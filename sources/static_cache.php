@@ -50,7 +50,7 @@ if (!isset($GLOBALS['FILE_BASE'])) {
  *
  * @return URLPATH The URL
  */
-function static_cache__get_self_url_easy()
+function static_cache__get_self_url_easy() : string
 {
     // May not be called from Composr, so can't rely on Composr's normal fixup_bad_php_env_vars function having being called
     $self_url = '';
@@ -71,7 +71,7 @@ function static_cache__get_self_url_easy()
  *
  * @return boolean Whether we are
  */
-function debugging_static_cache()
+function debugging_static_cache() : bool
 {
     return !empty($_GET['debug_static_cache']);
 }
@@ -83,7 +83,7 @@ function debugging_static_cache()
  * @param  boolean $consider_failover_mode Whether to consider potential of cache being needed for failover mode
  * @return boolean Whether we can
  */
-function can_static_cache_request($consider_failover_mode = false)
+function can_static_cache_request(bool $consider_failover_mode = false) : bool
 {
     global $SITE_INFO, $RELATIVE_PATH, $NON_CANONICAL_PARAMS;
 
@@ -171,7 +171,7 @@ function can_static_cache_request($consider_failover_mode = false)
  *
  * @return URLPATH The URL
  */
-function static_cache_current_url()
+function static_cache_current_url() : string
 {
     $url = static_cache__get_self_url_easy();
     $url = preg_replace('#(keep_session|for_session|keep_devtest|keep_failover)=\d+#', '', $url);
@@ -187,7 +187,7 @@ function static_cache_current_url()
  *
  * @param  integer $mode The mode
  */
-function static_cache($mode)
+function static_cache(int $mode)
 {
     global $SITE_INFO;
 

@@ -28,7 +28,7 @@ class Hook_cleanup_theme_images
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('themes:THEME_IMAGES');
@@ -43,7 +43,7 @@ class Hook_cleanup_theme_images
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         erase_theme_images_cache();
 

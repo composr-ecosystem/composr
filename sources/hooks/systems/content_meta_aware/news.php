@@ -30,7 +30,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info($zone = null, $get_extended_data = false)
+    public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
         if (!addon_installed('news')) {
             return null;
@@ -130,7 +130,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box(array $row, string $zone, bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
     {
         require_code('news');
 
@@ -143,7 +143,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
      * @param  ?string $id The pre-selected ID (null: none selected)
      * @return Tempcode List
      */
-    public function create_selection_list($id = null)
+    public function create_selection_list(?string $id = null) : object
     {
         require_code('news');
 
@@ -157,7 +157,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
  * @param  array $row Database row of entry
  * @return string The image URL
  */
-function generate_news_image_url($row)
+function generate_news_image_url(array $row) : string
 {
     if ($row['news_image'] != '') {
         $ret = $row['news_image'];

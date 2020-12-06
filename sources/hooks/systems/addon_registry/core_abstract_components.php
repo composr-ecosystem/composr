@@ -29,7 +29,7 @@ class Hook_addon_registry_core_abstract_components
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Core rendering functionality.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_themes',
@@ -81,7 +81,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/addon_registry/core_abstract_components.php',
@@ -144,7 +144,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BUTTON_SCREEN_ITEM.tpl' => 'button_screen_item',
@@ -171,7 +171,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__staff_actions()
+    public function tpl_preview__staff_actions() : array
     {
         return [
             lorem_globalise(do_lorem_template('STAFF_ACTIONS', [
@@ -194,7 +194,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__button_screen_item()
+    public function tpl_preview__button_screen_item() : array
     {
         return [
             lorem_globalise(do_lorem_template('BUTTON_SCREEN_ITEM', [
@@ -215,7 +215,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__fractional_edit()
+    public function tpl_preview__administrative__fractional_edit() : array
     {
         return [
             lorem_globalise(do_lorem_template('FRACTIONAL_EDIT', [
@@ -235,7 +235,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__crop_text_mouse_over_inline()
+    public function tpl_preview__crop_text_mouse_over_inline() : array
     {
         return [
             lorem_globalise(do_lorem_template('CROP_TEXT_MOUSE_OVER_INLINE', [
@@ -252,7 +252,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__img_thumb()
+    public function tpl_preview__img_thumb() : array
     {
         return [
             lorem_globalise(do_lorem_template('IMG_THUMB', [
@@ -272,7 +272,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__crop_text_mouse_over()
+    public function tpl_preview__crop_text_mouse_over() : array
     {
         return [
             lorem_globalise(do_lorem_template('CROP_TEXT_MOUSE_OVER', [
@@ -289,7 +289,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__button_screen()
+    public function tpl_preview__button_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('BUTTON_SCREEN', [
@@ -308,7 +308,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__standardbox_default()
+    public function tpl_preview__standardbox_default() : array
     {
         return $this->_tpl_preview__standardbox('default');
     }
@@ -320,7 +320,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__standardbox_accordion()
+    public function tpl_preview__standardbox_accordion() : array
     {
         return $this->_tpl_preview__standardbox('accordion');
     }
@@ -333,7 +333,7 @@ class Hook_addon_registry_core_abstract_components
      * @param  string $type View type
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function _tpl_preview__standardbox($type)
+    public function _tpl_preview__standardbox(string $type) : array
     {
         $links = [];
         foreach (placeholder_array() as $k => $v) {
@@ -382,7 +382,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__handle_conflict_resolution()
+    public function tpl_preview__administrative__handle_conflict_resolution() : array
     {
         return [
             lorem_globalise(do_lorem_template('HANDLE_CONFLICT_RESOLUTION', []))
@@ -396,7 +396,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__graph_scatter_diagram()
+    public function tpl_preview__graph_scatter_diagram() : array
     {
         $datapoints = [
             [
@@ -441,7 +441,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__graph_line_chart()
+    public function tpl_preview__graph_line_chart() : array
     {
         $datasets = [
             [
@@ -497,7 +497,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__graph_pie_chart()
+    public function tpl_preview__graph_pie_chart() : array
     {
         $datapoints = [
             [
@@ -540,7 +540,7 @@ class Hook_addon_registry_core_abstract_components
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__graph_bar_chart()
+    public function tpl_preview__graph_bar_chart() : array
     {
         $datapoints = [
             [

@@ -141,7 +141,7 @@ function attach_to_screen_header($data)
  * @param  ID_TEXT $param Parameter name
  * @param  boolean $block_page_from_static_cache_if_present If set to true and if this parameter is present in the URL then no static cache save will happen
  */
-function inform_non_canonical_parameter($param, $block_page_from_static_cache_if_present = true)
+function inform_non_canonical_parameter(string $param, bool $block_page_from_static_cache_if_present = true)
 {
     global $NON_CANONICAL_PARAMS;
 
@@ -174,7 +174,7 @@ function inform_non_canonical_parameter($param, $block_page_from_static_cache_if
  * @param  boolean $log_error Whether to log the error
  * @return string Blank string so it can be chained in the Tempcode compiler. You will rarely want to use this return value. It's kind of a failsafe.
  */
-function attach_message($message, $type = 'inform', $put_in_helper_panel = false, $log_error = false)
+function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
     if ((error_reporting() == 0) && ($type == 'warn')) {
         return ''; // Suppressing errors
@@ -292,7 +292,7 @@ function attach_message($message, $type = 'inform', $put_in_helper_panel = false
  * @param  ?ID_TEXT $zone_name The zone being operated within (null: auto-detect)
  * @return URLPATH The relative URL to the logo for the current zone
  */
-function get_logo_url($zone_name = null)
+function get_logo_url(?string $zone_name = null) : string
 {
     global $ZONE;
     if ($zone_name === null) {
@@ -313,7 +313,7 @@ function get_logo_url($zone_name = null)
  * @param  boolean $show_self Whether to show a self segment
  * @return Tempcode The breadcrumbs
  */
-function breadcrumbs($show_self = true)
+function breadcrumbs(bool $show_self = true) : object
 {
     static $out = null;
     if ($out !== null) {
@@ -355,7 +355,7 @@ function breadcrumbs($show_self = true)
  * @param  boolean $link_to_self_entrypoint Whether we'll be providing a link to where we are currently at
  * @return Tempcode The default breadcrumb stub
  */
-function breadcrumbs_get_default_stub($link_to_self_entrypoint = true)
+function breadcrumbs_get_default_stub(bool $link_to_self_entrypoint = true) : object
 {
     global $BREADCRUMB_SET_PARENTS, $DISPLAYED_TITLE, $BREADCRUMB_SET_SELF;
 
@@ -394,7 +394,7 @@ function breadcrumbs_get_default_stub($link_to_self_entrypoint = true)
  * @param  ?mixed $link_to_self_entrypoint Whether we'll be providing a link to where we are currently at (by reference, gets set to false in some circumstances) (null: don't save by reference)
  * @return Tempcode The segments in Tempcode0
  */
-function breadcrumb_segments_to_tempcode($segments, &$link_to_self_entrypoint = null)
+function breadcrumb_segments_to_tempcode(array $segments, &$link_to_self_entrypoint = null) : object
 {
     $out = new Tempcode();
 
@@ -430,7 +430,7 @@ function breadcrumb_segments_to_tempcode($segments, &$link_to_self_entrypoint = 
  *
  * @param  array $parents The list of parent entry points (pairs: entry point, title)
  */
-function breadcrumb_set_parents($parents)
+function breadcrumb_set_parents(array $parents)
 {
     global $BREADCRUMB_SET_PARENTS;
     $BREADCRUMB_SET_PARENTS = $parents;
@@ -456,7 +456,7 @@ function breadcrumb_set_self($title)
  *
  * @param  URLPATH $url The URL
  */
-function set_feed_url($url)
+function set_feed_url(string $url)
 {
     global $FEED_URL;
     $FEED_URL = $url;
@@ -471,7 +471,7 @@ function set_feed_url($url)
  * @param  boolean $append Whether to append
  * @param  boolean $put_in_box Whether to add a box around the parameter
  */
-function set_helper_panel_text($text, $append = true, $put_in_box = true)
+function set_helper_panel_text(?object $text, bool $append = true, bool $put_in_box = true)
 {
     if ($put_in_box) {
         $text = put_in_standard_box($text);
@@ -495,7 +495,7 @@ function set_helper_panel_text($text, $append = true, $put_in_box = true)
  *
  * @param  ?ID_TEXT $tutorial The page name of the tutorial (must be an existing one on the brand site, i.e. compo.sr) (null: none)
  */
-function set_helper_panel_tutorial($tutorial)
+function set_helper_panel_tutorial(?string $tutorial)
 {
     global $HELPER_PANEL_TUTORIAL;
     $HELPER_PANEL_TUTORIAL = $tutorial;
@@ -508,7 +508,7 @@ function set_helper_panel_tutorial($tutorial)
  *
  * @param  string $title The short title
  */
-function set_short_title($title)
+function set_short_title(string $title)
 {
     global $SHORT_TITLE, $FORCE_SET_TITLE;
     if (!$FORCE_SET_TITLE) {
@@ -634,7 +634,7 @@ function check_has_page_access()
  *
  * @return ID_TEXT The "real" zone name (not actually the zone name, but the zone name wants details to load for)
  */
-function load_zone_data()
+function load_zone_data() : string
 {
     global $ZONE, $RELATIVE_PATH;
     $zone_name = get_zone_name();
@@ -723,7 +723,7 @@ function load_zone_data()
  * @param  boolean $consider_nulls_as_unpassed If any nulls are passed it's considered as 'really not passed' rather than 'read from environment' for $type and $url_id
  * @return boolean Found via moniker
  */
-function process_url_monikers($redirect_if_non_canonical = true, $env_change = true, &$page = null, &$zone = null, &$type = null, &$url_id = null, $consider_nulls_as_unpassed = true)
+function process_url_monikers(bool $redirect_if_non_canonical = true, bool $env_change = true, ?string &$page = null, ?string &$zone = null, ?string &$type = null, ?string &$url_id = null, bool $consider_nulls_as_unpassed = true) : bool
 {
     if ($env_change) {
         static $run_once = false;
@@ -890,7 +890,7 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
  * @param  boolean $redirect_if_non_canonical Do a redirect if we're not on the canonical URL
  * @param  boolean $is_complete_url_under_zone Is the moniker representing the full URL (as opposed to being underneath a module)?
  */
-function handle_moniker_deprecation_redirect($zone, $moniker_row, $redirect_if_non_canonical, $is_complete_url_under_zone = false)
+function handle_moniker_deprecation_redirect(string $zone, array $moniker_row, bool $redirect_if_non_canonical, bool $is_complete_url_under_zone = false)
 {
     $deprecated = $moniker_row['m_deprecated'] == 1;
     if (($redirect_if_non_canonical) && ($deprecated) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (get_param_integer('keep_failover', null) !== 0)) {
@@ -1159,7 +1159,7 @@ function do_site()
  * @param  string $mime_type Mime type to use
  * @return boolean Whether saving could have happened
  */
-function save_static_caching($out, $mime_type = 'text/html')
+function save_static_caching($out, string $mime_type = 'text/html') : bool
 {
     require_code('static_cache');
     $debugging = debugging_static_cache();
@@ -1357,7 +1357,7 @@ function save_static_caching($out, $mime_type = 'text/html')
  * @param  string $out_evaluated Cache contents
  * @param  boolean $support_output_compression Whether to allow output compression
  */
-function write_static_cache_file($fast_cache_path, $out_evaluated, $support_output_compression)
+function write_static_cache_file(string $fast_cache_path, string $out_evaluated, bool $support_output_compression)
 {
     require_code('files');
     cms_file_put_contents_safe($fast_cache_path, $out_evaluated, FILE_WRITE_FIX_PERMISSIONS);
@@ -1380,7 +1380,7 @@ function write_static_cache_file($fast_cache_path, $out_evaluated, $support_outp
  * @param  boolean $redirect_check Whether to check for redirects (normally you would)
  * @return Tempcode The page
  */
-function request_page($codename, $required, $zone = null, $page_type = null, $being_included = false, $redirect_check = true)
+function request_page(string $codename, bool $required, ?string $zone = null, ?string $page_type = null, bool $being_included = false, bool $redirect_check = true) : object
 {
     global $SITE_INFO;
 
@@ -1539,7 +1539,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
  * @param  boolean $redirect_check Whether to check for redirects (normally you would)
  * @return ~array A list of details (false: page not found)
  */
-function _request_page($codename, $zone, $page_type = null, $lang = null, $redirect_check = true)
+function _request_page(string $codename, string $zone, ?string $page_type = null, ?string $lang = null, bool $redirect_check = true)
 {
     $details = persistent_cache_get(['PAGE_INFO', $codename, $zone, $page_type, $lang, $redirect_check]);
     if ($details === null || $details === false/*caching negativity breaks things if the page subsequently appears - even adding a page does a pre-check so would net a cached false*/) {
@@ -1560,7 +1560,7 @@ function _request_page($codename, $zone, $page_type = null, $lang = null, $redir
  * @return ~array A list of details (false: page not found)
  * @ignore
  */
-function __request_page($codename, $zone, $page_type = null, $lang = null, $redirect_check = true)
+function __request_page(string $codename, string $zone, ?string $page_type = null, ?string $lang = null, bool $redirect_check = true)
 {
     if ($lang === null) {
         require_code('lang');
@@ -1780,7 +1780,7 @@ function __request_page($codename, $zone, $page_type = null, $lang = null, $redi
  * @return ~array A list of details (false: page not found)
  * @ignore
  */
-function _request_page__redirects($codename, $zone, $wildcard_mode = false)
+function _request_page__redirects(string $codename, string $zone, bool $wildcard_mode = false)
 {
     $codename = cms_mb_strtolower($codename);
 
@@ -1832,9 +1832,9 @@ function _request_page__redirects($codename, $zone, $wildcard_mode = false)
  * @param  ID_TEXT $codename The codename of the page
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $theme The theme
- * @return array The page row
+ * @return ?array The page row (null: none found)
  */
-function load_comcode_page_from_cache($codename, $zone, $theme)
+function load_comcode_page_from_cache(string $codename, string $zone, string $theme) : ?array
 {
     $tuple = [$codename, $zone, $theme];
 
@@ -1855,7 +1855,7 @@ function load_comcode_page_from_cache($codename, $zone, $theme)
  *
  * @ignore
  */
-function _load_comcodes_page_from_cache($pages)
+function _load_comcodes_page_from_cache(array $pages) : array
 {
     global $COMCODE_PAGE_RUNTIME_CACHE;
 
@@ -1900,7 +1900,7 @@ function _load_comcodes_page_from_cache($pages)
  * @param  boolean $being_included Whether the page is being included from another
  * @return Tempcode The page
  */
-function load_comcode_page($string, $zone, $codename, $file_base = null, $being_included = false)
+function load_comcode_page(string $string, string $zone, string $codename, ?string $file_base = null, bool $being_included = false) : object
 {
     if (strlen($codename) < 1) {
         warn_exit(do_lang_tempcode('EMPTY_CODENAME'));
@@ -2137,7 +2137,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
  * @param  integer $jumps The number of jumps we have gone through so far (cuts out after 10 as a failsafe)
  * @return array The breadcrumbs
  */
-function comcode_breadcrumbs($the_page, $the_zone, $root = '', $include_link = false, $jumps = 0)
+function comcode_breadcrumbs(string $the_page, string $the_zone, string $root = '', bool $include_link = false, int $jumps = 0) : array
 {
     // Cut off broken recursion
     if ($jumps == 10) {
@@ -2227,7 +2227,7 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $include_link = f
  * @param  ?string $page_link Page link being viewed (null: work it out)
  * @param  integer $pg_time The time taken for page loading in milliseconds
  */
-function log_stats($page_link, $pg_time)
+function log_stats(?string $page_link, int $pg_time)
 {
     if (!addon_installed('stats')) {
         return;

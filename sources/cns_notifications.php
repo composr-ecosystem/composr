@@ -27,7 +27,7 @@
  * @param  ?TIME $time_barrier Only since this date (null: no limit)
  * @return array The personal post rows (with corresponding topic details)
  */
-function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $time_barrier = null)
+function cns_get_pp_rows(?int $limit = 5, bool $unread = true, bool $include_inline = true, ?int $time_barrier = null) : array
 {
     $cache_key = serialize([$limit, $unread, $include_inline, $time_barrier]);
 
@@ -125,7 +125,7 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
  * @param  MEMBER $member_id Member to look up for
  * @return integer Number of notifications
  */
-function generate_notifications_count($member_id)
+function generate_notifications_count(int $member_id) : int
 {
     static $notifications_cache = null;
     if (isset($notifications_cache[$member_id])) {

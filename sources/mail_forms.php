@@ -77,7 +77,7 @@ function form_to_email_entry_script()
  * @param  ?EMAIL $to_email E-mail address to send to (null: look from POST environment [if allowed] / staff address)
  * @param  boolean $is_via_post Whether $fields refers to some POSTed fields, as opposed to a direct field->value map
  */
-function form_to_email($subject = null, $subject_prefix = '', $subject_suffix = '', $body_prefix = '', $body_suffix = '', $fields = null, $to_email = null, $is_via_post = true)
+function form_to_email(?string $subject = null, string $subject_prefix = '', string $subject_suffix = '', string $body_prefix = '', string $body_suffix = '', ?array $fields = null, ?string $to_email = null, bool $is_via_post = true)
 {
     // Data
     $details = _form_to_email([], $subject, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, $fields, $to_email, $is_via_post);
@@ -132,7 +132,7 @@ function form_to_email($subject = null, $subject_prefix = '', $subject_suffix = 
  *
  * @ignore
  */
-function _form_to_email($extra_boring_fields = [], $subject = null, $subject_prefix = '', $subject_suffix = '', $body_prefix = '', $body_suffix = '', $fields = null, $to_email = null, $is_via_post = true)
+function _form_to_email(array $extra_boring_fields = [], ?string $subject = null, string $subject_prefix = '', string $subject_suffix = '', string $body_prefix = '', string $body_suffix = '', ?array $fields = null, ?string $to_email = null, bool $is_via_post = true) : array
 {
     // Find subject...
 
@@ -265,7 +265,7 @@ function _form_to_email($extra_boring_fields = [], $subject = null, $subject_pre
  *
  * @ignore
  */
-function _append_form_to_email(&$body, $is_tick, $field_name, $field_title, $field_val, $num_fields, &$body_parts)
+function _append_form_to_email(string &$body, bool $is_tick, string $field_name, string $field_title, string $field_val, int $num_fields, array &$body_parts)
 {
     $prefix = '';
     if ($num_fields != 1) {

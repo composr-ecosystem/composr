@@ -28,7 +28,7 @@ class Hook_config_comments_to_show_in_thread
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMMENTS_TO_SHOW_IN_THREAD',
@@ -52,7 +52,7 @@ class Hook_config_comments_to_show_in_thread
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '30';
     }

@@ -28,7 +28,7 @@ class Hook_notes_quotes
      *
      * @param  PATH $file Filename
      */
-    public function run($file)
+    public function run(string $file)
     {
         if (!addon_installed('random_quotes')) {
             return;

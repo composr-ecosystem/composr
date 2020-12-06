@@ -213,7 +213,7 @@ function catalogue_file_script()
  * @param  string $content_type Content type
  * @return AUTO_LINK Field ID
  */
-function define_custom_field($name, $description = '', $order = 0, $content_type = 'comcode_page')
+function define_custom_field(string $name, string $description = '', int $order = 0, string $content_type = 'comcode_page') : int
 {
     $settings_map = [
         'c_name' => '_' . $content_type,
@@ -257,7 +257,7 @@ function define_custom_field($name, $description = '', $order = 0, $content_type
  * @param  string $default Field default value
  * @return string The value
  */
-function option_value_from_field_array($field, $name, $default = '')
+function option_value_from_field_array(array $field, string $name, string $default = '') : string
 {
     if (empty($field['cf_options'])) {
         $options = [];
@@ -276,7 +276,7 @@ function option_value_from_field_array($field, $name, $default = '')
  * @param  string $__options Options string
  * @return array The setting map
  */
-function parse_field_options($__options)
+function parse_field_options(string $__options) : array
 {
     $_options = ($__options == '') ? [] : explode(',', $__options);
     $options = [];
@@ -300,7 +300,7 @@ function parse_field_options($__options)
  * @param  ?ID_TEXT $catalogue_name The name of the catalogue (null: all catalogues)
  * @return array The fields (empty array if the catalogue does not exist)
  */
-function get_catalogue_fields($catalogue_name = null)
+function get_catalogue_fields(?string $catalogue_name = null) : array
 {
     global $CAT_FIELDS_CACHE;
     if (isset($CAT_FIELDS_CACHE[$catalogue_name])) {
@@ -322,7 +322,7 @@ function get_catalogue_fields($catalogue_name = null)
  * @param  ID_TEXT $type Codename
  * @return object Hook object
  */
-function get_fields_hook($type)
+function get_fields_hook(string $type) : object
 {
     static $fields_hook_cache = [];
     if (isset($fields_hook_cache[$type])) {
@@ -356,7 +356,7 @@ function get_fields_hook($type)
  * @param  ID_TEXT $content_type Content type hook codename
  * @return array Extra do-next icon (single item array, or empty array if catalogues not installed)
  */
-function manage_custom_fields_donext_link($content_type)
+function manage_custom_fields_donext_link(string $content_type) : array
 {
     if (addon_installed('catalogues')) {
         require_lang('fields');
@@ -387,7 +387,7 @@ function manage_custom_fields_donext_link($content_type)
  * @param  ID_TEXT $content_type Content type hook codename
  * @return array Extra get_entry_points data
  */
-function manage_custom_fields_entry_points($content_type)
+function manage_custom_fields_entry_points(string $content_type) : array
 {
     if (addon_installed('catalogues')) {
         require_lang('fields');
@@ -421,7 +421,7 @@ function manage_custom_fields_entry_points($content_type)
  * @param  ID_TEXT $content_type Content type hook codename
  * @return boolean Whether it has
  */
-function has_tied_catalogue($content_type)
+function has_tied_catalogue(string $content_type) : bool
 {
     if (addon_installed('catalogues')) {
         require_code('content');
@@ -451,7 +451,7 @@ function has_tied_catalogue($content_type)
  * @param  ID_TEXT $id Content entry ID
  * @return ?AUTO_LINK Bound catalogue entry ID (null: none)
  */
-function get_bound_content_entry_wrap($content_type, $id)
+function get_bound_content_entry_wrap(string $content_type, string $id) : ?int
 {
     $catalogue_entry_id = get_bound_content_entry($content_type, $id);
 
@@ -482,7 +482,7 @@ function get_bound_content_entry_wrap($content_type, $id)
  * @param  ID_TEXT $id Content entry ID
  * @return ?AUTO_LINK Bound catalogue entry ID (null: none)
  */
-function get_bound_content_entry($content_type, $id)
+function get_bound_content_entry(string $content_type, string $id) : ?int
 {
     if (!addon_installed('catalogues')) {
         return null;
@@ -543,7 +543,7 @@ function get_bound_content_entry($content_type, $id)
  * @param  boolean $field_filter_inclusion_list Whether $field_filter is a inclusion list (if false, it is a exclusion-list)
  * @param  boolean $add_separate_header Whether to add a separate header above the fields, so long as not all the fields are already under some other header
  */
-function append_form_custom_fields($content_type, $id, &$fields, &$hidden, $field_filter = null, $field_filter_inclusion_list = true, $add_separate_header = false)
+function append_form_custom_fields(string $content_type, ?string $id, object &$fields, object &$hidden, ?array $field_filter = null, bool $field_filter_inclusion_list = true, bool $add_separate_header = false)
 {
     if (!addon_installed('catalogues')) {
         return;
@@ -639,7 +639,7 @@ function append_form_custom_fields($content_type, $id, &$fields, &$hidden, $fiel
  * @param  ID_TEXT $id Content entry ID
  * @param  ?ID_TEXT $old_id Content entry ID (prior to possible rename) (null: definitely unchanged)
  */
-function save_form_custom_fields($content_type, $id, $old_id = null)
+function save_form_custom_fields(string $content_type, string $id, ?string $old_id = null)
 {
     if (!addon_installed('catalogues')) {
         return;
@@ -707,7 +707,7 @@ function save_form_custom_fields($content_type, $id, $old_id = null)
  * @param  ID_TEXT $content_type Content type hook codename
  * @param  ID_TEXT $id Content entry ID
  */
-function delete_form_custom_fields($content_type, $id)
+function delete_form_custom_fields(string $content_type, string $id)
 {
     if (!addon_installed('catalogues')) {
         return;
@@ -732,7 +732,7 @@ function delete_form_custom_fields($content_type, $id)
  * @param  boolean $limit_to_storage_set Whether to only show options in the same storage set as $type
  * @return Tempcode List of field types
  */
-function create_selection_list_field_type($type = '', $limit_to_storage_set = false)
+function create_selection_list_field_type(string $type = '', bool $limit_to_storage_set = false) : object
 {
     static $cache = [];
     $cache_sig = serialize([$type, $limit_to_storage_set]);
@@ -861,7 +861,7 @@ abstract class ListFieldHook
      * @param  ?boolean $dynamic_choices Whether to put custom choices from previous data back into the main list (null: decide based on field options)
      * @return array List
      */
-    protected function get_input_list_map($field, $dynamic_choices = null)
+    protected function get_input_list_map(array $field, ?bool $dynamic_choices = null) : array
     {
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
 

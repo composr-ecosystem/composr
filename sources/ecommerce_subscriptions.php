@@ -25,7 +25,7 @@
  * @param  boolean $usergroup_subscriptions_only Whether to limit us to usergroup subscriptions
  * @return array A list of subscriptions and subscription lifetime positions
  */
-function find_member_subscriptions($member_id, $usergroup_subscriptions_only = false)
+function find_member_subscriptions(int $member_id, bool $usergroup_subscriptions_only = false) : array
 {
     $subscriptions = [];
 
@@ -189,7 +189,7 @@ function find_member_subscriptions($member_id, $usergroup_subscriptions_only = f
  * @param  array $subscription Subscription details
  * @return array Template-ready parameters
  */
-function prepare_templated_subscription($subscription)
+function prepare_templated_subscription(array $subscription) : array
 {
     require_lang('ecommerce');
 

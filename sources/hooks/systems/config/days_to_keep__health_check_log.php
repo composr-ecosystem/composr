@@ -28,7 +28,7 @@ class Hook_config_days_to_keep__health_check_log
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'DAYS_TO_KEEP__HEALTH_CHECK_LOG',
@@ -51,7 +51,7 @@ class Hook_config_days_to_keep__health_check_log
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('health_check')) {
             return null;

@@ -28,7 +28,7 @@ class Hook_config_show_first_join_page
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SHOW_FIRST_JOIN_PAGE',
@@ -51,7 +51,7 @@ class Hook_config_show_first_join_page
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (get_forum_type() != 'cns') {
             return null;

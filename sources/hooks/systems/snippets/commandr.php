@@ -28,7 +28,7 @@ class Hook_snippet_commandr
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('commandr')) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('commandr')));

@@ -30,7 +30,7 @@ class Module_cms_wiki
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -51,7 +51,7 @@ class Module_cms_wiki
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('wiki')) {
             return null;
@@ -75,7 +75,7 @@ class Module_cms_wiki
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('wiki');
         return ['edit_cat_lowrange_content' => [1, 'WIKI_EDIT_PAGE'], 'delete_cat_lowrange_content' => [1, 'WIKI_DELETE_PAGE'], 'submit_lowrange_content' => [1, 'WIKI_MAKE_POST'], 'bypass_validation_lowrange_content' => [1, 'BYPASS_WIKI_VALIDATION'], 'edit_own_lowrange_content' => [1, 'WIKI_EDIT_OWN_POST'], 'edit_lowrange_content' => [1, 'WIKI_EDIT_POST'], 'delete_own_lowrange_content' => [1, 'WIKI_DELETE_OWN_POST'], 'delete_lowrange_content' => [1, 'WIKI_DELETE_POST'], 'wiki_manage_tree' => 1];
@@ -92,7 +92,7 @@ class Module_cms_wiki
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('wiki', $error_msg)) {
@@ -170,7 +170,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -210,7 +210,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         require_code('fields');
@@ -235,7 +235,7 @@ class Module_cms_wiki
      * @param  ?AUTO_LINK $page_id The ID of the page (null: we're adding)
      * @return array The fields, the extra fields, the hidden fields
      */
-    public function get_page_fields($id = null, $title = '', $notes = '', $show_posts = 1, $page_id = null)
+    public function get_page_fields(?int $id = null, string $title = '', string $notes = '', int $show_posts = 1, ?int $page_id = null) : array
     {
         $fields = new Tempcode();
         $fields2 = new Tempcode();
@@ -292,7 +292,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function add_page()
+    public function add_page() : object
     {
         check_submit_permission('cat_low');
 
@@ -333,7 +333,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function _add_page()
+    public function _add_page() : object
     {
         check_submit_permission('cat_low');
 
@@ -376,7 +376,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function choose_page_to_edit()
+    public function choose_page_to_edit() : object
     {
         $list = create_selection_list_wiki_page_tree();
         require_code('form_templates');
@@ -408,7 +408,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function edit_page()
+    public function edit_page() : object
     {
         $__id = get_param_string('id', '', INPUT_FILTER_GET_COMPLEX);
         $_id = get_param_wiki_chain('id');
@@ -482,7 +482,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function _edit_page()
+    public function _edit_page() : object
     {
         $_id = get_param_wiki_chain('id');
         $id = intval($_id[0]);
@@ -540,7 +540,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function edit_tree()
+    public function edit_tree() : object
     {
         if (get_option('wiki_enable_children') == '0') {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -608,7 +608,7 @@ class Module_cms_wiki
      *
      * @return Tempcode The UI
      */
-    public function _edit_tree()
+    public function _edit_tree() : object
     {
         if (get_option('wiki_enable_children') == '0') {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

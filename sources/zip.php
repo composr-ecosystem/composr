@@ -25,7 +25,7 @@
  * @param  PATH $subpath The subpath relative to the path (should be left as the default '', as this is used for the recursion to distinguish the adding base path from where it's currently looking)
  * @return array A list of maps that stores time,full_path,name, for each file
  */
-function zip_scan_folder($path, $subpath = '')
+function zip_scan_folder(string $path, string $subpath = '') : array
 {
     require_code('files');
 
@@ -63,7 +63,7 @@ function zip_scan_folder($path, $subpath = '')
  * @param  PATH $filename The file
  * @return ?integer The CRC (null: error)
  */
-function crc32_file($filename)
+function crc32_file(string $filename) : ?int
 {
     if (function_exists('hash_file')) {
         $crc = hash_file('crc32b', $filename);
@@ -95,7 +95,7 @@ function crc32_file($filename)
  * @param  PATH $outfile_path File to spool into
  * @param  array $file_array A list of maps (time,data/full_path,name) covering everything to ZIP up
  */
-function create_zip_file($outfile_path, $file_array)
+function create_zip_file(string $outfile_path, array $file_array)
 {
     // Support compression via PHP
     if (class_exists('ZipArchive')) {

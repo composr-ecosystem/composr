@@ -29,7 +29,7 @@ class Hook_spam_heuristics_posting_speed
      * @param  string $post_data Posted data
      * @return integer Confidence score
      */
-    public function assess_confidence($post_data)
+    public function assess_confidence(string $post_data) : int
     {
         $score = intval(get_option('spam_heuristic_confidence_posting_speed'));
         if ($score == 0) {

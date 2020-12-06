@@ -38,7 +38,7 @@
  * @param  array $mails Other e-mails to send
  * @return AUTO_LINK The ID
  */
-function add_usergroup_subscription($title, $description, $price, $tax_code, $length, $length_units, $auto_recur, $group_id, $uses_primary, $enabled, $mail_start, $mail_end, $mail_uhoh, $mails = [])
+function add_usergroup_subscription(string $title, string $description, float $price, string $tax_code, int $length, string $length_units, int $auto_recur, int $group_id, int $uses_primary, int $enabled, ?string $mail_start, ?string $mail_end, ?string $mail_uhoh, array $mails = []) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_USERGROUP_SUBSCRIPTION', null, $title);
@@ -103,7 +103,7 @@ function add_usergroup_subscription($title, $description, $price, $tax_code, $le
  * @param  ?LONG_TEXT $mail_uhoh The text of the e-mail to send out when a subscription cannot be renewed because the subproduct is gone (null: default)
  * @param  ?array $mails Other e-mails to send (null: do not change)
  */
-function edit_usergroup_subscription($id, $title, $description, $price, $tax_code, $length, $length_units, $auto_recur, $group_id, $uses_primary, $enabled, $mail_start, $mail_end, $mail_uhoh, $mails = null)
+function edit_usergroup_subscription(int $id, string $title, string $description, float $price, string $tax_code, int $length, string $length_units, int $auto_recur, int $group_id, int $uses_primary, int $enabled, ?string $mail_start, ?string $mail_end, ?string $mail_uhoh, ?array $mails = null)
 {
     $db = get_db_for('f_usergroup_subs');
 
@@ -205,7 +205,7 @@ function edit_usergroup_subscription($id, $title, $description, $price, $tax_cod
  * @param  AUTO_LINK $id The ID
  * @param  LONG_TEXT $uhoh_mail The cancellation mail to send out (blank: none)
  */
-function delete_usergroup_subscription($id, $uhoh_mail = '')
+function delete_usergroup_subscription(int $id, string $uhoh_mail = '')
 {
     $db = get_db_for('f_usergroup_subs');
 

@@ -34,7 +34,7 @@ function init__upgrade_mysql()
  * @ignore
  * @return string Output messages
  */
-function upgrader_mysql_repair_screen()
+function upgrader_mysql_repair_screen() : string
 {
     if (strpos(get_db_type(), 'mysql') === false) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -50,7 +50,7 @@ function upgrader_mysql_repair_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader_criticise_mysql_fields_screen()
+function upgrader_criticise_mysql_fields_screen() : string
 {
     if (strpos(get_db_type(), 'mysql') === false) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

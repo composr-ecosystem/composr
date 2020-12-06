@@ -36,7 +36,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
  * @param  LONG_TEXT $string The text to escape
  * @return LONG_TEXT The escaped result
  */
-function code_editor_escape_html($string)
+function code_editor_escape_html(string $string) : string
 {
     if ($string === '') {
         return ''; // Optimisation
@@ -73,7 +73,7 @@ code_editor_do_footer();
  * @param  ID_TEXT $type The type our form clicks are
  * @param  ID_TEXT $target The target our form clicks get sent to
  */
-function code_editor_do_header($type, $target = '_top')
+function code_editor_do_header(string $type, string $target = '_top')
 {
     echo '
 <!DOCTYPE html>
@@ -213,7 +213,7 @@ END;
  * @param  SHORT_TEXT $dir The directory path to search
  * @return array A list of the HTML elements for the list box selection
  */
-function ce_do_dir($dir)
+function ce_do_dir(string $dir) : array
 {
     $out = [];
     $_dir = ($dir == '') ? '.' : $dir;
@@ -244,7 +244,7 @@ function ce_do_dir($dir)
  *
  * @param  SHORT_TEXT $given_password The password previously given to authorise our editing
  */
-function do_get_path($given_password)
+function do_get_path(string $given_password)
 {
     // Just to test a connection if one was requested
     $test = open_up_ftp_connection();
@@ -285,7 +285,7 @@ END;
  *
  * @return boolean Whether we have this
  */
-function ce_is_suexec_like()
+function ce_is_suexec_like() : bool
 {
     static $answer = null;
     if ($answer === null) {
@@ -303,7 +303,7 @@ function ce_is_suexec_like()
  * @param  PATH $path The full pathname to the file/directory
  * @param  integer $perms The permissions to make (not the permissions are reduced if the function finds that the file is owned by the web user [doesn't need world permissions then])
  */
-function ce_fix_permissions($path, $perms = 0666) // We call this function assuming we are giving world permissions
+function ce_fix_permissions(string $path, int $perms = 0666) // We call this function assuming we are giving world permissions
 {
     // If the file user is different to the web user, we need to make it world writeable
     if (!ce_is_suexec_like()) {
@@ -385,7 +385,7 @@ function open_up_ftp_connection()
  * @param  SHORT_TEXT $given_password The password previously given to authorise our editing
  * @param  SHORT_TEXT $path The path of the file we are editing
  */
-function do_page($given_password, $path)
+function do_page(string $given_password, string $path)
 {
     if ($path[0] == '/') {
         $path = substr($path, 1);
@@ -584,7 +584,7 @@ END;
  * @param  string $save_path The normal path
  * @return string The overridden save path
  */
-function convert_to_save_path($save_path)
+function convert_to_save_path(string $save_path) : string
 {
     if (substr($save_path, 0, 8) == 'sources/') {
         $save_path = 'sources_custom/' . substr($save_path, 8);
@@ -601,7 +601,7 @@ function convert_to_save_path($save_path)
  *
  * @param  PATH $filename File/directory name to sync on (may be full or relative path)
  */
-function ce_sync_file($filename)
+function ce_sync_file(string $filename)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
@@ -621,7 +621,7 @@ function ce_sync_file($filename)
  * @param  PATH $old File/directory name to move from (may be full or relative path)
  * @param  PATH $new File/directory name to move to (may be full or relative path)
  */
-function ce_sync_file_move($old, $new)
+function ce_sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
@@ -644,7 +644,7 @@ function ce_sync_file_move($old, $new)
  * @param  SHORT_TEXT $password_given Given master password
  * @return boolean Whether it is valid
  */
-function ce_check_master_password($password_given)
+function ce_check_master_password(string $password_given) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');
@@ -657,7 +657,7 @@ function ce_check_master_password($password_given)
  * @param  string $prefix The prefix of the temporary file name
  * @return ~string The name of the temporary file (false: error)
  */
-function ce_cms_tempnam($prefix = '')
+function ce_cms_tempnam(string $prefix = '')
 {
     global $FILE_BASE;
     $problem_saving = ((function_exists('get_option')) && (get_option('force_local_temp_dir') == '1')) || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0));

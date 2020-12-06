@@ -29,7 +29,7 @@ class Hook_addon_registry_ecommerce
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'eCommerce';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_ecommerce',
@@ -82,7 +82,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -96,7 +96,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/audit/ecommerce/ecommerce.svg';
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/ecommerce.php',
@@ -374,7 +374,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/CURRENCY.tpl' => 'currency',
@@ -434,7 +434,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__currency()
+    public function tpl_preview__currency() : array
     {
         return [
             lorem_globalise(do_lorem_template('CURRENCY', [
@@ -453,7 +453,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_logos_worldpay()
+    public function tpl_preview__ecom_logos_worldpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_LOGOS_WORLDPAY', [
@@ -472,7 +472,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_logos_authorize()
+    public function tpl_preview__ecom_logos_authorize() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_LOGOS_AUTHORIZE', [
@@ -488,7 +488,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_payment_processor_links_authorize()
+    public function tpl_preview__ecom_payment_processor_links_authorize() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE', [
@@ -503,7 +503,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_transaction_button_via_worldpay()
+    public function tpl_preview__ecom_transaction_button_via_worldpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', [
@@ -533,7 +533,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_button_via_worldpay()
+    public function tpl_preview__ecom_subscription_button_via_worldpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', [
@@ -565,7 +565,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_worldpay()
+    public function tpl_preview__ecom_subscription_cancel_button_via_worldpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', [
@@ -581,7 +581,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_transaction_button_via_paypal()
+    public function tpl_preview__ecom_transaction_button_via_paypal() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_PAYPAL', [
@@ -608,7 +608,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_button_via_paypal()
+    public function tpl_preview__ecom_subscription_button_via_paypal() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL', [
@@ -636,7 +636,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_paypal()
+    public function tpl_preview__ecom_subscription_cancel_button_via_paypal() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', [
@@ -652,7 +652,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_transaction_button_via_secpay()
+    public function tpl_preview__ecom_transaction_button_via_secpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', [
@@ -681,7 +681,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_button_via_secpay()
+    public function tpl_preview__ecom_subscription_button_via_secpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', [
@@ -712,7 +712,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_secpay()
+    public function tpl_preview__ecom_subscription_cancel_button_via_secpay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', [
@@ -729,7 +729,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_transaction_button_via_ccbill()
+    public function tpl_preview__ecom_transaction_button_via_ccbill() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
@@ -761,7 +761,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_button_via_ccbill()
+    public function tpl_preview__ecom_subscription_button_via_ccbill() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
@@ -794,7 +794,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_ccbill()
+    public function tpl_preview__ecom_subscription_cancel_button_via_ccbill() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', [
@@ -810,7 +810,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_transaction_button_via_authorize()
+    public function tpl_preview__ecom_transaction_button_via_authorize() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_AUTHORIZE', [
@@ -842,7 +842,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_button_via_authorize()
+    public function tpl_preview__ecom_subscription_button_via_authorize() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_AUTHORIZE', [
@@ -875,7 +875,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_authorize()
+    public function tpl_preview__ecom_subscription_cancel_button_via_authorize() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_AUTHORIZE', [
@@ -892,7 +892,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_screen()
+    public function tpl_preview__purchase_screen() : array
     {
         $fields = do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
             'TITLE' => lorem_title(),
@@ -924,7 +924,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_guest()
+    public function tpl_preview__purchase_stage_guest() : array
     {
         require_lang('cns');
 
@@ -944,7 +944,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_choose()
+    public function tpl_preview__purchase_stage_choose() : array
     {
         require_code('currency');
 
@@ -1090,7 +1090,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_message()
+    public function tpl_preview__purchase_stage_message() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_MESSAGE', [
@@ -1109,7 +1109,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_terms()
+    public function tpl_preview__purchase_stage_terms() : array
     {
         require_lang('installer');
         return [
@@ -1130,7 +1130,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_details()
+    public function tpl_preview__purchase_stage_details() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_DETAILS', [
@@ -1151,7 +1151,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_transact()
+    public function tpl_preview__purchase_stage_transact() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
@@ -1174,7 +1174,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_pay()
+    public function tpl_preview__purchase_stage_pay() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_PAY', [
@@ -1200,7 +1200,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__purchase_stage_finish()
+    public function tpl_preview__purchase_stage_finish() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_FINISH', [
@@ -1219,7 +1219,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_invoices_screen()
+    public function tpl_preview__ecom_invoices_screen() : array
     {
         $invoices = [];
         foreach (placeholder_array() as $k => $v) {
@@ -1254,7 +1254,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__ecom_outstanding_invoices_screen()
+    public function tpl_preview__administrative__ecom_outstanding_invoices_screen() : array
     {
         $invoices = [];
         foreach (placeholder_array() as $invoice) {
@@ -1289,7 +1289,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_subscriptions_screen()
+    public function tpl_preview__ecom_subscriptions_screen() : array
     {
         $button = do_lorem_template('ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER', [
             'STATUS' => lorem_phrase(),
@@ -1345,7 +1345,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__member_subscription_status_screen()
+    public function tpl_preview__member_subscription_status_screen() : array
     {
         $button = do_lorem_template('ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER', [
             'STATUS' => lorem_phrase(),
@@ -1401,7 +1401,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_view_manual_transactions_screen()
+    public function tpl_preview__ecom_view_manual_transactions_screen() : array
     {
         $lines = do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
             'ID' => placeholder_id(),
@@ -1427,7 +1427,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__ecom_sales_log_screen()
+    public function tpl_preview__administrative__ecom_sales_log_screen() : array
     {
         $cells = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -1463,7 +1463,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__cns_member_profile_ecommerce_logs_screen()
+    public function tpl_preview__administrative__cns_member_profile_ecommerce_logs_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', [
@@ -1480,7 +1480,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__ecom_transaction_logs_screen()
+    public function tpl_preview__administrative__ecom_transaction_logs_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_TRANSACTION_LOGS_SCREEN', [
@@ -1500,7 +1500,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__ecom_cash_flow_screen()
+    public function tpl_preview__administrative__ecom_cash_flow_screen() : array
     {
         $types = [];
         foreach (placeholder_array() as $v) {
@@ -1525,7 +1525,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__ecom_products_price_screen()
+    public function tpl_preview__administrative__ecom_products_price_screen() : array
     {
         // This is for getting the do_ajax_request() javascript function.
 
@@ -1554,7 +1554,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_product_forwarder_mail()
+    public function tpl_preview__ecom_product_forwarder_mail() : array
     {
         $temp = do_lorem_template('ECOM_PRODUCT_FORWARDER_MAIL', [
             'ENCODED_REASON' => lorem_phrase(),
@@ -1576,7 +1576,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_product_pop3_mail()
+    public function tpl_preview__ecom_product_pop3_mail() : array
     {
         $temp = do_lorem_template('ECOM_PRODUCT_POP3_MAIL', [
             'EMAIL' => lorem_word(),
@@ -1602,7 +1602,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_product_quota_mail()
+    public function tpl_preview__ecom_product_quota_mail() : array
     {
         return [
             do_lorem_template('ECOM_PRODUCT_QUOTA_MAIL', [
@@ -1621,7 +1621,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_payment_received_mail()
+    public function tpl_preview__ecom_payment_received_mail() : array
     {
         $temp = do_lorem_template('ECOM_PAYMENT_RECEIVED_MAIL', [
             'AUTOMATIC_SETUP' => false,
@@ -1660,7 +1660,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_payment_sent_mail()
+    public function tpl_preview__ecom_payment_sent_mail() : array
     {
         $temp = do_lorem_template('ECOM_PAYMENT_SENT_MAIL', [
             'AUTOMATIC_SETUP' => false,
@@ -1699,7 +1699,7 @@ class Hook_addon_registry_ecommerce
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ecom_tax_invoice_screen()
+    public function tpl_preview__ecom_tax_invoice_screen() : array
     {
         $items = [];
         foreach (placeholder_array() as $k => $v) {

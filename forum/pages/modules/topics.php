@@ -45,7 +45,7 @@ class Module_topics
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -66,7 +66,7 @@ class Module_topics
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return null;
@@ -90,7 +90,7 @@ class Module_topics
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('cns');
         return [
@@ -116,7 +116,7 @@ class Module_topics
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_forum', $error_msg)) {
@@ -162,7 +162,7 @@ class Module_topics
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         @ignore_user_abort(true); // Must keep going till completion
 
@@ -279,7 +279,7 @@ class Module_topics
      * @param  ID_TEXT $_title The language string codename for the title to use in the page
      * @return Tempcode The UI
      */
-    public function relay_with_reason($_title)
+    public function relay_with_reason(string $_title) : object
     {
         $title = get_screen_title($_title);
         $text = paragraph(do_lang_tempcode('OPTIONAL_REASON'));
@@ -316,7 +316,7 @@ class Module_topics
      * @param  ?AUTO_LINK $post_id The ID of the post to redirect to (null: redirect to topic instead)
      * @return Tempcode The UI
      */
-    public function redirect_to($_title, $topic_id, $lang = null, $post_id = null)
+    public function redirect_to(string $_title, int $topic_id, $lang = null, ?int $post_id = null) : object
     {
         require_code('cns_topicview');
 
@@ -343,7 +343,7 @@ class Module_topics
      * @param  ?mixed $lang What to output (Tempcode or string) (null: default)
      * @return Tempcode The UI
      */
-    public function redirect_to_forum($_title, $forum_id, $lang = null)
+    public function redirect_to_forum(string $_title, ?int $forum_id, $lang = null) : object
     {
         if ($lang === null) {
             $lang = do_lang_tempcode('SUCCESS');
@@ -365,7 +365,7 @@ class Module_topics
      *
      * @return array A list of markers
      */
-    public function get_markers()
+    public function get_markers() : array
     {
         $markers = [];
         foreach (array_keys($_REQUEST) as $key) {
@@ -381,7 +381,7 @@ class Module_topics
      *
      * @return Tempcode Hidden fields facilitating the marker relaying
      */
-    public function keep_markers()
+    public function keep_markers() : object
     {
         $markers = new Tempcode();
         $_markers = $this->get_markers();
@@ -400,7 +400,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function toggle_notifications_forum() // Type
+    public function toggle_notifications_forum() // Type : object
     {
         require_code('notifications2');
         return notifications_ui_advanced('cns_topic', do_lang_tempcode('NOW_ENABLED_NOTIFICATIONS_FORUM'), do_lang_tempcode('NOW_DISABLED_NOTIFICATIONS_FORUM'));
@@ -415,7 +415,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function validate_posts() // Type
+    public function validate_posts() // Type : object
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
@@ -454,7 +454,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function delete_posts() // Type
+    public function delete_posts() // Type : object
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
@@ -480,7 +480,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _delete_posts() // Type
+    public function _delete_posts() // Type : object
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
@@ -509,7 +509,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function move_posts_a() // Type
+    public function move_posts_a() // Type : object
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
@@ -569,7 +569,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function move_posts_b() // Type
+    public function move_posts_b() // Type : object
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
@@ -622,7 +622,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _move_posts() // Type
+    public function _move_posts() // Type : object
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
@@ -675,7 +675,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function mark_topics_read() // Type
+    public function mark_topics_read() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -717,7 +717,7 @@ class Module_topics
      * @param  AUTO_LINK $topic_id The ID of the topic to mark as unread
      * @return boolean Success status (false = too old to mark read; true = marked read or topic entirely missing)
      */
-    public function cns_ping_topic_unread($topic_id)
+    public function cns_ping_topic_unread(int $topic_id) : bool
     {
         $last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_last_time', ['id' => $topic_id]);
         if ($last_time === null) {
@@ -738,7 +738,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function mark_topics_unread() // Type
+    public function mark_topics_unread() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -777,7 +777,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function validate_topics() // Type
+    public function validate_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -808,7 +808,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function pin_topics() // Type
+    public function pin_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -839,7 +839,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function unpin_topics() // Type
+    public function unpin_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -870,7 +870,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function cascade_topics() // Type
+    public function cascade_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -901,7 +901,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function uncascade_topics() // Type
+    public function uncascade_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -932,7 +932,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function open_topics() // Type
+    public function open_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -963,7 +963,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function close_topics() // Type
+    public function close_topics() // Type : object
     {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -994,7 +994,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function mass_multimod() // Type
+    public function mass_multimod() // Type : object
     {
         require_lang('cns_multi_moderations');
 
@@ -1091,7 +1091,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _mass_multimod() // Type
+    public function _mass_multimod() // Type : object
     {
         require_lang('cns_multi_moderations');
 
@@ -1125,7 +1125,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function move_topics() // Type
+    public function move_topics() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -1174,7 +1174,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _move_topics() // Type
+    public function _move_topics() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -1195,7 +1195,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function delete_topics() // Type
+    public function delete_topics() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -1218,7 +1218,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _delete_topics() // Type
+    public function _delete_topics() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -1237,7 +1237,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function delete_topics_and_posts() // Type
+    public function delete_topics_and_posts() // Type : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -1264,7 +1264,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _delete_topics_and_posts() // Type
+    public function _delete_topics_and_posts() // Type : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -1308,7 +1308,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function categorise_pts() // Type
+    public function categorise_pts() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -1368,7 +1368,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _categorise_pts() // Type
+    public function _categorise_pts() // Type : object
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -1410,7 +1410,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function whisper()
+    public function whisper() : object
     {
         $title = get_screen_title('WHISPER');
 
@@ -1439,7 +1439,7 @@ class Module_topics
      * @param  ID_TEXT $selected_path The currently selected emoticon
      * @return Tempcode The emoticon input field
      */
-    public function choose_topic_emoticon($selected_path = '')
+    public function choose_topic_emoticon(string $selected_path = '') : object
     {
         $tabindex = get_form_field_tabindex(null);
 
@@ -1494,7 +1494,7 @@ class Module_topics
      * @param  array $quotes A list of posts to quote
      * @return Tempcode The default post
      */
-    public function attach_quotes($quotes)
+    public function attach_quotes(array $quotes) : object
     {
         require_code('comcode_cleanup');
 
@@ -1543,7 +1543,7 @@ class Module_topics
      * @param  AUTO_LINK $forum_id The forum ID we are looking for Post Templates active in
      * @return array A pair: The form element (Tempcode) and the default post to make
      */
-    public function post_templates($forum_id)
+    public function post_templates(int $forum_id) : array
     {
         if (!addon_installed('cns_post_templates')) {
             return [new Tempcode(), ''];
@@ -1590,7 +1590,7 @@ class Module_topics
      * @param  ?Tempcode $text Text of screen (null: none)
      * @return Tempcode The UI
      */
-    public function new_topic($private_topic = false, $member_id = null, $img_path = '', $text = null)
+    public function new_topic(bool $private_topic = false, ?int $member_id = null, string $img_path = '', ?object $text = null) : object
     {
         if (!$private_topic) {
             $forum_id = get_param_integer('id');
@@ -1845,7 +1845,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function new_pt() // Type
+    public function new_pt() // Type : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -1891,7 +1891,7 @@ class Module_topics
      * @param  string $topic_title The topic title
      * @param  Tempcode $doing The action currently being done
      */
-    public function handle_topic_breadcrumbs($forum_id, $topic_id, $topic_title, $doing)
+    public function handle_topic_breadcrumbs(int $forum_id, int $topic_id, string $topic_title, object $doing)
     {
         if ($forum_id === null) {
             breadcrumb_set_parents([['_SEARCH:forumview:pt', do_lang_tempcode('PRIVATE_TOPICS')], ['_SEARCH:topicview:' . strval($topic_id), $topic_title]]);
@@ -1908,7 +1908,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function new_post()
+    public function new_post() : object
     {
         require_code('cns_posts2');
 
@@ -2165,7 +2165,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function report_post() // Type
+    public function report_post() // Type : object
     {
         $post_id = get_param_integer('id');
 
@@ -2192,7 +2192,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _report_post()
+    public function _report_post() : object
     {
         if (addon_installed('captcha')) {
             require_code('captcha');
@@ -2221,7 +2221,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _add_reply() // Type
+    public function _add_reply() // Type : object
     {
         $info = $this->_add_reply_and_return_info();
         $tempcode = $info['output'];
@@ -2233,7 +2233,7 @@ class Module_topics
      *
      * @return array Map of info
      */
-    public function _add_reply_and_return_info()
+    public function _add_reply_and_return_info() : array
     {
         if (addon_installed('captcha')) {
             require_code('captcha');
@@ -2665,7 +2665,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function toggle_notifications_topic() // Type
+    public function toggle_notifications_topic() // Type : object
     {
         require_code('notifications2');
         return notifications_ui_advanced('cns_topic', do_lang_tempcode('NOW_ENABLED_NOTIFICATIONS_TOPIC'), do_lang_tempcode('NOW_DISABLED_NOTIFICATIONS_TOPIC'));
@@ -2676,7 +2676,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function mark_read_topic() // Type
+    public function mark_read_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
 
@@ -2705,7 +2705,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function mark_unread_topic() // Type
+    public function mark_unread_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
 
@@ -2729,7 +2729,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function delete_post() // Type
+    public function delete_post() // Type : object
     {
         $post_id = get_param_integer('id');
         $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
@@ -2797,7 +2797,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _delete_post() // Type
+    public function _delete_post() // Type : object
     {
         $post_id = either_param_integer('id', null);
         if ($post_id === null) {
@@ -2906,7 +2906,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function vote_poll() // Type
+    public function vote_poll() // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -2952,7 +2952,7 @@ class Module_topics
      * @param  integer $maximum_selections The maximum number of selections for voters
      * @return Tempcode The Tempcode for the fields
      */
-    public function get_poll_form_fields($question = '', $answers = [], $is_private = 0, $is_open = 1, $requires_reply = 0, $minimum_selections = 1, $maximum_selections = 1)
+    public function get_poll_form_fields(string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1) : object
     {
         require_lang('polls');
 
@@ -2980,7 +2980,7 @@ class Module_topics
      * @param  ?AUTO_LINK $topic_id The topic ID to add the poll to (null: it is instead gettable from a GET parameter named 'id')
      * @return Tempcode The UI
      */
-    public function add_poll($topic_id = null) // Type
+    public function add_poll(?int $topic_id = null) // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -3064,7 +3064,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _add_poll() // Type
+    public function _add_poll() // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -3141,7 +3141,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function edit_post() // Type
+    public function edit_post() // Type : object
     {
         $post_id = get_param_integer('id');
 
@@ -3293,7 +3293,7 @@ class Module_topics
      *
      * @return array The post JavaScript
      */
-    public function _post_javascript()
+    public function _post_javascript() : array
     {
         $size = cns_get_member_best_group_property(get_member(), 'max_post_length_comcode');
 
@@ -3316,7 +3316,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _edit_post() // Type
+    public function _edit_post() // Type : object
     {
         require_code('attachments2');
 
@@ -3384,7 +3384,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function validate_post() // Type
+    public function validate_post() // Type : object
     {
         $post_id = get_param_integer('id');
 
@@ -3411,7 +3411,7 @@ class Module_topics
      *
      * @param  AUTO_LINK $topic_id The topic ID
      */
-    public function check_has_mod_access($topic_id)
+    public function check_has_mod_access(int $topic_id)
     {
         if (!cns_may_access_topic($topic_id, get_member(), null, false)) {
             access_denied('I_ERROR');
@@ -3423,7 +3423,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function edit_topic() // Type
+    public function edit_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
 
@@ -3525,7 +3525,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _edit_topic() // Type
+    public function _edit_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         $cascading = post_param_integer('cascading', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
@@ -3560,7 +3560,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function delete_topic() // Type
+    public function delete_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         $post_url = build_url(['page' => '_SELF', 'type' => '_delete_topic', 'id' => $topic_id], '_SELF');
@@ -3616,7 +3616,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _delete_topic() // Type
+    public function _delete_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         $post_target_topic_id = post_param_integer('select_topic_id', null);
@@ -3641,7 +3641,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function invite_member()
+    public function invite_member() : object
     {
         $topic_id = get_param_integer('id');
 
@@ -3675,7 +3675,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _invite_member()
+    public function _invite_member() : object
     {
         $username = trim(post_param_string('username'));
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
@@ -3698,7 +3698,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function edit_poll() // Type
+    public function edit_poll() // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -3763,7 +3763,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _edit_poll() // Type
+    public function _edit_poll() // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -3814,7 +3814,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function delete_poll() // Type
+    public function delete_poll() // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -3836,7 +3836,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _delete_poll() // Type
+    public function _delete_poll() // Type : object
     {
         if (!addon_installed('polls')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -3858,7 +3858,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function move_topic() // Type
+    public function move_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_cache_first_title'], ['id' => $topic_id], '', 1);
@@ -3908,7 +3908,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _move_topic() // Type
+    public function _move_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         $to = post_param_integer('to');
@@ -3925,7 +3925,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function pin_topic() // Type
+    public function pin_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         require_code('cns_topics_action');
@@ -3939,7 +3939,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function unpin_topic() // Type
+    public function unpin_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         require_code('cns_topics_action');
@@ -3953,7 +3953,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function cascade_topic() // Type
+    public function cascade_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         require_code('cns_topics_action');
@@ -3967,7 +3967,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function uncascade_topic() // Type
+    public function uncascade_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         require_code('cns_topics_action');
@@ -3981,7 +3981,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function open_topic() // Type
+    public function open_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         require_code('cns_topics_action');
@@ -3995,7 +3995,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function close_topic() // Type
+    public function close_topic() // Type : object
     {
         $topic_id = get_param_integer('id');
         require_code('cns_topics_action');
@@ -4009,7 +4009,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function multimod() // Type
+    public function multimod() // Type : object
     {
         require_lang('cns_multi_moderations');
 
@@ -4096,7 +4096,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _multimod() // Type
+    public function _multimod() // Type : object
     {
         require_lang('cns_multi_moderations');
 
@@ -4114,7 +4114,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function topic_history() // Type
+    public function topic_history() // Type : object
     {
         $title = get_screen_title('actionlog:REVISIONS');
 
@@ -4128,7 +4128,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function mark_read() // Type
+    public function mark_read() // Type : object
     {
         $_forum_id = get_param_string('id');
         if ($_forum_id == '') {
@@ -4153,7 +4153,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function make_private()
+    public function make_private() : object
     {
         $topic_id = get_param_integer('id');
 
@@ -4195,7 +4195,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function _make_private()
+    public function _make_private() : object
     {
         $topic_id = post_param_integer('id');
         $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => $topic_id]);
@@ -4236,7 +4236,7 @@ class Module_topics
      *
      * @return Tempcode The UI
      */
-    public function birthday()
+    public function birthday() : object
     {
         $id = get_param_string('id');
         $topic_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_first_time>' . strval(time() - 60 * 60 * 24 * 3) . ' AND ' . db_string_equal_to('t_cache_first_title', do_lang('HAPPY_BIRTHDAY_PERSON', $id)));

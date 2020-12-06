@@ -29,7 +29,7 @@ class Hook_symbol_CONTENT_COUNT
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (empty($param[0])) {
             return '';

@@ -59,7 +59,7 @@ function init__webstandards2()
  *
  * @ignore
  */
-function __check_tag($tag, $attributes, $self_close, $close, $errors)
+function __check_tag(string $tag, array $attributes, bool $self_close, bool $close, array $errors) : array
 {
     global $XML_CONSTRAIN, $TAG_STACK, $ATT_STACK, $TABS_SEEN, $KEYS_SEEN, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_RANGES, $WEBSTANDARDS_CSP;
 
@@ -430,7 +430,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
  * @return ?array Array of errors (null: none)
  * @ignore
  */
-function _check_blockyness($tag, $attributes, $self_close, $close)
+function _check_blockyness(string $tag, array $attributes, bool $self_close, bool $close) : ?array
 {
     global $THE_DOCTYPE, $BLOCK_CONSTRAIN, $XML_CONSTRAIN, $TAGS_DEPRECATE_ALLOW, $PARENT_TAG, $TAGS_INLINE, $TAGS_BLOCK, $TAGS_NORMAL, $TAGS_INLINE_DEPRECATED, $TAGS_BLOCK_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $UNDER_XMLNS;
 
@@ -497,7 +497,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
  * @return ?array Array of errors (null: none)
  * @ignore
  */
-function _check_attributes($tag, $attributes, $self_close, $close)
+function _check_attributes(string $tag, array $attributes, bool $self_close, bool $close) : ?array
 {
     global $PSPELL_LINK, $THE_LANGUAGE, $XML_CONSTRAIN, $TAGS_DEPRECATE_ALLOW, $THE_DOCTYPE, $HYPERLINK_URLS, $CRAWLED_URLS, $EMBED_URLS, $TAGS_INLINE, $TAGS_BLOCK, $TAGS_NORMAL, $TAGS_INLINE_DEPRECATED, $TAGS_BLOCK_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $TAG_ATTRIBUTES, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_ATTRIBUTES_REQUIRED, $WEBSTANDARDS_CHECKER_OFF;
 
@@ -609,7 +609,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
  * @param  string $value The text
  * @return array Array of errors
  */
-function check_spelling($value)
+function check_spelling(string $value) : array
 {
     global $THE_LANGUAGE;
     $lang = cms_strtolower_ascii($THE_LANGUAGE);
@@ -638,7 +638,7 @@ function check_spelling($value)
  * @return ?array Array of errors (null: none)
  * @ignore
  */
-function _check_externals($tag, $attributes, $self_close, $close)
+function _check_externals(string $tag, array $attributes, bool $self_close, bool $close) : ?array
 {
     if ((function_exists('get_param_integer')) && (get_param_integer('keep_ext_check', null) === 0)) {
         return null;
@@ -711,7 +711,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
  * @return ?array Array of errors (null: none)
  * @ignore
  */
-function _check_link_accessibility($tag, $attributes, $self_close, $close)
+function _check_link_accessibility(string $tag, array $attributes, bool $self_close, bool $close) : ?array
 {
     global $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_RANGES, $WEBSTANDARDS_MANUAL;
 
@@ -771,7 +771,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
  * @return ?array Array of errors (null: none)
  * @ignore
  */
-function _check_labelling($tag, $attributes, $self_close, $close)
+function _check_labelling(string $tag, array $attributes, bool $self_close, bool $close) : ?array
 {
     global $TAG_STACK, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG;
 
@@ -821,7 +821,7 @@ function _check_labelling($tag, $attributes, $self_close, $close)
  * @param  string $data The data of the style sheet
  * @return array Parse information
  */
-function check_css($data)
+function check_css(string $data) : array
 {
     $_errors = _webstandards_css_sheet($data);
     if ($_errors === null) {
@@ -849,7 +849,7 @@ function check_css($data)
  * @return ?array Error information (null: no error)
  * @ignore
  */
-function _webstandards_css_sheet($data)
+function _webstandards_css_sheet(string $data) : ?array
 {
     global $CSS_TAG_RANGES, $CSS_VALUE_RANGES, $VALIDATED_ALREADY;
     $CSS_TAG_RANGES = [];
@@ -1147,7 +1147,7 @@ function _webstandards_css_sheet($data)
  * @return ?array Error information (null: no error)
  * @ignore
  */
-function _webstandards_css_class($data, $_i, $line = 0)
+function _webstandards_css_class(string $data, int $_i, int $line = 0) : ?array
 {
     $errors = [];
 
@@ -1269,7 +1269,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
  * @return ?array Error information (null: no error)
  * @ignore
  */
-function _check_css_value($key, $value, $_i)
+function _check_css_value(string $key, string $value, int $_i) : ?array
 {
     $value = str_replace(' !important', '', $value);
     $value = trim($value);

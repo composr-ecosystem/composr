@@ -29,7 +29,7 @@ class Hook_whatsnew_catalogues
      * @param  TIME $updated_since The time that there must be entries found newer than
      * @return ?array Tuple of result details: HTML list of all types that can be chosen, title for selection list (null: disabled)
      */
-    public function choose_categories($updated_since)
+    public function choose_categories(int $updated_since) : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -50,7 +50,7 @@ class Hook_whatsnew_catalogues
      * @param  string $filter Category filter to apply
      * @return array Tuple of result details
      */
-    public function run($cutoff_time, $lang, $filter)
+    public function run(int $cutoff_time, string $lang, string $filter) : array
     {
         if (!addon_installed('catalogues')) {
             return [];

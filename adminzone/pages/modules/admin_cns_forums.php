@@ -51,7 +51,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return null;
@@ -93,7 +93,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_forum', $error_msg)) {
@@ -128,7 +128,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         $this->add_one_label = do_lang_tempcode('ADD_FORUM');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_FORUM');
@@ -162,7 +162,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         $menu_links = [
             ['admin/add_one_category', ['admin_cns_forum_groupings', ['type' => 'add'], get_module_zone('admin_cns_forum_groupings')], do_lang('ADD_FORUM_GROUPING')],
@@ -230,7 +230,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  BINARY $mail_unconfirmed_notice Mailing list policy: whether to highlight that members are not fully confirmed
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $name = '', $description = '', $forum_grouping_id = null, $parent_forum = null, $position = null, $post_count_increment = 1, $order_sub_alpha = 0, $intro_question = '', $intro_answer = '', $redirection = '', $order = 'last_post', $is_threaded = 0, $allows_anonymous_posts = 1, $mail_email_address = '', $mail_server_type = '', $mail_server_host = '', $mail_server_port = null, $mail_folder = '', $mail_username = '', $mail_password = '', $mail_nonmatch_policy = 'post_as_guest', $mail_unconfirmed_notice = 1)
+    public function get_form_fields(?int $id = null, string $name = '', string $description = '', ?int $forum_grouping_id = null, ?int $parent_forum = null, ?int $position = null, int $post_count_increment = 1, int $order_sub_alpha = 0, string $intro_question = '', string $intro_answer = '', string $redirection = '', string $order = 'last_post', int $is_threaded = 0, int $allows_anonymous_posts = 1, string $mail_email_address = '', string $mail_server_type = '', string $mail_server_host = '', ?int $mail_server_port = null, string $mail_folder = '', string $mail_username = '', string $mail_password = '', string $mail_nonmatch_policy = 'post_as_guest', int $mail_unconfirmed_notice = 1) : array
     {
         if ($forum_grouping_id === null) {
             $forum_grouping_id = get_param_integer('forum_grouping_id', db_get_first_id());
@@ -326,7 +326,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  boolean $huge Whether we are dealing with a huge forum structure
      * @return Tempcode The UI
      */
-    public function get_forum_tree($id, $forum, &$all_forums, $position = 0, $sub_num_in_parent_forum_grouping = 1, $order_sub_alpha = null, $parent_order_sub_alpha = null, $huge = false)
+    public function get_forum_tree(int $id, string $forum, array &$all_forums, int $position = 0, int $sub_num_in_parent_forum_grouping = 1, ?int $order_sub_alpha = null, ?int $parent_order_sub_alpha = null, bool $huge = false) : object
     {
         $forum_groupings = new Tempcode();
 
@@ -469,7 +469,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function edit()
+    public function edit() : object
     {
         $huge = ($GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)') > intval(get_option('general_safety_listing_limit')));
 
@@ -490,7 +490,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function reorder()
+    public function reorder() : object
     {
         $all = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_parent_forum', 'f_forum_grouping_id']);
         $ordering = [];
@@ -534,7 +534,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($_id)
+    public function may_delete_this(string $_id) : bool
     {
         $id = intval($_id);
 
@@ -584,7 +584,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('group_privileges p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=group_id', 'g.id', ['module_the_name' => 'forums', 'category_name' => $id, 'the_value' => '1', 'g_is_private_club' => 1]);
         if ($test !== null) {
@@ -617,7 +617,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ?AUTO_LINK $id ID (null: new entry)
      * @return array A tuple of mailing list details
      */
-    public function input_and_check_mail_parameters($id = null)
+    public function input_and_check_mail_parameters(?int $id = null) : array
     {
         require_lang('cns_mailinglists');
 
@@ -682,7 +682,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('cns_forums_action2');
 
@@ -779,7 +779,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         list($mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice) = $this->input_and_check_mail_parameters(intval($id));
 
@@ -846,7 +846,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         cns_delete_forum(intval($id), post_param_integer('target_forum'), post_param_integer('delete_topics', 0));
     }

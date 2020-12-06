@@ -28,7 +28,7 @@ class Hook_config_cart_hold_hours
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'CART_HOLD_HOURS',
@@ -51,7 +51,7 @@ class Hook_config_cart_hold_hours
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('shopping')) {
             return null;

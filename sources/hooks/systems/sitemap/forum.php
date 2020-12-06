@@ -37,7 +37,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      * @param  string $page_link The page-link
      * @return ?ID_TEXT The permission page (null: none)
      */
-    public function get_privilege_page($page_link)
+    public function get_privilege_page(string $page_link) : ?string
     {
         return 'topics';
     }
@@ -47,7 +47,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      *
      * @return boolean Whether the hook is active
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return (get_forum_type() == 'cns');
     }
@@ -59,7 +59,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return integer A SITEMAP_NODE_* constant
      */
-    public function handles_page_link($page_link, $options)
+    public function handles_page_link(string $page_link, int $options) : int
     {
         $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
@@ -101,7 +101,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array List of node structures (null: working via callback)
      */
-    public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
+    public function get_virtual_nodes(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, bool $return_anyway = false) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return [];
@@ -193,7 +193,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
      * @return array Map between field name and field type
      */
-    protected function select_fields($cma_info = null, $table_alias = null, &$lang_fields_filtered = null)
+    protected function select_fields(?array $cma_info = null, ?string $table_alias = null, ?array &$lang_fields_filtered = null) : array
     {
         if ($cma_info === null) {
             $cma_info = $this->_get_cma_info();
@@ -225,7 +225,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array Node structure (null: working via callback / error)
      */
-    public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
+    public function get_node(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return null;

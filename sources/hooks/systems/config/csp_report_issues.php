@@ -28,7 +28,7 @@ class Hook_config_csp_report_issues
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'CSP_REPORT_ISSUES',
@@ -51,7 +51,7 @@ class Hook_config_csp_report_issues
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

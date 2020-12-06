@@ -32,7 +32,7 @@ Post-AJAX the functions are used to confirm these permissions (the permission ID
  * @param  array $map The parameters
  * @return array The parameters, as a pattern
  */
-function block_params_to_block_signature($map)
+function block_params_to_block_signature(array $map) : array
 {
     foreach ($map as $key => $val) {
         $map[$key] = preg_quote($val, '#');
@@ -47,7 +47,7 @@ function block_params_to_block_signature($map)
  * @param  array $used The given parameters
  * @return boolean Answer
  */
-function block_signature_check($allowed, $used)
+function block_signature_check(array $allowed, array $used) : bool
 {
     foreach ($used as $key => $val) {
         if ((!isset($allowed[$key])) || (preg_match('#^' . $allowed[$key] . '$#', $val) == 0)) {

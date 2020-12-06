@@ -28,7 +28,7 @@ class Module_admin_shopping
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Manuprathap';
@@ -49,7 +49,7 @@ class Module_admin_shopping
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('shopping')) {
             return null;
@@ -78,7 +78,7 @@ class Module_admin_shopping
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('shopping', $error_msg)) {
@@ -193,7 +193,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_javascript('shopping');
         require_css('shopping');
@@ -248,7 +248,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -267,7 +267,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function show_orders()
+    public function show_orders() : object
     {
         $filter = get_param_string('filter', null);
         $search = get_param_string('search', '', INPUT_FILTER_GET_COMPLEX);
@@ -404,7 +404,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function order_details()
+    public function order_details() : object
     {
         $id = get_param_integer('id');
 
@@ -422,7 +422,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function dispatch()
+    public function dispatch() : object
     {
         $id = get_param_integer('id');
 
@@ -439,7 +439,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function add_note()
+    public function add_note() : object
     {
         $id = get_param_integer('id');
 
@@ -494,7 +494,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function _add_note()
+    public function _add_note() : object
     {
         $id = post_param_integer('order_id');
 
@@ -518,7 +518,7 @@ class Module_admin_shopping
      *
      * @param  AUTO_LINK $order_id Order ID
      */
-    public function send_dispatch_notification($order_id)
+    public function send_dispatch_notification(int $order_id)
     {
         $message = post_param_string('dispatch_mail_content', null);
 
@@ -542,7 +542,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function delete_order()
+    public function delete_order() : object
     {
         $id = get_param_integer('id');
 
@@ -559,7 +559,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function return_order()
+    public function return_order() : object
     {
         $id = get_param_integer('id');
 
@@ -576,7 +576,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function hold_order()
+    public function hold_order() : object
     {
         $id = get_param_integer('id');
 
@@ -593,7 +593,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The interface
      */
-    public function export_orders()
+    public function export_orders() : object
     {
         $fields = new Tempcode();
 
@@ -635,7 +635,7 @@ class Module_admin_shopping
      *
      * @return Tempcode The result of execution
      */
-    public function _export_orders()
+    public function _export_orders() : object
     {
         $start_date = post_param_date('start_date', true);
         $end_date = post_param_date('end_date', true);

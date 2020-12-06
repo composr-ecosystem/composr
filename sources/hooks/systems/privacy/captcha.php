@@ -28,7 +28,7 @@ class Hook_privacy_captcha extends Hook_privacy_base
      *
      * @return ?array A map of privacy details in a standardised format (null: disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('captcha')) {
             return null;

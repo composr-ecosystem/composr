@@ -26,7 +26,7 @@
  * @param  ?MEMBER $member_id The member we are checking for (null: current member)
  * @return boolean The answer
  */
-function cns_may_edit_poll_by($forum_id, $poll_owner, $member_id = null)
+function cns_may_edit_poll_by(?int $forum_id, int $poll_owner, ?int $member_id = null) : bool
 {
     if (!addon_installed('polls')) {
         return false;
@@ -57,7 +57,7 @@ function cns_may_edit_poll_by($forum_id, $poll_owner, $member_id = null)
  * @param  ?MEMBER $member_id The member we are checking for (null: current member)
  * @return boolean The answer
  */
-function cns_may_attach_poll($topic_id, $topic_owner = null, $has_poll_already = null, $forum_id = null, $member_id = null)
+function cns_may_attach_poll(int $topic_id, ?int $topic_owner = null, ?bool $has_poll_already = null, ?int $forum_id = null, ?int $member_id = null) : bool
 {
     if (!addon_installed('polls')) {
         return false;
@@ -98,7 +98,7 @@ function cns_may_attach_poll($topic_id, $topic_owner = null, $has_poll_already =
  * @param  ?MEMBER $member_id The member we are checking for (null: current member)
  * @return boolean The answer
  */
-function cns_may_delete_poll_by($forum_id, $poll_owner, $member_id = null)
+function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id = null) : bool
 {
     if (!addon_installed('polls')) {
         return false;
@@ -126,7 +126,7 @@ function cns_may_delete_poll_by($forum_id, $poll_owner, $member_id = null)
  * @param  boolean $request_results Whether we must record that the current member is requesting the results, blocking future voting for them
  * @return ?array The map of results (null: could not find poll)
  */
-function cns_poll_get_results($poll_id, $request_results = true)
+function cns_poll_get_results(int $poll_id, bool $request_results = true) : ?array
 {
     if (!addon_installed('polls')) {
         return null;

@@ -23,7 +23,7 @@
 *
 * @return string comcode to be included in the warning private topic
 */
-function generate_punitive_text()
+function generate_punitive_text() : string
 {
     $message_punitive = post_param_integer('include_punitive_text', 0);
 
@@ -184,7 +184,7 @@ function generate_punitive_text()
 * @param  integer $max Maximum results
 * @return array List of content rows
 */
-function find_member_content($member_id, $max = 30)
+function find_member_content(int $member_id, int $max = 30) : array
 {
     if (!has_privilege(get_member(), 'delete_highrange_content')) {
         return [];

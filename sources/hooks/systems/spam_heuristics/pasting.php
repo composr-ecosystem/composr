@@ -29,7 +29,7 @@ class Hook_spam_heuristics_pasting
      * @param  string $post_data Posted data
      * @return integer Confidence score
      */
-    public function assess_confidence($post_data)
+    public function assess_confidence(string $post_data) : int
     {
         $score = intval(get_option('spam_heuristic_confidence_pasting'));
         if ($score == 0) {

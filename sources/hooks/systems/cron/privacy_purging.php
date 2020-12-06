@@ -30,7 +30,7 @@ class Hook_cron_privacy_purging
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         return [
             'label' => 'Privacy purging (database)',
@@ -44,7 +44,7 @@ class Hook_cron_privacy_purging
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         disable_php_memory_limit();
 
@@ -72,7 +72,7 @@ class Hook_cron_privacy_purging
      * @param  array $table_details Table details
      * @param  integer $table_action A PRIVACY_METHOD_* constant
      */
-    protected function handle_for_table($hook_ob, $table_name, $table_details, $table_action)
+    protected function handle_for_table(object $hook_ob, string $table_name, array $table_details, int $table_action)
     {
         $db = get_db_for($table_name);
 

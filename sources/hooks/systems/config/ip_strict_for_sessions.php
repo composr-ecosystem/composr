@@ -28,7 +28,7 @@ class Hook_config_ip_strict_for_sessions
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'IP_STRICT_FOR_SESSIONS',
@@ -51,7 +51,7 @@ class Hook_config_ip_strict_for_sessions
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

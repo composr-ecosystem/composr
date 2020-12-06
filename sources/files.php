@@ -67,7 +67,7 @@ function init__files()
  * @param  ?string $default_charset The default character set if none is specified (null: leave as null, ultimately meaning the default website character set will be used) (blank: smart detection)
  * @return ~resource The file handle (false: could not be opened)
  */
-function cms_fopen_text_read($path, &$charset, $locking = false, $mode = 'rb', $default_charset = null)
+function cms_fopen_text_read(string $path, string &$charset, bool $locking = false, string $mode = 'rb', ?string $default_charset = null)
 {
     $charset = null;
 
@@ -120,7 +120,7 @@ function cms_fopen_text_read($path, &$charset, $locking = false, $mode = 'rb', $
  * @param  ?string $charset The character set to read with (likely found from cms_fopen_text_read) (null: website character set)
  * @return ~string The string read (false: error)
  */
-function cms_fgets($myfile, $charset)
+function cms_fgets($myfile, ?string $charset)
 {
     $line = fgets($myfile);
     if ($line !== false) {
@@ -147,7 +147,7 @@ function cms_fgets($myfile, $charset)
  * @param  ?string $charset Character set to write with (null: website character set)
  * @return ~resource The file handle (false: could not be opened)
  */
-function cms_fopen_text_write($path, $locking = false, $mode = null, $charset = null)
+function cms_fopen_text_write(string $path, bool $locking = false, ?string $mode = null, ?string $charset = null)
 {
     if ($mode === null) {
         $mode = ($locking ? 'cb' : 'wb');
@@ -188,7 +188,7 @@ function cms_fopen_text_write($path, $locking = false, $mode = null, $charset = 
  * @param  integer $retry_depth How deep it is into retrying if somehow the data did not get written
  * @return boolean Success status
  */
-function cms_file_put_contents_safe($path, $contents, $flags = 4, $charset = null, $retry_depth = 0)
+function cms_file_put_contents_safe(string $path, string $contents, int $flags = 4, ?string $charset = null, int $retry_depth = 0) : bool
 {
     // Add BOM (byte-order-mark) to identify character set within the file
     if (($flags & FILE_WRITE_BOM) != 0) {
@@ -312,7 +312,7 @@ function cms_file_put_contents_safe($path, $contents, $flags = 4, $charset = nul
  * @param  integer $flags FILE_WRITE_* flags
  * @return boolean Success status (always false)
  */
-function _cms_file_put_contents_safe_failed($error_message, $path, $flags = 4)
+function _cms_file_put_contents_safe_failed($error_message, string $path, int $flags = 4) : bool
 {
     if (($flags & FILE_WRITE_FAILURE_SILENT) != 0) {
         return false;
@@ -345,7 +345,7 @@ function _cms_file_put_contents_safe_failed($error_message, $path, $flags = 4)
  * @param  string $val PHP config option value
  * @return integer Number of bytes
  */
-function php_return_bytes($val)
+function php_return_bytes(string $val) : int
 {
     $val = trim($val);
     if ($val == '') {
@@ -374,7 +374,7 @@ function php_return_bytes($val)
  * @param  URLPATH $url The URL that the file size of is being worked out for. Should be local.
  * @return string The formatted-string file size
  */
-function get_file_size($url)
+function get_file_size(string $url) : string
 {
     if (substr($url, 0, strlen(get_base_url())) == get_base_url()) {
         $url = substr($url, strlen(get_base_url()));
@@ -397,7 +397,7 @@ function get_file_size($url)
  * @param  integer $bytes The number of bytes the file has
  * @return string The formatted-string file size
  */
-function clean_file_size($bytes)
+function clean_file_size(int $bytes) : string
 {
     if ($bytes < 0) {
         return '-' . clean_file_size(-$bytes);
@@ -439,7 +439,7 @@ function clean_file_size($bytes)
  * @param  integer $scanner_mode Any INI_SCANNER_* constant
  * @return ~array Map of Ini file data (2d if processed sections) (false: error)
  */
-function cms_parse_ini_file_safe($path, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL)
+function cms_parse_ini_file_safe(string $path, bool $process_sections = false, int $scanner_mode = INI_SCANNER_NORMAL)
 {
     return parse_ini_string(cms_file_get_contents_safe($path), $process_sections, $scanner_mode);
 }
@@ -453,7 +453,7 @@ function cms_parse_ini_file_safe($path, $process_sections = false, $scanner_mode
  * @param  ?string $contents The contents of the file (null: the file needs opening)
  * @return array A map of the contents of the ini files
  */
-function cms_parse_ini_file_fast($path, $contents = null)
+function cms_parse_ini_file_fast(?string $path, ?string $contents = null) : array
 {
     if ($contents === null) {
         global $FILE_ARRAY;
@@ -494,7 +494,7 @@ function cms_parse_ini_file_fast($path, $contents = null)
  * @param  integer $bitmask Bitmask of extra stuff to ignore (see IGNORE_* constants)
  * @return boolean Whether it should be ignored
  */
-function should_ignore_file($path, $bitmask = 0)
+function should_ignore_file(string $path, int $bitmask = 0) : bool
 {
     $is_dir = @is_dir(get_file_base() . '/' . $path);
     $is_file = @is_file(get_file_base() . '/' . $path);
@@ -908,7 +908,7 @@ function should_ignore_file($path, $bitmask = 0)
  * @param  boolean $delete_dir_also Whether to delete the $dir at the end
  * @return boolean Success status
  */
-function deldir_contents($dir, $default_preserve = false, $delete_dir_also = false)
+function deldir_contents(string $dir, bool $default_preserve = false, bool $delete_dir_also = false) : bool
 {
     require_code('files2');
     return _deldir_contents($dir, $default_preserve, $delete_dir_also);

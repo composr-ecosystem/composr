@@ -28,7 +28,7 @@ class Hook_cleanup_orphaned_uploads
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('ORPHANED_UPLOADS');
@@ -43,7 +43,7 @@ class Hook_cleanup_orphaned_uploads
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('tasks');
         return call_user_func_array__long_task(do_lang('ORPHANED_UPLOADS'), null, 'find_orphaned_uploads');

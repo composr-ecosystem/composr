@@ -28,7 +28,7 @@ class Module_admin_config
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_config
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         $ret = [
             'browse' => ['CONFIGURATION', 'menu/adminzone/setup/config/config'],
@@ -94,7 +94,7 @@ class Module_admin_config
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -204,7 +204,7 @@ class Module_admin_config
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('config2');
 
@@ -272,7 +272,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function config_choose()
+    public function config_choose() : object
     {
         // Find all categories
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
@@ -417,7 +417,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function config_category()
+    public function config_category() : object
     {
         require_javascript('checking');
 
@@ -540,7 +540,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function config_set()
+    public function config_set() : object
     {
         require_code('input_filter_2');
         rescue_shortened_post_request();
@@ -613,7 +613,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function base()
+    public function base() : object
     {
         $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/config_editor.php' . $keep->evaluate();
@@ -625,7 +625,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function upgrader()
+    public function upgrader() : object
     {
         $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/upgrader.php' . $keep->evaluate();
@@ -637,7 +637,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function backend()
+    public function backend() : object
     {
         $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/backend.php' . $keep->evaluate();
@@ -649,7 +649,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function code_editor()
+    public function code_editor() : object
     {
         $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/code_editor.php' . $keep->evaluate();
@@ -661,7 +661,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function xml_fields()
+    public function xml_fields() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_xml_fields'], '_SELF');
 
@@ -678,7 +678,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function _xml_fields()
+    public function _xml_fields() : object
     {
         require_code('files');
         $full_path = get_custom_file_base() . '/data_custom/xml_config/fields.xml';
@@ -695,7 +695,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function xml_breadcrumbs()
+    public function xml_breadcrumbs() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_xml_breadcrumbs'], '_SELF');
 
@@ -712,7 +712,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function _xml_breadcrumbs()
+    public function _xml_breadcrumbs() : object
     {
         require_code('files');
         $full_path = get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml';
@@ -729,7 +729,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function advanced_banning()
+    public function advanced_banning() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_advanced_banning'], '_SELF');
 
@@ -746,7 +746,7 @@ class Module_admin_config
      *
      * @return Tempcode The UI
      */
-    public function _advanced_banning()
+    public function _advanced_banning() : object
     {
         require_code('files');
         $full_path = get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml';

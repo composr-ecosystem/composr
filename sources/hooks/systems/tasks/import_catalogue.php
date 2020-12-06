@@ -44,7 +44,7 @@ class Hook_task_import_catalogue
      * @param  ?string $filename The filename of the file to import (null: detect from $spreadsheet_path)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $spreadsheet_path, $filename = null)
+    public function run(string $catalogue_name, string $key_field, string $new_handling, string $delete_handling, string $update_handling, string $meta_keywords_field, string $meta_description_field, string $notes_field, bool $allow_rating, bool $allow_comments, bool $allow_trackbacks, string $spreadsheet_path, ?string $filename = null) : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -170,7 +170,7 @@ class Hook_task_import_catalogue
      * @param  boolean $allow_trackbacks Whether trackbacks are allowed for this resource
      * @return ?array Return to propagate [immediate exit] (null: nothing to propagate)
      */
-    public function import_spreadsheet_line($catalogue_name, $spreadsheet_data, $catalogue_root, $fields, &$categories, $spreadsheet_field_titles, $key_field, $new_handling, $delete_handling, $update_handling, &$matched_ids, $notes_field, $meta_keywords_field, $meta_description_field, $allow_rating, $allow_comments, $allow_trackbacks)
+    public function import_spreadsheet_line(string $catalogue_name, array $spreadsheet_data, ?int $catalogue_root, array $fields, array &$categories, array $spreadsheet_field_titles, string $key_field, string $new_handling, string $delete_handling, string $update_handling, array &$matched_ids, string $notes_field, string $meta_keywords_field, string $meta_description_field, bool $allow_rating, bool $allow_comments, bool $allow_trackbacks) : ?array
     {
         $notes = '';
         $meta_keywords = '';

@@ -24,7 +24,7 @@
  * @param  ?boolean $is_required_good_value If it is a required field (null: typically no, but look at hidden option for it)
  * @return string Poster name
  */
-function cns_get_safe_specified_poster_name($is_required_good_value = null)
+function cns_get_safe_specified_poster_name(?bool $is_required_good_value = null) : string
 {
     if ($is_required_good_value === null) {
         $is_required_good_value = (get_option('force_guest_names') === '1');
@@ -76,7 +76,7 @@ function cns_get_safe_specified_poster_name($is_required_good_value = null)
  *
  * @param  ?MEMBER $member_id The member (null: current member)
  */
-function cns_member_handle_promotion($member_id = null)
+function cns_member_handle_promotion(?int $member_id = null)
 {
     if (!addon_installed('points')) {
         return;
@@ -174,7 +174,7 @@ function cns_member_handle_promotion($member_id = null)
  * @param  ?SHORT_TEXT $no_notify_for__code_category DO NOT send notifications to: The category within the notification code (null: none / no restriction)
  * @param  ?SHORT_TEXT $poster_name The name of the poster (null: default for $sender_member_id)
  */
-function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $sender_member_id, $is_starter, $post, $topic_title, $_limit_to = null, $is_pt = false, $no_notify_for__notification_code = null, $no_notify_for__code_category = null, $poster_name = null)
+function cns_send_topic_notification(string $url, int $topic_id, int $post_id, int $forum_id, int $sender_member_id, bool $is_starter, string $post, string $topic_title, ?int $_limit_to = null, bool $is_pt = false, ?string $no_notify_for__notification_code = null, ?string $no_notify_for__code_category = null, ?string $poster_name = null)
 {
     if (($is_pt) && ($is_starter)) {
         return;
@@ -249,7 +249,7 @@ function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $send
  * @param  ?string $last_username The last username to post in the topic (null: unknown)
  * @param  ?MEMBER $last_member_id The ID of the last member to post in the topic (null: unknown)
  */
-function cns_force_update_topic_caching($topic_id, $post_count_dif = null, $last = true, $first = false, $last_post_id = null, $last_time = null, $last_title = null, $last_post = null, $last_username = null, $last_member_id = null)
+function cns_force_update_topic_caching(int $topic_id, ?int $post_count_dif = null, bool $last = true, bool $first = false, ?int $last_post_id = null, ?int $last_time = null, ?string $last_title = null, ?int $last_post = null, ?string $last_username = null, ?int $last_member_id = null)
 {
     $first_title = '';
     if ($last_post_id === null) {
@@ -352,7 +352,7 @@ function cns_force_update_topic_caching($topic_id, $post_count_dif = null, $last
  * @param  ?MEMBER $last_member_id The last post member of the last topic (null: Unknown, it will have to be looked up)
  * @param  ?AUTO_LINK $last_forum_id The forum the last post was in (note this makes sense, because there may be subforums under this forum that we have to take into account). (null: Unknown, it will have to be looked up).
  */
-function cns_force_update_forum_caching($forum_id, $num_topics_increment = null, $num_posts_increment = null, $last_topic_id = null, $last_title = null, $last_time = null, $last_username = null, $last_member_id = null, $last_forum_id = null)
+function cns_force_update_forum_caching(int $forum_id, ?int $num_topics_increment = null, ?int $num_posts_increment = null, ?int $last_topic_id = null, ?string $last_title = null, ?int $last_time = null, ?string $last_username = null, ?int $last_member_id = null, ?int $last_forum_id = null)
 {
     if (($num_topics_increment === null) && ($num_posts_increment !== null)) {
         $num_topics_increment = 0;

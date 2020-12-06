@@ -187,7 +187,7 @@ function comcode_convert_script()
  * @param  boolean $is_comcode Whether the code is Comcode
  * @return string Re-indented code
  */
-function reindent_code($text, $is_comcode)
+function reindent_code(string $text, bool $is_comcode) : string
 {
     $text = unixify_line_format($text);
 

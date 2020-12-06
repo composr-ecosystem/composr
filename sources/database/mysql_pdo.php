@@ -44,7 +44,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
      * @param  boolean $fail_ok Whether to on error echo an error and return with a null, rather than giving a critical error
      * @return ?object A database connection (null: error)
      */
-    public function get_connection($persistent, $db_name, $db_host, $db_user, $db_password, $fail_ok = false)
+    public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false) : ?object
     {
         if ((!class_exists('PDO')) || (!defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'))) {
             $error = 'The \'pdo_mysql\' PHP extension is not installed (anymore?). You need to contact the system administrator of this server, or use a different MySQL database driver (drivers can be chosen by editing _config.php).';
@@ -110,7 +110,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false)
+    public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false)
     {
         if (!$this->query_may_run($query, $connection, $get_insert_id)) {
             return null;
@@ -172,7 +172,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
      * @param  integer $start Where to start reading from
      * @return array A list of row maps
      */
-    protected function get_query_rows($results, $query, $start)
+    protected function get_query_rows(object $results, string $query, int $start) : array
     {
         $names = [];
         $types = [];
@@ -237,7 +237,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
      * @param  string $string The string
      * @return string The escaped string
      */
-    public function escape_string($string)
+    public function escape_string(string $string) : string
     {
         if (preg_match('#[^a-zA-Z0-9\.]#', $string) === 0) {
             return $string; // No non-trivial characters

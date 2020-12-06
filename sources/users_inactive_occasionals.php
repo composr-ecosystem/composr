@@ -27,7 +27,7 @@
  *
  * @ignore
  */
-function _enforce_sessioned_url($url)
+function _enforce_sessioned_url(string $url) : string
 {
     if (get_bot_type() === null) {
         return $url;
@@ -83,7 +83,7 @@ function _enforce_sessioned_url($url)
  * @param  ?IP $ip_address IP address for session (null: current user's IP address)
  * @return ID_TEXT New session ID
  */
-function create_session($member_id, $session_confirmed = 0, $invisible = false, $create_cookie = true, $ip_address = null)
+function create_session(int $member_id, int $session_confirmed = 0, bool $invisible = false, bool $create_cookie = true, ?string $ip_address = null) : string
 {
     if ($ip_address === null) {
         $ip_address = get_ip_address();
@@ -228,7 +228,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
  * @param  ID_TEXT $id The session ID
  * @param  boolean $guest_session Whether this is a guest session (guest sessions will use persistent cookies)
  */
-function set_session_id($id, $guest_session = false)  // NB: Guests sessions can persist because they are more benign
+function set_session_id(string $id, bool $guest_session = false)  // NB: Guests sessions can persist because they are more benign
 {
     global $DID_CHANGE_SESSION_ID;
     $DID_CHANGE_SESSION_ID = true;
@@ -288,7 +288,7 @@ function force_httpauth()
  * @param  MEMBER $member_id Real logged in member
  * @return MEMBER Simulated member
  */
-function try_su_login($member_id)
+function try_su_login(int $member_id) : int
 {
     $ks = get_param_string('keep_su', '');
 
@@ -369,7 +369,7 @@ function try_su_login($member_id)
  * @param  boolean $quick_only Whether to just do a quick check, don't establish new sessions
  * @return ?MEMBER Logged in member (null: no log in happened)
  */
-function try_httpauth_login($quick_only = false)
+function try_httpauth_login(bool $quick_only = false) : ?int
 {
     global $LDAP_CONNECTION;
 
@@ -409,7 +409,7 @@ function try_httpauth_login($quick_only = false)
  *
  * @return ?MEMBER Logged in member (null: no log in happened)
  */
-function try_cookie_login()
+function try_cookie_login() : ?int
 {
     $member_id = null;
 

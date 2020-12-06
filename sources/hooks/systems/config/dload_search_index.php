@@ -28,7 +28,7 @@ class Hook_config_dload_search_index
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'DLOAD_SEARCH_INDEX',
@@ -51,7 +51,7 @@ class Hook_config_dload_search_index
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('downloads')) {
             return null;

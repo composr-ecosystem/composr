@@ -30,7 +30,7 @@ class Hook_notification_ecom_product_request_custom extends Hook_notification__S
      * @param  ID_TEXT $notification_code Notification code
      * @return boolean Whether it does
      */
-    public function supports_categories($notification_code)
+    public function supports_categories(string $notification_code) : bool
     {
         return true;
     }
@@ -42,7 +42,7 @@ class Hook_notification_ecom_product_request_custom extends Hook_notification__S
      * @param  ?ID_TEXT $id The ID of where we're looking under (null: N/A)
      * @return array Tree structure
      */
-    public function create_category_tree($notification_code, $id)
+    public function create_category_tree(string $notification_code, ?string $id) : array
     {
         if (!addon_installed('ecommerce')) {
             return [];
@@ -68,7 +68,7 @@ class Hook_notification_ecom_product_request_custom extends Hook_notification__S
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         if (!addon_installed('ecommerce')) {
             return [];

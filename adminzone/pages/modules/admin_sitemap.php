@@ -28,7 +28,7 @@ class Module_admin_sitemap
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_sitemap
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('page_management')) {
             return null;
@@ -67,7 +67,7 @@ class Module_admin_sitemap
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('page_management', $error_msg)) {
@@ -119,7 +119,7 @@ class Module_admin_sitemap
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('zones2');
         require_code('zones3');
@@ -149,7 +149,7 @@ class Module_admin_sitemap
      *
      * @return Tempcode The UI
      */
-    public function sitemap()
+    public function sitemap() : object
     {
         require_css('sitemap_editor');
 
@@ -167,7 +167,7 @@ class Module_admin_sitemap
      *
      * @return Tempcode The UI
      */
-    public function delete()
+    public function delete() : object
     {
         $hidden = new Tempcode();
 
@@ -224,7 +224,7 @@ class Module_admin_sitemap
      *
      * @return Tempcode The UI
      */
-    public function _delete()
+    public function _delete() : object
     {
         $zone = post_param_string('zone', null);
 
@@ -277,7 +277,7 @@ class Module_admin_sitemap
      *
      * @return Tempcode The UI
      */
-    public function _move()
+    public function _move() : object
     {
         if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));

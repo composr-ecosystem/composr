@@ -28,7 +28,7 @@ class Hook_preview_comcode_page
      *
      * @return array Quartet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional], list of fields to limit to [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (get_page_name() == 'cms_comcode_pages');
         return [$applies, 'comcode_page', false, ['post']];
@@ -39,7 +39,7 @@ class Hook_preview_comcode_page
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         $codename = post_param_string('file');
         $zone = post_param_string('zone');

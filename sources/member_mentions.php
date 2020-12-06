@@ -25,7 +25,7 @@
  * @param  ID_TEXT $content_id The content ID
  * @param  ?MEMBER $submitter The content submitter (null: current user)
  */
-function dispatch_member_mention_notifications($content_type, $content_id, $submitter = null)
+function dispatch_member_mention_notifications(string $content_type, string $content_id, ?int $submitter = null)
 {
     if (get_mass_import_mode()) {
         return;

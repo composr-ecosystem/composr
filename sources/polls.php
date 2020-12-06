@@ -29,7 +29,7 @@
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The box
  */
-function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_links = false, $give_context = true, $guid = '')
+function render_poll_box(bool $results, array $myrow, string $zone = '_SEARCH', bool $include_manage_links = false, bool $give_context = true, string $guid = '') : object
 {
     if ($myrow === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -154,7 +154,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
  * @param  ?IP $ip The IP to vote (null: no IP check)
  * @return array Amended poll row
  */
-function vote_in_poll($poll_id, $cast, $myrow = null, $member_id = null, $ip = null)
+function vote_in_poll(int $poll_id, ?int $cast, ?array $myrow = null, ?int $member_id = null, ?string $ip = null) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -223,7 +223,7 @@ function vote_in_poll($poll_id, $cast, $myrow = null, $member_id = null, $ip = n
  * @param  IP $ip The IP to check for
  * @return boolean Whether the current member may vote
  */
-function may_vote_in_poll($poll_id, $member_id, $ip)
+function may_vote_in_poll(int $poll_id, int $member_id, string $ip) : bool
 {
     if (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_param_integer('keep_rating_test', 0) == 1)) {
         return true;
@@ -261,7 +261,7 @@ function may_vote_in_poll($poll_id, $member_id, $ip)
  * @param  ?MEMBER $only_owned Only show polls owned by this member (null: no such restriction)
  * @return Tempcode The list
  */
-function create_selection_list_polls($it = null, $only_owned = null)
+function create_selection_list_polls(?int $it = null, ?int $only_owned = null) : object
 {
     $where = ($only_owned === null) ? null : ['submitter' => $only_owned];
     $rows = $GLOBALS['SITE_DB']->query_select('poll', ['question', 'is_current', 'votes1', 'votes2', 'votes3', 'votes4', 'votes5', 'votes6', 'votes7', 'votes8', 'votes9', 'votes10', 'id', 'is_current', 'date_and_time'], $where, 'ORDER BY is_current DESC,date_and_time,question', intval(get_option('general_safety_listing_limit')));

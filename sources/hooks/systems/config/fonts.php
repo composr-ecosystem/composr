@@ -28,7 +28,7 @@ class Hook_config_fonts
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'FONTS',
@@ -51,7 +51,7 @@ class Hook_config_fonts
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'Arial,Courier,Georgia,Impact,Times,Trebuchet,Verdana,Tahoma,Geneva,Helvetica';
     }

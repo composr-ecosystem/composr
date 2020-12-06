@@ -32,7 +32,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      *
      * @param  string $table_prefix Table prefix
      */
-    public function __construct($table_prefix)
+    public function __construct(string $table_prefix)
     {
         $this->table_prefix = $table_prefix;
     }
@@ -44,7 +44,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
      */
-    public function apply_sql_limit_clause(&$query, $max = null, $start = 0)
+    public function apply_sql_limit_clause(string &$query, ?int $max = null, int $start = 0)
     {
         if ($max !== null) {
             $_max = $max;
@@ -79,7 +79,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      *
      * @param  string $query The complete SQL query
      */
-    protected function rewrite_to_unicode_syntax(&$query)
+    protected function rewrite_to_unicode_syntax(string &$query)
     {
         if (get_charset() != 'utf-8') {
             return;
@@ -128,7 +128,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      *
      * @return string The default user for db connections
      */
-    public function default_user()
+    public function default_user() : string
     {
         return 'sa';
     }
@@ -138,7 +138,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      *
      * @return string The default password for db connections
      */
-    public function default_password()
+    public function default_password() : string
     {
         return '';
     }
@@ -149,7 +149,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
      */
-    public function get_type_remap($for_alter = false)
+    public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
             'AUTO' => 'integer identity',
@@ -187,7 +187,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table($table_name, $fields, $connection, $raw_table_name, $save_bytes = false)
+    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -244,7 +244,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table()
+    public function supports_truncate_table() : bool
     {
         return true;
     }
@@ -261,7 +261,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
+    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         if ($index_name[0] == '#') {
             $ret = [];
@@ -324,7 +324,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return array List of SQL queries to run
      */
-    public function drop_table_if_exists($table, $connection)
+    public function drop_table_if_exists(string $table, $connection) : array
     {
         return ['IF EXISTS(SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table];
     }
@@ -336,7 +336,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  array $new_key A list of fields to put in the new key
      * @param  mixed $connection The DB connection to make on
      */
-    public function change_primary_key($table_name, $new_key, $connection)
+    public function change_primary_key(string $table_name, array $new_key, $connection)
     {
         $this->query('ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY', $connection);
         $this->query('ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')', $connection);
@@ -349,7 +349,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return ?integer The count (null: do it normally)
      */
-    public function get_table_count_approx($table, $connection)
+    public function get_table_count_approx(string $table, $connection) : ?int
     {
         $sql = 'SELECT SUM(p.rows) FROM sys.partitions AS p
             INNER JOIN sys.tables AS t
@@ -375,7 +375,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  integer $seconds The time limit in seconds
      * @param  mixed $connection The DB connection
      */
-    public function set_query_time_limit($seconds, $connection)
+    public function set_query_time_limit(int $seconds, $connection)
     {
         $this->query_timeout = $seconds;
     }
@@ -387,7 +387,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  string $compare The comparison
      * @return string The SQL
      */
-    public function string_equal_to($attribute, $compare)
+    public function string_equal_to(string $attribute, string $compare) : string
     {
         return $attribute . "='" . $this->escape_string($compare) . "'";
     }
@@ -399,7 +399,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  string $pattern The pattern
      * @return string The encoded pattern
      */
-    public function encode_like($pattern)
+    public function encode_like(string $pattern) : string
     {
         return $this->escape_string(str_replace('%', '*', $pattern));
     }
@@ -410,7 +410,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return boolean Whether it is
      */
-    public function has_full_text($connection)
+    public function has_full_text($connection) : bool
     {
         return ((!function_exists('get_value')) || (get_value('disable_fulltext_sqlserver') !== '1'));
     }
@@ -421,7 +421,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  string $content Our match string (assumes "?" has been stripped already)
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content)
+    public function full_text_assemble(string $content) : string
     {
         $content = str_replace('"', '', $content);
         return 'CONTAINS ((?),\'' . $this->escape_string($content) . '\')';
@@ -433,7 +433,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * @param  string $string The string
      * @return string The escaped string
      */
-    public function escape_string($string)
+    public function escape_string(string $string) : string
     {
         $string = fix_bad_unicode($string);
 

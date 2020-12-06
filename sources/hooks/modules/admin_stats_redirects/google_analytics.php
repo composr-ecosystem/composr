@@ -29,7 +29,7 @@ class Hook_admin_stats_redirects_google_analytics extends CMSStatsRedirect
      * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info($for_kpi = false)
+    public function info(bool $for_kpi = false) : ?array
     {
         if (get_option('google_analytics') == '') {
             return null;
@@ -49,7 +49,7 @@ class Hook_admin_stats_redirects_google_analytics extends CMSStatsRedirect
      * @param  string $bucket_name The bucket name
      * @return URLPATH Redirect URL
      */
-    public function get_redirect_url($bucket_name)
+    public function get_redirect_url(string $bucket_name) : string
     {
         return 'https://google.com/analytics';
     }

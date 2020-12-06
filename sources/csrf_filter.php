@@ -23,7 +23,7 @@
  *
  * @return boolean Whether they are
  */
-function csrf_filter_active()
+function csrf_filter_active() : bool
 {
     if (get_page_name() == 'login') {
         return false;
@@ -44,7 +44,7 @@ function csrf_filter_active()
  *
  * @return ID_TEXT Generated token
  */
-function generate_csrf_token()
+function generate_csrf_token() : string
 {
     static $token = null; // So we only have one per screen (otherwise we can get huge numbers in our table)
 
@@ -70,7 +70,7 @@ function generate_csrf_token()
  *
  * @param  ?ID_TEXT $token Provided token (null: none)
  */
-function check_csrf_token($token)
+function check_csrf_token(?string $token)
 {
     if (!csrf_filter_active()) {
         return;

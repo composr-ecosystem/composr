@@ -38,7 +38,7 @@ function init__lookup()
  * @param  ?string $email_address The member's e-mail address (by reference) (null: unknown)
  * @return array The member's IP addresses (IP address and most recent time of hit)
  */
-function lookup_user($param, &$username, &$member_id, &$ip, &$email_address)
+function lookup_user($param, ?string &$username, ?int &$member_id, ?string &$ip, ?string &$email_address) : array
 {
     if (!addon_installed('stats')) {
         return [];
@@ -126,7 +126,7 @@ function lookup_user($param, &$username, &$member_id, &$ip, &$email_address)
  * @set ASC DESC
  * @return Tempcode The results table
  */
-function find_page_stats_for($member_id, $ip, $start = 0, $max = 50, $sortable = 'date_and_time', $sort_order = 'DESC')
+function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $max = 50, ?string $sortable = 'date_and_time', ?string $sort_order = 'DESC') : object
 {
     if (!addon_installed('stats')) {
         return new Tempcode();
@@ -193,7 +193,7 @@ function find_page_stats_for($member_id, $ip, $start = 0, $max = 50, $sortable =
  * @param  array $where WHERE constraints
  * @return array A pair: The results table, The number
  */
-function find_security_alerts($where = [])
+function find_security_alerts(array $where = []) : array
 {
     require_lang('security');
 
@@ -260,7 +260,7 @@ function find_security_alerts($where = [])
  * @param  ?IP $ip IP address (null: current / member's)
  * @return PATH The path of the file
  */
-function save_user_metadata($include_referer = false, $member_id = null, $ip = null)
+function save_user_metadata(bool $include_referer = false, ?int $member_id = null, ?string $ip = null) : string
 {
     $data = find_user_metadata($include_referer, $member_id, $ip);
 
@@ -282,7 +282,7 @@ function save_user_metadata($include_referer = false, $member_id = null, $ip = n
  * @param  boolean $advanced Whether to include advanced data
  * @return array Data
  */
-function find_user_metadata($include_referer = true, $member_id = null, $ip = null, $advanced = false)
+function find_user_metadata(bool $include_referer = true, ?int $member_id = null, ?string $ip = null, bool $advanced = false) : array
 {
     if ($member_id === null) {
         $member_id = get_member();

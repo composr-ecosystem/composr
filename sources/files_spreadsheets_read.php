@@ -24,7 +24,7 @@
  * @param  string $filename Filename
  * @return boolean Whether it is
  */
-function is_spreadsheet_readable($filename)
+function is_spreadsheet_readable(string $filename) : bool
 {
     $ext = get_file_extension($filename);
     return in_array($ext, explode(',', spreadsheet_read_file_types()));
@@ -35,7 +35,7 @@ function is_spreadsheet_readable($filename)
  *
  * @return string A comma-separated list of supported file types
  */
-function spreadsheet_read_file_types()
+function spreadsheet_read_file_types() : string
 {
     return 'csv,txt';
 }
@@ -50,7 +50,7 @@ function spreadsheet_read_file_types()
  * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
  * @return object A subclass of CMS_Spreadsheet_Reader
  */
-function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = true, $default_charset = '')
+function spreadsheet_open_read(string $path, ?string $filename = null, int $algorithm = 3, bool $trim = true, ?string $default_charset = '') : object
 {
     if ($filename === null) {
         $filename = basename($path);
@@ -90,7 +90,7 @@ abstract class CMS_Spreadsheet_Reader
      * @param  boolean $trim Whether to trim each cell
      * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
      */
-    public function __construct($path, $filename, $algorithm = 3, $trim = true, $default_charset = '')
+    public function __construct(string $path, string $filename, int $algorithm = 3, bool $trim = true, ?string $default_charset = '')
     {
         $this->algorithm = $algorithm;
         $this->trim = $trim;
@@ -167,6 +167,7 @@ abstract class CMS_Spreadsheet_Reader
      */
     abstract protected function _read_row();
 
+
     /**
      * Close down the spreadsheet file handle, for when we're done.
      */
@@ -200,7 +201,7 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
      * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
      * @param  ?integer $format A FORMAT_* constant (null: autodetect)
      */
-    public function __construct($path, $filename, $algorithm = 3, $trim = true, $default_charset = '', $format = null)
+    public function __construct(string $path, string $filename, int $algorithm = 3, bool $trim = true, ?string $default_charset = '', ?int $format = null)
     {
         require_code('files');
 
@@ -286,7 +287,7 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
      * @param  string $delimiter The delimiter
      * @return ~array Row (false: error)
      */
-    protected function getcsv_record($handle, $charset, $delimiter)
+    protected function getcsv_record($handle, string $charset, string $delimiter)
     {
         $line = cms_fgets($this->handle, $this->charset);
         if ($line === false) {

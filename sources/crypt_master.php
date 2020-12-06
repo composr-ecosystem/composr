@@ -28,7 +28,7 @@ IMPORTANT: This file is loaded outside Composr, so must work as standalone.
  * @param  SHORT_TEXT $password_given Given master password
  * @return boolean Whether it is valid
  */
-function check_master_password($password_given)
+function check_master_password(string $password_given) : bool
 {
     _master_password_check__init();
 
@@ -61,7 +61,7 @@ function check_master_password($password_given)
  * @param  SHORT_TEXT $password_given_hashed Given master password
  * @return boolean Whether it is valid
  */
-function check_master_password_from_hash($password_given_hashed)
+function check_master_password_from_hash(string $password_given_hashed) : bool
 {
     _master_password_check__init();
 
@@ -106,7 +106,7 @@ function _master_password_check__init()
  *
  * @param  boolean $result Whether login is successful
  */
-function _master_password_check__result($result)
+function _master_password_check__result(bool $result)
 {
     $msg = 'Composr administrative script ' . basename($_SERVER['SCRIPT_NAME']);
     if (!empty($_SERVER['REMOTE_ADDR'])) {

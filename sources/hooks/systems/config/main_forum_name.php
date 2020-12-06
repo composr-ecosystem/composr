@@ -28,7 +28,7 @@ class Hook_config_main_forum_name
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAIN_FORUM_NAME',
@@ -51,7 +51,7 @@ class Hook_config_main_forum_name
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return has_no_forum() ? null : do_lang('DEFAULT_FORUM_TITLE', '', '', '', get_site_default_lang());
     }

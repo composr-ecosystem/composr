@@ -28,7 +28,7 @@ class Hook_config_activity_show_stats_count_page_views_this_month
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PAGE_VIEWS_THIS_MONTH',
@@ -51,7 +51,7 @@ class Hook_config_activity_show_stats_count_page_views_this_month
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('stats_block')) {
             return null;

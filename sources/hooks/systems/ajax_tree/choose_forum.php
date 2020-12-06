@@ -31,7 +31,7 @@ class Hook_ajax_tree_choose_forum
      * @param  ?ID_TEXT $default The ID to select by default (null: none)
      * @return string XML in the special category,entry format
      */
-    public function run($id, $options, $default = null)
+    public function run(?string $id, array $options, ?string $default = null) : string
     {
         require_code('cns_forums');
         require_code('cns_forums2');
@@ -131,7 +131,7 @@ class Hook_ajax_tree_choose_forum
      * @param  array $_full_tree Full tree structure
      * @return array The map
      */
-    protected function make_tree_map($_full_tree)
+    protected function make_tree_map(array $_full_tree) : array
     {
         $out = [];
         foreach ($_full_tree as $t) {
@@ -149,7 +149,7 @@ class Hook_ajax_tree_choose_forum
      * @param  ?ID_TEXT $it The ID to select by default (null: none)
      * @return Tempcode The nice list
      */
-    public function simple($id, $options, $it = null)
+    public function simple(?string $id, array $options, ?string $it = null) : object
     {
         require_code('cns_forums2');
 

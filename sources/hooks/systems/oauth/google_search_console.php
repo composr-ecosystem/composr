@@ -28,7 +28,7 @@ class Hook_oauth_google_search_console
      *
      * @return array Map of oAuth details
      */
-    public function info()
+    public function info() : array
     {
         return [
             'label' => 'Google Search Console',

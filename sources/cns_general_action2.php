@@ -27,7 +27,7 @@
  * @param  SHORT_TEXT $forum_multi_code The multi code specifying which forums this is applicable in
  * @param  BINARY $use_default_forums Whether to use this as the default post in applicable forum
  */
-function cns_edit_post_template($id, $title, $text, $forum_multi_code, $use_default_forums)
+function cns_edit_post_template(int $id, string $title, string $text, string $forum_multi_code, int $use_default_forums)
 {
     $GLOBALS['FORUM_DB']->query_update('f_post_templates', [
         't_title' => $title,
@@ -49,7 +49,7 @@ function cns_edit_post_template($id, $title, $text, $forum_multi_code, $use_defa
  *
  * @param  AUTO_LINK $id The ID of the Post Template to delete
  */
-function cns_delete_post_template($id)
+function cns_delete_post_template(int $id)
 {
     $title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_post_templates', 't_title', ['id' => $id]);
     if ($title === null) {
@@ -72,7 +72,7 @@ function cns_delete_post_template($id)
  *
  * @param  boolean $remove_old_core Make some of the old core emoticons non-core (level 1)
  */
-function import_custom_emoticons($remove_old_core = false)
+function import_custom_emoticons(bool $remove_old_core = false)
 {
     if ($remove_old_core) {
         $codes = [    // All except    :P  ;)  :(  :)  :|
@@ -116,7 +116,7 @@ function import_custom_emoticons($remove_old_core = false)
  * @param  BINARY $use_topics Whether this may be used as a topic emoticon
  * @param  BINARY $is_special Whether this may only be used by privileged members
  */
-function cns_edit_emoticon($old_code, $code, $theme_img_code, $relevance_level, $use_topics, $is_special = 0)
+function cns_edit_emoticon(string $old_code, string $code, string $theme_img_code, int $relevance_level, int $use_topics, int $is_special = 0)
 {
     if ($code != $old_code) {
         $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', ['e_code' => $code]);
@@ -157,7 +157,7 @@ function cns_edit_emoticon($old_code, $code, $theme_img_code, $relevance_level, 
  *
  * @param  SHORT_TEXT $code The ID of the emoticon to delete
  */
-function cns_delete_emoticon($code)
+function cns_delete_emoticon(string $code)
 {
     $old_theme_img_code = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_theme_img_code', ['e_code' => $code]);
     if ($old_theme_img_code === null) {
@@ -184,7 +184,7 @@ function cns_delete_emoticon($code)
  *
  * @return integer Number of emoticons
  */
-function cns_get_num_emoticons_on_disk()
+function cns_get_num_emoticons_on_disk() : int
 {
     if (!$GLOBALS['SITE_DB']->table_exists('theme_images')) {
         return 0; // Likely installing
@@ -215,7 +215,7 @@ function cns_get_num_emoticons_on_disk()
  * @param  ID_TEXT $usergroup_type How to send regarding usergroups (blank: indiscriminately)
  * @set primary secondary
  */
-function cns_edit_welcome_email($id, $name, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type)
+function cns_edit_welcome_email(int $id, string $name, string $subject, string $text, int $send_time, ?int $newsletter, ?int $usergroup, string $usergroup_type)
 {
     $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
@@ -246,7 +246,7 @@ function cns_edit_welcome_email($id, $name, $subject, $text, $send_time, $newsle
  *
  * @param  AUTO_LINK $id The ID
  */
-function cns_delete_welcome_email($id)
+function cns_delete_welcome_email(int $id)
 {
     $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
@@ -272,7 +272,7 @@ function cns_delete_welcome_email($id)
  * @param  SHORT_TEXT $forum_multi_code The multi code
  * @return Tempcode The form field
  */
-function cns_get_forum_multi_code_field($forum_multi_code)
+function cns_get_forum_multi_code_field(string $forum_multi_code) : object
 {
     require_code('form_templates');
     if ($forum_multi_code != '') {
@@ -298,7 +298,7 @@ function cns_get_forum_multi_code_field($forum_multi_code)
  * @param  ?TIME $timestamp The time of the moderation (null: just now)
  * @return AUTO_LINK The log ID
  */
-function cns_mod_log_it($the_type, $param_a = '', $param_b = '', $reason = '', $by = null, $timestamp = null)
+function cns_mod_log_it(string $the_type, string $param_a = '', string $param_b = '', string $reason = '', ?int $by = null, ?int $timestamp = null) : int
 {
     require_code('global4');
 

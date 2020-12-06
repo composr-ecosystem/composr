@@ -28,7 +28,7 @@ class Hook_cleanup_self_learning
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         global $SITE_INFO;
         $is_on = (isset($SITE_INFO['self_learning_cache']) && $SITE_INFO['self_learning_cache'] == '1');
@@ -49,7 +49,7 @@ class Hook_cleanup_self_learning
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         Self_learning_cache::erase_smart_cache();
 

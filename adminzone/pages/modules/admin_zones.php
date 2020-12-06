@@ -28,7 +28,7 @@ class Module_admin_zones
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_zones
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         $ret = [
             'browse' => ['ZONES', 'menu/adminzone/structure/zones/zones'],
@@ -104,7 +104,7 @@ class Module_admin_zones
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -188,7 +188,7 @@ class Module_admin_zones
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('zones2');
         require_code('zones3');
@@ -233,7 +233,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -252,7 +252,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function editor()
+    public function editor() : object
     {
         return $this->edit_zone('_editor', get_screen_title('ZONE_EDITOR'));
     }
@@ -262,7 +262,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function _editor()
+    public function _editor() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -486,7 +486,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function __editor()
+    public function __editor() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -597,7 +597,7 @@ class Module_admin_zones
      * @param  ?ID_TEXT $zone Name of the zone (null: unknown)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields($in_zone_editor = false, $title = '', $default_page = DEFAULT_ZONE_PAGE_NAME, $header_text = '', $theme = null, $require_session = 0, $zone = null)
+    public function get_form_fields(bool $in_zone_editor = false, string $title = '', string $default_page = DEFAULT_ZONE_PAGE_NAME, string $header_text = '', ?string $theme = null, int $require_session = 0, ?string $zone = null) : array
     {
         require_lang('permissions');
         require_javascript('core_zone_editor');
@@ -666,7 +666,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function add_zone()
+    public function add_zone() : object
     {
         appengine_live_guard();
 
@@ -719,7 +719,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function _add_zone()
+    public function _add_zone() : object
     {
         appengine_live_guard();
 
@@ -763,7 +763,7 @@ class Module_admin_zones
      * @param  ?Tempcode $title The title to use (null: the EDIT_ZONE title)
      * @return Tempcode The UI
      */
-    public function edit_zone($type = '_edit', $title = null)
+    public function edit_zone(string $type = '_edit', ?object $title = null) : object
     {
         if ($title === null) {
             $title = $this->title;
@@ -838,7 +838,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function _edit_zone()
+    public function _edit_zone() : object
     {
         require_lang('themes');
 
@@ -903,7 +903,7 @@ class Module_admin_zones
      *
      * @return Tempcode The UI
      */
-    public function __edit_zone()
+    public function __edit_zone() : object
     {
         $zone = post_param_string('zone');
 
@@ -961,7 +961,7 @@ class Module_admin_zones
      *
      * @param  ID_TEXT $zone The zone that we're setting permissions for
      */
-    public function set_permissions($zone)
+    public function set_permissions(string $zone)
     {
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();

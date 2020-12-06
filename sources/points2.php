@@ -37,7 +37,7 @@ function init__points2()
  * @param  boolean $include_in_log Whether to include a log line
  * @return ?AUTO_LINK ID of the gifts record if include_in_log was true (null: log was not created)
  */
-function system_gift_transfer($reason, $amount, $member_id, $include_in_log = true)
+function system_gift_transfer(string $reason, int $amount, int $member_id, bool $include_in_log = true) : ?int
 {
     require_lang('points');
     require_code('points');
@@ -96,7 +96,7 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
  * @param  boolean $send_email Whether to send out an e-mail about it
  * @return AUTO_LINK The ID of the gift point record created
  */
-function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = false, $send_email = true)
+function give_points(int $amount, int $recipient_id, int $sender_id, string $reason, bool $anonymous = false, bool $send_email = true) : int
 {
     require_lang('points');
     require_code('points');
@@ -179,7 +179,7 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
  * @param  SHORT_TEXT $reason The reason for the charging
  * @return AUTO_LINK The ID of the chargelog record
  */
-function charge_member($member_id, $amount, $reason)
+function charge_member(int $member_id, int $amount, string $reason) : int
 {
     require_lang('points');
     require_code('points');
@@ -211,7 +211,7 @@ function charge_member($member_id, $amount, $reason)
  * @param  ?TIME $time The time this is recorded to have happened (null: use current time)
  * @return AUTO_LINK The ID of the chargelog record
  */
-function add_to_charge_log($member_id, $amount, $reason, $time = null)
+function add_to_charge_log(int $member_id, int $amount, string $reason, ?int $time = null) : int
 {
     if ($time === null) {
         $time = time();
@@ -230,7 +230,7 @@ function add_to_charge_log($member_id, $amount, $reason, $time = null)
  *
  * @param  AUTO_LINK $id The transaction ID
  */
-function reverse_point_gift_transaction($id)
+function reverse_point_gift_transaction(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -261,7 +261,7 @@ function reverse_point_gift_transaction($id)
  *
  * @param  AUTO_LINK $id The transaction ID
  */
-function reverse_charge_transaction($id)
+function reverse_charge_transaction(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {

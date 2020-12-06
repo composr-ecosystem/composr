@@ -28,7 +28,7 @@ class Hook_preview_poll
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('polls')) && (get_page_name() == 'cms_polls');
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_poll
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         // Our questions templated
         $tpl = new Tempcode();

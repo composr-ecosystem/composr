@@ -31,7 +31,7 @@ class Hook_task_export_newsletter_subscribers
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($lang, $key, $file_type = null)
+    public function run(string $lang, string $key, ?string $file_type = null) : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;

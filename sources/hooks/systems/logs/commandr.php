@@ -28,7 +28,7 @@ class Hook_logs_commandr
      *
      * @return array List of logs
      */
-    public function enumerate_logs()
+    public function enumerate_logs() : array
     {
         if (!addon_installed('commandr')) {
             return [

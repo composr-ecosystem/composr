@@ -28,7 +28,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (!addon_installed('filedump')) {
             return [];
@@ -98,7 +98,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
      * @param  ?string $identifier Identifier (null: none)
      * @return string Written context
      */
-    protected function get_written_context($actionlog_row, $handler_data, $identifier)
+    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : string
     {
         switch ($actionlog_row['the_type']) {
             case 'FILEDUMP_CREATE_FOLDER':
@@ -126,7 +126,7 @@ class Hook_actionlog_filedump extends Hook_actionlog
      * @param  ?string $written_context The written context associated with this action log entry (null: unknown / none)
      * @param  array $bindings Default bindings
      */
-    protected function get_extended_actionlog_bindings($actionlog_row, $identifier, $written_context, &$bindings)
+    protected function get_extended_actionlog_bindings(array $actionlog_row, ?string $identifier, ?string $written_context, array &$bindings)
     {
         switch ($actionlog_row['the_type']) {
             case 'FILEDUMP_MOVE':

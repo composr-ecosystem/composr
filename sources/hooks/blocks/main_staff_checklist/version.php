@@ -28,7 +28,7 @@ class Hook_checklist_version
      *
      * @return array An array of tuples: The task row to show, the number of seconds until it is due (or null if not on a timer), the number of things to sort out (or null if not on a queue), The name of the config option that controls the schedule (or null if no option)
      */
-    public function run()
+    public function run() : array
     {
         require_code('version2');
         $version = get_future_version_information();

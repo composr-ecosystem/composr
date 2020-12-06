@@ -28,7 +28,7 @@ class Module_admin_setupwizard
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_setupwizard
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('setupwizard')) {
             return null;
@@ -69,7 +69,7 @@ class Module_admin_setupwizard
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('setupwizard', $error_msg)) {
@@ -112,7 +112,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         appengine_live_guard();
 
@@ -177,7 +177,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step1()
+    public function step1() : object
     {
         $dh = @opendir(get_custom_file_base() . '/imports/addons/');
         $addons_available = [];
@@ -243,7 +243,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step2()
+    public function step2() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');
         $submit_name = do_lang_tempcode('PROCEED');
@@ -328,7 +328,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step3()
+    public function step3() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_3_DESCRIBE');
@@ -443,7 +443,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step4()
+    public function step4() : object
     {
         require_code('addons2');
         require_lang('addons');
@@ -691,7 +691,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step5()
+    public function step5() : object
     {
         require_lang('menus');
 
@@ -773,7 +773,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step6()
+    public function step6() : object
     {
         require_all_lang();
 
@@ -897,7 +897,7 @@ class Module_admin_setupwizard
      * @param  ID_TEXT $code A code relating to which rules set to get
      * @return string The Comcode
      */
-    protected function get_rules_file($code)
+    protected function get_rules_file(string $code) : string
     {
         require_code('zones3');
         return get_template_contents('rules_' . $code);
@@ -908,7 +908,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step7()
+    public function step7() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => $this->has_themewizard_step() ? 'step8' : 'step9'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_7_DESCRIBE');
@@ -962,7 +962,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step8()
+    public function step8() : object
     {
         require_lang('themes');
         require_code('themewizard');
@@ -1003,7 +1003,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step9()
+    public function step9() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => 'step10'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_9_DESCRIBE');
@@ -1041,7 +1041,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step10()
+    public function step10() : object
     {
         push_query_limiting(false);
 
@@ -1440,7 +1440,7 @@ class Module_admin_setupwizard
      * @param  string $name The new site name
      * @return string The new theme name
      */
-    protected function generate_theme_name($name)
+    protected function generate_theme_name(string $name) : string
     {
         return substr(preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $name), 0, 40);
     }
@@ -1450,7 +1450,7 @@ class Module_admin_setupwizard
      *
      * @return array A pair: The list of addons to install, The list of addons to uninstall
      */
-    protected function detect_addon_operations()
+    protected function detect_addon_operations() : array
     {
         $installing = [];
         $uninstalling = [];
@@ -1501,7 +1501,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function step11()
+    public function step11() : object
     {
         // Clear some caching
         $this->clear_caching();
@@ -1543,7 +1543,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function install_test_content()
+    public function install_test_content() : object
     {
         if ((post_param_integer('submitting', 0) == 0) && (strpos($_SERVER['HTTP_REFERER'], get_base_url() . '/install.php?') !== 0)) {
             $post_url = build_url(['page' => '_SELF', 'type' => 'install_test_content'], '_SELF');
@@ -1574,7 +1574,7 @@ class Module_admin_setupwizard
      *
      * @return Tempcode The UI
      */
-    public function uninstall_test_content()
+    public function uninstall_test_content() : object
     {
         if (post_param_integer('submitting', 0) == 0) {
             $post_url = build_url(['page' => '_SELF', 'type' => 'uninstall_test_content'], '_SELF');
@@ -1600,7 +1600,7 @@ class Module_admin_setupwizard
      *
      * @return integer The number of steps
      */
-    protected function get_num_steps_enumerable()
+    protected function get_num_steps_enumerable() : int
     {
         $steps = 10;
         if (!$this->has_block_step()) {
@@ -1618,7 +1618,7 @@ class Module_admin_setupwizard
      * @param  integer $step System step number
      * @return integer Effective step number
      */
-    protected function get_effective_step($step)
+    protected function get_effective_step(int $step) : int
     {
         if ($step > 6) {
             if (!$this->has_block_step()) {
@@ -1638,7 +1638,7 @@ class Module_admin_setupwizard
      *
      * @return boolean Whether it will
      */
-    protected function has_block_step()
+    protected function has_block_step() : bool
     {
         return (get_theme_option('setupwizard__provide_block_choice', null, post_param_string('source_theme', 'default')) == '1');
     }
@@ -1648,7 +1648,7 @@ class Module_admin_setupwizard
      *
      * @return boolean Whether it will
      */
-    protected function has_themewizard_step()
+    protected function has_themewizard_step() : bool
     {
         return (addon_installed('themewizard')) && (get_theme_option('enable_themewizard', null, post_param_string('source_theme', 'default')) == '1');
     }

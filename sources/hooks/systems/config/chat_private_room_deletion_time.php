@@ -28,7 +28,7 @@ class Hook_config_chat_private_room_deletion_time
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PRIVATE_CHATROOM_DELETION_TIME',
@@ -51,7 +51,7 @@ class Hook_config_chat_private_room_deletion_time
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('chat')) {
             return null;

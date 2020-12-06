@@ -82,7 +82,7 @@ function cns_over_msn()
  * @param  boolean $fail_ok If it is okay to fail to find a mapping
  * @return ?AUTO_LINK The new ID (null: not found)
  */
-function import_id_remap_get($type, $id_old, $fail_ok = false)
+function import_id_remap_get(string $type, string $id_old, bool $fail_ok = false) : ?int
 {
     static $remap_cache = [];
     if ((array_key_exists($type, $remap_cache)) && (array_key_exists($id_old, $remap_cache[$type]))) {
@@ -107,7 +107,7 @@ function import_id_remap_get($type, $id_old, $fail_ok = false)
  * @param  string $id_old The source (old, original) ID of the mapping
  * @return boolean Whether it has been imported
  */
-function import_check_if_imported($type, $id_old)
+function import_check_if_imported(string $type, string $id_old) : bool
 {
     send_http_output_ping();
 
@@ -122,7 +122,7 @@ function import_check_if_imported($type, $id_old)
  * @param  string $id_old The source (old, original) ID of the mapping
  * @param  AUTO_LINK $id_new The destination (new) ID of the mapping
  */
-function import_id_remap_put($type, $id_old, $id_new)
+function import_id_remap_put(string $type, string $id_old, int $id_new)
 {
     $GLOBALS['SITE_DB']->query_insert('import_id_remap', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old, 'id_new' => $id_new]);
 }
@@ -134,7 +134,7 @@ function import_id_remap_put($type, $id_old, $id_new)
  * @param  SHORT_TEXT $replacement Replacement (blank: block entirely)
  * @param  BINARY $substr Whether to perform a substring match
  */
-function add_wordfilter_word($word, $replacement = '', $substr = 0)
+function add_wordfilter_word(string $word, string $replacement = '', int $substr = 0)
 {
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'word', ['word' => $word]);
     if ($test === null) {
@@ -204,7 +204,7 @@ function post_import_cleanup()
  *
  * @param  boolean $on Whether index maintenance should be on
  */
-function set_database_index_maintenance($on)
+function set_database_index_maintenance(bool $on)
 {
     if (strpos(get_db_type(), 'mysql') !== false) {
         push_db_scope_check(false);

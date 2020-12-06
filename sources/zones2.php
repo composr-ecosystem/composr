@@ -38,7 +38,7 @@ function init__zones2()
  * @param  boolean $in_tempcode Whether to get in Tempcode format (which will be HTML)
  * @return mixed Comcode page title
  */
-function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_tempcode = false)
+function get_comcode_page_title_from_disk(string $path, bool $include_subtitle = false, bool $in_tempcode = false)
 {
     $page_contents = trim(cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM, null, 300));
 
@@ -136,7 +136,7 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode Rendered box
  */
-function render_comcode_page_box($row, $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '')
+function render_comcode_page_box(array $row, bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -201,7 +201,7 @@ function render_comcode_page_box($row, $give_context = true, $include_breadcrumb
  * @param  string $base_url The base URL (blank: natural)
  * @return ID_TEXT The name
  */
-function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, $header_text = '', $theme = 'default', $require_session = 0, $uniqify = false, $base_url = '')
+function actual_add_zone(string $zone, string $title, string $default_page = DEFAULT_ZONE_PAGE_NAME, string $header_text = '', string $theme = 'default', int $require_session = 0, bool $uniqify = false, string $base_url = '') : string
 {
     require_lang('zones');
 
@@ -276,7 +276,7 @@ function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, 
  *
  * @param  ID_TEXT $zone The zone
  */
-function make_zone_directory($zone)
+function make_zone_directory(string $zone)
 {
     require_code('abstract_file_manager');
     if (!file_exists(get_file_base() . '/' . $zone)) {
@@ -320,7 +320,7 @@ function make_zone_directory($zone)
  * @param  ID_TEXT $zone The zone
  * @param  string $base_url The base URL (blank: natural)
  */
-function save_zone_base_url($zone, $base_url)
+function save_zone_base_url(string $zone, string $base_url)
 {
     if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
         return;
@@ -370,7 +370,7 @@ function save_zone_base_url($zone, $base_url)
  * @param  ID_TEXT $module The module name
  * @return integer 0=No upgrade. -2=Not installed, 1=Upgrade
  */
-function upgrade_module($zone, $module)
+function upgrade_module(string $zone, string $module) : int
 {
     $rows = $GLOBALS['SITE_DB']->query_select('modules', ['*'], ['module_the_name' => $module], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -428,7 +428,7 @@ function upgrade_module($zone, $module)
  * @param  ID_TEXT $module The module name
  * @return boolean Whether a module installer had to be run
  */
-function reinstall_module($zone, $module)
+function reinstall_module(string $zone, string $module) : bool
 {
     push_query_limiting(false);
 
@@ -488,7 +488,7 @@ function reinstall_module($zone, $module)
  * @param  ID_TEXT $zone The zone name
  * @param  ID_TEXT $module The module name
  */
-function uninstall_module($zone, $module)
+function uninstall_module(string $zone, string $module)
 {
     $module_path = get_file_base() . '/' . _get_module_path($zone, $module);
 
@@ -525,7 +525,7 @@ function uninstall_module($zone, $module)
  *
  * @return array Map of all blocks (name->[sources/sources_custom])
  */
-function find_all_blocks()
+function find_all_blocks() : array
 {
     $out = [];
 
@@ -557,7 +557,7 @@ function find_all_blocks()
  * @param  ID_TEXT $block The raw block codename
  * @return string A nice human readable version of the name
  */
-function cleanup_block_name($block)
+function cleanup_block_name(string $block) : string
 {
     $title = do_lang('BLOCK_TRANS_NAME_' . $block, null, null, null, null, false);
     if ($title !== null) {
@@ -576,7 +576,7 @@ function cleanup_block_name($block)
  * @param  boolean $include_standard_parameters Include parameters that apply to all blocks
  * @return array A list of parameters the block takes
  */
-function get_block_parameters($block, $include_standard_parameters = false)
+function get_block_parameters(string $block, bool $include_standard_parameters = false) : array
 {
     $block_path = _get_block_path($block);
     $info = extract_module_info($block_path);
@@ -607,7 +607,7 @@ function get_block_parameters($block, $include_standard_parameters = false)
  *
  * @return array A list of standard parameters
  */
-function get_standard_block_parameters()
+function get_standard_block_parameters() : array
 {
     return [
         'failsafe',
@@ -625,7 +625,7 @@ function get_standard_block_parameters()
  * @param  ID_TEXT $block The name of the block to upgrade
  * @return integer 0=No upgrade. -2=Not installed, 1=Upgrade
  */
-function upgrade_block($block)
+function upgrade_block(string $block) : int
 {
     $rows = $GLOBALS['SITE_DB']->query_select('blocks', ['*'], ['block_name' => $block], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -672,7 +672,7 @@ function upgrade_block($block)
  * @param  ID_TEXT $block The name of the block to reinstall
  * @return boolean Whether installation was required
  */
-function reinstall_block($block)
+function reinstall_block(string $block) : bool
 {
     $block_path = _get_block_path($block);
 
@@ -718,7 +718,7 @@ function reinstall_block($block)
  *
  * @param  ID_TEXT $block The name of the block to uninstall
  */
-function uninstall_block($block)
+function uninstall_block(string $block)
 {
     $block_path = _get_block_path($block);
 
@@ -755,7 +755,7 @@ function uninstall_block($block)
  * @param  array $params A list of parameters to pass to our functions
  * @return array A list of pieces of code to do the equivalent of executing the requested functions with the requested parameters
  */
-function extract_module_functions_page($zone, $page, $functions, $params = [])
+function extract_module_functions_page(string $zone, string $page, array $functions, array $params = []) : array
 {
     $path = zone_black_magic_filterer(get_file_base() . '/' . filter_naughty_harsh($zone) . (($zone == '') ? '' : '/') . 'pages/modules_custom/' . filter_naughty_harsh($page) . '.php');
     if (file_exists($path)) {
@@ -782,7 +782,7 @@ function extract_module_functions_page($zone, $page, $functions, $params = [])
  * @param  PATH $path The path to the module
  * @return ?array A module information map (null: module contains no info method)
  */
-function extract_module_info($path)
+function extract_module_info(string $path) : ?array
 {
     $functions = extract_module_functions($path, ['info']);
     if ($functions[0] === null) {
@@ -803,7 +803,7 @@ function extract_module_info($path)
  * @return array A map of page name to type (modules_custom, etc)
  * @ignore
  */
-function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects = false, $show_method = 0, $page_type = null)
+function _find_all_pages_wrap(string $zone, bool $keep_ext_on = false, bool $consider_redirects = false, int $show_method = 0, ?string $page_type = null) : array
 {
     $pages = [];
     if (($page_type === null) || ($page_type == 'modules')) {
@@ -873,7 +873,7 @@ function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects =
  * @return array A map of page name to type (modules_custom, etc)
  * @ignore
  */
-function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cutoff_time = null, $show_method = 0, $custom = null)
+function _find_all_pages(string $zone, string $type, string $ext = 'php', bool $keep_ext_on = false, ?int $cutoff_time = null, int $show_method = 0, ?bool $custom = null) : array
 {
     static $cache = [];
     $do_cache = (!$keep_ext_on) && ($cutoff_time === null) && ($show_method == 0) && ($custom === null);
@@ -996,7 +996,7 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
  * @return array A map of page name to type (modules_custom, etc)
  * @ignore
  */
-function _find_all_modules($zone)
+function _find_all_modules(string $zone) : array
 {
     if (in_safe_mode()) {
         return find_all_pages($zone, 'modules');
@@ -1027,7 +1027,7 @@ function sync_htaccess_with_zones()
  *
  * @param  ID_TEXT $zone The zone name
  */
-function check_zone_name($zone)
+function check_zone_name(string $zone)
 {
     $url_scheme = get_option('url_scheme');
     if (($url_scheme == 'SIMPLE') || ($url_scheme == 'HTM')) {
@@ -1053,7 +1053,7 @@ function check_zone_name($zone)
  * @param  ID_TEXT $zone The zone name
  * @param  ID_TEXT $page The page name
  */
-function check_page_name($zone, $page)
+function check_page_name(string $zone, string $page)
 {
     if ($zone == '') {
         $url_scheme = get_option('url_scheme');

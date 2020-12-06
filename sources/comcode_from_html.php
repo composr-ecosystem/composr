@@ -36,7 +36,7 @@ function init__comcode_from_html()
  *
  * @ignore
  */
-function _img_tag_fixup($matches)
+function _img_tag_fixup(array $matches) : string
 {
     $params = trim($matches[1]);
     if ($params != '') {
@@ -76,7 +76,7 @@ function _img_tag_fixup($matches)
  *
  * @ignore
  */
-function _img_tag_fixup_raw($matches)
+function _img_tag_fixup_raw(array $matches) : string
 {
     /*$referer = post_param_string('http_referer', $_SERVER['HTTP_REFERER']);*/ // CKEditor allows us to specify the base, so we know get_base_url() is right
     $caller_url = /*looks_like_url($referer) ? preg_replace('#/[^/]*$#', '', $referer) : */get_base_url();
@@ -102,7 +102,7 @@ function _img_tag_fixup_raw($matches)
  *
  * @ignore
  */
-function _a_tag_link_fixup($matches)
+function _a_tag_link_fixup(array $matches) : string
 {
     $referer = post_param_string('http_referer', $_SERVER['HTTP_REFERER']);
     $caller_url = looks_like_url($referer) ? preg_replace('#/[^/]*$#', '', $referer) : get_base_url();
@@ -118,7 +118,7 @@ function _a_tag_link_fixup($matches)
  *
  * @ignore
  */
-function _css_color_fixup($matches)
+function _css_color_fixup(array $matches) : string
 {
     $r = dechex(intval(trim($matches[2])));
     if (strlen($r) == 1) {
@@ -144,7 +144,7 @@ function _css_color_fixup($matches)
  *
  * @ignore
  */
-function _css_quot_fixup($matches)
+function _css_quot_fixup(array $matches) : string
 {
     return str_replace('&quot;', '\'', $matches[0]);
 }
@@ -157,7 +157,7 @@ function _css_quot_fixup($matches)
  *
  * @ignore
  */
-function _cdata_protect($matches)
+function _cdata_protect(array $matches) : string
 {
     $new = $matches[2];
     // We use a closing tag, as we can't just type these in the HTML normally (even in CDATA) - so they are safe unused strings
@@ -177,7 +177,7 @@ function _cdata_protect($matches)
  *
  * @ignore
  */
-function _codetag_protect($matches)
+function _codetag_protect(array $matches) : string
 {
     $new = $matches[2];
     $new = str_replace('<', '___lt___', $new);
@@ -193,7 +193,7 @@ function _codetag_protect($matches)
  *
  * @ignore
  */
-function _codetag_unprotect($matches)
+function _codetag_unprotect(array $matches) : string
 {
     $new = $matches[2];
     $new = str_replace('___lt___', '<', $new);
@@ -209,7 +209,7 @@ function _codetag_unprotect($matches)
  *
  * @ignore
  */
-function _reorder_xhtml_attributes($matches)
+function _reorder_xhtml_attributes(array $matches) : string
 {
     $middle = trim($matches[2]);
     $short = (substr($middle, -1) == '/');
@@ -246,7 +246,7 @@ function _reorder_xhtml_attributes($matches)
  *
  * @ignore
  */
-function _reorder_css_properties($matches)
+function _reorder_css_properties(array $matches) : string
 {
     $middle = $matches[2];
     $bits = array_map('trim', explode(';', $middle));
@@ -272,7 +272,7 @@ function _reorder_css_properties($matches)
  *
  * @ignore
  */
-function _semihtml_to_comcode_wrap($matches)
+function _semihtml_to_comcode_wrap(array $matches) : string
 {
     $middle = semihtml_to_comcode($matches[2]);
     if (substr($middle, 0, 10) == '[semihtml]') {
@@ -289,7 +289,7 @@ function _semihtml_to_comcode_wrap($matches)
  *
  * @ignore
  */
-function _debuttonise($matches)
+function _debuttonise(array $matches) : string
 {
     return html_entity_decode($matches[1], ENT_QUOTES);
 }
@@ -302,7 +302,7 @@ function _debuttonise($matches)
  *
  * @ignore
  */
-function _detagonise($matches)
+function _detagonise(array $matches) : string
 {
     $tag = $matches[1];
     $attributes = html_entity_decode(str_replace('&quot;', '\"', isset($matches[2]) ? $matches[2] : ''), ENT_QUOTES);
@@ -318,7 +318,7 @@ function _detagonise($matches)
  *
  * @ignore
  */
-function _dedirectiveise($matches)
+function _dedirectiveise(array $matches) : string
 {
     $attributes_arr = [];
     $attributes_xml = isset($matches[1]) ? $matches[1] : '';
@@ -341,7 +341,7 @@ function _dedirectiveise($matches)
  *
  * @param  string $semihtml Semi-HTML
  */
-function remove_wysiwyg_comcode_markup(&$semihtml)
+function remove_wysiwyg_comcode_markup(string &$semihtml)
 {
     // Our invisible characters isolating the cms Keep markers from style run-off
     $semihtml = str_replace('&#8203;', '', $semihtml);
@@ -386,7 +386,7 @@ function remove_wysiwyg_comcode_markup(&$semihtml)
  * @param  boolean $forceful Whether to force conversion on all header tags, even if they don't match Comcode-style/simple headers exactly
  * @return string Semi-HTML, with headers converted to titles
  */
-function convert_html_headers_to_titles($semihtml, $forceful)
+function convert_html_headers_to_titles(string $semihtml, bool $forceful) : string
 {
     if (stripos($semihtml, '<h') !== false) {
         $array_html_preg_replace = [];
@@ -421,7 +421,7 @@ function convert_html_headers_to_titles($semihtml, $forceful)
  * @param  LONG_TEXT $comcode The messy Comcode
  * @return LONG_TEXT The cleaned Comcode
  */
-function force_clean_comcode($comcode)
+function force_clean_comcode(string $comcode) : string
 {
     $matches = [];
     if (preg_match('#^\[semihtml\](.*)\[/semihtml\]$#s', $comcode, $matches) != 0) {
@@ -443,7 +443,7 @@ function force_clean_comcode($comcode)
  * @param  LONG_TEXT $semihtml The Semi-HTML to be converted
  * @return LONG_TEXT The equivalent Comcode
  */
-function wysiwygify_media_set($semihtml)
+function wysiwygify_media_set(string $semihtml) : string
 {
     // Media set contents doesn't need any divs, which get left from native attachments
     $i = 0;
@@ -470,7 +470,7 @@ function wysiwygify_media_set($semihtml)
  * @param  ?MEMBER $member_id Member to do as (null: current member)
  * @return LONG_TEXT The equivalent Comcode
  */
-function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_id = null)
+function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick = false, ?int $member_id = null) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1110,7 +1110,7 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
  * @param  array $matches Matches
  * @return string Result
  */
-function comcode_strip_html_tags($matches)
+function comcode_strip_html_tags(array $matches) : string
 {
     return $matches[1] . cms_strip_tags($matches[2], '<p><br><div><CDATA__space><CDATA__tab><CDATA__nl><CDATA__lf><CDATA__amp>') . $matches[3];
 }
@@ -1126,7 +1126,7 @@ function comcode_strip_html_tags($matches)
  * @param  string $semihtml Haystack
  * @return string Result
  */
-function comcode_preg_replace($element, $pattern, $replacement, $semihtml)
+function comcode_preg_replace(string $element, string $pattern, $replacement, string $semihtml) : string
 {
     // Quick exit, for efficiency
     if (strpos($semihtml, '[' . $element) === false) {
@@ -1187,7 +1187,7 @@ function comcode_preg_replace($element, $pattern, $replacement, $semihtml)
  * @param  string $semihtml Haystack
  * @return string Result
  */
-function array_html_preg_replace($element, $array, $semihtml)
+function array_html_preg_replace(string $element, array $array, string $semihtml) : string
 {
     // Quick exit, for efficiency
     if (strpos($semihtml, '<' . $element) === false) {

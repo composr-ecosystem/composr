@@ -23,7 +23,7 @@
  *
  * @return array List of pairs
  */
-function get_false_permissions()
+function get_false_permissions() : array
 {
     return [
         ['_COMCODE', 'allow_html'],
@@ -89,7 +89,7 @@ function get_false_permissions()
  *
  * @return array List of pairs
  */
-function get_true_permissions()
+function get_true_permissions() : array
 {
     return [
         ['SUBMISSION', 'edit_own_lowrange_content'],
@@ -112,7 +112,7 @@ function get_true_permissions()
  * @param  ID_TEXT $name The name of the option
  * @return boolean Whether it exists
  */
-function privilege_exists($name)
+function privilege_exists(string $name) : bool
 {
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('privilege_list', 'the_name', ['the_name' => $name]);
     return $test !== null;
@@ -127,7 +127,7 @@ function privilege_exists($name)
  * @param  boolean $not_even_mods Whether this privilege is not granted to supermoderators by default (something very sensitive); only applies if $default is true
  * @param  boolean $not_for_probation An exception for if $default is true, don't assign the privilege to the probation group
  */
-function add_privilege($section, $name, $default = false, $not_even_mods = false, $not_for_probation = false)
+function add_privilege(string $section, string $name, bool $default = false, bool $not_even_mods = false, bool $not_for_probation = false)
 {
     if (get_forum_type() == 'cns') {
         require_code('cns_groups');
@@ -179,7 +179,7 @@ function add_privilege($section, $name, $default = false, $not_even_mods = false
  * @param  ?ID_TEXT $category_type The category-type for the permission (null: none required)
  * @param  ?ID_TEXT $category_name The category-name/value for the permission (null: none required)
  */
-function set_privilege($group_id, $permission, $value, $page = null, $category_type = null, $category_name = null)
+function set_privilege(int $group_id, string $permission, bool $value, ?string $page = null, ?string $category_type = null, ?string $category_name = null)
 {
     if ($page === null) {
         $page = '';
@@ -206,7 +206,7 @@ function set_privilege($group_id, $permission, $value, $page = null, $category_t
  * @param  ID_TEXT $old The old name
  * @param  ID_TEXT $new The new name
  */
-function rename_privilege($old, $new)
+function rename_privilege(string $old, string $new)
 {
     $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_name' => $new], ['the_name' => $old], '', 1);
     $GLOBALS['SITE_DB']->query_update('group_privileges', ['privilege' => $new], ['privilege' => $old], '', 1);
@@ -218,7 +218,7 @@ function rename_privilege($old, $new)
  *
  * @param  ID_TEXT $name The codename of the permission
  */
-function delete_privilege($name)
+function delete_privilege(string $name)
 {
     $GLOBALS['SITE_DB']->query_delete('privilege_list', ['the_name' => $name], '', 1);
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'group_privileges WHERE ' . db_string_equal_to('privilege', $name));

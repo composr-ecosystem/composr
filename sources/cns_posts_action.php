@@ -24,7 +24,7 @@
  * @param  AUTO_LINK $forum_id The ID of the forum
  * @return array The list of applicable Post Templates
  */
-function cns_get_post_templates($forum_id)
+function cns_get_post_templates(int $forum_id) : array
 {
     if (!addon_installed('cns_post_templates')) {
         return [];
@@ -59,7 +59,7 @@ function cns_get_post_templates($forum_id)
  * @param  ?MEMBER $poster The poster (null: current member)
  * @return ?array Row of the existing post if a double post (single row map-element in a list of rows) (null: not a double post)
  */
-function cns_check_post($post, $topic_id = null, $poster = null)
+function cns_check_post(string $post, ?int $topic_id = null, ?int $poster = null) : ?array
 {
     if ($poster === null) {
         $poster = get_member();
@@ -128,7 +128,7 @@ function cns_check_post($post, $topic_id = null, $poster = null)
  * @param  boolean $send_notification Whether to send out notifications
  * @return AUTO_LINK The ID of the new post
  */
-function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = false, $validated = null, $is_emphasised = 0, $poster_name_if_guest = null, $ip_address = null, $time = null, $poster = null, $intended_solely_for = null, $last_edit_time = null, $last_edit_by = null, $check_permissions = true, $update_caching = true, $forum_id = null, $support_attachments = true, $topic_title = '', $id = null, $anonymous = false, $skip_post_checks = false, $is_pt = false, $insert_comcode_as_admin = false, $parent_id = null, $send_notification = true)
+function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig = 0, ?bool $is_starter = false, ?int $validated = null, int $is_emphasised = 0, ?string $poster_name_if_guest = null, ?string $ip_address = null, ?int $time = null, ?int $poster = null, ?int $intended_solely_for = null, ?int $last_edit_time = null, ?int $last_edit_by = null, bool $check_permissions = true, bool $update_caching = true, ?int $forum_id = null, bool $support_attachments = true, ?string $topic_title = '', ?int $id = null, bool $anonymous = false, bool $skip_post_checks = false, ?bool $is_pt = false, bool $insert_comcode_as_admin = false, ?int $parent_id = null, bool $send_notification = true) : int
 {
     cms_profile_start_for('cns_make_post');
 
@@ -470,7 +470,7 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
  * @param  MEMBER $member_id The member
  * @param  ?integer $member_post_count_dif The amount to add to the post count (null: fully recalculate the post count)
  */
-function cns_force_update_member_post_count($member_id, $member_post_count_dif = null)
+function cns_force_update_member_post_count(int $member_id, ?int $member_post_count_dif = null)
 {
     if ($GLOBALS['CNS_DRIVER']->get_guest_id() == $member_id) {
         return;
@@ -538,7 +538,7 @@ function cns_force_update_member_post_count($member_id, $member_post_count_dif =
  * @param  ?string $forum_name The name of the forum (null: find it from the DB)
  * @param  ?MEMBER $member_id The member (null: do no member decaching)
  */
-function cns_decache_cms_blocks($updated_forum_id, $forum_name = null, $member_id = null)
+function cns_decache_cms_blocks(int $updated_forum_id, ?string $forum_name = null, ?int $member_id = null)
 {
     if ($forum_name === null) {
         $forum_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $updated_forum_id]);

@@ -28,7 +28,7 @@ class Hook_cleanup_templates
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('TEMPLATE_CACHE');
@@ -43,7 +43,7 @@ class Hook_cleanup_templates
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         erase_cached_templates();
 

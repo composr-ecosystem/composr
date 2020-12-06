@@ -28,7 +28,7 @@ class Module_vforums
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_vforums
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return null;
@@ -85,7 +85,7 @@ class Module_vforums
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_forum', $error_msg)) {
@@ -128,7 +128,7 @@ class Module_vforums
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         cns_require_all_forum_stuff();
 
@@ -159,7 +159,7 @@ class Module_vforums
      *
      * @return Tempcode The UI
      */
-    public function new_posts()
+    public function new_posts() : object
     {
         $title = do_lang_tempcode('POSTS_SINCE');
 
@@ -189,7 +189,7 @@ class Module_vforums
      *
      * @return Tempcode The UI
      */
-    public function unanswered_topics()
+    public function unanswered_topics() : object
     {
         $title = do_lang_tempcode('UNANSWERED_TOPICS');
 
@@ -208,7 +208,7 @@ class Module_vforums
      *
      * @return Tempcode The UI
      */
-    public function involved_topics()
+    public function involved_topics() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -235,7 +235,7 @@ class Module_vforums
      *
      * @return Tempcode The UI
      */
-    public function unread_topics()
+    public function unread_topics() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -252,7 +252,7 @@ class Module_vforums
      *
      * @return Tempcode The UI
      */
-    public function recently_read()
+    public function recently_read() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -276,7 +276,7 @@ class Module_vforums
      * @param  string $extra_select Extra SQL for select clause
      * @return Tempcode The UI
      */
-    public function _vforum($title, $condition, $order, $separate_pins = true, $extra_tpl_map = [], $initial_table = null, $extra_select = '')
+    public function _vforum(object $title, $condition, string $order, bool $separate_pins = true, array $extra_tpl_map = [], ?string $initial_table = null, string $extra_select = '') : object
     {
         require_code('templates_pagination');
         list($max, $start, , $sql_sup, $sql_sup_order_by, $true_start, , $keyset_clause, $keyset_field) = get_keyset_pagination_settings('forum_max', intval(get_option('forum_topics_per_page')), 'forum_start', null, 'forum_sort', $order, 'get_forum_sort_order_vforums');

@@ -31,7 +31,7 @@ class Hook_points_joining
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return integer the number of points the member has
      */
-    public function total_points($member_id, $timestamp, $point_info)
+    public function total_points(int $member_id, int $timestamp, array $point_info) : int
     {
         $points_joining = intval(get_option('points_joining'));
 
@@ -50,7 +50,7 @@ class Hook_points_joining
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
-    public function points_profile($member_id_of, $member_id_viewing, $point_info)
+    public function points_profile(int $member_id_of, ?int $member_id_viewing, array $point_info) : ?array
     {
         $points_joining = intval(get_option('points_joining'));
 

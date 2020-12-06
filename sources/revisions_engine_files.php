@@ -38,7 +38,7 @@ class RevisionEngineFiles
      * @param  boolean $check_privilege Whether to check privileges
      * @return boolean Whether revisions are enabled
      */
-    public function enabled($check_privilege)
+    public function enabled(bool $check_privilege) : bool
     {
         if (get_option('store_revisions') == '0') {
             return false;
@@ -62,7 +62,7 @@ class RevisionEngineFiles
      * @param  ?string $original_text Text before revision (null: work out from disk)
      * @param  ?TIME $original_timestamp The creation timestamp for what was just replaced (null: work out from disk)
      */
-    public function add_revision($directory, $filename_id, $ext, $original_text, $original_timestamp)
+    public function add_revision(string $directory, string $filename_id, string $ext, ?string $original_text, ?int $original_timestamp)
     {
         if (!$this->enabled(false)) {
             return;
@@ -110,7 +110,7 @@ class RevisionEngineFiles
      * @param  string $ext File extension for revisable files
      * @param  TIME $id Revision ID
      */
-    public function delete_revision($directory, $filename_id, $ext, $id)
+    public function delete_revision(string $directory, string $filename_id, string $ext, int $id)
     {
         $revisions = $this->find_revisions($directory, $filename_id, $ext, null, $id);
         if (!isset($revisions[0])) {
@@ -138,7 +138,7 @@ class RevisionEngineFiles
      * @param  boolean $limited_data Whether to only collect IDs and other simple low-bandwidth data
      * @return array List of revision maps
      */
-    public function find_revisions($directory, $filename_id, $ext, $action = null, $revision_time = null, $max = 100, $start = 0, $limited_data = false)
+    public function find_revisions(string $directory, string $filename_id, string $ext, ?string $action = null, ?int $revision_time = null, ?int $max = 100, int $start = 0, bool $limited_data = false) : array
     {
         if (!$this->enabled(true)) {
             return [];
@@ -233,7 +233,7 @@ class RevisionEngineFiles
      * @param  string $ext File extension for revisable files
      * @return boolean Whether there are revisions
      */
-    public function has_revisions($directory, $filename_id, $ext)
+    public function has_revisions(string $directory, string $filename_id, string $ext) : bool
     {
         if (!$this->enabled(true)) {
             return false;
@@ -251,7 +251,7 @@ class RevisionEngineFiles
      * @param  string $ext File extension for revisable files
      * @return integer Number of revisions
      */
-    public function total_revisions($directory, $filename_id, $ext)
+    public function total_revisions(string $directory, string $filename_id, string $ext) : int
     {
         if (!$this->enabled(true)) {
             return 0;
@@ -267,7 +267,7 @@ class RevisionEngineFiles
      * @param  AUTO_LINK $actionlog_id The action log entry's ID
      * @return ?array A revision map (null: not found)
      */
-    public function find_revision_for_log($actionlog_id)
+    public function find_revision_for_log(int $actionlog_id) : ?array
     {
         if (!$this->enabled(true)) {
             return null;
@@ -321,7 +321,7 @@ class RevisionEngineFiles
      * @param  ?boolean $revision_loaded Whether a revision was loaded, passed by reference (null: initial value)
      * @return Tempcode UI
      */
-    public function ui_revision_undoer($directory, $filename_id, $ext, $action, &$text, &$revision_loaded = null)
+    public function ui_revision_undoer(string $directory, string $filename_id, string $ext, string $action, string &$text, ?bool &$revision_loaded = null) : object
     {
         $revision_loaded = false;
 

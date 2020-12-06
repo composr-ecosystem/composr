@@ -33,7 +33,7 @@
  *
  * @ignore
  */
-function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed, $password_raw, $cookie_login = false)
+function _forum_authorise_login(object $this_ref, ?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
 {
     require_code('cns_forum_driver_helper_auth');
 

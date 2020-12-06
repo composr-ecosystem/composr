@@ -28,7 +28,7 @@ class Hook_config_max_personal_gallery_videos_low
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'GALLERY_VIDEO_LIMIT_LOW',
@@ -52,7 +52,7 @@ class Hook_config_max_personal_gallery_videos_low
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('galleries')) {
             return null;

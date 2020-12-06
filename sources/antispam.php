@@ -46,7 +46,7 @@ function init__antispam()
  * @param  ?string $username Check this particular username that has just been supplied (null: none)
  * @param  ?EMAIL $email Check this particular e-mail address that has just been supplied (null: none)
  */
-function inject_action_spamcheck($username = null, $email = null)
+function inject_action_spamcheck(?string $username = null, ?string $email = null)
 {
     // Check RBL's/stopforumspam
     $spam_check_level = get_option('spam_check_level');
@@ -62,7 +62,7 @@ function inject_action_spamcheck($username = null, $email = null)
  * @param  ?EMAIL $email Check this particular e-mail address that has just been supplied (null: none)
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
  */
-function check_for_spam($username, $email, $page_level)
+function check_for_spam(?string $username, ?string $email, bool $page_level)
 {
     if ($username !== null) {
         $username = trim($username);
@@ -100,7 +100,7 @@ function check_for_spam($username, $email, $page_level)
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
  * @param  ?IP $user_ip IP address (null: current user's)
  */
-function check_rbls($page_level = false, $user_ip = null)
+function check_rbls(bool $page_level = false, ?string $user_ip = null)
 {
     if ($user_ip === null) {
         $user_ip = get_ip_address();
@@ -166,7 +166,7 @@ function check_rbls($page_level = false, $user_ip = null)
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
  * @return array Pair: Listed for potential blocking as a ANTISPAM_RESPONSE_* constant, confidence level if attainable (0.0 to 1.0) (else null)
  */
-function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_level = false)
+function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already = false, bool $page_level = false) : array
 {
     if (ip_address_is_local($user_ip)) {
         return [ANTISPAM_RESPONSE_UNLISTED, null];
@@ -298,7 +298,7 @@ function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_leve
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
  * @return ?array Return result (null: error)
  */
-function rbl_resolve($ip, $rbl_domain, $page_level)
+function rbl_resolve(string $ip, string $rbl_domain, bool $page_level) : ?array
 {
     if (strpos($ip, '.') !== false) { // ipv4
         $arpa = implode('.', array_reverse(explode('.', $ip)));
@@ -347,7 +347,7 @@ function rbl_resolve($ip, $rbl_domain, $page_level)
  * @param  ID_TEXT $blocked_by Identifier for whatever did the blocking
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
  */
-function handle_perceived_spammer_by_confidence($user_ip, $confidence_level, $blocked_by, $page_level)
+function handle_perceived_spammer_by_confidence(string $user_ip, float $confidence_level, string $blocked_by, bool $page_level)
 {
     // Ban
     $spam_ban_threshold = intval(get_option('spam_ban_threshold'));
@@ -401,7 +401,7 @@ function handle_perceived_spammer_by_confidence($user_ip, $confidence_level, $bl
  * @param  ?string $username Check this particular username that has just been supplied (null: none)
  * @param  ?EMAIL $email Check this particular e-mail address that has just been supplied (null: none)
  */
-function check_stopforumspam($username = null, $email = null)
+function check_stopforumspam(?string $username = null, ?string $email = null)
 {
     if (get_option('spam_block_lists') == '') {
         return;
@@ -440,7 +440,7 @@ function check_stopforumspam($username = null, $email = null)
  * @return array Pair: Listed for potential blocking as a ANTISPAM_RESPONSE_* constant, confidence level if attainable (0.0 to 1.0) (else null)
  * @ignore
  */
-function _check_stopforumspam($user_ip, $username = null, $email = null)
+function _check_stopforumspam(string $user_ip, ?string $username = null, ?string $email = null) : array
 {
     // http://www.stopforumspam.com/usage
 
@@ -514,7 +514,7 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
  *
  * @param  boolean $page_level Whether this is a page level check (i.e. we won't consider blocks or approval, just ban setting)
  */
-function check_spam_heuristics($page_level)
+function check_spam_heuristics(bool $page_level)
 {
     if (has_privilege(get_member(), 'bypass_spam_heuristics')) {
         return;
@@ -531,7 +531,7 @@ function check_spam_heuristics($page_level)
  *
  * @return array A pair: Confidence number, scoring text
  */
-function calculation_internal_heuristic_confidence()
+function calculation_internal_heuristic_confidence() : array
 {
     $post_data = '';
     foreach ($_POST as $val) {
@@ -565,7 +565,7 @@ function calculation_internal_heuristic_confidence()
  * @param  string $data Posted data
  * @return boolean Whether it does
  */
-function is_posted_code_alien($data)
+function is_posted_code_alien(string $data) : bool
 {
     // FUDGE: Ideally this would be configured in advanced_banning.xml, but it would be excessive to make it configurable given there's some logic involved
     if (

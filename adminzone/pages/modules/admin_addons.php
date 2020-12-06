@@ -28,7 +28,7 @@ class Module_admin_addons
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -50,7 +50,7 @@ class Module_admin_addons
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             'browse' => ['ADDONS', 'menu/adminzone/structure/addons'],
@@ -81,7 +81,7 @@ class Module_admin_addons
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('addons', [
@@ -128,7 +128,7 @@ class Module_admin_addons
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -275,7 +275,7 @@ class Module_admin_addons
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
@@ -356,7 +356,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function gui()
+    public function gui() : object
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW); // So it can scan inside addons
         send_http_output_ping();
@@ -565,7 +565,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function addon_import()
+    public function addon_import() : object
     {
         appengine_live_guard();
 
@@ -617,7 +617,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function _addon_import()
+    public function _addon_import() : object
     {
         appengine_live_guard();
 
@@ -653,7 +653,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function multi_action()
+    public function multi_action() : object
     {
         appengine_live_guard();
 
@@ -712,7 +712,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function _multi_action()
+    public function _multi_action() : object
     {
         appengine_live_guard();
 
@@ -803,7 +803,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function addon_install()
+    public function addon_install() : object
     {
         appengine_live_guard();
 
@@ -840,7 +840,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function _addon_install()
+    public function _addon_install() : object
     {
         appengine_live_guard();
 
@@ -880,7 +880,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function addon_tar_delete()
+    public function addon_tar_delete() : object
     {
         appengine_live_guard();
 
@@ -923,7 +923,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function _addon_tar_delete()
+    public function _addon_tar_delete() : object
     {
         appengine_live_guard();
 
@@ -941,7 +941,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function addon_uninstall()
+    public function addon_uninstall() : object
     {
         appengine_live_guard();
 
@@ -959,7 +959,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function _addon_uninstall()
+    public function _addon_uninstall() : object
     {
         appengine_live_guard();
 
@@ -1016,7 +1016,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function addon_export()
+    public function addon_export() : object
     {
         appengine_live_guard();
 
@@ -1090,7 +1090,7 @@ class Module_admin_addons
      * @param  PATH $dir The directory to search
      * @return array A map, path=>true (inverted list)
      */
-    protected function do_dir($dir)
+    protected function do_dir(string $dir) : array
     {
         $full = get_file_base() . '/' . (($dir == '') ? '' : ($dir . '/'));
         $temp = [];
@@ -1130,7 +1130,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function _addon_export()
+    public function _addon_export() : object
     {
         appengine_live_guard();
 
@@ -1383,7 +1383,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function __addon_export()
+    public function __addon_export() : object
     {
         appengine_live_guard();
 
@@ -1431,7 +1431,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function modules_interface()
+    public function modules_interface() : object
     {
         require_code('zones2');
         require_code('zones3');
@@ -1461,7 +1461,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function modules_view()
+    public function modules_view() : object
     {
         $zone = get_param_string('id');
         $tpl_modules = [];
@@ -1601,7 +1601,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function upgrade_module()
+    public function upgrade_module() : object
     {
         $module = post_param_string('module');
         $zone = post_param_string('zone');
@@ -1624,7 +1624,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function uninstall_module()
+    public function uninstall_module() : object
     {
         $module = post_param_string('module');
         $zone = post_param_string('zone');
@@ -1647,7 +1647,7 @@ class Module_admin_addons
      *
      * @return Tempcode The UI
      */
-    public function reinstall_module()
+    public function reinstall_module() : object
     {
         $module = post_param_string('module');
         $zone = post_param_string('zone');

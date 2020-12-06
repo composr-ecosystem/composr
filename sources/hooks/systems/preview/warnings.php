@@ -28,7 +28,7 @@ class Hook_preview_warnings
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('cns_warnings')) && (addon_installed('cns_forum')) && (get_page_name() == 'warnings');
         return [$applies, 'warnings', true];
@@ -39,7 +39,7 @@ class Hook_preview_warnings
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_code('cns_warnings');
         require_code('cns_posts_action');

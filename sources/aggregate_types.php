@@ -30,7 +30,7 @@
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return AUTO_LINK ID of the new instance
  */
-function add_aggregate_type_instance($aggregate_label, $aggregate_type, $_other_parameters, $add_time = null, $edit_time = null, $sync = true, $uniqify = false)
+function add_aggregate_type_instance(string $aggregate_label, string $aggregate_type, array $_other_parameters, ?int $add_time = null, ?int $edit_time = null, bool $sync = true, bool $uniqify = false) : int
 {
     // Check aggregate type
     $types = parse_aggregate_xml();
@@ -87,7 +87,7 @@ function add_aggregate_type_instance($aggregate_label, $aggregate_type, $_other_
  * @param  ?TIME $add_time Add time (null: don't change)
  * @param  ?TIME $edit_time Edit time (null: now)
  */
-function edit_aggregate_type_instance($id, $aggregate_label, $aggregate_type, $_other_parameters, $uniqify = false, $add_time = null, $edit_time = null)
+function edit_aggregate_type_instance(int $id, string $aggregate_label, string $aggregate_type, array $_other_parameters, bool $uniqify = false, ?int $add_time = null, ?int $edit_time = null)
 {
     // Check aggregate type
     $types = parse_aggregate_xml();
@@ -137,7 +137,7 @@ function edit_aggregate_type_instance($id, $aggregate_label, $aggregate_type, $_
  * @param  AUTO_LINK $id The ID
  * @param  boolean $delete_matches Whether to delete all associated resources
  */
-function delete_aggregate_type_instance($id, $delete_matches = false)
+function delete_aggregate_type_instance(int $id, bool $delete_matches = false)
 {
     $aggregate_label = $GLOBALS['SITE_DB']->query_select_value_if_there('aggregate_type_instances', 'aggregate_label', ['id' => $id]);
     if ($aggregate_label === null) {
@@ -194,7 +194,7 @@ function delete_aggregate_type_instance($id, $delete_matches = false)
  * @param  ID_TEXT $aggregate_type Aggregate type to find parameters for
  * @return array The aggregate type parameters
  */
-function find_aggregate_type_parameters($aggregate_type)
+function find_aggregate_type_parameters(string $aggregate_type) : array
 {
     $parameters = ['label'];
 
@@ -219,7 +219,7 @@ function find_aggregate_type_parameters($aggregate_type)
  *
  * @ignore
  */
-function _find_parameters_in($src_text, &$parameters)
+function _find_parameters_in(string $src_text, array &$parameters)
 {
     $matches = [];
     $cnt = preg_match_all('#\{(\w+)[^\}]+\}#', $src_text, $matches);
@@ -234,7 +234,7 @@ function _find_parameters_in($src_text, &$parameters)
  * @param  boolean $display_errors Whether errors should be displayed
  * @return array The aggregate types
  */
-function parse_aggregate_xml($display_errors = false)
+function parse_aggregate_xml(bool $display_errors = false) : array
 {
     static $_aggregate_types = [];
     if (!empty($_aggregate_types)) {
@@ -417,7 +417,7 @@ function parse_aggregate_xml($display_errors = false)
  *
  * @param  ?ID_TEXT $type Restrict to this aggregate type (null: no restriction)
  */
-function resync_all_aggregate_type_instances($type = null)
+function resync_all_aggregate_type_instances(?string $type = null)
 {
     $where = null;
     if ($type !== null) {
@@ -445,7 +445,7 @@ function resync_all_aggregate_type_instances($type = null)
  * @param  ?array $other_parameters Additional parameters (null: lookup)
  * @param  ?array $old_parameters Old additional parameters (null: lookup)
  */
-function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggregate_label = null, $aggregate_type = null, $other_parameters = null, $old_parameters = null)
+function sync_aggregate_type_instance(int $id, ?string $aggregate_label = null, ?string $old_aggregate_label = null, ?string $aggregate_type = null, ?array $other_parameters = null, ?array $old_parameters = null)
 {
     require_lang('aggregate_types');
 

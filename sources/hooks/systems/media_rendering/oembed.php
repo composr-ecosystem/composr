@@ -34,7 +34,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      *
      * @return string The label
      */
-    public function get_type_label()
+    public function get_type_label() : string
     {
         require_lang('comcode');
         return do_lang('MEDIA_TYPE_' . preg_replace('#^Hook_media_rendering_#', '', __CLASS__));
@@ -45,7 +45,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      *
      * @return integer The media type(s), as a bitmask
      */
-    public function get_media_type()
+    public function get_media_type() : int
     {
         return MEDIA_TYPE_ALL;
     }
@@ -57,7 +57,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  ?array $meta_details The media signature, so we can go on this on top of the mime-type (null: not known)
      * @return integer Recognition precedence
      */
-    public function recognises_mime_type($mime_type, $meta_details = null)
+    public function recognises_mime_type(string $mime_type, ?array $meta_details = null) : int
     {
         if ($mime_type == 'text/html' || $mime_type == 'application/xhtml+xml') {
             if ($meta_details !== null) {
@@ -75,7 +75,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  URLPATH $url URL to pattern match
      * @return integer Recognition precedence
      */
-    public function recognises_url($url)
+    public function recognises_url(string $url) : int
     {
         if (looks_like_url($url) && $this->_find_oembed_endpoint($url) !== null) {
             return MEDIA_RECOG_PRECEDENCE_HIGH;
@@ -89,7 +89,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  URLPATH $src_url Video URL
      * @return ?string The thumbnail URL (null: no match)
      */
-    public function get_video_thumbnail($src_url)
+    public function get_video_thumbnail(string $src_url) : ?string
     {
         $data = $this->get_oembed_data_result($src_url, []);
         if (($data !== null) && (isset($data['thumbnail_url']))) {
@@ -108,7 +108,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  ?MEMBER $source_member Member to run as (null: current member)
      * @return Tempcode Rendered version
      */
-    public function render($url, $url_safe, $attributes, $as_admin = false, $source_member = null)
+    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null) : object
     {
         if (is_object($url)) {
             $url = $url->evaluate();
@@ -213,7 +213,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  array $attributes Attributes (e.g. width, height)
      * @return ?array Fully parsed/validated oEmbed result (null: fail)
      */
-    public function get_oembed_data_result($url, $attributes)
+    public function get_oembed_data_result(string $url, array $attributes) : ?array
     {
         // Work out oEmbed parameters
         $params = [];
@@ -402,7 +402,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  URLPATH $url URL to find the oEmbed endpoint for
      * @return ?URLPATH Endpoint UR (null: none found)
      */
-    public function _find_oembed_endpoint($url)
+    public function _find_oembed_endpoint(string $url) : ?string
     {
         // Hard-coded
         $_oembed_manual_patterns = get_option('oembed_manual_patterns');
@@ -446,7 +446,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      * @param  string $link_captions_title Text to show the link with
      * @return Tempcode Rendered version
      */
-    public function _fallback_render($url, $attributes, $source_member, $link_captions_title = '')
+    public function _fallback_render($url, array $attributes, ?int $source_member, string $link_captions_title = '') : object
     {
         if ($link_captions_title == '') {
             require_code('http');

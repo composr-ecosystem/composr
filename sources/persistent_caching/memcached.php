@@ -43,7 +43,7 @@ class Persistent_caching_memcached
      *
      * @return array The list of objects
      */
-    public function &load_objects_list()
+    public function &load_objects_list() : array
     {
         if ($this->objects_list === null) {
             $this->objects_list = $this->object->get(get_file_base() . 'PERSISTENT_CACHE_OBJECTS');
@@ -61,7 +61,7 @@ class Persistent_caching_memcached
      * @param  ?TIME $min_cache_date Minimum timestamp that entries from the cache may hold (null: don't care)
      * @return ?mixed The data (null: not found / null entry)
      */
-    public function get($key, $min_cache_date = null)
+    public function get(string $key, ?int $min_cache_date = null)
     {
         $data = $this->object->get($key);
         if ($data === false) {
@@ -81,7 +81,7 @@ class Persistent_caching_memcached
      * @param  integer $flags Various flags (parameter not used)
      * @param  ?integer $expire_secs The expiration time in seconds (null: no expiry)
      */
-    public function set($key, $data, $flags = 0, $expire_secs = null)
+    public function set(string $key, $data, int $flags = 0, ?int $expire_secs = null)
     {
         // Update list of persistent-objects
         $this->load_objects_list();
@@ -98,7 +98,7 @@ class Persistent_caching_memcached
      *
      * @param  string $key Key
      */
-    public function delete($key)
+    public function delete(string $key)
     {
         // Update list of persistent-objects
         $this->load_objects_list();

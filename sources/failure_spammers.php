@@ -32,7 +32,7 @@ This code is not in failure.php due to the dynamic class declaration, triggering
  * @param  boolean $trigger_error Whether to emit a Composr error, on error. Should not be 'true' for automatic spammer reports, as the spammer should not see the submission process in action!
  * @return boolean Whether it was successful
  */
-function syndicate_spammer_report($ip_addr, $username, $email, $reason, $trigger_error = false)
+function syndicate_spammer_report(string $ip_addr, string $username, string $email, string $reason, bool $trigger_error = false) : bool
 {
     $did_something = false;
 

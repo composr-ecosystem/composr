@@ -28,7 +28,7 @@ class Hook_config_pt_notifications_as_web
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PT_NOTIFICATIONS_AS_WEB',
@@ -51,7 +51,7 @@ class Hook_config_pt_notifications_as_web
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '0';
     }

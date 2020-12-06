@@ -28,7 +28,7 @@ class Module_chat
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Philip Withnall';
@@ -81,7 +81,7 @@ class Module_chat
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_lang('chat');
 
@@ -264,7 +264,7 @@ class Module_chat
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('chat')) {
             return null;
@@ -290,7 +290,7 @@ class Module_chat
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('chat', $error_msg)) {
@@ -400,7 +400,7 @@ class Module_chat
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_javascript('chat');
         require_javascript('sound');
@@ -468,7 +468,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_lobby()
+    public function chat_lobby() : object
     {
         require_code('chat_lobby');
 
@@ -618,7 +618,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_room()
+    public function chat_room() : object
     {
         require_javascript('posting');
 
@@ -739,7 +739,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_private()
+    public function chat_private() : object
     {
         require_code('chat2');
 
@@ -780,7 +780,7 @@ class Module_chat
      *
      * @return Tempcode The UI to choose a chatroom (probably what was just added, but...)
      */
-    public function _chat_private()
+    public function _chat_private() : object
     {
         require_code('chat2');
         require_code('content2');
@@ -834,7 +834,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function blocking_interface()
+    public function blocking_interface() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -880,7 +880,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function blocking_set()
+    public function blocking_set() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -917,7 +917,7 @@ class Module_chat
      * @param  string $param Parameter of action
      * @return ?Tempcode If a confirm page is being output, this is it (null: continue as before)
      */
-    public function handle_repost($action, $param)
+    public function handle_repost(string $action, string $param) : ?object
     {
         $member_id = get_param_integer('member_id', null);
         if ($member_id !== null) {
@@ -946,7 +946,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function blocking_add()
+    public function blocking_add() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -979,7 +979,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function blocking_remove()
+    public function blocking_remove() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -1008,7 +1008,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function friend_add()
+    public function friend_add() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -1055,7 +1055,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function friend_remove()
+    public function friend_remove() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -1105,7 +1105,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_save_options()
+    public function chat_save_options() : object
     {
         $value = preg_replace('#^\##', '', post_param_string('text_colour', get_option('chat_default_post_colour'))) . ';' . post_param_string('font_name', get_option('chat_default_post_font')) . ';';
         require_code('users_active_actions');
@@ -1120,7 +1120,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_download_logs()
+    public function chat_download_logs() : object
     {
         $chatrooms = chat_get_all_rooms();
         $select = new Tempcode();
@@ -1161,7 +1161,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function _chat_download_logs()
+    public function _chat_download_logs() : object
     {
         $start_date_and_time = post_param_date('start', true);
         $finish_date_and_time = post_param_date('finish', true);
@@ -1180,7 +1180,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function set_effects()
+    public function set_effects() : object
     {
         require_code('chat_sounds');
 
@@ -1289,7 +1289,7 @@ class Module_chat
      *
      * @return Tempcode The UI
      */
-    public function _set_effects()
+    public function _set_effects() : object
     {
         require_code('chat_sounds');
 

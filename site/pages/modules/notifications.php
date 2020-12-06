@@ -28,7 +28,7 @@ class Module_notifications
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_notifications
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() == 'cns') {
             return [];
@@ -71,7 +71,7 @@ class Module_notifications
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $type = get_param_string('type', 'browse');
 
@@ -106,7 +106,7 @@ class Module_notifications
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -138,7 +138,7 @@ class Module_notifications
      *
      * @return Tempcode The result of execution
      */
-    public function browse()
+    public function browse() : object
     {
         $start = get_param_integer('n_start', 0);
         $max = get_param_integer('n_max', 50);
@@ -162,7 +162,7 @@ class Module_notifications
      *
      * @return Tempcode The result of execution
      */
-    public function view()
+    public function view() : object
     {
         $id = $this->id;
         $row = $this->row;
@@ -213,7 +213,7 @@ class Module_notifications
      *
      * @return Tempcode The result of execution
      */
-    public function overall()
+    public function overall() : object
     {
         $interface = notifications_ui(get_member());
 
@@ -230,7 +230,7 @@ class Module_notifications
      *
      * @return Tempcode The result of execution
      */
-    public function advanced()
+    public function advanced() : object
     {
         $notification_code = get_param_string('notification_code');
 

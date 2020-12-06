@@ -28,7 +28,7 @@ class Hook_preview_custom_comcode
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('custom_comcode')) && (get_page_name() == 'admin_custom_comcode');
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_custom_comcode
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_code('comcode_compiler');
 

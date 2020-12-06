@@ -28,7 +28,7 @@ class Hook_config_mail_delete_after
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAIL_DELETE_AFTER',
@@ -52,7 +52,7 @@ class Hook_config_mail_delete_after
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!function_exists('imap_open')) {
             return null;

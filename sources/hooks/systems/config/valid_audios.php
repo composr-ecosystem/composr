@@ -28,7 +28,7 @@ class Hook_config_valid_audios
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'AUDIO_TYPES',
@@ -51,7 +51,7 @@ class Hook_config_valid_audios
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'mp3,aac'; // Web-safe(ish) audio only
     }

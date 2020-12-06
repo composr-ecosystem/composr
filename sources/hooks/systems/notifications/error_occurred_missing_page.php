@@ -30,7 +30,7 @@ class Hook_notification_error_occurred_missing_page extends Hook_notification__S
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return integer Initial setting
      */
-    public function get_initial_setting($notification_code, $category = null)
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
         return A_NA;
     }
@@ -41,7 +41,7 @@ class Hook_notification_error_occurred_missing_page extends Hook_notification__S
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         $list = [];
         $list['error_occurred_missing_page'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_page')];

@@ -27,7 +27,7 @@
  * @param  ?string $main_title The title to use for the main links (a language string) (null: same as title)
  * @return Tempcode The do next manager
  */
-function do_next_manager_hooked($title, $text, $type, $main_title = null)
+function do_next_manager_hooked(string $title, $text, string $type, ?string $main_title = null) : object
 {
     $links = [];
 
@@ -84,7 +84,7 @@ function do_next_manager_hooked($title, $text, $type, $main_title = null)
  *
  * @return boolean Whether we are
  */
-function has_simplified_donext()
+function has_simplified_donext() : bool
 {
     $keep_simplified_donext = get_param_integer('keep_simplified_donext', null);
     return ((($keep_simplified_donext !== 0) && (get_option('simplified_donext') == '1')) || ($keep_simplified_donext == 1));
@@ -117,7 +117,7 @@ function has_simplified_donext()
  * @param  ?string $category_content_type Category content type (null: unknown)
  * @return Tempcode The do next manager
  */
-function do_next_manager($title, $text, $main = [], $main_title = null, $url_add_one = null, $url_edit_this = null, $url_edit_one = null, $url_view_this = null, $url_view_archive = null, $url_add_one_category = null, $url_edit_one_category = null, $url_edit_this_category = null, $url_view_this_category = null, $entry_extras = [], $category_extras = [], $additional_extras = [], $additional_title = null, $intro = null, $entries_title = null, $categories_title = null, $entry_content_type = null, $category_content_type = null)
+function do_next_manager(?object $title, object $text, array $main = [], ?string $main_title = null, ?array $url_add_one = null, ?array $url_edit_this = null, ?array $url_edit_one = null, ?array $url_view_this = null, ?array $url_view_archive = null, ?array $url_add_one_category = null, ?array $url_edit_one_category = null, ?array $url_edit_this_category = null, ?array $url_view_this_category = null, array $entry_extras = [], array $category_extras = [], array $additional_extras = [], $additional_title = null, ?object $intro = null, $entries_title = null, $categories_title = null, ?string $entry_content_type = null, ?string $category_content_type = null) : object
 {
     require_code('site_adminzone');
     adminzone_common_pages_code();
@@ -307,7 +307,7 @@ function do_next_manager($title, $text, $main = [], $main_title = null, $url_add
  *
  * @ignore
  */
-function _do_next_section($list, $title, $entry_content_type = null, $category_content_type = null)
+function _do_next_section(array $list, object $title, ?string $entry_content_type = null, ?string $category_content_type = null) : object
 {
     if (empty($list)) {
         return new Tempcode();

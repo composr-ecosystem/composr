@@ -28,7 +28,7 @@
  * @param  ?LONG_TEXT $post The post, in Comcode format (null: It'll have to be looked-up)
  * @return AUTO_LINK The ID of the topic (while this could be known without calling this function, as we've gone to effort and grabbed it from the DB, it might turn out useful for something)
  */
-function cns_validate_post($post_id, $topic_id = null, $forum_id = null, $poster = null, $post = null)
+function cns_validate_post(int $post_id, ?int $topic_id = null, ?int $forum_id = null, ?int $poster = null, ?string $post = null) : int
 {
     require_code('submit');
     send_content_validated_notification('post', strval($post_id));
@@ -105,7 +105,7 @@ function cns_validate_post($post_id, $topic_id = null, $forum_id = null, $poster
  * @param  ?string $poster_name_if_guest The name of the person making the post (null: no change)
  * @return AUTO_LINK The ID of the topic (while this could be known without calling this function, as we've gone to effort and grabbed it from the DB, it might turn out useful for something)
  */
-function cns_edit_post($post_id, $validated, $title, $post, $skip_sig, $is_emphasised, $intended_solely_for, $show_as_edited, $mark_as_unread, $reason, $check_perms = true, $edit_time = null, $add_time = null, $submitter = null, $null_is_literal = false, $run_checks = true, $poster_name_if_guest = null)
+function cns_edit_post(int $post_id, ?int $validated, string $title, string $post, int $skip_sig, int $is_emphasised, ?int $intended_solely_for, bool $show_as_edited, bool $mark_as_unread, string $reason, bool $check_perms = true, ?int $edit_time = null, ?int $add_time = null, ?int $submitter = null, bool $null_is_literal = false, bool $run_checks = true, ?string $poster_name_if_guest = null) : int
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -243,7 +243,7 @@ function cns_edit_post($post_id, $validated, $title, $post, $skip_sig, $is_empha
  * @param  boolean $save_revision Whether to save a revision
  * @return boolean Whether the topic was deleted, due to all posts in said topic being deleted
  */
-function cns_delete_posts_topic($topic_id, $posts, $reason = '', $check_perms = true, $cleanup = true, $save_revision = true)
+function cns_delete_posts_topic(int $topic_id, array $posts, string $reason = '', bool $check_perms = true, bool $cleanup = true, bool $save_revision = true) : bool
 {
     if (empty($posts)) {
         return false;
@@ -411,7 +411,7 @@ function cns_delete_posts_topic($topic_id, $posts, $reason = '', $check_perms = 
  * @param  ?SHORT_TEXT $title The title for the new topic (null: work out / irrelevant)
  * @return boolean Whether the topic was deleted
  */
-function cns_move_posts($from_topic_id, $to_topic_id, $posts, $reason, $to_forum_id = null, $delete_if_empty = false, $title = null)
+function cns_move_posts(int $from_topic_id, ?int $to_topic_id, array $posts, string $reason, ?int $to_forum_id = null, bool $delete_if_empty = false, ?string $title = null) : bool
 {
     // Info about source
     $from_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id'], ['id' => $from_topic_id]);

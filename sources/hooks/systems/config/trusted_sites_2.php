@@ -28,7 +28,7 @@ class Hook_config_trusted_sites_2
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TRUSTED_SITES_2',
@@ -52,7 +52,7 @@ class Hook_config_trusted_sites_2
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return "translate.googleusercontent.com\npaypal.com\nsandbox.paypal.com\nselect.worldpay.com\nselect-test.worldpay.com\nfacebook.com";
     }

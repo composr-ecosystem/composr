@@ -28,7 +28,7 @@ class Module_wiki
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -72,7 +72,7 @@ class Module_wiki
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_lang('wiki');
 
@@ -217,7 +217,7 @@ class Module_wiki
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('wiki')) {
             return null;
@@ -248,7 +248,7 @@ class Module_wiki
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('wiki', $error_msg)) {
@@ -398,7 +398,7 @@ class Module_wiki
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -447,7 +447,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function random()
+    public function random() : object
     {
         attach_message(do_lang_tempcode('TAKEN_RANDOM_WIKI_PAGE'), 'inform');
 
@@ -470,7 +470,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function page()
+    public function page() : object
     {
         $id = $this->id;
         $chain = $this->chain;
@@ -643,7 +643,7 @@ class Module_wiki
      * @param  boolean $may_post Whether posting is generally allowed (may be passed false if too many posts)
      * @return Tempcode The button Tempcode
      */
-    public function _render_screen_buttons($chain, $id, $include_expansion, $may_post = true)
+    public function _render_screen_buttons(string $chain, int $id, bool $include_expansion, bool $may_post = true) : object
     {
         $page_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $chain], '_SELF');
 
@@ -730,7 +730,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function revisions()
+    public function revisions() : object
     {
         $_id = get_param_string('id', null);
         $id = null;
@@ -765,7 +765,7 @@ class Module_wiki
      * @param  array $revision A revision map
      * @return ?Tempcode A rendered revision row (null: won't render)
      */
-    public function _render_revision($revision)
+    public function _render_revision(array $revision) : ?object
     {
         $_id = get_param_string('id', null);
         $id = null;
@@ -809,7 +809,7 @@ class Module_wiki
      *
      * @return array A list of markers
      */
-    public function get_markers()
+    public function get_markers() : array
     {
         $markers = [];
         foreach (array_keys($_REQUEST) as $key) {
@@ -825,7 +825,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function do_wiki_merge_interface()
+    public function do_wiki_merge_interface() : object
     {
         $_redir_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => get_param_string('id', false, INPUT_FILTER_GET_COMPLEX)], '_SELF');
         $merge_url = build_url(['page' => '_SELF', 'type' => '_merge', 'id' => get_param_string('id', false, INPUT_FILTER_GET_COMPLEX), 'redirect' => protect_url_parameter($_redir_url)], '_SELF', [], true);
@@ -871,7 +871,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function do_wiki_merge()
+    public function do_wiki_merge() : object
     {
         check_edit_permission('low', null, ['wiki_page', get_param_string('id', false, INPUT_FILTER_GET_COMPLEX)], 'cms_wiki');
 
@@ -925,7 +925,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function move()
+    public function move() : object
     {
         $_id = get_param_wiki_chain('id');
         $id = $_id[0];
@@ -966,7 +966,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function _move()
+    public function _move() : object
     {
         $post_id = post_param_integer('source');
         $target = post_param_integer('target');
@@ -1010,7 +1010,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    public function post()
+    public function post() : object
     {
         $post_id = get_param_integer('post_id', null);
         $mode = ($post_id === null) ? 'post' : 'edit';
@@ -1168,7 +1168,7 @@ class Module_wiki
      *
      * @return Tempcode The UI
      */
-    protected function _post()
+    protected function _post() : object
     {
         if (addon_installed('captcha')) {
             require_code('captcha');

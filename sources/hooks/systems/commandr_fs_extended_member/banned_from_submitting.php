@@ -28,7 +28,7 @@ class Hook_commandr_fs_extended_member__banned_from_submitting
      *
      * @return boolean Whether it is
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return addon_installed('securitylogging');
     }
@@ -39,7 +39,7 @@ class Hook_commandr_fs_extended_member__banned_from_submitting
      * @param  MEMBER $member_id The member ID
      * @return mixed The data
      */
-    public function read_property($member_id)
+    public function read_property(int $member_id)
     {
         return ($GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $member_id]) !== null);
     }
@@ -50,7 +50,7 @@ class Hook_commandr_fs_extended_member__banned_from_submitting
      * @param  MEMBER $member_id The member ID
      * @param  mixed $data The data
      */
-    public function write_property($member_id, $data)
+    public function write_property(int $member_id, $data)
     {
         $GLOBALS['SITE_DB']->query_delete('usersubmitban_member', ['the_member' => $member_id], '', 1);
         if ($data === true) {

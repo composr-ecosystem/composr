@@ -33,7 +33,7 @@ class Hook_media_rendering_hyperlink
      *
      * @return string The label
      */
-    public function get_type_label()
+    public function get_type_label() : string
     {
         require_lang('comcode');
         return do_lang('MEDIA_TYPE_' . preg_replace('#^Hook_media_rendering_#', '', __CLASS__));
@@ -44,7 +44,7 @@ class Hook_media_rendering_hyperlink
      *
      * @return integer The media type(s), as a bitmask
      */
-    public function get_media_type()
+    public function get_media_type() : int
     {
         return MEDIA_TYPE_OTHER;
     }
@@ -55,7 +55,7 @@ class Hook_media_rendering_hyperlink
      * @param  ID_TEXT $mime_type The mime type
      * @return integer Recognition precedence
      */
-    public function recognises_mime_type($mime_type)
+    public function recognises_mime_type(string $mime_type) : int
     {
         return MEDIA_RECOG_PRECEDENCE_LOW;
     }
@@ -66,7 +66,7 @@ class Hook_media_rendering_hyperlink
      * @param  URLPATH $url URL to pattern match
      * @return integer Recognition precedence
      */
-    public function recognises_url($url)
+    public function recognises_url(string $url) : int
     {
         // Won't link to local URLs
         if (@is_local_machine(parse_url($url, PHP_URL_HOST))) {
@@ -86,7 +86,7 @@ class Hook_media_rendering_hyperlink
      * @param  ?MEMBER $source_member Member to run as (null: current member)
      * @return Tempcode Rendered version
      */
-    public function render($url, $url_safe, $attributes, $as_admin = false, $source_member = null)
+    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null) : object
     {
         $_url = is_object($url) ? $url->evaluate() : $url;
         $_url_safe = is_object($url_safe) ? $url_safe->evaluate() : $url_safe;

@@ -30,7 +30,7 @@ class Hook_attachments_wiki_page
      * @param  object $db The database connector to check on
      * @return boolean Whether there is permission
      */
-    public function run($id, $db)
+    public function run(string $id, object $db) : bool
     {
         if (!addon_installed('wiki')) {
             return false;

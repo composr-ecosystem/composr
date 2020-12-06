@@ -28,7 +28,7 @@ class Block_main_content
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -62,7 +62,7 @@ class Block_main_content
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -98,7 +98,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $block_id = get_block_id($map);
 

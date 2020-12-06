@@ -23,7 +23,7 @@
  *
  * @return array Filedump broken links, to replacement path (or null)
  */
-function find_broken_filedump_links()
+function find_broken_filedump_links() : array
 {
     $paths_broken = [];
 
@@ -52,7 +52,7 @@ function find_broken_filedump_links()
  * @param  string $from Old path (give a path relative to uploads/filedump, with leading slash)
  * @param  string $to New path (give a path relative to uploads/filedump, with leading slash)
  */
-function update_filedump_links($from, $to)
+function update_filedump_links(string $from, string $to)
 {
     if ($to == '') {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -106,7 +106,7 @@ function update_filedump_links($from, $to)
  * @param  string $focus Focus on a particular filedump file (give a path relative to uploads/filedump, with leading slash) (blank: no filter)
  * @return array Filedump links used, and where
  */
-function find_filedump_links($focus = '')
+function find_filedump_links(string $focus = '') : array
 {
     $paths_used = [];
 
@@ -166,7 +166,7 @@ function find_filedump_links($focus = '')
  * @param  string $focus Focus on a particular filedump file (give a path relative to uploads/filedump), with leading slash (blank: no filter)
  * @param  array $paths_used Paths found (passed by reference)
  */
-function extract_filedump_links($comcode, $identifier, $focus, &$paths_used)
+function extract_filedump_links(string $comcode, $identifier, string $focus, array &$paths_used)
 {
     $_focus = str_replace('%2F', '/', rawurlencode($focus));
 
@@ -223,7 +223,7 @@ function extract_filedump_links($comcode, $identifier, $focus, &$paths_used)
  * @param  array $file The $_FILES-array-style row
  * @return ?Tempcode Error message (null: none)
  */
-function check_filedump_uploaded($file)
+function check_filedump_uploaded(array $file) : ?object
 {
     require_lang('filedump');
 
@@ -259,7 +259,7 @@ function check_filedump_uploaded($file)
  * @set overwrite ignore
  * @return array Map: Information about the status of the filedump add
  */
-function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $plupload_based = null, $check_permissions = true, $conflict_action = null)
+function add_filedump_file(string $subpath, string &$filename, string $tmp_path, string $description = '', ?bool $plupload_based = null, bool $check_permissions = true, ?string $conflict_action = null) : array
 {
     require_code('uploads');
     require_lang('filedump');
@@ -385,7 +385,7 @@ function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $
  *
  * @ignore
  */
-function _check_filedump_filename(&$subpath, &$filename, $check_permissions = true)
+function _check_filedump_filename(string &$subpath, string &$filename, bool $check_permissions = true)
 {
     $subpath = filter_naughty($subpath);
 
@@ -408,7 +408,7 @@ function _check_filedump_filename(&$subpath, &$filename, $check_permissions = tr
  * @param  ?ID_TEXT $base The base path to do under (null: root)
  * @return Tempcode Selection list
  */
-function nice_get_filedump_files($it, $only_images = false, $base = null)
+function nice_get_filedump_files(?string $it, bool $only_images = false, ?string $base = null) : object
 {
     $out = '';
 
@@ -438,7 +438,7 @@ function nice_get_filedump_files($it, $only_images = false, $base = null)
  * @param  ?ID_TEXT $base The base path to do under (null: root)
  * @return Tempcode Selection list
  */
-function nice_get_filedump_places($it, $base = null)
+function nice_get_filedump_places(?string $it, ?string $base = null) : object
 {
     $out = '';
 

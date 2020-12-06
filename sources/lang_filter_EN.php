@@ -50,7 +50,7 @@ class LangFilter_EN extends LangFilter
      * @param  ?LANGUAGE_NAME $lang Language (null: current language)
      * @return string The suffix
      */
-    public function compile_time($key, $value, $lang = null)
+    public function compile_time(?string $key, string $value, ?string $lang = null) : string
     {
         if ($lang === null) {
             $lang = user_lang();
@@ -376,7 +376,7 @@ class LangFilter_EN extends LangFilter
      * @param  array $parameters The parameters
      * @return string The suffix
      */
-    public function run_time($key, $value, $flag, $parameters)
+    public function run_time(string $key, string $value, string $flag, array $parameters) : string
     {
         $flags = explode('|', $flag);
 
@@ -506,7 +506,7 @@ class LangFilter_EN extends LangFilter
      * @param  string $code The CSS code
      * @return string The filtered CSS code
      */
-    public function filter_css($name, $code)
+    public function filter_css(string $name, string $code) : string
     {
         return $code;
     }

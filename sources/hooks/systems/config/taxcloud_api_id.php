@@ -28,7 +28,7 @@ class Hook_config_taxcloud_api_id
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TAXCLOUD_API_ID',
@@ -52,7 +52,7 @@ class Hook_config_taxcloud_api_id
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('ecommerce')) {
             return null;

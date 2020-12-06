@@ -24,7 +24,7 @@
  * @param  ?AUTO_LINK $forum_id The forum we are listing for (null: private topics)
  * @return array List of multi moderations
  */
-function cns_list_multi_moderations($forum_id)
+function cns_list_multi_moderations(?int $forum_id) : array
 {
     if (!addon_installed('cns_multi_moderations')) {
         return [];
@@ -75,7 +75,7 @@ function cns_list_multi_moderations($forum_id)
  * @param  ?MEMBER $member_id The member (null: current member)
  * @return boolean Answer
  */
-function cns_may_perform_multi_moderation($forum_id, $member_id = null)
+function cns_may_perform_multi_moderation(?int $forum_id, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -94,7 +94,7 @@ function cns_may_perform_multi_moderation($forum_id, $member_id = null)
  * @param  ?MEMBER $member_id The member (null: current member)
  * @return boolean Answer
  */
-function cns_may_warn_members($member_id = null)
+function cns_may_warn_members(?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -109,7 +109,7 @@ function cns_may_warn_members($member_id = null)
  * @param  MEMBER $member_id The member
  * @return array The warning rows
  */
-function cns_get_warnings($member_id)
+function cns_get_warnings(int $member_id) : array
 {
     if (!addon_installed('cns_warnings')) {
         return [];

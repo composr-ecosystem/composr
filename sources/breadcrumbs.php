@@ -26,7 +26,7 @@
  * @param  array $segments The default breadcrumb segments
  * @return array The adjusted breadcrumb segments
  */
-function load_breadcrumb_substitutions($segments)
+function load_breadcrumb_substitutions(array $segments) : array
 {
     // Works by going through in left-to-right order, doing multiple sweeps until no more substitutions can be made.
     // Only one substitution per rule is allowed.
@@ -151,7 +151,7 @@ class Breadcrumb_substitution_loader
      * @param  string $data The breadcrumb XML data
      * @return array Breadcrumb substitutions data
      */
-    public function go($data)
+    public function go(string $data) : array
     {
         $this->tag_stack = [];
         $this->attribute_stack = [];
@@ -190,11 +190,11 @@ class Breadcrumb_substitution_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $tag The name of the element found
      * @param  array $_attributes Array of attributes of the element
      */
-    public function startElement($parser, $tag, $_attributes)
+    public function startElement($parser, string $tag, array $_attributes)
     {
         array_push($this->tag_stack, $tag);
         $tag_attributes = [];
@@ -217,10 +217,10 @@ class Breadcrumb_substitution_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $data The text
      */
-    public function startText($parser, $data)
+    public function startText($parser, string $data)
     {
         $this->text_so_far .= $data;
     }
@@ -228,7 +228,7 @@ class Breadcrumb_substitution_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      */
     public function endElement($parser)
     {

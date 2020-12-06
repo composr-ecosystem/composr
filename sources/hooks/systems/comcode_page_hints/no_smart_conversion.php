@@ -28,7 +28,7 @@ class Hook_comcode_page_hints_no_smart_conversion
      *
      * @return ?array Map of details (null: UI disabled for this hint)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         if (get_option('eager_wysiwyg') == '0') {
             return null; // Always going to avoid smart conversion

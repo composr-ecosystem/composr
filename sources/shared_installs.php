@@ -23,7 +23,7 @@
  *
  * @return ?ID_TEXT The shared-site install (null: not on one)
  */
-function current_share_user()
+function current_share_user() : ?string
 {
     global $CURRENT_SHARE_USER;
     if ($CURRENT_SHARE_USER !== null) {

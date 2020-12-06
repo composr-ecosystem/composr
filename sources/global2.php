@@ -214,7 +214,7 @@ function init__global2()
          *
          * @return ?ID_TEXT Branch name (null: not in Git)
          */
-        function git_repos()
+        function git_repos() : ?string
         {
             $path = __DIR__ . '/.git/HEAD';
             if (!is_file($path)) {
@@ -708,7 +708,7 @@ function fixup_bad_php_env_vars()
  * @param  boolean $consider_failover_mode Whether to consider potential of cache being needed for failover mode
  * @return boolean Whether the web client can use static caching
  */
-function web_client_may_use_static_cache($early_boot_check = false, &$mode = null, &$reason = null, $consider_failover_mode = false)
+function web_client_may_use_static_cache(bool $early_boot_check = false, ?int &$mode = null, ?string &$reason = null, bool $consider_failover_mode = false) : bool
 {
     global $SITE_INFO, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $STATIC_CACHE_ENABLED, $IS_ACTUALLY_ADMIN;
 
@@ -805,7 +805,7 @@ function web_client_may_use_static_cache($early_boot_check = false, &$mode = nul
  *
  * @return boolean Whether it is
  */
-function whole_site_https()
+function whole_site_https() : bool
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
@@ -870,7 +870,7 @@ function handle_bad_access_context()
  *
  * @return string The hostname
  */
-function get_base_url_hostname()
+function get_base_url_hostname() : string
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
@@ -888,7 +888,7 @@ function get_base_url_hostname()
  *
  * @return string The hostname
  */
-function get_request_hostname()
+function get_request_hostname() : string
 {
     if (!empty($_SERVER['HTTP_HOST'])) {
         return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
@@ -906,7 +906,7 @@ function get_request_hostname()
  *
  * @return string The domain of the website
  */
-function get_domain()
+function get_domain() : string
 {
     global $SITE_INFO;
     $ret = (!empty($SITE_INFO['domain'])) ? $SITE_INFO['domain'] : '';
@@ -941,7 +941,7 @@ function get_domain()
  * @param  boolean $public Whether the request is public (can be cached in public proxy caches)
  * @param  TIME $expiry_seconds Seconds until cache expires (only applicable if $last_modified is not null)
  */
-function set_http_caching($last_modified, $public = false, $expiry_seconds = 604800/*1 week*/)
+function set_http_caching(?int $last_modified, bool $public = false, int $expiry_seconds = 604800/*1 week*/)
 {
     if ($last_modified === null) {
         @header('Cache-Control: no-store');
@@ -1008,7 +1008,7 @@ function prepare_for_known_ajax_response()
  *
  * @param  ID_TEXT $max_param The max parameter name
  */
-function memory_limit_for_max_param($max_param)
+function memory_limit_for_max_param(string $max_param)
 {
     $max = get_param_integer($max_param, null); // If making a large request and are an admin, raise PHP memory limit
     if (($max !== null) && ($max > 80) && (function_exists('has_privilege'))) {
@@ -1026,7 +1026,7 @@ function memory_limit_for_max_param($max_param)
  *
  * @return boolean Whether we are
  */
-function has_low_memory()
+function has_low_memory() : bool
 {
     $ml = ini_get('memory_limit');
     return ((substr($ml, -1) == 'M') && (intval(substr($ml, 0, strlen($ml) - 1)) < 64));
@@ -1061,7 +1061,7 @@ function disable_php_memory_limit()
  *
  * @return string The character set
  */
-function get_charset()
+function get_charset() : string
 {
     static $charset_cache = null;
     global $XSS_DETECT;
@@ -1165,7 +1165,7 @@ function load_user_stuff()
  *
  * @param  boolean $setting New setting
  */
-function push_suppress_error_death($setting)
+function push_suppress_error_death(bool $setting)
 {
     global $SUPPRESS_ERROR_DEATH;
     array_push($SUPPRESS_ERROR_DEATH, $setting);
@@ -1185,7 +1185,7 @@ function pop_suppress_error_death()
  *
  * @return boolean Last setting
  */
-function peek_suppress_error_death()
+function peek_suppress_error_death() : bool
 {
     global $SUPPRESS_ERROR_DEATH;
     return end($SUPPRESS_ERROR_DEATH);
@@ -1241,7 +1241,7 @@ function catch_fatal_errors()
  *
  * @ignore
  */
-function composr_error_handler($errno, $errstr, $errfile, $errline)
+function composr_error_handler(int $errno, string $errstr, string $errfile, int $errline) : bool
 {
     if (((error_reporting() & $errno) !== 0) && (strpos($errstr, 'Illegal length modifier specified')/*Weird random error in dev PHP version*/ === false) || ($GLOBALS['DYING_BADLY'])) {
         $GLOBALS['DYING_BADLY'] = false;
@@ -1342,7 +1342,7 @@ function composr_error_handler($errno, $errstr, $errfile, $errline)
  *
  * @return boolean Whether the browser session is set to be doing a hard cache-empty refresh
  */
-function is_browser_decaching()
+function is_browser_decaching() : bool
 {
     static $browser_decaching_cache = null;
     if ($browser_decaching_cache !== null) {
@@ -1384,7 +1384,7 @@ function is_browser_decaching()
  *
  * @return ID_TEXT The script running (usually 'index')
  */
-function current_script()
+function current_script() : string
 {
     // Strip down current URL so we can do a simple compare
     global $WHAT_IS_RUNNING_CACHE;
@@ -1402,7 +1402,7 @@ function current_script()
  * @param  string $is_this_running Script filename (canonically we want NO .php file type suffix)
  * @return boolean Whether the script is running
  */
-function running_script($is_this_running)
+function running_script(string $is_this_running) : bool
 {
     if (strpos($_SERVER['SCRIPT_NAME'], '/_tests/') !== false) {
         return false;
@@ -1432,7 +1432,7 @@ function running_script($is_this_running)
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
  * @exits
  */
-function inform_exit($text, $support_match_key_messages = null)
+function inform_exit($text, ?bool $support_match_key_messages = null)
 {
     require_code('failure'); // It's in failure.php although this isn't REALLY failure. Still it's an exceptional event so we can't justify loading the code as global.
     _generic_exit($text, 'INFORM_SCREEN', $support_match_key_messages);
@@ -1449,7 +1449,7 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  ?URLPATH $image_url Image to show (null: default)
  * @exits
  */
-function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = 500, $title = null, $image_url = null)
+function warn_exit($text, bool $support_match_key_messages = false, bool $log_error = false, ?int $http_status = 500, ?object $title = null, ?string $image_url = null)
 {
     require_code('failure');
     suggest_fatalistic();
@@ -1468,7 +1468,7 @@ function warn_exit($text, $support_match_key_messages = false, $log_error = fals
  * @param  integer $http_status HTTP status to set
  * @exits
  */
-function fatal_exit($text, $log_error = true, $http_status = 500)
+function fatal_exit($text, bool $log_error = true, int $http_status = 500)
 {
     require_code('failure');
     _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
@@ -1482,7 +1482,7 @@ function fatal_exit($text, $log_error = true, $http_status = 500)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
  * @exits
  */
-function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')
+function log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '')
 {
     require_code('failure');
     _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b);
@@ -1493,7 +1493,7 @@ function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b
  *
  * @return integer The major version number of your installation
  */
-function cms_version()
+function cms_version() : int
 {
     if (!function_exists('cms_version_number')) {
         return -1;
@@ -1507,7 +1507,7 @@ function cms_version()
  *
  * @return string The string saying the full Composr version number
  */
-function cms_version_pretty()
+function cms_version_pretty() : string
 {
     if (!function_exists('cms_version_minor')) {
         return 'unknown';
@@ -1522,7 +1522,7 @@ function cms_version_pretty()
  *
  * @return string The type of forum installed
  */
-function get_forum_type()
+function get_forum_type() : string
 {
     global $SITE_INFO;
     if (!isset($SITE_INFO['forum_type'])) {
@@ -1540,7 +1540,7 @@ function get_forum_type()
  * @param  boolean $forum_base Whether to get the base directory of the forum. Unless running Conversr, this makes no difference - if possibly running Conversr, you need to think about this parameter: are you trying to reach the MSN-central-site or just a link to the forums?
  * @return URLPATH The installed forum base URL
  */
-function get_forum_base_url($forum_base = false)
+function get_forum_base_url(bool $forum_base = false) : string
 {
     global $SITE_INFO;
 
@@ -1575,7 +1575,7 @@ function get_forum_base_url($forum_base = false)
  *
  * @return ?string The Composr cookie path (null: no special path, global)
  */
-function get_cookie_path()
+function get_cookie_path() : ?string
 {
     global $SITE_INFO;
     $ret = array_key_exists('cookie_path', $SITE_INFO) ? $SITE_INFO['cookie_path'] : '/';
@@ -1587,7 +1587,7 @@ function get_cookie_path()
  *
  * @return string The Composr cookie domain (blank: current domain)
  */
-function get_cookie_domain()
+function get_cookie_domain() : string
 {
     global $SITE_INFO;
     $ret = array_key_exists('cookie_domain', $SITE_INFO) ? $SITE_INFO['cookie_domain'] : '';
@@ -1599,7 +1599,7 @@ function get_cookie_domain()
  *
  * @return integer The number of days to store our cookies
  */
-function get_cookie_days()
+function get_cookie_days() : int
 {
     global $SITE_INFO;
     return array_key_exists('cookie_days', $SITE_INFO) ? intval($SITE_INFO['cookie_days']) : 120;
@@ -1610,7 +1610,7 @@ function get_cookie_days()
  *
  * @return string The name of the site
  */
-function get_site_name()
+function get_site_name() : string
 {
     return get_option('site_name');
 }
@@ -1620,7 +1620,7 @@ function get_site_name()
  *
  * @return boolean Whether we are in safe mode
  */
-function in_safe_mode()
+function in_safe_mode() : bool
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['safe_mode'])) {
@@ -1667,7 +1667,7 @@ function in_safe_mode()
  * @param  boolean $append_keep Whether to append keep variables
  * @return URLPATH The URL to the script
  */
-function find_script($name, $append_keep = false)
+function find_script(string $name, bool $append_keep = false) : string
 {
     $append = '';
     if ($append_keep) {
@@ -1723,7 +1723,7 @@ function find_script($name, $append_keep = false)
  * @param  ?ID_TEXT $zone_for The zone the link is for (null: root zone)
  * @return URLPATH The base URL
  */
-function get_base_url($zone_for = null)
+function get_base_url(?string $zone_for = null) : string
 {
     global $VIRTUALISED_ZONES_CACHE;
     static $base_url_cache = null;
@@ -1794,7 +1794,7 @@ function get_base_url($zone_for = null)
  *
  * @return URLPATH The base URL
  */
-function get_custom_base_url()
+function get_custom_base_url() : string
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['custom_base_url'])) {
@@ -1818,7 +1818,7 @@ function get_custom_base_url()
  * @param  URLPATH $at Short base URL we need to probe
  * @return URLPATH The appropriate base URL
  */
-function get_complex_base_url($at)
+function get_complex_base_url(string $at) : string
 {
     return ((get_forum_base_url() != get_base_url()) ? get_forum_base_url() : ((substr($at, 0, 22) === 'themes/default/images/') ? get_base_url() : get_custom_base_url()));
 }
@@ -1833,7 +1833,7 @@ function get_complex_base_url($at)
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?string The parameter value (null: missing)
  */
-function either_param_string($name, $default = false, $filters = INPUT_FILTER_DEFAULT_GET)
+function either_param_string(string $name, $default = false, int $filters = INPUT_FILTER_DEFAULT_GET) : ?string
 {
     $ret = __param(array_merge($_POST, $_GET), $name, $default);
     if ($ret === null) {
@@ -1867,7 +1867,7 @@ function either_param_string($name, $default = false, $filters = INPUT_FILTER_DE
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?string The parameter value (null: missing)
  */
-function post_param_string($name, $default = false, $filters = INPUT_FILTER_DEFAULT_POST)
+function post_param_string(string $name, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
 {
     $ret = __param($_POST, $name, $default, false, true);
 
@@ -1954,7 +1954,7 @@ function post_param_string($name, $default = false, $filters = INPUT_FILTER_DEFA
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?string The parameter value (null: missing)
  */
-function get_param_string($name, $default = false, $filters = INPUT_FILTER_DEFAULT_GET)
+function get_param_string(string $name, $default = false, int $filters = INPUT_FILTER_DEFAULT_GET) : ?string
 {
     $ret = __param($_GET, $name, $default);
     if (($ret === '') && (isset($_GET['require__' . $name])) && ($default !== $ret) && ($_GET['require__' . $name] !== '0')) {
@@ -1989,11 +1989,11 @@ function get_param_string($name, $default = false, $filters = INPUT_FILTER_DEFAU
  * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
  * @param  boolean $integer Whether the parameter has to be an integer
  * @param  ?boolean $posted Whether the parameter is a POST parameter (null: undetermined)
- * @return string The value of the parameter
+ * @return ?string The value of the parameter (null: missing)
  *
  * @ignore
  */
-function __param($array, $name, $default, $integer = false, $posted = false)
+function __param(array $array, string $name, $default, bool $integer = false, ?bool $posted = false) : ?string
 {
     if ((!isset($array[$name])) || ($array[$name] === false) || (($integer) && ($array[$name] === ''))) {
         if ($default !== false) {
@@ -2022,7 +2022,7 @@ function __param($array, $name, $default, $integer = false, $posted = false)
  * @param  boolean $case_sensitive Whether it is case sensitive
  * @return boolean Whether we have a match
  */
-function simulated_wildcard_match($context, $word, $full_cover = false, $case_sensitive = false)
+function simulated_wildcard_match(string $context, string $word, bool $full_cover = false, bool $case_sensitive = false) : bool
 {
     $rexp = '';
     $len = strlen($word);
@@ -2066,7 +2066,7 @@ function simulated_wildcard_match($context, $word, $full_cover = false, $case_se
  * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined or the empty string (null: allow missing parameter) (false: give error on missing parameter)
  * @return ?integer The parameter value (null: not set, and null given as default)
  */
-function either_param_integer($name, $default = false)
+function either_param_integer(string $name, $default = false) : ?int
 {
     $ret = __param(array_merge($_POST, $_GET), $name, ($default === false) ? $default : (($default === null) ? '' : strval($default)), true, null); // $_REQUEST contains cookies too, so can't use
     if (($default === null) && ($ret === '')) {
@@ -2092,7 +2092,7 @@ function either_param_integer($name, $default = false)
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?integer The parameter value (null: not set, and null given as default)
  */
-function post_param_integer($name, $default = false, $filters = INPUT_FILTER_DEFAULT_POST)
+function post_param_integer(string $name, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?int
 {
     $ret = __param($_POST, $name, ($default === false) ? $default : (($default === null) ? '' : strval($default)), true, true);
 
@@ -2135,7 +2135,7 @@ function post_param_integer($name, $default = false, $filters = INPUT_FILTER_DEF
  * @param  boolean $not_string_ok If a string is given, use the default parameter rather than giving an error (only use this if you are suffering from a parameter conflict situation between different parts of Composr)
  * @return ?integer The parameter value (null: not set, and null given as default)
  */
-function get_param_integer($name, $default = false, $not_string_ok = false)
+function get_param_integer(string $name, $default = false, bool $not_string_ok = false) : ?int
 {
     $m_default = ($default === false) ? false : (isset($default) ? (($default === 0) ? '0' : strval($default)) : '');
     $ret = __param($_GET, $name, $m_default, true); // do not set $ret to mixed(), breaks bootstrapping
@@ -2181,7 +2181,7 @@ function get_param_integer($name, $default = false, $not_string_ok = false)
  * @param  ?ID_TEXT $desired_charset The character set it should be in. We don't do any real conversions using this, only make sure that common problems with fed ISO-8859-1 data are resolved (null: output character set)
  * @return string The cleaned data
  */
-function unixify_line_format($in, $desired_charset = null)
+function unixify_line_format(string $in, ?string $desired_charset = null) : string
 {
     if ($in === '') {
         return $in;
@@ -2220,7 +2220,7 @@ function unixify_line_format($in, $desired_charset = null)
  *
  * @param  PATH $filename File/directory name to sync on (full path)
  */
-function sync_file($filename)
+function sync_file(string $filename)
 {
     global $FILE_BASE, $_MODIFIED_FILES;
     static $has_sync_script = null;
@@ -2241,7 +2241,7 @@ function sync_file($filename)
  * @param  PATH $old File/directory name to move from (may be full or relative path)
  * @param  PATH $new File/directory name to move to (may be full or relative path)
  */
-function sync_file_move($old, $new)
+function sync_file_move(string $old, string $new)
 {
     require_code('files2');
     _sync_file_move($old, $new);
@@ -2252,7 +2252,7 @@ function sync_file_move($old, $new)
  *
  * @param  boolean $known_utf8 Whether we know we are working in utf-8. This is the case for AJAX calls.
  */
-function convert_request_data_encodings($known_utf8 = false)
+function convert_request_data_encodings(bool $known_utf8 = false)
 {
     global $VALID_ENCODING, $CONVERTED_ENCODING;
     $VALID_ENCODING = true;
@@ -2292,7 +2292,7 @@ function cms_ob_end_clean()
  * @param  string $needle The needle
  * @return boolean Whether the haystack starts with the needle
  */
-function starts_with($haystack, $needle)
+function starts_with(string $haystack, string $needle) : bool
 {
     $length = strlen($needle);
     return (substr($haystack, 0, $length) === $needle);
@@ -2305,7 +2305,7 @@ function starts_with($haystack, $needle)
  * @param  string $needle The needle
  * @return boolean Whether the haystack ends with the needle
  */
-function ends_with($haystack, $needle)
+function ends_with(string $haystack, string $needle) : bool
 {
     $length = strlen($needle);
     return ($length === 0) || (substr($haystack, -$length) === $needle);
@@ -2316,7 +2316,7 @@ function ends_with($haystack, $needle)
  *
  * @return string Date/time string
  */
-function loggable_date()
+function loggable_date() : string
 {
     return gmdate('[d-M-Y H:i:s \U\T\C]');
 }
@@ -2330,7 +2330,7 @@ function loggable_date()
  * @param  mixed $var Input
  * @return boolean Whether it is CONSIDERED empty
  */
-function cms_empty_safe($var)
+function cms_empty_safe($var) : bool
 {
     return (empty($var)) && ($var !== '0');
 }

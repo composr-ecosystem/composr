@@ -29,7 +29,7 @@ class Hook_symbol_GALLERY_VIDEO_FOR_URL
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (!addon_installed('galleries')) {
             return '';

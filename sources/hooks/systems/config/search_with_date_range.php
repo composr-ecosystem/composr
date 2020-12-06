@@ -28,7 +28,7 @@ class Hook_config_search_with_date_range
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SEARCH_WITH_DATE_RANGE',
@@ -52,7 +52,7 @@ class Hook_config_search_with_date_range
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('search')) {
             return null;

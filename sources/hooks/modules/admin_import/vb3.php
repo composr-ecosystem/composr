@@ -45,7 +45,7 @@ class Hook_import_vb3
      *
      * @return ?array Importer handling details, including lists of all the import types covered (import types are not necessarily the same as actual tables) (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['supports_advanced_import'] = false;
@@ -99,7 +99,7 @@ class Hook_import_vb3
      * @param  string $file_base The probe path
      * @return array A quartet of the details (db_name, db_user, db_pass, table_prefix)
      */
-    public function probe_db_access($file_base)
+    public function probe_db_access(string $file_base) : array
     {
         $dbname = null;
         $dbusername = '';
@@ -136,7 +136,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_config($db, $table_prefix, $file_base)
+    public function import_config(object $db, string $table_prefix, string $file_base)
     {
         $config_remapping = [
             'bbactive' => '!site_closed',
@@ -220,7 +220,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_groups($db, $table_prefix, $file_base)
+    public function import_cns_groups(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('setting', ['*']);
         $PROBED_FORUM_CONFIG = [];
@@ -310,7 +310,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_members($db, $table_prefix, $file_base)
+    public function import_cns_members(object $db, string $table_prefix, string $file_base)
     {
         $row_start = get_param_integer('JUMPSTART_import_cns_members', 0);
         $rows = [];
@@ -445,7 +445,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_member_files($db, $table_prefix, $file_base)
+    public function import_cns_member_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -508,7 +508,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_custom_profile_fields($db, $table_prefix, $file_base)
+    public function import_cns_custom_profile_fields(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('profilefield', ['*']);
         foreach ($rows as $row) {
@@ -569,7 +569,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forum_groupings($db, $table_prefix, $old_base_dir)
+    public function import_cns_forum_groupings(object $db, string $table_prefix, string $old_base_dir)
     {
         $rows = $db->query_select('forum', ['*'], ['parentid' => -1]);
         foreach ($rows as $row) {
@@ -598,7 +598,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forums($db, $table_prefix, $old_base_dir)
+    public function import_cns_forums(object $db, string $table_prefix, string $old_base_dir)
     {
         require_code('cns_forums_action2');
 
@@ -673,7 +673,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_topics($db, $table_prefix, $file_base)
+    public function import_cns_topics(object $db, string $table_prefix, string $file_base)
     {
         $row_start = get_param_integer('JUMPSTART_import_cns_topics', 0);
         $rows = [];
@@ -744,7 +744,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_posts($db, $table_prefix, $file_base)
+    public function import_cns_posts(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -833,7 +833,7 @@ class Hook_import_vb3
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_topic($m)
+    protected function _fix_links_callback_topic(array $m) : string
     {
         return 'index.php?page=topicview&id=' . strval(import_id_remap_get('topic', strval($m[2]), true));
     }
@@ -844,7 +844,7 @@ class Hook_import_vb3
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_post($m)
+    protected function _fix_links_callback_post(array $m) : string
     {
         return 'index.php?page=topicview&type=findpost&id=' . strval(import_id_remap_get('post', strval($m[2]), true));
     }
@@ -855,7 +855,7 @@ class Hook_import_vb3
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_forum($m)
+    protected function _fix_links_callback_forum(array $m) : string
     {
         return 'index.php?page=forumview&id=' . strval(import_id_remap_get('forum', strval($m[2]), true));
     }
@@ -866,7 +866,7 @@ class Hook_import_vb3
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_member($m)
+    protected function _fix_links_callback_member(array $m) : string
     {
         return 'index.php?page=members&type=view&id=' . strval(import_id_remap_get('member', strval($m[2]), true));
     }
@@ -879,7 +879,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @return string The new text field text
      */
-    public function fix_links($post, $db, $table_prefix)
+    public function fix_links(string $post, object $db, string $table_prefix) : string
     {
         global $OLD_BASE_URL;
         if ($OLD_BASE_URL === null) {
@@ -901,7 +901,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_post_files($db, $table_prefix, $file_base)
+    public function import_cns_post_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
         require_code('attachments2');
@@ -957,7 +957,7 @@ class Hook_import_vb3
      * @param  boolean $obfuscate Whether to obfuscate the file type
      * @return array A tuple containing the URL, and if requested, the thumbnail
      */
-    public function data_to_disk($data, $filename, $sections, $thumbnail_data = '', $obfuscate = false)
+    public function data_to_disk(string $data, string $filename, string $sections, string $thumbnail_data = '', bool $obfuscate = false) : array
     {
         if ($filename == '') {
             $filetype = '';
@@ -1001,7 +1001,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
+    public function import_cns_polls_and_votes(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('poll p LEFT JOIN ' . $table_prefix . 'thread t ON p.pollid=t.pollid', ['*', 'p.pollid AS pollid']);
         foreach ($rows as $row) {
@@ -1047,7 +1047,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_calendar($db, $table_prefix, $file_base)
+    public function import_calendar(object $db, string $table_prefix, string $file_base)
     {
         require_code('calendar2');
 
@@ -1138,7 +1138,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_private_topics($db, $table_prefix, $old_base_dir)
+    public function import_cns_private_topics(object $db, string $table_prefix, string $old_base_dir)
     {
         $sql = 'SELECT pmid,fromuserid,userid,title FROM ' . $table_prefix . 'pm p LEFT JOIN ' . $table_prefix . 'pmtext t ON p.pmtextid=t.pmtextid WHERE folderid<>-1 AND title NOT LIKE \'' . db_encode_like('Sent:  %') . '\' ORDER BY dateline';
         $rows = $db->query($sql);
@@ -1218,7 +1218,7 @@ class Hook_import_vb3
      * @param  integer $iconid VB code
      * @return ID_TEXT Composr code
      */
-    public function convert_topic_emoticon($iconid)
+    public function convert_topic_emoticon(int $iconid) : string
     {
         switch ($iconid) {
             case 6:
@@ -1248,7 +1248,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_custom_comcode($db, $table_prefix, $file_base)
+    public function import_custom_comcode(object $db, string $table_prefix, string $file_base)
     {
         require_code('custom_comcode');
         require_code('comcode_compiler');
@@ -1292,7 +1292,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_notifications($db, $table_prefix, $file_base)
+    public function import_notifications(object $db, string $table_prefix, string $file_base)
     {
         require_code('notifications');
 
@@ -1346,7 +1346,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_logs($db, $table_prefix, $file_base)
+    public function import_logs(object $db, string $table_prefix, string $file_base)
     {
         require_code('cns_general_action2');
 
@@ -1397,7 +1397,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_points_gifts_and_charges($db, $table_prefix, $file_base)
+    public function import_points_gifts_and_charges(object $db, string $table_prefix, string $file_base)
     {
         $row_start = get_param_integer('JUMPSTART_import_points_gifts_and_charges', 0);
         do {
@@ -1438,7 +1438,7 @@ class Hook_import_vb3
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_wordfilter($db, $table_prefix, $file_base)
+    public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('setting', ['value'], ['varname' => 'censorwords']);
         $censorwords = $rows[0]['value'];

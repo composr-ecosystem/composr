@@ -25,7 +25,7 @@
  * @param  ID_TEXT $id The content ID
  * @return array List of awards won
  */
-function find_awards_for($content_type, $id)
+function find_awards_for(string $content_type, string $id) : array
 {
     $awards = [];
 
@@ -48,7 +48,7 @@ function find_awards_for($content_type, $id)
  * @param  ID_TEXT $content_id The content ID
  * @param  ?TIME $time Time the award was given (null: now)
  */
-function give_award($award_id, $content_id, $time = null)
+function give_award(int $award_id, string $content_id, ?int $time = null)
 {
     require_lang('awards');
 
@@ -129,7 +129,7 @@ function give_award($award_id, $content_id, $time = null)
  * @param  ?ID_TEXT $id The content ID (null: not added yet - therefore can't be holding the award yet)
  * @return Tempcode The fields
  */
-function get_award_fields($content_type, $id = null)
+function get_award_fields($content_type, ?string $id = null) : object
 {
     require_code('form_templates');
     require_lang('awards');
@@ -199,7 +199,7 @@ function get_award_fields($content_type, $id = null)
  * @param  ID_TEXT $content_type The content type
  * @param  ID_TEXT $id The content ID
  */
-function handle_award_setting($content_type, $id)
+function handle_award_setting(string $content_type, string $id)
 {
     if (fractional_edit()) {
         return;

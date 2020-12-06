@@ -36,7 +36,7 @@ function init__web_resources()
  *
  * @param  ID_TEXT $javascript The JavaScript file required
  */
-function require_javascript($javascript)
+function require_javascript(string $javascript)
 {
     global $JAVASCRIPTS, $SMART_CACHE, $JS_OUTPUT_STARTED_LIST;
 
@@ -65,7 +65,7 @@ function require_javascript($javascript)
  * @param  boolean $allow_defer Allow the compilation to be deferred through a PHP call (useful for parallelising compilation)
  * @return string The path to the JavaScript file in the cache (blank: no file) (defer: defer compilation through a script; only possible if $allow_defer is set)
  */
-function javascript_enforce($j, $theme = null, $allow_defer = false)
+function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer = false) : string
 {
     list($minify, $https, $mobile) = _get_web_resources_env();
 
@@ -160,7 +160,7 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
  *
  * @return Tempcode The Tempcode to tie in the JavaScript files
  */
-function javascript_tempcode()
+function javascript_tempcode() : object
 {
     global $JAVASCRIPTS, $JAVASCRIPT, $JS_OUTPUT_STARTED, $EARLY_SCRIPT_ORDER;
 
@@ -208,7 +208,7 @@ function javascript_tempcode()
  * @param  ?boolean $do_enforce Whether to generate the cached file if not already cached (null: from what is cached)
  * @ignore
  */
-function _javascript_tempcode($j, &$js, $_minify = null, $_https = null, $_mobile = null, $do_enforce = true)
+function _javascript_tempcode(string $j, object &$js, ?bool $_minify = null, ?bool $_https = null, ?bool $_mobile = null, ?bool $do_enforce = true)
 {
     list($minify, $https, $mobile) = _get_web_resources_env(null, $_minify, $_https, $_mobile);
 
@@ -260,7 +260,7 @@ function _javascript_tempcode($j, &$js, $_minify = null, $_https = null, $_mobil
  *
  * @param  ID_TEXT $css The CSS file required
  */
-function require_css($css)
+function require_css(string $css)
 {
     global $CSSS, $SMART_CACHE, $CSS_OUTPUT_STARTED_LIST, $CSS_OUTPUT_STARTED;
 
@@ -296,7 +296,7 @@ function require_css($css)
  * @param  boolean $allow_defer Allow the compilation to be deferred through a PHP call (useful for parallelising compilation)
  * @return string The path to the CSS file in the cache (blank: no file) (defer: defer compilation through a script; only possible if $allow_defer is set)
  */
-function css_enforce($c, $theme = null, $allow_defer = false)
+function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false) : string
 {
     list($minify, $https, $mobile) = _get_web_resources_env();
 
@@ -404,7 +404,7 @@ function css_enforce($c, $theme = null, $allow_defer = false)
  * @param  ?ID_TEXT $theme The name of the theme (null: current theme)
  * @return Tempcode The Tempcode to tie in the CSS files
  */
-function css_tempcode($inline = false, $only_global = false, $context = null, $theme = null)
+function css_tempcode(bool $inline = false, bool $only_global = false, ?string $context = null, ?string $theme = null) : object
 {
     global $CSSS, $CSS_OUTPUT_STARTED;
 
@@ -451,7 +451,7 @@ function css_tempcode($inline = false, $only_global = false, $context = null, $t
  *
  * @ignore
  */
-function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context = null, $theme = null, $_seed = null, $_minify = null, $_https = null, $_mobile = null, $do_enforce = true)
+function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $inline = false, ?string $context = null, ?string $theme = null, ?string $_seed = null, ?bool $_minify = null, ?bool $_https = null, ?bool $_mobile = null, bool $do_enforce = true)
 {
     list($minify, $https, $mobile, $seed) = _get_web_resources_env($_seed, $_minify, $_https, $_mobile);
 
@@ -525,7 +525,7 @@ function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context =
  *
  * @ignore
  */
-function _get_web_resources_env($_seed = null, $_minify = null, $_https = null, $_mobile = null)
+function _get_web_resources_env(?string $_seed = null, ?bool $_minify = null, ?bool $_https = null, ?bool $_mobile = null) : array
 {
     static $seed_cached = null;
     if ($_seed !== null) {
@@ -583,7 +583,7 @@ function _get_web_resources_env($_seed = null, $_minify = null, $_https = null, 
  *
  * @param  string $message_raw Comcode
  */
-function inject_web_resources_context_to_comcode(&$message_raw)
+function inject_web_resources_context_to_comcode(string &$message_raw)
 {
     global $CSSS, $JAVASCRIPTS;
 

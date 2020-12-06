@@ -31,7 +31,7 @@ class Hook_task_create_index
      * @param  array $params Parameters to pass to the create_index method
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($db_id, $params)
+    public function run(string $db_id, array $params) : ?array
     {
         $db = $GLOBALS[$db_id];
         call_user_func_array([$db, 'create_index'], $params);

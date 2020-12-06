@@ -25,7 +25,7 @@
  * @return array Map of notification types (integer code to language string codename)
  * @ignore
  */
-function _get_available_notification_types($member_id_of = null)
+function _get_available_notification_types(?int $member_id_of = null) : array
 {
     $__notification_types = [
         A_INSTANT_EMAIL => 'INSTANT_EMAIL',
@@ -57,7 +57,7 @@ function _get_available_notification_types($member_id_of = null)
  * @param  MEMBER $member_id_of Member this is for
  * @return Tempcode UI
  */
-function notifications_ui($member_id_of)
+function notifications_ui(int $member_id_of) : object
 {
     push_query_limiting(false);
 
@@ -248,7 +248,7 @@ function notifications_ui($member_id_of)
  * @param  ?Tempcode $disable_message Special message to output if we have toggled to disable (null: use standard)
  * @return Tempcode UI
  */
-function notifications_ui_advanced($notification_code, $enable_message = null, $disable_message = null)
+function notifications_ui_advanced(string $notification_code, ?object $enable_message = null, ?object $disable_message = null) : object
 {
     require_css('notifications');
     require_code('notifications');
@@ -384,7 +384,7 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
  *
  * @ignore
  */
-function _notifications_build_category_tree($_notification_types, $notification_code, $ob, $id, $depth, $force_change_children_to, &$done_get_change)
+function _notifications_build_category_tree(array $_notification_types, string $notification_code, object $ob, ?string $id, int $depth, ?bool $force_change_children_to, bool &$done_get_change) : object
 {
     $_notification_categories = $ob->create_category_tree($notification_code, $id);
 
@@ -483,7 +483,7 @@ function _notifications_build_category_tree($_notification_types, $notification_
  * @param  ID_TEXT $id Parent category ID
  * @param  ID_TEXT $child_id Child category ID
  */
-function copy_notifications_to_new_child($notification_code, $id, $child_id)
+function copy_notifications_to_new_child(string $notification_code, string $id, string $child_id)
 {
     $db = $GLOBALS[((substr($notification_code, 0, 4) == 'cns_') && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 

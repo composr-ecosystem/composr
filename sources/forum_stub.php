@@ -61,7 +61,7 @@ class Forum_driver_base
      *
      * @param  string $name The name of the new custom field
      */
-    public function install_delete_custom_field($name)
+    public function install_delete_custom_field(string $name)
     {
         if (method_exists($this, '_install_delete_custom_field')) {
             $this->_install_delete_custom_field($name);
@@ -73,7 +73,7 @@ class Forum_driver_base
      *
      * @return GROUP The usergroup ID of the forum guest member
      */
-    public function get_guest_group()
+    public function get_guest_group() : int
     {
         return db_get_first_id();
     }
@@ -86,7 +86,7 @@ class Forum_driver_base
      * @param  ?string $username Username, passed for performance reasons (null: look it up)
      * @return mixed The URL
      */
-    public function member_profile_url($id, $tempcode_okay = false, $username = null)
+    public function member_profile_url(int $id, bool $tempcode_okay = false, ?string $username = null)
     {
         $url = $this->_member_profile_url($id, $tempcode_okay, $username);
         if (($tempcode_okay) && (!is_object($url))) {
@@ -110,7 +110,7 @@ class Forum_driver_base
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @return Tempcode The hyperlink
      */
-    public function member_profile_hyperlink($id, $_username = '', $use_displayname = true, $tempcode_okay = false)
+    public function member_profile_hyperlink(int $id, string $_username = '', bool $use_displayname = true, bool $tempcode_okay = false) : object
     {
         if (is_guest($id)) {
             return ($_username == '') ? make_string_tempcode($this->get_username($this->get_guest_id())) : make_string_tempcode(escape_html($_username));
@@ -128,7 +128,7 @@ class Forum_driver_base
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient, and allows keep_* parameters to propagate which you almost certainly want!)
      * @return mixed The URL
      */
-    public function join_url($tempcode_okay = false)
+    public function join_url(bool $tempcode_okay = false)
     {
         $url = $this->_join_url($tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
@@ -146,7 +146,7 @@ class Forum_driver_base
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL
      */
-    public function users_online_url($tempcode_okay = false)
+    public function users_online_url(bool $tempcode_okay = false)
     {
         $url = $this->_users_online_url($tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
@@ -162,7 +162,7 @@ class Forum_driver_base
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL
      */
-    public function member_pm_url($id, $tempcode_okay = false)
+    public function member_pm_url(int $id, bool $tempcode_okay = false)
     {
         $url = $this->_member_pm_url($id, $tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
@@ -178,7 +178,7 @@ class Forum_driver_base
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL
      */
-    public function forum_url($id, $tempcode_okay = false)
+    public function forum_url(int $id, bool $tempcode_okay = false)
     {
         $url = $this->_forum_url($id, $tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
@@ -195,7 +195,7 @@ class Forum_driver_base
      * @param  integer $options A bitmask of USERNAME_* options to define how to handle missing members
      * @return ?SHORT_TEXT The username (null: deleted/missing member)
      */
-    public function get_username($id, $use_displayname = false, $options = USERNAME_DEFAULT_DELETED)
+    public function get_username(int $id, bool $use_displayname = false, int $options = USERNAME_DEFAULT_DELETED) : ?string
     {
         $guest_id = $this->get_guest_id();
 
@@ -263,7 +263,7 @@ class Forum_driver_base
      * @param  ID_TEXT $username The username
      * @return SHORT_TEXT The display name
      */
-    public function get_displayname($username)
+    public function get_displayname(string $username) : string
     {
         if (!method_exists($this, '_get_displayname')) {
             return $username;
@@ -277,7 +277,7 @@ class Forum_driver_base
      * @param  MEMBER $id The member
      * @return SHORT_TEXT The e-mail address (blank: not known)
      */
-    public function get_member_email_address($id)
+    public function get_member_email_address(int $id) : string
     {
         static $member_email_cache = [];
         if (array_key_exists($id, $member_email_cache)) {
@@ -295,7 +295,7 @@ class Forum_driver_base
      * @param  MEMBER $id The member
      * @return boolean The answer
      */
-    public function is_staff($id)
+    public function is_staff(int $id) : bool
     {
         if (is_guest($id)) {
             return false;
@@ -316,7 +316,7 @@ class Forum_driver_base
      * @param  MEMBER $id The member
      * @return boolean The answer
      */
-    public function is_super_admin($id)
+    public function is_super_admin(int $id) : bool
     {
         static $is_super_admin_cache = [];
         if (isset($is_super_admin_cache[$id])) {
@@ -338,7 +338,7 @@ class Forum_driver_base
      *
      * @return array The list of usergroups
      */
-    public function get_super_admin_groups()
+    public function get_super_admin_groups() : array
     {
         static $admin_group_cache = null;
         if ($admin_group_cache !== null) {
@@ -355,7 +355,7 @@ class Forum_driver_base
      *
      * @return array The list of usergroups
      */
-    public function get_moderator_groups()
+    public function get_moderator_groups() : array
     {
         static $moderator_group_cache = null;
         if ($moderator_group_cache !== null) {
@@ -378,7 +378,7 @@ class Forum_driver_base
      * @param  boolean $skip_hidden Whether to completely skip hidden usergroups
      * @return array The map
      */
-    public function get_usergroup_list($hide_hidden = false, $only_permissive = false, $force_show_all = false, $force_find = [], $for_member = null, $skip_hidden = false)
+    public function get_usergroup_list(bool $hide_hidden = false, bool $only_permissive = false, bool $force_show_all = false, array $force_find = [], ?int $for_member = null, bool $skip_hidden = false) : array
     {
         static $usergroup_list_cache = null;
         if (($usergroup_list_cache !== null) && (isset($usergroup_list_cache[$hide_hidden][$only_permissive][$force_show_all][serialize($force_find)][$for_member][$skip_hidden]))) {
@@ -403,7 +403,7 @@ class Forum_driver_base
      * @param  boolean $handle_probation Whether to take probation into account
      * @return array The list of usergroups
      */
-    public function get_members_groups($id, $skip_secret = false, $handle_probation = true)
+    public function get_members_groups(int $id, bool $skip_secret = false, bool $handle_probation = true) : array
     {
         if ((is_guest($id)) && (get_forum_type() == 'cns')) {
             static $ret = null;
@@ -430,7 +430,7 @@ class Forum_driver_base
      * @param  ?MEMBER $member_id The member we are getting the theme for (null: current user)
      * @return ID_TEXT The theme identifier
      */
-    public function get_theme($zone_for = null, $member_id = null)
+    public function get_theme(?string $zone_for = null, ?int $member_id = null) : string
     {
         global $SITE_INFO, $ZONE, $USER_THEME_CACHE, $IN_MINIKERNEL_VERSION;
 
@@ -528,7 +528,7 @@ class Forum_driver_base
      *
      * @return integer Number of forum posts
      */
-    public function get_num_new_forum_posts()
+    public function get_num_new_forum_posts() : int
     {
         $value = strval($this->_get_num_new_forum_posts());
         return intval($value);
@@ -540,7 +540,7 @@ class Forum_driver_base
      * @param  integer $topic_id The topic ID
      * @return boolean Whether it is
      */
-    public function topic_is_threaded($topic_id)
+    public function topic_is_threaded(int $topic_id) : bool
     {
         return false;
     }
@@ -552,7 +552,7 @@ class Forum_driver_base
      * @param  array $post_ids List of post IDs
      * @return array Extra details
      */
-    public function get_post_remaining_details($topic_id, $post_ids)
+    public function get_post_remaining_details(int $topic_id, array $post_ids) : array
     {
         return [];
     }

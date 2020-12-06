@@ -28,7 +28,7 @@ class Hook_config_one_per_email_address
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ONE_PER_EMAIL_ADDRESS',
@@ -52,7 +52,7 @@ class Hook_config_one_per_email_address
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }
@@ -65,7 +65,7 @@ class Hook_config_one_per_email_address
      * @param  string $old_value The old value
      * @return boolean Whether to allow the save
      */
-    public function presave_handler($new_value, $old_value)
+    public function presave_handler(string $new_value, string $old_value) : bool
     {
         if (($new_value == '2') && ($GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()) == '')) {
             attach_message(do_lang_tempcode('YOU_ADMIN_NO_EMAIL'), 'warn');

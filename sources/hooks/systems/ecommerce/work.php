@@ -32,7 +32,7 @@ class Hook_ecommerce_work
      * @param  ?ID_TEXT $search Product being searched for (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products($search = null)
+    public function get_products(?string $search = null) : array
     {
         $products = [
             'WORK' => [
@@ -68,7 +68,7 @@ class Hook_ecommerce_work
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
      */
-    public function get_needed_fields($type_code, $from_admin = false)
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
     {
         $fields = new Tempcode();
 
@@ -99,7 +99,7 @@ class Hook_ecommerce_work
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null for no specific confirmation)
      */
-    public function handle_needed_fields($type_code, $from_admin = false)
+    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         return [post_param_string('purchase_id'), null];
     }
@@ -111,7 +111,7 @@ class Hook_ecommerce_work
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return ?MEMBER The member ID (null: none)
      */
-    public function member_for($type_code, $purchase_id)
+    public function member_for(string $type_code, string $purchase_id) : ?int
     {
         $invoice_id = intval($purchase_id);
         return $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => $invoice_id]);

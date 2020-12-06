@@ -28,7 +28,7 @@ class Hook_config_ticket_mail_email_address
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TICKET_MAIL_EMAIL_ADDRESS',
@@ -52,7 +52,7 @@ class Hook_config_ticket_mail_email_address
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('tickets')) {
             return null;

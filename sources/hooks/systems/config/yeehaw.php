@@ -28,7 +28,7 @@ class Hook_config_yeehaw
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'AMERICAN_ENGLISH',
@@ -53,7 +53,7 @@ class Hook_config_yeehaw
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         require_code('locations');
         if (geolocate_ip() == 'US') {
@@ -70,7 +70,7 @@ class Hook_config_yeehaw
      * @param  string $old_value The old value
      * @return boolean Whether to allow the save
      */
-    public function presave_handler($new_value, $old_value)
+    public function presave_handler(string $new_value, string $old_value) : bool
     {
         erase_cached_language();
 

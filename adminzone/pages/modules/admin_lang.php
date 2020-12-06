@@ -28,7 +28,7 @@ class Module_admin_lang
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_lang
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         $ret = [
             'browse' => ['TRANSLATE_CODE', 'menu/adminzone/style/language/language'],
@@ -89,7 +89,7 @@ class Module_admin_lang
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -158,7 +158,7 @@ class Module_admin_lang
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('input_filter_2');
         rescue_shortened_post_request();
@@ -200,7 +200,7 @@ class Module_admin_lang
      * @param  ID_TEXT $param_name The name of the parameter for specifying language
      * @return Tempcode The UI
      */
-    public function choose_lang($title, $choose_lang_file = false, $add_lang = false, $text = '', $provide_na = true, $param_name = 'lang')
+    public function choose_lang(object $title, bool $choose_lang_file = false, bool $add_lang = false, $text = '', bool $provide_na = true, string $param_name = 'lang') : object
     {
         $langs = new Tempcode();
         $langs->attach(create_selection_list_langs(null, $add_lang));
@@ -261,7 +261,7 @@ class Module_admin_lang
      * @param  LANGUAGE_NAME $lang The language we want an equivalent in
      * @return string The match (or blank if no match can be found)
      */
-    public function find_lang_matches($old, $lang)
+    public function find_lang_matches(string $old, string $lang) : string
     {
         // Search for pretranslated content
         $potentials = $GLOBALS['SITE_DB']->query_select('translate', ['id'], ['text_original' => $old, 'language' => get_site_default_lang()]);
@@ -293,7 +293,7 @@ class Module_admin_lang
      *
      * @return Tempcode The UI
      */
-    public function criticise()
+    public function criticise() : object
     {
         $lang = get_param_string('crit_lang', '');
         if ($lang == '') {
@@ -396,7 +396,7 @@ class Module_admin_lang
      *
      * @return Tempcode The UI
      */
-    public function interface_content()
+    public function interface_content() : object
     {
         if (!multi_lang()) {
             warn_exit(do_lang_tempcode('MULTILANG_OFF_PRACTICAL'));
@@ -536,7 +536,7 @@ class Module_admin_lang
      *
      * @return Tempcode The UI
      */
-    public function set_lang_content()
+    public function set_lang_content() : object
     {
         $lang = choose_language($this->title);
         if (is_object($lang)) {
@@ -586,7 +586,7 @@ class Module_admin_lang
      *
      * @return Tempcode The UI
      */
-    public function interface_code()
+    public function interface_code() : object
     {
         $lang = filter_naughty_harsh(get_param_string('lang', ''));
         $lang_new = get_param_string('lang_new', $lang);
@@ -798,7 +798,7 @@ class Module_admin_lang
      *
      * @return Tempcode The UI
      */
-    public function set_lang_code()
+    public function set_lang_code() : object
     {
         delete_cache_entry('side_language');
         require_code('caches3');
@@ -868,7 +868,7 @@ class Module_admin_lang
      *
      * @return Tempcode The UI
      */
-    public function set_lang_code_2()
+    public function set_lang_code_2() : object
     {
         $lang = post_param_string('lang');
 

@@ -25,7 +25,7 @@
  *
  * @return boolean Encryption available?
  */
-function is_encryption_available()
+function is_encryption_available() : bool
 {
     return function_exists('openssl_pkey_get_public');
 }
@@ -35,7 +35,7 @@ function is_encryption_available()
  *
  * @return boolean Encryption enabled?
  */
-function is_encryption_enabled()
+function is_encryption_enabled() : bool
 {
     static $enabled = null;
     if ($enabled === null) {
@@ -54,7 +54,7 @@ function is_encryption_enabled()
  * @param  string $data Data to be encrypted
  * @return string Encrypted data, with magic marker
  */
-function encrypt_data($data)
+function encrypt_data(string $data) : string
 {
     require_lang('encryption');
 
@@ -107,7 +107,7 @@ function encrypt_data($data)
  * @param  string $data Data to check
  * @return boolean Encrypted?
  */
-function is_data_encrypted($data)
+function is_data_encrypted(string $data) : bool
 {
     if (!is_string($data)) {
         return false;
@@ -122,7 +122,7 @@ function is_data_encrypted($data)
  * @param  string $data Data
  * @return string Data, without the magic marker
  */
-function remove_magic_encryption_marker($data)
+function remove_magic_encryption_marker(string $data) : string
 {
     if (!is_data_encrypted($data)) {
         return $data;
@@ -138,7 +138,7 @@ function remove_magic_encryption_marker($data)
  * @param  string $passphrase Passphrase to unlock the site's private key
  * @return string Decrypted data
  */
-function decrypt_data($data, $passphrase)
+function decrypt_data(string $data, string $passphrase) : string
 {
     require_lang('encryption');
 

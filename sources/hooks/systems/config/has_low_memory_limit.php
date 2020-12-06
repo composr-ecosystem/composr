@@ -28,7 +28,7 @@ class Hook_config_has_low_memory_limit
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HAS_LOW_MEMORY_LIMIT',
@@ -51,7 +51,7 @@ class Hook_config_has_low_memory_limit
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return ((ini_get('memory_limit') == '-1' || ini_get('memory_limit') == '0' || ini_get('memory_limit') == '') ? '0' : null);
     }

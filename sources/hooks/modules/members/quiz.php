@@ -29,7 +29,7 @@ class Hook_members_quiz
      * @param  MEMBER $member_id The ID of the member we are getting links for
      * @return array List of pairs: title to value
      */
-    public function run($member_id)
+    public function run(int $member_id) : array
     {
         if (!addon_installed('quizzes')) {
             return [];
@@ -50,7 +50,7 @@ class Hook_members_quiz
      * @param  MEMBER $member_id The ID of the member we are getting sections for
      * @return array List of sections. Each tuple is Tempcode.
      */
-    public function get_sections($member_id)
+    public function get_sections(int $member_id) : array
     {
         if (!addon_installed('quizzes')) {
             return [];

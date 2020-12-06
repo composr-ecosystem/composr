@@ -30,7 +30,7 @@ class Hook_task_notify_topics_moved
      * @param  string $forum_name The name of the target forum
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($or_list, $forum_name)
+    public function run(string $or_list, string $forum_name) : ?array
     {
         if (!addon_installed('cns_forum')) {
             return null;

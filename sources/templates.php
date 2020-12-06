@@ -47,7 +47,7 @@ function init__templates()
  * @param  string $class CSS class to use
  * @return Tempcode The contents, put inside a standard box, according to the other parameters
  */
-function put_in_standard_box($content, $title = '', $type = 'default', $width = '', $options = '', $meta = '', $links = '', $top_links = '', $class = '')
+function put_in_standard_box(object $content, $title = '', string $type = 'default', string $width = '', string $options = '', string $meta = '', string $links = '', string $top_links = '', string $class = '') : object
 {
     if ($type == '') {
         $type = 'default';
@@ -102,7 +102,7 @@ function put_in_standard_box($content, $title = '', $type = 'default', $width = 
  * @param  ?mixed $sub Sub-title (null: none)
  * @return Tempcode The title Tempcode
  */
-function get_screen_title($title, $dereference_lang = true, $params = [], $user_online_title = null, $awards = [], $save_as_metadata = true, $sub = null)
+function get_screen_title($title, bool $dereference_lang = true, array $params = [], ?object $user_online_title = null, array $awards = [], bool $save_as_metadata = true, $sub = null) : object
 {
     global $TITLE_CALLED;
     $TITLE_CALLED = true;
@@ -170,7 +170,7 @@ function get_screen_title($title, $dereference_lang = true, $params = [], $user_
  * @param  ?ID_TEXT $overlay Open in overlay with the default link/form target being as follows (e.g. _top or _self) (null: an ordinary link)
  * @return Tempcode The generated hyperlink
  */
-function hyperlink($url, $caption, $external, $escape, $title = '', $accesskey = null, $post_data = null, $rel = null, $overlay = null)
+function hyperlink($url, $caption, bool $external, bool $escape, $title = '', ?string $accesskey = null, ?object $post_data = null, ?string $rel = null, ?string $overlay = null) : object
 {
     if (((is_object($caption)) && ($caption->is_empty())) || ((!is_object($caption)) && ($caption == ''))) {
         $caption = do_lang_tempcode('NA');
@@ -192,7 +192,7 @@ function hyperlink($url, $caption, $external, $escape, $title = '', $accesskey =
  * @param  ?string $class CSS classname (null: none)
  * @return Tempcode The generated div with contents
  */
-function div($tempcode, $guid = '', $class = null)
+function div(object $tempcode, string $guid = '', ?string $class = null) : object
 {
     return do_template('DIV', ['_GUID' => $guid, 'TEMPCODE' => $tempcode, 'CLASS' => $class]);
 }
@@ -205,7 +205,7 @@ function div($tempcode, $guid = '', $class = null)
  * @param  ?string $class CSS classname (null: none)
  * @return Tempcode The generated span with contents
  */
-function span($tempcode, $guid = '', $class = null)
+function span(object $tempcode, string $guid = '', ?string $class = null) : object
 {
     return do_template('SPAN', ['_GUID' => $guid, 'TEMPCODE' => $tempcode, 'CLASS' => $class]);
 }
@@ -218,7 +218,7 @@ function span($tempcode, $guid = '', $class = null)
  * @param  ?string $class CSS classname (null: none)
  * @return Tempcode The generated paragraph
  */
-function paragraph($text, $guid = '', $class = null)
+function paragraph($text, string $guid = '', ?string $class = null) : object
 {
     return do_template('PARAGRAPH', ['_GUID' => $guid, 'TEXT' => $text, 'CLASS' => $class]);
 }
@@ -233,7 +233,7 @@ function paragraph($text, $guid = '', $class = null)
  * @param  ?Tempcode $fields Fields to carry with on back button (null: none)
  * @return Tempcode The info page
  */
-function inform_screen($title, $text, $support_match_key_messages = false, $back_url = null, $fields = null)
+function inform_screen(object $title, $text, bool $support_match_key_messages = false, ?object $back_url = null, ?object $fields = null) : object
 {
     require_code('failure');
 
@@ -254,7 +254,7 @@ function inform_screen($title, $text, $support_match_key_messages = false, $back
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @return Tempcode The warn page
  */
-function warn_screen($title, $text, $provide_back = true, $support_match_key_messages = false)
+function warn_screen(object $title, $text, bool $provide_back = true, bool $support_match_key_messages = false) : object
 {
     require_code('failure');
     return _warn_screen($title, $text, $provide_back, $support_match_key_messages);
@@ -267,7 +267,7 @@ function warn_screen($title, $text, $provide_back = true, $support_match_key_mes
  * @param  mixed $value The value for this input field (string or Tempcode)
  * @return Tempcode The input field
  */
-function form_input_hidden($name, $value)
+function form_input_hidden(string $name, $value) : object
 {
     return do_template('FORM_SCREEN_INPUT_HIDDEN' . ((strpos($value, "\n") !== false) ? '_2' : ''), ['_GUID' => '1b39e13d1a09573c67522e2f3b7ebf14', 'NAME' => $name, 'VALUE' => $value]);
 }
@@ -279,7 +279,7 @@ function form_input_hidden($name, $value)
  * @param  Tempcode $entries List entries for group
  * @return Tempcode The group
  */
-function form_input_list_group($title, $entries)
+function form_input_list_group($title, object $entries) : object
 {
     if (browser_matches('ios')) { // Workaround to iOS bug
         $entries2 = new Tempcode();
@@ -302,7 +302,7 @@ function form_input_list_group($title, $entries)
  * @param  string $title The tooltip
  * @return Tempcode The input field
  */
-function form_input_list_entry($value, $selected = false, $text = '', $red = false, $disabled = false, $title = '')
+function form_input_list_entry(string $value, bool $selected = false, $text = '', bool $red = false, bool $disabled = false, string $title = '') : object
 {
     if ((!is_object($text)) && ($text == '')) {
         $text = $value;
@@ -332,7 +332,7 @@ function form_input_list_entry($value, $selected = false, $text = '', $red = fal
  * @param  boolean $using_textarea Whether to show using a textarea (more reliable to use clipboard to get from)
  * @return Tempcode Output
  */
-function with_whitespace($in, $using_textarea = false)
+function with_whitespace(string $in, bool $using_textarea = false) : object
 {
     if ($in == '') {
         return new Tempcode();
@@ -351,7 +351,7 @@ function with_whitespace($in, $using_textarea = false)
  * @set warn inform fatal
  * @return Tempcode Redirection message (likely to not actually be seen due to instant redirection)
  */
-function redirect_screen($title, $url, $text = null, $intermediary_hop = false, $msg_type = 'inform')
+function redirect_screen(?object $title, $url, $text = null, bool $intermediary_hop = false, string $msg_type = 'inform') : object
 {
     require_code('templates_redirect_screen');
     return _redirect_screen($title, $url, $text, $intermediary_hop, $msg_type);

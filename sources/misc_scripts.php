@@ -234,7 +234,7 @@ function preview_script()
  *
  * @ignore
  */
-function cron_bridge_script($caller)
+function cron_bridge_script(string $caller)
 {
     header('X-Robots-Tag: noindex');
 

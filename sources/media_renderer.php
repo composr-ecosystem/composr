@@ -55,7 +55,7 @@ function init__media_renderer()
  *
  * @param  integer $m The current media mode
  */
-function push_media_mode($m)
+function push_media_mode(int $m)
 {
     global $MEDIA_MODE;
     array_push($MEDIA_MODE, $m);
@@ -75,7 +75,7 @@ function pop_media_mode()
  *
  * @return integer The current media mode
  */
-function peek_media_mode()
+function peek_media_mode() : int
 {
     global $MEDIA_MODE;
     return $MEDIA_MODE[count($MEDIA_MODE) - 1];
@@ -93,7 +93,7 @@ function peek_media_mode()
  * @param  ?string $original_filename Originally filename to display as a link caption where appropriate (null: use $url_safe)
  * @return ?array The hooks (null: cannot find one)
  */
-function find_media_renderers($url, $attributes, $as_admin, $source_member, $acceptable_media = 15, $limit_to = null, $original_filename = null)
+function find_media_renderers(string $url, array $attributes, bool $as_admin, ?int $source_member, int $acceptable_media = 15, ?string $limit_to = null, ?string $original_filename = null) : ?array
 {
     if ($source_member === null) {
         $source_member = get_member();
@@ -206,7 +206,7 @@ function find_media_renderers($url, $attributes, $as_admin, $source_member, $acc
  * @param  ?string $original_filename Originally filename to display as a link caption where appropriate (null: use $url_safe)
  * @return ?Tempcode The rendered version (null: cannot render)
  */
-function render_media_url($url, $url_safe, $attributes, $as_admin = false, $source_member = null, $acceptable_media = 15, $limit_to = null, $url_to_scan_against = null, $original_filename = null)
+function render_media_url($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null, int $acceptable_media = 15, ?string $limit_to = null, ?string $url_to_scan_against = null, ?string $original_filename = null) : ?object
 {
     if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
         return null;
@@ -253,7 +253,7 @@ function render_media_url($url, $url_safe, $attributes, $as_admin = false, $sour
  *
  * @ignore
  */
-function _create_media_template_parameters($url, $attributes, $as_admin = false, $source_member = null, $prefer_natural_size = false, $url_direct_filesystem = null)
+function _create_media_template_parameters($url, array $attributes, bool $as_admin = false, ?int $source_member = null, bool $prefer_natural_size = false, ?string $url_direct_filesystem = null) : array
 {
     $_url = is_object($url) ? $url->evaluate() : $url;
     if ($url_direct_filesystem === null) {
@@ -418,7 +418,7 @@ abstract class Media_renderer_with_fallback
      * @param  ?mixed $click_url URL to route clicks through to (null: no special URL)
      * @return ?Tempcode Rendered version (null: do not render)
      */
-    public function fallback_render($url, $url_safe, $attributes, $as_admin, $source_member, $click_url = null)
+    public function fallback_render($url, $url_safe, array $attributes, bool $as_admin, ?int $source_member, $click_url = null) : ?object
     {
         if ((peek_media_mode() & MEDIA_LOWFI) != 0) {
             // Work out where to direct links to

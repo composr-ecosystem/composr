@@ -32,7 +32,7 @@ class Hook_ecommerce_wage
      * @param  ?ID_TEXT $search Product being searched for (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products($search = null)
+    public function get_products(?string $search = null) : array
     {
         $products = [
             'WAGE' => [
@@ -68,7 +68,7 @@ class Hook_ecommerce_wage
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
      */
-    public function get_needed_fields($type_code, $from_admin = false)
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
     {
         return null;
     }

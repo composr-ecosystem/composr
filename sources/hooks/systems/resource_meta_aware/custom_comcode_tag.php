@@ -30,7 +30,7 @@ class Hook_resource_meta_aware_custom_comcode_tag extends Hook_CMA
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info($zone = null, $get_extended_data = false)
+    public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
         if (!addon_installed('custom_comcode')) {
             return null;
@@ -123,7 +123,7 @@ class Hook_resource_meta_aware_custom_comcode_tag extends Hook_CMA
      *
      * @return array A map of heading codenames to Tempcode labels
      */
-    public function get_special_keymap_headings()
+    public function get_special_keymap_headings() : array
     {
         $headings = [];
 
@@ -138,7 +138,7 @@ class Hook_resource_meta_aware_custom_comcode_tag extends Hook_CMA
      * @param  array $row Database row
      * @return array A map of heading codenames to Tempcode values
      */
-    public function get_special_keymap($row)
+    public function get_special_keymap(array $row) : array
     {
         $keymap = [];
 

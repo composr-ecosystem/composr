@@ -25,7 +25,7 @@
  * @param  ID_TEXT $content_id Content ID
  * @return boolean Whether it is validated
  */
-function content_validated($content_type, $content_id)
+function content_validated(string $content_type, string $content_id) : bool
 {
     if (!addon_installed('unvalidated')) {
         return true;
@@ -45,7 +45,7 @@ function content_validated($content_type, $content_id)
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
  */
-function send_content_validated_notification($content_type, $content_id)
+function send_content_validated_notification(string $content_type, string $content_id)
 {
     require_code('content');
     list($content_title, $submitter_id, , , , $content_url_safe) = content_get_details($content_type, $content_id);
@@ -69,7 +69,7 @@ function send_content_validated_notification($content_type, $content_id)
  * @param  Tempcode $url The validation request will link to this URL
  * @param  ?MEMBER $member_id Member doing the submitting (null: current member)
  */
-function send_validation_request($type, $table, $non_integer_id, $id, $url, $member_id = null)
+function send_validation_request(string $type, string $table, bool $non_integer_id, string $id, object $url, ?int $member_id = null)
 {
     require_code('content');
     require_code('notifications');
@@ -117,7 +117,7 @@ function send_validation_request($type, $table, $non_integer_id, $id, $url, $mem
  * @param  ?MEMBER $member_id The member to give the points to (null: give to current member)
  * @return ?string A message about the member being given these submit points (null: no message)
  */
-function give_submit_points($type, $member_id = null)
+function give_submit_points(string $type, ?int $member_id = null) : ?string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -145,7 +145,7 @@ function give_submit_points($type, $member_id = null)
  * @param  IP $ip The IP address to probe
  * @return array The member IDs found
  */
-function wrap_probe_ip($ip)
+function wrap_probe_ip(string $ip) : array
 {
     if (strpos($ip, '*') !== false) {
         $a = $GLOBALS['SITE_DB']->query('SELECT DISTINCT member_id AS id FROM ' . get_table_prefix() . 'actionlogs WHERE ip LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'');
@@ -178,7 +178,7 @@ function wrap_probe_ip($ip)
  * @param  IP $ip The IP address to ban
  * @param  LONG_TEXT $descrip Explanation for ban
  */
-function wrap_add_ip_ban($ip, $descrip = '')
+function wrap_add_ip_ban(string $ip, string $descrip = '')
 {
     $ban = trim($ip);
     if (($ban != '') && (!compare_ip_address($ban, get_ip_address()))) {
@@ -199,7 +199,7 @@ function wrap_add_ip_ban($ip, $descrip = '')
  *
  * @param  IP $ip The IP address to unban
  */
-function wrap_remove_ip_ban($ip)
+function wrap_remove_ip_ban(string $ip)
 {
     require_code('failure');
 

@@ -21,7 +21,7 @@
  * @param  string $b Second string
  * @return integer Distance
  */
-function fake_levenshtein($a, $b)
+function fake_levenshtein(string $a, string $b) : int
 {
     // Some stripping, for performance, and because white space doesn't matter so much in HTML anyway
     $a = cms_preg_replace_safe('#\s#', '', $a);
@@ -52,7 +52,7 @@ class Hook_import_html_site
      *
      * @return ?array Importer handling details, including lists of all the import types covered (import types are not necessarily the same as actual tables) (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['supports_advanced_import'] = false;
@@ -69,7 +69,7 @@ class Hook_import_html_site
      * @param  string $file_base The probe path
      * @return array A quartet of the details (db_name, db_user, db_pass, table_prefix)
      */
-    public function probe_db_access($file_base)
+    public function probe_db_access(string $file_base) : array
     {
         return [null, null, null, null]; // No database connector needed
     }
@@ -79,7 +79,7 @@ class Hook_import_html_site
      *
      * @return Tempcode Extra fields
      */
-    public function get_extra_fields()
+    public function get_extra_fields() : object
     {
         // Give user options
         //  - where to copy files from [actually this field is in admin_import.php]
@@ -118,7 +118,7 @@ class Hook_import_html_site
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_pages($db, $table_prefix, $file_base)
+    public function import_pages(object $db, string $table_prefix, string $file_base)
     {
         appengine_live_guard();
 
@@ -509,7 +509,7 @@ class Hook_import_html_site
      * @param  PATH $file_base The base directory we are importing from
      * @return string Filtered HTML
      */
-    protected function _html_filter($file_contents, $fix_html, $base_url, $files, $file_base)
+    protected function _html_filter(string $file_contents, int $fix_html, string $base_url, array $files, string $file_base) : string
     {
         // If selected, clean up all the HTML
         if ($fix_html == 1) {

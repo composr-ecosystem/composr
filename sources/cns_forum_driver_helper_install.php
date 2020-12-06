@@ -46,7 +46,7 @@
  *
  * @ignore
  */
-function _helper_install_create_custom_field($this_ref, $name, $length, $locked = 1, $viewable = 0, $settable = 0, $required = 0, $description = '', $type = 'long_text', $encrypted = 0, $default = null, $options = '', $include_in_main_search = 0, $allow_template_search = 0, $icon = '', $section = '', $tempcode = '', $autofill_type = '', $autofill_hint = '')
+function _helper_install_create_custom_field(object $this_ref, string $name, int $length, int $locked = 1, int $viewable = 0, int $settable = 0, int $required = 0, string $description = '', string $type = 'long_text', int $encrypted = 0, ?string $default = null, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : bool
 {
     cns_require_all_forum_stuff();
     require_code('cns_members_action');
@@ -74,7 +74,7 @@ function _helper_install_create_custom_field($this_ref, $name, $length, $locked 
  *
  * @ignore
  */
-function _helper_install_specifics()
+function _helper_install_specifics() : array
 {
     $a = [];
     $a['name'] = 'cns_table_prefix';
@@ -112,7 +112,7 @@ function _helper_install_specifics()
  *
  * @ignore
  */
-function _helper_install_test_load_from($path)
+function _helper_install_test_load_from(string $path) : bool
 {
     global $PROBED_FORUM_CONFIG;
     $PROBED_FORUM_CONFIG['sql_database'] = 'cms';

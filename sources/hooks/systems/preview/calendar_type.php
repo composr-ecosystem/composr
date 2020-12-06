@@ -28,7 +28,7 @@ class Hook_preview_calendar_type
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('calendar')) && (get_page_name() == 'cms_calendar') && ((get_param_string('type', '') == 'add_category') || (get_param_string('type', '') == '_edit_category'));
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_calendar_type
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_code('uploads');
 

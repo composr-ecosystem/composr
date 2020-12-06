@@ -33,7 +33,7 @@
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
  * @return URLPATH The URL to the thumbnail
  */
-function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name = 'thumb_url', $thumb_width = null, $only_make_smaller = false)
+function _ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir, string $table, int $id, string $image_field_name = 'thumb_url', ?int $thumb_width = null, bool $only_make_smaller = false) : string
 {
     if ($thumb_width === null) {
         $thumb_width = intval(get_option('thumb_width'));
@@ -91,7 +91,7 @@ function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $imag
  *
  * @ignore
  */
-function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'uploads/auto_thumbs', $filename = null, $fallback_image = null, $algorithm = 'box', $where = 'both', $background = null, $only_make_smaller = false)
+function convert_image_plus(string $orig_url, ?string $dimensions = null, string $output_dir = 'uploads/auto_thumbs', ?string $filename = null, ?string $fallback_image = null, string $algorithm = 'box', string $where = 'both', ?string $background = null, bool $only_make_smaller = false) : string
 {
     cms_profile_start_for('convert_image_plus');
 
@@ -281,7 +281,7 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
  *
  * @ignore
  */
-function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on_error = true, $ext2 = null, $using_path = false, $only_make_smaller = false, $thumb_options = null)
+function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?int $box_size = null, bool $exit_on_error = true, ?string $ext2 = null, bool $using_path = false, bool $only_make_smaller = false, ?array $thumb_options = null) : string
 {
     disable_php_memory_limit();
     $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
@@ -686,7 +686,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
  * @param  PATH $to_path Path
  * @return URLPATH URL
  */
-function _image_path_to_url($to_path)
+function _image_path_to_url(string $to_path) : string
 {
     $file_base = get_custom_file_base();
     if (substr($to_path, 0, strlen($file_base) + 1) != $file_base . '/') {
@@ -705,7 +705,7 @@ function _image_path_to_url($to_path)
  * @param  boolean $exit_on_error Whether to exit Composr if an error occurs
  * @return boolean Success status
  */
-function check_memory_limit_for($file_path, $exit_on_error = true)
+function check_memory_limit_for(string $file_path, bool $exit_on_error = true) : bool
 {
     $ov = ini_get('memory_limit');
 
@@ -860,7 +860,7 @@ function remove_white_edges($source)
  * @param  ?string $thumb_url Pass the thumbnail back by reference (null: do not pass & do not collect a thumbnail)
  * @return ?URLPATH The URL (either to an independent upload, or the theme image, or a filedump URL) (null: leave alone, when doing an edit operation)
  */
-function post_param_image($name = 'image', $upload_to = null, $theme_image_type = null, $required = true, $is_edit = false, &$filename = null, &$thumb_url = null)
+function post_param_image(string $name = 'image', ?string $upload_to = null, ?string $theme_image_type = null, bool $required = true, bool $is_edit = false, ?string &$filename = null, ?string &$thumb_url = null) : ?string
 {
     require_code('uploads');
 
@@ -983,7 +983,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
  * @param  ?PATH $delete_on_error File path to delete if there's an error (null: none)
  * @return string Altered $val
  */
-function check_form_field_image($name, $val, $delete_on_error = null)
+function check_form_field_image(string $name, string $val, ?string $delete_on_error = null) : string
 {
     if ($val == '') {
         return '';

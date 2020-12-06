@@ -26,7 +26,7 @@
  * @param  string $mime_email The e-mail
  * @return array A tuple: The spam report, and the spam score, raw response, HTTP message
  */
-function email_spam_check($mime_email)
+function email_spam_check(string $mime_email) : array
 {
     $spam_report = null;
     $spam_score = null;
@@ -70,7 +70,7 @@ function email_spam_check($mime_email)
  *
  * @ignore
  */
-function _imap_server_spec($host, $port, $type = null)
+function _imap_server_spec(string $host, int $port, ?string $type = null) : string
 {
     if ($type === 'pop3' || $type === 'pop3s' || $type === 'pop3s_nocert' || $type === 'pop3t' || $type === 'pop3t_nocert') {
         $is_pop3 = true;
@@ -135,7 +135,7 @@ function _imap_server_spec($host, $port, $type = null)
  * @param  string $password The password
  * @return array Map of folders (codenames to display labels)
  */
-function find_mail_folders($host, $port, $type, $username, $password)
+function find_mail_folders(string $host, int $port, ?string $type, string $username, string $password) : array
 {
     if (!function_exists('imap_open')) {
         warn_exit(do_lang_tempcode('IMAP_NEEDED'));
@@ -176,7 +176,7 @@ function find_mail_folders($host, $port, $type, $username, $password)
  * @param  ?string $password The password (null: use configured)
  * @return ?TIME Last bounce time (null: not bounced)
  */
-function can_email_member($member_id, $host = null, $port = null, $type = null, $folder = null, $username = null, $password = null)
+function can_email_member(int $member_id, ?string $host = null, ?int $port = null, ?string $type = null, ?string $folder = null, ?string $username = null, ?string $password = null) : ?int
 {
     $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
     if ($email == '') {
@@ -199,7 +199,7 @@ function can_email_member($member_id, $host = null, $port = null, $type = null, 
  * @param  ?string $password The password (null: use configured)
  * @return ?TIME Last bounce time (null: not bounced)
  */
-function is_mail_bounced($email, $host = null, $port = null, $type = null, $folder = null, $username = null, $password = null)
+function is_mail_bounced(string $email, ?string $host = null, ?int $port = null, ?string $type = null, ?string $folder = null, ?string $username = null, ?string $password = null) : ?int
 {
     if ($email == '') {
         return null;
@@ -238,7 +238,7 @@ function is_mail_bounced($email, $host = null, $port = null, $type = null, $fold
  * @param  string $password The password
  * @param  ?TIME $since Only find bounces since this date (null: 8 weeks ago). This is approximate, we will actually look from a bit further back to compensate for possible timezone differences
  */
-function update_bounce_storage($host, $port, $type, $folder, $username, $password, $since = null)
+function update_bounce_storage(string $host, int $port, string $type, string $folder, string $username, string $password, ?int $since = null)
 {
     if ($since === null) {
         $since = time() - 60 * 60 * 24 * 7 * 8;
@@ -285,7 +285,7 @@ function update_bounce_storage($host, $port, $type, $folder, $username, $passwor
  * @param  ?TIME $since Only find bounces since this date (null: 8 weeks ago). This is approximate, we will actually look from a bit further back to compensate for possible timezone differences
  * @return array Bounces (a map between email address and details of the bounce)
  */
-function find_mail_bounces($host, $port, $type, $folder, $username, $password, $since = null)
+function find_mail_bounces(string $host, int $port, string $type, string $folder, string $username, string $password, ?int $since = null) : array
 {
     if ($since === null) {
         $since = time() - 60 * 60 * 24 * 7 * 8;
@@ -325,7 +325,7 @@ function find_mail_bounces($host, $port, $type, $folder, $username, $password, $
  *
  * @ignore
  */
-function _find_mail_bounces($host, $port, $type, $folder, $username, $password, $bounces_only = true, $since = null)
+function _find_mail_bounces(string $host, int $port, string $type, string $folder, string $username, string $password, bool $bounces_only = true, ?int $since = null) : array
 {
     if (!function_exists('imap_open')) {
         warn_exit(do_lang_tempcode('IMAP_NEEDED'));
@@ -436,7 +436,7 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = [])
+    public function __construct(array $advanced_parameters = [])
     {
         $this->line_term = "\n";
 
@@ -449,7 +449,7 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      * @param  array $advanced_parameters List of advanced parameters
      * @return boolean Whether the dispatcher instance is capable of sending e-mails
      */
-    public function is_dispatcher_available($advanced_parameters)
+    public function is_dispatcher_available(array $advanced_parameters) : bool
     {
         return true;
     }
@@ -469,7 +469,7 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain)
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
     {
         $worked = false;
         $error = null;
@@ -509,7 +509,7 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      * @param  string $additional_flags Additional stuff to send to sendmail executable
      * @return boolean Success status
      */
-    protected function manualproc_mail($to, $subject, $message, $additional_headers, $additional_flags = '')
+    protected function manualproc_mail(string $to, string $subject, string $message, string $additional_headers, string $additional_flags = '') : bool
     {
         $descriptorspec = [
             0 => ['pipe', 'r'], // stdin is a pipe that the child will read from

@@ -28,7 +28,7 @@ class Hook_snippet_calendar_recurrence_suggest
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('calendar')) {
             return new Tempcode();

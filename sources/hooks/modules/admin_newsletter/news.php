@@ -29,7 +29,7 @@ class Hook_whatsnew_news
      * @param  TIME $updated_since The time that there must be entries found newer than
      * @return ?array Tuple of result details: HTML list of all types that can be chosen, title for selection list (null: disabled)
      */
-    public function choose_categories($updated_since)
+    public function choose_categories(int $updated_since) : ?array
     {
         if (!addon_installed('news')) {
             return null;
@@ -51,7 +51,7 @@ class Hook_whatsnew_news
      * @param  BINARY $in_full Whether to use full article instead of summary
      * @return array Tuple of result details
      */
-    public function run($cutoff_time, $lang, $filter, $in_full = 1)
+    public function run(int $cutoff_time, string $lang, string $filter, int $in_full = 1) : array
     {
         if (!addon_installed('news')) {
             return [];

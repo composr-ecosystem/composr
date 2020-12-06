@@ -84,7 +84,7 @@ function init__config()
  *
  * @return boolean Whether to run in multi-lang mode
  */
-function multi_lang()
+function multi_lang() : bool
 {
     global $MULTI_LANG_CACHE;
 
@@ -172,7 +172,7 @@ function load_value_options()
  * @param  boolean $missing_ok Where to accept a missing option (and return null)
  * @return ?SHORT_TEXT The value (null: either null value, or no option found while $missing_ok set)
  */
-function get_theme_option($name, $default = null, $theme = null, $missing_ok = false)
+function get_theme_option(string $name, ?string $default = null, ?string $theme = null, bool $missing_ok = false) : ?string
 {
     // Look in theme.ini, if there is one
     if ($theme === null) {
@@ -369,7 +369,7 @@ function get_theme_option($name, $default = null, $theme = null, $missing_ok = f
  * @param  boolean $missing_ok Where to accept a missing option (and return null)
  * @return ?SHORT_TEXT The value (null: either null value, or no option found while $missing_ok set)
  */
-function get_option($name, $missing_ok = false)
+function get_option(string $name, bool $missing_ok = false) : ?string
 {
     global $CONFIG_OPTIONS_CACHE, $CONFIG_OPTIONS_FULLY_LOADED, $SMART_CACHE;
 
@@ -471,7 +471,7 @@ function get_option($name, $missing_ok = false)
  * @param  boolean $env_also Whether to also check server environmental variables. Only use if $elective_or_lengthy is set to false
  * @return ?SHORT_TEXT The value (null: value not found and default is null)
  */
-function get_value($name, $default = null, $elective_or_lengthy = false, $env_also = false)
+function get_value(string $name, ?string $default = null, bool $elective_or_lengthy = false, bool $env_also = false) : ?string
 {
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
@@ -529,7 +529,7 @@ function get_value($name, $default = null, $elective_or_lengthy = false, $env_al
  * @param  boolean $elective_or_lengthy Whether this value is an elective/lengthy one. Use this for getting & setting if you don't want it to be loaded up in advance for every page view (in bulk alongside other values), or if the value may be more than 255 characters. Performance trade-off: frequently used values should not be elective, infrequently used values should be elective.
  * @return ?SHORT_TEXT The value (null: value newer than not found)
  */
-function get_value_newer_than($name, $cutoff, $elective_or_lengthy = false)
+function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengthy = false) : ?string
 {
     if ($elective_or_lengthy) {
         return $GLOBALS['SITE_DB']->query_value_if_there('SELECT the_value FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'values_elective WHERE date_and_time>' . strval($cutoff) . ' AND ' . db_string_equal_to('the_name', $name));
@@ -569,7 +569,7 @@ function get_value_newer_than($name, $cutoff, $elective_or_lengthy = false)
  * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
  * @return SHORT_TEXT The value just set, same as $value (just as a nicety so that Commandr users can see something "happen")
  */
-function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false)
+function set_value(string $name, ?string $value, bool $elective_or_lengthy = false, bool $fail_ok = false) : string
 {
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
@@ -599,7 +599,7 @@ function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false
  * @param  ID_TEXT $name The name of the value
  * @param  boolean $elective_or_lengthy Whether this value is an elective/lengthy one. Use this for getting & setting if you don't want it to be loaded up in advance for every page view (in bulk alongside other values), or if the value may be more than 255 characters. Performance trade-off: frequently used values should not be elective, infrequently used values should be elective.
  */
-function delete_value($name, $elective_or_lengthy = false)
+function delete_value(string $name, bool $elective_or_lengthy = false)
 {
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
@@ -621,7 +621,7 @@ function delete_value($name, $elective_or_lengthy = false)
  *
  * @param  array $values List of names of the values
  */
-function delete_values($values)
+function delete_values(array $values)
 {
     if (empty($values)) {
         return;
@@ -644,7 +644,7 @@ function delete_values($values)
  * @param  ID_TEXT $stat The codename for the stat
  * @param  integer $increment What to increment the statistic by
  */
-function update_stat($stat, $increment)
+function update_stat(string $stat, int $increment)
 {
     if (running_script('stress_test_loader')) {
         return;
@@ -665,7 +665,7 @@ function update_stat($stat, $increment)
  * @set 0 1
  * @return ID_TEXT The inverted value
  */
-function invert_value($old)
+function invert_value(string $old) : string
 {
     if ($old == '1') {
         return '0';

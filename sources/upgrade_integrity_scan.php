@@ -34,7 +34,7 @@ function init__upgrade_integrity_scan()
  * @ignore
  * @return string Output messages
  */
-function upgrader_integrity_scan_screen()
+function upgrader_integrity_scan_screen() : string
 {
     $allow_merging = either_param_integer('allow_merging', 0);
     return run_integrity_check(false, $allow_merging == 1);
@@ -46,7 +46,7 @@ function upgrader_integrity_scan_screen()
  * @param  boolean $previous Whether to use data for the previous version
  * @return array Master data
  */
-function load_integrity_manifest($previous = false)
+function load_integrity_manifest(bool $previous = false) : array
 {
     $path = get_file_base() . '/data/' . ($previous ? 'files_previous.bin' : 'files.bin');
     $manifest = @unserialize(cms_file_get_contents_safe($path, FILE_READ_LOCK));
@@ -62,7 +62,7 @@ function load_integrity_manifest($previous = false)
  * @param  array $manifest Manifest of file checksums
  * @return array A pair: List of hook files, List of files
  */
-function load_files_list_of_installed_addons($manifest)
+function load_files_list_of_installed_addons(array $manifest) : array
 {
     // We'll need to know about stuff in our addon registry, and file manifest
     if (function_exists('find_all_hooks')) {
@@ -113,7 +113,7 @@ function load_files_list_of_installed_addons($manifest)
  * @param  boolean $unix_help Whether to give some help to unix people
  * @return string Results
  */
-function run_integrity_check($basic = false, $allow_merging = true, $unix_help = false)
+function run_integrity_check(bool $basic = false, bool $allow_merging = true, bool $unix_help = false) : string
 {
     $ret_str = '';
     $found_something = false;
@@ -348,7 +348,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
  *
  * @return array Pair: HTML list of moved files, raw list
  */
-function move_modules_ui()
+function move_modules_ui() : array
 {
     $out = '';
     $outr = [];
@@ -388,7 +388,7 @@ function move_modules_ui()
  * @param  boolean $allow_merging Whether merging of CSS changes is allowed
  * @return array Tuple of various kinds of outdated/missing files
  */
-function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files, $allow_merging)
+function check_outdated__handle_overrides(string $dir, string $rela, array &$manifest, array &$hook_files, bool $allow_merging) : array
 {
     $outdated__outdated_original_and_override = '';
     $outdated__possibly_outdated_override = '';
@@ -494,7 +494,7 @@ function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files,
  * @param  ?array $files List of verbatim files (a map: relative file paths as keys of map) (null: unknown, load them from files.day manifest)
  * @return array A pair: HTML list of alien files, HTML list of addon files
  */
-function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_files = null, $files = null)
+function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $addon_files = null, ?array $old_files = null, ?array $files = null) : array
 {
     if ($addon_files === null) {
         $addon_files = collapse_2d_complexity('filepath', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath', 'addon_name']));
@@ -620,7 +620,7 @@ function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_f
  * @ignore
  * @return string Output messages
  */
-function upgrader__integrity_scan_screen()
+function upgrader__integrity_scan_screen() : string
 {
     $_op_list = post_param_string('_op_list', null);
     if ($_op_list !== null) {
@@ -680,7 +680,7 @@ function upgrader__integrity_scan_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader_addon_remove_screen()
+function upgrader_addon_remove_screen() : string
 {
     $out = '';
 
@@ -706,7 +706,7 @@ function upgrader_addon_remove_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader__addon_remove_screen()
+function upgrader__addon_remove_screen() : string
 {
     $out = '';
 

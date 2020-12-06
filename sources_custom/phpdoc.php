@@ -877,12 +877,13 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
         'mixed' => null,
     ];
 
-    $_phpdoc_type = ltrim($phpdoc_type, '?~');
     $null_allowed = (strpos($phpdoc_type, '?') !== false);
+    $false_allowed = (strpos($phpdoc_type, '~') !== false);
+    $_phpdoc_type = ltrim($phpdoc_type, '?~');
 
     // Check PHP type is consistent with phpdoc type
     if (array_key_exists($_phpdoc_type, $valid_types)) {
-        $expected_php_type = $valid_types[$_phpdoc_type];
+        $expected_php_type = $false_allowed ? null : $valid_types[$_phpdoc_type];
 
         if ($php_type !== null) {
             if ($expected_php_type === null) {
@@ -908,7 +909,7 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             // Code write-back
             $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
             if ($name == '(return)') {
-                $funcdef_line_new = rtrim($funcdef_line_new) . ' : ' . $_expected_php_type . "\n";
+                $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type;
             } else {
                 $funcdef_line_new = preg_replace('#(&?(\.\.\.)?\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
             }

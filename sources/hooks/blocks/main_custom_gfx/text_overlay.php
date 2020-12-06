@@ -30,7 +30,7 @@ class Hook_main_custom_gfx_text_overlay
      * @param  object $block The block itself (contains utility methods)
      * @return Tempcode HTML to output
      */
-    public function run($map, &$block)
+    public function run(array $map, object &$block) : object
     {
         require_code('fonts');
         $test = check_ttf();

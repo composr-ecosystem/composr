@@ -28,7 +28,7 @@ class Hook_config_oembed_max_size
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'OEMBED_MAX_SIZE',
@@ -52,7 +52,7 @@ class Hook_config_oembed_max_size
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '200'; // A good example of a wide thing is an embedded Tweet
     }

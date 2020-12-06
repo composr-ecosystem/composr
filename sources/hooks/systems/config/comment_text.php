@@ -28,7 +28,7 @@ class Hook_config_comment_text
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMMENT_FORM_TEXT',
@@ -52,7 +52,7 @@ class Hook_config_comment_text
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return has_no_forum() ? null : static_evaluate_tempcode(do_template('COMMENTS_DEFAULT_TEXT'));
     }

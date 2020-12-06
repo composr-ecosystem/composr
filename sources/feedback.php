@@ -49,7 +49,7 @@ function init__feedback()
  * @param  ID_TEXT $old_category_id The old category ID, which we may have overridden the comment forum against
  * @return ID_TEXT The comment topic forum
  */
-function process_overridden_comment_forum($feedback_code, $id, $category_id, $old_category_id)
+function process_overridden_comment_forum(string $feedback_code, string $id, string $category_id, string $old_category_id) : string
 {
     $forum_id = find_overridden_comment_forum($feedback_code, $category_id);
 
@@ -77,7 +77,7 @@ function process_overridden_comment_forum($feedback_code, $id, $category_id, $ol
  * @param  ?ID_TEXT $category_id The category ID, which we may have overridden the comment forum against (null: no category ID to override against)
  * @return ID_TEXT The comment topic forum (may be integer as string, or string forum name - so use forum_id_from_name on the result)
  */
-function find_overridden_comment_forum($feedback_code, $category_id = null)
+function find_overridden_comment_forum(string $feedback_code, ?string $category_id = null) : string
 {
     if ($category_id !== null) {
         $comment_topic_forum = get_value('comment_forum__' . $feedback_code . '__' . $category_id);
@@ -101,7 +101,7 @@ function find_overridden_comment_forum($feedback_code, $category_id = null)
  * @param  ID_TEXT $content_type Content type
  * @return ID_TEXT Fixed content type
  */
-function _real_feedback_type($content_type)
+function _real_feedback_type(string $content_type) : string
 {
     if (substr($content_type, 0, 12) == 'catalogues__') {
         return 'catalogues';
@@ -116,7 +116,7 @@ function _real_feedback_type($content_type)
  * @param  ID_TEXT $content_id Content ID
  * @return array A tuple: Content title (null means unknown), Submitter (null means unknown), URL (for use within current browser session), URL (for use in e-mails / sharing), Content meta aware info array, Content row, Content object
  */
-function get_details_behind_feedback_code($content_type, $content_id)
+function get_details_behind_feedback_code(string $content_type, string $content_id) : array
 {
     require_code('content');
 
@@ -151,7 +151,7 @@ function get_details_behind_feedback_code($content_type, $content_id)
  * @param  ?TIME $time Time of comment topic (null: now)
  * @return array Tuple: Rating details, Comment details, Trackback details
  */
-function embed_feedback_systems($content_type, $content_id, $allow_rating, $allow_comments, $allow_trackbacks, $validated, $submitter, $content_url, $content_title, $forum, $time = null)
+function embed_feedback_systems(string $content_type, string $content_id, int $allow_rating, int $allow_comments, int $allow_trackbacks, int $validated, ?int $submitter, $content_url, string $content_title, ?string $forum, ?int $time = null) : array
 {
     $real_feedback_type = _real_feedback_type($content_type);
 
@@ -266,7 +266,7 @@ function post_comment_script()
  * @param  ?MEMBER $submitter Content owner (null: none)
  * @return Tempcode Tempcode for complete rating box
  */
-function get_rating_box($content_url, $content_title, $content_type, $content_id, $allow_rating, $submitter = null)
+function get_rating_box($content_url, ?string $content_title, string $content_type, string $content_id, bool $allow_rating, ?int $submitter = null) : object
 {
     if ($allow_rating) {
         return display_rating($content_url, $content_title, $content_type, $content_id, 'RATING_BOX', $submitter);
@@ -286,7 +286,7 @@ function get_rating_box($content_url, $content_title, $content_type, $content_id
  * @param  ?MEMBER $submitter Content owner (null: none)
  * @return Tempcode Tempcode for complete trackback box
  */
-function display_rating($content_url, $content_title, $content_type, $content_id, $display_tpl = 'RATING_INLINE_STATIC', $submitter = null)
+function display_rating($content_url, ?string $content_title, string $content_type, string $content_id, string $display_tpl = 'RATING_INLINE_STATIC', ?int $submitter = null) : object
 {
     if ($display_tpl == 'RATING_INLINE_STATIC') {
         $form_tpl = null;
@@ -313,7 +313,7 @@ function display_rating($content_url, $content_title, $content_type, $content_id
  * @param  ?MEMBER $submitter Content owner (null: none)
  * @return ?array Current rating information (ready to be passed into a template). RATING is the rating (out of 10), NUM_RATINGS is the number of ratings so far, RATING_FORM is the Tempcode of the rating box (null: rating disabled)
  */
-function get_rating_simple_array($content_url, $content_title, $content_type, $content_id, $form_tpl = 'RATING_FORM', $submitter = null)
+function get_rating_simple_array($content_url, ?string $content_title, string $content_type, string $content_id, ?string $form_tpl = 'RATING_FORM', ?int $submitter = null) : ?array
 {
     if (get_option('is_on_rating') == '1') {
         $real_feedback_type = _real_feedback_type($content_type);
@@ -457,7 +457,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
  * @return boolean Whether the resource has already been rated
  */
-function already_rated($rating_for_types, $content_id)
+function already_rated(array $rating_for_types, string $content_id) : bool
 {
     static $not = null;
     if ($not === null) {
@@ -519,7 +519,7 @@ function already_rated($rating_for_types, $content_id)
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know, but not first post so not important)
  */
-function actualise_rating($allow_rating, $content_type, $content_id, $content_url, $content_title)
+function actualise_rating(bool $allow_rating, string $content_type, string $content_id, $content_url, ?string $content_title)
 {
     if ((get_option('is_on_rating') == '0') || (!$allow_rating)) {
         return;
@@ -581,7 +581,7 @@ function actualise_give_rating_points()
  * @param  mixed $content_url The URL to where the commenting will pass back to (to put into the comment topic header) (URLPATH or Tempcode)
  * @param  ?string $content_title The title to where the commenting will pass back to (to put into the comment topic header) (null: don't know)
  */
-function actualise_specific_rating($rating, $page_name, $member_id, $content_type, $type, $content_id, $content_url, $content_title)
+function actualise_specific_rating(?int $rating, string $page_name, int $member_id, string $content_type, string $type, string $content_id, $content_url, ?string $content_title)
 {
     if ($rating !== null) {
         if (($rating > 10) || ($rating < 1)) {
@@ -717,7 +717,7 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
  * @param  ?Tempcode $hidden Hidden form fields for commenting form (null: none)
  * @return Tempcode The Tempcode for the comment topic
  */
-function get_comments($content_type, $allow_comments, $content_id, $invisible_if_no_comments = false, $forum = null, $post_warning = null, $_comments = null, $explicit_allow = false, $reverse = null, $highlight_by_user = null, $allow_reviews = false, $num_to_show_limit = null, $hidden = null)
+function get_comments(string $content_type, bool $allow_comments, string $content_id, bool $invisible_if_no_comments = false, ?string $forum = null, ?string $post_warning = null, $_comments = null, bool $explicit_allow = false, ?bool $reverse = null, ?int $highlight_by_user = null, bool $allow_reviews = false, ?int $num_to_show_limit = null, ?object $hidden = null) : object
 {
     if (((get_option('is_on_comments') == '1') && (get_forum_type() != 'none') && ((get_forum_type() != 'cns') || (addon_installed('cns_forum'))) && (($allow_reviews) || ($allow_comments))) || ($explicit_allow)) {
         $real_feedback_type = _real_feedback_type($content_type);
@@ -741,7 +741,7 @@ function get_comments($content_type, $allow_comments, $content_id, $invisible_if
  * @param  string $full_text Potentially complex topic title
  * @return string Simplified topic title
  */
-function extract_topic_identifier($full_text)
+function extract_topic_identifier(string $full_text) : string
 {
     $matches = [];
     if (preg_match('#: \#(.*)$#', $full_text, $matches) != 0) {
@@ -769,7 +769,7 @@ function extract_topic_identifier($full_text)
  * @param  ?TIME $time Time of comment topic (null: now)
  * @return boolean Whether a hidden post has been made
  */
-function actualise_post_comment($allow_comments, $content_type, $content_id, $content_url, $content_title, $forum = null, $do_captcha = true, $validated = null, $explicit_allow = false, $show_success_message = true, $private = false, $post_title = null, $post = null, $time = null)
+function actualise_post_comment(bool $allow_comments, string $content_type, string $content_id, $content_url, ?string $content_title, ?string $forum = null, bool $do_captcha = true, ?int $validated = null, bool $explicit_allow = false, bool $show_success_message = true, bool $private = false, ?string $post_title = null, ?string $post = null, ?int $time = null) : bool
 {
     if (!$explicit_allow) {
         if ((get_option('is_on_comments') == '0') || (!$allow_comments)) {
@@ -1018,7 +1018,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
  * @param  ?string $forum The name of the forum to use (null: default comment forum)
  * @param  ?AUTO_LINK $post_id ID of spacer post (null: unknown)
  */
-function update_spacer_post($allow_comments, $content_type, $content_id, $content_url, $content_title, $forum = null, $post_id = null)
+function update_spacer_post(bool $allow_comments, string $content_type, string $content_id, $content_url, ?string $content_title, ?string $forum = null, ?int $post_id = null)
 {
     if ((get_option('is_on_comments') == '0') || (!$allow_comments)) {
         return;
@@ -1080,7 +1080,7 @@ function update_spacer_post($allow_comments, $content_type, $content_id, $conten
  * @param  ID_TEXT $type The type of details being fetched (currently: blank or XML)
  * @return Tempcode Tempcode for complete trackback box
  */
-function get_trackbacks($content_type, $content_id, $allow_trackback, $type = '')
+function get_trackbacks(string $content_type, string $content_id, bool $allow_trackback, string $type = '') : object
 {
     if (($type != '') && ($type != 'xml')) {
         $type = '';
@@ -1167,7 +1167,7 @@ function get_trackbacks($content_type, $content_id, $allow_trackback, $type = ''
  * @param  ID_TEXT $content_id The ID of the type that this trackback is for
  * @return boolean Whether trackbacks are on
  */
-function actualise_post_trackback($allow_trackbacks, $content_type, $content_id)
+function actualise_post_trackback(bool $allow_trackbacks, string $content_type, string $content_id) : bool
 {
     if ((get_option('is_on_trackbacks') == '0') || (!$allow_trackbacks)) {
         return false;

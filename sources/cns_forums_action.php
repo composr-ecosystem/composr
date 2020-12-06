@@ -26,7 +26,7 @@
  * @param  BINARY $expanded_by_default Whether the forum grouping will be shown expanded by default (as opposed to contracted, where contained forums will not be shown until expansion)
  * @return AUTO_LINK The ID of the forum grouping just added
  */
-function cns_make_forum_grouping($title, $description, $expanded_by_default = 1)
+function cns_make_forum_grouping(string $title, string $description, int $expanded_by_default = 1) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_FORUM_GROUPING', null, $title);
@@ -77,7 +77,7 @@ function cns_make_forum_grouping($title, $description, $expanded_by_default = 1)
  * @param  BINARY $mail_unconfirmed_notice Mailing list policy: whether to highlight that members are not fully confirmed
  * @return AUTO_LINK The ID of the newly created forum
  */
-function cns_make_forum($name, $description, $forum_grouping_id, $access_mapping, $parent_forum, $position = 1, $post_count_increment = 1, $order_sub_alpha = 0, $intro_question = '', $intro_answer = '', $redirection = '', $order = 'last_post', $is_threaded = 0, $allows_anonymous_posts = 0, $mail_email_address = '', $mail_server_type = '', $mail_server_host = '', $mail_server_port = null, $mail_folder = '', $mail_username = '', $mail_password = '', $mail_nonmatch_policy = 'post_as_guest', $mail_unconfirmed_notice = 1)
+function cns_make_forum(string $name, string $description, ?int $forum_grouping_id, ?array $access_mapping, ?int $parent_forum, int $position = 1, int $post_count_increment = 1, int $order_sub_alpha = 0, string $intro_question = '', string $intro_answer = '', string $redirection = '', string $order = 'last_post', int $is_threaded = 0, int $allows_anonymous_posts = 0, string $mail_email_address = '', string $mail_server_type = '', string $mail_server_host = '', ?int $mail_server_port = null, string $mail_folder = '', string $mail_username = '', string $mail_password = '', string $mail_nonmatch_policy = 'post_as_guest', int $mail_unconfirmed_notice = 1) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_FORUM', null, $name);

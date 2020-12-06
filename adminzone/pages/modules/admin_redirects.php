@@ -33,7 +33,7 @@ class Module_admin_redirects
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -60,7 +60,7 @@ class Module_admin_redirects
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('redirects', [
@@ -117,7 +117,7 @@ class Module_admin_redirects
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('redirects_editor')) {
             return null;
@@ -137,7 +137,7 @@ class Module_admin_redirects
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('redirects_editor', $error_msg)) {
@@ -181,7 +181,7 @@ class Module_admin_redirects
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -211,7 +211,7 @@ class Module_admin_redirects
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -230,7 +230,7 @@ class Module_admin_redirects
      *
      * @return Tempcode The UI
      */
-    public function page()
+    public function page() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_page'], '_SELF');
         $existing = new Tempcode();
@@ -308,7 +308,7 @@ class Module_admin_redirects
      *
      * @return Tempcode The UI
      */
-    public function _page()
+    public function _page() : object
     {
         $found = [];
         foreach ($_POST as $key => $val) {
@@ -366,7 +366,7 @@ class Module_admin_redirects
      *
      * @return array A pair: Whether our redirect rules start in the file, the contents of the file
      */
-    protected function check_url_redirect_availability()
+    protected function check_url_redirect_availability() : array
     {
         if (!file_exists(get_file_base() . '/.htaccess')) {
             warn_exit(do_lang_tempcode('URL_REDIRECT_ERROR_MISSING_HTACCESS'));
@@ -393,7 +393,7 @@ class Module_admin_redirects
      *
      * @return Tempcode The UI
      */
-    public function url()
+    public function url() : object
     {
         // Run some basic checks...
 
@@ -511,7 +511,7 @@ class Module_admin_redirects
      * @param  string $in Quoted string
      * @return string Unquoted string
      */
-    protected function preg_unquote($in)
+    protected function preg_unquote(string $in) : string
     {
         $reps = [
             '\\.'  => '.',
@@ -543,7 +543,7 @@ class Module_admin_redirects
      *
      * @return Tempcode The UI
      */
-    public function _url()
+    public function _url() : object
     {
         list($ref_point_end, $c) = $this->check_url_redirect_availability();
 

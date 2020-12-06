@@ -28,7 +28,7 @@ class Hook_config_theme_header_type
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'THEME_HEADER_TYPE',
@@ -52,7 +52,7 @@ class Hook_config_theme_header_type
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'modern';
     }

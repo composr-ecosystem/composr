@@ -28,7 +28,7 @@ class Hook_config_password_reset_privacy
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PASSWORD_RESET_PRIVACY',
@@ -52,7 +52,7 @@ class Hook_config_password_reset_privacy
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'email';
     }

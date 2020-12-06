@@ -29,7 +29,7 @@
  * @param  resource $install_php_file File to write in to
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  */
-function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_file, $callback = null)
+function get_table_backup($log_file, string $db_meta, string $db_meta_indices, &$install_php_file, $callback = null)
 {
     push_db_scope_check(false);
 
@@ -131,7 +131,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  * @return Tempcode Success message
  */
-function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null) // This is called as a shutdown function and thus cannot script-timeout
+function make_backup(string $file, string $b_type = 'full', int $max_size = 100, $callback = null) // This is called as a shutdown function and thus cannot script-timeout : object
 {
     cms_disable_time_limit();
 
@@ -326,7 +326,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
  *
  * @return array A list of directories to backup
  */
-function directories_to_backup()
+function directories_to_backup() : array
 {
     // Zones
     $root_only_dirs = array_flip(find_all_zones(false, false, true));
@@ -389,7 +389,7 @@ function directories_to_backup()
  *
  * @param  string $file File to send
  */
-function deliver_remote_backup($file)
+function deliver_remote_backup(string $file)
 {
     $path_stub = get_custom_file_base() . '/exports/backups/';
     if (file_exists($path_stub . $file . '.tar.gz')) {

@@ -29,7 +29,7 @@ class Hook_notification_task_completed extends Hook_Notification
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         $list = [];
         $list['task_completed'] = [do_lang('tasks:TASK_COMPLETED'), do_lang('tasks:NOTIFICATION_TYPE_task_completed')];

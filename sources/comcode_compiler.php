@@ -102,7 +102,7 @@ function init__comcode_compiler()
  * @param  boolean $conservative Don't add things to WYSIWYG_COMCODE__HTML that may not be in some situations
  * @return integer The Comcode integration style
  */
-function wysiwyg_comcode_markup_style($tag, $attributes = null, $embed = null, $html_errors = false, $conservative = false)
+function wysiwyg_comcode_markup_style(string $tag, ?array $attributes = null, ?object $embed = null, bool $html_errors = false, bool $conservative = false) : int
 {
     global $BUTTON_EDITED_TAGS, $TEXTUAL_TAGS_WYSIWYG, $BLOCK_TAGS, $REVERSIBLE_TAGS, $CODE_TAGS;
 
@@ -189,7 +189,7 @@ function wysiwyg_comcode_markup_style($tag, $attributes = null, $embed = null, $
  * @param  boolean $html_errors Whether HTML structure errors have been spotted so far (limits how $semiparse_mode rendering works)
  * @return ?string The HTML (null: render as native HTML)
  */
-function add_wysiwyg_comcode_markup($tag, $attributes, $embed, $semihtml, $method = null, $html_errors = false)
+function add_wysiwyg_comcode_markup(string $tag, array $attributes, object $embed, bool $semihtml, ?int $method = null, bool $html_errors = false) : ?string
 {
     $semihtml = true; // It's effectively always on as we pre-escaped during semi-parse mode
 
@@ -332,7 +332,7 @@ function add_wysiwyg_comcode_markup($tag, $attributes, $embed, $semihtml, $metho
  *
  * @ignore
  */
-function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $db, $flags = 0, $highlight_bits = [], $on_behalf_of_member = null)
+function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_admin, ?string $pass_id, ?object $db, int $flags = 0, array $highlight_bits = [], ?int $on_behalf_of_member = null) : object
 {
     $comcode_parsing_hooks = find_all_hook_obs('systems', 'comcode_parsing', 'Hook_comcode_parsing_');
 
@@ -2178,7 +2178,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
  * @param  boolean $in_code_tag If in code tag
  * @return integer Updated flags
  */
-function _incorporate_flags_state($flags, $in_semihtml, $in_code_tag)
+function _incorporate_flags_state(int $flags, bool $in_semihtml, bool $in_code_tag) : int
 {
     $flags |= ($in_semihtml ? COMCODE_IS_ALL_SEMIHTML : 0);
     $flags |= ($in_code_tag ? COMCODE_IN_CODE_TAG : 0);
@@ -2192,7 +2192,7 @@ function _incorporate_flags_state($flags, $in_semihtml, $in_code_tag)
  * @param  array $tags The tags
  * @return boolean Whether one is present
  */
-function in_tag_stack($tag_stack, $tags)
+function in_tag_stack(array $tag_stack, array $tags) : bool
 {
     foreach ($tag_stack as $_temp) {
         if (in_array($_temp[0], $tags)) {
@@ -2222,7 +2222,7 @@ function in_tag_stack($tag_stack, $tags)
  *
  * @ignore
  */
-function _opened_tag($as_admin, $source_member, $attribute_map, $current_tag, $pos, $comcode_dangerous, $comcode_dangerous_html, $in_separate_parse_section, $in_html, $in_semihtml, $close, &$len, &$comcode)
+function _opened_tag(bool $as_admin, int $source_member, array $attribute_map, string $current_tag, int $pos, bool $comcode_dangerous, bool $comcode_dangerous_html, bool $in_separate_parse_section, bool $in_html, bool $in_semihtml, bool $close, int &$len, string &$comcode) : array
 {
     global $BLOCK_TAGS, $TEXTUAL_TAGS, $CODE_TAGS;
 
@@ -2284,7 +2284,7 @@ function _opened_tag($as_admin, $source_member, $attribute_map, $current_tag, $p
  * @param  array $allowed_html_seqs List of allowed HTML sequences
  * @return boolean Whether filtering happened (with jump-ahead in parser)
  */
-function filter_html_inclusion_list_at_tag_start($comcode, &$pos, &$continuation, $comcode_dangerous_html, $allowed_html_seqs)
+function filter_html_inclusion_list_at_tag_start(string $comcode, int &$pos, string &$continuation, bool $comcode_dangerous_html, array $allowed_html_seqs) : bool
 {
     if (!$comcode_dangerous_html) {
         // Special filtering required
@@ -2353,7 +2353,7 @@ function filter_html_inclusion_list_at_tag_start($comcode, &$pos, &$continuation
  * @param  boolean $in_html Whether the parser is/was in an HTML region
  * @param  boolean $in_semihtml Whether the parser is/was in a Semi-HTML region
  */
-function filter_html($as_admin, $source_member, $pos, &$len, &$comcode, $in_html, $in_semihtml)
+function filter_html(bool $as_admin, int $source_member, int $pos, int &$len, string &$comcode, bool $in_html, bool $in_semihtml)
 {
     if ((!$as_admin) && (!has_privilege($source_member, 'use_very_dangerous_comcode'))) {
         init_potential_js_naughty_array();
@@ -2414,7 +2414,7 @@ function filter_html($as_admin, $source_member, $pos, &$len, &$comcode, $in_html
  *
  * @ignore
  */
-function _obscure_html_callback($matches)
+function _obscure_html_callback(array $matches) : string
 {
     global $OBSCURE_REPLACEMENTS;
     $rep = uniqid('', true);
@@ -2432,7 +2432,7 @@ function _obscure_html_callback($matches)
  *
  * @ignore
  */
-function _close_open_lists($list_indent, $list_type)
+function _close_open_lists(int $list_indent, string $list_type) : array
 {
     $tag_output = '';
     for ($i = 0; $i < $list_indent; ++$i) { // Close any lists that exist
@@ -2451,7 +2451,7 @@ function _close_open_lists($list_indent, $list_type)
  * @param  string $tag The tag we're expecting to see here / a regexp
  * @return array A map of parsed attributes
  */
-function parse_single_comcode_tag($data, $tag = '\w+')
+function parse_single_comcode_tag(string $data, string $tag = '\w+') : array
 {
     $attributes = [];
     $_attributes = preg_replace('#^\[' . $tag . '\s*#', '', preg_replace('#\[/' . $tag . '\]$#Us', '', $data));

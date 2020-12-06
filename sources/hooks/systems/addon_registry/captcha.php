@@ -29,7 +29,7 @@ class Hook_addon_registry_captcha
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_captcha
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_captcha
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_captcha
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Stop spam-bots from performing actions on the website.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_captcha
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_members',
@@ -81,7 +81,7 @@ class Hook_addon_registry_captcha
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -96,7 +96,7 @@ class Hook_addon_registry_captcha
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_captcha
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/captcha.php',
@@ -176,7 +176,7 @@ class Hook_addon_registry_captcha
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/FORM_SCREEN_INPUT_CAPTCHA.tpl' => 'form_screen_input_captcha',
@@ -191,7 +191,7 @@ class Hook_addon_registry_captcha
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__form_screen_input_captcha()
+    public function tpl_preview__form_screen_input_captcha() : array
     {
         require_code('captcha');
         generate_captcha();
@@ -239,7 +239,7 @@ class Hook_addon_registry_captcha
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__captcha_loose()
+    public function tpl_preview__captcha_loose() : array
     {
         $name = placeholder_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', [

@@ -28,7 +28,7 @@ class Hook_stats_forum
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if (get_forum_type() != 'none') {
             $bits = new Tempcode();

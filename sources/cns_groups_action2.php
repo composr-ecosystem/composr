@@ -26,7 +26,7 @@
  * @param  ?array $group_row Database row for usergroup, passed for performance optimisation (null: lookup)
  * @return boolean The answer
  */
-function cns_may_control_group($group_id, $member_id, $group_row = null)
+function cns_may_control_group(int $group_id, int $member_id, ?array $group_row = null) : bool
 {
     if ($group_row === null) {
         $leader = cns_get_group_property($group_id, 'group_leader');
@@ -70,7 +70,7 @@ function cns_may_control_group($group_id, $member_id, $group_row = null)
  * @param  ?BINARY $is_private_club Whether this usergroup is a private club. Private clubs may be managed in the CMS zone, and do not have any special permissions - except over their own associated forum. (null: do not change)
  * @param  boolean $uniqify Whether to force the title as unique, if there's a conflict
  */
-function cns_edit_group($group_id, $name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold, $group_leader, $flood_control_submit_secs, $flood_control_access_secs, $max_daily_upload_mb, $max_attachments_per_post, $max_avatar_width, $max_avatar_height, $max_post_length_comcode, $max_sig_length_comcode, $gift_points_base, $gift_points_per_day, $enquire_on_new_ips, $is_presented_at_install, $hidden, $order, $rank_image_pri_only, $open_membership, $is_private_club, $uniqify = false)
+function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is_super_admin, ?int $is_super_moderator, ?string $title, ?string $rank_image, ?int $promotion_target, ?int $promotion_threshold, ?int $group_leader, ?int $flood_control_submit_secs, ?int $flood_control_access_secs, ?int $max_daily_upload_mb, ?int $max_attachments_per_post, ?int $max_avatar_width, ?int $max_avatar_height, ?int $max_post_length_comcode, ?int $max_sig_length_comcode, ?int $gift_points_base, ?int $gift_points_per_day, ?int $enquire_on_new_ips, ?int $is_presented_at_install, ?int $hidden, ?int $order, ?int $rank_image_pri_only, ?int $open_membership, ?int $is_private_club, bool $uniqify = false)
 {
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $name]);
     if (($test !== null) && ($test != $group_id)) {
@@ -197,7 +197,7 @@ function cns_edit_group($group_id, $name, $is_default, $is_super_admin, $is_supe
  * @param  AUTO_LINK $group_id The ID of the usergroup to delete
  * @param  ?GROUP $target_group The usergroup to move primary members to (null: main members)
  */
-function cns_delete_group($group_id, $target_group = null)
+function cns_delete_group(int $group_id, ?int $target_group = null)
 {
     $orig_target_group = $target_group;
     require_code('cns_groups');
@@ -277,7 +277,7 @@ function cns_delete_group($group_id, $target_group = null)
  * @param  GROUP $group_id The usergroup to apply to
  * @param  ?MEMBER $member_id The member applying (null: current member)
  */
-function cns_member_ask_join_group($group_id, $member_id = null)
+function cns_member_ask_join_group(int $group_id, ?int $member_id = null)
 {
     require_code('notifications');
 
@@ -347,7 +347,7 @@ function cns_member_ask_join_group($group_id, $member_id = null)
  * @param  GROUP $group_id The usergroup to remove from
  * @param  ?MEMBER $member_id The member leaving (null: current member)
  */
-function cns_member_leave_group($group_id, $member_id = null)
+function cns_member_leave_group(int $group_id, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -382,7 +382,7 @@ function cns_member_leave_group($group_id, $member_id = null)
  * @param  GROUP $id The usergroup
  * @param  BINARY $validated Whether the member is validated into the usergroup
  */
-function cns_add_member_to_group($member_id, $id, $validated = 1)
+function cns_add_member_to_group(int $member_id, int $id, int $validated = 1)
 {
     if (cns_is_ldap_member($member_id)) {
         return;
@@ -437,7 +437,7 @@ function cns_add_member_to_group($member_id, $id, $validated = 1)
  * @param  boolean $decline Whether the member is being declined membership
  * @param  string $reason The reason given for declining
  */
-function cns_member_validate_into_group($group_id, $prospective_member_id, $decline = false, $reason = '')
+function cns_member_validate_into_group(int $group_id, int $prospective_member_id, bool $decline = false, string $reason = '')
 {
     if (cns_is_ldap_member($prospective_member_id)) {
         return;
@@ -484,7 +484,7 @@ function cns_member_validate_into_group($group_id, $prospective_member_id, $decl
  * @param  GROUP $to The that is having its permissions replaced
  * @param  GROUP $from The that the permissions are being drawn from
  */
-function cns_group_absorb_privileges_of($to, $from)
+function cns_group_absorb_privileges_of(int $to, int $from)
 {
     _cns_group_absorb_privileges_of($to, $from, 'group_category_access');
     _cns_group_absorb_privileges_of($to, $from, 'group_zone_access');
@@ -503,7 +503,7 @@ function cns_group_absorb_privileges_of($to, $from)
  *
  * @ignore
  */
-function _cns_group_absorb_privileges_of($to, $from, $table, $id = 'group_id', $cns = false)
+function _cns_group_absorb_privileges_of(int $to, int $from, string $table, string $id = 'group_id', bool $cns = false)
 {
     if ($to == $from) {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));

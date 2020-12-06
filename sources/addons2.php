@@ -42,7 +42,7 @@ DEPENDENCY MANAGEMENT
  * @param  array $installing Addons being installed (a map between addon filename and addon details)
  * @param  array $uninstalling Addons being uninstalled (a map between addon name and addon details)
  */
-function resolve_addon_dependency_problems(&$installing, &$uninstalling)
+function resolve_addon_dependency_problems(array &$installing, array &$uninstalling)
 {
     require_lang('addons');
     require_code('addons');
@@ -129,7 +129,7 @@ CREATING ADDONS
  * @param  array $mtimes A map of file mtimes to use
  * @param  ?PATH $file_base Alternate file base to get addon files from (null: main website file base)
  */
-function create_addon($file, $files, $addon_name, $incompatibilities, $dependencies, $author, $organisation, $version, $category, $copyright_attribution, $licence, $description, $dir = 'exports/addons', $mtimes = [], $file_base = null)
+function create_addon(string $file, array $files, string $addon_name, string $incompatibilities, string $dependencies, string $author, string $organisation, string $version, string $category, string $copyright_attribution, string $licence, string $description, string $dir = 'exports/addons', array $mtimes = [], ?string $file_base = null)
 {
     require_code('tar');
 
@@ -245,7 +245,7 @@ QUERYING ADDONS
  * @param  array $already_known Addons we already have details for, performance optimisation
  * @return array Maps of maps describing the available addons (filename => details)
  */
-function find_available_addons($installed_too = true, $gather_mtimes = true, $already_known = [])
+function find_available_addons(bool $installed_too = true, bool $gather_mtimes = true, array $already_known = []) : array
 {
     $addons_available_for_installation = [];
     $files = [];
@@ -337,7 +337,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
  *
  * @return array Map of addon ID to addon title
  */
-function find_remote_addons()
+function find_remote_addons() : array
 {
     static $addons = [];
     if (!empty($addons)) {
@@ -367,7 +367,7 @@ function find_remote_addons()
  * @param  boolean $get_dependencies Whether to search for dependencies (only applies if $get_info is true)
  * @return array Map of maps describing the available addons (addon name => details)
  */
-function find_installed_addons($just_non_bundled = false, $get_info = true, $get_dependencies = false)
+function find_installed_addons(bool $just_non_bundled = false, bool $get_info = true, bool $get_dependencies = false) : array
 {
     $addons_installed = [];
 
@@ -406,7 +406,7 @@ function find_installed_addons($just_non_bundled = false, $get_info = true, $get
  * @param  string $addon_name The name of the addon
  * @return array List of dependencies
  */
-function find_addon_dependencies_on($addon_name)
+function find_addon_dependencies_on(string $addon_name) : array
 {
     // From DB
     $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 0], 'ORDER BY addon_name'));
@@ -464,7 +464,7 @@ INSTALLING ADDONS
  * @param  boolean $always_return Whether to make sure we always return, rather than possibly bombing out with a dependency management UI
  * @return array Triple: warnings, files, addon info array
  */
-function inform_about_addon_install($file, $also_uninstalling = [], $also_installing = [], $always_return = false)
+function inform_about_addon_install(string $file, array $also_uninstalling = [], array $also_installing = [], bool $always_return = false) : array
 {
     $full = get_custom_file_base() . '/imports/addons/' . $file;
 
@@ -705,7 +705,7 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
  * @param  ID_TEXT $dependency Feature name
  * @return boolean Whether it is
  */
-function has_feature($dependency)
+function has_feature(string $dependency) : bool
 {
     // Normalise
     $dependency = str_replace(' ', '', cms_strtolower_ascii(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
@@ -788,7 +788,7 @@ function has_feature($dependency)
  * @param  string $file Name of the addon TAR file
  * @return array List of paths that need to be writable
  */
-function get_addon_install_writable_paths($file)
+function get_addon_install_writable_paths(string $file) : array
 {
     $writable_paths = [];
 
@@ -813,7 +813,7 @@ function get_addon_install_writable_paths($file)
  * @param  boolean $do_db Do DB part
  * @param  boolean $clear_caches Whether to clear caches
  */
-function install_addon($file, $files = null, $do_files = true, $do_db = true, $clear_caches = true)
+function install_addon(string $file, ?array $files = null, bool $do_files = true, bool $do_db = true, bool $clear_caches = true)
 {
     require_code('zones2');
     require_code('zones3');
@@ -996,7 +996,7 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true, $c
  * @param  ID_TEXT $addon_name The addon name
  * @param  ?array $ini_info .ini-format info (needs processing) (null: unknown / N/A)
  */
-function reinstall_addon_soft($addon_name, $ini_info = null)
+function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
 {
     push_query_limiting(false);
 
@@ -1069,7 +1069,7 @@ UPGRADING ADDONS
  *
  * @return array List of addons updated
  */
-function find_updated_addons()
+function find_updated_addons() : array
 {
     static $updated_addons = null; // Cache
     if ($updated_addons === null) {
@@ -1133,7 +1133,7 @@ function find_updated_addons()
  * @param  string $addon_name The name of the addon
  * @return ?TIME Modification time (null: could not find any files)
  */
-function find_addon_effective_mtime($addon_name)
+function find_addon_effective_mtime(string $addon_name) : ?int
 {
     $addon_info = read_addon_info($addon_name);
 
@@ -1153,7 +1153,7 @@ function find_addon_effective_mtime($addon_name)
  * @param  ID_TEXT $addon_name The addon name
  * @return integer 0=No upgrade. -2=Not installed, 1=Upgrade
  */
-function upgrade_addon_soft($addon_name)
+function upgrade_addon_soft(string $addon_name) : int
 {
     require_code('files2');
     require_all_core_cms_code();
@@ -1202,7 +1202,7 @@ UNINSTALLING ADDONS
  * @param  boolean $always_return Whether to make sure we always return, rather than possibly bombing out with a dependency management UI
  * @return array Pair: warnings, files
  */
-function inform_about_addon_uninstall($addon_name, $also_uninstalling = [], $addon_info = null, $always_return = false)
+function inform_about_addon_uninstall(string $addon_name, array $also_uninstalling = [], ?array $addon_info = null, bool $always_return = false) : array
 {
     // Read/show info
     if ($addon_info === null) {
@@ -1263,7 +1263,7 @@ function inform_about_addon_uninstall($addon_name, $also_uninstalling = [], $add
  * @param  array $paths List of files
  * @return array A map between file path and addon
  */
-function find_addons_for_files($paths)
+function find_addons_for_files(array $paths) : array
 {
     if (empty($paths)) {
         return [];
@@ -1311,7 +1311,7 @@ function find_addons_for_files($paths)
  * @param  string $addon_name Name of the addon
  * @return array List of paths that need to be writable
  */
-function get_addon_uninstall_writable_paths($addon_name)
+function get_addon_uninstall_writable_paths(string $addon_name) : array
 {
     $addon_info = read_addon_info($addon_name);
 
@@ -1359,7 +1359,7 @@ function get_addon_uninstall_writable_paths($addon_name)
  * @param  string $addon_name Name of the addon
  * @param  boolean $clear_caches Whether to clear caches
  */
-function uninstall_addon($addon_name, $clear_caches = true)
+function uninstall_addon(string $addon_name, bool $clear_caches = true)
 {
     $addon_info = read_addon_info($addon_name);
 
@@ -1486,7 +1486,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
  *
  * @param  ID_TEXT $addon_name The addon name
  */
-function uninstall_addon_soft($addon_name)
+function uninstall_addon_soft(string $addon_name)
 {
     $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
 

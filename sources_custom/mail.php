@@ -40,7 +40,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      * @param  array $advanced_parameters List of advanced parameters
      * @return boolean Whether the dispatcher instance is capable of sending e-mails
      */
-    public function is_dispatcher_available($advanced_parameters)
+    public function is_dispatcher_available(array $advanced_parameters) : bool
     {
         $smtp_sockets_use = isset($advanced_parameters['smtp_sockets_use']) ? $advanced_parameters['smtp_sockets_use'] : null; // Whether to use SMTP sockets (null: default configured)
         if ($smtp_sockets_use === null) {
@@ -60,7 +60,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
-    public function dispatch($subject_line, $message_raw, $to_emails = null, $to_names = null, $from_email = '', $from_name = '')
+    public function dispatch(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
     {
         if ($from_email == '') {
             $from_email = $this->smtp_from_address;
@@ -84,7 +84,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain)
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
     {
         $worked = true;
         $error = null;

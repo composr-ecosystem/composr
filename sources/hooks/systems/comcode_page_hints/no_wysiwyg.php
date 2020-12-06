@@ -28,7 +28,7 @@ class Hook_comcode_page_hints_no_wysiwyg
      *
      * @return ?array Map of details (null: UI disabled for this hint)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return null; // Would confuse user as we already have a WYSIWYG enable/disable button
     }

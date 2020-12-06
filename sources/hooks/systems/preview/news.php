@@ -28,7 +28,7 @@ class Hook_preview_news
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('news')) && ((get_page_name() == 'cms_news') || (get_page_name() == 'cms_blogs')) && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
         return [$applies, 'news', false];
@@ -39,7 +39,7 @@ class Hook_preview_news
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         $original_comcode = post_param_string('post');
 

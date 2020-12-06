@@ -23,7 +23,7 @@
  *
  * @return boolean Whether it is
  */
-function permission_products_management_allowed()
+function permission_products_management_allowed() : bool
 {
     if (!has_actual_page_access(get_member(), 'admin_ecommerce')) {
         return false;
@@ -39,7 +39,7 @@ function permission_products_management_allowed()
  * @param  ?ID_TEXT $category_id Category ID (null: new)
  * @return Tempcode Form fields
  */
-function permission_product_form($resource_type, $category_id = null)
+function permission_product_form(string $resource_type, ?string $category_id = null) : object
 {
     if (!permission_products_management_allowed()) {
         return new Tempcode();
@@ -88,7 +88,7 @@ function permission_product_form($resource_type, $category_id = null)
  * @param  ID_TEXT $category_id Category ID
  * @return array Map
  */
-function _get_permission_product_save_map($resource_type, $category_id)
+function _get_permission_product_save_map(string $resource_type, string $category_id) : array
 {
     require_code('content');
     $module = convert_composr_type_codes('content_type', $resource_type, 'module');
@@ -111,7 +111,7 @@ function _get_permission_product_save_map($resource_type, $category_id)
  * @param  ID_TEXT $old_category_id Old category ID
  * @param  ?ID_TEXT $new_category_id New category ID (null: same as old category ID)
  */
-function permission_product_save($resource_type, $old_category_id, $new_category_id = null)
+function permission_product_save(string $resource_type, string $old_category_id, ?string $new_category_id = null)
 {
     if (!permission_products_management_allowed()) {
         return;
@@ -246,7 +246,7 @@ function permission_product_save($resource_type, $old_category_id, $new_category
  * @param  ID_TEXT $module The module
  * @param  ID_TEXT $category_id The category ID
  */
-function delete_prod_permission($module, $category_id)
+function delete_prod_permission(string $module, string $category_id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], ['p_module' => $module, 'p_category' => $category_id]);
 

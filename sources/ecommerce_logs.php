@@ -37,7 +37,7 @@ This file only contains the code for the sales log and code for viewing an indiv
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
  * @return ?array A pair: The sales table, pagination (null: none)
  */
-function build_sales_table($filter_member_id, $show_username = false, $show_delete = false, $max_default = 20, $empty_ok = false)
+function build_sales_table(?int $filter_member_id, bool $show_username = false, bool $show_delete = false, int $max_default = 20, bool $empty_ok = false) : ?array
 {
     require_code('templates_map_table');
     require_code('templates_results_table');
@@ -163,7 +163,7 @@ function build_sales_table($filter_member_id, $show_username = false, $show_dele
  * @param  boolean $show_order_actions Whether to show order actions
  * @return Tempcode The order details
  */
-function build_order_details($title, $id, $text, $show_order_actions = false)
+function build_order_details(object $title, int $id, object $text, bool $show_order_actions = false) : object
 {
     require_code('locations');
 

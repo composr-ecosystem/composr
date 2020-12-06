@@ -28,7 +28,7 @@ class Hook_cleanup_reorganise_uploads
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if ((get_option('reorganise_uploads') === null) || (get_option('reorganise_uploads') == '0')) {
             return null;
@@ -47,7 +47,7 @@ class Hook_cleanup_reorganise_uploads
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('tasks');
         return call_user_func_array__long_task(do_lang('config:REORGANISE_UPLOADS'), null, 'reorganise_uploads');

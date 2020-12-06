@@ -160,7 +160,7 @@ echo "Done\n";
  *
  * @return boolean Whether running as CLI
  */
-function fixperms_is_cli()
+function fixperms_is_cli() : bool
 {
     return (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
 }

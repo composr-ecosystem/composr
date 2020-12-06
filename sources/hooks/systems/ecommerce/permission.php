@@ -28,7 +28,7 @@ class Hook_ecommerce_permission
      *
      * @return ?array A tuple: list of [fields to shown, hidden fields], title for add form, add form (null: disabled)
      */
-    public function config()
+    public function config() : ?array
     {
         $fields = new Tempcode();
         $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('p_title'));
@@ -72,7 +72,7 @@ class Hook_ecommerce_permission
      * @param  LONG_TEXT $mail_body Confirmation mail body
      * @return Tempcode The fields
      */
-    protected function _get_fields($name_suffix = '', $title = '', $description = '', $enabled = 1, $price = 0.00, $tax_code = '0%', $price_points = null, $hours = null, $type = 'member_privileges', $privilege = '', $zone = '', $page = '', $module = '', $category = '', $mail_subject = '', $mail_body = '')
+    protected function _get_fields(string $name_suffix = '', string $title = '', string $description = '', int $enabled = 1, ?float $price = 0.00, string $tax_code = '0%', ?int $price_points = null, ?int $hours = null, string $type = 'member_privileges', string $privilege = '', string $zone = '', string $page = '', string $module = '', string $category = '', string $mail_subject = '', string $mail_body = '') : object
     {
         $fields = new Tempcode();
 
@@ -291,7 +291,7 @@ class Hook_ecommerce_permission
      * @param  ?ID_TEXT $search Product being searched for (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products($search = null)
+    public function get_products(?string $search = null) : array
     {
         $products = [];
 
@@ -352,7 +352,7 @@ class Hook_ecommerce_permission
      * @param  boolean $must_be_listed Whether the product must be available for public listing
      * @return integer The availability code (a ECOMMERCE_PRODUCT_* constant)
      */
-    public function is_available($type_code, $member_id, $req_quantity = 1, $must_be_listed = false)
+    public function is_available(string $type_code, int $member_id, int $req_quantity = 1, bool $must_be_listed = false) : int
     {
         if (is_guest($member_id)) {
             return ECOMMERCE_PRODUCT_NO_GUESTS;
@@ -381,7 +381,7 @@ class Hook_ecommerce_permission
      * @param  MEMBER $member_id The member it is for
      * @return array Permission map row
      */
-    protected function _get_map($row, $member_id)
+    protected function _get_map(array $row, int $member_id) : array
     {
         $map = ['member_id' => $member_id];
         switch ($row['p_type']) {
@@ -414,7 +414,7 @@ class Hook_ecommerce_permission
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
      */
-    public function get_needed_fields($type_code, $from_admin = false)
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
     {
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
@@ -430,7 +430,7 @@ class Hook_ecommerce_permission
      * @param  array $details Details of the product, with added keys: TXN_ID, STATUS, ORDER_STATUS
      * @return boolean Whether the product was automatically dispatched (if not then hopefully this function sent a staff notification)
      */
-    public function actualiser($type_code, $purchase_id, $details)
+    public function actualiser(string $type_code, string $purchase_id, array $details) : bool
     {
         if ($details['STATUS'] != 'Completed') {
             return false;
@@ -528,7 +528,7 @@ class Hook_ecommerce_permission
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return ?MEMBER The member ID (null: none)
      */
-    public function member_for($type_code, $purchase_id)
+    public function member_for(string $type_code, string $purchase_id) : ?int
     {
         return intval($purchase_id);
     }

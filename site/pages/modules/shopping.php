@@ -28,7 +28,7 @@ class Module_shopping
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Manuprathap';
@@ -63,7 +63,7 @@ class Module_shopping
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('shopping_cart', [
@@ -221,7 +221,7 @@ class Module_shopping
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('shopping')) {
             return null;
@@ -249,7 +249,7 @@ class Module_shopping
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('shopping', $error_msg)) {
@@ -310,7 +310,7 @@ class Module_shopping
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         @ignore_user_abort(true); // Must keep going till completion
 
@@ -365,7 +365,7 @@ class Module_shopping
      *
      * @return Tempcode The UI
      */
-    public function view_shopping_cart()
+    public function view_shopping_cart() : object
     {
         require_code('templates_results_table');
         require_code('form_templates');
@@ -476,7 +476,7 @@ class Module_shopping
      * @param  array $item Cart row
      * @param  ?array $tax_details Tax details (null: none known, look them up)
      */
-    protected function show_cart_entry(&$shopping_cart, $details, $item, $tax_details = null)
+    protected function show_cart_entry(object &$shopping_cart, array $details, array $item, ?array $tax_details = null)
     {
         $tpl_set = 'cart';
 
@@ -523,7 +523,7 @@ class Module_shopping
      *
      * @return Tempcode The UI
      */
-    public function add_item()
+    public function add_item() : object
     {
         if (is_guest()) {
             require_code('users_inactive_occasionals');
@@ -559,7 +559,7 @@ class Module_shopping
      *
      * @return Tempcode The UI
      */
-    public function update_cart()
+    public function update_cart() : object
     {
         $product_to_remove = [];
 
@@ -605,7 +605,7 @@ class Module_shopping
      *
      * @return Tempcode The UI
      */
-    public function empty_cart()
+    public function empty_cart() : object
     {
         empty_cart();
 
@@ -620,7 +620,7 @@ class Module_shopping
      *
      * @return Tempcode The interface
      */
-    public function my_orders()
+    public function my_orders() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');
@@ -674,7 +674,7 @@ class Module_shopping
      *
      * @return Tempcode The interface
      */
-    public function order_details()
+    public function order_details() : object
     {
         if (is_guest()) {
             access_denied('NOT_AS_GUEST');

@@ -100,7 +100,7 @@ function realtime_rain_script()
  * @param  TIME $to To time (inclusive)
  * @return array List of template parameter sets (perfect for use in a Tempcode LOOP)
  */
-function get_realtime_events($from, $to)
+function get_realtime_events(int $from, int $to) : array
 {
     //restrictify();
 
@@ -120,7 +120,7 @@ function get_realtime_events($from, $to)
  * @param  string $text Idealised title
  * @return Tempcode Cropped title, with tooltip for full title
  */
-function rain_truncate_for_title($text)
+function rain_truncate_for_title(string $text) : object
 {
     return protect_from_escaping(symbol_truncator([$text, '40', '1'], 'left'));
 }
@@ -131,7 +131,7 @@ function rain_truncate_for_title($text)
  * @param  IP $ip_address An IP address
  * @return URLPATH Country flag image (blank: could not find one)
  */
-function rain_get_country_image($ip_address)
+function rain_get_country_image(string $ip_address) : string
 {
     if ($ip_address == '') {
         return '';
@@ -156,7 +156,7 @@ function rain_get_country_image($ip_address)
  * @param  ?string $news News ticker news (null: no news ticker news)
  * @return array Map with an icon and multiplicity parameter
  */
-function rain_get_special_icons($ip_address, $timestamp, $user_agent = null, $news = null)
+function rain_get_special_icons(?string $ip_address, int $timestamp, ?string $user_agent = null, ?string $news = null) : array
 {
     $icon = null;
     $tooltip = '';

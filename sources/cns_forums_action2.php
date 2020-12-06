@@ -26,7 +26,7 @@
  * @param  SHORT_TEXT $description The description of the forum grouping
  * @param  BINARY $expanded_by_default Whether the forum grouping will be shown expanded by default (as opposed to contracted, where contained forums will not be shown until expansion)
  */
-function cns_edit_forum_grouping($forum_grouping_id, $title, $description, $expanded_by_default)
+function cns_edit_forum_grouping(int $forum_grouping_id, string $title, string $description, int $expanded_by_default)
 {
     $old_title = $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'c_title', ['id' => $forum_grouping_id]);
 
@@ -58,7 +58,7 @@ function cns_edit_forum_grouping($forum_grouping_id, $title, $description, $expa
  * @param  AUTO_LINK $forum_grouping_id The ID of the forum grouping we are editing
  * @param  ?AUTO_LINK $target_forum_grouping_id The ID of the forum grouping that we will move all the contained forum to (null: the first one)
  */
-function cns_delete_forum_grouping($forum_grouping_id, $target_forum_grouping_id = null)
+function cns_delete_forum_grouping(int $forum_grouping_id, ?int $target_forum_grouping_id = null)
 {
     if ($target_forum_grouping_id === null) {
         $target_forum_grouping_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT MIN(id) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forum_groupings WHERE id<>' . strval($forum_grouping_id));
@@ -110,7 +110,7 @@ function cns_delete_forum_grouping($forum_grouping_id, $target_forum_grouping_id
  * @param  BINARY $mail_unconfirmed_notice Mailing list policy: whether to highlight that members are not fully confirmed
  * @param  boolean $reset_intro_acceptance Whether to force forum rules to be re-agreed to, if they've just been changed
  */
-function cns_edit_forum($forum_id, $name, $description, $forum_grouping_id, $new_parent, $position, $post_count_increment, $order_sub_alpha, $intro_question, $intro_answer, $redirection, $order, $is_threaded, $allows_anonymous_posts, $mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice, $reset_intro_acceptance = false)
+function cns_edit_forum(int $forum_id, string $name, string $description, int $forum_grouping_id, ?int $new_parent, int $position, int $post_count_increment, int $order_sub_alpha, string $intro_question, string $intro_answer, string $redirection, string $order, int $is_threaded, int $allows_anonymous_posts, string $mail_email_address, string $mail_server_type, string $mail_server_host, ?int $mail_server_port, string $mail_folder, string $mail_username, string $mail_password, string $mail_nonmatch_policy, int $mail_unconfirmed_notice, bool $reset_intro_acceptance = false)
 {
     require_code('urls2');
     suggest_new_idmoniker_for('forumview', 'browse', strval($forum_id), '', $name);
@@ -207,7 +207,7 @@ function cns_edit_forum($forum_id, $name, $description, $forum_grouping_id, $new
  * @param  ?AUTO_LINK $target_forum_id The ID of the forum that topics will be moved to (null: root forum)
  * @param  BINARY $delete_topics Whether to delete topics instead of moving them to the target forum
  */
-function cns_delete_forum($forum_id, $target_forum_id = null, $delete_topics = 0)
+function cns_delete_forum(int $forum_id, ?int $target_forum_id = null, int $delete_topics = 0)
 {
     if ($target_forum_id === null) {
         $target_forum_id = db_get_first_id();
@@ -272,7 +272,7 @@ function cns_delete_forum($forum_id, $target_forum_id = null, $delete_topics = 0
  *
  * @param  AUTO_LINK $forum_id The ID of the forum
  */
-function cns_ping_forum_read_all($forum_id)
+function cns_ping_forum_read_all(int $forum_id)
 {
     $or_list = cns_get_all_subordinate_forums($forum_id, 't_forum_id');
     if ($or_list == '') {
@@ -305,7 +305,7 @@ function cns_ping_forum_read_all($forum_id)
  *
  * @param  AUTO_LINK $forum_id The ID of the forum
  */
-function cns_ping_forum_unread_all($forum_id)
+function cns_ping_forum_unread_all(int $forum_id)
 {
     $or_list = cns_get_all_subordinate_forums($forum_id, 't_forum_id');
     $topics = $GLOBALS['FORUM_DB']->query('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE (' . $or_list . ') AND t_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))));
@@ -327,7 +327,7 @@ function cns_ping_forum_unread_all($forum_id)
  *
  * @param  AUTO_LINK $forum_grouping_id The ID of the forum grouping
  */
-function cns_ensure_forum_grouping_exists($forum_grouping_id)
+function cns_ensure_forum_grouping_exists(int $forum_grouping_id)
 {
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['id' => $forum_grouping_id]);
     if ($test === null) {
@@ -341,7 +341,7 @@ function cns_ensure_forum_grouping_exists($forum_grouping_id)
  * @param  AUTO_LINK $forum_id The ID of the forum
  * @return SHORT_TEXT The name of the forum
  */
-function cns_ensure_forum_exists($forum_id)
+function cns_ensure_forum_exists(int $forum_id) : string
 {
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $forum_id]);
     if ($test === null) {

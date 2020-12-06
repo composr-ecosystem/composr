@@ -27,7 +27,7 @@
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The author box
  */
-function render_author_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_author_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -117,7 +117,7 @@ function authors_script()
  * @param  ID_TEXT $author The name of an author
  * @return ?MEMBER The member ID (null: none found)
  */
-function get_author_id_from_name($author)
+function get_author_id_from_name(string $author) : ?int
 {
     static $cache = [];
     if (array_key_exists($author, $cache)) {
@@ -142,7 +142,7 @@ function get_author_id_from_name($author)
  * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit) (blank: implicit)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  */
-function add_author($author, $url, $member_id, $description, $skills, $meta_keywords = '', $meta_description = '')
+function add_author(string $author, string $url, ?int $member_id, string $description, string $skills, ?string $meta_keywords = '', ?string $meta_description = '')
 {
     log_it('DEFINE_AUTHOR', $author, ($member_id === null) ? '' : strval($member_id));
 
@@ -196,7 +196,7 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
  *
  * @param  ID_TEXT $author The name of an author
  */
-function delete_author($author)
+function delete_author(string $author)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('authors', ['the_description', 'skills'], ['author' => $author], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -233,7 +233,7 @@ function delete_author($author)
  * @param  ID_TEXT $author An author
  * @return boolean Whether the member can edit this author
  */
-function has_edit_author_permission($member_id, $author)
+function has_edit_author_permission(int $member_id, string $author) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -254,7 +254,7 @@ function has_edit_author_permission($member_id, $author)
  * @param  ID_TEXT $author An author
  * @return boolean Whether the member can edit this author
  */
-function has_delete_author_permission($member_id, $author)
+function has_delete_author_permission(int $member_id, string $author) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -274,7 +274,7 @@ function has_delete_author_permission($member_id, $author)
  * @param  ID_TEXT $from The first author (being removed effectively)
  * @param  ID_TEXT $to The second author (subsuming the first)
  */
-function merge_authors($from, $to)
+function merge_authors(string $from, string $to)
 {
     $author_fields = $GLOBALS['SITE_DB']->query('SELECT m_name,m_table FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_name LIKE \'' . db_encode_like('%author') . '\'');
     foreach ($author_fields as $field) {

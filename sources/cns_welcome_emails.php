@@ -25,7 +25,7 @@
  * @param  ?array $member Member row (null: current member)
  * @return array A tuple: subject, message, message is-HTML, recipient name
  */
-function cns_prepare_welcome_email($mail, $member = null)
+function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
 {
     if ($member === null) {
         $member = $GLOBALS['FORUM_DRIVER']->get_member_row(get_member());

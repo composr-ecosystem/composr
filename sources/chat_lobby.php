@@ -60,7 +60,7 @@ function enter_chat_lobby()
  * @param  ?integer $max Maximum to show (null: default)
  * @return Tempcode The contact UI
  */
-function show_im_contacts($member_id = null, $simpler = false, $max = null)
+function show_im_contacts(?int $member_id = null, bool $simpler = false, ?int $max = null) : object
 {
     require_code('chat');
     require_lang('chat');
@@ -138,7 +138,7 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
  * @param  array $row The row of the chatroom to possibly prune
  * @return boolean Whether the room was pruned
  */
-function handle_chatroom_pruning($row)
+function handle_chatroom_pruning(array $row) : bool
 {
     $deletion_time = intval(get_option('chat_private_room_deletion_time'));
     if ($deletion_time == 0) {

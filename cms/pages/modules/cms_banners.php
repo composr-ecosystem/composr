@@ -48,7 +48,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('banners')) {
             return null;
@@ -80,7 +80,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('banners');
         return ['submit_cat_highrange_content' => [0, 'ADD_BANNER_TYPE'], 'edit_cat_highrange_content' => [0, 'EDIT_BANNER_TYPE'], 'delete_cat_highrange_content' => [0, 'DELETE_BANNER_TYPE'], 'submit_midrange_content' => [0, 'ADD_BANNER'], 'bypass_validation_midrange_content' => [0, 'BYPASS_VALIDATION_BANNER'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_BANNER'], 'edit_midrange_content' => [0, 'EDIT_BANNER'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_BANNER'], 'delete_midrange_content' => [0, 'DELETE_BANNER']];
@@ -93,7 +93,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('banners', $error_msg)) {
@@ -142,7 +142,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         //if ($GLOBALS['CURRENT_SHARE_USER'] !== null) warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
 
@@ -183,7 +183,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -207,7 +207,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
         require_lang('banners');
@@ -308,7 +308,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_banners') ? null : get_member();
         return create_selection_list_banners(null, $only_owned);
@@ -348,7 +348,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  SHORT_TEXT $title_text The title text for the banner (only used for text banners, and functions as the 'trigger text' if the banner type is shown inline)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields($name = '', $image_url = '', $site_url = '', $caption = '', $direct_code = '', $notes = '', $display_likelihood = 3, $campaign_remaining = 50, $deployment_agreement = 0, $expiry_date = null, $submitter = null, $validated = 1, $b_type = '', $b_types = [], $regions = [], $title_text = '')
+    public function get_form_fields(string $name = '', string $image_url = '', string $site_url = '', string $caption = '', string $direct_code = '', string $notes = '', int $display_likelihood = 3, ?int $campaign_remaining = 50, int $deployment_agreement = 0, ?int $expiry_date = null, ?int $submitter = null, int $validated = 1, string $b_type = '', array $b_types = [], array $regions = [], string $title_text = '') : array
     {
         if ($b_type == '') {
             $b_type = get_param_string('b_type', '');
@@ -385,7 +385,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('banners', ['submitter', 'add_date'], ['name' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -400,7 +400,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], ['name' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -420,7 +420,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $name = post_param_string('banner_codename');
         $caption = post_param_string('caption');
@@ -483,7 +483,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $orig_submitter = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'submitter', ['name' => $id]);
         if ($orig_submitter === null) {
@@ -529,7 +529,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         $b_type = post_param_string('b_type');
         $this->donext_type = $b_type;
@@ -545,7 +545,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, intval($id), $this->donext_type);
     }
@@ -555,7 +555,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function export_spreadsheet()
+    public function export_spreadsheet() : object
     {
         $_has_banner_network = $GLOBALS['SITE_DB']->query_select_value('banners', 'SUM(views_from)');
         $has_banner_network = (@intval($_has_banner_network) != 0);
@@ -682,7 +682,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('banners', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
@@ -693,7 +693,7 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('banners', $this->title);
@@ -725,7 +725,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -791,7 +791,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  BINARY $comcode_inline Whether the banner will be automatically shown via Comcode hot-text (this can only happen if banners of the title are given title-text)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $is_textual = 0, $image_width = 160, $image_height = 600, $max_file_size = 250, $comcode_inline = 0)
+    public function get_form_fields(?string $id = null, int $is_textual = 0, int $image_width = 160, int $image_height = 600, int $max_file_size = 250, int $comcode_inline = 0) : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -852,7 +852,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['SITE_DB']->query_select('banner_types', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -870,7 +870,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $id = post_param_string('new_id');
         $is_textual = post_param_integer('is_textual', 0);
@@ -905,7 +905,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $is_textual = post_param_integer('is_textual', 0);
         $image_width = post_param_integer('image_width');
@@ -939,7 +939,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_banner_type($id);
     }
@@ -952,7 +952,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, null, $id);
     }
@@ -966,7 +966,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  ID_TEXT $type The type ID we were working in
      * @return Tempcode The UI
      */
-    public function _do_next_manager($title, $description, $id, $type)
+    public function _do_next_manager(object $title, object $description, ?int $id, string $type) : object
     {
         require_code('templates_donext');
 

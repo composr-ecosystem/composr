@@ -28,7 +28,7 @@ class Hook_config_enable_add_topic_btn_in_topic
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ENABLE_ADD_TOPIC_BTN_IN_TOPIC',
@@ -51,7 +51,7 @@ class Hook_config_enable_add_topic_btn_in_topic
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('cns_forum')) {
             return null;

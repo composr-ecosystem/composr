@@ -49,7 +49,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('polls')) {
             return null;
@@ -80,7 +80,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('polls', $error_msg)) {
@@ -102,7 +102,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_code('polls');
         require_code('polls2');
@@ -124,7 +124,7 @@ class Module_cms_polls extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('polls');
         return ['submit_midrange_content' => [0, 'ADD_POLL'], 'bypass_validation_midrange_content' => [0, 'BYPASS_VALIDATION_POLL'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_POLL'], 'edit_midrange_content' => [0, 'EDIT_POLL'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_POLL'], 'delete_midrange_content' => [0, 'DELETE_POLL'], 'edit_own_highrange_content' => [0, 'EDIT_OWN_LIVE_POLL'], 'edit_highrange_content' => [0, 'EDIT_LIVE_POLL'], 'delete_own_highrange_content' => [0, 'DELETE_OWN_LIVE_POLL'], 'delete_highrange_content' => [0, 'DELETE_LIVE_POLL'], 'vote_in_polls' => 0];
@@ -135,7 +135,7 @@ class Module_cms_polls extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         require_code('fields');
@@ -156,7 +156,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -231,7 +231,7 @@ class Module_cms_polls extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_polls') ? null : get_member();
         $poll_list = create_selection_list_polls(null, $only_owned);
@@ -270,7 +270,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  LONG_TEXT $notes Notes for the poll
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $question = '', $a1 = '', $a2 = '', $a3 = '', $a4 = '', $a5 = '', $a6 = '', $a7 = '', $a8 = '', $a9 = '', $a10 = '', $current = true, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '')
+    public function get_form_fields(?int $id = null, string $question = '', string $a1 = '', string $a2 = '', string $a3 = '', string $a4 = '', string $a5 = '', string $a6 = '', string $a7 = '', string $a8 = '', string $a9 = '', string $a10 = '', bool $current = true, ?int $allow_rating = 1, ?int $allow_comments = 1, ?int $allow_trackbacks = 1, string $notes = '') : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -318,7 +318,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('poll', ['submitter', 'date_and_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -333,7 +333,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
@@ -349,7 +349,7 @@ class Module_cms_polls extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $question = post_param_string('question');
         $option1 = post_param_string('option1');
@@ -430,7 +430,7 @@ class Module_cms_polls extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $rows = $GLOBALS['SITE_DB']->query_select('poll', ['is_current', 'submitter', 'num_options'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -529,7 +529,7 @@ class Module_cms_polls extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('poll', ['is_current', 'submitter'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {

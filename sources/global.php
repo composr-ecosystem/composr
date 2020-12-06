@@ -29,7 +29,7 @@
  * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
  * @param  ?boolean $has_custom Whether this is going to be from under a custom directory (null: search). This is used for performance to avoid extra searching when we already know where a file is
  */
-function require_code($codename, $light_exit = false, $has_custom = null)
+function require_code(string $codename, bool $light_exit = false, ?bool $has_custom = null)
 {
     // Handle if already required...
 
@@ -283,7 +283,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
  *
  * @param  string $codename The codename for the source module to load
  */
-function require_code_no_override($codename)
+function require_code_no_override(string $codename)
 {
     global $REQUIRED_CODE;
     if (array_key_exists($codename, $REQUIRED_CODE)) {
@@ -303,7 +303,7 @@ function require_code_no_override($codename)
  * @param  ?string $path File path (null: N/A)
  * @return string Cleaned up file
  */
-function clean_php_file_for_eval($c, $path = null)
+function clean_php_file_for_eval(string $c, ?string $path = null) : string
 {
     $reps = [];
     $reps['?' . '>'] = '';
@@ -335,7 +335,7 @@ if (!class_exists('Error')) {
  * @param  boolean $light_exit Whether to cleanly fail when a source file is missing
  * @param  ?string $code File contents (null: use include not eval, which we prefer when possible as we benefit from opcode caching)
  */
-function call_included_code($path, $codename, $light_exit, $code = null)
+function call_included_code(string $path, string $codename, bool $light_exit, ?string $code = null)
 {
     $do_sed = function_exists('push_suppress_error_death');
     if ($do_sed) {
@@ -404,7 +404,7 @@ function call_included_code($path, $codename, $light_exit, $code = null)
  *
  * @return string Error message (blank: none)
  */
-function cms_error_get_last()
+function cms_error_get_last() : string
 {
     $error = error_get_last();
     if ($error === null) {
@@ -457,7 +457,7 @@ function cms_error_get_last()
  * @param  integer $times Number of times to replace (to expect to replace)
  * @return mixed Result (string or array)
  */
-function override_str_replace_exactly($search, $replace, $subject, $times = 1)
+function override_str_replace_exactly($search, $replace, $subject, int $times = 1)
 {
     $cnt = substr_count($subject, $search);
 
@@ -476,7 +476,7 @@ function override_str_replace_exactly($search, $replace, $subject, $times = 1)
  *
  * @return boolean If it is running as a live Google App Engine application
  */
-function appengine_is_live()
+function appengine_is_live() : bool
 {
     return (GOOGLE_APPENGINE) && (!is_writable(get_file_base() . '/sources/global.php'));
 }
@@ -487,7 +487,7 @@ function appengine_is_live()
  *
  * @return boolean If we are
  */
-function tacit_https()
+function tacit_https() : bool
 {
     static $tacit_https = null;
     if ($tacit_https === null) {
@@ -504,7 +504,7 @@ function tacit_https()
  * @param  array $parameters Array of parameters
  * @return ?object The object (null: could not create)
  */
-function object_factory($class, $failure_ok = false, $parameters = [])
+function object_factory(string $class, bool $failure_ok = false, array $parameters = []) : ?object
 {
     if (!class_exists($class)) {
         if ($failure_ok) {
@@ -524,7 +524,7 @@ function object_factory($class, $failure_ok = false, $parameters = [])
  * @param  string $function Function name
  * @return boolean Whether it is
  */
-function php_function_allowed($function)
+function php_function_allowed(string $function) : bool
 {
     static $cache = [];
     if (isset($cache[$function])) {
@@ -549,7 +549,7 @@ function php_function_allowed($function)
  * @param  string $value New value of option
  * @return ~string Old value of option (false: error)
  */
-function cms_ini_set($var, $value)
+function cms_ini_set(string $var, string $value)
 {
     if (!php_function_allowed('ini_set')) {
         return false;
@@ -573,7 +573,7 @@ function cms_flush_safe()
  *
  * @return PATH The file base, without a trailing slash
  */
-function get_file_base()
+function get_file_base() : string
 {
     global $FILE_BASE;
     return $FILE_BASE;
@@ -584,7 +584,7 @@ function get_file_base()
  *
  * @return PATH The file base, without a trailing slash
  */
-function get_custom_file_base()
+function get_custom_file_base() : string
 {
     global $FILE_BASE, $SITE_INFO;
     if (!empty($SITE_INFO['custom_file_base'])) {
@@ -608,7 +608,7 @@ function get_custom_file_base()
  * @param  boolean $preg Whether to just filter out the naughtiness
  * @return string Same as input string
  */
-function filter_naughty($in, $preg = false)
+function filter_naughty(string $in, bool $preg = false) : string
 {
     if (strpos($in, "\0") !== false) {
         log_hack_attack_and_exit('PATH_HACK');
@@ -635,7 +635,7 @@ function filter_naughty($in, $preg = false)
  * @param  boolean $preg Whether to just filter out the naughtiness
  * @return string Same as input string
  */
-function filter_naughty_harsh($in, $preg = false)
+function filter_naughty_harsh(string $in, bool $preg = false) : string
 {
     if (preg_match('#^[' . URL_CONTENT_REGEXP . ']*$#D', $in) !== 0) {
         return $in;
@@ -710,7 +710,7 @@ function fixup_bad_php_env_vars_pre()
  * @param  SHORT_TEXT $cidr CIDR range (e.g. 204.93.240.0/24)
  * @return boolean Whether it is
  */
-function ip_cidr_check($ip, $cidr)
+function ip_cidr_check(string $ip, string $cidr) : bool
 {
     if ((strpos($ip, ':') === false) !== (strpos($cidr, ':') === false)) {
         return false; // Different IP address type

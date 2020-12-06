@@ -28,7 +28,7 @@ class Hook_config_is_on_anonymous_posts
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'IS_ON_ANONYMOUS_POSTS_PRIVATE_TOPICS',
@@ -51,7 +51,7 @@ class Hook_config_is_on_anonymous_posts
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('cns_forum')) {
             return null;

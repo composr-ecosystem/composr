@@ -28,7 +28,7 @@ class Hook_commandr_fs_extended_member__point_charges
      *
      * @return boolean Whether it is
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return addon_installed('points');
     }
@@ -39,7 +39,7 @@ class Hook_commandr_fs_extended_member__point_charges
      * @param  MEMBER $member_id The member ID
      * @return mixed The data
      */
-    public function read_property($member_id)
+    public function read_property(int $member_id)
     {
         return table_to_portable_rows('chargelog', ['id'], ['member_id' => $member_id]);
     }
@@ -50,7 +50,7 @@ class Hook_commandr_fs_extended_member__point_charges
      * @param  MEMBER $member_id The member ID
      * @param  mixed $data The data
      */
-    public function write_property($member_id, $data)
+    public function write_property(int $member_id, $data)
     {
         table_from_portable_rows('chargelog', $data, ['member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }

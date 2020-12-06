@@ -39,7 +39,7 @@ function init__input_filter()
  * @param  ?boolean $posted Whether the parameter is a POST parameter (null: undetermined)
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  */
-function check_input_field_string($name, &$val, $posted, $filters)
+function check_input_field_string(string $name, string &$val, ?bool $posted, int $filters)
 {
     if (preg_match('#^\w*$#D', $val) !== 0) {
         return;
@@ -126,7 +126,7 @@ function check_input_field_string($name, &$val, $posted, $filters)
  * @param  string $val The value retrieved
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  */
-function check_posted_field($name, $val, $filters)
+function check_posted_field(string $name, string $val, int $filters)
 {
     $evil = false;
 
@@ -194,7 +194,7 @@ function check_posted_field($name, $val, $filters)
  * @param  URLPATH $url The URL
  * @return string The domain
  */
-function strip_url_to_representative_domain($url)
+function strip_url_to_representative_domain(string $url) : string
 {
     return preg_replace('#^www\.#', '', cms_strtolower_ascii(parse_url(normalise_idn_url($url), PHP_URL_HOST)));
 }
@@ -207,7 +207,7 @@ function strip_url_to_representative_domain($url)
  * @param  boolean $include_self Include a self reference
  * @return array Trusted domain names
  */
-function get_trusted_sites($level, $include_self = true)
+function get_trusted_sites(int $level, bool $include_self = true) : array
 {
     global $SITE_INFO;
 
@@ -262,7 +262,7 @@ function get_trusted_sites($level, $include_self = true)
  *
  * @param  string $val The data
  */
-function hard_filter_input_data__filesystem(&$val)
+function hard_filter_input_data__filesystem(string &$val)
 {
     static $nastiest_path_signals = [
         '(^|[/\\\\])_config\.php($|\0)',
@@ -283,7 +283,7 @@ function hard_filter_input_data__filesystem(&$val)
  * @param  string $name The name of the parameter
  * @param  string $val The value retrieved
  */
-function hard_filter_input_data__dynamic_firewall($name, &$val)
+function hard_filter_input_data__dynamic_firewall(string $name, string &$val)
 {
     $rules_path = get_custom_file_base() . '/data_custom/firewall_rules.txt';
     if (is_file($rules_path)) {
@@ -312,7 +312,7 @@ function hard_filter_input_data__dynamic_firewall($name, &$val)
  *
  * @ignore
  */
-function _link_rel_callback($matches)
+function _link_rel_callback(array $matches) : string
 {
     // Remove any existing rel attributes (it's too complex to play nice, e.g. what if a hacker added multiple ones and we altered the wrong one)
     $matches[1] = preg_replace('#\srel="[^"]*"#', '', $matches[1]);
@@ -330,7 +330,7 @@ function _link_rel_callback($matches)
  * @param  string $val The data
  * @param  boolean $lite Do a lite-check if we're not sure this is even actually HTML
  */
-function hard_filter_input_data__html(&$val, $lite = false)
+function hard_filter_input_data__html(string &$val, bool $lite = false)
 {
     require_code('comcode');
 
@@ -434,7 +434,7 @@ function hard_filter_input_data__html(&$val, $lite = false)
  * @param  boolean $live Whether it is running live rather than from some hard-coded value
  * @return string The filtered value of the parameter
  */
-function filter_form_field_default($name, $val, $live = false)
+function filter_form_field_default(string $name, ?string $val, bool $live = false) : string
 {
     // Read in a default parameter from the GET environment, if this feature is enabled.
     global $URL_DEFAULT_PARAMETERS_ENABLED;
@@ -576,7 +576,7 @@ function filter_form_field_default($name, $val, $live = false)
  * @param  array $matches Matches
  * @return string De-shouted string
  */
-function make_sentence_case_callback($matches)
+function make_sentence_case_callback(array $matches) : string
 {
     return cms_mb_strtoupper($matches[0]);
 }
@@ -587,7 +587,7 @@ function make_sentence_case_callback($matches)
  * @param  array $matches Matches
  * @return string De-shouted string
  */
-function deshout_callback($matches)
+function deshout_callback(array $matches) : string
 {
     return cms_ucwords_ascii(cms_mb_strtolower($matches[0]));
 }
@@ -599,7 +599,7 @@ function deshout_callback($matches)
  * @param  ?string $this_type The page type scoped for (null: current type)
  * @return array List of fields, each of which is a map (restriction => attributes)
  */
-function load_field_restrictions($this_page = null, $this_type = null)
+function load_field_restrictions(?string $this_page = null, ?string $this_type = null) : array
 {
     static $field_restrictions = null;
     if ($field_restrictions === null) {
@@ -643,7 +643,7 @@ class Field_restriction_loader
      * @param  string $this_type Screen type filters are loaded for
      * @return array Field restriction data
      */
-    public function go($this_page, $this_type)
+    public function go(string $this_page, string $this_type) : array
     {
         if (!addon_installed('xml_fields')) {
             return [];
@@ -693,11 +693,11 @@ class Field_restriction_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $tag The name of the element found
      * @param  array $_attributes Array of attributes of the element
      */
-    public function startElement($parser, $tag, $_attributes)
+    public function startElement($parser, string $tag, array $_attributes)
     {
         array_push($this->tag_stack, $tag);
         $attributes = [];
@@ -795,7 +795,7 @@ class Field_restriction_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      */
     public function endElement($parser)
     {
@@ -830,10 +830,10 @@ class Field_restriction_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $data The text
      */
-    public function startText($parser, $data)
+    public function startText($parser, string $data)
     {
         $this->text_so_far .= $data;
     }
@@ -844,7 +844,7 @@ class Field_restriction_loader
  *
  * @return array A tuple: Automatic rules, Reasoned Bans, Hack-attack handling specifiers
  */
-function load_advanced_banning()
+function load_advanced_banning() : array
 {
     static $automatic_rules = null, $reasoned_bans = null, $hackattack_specifiers = null;
     if ($automatic_rules === null) {
@@ -885,7 +885,7 @@ class Advanced_banning_loader
      * @param  string $this_type Screen type filters are loaded for
      * @return array A pair: Automatic rules, Reasoned bans
      */
-    public function go($this_page, $this_type)
+    public function go(string $this_page, string $this_type) : array
     {
         if (!addon_installed('securitylogging')) {
             return [[], []];
@@ -933,11 +933,11 @@ class Advanced_banning_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $tag The name of the element found
      * @param  array $_attributes Array of attributes of the element
      */
-    public function startElement($parser, $tag, $_attributes)
+    public function startElement($parser, string $tag, array $_attributes)
     {
         array_push($this->tag_stack, $tag);
         $attributes = [];
@@ -950,7 +950,7 @@ class Advanced_banning_loader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      */
     public function endElement($parser)
     {

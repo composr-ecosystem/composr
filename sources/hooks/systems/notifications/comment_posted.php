@@ -30,7 +30,7 @@ class Hook_notification_comment_posted extends Hook_Notification
      * @param  ID_TEXT $notification_code Notification code
      * @return boolean Whether it does
      */
-    public function supports_categories($notification_code)
+    public function supports_categories(string $notification_code) : bool
     {
         return true;
     }
@@ -42,7 +42,7 @@ class Hook_notification_comment_posted extends Hook_Notification
      * @param  ?ID_TEXT $id The ID of where we're looking under (null: N/A)
      * @return array Tree structure
      */
-    public function create_category_tree($notification_code, $id)
+    public function create_category_tree(string $notification_code, ?string $id) : array
     {
         $categories = parent::create_category_tree($notification_code, $id);
 
@@ -90,7 +90,7 @@ class Hook_notification_comment_posted extends Hook_Notification
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return integer Initial setting
      */
-    public function get_initial_setting($notification_code, $category = null)
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
         return A_NA;
     }
@@ -102,7 +102,7 @@ class Hook_notification_comment_posted extends Hook_Notification
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return integer Automatic setting
      */
-    public function get_default_auto_setting($notification_code, $category = null)
+    public function get_default_auto_setting(string $notification_code, ?string $category = null) : int
     {
         return A__STATISTICAL;
     }
@@ -113,7 +113,7 @@ class Hook_notification_comment_posted extends Hook_Notification
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         $list = [];
         $list['comment_posted'] = [do_lang('MESSAGES'), do_lang('NOTIFICATION_TYPE_comment_posted')];
@@ -131,7 +131,7 @@ class Hook_notification_comment_posted extends Hook_Notification
      * @param  integer $max Maximum (for pagination)
      * @return array A pair: Map of members to their notification setting, and whether there may be more
      */
-    public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
+    public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         list($_members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         if ($category !== null) { // Check permissions for content

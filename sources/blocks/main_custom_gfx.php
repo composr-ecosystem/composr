@@ -28,7 +28,7 @@ class Block_main_custom_gfx
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -47,7 +47,7 @@ class Block_main_custom_gfx
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('custom_comcode', $error_msg)) {
@@ -78,7 +78,7 @@ class Block_main_custom_gfx
      * @param  URLPATH $img_path The image path
      * @return mixed URL of completed image OR Tempcode error
      */
-    public function _do_image($cache_id, &$map, $img_path)
+    public function _do_image(string $cache_id, array &$map, string $img_path)
     {
         if (!array_key_exists('font_size', $map)) {
             $map['font_size'] = '8';

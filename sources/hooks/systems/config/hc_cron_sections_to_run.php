@@ -28,7 +28,7 @@ class Hook_config_hc_cron_sections_to_run
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HC_CRON_SECTIONS_TO_RUN',
@@ -52,7 +52,7 @@ class Hook_config_hc_cron_sections_to_run
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('health_check')) {
             return null;
@@ -70,7 +70,7 @@ class Hook_config_hc_cron_sections_to_run
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter($name, $myrow, $human_name, $explanation)
+    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
     {
         require_code('health_check');
 

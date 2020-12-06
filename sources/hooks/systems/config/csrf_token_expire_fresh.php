@@ -28,7 +28,7 @@ class Hook_config_csrf_token_expire_fresh
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'CSRF_TOKEN_EXPIRE_FRESH',
@@ -52,7 +52,7 @@ class Hook_config_csrf_token_expire_fresh
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return strval(1 * 24 * 10); // 10 days
     }

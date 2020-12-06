@@ -69,7 +69,7 @@ function init__content()
  * @param  ID_TEXT $type_has Content type type
  * @return boolean Whether there is permission
  */
-function may_view_content_behind($member_id, $content_type, $content_id, $type_has = 'content_type')
+function may_view_content_behind(int $member_id, string $content_type, string $content_id, string $type_has = 'content_type') : bool
 {
     $permission_type_code = convert_composr_type_codes($type_has, $content_type, 'permissions_type_code');
 
@@ -138,7 +138,7 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
  * @param  ID_TEXT $content_type The content type
  * @return ?object The object (null: could not get one)
  */
-function get_content_object($content_type)
+function get_content_object(string $content_type) : ?object
 {
     static $cache = [];
     if (isset($cache[$content_type])) {
@@ -174,7 +174,7 @@ function get_content_object($content_type)
  * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @return ID_TEXT Corrected content type type (blank: could not find)
  */
-function convert_composr_type_codes($type_has, $type_id, $type_wanted)
+function convert_composr_type_codes(string $type_has, string $type_id, string $type_wanted) : string
 {
     $real_type_wanted = $type_wanted;
 
@@ -209,7 +209,7 @@ function convert_composr_type_codes($type_has, $type_id, $type_wanted)
  * @param  ID_TEXT $type_id Content type ID we know
  * @return array Content type info list (blank: could not find)
  */
-function convert_composr_type_codes_multiple($type_has, $type_id)
+function convert_composr_type_codes_multiple(string $type_has, string $type_id) : array
 {
     $type_id = preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $type_id);
 
@@ -238,7 +238,7 @@ function convert_composr_type_codes_multiple($type_has, $type_id)
  * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
  * @return array Tuple: title, submitter, content hook info, the content row, URL (for use within current browser session), URL (for use in e-mails / sharing), Content object
  */
-function content_get_details($content_type, $content_id, $resource_fs_style = false)
+function content_get_details(string $content_type, string $content_id, bool $resource_fs_style = false) : array
 {
     $cma_ob = get_content_object($content_type);
     if (!is_object($cma_ob)) {
@@ -316,7 +316,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
  * @param  array $cma_info The info array for the content type
  * @return ?array The row (null: not found)
  */
-function content_get_row($content_id, $cma_info)
+function content_get_row(string $content_id, array $cma_info) : ?array
 {
     static $cache = [];
     $cache_key = $cma_info['table'] . '.' . $content_id;
@@ -342,7 +342,7 @@ function content_get_row($content_id, $cma_info)
  * @param  array $cma_info The info array for the content type
  * @return ID_TEXT The ID
  */
-function extract_content_str_id_from_data($data, $cma_info)
+function extract_content_str_id_from_data(array $data, array $cma_info) : string
 {
     $id_field = $cma_info['id_field'];
     $id = '';
@@ -366,7 +366,7 @@ function extract_content_str_id_from_data($data, $cma_info)
  * @set id parent_category category title description image views order submitter author add_time edit_time date validated video
  * @param  ?string $table_alias The table alias (null: none)
  */
-function append_content_select_for_fields(&$select, $cma_info, $fields, $table_alias = null)
+function append_content_select_for_fields(array &$select, array $cma_info, array $fields, ?string $table_alias = null)
 {
     if (in_array('image', $fields)) { // We may actually query against full_image too
         $fields[] = 'full_image';
@@ -395,7 +395,7 @@ function append_content_select_for_fields(&$select, $cma_info, $fields, $table_a
  * @param  ?string $table_alias The table alias (null: none)
  * @return array The mapping
  */
-function get_content_where_for_str_id($str_id, $cma_info, $table_alias = null)
+function get_content_where_for_str_id(string $str_id, array $cma_info, ?string $table_alias = null) : array
 {
     $where = [];
     $id_field = $cma_info['id_field'];
@@ -428,7 +428,7 @@ function get_content_where_for_str_id($str_id, $cma_info, $table_alias = null)
  * @param  array $infos Info maps for content types, if not passed will be looked up
  * @return array A pair: Rows, Max count
  */
-function content_rows_for_multi_type($content_types, $days = null, $extra_where = '', $extra_join = '', $sort = 'title ASC', $start = 0, $max = null, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null, $infos = [])
+function content_rows_for_multi_type(array $content_types, ?int $days = null, $extra_where = '', $extra_join = '', string $sort = 'title ASC', int $start = 0, ?int $max = null, $select = '', $select_b = '', $filter = '', bool $check_perms = true, ?array $pinned = [], ?array $allowed_sorts = null, ?int $member_id = null, array $infos = []) : array
 {
     $combined_rows = [];
     $pinned_rows = [];
@@ -519,7 +519,7 @@ function content_rows_for_multi_type($content_types, $days = null, $extra_where 
  * @param  ?array $info Info map for content type (null: look up)
  * @return array A tuple: Rows, Max count, Pinned rows
  */
-function content_rows_for_type($content_type, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null, $info = null)
+function content_rows_for_type(string $content_type, ?int $days, string $extra_where, string $extra_join, string $sort, int $start, ?int $max, string $select = '', string $select_b = '', string $filter = '', bool $check_perms = true, ?array $pinned = [], ?array $allowed_sorts = null, ?int $member_id = null, ?array $info = null) : array
 {
     require_code('content');
 
@@ -734,7 +734,7 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
  * @param  ?string $category_field_select The field name of the category to select against (null: work it out)
  * @return string SQL fragment
  */
-function build_selectcode_select_for_content_type($select, $info, $category_field_select = null)
+function build_selectcode_select_for_content_type(string $select, array $info, ?string $category_field_select = null) : string
 {
     if ($category_field_select === null) {
         if (is_array($info['category_field'])) {
@@ -767,7 +767,7 @@ function build_selectcode_select_for_content_type($select, $info, $category_fiel
  * @param  boolean $strict_error Provide a hack-attack error on invalid input
  * @return array A tuple: The SQL-style sort order, The sort direction, The URL-style sort order
  */
-function handle_abstract_sorting($sort, $info, $allowed_sorts = null, $strict_error = true)
+function handle_abstract_sorting(string $sort, array $info, ?array $allowed_sorts = null, bool $strict_error = true) : array
 {
     $feedback_type = isset($info['feedback_type_code']) ? $info['feedback_type_code'] : null;
     $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
@@ -856,7 +856,7 @@ function handle_abstract_sorting($sort, $info, $allowed_sorts = null, $strict_er
  * @param  boolean $strict_error Provide a hack-attack error on invalid input
  * @return array A pair: The URL-style sort order, The URL-style sort direction
  */
-function read_abstract_sorting_params($sort, $allowed_sorts, $strict_error = true)
+function read_abstract_sorting_params(string $sort, ?array $allowed_sorts, bool $strict_error = true) : array
 {
     $banal_default_sorts = [
         'natural',
@@ -904,14 +904,15 @@ abstract class Hook_CMA
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    abstract public function info($zone = null, $get_extended_data = false);
+    abstract public function info(?string $zone = null, bool $get_extended_data = false) : ?array;
+
 
     /**
      * Get content type details, with caching.
      *
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info_basic_cached()
+    public function info_basic_cached() : ?array
     {
         static $info = null;
         if ($info === null) {
@@ -926,7 +927,7 @@ abstract class Hook_CMA
      * @param  ID_TEXT $content_id The content ID
      * @return ?array The row (null: not found)
      */
-    public function get_row($content_id)
+    public function get_row(string $content_id) : ?array
     {
         $info = $this->info_basic_cached();
         return content_get_row($content_id, $info);
@@ -937,7 +938,7 @@ abstract class Hook_CMA
      *
      * @return string The content type
      */
-    public function get_content_type()
+    public function get_content_type() : string
     {
         return preg_replace('#^Hook_(content|resource)_meta_aware_#', '', get_class($this));
     }
@@ -948,7 +949,7 @@ abstract class Hook_CMA
      * @param  ?array $row The database row for the content (null: no override support)
      * @return Tempcode The label
      */
-    public function get_content_type_label($row = null)
+    public function get_content_type_label(?array $row = null) : object
     {
         $info = $this->info_basic_cached();
         if ($row !== null) {
@@ -968,7 +969,7 @@ abstract class Hook_CMA
      * @param  ?array $row The database row for the content (null: no override support)
      * @return string The universal label
      */
-    public function get_content_type_universal_label($row = null)
+    public function get_content_type_universal_label(?array $row = null) : string
     {
         $info = $this->info_basic_cached();
         if ($row !== null) {
@@ -988,7 +989,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return string ID
      */
-    public function get_id($row)
+    public function get_id(array $row) : string
     {
         $info = $this->info_basic_cached();
         return extract_content_str_id_from_data($row, $info);
@@ -1001,7 +1002,7 @@ abstract class Hook_CMA
      * @param  integer $render_type A FIELD_RENDER_* constant
      * @return mixed ID string (string or Tempcode, depending on $render_type)
      */
-    public function get_id_string($row, $render_type = 1)
+    public function get_id_string(array $row, int $render_type = 1)
     {
         $info = $this->info_basic_cached();
 
@@ -1038,7 +1039,7 @@ abstract class Hook_CMA
      * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
      * @return mixed Content title (string or Tempcode, depending on $render_type)
      */
-    public function get_title($row, $render_type = 1, &$falled_back_to_id = false, $resource_fs_style = false)
+    public function get_title(array $row, int $render_type = 1, bool &$falled_back_to_id = false, bool $resource_fs_style = false)
     {
         $info = $this->info_basic_cached();
 
@@ -1077,7 +1078,7 @@ abstract class Hook_CMA
      * @param  integer $render_type A FIELD_RENDER_* constant
      * @return mixed Content description (string or Tempcode, depending on $render_type)
      */
-    public function get_description($row, $render_type = 1)
+    public function get_description(array $row, int $render_type = 1)
     {
         $info = $this->info_basic_cached();
 
@@ -1121,7 +1122,7 @@ abstract class Hook_CMA
      * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
      * @return ?mixed Content title (string or Tempcode, depending on $render_type) (null: could not generate)
      */
-    protected function get_textual_field($row, $render_type, $info, $field, $dereference, $supports_comcode, $resource_fs_style = false)
+    protected function get_textual_field(array $row, int $render_type, array $info, string $field, bool $dereference, bool $supports_comcode, bool $resource_fs_style = false)
     {
         if (strpos($field, 'CALL:') !== false) {
             return call_user_func(trim(substr($field, 5)), $row, $render_type, $resource_fs_style);
@@ -1203,7 +1204,7 @@ abstract class Hook_CMA
      * @param  boolean $has_fallen_back Returned by reference, set if the image returned is a fallback image
      * @return URLPATH Image URL (blank: none)
      */
-    public function get_image_url($row, $fallback_method = 0, &$has_fallen_back = false)
+    public function get_image_url(array $row, int $fallback_method = 0, bool &$has_fallen_back = false) : string
     {
         $info = $this->info_basic_cached();
 
@@ -1282,7 +1283,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return ?TIME Add time (null: unknown)
      */
-    public function get_add_time($row)
+    public function get_add_time(array $row) : ?int
     {
         $info = $this->info_basic_cached();
         if ($info['add_time_field'] === null) {
@@ -1296,7 +1297,7 @@ abstract class Hook_CMA
      *
      * @return ?Tempcode Label (null: unknown)
      */
-    public function get_most_relevant_time_label()
+    public function get_most_relevant_time_label() : ?object
     {
         return do_lang_tempcode('DATE');
     }
@@ -1307,7 +1308,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return ?TIME Add time (null: unknown)
      */
-    public function get_most_relevant_time($row)
+    public function get_most_relevant_time(array $row) : ?int
     {
         $info = $this->info_basic_cached();
 
@@ -1328,7 +1329,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return ?MEMBER Submitter (null: unknown)
      */
-    public function get_submitter($row)
+    public function get_submitter(array $row) : ?int
     {
         $info = $this->info_basic_cached();
         if ($info['submitter_field'] === null) {
@@ -1343,7 +1344,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return string Username (or message explaining lack of one)
      */
-    public function get_username($row)
+    public function get_username(array $row) : string
     {
         $submitter = $this->get_submitter($row);
         if ($submitter === null) {
@@ -1358,7 +1359,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return ?string Author (null: unknown)
      */
-    public function get_author($row)
+    public function get_author(array $row) : ?string
     {
         if (!addon_installed('authors')) {
             return null;
@@ -1378,7 +1379,7 @@ abstract class Hook_CMA
      * @param  string $append What to append to the view page-link
      * @return string The page-link (blank: none)
      */
-    public function get_view_page_link($row, $append = '')
+    public function get_view_page_link(?array $row, string $append = '') : string
     {
         $info = $this->info_basic_cached();
         $pattern = $info['view_page_link_pattern'];
@@ -1403,7 +1404,7 @@ abstract class Hook_CMA
      * @param  string $append What to append to the view page-link
      * @return Tempcode The URL (blank: none)
      */
-    public function get_view_url($row, $skip_keep = false, $append = '')
+    public function get_view_url(?array $row, bool $skip_keep = false, string $append = '') : object
     {
         $page_link = $this->get_view_page_link($row, $append);
         return page_link_to_tempcode_url($page_link, $skip_keep);
@@ -1417,7 +1418,7 @@ abstract class Hook_CMA
      * @param  string $append What to append to the edit page-link
      * @return Tempcode The URL
      */
-    public function get_edit_url($row, $skip_keep = false, $append = '')
+    public function get_edit_url(?array $row, bool $skip_keep = false, string $append = '') : object
     {
         $info = $this->info_basic_cached();
         $pattern = $info['edit_page_link_pattern'];
@@ -1439,7 +1440,7 @@ abstract class Hook_CMA
      *
      * @return Tempcode The URL
      */
-    public function get_add_url()
+    public function get_add_url() : object
     {
         $info = $this->info_basic_cached();
         if ($info['add_url'] === null) {
@@ -1454,7 +1455,7 @@ abstract class Hook_CMA
      *
      * @return Tempcode The URL
      */
-    public function get_archive_url()
+    public function get_archive_url() : object
     {
         $info = $this->info_basic_cached();
         if ($info['archive_url'] === null) {
@@ -1476,7 +1477,7 @@ abstract class Hook_CMA
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box(array $row, string $zone, bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
     {
         $info = $this->info_basic_cached();
 
@@ -1497,7 +1498,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return Tempcode Hyperlink
      */
-    public function render_hyperlink($row)
+    public function render_hyperlink(array $row) : object
     {
         require_code('templates');
 
@@ -1517,7 +1518,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return Tempcode Hyperlink
      */
-    public function render_thumbnail($row)
+    public function render_thumbnail(array $row) : object
     {
         require_code('images');
 
@@ -1532,7 +1533,7 @@ abstract class Hook_CMA
      * @param  array $row The database row for the content
      * @return Tempcode Hyperlink
      */
-    public function render_hyperlink_thumbnail($row)
+    public function render_hyperlink_thumbnail(array $row) : object
     {
         require_code('images');
         require_code('templates');
@@ -1554,7 +1555,7 @@ abstract class Hook_CMA
      *
      * @return array A map of heading codenames to Tempcode labels
      */
-    public function get_special_keymap_headings()
+    public function get_special_keymap_headings() : array
     {
         $headings = [];
         return $headings;
@@ -1566,7 +1567,7 @@ abstract class Hook_CMA
      * @param  array $row Database row
      * @return array A map of heading codenames to Tempcode values
      */
-    public function get_special_keymap($row)
+    public function get_special_keymap(array $row) : array
     {
         $keymap = [];
         return $keymap;
@@ -1577,7 +1578,7 @@ abstract class Hook_CMA
      *
      * @return array Tuple: Has author, Has submitter, Has date, Has ratings
      */
-    protected function which_standard_keymap_headings()
+    protected function which_standard_keymap_headings() : array
     {
         $info = $this->info_basic_cached();
 
@@ -1594,7 +1595,7 @@ abstract class Hook_CMA
      *
      * @return array A map of heading codenames to Tempcode labels
      */
-    public function get_standard_keymap_headings()
+    public function get_standard_keymap_headings() : array
     {
         $headings = [];
 
@@ -1623,7 +1624,7 @@ abstract class Hook_CMA
      * @param  array $row Database row
      * @return array A map of heading codenames to Tempcode values
      */
-    public function get_standard_keymap($row)
+    public function get_standard_keymap(array $row) : array
     {
         $keymap = [];
 
@@ -1664,7 +1665,7 @@ abstract class Hook_CMA
      * @param  string $string The language string stub, e.g. ADD (must itself be a valid language string)
      * @return Tempcode Tempcode of language string
      */
-    public function content_language_string($string)
+    public function content_language_string(string $string) : object
     {
         $info = $this->info_basic_cached();
 
@@ -1688,7 +1689,7 @@ abstract class Hook_CMA
      * @param  ?string $id The pre-selected ID (null: none selected)
      * @return Tempcode List
      */
-    public function create_selection_list($id = null)
+    public function create_selection_list(?string $id = null) : object
     {
         $info = $this->info();
 
@@ -1722,7 +1723,7 @@ abstract class Hook_CMA
      *
      * @return ?string Hook name (null: none)
      */
-    public function create_selection_tree_list()
+    public function create_selection_tree_list() : ?string
     {
         return null;
     }

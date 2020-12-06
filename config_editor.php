@@ -144,7 +144,7 @@ function ce_do_login()
  *
  * @param  string $given_password The password given to get here (so we don't need to re-enter it each edit)
  */
-function do_access($given_password)
+function do_access(string $given_password)
 {
     $settings = [
         'admin_username' => 'The username used for the administrator when Composr is installed to not use a forum. On the vast majority of sites this setting does nothing.',
@@ -455,7 +455,7 @@ function do_set()
  *
  * @param  PATH $filename File/directory name to sync on (may be full or relative path)
  */
-function co_sync_file($filename)
+function co_sync_file(string $filename)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
@@ -475,7 +475,7 @@ function co_sync_file($filename)
  * @param  PATH $old File/directory name to move from (may be full or relative path)
  * @param  PATH $new File/directory name to move to (may be full or relative path)
  */
-function co_sync_file_move($old, $new)
+function co_sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
@@ -498,7 +498,7 @@ function co_sync_file_move($old, $new)
  * @param  SHORT_TEXT $password_given Given master password
  * @return boolean Whether it is valid
  */
-function co_check_master_password($password_given)
+function co_check_master_password(string $password_given) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');

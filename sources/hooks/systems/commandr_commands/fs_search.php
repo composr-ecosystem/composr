@@ -36,7 +36,7 @@ class Hook_commandr_command_fs_search
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $parameters, &$commandr_fs)
+    public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('fs_search', ['h'], [true, true]), '', ''];
@@ -111,7 +111,7 @@ class Hook_commandr_command_fs_search
      * @param  string $field_type Field type
      * @return array List of fields
      */
-    protected function find_fields_of($field_type)
+    protected function find_fields_of(string $field_type) : array
     {
         if (preg_match('#^[A-Z_]+$#', $field_type) != 0) {
             $more_fields = array_merge(

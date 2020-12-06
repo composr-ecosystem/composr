@@ -28,7 +28,7 @@ class Hook_config_site_message_usergroup_select
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         if (isset($GLOBALS['FORUM_DRIVER'])) {
             $guest_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($GLOBALS['FORUM_DRIVER']->get_guest_id());
@@ -61,7 +61,7 @@ class Hook_config_site_message_usergroup_select
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '';
     }

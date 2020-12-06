@@ -77,7 +77,7 @@ class CMS_Topic
      *
      * @param  ID_TEXT $rendering_context Rendering context
      */
-    public function set_rendering_context($rendering_context)
+    public function set_rendering_context(string $rendering_context)
     {
         $this->rendering_context = $rendering_context;
     }
@@ -100,7 +100,7 @@ class CMS_Topic
      * @param  ?Tempcode $hidden Hidden form fields for commenting form (null: none)
      * @return Tempcode The Tempcode for the comment topic
      */
-    public function render_as_comment_topic($content_type, $content_id, $allow_comments, $invisible_if_no_comments, $forum_name, $post_warning, $preloaded_comments, $explicit_allow, $reverse, $highlight_by_member, $allow_reviews, $num_to_show_limit, $hidden = null)
+    public function render_as_comment_topic(string $content_type, string $content_id, bool $allow_comments, bool $invisible_if_no_comments, ?string $forum_name, ?string $post_warning, $preloaded_comments, bool $explicit_allow, bool $reverse, ?int $highlight_by_member, bool $allow_reviews, ?int $num_to_show_limit, ?object $hidden = null) : object
     {
         if ((get_forum_type() == 'cns') && (!addon_installed('cns_forum'))) {
             return new Tempcode();
@@ -254,7 +254,7 @@ class CMS_Topic
      * @param  AUTO_LINK $parent_id Parent node being loaded to
      * @return Tempcode The Tempcode for the comment topic
      */
-    public function render_posts_from_topic($topic_id, $num_to_show_limit, $allow_comments, $invisible_if_no_comments, $forum_name, $preloaded_comments, $reverse, $may_reply, $highlight_by_member, $allow_reviews, $posts, $parent_id)
+    public function render_posts_from_topic(int $topic_id, int $num_to_show_limit, bool $allow_comments, bool $invisible_if_no_comments, ?string $forum_name, $preloaded_comments, bool $reverse, bool $may_reply, ?int $highlight_by_member, bool $allow_reviews, array $posts, int $parent_id) : object
     {
         if ((get_forum_type() == 'cns') && (!addon_installed('cns_forum'))) {
             return new Tempcode();
@@ -313,7 +313,7 @@ class CMS_Topic
      * @return ID_TEXT Sort order
      * @set relevance rating newest oldest
      */
-    protected function _get_sort_order($reverse)
+    protected function _get_sort_order(?bool $reverse) : string
     {
         static $sort = null;
 
@@ -346,7 +346,7 @@ class CMS_Topic
      * @param  boolean $load_spacer_posts_too Whether to allow spacer posts to flow through the renderer
      * @return boolean Success status
      */
-    public function load_from_topic($topic_id, $num_to_show_limit, $start = 0, $reverse = null, $posts = null, $load_spacer_posts_too = false)
+    public function load_from_topic(?int $topic_id, int $num_to_show_limit, int $start = 0, ?bool $reverse = null, ?array $posts = null, bool $load_spacer_posts_too = false) : bool
     {
         $this->topic_id = $topic_id;
         $this->topic_last_read = (is_guest() || get_forum_type() != 'cns') ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $this->topic_id]);
@@ -418,7 +418,7 @@ class CMS_Topic
      *
      * @param  array $posts Review titles
      */
-    public function inject_posts_for_scoring_algorithm($posts)
+    public function inject_posts_for_scoring_algorithm(array $posts)
     {
         $all_posts_ordered = [];
         foreach ($posts as $post) {
@@ -444,7 +444,7 @@ class CMS_Topic
      *
      * @param  array $reviews_rating_criteria Review criteria
      */
-    public function set_reviews_rating_criteria($reviews_rating_criteria)
+    public function set_reviews_rating_criteria(array $reviews_rating_criteria)
     {
         $this->reviews_rating_criteria = $reviews_rating_criteria;
     }
@@ -463,7 +463,7 @@ class CMS_Topic
      * @param  boolean $maybe_missing_links Whether to just render everything as flat (used when doing AJAX post loading). NOT actually used since we wrote better post-orphaning-fixing code.
      * @return array Tuple: Rendered topic, serialized options to render more posts, secure hash of serialized options to prevent tampering
      */
-    public function render_posts($num_to_show_limit, $max_thread_depth, $may_reply, $highlight_by_member, $all_individual_review_ratings, $forum_id, $topic_info, $parent_post_id = null, $maybe_missing_links = false)
+    public function render_posts(?int $num_to_show_limit, int $max_thread_depth, bool $may_reply, ?int $highlight_by_member, array $all_individual_review_ratings, int $forum_id, ?array $topic_info, ?int $parent_post_id = null, bool $maybe_missing_links = false) : array
     {
         require_code('feedback');
 
@@ -576,7 +576,7 @@ class CMS_Topic
      * @param  array $queue Posts to choose from, in preference order
      * @return array Chosen posts
      */
-    protected function _decide_what_to_render($num_to_show_limit, &$queue)
+    protected function _decide_what_to_render(int $num_to_show_limit, array &$queue) : array
     {
         $posts = [];
         while ((count($posts) < $num_to_show_limit) && (!empty($queue))) {
@@ -623,7 +623,7 @@ class CMS_Topic
      * @param  array $queue Posts to choose from (the queue)
      * @param  array $posts Posts picked out (passed by reference)
      */
-    protected function _grab_at_and_above_and_remove($post_id, &$queue, &$posts)
+    protected function _grab_at_and_above_and_remove(int $post_id, array &$queue, array &$posts)
     {
         if ((!isset($posts[$post_id])) && (isset($queue['post_' . strval($post_id)]))) {
             $grabbed = $queue['post_' . strval($post_id)];
@@ -650,7 +650,7 @@ class CMS_Topic
      * @param  array $posts_in Posts to choose from
      * @return array Relevant posts
      */
-    protected function _grab_at_and_underneath($parent_post_id, $posts_in)
+    protected function _grab_at_and_underneath(?int $parent_post_id, array $posts_in) : array
     {
         $posts_out = [];
 
@@ -680,7 +680,7 @@ class CMS_Topic
      * @param  array $posts Posts to load
      * @return array Upgraded posts
      */
-    protected function _grab_full_post_details($posts)
+    protected function _grab_full_post_details(array $posts) : array
     {
         $id_list = [];
         foreach ($posts as $p) {
@@ -707,7 +707,7 @@ class CMS_Topic
      * @param  integer $depth Current depth in recursion
      * @return array Array structure of rendered posts
      */
-    protected function _arrange_posts_in_tree($post_id, &$posts, $queue, $max_thread_depth, $depth = 0)
+    protected function _arrange_posts_in_tree(?int $post_id, array &$posts, array $queue, int $max_thread_depth, int $depth = 0) : array
     {
         $rendered = [];
         $non_rendered = [];
@@ -760,7 +760,7 @@ class CMS_Topic
      * @param  integer $depth The recursion depth
      * @return Tempcode Rendered tree structure
      */
-    protected function _render_post_tree($num_to_show_limit, $tree, $may_reply, $highlight_by_member, $all_individual_review_ratings, $forum_id, $topic_info, $depth = 0)
+    protected function _render_post_tree(int $num_to_show_limit, array $tree, bool $may_reply, ?int $highlight_by_member, array $all_individual_review_ratings, int $forum_id, ?array $topic_info, int $depth = 0) : object
     {
         list($rendered,) = $tree;
         $sequence = new Tempcode();
@@ -1009,7 +1009,7 @@ class CMS_Topic
      * @param  array $posts An array of posts
      * @param  array $level_has_adjacent_sibling For internal use only
      */
-    protected function set_level_has_adjacent_sibling(&$posts, $level_has_adjacent_sibling = [])
+    protected function set_level_has_adjacent_sibling(array &$posts, array $level_has_adjacent_sibling = [])
     {
         foreach ($posts as $i => &$post) {
             $post['level_has_adjacent_sibling'] = $level_has_adjacent_sibling;
@@ -1025,7 +1025,7 @@ class CMS_Topic
      * @param  array $post A post
      * @return Tempcode
      */
-    protected function render_post_map_item($post)
+    protected function render_post_map_item(array $post) : object
     {
         $date = get_timezoned_date_time($post['date']);
         $poster_url = is_guest($post['member']) ? new Tempcode() : $GLOBALS['FORUM_DRIVER']->member_profile_url($post['member'], true);
@@ -1064,7 +1064,7 @@ class CMS_Topic
      * @param  ID_TEXT $type The content type the comments are for
      * @param  ID_TEXT $id The content ID the comments are for
      */
-    public function inject_rss_url($forum, $type, $id)
+    public function inject_rss_url(string $forum, string $type, string $id)
     {
         $GLOBALS['FEED_URL_2'] = '?mode=comments&forum=' . urlencode($forum) . '&select=' . urlencode($type . '_' . $id);
     }
@@ -1090,7 +1090,7 @@ class CMS_Topic
      * @param  ?Tempcode $hidden Hidden form fields for commenting form (null: none)
      * @return Tempcode Posting form
      */
-    public function get_posting_form($type, $id, $allow_reviews, $post_url, $post_warning, $hidden = null)
+    public function get_posting_form(string $type, string $id, bool $allow_reviews, object $post_url, ?string $post_warning, ?object $hidden = null) : object
     {
         require_lang('comcode');
 

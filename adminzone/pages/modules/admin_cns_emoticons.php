@@ -45,7 +45,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -81,7 +81,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -127,7 +127,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         $this->add_one_label = do_lang_tempcode('ADD_EMOTICON');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_EMOTICON');
@@ -170,7 +170,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -191,7 +191,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import()
+    public function import() : object
     {
         if (is_on_multi_site_network()) {
             attach_message(do_lang_tempcode('EDITING_ON_WRONG_MSN'), 'warn');
@@ -230,7 +230,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _import()
+    public function _import() : object
     {
         post_param_string('test'); // To pick up on max file size exceeded errors
 
@@ -262,7 +262,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @param  PATH $path Path to the emoticon file, on disk (must be in theme images folder)
      */
-    public function _import_emoticon($path)
+    public function _import_emoticon(string $path)
     {
         $emoticon_code = basename($path, '.' . get_file_extension($path));
 
@@ -312,7 +312,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      * @param  BINARY $is_special Whether this may only be used by privileged members
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($code = ':-]', $theme_img_code = '', $relevance_level = 1, $use_topics = 1, $is_special = 0)
+    public function get_form_fields(string $code = ':-]', string $theme_img_code = '', int $relevance_level = 1, int $use_topics = 1, int $is_special = 0) : array
     {
         if (is_on_multi_site_network()) {
             attach_message(do_lang_tempcode('EDITING_ON_WRONG_MSN'), 'warn');
@@ -367,7 +367,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_radio_entries()
+    public function create_selection_list_radio_entries() : object
     {
         $_m = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['e_code', 'e_theme_img_code']);
         $entries = new Tempcode();
@@ -401,7 +401,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['*'], ['e_code' => $id], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -419,7 +419,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('themes2');
 
@@ -436,7 +436,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         require_code('themes2');
 
@@ -454,7 +454,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         cns_delete_emoticon($id);
     }
@@ -464,7 +464,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('core_cns', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'), [], ['have_default_full_emoticon_set']);
@@ -475,7 +475,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('core_cns', $this->title, [], ['have_default_full_emoticon_set']);

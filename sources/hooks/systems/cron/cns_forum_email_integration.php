@@ -30,7 +30,7 @@ class Hook_cron_cns_forum_email_integration
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;

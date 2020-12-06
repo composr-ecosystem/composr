@@ -29,7 +29,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Admin Utilities';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'The dashboard tools shown in the Admin Zone.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_adminzone',
@@ -81,7 +81,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/css/adminzone_dashboard.css',
@@ -170,7 +170,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK.tpl' => 'administrative__block_main_staff_checklist',
@@ -194,7 +194,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__block_main_staff_links()
+    public function tpl_preview__administrative__block_main_staff_links() : array
     {
         $formatted = [];
         foreach (placeholder_array() as $v) {
@@ -229,7 +229,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_notes()
+    public function tpl_preview__block_main_notes() : array
     {
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_NOTES', [
@@ -251,7 +251,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__block_main_staff_checklist()
+    public function tpl_preview__administrative__block_main_staff_checklist() : array
     {
         $_status = do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
@@ -325,7 +325,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__block_main_staff_new_version()
+    public function tpl_preview__administrative__block_main_staff_new_version() : array
     {
         require_lang('version');
         return [
@@ -345,7 +345,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__block_main_staff_tips()
+    public function tpl_preview__administrative__block_main_staff_tips() : array
     {
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_TIPS', [
@@ -366,7 +366,7 @@ class Hook_addon_registry_core_adminzone_dashboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__block_main_staff_actions()
+    public function tpl_preview__administrative__block_main_staff_actions() : array
     {
         if (!addon_installed('actionlog')) {
             return [];

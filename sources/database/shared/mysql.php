@@ -32,7 +32,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @param  string $table_prefix Table prefix
      */
-    public function __construct($table_prefix)
+    public function __construct(string $table_prefix)
     {
         $this->table_prefix = $table_prefix;
     }
@@ -42,7 +42,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return string The default user for db connections
      */
-    public function default_user()
+    public function default_user() : string
     {
         return 'root';
     }
@@ -52,7 +52,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return string The default password for db connections
      */
-    public function default_password()
+    public function default_password() : string
     {
         return '';
     }
@@ -64,7 +64,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
      */
-    public function apply_sql_limit_clause(&$query, $max = null, $start = 0)
+    public function apply_sql_limit_clause(string &$query, ?int $max = null, int $start = 0)
     {
         if (($max !== null) && ($start != 0)) {
             $query .= ' LIMIT ' . strval($start) . ',' . strval($max);
@@ -80,7 +80,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function has_expression_ordering()
+    public function has_expression_ordering() : bool
     {
         return true;
     }
@@ -90,7 +90,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function has_update_joins()
+    public function has_update_joins() : bool
     {
         return true;
     }
@@ -100,7 +100,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether they do
      */
-    public function has_default_for_text_fields()
+    public function has_default_for_text_fields() : bool
     {
         return false;
     }
@@ -110,7 +110,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return string Character (blank: has none defined)
      */
-    public function get_field_encapsulator()
+    public function get_field_encapsulator() : string
     {
         return '`';
     }
@@ -123,7 +123,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @set CHAR INT FLOAT
      * @return string The database type
      */
-    public function cast($field, $type)
+    public function cast(string $field, string $type) : string
     {
         switch ($type) {
             case 'CHAR':
@@ -151,7 +151,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  string $query Query
      * @return string Fixed query
      */
-    protected function fix_mysql8_query($query)
+    protected function fix_mysql8_query(string $query) : string
     {
         if (preg_match('#(descriptions|DESCRIPTIONS|groups|path)#i', $query) == 0) { // We define 'descriptions' as well as 'DESCRIPTIONS' due to Turkish issue
             return $query;
@@ -175,7 +175,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  string $query Query
      * @return array The tokens
      */
-    protected function tokenise_query($query)
+    protected function tokenise_query(string $query) : array
     {
         static $symbolic_tokens = null;
         if ($symbolic_tokens === null) {
@@ -268,7 +268,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return array List of queries
      */
-    protected function get_init_queries()
+    protected function get_init_queries() : array
     {
         global $SITE_INFO;
         if (empty($SITE_INFO['database_charset'])) {
@@ -316,7 +316,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $setting Whether it is on (may be overridden be configuration)
      * @return string The value
      */
-    protected function _strict_mode_query($setting)
+    protected function _strict_mode_query(bool $setting) : string
     {
         if (($setting) && (get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
             $value = 'STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY';
@@ -333,7 +333,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $setting Whether it is on (may be overridden be configuration)
      * @return ?string The query (null: none)
      */
-    public function strict_mode_query($setting)
+    public function strict_mode_query(bool $setting) : ?string
     {
         $value = $this->_strict_mode_query($setting);
         $query = 'SET sql_mode=\'' . $value . '\'';
@@ -349,7 +349,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
      * @return boolean Whether it can
      */
-    public function query_may_run($query, $connection, $get_insert_id)
+    public function query_may_run(string $query, $connection, bool $get_insert_id) : bool
     {
         if (isset($query[500000])) { // Let's hope we can fail on this, because it's a huge query. We can only allow it if MySQL can.
             $test_result = $this->query('SHOW VARIABLES LIKE \'max_allowed_packet\'', $connection, null, 0, true);
@@ -379,7 +379,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  integer $seconds The time limit in seconds
      * @param  mixed $connection The DB connection
      */
-    public function set_query_time_limit($seconds, $connection)
+    public function set_query_time_limit(int $seconds, $connection)
     {
         $this->query('SET SESSION MAX_EXECUTION_TIME=' . strval($seconds * 1000), $connection, null, 0, true); // Only works in MySQL 5.7+
     }
@@ -391,7 +391,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  string $pattern The pattern
      * @return string The encoded pattern
      */
-    public function encode_like($pattern)
+    public function encode_like(string $pattern) : string
     {
         return str_replace('\\\\_'/*MySQL escaped underscores*/, '\\_', $this->escape_string($pattern));
     }
@@ -403,7 +403,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  string $err The error message
      * @param  mixed $connection The DB connection
      */
-    protected function handle_failed_query($query, $err, $connection)
+    protected function handle_failed_query(string $query, string $err, $connection)
     {
         if (function_exists('ocp_mark_as_escaped')) {
             ocp_mark_as_escaped($err);
@@ -429,7 +429,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
      */
-    public function get_type_remap($for_alter = false)
+    public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
             'AUTO' => $for_alter ? 'integer unsigned PRIMARY KEY auto_increment' : 'integer unsigned auto_increment',
@@ -467,7 +467,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table($table_name, $fields, $connection, $raw_table_name, $save_bytes = false)
+    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -531,7 +531,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_drop_table_if_exists()
+    public function supports_drop_table_if_exists() : bool
     {
         return true;
     }
@@ -543,7 +543,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  array $new_key A list of fields to put in the new key
      * @param  mixed $connection The DB connection to make on
      */
-    public function change_primary_key($table_name, $new_key, $connection)
+    public function change_primary_key(string $table_name, array $new_key, $connection)
     {
         $this->query('ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY, ADD PRIMARY KEY (' . implode(',', $new_key) . ')', $connection);
     }
@@ -555,7 +555,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return ?integer The count (null: do it normally)
      */
-    public function get_table_count_approx($table, $connection)
+    public function get_table_count_approx(string $table, $connection) : ?int
     {
         if (get_value('slow_counts') === '1') {
             $sql = 'SELECT TABLE_ROWS FROM information_schema.tables WHERE table_schema=DATABASE() AND TABLE_NAME=\'' . $this->escape_string($table) . '\'';
@@ -578,7 +578,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return integer Search length
      */
-    public function get_minimum_search_length($connection)
+    public function get_minimum_search_length($connection) : int
     {
         static $min_word_length = null;
         if ($min_word_length === null) {
@@ -603,7 +603,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
+    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         if ($index_name[0] == '#') {
             $index_name = substr($index_name, 1);
@@ -619,7 +619,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table()
+    public function supports_truncate_table() : bool
     {
         return true;
     }
@@ -634,7 +634,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?string SQL query (null: not supported)
      */
-    public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
+    public function query_insert_or_replace(string $table, array $map, array $key_map, bool $fail_ok = false, bool $save_as_volatile = false) : ?string
     {
         $keys = '';
         $values = '';
@@ -682,7 +682,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return boolean Whether it is
      */
-    public function has_full_text($connection)
+    public function has_full_text($connection) : bool
     {
         return true;
     }
@@ -692,7 +692,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function has_full_text_boolean()
+    public function has_full_text_boolean() : bool
     {
         return true;
     }
@@ -703,7 +703,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  string $content Our match string (assumes "?" has been stripped already)
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content)
+    public function full_text_assemble(string $content) : string
     {
         static $stopwords = null;
         if ($stopwords === null) {

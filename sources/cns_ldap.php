@@ -39,7 +39,7 @@ When looping over results, we always have to skip non-numeric keys, which are fo
  * @param  boolean $for_dn Whether this is for use in a DN string
  * @return string The escaped value
  */
-function cms_ldap_escape($str, $for_dn = false)
+function cms_ldap_escape(string $str, bool $for_dn = false) : string
 {
     // see:
     // RFC2254
@@ -64,7 +64,7 @@ function cms_ldap_escape($str, $for_dn = false)
  * @param  string $str The escaped value
  * @return string The value
  */
-function ldap_unescape($str)
+function ldap_unescape(string $str) : string
 {
     require_code('character_sets');
     return convert_to_internal_encoding($str, 'utf-8', get_charset());
@@ -95,7 +95,7 @@ function cns_ldap_connect()
  *
  * @return string The property
  */
-function member_search_qualifier()
+function member_search_qualifier() : string
 {
     $v = get_option('ldap_member_search_qualifier');
     if ($v == '') {
@@ -109,7 +109,7 @@ function member_search_qualifier()
  *
  * @return string The property
  */
-function member_property()
+function member_property() : string
 {
     return get_option('ldap_member_property');
 }
@@ -119,7 +119,7 @@ function member_property()
  *
  * @return string The property
  */
-function get_member_class()
+function get_member_class() : string
 {
     return get_option('ldap_member_class');
 }
@@ -129,7 +129,7 @@ function get_member_class()
  *
  * @return string The property
  */
-function group_search_qualifier()
+function group_search_qualifier() : string
 {
     $v = get_option('ldap_group_search_qualifier');
     if ($v == '') {
@@ -143,7 +143,7 @@ function group_search_qualifier()
  *
  * @return string The property
  */
-function group_property()
+function group_property() : string
 {
     return 'cn';
 }
@@ -153,7 +153,7 @@ function group_property()
  *
  * @return string The property
  */
-function get_group_class()
+function get_group_class() : string
 {
     return get_option('ldap_group_class');
 }
@@ -163,7 +163,7 @@ function get_group_class()
  *
  * @return string The group
  */
-function get_mapped_users_group()
+function get_mapped_users_group() : string
 {
     return 'users';
 }
@@ -173,7 +173,7 @@ function get_mapped_users_group()
  *
  * @return string The group
  */
-function get_mapped_admin_group()
+function get_mapped_admin_group() : string
 {
     if (get_option('ldap_is_windows') == '0') {
         return 'admin';
@@ -188,7 +188,7 @@ function get_mapped_admin_group()
  * @param  string $cn The username
  * @return boolean The answer
  */
-function cns_is_ldap_member_potential($cn)
+function cns_is_ldap_member_potential(string $cn) : bool
 {
     global $LDAP_CONNECTION;
     if ($LDAP_CONNECTION === null) {
@@ -249,7 +249,7 @@ function cns_ldap_bind()
  * @param  SHORT_TEXT $cn The username
  * @return boolean The answer
  */
-function cns_is_on_ldap($cn)
+function cns_is_on_ldap(string $cn) : bool
 {
     global $LDAP_CONNECTION;
     $path = member_search_qualifier() . get_option('ldap_base_dn');
@@ -277,7 +277,7 @@ function cns_is_on_ldap($cn)
  * @param  string $cn The username
  * @return ?string The password (null: no such user)
  */
-function cns_get_ldap_hash($cn)
+function cns_get_ldap_hash(string $cn) : ?string
 {
     global $LDAP_CONNECTION;
 
@@ -311,7 +311,7 @@ function cns_get_ldap_hash($cn)
  * @param  string $password The password
  * @return string The hashed password
  */
-function cns_ldap_hash($cn, $password)
+function cns_ldap_hash(string $cn, string $password) : string
 {
     global $LDAP_CONNECTION;
 
@@ -354,7 +354,7 @@ function cns_ldap_hash($cn, $password)
  * @param  string $cn The username
  * @return string The login string
  */
-function ldap_get_login_string($cn)
+function ldap_get_login_string(string $cn) : string
 {
     $pre = get_option('ldap_login_qualifier');
     if ($pre != '') {
@@ -380,7 +380,7 @@ function ldap_get_login_string($cn)
  * @param  ?string $password The password (null: no such user)
  * @return array Part of the member row to put back in and authorise normally (hackerish, but it works kind of like a filter / stage in a chain)
  */
-function cns_ldap_authorise_login($cn, $password)
+function cns_ldap_authorise_login(string $cn, ?string $password) : array
 {
     global $LDAP_CONNECTION;
 
@@ -426,7 +426,7 @@ function cns_ldap_authorise_login($cn, $password)
  * @param  string $cn The username
  * @return ?integer The Composr member-ID (null: none)
  */
-function cns_member_ldapcn_to_cnsid($cn)
+function cns_member_ldapcn_to_cnsid(string $cn) : ?int
 {
     $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $cn, 'm_password_compat_scheme' => 'ldap']);
     if ($ret === null) {
@@ -441,7 +441,7 @@ function cns_member_ldapcn_to_cnsid($cn)
  * @param  integer $id The Composr member-ID
  * @return ?SHORT_TEXT The username (null: none)
  */
-function cns_member_cnsid_to_ldapcn($id)
+function cns_member_cnsid_to_ldapcn(int $id) : ?string
 {
     $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_username', ['id' => $id, 'm_password_compat_scheme' => 'ldap']);
     if ($ret === null) {
@@ -455,7 +455,7 @@ function cns_member_cnsid_to_ldapcn($id)
  *
  * @return array The list of usergroups (string)
  */
-function cns_get_all_ldap_groups()
+function cns_get_all_ldap_groups() : array
 {
     global $LDAP_CONNECTION;
 
@@ -495,7 +495,7 @@ function cns_get_all_ldap_groups()
  * @param  string $cn The usergroup
  * @return ?GROUP The Composr-ID (null: none)
  */
-function cns_group_ldapcn_to_cnsid($cn)
+function cns_group_ldapcn_to_cnsid(string $cn) : ?int
 {
     if ($cn == get_mapped_admin_group()) {
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
@@ -524,7 +524,7 @@ function cns_group_ldapcn_to_cnsid($cn)
  * @param  GROUP $id The Conversr ID
  * @return ?SHORT_TEXT The named LDAP usergroup (null: none)
  */
-function cns_group_cnsid_to_ldapcn($id)
+function cns_group_cnsid_to_ldapcn(int $id) : ?string
 {
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     if ((array_key_exists(0, $admin_groups)) && ($id == $admin_groups[0])) {
@@ -545,7 +545,7 @@ function cns_group_cnsid_to_ldapcn($id)
  * @param  ID_TEXT $cn The CN of the member
  * @return SHORT_TEXT Guessed e-mail address (blank: couldn't find)
  */
-function cns_ldap_guess_email($cn)
+function cns_ldap_guess_email(string $cn) : string
 {
     global $LDAP_CONNECTION;
 
@@ -572,7 +572,7 @@ function cns_ldap_guess_email($cn)
  * @param  boolean $non_validated Whether to include those applied to join the usergroup, but not validated in
  * @param  boolean $include_secondaries Whether to include those in the usergroup as a secondary member
  */
-function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries, $non_validated, $include_secondaries)
+function cns_get_group_members_raw_ldap(array &$members, int $group_id, bool $include_primaries, bool $non_validated, bool $include_secondaries)
 {
     global $LDAP_CONNECTION;
     $gid = null;
@@ -671,7 +671,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
  * @param  ?MEMBER $member_id The member to find the usergroups of (null: current member)
  * @return array Flipped list (e.g. [1=>true,2=>true,3=>true] for someone in (1,2,3)).
  */
-function cns_get_members_groups_ldap($member_id)
+function cns_get_members_groups_ldap(?int $member_id) : array
 {
     $groups = [];
 
@@ -760,7 +760,7 @@ function cns_get_members_groups_ldap($member_id)
  * @param  MEMBER $member_id The member
  * @return GROUP The
  */
-function cns_ldap_get_member_primary_group($member_id)
+function cns_ldap_get_member_primary_group(int $member_id) : int
 {
     global $PRIMARY_GROUP_MEMBERS_CACHE;
 
@@ -806,7 +806,7 @@ function cns_ldap_get_member_primary_group($member_id)
  * @param  integer $gid The LDAP ID
  * @return ?GROUP The Composr-ID (null: could not find)
  */
-function cns_group_ldapgid_to_cnsid($gid)
+function cns_group_ldapgid_to_cnsid(int $gid) : ?int
 {
     global $LDAP_CONNECTION;
     $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(gidnumber=' . cms_ldap_escape(strval($gid)) . '))', [group_property()], 1);
@@ -830,7 +830,7 @@ function cns_group_ldapgid_to_cnsid($gid)
  * @param  string $cn The named LDAP usergroup
  * @return ?integer The LDAP usergroup ID (null: none)
  */
-function cns_group_ldapcn_to_ldapgid($cn)
+function cns_group_ldapcn_to_ldapgid(string $cn) : ?int
 {
     global $LDAP_CONNECTION;
     $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', ['gidnumber']);
@@ -850,7 +850,7 @@ function cns_group_ldapcn_to_ldapgid($cn)
  * @param  string $type The type (e.g. CN, DN).
  * @return string The short one
  */
-function cns_long_cn_to_short_cn($long, $type)
+function cns_long_cn_to_short_cn(string $long, string $type) : string
 {
     $matches = [];
     if (preg_match('#^(dn|cn|' . preg_quote($type, '#') . ')=([^,]+)(,.*)?$#i', $long, $matches) != 0) {

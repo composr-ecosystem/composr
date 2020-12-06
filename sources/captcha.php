@@ -128,7 +128,7 @@ function captcha_script()
  * @param  string $code_needed The code
  * @return array A tuple: the image CAPTCHA, the width, the height
  */
-function captcha_image($code_needed)
+function captcha_image(string $code_needed) : array
 {
     // Write basic, using multiple fonts with random Y-position offsets
     $characters = strlen($code_needed);
@@ -198,7 +198,7 @@ function captcha_image($code_needed)
  * @param  string $code_needed The code
  * @return string the audio CAPTCHA
  */
-function captcha_audio($code_needed)
+function captcha_audio(string $code_needed) : string
 {
     $data = '';
     for ($i = 0; $i < strlen($code_needed); $i++) {
@@ -243,7 +243,7 @@ function captcha_audio($code_needed)
  * @param  Tempcode $hidden Hidden fields (will attach to here for non-visible CAPTCHA systems)
  * @return Tempcode The field
  */
-function form_input_captcha($hidden)
+function form_input_captcha(object $hidden) : object
 {
     $tabindex = get_form_field_tabindex(null);
 
@@ -286,7 +286,7 @@ function form_input_captcha($hidden)
  *
  * @return boolean Whether CAPTCHA is used
  */
-function use_captcha()
+function use_captcha() : bool
 {
     if (get_option('use_captchas') == '0') {
         return false;
@@ -332,7 +332,7 @@ function use_captcha()
  *
  * @return boolean Whether question-CAPTCHA is used
  */
-function uses_question_captcha()
+function uses_question_captcha() : bool
 {
     if (empty(get_captcha_questions())) {
         return false;
@@ -360,7 +360,7 @@ function uses_question_captcha()
  *
  * @return array A list of tuples: question, answer, multi-choice answers (or null)
  */
-function get_captcha_questions()
+function get_captcha_questions() : array
 {
     $questions = [];
     $_questions = trim(get_option('captcha_questions'));
@@ -443,7 +443,7 @@ function generate_captcha()
  *
  * @param  boolean $regenerate_on_error Whether to possibly regenerate upon error
  */
-function enforce_captcha($regenerate_on_error = true)
+function enforce_captcha(bool $regenerate_on_error = true)
 {
     if (use_captcha()) {
         $error_message = do_lang_tempcode('INVALID_SECURITY_CODE_ENTERED');
@@ -461,7 +461,7 @@ function enforce_captcha($regenerate_on_error = true)
  * @param  string $answer Answer
  * @return string Normalised answer
  */
-function normalise_captcha_question_answer($answer)
+function normalise_captcha_question_answer(string $answer) : string
 {
     $ret = cms_mb_strtolower($answer);
     $ret = trim($ret);
@@ -476,7 +476,7 @@ function normalise_captcha_question_answer($answer)
  * @param  ?Tempcode $error_message Error message to write out (null: none)
  * @return boolean Whether it is valid for the current session
  */
-function check_captcha($code_entered = null, $regenerate_on_error = true, &$error_message = null)
+function check_captcha(?string $code_entered = null, bool $regenerate_on_error = true, ?object &$error_message = null) : bool
 {
     if (!use_captcha()) {
         return true;
@@ -599,7 +599,7 @@ function _cleanout_captcha()
  *
  * @return string Function name
  */
-function captcha_ajax_check_function()
+function captcha_ajax_check_function() : string
 {
     if (!use_captcha()) {
         return '';

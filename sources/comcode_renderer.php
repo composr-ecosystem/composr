@@ -48,7 +48,7 @@ function init__comcode_renderer()
  *
  * @ignore
  */
-function _apply_emoticons($text)
+function _apply_emoticons(string $text) : string
 {
     if (!isset($GLOBALS['FORUM_DRIVER'])) {
         return $text;
@@ -115,7 +115,7 @@ function _apply_emoticons($text)
  * @param  array $imgcode Parameter triple(template,src,code)
  * @return mixed Either a Tempcode result, or a string result, depending on $evaluate
  */
-function do_emoticon($imgcode)
+function do_emoticon(array $imgcode)
 {
     $tpl = do_template($imgcode[0], ['SRC' => $imgcode[1], 'EMOTICON' => $imgcode[2]]);
     return $tpl;
@@ -129,7 +129,7 @@ function do_emoticon($imgcode)
  * @param  boolean $as_admin Whether to check as arbitrary admin
  * @return URLPATH Filtered input URL
  */
-function check_naughty_javascript_url($source_member, $url, $as_admin)
+function check_naughty_javascript_url(int $source_member, string $url, bool $as_admin) : string
 {
     init_potential_js_naughty_array();
 
@@ -183,7 +183,7 @@ function check_naughty_javascript_url($source_member, $url, $as_admin)
  *
  * @ignore
  */
-function _custom_comcode_import($db)
+function _custom_comcode_import(object $db)
 {
     init_valid_comcode_tags();
 
@@ -291,7 +291,7 @@ function _custom_comcode_import($db)
  *
  * @ignore
  */
-function _comcode_to_tempcode($comcode, $source_member = null, $as_admin = false, $pass_id = null, $db = null, $flags = 0, $highlight_bits = [], $on_behalf_of_member = null)
+function _comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $as_admin = false, ?string $pass_id = null, ?object $db = null, int $flags = 0, array $highlight_bits = [], ?int $on_behalf_of_member = null) : object
 {
     $structure_sweep = ($flags & COMCODE_STRUCTURE_SWEEP) != 0;
 
@@ -338,7 +338,7 @@ function _comcode_to_tempcode($comcode, $source_member = null, $as_admin = false
  * @return Tempcode An error message to put in the output stream (shown in certain situations, where in other situations we bomb out)
  * @exits
  */
-function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $check_only = false)
+function comcode_parse_error_exit(bool $preparse_mode, array $_message, int $pos, string $comcode, bool $check_only = false) : object
 {
     require_lang('comcode');
     if ($_message[0] === null) {
@@ -482,7 +482,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
  * @param  ID_TEXT $tag Comcode tag name
  * @return URLPATH Fixed URL
  */
-function absoluteise_and_test_comcode_url($given_url, $source_member, $as_admin, $tag)
+function absoluteise_and_test_comcode_url(string $given_url, int $source_member, bool $as_admin, string $tag) : string
 {
     $url = $given_url;
 
@@ -516,7 +516,7 @@ function absoluteise_and_test_comcode_url($given_url, $source_member, $as_admin,
  * @param  MEMBER $source_member The member who is responsible for this Comcode
  * @return Tempcode Error message, or blank if no error
  */
-function test_url($url_full, $tag_type, $given_url, $source_member)
+function test_url(string $url_full, string $tag_type, string $given_url, int $source_member) : object
 {
     if (get_option('check_broken_urls') == '0') {
         return new Tempcode();
@@ -586,7 +586,7 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
  *
  * @ignore
  */
-function comcode_safelisted($tag, $marker, $comcode)
+function comcode_safelisted(string $tag, int $marker, string $comcode) : bool
 {
     static $comcode_parsing_hooks = null;
     if ($comcode_parsing_hooks === null) {
@@ -635,7 +635,7 @@ function comcode_safelisted($tag, $marker, $comcode)
  *
  * @ignore
  */
-function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_id, $marker, $source_member, $as_admin, $db, &$comcode, $structure_sweep, $semiparse_mode, $highlight_bits = [], $on_behalf_of_member = null, $in_semihtml = false, $is_all_semihtml = false, $html_errors = false)
+function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_dangerous, string $pass_id, int $marker, int $source_member, bool $as_admin, object $db, string &$comcode, bool $structure_sweep, bool $semiparse_mode, array $highlight_bits = [], ?int $on_behalf_of_member = null, bool $in_semihtml = false, bool $is_all_semihtml = false, bool $html_errors = false) : object
 {
     if (($structure_sweep) && ($tag != 'title')) {
         return new Tempcode();
@@ -2400,7 +2400,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
  * @param  boolean $is_all_semihtml Whether what we have came from semihtml mode
  * @return array A pair: The Tempcode for the code box, and the title of the box
  */
-function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_all_semihtml = false)
+function do_code_box(string $type, object $embed, bool $numbers = true, bool $in_semihtml = false, bool $is_all_semihtml = false) : array
 {
     $_embed = null;
     $title = do_lang_tempcode('CODE');
@@ -2476,7 +2476,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
  *
  * @ignore
  */
-function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
+function _do_contents_level(array $tree_structure, array $list_types, int $base, int $the_level = 0) : object
 {
     $lines = [];
     foreach ($tree_structure as $level) {
@@ -2505,7 +2505,7 @@ function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
  * @param  ID_TEXT $name The name of the value
  * @return ?SHORT_TEXT The value (null: value not found)
  */
-function get_tutorial_link($name)
+function get_tutorial_link(string $name) : ?string
 {
     static $cache = [];
     if (isset($cache[$name])) {
@@ -2523,7 +2523,7 @@ function get_tutorial_link($name)
  * @param  ID_TEXT $name The name of the value
  * @param  SHORT_TEXT $value The value
  */
-function set_tutorial_link($name, $value)
+function set_tutorial_link(string $name, string $value)
 {
     if (strpos($value, ':search:') !== false) {
         return; // Do not want tutorial links to search results page

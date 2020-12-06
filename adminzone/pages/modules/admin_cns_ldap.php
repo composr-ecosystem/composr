@@ -28,7 +28,7 @@ class Module_admin_cns_ldap
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_cns_ldap
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('ldap')) {
             return null;
@@ -78,7 +78,7 @@ class Module_admin_cns_ldap
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         foreach (array_keys($usergroups) as $id) {
@@ -93,7 +93,7 @@ class Module_admin_cns_ldap
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('ldap', $error_msg)) {
@@ -126,7 +126,7 @@ class Module_admin_cns_ldap
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         cns_require_all_forum_stuff();
 
@@ -159,7 +159,7 @@ class Module_admin_cns_ldap
      *
      * @return Tempcode The UI
      */
-    public function gui()
+    public function gui() : object
     {
         $groups_add = new Tempcode();
         $groups_delete = new Tempcode();
@@ -220,7 +220,7 @@ class Module_admin_cns_ldap
      *
      * @return Tempcode The UI
      */
-    public function actual()
+    public function actual() : object
     {
         $all_ldap_groups = cns_get_all_ldap_groups();
         foreach ($all_ldap_groups as $group) {

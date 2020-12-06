@@ -28,7 +28,7 @@ class Hook_config_long_google_cookies
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'LONG_GOOGLE_COOKIES',
@@ -53,7 +53,7 @@ class Hook_config_long_google_cookies
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

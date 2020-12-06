@@ -311,7 +311,7 @@ function dload_script()
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @return AUTO_LINK The ID of the newly added download category
  */
-function add_download_category($category, $parent_id, $description, $notes = '', $rep_image = '', $id = null, $add_time = null, $meta_keywords = '', $meta_description = '')
+function add_download_category(string $category, int $parent_id, string $description, string $notes = '', string $rep_image = '', ?int $id = null, ?int $add_time = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_DOWNLOAD_CATEGORY', null, $category);
@@ -377,7 +377,7 @@ function add_download_category($category, $parent_id, $description, $notes = '',
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit)
  * @param  ?TIME $add_time Add time (null: do not change)
  */
-function edit_download_category($category_id, $category, $parent_id, $description, $notes, $rep_image, $meta_keywords, $meta_description, $add_time = null)
+function edit_download_category(int $category_id, string $category, int $parent_id, string $description, string $notes, string $rep_image, ?string $meta_keywords, ?string $meta_description, ?int $add_time = null)
 {
     $under_category_id = $parent_id;
     while (($under_category_id !== null) && ($under_category_id != INTEGER_MAGIC_NULL)) {
@@ -439,7 +439,7 @@ function edit_download_category($category_id, $category, $parent_id, $descriptio
  *
  * @param  AUTO_LINK $category_id The download category to delete
  */
-function delete_download_category($category_id)
+function delete_download_category(int $category_id)
 {
     $root_category = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'MIN(id)');
     if ($category_id == $root_category) {
@@ -505,7 +505,7 @@ function delete_download_category($category_id)
  * @param  boolean $direct_path Whether a direct file path was given instead of a URL
  * @return LONG_TEXT The data-mash
  */
-function create_data_mash($url, $data = null, $extension = null, $direct_path = false)
+function create_data_mash(string $url, ?string $data = null, ?string $extension = null, bool $direct_path = false) : string
 {
     if (get_option('dload_search_index') == '0') {
         return '';
@@ -836,7 +836,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
  *
  * @ignore
  */
-function _find_pdftohtml()
+function _find_pdftohtml() : string
 {
     $path = 'pdftohtml';
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
@@ -867,7 +867,7 @@ function _find_pdftohtml()
  *
  * @ignore
  */
-function _is_valid_data_mash_char(&$ch)
+function _is_valid_data_mash_char(string &$ch) : bool
 {
     $c = ord($ch);
     if (($c == 145) || ($c == 146)) {
@@ -908,7 +908,7 @@ function _is_valid_data_mash_char(&$ch)
  * @param  URLPATH $url_redirect The URL to redirect
  * @return AUTO_LINK The ID of the newly added download
  */
-function add_download($category_id, $name, $url, $description, $author, $additional_details, $out_mode_id, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $original_filename, $file_size, $cost, $submitter_gets_points, $licence = null, $add_date = null, $num_downloads = 0, $views = 0, $submitter = null, $edit_date = null, $id = null, $meta_keywords = '', $meta_description = '', $default_pic = 1, $url_redirect = '')
+function add_download(int $category_id, string $name, string $url, string $description, string $author, string $additional_details, ?int $out_mode_id, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $original_filename, int $file_size, int $cost, int $submitter_gets_points, ?int $licence = null, ?int $add_date = null, int $num_downloads = 0, int $views = 0, ?int $submitter = null, ?int $edit_date = null, ?int $id = null, string $meta_keywords = '', string $meta_description = '', int $default_pic = 1, string $url_redirect = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_DOWNLOAD', null, $name);
@@ -1047,7 +1047,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
  * @param  ?AUTO_LINK $id The ID of the download (null: lookup from download)
  * @param  ?MEMBER $submitter The submitter (null: work out automatically)
  */
-function set_download_gallery_permissions($id, $submitter = null)
+function set_download_gallery_permissions(?int $id, ?int $submitter = null)
 {
     if ($submitter === null) {
         $submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', ['id' => $id]);
@@ -1107,7 +1107,7 @@ function set_download_gallery_permissions($id, $submitter = null)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  * @param  URLPATH $url_redirect The URL to redirect
  */
-function edit_download($id, $category_id, $name, $url, $description, $author, $additional_details, $out_mode_id, $default_pic, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $original_filename, $file_size, $cost, $submitter_gets_points, $licence, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $num_downloads = null, $null_is_literal = false, $url_redirect = '')
+function edit_download(int $id, int $category_id, string $name, string $url, string $description, string $author, string $additional_details, ?int $out_mode_id, int $default_pic, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $original_filename, int $file_size, int $cost, int $submitter_gets_points, ?int $licence, string $meta_keywords, string $meta_description, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, ?int $num_downloads = null, bool $null_is_literal = false, string $url_redirect = '')
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -1264,7 +1264,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
  * @param  AUTO_LINK $id The ID of the download to delete
  * @param  boolean $leave Whether to leave the actual file behind
  */
-function delete_download($id, $leave = false)
+function delete_download(int $id, bool $leave = false)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['name', 'the_description', 'additional_details'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -1331,7 +1331,7 @@ function delete_download($id, $leave = false)
  * @param  LONG_TEXT $text The text of the download licence
  * @return AUTO_LINK The ID of the new download licence
  */
-function add_download_licence($title, $text)
+function add_download_licence(string $title, string $text) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_DOWNLOAD_LICENCE', null, $title);
@@ -1355,7 +1355,7 @@ function add_download_licence($title, $text)
  * @param  SHORT_TEXT $title The title of the download licence
  * @param  LONG_TEXT $text The text of the download licence
  */
-function edit_download_licence($id, $title, $text)
+function edit_download_licence(int $id, string $title, string $text)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('download_licences', ['l_title'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -1377,7 +1377,7 @@ function edit_download_licence($id, $title, $text)
  *
  * @param  AUTO_LINK $id The ID of the download licence to delete
  */
-function delete_download_licence($id)
+function delete_download_licence(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('download_licences', ['l_title'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -1404,7 +1404,7 @@ function delete_download_licence($id)
  * @param  integer $size The size of the download (if zero, no bandwidth will be done - zero implies either an empty file, or a remote file that doesn't affect our bandwidth)
  * @param  boolean $got_before Whether the download has been downloaded before
  */
-function log_download($id, $size, $got_before)
+function log_download(int $id, int $size, bool $got_before)
 {
     // Log
     if (!$got_before) {
@@ -1427,7 +1427,7 @@ function log_download($id, $size, $got_before)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__download_categories($where = [], $tolerate_errors = false)
+function reorganise_uploads__download_categories(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('download_category', 'uploads/repimages', 'rep_image', $where, true, $tolerate_errors);
@@ -1439,7 +1439,7 @@ function reorganise_uploads__download_categories($where = [], $tolerate_errors =
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__downloads($where = [], $tolerate_errors = false)
+function reorganise_uploads__downloads(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('download', 'uploads/downloads', 'url', $where, false, $tolerate_errors);

@@ -28,7 +28,7 @@ class Hook_snippet_rating
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (get_option('is_on_rating') == '0') {
             return do_lang_tempcode('INTERNAL_ERROR');

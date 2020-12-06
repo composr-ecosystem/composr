@@ -24,7 +24,7 @@
  * @param  PATH $in_path The path of the TAR file to convert
  * @param  ?PATH $out_path The path of the ZIP file to save to (null: make up a temporary path)
  */
-function convert_zip_to_tar($in_path, &$out_path = null)
+function convert_zip_to_tar(string $in_path, ?string &$out_path = null)
 {
     $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 

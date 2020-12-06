@@ -37,7 +37,7 @@ function init__menus2()
  *
  * @param  ?PATH $file_path The path to the spreadsheet file (null: uploads/website_specific/cms_menu_items.<default file type>)
  */
-function export_menu_spreadsheet($file_path = null)
+function export_menu_spreadsheet(?string $file_path = null)
 {
     $sql = 'SELECT m.id, i_menu, i_order, i_parent, i_url, i_check_permissions, i_expanded, i_new_window, i_page_only, i_theme_img_code, i_caption, i_caption_long, i_include_sitemap FROM ' . get_table_prefix() . 'menu_items m';
 
@@ -63,7 +63,7 @@ function export_menu_spreadsheet($file_path = null)
  * @param  ?PATH $file_path The path to the spreadsheet file (null: uploads/website_specific/cms_menu_items.<default file type>)
  * @param  ?string $filename The filename of the spreadsheet file (null: detect from $file_path)
  */
-function import_menu_spreadsheet($file_path = null, $filename = null)
+function import_menu_spreadsheet(?string $file_path = null, ?string $filename = null)
 {
     $old_menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_caption', 'i_caption_long']);
     foreach ($old_menu_items as $old_menu_item) {
@@ -109,7 +109,7 @@ function import_menu_spreadsheet($file_path = null, $filename = null)
  * @param  boolean $reset Whether to delete the current menu contents
  * @param  ?AUTO_LINK $parent Parent of current node in recursion (null: no parent)
  */
-function create_menu_structure($structure, $menu_name = 'main_menu', $reset = true, $parent = null)
+function create_menu_structure(array $structure, string $menu_name = 'main_menu', bool $reset = true, ?int $parent = null)
 {
     /*
         CALLING SAMPLE:
@@ -227,7 +227,7 @@ function menu_management_script()
  * @param  ?integer $order Order to use (null: automatic, after the ones that have it specified)
  * @return AUTO_LINK The ID of the newly added menu item
  */
-function add_menu_item_simple($menu_id, $parent, $caption, $url = '', $expanded = 0, $check_permissions = 0, $dereference_caption = true, $caption_long = '', $new_window = 0, $theme_image_code = '', $include_sitemap = 0, $order = null)
+function add_menu_item_simple(string $menu_id, $parent, string $caption, string $url = '', int $expanded = 0, int $check_permissions = 0, bool $dereference_caption = true, string $caption_long = '', int $new_window = 0, string $theme_image_code = '', int $include_sitemap = 0, ?int $order = null) : int
 {
     global $ADD_MENU_COUNTER;
 
@@ -258,7 +258,7 @@ function add_menu_item_simple($menu_id, $parent, $caption, $url = '', $expanded 
  *
  * @param  SHORT_TEXT $url The URL (in entry point form), or a caption
  */
-function delete_menu_item_simple($url)
+function delete_menu_item_simple(string $url)
 {
     $_id = $GLOBALS['SITE_DB']->query_select('menu_items', ['id'], ['i_url' => $url]);
     foreach ($_id as $id) {
@@ -289,7 +289,7 @@ function delete_menu_item_simple($url)
  * @param  ?AUTO_LINK $id The ID (null: auto-increment)
  * @return AUTO_LINK The ID of the newly added menu item
  */
-function add_menu_item($menu_id, $order, $parent, $caption, $url, $check_permissions, $page_only, $expanded, $new_window, $caption_long, $theme_image_code = '', $include_sitemap = 0, $id = null)
+function add_menu_item(string $menu_id, int $order, ?int $parent, string $caption, string $url, int $check_permissions, string $page_only, int $expanded, int $new_window, string $caption_long, string $theme_image_code = '', int $include_sitemap = 0, ?int $id = null) : int
 {
     $map = [
         'i_menu' => $menu_id,
@@ -339,7 +339,7 @@ function add_menu_item($menu_id, $order, $parent, $caption, $url, $check_permiss
  * @param  ID_TEXT $theme_image_code The theme image code
  * @param  SHORT_INTEGER $include_sitemap An INCLUDE_SITEMAP_* constant
  */
-function edit_menu_item($id, $menu_id, $order, $parent, $caption, $url, $check_permissions, $page_only, $expanded, $new_window, $caption_long, $theme_image_code, $include_sitemap)
+function edit_menu_item(int $id, string $menu_id, int $order, ?int $parent, string $caption, string $url, int $check_permissions, string $page_only, int $expanded, int $new_window, string $caption_long, string $theme_image_code, int $include_sitemap)
 {
     $_caption = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_caption', ['id' => $id]);
     if ($_caption === null) {
@@ -375,7 +375,7 @@ function edit_menu_item($id, $menu_id, $order, $parent, $caption, $url, $check_p
  *
  * @param  AUTO_LINK $id The ID of the menu item to delete
  */
-function delete_menu_item($id)
+function delete_menu_item(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['i_caption', 'i_caption_long', 'i_menu'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -405,7 +405,7 @@ function delete_menu_item($id)
  *
  * @param  ID_TEXT $menu_id The ID of the menu
  */
-function delete_menu($menu_id)
+function delete_menu(string $menu_id)
 {
     // Get content language strings currently used
     $old_menu_bits = list_to_map('id', $GLOBALS['SITE_DB']->query_select('menu_items', ['id', 'i_caption', 'i_caption_long'], ['i_menu' => $menu_id]));
@@ -447,7 +447,7 @@ function delete_menu($menu_id)
  * @param  ID_TEXT $target_menu The ID of the menu to save into
  * @param  SHORT_TEXT $source Sitemap details
  */
-function copy_from_sitemap_to_new_menu($target_menu, $source)
+function copy_from_sitemap_to_new_menu(string $target_menu, string $source)
 {
     require_code('comcode_from_html');
     require_code('menus');
@@ -476,7 +476,7 @@ function copy_from_sitemap_to_new_menu($target_menu, $source)
  *
  * @ignore
  */
-function _copy_from_sitemap_to_new_menu($target_menu, $node, &$order, $parent = null)
+function _copy_from_sitemap_to_new_menu(string $target_menu, array $node, int &$order, ?int $parent = null)
 {
     if (isset($node['children'])) {
         foreach ($node['children'] as $child) {
@@ -516,7 +516,7 @@ function _copy_from_sitemap_to_new_menu($target_menu, $node, &$order, $parent = 
  *
  * @return array A list of the menu item IDs being saved (i.e. what it is referenced as in POST)
  */
-function menu_items_being_saved()
+function menu_items_being_saved() : array
 {
     // Find what we have on the menu first
     $ids = [];
@@ -540,7 +540,7 @@ function menu_items_being_saved()
  * @param  array $old_menu_bits The map of menu id=>string content language string IDs employed by items before the edit
  * @param  integer $order The order this branch has in the editor (and due to linearly moving through, the number of branches shown assembled ready)
  */
-function save_add_menu_item_from_post($menu_id, $id, &$ids, $parent, &$old_menu_bits, &$order)
+function save_add_menu_item_from_post(string $menu_id, int $id, array &$ids, ?int $parent, array &$old_menu_bits, int &$order)
 {
     // Load in details of menu item
     $caption = post_param_string('caption_' . strval($id), '');

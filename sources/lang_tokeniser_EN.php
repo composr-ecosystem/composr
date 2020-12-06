@@ -50,7 +50,7 @@ class LangTokeniser_EN
      * @param  integer $max_tokens The maximum number of tokens to parse
      * @return array A complex structure of search tokens
      */
-    public function query_to_search_tokens($query, $support_boolean = true, $max_tokens = 30)
+    public function query_to_search_tokens(string $query, bool $support_boolean = true, int $max_tokens = 30) : array
     {
         /*
         Note the default for $max_tokens comes from being comfortably less than MySQL's:
@@ -157,7 +157,7 @@ class LangTokeniser_EN
      * @param  integer $num_tokens_found The number of tokens found so far
      * @param  integer $max_tokens The maximum number of tokens to parse
      */
-    protected function finish_search_token(&$fuzzy_and, &$and, &$not, &$in_quotes, &$operator, &$current_search_token, &$is_singular_ngram, &$num_tokens_found, $max_tokens)
+    protected function finish_search_token(array &$fuzzy_and, array &$and, array &$not, bool &$in_quotes, ?string &$operator, string &$current_search_token, bool &$is_singular_ngram, int &$num_tokens_found, int $max_tokens)
     {
         if ($num_tokens_found == $max_tokens) {
             return;
@@ -202,7 +202,7 @@ class LangTokeniser_EN
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
      * @return array A list of ngrams (along with a boolean to indicate whether they are a boolean ngram)
      */
-    public function text_to_ngrams($text, $max_ngram_size = 1, &$total_singular_ngram_tokens = null)
+    public function text_to_ngrams(string $text, int $max_ngram_size = 1, ?int &$total_singular_ngram_tokens = null) : array
     {
         $word_ngrams = [];
 
@@ -221,7 +221,7 @@ class LangTokeniser_EN
      * @param  string $text The text
      * @return array List of phrases
      */
-    protected function text_to_phrases($text)
+    protected function text_to_phrases(string $text) : array
     {
         static $utf = null;
         if ($utf === null) {
@@ -272,7 +272,7 @@ class LangTokeniser_EN
      * @param  integer $total_word_tokens Maintain a count of singular ngrams (word tokens in our case) in here
      * @return array List of words
      */
-    protected function phrase_to_word_list($phrase, &$total_word_tokens)
+    protected function phrase_to_word_list(string $phrase, int &$total_word_tokens) : array
     {
         static $utf = null, $word_regexp = null;
         if ($utf === null) {
@@ -299,7 +299,7 @@ class LangTokeniser_EN
      * @param  array $word_list List of words
      * @param  integer $max_ngram_size The maximum number of ngrams (typically words) to sequence together
      */
-    protected function word_list_to_word_ngrams(&$word_ngrams, $word_list, $max_ngram_size)
+    protected function word_list_to_word_ngrams(array &$word_ngrams, array $word_list, int $max_ngram_size)
     {
         $count = count($word_list);
 

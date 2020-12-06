@@ -123,7 +123,7 @@ function init__database__xml()
  *
  * @ignore
  */
-function _get_sql_keywords()
+function _get_sql_keywords() : array
 {
     return [
         'LEFT', 'RIGHT', // Join types
@@ -161,7 +161,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @param  string $table_prefix Table prefix
      */
-    public function __construct($table_prefix)
+    public function __construct(string $table_prefix)
     {
         $this->table_prefix = $table_prefix;
     }
@@ -171,7 +171,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return string The default user for db connections
      */
-    public function default_user()
+    public function default_user() : string
     {
         return '';
     }
@@ -181,7 +181,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return string The default password for db connections
      */
-    public function default_password()
+    public function default_password() : string
     {
         return '';
     }
@@ -192,7 +192,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
      */
-    public function get_type_remap($for_alter = false)
+    public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
             'AUTO' => 'AUTO',
@@ -232,7 +232,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
+    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         // Indexes not supported
         return [];
@@ -245,7 +245,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $new_key A list of fields to put in the new key
      * @param  array $db The DB connection to make on
      */
-    public function change_primary_key($table_name, $new_key, $db)
+    public function change_primary_key(string $table_name, array $new_key, array $db)
     {
         $this->query('UPDATE db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name), $db);
         foreach ($new_key as $_new_key) {
@@ -263,7 +263,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table($table_name, $fields, $connection, $raw_table_name, $save_bytes = false)
+    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -304,7 +304,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $db The DB connection to make on
      * @param  boolean $if_not_exists Whether to only do it if it does not currently exist
      */
-    protected function _create_table($table_name, $fields, $db, $if_not_exists = false)
+    protected function _create_table(string $table_name, array $fields, array $db, bool $if_not_exists = false)
     {
         $path = $db[0] . '/' . $table_name;
 
@@ -336,7 +336,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $db The DB connection to delete on
      * @return boolean Success status
      */
-    protected function _drop_table($table_name, $db)
+    protected function _drop_table(string $table_name, array $db) : bool
     {
         $file_path = $db[0] . '/' . $table_name;
         $dh = @opendir($file_path);
@@ -368,7 +368,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether the database is a flat file database
      */
-    public function is_flat_file_simple()
+    public function is_flat_file_simple() : bool
     {
         return true;
     }
@@ -391,7 +391,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to on error echo an error and return with a null, rather than giving a critical error
      * @return ?mixed A database connection (null: failed)
      */
-    public function get_connection($persistent, $db_name, $db_host, $db_user, $db_password, $fail_ok = false)
+    public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         if ((strpos($db_name, '\\') === false) && (strpos($db_name, '/') === false)) {
             $db_name = get_custom_file_base() . '/uploads/website_specific/' . $db_name;
@@ -412,7 +412,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether it does
      */
-    public function has_sequential_auto_increment()
+    public function has_sequential_auto_increment() : bool
     {
         return false;
     }
@@ -423,7 +423,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return boolean Whether it is
      */
-    public function has_full_text($connection)
+    public function has_full_text($connection) : bool
     {
         return false;
     }
@@ -434,7 +434,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $content Our match string (assumes "?" has been stripped already)
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content)
+    public function full_text_assemble(string $content) : string
     {
         return '';
     }
@@ -444,7 +444,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function has_full_text_boolean()
+    public function has_full_text_boolean() : bool
     {
         return false;
     }
@@ -454,7 +454,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_drop_table_if_exists()
+    public function supports_drop_table_if_exists() : bool
     {
         return true;
     }
@@ -464,7 +464,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table()
+    public function supports_truncate_table() : bool
     {
         return true;
     }
@@ -475,7 +475,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $string The string
      * @return string The escaped string
      */
-    public function escape_string($string)
+    public function escape_string(string $string) : string
     {
         $string = fix_bad_unicode($string);
 
@@ -489,7 +489,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $pattern The pattern
      * @return string The encoded pattern
      */
-    public function encode_like($pattern)
+    public function encode_like(string $pattern) : string
     {
         return str_replace('\\\\_'/*addslashes escaped underscores*/, '\\_', $this->escape_string($pattern));
     }
@@ -501,7 +501,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
      */
-    public function apply_sql_limit_clause(&$query, $max = null, $start = 0)
+    public function apply_sql_limit_clause(string &$query, ?int $max = null, int $start = 0)
     {
         if (($max !== null) && ($start != 0)) {
             $query .= ' LIMIT ' . strval($start) . ',' . strval($max);
@@ -524,7 +524,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query($query, $db, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false, $save_as_volatile = false)
+    public function query(string $query, array $db, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false, bool $save_as_volatile = false)
     {
         global $DELIMITERS_FLIPPED, $DELIMITERS, $SYMBOL_DELIMITER;
 
@@ -643,7 +643,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $looking The item
      * @return boolean Whether it is
      */
-    public function is_start_of_delimiter($looking)
+    public function is_start_of_delimiter(string $looking) : bool
     {
         global $DELIMITERS_FLIPPED, $DELIMITERS, $DELIMITERS_ALPHA;
 
@@ -670,7 +670,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?array The schema map (null: not found)
      */
-    protected function _read_schema($db, $table_name, $fail_ok = false)
+    protected function _read_schema(array $db, string $table_name, bool $fail_ok = false) : ?array
     {
         global $SCHEMA_CACHE;
         if (array_key_exists($table_name, $SCHEMA_CACHE)) {
@@ -750,7 +750,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $record The data
      * @param  string $query Query that was executed
      */
-    protected function _type_check($schema, $record, $query)
+    protected function _type_check(array $schema, array $record, string $query)
     {
         global $INT_TYPES, $STRING_TYPES;
 
@@ -810,7 +810,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?integer $max The maximum number of rows to read (null: no limit / there's a sort clause meaning we need to read all)
      * @return ?array The collected records (null: error)
      */
-    protected function _read_all_records($db, $table_name, $table_as, $schema, $where_expr, $bindings, $fail_ok, $query, $include_unused_fields = false, $max = null)
+    protected function _read_all_records(array $db, string $table_name, string $table_as, ?array $schema, ?array $where_expr, array $bindings, bool $fail_ok, string $query, bool $include_unused_fields = false, ?int $max = null) : ?array
     {
         $records = [];
         $key_fragments = ''; // We can do a filename substring search to stop us having to parse ALL
@@ -1019,7 +1019,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $not_full_accuracy Whether to do a not-full-accurate search
      * @return array AND map
      */
-    protected function _turn_where_expr_to_map($where_expr, $table_as, $schema = null, $not_full_accuracy = false)
+    protected function _turn_where_expr_to_map(array $where_expr, string $table_as, ?array $schema = null, bool $not_full_accuracy = false) : array
     {
         if ($where_expr[0] == 'PARENTHESISED') {
             return $this->_turn_where_expr_to_map($where_expr[1], $table_as, $schema, $not_full_accuracy);
@@ -1091,7 +1091,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?array The record map (null: does not contain requested substrings / error)
      */
-    protected function _read_record($path, $schema = null, $must_contain_strings = [], $include_unused_fields = false, $fail_ok = false)
+    protected function _read_record(string $path, ?array $schema = null, array $must_contain_strings = [], bool $include_unused_fields = false, bool $fail_ok = false) : ?array
     {
         if ($fail_ok && !is_file($path)) {
             return null;
@@ -1231,7 +1231,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $records The list of record maps
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      */
-    protected function _write_records($db, $table_name, $records, $fail_ok = false)
+    protected function _write_records(array $db, string $table_name, array $records, bool $fail_ok = false)
     {
         foreach ($records as $guid => $record) {
             if (!is_string($guid)) {
@@ -1251,7 +1251,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      */
-    protected function _write_record($db, $table_name, $guid, $record, $fail_ok = false, $save_as_volatile = false)
+    protected function _write_record(array $db, string $table_name, string $guid, array $record, bool $fail_ok = false, bool $save_as_volatile = false)
     {
         $suffix = $save_as_volatile ? '.xml-volatile' : '.xml';
 
@@ -1316,7 +1316,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  PATH $path The file path
      * @param  array $db Database connection
      */
-    protected function _delete_record($path, $db)
+    protected function _delete_record(string $path, array $db)
     {
         if (file_exists($path)) {
             @unlink($path);
@@ -1336,7 +1336,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?string $existing_identity The GUID representing what we have now (so we don't think we're conflicting with ourself) (null: not yet added)
      * @return boolean Whether there was a conflict
      */
-    protected function _key_conflict_check($db, $table_name, $schema, $record, $query, $fail_ok, $existing_identity = null)
+    protected function _key_conflict_check(array $db, string $table_name, array $schema, array $record, string $query, bool $fail_ok, ?string $existing_identity = null) : bool
     {
         $where = '';
         foreach ($schema as $key => $type) {
@@ -1385,7 +1385,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_x_drop($tokens, $query, $db, $fail_ok)
+    protected function _do_query_x_drop(array $tokens, string $query, array $db, bool $fail_ok)
     {
         $at = 0;
         if (!$this->_parsing_expects($at, $tokens, 'X_DROP_TABLE', $query)) {
@@ -1423,7 +1423,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_drop($tokens, $query, $db, $fail_ok)
+    protected function _do_query_drop(array $tokens, string $query, array $db, bool $fail_ok)
     {
         $at = 0;
         if (!$this->_parsing_expects($at, $tokens, 'DROP', $query)) {
@@ -1477,7 +1477,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_alter($tokens, $query, $db, $fail_ok)
+    protected function _do_query_alter(array $tokens, string $query, array $db, bool $fail_ok)
     {
         global $SCHEMA_CACHE;
 
@@ -1619,7 +1619,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_x_create($tokens, $query, $db, $fail_ok)
+    protected function _do_query_x_create(array $tokens, string $query, array $db, bool $fail_ok)
     {
         $at = 0;
         if (!$this->_parsing_expects($at, $tokens, 'X_CREATE_TABLE', $query)) {
@@ -1672,7 +1672,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_create($tokens, $query, $db, $fail_ok)
+    protected function _do_query_create(array $tokens, string $query, array $db, bool $fail_ok)
     {
         $at = 0;
         if (!$this->_parsing_expects($at, $tokens, 'CREATE', $query)) {
@@ -1766,7 +1766,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      * @return ?mixed The insert ID (null: not requested / error)
      */
-    protected function _do_query_insert($tokens, $query, $db, $fail_ok, $get_insert_id, &$random_key, $save_as_volatile = false)
+    protected function _do_query_insert(array $tokens, string $query, array $db, bool $fail_ok, bool $get_insert_id, ?int &$random_key, bool $save_as_volatile = false)
     {
         $_inserts = $this->_do_query_insert__parse($tokens, $query, $db, $fail_ok);
         if ($_inserts === null) {
@@ -1785,7 +1785,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?array A pair: the table, and the rows to insert (null: error)
      */
-    protected function _do_query_insert__parse($tokens, $query, $db, $fail_ok)
+    protected function _do_query_insert__parse(array $tokens, string $query, array $db, bool $fail_ok) : ?array
     {
         // Parse
         $at = 0;
@@ -1863,7 +1863,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      * @return ?mixed The insert ID (null: not requested / error)
      */
-    protected function _do_query_insert__execute($inserts, $table_name, $query, $db, $fail_ok, $get_insert_id, &$random_key, $save_as_volatile = false)
+    protected function _do_query_insert__execute(array $inserts, string $table_name, string $query, array $db, bool $fail_ok, bool $get_insert_id, ?int &$random_key, bool $save_as_volatile = false)
     {
         global $TABLE_BASES;
 
@@ -1928,7 +1928,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?array The expression (null: error)
      */
-    protected function _parsing_read_expression(&$at, $tokens, $query, $db, $look_for_connectives = true, $look_for_any_connectives = true, $fail_ok = false)
+    protected function _parsing_read_expression(int &$at, array $tokens, string $query, array $db, bool $look_for_connectives = true, bool $look_for_any_connectives = true, bool $fail_ok = false) : ?array
     {
         $token = $this->_parsing_read($at, $tokens, $query);
         $expr = [];
@@ -2292,7 +2292,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $cuts_to_single_row Whether this is an aggregate function that reduces the results to a single row (returned by reference)
      * @return ?mixed The result (null: error/NULL)
      */
-    protected function _execute_expression($expr, $bindings, $query, $db, $fail_ok, $full_set = null, &$cuts_to_single_row = false)
+    protected function _execute_expression(array $expr, array $bindings, string $query, array $db, bool $fail_ok, ?array $full_set = null, bool &$cuts_to_single_row = false)
     {
         switch ($expr[0]) {
             // Aggregate expressions...
@@ -2634,7 +2634,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_update($tokens, $query, $db, $max, $start, $fail_ok)
+    protected function _do_query_update(array $tokens, string $query, array $db, ?int $max, int $start, bool $fail_ok)
     {
         // Parse
         $at = 0;
@@ -2728,7 +2728,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_delete($tokens, $query, $db, $max, $start, $fail_ok)
+    protected function _do_query_delete(array $tokens, string $query, array $db, ?int $max, int $start, bool $fail_ok)
     {
         // Parse
         $at = 0;
@@ -2799,7 +2799,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_truncate($tokens, $query, $db, $fail_ok)
+    protected function _do_query_truncate(array $tokens, string $query, array $db, bool $fail_ok)
     {
         $at = 0;
         if (!$this->_parsing_expects($at, $tokens, 'TRUNCATE', $query)) {
@@ -2841,7 +2841,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $do_end_check Whether to not do the check to make sure we've parsed everything
      * @return ?mixed The results (null: no results)
      */
-    protected function _do_query_select($tokens, $query, $db, $max, $start, $fail_ok, &$at, $do_end_check = true)
+    protected function _do_query_select(array $tokens, string $query, array $db, ?int $max, int $start, bool $fail_ok, int &$at, bool $do_end_check = true)
     {
         $test = $this->_parse_query_select($tokens, $query, $db, $max, $start, $fail_ok, $at, $do_end_check);
         if ($test === null) {
@@ -2864,7 +2864,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $do_end_check Whether to not do the check to make sure we've parsed everything
      * @return ?array A tuple of query parts (null: error)
      */
-    protected function _parse_query_select($tokens, $query, $db, $max, $start, $fail_ok, &$at, $do_end_check = true)
+    protected function _parse_query_select(array $tokens, string $query, array $db, ?int $max, int $start, bool $fail_ok, int &$at, bool $do_end_check = true) : ?array
     {
         $all_keywords = _get_sql_keywords();
 
@@ -3124,7 +3124,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return array List of selected items
      */
-    protected function _parse_select_items(&$at, $tokens, $query, $db, $fail_ok)
+    protected function _parse_select_items(int &$at, array $tokens, string $query, array $db, bool $fail_ok) : array
     {
         $select = [];
         do {
@@ -3191,7 +3191,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?array $schema Schema filled in function (null: none passed)
      * @return ?mixed The results (null: no results)
      */
-    protected function _execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $is_distinct, $bindings, $fail_ok, &$schema = null)
+    protected function _execute_query_select(array $select, ?string $as, array $joins, array $where_expr, ?array $group_by, ?array $having, ?string $orders, array $unions, string $query, array $db, ?int $max, int $start, bool $is_distinct, array $bindings, bool $fail_ok, ?array &$schema = null)
     {
         // Execute to get records
         $done = 0;
@@ -3622,7 +3622,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $record Particular row currently being handled
      * @return array Filtered fields from row
      */
-    protected function _handle_multi_select($want, $record)
+    protected function _handle_multi_select(array $want, array $record) : array
     {
         $filtered_record = [];
         if (array_key_exists(1, $want)) {
@@ -3648,7 +3648,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  integer $i Offset in a field set
      * @return string Parameter name
      */
-    protected function _param_name_for($param, $i)
+    protected function _param_name_for($param, int $i) : string
     {
         if (is_array($param) && isset($param[1])) {
             $param = $param[1];
@@ -3670,7 +3670,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return array The result row based on the set
      */
-    protected function _function_set_scoping($set, $select, $rep, $query, $db, $fail_ok)
+    protected function _function_set_scoping(array $set, array $select, array $rep, string $query, array $db, bool $fail_ok) : array
     {
         foreach ($select as $i => $s_term) {
             $as = null;
@@ -3805,7 +3805,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  integer $closing_parentheses_needed How many closing parentheses we expect
      * @return ?array Join condition (null: no join here)
      */
-    protected function _read_join(&$at, $tokens, $query, $db, $fail_ok, &$closing_parentheses_needed)
+    protected function _read_join(int &$at, array $tokens, string $query, array $db, bool $fail_ok, int &$closing_parentheses_needed) : ?array
     {
         $token = $this->_parsing_read($at, $tokens, $query, true);
 
@@ -3906,7 +3906,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $joined_as The renaming of our table, so we can recognise it in the join condition
      * @return array Altered join condition
      */
-    protected function _setify_join_condition_for_optimisation($join_condition, $schema, $records, $joined_as)
+    protected function _setify_join_condition_for_optimisation(array $join_condition, array $schema, array $records, string $joined_as) : array
     {
         if ($join_condition[0] == 'AND') {
             $join_condition_a = $this->_setify_join_condition_for_optimisation($join_condition[1], $schema, $records, $joined_as);
@@ -3947,7 +3947,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?array A pair: an array of results, an array of the schema for what has been joined (null: error)
      */
-    protected function _execute_join($db, $joined_as_prior, $join, $query, $records, $schema, $where_expr, $bindings, $fail_ok = false)
+    protected function _execute_join(array $db, string $joined_as_prior, array $join, string $query, array $records, array $schema, array $where_expr, array $bindings, bool $fail_ok = false) : ?array
     {
         $joined_as = $join[2];
 
@@ -4090,7 +4090,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether it can return null if we're out of output (otherwise fails)
      * @return ?string Token read (null: error, read too far)
      */
-    protected function _parsing_read(&$at, $tokens, $query, $fail_ok = false)
+    protected function _parsing_read(int &$at, array $tokens, string $query, bool $fail_ok = false) : ?string
     {
         $at++;
 
@@ -4114,7 +4114,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return boolean Success status
      */
-    protected function _parsing_expects(&$at, $tokens, $token, $query, $fail_ok = false)
+    protected function _parsing_expects(int &$at, array $tokens, string $token, string $query, bool $fail_ok = false) : bool
     {
         $next = $this->_parsing_read($at, $tokens, $query, $fail_ok);
         if ($next !== $token) {
@@ -4133,7 +4133,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return boolean Success status
      */
-    protected function _parsing_check_ended($at, $tokens, $query, $fail_ok = false)
+    protected function _parsing_check_ended(int $at, array $tokens, string $query, bool $fail_ok = false) : bool
     {
         do {
             $token = $this->_parsing_read($at, $tokens, $query, true);
@@ -4153,7 +4153,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?string $error Error message (null: none)
      * @return ?mixed Always returns null (null: error)
      */
-    protected function _bad_query($query, $fail_ok = false, $error = null)
+    protected function _bad_query(string $query, bool $fail_ok = false, ?string $error = null)
     {
         if (!$fail_ok) {
             $msg = 'Failed on query: ' . $query;
@@ -4172,7 +4172,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  ?array $record The record (null: don't have/use)
      * @return string The GUID
      */
-    protected function _guid($schema = null, $record = null)
+    protected function _guid(?array $schema = null, ?array $record = null) : string
     {
         if (($schema !== null) && ($record !== null)) {
             $guid = '';
@@ -4230,7 +4230,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $in Value to escape (original value)
      * @return string Escaped value
      */
-    protected function _escape_name($in)
+    protected function _escape_name(string $in) : string
     {
         return str_replace(['=', ':', ',', '/', '|'], ['!equals!', '!colon!', '!comma!', '!slash!', '!pipe!'], $in);
     }
@@ -4241,7 +4241,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  string $in Escaped value
      * @return string Original value
      */
-    protected function _unescape_name($in)
+    protected function _unescape_name(string $in) : string
     {
         return str_replace(['!equals!', '!colon!', '!comma!', '!slash!', '!pipe!'], ['=', ':', ',', '/', '|'], $in);
     }
@@ -4251,7 +4251,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @param  string $table_name The table name
      */
-    protected function _clear_caching_for($table_name)
+    protected function _clear_caching_for(string $table_name)
     {
         global $DIR_CONTENTS_CACHE;
         unset($DIR_CONTENTS_CACHE[$table_name]);

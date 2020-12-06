@@ -28,7 +28,7 @@ class Hook_cleanup_comcode_pages
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         require_lang('zones');
 
@@ -45,7 +45,7 @@ class Hook_cleanup_comcode_pages
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('caches3');
 

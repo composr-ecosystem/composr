@@ -28,7 +28,7 @@ class Hook_cleanup_catalogues
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -49,7 +49,7 @@ class Hook_cleanup_catalogues
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_lang('catalogues');
 

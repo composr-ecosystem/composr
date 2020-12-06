@@ -41,7 +41,7 @@ function init__search()
  * @param  boolean $apply_permissions Whether to apply permissions
  * @return array Map between keyword and count, in commonality order
  */
-function perform_keyword_search($limit_to = null, $keyword_prefix = null, $max = 300, $apply_permissions = true)
+function perform_keyword_search(?array $limit_to = null, ?string $keyword_prefix = null, int $max = 300, bool $apply_permissions = true) : array
 {
     $where = '1=1';
 
@@ -143,7 +143,7 @@ function perform_keyword_search($limit_to = null, $keyword_prefix = null, $max =
  * @param  ID_TEXT $search_type The search type it is for (blank: N/A)
  * @return array List of suggestions
  */
-function find_search_suggestions($request, $search_type = '')
+function find_search_suggestions(string $request, string $search_type = '') : array
 {
     $suggestions = [];
 
@@ -246,7 +246,7 @@ function find_search_suggestions($request, $search_type = '')
  * @param  array $map Search block parameters
  * @return array Search block template parameters
  */
-function do_search_block($map)
+function do_search_block(array $map) : array
 {
     require_lang('search');
     require_css('search');

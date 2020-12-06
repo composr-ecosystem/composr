@@ -30,7 +30,7 @@ class Hook_profiles_tabs_edit_notifications
      * @param  MEMBER $member_id_viewing The ID of the member who is doing the viewing
      * @return boolean Whether this hook is active
      */
-    public function is_active($member_id_of, $member_id_viewing)
+    public function is_active(int $member_id_of, int $member_id_viewing) : bool
     {
         return (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'assume_any_member')) || (has_privilege($member_id_viewing, 'member_maintenance')));
     }
@@ -43,7 +43,7 @@ class Hook_profiles_tabs_edit_notifications
      * @param  boolean $leave_to_ajax_if_possible Whether to leave the tab contents null, if this hook supports it, so that AJAX can load it later
      * @return ?array A tuple: The tab title, the tab body text (may be blank), the tab fields, extra JavaScript (may be blank) the suggested tab order, hidden fields (optional) (null: if $leave_to_ajax_if_possible was set), the icon
      */
-    public function render_tab($member_id_of, $member_id_viewing, $leave_to_ajax_if_possible = false)
+    public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : ?array
     {
         require_lang('notifications');
         $title = do_lang_tempcode('NOTIFICATIONS');

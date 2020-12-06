@@ -63,7 +63,7 @@ class Hook_payment_gateway_ccbill
      *
      * @return array The config
      */
-    public function get_config()
+    public function get_config() : array
     {
         return [
             'supports_remote_memo' => false,
@@ -76,7 +76,7 @@ class Hook_payment_gateway_ccbill
      * @param  float $amount A transaction amount
      * @return float The fee
      */
-    public function get_transaction_fee($amount)
+    public function get_transaction_fee(float $amount) : float
     {
         return 0.12 * $amount; // A wild guess for now
     }
@@ -86,7 +86,7 @@ class Hook_payment_gateway_ccbill
      *
      * @return string The answer
      */
-    protected function get_account_id()
+    protected function get_account_id() : string
     {
         return ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
     }
@@ -96,7 +96,7 @@ class Hook_payment_gateway_ccbill
      *
      * @return string A transaction ID
      */
-    public function generate_trans_id()
+    public function generate_trans_id() : string
     {
         require_code('crypt');
         return get_secure_random_string();
@@ -115,7 +115,7 @@ class Hook_payment_gateway_ccbill
      * @param  ID_TEXT $currency The currency to use
      * @return Tempcode The button
      */
-    public function make_transaction_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $currency)
+    public function make_transaction_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, float $shipping_cost, string $currency) : object
     {
         if (!isset($this->currency_alphabetic_to_numeric_code[$currency])) {
             warn_exit(do_lang_tempcode('UNRECOGNISED_CURRENCY', 'ccbill', escape_html($currency)));
@@ -173,7 +173,7 @@ class Hook_payment_gateway_ccbill
      * @set d w m y
      * @return Tempcode The button
      */
-    public function make_subscription_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $currency, $length, $length_units)
+    public function make_subscription_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, string $currency, int $length, string $length_units) : object
     {
         if (!isset($this->currency_alphabetic_to_numeric_code[$currency])) {
             warn_exit(do_lang_tempcode('UNRECOGNISED_CURRENCY', 'ccbill', escape_html($currency)));
@@ -219,7 +219,7 @@ class Hook_payment_gateway_ccbill
      *
      * @return array A map of member address details (form field name => address value)
      */
-    protected function _build_member_address()
+    protected function _build_member_address() : array
     {
         $shipping_email = '';
         $shipping_phone = '';
@@ -286,7 +286,7 @@ class Hook_payment_gateway_ccbill
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return Tempcode The button
      */
-    public function make_cancel_button($purchase_id)
+    public function make_cancel_button(string $purchase_id) : object
     {
         return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', ['_GUID' => 'f1aaed809380c3fdca22728393eaef75', 'PURCHASE_ID' => $purchase_id]);
     }
@@ -297,7 +297,7 @@ class Hook_payment_gateway_ccbill
      * @param  boolean $silent_fail Return null on failure rather than showing any error message. Used when not sure a valid & finalised transaction is in the POST environment, but you want to try just in case (e.g. on a redirect back from the gateway).
      * @return ?array A long tuple of collected data. Emulates some of the key variables of the PayPal IPN response (null: no transaction; will only return null when $silent_fail is set).
      */
-    public function handle_ipn_transaction($silent_fail)
+    public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
         $trans_expecting_id = post_param_string('customPurchaseId');
 
@@ -356,7 +356,7 @@ class Hook_payment_gateway_ccbill
      * @param  ID_TEXT $txn_id Transaction ID
      * @return AUTO_LINK Address ID
      */
-    public function store_shipping_address($trans_expecting_id, $txn_id)
+    public function store_shipping_address(string $trans_expecting_id, string $txn_id) : int
     {
         $shipping_address = [
             'a_firstname' => post_param_string('customer_fname', ''),
@@ -379,7 +379,7 @@ class Hook_payment_gateway_ccbill
      * @param  AUTO_LINK $subscription_id ID of the subscription to cancel
      * @return ?boolean True: yes. False: no. (null: cancels via a user-URL-directioning)
      */
-    public function auto_cancel($subscription_id)
+    public function auto_cancel(int $subscription_id) : ?bool
     {
         // https://www.ccbill.com/cs/manuals/Custom_Cancellation_Software.pdf
         // Can't do it because we don't have customer's username and password ("login_id", "password")

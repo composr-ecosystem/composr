@@ -51,7 +51,7 @@ function init__webstandards_js_parse()
  *
  * @return ?array Parse info (null: error)
  */
-function webstandards_js_parse()
+function webstandards_js_parse() : ?array
 {
     global $JS_PARSE_POSITION;
     $JS_PARSE_POSITION = 0;
@@ -67,7 +67,7 @@ function webstandards_js_parse()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_js()
+function _webstandards_js_parse_js() : ?array
 {
     // Choice{"FUNCTION" "IDENTIFIER "PARENTHESIS_OPEN" comma_parameters "PARENTHESIS_CLOSE" command | command}*
 
@@ -117,7 +117,7 @@ function _webstandards_js_parse_js()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_command()
+function _webstandards_js_parse_command() : ?array
 {
     // Choice{"CURLY_OPEN" command* "CURLY_CLOSE" | command_actual "COMMAND_TERMINATE"*}
 
@@ -175,7 +175,7 @@ function _webstandards_js_parse_command()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_command_actual()
+function _webstandards_js_parse_command_actual() : ?array
 {
     // Choice{"VAR" comma_variables | "FUNCTION" | variable "DEC" | variable "INC" | variable assignment_operator expression | function "PARENTHESIS_OPEN" comma_expressions "PARENTHESIS_CLOSE" | "IF" expression command if_rest? | "FINALLY" identifier "CURLY_OPEN" command "CURLY_CLOSE" | "CATCH" identifier "CURLY_OPEN" command "CURLY_CLOSE" | "TRY" "CURLY_OPEN" command "CURLY_CLOSE" | "SWITCH" expression "CURLY_OPEN" cases "CURLY_CLOSE" | "FOR" "PARENTHESIS_OPEN" identifier "OF" expression "PARENTHESIS_CLOSE" command | "FOR" "PARENTHESIS_OPEN" command expression command "PARENTHESIS_CLOSE" command | "DO" command "WHILE" "PARENTHESIS_OPEN" expression "PARENTHESIS_CLOSE" | "WHILE" "PARENTHESIS_OPEN" expression "PARENTHESIS_CLOSE" command | "RETURN" | "CONTINUE" | "BREAK" | "RETURN" expression | "THROW" expression | "DELETE" identifier}
 
@@ -483,7 +483,7 @@ function _webstandards_js_parse_command_actual()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_if_rest()
+function _webstandards_js_parse_if_rest() : ?array
 {
     // Choice{else command | elseif expression command if_rest?}
 
@@ -511,7 +511,7 @@ function _webstandards_js_parse_if_rest()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_cases()
+function _webstandards_js_parse_cases() : ?array
 {
     // Choice{"CASE" expression "COLON" command* | "DEFAULT" "COLON" command*}*
 
@@ -577,7 +577,7 @@ function _webstandards_js_parse_cases()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_function_dec($anonymous = false)
+function _webstandards_js_parse_function_dec(bool $anonymous = false) : ?array
 {
     $function = [];
     $function['offset'] = $GLOBALS['JS_PARSE_POSITION'];
@@ -614,7 +614,7 @@ function _webstandards_js_parse_function_dec($anonymous = false)
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_expression()
+function _webstandards_js_parse_expression() : ?array
 {
     // Choice{expression_inner | expression_inner binary_operation expression_inner | expression_inner QUESTION expression_inner COLON expression_inner}
 
@@ -664,7 +664,7 @@ function _webstandards_js_parse_expression()
  * @param  array $op_list Ops in
  * @return array Ops out
  */
-function precedence_sort($op_list)
+function precedence_sort(array $op_list) : array
 {
     if (count($op_list) == 1) {
         return $op_list[0];
@@ -711,7 +711,7 @@ function precedence_sort($op_list)
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_expression_inner()
+function _webstandards_js_parse_expression_inner() : ?array
 {
     // Choice{"BW_NOT" expression | "BOOLEAN_NOT" expression | "TYPEOF" "IDENTIFIER" | "IDENTIFIER" "IN" "IDENTIFIER" | "IDENTIFIER" "INSTANCEOF" "IDENTIFIER" | SUBTRACT expression | literal | variable | variable "PARENTHESIS_OPEN" comma_parameters "PARENTHESIS_CLOSE" | "IDENTIFIER" | "IDENTIFIER" "PARENTHESIS_OPEN" comma_parameters "PARENTHESIS_CLOSE" | "NEW" "IDENTIFIER" "PARENTHESIS_OPEN" comma_expressions "PARENTHESIS_CLOSE" | "NEW" "IDENTIFIER" | "ARRAY" "PARENTHESIS_OPEN" create_array "PARENTHESIS_CLOSE" | "PARENTHESIS_OPEN" expression "PARENTHESIS_CLOSE" | "PARENTHESIS_OPEN" assignment "PARENTHESIS_CLOSE"}
 
@@ -960,7 +960,7 @@ function _webstandards_js_parse_expression_inner()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_identify_chain($variable)
+function _webstandards_js_parse_identify_chain(array $variable) : ?array
 {
     $next_2 = parser_peek();
     switch ($next_2) {
@@ -1043,7 +1043,7 @@ function _webstandards_js_parse_identify_chain($variable)
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_variable()
+function _webstandards_js_parse_variable() : ?array
 {
     // Choice{"IDENTIFIER" | "IDENTIFIER" "OBJECT_OPERATOR" "IDENTIFIER" | "IDENTIFIER" "EXTRACT_OPEN" expression "EXTRACT_CLOSE"}
 
@@ -1066,7 +1066,7 @@ function _webstandards_js_parse_variable()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_variable_actual()
+function _webstandards_js_parse_variable_actual() : ?array
 {
     $next = parser_peek();
     switch ($next) {
@@ -1141,7 +1141,7 @@ function _webstandards_js_parse_variable_actual()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_assignment_operator()
+function _webstandards_js_parse_assignment_operator() : ?array
 {
     // Choice{"EQUAL" | "CONCAT_EQUAL" | "DIV_EQUAL" | "MUL_EQUAL" | "SUBTRACT_EQUAL" | "PLUS_EQUAL" | "SL_EQUAL" | "SR_EQUAL" | "ZSR_EQUAL" | "BW_AND_EQUAL" | "BW_OR_EQUAL"}
 
@@ -1159,7 +1159,7 @@ function _webstandards_js_parse_assignment_operator()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_literal()
+function _webstandards_js_parse_literal() : ?array
 {
     // Choice{"SUBTRACT" literal | "number_literal" | "string_literal" | "true" | "false" | "null" | "undefined" | "Infinity" | "NaN" | "IDENTIFIER"}
 
@@ -1229,7 +1229,7 @@ function _webstandards_js_parse_literal()
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_comma_expressions($allow_blanks = false, $closer = 'PARENTHESIS_CLOSE')
+function _webstandards_js_parse_comma_expressions(bool $allow_blanks = false, string $closer = 'PARENTHESIS_CLOSE') : ?array
 {
     // Choice{expression "COMMA" comma_expressions | expression}
 
@@ -1270,7 +1270,7 @@ function _webstandards_js_parse_comma_expressions($allow_blanks = false, $closer
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_comma_variables($allow_blanks = false, $closer = 'PARENTHESIS_CLOSE')
+function _webstandards_js_parse_comma_variables(bool $allow_blanks = false, string $closer = 'PARENTHESIS_CLOSE') : ?array
 {
     // Choice{"variable" "COMMA" comma_variables | "variable"}
 
@@ -1320,7 +1320,7 @@ function _webstandards_js_parse_comma_variables($allow_blanks = false, $closer =
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_comma_parameters($allow_expressions = true, $closer = 'PARENTHESIS_CLOSE', $separator = 'EQUAL')
+function _webstandards_js_parse_comma_parameters(bool $allow_expressions = true, string $closer = 'PARENTHESIS_CLOSE', string $separator = 'EQUAL') : ?array
 {
     // Choice{parameter | parameter "COMMA" comma_parameters}?
 
@@ -1359,7 +1359,7 @@ function _webstandards_js_parse_comma_parameters($allow_expressions = true, $clo
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_comma_commands($closer = 'COMMAND_TERMINATE')
+function _webstandards_js_parse_comma_commands(string $closer = 'COMMAND_TERMINATE') : ?array
 {
     // Choice{parameter | parameter "COMMA" comma_commands}?
 
@@ -1395,7 +1395,7 @@ function _webstandards_js_parse_comma_commands($closer = 'COMMAND_TERMINATE')
  * @return ?array Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_parameter($allow_expressions = true, $separator = 'EQUAL')
+function _webstandards_js_parse_parameter(bool $allow_expressions = true, string $separator = 'EQUAL') : ?array
 {
     // Choice{"REFERENCE" "variable" | "variable" | "variable" "EQUAL" literal}
 
@@ -1428,7 +1428,7 @@ function _webstandards_js_parse_parameter($allow_expressions = true, $separator 
  * @param  string $token The token we want
  * @return ?mixed The token parameters (null: error)
  */
-function parser_expect($token)
+function parser_expect(string $token)
 {
     global $JS_LEX_TOKENS, $JS_PARSE_POSITION;
     if (!isset($JS_LEX_TOKENS[$JS_PARSE_POSITION])) {
@@ -1453,7 +1453,7 @@ function parser_expect($token)
  * @param  boolean $all Whether we want all the token parameters (as opposed to just the first)
  * @return ?mixed All the token parameters, or just the first (null: error)
  */
-function parser_peek($all = false)
+function parser_peek(bool $all = false)
 {
     global $JS_LEX_TOKENS, $JS_PARSE_POSITION;
     if (!isset($JS_LEX_TOKENS[$JS_PARSE_POSITION])) {
@@ -1476,7 +1476,7 @@ function parser_peek($all = false)
  * @param  ?integer $p Whether to start looking from (null: current position in parse)
  * @return ?mixed The first token parameter (null: error)
  */
-function parser_peek_dist($d, $p = null)
+function parser_peek_dist(int $d, ?int $p = null)
 {
     global $JS_LEX_TOKENS, $JS_PARSE_POSITION;
     if ($p === null) {
@@ -1504,7 +1504,7 @@ function parser_peek_dist($d, $p = null)
  * @param  boolean $all Whether we want all the token parameters (as opposed to just the first)
  * @return ?mixed All the token parameters, or just the first (null: error)
  */
-function parser_next($all = false)
+function parser_next(bool $all = false)
 {
     global $JS_LEX_TOKENS, $JS_PARSE_POSITION;
     if (!isset($JS_LEX_TOKENS[$JS_PARSE_POSITION])) {
@@ -1527,7 +1527,7 @@ function parser_next($all = false)
  * @param  string $message The error
  * @return ?boolean Always null (null: exit)
  */
-function webstandards_js_parser_error($message)
+function webstandards_js_parser_error(string $message) : ?bool
 {
     global $JS_LEX_TOKENS, $JS_PARSE_POSITION;
     list($pos, $line, $_, $i) = js_pos_to_line_details($JS_PARSE_POSITION);

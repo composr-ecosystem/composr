@@ -34,7 +34,7 @@ class Hook_task_import_wordpress
      * @param  boolean $import_wordpress_users Whether to import Wordpress users
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $import_wordpress_users)
+    public function run(int $is_validated, int $download_images, int $to_own_account, int $import_blog_comments, int $import_to_blog, bool $import_wordpress_users) : ?array
     {
         if (!addon_installed('news')) {
             return null;

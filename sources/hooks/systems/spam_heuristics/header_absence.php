@@ -29,7 +29,7 @@ class Hook_spam_heuristics_header_absence
      * @param  string $post_data Posted data
      * @return integer Confidence score
      */
-    public function assess_confidence($post_data)
+    public function assess_confidence(string $post_data) : int
     {
         if (is_cli()) {
             return 0;

@@ -27,7 +27,7 @@
  * @param  string $prefix Prefix for field naming
  * @return Tempcode The form fields
  */
-function get_privacy_form_fields($content_type, $content_id = null, $show_header = true, $prefix = '')
+function get_privacy_form_fields(?string $content_type, ?string $content_id = null, bool $show_header = true, string $prefix = '') : object
 {
     if (is_guest()) {
         return new Tempcode();
@@ -109,7 +109,7 @@ function get_privacy_form_fields($content_type, $content_id = null, $show_header
  * @param  string $prefix Prefix for field naming
  * @return array A pair: the privacy level, the list of usernames
  */
-function read_privacy_fields($prefix = '')
+function read_privacy_fields(string $prefix = '') : array
 {
     $privacy_level = post_param_string($prefix . 'privacy_level', '');
 
@@ -131,7 +131,7 @@ function read_privacy_fields($prefix = '')
  * @param  string $privacy_level Privacy level
  * @return array Tuple: member view access, friend view access, guest view access
  */
-function privacy_level_to_binary_settings($privacy_level)
+function privacy_level_to_binary_settings(string $privacy_level) : array
 {
     switch ($privacy_level) {
         case 'members':
@@ -173,7 +173,7 @@ function privacy_level_to_binary_settings($privacy_level)
  * @param  boolean $send_invites Whether to send out invite notifications (only do this is it is a new content entry, rather than something obscure, like a member's photo)
  * @return boolean Whether it saved something
  */
-function save_privacy_form_fields($content_type, $content_id, $privacy_level, $additional_access, $send_invites = true)
+function save_privacy_form_fields(string $content_type, ?string $content_id, string $privacy_level, array $additional_access, bool $send_invites = true) : bool
 {
     if (fractional_edit()) {
         return false;
@@ -249,7 +249,7 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
  * @param  ID_TEXT $content_id The content ID
  * @return boolean Whether it deleted something
  */
-function delete_privacy_form_fields($content_type, $content_id)
+function delete_privacy_form_fields(string $content_type, string $content_id) : bool
 {
     if (is_guest()) {
         return false;

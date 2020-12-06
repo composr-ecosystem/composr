@@ -45,7 +45,7 @@ class Hook_import_mybb
      *
      * @return ?array Importer handling details, including lists of all the import types covered (import types are not necessarily the same as actual tables) (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['supports_advanced_import'] = false;
@@ -98,7 +98,7 @@ class Hook_import_mybb
      * @param  string $file_base The probe path
      * @return array A quartet of the details (db_name, db_user, db_pass, table_prefix)
      */
-    public function probe_db_access($file_base)
+    public function probe_db_access(string $file_base) : array
     {
         $config = [];
         if (!file_exists($file_base . '/inc/config.php')) {
@@ -116,7 +116,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_config($db, $table_prefix, $file_base)
+    public function import_config(object $db, string $table_prefix, string $file_base)
     {
         require($file_base . '/inc/config.php');
 
@@ -252,7 +252,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_groups($db, $table_prefix, $file_base)
+    public function import_cns_groups(object $db, string $table_prefix, string $file_base)
     {
         require($file_base . '/inc/config.php');
 
@@ -302,7 +302,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_members($db, $table_prefix, $file_base)
+    public function import_cns_members(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -444,7 +444,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_member_files($db, $table_prefix, $file_base)
+    public function import_cns_member_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -544,7 +544,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_ip_bans($db, $table_prefix, $file_base)
+    public function import_ip_bans(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('users u LEFT JOIN ' . $table_prefix . 'banned b ON u.uid=b.uid', ['*'], ['b.gid' => 7]);
 
@@ -592,7 +592,7 @@ class Hook_import_mybb
      * @param  string $ip The phpBB IP address
      * @return IP The normal IP address
      */
-    protected function _un_phpbb_ip($ip)
+    protected function _un_phpbb_ip(string $ip) : string
     {
         if (strlen($ip) < 8) {
             return '127.0.0.1';
@@ -609,7 +609,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forum_groupings($db, $table_prefix, $old_base_dir)
+    public function import_cns_forum_groupings(object $db, string $table_prefix, string $old_base_dir)
     {
         $rows = $db->query_select('forums', ['*'], ['type' => 'c']);
         foreach ($rows as $row) {
@@ -639,7 +639,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forums($db, $table_prefix, $old_base_dir)
+    public function import_cns_forums(object $db, string $table_prefix, string $old_base_dir)
     {
         require_code('cns_forums_action2');
 
@@ -699,7 +699,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_topics($db, $table_prefix, $file_base)
+    public function import_cns_topics(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -728,7 +728,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_posts($db, $table_prefix, $file_base)
+    public function import_cns_posts(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -797,7 +797,7 @@ class Hook_import_mybb
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_topic($m)
+    protected function _fix_links_callback_topic(array $m) : string
     {
         return 'index.php?page=topicview&id=' . strval(import_id_remap_get('topic', strval($m[2]), true));
     }
@@ -808,7 +808,7 @@ class Hook_import_mybb
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_post($m)
+    protected function _fix_links_callback_post(array $m) : string
     {
         return 'index.php?page=topicview&type=findpost&id=' . strval(import_id_remap_get('post', strval($m[2]), true));
     }
@@ -819,7 +819,7 @@ class Hook_import_mybb
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_forum($m)
+    protected function _fix_links_callback_forum(array $m) : string
     {
         return 'index.php?page=forumview&id=' . strval(import_id_remap_get('forum', strval($m[2]), true));
     }
@@ -830,7 +830,7 @@ class Hook_import_mybb
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_member($m)
+    protected function _fix_links_callback_member(array $m) : string
     {
         return 'index.php?page=members&type=view&id=' . strval(import_id_remap_get('member', strval($m[2]), true));
     }
@@ -843,7 +843,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @return string The new text field text
      */
-    public function fix_links($post, $db, $table_prefix)
+    public function fix_links(string $post, object $db, string $table_prefix) : string
     {
         $options = $db->query_select('settings', ['*'], ['name' => 'bburl']);
 
@@ -867,7 +867,7 @@ class Hook_import_mybb
      * @param  string $output_filename The filename to output to
      * @return URLPATH The URL
      */
-    public function data_to_disk($data, $filename, $sections, $db, $table_prefix = '', $output_filename = '')
+    public function data_to_disk(string $data, string $filename, string $sections, object $db, string $table_prefix = '', string $output_filename = '') : string
     {
         $options = $db->query_select('settings', ['*'], ['name' => 'bburl']);
 
@@ -900,7 +900,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_post_files($db, $table_prefix, $file_base)
+    public function import_cns_post_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
         require_code('attachments2');
@@ -950,7 +950,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
+    public function import_cns_polls_and_votes(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('polls');
         foreach ($rows as $row) {
@@ -1008,7 +1008,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_private_topics($db, $table_prefix, $old_base_dir)
+    public function import_cns_private_topics(object $db, string $table_prefix, string $old_base_dir)
     {
         $rows = $db->query_select('privatemessages p', ['*'], [], 'ORDER BY dateline');
 
@@ -1083,7 +1083,7 @@ class Hook_import_mybb
      * @param  integer $iconid VB code
      * @return ID_TEXT Composr code
      */
-    public function convert_topic_emoticon($iconid)
+    public function convert_topic_emoticon(int $iconid) : string
     {
         switch ($iconid) {
             case 1:
@@ -1121,7 +1121,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_notifications($db, $table_prefix, $file_base)
+    public function import_notifications(object $db, string $table_prefix, string $file_base)
     {
         require_code('notifications');
 
@@ -1158,7 +1158,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_wordfilter($db, $table_prefix, $file_base)
+    public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('badwords');
         foreach ($rows as $row) {
@@ -1173,7 +1173,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_custom_comcode($db, $table_prefix, $file_base)
+    public function import_custom_comcode(object $db, string $table_prefix, string $file_base)
     {
         require_code('custom_comcode');
         require_code('comcode_compiler');
@@ -1225,7 +1225,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_custom_profile_fields($db, $table_prefix, $file_base)
+    public function import_cns_custom_profile_fields(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('profilefields', ['*']);
         $members = $db->query_select('userfields', ['*']);
@@ -1265,7 +1265,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_calendar($db, $table_prefix, $file_base)
+    public function import_calendar(object $db, string $table_prefix, string $file_base)
     {
         require_code('calendar2');
 
@@ -1367,7 +1367,7 @@ class Hook_import_mybb
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_multi_moderations($db, $table_prefix, $file_base)
+    public function import_cns_multi_moderations(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('modtools', ['*'], ['type' => 't']);
         foreach ($rows as $row) {

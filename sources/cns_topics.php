@@ -29,7 +29,7 @@
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The topic box
  */
-function render_topic_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '')
+function render_topic_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -79,7 +79,7 @@ function render_topic_box($row, $zone = '_SEARCH', $give_context = true, $includ
  * @param  ?MEMBER $member_id The member doing the lookup (null: current member)
  * @return string The WHERE clause
  */
-function cns_get_topic_where($topic_id, $member_id = null)
+function cns_get_topic_where(int $topic_id, ?int $member_id = null) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -110,7 +110,7 @@ function cns_get_topic_where($topic_id, $member_id = null)
  * @param  boolean $check_validation Whether to check validation
  * @return boolean The answer
  */
-function cns_may_access_topic($topic_id, $member_id = null, $topic_info = null, $check_validation = true)
+function cns_may_access_topic(int $topic_id, ?int $member_id = null, ?array $topic_info = null, bool $check_validation = true) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -161,7 +161,7 @@ function cns_may_access_topic($topic_id, $member_id = null, $topic_info = null, 
  * @param  ?MEMBER $member_id The member (null: current member)
  * @return boolean The answer
  */
-function cns_may_make_private_topic($member_id = null)
+function cns_may_make_private_topic(?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -198,7 +198,7 @@ function cns_check_make_private_topic()
  * @param  ?MEMBER $member_id The member (null: current member)
  * @return boolean The answer
  */
-function cns_may_post_topic($forum_id, $member_id = null)
+function cns_may_post_topic(?int $forum_id, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -231,7 +231,7 @@ function cns_may_post_topic($forum_id, $member_id = null)
  * @param  ?MEMBER $member_id The member (null: current member)
  * @return boolean The answer
  */
-function cns_has_replied_topic($topic_id, $member_id = null)
+function cns_has_replied_topic(int $topic_id, ?int $member_id = null) : bool
 {
     $test = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'id', ['p_topic_id' => $topic_id, 'p_poster' => $member_id]);
     return $test !== null;
@@ -245,7 +245,7 @@ function cns_has_replied_topic($topic_id, $member_id = null)
  * @param  MEMBER $resource_owner The member that owns this resource
  * @return boolean The answer
  */
-function cns_may_edit_topics_by($forum_id, $member_id, $resource_owner)
+function cns_may_edit_topics_by(?int $forum_id, int $member_id, int $resource_owner) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -266,7 +266,7 @@ function cns_may_edit_topics_by($forum_id, $member_id, $resource_owner)
  * @param  MEMBER $resource_owner The member that owns this resource
  * @return boolean The answer
  */
-function cns_may_delete_topics_by($forum_id, $member_id, $resource_owner)
+function cns_may_delete_topics_by(?int $forum_id, int $member_id, int $resource_owner) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -286,7 +286,7 @@ function cns_may_delete_topics_by($forum_id, $member_id, $resource_owner)
  * @param  ?MEMBER $member_id The member to do this for (null: current member)
  * @param  ?TIME $timestamp Mark read timestamp (null: now)
  */
-function cns_ping_topic_read($topic_id, $member_id = null, $timestamp = null)
+function cns_ping_topic_read(int $topic_id, ?int $member_id = null, ?int $timestamp = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -308,7 +308,7 @@ function cns_ping_topic_read($topic_id, $member_id = null, $timestamp = null)
  * @param  ?TIME $member_last_time The time the member last viewed the topic (null: get it from the DB)
  * @return boolean They have read it as such, yes
  */
-function cns_has_read_topic($topic_id, $topic_last_time = null, $member_id = null, $member_last_time = null)
+function cns_has_read_topic(int $topic_id, ?int $topic_last_time = null, ?int $member_id = null, ?int $member_last_time = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -359,7 +359,7 @@ function cns_has_read_topic($topic_id, $topic_last_time = null, $member_id = nul
  * @param  ?MEMBER $member_id The member (null: current member)
  * @return boolean Whether they have special access
  */
-function cns_has_special_pt_access($topic_id, $member_id = null)
+function cns_has_special_pt_access(int $topic_id, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

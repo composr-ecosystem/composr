@@ -28,7 +28,7 @@ class Hook_cleanup_composr_fast_custom_index
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('search')) {
             return null;
@@ -49,7 +49,7 @@ class Hook_cleanup_composr_fast_custom_index
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('database_search');
 

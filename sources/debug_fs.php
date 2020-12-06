@@ -107,7 +107,7 @@ class DebugFsStreamWrapper
      * @param  PATH $path The path
      * @return boolean Whether there is an issue
      */
-    protected function has_path_case_issue($path)
+    protected function has_path_case_issue(string $path) : bool
     {
         global $DEBUG_FS__BEHAVIOURS;
         if (($DEBUG_FS__BEHAVIOURS & DEBUG_FS__CASE_SENSITIVE) != 0) {
@@ -155,7 +155,7 @@ class DebugFsStreamWrapper
      *
      * @param  string $path Path
      */
-    protected function strip_back_path(&$path)
+    protected function strip_back_path(string &$path)
     {
         $path = preg_replace('#^debugfs://#', '', $path);
     }
@@ -167,7 +167,7 @@ class DebugFsStreamWrapper
      * @param  ?PATH $path Path (null: N/A)
      * @param  boolean $slowdown Whether to apply an automatic slow-down
      */
-    protected function init_call($function, $path = null, $slowdown = false)
+    protected function init_call(string $function, ?string $path = null, bool $slowdown = false)
     {
         global $DEBUG_FS__LOG_FILE;
         if ($DEBUG_FS__LOG_FILE !== null) {
@@ -212,7 +212,7 @@ class DebugFsStreamWrapper
      * @param  boolean $options Bitmask options
      * @return boolean Success status
      */
-    public function dir_opendir($path, $options)
+    public function dir_opendir(string $path, bool $options) : bool
     {
         $this->init_call('dir_opendir', $path, true);
 
@@ -247,7 +247,7 @@ class DebugFsStreamWrapper
      *
      * @return boolean Success status
      */
-    public function dir_rewinddir()
+    public function dir_rewinddir() : bool
     {
         $this->init_call('dir_rewinddir');
 
@@ -264,7 +264,7 @@ class DebugFsStreamWrapper
      *
      * @return boolean Success status
      */
-    public function dir_closedir()
+    public function dir_closedir() : bool
     {
         $this->init_call('dir_closedir');
 
@@ -285,7 +285,7 @@ class DebugFsStreamWrapper
      * @param  integer $options Bitmask options
      * @return boolean Success status
      */
-    public function mkdir($path, $mode, $options)
+    public function mkdir(string $path, int $mode, int $options) : bool
     {
         $this->init_call('mkdir', $path, true);
 
@@ -305,7 +305,7 @@ class DebugFsStreamWrapper
      * @param  boolean $options Bitmask options
      * @return boolean Success status
      */
-    public function rmdir($path, $options)
+    public function rmdir(string $path, bool $options) : bool
     {
         $this->init_call('rmdir', $path, true);
 
@@ -326,7 +326,7 @@ class DebugFsStreamWrapper
      * @param  PATH $path The file path
      * @return boolean Success status
      */
-    public function unlink($path)
+    public function unlink(string $path) : bool
     {
         $this->init_call('unlink', $path, true);
 
@@ -346,7 +346,7 @@ class DebugFsStreamWrapper
      * @param  boolean $flags Bitmask options
      * @return ~array Map of status information (false: error)
      */
-    public function url_stat($path, $flags)
+    public function url_stat(string $path, bool $flags)
     {
         $this->init_call('url_stat', $path);
 
@@ -370,7 +370,7 @@ class DebugFsStreamWrapper
      * @param  string $opened_path The real path will be written into here, if requested
      * @return boolean Success status
      */
-    public function stream_open($path, $mode, $options, &$opened_path)
+    public function stream_open(string $path, string $mode, int $options, string &$opened_path) : bool
     {
         $this->init_call('stream_open', $path, true);
 
@@ -399,7 +399,7 @@ class DebugFsStreamWrapper
      * @param  integer $count Maximum length to read
      * @return ~string The read data (false: error)
      */
-    public function stream_read($count)
+    public function stream_read(int $count)
     {
         $this->init_call('stream_read');
 
@@ -416,7 +416,7 @@ class DebugFsStreamWrapper
      * @param  string $data The string to write to the file
      * @return ~integer The number of bytes written (false: error)
      */
-    public function stream_write($data)
+    public function stream_write(string $data)
     {
         $this->init_call('stream_write');
 
@@ -433,7 +433,7 @@ class DebugFsStreamWrapper
      * @param  integer $new_size Cut off size
      * @return boolean Success status
      */
-    public function stream_truncate($new_size)
+    public function stream_truncate(int $new_size) : bool
     {
         $this->init_call('stream_truncate', null, true);
 
@@ -451,7 +451,7 @@ class DebugFsStreamWrapper
      * @param  integer $whence SEEK_SET, SEEK_CUR or SEEK_END
      * @return boolean Success status
      */
-    public function stream_seek($offset, $whence = 0/*SEEK_SET*/)
+    public function stream_seek(int $offset, int $whence = 0/*SEEK_SET*/) : bool
     {
         $this->init_call('stream_seek');
 
@@ -483,7 +483,7 @@ class DebugFsStreamWrapper
      *
      * @return boolean Whether the end of the file has been reached
      */
-    public function stream_eof()
+    public function stream_eof() : bool
     {
         $this->init_call('stream_eof');
 
@@ -499,7 +499,7 @@ class DebugFsStreamWrapper
      *
      * @return boolean Success status
      */
-    public function stream_flush()
+    public function stream_flush() : bool
     {
         $this->init_call('stream_flush');
 
@@ -516,7 +516,7 @@ class DebugFsStreamWrapper
      * @param  integer $operation Operation (LOCK_SH, LOCK_EX, LOCK_UN)
      * @return boolean Success status
      */
-    public function stream_lock($operation)
+    public function stream_lock(int $operation) : bool
     {
         $this->init_call('stream_lock', null, true);
 
@@ -535,7 +535,7 @@ class DebugFsStreamWrapper
      * @param  integer $arg2 2nd argument
      * @return boolean Success status
      */
-    public function stream_set_option($option, $arg1, $arg2)
+    public function stream_set_option(int $option, int $arg1, int $arg2) : bool
     {
         $this->init_call('stream_set_option');
 
@@ -563,7 +563,7 @@ class DebugFsStreamWrapper
      *
      * @return boolean Success status
      */
-    public function stream_close()
+    public function stream_close() : bool
     {
         $this->init_call('stream_close');
 
@@ -585,7 +585,7 @@ class DebugFsStreamWrapper
      * @param  PATH $path_to New name
      * @return boolean Success status
      */
-    public function rename($path_from, $path_to)
+    public function rename(string $path_from, string $path_to) : bool
     {
         $this->init_call('rename', $path_from, true);
 
@@ -610,7 +610,7 @@ class DebugFsStreamWrapper
      * @param  mixed $value Value to set
      * @return boolean Success status
      */
-    public function stream_metadata($path, $option, $value)
+    public function stream_metadata(string $path, int $option, $value) : bool
     {
         $this->init_call('stream_metadata', $path, true);
 

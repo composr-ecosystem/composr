@@ -29,7 +29,7 @@ class Hook_notification_paid_subscription_messages extends Hook_Notification
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         if (!addon_installed('ecommerce')) {
             return [];
@@ -51,7 +51,7 @@ class Hook_notification_paid_subscription_messages extends Hook_Notification
      * @param  integer $max Maximum (for pagination)
      * @return array A pair: Map of members to their notification setting, and whether there may be more
      */
-    public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
+    public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         $members = $this->_all_members_who_have_enabled_with_page_access($members, 'purchase', $notification_code, $category, $to_member_ids, $start, $max);

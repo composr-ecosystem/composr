@@ -48,7 +48,7 @@ function init__oauth()
  * @param  string $service_name The name of the service
  * @return array Service info
  */
-function get_oauth_service_info($service_name)
+function get_oauth_service_info(string $service_name) : array
 {
     static $info_cache = [];
     if (isset($info_cache[$service_name])) {
@@ -68,7 +68,7 @@ function get_oauth_service_info($service_name)
  * @param  string $service_name The name of the service
  * @return ?string Refresh token (null: none)
  */
-function get_oauth_refresh_token($service_name)
+function get_oauth_refresh_token(string $service_name) : ?string
 {
     $service_info = get_oauth_service_info($service_name);
 
@@ -87,7 +87,7 @@ function get_oauth_refresh_token($service_name)
  * @param  boolean $trigger_error Whether to throw a Composr error, on error
  * @return ?string Access token (null: none)
  */
-function refresh_oauth2_token($service_name, $trigger_error = true)
+function refresh_oauth2_token(string $service_name, bool $trigger_error = true) : ?string
 {
     static $cache = [];
     if (array_key_exists($service_name, $cache)) {

@@ -38,7 +38,7 @@ Viewing attachments (but not direct rendering - that is in media_rendering.php).
  * @param  boolean $semiparse_mode Whether to parse so as to create something that would fit inside a semihtml tag. It means we generate HTML, with Comcode written into it where the tag could never be reverse-converted (e.g. a block).
  * @return Tempcode The Tempcode for the attachment
  */
-function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source_member, $as_admin, $db, $highlight_bits = [], $on_behalf_of_member = null, $semiparse_mode = false)
+function render_attachment(string $tag, array $attributes, array $attachment_row, string $pass_id, int $source_member, bool $as_admin, object $db, array $highlight_bits = [], ?int $on_behalf_of_member = null, bool $semiparse_mode = false) : object
 {
     require_code('comcode_renderer');
     require_code('media_renderer');
@@ -129,7 +129,7 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
  * @param  ?object $db The database connector to use (null: site DB)
  * @return boolean Whether the member has attachment access
  */
-function has_attachment_access($member_id, $id, $db = null)
+function has_attachment_access(int $member_id, int $id, ?object $db = null) : bool
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];

@@ -28,7 +28,7 @@ class Hook_fields_tax_code
      *
      * @return array Map of field type to field type title
      */
-    public function get_field_types()
+    public function get_field_types() : array
     {
         if (!addon_installed('ecommerce')) {
             return [];
@@ -47,7 +47,7 @@ class Hook_fields_tax_code
      * @param  array $field The field details
      * @return ?array Specially encoded input detail rows (null: nothing special)
      */
-    public function get_search_inputter($field)
+    public function get_search_inputter(array $field) : ?array
     {
         return null;
     }
@@ -59,7 +59,7 @@ class Hook_fields_tax_code
      * @param  integer $i We're processing for the ith row
      * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
      */
-    public function inputted_to_sql_for_search($field, $i)
+    public function inputted_to_sql_for_search(array $field, int $i) : ?array
     {
         return null;
     }
@@ -76,7 +76,7 @@ class Hook_fields_tax_code
      * @param  ?string $default The given default value as a string (null: don't "lock in" a new default value)
      * @return array Tuple of details (row-type,default-value-to-use,db row-type)
      */
-    public function get_field_value_row_bits($field, $required = null, $default = null)
+    public function get_field_value_row_bits(?array $field, ?bool $required = null, ?string $default = null) : array
     {
         return ['short_unescaped', $default, 'short'];
     }
@@ -97,7 +97,7 @@ class Hook_fields_tax_code
      * @param  ?mixed $ev_pure The 'pure' form of the raw value, meaning Comcode is not pre-parsed and string conversion has not been performed (null: unknown)
      * @return mixed Rendered field (Tempcode or string)
      */
-    public function render_field_value(&$field, $ev, $i, $only_fields, $table = null, $id = null, $id_field = null, $field_id_field = null, $url_field = null, $submitter = null, $ev_pure = null)
+    public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {
         if (is_object($ev)) {
             $ev = $ev->evaluate();
@@ -166,7 +166,7 @@ class Hook_fields_tax_code
      * @param  boolean $new Whether this is for a new entry
      * @return ?Tempcode The Tempcode for the input field (null: skip the field - it's not input)
      */
-    public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
+    public function get_field_inputter(string $_cf_name, string $_cf_description, array $field, ?string $actual_value, bool $new) : ?object
     {
         require_code('ecommerce');
 
@@ -194,7 +194,7 @@ class Hook_fields_tax_code
      * @param  ?array $old_value Former value of field (null: none)
      * @return ?string The value (null: could not process)
      */
-    public function inputted_to_field_value($editing, $field, $upload_dir = 'uploads/catalogues', $old_value = null)
+    public function inputted_to_field_value(bool $editing, array $field, ?string $upload_dir = 'uploads/catalogues', ?array $old_value = null) : ?string
     {
         require_code('ecommerce');
 

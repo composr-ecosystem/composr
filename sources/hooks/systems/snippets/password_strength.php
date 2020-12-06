@@ -28,7 +28,7 @@ class Hook_snippet_password_strength
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         require_code('password_rules');
         $score = test_password(

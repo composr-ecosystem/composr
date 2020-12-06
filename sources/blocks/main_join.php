@@ -28,7 +28,7 @@ class Block_main_join
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -55,7 +55,7 @@ class Block_main_join
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         if (get_forum_type() != 'cns') {
             return do_template('RED_ALERT', ['_GUID' => 'm0f7is0vysmap7v6uiz8po92kg5ek1bd', 'TEXT' => do_lang_tempcode('NO_CNS')]);
@@ -159,7 +159,7 @@ class Block_main_join
      * @param  array $map A map of parameters
      * @return boolean If there is
      */
-    protected function has_email_to_send($map)
+    protected function has_email_to_send(array $map) : bool
     {
         return file_exists(get_custom_file_base() . '/' . $map['path']);
     }
@@ -171,7 +171,7 @@ class Block_main_join
      * @param  EMAIL $email_address The e-mail address
      * @return boolean If it worked
      */
-    protected function send_email($map, $email_address)
+    protected function send_email(array $map, string $email_address) : bool
     {
         if ($email_address != '') {
             if ($this->has_email_to_send($map)) {

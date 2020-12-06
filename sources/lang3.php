@@ -27,7 +27,7 @@
  * @return mixed The UI (Tempcode) or the language to use (string/LANGUAGE_NAME)
  * @ignore
  */
-function _choose_language($title, $tip = false, $allow_all_selection = false)
+function _choose_language(object $title, bool $tip = false, bool $allow_all_selection = false)
 {
     if (!multi_lang()) {
         return user_lang();
@@ -120,7 +120,7 @@ function attach_translation_notice()
  * @return array The installed languages (map, lang=>type)
  * @ignore
  */
-function _find_all_langs($even_empty_langs = false)
+function _find_all_langs(bool $even_empty_langs = false) : array
 {
     require_code('files');
 
@@ -216,7 +216,7 @@ function _find_all_langs($even_empty_langs = false)
  *
  * @ignore
  */
-function _create_selection_list_langs($select_lang = null, $show_unset = false)
+function _create_selection_list_langs(?string $select_lang = null, bool $show_unset = false) : object
 {
     $langs = new Tempcode();
     $_langs = find_all_langs();
@@ -266,7 +266,7 @@ function _create_selection_list_langs($select_lang = null, $show_unset = false)
  * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @return array The content language string save fields
  */
-function lang_code_to_default_content($field_name, $code, $comcode = false, $level = 2, $db = null, $parameter1 = null, $parameter2 = null, $parameter3 = null)
+function lang_code_to_default_content(string $field_name, string $code, bool $comcode = false, int $level = 2, ?object $db = null, $parameter1 = null, $parameter2 = null, $parameter3 = null) : array
 {
     $insert_map = insert_lang($field_name, do_lang($code, $parameter1, $parameter2, $parameter3), $level, $db, $comcode);
     if (multi_lang_content()) {
@@ -292,7 +292,7 @@ function lang_code_to_default_content($field_name, $code, $comcode = false, $lev
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @return array The content language string save fields
  */
-function lang_code_to_static_content($field_name, $str, $comcode = false, $level = 2, $db = null)
+function lang_code_to_static_content(string $field_name, string $str, bool $comcode = false, int $level = 2, ?object $db = null) : array
 {
     $insert_map = insert_lang($field_name, $str, $level, $db, $comcode);
     if (multi_lang_content()) {
@@ -328,7 +328,7 @@ function lang_code_to_static_content($field_name, $str, $comcode = false, $level
  *
  * @ignore
  */
-function _insert_lang($field_name, $text, $level, $db = null, $comcode = false, $id = null, $lang = null, $insert_as_admin = false, $pass_id = null, $text_parsed = null, $preparse_mode = true, $save_as_volatile = false)
+function _insert_lang(string $field_name, string $text, int $level, ?object $db = null, bool $comcode = false, ?int $id = null, ?string $lang = null, bool $insert_as_admin = false, ?string $pass_id = null, ?string $text_parsed = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -432,7 +432,7 @@ function _insert_lang($field_name, $text, $level, $db = null, $comcode = false, 
  *
  * @ignore
  */
-function _lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pass_id = null, $for_member = null, $as_admin = false, $leave_source_user = false)
+function _lang_remap(string $field_name, $id, string $text, ?object $db = null, bool $comcode = false, ?string $pass_id = null, ?int $for_member = null, bool $as_admin = false, bool $leave_source_user = false) : array
 {
     if ($id === 0) {
         return insert_lang($field_name, $text, 3, $db, $comcode, null, null, $as_admin, $pass_id);
@@ -539,7 +539,7 @@ function _lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pas
  * @param  boolean $as_admin Whether to force as_admin, even if the content language string isn't stored against an admin (designed for Comcode page caching)
  * @return ?Tempcode The parsed Comcode (null: the text couldn't be looked up)
  */
-function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $as_admin)
+function parse_translated_text(string $table, array &$row, string $field_name, ?object $db, ?string $lang, bool $force, bool $as_admin) : ?object
 {
     global $SEARCH_QUERY_TERMS;
 
@@ -644,7 +644,7 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
  *
  * @ignore
  */
-function _comcode_lang_string($lang_code)
+function _comcode_lang_string(string $lang_code) : object
 {
     global $COMCODE_LANG_STRING_CACHE;
     if (array_key_exists($lang_code, $COMCODE_LANG_STRING_CACHE)) {
@@ -729,7 +729,7 @@ function _comcode_lang_string($lang_code)
  * @param  array $attrs The attributes
  * @param  ?object $db The database connector to use (null: standard site connector)
  */
-function mass_delete_lang($table, $attrs, $db)
+function mass_delete_lang(string $table, array $attrs, ?object $db)
 {
     if (empty($attrs)) {
         return;

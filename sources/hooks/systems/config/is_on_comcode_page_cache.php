@@ -28,7 +28,7 @@ class Hook_config_is_on_comcode_page_cache
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMCODE_PAGE_CACHE',
@@ -51,7 +51,7 @@ class Hook_config_is_on_comcode_page_cache
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

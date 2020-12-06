@@ -26,7 +26,7 @@
  * @param  integer $length The length
  * @return string The shortened filename
  */
-function shorten_urlencoded_filename($filename, $length = 226)
+function shorten_urlencoded_filename(string $filename, int $length = 226) : string
 {
     if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
         // Older versions of PHP on Windows cannot handle utf-8 filenames
@@ -67,7 +67,7 @@ function shorten_urlencoded_filename($filename, $length = 226)
  * @param  boolean $tolerate_errors If this is set to false then an error message will be shown if the URL is still too long after we do what we can; set to true if we have someway of further shortening the URL after this function is called
  * @return URLPATH The shortened URL
  */
-function _cms_rawurlrecode($url, $tolerate_errors)
+function _cms_rawurlrecode(string $url, bool $tolerate_errors) : string
 {
     $recoded = '';
 
@@ -143,7 +143,7 @@ class HarmlessURLCoder
      * @param  string $str The input string
      * @return string The decoded string
      */
-    public function decode($str)
+    public function decode(string $str) : string
     {
         if ((function_exists('idn_to_utf8')) && (strpos($str, '://') !== false) && (get_charset() == 'utf-8')) {
             $domain = parse_url($str, PHP_URL_HOST);
@@ -182,7 +182,7 @@ class HarmlessURLCoder
      * @param  string $str The input string
      * @return string The encoded string
      */
-    public function encode($str)
+    public function encode(string $str) : string
     {
         if ((function_exists('idn_to_ascii')) && (strpos($str, '://') !== false) && (get_charset() == 'utf-8')) {
             $domain = preg_replace('#(^.*://)([^:/]*)(.*$)#', '$2', $str);

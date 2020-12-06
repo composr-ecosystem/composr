@@ -28,7 +28,7 @@ class Hook_config_cns_show_profile_link
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MY_PROFILE_LINK',
@@ -51,7 +51,7 @@ class Hook_config_cns_show_profile_link
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (get_forum_type() == 'none') ? null : '1';
     }

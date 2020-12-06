@@ -28,7 +28,7 @@ class Hook_config_oembed_html_safelist
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'OEMBED_HTML_SAFELIST',
@@ -52,7 +52,7 @@ class Hook_config_oembed_html_safelist
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return "youtube.com\nyoutu.be\nvimeo.com\ndailymotion.com\nslideshare.net\nscribd.com\nsoundcloud.com\ntwitter.com\ninstagram.com\nembed.ly\nmaps.bing.com\nmaps.google.com\nmaps.google.co.uk\nimgur.com\nustream.tv\njustin.tv\napi.embed.ly\nnoembed.com\nfacebook.com";
     }

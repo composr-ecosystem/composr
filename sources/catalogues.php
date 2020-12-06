@@ -47,7 +47,7 @@ function init__catalogues()
  * @param  boolean $fail_ok Whether to return null if we can't find it (as opposed to a fatal error)
  * @return ?array Catalogue row (null: could not find it, and $fail_ok was set to true)
  */
-function load_catalogue_row($catalogue_name, $fail_ok = false)
+function load_catalogue_row(string $catalogue_name, bool $fail_ok = false) : ?array
 {
     static $catalogues_cache = [];
     if (!isset($catalogues_cache[$catalogue_name])) {
@@ -75,7 +75,7 @@ function load_catalogue_row($catalogue_name, $fail_ok = false)
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The catalogue box
  */
-function render_catalogue_entry_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '')
+function render_catalogue_entry_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -118,7 +118,7 @@ function render_catalogue_entry_box($row, $zone = '_SEARCH', $give_context = tru
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_catalogue_category_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+function render_catalogue_category_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -196,7 +196,7 @@ function render_catalogue_category_box($row, $zone = '_SEARCH', $give_context = 
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The catalogue box
  */
-function render_catalogue_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_catalogue_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -241,7 +241,7 @@ function render_catalogue_box($row, $zone = '_SEARCH', $give_context = true, $gu
  * @param  AUTO_LINK $category_id The ID of the category for which count details are collected
  * @return array The number of entries is returned in $output['num_entries'], and the number of subcategories is returned in $output['num_children'], the (possibly recursive) number of subcategories in $output['num_children_children'], and the (possibly recursive) number of entries is returned in $output['num_entries_children']
  */
-function count_catalogue_category_children($category_id)
+function count_catalogue_category_children(int $category_id) : array
 {
     static $total_categories = null;
     if ($total_categories === null) {
@@ -287,7 +287,7 @@ function count_catalogue_category_children($category_id)
  * @param  boolean $check_perms Whether to check permissions (we normally leave false as we have pre-checked permissions for $category_id)
  * @return array An array containing our built up entries (renderable Tempcode), our sorting interface, and our entries (entry records from database, with an additional 'map' field), and the max rows, and the display type used
  */
-function render_catalogue_category_entry_buildup($category_id, $catalogue_name, $catalogue, $view_type, $tpl_set, $max, $start, $select, $root, $display_type = null, $do_sorting = true, $entries = null, $filter = '', $order_by_high_level = null, $ordering_param = 'sort', $viewing_member_id = null, $check_perms = false)
+function render_catalogue_category_entry_buildup(?int $category_id, string $catalogue_name, ?array $catalogue, string $view_type, string $tpl_set, ?int $max, int $start, $select, ?int $root, ?int $display_type = null, bool $do_sorting = true, ?array $entries = null, string $filter = '', ?string $order_by_high_level = null, string $ordering_param = 'sort', ?int $viewing_member_id = null, bool $check_perms = false) : array
 {
     if ($filter != '') {
         require_code('filtercode');
@@ -606,7 +606,7 @@ function render_catalogue_category_entry_buildup($category_id, $catalogue_name, 
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _catalogues_filtercode($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _catalogues_filtercode(object $db, array $info, ?string $catalogue_name, array &$extra_join, string $filter_key, string $filter_val, array $db_fields, string $table_join_code) : ?array
 {
     if (preg_match('#^((.*)\.)?field_(\d+)#', $filter_key) != 0) { // This is by field ID, not field sequence #
         $ret = _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $filter_key, $filter_val, $db_fields, $table_join_code);
@@ -641,7 +641,7 @@ function _catalogues_filtercode($db, $info, $catalogue_name, &$extra_join, $filt
  * @param  boolean $check_perms Whether to check permissions (we normally leave false as we have pre-checked permissions for $category_id)
  * @return array A tuple: whether sorting was done, number of entries returned, list of entries
  */
-function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $select, $do_sorting, $filtercode, $order_by, $direction, $extra_where = '', $viewing_member_id = null, $check_perms = false)
+function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $max, int $start, $select, bool $do_sorting, ?array $filtercode, string $order_by, string $direction, string $extra_where = '', ?int $viewing_member_id = null, bool $check_perms = false) : array
 {
     $where_clause = '1=1' . $extra_where;
     if ($category_id !== null) {
@@ -783,7 +783,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
  * @param  ID_TEXT $direction Sort direction
  * @return array Entries
  */
-function catalogue_entries_manual_sort($fields, &$entries, $order_by, $direction)
+function catalogue_entries_manual_sort(array $fields, array &$entries, string $order_by, string $direction) : array
 {
     $num_entries = count($entries);
 
@@ -884,7 +884,7 @@ function catalogue_entries_manual_sort($fields, &$entries, $order_by, $direction
  * @param  boolean $force_view_all Whether to render everything
  * @return array A map of information relating to the entry. The map contains 'FIELDS' (Tempcode for all accumulated fields), 'FIELD_x' (for each field x applying to the entry), STAFF_DETAILS, COMMENT_DETAILS, RATING_DETAILS, VIEW_URL, BREADCRUMBS
  */
-function get_catalogue_entry_map($entry, $catalogue = null, $view_type = 'PAGE', $tpl_set = 'DEFAULT', $root = null, $fields = null, $only_fields = null, $feedback_details = false, $breadcrumbs_details = false, $order_by = null, &$_breadcrumbs = null, $force_view_all = false)
+function get_catalogue_entry_map(array $entry, ?array $catalogue = null, string $view_type = 'PAGE', string $tpl_set = 'DEFAULT', ?int $root = null, ?array $fields = null, ?array $only_fields = null, bool $feedback_details = false, bool $breadcrumbs_details = false, ?int $order_by = null, ?array &$_breadcrumbs = null, bool $force_view_all = false) : array
 {
     $id = $entry['id'];
     $all_visible = true;
@@ -1083,7 +1083,7 @@ function get_catalogue_entry_map($entry, $catalogue = null, $view_type = 'PAGE',
  * @param  ?LANGUAGE_NAME $lang Language codename (null: current user's language)
  * @return array A list of maps (each field for the entry gets a map), where each map contains 'effective_value' (the value for the field). Some maps get additional fields (effective_value_pure), depending on the field type
  */
-function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fields = null, $fields = null, $natural_order = false, $view_type = 'PAGE', $lang = null)
+function get_catalogue_entry_field_values(?string $catalogue_name, $entry_id, ?array $only_fields = null, ?array $fields = null, bool $natural_order = false, string $view_type = 'PAGE', ?string $lang = null) : array
 {
     global $CAT_FIELDS_CACHE;
 
@@ -1163,7 +1163,7 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
  *
  * @ignore
  */
-function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target, $i, $tables_to_scan = null, $lang = null)
+function _resolve_catalogue_entry_field(array $field, $entry_id, ?array $only_field_ids, array &$target, int $i, ?array $tables_to_scan = null, ?string $lang = null)
 {
     $ob = get_fields_hook($field['cf_type']);
     list($raw_type, , $type) = $ob->get_field_value_row_bits($field);
@@ -1245,7 +1245,7 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
  * @return ?array The row (null: not found)
  * @ignore
  */
-function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only_field_ids = null, $tables_to_scan = null)
+function _get_catalogue_entry_field(int $field_id, $entry_id, string $type = 'short', ?array $only_field_ids = null, ?array $tables_to_scan = null) : ?array
 {
     if (is_array($entry_id)) {
         $entry_id = $entry_id['id'];
@@ -1388,7 +1388,7 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode Catalogue selection list
  */
-function create_selection_list_catalogues($it = null, $prefer_ones_with_entries = false, $only_submittable = false, $updated_since = null)
+function create_selection_list_catalogues(?string $it = null, bool $prefer_ones_with_entries = false, bool $only_submittable = false, ?int $updated_since = null) : object
 {
     $query = 'SELECT c.c_name,c.c_ecommerce,c.c_title FROM ' . get_table_prefix() . 'catalogues c';
     if ($updated_since !== null) {
@@ -1449,7 +1449,7 @@ function create_selection_list_catalogues($it = null, $prefer_ones_with_entries 
  * @param  boolean $use_compound_list Whether to make the list elements store comma-separated child lists instead of IDs
  * @return Tempcode The list of categories
  */
-function create_selection_list_catalogue_category_tree($catalogue_name, $it = null, $addable_filter = false, $use_compound_list = false)
+function create_selection_list_catalogue_category_tree(string $catalogue_name, ?int $it = null, bool $addable_filter = false, bool $use_compound_list = false) : object
 {
     if ($GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $catalogue_name]) > intval(get_option('general_safety_listing_limit'))) {
         return new Tempcode(); // Too many!
@@ -1496,7 +1496,7 @@ function create_selection_list_catalogue_category_tree($catalogue_name, $it = nu
  * @param  boolean $do_stats Whether to collect entry counts with our tree information
  * @return array A list of maps for all subcategories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title), and 'entries_count' (the number of entries in the category).
  */
-function get_catalogue_category_tree($catalogue_name, $category_id, $breadcrumbs = '', $category_details = null, $levels = null, $addable_filter = false, $use_compound_list = false, $do_stats = false)
+function get_catalogue_category_tree(string $catalogue_name, ?int $category_id, string $breadcrumbs = '', ?array $category_details = null, ?int $levels = null, bool $addable_filter = false, bool $use_compound_list = false, bool $do_stats = false) : array
 {
     if (!$use_compound_list) {
         if ($levels == -1) {
@@ -1583,7 +1583,7 @@ function get_catalogue_category_tree($catalogue_name, $category_id, $breadcrumbs
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
  * @return Tempcode The list of entries
  */
-function create_selection_list_catalogue_entries_tree($catalogue_name, $it = null, $submitter = null, $editable_filter = false)
+function create_selection_list_catalogue_entries_tree(string $catalogue_name, ?int $it = null, ?int $submitter = null, bool $editable_filter = false) : object
 {
     $tree = get_catalogue_entries_tree($catalogue_name, $submitter, null, null, null, null, $editable_filter);
 
@@ -1615,7 +1615,7 @@ function create_selection_list_catalogue_entries_tree($catalogue_name, $it = nul
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
  * @return array A list of maps for all categories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title), and more.
  */
-function get_catalogue_entries_tree($catalogue_name, $submitter = null, $category_id = null, $breadcrumbs = null, $title = null, $levels = null, $editable_filter = false)
+function get_catalogue_entries_tree(string $catalogue_name, ?int $submitter = null, ?int $category_id = null, ?string $breadcrumbs = null, ?string $title = null, ?int $levels = null, bool $editable_filter = false) : array
 {
     if (($category_id === null) && ($levels === null)) {
         if ($GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $catalogue_name]) > intval(get_option('general_safety_listing_limit'))) {
@@ -1736,7 +1736,7 @@ function get_catalogue_entries_tree($catalogue_name, $submitter = null, $categor
  * @param  boolean $attach_to_url_filter Whether to copy through any filter parameters in the URL, under the basis that they are associated with what this box is browsing
  * @return array The breadcrumbs
  */
-function catalogue_category_breadcrumbs($category_id, $root = null, $include_link = false, $attach_to_url_filter = false)
+function catalogue_category_breadcrumbs(int $category_id, ?int $root = null, bool $include_link = false, bool $attach_to_url_filter = false) : array
 {
     if ($category_id === null) {
         return [];
@@ -1787,7 +1787,7 @@ function catalogue_category_breadcrumbs($category_id, $root = null, $include_lin
  * @param  ?array $catalogue Catalogue row (null: look up)
  * @return boolean Status of ecommerce catalogue check
  */
-function is_ecommerce_catalogue($catalogue_name, $catalogue = null)
+function is_ecommerce_catalogue(string $catalogue_name, ?array $catalogue = null) : bool
 {
     if (($catalogue !== null) && ($catalogue['c_ecommerce'] == 0)) {
         return false;
@@ -1812,7 +1812,7 @@ function is_ecommerce_catalogue($catalogue_name, $catalogue = null)
  * @param  AUTO_LINK $entry_id Entry ID
  * @return boolean Status of entry type check
  */
-function is_ecommerce_catalogue_entry($entry_id)
+function is_ecommerce_catalogue_entry(int $entry_id) : bool
 {
     $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => $entry_id]);
 
@@ -1825,7 +1825,7 @@ function is_ecommerce_catalogue_entry($entry_id)
  * @param  AUTO_LINK $id Entry ID
  * @return Tempcode Tempcode interface to display an entry
  */
-function render_catalogue_entry_screen($id)
+function render_catalogue_entry_screen(int $id) : object
 {
     if (addon_installed('content_privacy')) {
         require_code('content_privacy');

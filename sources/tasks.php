@@ -75,7 +75,7 @@ function tasks_script()
  *
  * @param  array $task_row The task row
  */
-function execute_task_background($task_row)
+function execute_task_background(array $task_row)
 {
     require_code('failure');
 
@@ -207,7 +207,7 @@ function execute_task_background($task_row)
  * @param  boolean $send_notification Whether to send a notification of the task having come out of the queue
  * @return Tempcode UI (function may not return if the task is immediate and doesn't have a text/html result)
  */
-function call_user_func_array__long_task($plain_title, $title, $hook, $args = [], $run_at_end_of_script = false, $force_immediate = false, $send_notification = true)
+function call_user_func_array__long_task(string $plain_title, ?object $title, string $hook, array $args = [], bool $run_at_end_of_script = false, bool $force_immediate = false, bool $send_notification = true) : object
 {
     if (
         (get_param_integer('keep_debug_tasks', 0) == 1) ||
@@ -369,7 +369,7 @@ function task_log_open()
  * @param  ?integer $i Iterator position, must be passed for any high frequency calls to this function (null: N/A)
  * @param  ?integer $total Total iterating through (null: N/A)
  */
-function task_log($object, $message, $i = null, $total = null)
+function task_log(?object $object, string $message, ?int $i = null, ?int $total = null)
 {
     global $TASK_LOG_FILE;
     if ($TASK_LOG_FILE === null) {

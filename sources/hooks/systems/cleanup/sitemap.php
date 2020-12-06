@@ -28,7 +28,7 @@ class Hook_cleanup_sitemap
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
             return null;
@@ -47,7 +47,7 @@ class Hook_cleanup_sitemap
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('tasks');
         call_user_func_array__long_task(do_lang('REBUILD_SITEMAP'), get_screen_title('REBUILD_SITEMAP'), 'sitemap', [true], false, false, false);

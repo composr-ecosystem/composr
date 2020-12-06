@@ -28,7 +28,7 @@ class Hook_config_notification_poll_frequency
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'NOTIFICATION_POLL_FREQUENCY',
@@ -51,7 +51,7 @@ class Hook_config_notification_poll_frequency
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (get_db_type() == 'xml') {
             return '1000';

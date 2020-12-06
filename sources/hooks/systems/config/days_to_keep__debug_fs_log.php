@@ -28,7 +28,7 @@ class Hook_config_days_to_keep__debug_fs_log
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'DAYS_TO_KEEP__DEBUG_FS_LOG',
@@ -51,7 +51,7 @@ class Hook_config_days_to_keep__debug_fs_log
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!is_file(get_custom_file_base() . '/data_custom/debug_fs.log')) {
             return null;

@@ -35,7 +35,7 @@ Editing/deleting attachments.
  * @param  ?MEMBER $for_member The member that owns the content this is for (null: current member)
  * @return array The content language string save fields
  */
-function update_lang_comcode_attachments($field_name, $lang_id, $text, $type, $id, $db = null, $for_member = null)
+function update_lang_comcode_attachments(string $field_name, $lang_id, string $text, string $type, string $id, ?object $db = null, ?int $for_member = null) : array
 {
     if ($lang_id === 0) {
         return insert_lang_comcode_attachments($field_name, 3, $text, $type, $id, $db, false, $for_member);
@@ -108,7 +108,7 @@ function update_lang_comcode_attachments($field_name, $lang_id, $text, $type, $i
  * @param  ID_TEXT $type The hook
  * @param  ?object $db The database connector to use (null: standard site connector)
  */
-function delete_attachments($type, $db = null)
+function delete_attachments(string $type, ?object $db = null)
 {
     if (get_option('attachment_cleanup') == '0') {
         return;
@@ -144,7 +144,7 @@ function delete_attachments($type, $db = null)
  *
  * @ignore
  */
-function _delete_attachment($id, $db)
+function _delete_attachment(int $id, object $db)
 {
     $db->query_delete('attachment_refs', ['a_id' => $id]);
 
@@ -179,7 +179,7 @@ function _delete_attachment($id, $db)
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $force Whether to force this, regardless of config
  */
-function delete_comcode_attachments($type, $id, $db = null, $force = false)
+function delete_comcode_attachments(string $type, string $id, ?object $db = null, bool $force = false)
 {
     if (get_option('attachment_cleanup') == '0' && !$force) {
         return;
@@ -210,7 +210,7 @@ function delete_comcode_attachments($type, $id, $db = null, $force = false)
  * @param  ID_TEXT $id The ID in the set of the arbitrary types that the attached is for
  * @param  ?object $db The database connector to use (null: standard site connector)
  */
-function delete_lang_comcode_attachments($lang_id, $type, $id, $db = null)
+function delete_lang_comcode_attachments($lang_id, string $type, string $id, ?object $db = null)
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];

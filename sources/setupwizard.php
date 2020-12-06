@@ -95,7 +95,7 @@ function uninstall_test_content()
  *
  * @ignore
  */
-function _get_zone_pages($installprofileblocks, $block_options, $collapse_zones, $installprofile)
+function _get_zone_pages(array $installprofileblocks, array $block_options, bool $collapse_zones, string $installprofile) : array
 {
     $page_structure = [];
 

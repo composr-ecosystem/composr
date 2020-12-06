@@ -29,7 +29,7 @@ class Hook_notification_ticket_reply_staff extends Hook_Notification
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         if (!addon_installed('tickets')) {
             return [];
@@ -51,7 +51,7 @@ class Hook_notification_ticket_reply_staff extends Hook_Notification
      * @param  integer $max Maximum (for pagination)
      * @return array A pair: Map of members to their notification setting, and whether there may be more
      */
-    public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
+    public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         $members = $this->_all_members_who_have_enabled_with_privilege($members, 'support_operator', $notification_code, $category, $to_member_ids, $start, $max);
@@ -67,7 +67,7 @@ class Hook_notification_ticket_reply_staff extends Hook_Notification
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return boolean Whether they could
      */
-    public function member_could_potentially_enable($notification_code, $member_id, $category = null)
+    public function member_could_potentially_enable(string $notification_code, int $member_id, ?string $category = null) : bool
     {
         return $this->_is_staff(null, null, $member_id);
     }
@@ -81,7 +81,7 @@ class Hook_notification_ticket_reply_staff extends Hook_Notification
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return boolean Whether they have
      */
-    public function member_has_enabled($notification_code, $member_id, $category = null)
+    public function member_has_enabled(string $notification_code, int $member_id, ?string $category = null) : bool
     {
         return $this->_is_staff($notification_code, $category, $member_id);
     }
@@ -94,7 +94,7 @@ class Hook_notification_ticket_reply_staff extends Hook_Notification
      * @param  MEMBER $member_id Member to check against
      * @return boolean Whether they do
      */
-    protected function _is_staff($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $member_id)
+    protected function _is_staff(?string $only_if_enabled_on__notification_code, ?string $only_if_enabled_on__category, int $member_id) : bool
     {
         $test = ($only_if_enabled_on__notification_code === null) ? true : notifications_enabled($only_if_enabled_on__notification_code, $only_if_enabled_on__category, $member_id);
 

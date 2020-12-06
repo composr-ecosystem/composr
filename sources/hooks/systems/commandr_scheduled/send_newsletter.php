@@ -28,7 +28,7 @@ class Hook_commandr_scheduled_send_newsletter
      *
      * @return ?array Map of hook details (null: addon not available)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -48,7 +48,7 @@ class Hook_commandr_scheduled_send_newsletter
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $id, $parameters, &$commandr_fs)
+    public function run(array $options, string $id, array $parameters, object &$commandr_fs) : array
     {
         require_code('newsletter');
 

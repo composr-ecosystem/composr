@@ -24,7 +24,7 @@
  * @param  string $sql SQL defining what rows to load
  * @return array List of all rows cached (not just the ones loaded now)
  */
-function load_news_cat_rows($sql)
+function load_news_cat_rows(string $sql) : array
 {
     static $cache = [], $loaded_queries = [];
 
@@ -53,7 +53,7 @@ function load_news_cat_rows($sql)
  * @param  boolean $null_ok Whether to return null if not found (as opposed to exiting)
  * @return ?array Row (null: could not load)
  */
-function get_news_cat_row($id, $null_ok = false)
+function get_news_cat_row(int $id, bool $null_ok = false) : ?array
 {
     $rows = load_news_cat_rows('id=' . strval($id));
     if (!array_key_exists($id, $rows)) {
@@ -72,7 +72,7 @@ function get_news_cat_row($id, $null_ok = false)
  * @param  string $nc_img URL / theme image code / blank
  * @return URLPATH URL (or blank)
  */
-function get_news_category_image_url($nc_img)
+function get_news_category_image_url(string $nc_img) : string
 {
     if ($nc_img == '') {
         $image = '';
@@ -101,7 +101,7 @@ function get_news_category_image_url($nc_img)
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The box
  */
-function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief = false, $guid = '')
+function render_news_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $brief = false, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -185,7 +185,7 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_news_category_box($row, $zone = '_SEARCH', $give_context = true, $attach_to_url_filter = false, $blogs = null, $guid = '')
+function render_news_category_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $attach_to_url_filter = false, ?int $blogs = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -253,7 +253,7 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode The Tempcode for the news category select list
  */
-function create_selection_list_news_categories($it = null, $show_all_personal_categories = false, $addable_filter = false, $only_existing = false, $only_blogs = null, $prefer_not_blog_selected = false, $updated_since = null)
+function create_selection_list_news_categories($it = null, bool $show_all_personal_categories = false, bool $addable_filter = false, bool $only_existing = false, ?bool $only_blogs = null, bool $prefer_not_blog_selected = false, ?int $updated_since = null) : object
 {
     if (!is_array($it)) {
         $it = [$it];
@@ -366,7 +366,7 @@ function create_selection_list_news_categories($it = null, $show_all_personal_ca
  * @param  boolean $only_in_blog Whether to only show blog posts
  * @return Tempcode The list
  */
-function create_selection_list_news($it, $only_owned = null, $editable_filter = false, $only_in_blog = false)
+function create_selection_list_news(?int $it, ?int $only_owned = null, bool $editable_filter = false, bool $only_in_blog = false) : object
 {
     $where = ($only_owned === null) ? '1' : ('submitter=' . strval($only_owned));
     if ($only_in_blog) {

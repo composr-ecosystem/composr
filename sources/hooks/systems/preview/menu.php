@@ -28,7 +28,7 @@ class Hook_preview_menu
      *
      * @return array Triplet: Whether it applies, the attachment ID type, whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (get_page_name() == 'admin_menus');
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_menu
      *
      * @return array A pair: The preview, the updated post Comcode
      */
-    public function run()
+    public function run() : array
     {
         require_code('menus');
         require_code('menus2');

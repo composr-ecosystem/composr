@@ -28,7 +28,7 @@ class Block_side_cns_private_topics
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -50,7 +50,7 @@ class Block_side_cns_private_topics
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -68,7 +68,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_forum', $error_msg)) {

@@ -33,7 +33,7 @@ class Module_admin_revisions
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -63,7 +63,7 @@ class Module_admin_revisions
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         add_privilege('SUBMISSION', 'view_revisions', false);
         add_privilege('SUBMISSION', 'undo_revisions', false);
@@ -98,7 +98,7 @@ class Module_admin_revisions
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('actionlog')) {
             return null;
@@ -116,7 +116,7 @@ class Module_admin_revisions
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('actionlog', $error_msg)) {
@@ -147,7 +147,7 @@ class Module_admin_revisions
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         check_privilege('view_revisions');
 
@@ -176,7 +176,7 @@ class Module_admin_revisions
      *
      * @return Tempcode The UI
      */
-    public function gui()
+    public function gui() : object
     {
         require_all_lang();
 
@@ -225,7 +225,7 @@ class Module_admin_revisions
      * @param  array $revision A revision map
      * @return ?Tempcode A rendered revision row (null: won't render)
      */
-    public function _render_revision($revision)
+    public function _render_revision(array $revision) : ?object
     {
         require_code('content');
         list($content_title, , , , $content_url) = content_get_details($revision['r_resource_type'], $revision['r_resource_id']);
@@ -297,7 +297,7 @@ class Module_admin_revisions
      *
      * @return Tempcode The UI
      */
-    public function delete()
+    public function delete() : object
     {
         check_privilege('delete_revisions');
 

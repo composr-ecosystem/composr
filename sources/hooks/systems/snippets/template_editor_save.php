@@ -28,7 +28,7 @@ class Hook_snippet_template_editor_save
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!has_actual_page_access(get_member(), 'admin_themes', get_module_zone('admin_themes'))) {
             access_denied('I_ERROR');

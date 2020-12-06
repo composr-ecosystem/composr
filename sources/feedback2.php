@@ -25,7 +25,7 @@
  * @param  ?ID_TEXT $category_id The category ID to override the comment topic forum for (null: none)
  * @param  ID_TEXT $forum_id The new comment topic forum
  */
-function set_comment_forum_for($feedback_code, $category_id, $forum_id)
+function set_comment_forum_for(string $feedback_code, ?string $category_id, string $forum_id)
 {
     require_code('feedback');
 
@@ -154,7 +154,7 @@ function trackback_script()
  * @param  string $field_name_prefix Field name prefix
  * @return Tempcode The feedback editing fields
  */
-function feedback_fields($content_type, $allow_rating, $allow_comments, $allow_trackbacks, $send_trackbacks, $notes, $allow_reviews = null, $default_off = false, $has_notes = true, $show_header = true, $field_name_prefix = '')
+function feedback_fields(string $content_type, bool $allow_rating, bool $allow_comments, ?bool $allow_trackbacks, bool $send_trackbacks, string $notes, ?bool $allow_reviews = null, bool $default_off = false, bool $has_notes = true, bool $show_header = true, string $field_name_prefix = '') : object
 {
     if (get_option('enable_feedback') == '0') {
         return new Tempcode();
@@ -223,7 +223,7 @@ function feedback_fields($content_type, $allow_rating, $allow_comments, $allow_t
  * @param  string $excerpt The excerpt to send
  * @return boolean Success?
  */
-function send_trackbacks($_urls, $title, $excerpt)
+function send_trackbacks(string $_urls, string $title, string $excerpt) : bool
 {
     if ($_urls == '') {
         return true;

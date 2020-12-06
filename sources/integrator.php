@@ -25,7 +25,7 @@
  * @param  URLPATH $operation_base_url We open up linked URLs under this recursively
  * @return string The cleaned up contents at the URL, set up for the recursive integrator usage
  */
-function reprocess_url($url, $operation_base_url)
+function reprocess_url(string $url, string $operation_base_url) : string
 {
     if (url_is_local($url)) {
         return '';

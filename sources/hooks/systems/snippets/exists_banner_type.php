@@ -28,7 +28,7 @@ class Hook_snippet_exists_banner_type
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('banners')) {
             return new Tempcode();

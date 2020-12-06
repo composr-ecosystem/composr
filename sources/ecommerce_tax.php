@@ -29,7 +29,7 @@
  * @param  float $multiplier The multiplier
  * @return ID_TEXT The amended tax code
  */
-function tax_multiplier($tax_code, $multiplier)
+function tax_multiplier(string $tax_code, float $multiplier) : string
 {
     if (($tax_code != '') && (is_numeric($tax_code[0])) && (substr($tax_code, -1) != '%')) {
         return float_to_raw_string(floatval($tax_code) * $multiplier);
@@ -50,7 +50,7 @@ function tax_multiplier($tax_code, $multiplier)
  * @param  integer $quantity The quantity of items
  * @return array A tuple: The tax derivation, tax due (including shipping tax), tax tracking ID (at time of writing this is just with TaxCloud), shipping tax
  */
-function calculate_tax_due($details, $tax_code, $amount, $shipping_cost = 0.00, $member_id = null, $quantity = 1)
+function calculate_tax_due(?array $details, string $tax_code, float $amount, float $shipping_cost = 0.00, ?int $member_id = null, int $quantity = 1) : array
 {
     // ADD CUSTOM CODE HERE BY OVERRIDING THIS FUNCTION
 
@@ -98,7 +98,7 @@ function calculate_tax_due($details, $tax_code, $amount, $shipping_cost = 0.00, 
  * @param  ?MEMBER $member_id The member this is for (null: current member)
  * @return array A tuple: The shipping tax derivation, shipping tax due (including shipping tax), shipping tax tracking ID (at time of writing this is just with TaxCloud)
  */
-function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipping_cost = 0.00, $member_id = null)
+function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix = '', float $shipping_cost = 0.00, ?int $member_id = null) : array
 {
     // ADD CUSTOM CODE HERE BY OVERRIDING THIS FUNCTION
 
@@ -463,7 +463,7 @@ function check_taxcloud_configured_correctly()
  * @param  MEMBER $member_id The member ID
  * @param  ID_TEXT $session_id The session ID of the purchaser
  */
-function taxcloud_declare_completed($tracking_id, $txn_id, $member_id, $session_id)
+function taxcloud_declare_completed(string $tracking_id, string $txn_id, int $member_id, string $session_id)
 {
     $url = 'https://api.taxcloud.com/1.0/TaxCloud/AuthorizedWithCapture';
 
@@ -509,7 +509,7 @@ function taxcloud_declare_completed($tracking_id, $txn_id, $member_id, $session_
  * @param  REAL $tax Tax in money
  * @return REAL The tax rate (as a percentage)
  */
-function backcalculate_tax_rate($amount, $tax)
+function backcalculate_tax_rate(float $amount, float $tax) : float
 {
     if ($amount == 0.00) {
         return 0.0;
@@ -529,7 +529,7 @@ function backcalculate_tax_rate($amount, $tax)
  * @param  REAL $shipping_tax Transaction shipping tax in money
  * @return array Invoicing breakdown
  */
-function generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost = 0.00, $shipping_tax = 0.00)
+function generate_invoicing_breakdown(string $type_code, string $item_name, string $purchase_id, float $price, float $tax, float $shipping_cost = 0.00, float $shipping_tax = 0.00) : array
 {
     $invoicing_breakdown = [];
 
@@ -599,7 +599,7 @@ function generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $pri
  * @param  MEMBER $member_id The member to send to
  * @param  AUTO_LINK $id The invoice ID
  */
-function send_invoice_notification($member_id, $id)
+function send_invoice_notification(int $member_id, int $id)
 {
     // Send out notification
     require_code('notifications');
@@ -616,7 +616,7 @@ function send_invoice_notification($member_id, $id)
  * @param  ID_TEXT $txn_id Transaction ID
  * @return Tempcode Tax invoice
  */
-function generate_tax_invoice($txn_id)
+function generate_tax_invoice(string $txn_id) : object
 {
     require_css('ecommerce');
     require_code('locations');
@@ -710,7 +710,7 @@ function generate_tax_invoice($txn_id)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_tax_code($set_title, $description, $set_name, $default, $required, $tabindex = null)
+function form_input_tax_code($set_title, $description, string $set_name, string $default, bool $required, ?int $tabindex = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -793,7 +793,7 @@ function form_input_tax_code($set_title, $description, $set_name, $default, $req
  * @param  integer $depth Current recursion depth
  * @return Tempcode The list
  */
-function _prepare_tics_list($all_tics, $default, $parent, $pre = '', $depth = 0)
+function _prepare_tics_list(array $all_tics, string $default, string $parent, string $pre = '', int $depth = 0) : object
 {
     if ($depth > 5) {
         return new Tempcode(); // Some kind of error, likely corrupt data (which we've seen happen with TaxCloud)
@@ -835,7 +835,7 @@ function _prepare_tics_list($all_tics, $default, $parent, $pre = '', $depth = 0)
  * @param  string $default Default value
  * @return string The value
  */
-function post_param_tax_code($name, $default = '0%')
+function post_param_tax_code(string $name, string $default = '0%') : string
 {
     $value = post_param_string($name . '_flat', ''); // Simple flat figure
     if ($value == '') {

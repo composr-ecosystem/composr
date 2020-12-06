@@ -28,7 +28,7 @@ class Hook_config_spam_heuristic_user_agents
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SPAM_HEURISTIC_USER_AGENTS',
@@ -52,7 +52,7 @@ class Hook_config_spam_heuristic_user_agents
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'Perl,Bot,jakarta,libwww,lwp-trivial,curl,urllib,GT::WWW,Snoopy,MFC_Tear_Sample,HTTP::Lite,PHPCrawl,URI::Fetch,Zend_Http_Client,http client,PECL::HTTP,wget';
     }

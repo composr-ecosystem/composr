@@ -46,7 +46,7 @@ class ForumEmailIntegration extends EmailIntegration
      * @param  AUTO_LINK $forum_id Forum ID
      * @param  ?array $forum_row Forum row (null: load up from database)
      */
-    public function set_forum($forum_id, $forum_row = null)
+    public function set_forum(int $forum_id, ?array $forum_row = null)
     {
         $this->forum_id = $forum_id;
 
@@ -76,7 +76,7 @@ class ForumEmailIntegration extends EmailIntegration
      * @param  string $from_displayname Display name of poster
      * @param  boolean $is_starter Whether this is a new topic, just created by the poster
      */
-    public function outgoing_message($topic_id, $post_id, $forum_id, $post_url, $topic_title, $post, $to_member_id, $to_displayname, $to_email, $from_displayname, $is_starter = false)
+    public function outgoing_message(int $topic_id, int $post_id, int $forum_id, $post_url, string $topic_title, string $post, int $to_member_id, string $to_displayname, string $to_email, string $from_displayname, bool $is_starter = false)
     {
         $this->set_forum($forum_id);
 
@@ -94,7 +94,7 @@ class ForumEmailIntegration extends EmailIntegration
      *
      * @return EMAIL E-mail address
      */
-    protected function get_sender_email()
+    protected function get_sender_email() : string
     {
         foreach (['website_email', null, 'staff_address'] as $address) {
             if (($address === null) && ($this->forum_row['f_mail_email_address'] != '')) {
@@ -115,7 +115,7 @@ class ForumEmailIntegration extends EmailIntegration
      *
      * @return EMAIL E-mail address
      */
-    protected function get_system_email()
+    protected function get_system_email() : string
     {
         foreach ([null, 'staff_address', 'website_email'] as $address) {
             if (($address === null) && ($this->forum_row['f_mail_email_address'] != '')) {
@@ -175,7 +175,7 @@ class ForumEmailIntegration extends EmailIntegration
      * @param  ?string $_body_html E-mail body in HTML format (null: not present)
      * @param  array $attachments Map of attachments (name to file data); only populated if $mime_type is appropriate for an attachment
      */
-    protected function _process_incoming_message($from_email, $email_bounce_to, $from_name, $subject, $_body_text, $_body_html, $attachments)
+    protected function _process_incoming_message(string $from_email, string $email_bounce_to, string $from_name, string $subject, ?string $_body_text, ?string $_body_html, array $attachments)
     {
         // Try to bind to a from member
         $member_id = $this->find_member_id($from_email);
@@ -310,7 +310,7 @@ class ForumEmailIntegration extends EmailIntegration
      * @param  string $text E-mail component
      * @param  integer $format A STRIP_* constant
      */
-    protected function strip_system_code(&$text, $format)
+    protected function strip_system_code(string &$text, int $format)
     {
         switch ($format) {
             case self::STRIP_SUBJECT:
@@ -358,7 +358,7 @@ class ForumEmailIntegration extends EmailIntegration
      * @param  EMAIL $email E-mail address we tried to bind to
      * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
      */
-    protected function send_bounce_email__cannot_bind($subject, $_body_text, $_body_html, $email, $email_bounce_to)
+    protected function send_bounce_email__cannot_bind(string $subject, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to)
     {
         $prefer_html = has_privilege($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'allow_html');
         if (($_body_html === null) || ((!$prefer_html) && ($_body_text !== null))) {
@@ -385,7 +385,7 @@ class ForumEmailIntegration extends EmailIntegration
      * @param  string $username Bound username
      * @param  MEMBER $member_id Member ID
      */
-    protected function send_bounce_email__access_denied($subject, $_body_text, $_body_html, $email, $email_bounce_to, $forum_name, $username, $member_id)
+    protected function send_bounce_email__access_denied(string $subject, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to, string $forum_name, string $username, int $member_id)
     {
         $prefer_html = has_privilege($member_id, 'allow_html');
         if (($_body_html === null) || ((!$prefer_html) && ($_body_text !== null))) {

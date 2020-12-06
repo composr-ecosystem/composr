@@ -41,7 +41,7 @@ function init__menus()
  * @param  boolean $apply_highlighting Whether to apply current-screen highlighting
  * @return array A tuple: The generated Tempcode of the menu, the menu nodes, whether we flattened
  */
-function build_menu($type, $menu_id, $silent_failure = false, $apply_highlighting = true)
+function build_menu(string $type, string $menu_id, bool $silent_failure = false, bool $apply_highlighting = true) : array
 {
     $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+$#', $menu_id) == 0);
 
@@ -132,7 +132,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
  *
  * @ignore
  */
-function _build_stored_menu($menu_id)
+function _build_stored_menu(string $menu_id) : array
 {
     // Load items
     $root = persistent_cache_get(['MENU', $menu_id]);
@@ -160,7 +160,7 @@ function _build_stored_menu($menu_id)
  * @return array The Sitemap node structure (called a 'branch structure' for menus)
  * @ignore
  */
-function _build_sitemap_menu($menu_id)
+function _build_sitemap_menu(string $menu_id) : array
 {
     static $cache = [];
     if (isset($cache[$menu_id])) {
@@ -311,7 +311,7 @@ function _build_sitemap_menu($menu_id)
  *
  * @ignore
  */
-function _get_menu_root_wrapper()
+function _get_menu_root_wrapper() : array
 {
     return [
         'title' => '',
@@ -339,7 +339,7 @@ function _get_menu_root_wrapper()
  *
  * @ignore
  */
-function _build_stored_menu_branch($item, $items)
+function _build_stored_menu_branch(array $item, array $items) : array
 {
     $is_page_link = !looks_like_url($item['i_url']);
 
@@ -431,7 +431,7 @@ function _build_stored_menu_branch($item, $items)
  *
  * @ignore
  */
-function _find_child_page_links($branches, &$page_links)
+function _find_child_page_links(array $branches, array &$page_links)
 {
     foreach ($branches as $branch) {
         $page_links[$branch['page_link']] = true;
@@ -450,7 +450,7 @@ function _find_child_page_links($branches, &$page_links)
  *
  * @ignore
  */
-function _append_to_page_links(&$branches, $page_link_append)
+function _append_to_page_links(array &$branches, string $page_link_append)
 {
     foreach ($branches as &$branch) {
         if ($branch['page_link'] !== null) {
@@ -474,7 +474,7 @@ function _append_to_page_links(&$branches, $page_link_append)
  *
  * @ignore
  */
-function _render_menu($menu, $source_member, $type, $as_admin = false, $apply_highlighting = true)
+function _render_menu(array $menu, ?int $source_member, string $type, bool $as_admin = false, bool $apply_highlighting = true) : object
 {
     if ($source_member === null) {
         $source_member = get_member();
@@ -539,7 +539,7 @@ function _render_menu($menu, $source_member, $type, $as_admin = false, $apply_hi
  *
  * @ignore
  */
-function _render_menu_branch($branch, $codename, $source_member, $level, $type, $as_admin, $all_branches, $apply_highlighting, $the_level = 1)
+function _render_menu_branch(array $branch, string $codename, int $source_member, int $level, string $type, bool $as_admin, array $all_branches, bool $apply_highlighting, int $the_level = 1) : array
 {
     if ($branch['only_on_page'] != '') {
         if (strpos($branch['only_on_page'], '{') !== false) {

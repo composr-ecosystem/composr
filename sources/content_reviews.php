@@ -27,7 +27,7 @@
  * @set 0 1 2
  * @return string Content review details to show
  */
-function show_content_reviews($content_type, $content_id, $display_mode = 0)
+function show_content_reviews(string $content_type, string $content_id, int $display_mode = 0) : string
 {
     $content_reviews = $GLOBALS['SITE_DB']->query_select('content_reviews', ['display_review_status', 'last_reviewed_time', 'next_review_time'], [
         'content_type' => $content_type,

@@ -34,7 +34,7 @@
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The tag name
  */
-function add_custom_comcode_tag($tag, $title, $description, $replace, $example, $parameters, $enabled, $dangerous_tag, $block_tag, $textual_tag, $uniqify = false)
+function add_custom_comcode_tag(string $tag, $title, $description, string $replace, string $example, string $parameters, int $enabled, int $dangerous_tag, int $block_tag, int $textual_tag, bool $uniqify = false) : string
 {
     require_code('type_sanitisation');
     if (!is_alphanumeric($tag, true)) {
@@ -104,7 +104,7 @@ function add_custom_comcode_tag($tag, $title, $description, $replace, $example, 
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The tag name
  */
-function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace, $example, $parameters, $enabled, $dangerous_tag, $block_tag, $textual_tag, $uniqify = false)
+function edit_custom_comcode_tag(string $old_tag, string $tag, string $title, string $description, string $replace, string $example, string $parameters, int $enabled, int $dangerous_tag, int $block_tag, int $textual_tag, bool $uniqify = false) : string
 {
     $old = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_title', 'tag_description'], ['tag_tag' => $old_tag], '', 1);
     if (!array_key_exists(0, $old)) {
@@ -164,7 +164,7 @@ function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace,
  *
  * @param  ID_TEXT $tag Tag name
  */
-function delete_custom_comcode_tag($tag)
+function delete_custom_comcode_tag(string $tag)
 {
     $old = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_title', 'tag_description'], ['tag_tag' => $tag], '', 1);
     if (!array_key_exists(0, $old)) {

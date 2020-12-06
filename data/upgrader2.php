@@ -177,7 +177,7 @@ up2_do_footer();
  *
  * @param  URLPATH $refresh_url URL to go to next (blank: done)
  */
-function up2_do_header($refresh_url = '')
+function up2_do_header(string $refresh_url = '')
 {
     $_refresh_url = htmlentities($refresh_url);
     echo <<<END
@@ -224,7 +224,7 @@ END;
  * @param  SHORT_TEXT $password_given_hashed Given master password
  * @return boolean Whether it is valid
  */
-function upgrader2_check_master_password($password_given_hashed)
+function upgrader2_check_master_password(string $password_given_hashed) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');

@@ -28,7 +28,7 @@ class Hook_cleanup_blocks
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('BLOCK_CACHE');
@@ -43,7 +43,7 @@ class Hook_cleanup_blocks
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         erase_block_cache(true);
 

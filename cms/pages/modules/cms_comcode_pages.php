@@ -28,7 +28,7 @@ class Module_cms_comcode_pages
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_cms_comcode_pages
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         $ret = [
             'browse' => ['COMCODE_PAGE_MANAGEMENT', 'menu/cms/comcode_page_edit'],
@@ -69,7 +69,7 @@ class Module_cms_comcode_pages
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         return ['submit_highrange_content' => [1, 'COMCODE_PAGE_ADD'], 'edit_highrange_content' => [1, 'COMCODE_PAGE_EDIT'], 'edit_own_highrange_content' => [1, 'COMCODE_PAGE_OWN_EDIT'], 'bypass_validation_highrange_content' => [1, 'BYPASS_COMCODE_PAGE_VALIDATION']];
     }
@@ -84,7 +84,7 @@ class Module_cms_comcode_pages
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -173,7 +173,7 @@ class Module_cms_comcode_pages
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('zones2');
         require_code('zones3');
@@ -206,7 +206,7 @@ class Module_cms_comcode_pages
      * @param  Tempcode $completion_text The text to show (blank: default)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $page, $zone, $completion_text)
+    public function do_next_manager(object $title, ?string $page, string $zone, object $completion_text) : object
     {
         if (!addon_installed('page_management')) {
             return redirect_screen($title, build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF'), $completion_text);
@@ -223,7 +223,7 @@ class Module_cms_comcode_pages
      * @param  boolean $check_permissions Whether to check edit permissions
      * @return array The map (page name => map [path & row])
      */
-    public function get_comcode_files_list_disk_search($lang, $zone_filter, $check_permissions = true)
+    public function get_comcode_files_list_disk_search(string $lang, ?array $zone_filter, bool $check_permissions = true) : array
     {
         $zones = find_all_zones();
         $out = [];
@@ -274,7 +274,7 @@ class Module_cms_comcode_pages
      *
      * @return Tempcode The UI
      */
-    public function edit()
+    public function edit() : object
     {
         if (get_param_integer('clear_autosave', 0) == 1) {
             require_code('autosave');
@@ -861,7 +861,7 @@ class Module_cms_comcode_pages
      *
      * @return Tempcode The UI
      */
-    public function _edit()
+    public function _edit() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -1185,7 +1185,7 @@ class Module_cms_comcode_pages
      * @param  string $page_link Page-link of page
      * @return boolean Whether it has
      */
-    protected function has_integrated_menu_editing($page_link)
+    protected function has_integrated_menu_editing(string $page_link) : bool
     {
         $num_menus = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'COUNT(DISTINCT i_menu)');
         if ($num_menus != 1) {
@@ -1210,7 +1210,7 @@ class Module_cms_comcode_pages
      * @param  string $prefix Prefix before labels
      * @return Tempcode The menu branch list entries
      */
-    protected function menu_branch_selection_under($parent_id, $menu_branches, $existing_menu_branch, $page_link, $prefix = '')
+    protected function menu_branch_selection_under(?int $parent_id, array $menu_branches, ?int $existing_menu_branch, string $page_link, string $prefix = '') : object
     {
         $_menu_branches = new Tempcode();
         foreach ($menu_branches as $menu_branch) {
@@ -1229,7 +1229,7 @@ class Module_cms_comcode_pages
      *
      * @return Tempcode The UI
      */
-    public function __edit()
+    public function __edit() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -1409,7 +1409,7 @@ class Module_cms_comcode_pages
      *
      * @return Tempcode The UI
      */
-    public function generate_page_sitemap()
+    public function generate_page_sitemap() : object
     {
         require_css('sitemap_editor');
 
@@ -1520,7 +1520,7 @@ class Module_cms_comcode_pages
      * @param  ID_TEXT $under The page we are looking under
      * @return Tempcode The structure
      */
-    public function organise_page_tree(&$pages, $under = '')
+    public function organise_page_tree(array &$pages, string $under = '') : object
     {
         send_http_output_ping();
 

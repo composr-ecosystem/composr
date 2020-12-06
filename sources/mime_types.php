@@ -26,7 +26,7 @@
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
  * @return array The MIME types
  */
-function get_mime_types($as_admin)
+function get_mime_types(bool $as_admin) : array
 {
     $mime_types = [
         // Open office
@@ -191,7 +191,7 @@ function get_mime_types($as_admin)
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
  * @return string The MIME type
  */
-function get_mime_type($extension, $as_admin)
+function get_mime_type(string $extension, bool $as_admin) : string
 {
     $extension = cms_strtolower_ascii($extension);
 
@@ -211,7 +211,7 @@ function get_mime_type($extension, $as_admin)
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
  * @return ?string File extension (null: unknown)
  */
-function get_ext_from_mime_type($mime_type, $as_admin = true)
+function get_ext_from_mime_type(string $mime_type, bool $as_admin = true) : ?string
 {
     $mime_type = cms_strtolower_ascii($mime_type);
 

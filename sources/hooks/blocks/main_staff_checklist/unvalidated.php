@@ -28,7 +28,7 @@ class Hook_checklist_unvalidated
      *
      * @return array An array of tuples: The task row to show, the number of seconds until it is due (or null if not on a timer), the number of things to sort out (or null if not on a queue), The name of the config option that controls the schedule (or null if no option)
      */
-    public function run()
+    public function run() : array
     {
         if (!addon_installed('unvalidated')) {
             return [];
@@ -62,7 +62,7 @@ class Hook_checklist_unvalidated
      *
      * @return array A pair: Number of major things, number of minor things
      */
-    public function get_num_unvalidated()
+    public function get_num_unvalidated() : array
     {
         require_code('content');
 

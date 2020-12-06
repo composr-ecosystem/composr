@@ -28,7 +28,7 @@ class Module_admin_menus
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_menus
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             'browse' => ['MENU_MANAGEMENT', 'menu/adminzone/structure/menus'],
@@ -63,7 +63,7 @@ class Module_admin_menus
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -105,7 +105,7 @@ class Module_admin_menus
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('input_filter_2');
         rescue_shortened_post_request();
@@ -135,7 +135,7 @@ class Module_admin_menus
      *
      * @return Tempcode The UI
      */
-    public function choose_menu_name()
+    public function choose_menu_name() : object
     {
         $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
         $rows = list_to_map('i_menu', $rows);
@@ -192,7 +192,7 @@ class Module_admin_menus
      *
      * @return Tempcode The UI
      */
-    public function edit_menu()
+    public function edit_menu() : object
     {
         $id = get_param_string('id', '');
         if ($id == '') {
@@ -352,7 +352,7 @@ class Module_admin_menus
      * @param  array $menu_items All rows on the menu
      * @return Tempcode The part of the UI
      */
-    public function menu_branch($id, $branch, &$order, $clickable_sections, $menu_items)
+    public function menu_branch(string $id, ?int $branch, int &$order, bool $clickable_sections, array $menu_items) : object
     {
         $child_branches = new Tempcode();
         foreach ($menu_items as $menu_item) {
@@ -420,7 +420,7 @@ class Module_admin_menus
      *
      * @return Tempcode The UI
      */
-    public function _edit_menu()
+    public function _edit_menu() : object
     {
         post_param_integer('confirm'); // Just to make sure hackers don't try and get people to erase this form via a URL
 

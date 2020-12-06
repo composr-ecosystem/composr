@@ -28,7 +28,7 @@ class Block_main_news
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -71,7 +71,7 @@ class Block_main_news
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -122,7 +122,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('news', $error_msg)) {
@@ -501,7 +501,7 @@ PHP;
      * @param  integer $blogs Whether we are showing blogs (1=only, 0=no, -1=don't care)
      * @return array The template map
      */
-    protected function assemble_template_map($myrow, $optimise, $show_in_full, $show_author, $prop_url, $allow_comments_shared, $base_url, $attach_to_url_filter, $zone, $blogs)
+    protected function assemble_template_map(array $myrow, bool $optimise, bool $show_in_full, bool $show_author, array $prop_url, bool $allow_comments_shared, string $base_url, bool $attach_to_url_filter, string $zone, int $blogs) : array
     {
         $just_news_row = db_map_restrict($myrow, ['id', 'title', 'news', 'news_article']);
 
@@ -607,7 +607,7 @@ PHP;
      * @param  string $select The Selectcode
      * @return string The SQL
      */
-    protected function generate_selectcode_sql($select)
+    protected function generate_selectcode_sql(string $select) : string
     {
         require_code('selectcode');
         $selects_1 = selectcode_to_sqlfragment($select, 'r.id', 'news_categories', null, 'r.news_category', 'id');

@@ -28,7 +28,7 @@ class Hook_config_points_show_personal_stats_gift_points_left
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COUNT_GIFT_POINTS_LEFT',
@@ -51,7 +51,7 @@ class Hook_config_points_show_personal_stats_gift_points_left
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('points')) {
             return null;

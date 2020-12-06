@@ -28,7 +28,7 @@ class Hook_snippet_checklist_task_manage
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         $type = post_param_string('type');
 

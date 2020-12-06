@@ -30,7 +30,7 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info($zone = null, $get_extended_data = false)
+    public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -127,7 +127,7 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
      *
      * @return array A map of heading codenames to Tempcode labels
      */
-    public function get_special_keymap_headings()
+    public function get_special_keymap_headings() : array
     {
         $headings = [];
 
@@ -143,7 +143,7 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
      * @param  array $row Database row
      * @return array A map of heading codenames to Tempcode values
      */
-    public function get_special_keymap($row)
+    public function get_special_keymap(array $row) : array
     {
         require_code('catalogues');
 
@@ -170,7 +170,7 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box(array $row, string $zone, bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
     {
         require_code('catalogues');
 
@@ -182,7 +182,7 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
      *
      * @return ?string Hook name (null: none)
      */
-    public function create_selection_tree_list()
+    public function create_selection_tree_list() : ?string
     {
         return 'choose_catalogue_category';
     }
@@ -194,7 +194,7 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
  * @param  array $row Database row of entry
  * @return Tempcode Label
  */
-function generate_catalogue_category_content_type_label($row)
+function generate_catalogue_category_content_type_label(array $row) : object
 {
     if (!array_key_exists('c_name', $row)) {
         return do_lang_tempcode('catalogues:CATALOGUE_CATEGORY');
@@ -210,7 +210,7 @@ function generate_catalogue_category_content_type_label($row)
  * @param  array $row Database row of entry
  * @return string Label
  */
-function generate_catalogue_category_content_type_universal_label($row)
+function generate_catalogue_category_content_type_universal_label(array $row) : string
 {
     if (!array_key_exists('c_name', $row)) {
         return 'Catalogue category';

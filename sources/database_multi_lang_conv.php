@@ -23,7 +23,7 @@
  *
  * @param  boolean $only_trans Whether to only rebuild translatable field indexes
  */
-function rebuild_indices($only_trans = false)
+function rebuild_indices(bool $only_trans = false)
 {
     push_db_scope_check(false);
     push_query_limiting(false);
@@ -255,7 +255,7 @@ function enable_content_translation()
  * @param  boolean $new_setting New setting value (i.e. on or off)
  * @ignore
  */
-function _update_base_config_for_content_translation($new_setting)
+function _update_base_config_for_content_translation(bool $new_setting)
 {
     $config_path = get_file_base() . '/_config.php';
     $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);

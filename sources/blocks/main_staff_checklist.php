@@ -28,7 +28,7 @@ class Block_main_staff_checklist
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -48,7 +48,7 @@ class Block_main_staff_checklist
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         // No cache on POST as this is when we save text data
@@ -78,7 +78,7 @@ PHP;
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if (($upgrade_from === null) || ($upgrade_from < 4)) {
             $GLOBALS['SITE_DB']->create_table('staff_checklist_cus_tasks', [
@@ -116,7 +116,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         require_lang('dates');
         require_lang('staff_checklist');
@@ -220,7 +220,7 @@ PHP;
  * @param  ?integer $recur_hours It should be done every this many hours (null: never happened)
  * @return array A pair: Tempcode to display, and the number of seconds to go until the action should happen
  */
-function staff_checklist_time_ago_and_due($seconds_ago, $recur_hours = null)
+function staff_checklist_time_ago_and_due(?int $seconds_ago, ?int $recur_hours = null) : array
 {
     if ($recur_hours === null) { // None recurring
         $seconds_to_go = $seconds_ago; // Actually, if only one parameter given, meaning is different

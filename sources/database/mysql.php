@@ -44,7 +44,7 @@ class Database_Static_mysql extends Database_super_mysql
      * @param  boolean $fail_ok Whether to on error echo an error and return with a null, rather than giving a critical error
      * @return ?mixed A database connection (note for this driver, it's actually a pair, containing the database name too: because we need to select the name before each query on the connection) (null: failed)
      */
-    public function get_connection($persistent, $db_name, $db_host, $db_user, $db_password, $fail_ok = false)
+    public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         if (!function_exists('mysql_connect')) {
             $error = 'The \'mysql\' PHP extension is not installed (anymore?). This extension was removed in PHP 7, in favour of \'mysqli\'. You need to contact the system administrator of this server, or use a different MySQL database driver (drivers can be chosen by editing _config.php).';
@@ -120,7 +120,7 @@ class Database_Static_mysql extends Database_super_mysql
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false)
+    public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false)
     {
         list($db_link, $db_name) = $connection;
 
@@ -195,7 +195,7 @@ class Database_Static_mysql extends Database_super_mysql
      * @param  integer $start Where to start reading from
      * @return array A list of row maps
      */
-    protected function get_query_rows($results, $query, $start)
+    protected function get_query_rows($results, string $query, int $start) : array
     {
         $row = mysql_fetch_row($results); // cannot use mysql_fetch_assoc because no dupe results are returned, which knocks off the offsets used by mysql_field_type
         if ($row === false) { // Quick get away
@@ -274,7 +274,7 @@ class Database_Static_mysql extends Database_super_mysql
      * @param  string $string The string
      * @return string The escaped string
      */
-    public function escape_string($string)
+    public function escape_string(string $string) : string
     {
         if (preg_match('#[^a-zA-Z0-9\.]#', $string) === 0) {
             return $string; // No non-trivial characters

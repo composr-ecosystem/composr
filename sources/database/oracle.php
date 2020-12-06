@@ -40,7 +40,7 @@ class Database_Static_oracle extends DatabaseDriver
      *
      * @param  string $table_prefix Table prefix
      */
-    public function __construct($table_prefix)
+    public function __construct(string $table_prefix)
     {
         $this->table_prefix = $table_prefix;
     }
@@ -50,7 +50,7 @@ class Database_Static_oracle extends DatabaseDriver
      *
      * @return string The default user for db connections
      */
-    public function default_user()
+    public function default_user() : string
     {
         return 'system';
     }
@@ -60,7 +60,7 @@ class Database_Static_oracle extends DatabaseDriver
      *
      * @return string The default password for db connections
      */
-    public function default_password()
+    public function default_password() : string
     {
         return '';
     }
@@ -76,7 +76,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  boolean $fail_ok Whether to on error echo an error and return with a null, rather than giving a critical error
      * @return ?mixed A database connection (null: failed)
      */
-    public function get_connection($persistent, $db_name, $db_host, $db_user, $db_password, $fail_ok = false)
+    public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         if ($db_host != 'localhost') {
             fatal_exit(do_lang_tempcode('ONLY_LOCAL_HOST_FOR_TYPE'));
@@ -117,7 +117,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
      */
-    public function apply_sql_limit_clause(&$query, $max = null, $start = 0)
+    public function apply_sql_limit_clause(string &$query, ?int $max = null, int $start = 0)
     {
         if (($start != 0) && ($max !== null) && (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) {
             $old_query = $query;
@@ -159,7 +159,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false)
+    public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false)
     {
         $this->apply_sql_limit_clause($query, $max, $start);
 
@@ -211,7 +211,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  integer $start Where to start reading from
      * @return array A list of row maps
      */
-    protected function get_query_rows($results, $query, $start)
+    protected function get_query_rows($results, string $query, int $start) : array
     {
         $out = [];
         $i = 0;
@@ -270,7 +270,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  boolean $for_alter Whether this is for adding a table field
      * @return array The map
      */
-    public function get_type_remap($for_alter = false)
+    public function get_type_remap(bool $for_alter = false) : array
     {
         $type_remap = [
             'AUTO' => 'integer',
@@ -308,7 +308,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
      * @return array List of SQL queries to run
      */
-    public function create_table($table_name, $fields, $connection, $raw_table_name, $save_bytes = false)
+    public function create_table(string $table_name, array $fields, $connection, string $raw_table_name, bool $save_bytes = false) : array
     {
         $type_remap = $this->get_type_remap();
 
@@ -373,7 +373,7 @@ class Database_Static_oracle extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table()
+    public function supports_truncate_table() : bool
     {
         return true;
     }
@@ -390,7 +390,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  string $table_prefix The table prefix
      * @return array List of SQL queries to run
      */
-    public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
+    public function create_index(string $table_name, string $index_name, string $_fields, $connection, string $raw_table_name, string $unique_key_fields, string $table_prefix) : array
     {
         if ($index_name[0] == '#') {
             $ret = [];
@@ -432,7 +432,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  array $new_key A list of fields to put in the new key
      * @param  mixed $connection The DB connection to make on
      */
-    public function change_primary_key($table_name, $new_key, $connection)
+    public function change_primary_key(string $table_name, array $new_key, $connection)
     {
         $this->query('ALTER TABLE ' . $table_name . ' DROP PRIMARY KEY', $connection);
         $this->query('ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(',', $new_key) . ')', $connection);
@@ -445,7 +445,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  mixed $connection The DB connection
      * @return ?integer The count (null: do it normally)
      */
-    public function get_table_count_approx($table, $connection)
+    public function get_table_count_approx(string $table, $connection) : ?int
     {
         $sql = 'SELECT NUM_ROWS FROM ALL_TABLES WHERE TABLE_NAME=\'' . cms_strtoupper_ascii($this->escape_string($table)) . '\'';
         $values = $this->query($sql, $connection, null, 0, true);
@@ -464,7 +464,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  string $compare The comparison
      * @return string The SQL
      */
-    public function string_equal_to($attribute, $compare)
+    public function string_equal_to(string $attribute, string $compare) : string
     {
         return $attribute . " LIKE '" . $this->escape_string($compare) . "'";
     }
@@ -475,7 +475,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  string $content Our match string (assumes "?" has been stripped already)
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content)
+    public function full_text_assemble(string $content) : string
     {
         $content = str_replace('"', '', $content);
         return 'CONTAINS ((?),\'' . $this->escape_string($content) . '\')';
@@ -486,7 +486,7 @@ class Database_Static_oracle extends DatabaseDriver
      *
      * @return boolean Whether a blank string IS NULL
      */
-    public function empty_is_null()
+    public function empty_is_null() : bool
     {
         return true;
     }
@@ -497,7 +497,7 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  string $string The string
      * @return string The escaped string
      */
-    public function escape_string($string)
+    public function escape_string(string $string) : string
     {
         $string = fix_bad_unicode($string);
 

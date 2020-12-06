@@ -30,7 +30,7 @@
  * @param  ?Tempcode $text_summary Text summary for result (e.g. highlighted portion of actual file from search result) (null: none)
  * @return Tempcode The isolated post
  */
-function render_post_box($row, $use_post_title = false, $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '', $text_summary = null)
+function render_post_box(array $row, bool $use_post_title = false, bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '', ?object $text_summary = null) : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();

@@ -124,7 +124,7 @@ function init__sitemap()
  * @param  integer $meta_gather A bitmask of SITEMAP_GATHER_* constants, of extra data to include
  * @return ?array Node structure (null: working via callback / error)
  */
-function retrieve_sitemap_node($page_link = '', $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $options = 0, $zone = '_SEARCH', $meta_gather = 0)
+function retrieve_sitemap_node(string $page_link = '', $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0) : ?array
 {
     push_query_limiting(false);
 
@@ -172,7 +172,7 @@ function retrieve_sitemap_node($page_link = '', $callback = null, $valid_node_ty
  * @param  integer $options A bitmask of SITEMAP_GEN_* options
  * @return ?array A pair: the Sitemap object, and whether you need to make a virtual call (null: cannot find one)
  */
-function find_sitemap_object($page_link, $options = 0)
+function find_sitemap_object(string $page_link, int $options = 0) : ?array
 {
     if ($page_link == '') {
         $hook = 'root';
@@ -234,7 +234,7 @@ abstract class Hook_sitemap_base
      * @param  ?ID_TEXT $page_type The type of page - for if you know it (null: don't know it)
      * @return ~array A list of details (false: page not found)
      */
-    protected function _request_page_details($page, $zone, $page_type = null)
+    protected function _request_page_details(string $page, string $zone, ?string $page_type = null)
     {
         require_code('site');
         $details = _request_page($page, $zone, $page_type);
@@ -259,7 +259,7 @@ abstract class Hook_sitemap_base
      * @param  boolean $is_comcode_page Whether this is a Comcode page
      * @return boolean Whether the page should be omitted
      */
-    protected function _is_page_omitted_from_sitemap($zone, $page, $options, $is_comcode_page)
+    protected function _is_page_omitted_from_sitemap(string $zone, string $page, int $options, bool $is_comcode_page) : bool
     {
         if (($is_comcode_page) && (($options & SITEMAP_GEN_MACHINE_SITEMAP) == 0)) {
             require_code('global4');
@@ -305,7 +305,7 @@ abstract class Hook_sitemap_base
      *
      * @return boolean Whether the hook is active
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return true;
     }
@@ -317,7 +317,7 @@ abstract class Hook_sitemap_base
      * @param  ID_TEXT $page_link The page-link (replaced by reference)
      * @return ID_TEXT The page name (only returned because it could also be useful, saves some code)
      */
-    protected function _make_zone_concrete(&$zone, &$page_link)
+    protected function _make_zone_concrete(string &$zone, string &$page_link) : string
     {
         $matches = [];
         preg_match('#^([^:]*):([^:]*)#', $page_link, $matches);
@@ -359,7 +359,8 @@ abstract class Hook_sitemap_base
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return integer A SITEMAP_NODE_* constant
      */
-    abstract public function handles_page_link($page_link, $options);
+    abstract public function handles_page_link(string $page_link, int $options) : int;
+
 
     /**
      * Get a particular Sitemap object. Used for easily tying in a different kind of child node.
@@ -367,7 +368,7 @@ abstract class Hook_sitemap_base
      * @param  ID_TEXT $hook The hook, i.e. the Sitemap object type. Usually the same as a content type.
      * @return object The Sitemap object
      */
-    protected function _get_sitemap_object($hook)
+    protected function _get_sitemap_object(string $hook) : object
     {
         require_code('hooks/systems/sitemap/' . filter_naughty_harsh($hook, true));
         return object_factory('Hook_sitemap_' . filter_naughty_harsh($hook, true));
@@ -389,7 +390,7 @@ abstract class Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array List of node structures (null: working via callback)
      */
-    public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
+    public function get_virtual_nodes(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, bool $return_anyway = false) : ?array
     {
         $nodes = ($callback === null || $return_anyway) ? [] : null;
 
@@ -412,7 +413,8 @@ abstract class Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array Node structure (null: working via callback / error)
      */
-    abstract public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false);
+    abstract public function get_node(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array;
+
 
     /**
      * Make sure a Sitemap page-link is not recursively being evaluated due to some kind of issue (e.g. a cyclic category structure or a bug).
@@ -420,7 +422,7 @@ abstract class Hook_sitemap_base
      * @param  ID_TEXT $page_link The page-link we are finding
      * @return boolean Whether are are okay, not looping
      */
-    protected function check_for_looping($page_link)
+    protected function check_for_looping(string $page_link) : bool
     {
         global $IS_SITEMAP_STRUCTURE_LOOPING;
 
@@ -440,7 +442,7 @@ abstract class Hook_sitemap_base
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return MEMBER The member ID to evaluate for
      */
-    protected function get_member($options)
+    protected function get_member(int $options) : int
     {
         if (($options & SITEMAP_GEN_AS_GUEST) != 0) {
             return $GLOBALS['FORUM_DRIVER']->get_guest_id();
@@ -456,7 +458,7 @@ abstract class Hook_sitemap_base
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return boolean Whether the permissions pass
      */
-    protected function _check_node_permissions($struct, $options)
+    protected function _check_node_permissions(array $struct, int $options) : bool
     {
         if (($options & SITEMAP_GEN_CHECK_PERMS) == 0) {
             return true;
@@ -552,7 +554,7 @@ abstract class Hook_sitemap_base
      * @param  string $page_link The page-link
      * @return ?ID_TEXT The permission page (null: none)
      */
-    public function get_privilege_page($page_link)
+    public function get_privilege_page(string $page_link) : ?string
     {
         return null;
     }
@@ -563,7 +565,7 @@ abstract class Hook_sitemap_base
      * @param  ID_TEXT $page_link The page-link
      * @return ?array The pair (null: permission modules not handled)
      */
-    public function extract_child_page_link_permission_pair($page_link)
+    public function extract_child_page_link_permission_pair(string $page_link) : ?array
     {
         return null;
     }
@@ -579,7 +581,7 @@ abstract class Hook_sitemap_base
      * @param  ?ID_TEXT $id The ID (null: unknown)
      * @return ?array Faked database row (null: derive)
      */
-    protected function _load_row_from_page_groupings($row, $meta_gather, $zone, $page, $type = 'browse', $id = null)
+    protected function _load_row_from_page_groupings(?array $row, int $meta_gather, string $zone, string $page, string $type = 'browse', ?string $id = null) : ?array
     {
         if (!isset($row[0])) { // If the first tuple element is not defined (a property map may be, for Comcode pages)
             // Find from page grouping
@@ -653,7 +655,7 @@ abstract class Hook_sitemap_base
      * @param  ?array $row Faked database row (null: we don't have row data)
      * @param  integer $meta_gather A bitmask of SITEMAP_GATHER_* constants, of extra data to include
      */
-    protected function _ameliorate_with_row($options, &$struct, $row, $meta_gather)
+    protected function _ameliorate_with_row(int $options, array &$struct, ?array $row, int $meta_gather)
     {
         if (array_key_exists(0, $row)) {
             $title = $row[0];
@@ -716,7 +718,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return integer A SITEMAP_NODE_* constant
      */
-    public function handles_page_link($page_link, $options)
+    public function handles_page_link(string $page_link, int $options) : int
     {
         $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
@@ -743,7 +745,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ID_TEXT $page_link The page-link
      * @return ?ID_TEXT The ID (null: unknown)
      */
-    protected function _get_page_link_id($page_link)
+    protected function _get_page_link_id(string $page_link) : ?string
     {
         $matches = [];
         if (preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches) == 0) {
@@ -757,7 +759,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      *
      * @return ?object The CMA object (null: disabled)
      */
-    protected function _get_cma_ob()
+    protected function _get_cma_ob() : ?object
     {
         if ($this->cma_ob === null) {
             require_code('content');
@@ -771,7 +773,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      *
      * @return ?array The CMA info (null: disabled)
      */
-    protected function _get_cma_info()
+    protected function _get_cma_info() : ?array
     {
         if ($this->cma_info === null) {
             $cma_ob = $this->_get_cma_ob();
@@ -786,7 +788,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ID_TEXT $content_id The content ID
      * @return array The content row
      */
-    protected function _get_row($content_id)
+    protected function _get_row(string $content_id) : array
     {
         $cma_info = $this->_get_cma_info();
         return content_get_row($content_id, $cma_info);
@@ -807,7 +809,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ?array $row Database row (null: lookup)
      * @return ?array A tuple: content ID, row, partial node structure (null: filtered)
      */
-    protected function _create_partial_node_structure($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row)
+    protected function _create_partial_node_structure(string $page_link, ?string $callback, ?array $valid_node_types, ?int $child_cutoff, ?int $max_recurse_depth, int $recurse_level, int $options, string $zone, int $meta_gather, ?array $row) : ?array
     {
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return null;
@@ -977,7 +979,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
      * @return array Map between field name and field type
      */
-    protected function select_fields($cma_info = null, $table_alias = null, &$lang_fields_filtered = null)
+    protected function select_fields(?array $cma_info = null, ?string $table_alias = null, ?array &$lang_fields_filtered = null) : array
     {
         if ($cma_info === null) {
             $cma_info = $this->_get_cma_info();
@@ -1036,7 +1038,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ?string $explicit_order_by_subcategories Order by for categories (null: alphabetical title)
      * @return ?array Child nodes (null: not retrieved yet)
      */
-    protected function _get_children_nodes($content_id, $page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row, $extra_where_entries = '', $explicit_order_by_entries = null, $explicit_order_by_subcategories = null)
+    protected function _get_children_nodes(string $content_id, string $page_link, ?string $callback, ?array $valid_node_types, ?int $child_cutoff, ?int $max_recurse_depth, int $recurse_level, int $options, string $zone, int $meta_gather, ?array $row, string $extra_where_entries = '', ?string $explicit_order_by_entries = null, ?string $explicit_order_by_subcategories = null) : ?array
     {
         if (($max_recurse_depth !== null) && ($recurse_level >= $max_recurse_depth)) {
             return null;
@@ -1204,7 +1206,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * @param  ID_TEXT $page_link The page-link
      * @return ?array The pair (null: permission modules not handled)
      */
-    public function extract_child_page_link_permission_pair($page_link)
+    public function extract_child_page_link_permission_pair(string $page_link) : ?array
     {
         $matches = [];
         preg_match('#^([^:]*):([^:]*):browse:(.*)$#', $page_link, $matches);
@@ -1221,7 +1223,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
  *
  * @return array List of link tuples (one of the elements of which defines the page grouping -- see the page grouping hooks to see the structure)
  */
-function get_page_grouping_links()
+function get_page_grouping_links() : array
 {
     static $links = null;
     if ($links === null) {
@@ -1242,7 +1244,7 @@ function get_page_grouping_links()
  * @param  boolean $include_zone Use page-links in the mapping rather than just page names
  * @return array Root Comcode pages, mapping page name to validation status
  */
-function get_root_comcode_pages($zone, $include_zone = false)
+function get_root_comcode_pages(string $zone, bool $include_zone = false) : array
 {
     /*
     $rows[$zone] = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'p_validated'], ['the_zone' => $zone, 'p_parent_page' => '']);
@@ -1313,7 +1315,7 @@ function get_root_comcode_pages($zone, $include_zone = false)
  * @param  ?mixed $filter_func Filter function for limiting what rows will be included (null: none)
  * @return Tempcode List
  */
-function create_selection_list($root_page_link, $under_only = false, $default = null, $valid_node_types = null, $valid_selectable_content_types = null, $check_permissions_against = 0, $check_permissions_for = null, $consider_validation = false, $only_owned = null, $use_compound_list = false, $filter_func = null)
+function create_selection_list(string $root_page_link, bool $under_only = false, ?string $default = null, ?array $valid_node_types = null, ?array $valid_selectable_content_types = null, int $check_permissions_against = 0, ?int $check_permissions_for = null, bool $consider_validation = false, ?int $only_owned = null, bool $use_compound_list = false, $filter_func = null) : object
 {
     if ($check_permissions_for === null) {
         $check_permissions_for = get_member();
@@ -1358,7 +1360,7 @@ function create_selection_list($root_page_link, $under_only = false, $default = 
  *
  * @ignore
  */
-function _create_selection_list(&$out, $node, $default, $valid_selectable_content_types, $check_permissions_against, $check_permissions_for, $only_owned, $use_compound_list, $filter_func, $depth = 0)
+function _create_selection_list(object &$out, array $node, ?string $default, ?array $valid_selectable_content_types, int $check_permissions_against, ?int $check_permissions_for, ?int $only_owned, bool $use_compound_list, $filter_func, int $depth = 0) : string
 {
     // Skip?
     if ($check_permissions_for !== null) {

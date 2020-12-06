@@ -29,7 +29,7 @@ class Hook_notification_cns_new_pt extends Hook_Notification
      * @param  ID_TEXT $notification_code Notification code
      * @return integer Allowed settings
      */
-    public function allowed_settings($notification_code)
+    public function allowed_settings(string $notification_code) : int
     {
         $ret = A__ALL & ~A_INSTANT_PT;
         if (get_option('pt_notifications_as_web') == '0') {
@@ -44,7 +44,7 @@ class Hook_notification_cns_new_pt extends Hook_Notification
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         if (get_forum_type() != 'cns') {
             return [];
@@ -70,7 +70,7 @@ class Hook_notification_cns_new_pt extends Hook_Notification
      * @param  integer $max Maximum (for pagination)
      * @return array A pair: Map of members to their notification setting, and whether there may be more
      */
-    public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
+    public function list_members_who_have_enabled(string $notification_code, ?string $category = null, ?array $to_member_ids = null, ?int $from_member_id = null, int $start = 0, int $max = 300) : array
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         if (empty($to_member_ids)) { // Only if we're not actually sending a PT now (notification should happen if sending a PT to someone who can't send them, with default settings)

@@ -28,7 +28,7 @@ class Hook_snippet_css_compile__text
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {

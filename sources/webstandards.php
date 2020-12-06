@@ -1349,7 +1349,7 @@ function init__webstandards()
  * @param  boolean $webstandards_csp Bring up messages about CSP
  * @return array Parse information
  */
-function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $webstandards_javascript = true, $webstandards_css = true, $webstandards_wcag = true, $webstandards_compat = true, $webstandards_ext_files = true, $webstandards_manual = false, $webstandards_csp = false)
+function check_xhtml(string $out, bool $well_formed_only = false, bool $is_fragment = false, bool $webstandards_javascript = true, bool $webstandards_css = true, bool $webstandards_wcag = true, bool $webstandards_compat = true, bool $webstandards_ext_files = true, bool $webstandards_manual = false, bool $webstandards_csp = false) : array
 {
     if (function_exists('cms_extend_time_limit')) {
         $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
@@ -1685,7 +1685,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
  *
  * @ignore
  */
-function _xhtml_error($error, $param_a = '', $param_b = '', $param_c = '', $raw = false, $rel_pos = 0)
+function _xhtml_error(string $error, string $param_a = '', string $param_b = '', string $param_c = '', bool $raw = false, int $rel_pos = 0) : array
 {
     global $POS, $OUT, $LINENO, $LINESTART;
     $lineno = ($rel_pos == 0) ? 0 : substr_count(substr($OUT, $POS, $rel_pos), "\n");
@@ -1712,7 +1712,7 @@ function _xhtml_error($error, $param_a = '', $param_b = '', $param_c = '', $raw 
  * @param  string $string The string to check
  * @return boolean Whether the string holds a hexadecimal number
  */
-function is_hex($string)
+function is_hex(string $string) : bool
 {
     if (function_exists('ctype_xdigit')) {
         return ctype_xdigit($string);
@@ -1728,7 +1728,7 @@ function is_hex($string)
  * @param  integer $offset Checking offset
  * @return ?mixed An array of error details (null: no errors)
  */
-function test_entity($offset = 0)
+function test_entity(int $offset = 0)
 {
     global $OUT, $POS, $ENTITIES;
 
@@ -1761,7 +1761,7 @@ function test_entity($offset = 0)
  * @param  string $in Text to fix in
  * @return string Fixed result
  */
-function fix_entities($in)
+function fix_entities(string $in) : string
 {
     global $ENTITIES;
 
@@ -2259,7 +2259,7 @@ function _get_next_tag()
  *
  * @ignore
  */
-function _check_tag($tag, $attributes, $self_close, $close, $errors)
+function _check_tag(string $tag, array $attributes, bool $self_close, bool $close, array $errors)
 {
     global $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $WELL_FORMED_ONLY, $WEBSTANDARDS_CHECKER_OFF, $MUST_SELFCLOSE_TAGS;
 
@@ -2316,7 +2316,7 @@ function _check_tag($tag, $attributes, $self_close, $close, $errors)
  *
  * @ignore
  */
-function _get_tag_basis($full)
+function _get_tag_basis(string $full) : string
 {
     return trim($full, '/ <>');
 }

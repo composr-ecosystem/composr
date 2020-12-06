@@ -31,7 +31,7 @@ class Hook_commandr_fs_database
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~array The final directory listing (false: failure)
      */
-    public function listing($meta_dir, $meta_root_node, &$commandr_fs)
+    public function listing(array $meta_dir, string $meta_root_node, object &$commandr_fs)
     {
         push_db_scope_check(false);
 
@@ -132,7 +132,7 @@ class Hook_commandr_fs_database
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function make_directory($meta_dir, $meta_root_node, $new_dir_name, &$commandr_fs)
+    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         push_db_scope_check(false);
 
@@ -177,7 +177,7 @@ class Hook_commandr_fs_database
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_directory($meta_dir, $meta_root_node, $dir_name, &$commandr_fs)
+    public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
         push_db_scope_check(false);
 
@@ -204,7 +204,7 @@ class Hook_commandr_fs_database
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
         push_db_scope_check(false);
 
@@ -239,7 +239,7 @@ class Hook_commandr_fs_database
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         push_db_scope_check(false);
 
@@ -270,7 +270,7 @@ class Hook_commandr_fs_database
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
+    public function write_file(array $meta_dir, string $meta_root_node, string $file_name, $contents, object &$commandr_fs) : bool
     {
         push_db_scope_check(false);
 
@@ -314,7 +314,7 @@ class Hook_commandr_fs_database
      * @param  string $keys Key-value map ("key:value,key2:value2")
      * @return ~array WHERE map array (false: if an invalid key was referenced)
      */
-    protected function _do_where($table_name, $keys)
+    protected function _do_where(string $table_name, string $keys)
     {
         push_db_scope_check(false);
 
@@ -357,7 +357,7 @@ class Hook_commandr_fs_database
      * @param  string $in Value to escape (original value)
      * @return string Escaped value
      */
-    public function escape_name($in)
+    public function escape_name(string $in) : string
     {
         return str_replace([':', ',', '/'], ['!colon!', '!comma!', '!slash!'], $in);
     }
@@ -368,7 +368,7 @@ class Hook_commandr_fs_database
      * @param  string $in Escaped value
      * @return string Original value
      */
-    public function unescape_name($in)
+    public function unescape_name(string $in) : string
     {
         return str_replace(['!colon!', '!comma!', '!slash!'], [':', ',', '/'], $in);
     }

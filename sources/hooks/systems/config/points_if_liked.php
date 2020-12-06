@@ -28,7 +28,7 @@ class Hook_config_points_if_liked
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'POINTS_IF_LIKED',
@@ -51,7 +51,7 @@ class Hook_config_points_if_liked
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('points')) {
             return null;

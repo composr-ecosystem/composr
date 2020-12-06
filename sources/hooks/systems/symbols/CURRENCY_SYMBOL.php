@@ -29,7 +29,7 @@ class Hook_symbol_CURRENCY_SYMBOL
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (!addon_installed('ecommerce')) {
             return '';

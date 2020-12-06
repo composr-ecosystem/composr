@@ -46,7 +46,8 @@ abstract class Hook_privacy_base
      *
      * @return ?array A map of privacy details in a standardised format (null: disabled)
      */
-    abstract public function info();
+    abstract public function info() : ?array;
+
 
     /**
      * Get selection SQL for a particular search.
@@ -60,7 +61,7 @@ abstract class Hook_privacy_base
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return string The stem of the SQL query
      */
-    public function get_selection_sql($table_name, $table_details, $member_id_username = null, $ip_addresses = [], $member_id = null, $email_address = '', $others = [])
+    public function get_selection_sql(string $table_name, array $table_details, ?int $member_id_username = null, array $ip_addresses = [], ?int $member_id = null, string $email_address = '', array $others = []) : string
     {
         $db = get_db_for($table_name);
 
@@ -131,7 +132,7 @@ abstract class Hook_privacy_base
      * @param  ID_TEXT $table_name Table name
      * @return array Field metadata
      */
-    protected function get_field_metadata($table_name)
+    protected function get_field_metadata(string $table_name) : array
     {
         $db = get_db_for($table_name);
         $fields = $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table_name]);
@@ -145,7 +146,7 @@ abstract class Hook_privacy_base
      * @param  array $row Row raw from the database
      * @return array Row in a cleanly serialised format
      */
-    public function serialise($table_name, $row)
+    public function serialise(string $table_name, array $row) : array
     {
         $db = get_db_for($table_name);
         $metadata = $this->get_field_metadata($table_name);
@@ -172,7 +173,7 @@ abstract class Hook_privacy_base
      * @param  ID_TEXT $table_name Table name
      * @param  array $row Row raw from the database
      */
-    public function anonymise($table_name, $row)
+    public function anonymise(string $table_name, array $row)
     {
         $info = $this->info();
 
@@ -232,7 +233,7 @@ abstract class Hook_privacy_base
      * @param  ID_TEXT $table_name Table name
      * @param  array $row Row raw from the database
      */
-    public function delete($table_name, $row)
+    public function delete(string $table_name, array $row)
     {
         $info = $this->info();
 

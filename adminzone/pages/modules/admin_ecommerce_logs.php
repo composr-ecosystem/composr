@@ -30,7 +30,7 @@ class Module_admin_ecommerce_logs
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -51,7 +51,7 @@ class Module_admin_ecommerce_logs
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -91,7 +91,7 @@ class Module_admin_ecommerce_logs
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('ecommerce', $error_msg)) {
@@ -179,7 +179,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('ecommerce2');
 
@@ -243,7 +243,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -268,7 +268,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The UI
      */
-    public function trigger()
+    public function trigger() : object
     {
         require_code('currency');
 
@@ -408,7 +408,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function _trigger()
+    public function _trigger() : object
     {
         $type_code = post_param_string('type_code');
 
@@ -578,7 +578,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The UI
      */
-    public function sales()
+    public function sales() : object
     {
         require_code('ecommerce_logs');
         list($sales_table, $pagination) = build_sales_table(null, true, true, 50);
@@ -591,7 +591,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The UI
      */
-    public function delete_sales_log_entry()
+    public function delete_sales_log_entry() : object
     {
         $this->_delete_sales_log_entry(get_param_integer('id'));
 
@@ -605,7 +605,7 @@ class Module_admin_ecommerce_logs
      *
      * @param  integer $id The sales ID
      */
-    public function _delete_sales_log_entry($id)
+    public function _delete_sales_log_entry(int $id)
     {
         $GLOBALS['SITE_DB']->query_delete('ecom_sales', ['id' => $id], '', 1);
     }
@@ -615,7 +615,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The UI
      */
-    public function logs()
+    public function logs() : object
     {
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
@@ -741,7 +741,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The interface
      */
-    public function export_transactions()
+    public function export_transactions() : object
     {
         require_code('form_templates');
 
@@ -793,7 +793,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function _export_transactions()
+    public function _export_transactions() : object
     {
         $start_date = post_param_date('start_date', true);
         $end_date = post_param_date('end_date', true);
@@ -809,7 +809,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function tax_invoice()
+    public function tax_invoice() : object
     {
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
@@ -824,7 +824,7 @@ class Module_admin_ecommerce_logs
      * @param  Tempcode $title The title to display
      * @return Tempcode The result of execution
      */
-    public function _get_between($title)
+    public function _get_between(object $title) : object
     {
         require_code('form_templates');
 
@@ -855,7 +855,7 @@ class Module_admin_ecommerce_logs
      * @param  boolean $unpaid_invoices_count Whether to count unpaid invoices into this. This means any invoicing in transactions will be ignored, and instead invoicing will be read directly.
      * @return array A template-ready list of maps of summary for multiple transaction types
      */
-    public function get_types($from, $to, $unpaid_invoices_count = false)
+    public function get_types(int $from, int $to, bool $unpaid_invoices_count = false) : array
     {
         $types = [
             // Calculations
@@ -966,7 +966,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function cash_flow()
+    public function cash_flow() : object
     {
         $d = [post_param_date('from', true), post_param_date('to', true)];
         if ($d[0] === null) {
@@ -986,7 +986,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function profit_loss()
+    public function profit_loss() : object
     {
         $d = [post_param_date('from', true), post_param_date('to', true)];
         if ($d[0] === null) {
@@ -1007,7 +1007,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function view_manual_subscriptions()
+    public function view_manual_subscriptions() : object
     {
         disable_php_memory_limit();
 
@@ -1073,7 +1073,7 @@ class Module_admin_ecommerce_logs
      *
      * @return Tempcode The result of execution
      */
-    public function cancel_subscription()
+    public function cancel_subscription() : object
     {
         $id = get_param_integer('subscription_id');
         $subscription = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['s_type_code', 's_member_id'], ['id' => $id], '', 1);

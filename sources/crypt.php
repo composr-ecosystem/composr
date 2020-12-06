@@ -25,7 +25,7 @@
  * @param  SHORT_TEXT $salt The salt
  * @return SHORT_TEXT The salted&hashed password
  */
-function ratchet_hash($password, $salt)
+function ratchet_hash(string $password, string $salt) : string
 {
     // NB: We don't pass the salt separately, we let password_hash generate its own internal salt also (that builds into the hash). So it is double salted.
     $ratchet = max(10, intval(get_option('crypt_ratchet')));
@@ -41,7 +41,7 @@ function ratchet_hash($password, $salt)
  * @param  integer $legacy_style Legacy hashing style to fallback to
  * @return boolean Whether the password if verified
  */
-function ratchet_hash_verify($password, $salt, $pass_hash_salted, $legacy_style = 0)
+function ratchet_hash_verify(string $password, string $salt, string $pass_hash_salted, int $legacy_style = 0) : bool
 {
     if (strpos($pass_hash_salted, '$') !== false) {
         return password_verify($salt . md5($password), $pass_hash_salted);
@@ -59,7 +59,7 @@ function ratchet_hash_verify($password, $salt, $pass_hash_salted, $legacy_style 
  *
  * @return ID_TEXT The salt
  */
-function get_site_salt()
+function get_site_salt() : string
 {
     $site_salt = get_value('site_salt');
     if ($site_salt === null) {
@@ -75,7 +75,7 @@ function get_site_salt()
  *
  * @return string The randomised password
  */
-function get_secure_random_string()
+function get_secure_random_string() : string
 {
     // md5 used in the below so that we get nice ASCII characters
 
@@ -88,7 +88,7 @@ function get_secure_random_string()
  *
  * @return integer The randomised number
  */
-function get_secure_random_number()
+function get_secure_random_number() : int
 {
     // TODO: #3046 in tracker
     // 2147483647 is from MySQL limit http://dev.mysql.com/doc/refman/5.6/en/integer-types.html ; PHP_INT_MAX is higher on 64bit machines
@@ -100,7 +100,7 @@ function get_secure_random_number()
  *
  * @return string The obfuscated 'mailto:' string
  */
-function mailto_obfuscated()
+function mailto_obfuscated() : string
 {
     static $ret = null;
     if ($ret === null) {
@@ -115,7 +115,7 @@ function mailto_obfuscated()
  * @param  string $val The text to obfuscate
  * @return string The obfuscated version
  */
-function obfuscate_entities($val)
+function obfuscate_entities(string $val) : string
 {
     if (strpos($val, '&') !== false) {
         return $val; // Prevent double encoding
@@ -151,7 +151,7 @@ function obfuscate_entities($val)
  * @param  EMAIL $email The e-mail address to obfuscate
  * @return string The obfuscated version
  */
-function obfuscate_email_address($email)
+function obfuscate_email_address(string $email) : string
 {
     /* One possibility (conventional, but annoying)...
     $i = mt_rand(0, strlen($email));

@@ -26,7 +26,7 @@
  * @param  integer $num_minutes The number of minutes (may be negative to take time away)
  * @param  boolean $prefer_for_primary_group Whether to put the member into as a primary group if this is a new temporary membership (it is recommended to NOT use this, since we don't track the source group and hence on expiry the member is put back to the first default group - but also generally you probably don't want to box yourself in with moving people's primary group, it ties your future flexibility down a lot)
  */
-function bump_member_group_timeout($member_id, $group_id, $num_minutes, $prefer_for_primary_group = false)
+function bump_member_group_timeout(int $member_id, int $group_id, int $num_minutes, bool $prefer_for_primary_group = false)
 {
     $db = get_db_for('f_group_member_timeouts');
 
@@ -49,7 +49,7 @@ function bump_member_group_timeout($member_id, $group_id, $num_minutes, $prefer_
  * @param  TIME $timestamp The expiry timestamp
  * @param  boolean $prefer_for_primary_group Whether to put the member into as a primary group if this is a new temporary membership (it is recommended to NOT use this, since we don't track the source group and hence on expiry the member is put back to the first default group - but also generally you probably don't want to box yourself in with moving people's primary group, it ties your future flexibility down a lot)
  */
-function set_member_group_timeout($member_id, $group_id, $timestamp, $prefer_for_primary_group = false)
+function set_member_group_timeout(int $member_id, int $group_id, int $timestamp, bool $prefer_for_primary_group = false)
 {
     // We don't want guests here!
     if (is_guest($member_id)) {

@@ -29,7 +29,7 @@ class Hook_members_calendar
      * @param  MEMBER $member_id The ID of the member we are getting links for
      * @return array List of pairs: title to value
      */
-    public function run($member_id)
+    public function run(int $member_id) : array
     {
         if (!addon_installed('calendar')) {
             return [];

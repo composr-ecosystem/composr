@@ -71,7 +71,7 @@ if (uninstall_check_master_password(post_param_string('given_password', null, IN
  * @param  ?SHORT_TEXT $password_given Given master password (null: none)
  * @return boolean Whether it is valid
  */
-function uninstall_check_master_password($password_given)
+function uninstall_check_master_password(?string $password_given) : bool
 {
     if ($password_given === null) {
         return false;

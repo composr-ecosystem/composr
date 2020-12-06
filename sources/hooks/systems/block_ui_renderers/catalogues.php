@@ -32,7 +32,7 @@ class Hook_block_ui_renderers_catalogues
      * @param  string $default Default value for field
      * @return ?Tempcode Rendered field (null: not handled)
      */
-    public function render_block_ui_parameter_hidden($block, $parameter, $has_default, $default)
+    public function render_block_ui_parameter_hidden(string $block, string $parameter, bool $has_default, string $default) : ?object
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -51,7 +51,7 @@ class Hook_block_ui_renderers_catalogues
      * @param  Tempcode $description Field description
      * @return ?Tempcode Rendered field (null: not handled)
      */
-    public function render_block_ui_parameter($block, $parameter, $has_default, $default, $description)
+    public function render_block_ui_parameter(string $block, string $parameter, bool $has_default, string $default, object $description) : ?object
     {
         if (!addon_installed('catalogues')) {
             return null;

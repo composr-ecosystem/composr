@@ -154,7 +154,7 @@ function preload_block_internal_caching()
  *
  * @param  integer $declarations Bitmask of declarations (I_UNDERSTAND_* constants)
  */
-function i_solemnly_declare($declarations)
+function i_solemnly_declare(int $declarations)
 {
     global $DECLARATIONS_STACK, $DECLARATIONS_STATE_DEFAULT, $DECLARATIONS_STATE;
     array_pop($DECLARATIONS_STACK);
@@ -194,7 +194,7 @@ function _solemnly_enter()
  *
  * @ignore
  */
-function _solemnly_leave(&$out = null)
+function _solemnly_leave(?string &$out = null)
 {
     if (in_safe_mode()) {
         // No custom code actually running
@@ -233,7 +233,7 @@ function _solemnly_leave(&$out = null)
  * @param  integer $declaration The property
  * @return boolean Whether it is understood
  */
-function has_solemnly_declared($declaration)
+function has_solemnly_declared(int $declaration) : bool
 {
     if (($declaration == I_UNDERSTAND_XSS) && ($GLOBALS['CSP_ENABLED'])) {
         return true;
@@ -250,7 +250,7 @@ function has_solemnly_declared($declaration)
  * @param  boolean $relative Where the passed path is relative
  * @return PATH The fixed path
  */
-function zone_black_magic_filterer($path, $relative = false)
+function zone_black_magic_filterer(string $path, bool $relative = false) : string
 {
     static $no_collapse_zones = null;
     if ($no_collapse_zones === null) {
@@ -321,7 +321,7 @@ function zone_black_magic_filterer($path, $relative = false)
  * @param  ID_TEXT $zone The zone
  * @return array A triple: The file base, The path (blank: not found), Combined path (blank: not found)
  */
-function find_comcode_page($lang, $file, $zone)
+function find_comcode_page(string $lang, string $file, string $zone) : array
 {
     $file_path = zone_black_magic_filterer(filter_naughty($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $file . '.txt'), true);
 
@@ -353,7 +353,7 @@ function find_comcode_page($lang, $file, $zone)
  *
  * @return ID_TEXT The current zone
  */
-function get_zone_name()
+function get_zone_name() : string
 {
     global $ZONE, $RELATIVE_PATH, $SITE_INFO, $VIRTUALISED_ZONES_CACHE;
     if ($ZONE !== null) {
@@ -429,7 +429,7 @@ function load_redirect_cache()
  * @param  ?ID_TEXT $first_zone_to_check First zone to check (used for an optimisation) (null: current zone)
  * @return ?ID_TEXT The zone the page is in (null: not found)
  */
-function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype = 'php', $error = true, $check_redirects = true, $first_zone_to_check = null)
+function get_module_zone(string $module_name, string $type = 'modules', ?string $dir2 = null, string $ftype = 'php', bool $error = true, bool $check_redirects = true, ?string $first_zone_to_check = null) : ?string
 {
     if ($module_name === '') {
         return null;
@@ -560,7 +560,7 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
  * @param  ?ID_TEXT $first_zone_to_check First zone to check (used for an optimisation) (null: current zone)
  * @return ?ID_TEXT The zone the Comcode page is in (null: missing)
  */
-function get_comcode_zone($page_name, $error = true, $first_zone_to_check = null)
+function get_comcode_zone(string $page_name, bool $error = true, ?string $first_zone_to_check = null) : ?string
 {
     $test = get_module_zone($page_name, 'comcode', user_lang(), 'txt', false, true, $first_zone_to_check);
     if ($test !== null) {
@@ -593,7 +593,7 @@ function get_comcode_zone($page_name, $error = true, $first_zone_to_check = null
  * @param  ?ID_TEXT $type Page type (null: check all)
  * @return ?ID_TEXT The zone the page is in (null: missing)
  */
-function get_page_zone($page_name, $error = true, $first_zone_to_check = null, $type = null)
+function get_page_zone(string $page_name, bool $error = true, ?string $first_zone_to_check = null, ?string $type = null) : ?string
 {
     if (($type === null) || ($type == 'comcode')) {
         // Optimisation for pages known to default as Comcode pages
@@ -654,7 +654,7 @@ function get_page_zone($page_name, $error = true, $first_zone_to_check = null, $
  * @param  PATH $string The relative path to the module file
  * @return Tempcode The result of executing the module
  */
-function load_minimodule_page($string)
+function load_minimodule_page(string $string) : object
 {
     global $PAGE_STRING;
     if ($PAGE_STRING === null) {
@@ -674,7 +674,7 @@ function load_minimodule_page($string)
  *
  * @ignore
  */
-function _load_mini_code($string, $map = [])
+function _load_mini_code(string $string, array $map = []) : object
 {
     require_code('developer_tools');
     destrictify();
@@ -739,7 +739,7 @@ function _load_mini_code($string, $map = [])
  * @param  ID_TEXT $codename The page name to load
  * @return Tempcode The result of executing the module
  */
-function load_module_page($string, $codename)
+function load_module_page(string $string, string $codename) : object
 {
     global $PAGE_STRING;
     if ($PAGE_STRING === null) {
@@ -797,7 +797,7 @@ function load_module_page($string, $codename)
  * @param  integer $max Maximum zones to get
  * @return array A list of zone names / a list of quartets (name, title, default page, zone row)
  */
-function find_all_zones($search = false, $get_titles = false, $force_all = false, $start = 0, $max = 50)
+function find_all_zones(bool $search = false, bool $get_titles = false, bool $force_all = false, int $start = 0, int $max = 50) : array
 {
     $single_public_zone = (get_option('single_public_zone') == '1');
 
@@ -915,7 +915,7 @@ function cache_module_installed_status()
  * @param  ID_TEXT $module The module name
  * @return boolean Whether it is
  */
-function module_installed($module)
+function module_installed(string $module) : bool
 {
     global $MODULE_INSTALLED_CACHE;
     if (array_key_exists($module, $MODULE_INSTALLED_CACHE)) {
@@ -936,7 +936,7 @@ function module_installed($module)
  *
  * @ignore
  */
-function _get_module_path($zone, $module)
+function _get_module_path(string $zone, string $module) : string
 {
     $module_path = zone_black_magic_filterer(($zone == '') ? ('pages/modules_custom/' . filter_naughty_harsh($module) . '.php') : (filter_naughty($zone) . '/pages/modules_custom/' . filter_naughty_harsh($module) . '.php'), true);
     if ((in_safe_mode()) || (!is_file(get_file_base() . '/' . $module_path))) {
@@ -953,7 +953,7 @@ function _get_module_path($zone, $module)
  * @param  string $classname_prefix The hook class-name prefix, the classes are named {$classname_prefix}{$hook}
  * @return array A map of hook implementation name to hook object
  */
-function find_all_hook_obs($type, $subtype, $classname_prefix)
+function find_all_hook_obs(string $type, string $subtype, string $classname_prefix) : array
 {
     $hooks = find_all_hooks($type, $subtype);
     ksort($hooks);
@@ -978,7 +978,7 @@ function find_all_hook_obs($type, $subtype, $classname_prefix)
  * @param  ID_TEXT $subtype The hook sub-type to find hook implementations for (e.g. the name of a module)
  * @return array A map of hook implementation name to [sources|sources_custom]
  */
-function find_all_hooks($type, $subtype)
+function find_all_hooks(string $type, string $subtype) : array
 {
     global $HOOKS_CACHE;
     if (isset($HOOKS_CACHE[$type . '/' . $subtype])) {
@@ -1042,7 +1042,7 @@ function find_all_hooks($type, $subtype)
  * @param  ID_TEXT $codename The block name
  * @return ID_TEXT The default caching setting
  */
-function block_cache_default($codename)
+function block_cache_default(string $codename) : string
 {
     if (cron_installed(true)) {
         if ($codename === 'side_rss' || $codename === 'main_rss') { // Special cases to stop external dependencies causing slowdowns
@@ -1058,7 +1058,7 @@ function block_cache_default($codename)
  * @param  array $map The block parameter map
  * @return ID_TEXT The block ID
  */
-function get_block_id($map)
+function get_block_id(array $map) : string
 {
     if (isset($map['block_id'])) {
         return $map['block_id'];
@@ -1079,7 +1079,7 @@ function get_block_id($map)
  * @param  array $map The block parameter map
  * @return Tempcode The generated Tempcode
  */
-function do_block($codename, $map = [])
+function do_block(string $codename, array $map = []) : object
 {
     global $LANGS_REQUESTED, $REQUIRED_ALL_LANG, $JAVASCRIPTS, $CSSS, $DO_NOT_CACHE_THIS, $SMART_CACHE;
 
@@ -1282,7 +1282,7 @@ function do_block($codename, $map = [])
  * @param  Tempcode $_cache Input Tempcode
  * @return Tempcode Output Tempcode
  */
-function apply_quick_caching($_cache)
+function apply_quick_caching(object $_cache) : object
 {
     $cache = $_cache->evaluate();
 
@@ -1344,7 +1344,7 @@ function apply_quick_caching($_cache)
  * @param  array $map The parameters
  * @return string Parameters for a Comcode block tag
  */
-function get_block_ajax_submit_map($map)
+function get_block_ajax_submit_map(array $map) : string
 {
     $map_comcode = '';
     foreach ($map as $key => $val) {
@@ -1361,7 +1361,7 @@ function get_block_ajax_submit_map($map)
  * @param  array $map The parameters / acceptable parameter pattern
  * @return string The parameters / acceptable parameter pattern, as template safe parameter
  */
-function block_params_arr_to_str($map)
+function block_params_arr_to_str(array $map) : string
 {
     ksort($map);
 
@@ -1388,7 +1388,7 @@ function block_params_arr_to_str($map)
  * @param  boolean $block_symbol_style Whether to leave in block symbol style (i.e. like {$BLOCK} would take, a list not a map)
  * @return array The parameters / acceptable parameter pattern
  */
-function block_params_str_to_arr($_map, $block_symbol_style = false)
+function block_params_str_to_arr(string $_map, bool $block_symbol_style = false) : array
 {
     $map = [];
     $param = preg_split('#((?<!\\\\)|(?<=\\\\\\\\)|(?<=^)),#', $_map);
@@ -1416,7 +1416,7 @@ function block_params_str_to_arr($_map, $block_symbol_style = false)
  * @param  array $map The block parameter map
  * @return array A pair: Either the block object, or the string output of a miniblock ; and whether we entered a new security scope
  */
-function do_block_hunt_file($codename, $map = [])
+function do_block_hunt_file(string $codename, array $map = []) : array
 {
     global $BLOCKS_AT_CACHE;
 
@@ -1498,7 +1498,7 @@ function do_block_hunt_file($codename, $map = [])
  * @param  ?boolean $new_security_scope Whether the block is in a new security scope (null: not looked up)
  * @return ?array The block info (null: cannot cache for some reason)
  */
-function get_block_info_row($codename, $map = [], &$object = null, &$new_security_scope = null)
+function get_block_info_row(string $codename, array $map = [], &$object = null, ?bool &$new_security_scope = null) : ?array
 {
     static $cache = [];
     $sz = serialize([$codename, $map]);
@@ -1546,7 +1546,7 @@ function get_block_info_row($codename, $map = [], &$object = null, &$new_securit
  * @param  array $map The block parameter map
  * @return ?LONG_TEXT The derived cache identifier (null: the identifier is CURRENTLY null meaning cannot be cached)
  */
-function do_block_get_cache_identifier($codename, $cache_on, $map)
+function do_block_get_cache_identifier(string $codename, $cache_on, array $map) : ?string
 {
     static $cache = [];
     $sz = serialize([$cache_on, $map]);
@@ -1592,7 +1592,7 @@ function do_block_get_cache_identifier($codename, $cache_on, $map)
  *
  * @ignore
  */
-function _get_block_path($block)
+function _get_block_path(string $block) : string
 {
     $block_path = get_file_base() . '/sources_custom/blocks/' . filter_naughty($block) . '.php';
     if ((in_safe_mode()) || (!is_file($block_path))) {
@@ -1610,7 +1610,7 @@ function _get_block_path($block)
  * @param  ID_TEXT $block The module name
  * @return boolean Whether it is
  */
-function block_installed($block)
+function block_installed(string $block) : bool
 {
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('blocks', 'block_name', ['block_name' => $block]);
     return $test !== null;
@@ -1628,7 +1628,7 @@ function block_installed($block)
  * @set modules comcode html
  * @return array A map of page name to type (modules_custom, etc)
  */
-function find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects = false, $show_method = 0, $page_type = null)
+function find_all_pages_wrap(string $zone, bool $keep_ext_on = false, bool $consider_redirects = false, int $show_method = 0, ?string $page_type = null) : array
 {
     require_code('zones2');
     return _find_all_pages_wrap($zone, $keep_ext_on, $consider_redirects, $show_method, $page_type);
@@ -1647,7 +1647,7 @@ function find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects = 
  * @set 0 1 2
  * @return array A map of page name to type (modules_custom, etc)
  */
-function find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cutoff_time = null, $show_method = 0)
+function find_all_pages(string $zone, string $type, string $ext = 'php', bool $keep_ext_on = false, ?int $cutoff_time = null, int $show_method = 0) : array
 {
     require_code('zones2');
     return _find_all_pages($zone, $type, $ext, $keep_ext_on, $cutoff_time, $show_method);
@@ -1659,7 +1659,7 @@ function find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cutof
  * @param  ID_TEXT $zone The zone name
  * @return array A map of page name to type (modules_custom, etc)
  */
-function find_all_modules($zone)
+function find_all_modules(string $zone) : array
 {
     require_code('zones2');
     return _find_all_modules($zone);
@@ -1676,7 +1676,7 @@ function find_all_modules($zone)
  * @param  ?string $class_name Class name to use (null: autodetect, which is a little slower)
  * @return array A list of pieces of code to do the equivalent of executing the requested functions with the requested parameters
  */
-function extract_module_functions($path, $functions, $params = [], $prefer_direct_code_call = false, $class_name = null)
+function extract_module_functions(string $path, array $functions, array $params = [], bool $prefer_direct_code_call = false, ?string $class_name = null) : array
 {
     global $SITE_INFO;
     $prefer_direct_code_call = $prefer_direct_code_call || ((isset($SITE_INFO['prefer_direct_code_call'])) && ($SITE_INFO['prefer_direct_code_call'] === '1'));
@@ -1826,7 +1826,7 @@ function extract_module_functions($path, $functions, $params = [], $prefer_direc
  * @param  object $object The module object
  * @param  ID_TEXT $codename The block name
  */
-function _check_module_installation_status($object, $codename)
+function _check_module_installation_status(object $object, string $codename)
 {
     // Get info about what is installed and what is on disk
     if (get_value('assume_modules_correct') !== '1') {
@@ -1865,7 +1865,7 @@ function _check_module_installation_status($object, $codename)
  * @param  ID_TEXT $codename The block name
  * @return ?Tempcode The block error output (null: no error)
  */
-function _check_block_installation_status($object, $codename)
+function _check_block_installation_status(object $object, string $codename) : ?object
 {
     // Get info about what is installed and what is on disk
     if (get_value('assume_modules_correct') !== '1') {

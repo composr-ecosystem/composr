@@ -28,7 +28,7 @@ class Hook_config_probation_usergroup
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PROBATION_USERGROUP',
@@ -52,7 +52,7 @@ class Hook_config_probation_usergroup
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (get_forum_type() != 'cns') ? null : do_lang('cns:PROBATION');
     }

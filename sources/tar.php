@@ -30,7 +30,7 @@
  * @param  ?string $real_filename The real filename of the TAR file (null: derive from $path)
  * @return array The TAR file handle
  */
-function tar_open($path, $mode, $known_exists = false, $real_filename = null)
+function tar_open(string $path, string $mode, bool $known_exists = false, ?string $real_filename = null) : array
 {
     if ($real_filename === null) {
         $real_filename = basename($path);
@@ -82,7 +82,7 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
  * @param  boolean $tolerate_errors Whether to tolerate errors (returns null if error)
  * @return ?array A list of maps that stores 'path', 'mode', 'size' and 'mtime', for each file in the archive (null: error)
  */
-function tar_get_directory(&$resource, $tolerate_errors = false)
+function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?array
 {
     if (array_key_exists('directory', $resource)) {
         return $resource['directory'];
@@ -186,7 +186,7 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
  * @param  integer $size The file size of a file that would be inside the TAR archive
  * @return integer The block size TAR would use to store this file
  */
-function file_size_to_tar_block_size($size)
+function file_size_to_tar_block_size(int $size) : int
 {
     return ($size % 512 == 0) ? $size : ((intval($size / 512) + 1) * 512);
 }
@@ -204,7 +204,7 @@ function file_size_to_tar_block_size($size)
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  * @return array A list of maps that stores 'path', 'mode' and 'size', for each newly added file in the archive
  */
-function tar_add_folder_incremental(&$resource, $log_file, $path, $threshold, $max_size, $subpath = '', $ignore_bitmask = 0, $callback = null)
+function tar_add_folder_incremental(array &$resource, $log_file, string $path, int $threshold, ?int $max_size, string $subpath = '', ?int $ignore_bitmask = 0, $callback = null) : array
 {
     require_code('files');
 
@@ -301,7 +301,7 @@ function tar_add_folder_incremental(&$resource, $log_file, $path, $threshold, $m
  * @param  ?integer $ignore_bitmask Bitmask of extra stuff to ignore (see IGNORE_* constants) (null: don't ignore anything)
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  */
-function tar_add_folder(&$resource, $log_file, $path, $max_size = null, $subpath = '', $avoid_backing_up = [], $root_only_dirs = null, $tick = false, $ignore_bitmask = 0, $callback = null) // Note we cannot modify $resource unless we pass it by reference
+function tar_add_folder(array &$resource, $log_file, string $path, ?int $max_size = null, string $subpath = '', array $avoid_backing_up = [], ?array $root_only_dirs = null, bool $tick = false, ?int $ignore_bitmask = 0, $callback = null) // Note we cannot modify array $resource unless we pass it by reference
 {
     require_code('files');
 
@@ -374,7 +374,7 @@ function tar_add_folder(&$resource, $log_file, $path, $max_size = null, $subpath
  * @param  boolean $comcode_backups Whether to take backups of Comcode pages
  * @param  boolean $report_errors Whether to report errors
  */
-function tar_extract_to_folder(&$resource, $path, $use_afm = false, $files = null, $comcode_backups = false, $report_errors = true)
+function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = false, ?array $files = null, bool $comcode_backups = false, bool $report_errors = true)
 {
     if (!array_key_exists('directory', $resource)) {
         tar_get_directory($resource);
@@ -494,7 +494,7 @@ function tar_extract_to_folder(&$resource, $path, $use_afm = false, $files = nul
  * @param  ?PATH $write_data_to Write data to here (null: return within array)
  * @return ?array A map, containing 'data' (the file), 'size' (the filesize), 'mtime' (the modification timestamp), and 'mode' (the permissions) (null: not found / TAR possibly corrupt if we turned tolerate errors on)
  */
-function tar_get_file(&$resource, $path, $tolerate_errors = false, $write_data_to = null)
+function tar_get_file(array &$resource, string $path, bool $tolerate_errors = false, ?string $write_data_to = null) : ?array
 {
     if (!array_key_exists('directory', $resource)) {
         $ret = tar_get_directory($resource, $tolerate_errors);
@@ -564,7 +564,7 @@ function tar_get_file(&$resource, $path, $tolerate_errors = false, $write_data_t
  * @param  boolean $efficient_mode Don't do duplicate checks
  * @return integer Offset of the file in the TAR
  */
-function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = null, $data_is_path = false, $return_on_errors = false, $efficient_mode = false)
+function tar_add_file(array &$resource, string $target_path, string $data, int $_mode = 0644, ?int $_mtime = null, bool $data_is_path = false, bool $return_on_errors = false, bool $efficient_mode = false) : int
 {
     if ($_mtime === null) {
         $_mtime = time();
@@ -696,7 +696,7 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
  * @param  string $header The header from a TAR file
  * @return integer The checksum
  */
-function tar_crc($header)
+function tar_crc(string $header) : int
 {
     $checksum = 0;
     for ($i = 0; $i < 512; $i++) {
@@ -711,7 +711,7 @@ function tar_crc($header)
  *
  * @param  array $resource The TAR file handle to close
  */
-function tar_close($resource)
+function tar_close(array $resource)
 {
     $writing = (substr($resource['mode'], 0, 1) != 'r');
 

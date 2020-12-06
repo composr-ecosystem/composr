@@ -72,7 +72,7 @@ function init__form_templates()
  * @param  ID_TEXT $param The parameter stub (stub of a series of POST parameters, made by cns_get_forum_multi_code_field's field or similar)
  * @return SHORT_TEXT The multi code
  */
-function read_multi_code($param)
+function read_multi_code(string $param) : string
 {
     $type = post_param_string($param);
     if ($type == '*') {
@@ -91,7 +91,7 @@ function read_multi_code($param)
  * @param  integer $inc How much to increment the counter by
  * @param  integer $name_length The name length being checked
  */
-function check_suhosin_request_quantity($inc = 1, $name_length = 0)
+function check_suhosin_request_quantity(int $inc = 1, int $name_length = 0)
 {
     static $count = 0;
     $count += $inc;
@@ -142,7 +142,7 @@ function check_suhosin_request_quantity($inc = 1, $name_length = 0)
  *
  * @param  integer $size Most determinative size within wider request size (we'll assume we actually need 500 more bytes than this)
  */
-function check_suhosin_request_size($size)
+function check_suhosin_request_size(int $size)
 {
     foreach (['suhosin.request.max_value_length', 'suhosin.post.max_value_length'] as $setting) {
         if ((@is_numeric(ini_get($setting))) && (intval(ini_get($setting)) - 500 < $size)) {
@@ -178,7 +178,7 @@ function url_default_parameters__disable()
  * @param  integer $default The last-resort default
  * @return integer The value
  */
-function take_param_int_modeavg($setting, $db_property, $table, $default)
+function take_param_int_modeavg(?int $setting, string $db_property, string $table, int $default) : int
 {
     if ($setting !== null) {
         return $setting;
@@ -220,7 +220,7 @@ function attach_wysiwyg()
  * @param  ID_TEXT $regular_max_size_type Code representing the media types we are using limits for
  * @set image file
  */
-function handle_max_file_size(&$hidden, $regular_max_size_type = 'file')
+function handle_max_file_size(object &$hidden, string $regular_max_size_type = 'file')
 {
     require_code('files2');
     switch ($regular_max_size_type) {
@@ -243,7 +243,7 @@ function handle_max_file_size(&$hidden, $regular_max_size_type = 'file')
  * @param  boolean $true_attachment_ui Include a true attachment UI (as opposed to something say on a contact form)
  * @return array A pair: the attachments UI (Tempcode), the hidden attachment field
  */
-function get_attachments($posting_field_name, $true_attachment_ui = true)
+function get_attachments(string $posting_field_name, bool $true_attachment_ui = true) : array
 {
     $image_types = str_replace(',', ', ', get_option('valid_images'));
 
@@ -343,7 +343,7 @@ function get_attachments($posting_field_name, $true_attachment_ui = true)
  * @param  ?Tempcode $cancel_url Cancel URL for cancelling auto-save (null: no cancel button)
  * @return Tempcode The posting form
  */
-function get_posting_form($submit_name, $submit_icon, $post, $post_url, $hidden_fields, $specialisation, $post_comment = null, $extra = '', $specialisation2 = null, $default_parsed = null, $js_function_calls = [], $tabindex = null, $required = true, $has_preview = true, $support_wysiwyg = true, $support_autosave = true, $specialisation2_hidden = false, $description = '', $cancel_url = null)
+function get_posting_form($submit_name, string $submit_icon, string $post, $post_url, object $hidden_fields, object $specialisation, $post_comment = null, string $extra = '', ?object $specialisation2 = null, ?object $default_parsed = null, array $js_function_calls = [], ?int $tabindex = null, bool $required = true, bool $has_preview = true, bool $support_wysiwyg = true, bool $support_autosave = true, bool $specialisation2_hidden = false, $description = '', ?object $cancel_url = null) : object
 {
     require_javascript('posting');
     require_javascript('plupload');
@@ -437,7 +437,7 @@ function get_posting_form($submit_name, $submit_icon, $post, $post_url, $hidden_
  * @param  boolean $is_posting_field Whether this is for a posting field (i.e. has attachment support)
  * @return Tempcode The Comcode editor
  */
-function get_comcode_editor($field_name = 'post', $cut_down = false, $is_posting_field = false)
+function get_comcode_editor(string $field_name = 'post', bool $cut_down = false, bool $is_posting_field = false) : object
 {
     require_lang('comcode');
 
@@ -522,7 +522,7 @@ function get_comcode_editor($field_name = 'post', $cut_down = false, $is_posting
  * @param  ?string $default Comcode that might be WYSIWYG edited (null: none)
  * @return boolean Whether it is
  */
-function wysiwyg_on($default = null)
+function wysiwyg_on(?string $default = null) : bool
 {
     return ((browser_matches('wysiwyg', $default)) && ((!array_key_exists('use_wysiwyg', $_COOKIE)) || ($_COOKIE['use_wysiwyg'] != '0')));
 }
@@ -534,7 +534,7 @@ function wysiwyg_on($default = null)
  * @param  boolean $required Whether it is required by default
  * @return boolean Whether it is required
  */
-function filter_form_field_required($name, $required)
+function filter_form_field_required(string $name, bool $required) : bool
 {
     if (!$required) {
         $minlength = get_field_restrict_property('minlength', $name);
@@ -554,7 +554,7 @@ function filter_form_field_required($name, $required)
  * @param  ?string $type The page type scoped for (null: current type)
  * @return ?string The property (null: non-existent)
  */
-function get_field_restrict_property($property, $field, $page = null, $type = null)
+function get_field_restrict_property(string $property, string $field, ?string $page = null, ?string $type = null) : ?string
 {
     if ($page === null) {
         $page = get_page_name();
@@ -595,7 +595,7 @@ function get_field_restrict_property($property, $field, $page = null, $type = nu
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_codename($pretty_name, $description, $name, $default, $required, $tabindex = null, $_maxlength = 40, $extra_chars = [], $placeholder = null, $autocomplete = null)
+function form_input_codename($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, ?int $_maxlength = 40, array $extra_chars = [], ?string $placeholder = null, $autocomplete = null) : object
 {
     if ($default === null) {
         $default = '';
@@ -645,7 +645,7 @@ function form_input_codename($pretty_name, $description, $name, $default, $requi
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_line($pretty_name, $description, $name, $default, $required, $tabindex = null, $_maxlength = null, $type = 'text', $placeholder = null, $pattern = null, $pattern_error = null, $size = null, $autocomplete = null)
+function form_input_line($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, ?int $_maxlength = null, string $type = 'text', ?string $placeholder = null, ?string $pattern = null, ?string $pattern_error = null, ?int $size = null, $autocomplete = null) : object
 {
     if ($default === null) {
         $default = '';
@@ -696,7 +696,7 @@ function form_input_line($pretty_name, $description, $name, $default, $required,
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_url($pretty_name, $description, $name, $default, $required, $tabindex = null, $autocomplete = null)
+function form_input_url($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, $autocomplete = null) : object
 {
     if ($default === null) {
         $default = '';
@@ -738,7 +738,7 @@ function form_input_url($pretty_name, $description, $name, $default, $required, 
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_username($pretty_name, $description, $name, $default, $required, $needs_match = true, $tabindex = null, $autocomplete = null)
+function form_input_username($pretty_name, $description, string $name, ?string $default, bool $required, bool $needs_match = true, ?int $tabindex = null, $autocomplete = null) : object
 {
     if ($default === null) {
         $default = '';
@@ -778,7 +778,7 @@ function form_input_username($pretty_name, $description, $name, $default, $requi
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_author($pretty_name, $description, $name, $default, $required, $tabindex = null, $autocomplete = null)
+function form_input_author($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, $autocomplete = null) : object
 {
     if (!addon_installed('authors')) {
         return form_input_username($pretty_name, $description, $name, $default, $required, true, $tabindex, $autocomplete);
@@ -835,7 +835,7 @@ function form_input_author($pretty_name, $description, $name, $default, $require
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_email($pretty_name, $description, $name, $default, $required, $tabindex = null, $autocomplete = null)
+function form_input_email($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, $autocomplete = null) : object
 {
     if ($default === null) {
         $default = '';
@@ -871,7 +871,7 @@ function form_input_email($pretty_name, $description, $name, $default, $required
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_colour($pretty_name, $description, $name, $default, $required, $tabindex = null)
+function form_input_colour($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null) : object
 {
     if ($default === null) {
         $default = '';
@@ -913,7 +913,7 @@ function form_input_colour($pretty_name, $description, $name, $default, $require
  * @param  boolean $get_title_too Whether to also get the title for the page
  * @return Tempcode The input field
  */
-function form_input_page_link($pretty_name, $description, $name, $default, $required, $tabindex = null, $page_type = null, $get_title_too = false)
+function form_input_page_link($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, ?string $page_type = null, bool $get_title_too = false) : object
 {
     require_lang('menus');
 
@@ -944,7 +944,7 @@ function form_input_page_link($pretty_name, $description, $name, $default, $requ
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_line_comcode($pretty_name, $description, $name, $default, $required, $tabindex = null, $autocomplete = null)
+function form_input_line_comcode($pretty_name, $description, string $name, ?string $default, bool $required, ?int $tabindex = null, $autocomplete = null) : object
 {
     require_lang('comcode');
 
@@ -988,7 +988,7 @@ function form_input_line_comcode($pretty_name, $description, $name, $default, $r
  * @param  ?string $pattern_error Custom regex pattern validation error (null: none)
  * @return Tempcode The input field
  */
-function form_input_line_multi($pretty_name, $description, $name, $default_array, $num_required, $tabindex = null, $class = 'line', $pattern = null, $pattern_error = null)
+function form_input_line_multi($pretty_name, $description, string $name, array $default_array, int $num_required, ?int $tabindex = null, string $class = 'line', ?string $pattern = null, ?string $pattern_error = null) : object
 {
     if (substr($name, -1) != '_' && substr($name, -2) != '[]') {
         $name .= '_';
@@ -1052,7 +1052,7 @@ function form_input_line_multi($pretty_name, $description, $name, $default_array
  * @param  ?integer $maxlength The maximum length of the field (null: unlimited)
  * @return Tempcode The input field
  */
-function form_input_text_multi($pretty_name, $description, $name, $default_array, $num_required, $tabindex = null, $maxlength = null)
+function form_input_text_multi($pretty_name, $description, string $name, array $default_array, int $num_required, ?int $tabindex = null, ?int $maxlength = null) : object
 {
     if (substr($name, -1) != '_') {
         $name .= '_';
@@ -1111,7 +1111,7 @@ function form_input_text_multi($pretty_name, $description, $name, $default_array
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_username_multi($pretty_name, $description, $name, $default_array, $num_required, $needs_match = true, $tabindex = null)
+function form_input_username_multi($pretty_name, $description, string $name, array $default_array, int $num_required, bool $needs_match = true, ?int $tabindex = null) : object
 {
     if (substr($name, -1) != '_') {
         $name .= '_';
@@ -1169,7 +1169,7 @@ function form_input_username_multi($pretty_name, $description, $name, $default_a
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_text($pretty_name, $description, $name, $default, $required, $tabindex = null, $scrolls = false, $maxlength = null, $rows = null, $autocomplete = null)
+function form_input_text($pretty_name, $description, string $name, string $default, bool $required, ?int $tabindex = null, bool $scrolls = false, ?int $maxlength = null, ?int $rows = null, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1214,7 +1214,7 @@ function form_input_text($pretty_name, $description, $name, $default, $required,
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_text_comcode($pretty_name, $description, $name, $default, $required, $tabindex = null, $force_non_wysiwyg = false, $description_side = '', $default_parsed = null, $scrolls = false, $rows = null, $autocomplete = null)
+function form_input_text_comcode($pretty_name, $description, string $name, string $default, bool $required, ?int $tabindex = null, bool $force_non_wysiwyg = false, $description_side = '', ?object $default_parsed = null, bool $scrolls = false, ?int $rows = null, $autocomplete = null) : object
 {
     if ((browser_matches('wysiwyg', $default)) && (!$force_non_wysiwyg) && (strpos($default, '{$,page hint: no_wysiwyg}') === false)) {
         return form_input_huge_comcode($pretty_name, $description, $name, $default, $required, $tabindex, 10, $description_side, $default_parsed, $scrolls);
@@ -1286,7 +1286,7 @@ function form_input_text_comcode($pretty_name, $description, $name, $default, $r
  * @param  boolean $force_non_wysiwyg Force non-WYSIWYG and non default-Comcode parsing
  * @return Tempcode The input field
  */
-function form_input_huge_comcode($pretty_name, $description, $name, $default, $required, $tabindex = null, $rows = 20, $description_side = '', $default_parsed = null, $scrolls = false, $force_non_wysiwyg = false)
+function form_input_huge_comcode($pretty_name, $description, string $name, string $default, bool $required, ?int $tabindex = null, int $rows = 20, $description_side = '', ?object $default_parsed = null, bool $scrolls = false, bool $force_non_wysiwyg = false) : object
 {
     require_lang('comcode');
 
@@ -1354,7 +1354,7 @@ function form_input_huge_comcode($pretty_name, $description, $name, $default, $r
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_huge($pretty_name, $description, $name, $default, $required, $tabindex = null, $rows = 20, $description_side = '', $scrolls = false, $autocomplete = null)
+function form_input_huge($pretty_name, $description, string $name, string $default, bool $required, ?int $tabindex = null, int $rows = 20, $description_side = '', bool $scrolls = false, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1397,7 +1397,7 @@ function form_input_huge($pretty_name, $description, $name, $default, $required,
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_password($pretty_name, $description, $name, $required, $tabindex = null, $default = '', $autocomplete = null)
+function form_input_password($pretty_name, $description, string $name, bool $required, ?int $tabindex = null, string $default = '', $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1432,7 +1432,7 @@ function form_input_password($pretty_name, $description, $name, $required, $tabi
  * @param  boolean $disabled Whether this box should be disabled
  * @return Tempcode The input field
  */
-function form_input_tick($pretty_name, $description, $name, $ticked, $tabindex = null, $value = '1', $read_only = false, $disabled = false)
+function form_input_tick($pretty_name, $description, string $name, bool $ticked, ?int $tabindex = null, string $value = '1', bool $read_only = false, bool $disabled = false) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1462,7 +1462,7 @@ function form_input_tick($pretty_name, $description, $name, $ticked, $tabindex =
  * @param  ?mixed $custom_value Value for custom value, string (accept single value) or array (accept multiple values) (null: no custom value known)
  * @return Tempcode The input field
  */
-function form_input_various_ticks($options, $description, $_tabindex = null, $_pretty_name = '', $simple_style = false, $custom_name = null, $custom_value = null)
+function form_input_various_ticks(array $options, $description, ?int $_tabindex = null, $_pretty_name = '', bool $simple_style = false, ?string $custom_name = null, $custom_value = null) : object
 {
     if (empty($options)) {
         return new Tempcode();
@@ -1531,7 +1531,7 @@ function form_input_various_ticks($options, $description, $_tabindex = null, $_p
  * @param  ?integer $images_only IMAGE_CRITERIA_* bitmask for images (null: not restricted to images)
  * @return Tempcode The input field
  */
-function form_input_upload_multi_source($set_title, $set_description, &$hidden, $set_name = 'image', $theme_image_type = null, $required = true, $default = null, $support_syndication = false, $filter = null, $images_only = 0)
+function form_input_upload_multi_source($set_title, $set_description, object &$hidden, string $set_name = 'image', ?string $theme_image_type = null, bool $required = true, ?string $default = null, bool $support_syndication = false, ?string $filter = null, ?int $images_only = 0) : object
 {
     require_code('images');
 
@@ -1662,7 +1662,7 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
  * @param  URLPATH $url URL
  * @return array A pair: Modified URL, whether it is an image
  */
-function make_previewable_url_absolute($url)
+function make_previewable_url_absolute(string $url) : array
 {
     $_url = $url;
     $is_image = false;
@@ -1705,7 +1705,7 @@ function make_previewable_url_absolute($url)
  * @param  ?string $syndication_json JSON structure of what uploader syndications there will be (null: none)
  * @return Tempcode The input field
  */
-function form_input_upload($pretty_name, $description, $name, $required, $default = null, $tabindex = null, $plupload = true, $filter = '', $syndication_json = null)
+function form_input_upload($pretty_name, $description, string $name, bool $required, ?string $default = null, ?int $tabindex = null, bool $plupload = true, string $filter = '', ?string $syndication_json = null) : object
 {
     if ($plupload) {
         require_javascript('plupload');
@@ -1752,7 +1752,7 @@ function form_input_upload($pretty_name, $description, $name, $required, $defaul
  * @param  ?string $syndication_json JSON structure of what uploader syndications there will be (null: none)
  * @return Tempcode The input field
  */
-function form_input_upload_multi($pretty_name, $description, $name, $required, $tabindex = null, $default = null, $plupload = true, $filter = '', $syndication_json = null)
+function form_input_upload_multi($pretty_name, $description, string $name, bool $required, ?int $tabindex = null, ?array $default = null, bool $plupload = true, string $filter = '', ?string $syndication_json = null) : object
 {
     if ($plupload) {
         require_javascript('plupload');
@@ -1800,7 +1800,7 @@ function form_input_upload_multi($pretty_name, $description, $name, $required, $
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_list($pretty_name, $description, $name, $content, $tabindex = null, $inline_list = false, $required = true, $images = null, $size = 5, $autocomplete = null)
+function form_input_list($pretty_name, $description, string $name, object $content, ?int $tabindex = null, bool $inline_list = false, bool $required = true, ?array $images = null, int $size = 5, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1840,7 +1840,7 @@ function form_input_list($pretty_name, $description, $name, $content, $tabindex 
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_huge_list($pretty_name, $description, $name, $content, $tabindex = null, $inline_list = false, $required = true, $size = null, $autocomplete = null)
+function form_input_huge_list($pretty_name, $description, string $name, object $content, ?int $tabindex = null, bool $inline_list = false, bool $required = true, ?int $size = null, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1880,7 +1880,7 @@ function form_input_huge_list($pretty_name, $description, $name, $content, $tabi
  * @param  ?mixed $custom_value Value for custom value, string (accept single value) or array (accept multiple values) (null: no custom value known)
  * @return Tempcode The input field
  */
-function form_input_multi_list($pretty_name, $description, $name, $content, $tabindex = null, $size = 5, $required = false, $custom_name = null, $custom_value = null)
+function form_input_multi_list($pretty_name, $description, string $name, object $content, ?int $tabindex = null, int $size = 5, bool $required = false, ?string $custom_name = null, $custom_value = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1914,7 +1914,7 @@ function form_input_multi_list($pretty_name, $description, $name, $content, $tab
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_combo($pretty_name, $description, $name, $default, $options, $tabindex = null, $required = true, $autocomplete = null)
+function form_input_combo($pretty_name, $description, string $name, string $default, object $options, ?int $tabindex = null, bool $required = true, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1950,7 +1950,7 @@ function form_input_combo($pretty_name, $description, $name, $default, $options,
  * @param  ?string $nice_label Label for default value (null: just use the literal)
  * @return Tempcode The input field
  */
-function form_input_tree_list($pretty_name, $description, $name, $root_id, $hook, $options, $required, $default = null, $use_server_id = false, $tabindex = null, $multi_select = false, $nice_label = null)
+function form_input_tree_list($pretty_name, $description, string $name, ?string $root_id, string $hook, array $options, bool $required, ?string $default = null, bool $use_server_id = false, ?int $tabindex = null, bool $multi_select = false, ?string $nice_label = null) : object
 {
     require_javascript('tree_list');
 
@@ -2026,7 +2026,7 @@ function form_input_tree_list($pretty_name, $description, $name, $root_id, $hook
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_all_and_not($pretty_name, $description, $base, $list, $type = '+', $tabindex = null)
+function form_input_all_and_not($pretty_name, $description, string $base, object $list, string $type = '+', ?int $tabindex = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2052,7 +2052,7 @@ function form_input_all_and_not($pretty_name, $description, $base, $list, $type 
  * @param  string $selected_path Default value (only appropriate if has picture contents)
  * @return Tempcode The input field
  */
-function form_input_radio($pretty_name, $description, $name, $content, $required = false, $picture_contents = false, $selected_path = '')
+function form_input_radio($pretty_name, $description, string $name, object $content, bool $required = false, bool $picture_contents = false, string $selected_path = '') : object
 {
     $map = ['_GUID' => '26021f9ae8a0cd83b93874bfa80052ca', 'NAME' => $name, 'REQUIRED' => $required, 'CONTENT' => $content, 'IMAGES' => $picture_contents];
     if ($picture_contents) {
@@ -2073,7 +2073,7 @@ function form_input_radio($pretty_name, $description, $name, $content, $required
  * @param  mixed $description An additional long description (blank: no description)
  * @return Tempcode The input field
  */
-function form_input_radio_entry($name, $value, $selected = false, $text = '', $tabindex = null, $description = '')
+function form_input_radio_entry(string $name, string $value, bool $selected = false, $text = '', ?int $tabindex = null, $description = '') : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2112,7 +2112,7 @@ function form_input_radio_entry($name, $value, $selected = false, $text = '', $t
  * @param  boolean $direct_titles Whether to show direct codenames, rather than trying to prettify them into titles
  * @return Tempcode The input field
  */
-function form_input_theme_image($pretty_name, $description, $name, $ids, $selected_url = null, $selected_code = null, $tabindex = null, $allow_none = false, $db = null, $theme = null, $lang = null, $linear = false, $direct_titles = false)
+function form_input_theme_image($pretty_name, $description, string $name, array $ids, ?string $selected_url = null, ?string $selected_code = null, ?int $tabindex = null, bool $allow_none = false, ?object $db = null, ?string $theme = null, ?string $lang = null, bool $linear = false, bool $direct_titles = false) : object
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -2308,7 +2308,7 @@ function form_input_theme_image($pretty_name, $description, $name, $ids, $select
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_date__cron($pretty_name, $description, $name, $required, $null_default, $do_time, $default_time = null, $total_years_to_show = 10, $year_start = null, $tabindex = null)
+function form_input_date__cron($pretty_name, $description, string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null) : object
 {
     if (cron_installed()) {
         return form_input_date($pretty_name, $description, $name, $required, $null_default, $do_time, $default_time, $total_years_to_show, $year_start, $tabindex);
@@ -2335,7 +2335,7 @@ function form_input_date__cron($pretty_name, $description, $name, $required, $nu
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_date($pretty_name, $description, $name, $required, $null_default, $do_time, $default_time = null, $total_years_to_show = 10, $year_start = null, $tabindex = null, $do_date = true, $timezone = null, $handle_timezone = true, $autocomplete = null)
+function form_input_date($pretty_name, $description, string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, ?int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null, bool $do_date = true, ?string $timezone = null, bool $handle_timezone = true, $autocomplete = null) : object
 {
     $input = _form_input_date($name, $required, $null_default, $do_time, $default_time, $total_years_to_show, $year_start, $tabindex, $do_date, $timezone, $handle_timezone, $autocomplete);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
@@ -2360,7 +2360,7 @@ function form_input_date($pretty_name, $description, $name, $required, $null_def
  *
  * @ignore
  */
-function _form_input_date($name, $required, $null_default, $do_time, $default_time = null, $total_years_to_show = 10, $year_start = null, $tabindex = null, $do_date = true, $timezone = null, $handle_timezone = true, $autocomplete = null)
+function _form_input_date(string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, ?int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null, bool $do_date = true, ?string $timezone = null, bool $handle_timezone = true, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2490,7 +2490,7 @@ function _form_input_date($name, $required, $null_default, $do_time, $default_ti
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_date_components($pretty_name, $description, $name, $want_year, $want_month, $want_day, $start_year, $end_year, $default_year, $default_month, $default_day, $required, $tabindex = null)
+function form_input_date_components($pretty_name, $description, string $name, bool $want_year, bool $want_month, bool $want_day, int $start_year, int $end_year, ?int $default_year, ?int $default_month, ?int $default_day, bool $required, ?int $tabindex = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2532,7 +2532,7 @@ function form_input_date_components($pretty_name, $description, $name, $want_yea
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
  * @return Tempcode The input field
  */
-function form_input_integer($pretty_name, $description, $name, $default, $required, $tabindex = null, $maxlength = null, $autocomplete = null)
+function form_input_integer($pretty_name, $description, string $name, ?int $default, bool $required, ?int $tabindex = null, ?int $maxlength = null, $autocomplete = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2570,7 +2570,7 @@ function form_input_integer($pretty_name, $description, $name, $default, $requir
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_dimensions($pretty_name, $description, $name_width, $name_height, $default_width, $default_height, $required, $tabindex = null)
+function form_input_dimensions($pretty_name, $description, string $name_width, string $name_height, ?int $default_width, ?int $default_height, bool $required, ?int $tabindex = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2603,7 +2603,7 @@ function form_input_dimensions($pretty_name, $description, $name_width, $name_he
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
-function form_input_float($pretty_name, $description, $name, $default, $required, $tabindex = null)
+function form_input_float($pretty_name, $description, string $name, ?float $default, bool $required, ?int $tabindex = null) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2631,7 +2631,7 @@ function form_input_float($pretty_name, $description, $name, $default, $required
  * @param  ID_TEXT $set_name The codename for this field set
  * @return Tempcode Tempcode to start attaching the field set to
  */
-function alternate_fields_set__start($set_name)
+function alternate_fields_set__start(string $set_name) : object
 {
     global $DOING_ALTERNATE_FIELDS_SET;
     if ($DOING_ALTERNATE_FIELDS_SET !== null) {
@@ -2654,7 +2654,7 @@ function alternate_fields_set__start($set_name)
  * @param  string $default_set The default set to pre-select
  * @return Tempcode The field set
  */
-function alternate_fields_set__end($set_name, $pretty_name, $description, $fields, $required, $existing_image_preview_url = null, $raw = false, $default_set = '')
+function alternate_fields_set__end(string $set_name, $pretty_name, $description, object $fields, bool $required, ?string $existing_image_preview_url = null, bool $raw = false, string $default_set = '') : object
 {
     global $DOING_ALTERNATE_FIELDS_SET;
     if ($DOING_ALTERNATE_FIELDS_SET === null) {
@@ -2710,7 +2710,7 @@ function single_field__end()
  * @param  ?integer $tabindex The tab index (null: none specified)
  * @return Tempcode The field
  */
-function form_input_na($pretty_name, $tabindex = null)
+function form_input_na($pretty_name, ?int $tabindex = null) : object
 {
     return _form_input('', $pretty_name, new Tempcode(), new Tempcode(), false, false, null);
 }
@@ -2733,7 +2733,7 @@ function form_input_na($pretty_name, $tabindex = null)
  *
  * @ignore
  */
-function _form_input($name, $pretty_name, $description, $input, $required, $comcode = false, $tabindex = null, $w = false, $skip_label = false, $description_side = '', $pattern_error = null)
+function _form_input(string $name, $pretty_name, $description, object $input, bool $required, bool $comcode = false, ?int $tabindex = null, bool $w = false, bool $skip_label = false, $description_side = '', ?string $pattern_error = null) : object
 {
     global $_FORM_INPUT_PREFIX, $_FORM_INPUT_SUFFIX;
     if ($_FORM_INPUT_PREFIX !== null) {
@@ -2826,7 +2826,7 @@ function _form_input($name, $pretty_name, $description, $input, $required, $comc
  * @param  ~?mixed $provided_autocomplete The provided autocomplete value (false: explicitly disable autocomplete) (null: try to find a value for the provided $name, otherwise return null)
  * @return ?string (null: don't use an autocomplete attribute)
  */
-function _get_autocomplete_attribute_value($name, $provided_autocomplete)
+function _get_autocomplete_attribute_value(string $name, $provided_autocomplete) : ?string
 {
     $autocomplete_field_names = [
         // Keys ([name] attribute values) as agreed upon by "#0003470: Change our approach to autofill" https://compo.sr/tracker/view.php?id=3470
@@ -2887,7 +2887,7 @@ function _get_autocomplete_attribute_value($name, $provided_autocomplete)
  * @param  boolean $only_staff Whether to only care about staff conflicts
  * @return array A pair: warning details, ping URL
  */
-function handle_conflict_resolution($id = null, $only_staff = false)
+function handle_conflict_resolution(?string $id = null, bool $only_staff = false) : array
 {
     if (($only_staff) && (!$GLOBALS['FORUM_DRIVER']->is_staff(get_member()))) {
         return [null, null];
@@ -2923,7 +2923,7 @@ function handle_conflict_resolution($id = null, $only_staff = false)
  * @param  ?integer $tabindex Requested tab-index (null: no specific request)
  * @return integer Used tab-index
  */
-function get_form_field_tabindex($tabindex = null)
+function get_form_field_tabindex(?int $tabindex = null) : int
 {
     if ($tabindex === null) {
         global $TABINDEX;
@@ -2938,7 +2938,7 @@ function get_form_field_tabindex($tabindex = null)
  *
  * @param  ?string $default Default value (null: not set) (blank: not set)
  */
-function handle_default_comcode_text(&$default)
+function handle_default_comcode_text(?string &$default)
 {
     if (cms_empty_safe($default)) {
         $_dct = get_value('default_comcode_text', '');
@@ -2953,7 +2953,7 @@ function handle_default_comcode_text(&$default)
  *
  * @param  string $post Post value
  */
-function handle_default_comcode_text_input(&$post)
+function handle_default_comcode_text_input(string &$post)
 {
     if ($post != '') {
         if (post_param_integer('_comment_form_post', 0) == 1) {

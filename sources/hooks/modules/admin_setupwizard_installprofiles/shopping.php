@@ -28,7 +28,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      *
      * @return ?array Map of installprofile details (null: profile is unavailable)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('shopping')) {
             return null;
@@ -45,7 +45,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      *
      * @return array Pair: List of addons in the profile, Separated list of ones to show under advanced
      */
-    public function get_addon_list()
+    public function get_addon_list() : array
     {
         return [
             ['ecommerce', 'shopping', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'],
@@ -58,7 +58,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      *
      * @return array Map of default settings
      */
-    public function field_defaults()
+    public function field_defaults() : array
     {
         return [
             'have_default_banners_hosting' => '0',
@@ -84,7 +84,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      *
      * @return array Details of what blocks are wanted
      */
-    public function default_blocks()
+    public function default_blocks() : array
     {
         return [
             BLOCK_POSITION_MAIN => [
@@ -104,7 +104,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      *
      * @return array Details of what block options are wanted
      */
-    public function block_options()
+    public function block_options() : array
     {
         return [];
     }

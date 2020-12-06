@@ -39,7 +39,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return array The info map
      */
-    protected function _get_cma_info($resource_type)
+    protected function _get_cma_info(string $resource_type) : array
     {
         if (!array_key_exists($resource_type, $this->_cma_object)) {
             require_code('content');
@@ -54,7 +54,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return boolean Whether it is
      */
-    public function is_folder_type($resource_type)
+    public function is_folder_type(string $resource_type) : bool
     {
         $folder_types = is_array($this->folder_resource_type) ? $this->folder_resource_type : (($this->folder_resource_type === null) ? [] : [$this->folder_resource_type]);
         return in_array($resource_type, $folder_types);
@@ -66,7 +66,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return boolean Whether it is
      */
-    public function is_file_type($resource_type)
+    public function is_file_type(string $resource_type) : bool
     {
         $file_types = is_array($this->file_resource_type) ? $this->file_resource_type : (($this->file_resource_type === null) ? [] : [$this->file_resource_type]);
         return in_array($resource_type, $file_types);
@@ -82,7 +82,8 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return integer How many resources there are
      */
-    abstract public function get_resources_count($resource_type);
+    abstract public function get_resources_count(string $resource_type) : int;
+
 
     /**
      * Standard Commandr-fs function for searching for a resource by label.
@@ -91,7 +92,8 @@ abstract class Resource_fs_base
      * @param  LONG_TEXT $label The resource label
      * @return array A list of resource IDs
      */
-    abstract public function find_resource_by_label($resource_type, $label);
+    abstract public function find_resource_by_label(string $resource_type, string $label) : array;
+
 
     /**
      * Standard Commandr-fs add function for resource-fs hooks. Adds some resource with the given label and properties.
@@ -102,7 +104,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error)
      */
-    public function folder_add($filename, $path, $properties, $force_type = null)
+    public function folder_add(string $filename, string $path, array $properties, ?string $force_type = null)
     {
         return false;
     }
@@ -114,7 +116,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
      * @return ~array Details of the resource (false: error)
      */
-    public function folder_load($filename, $path)
+    public function folder_load(string $filename, string $path)
     {
         return false;
     }
@@ -128,7 +130,7 @@ abstract class Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_edit($filename, $path, $properties, $explicit_move = false)
+    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
     {
         return false;
     }
@@ -140,7 +142,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    public function folder_delete($filename, $path)
+    public function folder_delete(string $filename, string $path) : bool
     {
         return false;
     }
@@ -152,7 +154,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_file_edit_date($row, $category = '')
+    protected function _get_file_edit_date(array $row, string $category = '') : ?int
     {
         return null;
     }
@@ -166,7 +168,8 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    abstract public function file_add($filename, $path, $properties, $force_type = null);
+    abstract public function file_add(string $filename, string $path, array $properties, ?string $force_type = null) : string;
+
 
     /**
      * Standard Commandr-fs load function for resource-fs hooks. Finds the properties for some resource.
@@ -175,7 +178,8 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
      * @return ~array Details of the resource (false: error)
      */
-    abstract public function file_load($filename, $path);
+    abstract public function file_load(string $filename, string $path);
+
 
     /**
      * Standard Commandr-fs edit function for resource-fs hooks. Edits the resource to the given properties.
@@ -186,7 +190,8 @@ abstract class Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    abstract public function file_edit($filename, $path, $properties, $explicit_move = false);
+    abstract public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string;
+
 
     /**
      * Standard Commandr-fs delete function for resource-fs hooks. Deletes the resource.
@@ -195,7 +200,8 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    abstract public function file_delete($filename, $path);
+    abstract public function file_delete(string $filename, string $path) : bool;
+
 
     /*
     HOOKS MAY OVERRIDE THESE AS REQUIRED, TO ENCODE IMPLEMENTATION COMPLEXITIES
@@ -206,7 +212,7 @@ abstract class Resource_fs_base
      *
      * @return boolean Whether it is
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return true;
     }
@@ -218,7 +224,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_folder_edit_date($row, $category = '')
+    protected function _get_folder_edit_date(array $row, string $category = '') : ?int
     {
         return null;
     }
@@ -229,7 +235,7 @@ abstract class Resource_fs_base
      * @param  string $filetype The file type (no file extension)
      * @return array List of our resource types that can
      */
-    public function can_accept_filetype($filetype)
+    public function can_accept_filetype(string $filetype) : array
     {
         if ($filetype != RESOURCE_FS_DEFAULT_EXTENSION) {
             return [];
@@ -252,7 +258,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $under Resource type (may be file or folder)
      * @return ?array A map: The parent referencing field, the table it is in, and the ID field of that table (null: cannot be under)
      */
-    protected function _has_parent_child_relationship($above, $under)
+    protected function _has_parent_child_relationship(?string $above, string $under) : ?array
     {
         $sub_info = $this->_get_cma_info($under);
 
@@ -309,7 +315,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return ~string Resource data (false: error)
      */
-    public function file_load__flat($filename, $path)
+    public function file_load__flat(string $filename, string $path)
     {
         if ([] == $this->can_accept_filetype(get_file_extension($filename))) {
             return false;
@@ -324,7 +330,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return ~string Resource data (false: error)
      */
-    public function folder_load__flat($filename, $path)
+    public function folder_load__flat(string $filename, string $path)
     {
         $ext = get_file_extension($filename);
         if ($ext != '') {
@@ -343,7 +349,7 @@ abstract class Resource_fs_base
      * @param  string $data Resource data
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_save__flat($filename, $path, $data)
+    public function file_save__flat(string $filename, string $path, string $data)
     {
         // Files other stuff makes, we don't want auto-created junk files creating composr content
         $all_disallowed = [
@@ -375,7 +381,7 @@ abstract class Resource_fs_base
      * @param  string $data Resource data
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_save__flat($filename, $path, $data)
+    public function folder_save__flat(string $filename, string $path, string $data)
     {
         $ext = get_file_extension($filename);
         if ($ext != '') {
@@ -395,7 +401,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return array A pair: the resource label, Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
      */
-    protected function _file_magic_filter($filename, $path, $properties, $resource_type)
+    protected function _file_magic_filter(string $filename, string $path, array $properties, string $resource_type) : array
     {
         $label = basename($filename, '.' . RESOURCE_FS_DEFAULT_EXTENSION); // Default implementation is simply to assume the stub of the filename (or may be a raw label already, with no file type) is the resource label
         if (array_key_exists('label', $properties)) {
@@ -415,7 +421,7 @@ abstract class Resource_fs_base
      * @param  array $properties Properties
      * @return array A pair: the resource label, Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
      */
-    protected function _folder_magic_filter($filename, $path, $properties)
+    protected function _folder_magic_filter(string $filename, string $path, array $properties) : array
     {
         return [$properties, $filename]; // Default implementation is simply to assume the filename is the resource label, and leave properties alone
     }
@@ -427,7 +433,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_id The resource ID
      * @return ?ID_TEXT The filename (null: could not find)
      */
-    public function file_convert_id_to_filename($resource_type, $resource_id)
+    public function file_convert_id_to_filename(string $resource_type, string $resource_id) : ?string
     {
         $moniker = find_moniker_via_id($resource_type, $resource_id);
         if ($moniker === null) {
@@ -443,7 +449,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_id The resource ID
      * @return ?ID_TEXT The filename (null: could not find)
      */
-    public function folder_convert_id_to_filename($resource_type, $resource_id)
+    public function folder_convert_id_to_filename(string $resource_type, string $resource_id) : ?string
     {
         return find_moniker_via_id($resource_type, $resource_id);
     }
@@ -455,7 +461,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: assumption of only one folder resource type for this hook; only passed as non-null from overridden functions within hooks that are calling this as a helper function)
      * @return ?array A pair: The resource type, the resource ID (null: could not find)
      */
-    public function file_convert_filename_to_id($filename, $resource_type = null)
+    public function file_convert_filename_to_id(string $filename, ?string $resource_type = null) : ?array
     {
         if ($resource_type === null) {
             $resource_type = $this->file_resource_type;
@@ -478,7 +484,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: assumption of only one folder resource type for this hook; only passed as non-null from overridden functions within hooks that are calling this as a helper function)
      * @return array A pair: The resource type, the resource ID
      */
-    public function folder_convert_filename_to_id($filename, $resource_type = null)
+    public function folder_convert_filename_to_id(string $filename, ?string $resource_type = null) : array
     {
         if ($resource_type === null) {
             $resource_type = $this->folder_resource_type;
@@ -501,7 +507,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?string The value (null: null value)
      */
-    protected function _default_property_str($properties, $property)
+    protected function _default_property_str(array $properties, string $property) : ?string
     {
         return array_key_exists($property, $properties) ? $properties[$property] : '';
     }
@@ -513,7 +519,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?string The value (null: null value)
      */
-    protected function _default_property_str_null($properties, $property)
+    protected function _default_property_str_null(array $properties, string $property) : ?string
     {
         return array_key_exists($property, $properties) ? $properties[$property] : null;
     }
@@ -525,7 +531,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_int($properties, $property)
+    protected function _default_property_int(array $properties, string $property) : ?int
     {
         if (!array_key_exists($property, $properties)) {
             return 0;
@@ -546,7 +552,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_int_null($properties, $property)
+    protected function _default_property_int_null(array $properties, string $property) : ?int
     {
         if (!array_key_exists($property, $properties)) {
             return null;
@@ -567,7 +573,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?float The value (null: null value)
      */
-    protected function _default_property_float($properties, $property)
+    protected function _default_property_float(array $properties, string $property) : ?float
     {
         if (!array_key_exists($property, $properties)) {
             return 0.0;
@@ -588,7 +594,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?float The value (null: null value)
      */
-    protected function _default_property_float_null($properties, $property)
+    protected function _default_property_float_null(array $properties, string $property) : ?float
     {
         if (!array_key_exists($property, $properties)) {
             return null;
@@ -608,7 +614,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $category The category value (blank: root) (null: root)
      * @return ?integer The category (null: root)
      */
-    protected function _integer_category($category)
+    protected function _integer_category(?string $category) : ?int
     {
         if ($category === null) {
             return null;
@@ -626,7 +632,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $db_property The database property (null: same as $property)
      * @return integer The value
      */
-    protected function _default_property_int_modeavg($properties, $property, $table, $default, $db_property = null)
+    protected function _default_property_int_modeavg(array $properties, string $property, string $table, int $default, ?string $db_property = null) : int
     {
         if ($db_property === null) {
             $db_property = $property;
@@ -663,7 +669,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_time_null($properties, $property)
+    protected function _default_property_time_null(array $properties, string $property) : ?int
     {
         if (!isset($properties[$property])) {
             return null;
@@ -679,7 +685,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return integer The value
      */
-    protected function _default_property_time($properties, $property)
+    protected function _default_property_time(array $properties, string $property) : int
     {
         if (!isset($properties[$property])) {
             return time();
@@ -699,7 +705,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_member_null($properties, $property)
+    protected function _default_property_member_null(array $properties, string $property) : ?int
     {
         if (!isset($properties[$property])) {
             return null;
@@ -715,7 +721,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_member($properties, $property)
+    protected function _default_property_member(array $properties, string $property) : ?int
     {
         if (!isset($properties[$property])) {
             return get_member();
@@ -739,7 +745,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_group_null($properties, $property)
+    protected function _default_property_group_null(array $properties, string $property) : ?int
     {
         if (!isset($properties[$property])) {
             return null;
@@ -755,7 +761,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?integer The value (null: null value)
      */
-    protected function _default_property_group($properties, $property)
+    protected function _default_property_group(array $properties, string $property) : ?int
     {
         if (!isset($properties[$property])) {
             $properties[$property] = db_get_first_id();
@@ -780,7 +786,7 @@ abstract class Resource_fs_base
      * @param  boolean $ignore_conflicts Whether to ignore conflicts with existing files (=edit op, basically)
      * @return string The value
      */
-    protected function _default_property_urlpath($properties, $property, $ignore_conflicts = false)
+    protected function _default_property_urlpath(array $properties, string $property, bool $ignore_conflicts = false) : string
     {
         if (empty($properties[$property])) {
             return '';
@@ -797,7 +803,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?mixed The value (null: null value)
      */
-    protected function _default_property_foreign_key_null($_table_referenced, $properties, $property)
+    protected function _default_property_foreign_key_null(array $_table_referenced, array $properties, string $property)
     {
         if (!isset($properties[$property])) {
             return null;
@@ -814,7 +820,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return mixed The value
      */
-    protected function _default_property_foreign_key($_table_referenced, $properties, $property)
+    protected function _default_property_foreign_key(array $_table_referenced, array $properties, string $property)
     {
         return remap_portable_as_foreign_key($_table_referenced, $properties[$property]);
     }
@@ -827,7 +833,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return ?mixed The value (null: null value)
      */
-    protected function _default_property_resource_id_null($resource_type, $properties, $property)
+    protected function _default_property_resource_id_null(string $resource_type, array $properties, string $property)
     {
         if (!isset($properties[$property])) {
             return null;
@@ -844,7 +850,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $property The property
      * @return mixed The value
      */
-    protected function _default_property_resource_id($resource_type, $properties, $property)
+    protected function _default_property_resource_id(string $resource_type, array $properties, string $property)
     {
         return remap_portable_as_resource_id($resource_type, $properties[$property]);
     }
@@ -855,7 +861,7 @@ abstract class Resource_fs_base
      * @param  LONG_TEXT $label The label
      * @return ID_TEXT The name
      */
-    protected function _create_name_from_label($label)
+    protected function _create_name_from_label(string $label) : string
     {
         $name = cms_strtolower_ascii($label);
         $name = preg_replace('#[^\w\.\-]#', '_', $name);
@@ -876,7 +882,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @param  array $properties Properties
      */
-    protected function _log_if_save_matchup($resource_type, $resource_id, $path, $properties)
+    protected function _log_if_save_matchup(?string $resource_type, $resource_id, string $path, array $properties)
     {
         if ($resource_type === null) {
             return; // Too difficult to check, don't bother; only expert coding would lead to this scenario anyway
@@ -937,7 +943,7 @@ abstract class Resource_fs_base
      * @param  boolean $full_subpath Whether to include the full subpath
      * @return ?string The foldername/subpath (null: not found)
      */
-    public function search($resource_type, $resource_id, $full_subpath = false)
+    public function search(string $resource_type, string $resource_id, bool $full_subpath = false) : ?string
     {
         // Find resource
         require_code('content');
@@ -1009,7 +1015,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $use_guid_for_new GUID to auto-create with (null: either not auto-creating, or not specifying the GUID if we are)
      * @return ?ID_TEXT The filename (null: not found)
      */
-    public function convert_label_to_filename($label, $subpath, $resource_type, $must_already_exist = false, $use_guid_for_new = null)
+    public function convert_label_to_filename(string $label, string $subpath, string $resource_type, bool $must_already_exist = false, ?string $use_guid_for_new = null) : ?string
     {
         $label = cms_mb_substr($label, 0, 255);
         $resource_id = $this->convert_label_to_id($label, $subpath, $resource_type, $must_already_exist, $use_guid_for_new);
@@ -1029,7 +1035,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $use_guid_for_new GUID to auto-create with (null: either not auto-creating, or not specifying the GUID if we are)
      * @return ?ID_TEXT The ID (null: not found)
      */
-    public function convert_label_to_id($_label, $subpath, $resource_type, $must_already_exist = false, $use_guid_for_new = null)
+    public function convert_label_to_id(string $_label, string $subpath, string $resource_type, bool $must_already_exist = false, ?string $use_guid_for_new = null) : ?string
     {
         $label = cms_mb_substr($_label, 0, 255);
 
@@ -1100,7 +1106,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_id The resource ID
      * @return ?ID_TEXT The filename (null: not found)
      */
-    public function convert_id_to_filename($resource_type, $resource_id)
+    public function convert_id_to_filename(string $resource_type, string $resource_id) : ?string
     {
         if ($this->is_file_type($resource_type)) {
             return $this->file_convert_id_to_filename($resource_type, $resource_id);
@@ -1118,7 +1124,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return ?array A pair: The resource type, the resource ID (null: could not find)
      */
-    public function convert_filename_to_id($filename, $resource_type)
+    public function convert_filename_to_id(string $filename, string $resource_type) : ?array
     {
         if ($this->is_file_type($resource_type)) {
             return $this->file_convert_filename_to_id($filename, $resource_type);
@@ -1140,7 +1146,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $search_path Search path (null: the same as the path saving at)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function resource_save($resource_type, $label, $path, $properties = [], $search_label_as = null, $search_path = null)
+    public function resource_save(string $resource_type, string $label, string $path, array $properties = [], ?string $search_label_as = null, ?string $search_path = null) : string
     {
         if ($this->is_folder_type($resource_type)) {
             $resource_id = $this->folder_save($label, $path, $properties, $search_label_as, $search_path);
@@ -1159,7 +1165,7 @@ abstract class Resource_fs_base
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function resource_add($resource_type, $label, $path, $properties = [])
+    public function resource_add(string $resource_type, string $label, string $path, array $properties = []) : string
     {
         if ($this->is_folder_type($resource_type)) {
             $resource_id = $this->folder_add($label, $path, $properties, $resource_type);
@@ -1179,7 +1185,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return ~array Details of the resource (false: error)
      */
-    public function resource_load($resource_type, $filename, $path)
+    public function resource_load(string $resource_type, string $filename, string $path)
     {
         if ($this->is_folder_type($resource_type)) {
             $properties = $this->folder_load($filename, $path);
@@ -1199,7 +1205,7 @@ abstract class Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function resource_edit($resource_type, $filename, $path, $properties, $explicit_move = false)
+    public function resource_edit(string $resource_type, string $filename, string $path, array $properties, bool $explicit_move = false) : string
     {
         if ($this->is_folder_type($resource_type)) {
             $resource_id = $this->folder_edit($filename, $path, $properties, $explicit_move);
@@ -1219,7 +1225,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    public function resource_delete($resource_type, $filename, $path)
+    public function resource_delete(string $resource_type, string $filename, string $path) : bool
     {
         if ($this->is_folder_type($resource_type)) {
             resource_fs_logging('Deleted the ' . $path . '/' . $filename . ' folder as requested', 'notice');
@@ -1240,7 +1246,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function reset_resource_access($filename, $resource_type = null, $category = null)
+    public function reset_resource_access(?string $filename, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1280,7 +1286,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function set_resource_access($filename, $groups, $resource_type = null, $category = null)
+    public function set_resource_access(?string $filename, array $groups, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1346,7 +1352,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      * @return array A mapping from group ID to view access
      */
-    public function get_resource_access($filename, $resource_type = null, $category = null)
+    public function get_resource_access(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1397,7 +1403,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function set_resource_access__members($filename, $members, $resource_type = null, $category = null)
+    public function set_resource_access__members(?string $filename, array $members, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1457,7 +1463,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      * @return array A mapping from member ID to view access
      */
-    public function get_resource_access__members($filename, $resource_type = null, $category = null)
+    public function get_resource_access__members(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1498,7 +1504,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function reset_resource_privileges($filename, $resource_type = null, $category = null)
+    public function reset_resource_privileges(?string $filename, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1530,7 +1536,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      * @return ?array A mapping from privilege to minimum preset level required for privilege activation (null: unworkable)
      */
-    protected function _compute_privilege_preset_scheme($filename, $resource_type = null, $category = null)
+    protected function _compute_privilege_preset_scheme(?string $filename, ?string $resource_type = null, ?string $category = null) : ?array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1584,7 +1590,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function set_resource_privileges_from_preset($filename, $group_presets, $resource_type = null, $category = null)
+    public function set_resource_privileges_from_preset(?string $filename, array $group_presets, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1615,7 +1621,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function set_resource_privileges($filename, $group_settings, $resource_type = null, $category = null)
+    public function set_resource_privileges(?string $filename, array $group_settings, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1660,7 +1666,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      * @return array A map between group ID, and a map of privilege to setting
      */
-    public function get_resource_privileges($filename, $resource_type = null, $category = null)
+    public function get_resource_privileges(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1721,7 +1727,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function set_resource_privileges_from_preset__members($filename, $member_presets, $resource_type = null, $category = null)
+    public function set_resource_privileges_from_preset__members(?string $filename, array $member_presets, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1752,7 +1758,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: $filename specified instead)
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      */
-    public function set_resource_privileges__members($filename, $member_settings, $resource_type = null, $category = null)
+    public function set_resource_privileges__members(?string $filename, array $member_settings, ?string $resource_type = null, ?string $category = null)
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1790,7 +1796,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $category The resource ID (null: $filename specified instead)
      * @return array A map between member ID, and a map of privilege to setting
      */
-    public function get_resource_privileges__members($filename, $resource_type = null, $category = null)
+    public function get_resource_privileges__members(?string $filename, ?string $resource_type = null, ?string $category = null) : array
     {
         if (($filename === null) && (($resource_type === null) || ($category === null))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1829,7 +1835,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return ~string Resource data (false: error)
      */
-    public function file_load_json($filename, $path)
+    public function file_load_json(string $filename, string $path)
     {
         $properties = $this->file_load($filename, $path);
         if ($properties === false) {
@@ -1845,7 +1851,7 @@ abstract class Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return ~string Resource data (false: error)
      */
-    public function folder_load_json($filename, $path)
+    public function folder_load_json(string $filename, string $path)
     {
         $properties = $this->folder_load($filename, $path);
         if ($properties === false) {
@@ -1862,7 +1868,7 @@ abstract class Resource_fs_base
      * @param  string $data Resource data
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_save_json($filename, $path, $data)
+    public function file_save_json(string $filename, string $path, string $data)
     {
         $properties = ($data == '') ? [] : @json_decode($data, true);
         if ($properties === false) {
@@ -1881,7 +1887,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $search_path Search path (null: the same as the path saving at)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_save($filename, $path, $properties, $search_label_as = null, $search_path = null)
+    public function file_save(string $filename, string $path, array $properties, ?string $search_label_as = null, ?string $search_path = null) : string
     {
         if ($search_path === null) {
             $search_path = $path;
@@ -1922,7 +1928,7 @@ abstract class Resource_fs_base
      * @param  string $data Resource data
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_save_json($filename, $path, $data)
+    public function folder_save_json(string $filename, string $path, string $data)
     {
         $properties = @json_decode($data, true);
         if ($properties === false) {
@@ -1941,7 +1947,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $search_path Search path (null: the same as the path saving at)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_save($filename, $path, $properties, $search_label_as = null, $search_path = null)
+    public function folder_save(string $filename, string $path, array $properties, ?string $search_label_as = null, ?string $search_path = null) : string
     {
         if ($search_path === null) {
             $search_path = $path;
@@ -1987,7 +1993,7 @@ abstract class Resource_fs_base
      * @param  SHORT_TEXT $filename Filename
      * @param  string $path The path (blank: root / not applicable)
      */
-    protected function _resource_load_extend($resource_type, $resource_id, &$properties, $filename, $path)
+    protected function _resource_load_extend(string $resource_type, string $resource_id, array &$properties, string $filename, string $path)
     {
         $cma_info = $this->_get_cma_info($resource_type);
         $db = $cma_info['db'];
@@ -2109,7 +2115,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $filename Filename
      * @param  LONG_TEXT $label Resource label
      */
-    protected function _resource_save_extend_pre(&$properties, $resource_type, $filename, $label)
+    protected function _resource_save_extend_pre(array &$properties, string $resource_type, string $filename, string $label)
     {
         $cma_info = $this->_get_cma_info($resource_type);
         $db = $cma_info['db'];
@@ -2151,7 +2157,7 @@ abstract class Resource_fs_base
      * @param  LONG_TEXT $label Resource label
      * @param  array $properties Details of properties
      */
-    protected function _resource_save_extend($resource_type, $resource_id, $filename, $label, $properties)
+    protected function _resource_save_extend(string $resource_type, string $resource_id, string $filename, string $label, array $properties)
     {
         if (cms_mb_strlen($filename) > 80) { // Filename has may just have been the label from an add operation, in which case we must chop it down
             $filename = cms_mb_substr($filename, 0, 80);
@@ -2309,7 +2315,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $type The resource type
      * @return array Details of properties
      */
-    protected function _custom_fields_enumerate_properties($type)
+    protected function _custom_fields_enumerate_properties(string $type) : array
     {
         static $cache = [];
         if (array_key_exists($type, $cache)) {
@@ -2372,7 +2378,7 @@ abstract class Resource_fs_base
      * @param  ID_TEXT $id The content ID
      * @return array Loaded properties
      */
-    protected function _custom_fields_load($type, $id)
+    protected function _custom_fields_load(string $type, string $id) : array
     {
         if (!addon_installed('catalogues')) {
             return [];
@@ -2422,7 +2428,7 @@ abstract class Resource_fs_base
      * @param  LONG_TEXT $label Resource label
      * @param  array $properties Properties to save
      */
-    protected function _custom_fields_save($type, $id, $filename, $label, $properties)
+    protected function _custom_fields_save(string $type, string $id, string $filename, string $label, array $properties)
     {
         if (!addon_installed('catalogues')) {
             return;
@@ -2482,7 +2488,7 @@ abstract class Resource_fs_base
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~array The final directory listing (false: failure)
      */
-    public function listing($meta_dir, $meta_root_node, &$commandr_fs)
+    public function listing(array $meta_dir, string $meta_root_node, object &$commandr_fs)
     {
         if (!$this->is_active()) {
             return false;
@@ -2658,7 +2664,7 @@ abstract class Resource_fs_base
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function make_directory($meta_dir, $meta_root_node, $new_dir_name, &$commandr_fs)
+    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         if ($this->folder_resource_type === null) {
             return false;
@@ -2675,7 +2681,7 @@ abstract class Resource_fs_base
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_directory($meta_dir, $meta_root_node, $dir_name, &$commandr_fs)
+    public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
         if ($this->folder_resource_type === null) {
             return false;
@@ -2692,7 +2698,7 @@ abstract class Resource_fs_base
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         if ($file_name == RESOURCE_FS_SPECIAL_DIRECTORY_FILE) {
             return $this->folder_load__flat(array_pop($meta_dir), implode('/', $meta_dir));
@@ -2710,7 +2716,7 @@ abstract class Resource_fs_base
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
+    public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
         if ($file_name == RESOURCE_FS_SPECIAL_DIRECTORY_FILE) {
             return $this->folder_save__flat(array_pop($meta_dir), implode('/', $meta_dir), $contents) !== false;
@@ -2727,7 +2733,7 @@ abstract class Resource_fs_base
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
         if ($file_name == RESOURCE_FS_SPECIAL_DIRECTORY_FILE) {
             return true; // Fake success, as needs to do so when deleting folder contents

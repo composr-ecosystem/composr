@@ -30,7 +30,7 @@
  * @param  SHORT_TEXT $forum_multi_code The forum multi code for where this Multi Moderation may be applied
  * @param  SHORT_TEXT $title_suffix The title suffix
  */
-function cns_edit_multi_moderation($id, $name, $post_text, $move_to, $pin_state, $open_state, $forum_multi_code, $title_suffix)
+function cns_edit_multi_moderation(int $id, string $name, string $post_text, ?int $move_to, ?int $pin_state, ?int $open_state, string $forum_multi_code, string $title_suffix)
 {
     if (!addon_installed('cns_multi_moderations')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
@@ -62,7 +62,7 @@ function cns_edit_multi_moderation($id, $name, $post_text, $move_to, $pin_state,
  *
  * @param  AUTO_LINK $id The ID of the Multi Moderation we are deleting
  */
-function cns_delete_multi_moderation($id)
+function cns_delete_multi_moderation(int $id)
 {
     if (!addon_installed('cns_multi_moderations')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
@@ -94,7 +94,7 @@ function cns_delete_multi_moderation($id)
  * @param  BINARY $is_emphasised Whether the post is marked emphasised
  * @param  BINARY $skip_sig Whether to skip showing the posters signature in the post
  */
-function cns_perform_multi_moderation($id, $topic_id, $reason, $post_text = '', $is_emphasised = 1, $skip_sig = 0)
+function cns_perform_multi_moderation(int $id, int $topic_id, string $reason, string $post_text = '', int $is_emphasised = 1, int $skip_sig = 0)
 {
     if (!addon_installed('cns_multi_moderations')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
@@ -241,7 +241,7 @@ function warnings_script()
  * @param  ?GROUP $changed_usergroup_to The usergroup being changed to (null: no change)
  * @return AUTO_LINK The ID of the newly created warning
  */
-function cns_make_warning($member_id, $explanation, $by = null, $time = null, $is_warning = 1, $silence_from_topic = null, $silence_from_forum = null, $probation = 0, $banned_ip = '', $charged_points = 0, $banned_member = 0, $changed_usergroup_to = null)
+function cns_make_warning(int $member_id, string $explanation, ?int $by = null, ?int $time = null, int $is_warning = 1, ?int $silence_from_topic = null, ?int $silence_from_forum = null, int $probation = 0, string $banned_ip = '', int $charged_points = 0, int $banned_member = 0, ?int $changed_usergroup_to = null) : int
 {
     if (!addon_installed('cns_warnings')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_warnings')));
@@ -304,7 +304,7 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
  * @param  BINARY $is_warning Whether this counts as a warning
  * @return AUTO_LINK The member ID the warning was for
  */
-function cns_edit_warning($warning_id, $explanation, $is_warning = 1)
+function cns_edit_warning(int $warning_id, string $explanation, int $is_warning = 1) : int
 {
     if (!addon_installed('cns_warnings')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_warnings')));
@@ -338,7 +338,7 @@ function cns_edit_warning($warning_id, $explanation, $is_warning = 1)
  * @param  AUTO_LINK $warning_id The ID of the formal warning we are deleting
  * @return AUTO_LINK The member ID the warning was for
  */
-function cns_delete_warning($warning_id)
+function cns_delete_warning(int $warning_id) : int
 {
     if (!addon_installed('cns_warnings')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_warnings')));

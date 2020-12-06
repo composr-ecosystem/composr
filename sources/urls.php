@@ -95,7 +95,7 @@ function init__urls()
  * @param  boolean $script_name_if_cli Return the script name instead of a URL, if running on the CLI. If this is set to false it will return the base URL instead.
  * @return URLPATH The URL
  */
-function get_self_url_easy($script_name_if_cli = false)
+function get_self_url_easy(bool $script_name_if_cli = false) : string
 {
     if (is_cli()) {
         if ($script_name_if_cli) {
@@ -124,7 +124,7 @@ function get_self_url_easy($script_name_if_cli = false)
  * @param  boolean $avoid_remap Whether to avoid URL Schemes (sometimes essential so we can assume the standard URL parameter addition scheme in templates)
  * @return mixed The URL (Tempcode or string)
  */
-function get_self_url($evaluate = false, $root_if_posted = false, $extra_params = [], $posted_too = false, $avoid_remap = false)
+function get_self_url(bool $evaluate = false, bool $root_if_posted = false, array $extra_params = [], bool $posted_too = false, bool $avoid_remap = false)
 {
     global $SELF_URL_CACHED, $IN_SELF_ROUTING_SCRIPT;
     $cacheable = ($evaluate) && (!$root_if_posted) && (empty($extra_params)) && (!$posted_too) && (!$avoid_remap);
@@ -180,7 +180,7 @@ function get_self_url($evaluate = false, $root_if_posted = false, $extra_params 
  *
  * @return URLPATH The canonical URL
  */
-function get_canonical_url()
+function get_canonical_url() : string
 {
     global $NON_CANONICAL_PARAMS, $CANONICAL_URL;
     if ($CANONICAL_URL === null) {
@@ -203,7 +203,7 @@ function get_canonical_url()
  * @param  ?boolean $can_try_url_schemes Whether we have to consider URL Schemes (null: don't know, look up)
  * @return URLPATH The encoded result
  */
-function cms_urlencode($url_part, $can_try_url_schemes = null)
+function cms_urlencode(string $url_part, ?bool $can_try_url_schemes = null) : string
 {
     // Slipstream for 99.99% of data
     $url_part_encoded = urlencode($url_part);
@@ -230,7 +230,7 @@ function cms_urlencode($url_part, $can_try_url_schemes = null)
  * @param  ?boolean $can_try_url_schemes Whether we have to consider URL Schemes (null: don't know, look up)
  * @return URLPATH The encoded result
  */
-function cms_rawurlencode($url_part, $can_try_url_schemes = null)
+function cms_rawurlencode(string $url_part, ?bool $can_try_url_schemes = null) : string
 {
     // Slipstream for 99.99% of data
     $url_part_encoded = rawurlencode($url_part);
@@ -255,7 +255,7 @@ function cms_rawurlencode($url_part, $can_try_url_schemes = null)
  * @param  URLPATH $url_part The URL to encode
  * @return URLPATH The encoded result
  */
-function cms_urldecode_post_process($url_part)
+function cms_urldecode_post_process(string $url_part) : string
 {
     if ((strpos($url_part, ':') !== false) && (can_try_url_schemes())) {
         $url_part = str_replace([':uhash:', ':amp:', ':slash:'], ['#', '&', '/'], $url_part);
@@ -269,7 +269,7 @@ function cms_urldecode_post_process($url_part)
  *
  * @param  boolean $setting Temporary setting
  */
-function push_no_keep_context($setting = true)
+function push_no_keep_context(bool $setting = true)
 {
     global $HAS_NO_KEEP_CONTEXT, $NO_KEEP_CONTEXT_STACK;
     array_push($NO_KEEP_CONTEXT_STACK, $HAS_NO_KEEP_CONTEXT);
@@ -292,7 +292,7 @@ function pop_no_keep_context()
  * @param  string $val Parameter value
  * @return boolean Whether we can skip it
  */
-function skippable_keep($key, $val)
+function skippable_keep(string $key, string $val) : bool
 {
     global $BOT_TYPE_CACHE, $HAS_NO_KEEP_CONTEXT;
     if ($HAS_NO_KEEP_CONTEXT) {
@@ -322,7 +322,7 @@ function skippable_keep($key, $val)
  * @param  boolean $avoid_remap Whether to explicitly avoid using URL Schemes. While it might seem weird to put this in as a function parameter, it removes duplicated logic checks in the code.
  * @return boolean Whether a URL Scheme is in use
  */
-function can_try_url_schemes($avoid_remap = false)
+function can_try_url_schemes(bool $avoid_remap = false) : bool
 {
     if (!function_exists('get_option')) {
         return false;
@@ -336,7 +336,7 @@ function can_try_url_schemes($avoid_remap = false)
  *
  * @return boolean Whether they are
  */
-function has_keep_parameters()
+function has_keep_parameters() : bool
 {
     static $answer = null;
     if ($answer !== null) {
@@ -371,7 +371,7 @@ function has_keep_parameters()
  * @param  string $hash Hash portion of the URL (blank: none). May or may not start '#' - code will put it on if needed
  * @return Tempcode The URL in Tempcode format
  */
-function build_url($parameters, $zone_name = '_SEARCH', $skip = [], $keep_all = false, $avoid_remap = false, $skip_keep = false, $hash = '')
+function build_url(array $parameters, string $zone_name = '_SEARCH', array $skip = [], bool $keep_all = false, bool $avoid_remap = false, bool $skip_keep = false, string $hash = '') : object
 {
     if (@cms_empty_safe($parameters['page']) && running_script('index')) { // For SEO purposes we need to make sure we get the right URL
         $parameters['page'] = get_zone_default_page($zone_name);
@@ -434,7 +434,7 @@ function build_url($parameters, $zone_name = '_SEARCH', $skip = [], $keep_all = 
  * @param  string $hash Hash portion of the URL (blank: none). May or may not start '#' - code will put it on if needed
  * @return string The page-link
  */
-function build_page_link($parameters, $zone_name = '', $skip = [], $hash = '')
+function build_page_link(array $parameters, string $zone_name = '', array $skip = [], string $hash = '') : string
 {
     $id = isset($parameters['id']) ? $parameters['id'] : null;
 
@@ -500,7 +500,7 @@ function build_page_link($parameters, $zone_name = '', $skip = [], $hash = '')
  *
  * @return boolean Whether URL monikers are enabled
  */
-function url_monikers_enabled()
+function url_monikers_enabled() : bool
 {
     if (!function_exists('get_option')) {
         return false;
@@ -529,7 +529,7 @@ function url_monikers_enabled()
  *
  * @ignore
  */
-function _build_url($parameters, $zone_name = '', $skip = [], $keep_all = false, $avoid_remap = false, $skip_keep = false, $hash = '')
+function _build_url(array $parameters, string $zone_name = '', array $skip = [], bool $keep_all = false, bool $avoid_remap = false, bool $skip_keep = false, string $hash = '') : string
 {
     global $HAS_KEEP_IN_URL_CACHE, $CAN_TRY_URL_SCHEMES_CACHE, $BOT_TYPE_CACHE, $WHAT_IS_RUNNING_CACHE, $KNOWN_AJAX, $IN_SELF_ROUTING_SCRIPT;
 
@@ -705,7 +705,7 @@ function _build_url($parameters, $zone_name = '', $skip = [], $keep_all = false,
  *
  * @ignore
  */
-function _handle_array_var_append($key, $val, &$parameters)
+function _handle_array_var_append(string $key, array $val, array &$parameters)
 {
     $val2 = null;
 
@@ -731,7 +731,7 @@ function _handle_array_var_append($key, $val, &$parameters)
  * @return ?URLPATH The improved URL (null: couldn't do anything)
  * @ignore
  */
-function _url_rewrite_params($zone_name, $parameters, $force_index_php = false)
+function _url_rewrite_params(string $zone_name, array $parameters, bool $force_index_php = false) : ?string
 {
     global $URL_REMAPPINGS;
     if ($URL_REMAPPINGS === null) {
@@ -868,7 +868,7 @@ function _url_rewrite_params($zone_name, $parameters, $force_index_php = false)
  * @param  URLPATH $url The URL to check
  * @return boolean Whether the URL is local
  */
-function url_is_local($url)
+function url_is_local(string $url) : bool
 {
     if ($url === '') {
         return true;
@@ -895,7 +895,7 @@ function url_is_local($url)
  * @param  boolean $lax Whether to be a bit lax in the check
  * @return boolean Whether the value appears to be a URL
  */
-function looks_like_url($value, $lax = false)
+function looks_like_url(string $value, bool $lax = false) : bool
 {
     if ($lax) {
         if (strpos($value, '/') !== false) {
@@ -934,7 +934,7 @@ function looks_like_url($value, $lax = false)
  * @param  array $exclude A list of parameters to exclude
  * @return Tempcode The built-up hidden form fields
  */
-function build_keep_form_fields($page = '', $keep_all = false, $exclude = [])
+function build_keep_form_fields(string $page = '', bool $keep_all = false, array $exclude = []) : object
 {
     require_code('urls2');
     return _build_keep_form_fields($page, $keep_all, $exclude);
@@ -947,7 +947,7 @@ function build_keep_form_fields($page = '', $keep_all = false, $exclude = [])
  * @param  boolean $force_everything Force field labels and descriptions to copy through even when there are huge numbers of parameters
  * @return Tempcode The built-up hidden form fields
  */
-function build_keep_post_fields($exclude = [], $force_everything = false)
+function build_keep_post_fields(array $exclude = [], bool $force_everything = false) : object
 {
     require_code('urls2');
     return _build_keep_post_fields($exclude, $force_everything);
@@ -959,7 +959,7 @@ function build_keep_post_fields($exclude = [], $force_everything = false)
  * @param  URLPATH $url_full The URL to convert to an encoded filename
  * @return string A usable filename based on the URL
  */
-function url_to_filename($url_full)
+function url_to_filename(string $url_full) : string
 {
     require_code('urls2');
     return _url_to_filename($url_full);
@@ -973,7 +973,7 @@ function url_to_filename($url_full)
  * @param  boolean $base_is_full_url Whether the base URL is actually a full URL which needs stripping back
  * @return URLPATH Fully qualified URL
  */
-function qualify_url($url, $url_base, $base_is_full_url = false)
+function qualify_url(string $url, string $url_base, bool $base_is_full_url = false) : string
 {
     require_code('urls2');
     return _qualify_url($url, $url_base, $base_is_full_url);
@@ -985,7 +985,7 @@ function qualify_url($url, $url_base, $base_is_full_url = false)
  * @param  SHORT_TEXT $page_link The page-link
  * @return array Triple: zone, attribute-array, hash part of a URL including the hash (or blank)
  */
-function page_link_decode($page_link)
+function page_link_decode(string $page_link) : array
 {
     if (strpos($page_link, '#') === false) {
         $hash = '';
@@ -1076,7 +1076,7 @@ function page_link_decode($page_link)
  * @param  URLPATH $url The value to convert
  * @return ?PATH File path (null: is not local)
  */
-function convert_url_to_path($url)
+function convert_url_to_path(string $url) : ?string
 {
     require_code('urls2');
     return _convert_url_to_path($url);
@@ -1088,7 +1088,7 @@ function convert_url_to_path($url)
  * @param  URLPATH $in The URL to fix
  * @return URLPATH The fixed URL (or original one if no fix was needed)
  */
-function fixup_protocolless_urls($in)
+function fixup_protocolless_urls(string $in) : string
 {
     require_code('urls2');
     return _fixup_protocolless_urls($in);
@@ -1102,7 +1102,7 @@ function fixup_protocolless_urls($in)
  * @param  boolean $perfect_only Whether to only allow perfect conversions
  * @return string The page-link (blank: could not convert)
  */
-function url_to_page_link($url, $abs_only = false, $perfect_only = true)
+function url_to_page_link(string $url, bool $abs_only = false, bool $perfect_only = true) : string
 {
     require_code('urls2');
     return _url_to_page_link($url, $abs_only, $perfect_only);
@@ -1115,7 +1115,7 @@ function url_to_page_link($url, $abs_only = false, $perfect_only = true)
  * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
  * @return URLPATH URL
  */
-function page_link_to_url($url, $skip_keep = false)
+function page_link_to_url(string $url, bool $skip_keep = false) : string
 {
     $parts = [];
     if ((preg_match('#([' . URL_CONTENT_REGEXP . ']*):([' . URL_CONTENT_REGEXP . ']+|[^/]|$)((:(.*))*)#', $url, $parts) != 0) && ($parts[1] != 'mailto')) { // Specially encoded page-link. Complex regexp to make sure URLs do not match
@@ -1134,7 +1134,7 @@ function page_link_to_url($url, $skip_keep = false)
  * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
  * @return Tempcode URL
  */
-function page_link_to_tempcode_url($page_link, $skip_keep = false)
+function page_link_to_tempcode_url(string $page_link, bool $skip_keep = false) : object
 {
     list($zone, $map, $hash) = page_link_decode($page_link);
     return build_url($map, $zone, [], false, false, $skip_keep, $hash);
@@ -1218,7 +1218,7 @@ function load_moniker_hooks()
  * @param  boolean $search_redirects Whether to consider that the page may have been redirected. We'll generally set this to false when linking, as we know that redirects will be considered elsewhere in the stack anyway
  * @return ?string The moniker ID (null: could not find)
  */
-function find_id_moniker($url_parts, $zone, $search_redirects = true)
+function find_id_moniker(array $url_parts, string $zone, bool $search_redirects = true) : ?string
 {
     if (!isset($url_parts['page'])) {
         return null;
@@ -1408,7 +1408,7 @@ function find_id_moniker($url_parts, $zone, $search_redirects = true)
  * @param  string $url The URL to append to (returned by reference)
  * @param  string $append URL parameter(s) to append, with no leading or trailing ? or & characters
  */
-function extend_url(&$url, $append)
+function extend_url(string &$url, string $append)
 {
     if (($append != '') && (strpos($url, '?' . $append) === false) && (strpos($url, '&' . $append) === false)) {
         $url .= ((strpos($url, '?') === false) ? '?' : '&') . $append;
@@ -1422,7 +1422,7 @@ function extend_url(&$url, $append)
  * @param  string $url The URL to check
  * @return string $append The fixed URL
  */
-function ensure_protocol_suitability($url)
+function ensure_protocol_suitability(string $url) : string
 {
     if (!tacit_https()) { // Site not running HTTPS for this page
         return $url;
@@ -1454,7 +1454,7 @@ function ensure_protocol_suitability($url)
  * @param  mixed $parameter Non-encoded parameter (Tempcode, string, or null)
  * @return ?Tempcode Encoded parameter (null: null input pipe-through)
  */
-function protect_url_parameter($parameter)
+function protect_url_parameter($parameter) : ?object
 {
     if ($parameter === null) {
         return $parameter;
@@ -1469,7 +1469,7 @@ function protect_url_parameter($parameter)
  * @param  mixed $parameter Non-encoded parameter (Tempcode, string, or null)
  * @return ?string Encoded parameter (null: null input pipe-through)
  */
-function _protect_url_parameter($parameter)
+function _protect_url_parameter($parameter) : ?string
 {
     if ($parameter === null) {
         return $parameter;
@@ -1509,7 +1509,7 @@ function _protect_url_parameter($parameter)
  * @param  boolean $tolerate_errors If this is set to false then an error message will be shown if the URL is still too long after we do what we can; set to true if we have someway of further shortening the URL after this function is called
  * @return URLPATH The shortened URL
  */
-function cms_rawurlrecode($url, $force = false, $tolerate_errors = false)
+function cms_rawurlrecode(string $url, bool $force = false, bool $tolerate_errors = false) : string
 {
     if ((cms_mb_strlen($url) > 255) || ($force)) {
         require_code('urls_simplifier');
@@ -1525,7 +1525,7 @@ function cms_rawurlrecode($url, $force = false, $tolerate_errors = false)
  * @param  URLPATH $url The URL
  * @return URLPATH The normalised URL
  */
-function normalise_idn_url($url)
+function normalise_idn_url(string $url) : string
 {
     require_code('urls_simplifier');
     $coder_ob = new HarmlessURLCoder();
@@ -1539,7 +1539,7 @@ function normalise_idn_url($url)
  * @param  ?integer $maxlength Maximum length (null: no limit)
  * @return string Page-link
  */
-function get_current_page_link($include_keep_components = true, $maxlength = null)
+function get_current_page_link(bool $include_keep_components = true, ?int $maxlength = null) : string
 {
     $page_link = get_zone_name() . ':' . get_page_name();
     $type = get_param_string('type', null);

@@ -24,7 +24,7 @@
  * @param  string $module The module
  * @param  mixed $category The category (integer or string)
  */
-function set_global_category_access($module, $category)
+function set_global_category_access(string $module, $category)
 {
     if (is_integer($category)) {
         $category = strval($category);
@@ -56,7 +56,7 @@ function set_global_category_access($module, $category)
  * @param  string $zone The zone to do this in
  * @param  boolean $overwrite_all Whether to flush out all existing data
  */
-function mass_set_page_access($no_guest_permissions, $only_admin_permissions, $zone, $overwrite_all = false)
+function mass_set_page_access(array $no_guest_permissions, array $only_admin_permissions, string $zone, bool $overwrite_all = false)
 {
     if ($overwrite_all) {
         $GLOBALS['SITE_DB']->query_delete('group_page_access');
@@ -94,7 +94,7 @@ function mass_set_page_access($no_guest_permissions, $only_admin_permissions, $z
  *
  * @ignore
  */
-function _handle_permission_check_logging($member_id, $op, $params, $result)
+function _handle_permission_check_logging(int $member_id, string $op, array $params, bool $result)
 {
     global $PERMISSION_CHECK_LOGGER;
 
@@ -143,7 +143,7 @@ function _handle_permission_check_logging($member_id, $op, $params, $result)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member has the privilege
  */
-function has_privilege_group($group_id, $privilege, $page = null, $cats = null)
+function has_privilege_group(int $group_id, string $privilege, ?string $page = null, ?array $cats = null) : bool
 {
     if ($page === null) {
         $page = get_page_name();
@@ -191,7 +191,7 @@ function has_privilege_group($group_id, $privilege, $page = null, $cats = null)
  *
  * @return Tempcode Hidden fields
  */
-function get_category_permissions_hidden_on()
+function get_category_permissions_hidden_on() : object
 {
     $hidden = new Tempcode();
     $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
@@ -212,7 +212,7 @@ function get_category_permissions_hidden_on()
  * @param  ?Tempcode $pinterface_view Label for view permissions (null: default)
  * @return Tempcode The form field matrix
  */
-function get_category_permissions_for_environment($module, $category, $page = null, $help = null, $new_category = false, $pinterface_view = null)
+function get_category_permissions_for_environment(string $module, string $category, ?string $page = null, ?object $help = null, bool $new_category = false, ?object $pinterface_view = null) : object
 {
     if ($page === null) {
         $page = get_page_name();
@@ -313,7 +313,7 @@ function get_category_permissions_for_environment($module, $category, $page = nu
  * @param  ?Tempcode $pinterface_view Label for view permissions (null: default)
  * @return Tempcode The form field matrix
  */
-function get_permissions_matrix($server_id, $access, $overridables, $privileges, $default_access, $include_outer = true, $pinterface_view = null)
+function get_permissions_matrix(string $server_id, array $access, array $overridables, array $privileges, array $default_access, bool $include_outer = true, ?object $pinterface_view = null) : object
 {
     require_lang('permissions');
     require_javascript('core_permission_management');
@@ -454,7 +454,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
  * @param  ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string)
  * @param  ?ID_TEXT $page The page this is for (null: current page)
  */
-function set_category_permissions_from_environment($module, $category, $page = null)
+function set_category_permissions_from_environment(string $module, string $category, ?string $page = null)
 {
     if ($page === null) {
         $page = get_page_name();
@@ -537,7 +537,7 @@ function set_category_permissions_from_environment($module, $category, $page = n
  * @param  ?Tempcode $help Extra help to show in interface (null: none)
  * @return Tempcode The form fields
  */
-function get_page_permissions_for_environment($zone, $page, $help = null)
+function get_page_permissions_for_environment(string $zone, string $page, ?object $help = null) : object
 {
     require_lang('permissions');
 
@@ -576,7 +576,7 @@ function get_page_permissions_for_environment($zone, $page, $help = null)
  * @param  ID_TEXT $zone The ID code for the zone
  * @param  ID_TEXT $page The ID code for the page
  */
-function set_page_permissions_from_environment($zone, $page)
+function set_page_permissions_from_environment(string $zone, string $page)
 {
     if ($page === null) {
         $page = get_page_name();

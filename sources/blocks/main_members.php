@@ -28,7 +28,7 @@ class Block_main_members
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -64,7 +64,7 @@ class Block_main_members
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -103,7 +103,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         if (get_forum_type() != 'cns') {
             return do_template('RED_ALERT', ['_GUID' => 'lnxrdzazqbcnmcg8ubo3y915wcef6t13', 'TEXT' => do_lang_tempcode('NO_CNS')]);

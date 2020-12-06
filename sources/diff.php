@@ -46,7 +46,7 @@ function init__diff()
  * @param  string $new_contents Second string
  * @return string Diff
  */
-function diff_simple_text($old_contents, $new_contents)
+function diff_simple_text(string $old_contents, string $new_contents) : string
 {
     $before = ini_get('ocproducts.type_strictness');
     cms_ini_set('ocproducts.type_strictness', '0');
@@ -66,7 +66,7 @@ function diff_simple_text($old_contents, $new_contents)
  * @return string Diff
  * @ignore
  */
-function _diff_simple($old, $new)
+function _diff_simple(array $old, array $new) : string
 {
     $unified = true;
 
@@ -107,7 +107,7 @@ function _diff_simple($old, $new)
  * @param  PATH $text_3 Third file contents (to apply diff between $text_1 and $text_2 to)
  * @return string New text
  */
-function diff_3way_text($text_1, $text_2, $text_3)
+function diff_3way_text(string $text_1, string $text_2, string $text_3) : string
 {
     require_code('diff/Diff3');
     require_code('diff/Diff/ThreeWay');

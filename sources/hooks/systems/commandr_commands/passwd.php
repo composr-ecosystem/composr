@@ -31,7 +31,7 @@ class Hook_commandr_command_passwd
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~array Array of stdcommand, stdhtml, stdout, and stderr responses (false: error)
      */
-    public function run($options, $parameters, &$commandr_fs)
+    public function run(array $options, array $parameters, object &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('passwd', ['h', 'u'], [true]), '', ''];

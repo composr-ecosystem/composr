@@ -41,7 +41,7 @@ PHP: 10.3.0.beta4         (only used when interfacing with PHP, not our standard
  *
  * @return Tempcode Information about the installed Composr version
  */
-function get_future_version_information()
+function get_future_version_information() : object
 {
     require_lang('version');
 
@@ -81,7 +81,7 @@ function get_future_version_information()
  * @param  ?float $general General version number (null: on disk version)
  * @return string Branch version number
  */
-function get_version_branch($general = null)
+function get_version_branch(?float $general = null) : string
 {
     if ($general === null) {
         $general = cms_version_number();
@@ -97,7 +97,7 @@ function get_version_branch($general = null)
  * @param  ?string $minor Minor version number (null: on disk version)
  * @return string Dotted version number
  */
-function get_version_dotted($main = null, $minor = null)
+function get_version_dotted(?int $main = null, ?string $minor = null) : string
 {
     if ($main === null) {
         $main = cms_version();
@@ -116,7 +116,7 @@ function get_version_dotted($main = null, $minor = null)
  * @param  string $any_format Any reasonable input
  * @return string Dotted version number
  */
-function get_version_dotted__from_anything($any_format)
+function get_version_dotted__from_anything(string $any_format) : string
 {
     $dotted = $any_format;
 
@@ -144,7 +144,7 @@ function get_version_dotted__from_anything($any_format)
  * @param  string $dotted Dotted version number
  * @return array Tuple of components: dotted basis version (i.e. with no alpha/beta/RC component and no trailing zeros), qualifier (blank, or alpha, or beta, or RC), qualifier number (null if not an alpha/beta/RC), dotted version number with trailing zeros to always cover 3 components, general version number (i.e. float, no patch release and qualifier information, like cms_version_number), dotted version number to cover 3 or 4 components (i.e. with qualifier if present)
  */
-function get_version_components__from_dotted($dotted)
+function get_version_components__from_dotted(string $dotted) : array
 {
     // Now split it up version number
     $qualifier = null;
@@ -188,7 +188,7 @@ function get_version_components__from_dotted($dotted)
  * @param  string $dotted Dotted version number (optionally in long-dotted format)
  * @return string Pretty version number
  */
-function get_version_pretty__from_dotted($dotted)
+function get_version_pretty__from_dotted(string $dotted) : string
 {
     return preg_replace('#(\.0)*\.(alpha|beta|RC)#', ' ${2}', $dotted);
 }
@@ -199,7 +199,7 @@ function get_version_pretty__from_dotted($dotted)
  * @param  string $dotted Dotted version number
  * @return boolean Whether it is
  */
-function is_substantial_release($dotted)
+function is_substantial_release(string $dotted) : bool
 {
     list(, , , , , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($dotted);
 
@@ -219,7 +219,7 @@ function is_substantial_release($dotted)
  * @param  string $v The version
  * @return ?boolean Whether it is (null: some kind of error)
  */
-function is_php_version_supported($v)
+function is_php_version_supported(string $v) : ?bool
 {
     static $data = null;
     if ($data === null) {

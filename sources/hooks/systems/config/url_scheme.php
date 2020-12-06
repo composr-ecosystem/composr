@@ -28,7 +28,7 @@ class Hook_config_url_scheme
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'URL_SCHEME',
@@ -52,7 +52,7 @@ class Hook_config_url_scheme
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (GOOGLE_APPENGINE) {
             return 'HTM';
@@ -68,7 +68,7 @@ class Hook_config_url_scheme
      * @param  string $old_value The old value
      * @return boolean Whether to allow the save
      */
-    public function presave_handler($new_value, $old_value)
+    public function presave_handler(string $new_value, string $old_value) : bool
     {
         // Make sure we haven't locked ourselves out due to absent URL Scheme support
         $http_result = cms_http_request(get_base_url() . '/pg/keymap', ['trigger_error' => false, 'no_redirect' => true]);

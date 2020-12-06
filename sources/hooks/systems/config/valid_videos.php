@@ -28,7 +28,7 @@ class Hook_config_valid_videos
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'VIDEO_TYPES',
@@ -51,7 +51,7 @@ class Hook_config_valid_videos
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'f4v,mov,mp4,m4v,qt'; // Web-safe(ish) 'video' only
     }

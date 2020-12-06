@@ -28,7 +28,7 @@ class Hook_config_minimum_password_strength
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MINIMUM_PASSWORD_STRENGTH',
@@ -52,7 +52,7 @@ class Hook_config_minimum_password_strength
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (get_forum_type() != 'cns') ? null : '5';
     }

@@ -24,7 +24,7 @@
  * @param  ID_TEXT $special_page_type The special page type
  * @set query templates tree lang
  */
-function initialise_special_page_types($special_page_type)
+function initialise_special_page_types(string $special_page_type)
 {
     disable_php_memory_limit();
 
@@ -63,7 +63,7 @@ function initialise_special_page_types($special_page_type)
  * @param  Tempcode $out The normal script Tempcode output
  * @param  string $out_evaluated The normal script evaluated output
  */
-function special_page_types($special_page_type, &$out, $out_evaluated)
+function special_page_types(string $special_page_type, object &$out, string $out_evaluated)
 {
     global $RECORDED_TEMPLATES_USED;
 
@@ -553,7 +553,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
  * @param  boolean $ret Whether to return Tempcode
  * @return string Returned result (won't return it $ret is false)
  */
-function check_xhtml_webstandards($out, $display_regardless = false, $preview_mode = 0, $ret = false)
+function check_xhtml_webstandards(string $out, bool $display_regardless = false, int $preview_mode = 0, bool $ret = false) : string
 {
     if ((!$display_regardless) && ($preview_mode == 0)) {
         $hash = md5($out);
@@ -606,7 +606,7 @@ function check_xhtml_webstandards($out, $display_regardless = false, $preview_mo
  * @param  boolean $ret Whether to return Tempcode
  * @return string Returned result (won't return it $ret is false)
  */
-function display_webstandards_results($out, $error, $preview_mode = false, $ret = false)
+function display_webstandards_results(string $out, array $error, bool $preview_mode = false, bool $ret = false) : string
 {
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS;
     $KEEP_MARKERS = false;
@@ -888,7 +888,7 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
  *
  * @param  Tempcode $messages_bottom Where to place the message
  */
-function attach_message_memory_usage(&$messages_bottom)
+function attach_message_memory_usage(object &$messages_bottom)
 {
     $memory_usage = memory_get_peak_usage();
     $messages_bottom->attach(do_template('MESSAGE', [

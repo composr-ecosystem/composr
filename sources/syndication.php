@@ -26,7 +26,7 @@
  * @param  array $activities A list of activity tuples, each tuple having the language string, optionally the activity member, and optionally up to 3 labels
  * @param  ?array $syndication_context A serialisable representation of data set via get_syndication_option_fields (null: read from environment)
  */
-function syndicate_content($content_type, $content_id, $activities, $syndication_context = null)
+function syndicate_content(string $content_type, string $content_id, array $activities, ?array $syndication_context = null)
 {
     if (running_script('install')) {
         return;
@@ -79,7 +79,7 @@ function syndicate_content($content_type, $content_id, $activities, $syndication
  * @param  string $content_type Content type
  * @param  string $content_id Content ID
  */
-function unsyndicate_content($content_type, $content_id)
+function unsyndicate_content(string $content_type, string $content_id)
 {
     $hooks = find_all_hook_obs('systems', 'syndication', 'Hook_syndication_');
     foreach ($hooks as $ob) {
@@ -112,7 +112,7 @@ function unsyndicate_content($content_type, $content_id)
  * @param  ?MEMBER $also_involving Member also 'intimately' involved, such as a content submitter who is a friend (null: none)
  * @param  ?array $syndication_context A serialisable representation of data set via get_syndication_option_fields (null: read from environment)
  */
-function syndicate_described_activity($language_string_code = '', $label_1 = '', $label_2 = '', $label_3 = '', $page_link_1 = '', $page_link_2 = '', $page_link_3 = '', $addon = '', $is_public = 1, $member_id = null, $sitewide_too = false, $also_involving = null, $syndication_context = null)
+function syndicate_described_activity(string $language_string_code = '', string $label_1 = '', string $label_2 = '', string $label_3 = '', string $page_link_1 = '', string $page_link_2 = '', string $page_link_3 = '', string $addon = '', int $is_public = 1, ?int $member_id = null, bool $sitewide_too = false, ?int $also_involving = null, ?array $syndication_context = null)
 {
     if (running_script('install')) {
         return;
@@ -143,7 +143,7 @@ function syndicate_described_activity($language_string_code = '', $label_1 = '',
  * @param  boolean $is_edit If these options are for an edit
  * @return Tempcode Syndication fields (or empty)
  */
-function get_syndication_option_fields($content_type, $is_edit = false)
+function get_syndication_option_fields(?string $content_type, bool $is_edit = false) : object
 {
     $ret = new Tempcode();
     $hooks = find_all_hook_obs('systems', 'syndication', 'Hook_syndication_');
@@ -161,7 +161,7 @@ function get_syndication_option_fields($content_type, $is_edit = false)
  * @param  ?string $content_type The content type this is for (null: none)
  * @return array Syndication field context
  */
-function read_get_syndication_option_fields($content_type)
+function read_get_syndication_option_fields(?string $content_type) : array
 {
     $ret = [];
     $hooks = find_all_hook_obs('systems', 'syndication', 'Hook_syndication_');

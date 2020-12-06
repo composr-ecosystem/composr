@@ -163,7 +163,7 @@ function lang_load_runtime_processing()
  * @param  boolean $require_result Whether to cause Composr to exit if the lookup does not succeed
  * @return ?mixed The human-readable content (null: not found). String normally. Tempcode if Tempcode parameters.
  */
-function do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, $lang = null, $require_result = true)
+function do_lang(string $codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, ?string $lang = null, bool $require_result = true)
 {
     return _do_lang($codename, $parameter1, $parameter2, $parameter3, $lang, $require_result);
 }
@@ -174,7 +174,7 @@ function do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3 
  *
  * @return LANGUAGE_NAME The fallback language
  */
-function fallback_lang()
+function fallback_lang() : string
 {
     return 'EN';
 }
@@ -184,7 +184,7 @@ function fallback_lang()
  *
  * @return LANGUAGE_NAME The user's current language
  */
-function user_lang()
+function user_lang() : string
 {
     // Quick exit: Cache
     global $USER_LANG_CACHED;
@@ -305,7 +305,7 @@ function user_lang()
  *
  * @return ?LANGUAGE_NAME The closest-fit language to what the browser wants (null: browser doesn't ask)
  */
-function get_lang_browser()
+function get_lang_browser() : ?string
 {
     // In browser?
     $http_lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -338,7 +338,7 @@ function get_lang_browser()
  * @param  LANGUAGE_NAME $lang The language
  * @return boolean Whether the language exists
  */
-function does_lang_exist($lang)
+function does_lang_exist(string $lang) : bool
 {
     if ($lang == '') {
         return false;
@@ -365,7 +365,7 @@ function does_lang_exist($lang)
  *
  * @return LANGUAGE_NAME The site's default language
  */
-function get_site_default_lang()
+function get_site_default_lang() : string
 {
     // Site default then
     global $SITE_INFO;
@@ -398,7 +398,7 @@ function get_site_default_lang()
  * @param  MEMBER $member_id The member ID
  * @return ?LANGUAGE_NAME The language used by the member (null: the language will not map)
  */
-function get_lang_member($member_id)
+function get_lang_member(int $member_id) : ?string
 {
     if (is_guest($member_id)) {
         return get_site_default_lang();
@@ -441,7 +441,7 @@ function get_lang_member($member_id)
  * @param  ?MEMBER $member_id The member ID (null: site default language, although better just to call get_site_default_lang directly)
  * @return LANGUAGE_NAME The current language
  */
-function get_lang($member_id)
+function get_lang(?int $member_id) : string
 {
     if ($member_id !== null) {
         if ($member_id == get_member()) {
@@ -467,7 +467,7 @@ function get_lang($member_id)
  * @set lang_custom custom
  * @param  boolean $ignore_errors Whether to just return if there was a loading error
  */
-function require_lang($codename, $lang = null, $type = null, $ignore_errors = false) // $type is for efficiency only - to avoid needing to doubly-search when requiring all
+function require_lang(string $codename, ?string $lang = null, ?string $type = null, bool $ignore_errors = false) // ?string $type is for efficiency only - to avoid needing to doubly-search when requiring all
 {
     // So we can keep track of what code loads what langs
     global $LANGS_REQUESTED, $LANG_REQUESTED_LANG, $REQUIRE_LANG_LOOP, $PAGE_CACHE_LAZY_LOAD, $PAGE_CACHE_LANGS_REQUESTED, $LANG_LOADED_LANG, $LANGUAGE_STRINGS_CACHE;
@@ -617,7 +617,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
  * @param  ?LANGUAGE_NAME $lang The language to include files from (null: use current user's language)
  * @param  boolean $only_if_for_lang Only load it up if it is specifically defined for our language
  */
-function require_all_lang($lang = null, $only_if_for_lang = false)
+function require_all_lang(?string $lang = null, bool $only_if_for_lang = false)
 {
     $support_smart_decaching = support_smart_decaching(true);
 
@@ -651,7 +651,7 @@ function require_all_lang($lang = null, $only_if_for_lang = false)
  *
  * @param  ?LANGUAGE_NAME $lang The language to require open files from (null: uses the current language)
  */
-function require_all_open_lang_files($lang = null)
+function require_all_open_lang_files(?string $lang = null)
 {
     global $PAGE_CACHE_LAZY_LOAD, $LANG_REQUESTED_LANG, $LANGS_REQUESTED;
     $PAGE_CACHE_LAZY_LOAD = false;
@@ -671,7 +671,7 @@ function require_all_open_lang_files($lang = null)
  * @param  mixed $in Text
  * @return Tempcode Text that can't be escaped
  */
-function protect_from_escaping($in)
+function protect_from_escaping($in) : object
 {
     return do_lang_tempcode('dont_escape_trick', $in);
 }
@@ -689,7 +689,7 @@ function protect_from_escaping($in)
  *
  * @ignore
  */
-function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, $lang = null, $require_result = true)
+function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $parameter3 = null, ?string $lang = null, bool $require_result = true)
 {
     global $LANGUAGE_STRINGS_CACHE, $USER_LANG_CACHED, $RECORD_LANG_STRINGS, $XSS_DETECT, $PAGE_CACHE_LANG_LOADED, $PAGE_CACHE_LAZY_LOAD, $SMART_CACHE, $PAGE_CACHE_LANGS_REQUESTED, $LANG_REQUESTED_LANG, $LANG_FILTER_OB, $LANG_RUNTIME_PROCESSING;
 
@@ -929,7 +929,7 @@ function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3
  * @param  boolean $even_empty_langs Whether to even find empty languages
  * @return array The installed languages (map, lang=>type)
  */
-function find_all_langs($even_empty_langs = false)
+function find_all_langs(bool $even_empty_langs = false) : array
 {
     require_code('lang3');
     return _find_all_langs($even_empty_langs);
@@ -942,7 +942,7 @@ function find_all_langs($even_empty_langs = false)
  * @param  boolean $show_unset Whether to show languages that have no language details currently defined for them
  * @return Tempcode The language selector
  */
-function create_selection_list_langs($select_lang = null, $show_unset = false)
+function create_selection_list_langs(?string $select_lang = null, bool $show_unset = false) : object
 {
     require_code('lang3');
     return _create_selection_list_langs($select_lang, $show_unset);
@@ -966,7 +966,7 @@ function create_selection_list_langs($select_lang = null, $show_unset = false)
  * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
  * @return array The content language string save fields
  */
-function insert_lang_comcode($field_name, $text, $level, $db = null, $insert_as_admin = false, $pass_id = null, $preparse_mode = true, $save_as_volatile = false)
+function insert_lang_comcode(string $field_name, string $text, int $level, ?object $db = null, bool $insert_as_admin = false, ?string $pass_id = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -998,7 +998,7 @@ function insert_lang_comcode($field_name, $text, $level, $db = null, $insert_as_
  * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
  * @return array The content language string save fields
  */
-function insert_lang($field_name, $text, $level, $db = null, $comcode = false, $id = null, $lang = null, $insert_as_admin = false, $pass_id = null, $text_parsed = null, $preparse_mode = true, $save_as_volatile = false)
+function insert_lang(string $field_name, string $text, int $level, ?object $db = null, bool $comcode = false, ?int $id = null, ?string $lang = null, bool $insert_as_admin = false, ?string $pass_id = null, ?string $text_parsed = null, bool $preparse_mode = true, bool $save_as_volatile = false) : array
 {
     require_code('lang3');
     return _insert_lang($field_name, $text, $level, $db, $comcode, $id, $lang, $insert_as_admin, $pass_id, $text_parsed, $preparse_mode, $save_as_volatile);
@@ -1016,7 +1016,7 @@ function insert_lang($field_name, $text, $level, $db = null, $comcode = false, $
  * @param  boolean $as_admin Whether to generate Comcode as arbitrary admin
  * @return array The content language string save fields
  */
-function lang_remap_comcode($field_name, $id, $text, $db = null, $pass_id = null, $source_user = null, $as_admin = false)
+function lang_remap_comcode(string $field_name, $id, string $text, ?object $db = null, ?string $pass_id = null, ?int $source_user = null, bool $as_admin = false) : array
 {
     if ((strpos($text, '[attachment') !== false) && ($pass_id === null)) {
         require_code('attachments3');
@@ -1039,7 +1039,7 @@ function lang_remap_comcode($field_name, $id, $text, $db = null, $pass_id = null
  * @param  boolean $as_admin Whether to generate Comcode as arbitrary admin
  * @return array The content language string save fields
  */
-function lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pass_id = null, $source_user = null, $as_admin = false)
+function lang_remap(string $field_name, $id, string $text, ?object $db = null, bool $comcode = false, ?string $pass_id = null, ?int $source_user = null, bool $as_admin = false) : array
 {
     require_code('lang3');
     return _lang_remap($field_name, $id, $text, $db, $comcode, $pass_id, $source_user, $as_admin);
@@ -1048,10 +1048,10 @@ function lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pass
 /**
  * Delete the specified content language string from the translation table.
  *
- * @param  integer $id The ID
+ * @param  mixed $id The ID
  * @param  ?object $db The database connector to use (null: standard site connector)
  */
-function delete_lang($id, $db = null)
+function delete_lang($id, ?object $db = null)
 {
     if (!multi_lang_content()) {
         return;
@@ -1077,7 +1077,7 @@ function delete_lang($id, $db = null)
  * @param  boolean $clear_away_from_cache Whether to remove from the Tempcode cache when we're done, for performance reasons (normally don't bother with this, but some code knows it won't be needed again -- esp Comcode cache layer -- and saves RAM by removing it)
  * @return ?Tempcode The parsed Comcode (null: the text couldn't be looked up)
  */
-function get_translated_tempcode__and_simplify($table, $row, $field_name, $db = null, $lang = null, $force = false, $as_admin = false, $clear_away_from_cache = false)
+function get_translated_tempcode__and_simplify(string $table, array $row, string $field_name, ?object $db = null, ?string $lang = null, bool $force = false, bool $as_admin = false, bool $clear_away_from_cache = false) : ?object
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -1109,7 +1109,7 @@ function get_translated_tempcode__and_simplify($table, $row, $field_name, $db = 
  * @param  boolean $ignore_browser_decaching If we have just re-populated so will not decache
  * @return ?Tempcode The parsed Comcode (null: the text couldn't be looked up)
  */
-function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = null, $force = false, $as_admin = false, $clear_away_from_cache = false, $ignore_browser_decaching = false)
+function get_translated_tempcode(string $table, array $row, string $field_name, ?object $db = null, ?string $lang = null, bool $force = false, bool $as_admin = false, bool $clear_away_from_cache = false, bool $ignore_browser_decaching = false) : ?object
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -1230,7 +1230,7 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
  * @param  boolean $force Whether to force it to the specified language
  * @return ?string The human-readable version (null: could not look up when $force was on)
  */
-function get_translated_text($entry, $db = null, $lang = null, $force = false)
+function get_translated_text($entry, ?object $db = null, ?string $lang = null, bool $force = false) : ?string
 {
     if (!multi_lang_content()) {
         return $entry;
@@ -1305,7 +1305,7 @@ function get_translated_text($entry, $db = null, $lang = null, $force = false)
  * @param  ID_TEXT $lang_code The language string codename
  * @return Tempcode The parsed Comcode
  */
-function comcode_lang_string($lang_code)
+function comcode_lang_string(string $lang_code) : object
 {
     require_code('lang3');
     return _comcode_lang_string($lang_code);
@@ -1319,7 +1319,7 @@ function comcode_lang_string($lang_code)
  * @param  boolean $allow_all_selection Whether to add an 'all' entry to the list
  * @return mixed The UI (Tempcode) or the language to use (string/LANGUAGE_NAME)
  */
-function choose_language($title, $tip = false, $allow_all_selection = false)
+function choose_language(object $title, bool $tip = false, bool $allow_all_selection = false)
 {
     require_code('lang3');
     return _choose_language($title, $tip, $allow_all_selection);
@@ -1331,7 +1331,7 @@ function choose_language($title, $tip = false, $allow_all_selection = false)
  * @param  integer $index Number to do this for
  * @return string The suffix
  */
-function get_ordinal_suffix($index)
+function get_ordinal_suffix(int $index) : string
 {
     // Based on http://stackoverflow.com/questions/3109978/php-display-number-with-ordinal-suffix
     $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
@@ -1352,7 +1352,7 @@ function get_ordinal_suffix($index)
  * @param  string $table Translate table
  * @param  string $id_field ID field
  */
-function table_id_locking_start($db, &$id, &$lock, $table = 'translate', $id_field = 'id')
+function table_id_locking_start(object $db, ?int &$id, bool &$lock, string $table = 'translate', string $id_field = 'id')
 {
     if (($id === null) && (multi_lang()) && (strpos(get_db_type(), 'mysql') !== false)) { // Needed as MySQL auto-increment works separately for each combo of other key values (i.e. language in this case). We can't let a content language string ID get assigned to something entirely different in another language. This MySQL behaviour is not well documented, it may work differently on different versions.
         $db->query('LOCK TABLES ' . $db->get_table_prefix() . $table, null, 0, true); // Suppress errors in case access denied
@@ -1378,7 +1378,7 @@ function table_id_locking_start($db, &$id, &$lock, $table = 'translate', $id_fie
  * @param  string $table Translate table
  * @param  string $id_field ID field
  */
-function table_id_locking_end($db, $id, $lock, $table = 'translate', $id_field = 'id')
+function table_id_locking_end(object $db, ?int $id, bool $lock, string $table = 'translate', string $id_field = 'id')
 {
     if ($lock) {
         if (strpos(get_db_type(), 'mysql') !== false) {
@@ -1404,7 +1404,7 @@ class LangFilter
      * @param  ?LANGUAGE_NAME $lang Language (null: current language)
      * @return string The suffix
      */
-    public function compile_time($key, $value, $lang = null)
+    public function compile_time(?string $key, string $value, ?string $lang = null) : string
     {
         return $value;
     }
@@ -1418,7 +1418,7 @@ class LangFilter
      * @param  array $parameters The parameters
      * @return string The suffix
      */
-    public function run_time($key, $value, $flag, $parameters)
+    public function run_time(string $key, string $value, string $flag, array $parameters) : string
     {
         return $value;
     }

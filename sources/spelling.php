@@ -42,7 +42,7 @@ function init__spelling()
  * @param  string $html Input string
  * @return string Cleaned
  */
-function clean_simple_html_for_spellcheck($html)
+function clean_simple_html_for_spellcheck(string $html) : string
 {
     return @html_entity_decode($html, ENT_QUOTES);
 }
@@ -53,7 +53,7 @@ function clean_simple_html_for_spellcheck($html)
  * @param  string $html Input string
  * @return string Cleaned
  */
-function clean_html_for_spellcheck($html)
+function clean_html_for_spellcheck(string $html) : string
 {
     require_code('comcode_from_html');
     $comcode = semihtml_to_comcode($html, true);
@@ -67,7 +67,7 @@ function clean_html_for_spellcheck($html)
  * @param  string $comcode Input string
  * @return string Cleaned
  */
-function clean_comcode_for_spellcheck($comcode)
+function clean_comcode_for_spellcheck(string $comcode) : string
 {
     foreach (['tt', 'code', 'codebox'] as $tag) { // Strip whole tags
         $comcode = preg_replace('#\[' . $tag . '[^\[\]]*\].*\[/' . $tag . '\]#Us', '', $comcode);
@@ -84,7 +84,7 @@ function clean_comcode_for_spellcheck($comcode)
  * @param  string $text Input string
  * @return string Fixed input string
  */
-function spell_correct_phrase($text)
+function spell_correct_phrase(string $text) : string
 {
     if (_find_spell_checker() === null) {
         return $text;
@@ -117,7 +117,7 @@ function spell_correct_phrase($text)
  * @param  boolean $unicode_accepted Whether Unicode is accepted
  * @return array A map of misspellings, lower case bad word => array of corrections
  */
-function run_spellcheck($text, $lang = null, $skip_known_words_in_db = true, $provide_corrections = true, $unicode_accepted = true)
+function run_spellcheck(string $text, ?string $lang = null, bool $skip_known_words_in_db = true, bool $provide_corrections = true, bool $unicode_accepted = true) : array
 {
     $spell_checker = _find_spell_checker();
 
@@ -143,7 +143,7 @@ function run_spellcheck($text, $lang = null, $skip_known_words_in_db = true, $pr
  * @param  boolean $unicode_accepted Whether Unicode is accepted
  * @return array A map of misspellings, lower case bad word => array of corrections
  */
-function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = true, $provide_corrections = true, $unicode_accepted = true)
+function run_spellcheck__words(array $words, ?string $lang = null, bool $skip_known_words_in_db = true, bool $provide_corrections = true, bool $unicode_accepted = true) : array
 {
     $spell_checker = _find_spell_checker();
 
@@ -253,7 +253,7 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
  * @param  boolean $unicode_accepted Whether Unicode is accepted
  * @return array List of words
  */
-function _find_words($text, $unicode_accepted = true)
+function _find_words(string $text, bool $unicode_accepted = true) : array
 {
     $text = str_replace('_', '-', $text); // Underscores as dashes
 
@@ -324,7 +324,7 @@ function _find_words($text, $unicode_accepted = true)
  *
  * @ignore
  */
-function spellcheck_initialise($lang = null)
+function spellcheck_initialise(?string $lang = null)
 {
     $spell_checker = _find_spell_checker();
 
@@ -434,7 +434,7 @@ function spellchecker_shutdown()
  *
  * @return ?string Spell checker (null: none)
  */
-function _find_spell_checker()
+function _find_spell_checker() : ?string
 {
     if (function_exists('get_value')) {
         $spell_checker = get_value('force_spell_checker');
@@ -464,7 +464,7 @@ function _find_spell_checker()
  *
  * @return string Relative path
  */
-function sl_get_custom_file_base()
+function sl_get_custom_file_base() : string
 {
     if (function_exists('get_custom_file_base')) {
         return get_custom_file_base();
@@ -479,7 +479,7 @@ function sl_get_custom_file_base()
  * @param  mixed $spell_link Spellchecker
  * @param  array $words List of words
  */
-function add_spellchecker_words_temp($spell_link, $words)
+function add_spellchecker_words_temp($spell_link, array $words)
 {
     $spell_checker = _find_spell_checker();
 
@@ -516,7 +516,7 @@ function add_spellchecker_words_temp($spell_link, $words)
  *
  * @param  array $words List of words
  */
-function add_spellchecker_words($words)
+function add_spellchecker_words(array $words)
 {
     $spell_checker = _find_spell_checker();
 

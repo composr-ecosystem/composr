@@ -26,7 +26,7 @@
  * @param  ?ID_TEXT $catalogue_name The catalogue name where to grab default settings from (null: content type has no bound catalogue / try and auto-detect)
  * @return Tempcode The fields
  */
-function content_review_get_fields($content_type, $content_id = null, $catalogue_name = null)
+function content_review_get_fields(string $content_type, ?string $content_id = null, ?string $catalogue_name = null) : object
 {
     $fields = new Tempcode();
 
@@ -157,7 +157,7 @@ function content_review_get_fields($content_type, $content_id = null, $catalogue
  * @param  ID_TEXT $content_id The content ID
  * @param  ?ID_TEXT $old_content_id The old content ID (null: not being renamed)
  */
-function content_review_set($content_type, $content_id, $old_content_id = null)
+function content_review_set(string $content_type, string $content_id, ?string $old_content_id = null)
 {
     if (fractional_edit()) {
         return;
@@ -208,7 +208,7 @@ function content_review_set($content_type, $content_id, $old_content_id = null)
  * @set leave unvalidate delete
  * @param  BINARY $display_review_status Whether to display the review status publicly
  */
-function schedule_content_review($content_type, $content_id, $review_freq, $next_review_time = null, $auto_action = 'leave', $display_review_status = 0)
+function schedule_content_review(string $content_type, string $content_id, ?int $review_freq, ?int $next_review_time = null, string $auto_action = 'leave', int $display_review_status = 0)
 {
     if ($review_freq === 0) {
         $review_freq = null;

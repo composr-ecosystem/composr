@@ -45,7 +45,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_post_templates')) {
             return null;
@@ -73,7 +73,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_post_templates', $error_msg)) {
@@ -119,7 +119,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         cns_require_all_forum_stuff();
 
@@ -147,7 +147,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -167,7 +167,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import()
+    public function import() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_import', 'uploading' => 1], '_SELF');
 
@@ -207,7 +207,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _import()
+    public function _import() : object
     {
         require_code('files');
         require_lang('dearchive');
@@ -323,7 +323,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  string $data Data
      * @param  SHORT_TEXT $target_forum The forum multicode identifying where the multi-moderation is applicable
      */
-    public function _import_stock_response($path, $data, $target_forum)
+    public function _import_stock_response(string $path, string $data, string $target_forum)
     {
         require_code('cns_general_action');
 
@@ -340,7 +340,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -395,7 +395,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  BINARY $use_default_forums Whether to use as the default post for applicable forums
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($title = '', $text = '', $forum_multi_code = '', $use_default_forums = 0)
+    public function get_form_fields(string $title = '', string $text = '', string $forum_multi_code = '', int $use_default_forums = 0) : array
     {
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
@@ -412,7 +412,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['FORUM_DB']->query_select('f_post_templates', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -428,7 +428,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $id = cns_make_post_template(post_param_string('title'), post_param_string('text'), read_multi_code('forum_multi_code'), post_param_integer('use_default_forums', 0));
         return [strval($id), null];
@@ -440,7 +440,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         cns_edit_post_template(intval($id), post_param_string('title'), post_param_string('text'), read_multi_code('forum_multi_code'), post_param_integer('use_default_forums', 0));
         return null;
@@ -451,7 +451,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         cns_delete_post_template(intval($id));
     }

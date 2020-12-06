@@ -28,7 +28,7 @@ class Module_cms_chat
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Philip Withnall';
@@ -49,7 +49,7 @@ class Module_cms_chat
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('chat')) {
             return null;
@@ -65,7 +65,7 @@ class Module_cms_chat
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('chat');
         return ['edit_lowrange_content' => [1, 'MODERATE_CHATROOMS']];
@@ -80,7 +80,7 @@ class Module_cms_chat
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('chat', $error_msg)) {
@@ -191,7 +191,7 @@ class Module_cms_chat
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('chat');
         require_code('chat2');
@@ -235,7 +235,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_choose_room()
+    public function chat_choose_room() : object
     {
         $introtext = do_lang_tempcode('CHAT_MODERATION_INTRO');
 
@@ -299,7 +299,7 @@ class Module_cms_chat
      * @param  array $b Second row
      * @return integer Sorting code
      */
-    public function _sort_chat_browse_rows($a, $b)
+    public function _sort_chat_browse_rows(array $a, array $b) : int
     {
         $messages_a = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)', ['room_id' => $a['id']]);
         $messages_b = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)', ['room_id' => $b['id']]);
@@ -317,7 +317,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function moderate_chat_room()
+    public function moderate_chat_room() : object
     {
         $room_id = get_param_integer('id');
         check_chatroom_access($room_id);
@@ -391,7 +391,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_ban()
+    public function chat_ban() : object
     {
         $id = get_param_integer('id');
 
@@ -447,7 +447,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_unban()
+    public function chat_unban() : object
     {
         $id = get_param_integer('id');
 
@@ -495,7 +495,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_edit_message()
+    public function chat_edit_message() : object
     {
         $myrow = $this->myrow;
 
@@ -544,7 +544,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function _chat_edit_message()
+    public function _chat_edit_message() : object
     {
         $delete = post_param_integer('delete', 0);
         if ($delete == 1) {
@@ -613,7 +613,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function _chat_delete_message()
+    public function _chat_delete_message() : object
     {
         $myrow = $this->myrow;
         $message_id = $this->message_id;
@@ -676,7 +676,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function chat_delete_all_messages()
+    public function chat_delete_all_messages() : object
     {
         $id = get_param_integer('id');
         check_chatroom_access($id);
@@ -716,7 +716,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function _chat_delete_all_messages()
+    public function _chat_delete_all_messages() : object
     {
         $delete = post_param_integer('continue_delete', 0);
         if ($delete != 1) {
@@ -753,7 +753,7 @@ class Module_cms_chat
      *
      * @return Tempcode The UI
      */
-    public function _chat_delete_many_messages()
+    public function _chat_delete_many_messages() : object
     {
         $room_id = get_param_integer('room_id');
         check_chatroom_access($room_id);

@@ -25,7 +25,7 @@
  * @param  string $post The Comcode
  * @return array A list of template-ready maps specifying checkboxes
  */
-function comcode_page_hints_ui($name, &$post)
+function comcode_page_hints_ui(string $name, string &$post) : array
 {
     $hints = [];
 
@@ -64,7 +64,7 @@ function comcode_page_hints_ui($name, &$post)
  * @param  string $name Input field name
  * @param  string $post The Comcode
  */
-function comcode_page_hints_post($name, &$post)
+function comcode_page_hints_post(string $name, string &$post)
 {
     $hooks = find_all_hook_obs('systems', 'comcode_page_hints', 'Hook_comcode_page_hints_');
     foreach ($hooks as $hook => $object) {
@@ -101,7 +101,7 @@ function comcode_page_hints_post($name, &$post)
  * @param  ?MEMBER $aggressive Force an HTML-evaluation of the Comcode through this security ID then back to Comcode, as a security technique (null: don't)
  * @return string Censored Comcode
  */
-function comcode_censored_raw_code_access($comcode, $aggressive = null)
+function comcode_censored_raw_code_access(string $comcode, ?int $aggressive = null) : string
 {
     if ($aggressive !== null) {
         $eval = comcode_to_tempcode($comcode, $aggressive);
@@ -119,7 +119,7 @@ function comcode_censored_raw_code_access($comcode, $aggressive = null)
  *
  * @param  string $text Comcode / HTML
  */
-function download_associated_media(&$text)
+function download_associated_media(string &$text)
 {
     $matches = [];
     $num_matches = preg_match_all('#<(img|source)\s[^<>]*src="([^"<>]*)"#i', $text, $matches);
@@ -140,7 +140,7 @@ function download_associated_media(&$text)
  * @param  string $text Comcode / HTML
  * @param  string $old_url Old URL to download and replace
  */
-function _download_associated_media(&$text, $old_url)
+function _download_associated_media(string &$text, string $old_url)
 {
     if (!is_our_server(parse_url($old_url, PHP_URL_HOST))) {
         require_code('crypt');

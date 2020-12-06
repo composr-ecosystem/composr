@@ -46,7 +46,7 @@ abstract class EmailIntegration
      *
      * @param  string $message Message
      */
-    protected function log_message($message)
+    protected function log_message(string $message)
     {
         $path = get_custom_file_base() . '/data_custom/mail_integration.log';
         if (is_file($path)) {
@@ -70,7 +70,7 @@ abstract class EmailIntegration
      * @param  string $from_displayname Display name of sender
      * @param  EMAIL $from_email E-mail address of sender (blank: use sender address for Reply-To)
      */
-    protected function _outgoing_message($subject, $message, $to_member_id, $to_displayname, $to_email, $from_displayname, $from_email = '')
+    protected function _outgoing_message(string $subject, string $message, int $to_member_id, string $to_displayname, string $to_email, string $from_displayname, string $from_email = '')
     {
         if ($to_email == '') {
             return;
@@ -92,7 +92,7 @@ abstract class EmailIntegration
      *
      * @return EMAIL E-mail address
      */
-    protected function get_sender_email()
+    protected function get_sender_email() : string
     {
         foreach (['website_email', 'staff_address'] as $address) {
             if (get_option($address) != '') {
@@ -109,7 +109,8 @@ abstract class EmailIntegration
      *
      * @return EMAIL E-mail address
      */
-    abstract protected function get_system_email();
+    abstract protected function get_system_email() : string;
+
 
     /**
      * Scan for new e-mails.
@@ -126,7 +127,7 @@ abstract class EmailIntegration
      * @param  string $username Username (blank: get from global configuration)
      * @param  string $password Password (blank: get from global configuration)
      */
-    protected function _incoming_scan($type, $host, $port, $folder, $username, $password)
+    protected function _incoming_scan(string $type, string $host, ?int $port, string $folder, string $username, string $password)
     {
         require_code('mail2');
 
@@ -279,7 +280,7 @@ abstract class EmailIntegration
      * @param  ?string $_body_html E-mail body in HTML format (null: not present)
      * @param  array $attachments Map of attachments (name to file data)
      */
-    protected function process_incoming_message($from_email, $from_name, $subject, $_body_text, $_body_html, $attachments)
+    protected function process_incoming_message(string $from_email, string $from_name, string $subject, ?string $_body_text, ?string $_body_html, array $attachments)
     {
         $email_bounce_to = $from_email;
 
@@ -347,7 +348,7 @@ abstract class EmailIntegration
      * @param  ?string $_body_html E-mail body in HTML format (null: not present)
      * @param  array $attachments Map of attachments (name to file data)
      */
-    abstract protected function _process_incoming_message($from_email, $email_bounce_to, $from_name, $subject, $_body_text, $_body_html, $attachments);
+    abstract protected function _process_incoming_message(string $from_email, string $email_bounce_to, string $from_name, string $subject, ?string $_body_text, ?string $_body_html, array $attachments);
 
     /**
      * Get the mime type for a part of the IMAP structure.
@@ -355,7 +356,7 @@ abstract class EmailIntegration
      * @param  object $structure Structure
      * @return string Mime type
      */
-    protected function _imap_get_mime_type($structure)
+    protected function _imap_get_mime_type(object $structure) : string
     {
         $primary_mime_type = ['TEXT', 'MULTIPART', 'MESSAGE', 'APPLICATION', 'AUDIO', 'IMAGE', 'VIDEO', 'OTHER'];
         if ($structure->subtype) {
@@ -379,7 +380,7 @@ abstract class EmailIntegration
      * @param  string $part_number Message part number (blank: root)
      * @return ?string The message part (null: could not find one)
      */
-    protected function _imap_get_part($stream, $msg_number, $needed_mime_type, &$attachments, &$attachment_size_total, $input_charset, $structure = null, $part_number = '')
+    protected function _imap_get_part($stream, int $msg_number, string $needed_mime_type, array &$attachments, int &$attachment_size_total, string $input_charset, ?object $structure = null, string $part_number = '') : ?string
     {
         if ($structure === null) {
             $structure = imap_fetchstructure($stream, $msg_number);
@@ -531,7 +532,7 @@ abstract class EmailIntegration
      * @param  ?string $_body_html E-mail body in HTML format (null: not present)
      * @return ?MEMBER The member ID (null: none)
      */
-    protected function handle_missing_member($from_email, $email_bounce_to, $mail_nonmatch_policy, $subject, $_body_text, $_body_html)
+    protected function handle_missing_member(string $from_email, string $email_bounce_to, string $mail_nonmatch_policy, string $subject, ?string $_body_text, ?string $_body_html) : ?int
     {
         $member_id = null;
 
@@ -605,7 +606,7 @@ abstract class EmailIntegration
      * @param  MEMBER $member_id Regular member ID
      * @return MEMBER Degraded member ID
      */
-    protected function degrade_member_id_for_comcode($member_id)
+    protected function degrade_member_id_for_comcode(int $member_id) : int
     {
         if (has_privilege($member_id, 'comcode_dangerous')) {
             $member_id_security = $GLOBALS['FORUM_DRIVER']->get_guest_id(); // Sorry, we can't let e-mail posting with staff permissions
@@ -624,7 +625,7 @@ abstract class EmailIntegration
      * @param  string $body Comcode body (altered by reference)
      * @return array List of attachment error messages
      */
-    protected function save_attachments($attachments, $member_id, $member_id_comcode, &$body)
+    protected function save_attachments(array $attachments, int $member_id, int $member_id_comcode, string &$body) : array
     {
         require_code('files');
         require_code('files2');
@@ -718,7 +719,7 @@ abstract class EmailIntegration
      * @param  array $attachments Attachments
      * @param  string $body Comcode body (altered by reference)
      */
-    protected function substitute_cid_attachments(&$attachments, &$body)
+    protected function substitute_cid_attachments(array &$attachments, string &$body)
     {
         $matches = [];
 
@@ -760,7 +761,7 @@ abstract class EmailIntegration
      * @param  MEMBER $member_id Member ID
      * @return string Comcode version
      */
-    protected function email_comcode_from_html($body, $member_id)
+    protected function email_comcode_from_html(string $body, int $member_id) : string
     {
         $body = unixify_line_format($body);
 
@@ -842,7 +843,7 @@ abstract class EmailIntegration
      * @param  string $body Text body
      * @return string Comcode version
      */
-    protected function email_comcode_from_text($body)
+    protected function email_comcode_from_text(string $body) : string
     {
         $body = unixify_line_format($body);
 
@@ -861,7 +862,7 @@ abstract class EmailIntegration
      * @param  string $body E-mail component
      * @param  integer $format A STRIP_* constant
      */
-    abstract protected function strip_system_code(&$body, $format);
+    abstract protected function strip_system_code(string &$body, int $format);
 
     /**
      * Process a quote block in plain-text e-mail, into a Comcode quote tag. preg callback.
@@ -869,7 +870,7 @@ abstract class EmailIntegration
      * @param  array $matches preg Matches
      * @return string The result
      */
-    public function _convert_text_quote_to_comcode($matches)
+    public function _convert_text_quote_to_comcode(array $matches) : string
     {
         return '[quote]' . "\n" . trim(preg_replace('#\n> (.*)#', "\n" . '${1}', $matches[0])) . "\n" . '[/quote]';
     }
@@ -884,7 +885,7 @@ abstract class EmailIntegration
      * @param  EMAIL $from_email From address
      * @return boolean Whether it should not be processed
      */
-    protected function is_non_human_email($subject, $_body_text, $_body_html, $full_header, $from_email)
+    protected function is_non_human_email(string $subject, ?string $_body_text, ?string $_body_html, string $full_header, string $from_email) : bool
     {
         if (array_key_exists($from_email, find_system_email_addresses())) {
             return true;
@@ -933,7 +934,7 @@ abstract class EmailIntegration
      * @param  string $header E-mail header
      * @return ?array A pair: E-mail address (hopefully), From name (null: failed to parse)
      */
-    protected function get_email_address_from_header($header)
+    protected function get_email_address_from_header(string $header) : ?array
     {
         $addresses = imap_rfc822_parse_adrlist($header, get_domain());
         if (empty($addresses)) {
@@ -949,7 +950,7 @@ abstract class EmailIntegration
      * @param  string $from_email E-mail address
      * @return ?MEMBER Member ID (null: none)
      */
-    protected function find_member_id($from_email)
+    protected function find_member_id(string $from_email) : ?int
     {
         return $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($from_email);
     }
@@ -964,7 +965,7 @@ abstract class EmailIntegration
      * @param  array $errors Attachment errors
      * @param  string $url URL to content
      */
-    protected function send_bounce_email__attachment_errors($subject, $body, $email, $email_bounce_to, $errors, $url)
+    protected function send_bounce_email__attachment_errors(string $subject, string $body, string $email, string $email_bounce_to, array $errors, string $url)
     {
         $extended_subject = do_lang('MAIL_INTEGRATION_ATTACHMENT_ERRORS_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
         $extended_message = do_lang('MAIL_INTEGRATION_ATTACHMENT_ERRORS_MAIL', strip_comcode($body), $email, [$subject, get_site_name(), implode("\n", $errors), $url], get_site_default_lang());
@@ -981,7 +982,7 @@ abstract class EmailIntegration
      * @param  EMAIL $email E-mail address we tried to bind to
      * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
      */
-    abstract protected function send_bounce_email__cannot_bind($subject, $_body_text, $_body_html, $email, $email_bounce_to);
+    abstract protected function send_bounce_email__cannot_bind(string $subject, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to);
 
     /**
      * Send out a system (advisory) e-mail.
@@ -991,7 +992,7 @@ abstract class EmailIntegration
      * @param  EMAIL $email E-mail address we were to bind to
      * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
      */
-    protected function send_system_email($subject, $body, $email, $email_bounce_to)
+    protected function send_system_email(string $subject, string $body, string $email, string $email_bounce_to)
     {
         $from_email = $this->get_system_email();
 

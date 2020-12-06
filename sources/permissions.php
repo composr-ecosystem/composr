@@ -72,7 +72,7 @@ function clear_permissions_runtime_cache()
  * @param  array $params Parameters to this permission-checking function
  * @param  boolean $result Whether the permission was held
  */
-function handle_permission_check_logging($member_id, $op, $params, $result)
+function handle_permission_check_logging(int $member_id, string $op, array $params, bool $result)
 {
     global $PERMISSION_CHECK_LOGGER, $PERMISSIONS_ALREADY_LOGGED, $SITE_INFO;
     if ($PERMISSION_CHECK_LOGGER === null) {
@@ -122,7 +122,7 @@ function handle_permission_check_logging($member_id, $op, $params, $result)
  * @param  string $param The parameter given to the error message
  * @param  boolean $force_login Force the user to login (even if perhaps they are logged in already)
  */
-function access_denied($class = 'ACCESS_DENIED', $param = '', $force_login = false)
+function access_denied(string $class = 'ACCESS_DENIED', string $param = '', bool $force_login = false)
 {
     require_code('failure');
     _access_denied($class, $param, $force_login);
@@ -135,7 +135,7 @@ function access_denied($class = 'ACCESS_DENIED', $param = '', $force_login = fal
  * @param  ID_TEXT $zone The ID code for the zone being checked
  * @return boolean Whether the member has zone access
  */
-function has_zone_access($member_id, $zone)
+function has_zone_access(int $member_id, string $zone) : bool
 {
     if (running_script('upgrader')) {
         return true;
@@ -216,7 +216,7 @@ function has_zone_access($member_id, $zone)
  * @param  ?mixed $privilege Either the ID code of a privilege, an array of alternatives that are acceptable (null: none required)
  * @return boolean Whether the member has zone and page access
  */
-function has_actual_page_access($member_id = null, $page = null, $zone = null, $cats = null, $privilege = null)
+function has_actual_page_access(?int $member_id = null, ?string $page = null, ?string $zone = null, ?array $cats = null, $privilege = null) : bool
 {
     if (running_script('upgrader')) {
         return true;
@@ -283,7 +283,7 @@ function has_actual_page_access($member_id = null, $page = null, $zone = null, $
  * @param  boolean $at_now Whether we want to check we have access to the CURRENT page, using any match-key permissions
  * @return boolean Whether the member has page access
  */
-function has_page_access($member_id, $page, $zone, $at_now = false)
+function has_page_access(int $member_id, string $page, string $zone, bool $at_now = false) : bool
 {
     if (running_script('upgrader')) {
         return true;
@@ -417,7 +417,7 @@ function has_page_access($member_id, $page, $zone, $at_now = false)
  * @param  MEMBER $member_id The member being checked whether to have the access
  * @param  ?ID_TEXT $module The ID code for the module being checked for category access (null: all categories)
  */
-function load_up_all_module_category_permissions($member_id, $module = null)
+function load_up_all_module_category_permissions(int $member_id, ?string $module = null)
 {
     $groups = get_permission_where_clause_groups($member_id);
     if ($groups === null) {
@@ -467,7 +467,7 @@ function load_up_all_module_category_permissions($member_id, $module = null)
  * @param  ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string)
  * @return boolean Whether the member has category access
  */
-function has_category_access($member_id, $module, $category)
+function has_category_access(int $member_id, string $module, string $category) : bool
 {
     if (running_script('upgrader') || running_script('install')) {
         return true;
@@ -545,7 +545,7 @@ function has_category_access($member_id, $module, $category)
  * @return ?string The SQL query fragment (null: admin, so permission regardless)
  * @ignore
  */
-function get_permission_where_clause_groups($member_id, $consider_clubs = true, $field_prefix = '')
+function get_permission_where_clause_groups(int $member_id, bool $consider_clubs = true, string $field_prefix = '') : ?string
 {
     if (!isset($GLOBALS['FORUM_DRIVER'])) {
         return '1=0';
@@ -590,7 +590,7 @@ function get_permission_where_clause_groups($member_id, $consider_clubs = true, 
  * @param  ID_TEXT $row_alias The alias for the main query row
  * @return string SQL
  */
-function get_category_permission_where_clause($module, $category_field, $member_id, $groups, $row_alias = 'r')
+function get_category_permission_where_clause(string $module, string $category_field, ?int $member_id, string $groups, string $row_alias = 'r') : string
 {
     $_category_field = (empty($row_alias) ? '' : ($row_alias . '.')) . $category_field;
 
@@ -614,7 +614,7 @@ function get_category_permission_where_clause($module, $category_field, $member_
  * @param  ID_TEXT $row_alias The alias for the main query row
  * @return string SQL
  */
-function get_page_permission_where_clause($zone_field, $page_field, $member_id, $groups, $row_alias = 'r')
+function get_page_permission_where_clause(string $zone_field, string $page_field, ?int $member_id, string $groups, string $row_alias = 'r') : string
 {
     $query = get_zone_permission_where_clause($zone_field, $member_id, $groups, $row_alias);
     $query .= ' AND (';
@@ -636,7 +636,7 @@ function get_page_permission_where_clause($zone_field, $page_field, $member_id, 
  * @param  ID_TEXT $row_alias The alias for the main query row
  * @return string SQL
  */
-function get_zone_permission_where_clause($zone_field, $member_id, $groups, $row_alias = 'r')
+function get_zone_permission_where_clause(string $zone_field, ?int $member_id, string $groups, string $row_alias = 'r') : string
 {
     $query = ' AND (';
     $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_zone_access a WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND (' . $groups . '))';
@@ -654,7 +654,7 @@ function get_zone_permission_where_clause($zone_field, $member_id, $groups, $row
  * @param  array $groups List of groups to filter
  * @return array List of permissive groups, filtered from those given
  */
-function filter_group_permissivity($groups)
+function filter_group_permissivity(array $groups) : array
 {
     if (count($groups) == 1) {
         return $groups;
@@ -687,7 +687,7 @@ function filter_group_permissivity($groups)
  * @param  ?ID_TEXT $privilege2 An alternative privilege to the 'assume_any_member' privilege (null: no override)
  * @param  ?MEMBER $member_viewing The member who is doing the viewing (null: current member)
  */
-function enforce_personal_access($member_id, $privilege = null, $privilege2 = null, $member_viewing = null)
+function enforce_personal_access(int $member_id, ?string $privilege = null, ?string $privilege2 = null, ?int $member_viewing = null)
 {
     if ($member_viewing === null) {
         $member_viewing = get_member();
@@ -715,7 +715,7 @@ function enforce_personal_access($member_id, $privilege = null, $privilege2 = nu
  * @param  ?MEMBER $member_id Member to check for (null: current user)
  * @param  ?ID_TEXT $page_name Page name to check for (null: current page)
  */
-function check_privilege($privilege, $cats = null, $member_id = null, $page_name = null)
+function check_privilege(string $privilege, ?array $cats = null, ?int $member_id = null, ?string $page_name = null)
 {
     if ($page_name === null) {
         $page_name = get_page_name();
@@ -737,7 +737,7 @@ function check_privilege($privilege, $cats = null, $member_id = null, $page_name
  * @param  ID_TEXT $module The ID code for the permission module being checked for
  * @return boolean Whether the member has the privilege
  */
-function has_some_cat_privilege($member_id, $privilege, $page, $module)
+function has_some_cat_privilege(int $member_id, string $privilege, ?string $page, string $module) : bool
 {
     $page_wide_test = has_privilege($member_id, $privilege, $page); // To make sure privileges are cached, and test if page-wide or site-wide exists
     if ($page_wide_test) {
@@ -765,7 +765,7 @@ function has_some_cat_privilege($member_id, $privilege, $page, $module)
  * @param  ?mixed $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...), or a string of the cat type if you will accept overrides in any matching cat (null: N/A)
  * @return boolean Whether the member has the privilege
  */
-function has_privilege($member_id, $privilege, $page = null, $cats = null)
+function has_privilege(int $member_id, string $privilege, ?string $page = null, $cats = null) : bool
 {
     if (running_script('upgrader')) {
         return true;
@@ -907,7 +907,7 @@ function has_privilege($member_id, $privilege, $page = null, $cats = null)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
  */
-function check_submit_permission($range, $cats = null, $page = null)
+function check_submit_permission(string $range, ?array $cats = null, ?string $page = null)
 {
     if ($page === null) {
         $page = get_page_name();
@@ -929,7 +929,7 @@ function check_submit_permission($range, $cats = null, $page = null)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member can submit in this range
  */
-function has_submit_permission($range, $member_id, $ip, $page, $cats = null)
+function has_submit_permission(string $range, int $member_id, string $ip, ?string $page, ?array $cats = null) : bool
 {
     global $SUBMIT_PERMISSION_CACHE, $USERSUBMITBAN_MEMBER_CACHE;
     if (isset($SUBMIT_PERMISSION_CACHE[$range][$member_id][$ip][$page][($cats === null) ? '' : serialize($cats)])) {
@@ -965,7 +965,7 @@ function has_submit_permission($range, $member_id, $ip, $page, $cats = null)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
  */
-function check_some_edit_permission($range, $cats = null, $page = null)
+function check_some_edit_permission(string $range, ?array $cats = null, ?string $page = null)
 {
     if ($page === null) {
         $page = get_page_name();
@@ -997,7 +997,7 @@ function check_some_edit_permission($range, $cats = null, $page = null)
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
  */
-function check_edit_permission($range, $resource_owner, $cats = null, $page = null)
+function check_edit_permission(string $range, ?int $resource_owner, ?array $cats = null, ?string $page = null)
 {
     if ($page === null) {
         $page = get_page_name();
@@ -1019,7 +1019,7 @@ function check_edit_permission($range, $resource_owner, $cats = null, $page = nu
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member may edit the resource
  */
-function has_edit_permission($range, $member_id, $resource_owner, $page, $cats = null)
+function has_edit_permission(string $range, int $member_id, ?int $resource_owner, ?string $page, ?array $cats = null) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -1042,7 +1042,7 @@ function has_edit_permission($range, $member_id, $resource_owner, $page, $cats =
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @param  ?ID_TEXT $page The ID code for the page being checked (null: current page)
  */
-function check_delete_permission($range, $resource_owner, $cats = null, $page = null)
+function check_delete_permission(string $range, ?int $resource_owner, ?array $cats = null, ?string $page = null)
 {
     if ($page === null) {
         $page = get_page_name();
@@ -1064,7 +1064,7 @@ function check_delete_permission($range, $resource_owner, $cats = null, $page = 
  * @param  ?array $cats A list of cat details to require access to (c-type-1,c-id-1,c-type-2,c-d-2,...) (null: N/A)
  * @return boolean Whether the member may delete the resource
  */
-function has_delete_permission($range, $member_id, $resource_owner, $page, $cats = null)
+function has_delete_permission(string $range, int $member_id, ?int $resource_owner, ?string $page, ?array $cats = null) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -1085,7 +1085,7 @@ function has_delete_permission($range, $member_id, $resource_owner, $page, $cats
  * @param  ?MEMBER $member_id The member being checked for access (null: current member)
  * @return boolean If the permission is there
  */
-function has_add_comcode_page_permission($zone = null, $member_id = null)
+function has_add_comcode_page_permission(?string $zone = null, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1115,7 +1115,7 @@ function has_add_comcode_page_permission($zone = null, $member_id = null)
  * @param  ?MEMBER $member_id The member being checked for access (null: current member)
  * @return boolean If the permission is there
  */
-function has_bypass_validation_comcode_page_permission($zone = null, $member_id = null)
+function has_bypass_validation_comcode_page_permission(?string $zone = null, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1146,7 +1146,7 @@ function has_bypass_validation_comcode_page_permission($zone = null, $member_id 
  * @param  ?MEMBER $member_id The member being checked for access (null: current member)
  * @return boolean If the permission is there
  */
-function has_some_edit_comcode_page_permission($scope, $zone = null, $member_id = null)
+function has_some_edit_comcode_page_permission(int $scope, ?string $zone = null, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1187,7 +1187,7 @@ function has_some_edit_comcode_page_permission($scope, $zone = null, $member_id 
  * @param  ?MEMBER $member_id The member being checked for access (null: current member)
  * @return array A list of pairs: The zone name, and a bitmask of COMCODE_EDIT_* constants identifying the level of editing permission present
  */
-function get_comcode_page_editability_per_zone($member_id = null)
+function get_comcode_page_editability_per_zone(?int $member_id = null) : array
 {
     $zones = [];
 
@@ -1218,7 +1218,7 @@ function get_comcode_page_editability_per_zone($member_id = null)
  * @param  ?MEMBER $member_id The member being checked for access (null: current member)
  * @return boolean If the permission is there
  */
-function has_edit_comcode_page_permission($zone, $page, $owner = null, $member_id = null)
+function has_edit_comcode_page_permission(string $zone, string $page, ?int $owner = null, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

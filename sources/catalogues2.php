@@ -24,7 +24,7 @@
  * @param  ID_TEXT $catalogue_name Catalogue name
  * @return AUTO_LINK The category ID
  */
-function create_ecommerce_catalogue($catalogue_name)
+function create_ecommerce_catalogue(string $catalogue_name) : int
 {
     actual_add_catalogue(
         $catalogue_name,
@@ -87,7 +87,7 @@ function create_ecommerce_catalogue($catalogue_name)
  *
  * @param  ID_TEXT $catalogue_name Catalogue name
  */
-function catalogue_to_tree($catalogue_name)
+function catalogue_to_tree(string $catalogue_name)
 {
     $_c_title = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_title', ['c_name' => $catalogue_name]);
     if ($_c_title === null) {
@@ -103,7 +103,7 @@ function catalogue_to_tree($catalogue_name)
  *
  * @param  ID_TEXT $catalogue_name Catalogue name
  */
-function catalogue_from_tree($catalogue_name)
+function catalogue_from_tree(string $catalogue_name)
 {
     $GLOBALS['SITE_DB']->query_update('catalogue_categories', ['cc_parent_id' => null], ['c_name' => $catalogue_name]);
     $GLOBALS['SITE_DB']->query_update('catalogues', ['c_is_tree' => 0], ['c_name' => $catalogue_name], '', 1);
@@ -129,7 +129,7 @@ function catalogue_from_tree($catalogue_name)
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function actual_add_catalogue($name, $title, $description, $display_type, $is_tree, $notes, $submit_points, $ecommerce = 0, $categories_sort_order = 'title ASC', $send_view_reports = 'never', $default_review_freq = null, $add_time = null, $uniqify = false)
+function actual_add_catalogue(string $name, $title, $description, int $display_type, int $is_tree, string $notes, int $submit_points, int $ecommerce = 0, string $categories_sort_order = 'title ASC', string $send_view_reports = 'never', ?int $default_review_freq = null, ?int $add_time = null, bool $uniqify = false) : string
 {
     if ($add_time === null) {
         $add_time = time();
@@ -242,7 +242,7 @@ function actual_add_catalogue($name, $title, $description, $display_type, $is_tr
  * @param  ?AUTO_LINK $id Force this ID (null: auto-increment as normal)
  * @return AUTO_LINK Field ID
  */
-function actual_add_catalogue_field($c_name, $name, $description = '', $type = 'short_text', $order = null, $defines_order = 0, $visible = 1, $default = '', $required = 0, $is_sortable = 0, $include_in_main_search = 0, $allow_template_search = 0, $put_in_category = 1, $put_in_search = 1, $options = '', $id = null)
+function actual_add_catalogue_field(string $c_name, $name, $description = '', string $type = 'short_text', ?int $order = null, int $defines_order = 0, int $visible = 1, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '', ?int $id = null) : int
 {
     if ($order === null) {
         $order = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'MAX(cf_order)', ['c_name' => $c_name]);
@@ -344,7 +344,7 @@ function actual_add_catalogue_field($c_name, $name, $description = '', $type = '
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function actual_edit_catalogue($old_name, $name, $title, $description, $display_type, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time = null, $uniqify = false)
+function actual_edit_catalogue(string $old_name, string $name, string $title, string $description, int $display_type, string $notes, int $submit_points, int $ecommerce, string $categories_sort_order, string $send_view_reports, ?int $default_review_freq, ?int $add_time = null, bool $uniqify = false) : string
 {
     if ($old_name != $name) {
         // Check doesn't already exist
@@ -439,7 +439,7 @@ function actual_edit_catalogue($old_name, $name, $title, $description, $display_
  *
  * @param  ID_TEXT $name The name of the catalogue
  */
-function actual_delete_catalogue($name)
+function actual_delete_catalogue(string $name)
 {
     // Delete lang
     $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['c_description', 'c_title'], ['c_name' => $name], '', 1);
@@ -520,7 +520,7 @@ function actual_delete_catalogue($name)
  * @param  SHORT_TEXT $options Field options
  * @param  ?ID_TEXT $type The field type (null: do not change)
  */
-function actual_edit_catalogue_field($id, $c_name, $name, $description, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category = 1, $put_in_search = 1, $options = '', $type = null) // You cannot edit a field type
+function actual_edit_catalogue_field(int $id, string $c_name, ?string $name, ?string $description, int $order, int $defines_order, int $visible, string $default, int $required, int $is_sortable, int $include_in_main_search, int $allow_template_search, int $put_in_category = 1, int $put_in_search = 1, string $options = '', ?string $type = null) // You cannot edit a field type
 {
     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['cf_description', 'cf_name', 'cf_type'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -580,7 +580,7 @@ function actual_edit_catalogue_field($id, $c_name, $name, $description, $order, 
  * @param  string $table The table
  * @param  string $delimiter Delimiter which separates special syntax
  */
-function catalogue_field_strip_exotic_syntax($id, $table, $delimiter)
+function catalogue_field_strip_exotic_syntax(int $id, string $table, string $delimiter)
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -606,7 +606,7 @@ function catalogue_field_strip_exotic_syntax($id, $table, $delimiter)
  *
  * @param  AUTO_LINK $id The ID of the field
  */
-function actual_delete_catalogue_field($id)
+function actual_delete_catalogue_field(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['cf_name', 'cf_description', 'cf_type'], ['id' => $id]);
     if (!array_key_exists(0, $rows)) {
@@ -637,7 +637,7 @@ function actual_delete_catalogue_field($id)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @return AUTO_LINK The ID of the new category
  */
-function actual_add_catalogue_category($catalogue_name, $title, $description, $notes, $parent_id, $rep_image = '', $move_days_lower = 30, $move_days_higher = 60, $move_target = null, $add_date = null, $id = null, $meta_keywords = '', $meta_description = '')
+function actual_add_catalogue_category(string $catalogue_name, $title, $description, string $notes, ?int $parent_id, string $rep_image = '', int $move_days_lower = 30, int $move_days_higher = 60, ?int $move_target = null, ?int $add_date = null, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
 {
     if ($add_date === null) {
         $add_date = time();
@@ -755,7 +755,7 @@ function rebuild_catalogue_cat_treecache()
  * @param  ?AUTO_LINK $parent_id The ID of the parent category (null: no parent)
  * @param  boolean $cleanup_first Whether to delete any possible pre-existing records for the category first
  */
-function store_in_catalogue_cat_treecache($id, $parent_id, $cleanup_first = true)
+function store_in_catalogue_cat_treecache(int $id, ?int $parent_id, bool $cleanup_first = true)
 {
     if ($cleanup_first) {
         $GLOBALS['SITE_DB']->query_delete('catalogue_cat_treecache', ['cc_id' => $id]);
@@ -783,7 +783,7 @@ function store_in_catalogue_cat_treecache($id, $parent_id, $cleanup_first = true
  * @param  ?AUTO_LINK $cat_id The ID of the category (null: skip, called by some code that didn't realise it didn't impact a tree parent)
  * @param  boolean $recursive_updates Whether to recurse up the tree to force recalculations on other categories (recommended, unless you are doing a complete rebuild)
  */
-function calculate_category_child_count_cache($cat_id, $recursive_updates = true)
+function calculate_category_child_count_cache(?int $cat_id, bool $recursive_updates = true)
 {
     if ($cat_id === null) {
         return;
@@ -829,7 +829,7 @@ function calculate_category_child_count_cache($cat_id, $recursive_updates = true
  * @param  ?TIME $add_time Add time (null: do not change)
  * @param  ?ID_TEXT $c_name The catalogue name (null: do not change)
  */
-function actual_edit_catalogue_category($id, $title, $description, $notes, $parent_id, $meta_keywords, $meta_description, $rep_image, $move_days_lower, $move_days_higher, $move_target, $add_time = null, $c_name = null)
+function actual_edit_catalogue_category(int $id, string $title, string $description, string $notes, ?int $parent_id, string $meta_keywords, string $meta_description, string $rep_image, int $move_days_lower, int $move_days_higher, ?int $move_target, ?int $add_time = null, ?string $c_name = null)
 {
     $under_category_id = $parent_id;
     while (($under_category_id !== null) && ($under_category_id != INTEGER_MAGIC_NULL)) {
@@ -919,7 +919,7 @@ function actual_edit_catalogue_category($id, $title, $description, $notes, $pare
  * @param  AUTO_LINK $id The ID of the category
  * @param  boolean $deleting_all Whether we're deleting everything under the category; if FALSE we will actively reassign child categories and entries up a level (if tree) or deletes (if not tree)
  */
-function actual_delete_catalogue_category($id, $deleting_all = false)
+function actual_delete_catalogue_category(int $id, bool $deleting_all = false)
 {
     // Info about our category
     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories c LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogues x ON c.c_name=x.c_name', ['c_is_tree', 'c.c_name', 'cc_description', 'cc_title', 'cc_parent_id'], ['id' => $id], '', 1);
@@ -1033,7 +1033,7 @@ function actual_delete_catalogue_category($id, $deleting_all = false)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @return AUTO_LINK The ID of the newly added entry
  */
-function actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $time = null, $submitter = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '')
+function actual_add_catalogue_entry(int $category_id, int $validated, string $notes, int $allow_rating, int $allow_comments, int $allow_trackbacks, array $map, ?int $time = null, ?int $submitter = null, ?int $edit_date = null, int $views = 0, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
 {
     if ($time === null) {
         $time = time();
@@ -1227,7 +1227,7 @@ function actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rat
  * @param  ?MEMBER $submitter Submitter (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null
  */
-function actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $meta_keywords = '', $meta_description = '', $edit_time = null, $add_time = null, $views = null, $submitter = null, $null_is_literal = false)
+function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, string $notes, int $allow_rating, int $allow_comments, int $allow_trackbacks, array $map, ?string $meta_keywords = '', ?string $meta_description = '', ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -1407,7 +1407,7 @@ function actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $all
  *
  * @param  AUTO_LINK $id The ID of the entry to delete
  */
-function actual_delete_catalogue_entry($id)
+function actual_delete_catalogue_entry(int $id)
 {
     $old_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => $id]);
     if ($old_category_id === null) {
@@ -1503,7 +1503,7 @@ function actual_delete_catalogue_entry($id)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__catalogue_categories($where = [], $tolerate_errors = false)
+function reorganise_uploads__catalogue_categories(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('catalogue_category', 'uploads/repimages', 'rep_image', $where, true, $tolerate_errors);
@@ -1515,7 +1515,7 @@ function reorganise_uploads__catalogue_categories($where = [], $tolerate_errors 
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__catalogue_entries($where = [], $tolerate_errors = false)
+function reorganise_uploads__catalogue_entries(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     $fake_cma_info = [

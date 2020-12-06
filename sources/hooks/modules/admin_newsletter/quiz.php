@@ -31,7 +31,7 @@ class Hook_whatsnew_quiz
      * @param  string $filter Category filter to apply
      * @return array Tuple of result details
      */
-    public function run($cutoff_time, $lang, $filter)
+    public function run(int $cutoff_time, string $lang, string $filter) : array
     {
         if (!addon_installed('quizzes')) {
             return [];

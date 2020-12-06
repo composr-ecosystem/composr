@@ -28,7 +28,7 @@ class Hook_snippet_realtime_rain_load
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('realtime_rain')) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('realtime_rain')));

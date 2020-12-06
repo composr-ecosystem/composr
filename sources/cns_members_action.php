@@ -25,7 +25,7 @@
  * @param  ?array $overrides Map of config option codenames and overridden values (null: no overrides)
  * @return ID_TEXT Config option value
  */
-function get_option_with_overrides($option_name, $overrides)
+function get_option_with_overrides(string $option_name, ?array $overrides) : string
 {
     if ((isset($overrides[$option_name])) && ($overrides[$option_name] != '')) {
         return $overrides[$option_name];
@@ -44,7 +44,7 @@ function get_option_with_overrides($option_name, $overrides)
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return boolean Whether the field must be filled in
  */
-function member_field_is_required($member_id, $field_class, $current_value = null, $editing_member = null, $adjusted_config_options = null)
+function member_field_is_required(?int $member_id, string $field_class, ?string $current_value = null, ?int $editing_member = null, ?array $adjusted_config_options = null) : bool
 {
     if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) == '0') || ((get_option_with_overrides('dobs', $adjusted_config_options) == '1') && ($member_id === null)))) {
         return false;
@@ -121,7 +121,7 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = [], $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = '0', $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
+function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $on_probation_until = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compatibility_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
 {
     require_code('form_templates');
     require_code('cns_members');
@@ -469,7 +469,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
  * @param  string $__default The default value to use
  * @return array A tuple: the DB field type, the default (in correct data type)
  */
-function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
+function get_cpf_storage_for(string $type, int $encrypted = 0, string $__default = '') : array
 {
     $default = null;
 
@@ -536,7 +536,7 @@ function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
  * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
  * @return AUTO_LINK The ID of the new Custom Profile Field
  */
-function cns_make_custom_field($name, $locked = 0, $description = '', $default = '', $public_view = 0, $owner_view = 0, $owner_set = 0, $encrypted = 0, $type = 'long_text', $required = 0, $show_in_posts = 0, $show_in_post_previews = 0, $order = null, $only_group = '', $show_on_join_form = 0, $options = '', $include_in_main_search = 0, $allow_template_search = 0, $icon = '', $section = '', $tempcode = '', $no_name_dupe = false, $autofill_type = '', $autofill_hint = '')
+function cns_make_custom_field(string $name, int $locked = 0, string $description = '', string $default = '', int $public_view = 0, int $owner_view = 0, int $owner_set = 0, int $encrypted = 0, string $type = 'long_text', int $required = 0, int $show_in_posts = 0, int $show_in_post_previews = 0, ?int $order = null, string $only_group = '', int $show_on_join_form = 0, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', bool $no_name_dupe = false, string $autofill_type = '', string $autofill_hint = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_CUSTOM_PROFILE_FIELD', null, $name);
@@ -643,7 +643,7 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
  * @param  boolean $immediate Whether to create the indexes immediately (as opposed to doing it in a task)
  * @return boolean If the operation could succeed (false means limit hit)
  */
-function build_cpf_indices($id, $index, $type, $db_type, $immediate = false)
+function build_cpf_indices(int $id, bool $index, string $type, string $db_type, bool $immediate = false) : bool
 {
     $indices_count = $GLOBALS['FORUM_DB']->query_select_value('db_meta_indices', 'COUNT(*)', ['i_table' => 'f_member_custom_fields']);
     if (!running_script('install')) {

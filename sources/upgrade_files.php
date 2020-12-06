@@ -24,7 +24,7 @@
  * @ignore
  * @return string Output messages
  */
-function upgrader_file_upgrade_screen()
+function upgrader_file_upgrade_screen() : string
 {
     $out = '';
 
@@ -86,7 +86,7 @@ function upgrader_file_upgrade_screen()
  * @ignore
  * @return string Output messages
  */
-function _upgrader_file_upgrade_screen()
+function _upgrader_file_upgrade_screen() : string
 {
     $out = '';
 

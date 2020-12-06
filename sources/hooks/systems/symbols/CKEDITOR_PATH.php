@@ -29,7 +29,7 @@ class Hook_symbol_CKEDITOR_PATH
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         $value = 'data/ckeditor';
 

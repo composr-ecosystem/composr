@@ -37,7 +37,7 @@ class Hook_import_cms_merge
      *
      * @return ?array Importer handling details, including lists of all the import types covered (import types are not necessarily the same as actual tables) (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['supports_advanced_import'] = true;
@@ -153,7 +153,7 @@ class Hook_import_cms_merge
      * @param  PATH $file_base The base directory we are importing from
      * @return ?Tempcode Error/warning UI (null: no error/warning)
      */
-    public function pre_import_tests($db, $table_prefix, $file_base)
+    public function pre_import_tests(object $db, string $table_prefix, string $file_base) : ?object
     {
         $title = get_screen_title('IMPORT');
 
@@ -228,7 +228,7 @@ class Hook_import_cms_merge
      * @param  PATH $file_base The path to the imported site
      * @return boolean Answer
      */
-    public function on_same_msn($file_base)
+    public function on_same_msn(string $file_base) : bool
     {
         if (get_param_integer('keep_on_same_msn', null) === 0) {
             return false;
@@ -257,7 +257,7 @@ class Hook_import_cms_merge
      * @param  mixed $id The content language string ID
      * @return string The cleaned-up string
      */
-    public function get_lang_string($db, $id)
+    public function get_lang_string(object $db, $id) : string
     {
         if ($id === null) {
             return '';
@@ -281,7 +281,7 @@ class Hook_import_cms_merge
      * @param  ?ID_TEXT $referer_id Attachment referer type (null: not setting one now)
      * @return string Output
      */
-    public function update_comcode($comcode, $referer_id = null)
+    public function update_comcode(string $comcode, ?string $referer_id = null) : string
     {
         $matches = [];
         $count = preg_match_all('#\](\d+)\[/attachment\]#', $comcode, $matches);
@@ -310,7 +310,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_welcome_emails($db, $table_prefix, $file_base)
+    public function import_cns_welcome_emails(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -339,7 +339,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_quizzes($db, $table_prefix, $file_base)
+    public function import_quizzes(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('quizzes', ['*'], [], 'ORDER BY id', null, 0, true);
         if ($rows === null) {
@@ -507,7 +507,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_ecommerce($db, $table_prefix, $file_base)
+    public function import_ecommerce(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('ecom_transactions', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -648,7 +648,7 @@ class Hook_import_cms_merge
      * @param  object $db The DB connection to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    protected function _import_ecom_prods_custom($db, $table_prefix)
+    protected function _import_ecom_prods_custom(object $db, string $table_prefix)
     {
         $rows = $db->query_select('ecom_prods_custom', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -670,7 +670,7 @@ class Hook_import_cms_merge
      * @param  object $db The DB connection to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    protected function _import_ecom_prods_permissions($db, $table_prefix)
+    protected function _import_ecom_prods_permissions(object $db, string $table_prefix)
     {
         $rows = $db->query_select('ecom_prods_permissions', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -693,7 +693,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_attachments($db, $table_prefix, $file_base)
+    public function import_attachments(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -725,7 +725,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_attachment_references($db, $table_prefix, $file_base)
+    public function import_attachment_references(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -764,7 +764,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_feedback($db, $table_prefix, $file_base)
+    public function import_feedback(object $db, string $table_prefix, string $file_base)
     {
         $type_remap = ['downloads_category' => 'download_category', 'downloads_download' => 'download', 'downloads' => 'download'];
 
@@ -859,7 +859,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_authors($db, $table_prefix, $file_base)
+    public function import_authors(object $db, string $table_prefix, string $file_base)
     {
         require_code('authors');
 
@@ -885,7 +885,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_banners($db, $table_prefix, $file_base)
+    public function import_banners(object $db, string $table_prefix, string $file_base)
     {
         require_code('banners2');
 
@@ -968,7 +968,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_points_gifts_and_charges($db, $table_prefix, $file_base)
+    public function import_points_gifts_and_charges(object $db, string $table_prefix, string $file_base)
     {
         require_code('points2');
 
@@ -1034,7 +1034,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_config($db, $table_prefix, $file_base)
+    public function import_config(object $db, string $table_prefix, string $file_base)
     {
         $remap = [
         ];
@@ -1069,7 +1069,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_polls($db, $table_prefix, $file_base)
+    public function import_polls(object $db, string $table_prefix, string $file_base)
     {
         require_code('polls2');
 
@@ -1161,7 +1161,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_news_and_categories($db, $table_prefix, $file_base)
+    public function import_news_and_categories(object $db, string $table_prefix, string $file_base)
     {
         require_code('news2');
 
@@ -1241,7 +1241,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_newsletter_subscriptions($db, $table_prefix, $file_base)
+    public function import_newsletter_subscriptions(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('newsletters', ['*'], [], '', null, 0, true);
         if ($rows !== null) {
@@ -1314,7 +1314,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_downloads_and_categories($db, $table_prefix, $file_base)
+    public function import_downloads_and_categories(object $db, string $table_prefix, string $file_base)
     {
         require_code('downloads2');
 
@@ -1401,7 +1401,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_images_and_galleries($db, $table_prefix, $file_base)
+    public function import_images_and_galleries(object $db, string $table_prefix, string $file_base)
     {
         require_code('galleries2');
 
@@ -1481,7 +1481,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_wiki($db, $table_prefix, $file_base)
+    public function import_wiki(object $db, string $table_prefix, string $file_base)
     {
         if (!import_check_if_imported('wiki_page', strval(db_get_first_id()))) {
             import_id_remap_put('wiki_page', strval(db_get_first_id()), db_get_first_id());
@@ -1635,7 +1635,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_custom_comcode($db, $table_prefix, $file_base)
+    public function import_custom_comcode(object $db, string $table_prefix, string $file_base)
     {
         require_code('custom_comcode');
 
@@ -1672,7 +1672,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_comcode_pages($db, $table_prefix, $file_base)
+    public function import_comcode_pages(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('comcode_pages', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -1751,7 +1751,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_staff_checklist_cus_tasks($db, $table_prefix, $file_base)
+    public function import_staff_checklist_cus_tasks(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('staff_checklist_cus_tasks', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -1776,7 +1776,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_wordfilter($db, $table_prefix, $file_base)
+    public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
         require_code('wordfilter');
 
@@ -1797,7 +1797,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_calendar($db, $table_prefix, $file_base)
+    public function import_calendar(object $db, string $table_prefix, string $file_base)
     {
         require_code('calendar2');
 
@@ -1901,7 +1901,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_redirects($db, $table_prefix, $file_base)
+    public function import_redirects(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('redirects', ['*']);
         $this->_fix_comcode_ownership($rows);
@@ -1917,7 +1917,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_themes($db, $table_prefix, $file_base)
+    public function import_themes(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'theme_images WHERE path LIKE \'' . db_encode_like('%/images\_custom/%') . '\'');
         $this->_fix_comcode_ownership($rows);
@@ -1939,7 +1939,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_support_tickets($db, $table_prefix, $file_base)
+    public function import_support_tickets(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('ticket_types', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -1991,7 +1991,7 @@ class Hook_import_cms_merge
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    protected function _import_ticket_extra_access($db, $table_prefix)
+    protected function _import_ticket_extra_access(object $db, string $table_prefix)
     {
         $rows = $db->query_select('ticket_extra_access', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -2015,7 +2015,7 @@ class Hook_import_cms_merge
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    protected function _import_ticket_known_emailers($db, $table_prefix)
+    protected function _import_ticket_known_emailers(object $db, string $table_prefix)
     {
         $rows = $db->query_select('ticket_known_emailers', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -2040,7 +2040,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_useronline_tracking($db, $table_prefix, $file_base)
+    public function import_useronline_tracking(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('usersonline_track', ['*']);
         $this->_fix_comcode_ownership($rows);
@@ -2056,7 +2056,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_ip_bans($db, $table_prefix, $file_base)
+    public function import_ip_bans(object $db, string $table_prefix, string $file_base)
     {
         require_code('failure');
 
@@ -2091,7 +2091,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_zones($db, $table_prefix, $file_base)
+    public function import_zones(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('zones', ['*']);
         $this->_fix_comcode_ownership($rows);
@@ -2117,7 +2117,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_catalogues($db, $table_prefix, $file_base)
+    public function import_catalogues(object $db, string $table_prefix, string $file_base)
     {
         require_code('catalogues2');
 
@@ -2271,7 +2271,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_chat_rooms($db, $table_prefix, $file_base)
+    public function import_chat_rooms(object $db, string $table_prefix, string $file_base)
     {
         require_code('chat2');
 
@@ -2394,7 +2394,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_awards($db, $table_prefix, $file_base)
+    public function import_awards(object $db, string $table_prefix, string $file_base)
     {
         $content_types = [];
         $rows = $db->query_select('award_types', ['*'], [], '', null, 0, true);
@@ -2454,7 +2454,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_filedump($db, $table_prefix, $file_base)
+    public function import_filedump(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('filedump', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -2479,7 +2479,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_permissions($db, $table_prefix, $file_base)
+    public function import_permissions(object $db, string $table_prefix, string $file_base)
     {
         $remap = [
         ];
@@ -2768,7 +2768,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_notifications($db, $table_prefix, $file_base)
+    public function import_notifications(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('notifications_enabled', ['*'], [], '', null, 0, true);
         if ($rows !== null) {
@@ -2835,7 +2835,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_groups($db, $table_prefix, $file_base)
+    public function import_cns_groups(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -2879,7 +2879,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_members($db, $table_prefix, $file_base)
+    public function import_cns_members(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3051,7 +3051,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_custom_profile_fields($db, $table_prefix, $file_base)
+    public function import_cns_custom_profile_fields(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3101,7 +3101,7 @@ class Hook_import_cms_merge
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    protected function _import_f_member_cpf_perms($db, $table_prefix)
+    protected function _import_f_member_cpf_perms(object $db, string $table_prefix)
     {
         $rows = $db->query_select('f_member_cpf_perms', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -3131,7 +3131,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_forum_groupings($db, $table_prefix, $file_base)
+    public function import_cns_forum_groupings(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3165,7 +3165,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_forums($db, $table_prefix, $file_base)
+    public function import_cns_forums(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3246,7 +3246,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_topics($db, $table_prefix, $file_base)
+    public function import_cns_topics(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3359,7 +3359,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_posts($db, $table_prefix, $file_base)
+    public function import_cns_posts(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3439,7 +3439,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
+    public function import_cns_polls_and_votes(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3498,7 +3498,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_emoticons($db, $table_prefix, $file_base)
+    public function import_cns_emoticons(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3520,7 +3520,7 @@ class Hook_import_cms_merge
      * @param  SHORT_TEXT $multi_code Multi code
      * @return SHORT_TEXT New multi code
      */
-    public function convert_multi_code($multi_code)
+    public function convert_multi_code(string $multi_code) : string
     {
         if ($multi_code == '*') {
             return $multi_code;
@@ -3565,7 +3565,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_multi_moderations($db, $table_prefix, $file_base)
+    public function import_cns_multi_moderations(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3591,7 +3591,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_post_templates($db, $table_prefix, $file_base)
+    public function import_cns_post_templates(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3612,7 +3612,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_warnings($db, $table_prefix, $file_base)
+    public function import_cns_warnings(object $db, string $table_prefix, string $file_base)
     {
         if ($this->on_same_msn($file_base)) {
             return;
@@ -3656,7 +3656,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_aggregate_type_instances($db, $table_prefix, $file_base)
+    public function import_aggregate_type_instances(object $db, string $table_prefix, string $file_base)
     {
         require_code('aggregate_types');
 
@@ -3685,7 +3685,7 @@ class Hook_import_cms_merge
      * @param  ID_TEXT $old_id The old ID
      * @param  ID_TEXT $id_new The new ID
      */
-    protected function _import_content_privacy($db, $content_type, $old_id, $id_new)
+    protected function _import_content_privacy(object $db, string $content_type, string $old_id, string $id_new)
     {
         if (addon_installed('content_privacy')) {
             $rows = $db->query_select('content_privacy', ['*'], ['content_type' => $content_type, 'content_id' => $old_id], '', 1);
@@ -3715,7 +3715,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_saved_warnings($db, $table_prefix, $file_base)
+    public function import_cns_saved_warnings(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('f_saved_warnings', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -3739,7 +3739,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_match_key_messages($db, $table_prefix, $file_base)
+    public function import_match_key_messages(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('match_key_messages', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -3765,7 +3765,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_menu_items($db, $table_prefix, $file_base)
+    public function import_menu_items(object $db, string $table_prefix, string $file_base)
     {
         $parent_rows = $db->query_select('menu_items', ['*']);
         if ($parent_rows === null) {
@@ -3808,7 +3808,7 @@ class Hook_import_cms_merge
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_staff_links($db, $table_prefix, $file_base)
+    public function import_staff_links(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('staff_links', ['*'], [], '', null, 0, true);
         if ($rows === null) {
@@ -3829,7 +3829,7 @@ class Hook_import_cms_merge
      * @param  ID_TEXT $rating_type The rating type
      * @param  ?ID_TEXT $import_type The import type to get remapping from (null: no remapping)
      */
-    protected function _import_review_supplement($db, $table_prefix, $rating_type, $import_type)
+    protected function _import_review_supplement(object $db, string $table_prefix, string $rating_type, ?string $import_type)
     {
         $rows = $db->query_select('review_supplement', ['*'], ['r_rating_type' => $rating_type]);
         foreach ($rows as $row) {
@@ -3862,7 +3862,7 @@ class Hook_import_cms_merge
      * @param  ID_TEXT $content_type The content type
      * @param  ?ID_TEXT $import_type The import type to get remapping from (null: no remapping)
      */
-    protected function _import_content_reviews($db, $table_prefix, $content_type, $import_type)
+    protected function _import_content_reviews(object $db, string $table_prefix, string $content_type, ?string $import_type)
     {
         $rows = $db->query_select('content_reviews', ['*'], ['content_type' => $content_type]);
         if ($rows === null) {
@@ -3889,7 +3889,7 @@ class Hook_import_cms_merge
      * @param  ID_TEXT $content_type The content type
      * @param  ?ID_TEXT $import_type The import type to get remapping from (null: no remapping)
      */
-    protected function _import_catalogue_entry_linkage($db, $table_prefix, $content_type, $import_type)
+    protected function _import_catalogue_entry_linkage(object $db, string $table_prefix, string $content_type, ?string $import_type)
     {
         $sql = 'SELECT * FROM ' . $table_prefix . 'catalogue_entry_linkage WHERE ' . db_string_equal_to('content_type', $content_type);
         if ($content_type == 'wiki_page') {
@@ -3922,7 +3922,7 @@ class Hook_import_cms_merge
      *
      * @param  array $rows Rows with potential fields to fix
      */
-    protected function _fix_comcode_ownership(&$rows)
+    protected function _fix_comcode_ownership(array &$rows)
     {
         foreach ($rows as &$row) {
             foreach ($row as $field => $value) {

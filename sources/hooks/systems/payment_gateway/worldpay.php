@@ -40,7 +40,7 @@ class Hook_payment_gateway_worldpay
      *
      * @return array The config
      */
-    public function get_config()
+    public function get_config() : array
     {
         return [
             'supports_remote_memo' => false,
@@ -53,7 +53,7 @@ class Hook_payment_gateway_worldpay
      * @param  float $amount A transaction amount
      * @return float The fee
      */
-    public function get_transaction_fee($amount)
+    public function get_transaction_fee(float $amount) : float
     {
         return 0.045 * $amount; // for credit card. Debit card is a flat 50p
     }
@@ -63,7 +63,7 @@ class Hook_payment_gateway_worldpay
      *
      * @return string The answer
      */
-    protected function _get_username()
+    protected function _get_username() : string
     {
         return ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
     }
@@ -73,7 +73,7 @@ class Hook_payment_gateway_worldpay
      *
      * @return URLPATH The remote form URL
      */
-    protected function _get_remote_form_url()
+    protected function _get_remote_form_url() : string
     {
         return 'https://' . (ecommerce_test_mode() ? 'select-test' : 'select') . '.worldpay.com/wcc/purchase';
     }
@@ -83,7 +83,7 @@ class Hook_payment_gateway_worldpay
      *
      * @return Tempcode The stuff
      */
-    public function get_logos()
+    public function get_logos() : object
     {
         $inst_id = $this->_get_username();
         $address = str_replace("\n", '<br />', escape_html(get_full_business_address()));
@@ -97,7 +97,7 @@ class Hook_payment_gateway_worldpay
      *
      * @return string A transaction ID
      */
-    public function generate_trans_id()
+    public function generate_trans_id() : string
     {
         require_code('crypt');
         return get_secure_random_string();
@@ -116,7 +116,7 @@ class Hook_payment_gateway_worldpay
      * @param  ID_TEXT $currency The currency to use
      * @return Tempcode The button
      */
-    public function make_transaction_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $currency)
+    public function make_transaction_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, float $shipping_cost, string $currency) : object
     {
         $username = $this->_get_username();
         $form_url = $this->_get_remote_form_url();
@@ -160,7 +160,7 @@ class Hook_payment_gateway_worldpay
      * @set d w m y
      * @return Tempcode The button
      */
-    public function make_subscription_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $currency, $length, $length_units)
+    public function make_subscription_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, string $currency, int $length, string $length_units) : object
     {
         // https://support.worldpay.com/support/kb/bg/recurringpayments/rpfp.html
 
@@ -218,7 +218,7 @@ class Hook_payment_gateway_worldpay
      *
      * @return array A map of member address details (form field name => address value)
      */
-    protected function _build_member_address()
+    protected function _build_member_address() : array
     {
         $member_address = [];
 
@@ -289,7 +289,7 @@ class Hook_payment_gateway_worldpay
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return Tempcode The button
      */
-    public function make_cancel_button($purchase_id)
+    public function make_cancel_button(string $purchase_id) : object
     {
         return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', ['_GUID' => '187fba57424e7850b9e21fc147de48eb', 'PURCHASE_ID' => $purchase_id]);
     }
@@ -300,7 +300,7 @@ class Hook_payment_gateway_worldpay
      * @param  boolean $silent_fail Return null on failure rather than showing any error message. Used when not sure a valid & finalised transaction is in the POST environment, but you want to try just in case (e.g. on a redirect back from the gateway).
      * @return ?array A long tuple of collected data. Emulates some of the key variables of the PayPal IPN response (null: no transaction; will only return null when $silent_fail is set).
      */
-    public function handle_ipn_transaction($silent_fail)
+    public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
         // http://support.worldpay.com/support/kb/bg/paymentresponse/pr0000.html
 
@@ -368,7 +368,7 @@ class Hook_payment_gateway_worldpay
      * @param  ID_TEXT $purchase_id Purchase ID
      * @return string The response
      */
-    public function show_payment_response($type_code, $purchase_id)
+    public function show_payment_response(string $type_code, string $purchase_id) : string
     {
         $txn_id = post_param_string('transId');
         $message = do_lang('TRANSACTION_ID_WRITTEN', $txn_id);
@@ -383,7 +383,7 @@ class Hook_payment_gateway_worldpay
      * @param  ID_TEXT $txn_id Transaction ID
      * @return AUTO_LINK Address ID
      */
-    public function store_shipping_address($trans_expecting_id, $txn_id)
+    public function store_shipping_address(string $trans_expecting_id, string $txn_id) : int
     {
         $_name = explode(' ', post_param_string('delvName', ''));
         $name = [];
@@ -414,7 +414,7 @@ class Hook_payment_gateway_worldpay
      * @param  AUTO_LINK $subscription_id ID of the subscription to cancel
      * @return ?boolean True: yes. False: no. (null: cancels via a user-URL-directioning)
      */
-    public function auto_cancel($subscription_id)
+    public function auto_cancel(int $subscription_id) : ?bool
     {
         // They created a username and password initially. They need to login using this at https://futurepay.worldpay.com/fp/jsp/common/login_shopper.jsp
 

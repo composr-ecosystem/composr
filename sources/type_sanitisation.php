@@ -33,7 +33,7 @@ function init__type_sanitisation()
          * @param  boolean $strict Whether to do stricter sanitisation, latin alphanumeric only and no dots
          * @return boolean Whether the string is alphanumeric or not
          */
-        function is_alphanumeric($string, $strict = false)
+        function is_alphanumeric(string $string, bool $strict = false) : bool
         {
             if ($strict) {
                 return preg_match('#^[\w\-]*$#D', $string) != 0;
@@ -56,7 +56,7 @@ function init__type_sanitisation()
  * @param  string $string The string to test (Note: This is typed string, not e-mail, because it has to function on failure + we could make an infinite loop)
  * @return boolean Whether the string is an e-mail address or not
  */
-function is_valid_email_address($string)
+function is_valid_email_address(string $string) : bool
 {
     if ($string == '') {
         return false;

@@ -27,7 +27,7 @@
  *
  * @ignore
  */
-function _find_text_file_path($codename, $lang)
+function _find_text_file_path(string $codename, ?string $lang) : string
 {
     if ($lang === null) {
         $langs = [''];
@@ -70,7 +70,7 @@ function _find_text_file_path($codename, $lang)
  * @param  boolean $missing_blank Whether to tolerate missing files
  * @return string The file contents
  */
-function read_text_file($codename, $lang = null, $missing_blank = false)
+function read_text_file(string $codename, ?string $lang = null, bool $missing_blank = false) : string
 {
     $path = _find_text_file_path($codename, $lang);
 
@@ -101,7 +101,7 @@ function read_text_file($codename, $lang = null, $missing_blank = false)
  * @param  ?LANGUAGE_NAME $lang The language to write for (null: none) (blank: search)
  * @param  string $out The data to write
  */
-function write_text_file($codename, $lang, $out)
+function write_text_file(string $codename, ?string $lang, string $out)
 {
     $xpath = _find_text_file_path($codename, $lang);
     if ($xpath == '') {

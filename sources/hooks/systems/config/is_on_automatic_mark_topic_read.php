@@ -28,7 +28,7 @@ class Hook_config_is_on_automatic_mark_topic_read
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'IS_ON_AUTOMATIC_MARK_TOPIC_READ',
@@ -51,7 +51,7 @@ class Hook_config_is_on_automatic_mark_topic_read
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (get_forum_type() != 'cns') {
             return null;

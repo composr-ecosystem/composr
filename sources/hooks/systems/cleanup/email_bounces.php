@@ -28,7 +28,7 @@ class Hook_cleanup_email_bounces
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('EMAIL_BOUNCES');
@@ -43,7 +43,7 @@ class Hook_cleanup_email_bounces
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         $GLOBALS['SITE_DB']->query_select('email_bounces');
 

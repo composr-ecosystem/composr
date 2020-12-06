@@ -34,7 +34,7 @@ function init__cns_general()
  *
  * @return array A map of forum stats
  */
-function cns_get_forums_stats()
+function cns_get_forums_stats() : array
 {
     $forums_stats = [];
 
@@ -92,7 +92,7 @@ function cns_get_forums_stats()
  * @param  ?MEMBER $member_id_viewing The member viewing the details. (null: current member)
  * @return ?array A map of details (null: not found)
  */
-function cns_read_in_member_profile($member_id, $need = null, $include_encrypted_cpfs = false, $cpf_preview_mode = null, $member_id_viewing = null)
+function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $include_encrypted_cpfs = false, ?bool $cpf_preview_mode = null, ?int $member_id_viewing = null) : ?array
 {
     if ($member_id_viewing === null) {
         $member_id_viewing = get_member();
@@ -453,7 +453,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
  * @param  MEMBER $member_id The member to check
  * @return ?array A tuple: label to refer to with, written date string, timestamp with censoring applied if needed, timestamp without censoring, age or null if censored (null: none)
  */
-function get_member_dob_details($member_id)
+function get_member_dob_details(int $member_id) : ?array
 {
     if (is_guest($member_id)) {
         return null;
@@ -506,7 +506,7 @@ function get_member_dob_details($member_id)
  * @param  MEMBER $member_id Member ID
  * @return string Member title
  */
-function get_member_title($member_id)
+function get_member_title(int $member_id) : string
 {
     if (!addon_installed('cns_member_titles')) {
         return '';
@@ -526,7 +526,7 @@ function get_member_title($member_id)
  * @param  GROUP $gid ID number
  * @return string Colour
  */
-function get_group_colour($gid)
+function get_group_colour(int $gid) : string
 {
     $all_colours = ['cns-gcol-1', 'cns-gcol-2', 'cns-gcol-3', 'cns-gcol-4', 'cns-gcol-5', 'cns-gcol-6', 'cns-gcol-7', 'cns-gcol-8', 'cns-gcol-9', 'cns-gcol-10', 'cns-gcol-11', 'cns-gcol-12', 'cns-gcol-13', 'cns-gcol-14', 'cns-gcol-15'];
     return $all_colours[$gid % count($all_colours)];
@@ -538,7 +538,7 @@ function get_group_colour($gid)
  * @param  ?TIME $time A timestamps that exists in the certain day (null: now)
  * @return array List of maps describing the members whose birthday it is on the certain day
  */
-function cns_find_birthdays($time = null)
+function cns_find_birthdays(?int $time = null) : array
 {
     if ($time === null) {
         $time = time();
@@ -581,7 +581,7 @@ function cns_find_birthdays($time = null)
  * @param  array $buttons List of maps (each map contains: url, img, title)
  * @return Tempcode The button panel
  */
-function cns_button_screen_wrap($buttons)
+function cns_button_screen_wrap(array $buttons) : object
 {
     if (empty($buttons)) {
         return new Tempcode();
@@ -599,7 +599,7 @@ function cns_button_screen_wrap($buttons)
  *
  * @param  AUTO_LINK $forum_id Forum ID
  */
-function cns_set_context_forum($forum_id)
+function cns_set_context_forum(int $forum_id)
 {
     global $SET_CONTEXT_FORUM;
     $SET_CONTEXT_FORUM = $forum_id;

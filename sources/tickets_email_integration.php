@@ -51,7 +51,7 @@ class TicketsEmailIntegration extends EmailIntegration
      * @param  string $from_displayname Display name of staff poster
      * @param  boolean $new Whether this is a new ticket, just created by the ticket owner
      */
-    public function outgoing_message($ticket_id, $ticket_url, $ticket_type_name, $subject, $message, $to_member_id, $to_displayname, $to_email, $from_displayname, $new = false)
+    public function outgoing_message(string $ticket_id, $ticket_url, string $ticket_type_name, string $subject, string $message, int $to_member_id, string $to_displayname, string $to_email, string $from_displayname, bool $new = false)
     {
         if (is_object($ticket_url)) {
             $ticket_url = $ticket_url->evaluate();
@@ -71,7 +71,7 @@ class TicketsEmailIntegration extends EmailIntegration
      *
      * @return EMAIL E-mail address
      */
-    protected function get_sender_email()
+    protected function get_sender_email() : string
     {
         foreach (['website_email', 'ticket_mail_email_address', 'staff_address'] as $address) {
             if (get_option($address) != '') {
@@ -88,7 +88,7 @@ class TicketsEmailIntegration extends EmailIntegration
      *
      * @return EMAIL E-mail address
      */
-    protected function get_system_email()
+    protected function get_system_email() : string
     {
         foreach (['ticket_mail_email_address', 'staff_address', 'website_email'] as $address) {
             if (get_option($address) != '') {
@@ -130,7 +130,7 @@ class TicketsEmailIntegration extends EmailIntegration
      * @param  ?string $_body_html E-mail body converted from HTML format (null: not present)
      * @param  array $attachments Map of attachments (name to file data); only populated if $mime_type is appropriate for an attachment
      */
-    protected function _process_incoming_message($from_email, $email_bounce_to, $from_name, $subject, $_body_text, $_body_html, $attachments)
+    protected function _process_incoming_message(string $from_email, string $email_bounce_to, string $from_name, string $subject, ?string $_body_text, ?string $_body_html, array $attachments)
     {
         // Try to bind to an existing ticket
         $existing_ticket_id = null;
@@ -271,7 +271,7 @@ class TicketsEmailIntegration extends EmailIntegration
      * @param  ?string $existing_ticket_id ID of existing ticket (null: unknown)
      * @return ?MEMBER The member ID (null: not found)
      */
-    protected function find_member_id($from_email, $tags = [], $existing_ticket_id = null)
+    protected function find_member_id(string $from_email, array $tags = [], ?string $existing_ticket_id = null) : ?int
     {
         $member_id = null;
         foreach ($tags as $tag) {
@@ -304,7 +304,7 @@ class TicketsEmailIntegration extends EmailIntegration
      * @param  string $body E-mail component
      * @param  integer $format A STRIP_* constant
      */
-    protected function strip_system_code(&$body, $format)
+    protected function strip_system_code(string &$body, int $format)
     {
         switch ($format) {
             case self::STRIP_SUBJECT:
@@ -344,7 +344,7 @@ class TicketsEmailIntegration extends EmailIntegration
      * @param  EMAIL $email E-mail address we tried to bind to
      * @param  EMAIL $email_bounce_to E-mail address of sender (usually the same as $email, but not if it was a forwarded e-mail)
      */
-    protected function send_bounce_email__cannot_bind($subject, $_body_text, $_body_html, $email, $email_bounce_to)
+    protected function send_bounce_email__cannot_bind(string $subject, ?string $_body_text, ?string $_body_html, string $email, string $email_bounce_to)
     {
         if ($_body_html === null) {
             $body = $this->email_comcode_from_text($_body_text);

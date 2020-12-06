@@ -51,7 +51,7 @@
  * @param  boolean $comes_with_permissions Whether permissions should be auto-copied
  * @return AUTO_LINK The ID of the new usergroup
  */
-function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_moderator = 0, $title = '', $rank_image = '', $promotion_target = null, $promotion_threshold = null, $group_leader = null, $flood_control_submit_secs = null, $flood_control_access_secs = null, $max_daily_upload_mb = null, $max_attachments_per_post = null, $max_avatar_width = null, $max_avatar_height = null, $max_post_length_comcode = null, $max_sig_length_comcode = null, $gift_points_base = null, $gift_points_per_day = null, $enquire_on_new_ips = 0, $is_presented_at_install = 0, $hidden = 0, $order = null, $rank_image_pri_only = 1, $open_membership = 0, $is_private_club = 0, $uniqify = false, $comes_with_permissions = true)
+function cns_make_group(string $name, int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null, ?int $group_leader = null, ?int $flood_control_submit_secs = null, ?int $flood_control_access_secs = null, ?int $max_daily_upload_mb = null, ?int $max_attachments_per_post = null, ?int $max_avatar_width = null, ?int $max_avatar_height = null, ?int $max_post_length_comcode = null, ?int $max_sig_length_comcode = null, ?int $gift_points_base = null, ?int $gift_points_per_day = null, int $enquire_on_new_ips = 0, int $is_presented_at_install = 0, int $hidden = 0, ?int $order = null, int $rank_image_pri_only = 1, int $open_membership = 0, int $is_private_club = 0, bool $uniqify = false, bool $comes_with_permissions = true) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_GROUP', null, $name);
@@ -176,7 +176,7 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
  *
  * @param  AUTO_LINK $group_id The usergroup to copy to
  */
-function cns_copy_group_permissions($group_id)
+function cns_copy_group_permissions(int $group_id)
 {
     require_code('cns_groups');
     $group_members = get_first_default_group();
@@ -222,7 +222,7 @@ function cns_copy_group_permissions($group_id)
  * @set none simple fun
  * @return array A list of usergroup IDs
  */
-function cns_make_rank_set($rank_set)
+function cns_make_rank_set(string $rank_set) : array
 {
     require_lang('cns_ranks');
 
@@ -299,7 +299,7 @@ function cns_make_rank_set($rank_set)
  * @param  ?integer $promotion_threshold The point threshold for promotion (null: no promotion prospects)
  * @return AUTO_LINK The ID of the usergroup
  */
-function cns_make_or_edit_group($group_id, $name, $is_default = 0, $is_super_admin = 0, $is_super_moderator = 0, $title = '', $rank_image = '', $promotion_target = null, $promotion_threshold = null)
+function cns_make_or_edit_group(?int $group_id, string $name, int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null) : int
 {
     if ($group_id === null) {
         $group_id = cns_make_group($name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold);

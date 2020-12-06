@@ -34,7 +34,7 @@ function init__upgrade_db_upgrade()
  * @ignore
  * @return string Output messages
  */
-function upgrader_db_upgrade_screen()
+function upgrader_db_upgrade_screen() : string
 {
     $out = '';
 
@@ -85,7 +85,7 @@ function upgrader_db_upgrade_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader_db_upgrade_cns_screen()
+function upgrader_db_upgrade_cns_screen() : string
 {
     $out = '';
     if (cns_upgrade()) {
@@ -101,7 +101,7 @@ function upgrader_db_upgrade_cns_screen()
  *
  * @return boolean Whether anything was done
  */
-function version_specific()
+function version_specific() : bool
 {
     // Version specific (rather than component specific) upgrading
     $version_files = cms_version_number();
@@ -400,7 +400,7 @@ function version_specific()
  *
  * @return string List of upgraded/installed modules/blocks
  */
-function upgrade_modules()
+function upgrade_modules() : string
 {
     $out = '';
 
@@ -469,7 +469,7 @@ function upgrade_modules()
  *
  * @return boolean Whether anything was done
  */
-function cns_upgrade()
+function cns_upgrade() : bool
 {
     $version_files = cms_version_number();
     $_version_database_cns = get_value('cns_version');

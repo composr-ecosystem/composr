@@ -29,7 +29,7 @@ class Hook_symbol_BETA_CSS_PROPERTY
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         /*
         Properties currently used:

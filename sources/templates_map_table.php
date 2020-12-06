@@ -28,7 +28,7 @@
  * @param  boolean $responsive Use a responsive layout for the table (too much to fit in 2 columns on a small screen)
  * @return Tempcode The generated map screen
  */
-function map_table_screen($title, $fields, $text = null, $buttons = null, $responsive = false)
+function map_table_screen(object $title, array $fields, ?object $text = null, ?object $buttons = null, bool $responsive = false) : object
 {
     $_fields = new Tempcode();
     foreach ($fields as $key => $val) {
@@ -59,7 +59,7 @@ function map_table_screen($title, $fields, $text = null, $buttons = null, $respo
  * @param  string $abbr Field abbreviation (blank: none)
  * @return Tempcode The generated map field
  */
-function map_table_field($name, $value, $raw = false, $abbr = '') // Not for use with the above, which takes the fields as a raw map
+function map_table_field($name, $value, bool $raw = false, string $abbr = '') // Not for use with the above, which takes the fields as a raw map : object
 {
     if ($raw) {
         $value = protect_from_escaping($value);

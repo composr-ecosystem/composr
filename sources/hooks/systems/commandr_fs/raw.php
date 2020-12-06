@@ -31,7 +31,7 @@ class Hook_commandr_fs_raw
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~array The final directory listing (false: failure)
      */
-    public function listing($meta_dir, $meta_root_node, &$commandr_fs)
+    public function listing(array $meta_dir, string $meta_root_node, object &$commandr_fs)
     {
         $path = get_custom_file_base();
         foreach ($meta_dir as $meta_dir_section) {
@@ -67,7 +67,7 @@ class Hook_commandr_fs_raw
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function make_directory($meta_dir, $meta_root_node, $new_dir_name, &$commandr_fs)
+    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         $new_dir_name = filter_naughty($new_dir_name);
         $path = get_custom_file_base();
@@ -94,7 +94,7 @@ class Hook_commandr_fs_raw
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_directory($meta_dir, $meta_root_node, $dir_name, &$commandr_fs)
+    public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
         $dir_name = filter_naughty($dir_name);
         $path = get_custom_file_base();
@@ -123,7 +123,7 @@ class Hook_commandr_fs_raw
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
         $file_name = filter_naughty($file_name);
         $path = get_custom_file_base();
@@ -149,7 +149,7 @@ class Hook_commandr_fs_raw
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         $file_name = filter_naughty($file_name);
         $path = get_custom_file_base();
@@ -174,7 +174,7 @@ class Hook_commandr_fs_raw
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
+    public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
         $file_name = filter_naughty($file_name);
         $path = get_custom_file_base();

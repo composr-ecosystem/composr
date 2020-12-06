@@ -155,7 +155,7 @@ class Self_learning_cache
      *
      * @param  ID_TEXT $bucket_name The identifier this cache object is for
      */
-    public function __construct($bucket_name)
+    public function __construct(string $bucket_name)
     {
         $this->bucket_name = $bucket_name;
         $dir = get_custom_file_base() . '/caches/self_learning';
@@ -169,7 +169,7 @@ class Self_learning_cache
      *
      * @return boolean Whether it is
      */
-    public static function is_on()
+    public static function is_on() : bool
     {
         static $is_on = null;
         if ($is_on === null) {
@@ -220,7 +220,7 @@ class Self_learning_cache
      * @param  ID_TEXT $key Cache key
      * @return ?mixed The value (null: not in cache - needs to be learnt)
      */
-    public function get($key)
+    public function get(string $key)
     {
         if (isset($this->data[$key])) {
             return $this->data[$key];
@@ -234,7 +234,7 @@ class Self_learning_cache
      * @param  ID_TEXT $key Cache key
      * @return boolean Whether it was
      */
-    public function get_initial_status($key)
+    public function get_initial_status(string $key) : bool
     {
         return isset($this->keys_initial[$key]);
     }
@@ -245,7 +245,7 @@ class Self_learning_cache
      * @param  ID_TEXT $key Cache key
      * @param  mixed $value Value. Should not be null, as that is reserved for "not in cache"
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         if ($this->paused) {
             return;
@@ -267,7 +267,7 @@ class Self_learning_cache
      * @param  mixed $value_2 Secondary value to attach to appended value (optional)
      * @return boolean Whether the value was appended (false if it was already there)
      */
-    public function append($key, $value, $value_2 = true)
+    public function append(string $key, $value, $value_2 = true) : bool
     {
         if (!isset($this->data[$key])) {
             $this->data[$key] = [];
@@ -297,7 +297,7 @@ class Self_learning_cache
      *
      * @param  boolean $do_immediately Immediately save the cache change (slow...)
      */
-    private function save($do_immediately = false)
+    private function save(bool $do_immediately = false)
     {
         if (!$this->is_on()) {
             return;
@@ -417,7 +417,7 @@ class Self_learning_cache
  * @param  ?TIME $min_cache_date Minimum timestamp that entries from the cache may hold (null: don't care)
  * @return ?mixed The data (null: not found / null entry)
  */
-function persistent_cache_get($key, $min_cache_date = null)
+function persistent_cache_get($key, ?int $min_cache_date = null)
 {
     global $PERSISTENT_CACHE;
     //if (($GLOBALS['DEV_MODE']) && (mt_rand(0, 3) == 1)) return null;  Annoying when doing performance tests, but you can enable to test persistent cache more
@@ -443,7 +443,7 @@ function persistent_cache_get($key, $min_cache_date = null)
  * @param  boolean $server_wide Whether it is server-wide data
  * @param  ?integer $expire_secs The expiration time in seconds. (null: Default expiry in 60 minutes, or never if it is server-wide).
  */
-function persistent_cache_set($key, $data, $server_wide = false, $expire_secs = null)
+function persistent_cache_set($key, $data, bool $server_wide = false, ?int $expire_secs = null)
 {
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {
@@ -467,7 +467,7 @@ function persistent_cache_set($key, $data, $server_wide = false, $expire_secs = 
  * @param  mixed $key Key name
  * @param  boolean $substring Whether we are deleting via substring
  */
-function persistent_cache_delete($key, $substring = false)
+function persistent_cache_delete($key, bool $substring = false)
 {
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {
@@ -574,7 +574,7 @@ function erase_static_cache()
  * @param  ?string $name The name (filename? codename?) of what we are using the cache for, so we can support low-level cache avoidance via URL parameter (null: none)
  * @return boolean Whether it has the caching
  */
-function has_caching_for($type, $name = null)
+function has_caching_for(string $type, ?string $name = null) : bool
 {
     if (!function_exists('get_option')) {
         return false;
@@ -610,7 +610,7 @@ function has_caching_for($type, $name = null)
  *
  * @param  ?MEMBER $member_id Member to only decache for (null: decache for all members, due to a mass-topic-operation)
  */
-function decache_private_topics($member_id = null)
+function decache_private_topics(?int $member_id = null)
 {
     delete_cache_entry(['side_cns_private_topics', '_new_pts', '_get_pts'], null, $member_id);
 }
@@ -622,7 +622,7 @@ function decache_private_topics($member_id = null)
  * @param  ?array $identifier A map of identifying characteristics (null: no identifying characteristics, decache all)
  * @param  ?MEMBER $member_id Member to only decache for (null: no limit)
  */
-function delete_cache_entry($cached_for, $identifier = null, $member_id = null)
+function delete_cache_entry($cached_for, ?array $identifier = null, ?int $member_id = null)
 {
     if (get_mass_import_mode()) {
         return;
@@ -638,7 +638,7 @@ function delete_cache_entry($cached_for, $identifier = null, $member_id = null)
  * @param  ID_TEXT $codename The codename of what will be checked for caching
  * @return ?array The cached result (null: no cached result)
  */
-function find_cache_on($codename)
+function find_cache_on(string $codename) : ?array
 {
     // See if we have it cached
     global $BLOCK_CACHE_ON_CACHE;
@@ -667,7 +667,7 @@ function find_cache_on($codename)
  * @param  array $map Parameters to call up block with if we have to defer caching
  * @return ?mixed The cached result (null: no cached result)
  */
-function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CACHE_AGAINST_DEFAULT, $ttl = 10000, $tempcode = false, $caching_via_cron = false, $map = [])
+function get_cache_entry(string $codename, string $cache_identifier, int $special_cache_flags = CACHE_AGAINST_DEFAULT, int $ttl = 10000, bool $tempcode = false, bool $caching_via_cron = false, array $map = [])
 {
     $det = [$codename, $cache_identifier, md5($cache_identifier), $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map];
 
@@ -688,7 +688,7 @@ function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CA
 /**
  * Fill in cache signature details from the environment, based on $special_cache_flags.
  *
- * @param  integer $special_cache_flags Special cache flags
+ * @param  ?integer $special_cache_flags Special cache flags (null: none)
  * @param  ?BINARY $staff_status Staff status to limit to (null: Get from environment)
  * @param  ?MEMBER $member_id Member to limit to (null: Get from environment)
  * @param  ?SHORT_TEXT $groups Sorted permissive usergroup list to limit to (null: Get from environment)
@@ -697,7 +697,7 @@ function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CA
  * @param  ?ID_TEXT $theme The theme this is being cached for (null: Get from environment)
  * @param  ?LANGUAGE_NAME $lang The language this is being cached for (null: Get from environment)
  */
-function get_cache_signature_details($special_cache_flags, &$staff_status, &$member_id, &$groups, &$is_bot, &$timezone, &$theme, &$lang)
+function get_cache_signature_details(?int $special_cache_flags, ?int &$staff_status, ?int &$member_id, ?string &$groups, ?int &$is_bot, ?string &$timezone, ?string &$theme, ?string &$lang)
 {
     if ($staff_status === null) {
         $staff_status = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0)) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
@@ -755,7 +755,7 @@ function get_cache_signature_details($special_cache_flags, &$staff_status, &$mem
  *
  * @ignore
  */
-function _get_cache_entries($dets, $special_cache_flags = null)
+function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : array
 {
     static $cache = [];
 

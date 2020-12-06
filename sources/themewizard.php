@@ -53,7 +53,7 @@ function init__themewizard()
  * @param  ID_TEXT $theme The theme name
  * @param  boolean $guess_images_if_needed Whether we suspect the theme might not be well defined
  */
-function load_themewizard_params_from_theme($theme, $guess_images_if_needed = false)
+function load_themewizard_params_from_theme(string $theme, bool $guess_images_if_needed = false)
 {
     global $THEMEWIZARD_IMAGES_CACHE;
     if (isset($THEMEWIZARD_IMAGES_CACHE[$theme])) {
@@ -113,7 +113,7 @@ function load_themewizard_params_from_theme($theme, $guess_images_if_needed = fa
  * @param  ID_TEXT $theme The theme name
  * @return boolean Whether the theme is dark
  */
-function find_theme_dark($theme)
+function find_theme_dark(string $theme) : bool
 {
     global $THEME_DARK_CACHE;
     if (isset($THEME_DARK_CACHE[$theme])) {
@@ -145,7 +145,7 @@ function find_theme_dark($theme)
  * @param  boolean $silent_fail Whether to silently fail (i.e. not give out an error message when a theme image cannot be found)
  * @return ?URLPATH URL to image (null: use standard one, this one is not theme wizard influenced)
  */
-function find_theme_image_themewizard_preview($id, $silent_fail = false)
+function find_theme_image_themewizard_preview(string $id, bool $silent_fail = false) : ?string
 {
     $source_theme = get_param_string('keep_theme_source', 'default');
     $algorithm = get_param_string('keep_theme_algorithm', 'equations');
@@ -195,7 +195,7 @@ function find_theme_image_themewizard_preview($id, $silent_fail = false)
  * @param  string $logo_type Logo type/size to generate. 'large' is for the bigger logo with background image, 'standalone' crops the background a bit, for use in e-mails etc., 'small' is the transparent logo without background, used for the small header type, and 'small_white' is used when the small header has a dark background
  * @return resource The image resource
  */
-function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/default_logos/logo1', $background_theme_image = 'logo/default_backgrounds/banner1', $raw = false, $theme = null, $logo_type = 'large')
+function generate_logo(string $name, ?string $font_choice = null, string $logo_theme_image = 'logo/default_logos/logo1', string $background_theme_image = 'logo/default_backgrounds/banner1', bool $raw = false, ?string $theme = null, string $logo_type = 'large')
 {
     if (!headers_sent()) {
         header('X-Robots-Tag: noindex');
@@ -383,7 +383,7 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
  * @param  string $theme The theme name
  * @return resource The image resource
  */
-function _generate_logo_get_image($image_codename, $theme)
+function _generate_logo_get_image(string $image_codename, string $theme)
 {
     $url = find_theme_image($image_codename, false, false, $theme, null, null, true);
     $file_path_stub = convert_url_to_path($url);
@@ -415,7 +415,7 @@ function _generate_logo_get_image($image_codename, $theme)
  * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
  * @param  boolean $inherit_css Whether to inherit the CSS, for easier theme upgrading
  */
-function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark = false, $inherit_css = false)
+function make_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $use, ?bool $dark = false, bool $inherit_css = false)
 {
     $old_limit = cms_disable_time_limit();
     disable_php_memory_limit();
@@ -664,7 +664,7 @@ function themewizard_script()
  * @param  ?LANGUAGE_NAME $lang The language to work in (null: default)
  * @return mixed Image resource OR A pair: extended map of colours, colour expression landscape
  */
-function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $dark = null, $colours = null, $landscape = null, $lang = null)
+function calculate_theme(string $seed, string $source_theme, string $algorithm, string $show = 'colours', ?bool $dark = null, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
 {
     if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
         $algorithm = 'hsv';
@@ -835,7 +835,7 @@ function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $d
  * @param  ID_TEXT $source_theme The theme it's being generated from
  * @return array A pair: extended map of colours, colour expression landscape
  */
-function calculate_dynamic_css_colours($colours, $source_theme)
+function calculate_dynamic_css_colours(array $colours, string $source_theme) : array
 {
     $theme = filter_naughty($source_theme);
     $css_dir = (($theme == 'default') ? 'css' : 'css_custom');
@@ -927,7 +927,7 @@ function calculate_dynamic_css_colours($colours, $source_theme)
  * @param  string $textual Textual expression
  * @return ?array Expression tree (null: not real)
  */
-function parse_css_colour_expression($textual)
+function parse_css_colour_expression(string $textual) : ?array
 {
     // '*' is inserted after a %, and then % is dropped
     $textual = preg_replace('#(^| )(\d+)%#', '\\1\\2 *', $textual);
@@ -950,7 +950,7 @@ function parse_css_colour_expression($textual)
  *
  * @ignore
  */
-function _parse_css_colour_expression($tokens)
+function _parse_css_colour_expression(array $tokens) : ?array
 {
     // We now scan through, structuring into an evaluation-order tree (but not an expression tree  at the level we're operating on)
     // Parentheses
@@ -1007,7 +1007,7 @@ function _parse_css_colour_expression($tokens)
  * @param  array $colours Known colours at this point
  * @return ?string RRGGBB colour or possibly just a number (null: answer cannot be computed)
  */
-function execute_css_colour_expression($expression, $colours)
+function execute_css_colour_expression($expression, array $colours) : ?string
 {
     if (!is_array($expression)) {
         if (preg_match('#^[0-9A-Fa-f]{6}$#', $expression) != 0) {
@@ -1153,7 +1153,7 @@ function execute_css_colour_expression($expression, $colours)
  * @param  boolean $hue Whether this is hue (meaning it cycles around)
  * @return integer Constrained colour component
  */
-function fix_colour($x, $hue = false)
+function fix_colour($x, bool $hue = false) : int
 {
     if (is_float($x)) {
         $x = intval(round($x));
@@ -1184,7 +1184,7 @@ function fix_colour($x, $hue = false)
  * @param  string $rgb RRGGBB colour
  * @return array Triplet of (0-255) components: H, S, V
  */
-function rgb_to_hsv($rgb)
+function rgb_to_hsv(string $rgb) : array
 {
     $red = hexdec(substr($rgb, 0, 2));
     $green = hexdec(substr($rgb, 2, 2));
@@ -1238,7 +1238,7 @@ function rgb_to_hsv($rgb)
  * @param  float $v V component
  * @return string RGB colour
  */
-function hsv_to_rgb($h, $s, $v)
+function hsv_to_rgb(float $h, float $s, float $v) : string
 {
     $h = 6.0 * $h / 255.0;
     $s = $s / 255.0;
@@ -1305,7 +1305,7 @@ function hsv_to_rgb($h, $s, $v)
  * @param  ID_TEXT $seed The seed colour
  * @return string The sheet
  */
-function themewizard_colours_to_sheet($sheet, $landscape, $source_theme, $algorithm, $seed)
+function themewizard_colours_to_sheet(string $sheet, array $landscape, string $source_theme, string $algorithm, string $seed) : string
 {
     $theme = filter_naughty($source_theme);
 
@@ -1339,7 +1339,7 @@ function themewizard_colours_to_sheet($sheet, $landscape, $source_theme, $algori
  * @param  ID_TEXT $seed The seed colour
  * @return string The sheet
  */
-function themewizard_colours_to_css($contents, $landscape, $source_theme, $algorithm, $seed)
+function themewizard_colours_to_css(string $contents, array $landscape, string $source_theme, string $algorithm, string $seed) : string
 {
     if ($algorithm == 'hsv') {
         list($composr_h, $composr_s, $composr_v) = rgb_to_hsv(find_theme_seed($source_theme));
@@ -1386,7 +1386,7 @@ function themewizard_colours_to_css($contents, $landscape, $source_theme, $algor
  * @param  boolean $invert Whether to invert the colours
  * @return resource The image
  */
-function re_hue_image($path, $seed, $source_theme, $also_s_and_v = false, $invert = false)
+function re_hue_image($path, string $seed, string $source_theme, bool $also_s_and_v = false, bool $invert = false)
 {
     list($composr_h, $composr_s, $composr_v) = rgb_to_hsv(find_theme_seed($source_theme));
     list($seed_h, $seed_s, $seed_v) = rgb_to_hsv($seed);
@@ -1457,7 +1457,7 @@ function re_hue_image($path, $seed, $source_theme, $also_s_and_v = false, $inver
  * @param  string $bottom Colour for the bottom
  * @return resource The image
  */
-function generate_gradient($top, $bottom)
+function generate_gradient(string $top, string $bottom)
 {
     $gradient = imagecreate(1, 27);
     $width = 27;
@@ -1499,7 +1499,7 @@ function generate_gradient($top, $bottom)
  * @param  boolean $end_array Whether the pixel_x_start array is actually an end array
  * @return resource The image
  */
-function generate_recoloured_image($path, $colour_a_orig, $colour_a_new, $colour_b1_orig, $colour_b1_new, $colour_b2_orig = null, $colour_b2_new = null, $gradient_direction = 'vertical', $pixel_x_start_array = null, $gradient_offset = 0, $end_array = false)
+function generate_recoloured_image($path, string $colour_a_orig, string $colour_a_new, string $colour_b1_orig, string $colour_b1_new, ?string $colour_b2_orig = null, ?string $colour_b2_new = null, string $gradient_direction = 'vertical', ?array $pixel_x_start_array = null, int $gradient_offset = 0, bool $end_array = false)
 {
     /*$colour_a_new = $colour_a_orig;  For testing: a null conversion
     $colour_b1_new = $colour_b1_orig;

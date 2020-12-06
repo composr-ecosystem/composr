@@ -28,7 +28,7 @@ class Module_admin_email_log
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_email_log
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             'browse' => ['EMAIL_LOG', 'menu/adminzone/audit/email_log'],
@@ -63,7 +63,7 @@ class Module_admin_email_log
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $type = get_param_string('type', 'browse');
 
@@ -105,7 +105,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -139,7 +139,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function show()
+    public function show() : object
     {
         require_code('mail');
 
@@ -240,7 +240,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function view()
+    public function view() : object
     {
         $id = get_param_integer('id');
 
@@ -347,7 +347,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function attachment()
+    public function attachment() : object
     {
         $id = get_param_integer('id');
         $i = get_param_integer('i');
@@ -398,7 +398,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function edit()
+    public function edit() : object
     {
         $id = get_param_integer('id');
 
@@ -481,7 +481,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function _edit()
+    public function _edit() : object
     {
         $id = get_param_integer('id');
 
@@ -577,7 +577,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function mass_send()
+    public function mass_send() : object
     {
         require_code('mail');
 
@@ -633,7 +633,7 @@ class Module_admin_email_log
      *
      * @return Tempcode The result of execution
      */
-    public function mass_delete()
+    public function mass_delete() : object
     {
         $count = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_queued' => 1]);
 

@@ -35,7 +35,7 @@
  * @param  ?integer $views Number of views (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function cns_edit_topic($topic_id, $description = null, $emoticon = null, $validated = null, $open = null, $pinned = null, $cascading = null, $reason = '', $title = null, $description_link = null, $check_perms = true, $views = null, $null_is_literal = false)
+function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $emoticon = null, ?int $validated = null, ?int $open = null, ?int $pinned = null, ?int $cascading = null, string $reason = '', ?string $title = null, ?string $description_link = null, bool $check_perms = true, ?int $views = null, bool $null_is_literal = false)
 {
     $info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
     if (!array_key_exists(0, $info)) {
@@ -172,7 +172,7 @@ function cns_edit_topic($topic_id, $description = null, $emoticon = null, $valid
  * @param  boolean $check_perms Whether to check permissions
  * @return AUTO_LINK The forum ID the topic is in (could be found without calling the function, but as we've looked it up, it is worth keeping)
  */
-function cns_delete_topic($topic_id, $reason = '', $post_target_topic_id = null, $check_perms = true)
+function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_topic_id = null, bool $check_perms = true) : int
 {
     // Info about source
     $info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
@@ -330,7 +330,7 @@ function cns_delete_topic($topic_id, $reason = '', $post_target_topic_id = null,
  * @param  ?array $topics A list of the topic IDs to move (null: move all topics from source forum)
  * @param  boolean $check_perms Whether to check permissions
  */
-function cns_move_topics($from, $to, $topics = null, $check_perms = true) // NB: From is good to add a additional security/integrity. We'll never move from more than one forum. Extra constraints that cause no harm are good in a situation that doesn't govern general efficiency.
+function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_perms = true) // NB: From is good to add a additional security/integrity. We'll never move from more than one forum. Extra constraints that cause no harm are good in a situation that doesn't govern general efficiency.
 {
     if ($from == $to) {
         return; // That would be nuts, and interfere with our logic
@@ -510,7 +510,7 @@ function cns_move_topics($from, $to, $topics = null, $check_perms = true) // NB:
  * @param  MEMBER $member_id Member getting access
  * @param  AUTO_LINK $topic_id The topic
  */
-function cns_invite_to_pt($member_id, $topic_id)
+function cns_invite_to_pt(int $member_id, int $topic_id)
 {
     $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
     if (!array_key_exists(0, $topic_info)) {
@@ -567,7 +567,7 @@ function cns_invite_to_pt($member_id, $topic_id)
  * @param  ?string $post_comcode Post text (null: unknown, lookup from $post_id)
  * @param  boolean $mark_unread Whether to also mark the topic as unread
  */
-function send_pt_notification($post_id, $subject, $topic_id, $to_id, $from_id = null, $post_comcode = null, $mark_unread = false)
+function send_pt_notification(int $post_id, string $subject, int $topic_id, int $to_id, ?int $from_id = null, ?string $post_comcode = null, bool $mark_unread = false)
 {
     if ($from_id === null) {
         $from_id = get_member();
@@ -597,7 +597,7 @@ function send_pt_notification($post_id, $subject, $topic_id, $to_id, $from_id = 
  * @param  SHORT_TEXT $topic_title Topic title
  * @param  LONG_TEXT $post Post made
  */
-function handle_topic_ticket_reply($forum_id, $topic_id, $topic_title, $post)
+function handle_topic_ticket_reply(?int $forum_id, int $topic_id, string $topic_title, string $post)
 {
     // E-mail the user or staff if the post is a new one in a support ticket
     if (addon_installed('tickets')) {

@@ -28,7 +28,7 @@ class Hook_preview_wiki_post
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('wiki')) && (get_page_name() == 'wiki');
         return [$applies, 'wiki_post', false];
@@ -39,7 +39,7 @@ class Hook_preview_wiki_post
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_lang('cns');
         require_css('cns');

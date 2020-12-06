@@ -28,7 +28,7 @@ class Hook_config_website_email
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'WEBSITE_EMAIL',
@@ -52,7 +52,7 @@ class Hook_config_website_email
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         $staff_address = get_option('staff_address');
         $website_email = 'website@' . get_domain();

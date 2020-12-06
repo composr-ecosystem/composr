@@ -34,7 +34,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return integer How many resources there are
      */
-    public function get_resources_count($resource_type)
+    public function get_resources_count(string $resource_type) : int
     {
         switch ($resource_type) {
             case 'download':
@@ -53,7 +53,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  LONG_TEXT $label The resource label
      * @return array A list of resource IDs
      */
-    public function find_resource_by_label($resource_type, $label)
+    public function find_resource_by_label(string $resource_type, string $label) : array
     {
         switch ($resource_type) {
             case 'download':
@@ -80,7 +80,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      *
      * @return boolean Whether it is
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return addon_installed('downloads');
     }
@@ -92,7 +92,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_folder_edit_date($row, $category = '')
+    protected function _get_folder_edit_date(array $row, string $category = '') : ?int
     {
         $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', strval($row['id'])) . ' AND  (' . db_string_equal_to('the_type', 'ADD_DOWNLOAD_CATEGORY') . ' OR ' . db_string_equal_to('the_type', 'EDIT_DOWNLOAD_CATEGORY') . ')';
         return $GLOBALS['SITE_DB']->query_value_if_there($query);
@@ -107,7 +107,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error)
      */
-    public function folder_add($filename, $path, $properties, $force_type = null)
+    public function folder_add(string $filename, string $path, array $properties, ?string $force_type = null)
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
         if ($category === null) { // Can't create more than one root
@@ -143,7 +143,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
      * @return ~array Details of the resource (false: error)
      */
-    public function folder_load($filename, $path)
+    public function folder_load(string $filename, string $path)
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
@@ -177,7 +177,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_edit($filename, $path, $properties, $explicit_move = false)
+    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
@@ -211,7 +211,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    public function folder_delete($filename, $path)
+    public function folder_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
@@ -228,7 +228,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_file_edit_date($row, $category = '')
+    protected function _get_file_edit_date(array $row, string $category = '') : ?int
     {
         $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', strval($row['id'])) . ' AND  (' . db_string_equal_to('the_type', 'ADD_DOWNLOAD') . ' OR ' . db_string_equal_to('the_type', 'EDIT_DOWNLOAD') . ')';
         return $GLOBALS['SITE_DB']->query_value_if_there($query);
@@ -243,7 +243,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_add($filename, $path, $properties, $force_type = null)
+    public function file_add(string $filename, string $path, array $properties, ?string $force_type = null)
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
@@ -304,7 +304,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
      * @return ~array Details of the resource (false: error)
      */
-    public function file_load($filename, $path)
+    public function file_load(string $filename, string $path)
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
@@ -354,7 +354,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_edit($filename, $path, $properties, $explicit_move = false)
+    public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
@@ -418,7 +418,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    public function file_delete($filename, $path)
+    public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 

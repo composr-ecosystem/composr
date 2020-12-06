@@ -29,7 +29,7 @@ class Hook_addon_registry_core_rich_media
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Graphical';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Comcode and attachments.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_comcode',
@@ -83,7 +83,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -97,7 +97,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/images/icons/editor/insert_emoticons.svg',
@@ -381,7 +381,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/EMOTICON_CLICK_CODE.tpl' => 'emoticon_click_code',
@@ -490,7 +490,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_big_tabs()
+    public function tpl_preview__comcode_big_tabs() : array
     {
         $content = new Tempcode();
 
@@ -530,7 +530,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_page_edit_screen()
+    public function tpl_preview__comcode_page_edit_screen() : array
     {
         require_lang('zones');
 
@@ -558,7 +558,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_tooltip()
+    public function tpl_preview__comcode_tooltip() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_TOOLTIP', [
@@ -576,7 +576,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__emoticon_click_code()
+    public function tpl_preview__emoticon_click_code() : array
     {
         $emoticon = placeholder_emoticons();
         $emt = new Tempcode();
@@ -613,7 +613,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__attachments()
+    public function tpl_preview__attachments() : array
     {
         require_javascript('checking');
         require_javascript('plupload');
@@ -680,7 +680,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_critical_parse_error()
+    public function tpl_preview__comcode_critical_parse_error() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_CRITICAL_PARSE_ERROR', [
@@ -698,7 +698,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_mistake_screen()
+    public function tpl_preview__comcode_mistake_screen() : array
     {
         $line = new Tempcode();
         foreach (placeholder_array() as $key => $value) {
@@ -733,7 +733,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_overlay()
+    public function tpl_preview__comcode_overlay() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_OVERLAY', [
@@ -756,7 +756,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_snapback()
+    public function tpl_preview__comcode_snapback() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_SNAPBACK', [
@@ -775,7 +775,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_section_controller()
+    public function tpl_preview__comcode_section_controller() : array
     {
         $section = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -814,7 +814,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_carousel()
+    public function tpl_preview__comcode_carousel() : array
     {
         $content = new Tempcode();
         foreach (placeholder_array(10) as $v) {
@@ -835,7 +835,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_if_in_group()
+    public function tpl_preview__comcode_if_in_group() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_IF_IN_GROUP', [
@@ -853,7 +853,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_abbr()
+    public function tpl_preview__comcode_abbr() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_ABBR', [
@@ -870,7 +870,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_address()
+    public function tpl_preview__comcode_address() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_ADDRESS', [
@@ -886,7 +886,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_dfn()
+    public function tpl_preview__comcode_dfn() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_DFN', [
@@ -902,7 +902,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_q()
+    public function tpl_preview__comcode_q() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_Q', [
@@ -918,7 +918,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_pulse()
+    public function tpl_preview__comcode_pulse() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_PULSE', [
@@ -937,7 +937,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_del()
+    public function tpl_preview__comcode_del() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_DEL', [
@@ -955,7 +955,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_ins()
+    public function tpl_preview__comcode_ins() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_INS', [
@@ -973,7 +973,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_cite()
+    public function tpl_preview__comcode_cite() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_CITE', [
@@ -989,7 +989,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_bold()
+    public function tpl_preview__comcode_bold() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_BOLD', [
@@ -1005,7 +1005,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_align()
+    public function tpl_preview__comcode_align() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_ALIGN', [
@@ -1022,7 +1022,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_indent()
+    public function tpl_preview__comcode_indent() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_INDENT', [
@@ -1039,7 +1039,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_surround()
+    public function tpl_preview__comcode_surround() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_SURROUND', [
@@ -1056,7 +1056,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_italics()
+    public function tpl_preview__comcode_italics() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_ITALICS', [
@@ -1072,7 +1072,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_underline()
+    public function tpl_preview__comcode_underline() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_UNDERLINE', [
@@ -1088,7 +1088,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_strike()
+    public function tpl_preview__comcode_strike() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_STRIKE', [
@@ -1104,7 +1104,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_sup()
+    public function tpl_preview__comcode_sup() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_SUP', [
@@ -1120,7 +1120,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_sub()
+    public function tpl_preview__comcode_sub() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_SUB', [
@@ -1136,7 +1136,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_random()
+    public function tpl_preview__comcode_random() : array
     {
         $parts = [];
         foreach (placeholder_array(5) as $k => $v) {
@@ -1161,7 +1161,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_jumping()
+    public function tpl_preview__comcode_jumping() : array
     {
         $parts = [];
         $parts[] = [
@@ -1184,7 +1184,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_ticker()
+    public function tpl_preview__comcode_ticker() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_TICKER', [
@@ -1202,7 +1202,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_highlight()
+    public function tpl_preview__comcode_highlight() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_HIGHLIGHT', [
@@ -1218,7 +1218,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_font()
+    public function tpl_preview__comcode_font() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_FONT', [
@@ -1237,7 +1237,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_concept()
+    public function tpl_preview__comcode_concept() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_CONCEPT', [
@@ -1254,7 +1254,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_concept_inline()
+    public function tpl_preview__comcode_concept_inline() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_CONCEPT_INLINE', [
@@ -1271,7 +1271,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_concepts()
+    public function tpl_preview__comcode_concepts() : array
     {
         $concepts = [];
         foreach (placeholder_array() as $i => $v) {
@@ -1297,7 +1297,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_thumb()
+    public function tpl_preview__comcode_thumb() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_THUMB', [
@@ -1316,7 +1316,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_img()
+    public function tpl_preview__comcode_img() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_IMG', [
@@ -1337,7 +1337,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_url()
+    public function tpl_preview__comcode_url() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_URL', [
@@ -1357,7 +1357,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_email()
+    public function tpl_preview__comcode_email() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_EMAIL', [
@@ -1377,7 +1377,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_reference()
+    public function tpl_preview__comcode_reference() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_REFERENCE', [
@@ -1393,7 +1393,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_shocker()
+    public function tpl_preview__comcode_shocker() : array
     {
         $attributes = [
             'left_1' => 'Ra Ra',
@@ -1444,7 +1444,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_hide()
+    public function tpl_preview__comcode_hide() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_HIDE', [
@@ -1461,7 +1461,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_quote_by()
+    public function tpl_preview__comcode_quote_by() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_QUOTE_BY', [
@@ -1480,7 +1480,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_quote()
+    public function tpl_preview__comcode_quote() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_QUOTE', [
@@ -1497,7 +1497,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_contents()
+    public function tpl_preview__comcode_contents() : array
     {
         $lines = [];
         foreach (placeholder_array() as $v) {
@@ -1527,7 +1527,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_textcode_line()
+    public function tpl_preview__comcode_textcode_line() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_TEXTCODE_LINE', []), null, '', true)
@@ -1541,7 +1541,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_textcode_tab()
+    public function tpl_preview__comcode_textcode_tab() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_TEXTCODE_TAB', []), null, '', true)
@@ -1555,7 +1555,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_wiki_link()
+    public function tpl_preview__comcode_wiki_link() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_WIKI_LINK', [
@@ -1572,7 +1572,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_code_scroll()
+    public function tpl_preview__comcode_code_scroll() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_CODE_SCROLL', [
@@ -1590,7 +1590,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_table_fake_wide_screen()
+    public function tpl_preview__comcode_table_fake_wide_screen() : array
     {
         $tag_output = new Tempcode();
 
@@ -1639,7 +1639,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_table_fake_screen()
+    public function tpl_preview__comcode_table_fake_screen() : array
     {
         $tag_output = new Tempcode();
 
@@ -1688,7 +1688,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_table_real_screen()
+    public function tpl_preview__comcode_table_real_screen() : array
     {
         $tag_output = new Tempcode();
 
@@ -1733,7 +1733,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_subtitle()
+    public function tpl_preview__comcode_subtitle() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_SUBTITLE', [
@@ -1752,7 +1752,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__attachments_browser()
+    public function tpl_preview__attachments_browser() : array
     {
         $list_cont = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -1791,7 +1791,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_code()
+    public function tpl_preview__comcode_code() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_CODE', [
@@ -1810,7 +1810,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_tab_body()
+    public function tpl_preview__comcode_tab_body() : array
     {
         $content = new Tempcode();
         $head = new Tempcode();
@@ -1851,7 +1851,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_samp()
+    public function tpl_preview__comcode_samp() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_SAMP', [
@@ -1867,7 +1867,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_var()
+    public function tpl_preview__comcode_var() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_VAR', [
@@ -1883,7 +1883,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_teletype()
+    public function tpl_preview__comcode_teletype() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_TELETYPE', [
@@ -1898,7 +1898,7 @@ class Hook_addon_registry_core_rich_media
      * @param  ID_TEXT $template Template name
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function do_media_preview($template)
+    public function do_media_preview(string $template) : array
     {
         require_code('files');
 
@@ -1935,7 +1935,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_audio_websafe()
+    public function tpl_preview__media_audio_websafe() : array
     {
         return $this->do_media_preview('MEDIA_AUDIO_WEBSAFE');
     }
@@ -1947,7 +1947,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_image_websafe()
+    public function tpl_preview__media_image_websafe() : array
     {
         return $this->do_media_preview('MEDIA_IMAGE_WEBSAFE');
     }
@@ -1959,7 +1959,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_pdf()
+    public function tpl_preview__media_pdf() : array
     {
         return $this->do_media_preview('MEDIA_PDF');
     }
@@ -1971,7 +1971,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_svg()
+    public function tpl_preview__media_svg() : array
     {
         return $this->do_media_preview('MEDIA_SVG');
     }
@@ -1983,7 +1983,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_video_facebook()
+    public function tpl_preview__media_video_facebook() : array
     {
         return $this->do_media_preview('MEDIA_VIDEO_FACEBOOK');
     }
@@ -1995,7 +1995,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_video_general()
+    public function tpl_preview__media_video_general() : array
     {
         return $this->do_media_preview('MEDIA_VIDEO_GENERAL');
     }
@@ -2007,7 +2007,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_video_websafe()
+    public function tpl_preview__media_video_websafe() : array
     {
         return $this->do_media_preview('MEDIA_VIDEO_WEBSAFE');
     }
@@ -2019,7 +2019,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_vimeo()
+    public function tpl_preview__media_vimeo() : array
     {
         return $this->do_media_preview('MEDIA_VIMEO');
     }
@@ -2031,7 +2031,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_youtube()
+    public function tpl_preview__media_youtube() : array
     {
         return $this->do_media_preview('MEDIA_YOUTUBE');
     }
@@ -2043,7 +2043,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_download()
+    public function tpl_preview__media_download() : array
     {
         return $this->do_media_preview('MEDIA_DOWNLOAD');
     }
@@ -2055,7 +2055,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media__download_link()
+    public function tpl_preview__media__download_link() : array
     {
         return $this->do_media_preview('MEDIA__DOWNLOAD_LINK');
     }
@@ -2067,7 +2067,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_webpage_oembed_rich()
+    public function tpl_preview__media_webpage_oembed_rich() : array
     {
         require_code('files');
 
@@ -2090,7 +2090,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_webpage_oembed_video()
+    public function tpl_preview__media_webpage_oembed_video() : array
     {
         require_code('files');
 
@@ -2113,7 +2113,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__media_webpage_semantic()
+    public function tpl_preview__media_webpage_semantic() : array
     {
         require_code('files');
 
@@ -2138,7 +2138,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_member_link()
+    public function tpl_preview__comcode_member_link() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_MEMBER_LINK', [
@@ -2157,7 +2157,7 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_media_set()
+    public function tpl_preview__comcode_media_set() : array
     {
         $media = new Tempcode();
 

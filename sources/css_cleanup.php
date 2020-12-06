@@ -38,7 +38,7 @@ abstract class CSSCleanup
      * @param  boolean $do_as_overrides Whether to save as overrides
      * @param  boolean $carry_from_default Whether to copy files from the default theme that are not in the $theme theme already
      */
-    public function __construct($theme = 'default', $do_as_overrides = true, $carry_from_default = true)
+    public function __construct(string $theme = 'default', bool $do_as_overrides = true, bool $carry_from_default = true)
     {
         $this->theme = $theme;
         $this->do_as_overrides = $do_as_overrides;
@@ -292,7 +292,7 @@ class EmToPx extends CSSCleanup
      * @param  string $font_size Font size
      * @return string Normalised font size
      */
-    protected function normalise_font_size($font_size)
+    protected function normalise_font_size(string $font_size) : string
     {
         $font_size = cms_strtolower_ascii($font_size);
 
@@ -353,7 +353,7 @@ class EmToPx extends CSSCleanup
      * @param  boolean $is_for_font_size It is for a font size property
      * @return float Size in px units
      */
-    protected function convert_em_to_px($amount_em, $selector, $is_for_font_size = false)
+    protected function convert_em_to_px(float $amount_em, string $selector, bool $is_for_font_size = false) : float
     {
         // We do our big approximations in here. We assume we can predict all places font-sizes may raise based on html, body, and the trail of our selector, and that nothing compounds across multiple elements matching the same selector.
         // Practically speaking, these approximations are good enough, especially given that:
@@ -396,7 +396,7 @@ class EmToPx extends CSSCleanup
      * @param  string $context_selector The selector this is for (useful for debugging, not used for calculation)
      * @return integer Font size in px units
      */
-    protected function find_font_size_from_chain($chain, $context_selector)
+    protected function find_font_size_from_chain(array $chain, string $context_selector) : int
     {
         $font_size = 16;
         $root_font_size = $font_size;
@@ -457,7 +457,7 @@ class EmToPx extends CSSCleanup
      * @param  boolean $just_element Just check the element part of the selector, ignore any complex selector parts of it (like attribute selector)
      * @return boolean Whether it corresponds
      */
-    protected function selector_corresponds($simple, $complex, $may_be_chained_by = [], $just_element = false)
+    protected function selector_corresponds(string $simple, string $complex, array $may_be_chained_by = [], bool $just_element = false) : bool
     {
         if ($simple == '') {
             return false;

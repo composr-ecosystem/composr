@@ -27,7 +27,7 @@
  * @param  boolean $include_urls Whether to include URLs in the text version
  * @return string Clean text
  */
-function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $include_urls = false)
+function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_preserve = [], bool $include_urls = false) : string
 {
     $text = $in;
 
@@ -384,7 +384,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
  *
  * @ignore
  */
-function _indent_callback($matches)
+function _indent_callback(array $matches) : string
 {
     return '      ' . str_replace("\n", "\n" . '      ', $matches[1]);
 }
@@ -397,7 +397,7 @@ function _indent_callback($matches)
  *
  * @ignore
  */
-function _title_callback($matches)
+function _title_callback(array $matches) : string
 {
     $symbol = '-';
     if (strpos($matches[2], '1') !== false || $matches[2] == '') {
@@ -420,7 +420,7 @@ function _title_callback($matches)
  *
  * @ignore
  */
-function _box_callback($matches)
+function _box_callback(array $matches) : string
 {
     return $matches[1] . "\n" . str_repeat('-', strlen($matches[1])) . "\n" . $matches[2];
 }
@@ -433,7 +433,7 @@ function _box_callback($matches)
  *
  * @ignore
  */
-function _page_callback($matches)
+function _page_callback(array $matches) : string
 {
     $url = page_link_to_url($matches[1], true);
     return '[url="' . addslashes($url) . '"]' . $matches[2] . '[/url]';
@@ -447,7 +447,7 @@ function _page_callback($matches)
  *
  * @ignore
  */
-function _random_callback($matches)
+function _random_callback(array $matches) : string
 {
     $parts = [];
     $num_parts = preg_match_all('# [^=]*="([^"]*)"#', $matches[1], $parts);
@@ -462,7 +462,7 @@ function _random_callback($matches)
  *
  * @ignore
  */
-function _shocker_callback($matches)
+function _shocker_callback(array $matches) : string
 {
     $parts = [];
     $num_parts = preg_match_all('# [^=]*="([^"]*)"#', $matches[1], $parts);
@@ -484,7 +484,7 @@ function _shocker_callback($matches)
  *
  * @ignore
  */
-function _comcode_callback($matches)
+function _comcode_callback(array $matches) : string
 {
     return str_replace('xxx', $matches[2], static_evaluate_tempcode(comcode_to_tempcode($matches[1] . 'xxx' . $matches[3])));
 }
@@ -497,7 +497,7 @@ function _comcode_callback($matches)
  *
  * @ignore
  */
-function _semihtml_to_comcode_callback($matches)
+function _semihtml_to_comcode_callback(array $matches) : string
 {
     return semihtml_to_comcode($matches[1], true, true);
 }

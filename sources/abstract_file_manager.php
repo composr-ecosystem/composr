@@ -44,7 +44,7 @@ function init__abstract_file_manager()
  *
  * @param  array $writable_paths A list of file or directory paths to check first for writability. Only works for suEXEC-style. Advisable because we don't want to fail in the middle of something. May be glob style, or end in '/*' for recursion.
  */
-function force_have_afm_details($writable_paths = [])
+function force_have_afm_details(array $writable_paths = [])
 {
     $no_ftp_conditions = [
         is_suexec_like(), // No need for FTP
@@ -151,7 +151,7 @@ function get_afm_form()
  *
  * @return Tempcode The form fields
  */
-function get_afm_form_fields()
+function get_afm_form_fields() : object
 {
     require_code('form_templates');
     $fields = new Tempcode();
@@ -248,7 +248,7 @@ function get_afm_form_fields()
  *
  * @ignore
  */
-function _ftp_info($light_fail = false)
+function _ftp_info(bool $light_fail = false)
 {
     global $AFM_FTP_CONN;
     if ($AFM_FTP_CONN !== null) {
@@ -362,7 +362,7 @@ function _ftp_info($light_fail = false)
  *
  * @ignore
  */
-function _translate_dir_access($world_access)
+function _translate_dir_access(bool $world_access) : int
 {
     if (is_suexec_like()) {
         return 0755;
@@ -384,7 +384,7 @@ function _translate_dir_access($world_access)
  *
  * @ignore
  */
-function _translate_file_access($world_access, $file_type = '')
+function _translate_file_access(bool $world_access, string $file_type = '') : int
 {
     $mask = 0;
 
@@ -420,7 +420,7 @@ function _translate_file_access($world_access, $file_type = '')
  *
  * @ignore
  */
-function _access_string($access_int)
+function _access_string(int $access_int) : string
 {
     return sprintf('%o', $access_int);
 }
@@ -433,7 +433,7 @@ function _access_string($access_int)
  *
  * @ignore
  */
-function _rescope_path($path)
+function _rescope_path(string $path) : string
 {
     if (post_param_string('uses_ftp', running_script('upgrader') ? '0' : get_value('uses_ftp')) == '1') {
         $ftp_folder = post_param_string('ftp_folder', get_value('ftp_directory'));
@@ -451,7 +451,7 @@ function _rescope_path($path)
  * @param  PATH $basic_path The path of the file/directory we are setting permissions of
  * @param  integer $bitmask File permissions bitmask
  */
-function afm_set_perms($basic_path, $bitmask)
+function afm_set_perms(string $basic_path, int $bitmask)
 {
     $path = _rescope_path($basic_path);
 
@@ -470,7 +470,7 @@ function afm_set_perms($basic_path, $bitmask)
  * @param  boolean $world_access Whether world access is required
  * @param  boolean $recursive Whether we should recursively make any directories that are missing in the given path, until we can make the final directory
  */
-function afm_make_directory($basic_path, $world_access, $recursive = false)
+function afm_make_directory(string $basic_path, bool $world_access, bool $recursive = false)
 {
     $access = _translate_dir_access($world_access);
     $path = _rescope_path($basic_path);
@@ -521,7 +521,7 @@ function afm_make_directory($basic_path, $world_access, $recursive = false)
  *
  * @ignore
  */
-function _get_dir_tree($base, $at = '')
+function _get_dir_tree(string $base, string $at = '') : array
 {
     $out = [['dir', $at]];
     $stub = get_custom_file_base() . '/' . $base . '/' . $at;
@@ -550,7 +550,7 @@ function _get_dir_tree($base, $at = '')
  * @param  PATH $basic_path The path to and of the directory we are deleting
  * @param  boolean $recursive Whether we should recursively delete any child files and directories
  */
-function afm_delete_directory($basic_path, $recursive = false)
+function afm_delete_directory(string $basic_path, bool $recursive = false)
 {
     $paths = $recursive ? array_reverse(_get_dir_tree($basic_path)) : [['dir', '']];
 
@@ -587,7 +587,7 @@ function afm_delete_directory($basic_path, $recursive = false)
  * @param  boolean $world_access Whether world access is required
  * @param  boolean $bom Whether to save a byte-order-mark if appropriate to the website character set
  */
-function afm_make_file($basic_path, $contents, $world_access, $bom = false)
+function afm_make_file(string $basic_path, string $contents, bool $world_access, bool $bom = false)
 {
     $path = _rescope_path($basic_path);
     $access = _translate_file_access($world_access, get_file_extension($basic_path));
@@ -630,7 +630,7 @@ function afm_make_file($basic_path, $contents, $world_access, $bom = false)
  * @param  boolean $bom Whether to consider the byte-order-mark and do character set conversions
  * @return string The contents of the file
  */
-function afm_read_file($path, $bom = false)
+function afm_read_file(string $path, bool $bom = false) : string
 {
     return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK | ($bom ? FILE_READ_BOM : 0));
 }
@@ -642,7 +642,7 @@ function afm_read_file($path, $bom = false)
  * @param  PATH $new_path The target path
  * @param  boolean $world_access Whether world access is required for the copy
  */
-function afm_copy($old_path, $new_path, $world_access)
+function afm_copy(string $old_path, string $new_path, bool $world_access)
 {
     $a = get_custom_file_base() . '/' . $old_path;
     if (!file_exists($a)) {
@@ -658,7 +658,7 @@ function afm_copy($old_path, $new_path, $world_access)
  * @param  PATH $basic_old_path The path to the file we are moving from
  * @param  PATH $basic_new_path The target path
  */
-function afm_move($basic_old_path, $basic_new_path)
+function afm_move(string $basic_old_path, string $basic_new_path)
 {
     if (file_exists(get_custom_file_base() . '/' . $basic_new_path)) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($basic_new_path)));
@@ -697,7 +697,7 @@ function afm_move($basic_old_path, $basic_new_path)
  *
  * @param  PATH $basic_path The path to the file we are deleting
  */
-function afm_delete_file($basic_path)
+function afm_delete_file(string $basic_path)
 {
     $path = _rescope_path($basic_path);
 
@@ -730,7 +730,7 @@ function afm_delete_file($basic_path)
  *
  * @return TIME Time
  */
-function website_default_php_file_permissions()
+function website_default_php_file_permissions() : int
 {
     return fileperms(get_file_base() . '/sources/global.php');
 }

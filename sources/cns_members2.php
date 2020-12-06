@@ -32,7 +32,7 @@
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _members_filtercode($db, $info, $context, &$extra_join, $filter_key, $field_val, $db_fields, $table_join_code)
+function _members_filtercode(object $db, array $info, string $context, array &$extra_join, string $filter_key, string $field_val, array $db_fields, string $table_join_code) : ?array
 {
     // If it's trivial
     if (($filter_key == 'id') || (preg_match('#^m_\w+$#', $filter_key) != 0)) {
@@ -92,7 +92,7 @@ function _members_filtercode($db, $info, $context, &$extra_join, $filter_key, $f
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The member box
  */
-function render_member_box($member_id, $preview = false, $show_avatar = true, $extra_fields = [], $give_context = true, $guid = '')
+function render_member_box(int $member_id, bool $preview = false, bool $show_avatar = true, array $extra_fields = [], bool $give_context = true, string $guid = '') : object
 {
     if ($member_id === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -200,7 +200,7 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
  * @param  ?MEMBER $member_id Member to PT. (null: current member)
  * @return boolean Whether the PT may be created
  */
-function cns_may_whisper($target, $member_id = null)
+function cns_may_whisper(int $target, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

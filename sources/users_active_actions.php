@@ -23,7 +23,7 @@
  *
  * @return MEMBER The member to simulate
  */
-function restricted_manually_enabled_backdoor()
+function restricted_manually_enabled_backdoor() : int
 {
     global $IS_A_COOKIE_LOGIN, $IS_VIA_BACKDOOR;
     $IS_A_COOKIE_LOGIN = true;
@@ -68,7 +68,7 @@ function restricted_manually_enabled_backdoor()
  *
  * @return MEMBER Admin user
  */
-function get_first_admin_user()
+function get_first_admin_user() : int
 {
     $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
     if (!empty($members)) {
@@ -84,7 +84,7 @@ function get_first_admin_user()
  *
  * @param  ID_TEXT $username Username
  */
-function handle_active_login($username)
+function handle_active_login(string $username)
 {
     $result = [];
 
@@ -233,7 +233,7 @@ function handle_active_logout()
  *
  * @ignore
  */
-function _enforce_temporary_passwords($member_id)
+function _enforce_temporary_passwords(int $member_id)
 {
     if ((get_forum_type() == 'cns') && (running_script('index')) && ($member_id != db_get_first_id()) && (!$GLOBALS['IS_ACTUALLY_ADMIN']) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') && (get_page_name() != 'lost_password') && ((get_page_name() != 'members') || (get_param_string('type', 'browse') != 'view'))) {
         $force_change_message = null;
@@ -285,7 +285,7 @@ function _enforce_temporary_passwords($member_id)
  *
  * @param  ID_TEXT $session The new session
  */
-function delete_session($session)
+function delete_session(string $session)
 {
     require_code('users_inactive_occasionals');
     set_session_id('');
@@ -304,7 +304,7 @@ function delete_session($session)
  *
  * @param  boolean $make_invisible Whether to make the current user invisible (true=make invisible, false=make visible)
  */
-function set_invisibility($make_invisible = true)
+function set_invisibility(bool $make_invisible = true)
 {
     $GLOBALS['SITE_DB']->query_update('sessions', ['session_invisible' => $make_invisible ? 1 : 0], ['member_id' => get_member(), 'the_session' => get_session_id()], '', 1);
     global $SESSION_CACHE;
@@ -339,7 +339,7 @@ function set_invisibility($make_invisible = true)
  * @param  ?integer $days Days to store (null: default)
  * @return boolean The result of the PHP setcookie command
  */
-function cms_setcookie($name, $value, $session = false, $httponly = false, $days = null)
+function cms_setcookie(string $name, string $value, bool $session = false, bool $httponly = false, ?int $days = null) : bool
 {
     /*if (($GLOBALS['DEV_MODE']) && (running_script('index')) && (get_forum_type() == 'cns') && (get_param_integer('keep_debug_has_cookies', 0) == 0) && ($name != 'has_referers')) {    Annoying, and non-cookie support is very well tested by now
         return true;
@@ -405,7 +405,7 @@ function cms_setcookie($name, $value, $session = false, $httponly = false, $days
  * @param  string $name The name of the cookie
  * @return boolean The result of the PHP setcookie command
  */
-function cms_eatcookie($name)
+function cms_eatcookie(string $name) : bool
 {
     $expire = time() - 100000; // Note the negative number must be greater than 13*60*60 to account for maximum timezone difference
 

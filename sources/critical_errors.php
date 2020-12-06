@@ -63,7 +63,7 @@ if (!function_exists('critical_error')) {
      * @param  ?string $relay Relayed additional details (null: nothing relayed)
      * @param  boolean $exit Whether to actually exit
      */
-    function critical_error($code, $relay = null, $exit = true)
+    function critical_error(string $code, ?string $relay = null, bool $exit = true)
     {
         error_reporting(0);
 

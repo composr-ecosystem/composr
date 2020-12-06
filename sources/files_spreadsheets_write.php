@@ -24,7 +24,7 @@
  * @param  string $filename Filename
  * @return boolean Whether it is
  */
-function is_spreadsheet_writable($filename)
+function is_spreadsheet_writable(string $filename) : bool
 {
     $ext = get_file_extension($filename);
     return in_array($ext, ['csv', 'txt']);
@@ -35,7 +35,7 @@ function is_spreadsheet_writable($filename)
  *
  * @return string Default format
  */
-function spreadsheet_write_default()
+function spreadsheet_write_default() : string
 {
     $file_type = either_param_string('file_type', null);
     if (($file_type !== null) && (is_spreadsheet_writable('example.' . $file_type))) {
@@ -54,7 +54,7 @@ function spreadsheet_write_default()
  * @param  array $metadata List of maps, each map representing metadata of a row; supports 'url'; will only be used by file formats that support it
  * @return object A CMS_Spreadsheet_Writer object (pre-closed, you don't need to close it)
  */
-function make_spreadsheet(&$path, $data, $filename = null, $metadata = [])
+function make_spreadsheet(?string &$path, array $data, ?string $filename = null, array $metadata = []) : object
 {
     if ($filename === null) {
         $filename = basename($path);
@@ -78,7 +78,7 @@ function make_spreadsheet(&$path, $data, $filename = null, $metadata = [])
  * @param  ?string $charset The character set to write with (if supported) (null: website character set)
  * @return object A subclass of CMS_Spreadsheet_Writer
  */
-function spreadsheet_open_write(&$path, $filename = null, $algorithm = 3, $charset = '')
+function spreadsheet_open_write(?string &$path, ?string $filename = null, int $algorithm = 3, ?string $charset = '') : object
 {
     if ($filename === null) {
         $filename = basename($path);
@@ -120,7 +120,7 @@ abstract class CMS_Spreadsheet_Writer
      * @param  integer $algorithm An ALGORITHM_* constant
      * @param  ?string $charset The character set to write with (if supported) (null: website character set)
      */
-    abstract public function __construct(&$path, $filename, $algorithm = 3, $charset = null);
+    abstract public function __construct(?string &$path, string $filename, int $algorithm = 3, ?string $charset = null);
 
     /**
      * Write spreadsheet row.
@@ -128,7 +128,7 @@ abstract class CMS_Spreadsheet_Writer
      * @param  array $row Row
      * @param  ?array $metadata Map representing metadata of a row; supports 'url'; will only be used by file formats that support it (null: none)
      */
-    public function write_row($row, $metadata = null)
+    public function write_row(array $row, ?array $metadata = null)
     {
         if ($this->algorithm == self::ALGORITHM_NAMED_FIELDS) {
             if ($this->fields === null) { // First row
@@ -145,14 +145,15 @@ abstract class CMS_Spreadsheet_Writer
      *
      * @param  array $row Row
      */
-    abstract protected function _write_row($row);
+    abstract protected function _write_row(array $row);
 
     /**
      * Get the mime-type for the spreadsheet.
      *
      * @return string Mime-type
      */
-    abstract public function get_mime_type();
+    abstract public function get_mime_type() : string;
+
 
     /**
      * Close down the spreadsheet file handle, for when we're done.
@@ -167,7 +168,7 @@ abstract class CMS_Spreadsheet_Writer
      * @param  boolean $is_tmp_file If the path we've been working with is a temporary file, and therefore needs to be deleted
      * @exits
      */
-    public function output_and_exit($filename, $is_tmp_file = false)
+    public function output_and_exit(?string $filename, bool $is_tmp_file = false)
     {
         $this->close();
 
@@ -226,7 +227,7 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
      * @param  integer $format A FORMAT_* constant
      * @param  boolean $write_bom Whether to write a byte-order-mark (BOM)
      */
-    public function __construct(&$path, $filename, $algorithm = 3, $charset = null, $format = 1, $write_bom = true)
+    public function __construct(?string &$path, string $filename, int $algorithm = 3, ?string $charset = null, int $format = 1, bool $write_bom = true)
     {
         require_code('files');
 
@@ -253,7 +254,7 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
      *
      * @param  array $row Row
      */
-    protected function _write_row($row)
+    protected function _write_row(array $row)
     {
         if ($this->handle === null) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -308,7 +309,7 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
      *
      * @return string Mime-type
      */
-    public function get_mime_type()
+    public function get_mime_type() : string
     {
         return 'text/csv';
     }

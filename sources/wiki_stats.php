@@ -23,7 +23,7 @@
  *
  * @return integer The number of pages in the Wiki+ database
  */
-function get_num_wiki_pages()
+function get_num_wiki_pages() : int
 {
     $value = get_value_newer_than('num_wiki_pages', time() - 60 * 60 * 24);
 
@@ -44,7 +44,7 @@ function get_num_wiki_pages()
  *
  * @return integer The number of posts in the Wiki+ database
  */
-function get_num_wiki_posts()
+function get_num_wiki_posts() : int
 {
     $value = get_value_newer_than('num_wiki_posts', time() - 60 * 60 * 24);
 

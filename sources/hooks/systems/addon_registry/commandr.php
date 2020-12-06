@@ -29,7 +29,7 @@ class Hook_addon_registry_commandr
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_commandr
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_commandr
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Admin Utilities';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_commandr
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'A command-line environment for managing your website, designed for Linux/Unix lovers.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_commandr
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_commandr',
@@ -82,7 +82,7 @@ class Hook_addon_registry_commandr
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -96,7 +96,7 @@ class Hook_addon_registry_commandr
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/tools/commandr.svg';
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_commandr
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/commandr.php',
@@ -243,7 +243,7 @@ class Hook_addon_registry_commandr
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/COMMANDR_MAIN.tpl' => 'administrative__commandr_main',
@@ -270,7 +270,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_main()
+    public function tpl_preview__administrative__commandr_main() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_MAIN', [
@@ -289,7 +289,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_main_screen()
+    public function tpl_preview__administrative__commandr_main_screen() : array
     {
         $content = do_lorem_template('COMMANDR_MAIN', [
             'SUBMIT_URL' => placeholder_url(),
@@ -312,7 +312,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_command()
+    public function tpl_preview__administrative__commandr_command() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_COMMAND', [
@@ -332,7 +332,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_array()
+    public function tpl_preview__administrative__commandr_array() : array
     {
         $elements = [];
         $elements[] = [
@@ -354,7 +354,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_help()
+    public function tpl_preview__administrative__commandr_help() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_HELP', [
@@ -372,7 +372,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_box()
+    public function tpl_preview__administrative__commandr_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_BOX', [
@@ -388,7 +388,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_commands()
+    public function tpl_preview__administrative__commandr_commands() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_COMMANDS', [
@@ -404,7 +404,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_rss()
+    public function tpl_preview__administrative__commandr_rss() : array
     {
         $content = [];
         $content[] = [
@@ -429,7 +429,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_edit()
+    public function tpl_preview__administrative__commandr_edit() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_EDIT', [
@@ -447,7 +447,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_users_online()
+    public function tpl_preview__administrative__commandr_users_online() : array
     {
         $memb = [];
         foreach (placeholder_array() as $k => $v) {
@@ -468,7 +468,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_find_codes()
+    public function tpl_preview__administrative__commandr_find_codes() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_FIND_CODES', [
@@ -484,7 +484,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_whois()
+    public function tpl_preview__administrative__commandr_whois() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMANDR_WHOIS', [
@@ -505,7 +505,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_entry_points()
+    public function tpl_preview__administrative__commandr_entry_points() : array
     {
         $points = [];
         foreach (placeholder_array() as $k => $v) {
@@ -525,7 +525,7 @@ class Hook_addon_registry_commandr
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__commandr_ls()
+    public function tpl_preview__administrative__commandr_ls() : array
     {
         $directories = [];
         foreach (placeholder_array() as $k => $v) {

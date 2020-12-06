@@ -28,7 +28,7 @@ class Hook_config_show_screen_actions
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SHOW_SCREEN_ACTIONS',
@@ -52,7 +52,7 @@ class Hook_config_show_screen_actions
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

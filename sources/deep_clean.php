@@ -25,7 +25,7 @@
  * @param  string $heading Heading to not allow to be repeated at start (blank: none)
  * @return string Output
  */
-function deep_clean($d, $heading = '')
+function deep_clean(string $d, string $heading = '') : string
 {
     $d = unixify_line_format($d);
 
@@ -155,7 +155,7 @@ function deep_clean($d, $heading = '')
  *
  * @param  string $text Comcode / HTML
  */
-function column_cleanup(&$text)
+function column_cleanup(string &$text)
 {
     $text = str_replace('<br>', '<br />', $text);
     $temp_text = cms_strip_tags($text, '<br>');

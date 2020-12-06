@@ -49,7 +49,7 @@ abstract class Hook_actionlog
      * @param  boolean $show_view_profile Show view profile links
      * @return ?~array Map of extended data in standard format (null: not available from this hook) (false: hook has responsibility but has failed)
      */
-    public function get_extended_actionlog_data($actionlog_row, $show_view_profile = true)
+    public function get_extended_actionlog_data(array $actionlog_row, bool $show_view_profile = true) : ?array
     {
         $handlers = $this->get_handlers();
 
@@ -140,7 +140,7 @@ abstract class Hook_actionlog
      * @param  array $handler_data Handler data
      * @return string Identifier
      */
-    protected function get_identifier($actionlog_row, $handler_data)
+    protected function get_identifier(array $actionlog_row, array $handler_data) : string
     {
         $identifier = null;
         if ($handler_data['identifier_index'] === 0) {
@@ -159,7 +159,7 @@ abstract class Hook_actionlog
      * @param  ?string $identifier Identifier (null: none)
      * @return string Written context
      */
-    protected function get_written_context($actionlog_row, $handler_data, $identifier)
+    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : string
     {
         $written_context = null;
         if ($handler_data['written_context_index'] === 0) {
@@ -183,7 +183,7 @@ abstract class Hook_actionlog
      * @param  ?string $written_context The written context associated with this action log entry (null: unknown / none)
      * @param  array $bindings Default bindings
      */
-    protected function get_extended_actionlog_bindings($actionlog_row, $identifier, $written_context, &$bindings)
+    protected function get_extended_actionlog_bindings(array $actionlog_row, ?string $identifier, ?string $written_context, array &$bindings)
     {
         // For overriding
     }
@@ -195,7 +195,7 @@ abstract class Hook_actionlog
      * @param  array $bindings Mapping of bindings to apply
      * @return ~boolean Whether successful applying the bindings (false: null or missing binding)
      */
-    protected function apply_string_parameter_substitutions(&$string, $bindings)
+    protected function apply_string_parameter_substitutions(string &$string, array $bindings)
     {
         foreach ($bindings as $binding_from => $binding_to) {
             if (is_integer($binding_from)) {
@@ -235,7 +235,7 @@ abstract class Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         return [];
     }
@@ -247,7 +247,7 @@ abstract class Hook_actionlog
  * @param  ID_TEXT $the_type Action log type
  * @return integer Flags
  */
-function get_handler_flags($the_type)
+function get_handler_flags(string $the_type) : int
 {
     static $hook_obs = null;
     if ($hook_obs === null) {
@@ -273,7 +273,7 @@ function get_handler_flags($the_type)
  * @param  boolean $show_view_profile Show view profile links
  * @return ?array Tuple: enhanced label, enhanced label that may be null, flags, map of followup URLs (null: could not construct a nice link)
  */
-function actionlog_linkage($actionlog_row, $crop_length_a = null, $crop_length_b = null, $show_view_profile = true)
+function actionlog_linkage(array $actionlog_row, ?int $crop_length_a = null, ?int $crop_length_b = null, bool $show_view_profile = true) : ?array
 {
     static $hook_obs = null;
     if ($hook_obs === null) {

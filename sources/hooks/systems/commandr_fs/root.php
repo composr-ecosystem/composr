@@ -31,7 +31,7 @@ class Hook_commandr_fs_root
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~array The final directory listing (false: failure)
      */
-    public function listing($meta_dir, $meta_root_node, &$commandr_fs)
+    public function listing(array $meta_dir, string $meta_root_node, object &$commandr_fs)
     {
         $override_path = $this->_customise_directory($meta_dir);
         $nonoverride_path = $this->_customise_directory($meta_dir, false);
@@ -71,7 +71,7 @@ class Hook_commandr_fs_root
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function make_directory($meta_dir, $meta_root_node, $new_dir_name, &$commandr_fs)
+    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         $new_dir_name = filter_naughty($new_dir_name);
         $path = $this->_customise_directory($meta_dir);
@@ -95,7 +95,7 @@ class Hook_commandr_fs_root
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_directory($meta_dir, $meta_root_node, $dir_name, &$commandr_fs)
+    public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
         $dir_name = filter_naughty($dir_name);
         $path = $this->_customise_directory($meta_dir);
@@ -121,7 +121,7 @@ class Hook_commandr_fs_root
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
         $file_name = filter_naughty($file_name);
         $path = $this->_customise_directory($meta_dir);
@@ -144,7 +144,7 @@ class Hook_commandr_fs_root
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         $file_name = filter_naughty($file_name);
         $path = $this->_customise_directory($meta_dir);
@@ -169,7 +169,7 @@ class Hook_commandr_fs_root
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
+    public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
         $file_name = filter_naughty($file_name);
         $path = $this->_customise_directory($meta_dir);
@@ -190,7 +190,7 @@ class Hook_commandr_fs_root
      * @param  boolean $change_to_override Whether to rewrite to be the alternative override directory
      * @return string Customised path
      */
-    protected function _customise_directory($directory, $change_to_override = true)
+    protected function _customise_directory(array $directory, bool $change_to_override = true) : string
     {
         $dir_replacements = ['sources', 'comcode', 'html', 'minimodules', 'modules', 'data', 'lang', 'text', 'images', 'templates'];
 

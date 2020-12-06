@@ -25,7 +25,7 @@
  * @param  ?ID_TEXT $field_type The field type (null: work out what is there to read automatically)
  * @return string The parameter value
  */
-function read_filtercode_parameter_from_env($field_name, $field_type = null)
+function read_filtercode_parameter_from_env(string $field_name, ?string $field_type = null) : string
 {
     $env = $_POST + $_GET;
 
@@ -64,7 +64,7 @@ function read_filtercode_parameter_from_env($field_name, $field_type = null)
  * @param  array $types Field types (empty array: use string inputs / defaults for table)
  * @return array The form fields, The modded filter, Merger links
  */
-function form_for_filtercode($filter, $labels = [], $content_type = null, $types = [])
+function form_for_filtercode(string $filter, array $labels = [], ?string $content_type = null, array $types = []) : array
 {
     $table = null;
     $db = $GLOBALS['SITE_DB'];
@@ -423,7 +423,7 @@ function form_for_filtercode($filter, $labels = [], $content_type = null, $types
  * @param  string $filter String-based search filter
  * @return array Parsed structure
  */
-function parse_filtercode($filter)
+function parse_filtercode(string $filter) : array
 {
     $parsed = [];
     $filters = explode((strpos($filter, "\n") !== false) ? "\n" : ',', $filter);
@@ -451,7 +451,7 @@ function parse_filtercode($filter)
  * @param  array $parsed Parsed structure
  * @return string String-based search filter
  */
-function unparse_filtercode($parsed)
+function unparse_filtercode(array $parsed) : string
 {
     $filter = '';
     foreach ($parsed as $_filter) {
@@ -478,7 +478,7 @@ function unparse_filtercode($parsed)
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _fields_api_filtercode_named(object $db, array $info, ?string $catalogue_name, array &$extra_join, string $filter_key, string $filter_val, array $db_fields, string $table_join_code) : ?array
 {
     require_code('fields');
     $fields = get_catalogue_fields($catalogue_name);
@@ -525,7 +525,7 @@ function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join,
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _fields_api_filtercode(object $db, array $info, ?string $catalogue_name, array &$extra_join, string $filter_key, string $filter_val, array $db_fields, string $table_join_code) : ?array
 {
     $matches = [];
     if (preg_match('#^((.*)\.)?field_(\d+)#', $filter_key, $matches) == 0) {
@@ -584,7 +584,7 @@ function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, $filt
  * @param  string $str Input string
  * @return string Suitable key name
  */
-function generate_filtercode_join_key_from_string($str)
+function generate_filtercode_join_key_from_string(string $str) : string
 {
     return substr(md5($str), 0, 3);
 }
@@ -603,7 +603,7 @@ function generate_filtercode_join_key_from_string($str)
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _default_conv_func($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _default_conv_func(object $db, array $info, ?string $catalogue_name, array &$extra_join, string $filter_key, string $filter_val, array $db_fields, string $table_join_code) : ?array
 {
     if (isset($info['id_field'])) {
         $first_id_field = (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']);
@@ -765,7 +765,7 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, $filter_k
  * @param  string $table_join_code What the database will join the table with
  * @return array Tuple: array of extra join (implode with ''), string of extra where
  */
-function filtercode_to_sql($db, $filters, $content_type = null, $context = null, $table_join_code = 'r')
+function filtercode_to_sql(object $db, array $filters, ?string $content_type = null, ?string $context = null, string $table_join_code = 'r') : array
 {
     // Nothing to do?
     if (empty($filters)) {
@@ -1041,7 +1041,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
  * @param  string $_link_filter Filtercode filter
  * @return array Template-ready details
  */
-function prepare_filtercode_merger_link($_link_filter)
+function prepare_filtercode_merger_link(string $_link_filter) : array
 {
     $active_filter = parse_filtercode(either_param_string('active_filter', '', INPUT_FILTER_NONE));
     $link_filter = parse_filtercode($_link_filter);

@@ -28,7 +28,7 @@ class Hook_cleanup_temp
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('TEMP');
@@ -43,7 +43,7 @@ class Hook_cleanup_temp
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         $tables = [
             'incoming_uploads',

@@ -24,7 +24,7 @@
  * @param  array $values The array of field titles that define the entries in the table table
  * @return Tempcode The generated header
  */
-function columned_table_header_row($values)
+function columned_table_header_row(array $values) : object
 {
     $cells = new Tempcode();
     foreach ($values as $value) {
@@ -41,7 +41,7 @@ function columned_table_header_row($values)
  * @param  boolean $escape Whether to add escaping
  * @return Tempcode The generated row
  */
-function columned_table_row($values, $escape)
+function columned_table_row(array $values, bool $escape) : object
 {
     $cells = new Tempcode();
     foreach ($values as $value) {

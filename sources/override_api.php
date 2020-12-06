@@ -25,7 +25,7 @@
  * @param  string $function Name of the function
  * @return SHORT_TEXT The MD5 hash (blank: no such function)
  */
-function get_function_hash($code, $function)
+function get_function_hash(string $code, string $function) : string
 {
     $matches = [];
     if (preg_match('#^(function ' . $function . '\(.*\n\{.*\n\})#msU', $code, $matches) != 0) {
@@ -44,7 +44,7 @@ function get_function_hash($code, $function)
  * @param  string $newcode Code to insert
  * @return boolean Success status
  */
-function insert_code_before__by_linenum(&$code, $function, $linenum, $newcode)
+function insert_code_before__by_linenum(string &$code, string $function, int $linenum, string $newcode) : bool
 {
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
@@ -73,7 +73,7 @@ function insert_code_before__by_linenum(&$code, $function, $linenum, $newcode)
  * @param  string $newcode Code to insert
  * @return boolean Success status
  */
-function insert_code_after__by_linenum(&$code, $function, $linenum, $newcode)
+function insert_code_after__by_linenum(string &$code, string $function, int $linenum, string $newcode) : bool
 {
     return insert_code_before__by_linenum($code, $function, $linenum + 1, $newcode);
 }
@@ -88,7 +88,7 @@ function insert_code_after__by_linenum(&$code, $function, $linenum, $newcode)
  * @param  integer $instance_of_command We are inserting at this instance of the line (i.e. takes into account a literal line of code may exist in other places in a function).
  * @return boolean Success status
  */
-function insert_code_before__by_command(&$code, $function, $command, $newcode, $instance_of_command = 1)
+function insert_code_before__by_command(string &$code, string $function, string $command, string $newcode, int $instance_of_command = 1) : bool
 {
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
@@ -118,7 +118,7 @@ function insert_code_before__by_command(&$code, $function, $command, $newcode, $
  * @param  integer $instance_of_command We are inserting at this instance of the line (i.e. takes into account a literal line of code may exist in other places in a function).
  * @return boolean Success status
  */
-function insert_code_after__by_command(&$code, $function, $command, $newcode, $instance_of_command = 1)
+function insert_code_after__by_command(string &$code, string $function, string $command, string $newcode, int $instance_of_command = 1) : bool
 {
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {
@@ -147,7 +147,7 @@ function insert_code_after__by_command(&$code, $function, $command, $newcode, $i
  * @param  integer $instance_of_command We remove the nth instance of this command
  * @return boolean Success status
  */
-function remove_code(&$code, $function, $command, $instance_of_command = 1)
+function remove_code(string &$code, string $function, string $command, int $instance_of_command = 1) : bool
 {
     $pos = strpos($code, 'function ' . $function . '(');
     if ($pos === false) {

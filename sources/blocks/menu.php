@@ -28,7 +28,7 @@ class Block_menu
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -46,7 +46,7 @@ class Block_menu
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         /* Ideally we would not cache as we would need to cache for all screens due to context sensitive link display (either you're here or match key filtering). However in most cases that only happens per page, so we will cache per page -- and people can turn off caching via the standard block parameter for that if needed.*/
         $info = [];
@@ -62,7 +62,7 @@ class Block_menu
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $block_id = get_block_id($map);
 
@@ -130,7 +130,7 @@ class Block_menu
  * @param  array $map The block parameters
  * @return array The cache signature
  */
-function block_menu__cache_on($map)
+function block_menu__cache_on(array $map) : array
 {
     /*
     Menu caching is problematic. "Is active" caching theoretically would need doing against each URL.

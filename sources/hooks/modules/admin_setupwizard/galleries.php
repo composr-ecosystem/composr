@@ -28,7 +28,7 @@ class Hook_sw_galleries
      *
      * @return array Current settings
      */
-    public function get_current_settings()
+    public function get_current_settings() : array
     {
         $settings = [];
 
@@ -46,7 +46,7 @@ class Hook_sw_galleries
      * @param  array $field_defaults Default values for the fields, from the install-profile
      * @return array A pair: Input fields, Hidden fields
      */
-    public function get_fields($field_defaults)
+    public function get_fields(array $field_defaults) : array
     {
         if (!addon_installed('galleries') || post_param_integer('addon_galleries', null) === 0) {
             return [new Tempcode(), new Tempcode()];

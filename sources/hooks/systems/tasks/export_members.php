@@ -33,7 +33,7 @@ class Hook_task_export_members
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($filter_by_allow, $fields_to_use, $usergroups, $order_by, $file_type = null)
+    public function run(bool $filter_by_allow, array $fields_to_use, array $usergroups, string $order_by, ?string $file_type = null) : ?array
     {
         require_code('cns_members_action2');
         list($headings, $cpfs, $subscription_types) = member_get_spreadsheet_headings_extended();
@@ -173,7 +173,7 @@ class Hook_task_export_members
      * @param  array $subscription_types List of subscription types
      * @return array The row
      */
-    public function _get_spreadsheet_member_record($m, $groups, $headings, $cpfs, $member_groups, $subscription_types)
+    public function _get_spreadsheet_member_record(array $m, array $groups, array $headings, array $cpfs, array $member_groups, array $subscription_types) : array
     {
         // Usergroup subscription details
         if (addon_installed('ecommerce')) {

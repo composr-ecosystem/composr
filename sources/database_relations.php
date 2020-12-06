@@ -51,7 +51,7 @@ function init__database_relations()
  *
  * @return array List of tables and their status regarding being ignored for backups etc
  */
-function get_table_purpose_flags()
+function get_table_purpose_flags() : array
 {
     return [
         'addons' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
@@ -281,7 +281,7 @@ function get_table_purpose_flags()
  * @param  integer $flag A particular flag(s)
  * @return boolean Whether the flag(s) exists (at least one)
  */
-function table_has_purpose_flag($table, $flag)
+function table_has_purpose_flag(string $table, int $flag) : bool
 {
     static $flags = null;
     if ($flags === null) {
@@ -301,7 +301,7 @@ function table_has_purpose_flag($table, $flag)
  *
  * @return array Map of table descriptions
  */
-function get_table_descriptions()
+function get_table_descriptions() : array
 {
     return [
         'actionlogs' => 'stores logs of actions performed on the website',
@@ -383,7 +383,7 @@ function get_table_descriptions()
  * @param  string $table A particular table
  * @return array Map of foreign key relations
  */
-function get_relation_map_for_table($table)
+function get_relation_map_for_table(string $table) : array
 {
     $relation_map = get_relation_map();
     $new_relation_map = [];
@@ -404,7 +404,7 @@ function get_relation_map_for_table($table)
  *
  * @return array Map of foreign key relations
  */
-function get_relation_map()
+function get_relation_map() : array
 {
     return [
         'actionlogs.warning_id' => 'f_warnings.id',
@@ -566,7 +566,7 @@ function get_relation_map()
  * @param  object $db Database connector to look in
  * @return array The tables
  */
-function find_all_tables($db)
+function find_all_tables(object $db) : array
 {
     $fields = $db->query_select('db_meta', ['m_table', 'm_name', 'm_type'], [], 'ORDER BY m_table');
     $tables = [];
@@ -595,7 +595,7 @@ function find_all_tables($db)
  * @param  ?object $db Database connector to use (null: site database)
  * @param  ?string $intended_db_type Database driver to use (null: site database driver)
  */
-function get_sql_dump($out_file, $include_drops = false, $output_statuses = false, $skip = [], $only = null, $db = null, $intended_db_type = null)
+function get_sql_dump($out_file, bool $include_drops = false, bool $output_statuses = false, array $skip = [], ?array $only = null, ?object $db = null, ?string $intended_db_type = null)
 {
     disable_php_memory_limit();
     cms_disable_time_limit();

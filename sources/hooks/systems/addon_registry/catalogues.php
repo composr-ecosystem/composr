@@ -29,7 +29,7 @@ class Hook_addon_registry_catalogues
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_catalogues
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_catalogues
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Information Display';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_catalogues
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard Composr features (e.g. ratings).';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_catalogues',
@@ -83,7 +83,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -97,7 +97,7 @@ class Hook_addon_registry_catalogues
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/rich_content/catalogues/catalogues.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/catalogues.php',
@@ -216,7 +216,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/CATALOGUE_ADDING_SCREEN.tpl' => 'administrative__catalogue_adding_screen',
@@ -259,7 +259,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__category_screen()
+    public function tpl_preview__category_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_CATEGORY_SCREEN', [
@@ -291,7 +291,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__grid_category_screen()
+    public function tpl_preview__grid_category_screen() : array
     {
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
@@ -351,7 +351,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__fieldmap_category_screen()
+    public function tpl_preview__fieldmap_category_screen() : array
     {
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
@@ -405,7 +405,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__list_category_screen()
+    public function tpl_preview__list_category_screen() : array
     {
         $entries = new Tempcode();
         foreach (placeholder_array() as $v) {
@@ -441,7 +441,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__tabular_category_screen__links()
+    public function tpl_preview__tabular_category_screen__links() : array
     {
         $head = new Tempcode();
         $entry_fields = new Tempcode();
@@ -503,7 +503,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__tabular_category_screen()
+    public function tpl_preview__tabular_category_screen() : array
     {
         $head = do_lorem_template('CATALOGUE_DEFAULT_TABULAR_HEADCELL', [
             'SORT_ASC_SELECTED' => true,
@@ -559,7 +559,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__entry_screen()
+    public function tpl_preview__entry_screen() : array
     {
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
@@ -625,7 +625,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__catalogue_adding_screen()
+    public function tpl_preview__administrative__catalogue_adding_screen() : array
     {
         require_javascript('checking');
 
@@ -652,7 +652,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__catalogue_editing_screen()
+    public function tpl_preview__administrative__catalogue_editing_screen() : array
     {
         require_javascript('checking');
 
@@ -680,7 +680,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__catalogue_entries_list_line()
+    public function tpl_preview__catalogue_entries_list_line() : array
     {
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_ENTRIES_LIST_LINE', [
@@ -697,7 +697,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__catalogue_categories_list_line()
+    public function tpl_preview__catalogue_categories_list_line() : array
     {
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_CATEGORIES_LIST_LINE', [
@@ -714,7 +714,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__search_result_catalogue_entries()
+    public function tpl_preview__search_result_catalogue_entries() : array
     {
         return [
             lorem_globalise(do_lorem_template('SEARCH_RESULT_CATALOGUE_ENTRIES', [
@@ -813,7 +813,7 @@ class Hook_addon_registry_catalogues
      *
      * @return array A map of available predefined content codenames, and details (if installed, and title)
      */
-    public function enumerate_predefined_content()
+    public function enumerate_predefined_content() : array
     {
         require_lang('catalogues');
 
@@ -846,7 +846,7 @@ class Hook_addon_registry_catalogues
      *
      * @param  ?array $content A list of predefined content labels to install (null: all)
      */
-    public function install_predefined_content($content = null)
+    public function install_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_catalogues_projects', $content))) && (!has_predefined_content('catalogues', 'have_default_catalogues_projects'))) {
             require_lang('catalogues');
@@ -995,7 +995,7 @@ class Hook_addon_registry_catalogues
      *
      * @param  ?array $content A list of predefined content labels to uninstall (null: all)
      */
-    public function uninstall_predefined_content($content = null)
+    public function uninstall_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_catalogues_projects', $content))) && (has_predefined_content('catalogues', 'have_default_catalogues_projects'))) {
             require_lang('catalogues');

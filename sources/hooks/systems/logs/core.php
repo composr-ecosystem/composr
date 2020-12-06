@@ -28,7 +28,7 @@ class Hook_logs_core
      *
      * @return array List of logs
      */
-    public function enumerate_logs()
+    public function enumerate_logs() : array
     {
         return [
             'errorlog.php' => ['days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))],

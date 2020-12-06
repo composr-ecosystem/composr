@@ -76,7 +76,7 @@ function rebuild_zone_files()
  * @param  PATH $from Source path
  * @param  PATH $to Destination path
  */
-function move_folder_contents($from, $to)
+function move_folder_contents(string $from, string $to)
 {
     $dh = @opendir(get_custom_file_base() . '/' . $from);
     if ($dh !== false) {
@@ -97,7 +97,7 @@ function move_folder_contents($from, $to)
  *
  * @param  array $reps Change from/to this
  */
-function perform_search_replace($reps)
+function perform_search_replace(array $reps)
 {
     // Find directories to do replacements in...
 
@@ -157,7 +157,7 @@ function perform_search_replace($reps)
  * @param  ID_TEXT $new_zone The new name of the zone
  * @param  boolean $dont_bother_with_main_row Whether to assume the main zone row has already been renamed as part of a wider editing operation
  */
-function rename_zone($zone, $new_zone, $dont_bother_with_main_row = false)
+function rename_zone(string $zone, string $new_zone, bool $dont_bother_with_main_row = false)
 {
     cms_disable_time_limit();
 

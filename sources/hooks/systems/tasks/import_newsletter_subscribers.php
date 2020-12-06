@@ -33,7 +33,7 @@ class Hook_task_import_newsletter_subscribers
      * @param  ?string $filename The filename of the file to import (null: detect from $path)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($_language, $newsletter_id, $subscribe, $path, $filename = null)
+    public function run(string $_language, int $newsletter_id, bool $subscribe, string $path, ?string $filename = null) : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;

@@ -29,7 +29,7 @@ class Hook_addon_registry_core_themeing
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Graphical';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Themeing the website, via CSS, HTML, and images.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_themes',
@@ -88,7 +88,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -102,7 +102,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/style/themes/themes.svg';
     }
@@ -112,7 +112,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/images/icons/menu/adminzone/style/themes/themes.svg',
@@ -170,7 +170,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/THEME_MANAGE_SCREEN.tpl' => 'administrative__theme_manage_screen',
@@ -203,7 +203,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_manage_screen()
+    public function tpl_preview__administrative__theme_manage_screen() : array
     {
         require_lang('zones');
 
@@ -254,7 +254,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_image_manage_screen()
+    public function tpl_preview__administrative__theme_image_manage_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('THEME_IMAGE_MANAGE_SCREEN', [
@@ -272,7 +272,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_image_preview()
+    public function tpl_preview__administrative__theme_image_preview() : array
     {
         return [
             lorem_globalise(do_lorem_template('THEME_IMAGE_PREVIEW', [
@@ -291,7 +291,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_template_editor_template_detail()
+    public function tpl_preview__administrative__theme_template_editor_template_detail() : array
     {
         return [
             lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', [
@@ -312,7 +312,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_template_editor_screen()
+    public function tpl_preview__administrative__theme_template_editor_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_SCREEN', [
@@ -335,7 +335,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_template_editor_tab()
+    public function tpl_preview__administrative__theme_template_editor_tab() : array
     {
         $_parameters = do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => true, 'DISABLED' => false, 'CLASS' => '', 'NAME' => placeholder_id(), 'TEXT' => lorem_phrase()]);
 
@@ -392,7 +392,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_template_editor_restore_revision()
+    public function tpl_preview__administrative__theme_template_editor_restore_revision() : array
     {
         return [
             lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', [
@@ -410,7 +410,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__tempcode_tester_screen()
+    public function tpl_preview__administrative__tempcode_tester_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('TEMPCODE_TESTER_SCREEN', [
@@ -426,7 +426,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__screen_previews_screen()
+    public function tpl_preview__administrative__screen_previews_screen() : array
     {
         $templates = new Tempcode();
         $lis = new Tempcode();
@@ -461,7 +461,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__template_edit_links_screen()
+    public function tpl_preview__administrative__template_edit_links_screen() : array
     {
         $parameters = [
             'FILE' => lorem_phrase(),
@@ -492,7 +492,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__template_tree_screen()
+    public function tpl_preview__administrative__template_tree_screen() : array
     {
         $tree_items = new Tempcode();
         foreach (placeholder_array() as $value) {
@@ -534,7 +534,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__preview_svg_sprite_icon()
+    public function tpl_preview__administrative__preview_svg_sprite_icon() : array
     {
         require_lang('themes');
 
@@ -554,7 +554,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__preview_svg_sprite_screen()
+    public function tpl_preview__administrative__preview_svg_sprite_screen() : array
     {
         require_lang('themes');
 
@@ -581,7 +581,7 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__generate_svg_sprite_screen()
+    public function tpl_preview__administrative__generate_svg_sprite_screen() : array
     {
         require_lang('themes');
 

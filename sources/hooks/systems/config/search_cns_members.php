@@ -28,7 +28,7 @@ class Hook_config_search_cns_members
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'DEFAULT_SEARCH_CNS_MEMBERS',
@@ -51,7 +51,7 @@ class Hook_config_search_cns_members
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('search')) {
             return null;

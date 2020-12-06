@@ -35,7 +35,7 @@ function init__locations_geocoding()
  * @set google bing mapquest
  * @return ?object Service to use (null: no service, which should be impossible as there's always something)
  */
-function choose_geocoding_service(&$service = null)
+function choose_geocoding_service(?string &$service = null) : ?object
 {
     $hook_obs = find_all_hook_obs('systems', 'geocoding', 'Hook_geocoding_');
     foreach ($hook_obs as $hook => $hook_ob) {
@@ -62,7 +62,7 @@ function choose_geocoding_service(&$service = null)
  * @set google bing mapquest
  * @return ?array A pair: Latitude, Longitude (null: error)
  */
-function geocode($location, &$errormsg = null, $service = null)
+function geocode(string $location, ?object &$errormsg = null, ?string $service = null) : ?array
 {
     $ob = choose_geocoding_service($service);
     if ($ob === null) {
@@ -87,7 +87,7 @@ function geocode($location, &$errormsg = null, $service = null)
  * @set google bing mapquest
  * @return ?array A tuple: Formatted address, Street Address, City, County, State, Zip/Postcode, Country (null: error)
  */
-function reverse_geocode($latitude, $longitude, &$errormsg = null, $service = null)
+function reverse_geocode(float $latitude, float $longitude, ?object &$errormsg = null, ?string $service = null) : ?array
 {
     $ob = choose_geocoding_service($service);
     $ret = $ob->reverse_geocode($latitude, $longitude, $errormsg);

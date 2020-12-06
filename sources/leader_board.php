@@ -24,7 +24,7 @@
  * @param  TIME $cutoff Cut-off time
  * @return boolean Whether it has
  */
-function has_leader_board_since($cutoff)
+function has_leader_board_since(int $cutoff) : bool
 {
     $test = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'leader_board WHERE date_and_time>=' . strval($cutoff));
     return ($test > 0);
@@ -36,7 +36,7 @@ function has_leader_board_since($cutoff)
  * @param  boolean $retrieve Whether to retrieve results too (no retrieve -> faster call)
  * @return ?array A map of member-IDs to points, sorted by leader-board status (null: not retrieving)
  */
-function calculate_latest_leader_board($retrieve = true)
+function calculate_latest_leader_board(bool $retrieve = true) : ?array
 {
     // Already has?
     $cutoff = time() - 60 * 60 * 24 * 7;

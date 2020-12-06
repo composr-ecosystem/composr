@@ -29,7 +29,7 @@ class Hook_gu_downloads
      * @param  ID_TEXT $cat Gallery name
      * @return array Results
      */
-    public function new_donext_icons($cat)
+    public function new_donext_icons(string $cat) : array
     {
         if (!addon_installed('downloads')) {
             return [];

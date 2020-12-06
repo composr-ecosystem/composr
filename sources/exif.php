@@ -28,7 +28,7 @@
  * @param  ?string $filename This is the original filename of the photo which may contain metadata (null: derive from path)
  * @return array Map of metadata, using standard EXIF naming
  */
-function get_exif_data($path, $filename = null)
+function get_exif_data(string $path, ?string $filename = null) : array
 {
     $out = [];
 
@@ -64,7 +64,7 @@ function get_exif_data($path, $filename = null)
  *
  * @ignore
  */
-function _get_simple_gps($exif)
+function _get_simple_gps(array $exif) : array
 {
     // Based on http://stackoverflow.com/questions/2526304/php-extract-gps-exif-data
 
@@ -116,7 +116,7 @@ function _get_simple_gps($exif)
  * @param  string $filename This is the original filename of the photo which may contain metadata
  * @return string Whichever caption is found
  */
-function get_exif_image_caption($path, $filename)
+function get_exif_image_caption(string $path, string $filename) : string
 {
     $comments = '';
 
@@ -242,7 +242,7 @@ function get_exif_image_caption($path, $filename)
  * @param  array $exif The EXIF data
  * @param  array $map Extra metadata to store, against explicit field IDs
  */
-function store_exif($content_type, $content_id, $exif, $map = [])
+function store_exif(string $content_type, string $content_id, array $exif, array $map = [])
 {
     require_code('fields');
 
@@ -312,7 +312,7 @@ function store_exif($content_type, $content_id, $exif, $map = [])
  * @param  array $metadata The EXIF data
  * @return array Cleaned up EXIF data
  */
-function cleanup_exif($metadata)
+function cleanup_exif(array $metadata) : array
 {
     require_code('character_sets');
     $val = mixed();

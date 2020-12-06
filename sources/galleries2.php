@@ -43,7 +43,7 @@ function init__galleries2()
  * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
  * @return array Tuple of image details
  */
-function image_get_defaults__post($is_edit = false, $url = '', $filename = null, $title = '', $cat = '')
+function image_get_defaults__post(bool $is_edit = false, string $url = '', ?string $filename = null, string $title = '', string $cat = '') : array
 {
     if (($is_edit) && (fractional_edit())) {
         if ($title == '') {
@@ -115,7 +115,7 @@ function image_get_defaults__post($is_edit = false, $url = '', $filename = null,
  * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
  * @return array Tuple of image details
  */
-function image_get_default_metadata($url = '', $filename = null, $title = '', $cat = '')
+function image_get_default_metadata(string $url = '', ?string $filename = null, string $title = '', string $cat = '') : array
 {
     if ($title == '') {
         if ($url != '') {
@@ -155,7 +155,7 @@ function image_get_default_metadata($url = '', $filename = null, $title = '', $c
  * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
  * @return array Tuple of video details
  */
-function video_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', $filename = null, $video_width = null, $video_height = null, $video_length = null, $closed_captions_url = '', $title = '', $cat = '')
+function video_get_defaults__post(bool $is_edit = false, string $url = '', string $thumb_url = '', ?string $filename = null, ?int $video_width = null, ?int $video_height = null, ?int $video_length = null, string $closed_captions_url = '', string $title = '', string $cat = '') : array
 {
     if (($is_edit) && (fractional_edit())) {
         $title = post_param_string('title', '');
@@ -260,7 +260,7 @@ function video_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', 
  * @param  ?string $filename Filename of video (null: not known yet, calculate here if possible)
  * @return URLPATH Thumbnail URL (blank: could not generate)
  */
-function video_get_default_thumb_url($url = '', $thumb_url = '', $filename = null)
+function video_get_default_thumb_url(string $url = '', string $thumb_url = '', ?string $filename = null) : string
 {
     require_code('crypt');
     require_code('images');
@@ -382,7 +382,7 @@ function video_get_default_thumb_url($url = '', $thumb_url = '', $filename = nul
  * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
  * @return array Tuple of video details
  */
-function video_get_default_metadata($url = '', $thumb_url = '', $filename = null, $video_width = null, $video_height = null, $video_length = null, $title = '', $cat = '')
+function video_get_default_metadata(string $url = '', string $thumb_url = '', ?string $filename = null, ?int $video_width = null, ?int $video_height = null, ?int $video_length = null, string $title = '', string $cat = '') : array
 {
     if ($url != '') {
         if (($video_width === null) || ($video_height === null) || ($video_length === null)) {
@@ -532,7 +532,7 @@ function video_get_default_metadata($url = '', $thumb_url = '', $filename = null
  * @param  boolean $delay_errors Whether to skip over errored files instead of dying. We don't currently make use of this as our readers aren't sophisticated enough to properly spot erroneous situations.
  * @return ~array The triplet of width/height/length (possibly containing nulls for when we can't detect properties) (false: error)
  */
-function get_video_details_from_file($file_path, $filename, $delay_errors = false)
+function get_video_details_from_file(string $file_path, ?string $filename, bool $delay_errors = false) : array
 {
     $info = null;
 
@@ -611,7 +611,7 @@ function get_video_details_from_file($file_path, $filename, $delay_errors = fals
  * @param  string $buffer The binary chunk
  * @return integer The integer
  */
-function read_intel_endian_int($buffer)
+function read_intel_endian_int(string $buffer) : int
 {
     if (strlen($buffer) == 2) {
         return ord($buffer[0]) | (ord($buffer[1]) << 8);
@@ -628,7 +628,7 @@ function read_intel_endian_int($buffer)
  * @param  string $buffer The binary chunk
  * @return integer The integer
  */
-function read_network_endian_int($buffer)
+function read_network_endian_int(string $buffer) : int
 {
     if (strlen($buffer) == 2) {
         return ord($buffer[1]) | (ord($buffer[0]) << 8);
@@ -646,7 +646,7 @@ function read_network_endian_int($buffer)
  * @return ?array The triplet (possibly containing nulls for when we can't detect properties) (null: error)
  * @ignore
  */
-function _get_mp4_details($file)
+function _get_mp4_details($file) : ?array
 {
     // Read in atoms
     $info = _get_mp4_details_do_atom_list($file);
@@ -665,7 +665,7 @@ function _get_mp4_details($file)
  * @return array The quartet (possibly containing nulls for when we can't detect properties)
  * @ignore
  */
-function _get_mp4_details_do_atom_list($file, $atom_size = null)
+function _get_mp4_details_do_atom_list($file, ?int $atom_size = null) : array
 {
     $length = null;
     $width = null;
@@ -783,7 +783,7 @@ function decache_gallery_blocks()
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the new entry
  */
-function add_image($title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
+function add_image($title, string $cat, $description, string $url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $submitter = null, ?int $add_date = null, ?int $edit_date = null, int $views = 0, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
 {
     if ((get_param_string('type', null) !== '__import') && (is_string($title))) {
         require_code('global4');
@@ -908,7 +908,7 @@ function add_image($title, $cat, $description, $url, $validated, $allow_rating, 
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_image($id, $title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
+function edit_image(int $id, string $title, string $cat, string $description, string $url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $meta_keywords, string $meta_description, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -1023,7 +1023,7 @@ function edit_image($id, $title, $cat, $description, $url, $validated, $allow_ra
  * @param  AUTO_LINK $id The ID of the image
  * @param  boolean $delete_full Whether to delete the actual file also
  */
-function delete_image($id, $delete_full = true)
+function delete_image(int $id, bool $delete_full = true)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('images', ['title', 'the_description', 'cat'], ['id' => $id]);
     if (!array_key_exists(0, $rows)) {
@@ -1103,7 +1103,7 @@ function delete_image($id, $delete_full = true)
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the new entry
  */
-function add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $closed_captions_url = '', $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
+function add_video(string $title, string $cat, string $description, string $url, string $thumb_url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, int $video_length, int $video_width, int $video_height, string $closed_captions_url = '', ?int $submitter = null, ?int $add_date = null, ?int $edit_date = null, int $views = 0, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
 {
     if (get_param_string('type', null) !== '__import') {
         require_code('global4');
@@ -1221,7 +1221,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $closed_captions_url = null, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
+function edit_video(int $id, string $title, string $cat, string $description, string $url, string $thumb_url, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, int $video_length, int $video_width, int $video_height, string $meta_keywords, string $meta_description, ?string $closed_captions_url = null, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -1345,7 +1345,7 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
  * @param  AUTO_LINK $id The ID of the entry to delete
  * @param  boolean $delete_full Whether to delete the actual video file from disk as well as the entry
  */
-function delete_video($id, $delete_full = true)
+function delete_video(int $id, bool $delete_full = true)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('videos', ['title', 'the_description', 'cat'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -1405,7 +1405,7 @@ function delete_video($id, $delete_full = true)
  * @param  ID_TEXT $gallery The name of the gallery for the image
  * @return ?array A quartet of watermark images suitable for handle_images_cleanup_pipeline (null: no watermark images)
  */
-function find_gallery_watermarks($gallery)
+function find_gallery_watermarks(string $gallery) : ?array
 {
     // We need to find the most applicable gallery watermarks
     $watermark_top_left = '';
@@ -1442,7 +1442,7 @@ function find_gallery_watermarks($gallery)
  *
  * @ignore
  */
-function _watermark_corner($source, $watermark_url, $x, $y)
+function _watermark_corner($source, string $watermark_url, int $x, int $y)
 {
     if ($watermark_url != '') {
         $_watermark_url = rawurldecode($watermark_url);
@@ -1491,7 +1491,7 @@ function _watermark_corner($source, $watermark_url, $x, $y)
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept_images = 1, $accept_videos = 1, $is_member_synched = 0, $layout_mode = null, $rep_image = '', $watermark_top_left = '', $watermark_top_right = '', $watermark_bottom_left = '', $watermark_bottom_right = '', $allow_rating = 1, $allow_comments = 1, $skip_exists_check = false, $add_date = null, $g_owner = null, $meta_keywords = '', $meta_description = '', $uniqify = false)
+function add_gallery(string $name, string $fullname, string $description, string $notes, string $parent_id, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', int $allow_rating = 1, int $allow_comments = 1, bool $skip_exists_check = false, ?int $add_date = null, ?int $g_owner = null, ?string $meta_keywords = '', ?string $meta_description = '', bool $uniqify = false) : string
 {
     require_code('galleries');
 
@@ -1604,7 +1604,7 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent_id = null, $accept_images = 1, $accept_videos = 1, $is_member_synched = 0, $layout_mode = null, $rep_image = '', $watermark_top_left = '', $watermark_top_right = '', $watermark_bottom_left = '', $watermark_bottom_right = '', $meta_keywords = null, $meta_description = null, $allow_rating = 1, $allow_comments = 1, $g_owner = null, $add_time = null, $null_is_literal = false, $uniqify = false)
+function edit_gallery(string $old_name, string $name, string $fullname, string $description, string $notes, ?string $parent_id = null, int $accept_images = 1, int $accept_videos = 1, int $is_member_synched = 0, ?string $layout_mode = null, string $rep_image = '', string $watermark_top_left = '', string $watermark_top_right = '', string $watermark_bottom_left = '', string $watermark_bottom_right = '', ?string $meta_keywords = null, ?string $meta_description = null, int $allow_rating = 1, int $allow_comments = 1, ?int $g_owner = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false) : string
 {
     $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $name], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -1759,7 +1759,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
  *
  * @param  ID_TEXT $name The gallery codename
  */
-function delete_gallery($name)
+function delete_gallery(string $name)
 {
     if ($name == '') {
         warn_exit(do_lang_tempcode('NO_DELETE_ROOT', 'gallery'));
@@ -1846,7 +1846,7 @@ function delete_gallery($name)
  *
  * @param  ID_TEXT $cat The gallery codename
  */
-function make_member_gallery_if_needed($cat)
+function make_member_gallery_if_needed(string $cat)
 {
     // If it is a non-member gallery, it must surely exist, as we have no interface to choose non-existent ones (it's safe enough to assume it hasn't been deleted suddenly)
 
@@ -1885,7 +1885,7 @@ function make_member_gallery_if_needed($cat)
  * @param  ID_TEXT $cat The gallery codename
  * @return ?SHORT_TEXT The gallery title (null: does not exist and won't be auto-created)
  */
-function get_potential_gallery_title($cat)
+function get_potential_gallery_title(string $cat) : ?string
 {
     // Test to see if it exists
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $cat]);
@@ -1921,7 +1921,7 @@ function get_potential_gallery_title($cat)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__galleries($where = [], $tolerate_errors = false)
+function reorganise_uploads__galleries(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('gallery', 'uploads/repimages', 'rep_image', $where, true, $tolerate_errors);
@@ -1936,7 +1936,7 @@ function reorganise_uploads__galleries($where = [], $tolerate_errors = false)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__gallery_images($where = [], $tolerate_errors = false)
+function reorganise_uploads__gallery_images(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('image', 'uploads/galleries', 'url', $where, false, $tolerate_errors);
@@ -1947,7 +1947,7 @@ function reorganise_uploads__gallery_images($where = [], $tolerate_errors = fals
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = false)
+function reorganise_uploads__gallery_videos(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('video', 'uploads/galleries', 'url', $where, false, $tolerate_errors);
@@ -1973,7 +1973,7 @@ function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = fals
  * @param  ?TIME $time Timestamp to use (null: now)
  * @return ?array A pair: The media type, The media ID (null: error)
  */
-function add_gallery_media_wrap($url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $filename = null, $time = null)
+function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $allow_rating, int $allow_comments_reviews, int $allow_trackbacks, bool $watermark, string $notes, string $privacy_level, array $additional_access, ?string $filename = null, ?int $time = null) : ?array
 {
     require_code('exif');
 

@@ -28,7 +28,7 @@ class Hook_preview_comcode_tag
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (post_param_string('tag_contents', null) !== null) || (post_param_string('tag_contents__a', null) !== null) || (post_param_string('tag_contents__b', null) !== null) || (post_param_string('tag_contents_0', null) !== null);
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_comcode_tag
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_code('comcode_add');
 

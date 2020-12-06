@@ -28,7 +28,7 @@ class Hook_config_show_empty_cpfs
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SHOW_EMPTY_CPFS',
@@ -51,7 +51,7 @@ class Hook_config_show_empty_cpfs
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (get_forum_type() != 'cns') {
             return null;

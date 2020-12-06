@@ -29,7 +29,7 @@ class Hook_trackback_polls
      * @param  ID_TEXT $id The ID
      * @return boolean Whether trackback is enabled
      */
-    public function run($id)
+    public function run(string $id) : bool
     {
         if (!addon_installed('polls')) {
             return false;

@@ -29,7 +29,7 @@ class Hook_addon_registry_stats
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_stats
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_stats
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Admin Utilities';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_stats
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Show advanced graphs (analytics) and dumps of raw data relating to your website activity.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_stats
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_statistics',
@@ -81,7 +81,7 @@ class Hook_addon_registry_stats
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_stats
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_stats
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/stats.php',
@@ -192,7 +192,7 @@ class Hook_addon_registry_stats
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/STATS_SCREEN.tpl' => 'administrative__stats_screen',
@@ -210,7 +210,7 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__stats_screen()
+    public function tpl_preview__administrative__stats_screen() : array
     {
         $existing_kpis = [];
         $existing_kpis[] = [
@@ -245,7 +245,7 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__stats_graph_screen()
+    public function tpl_preview__administrative__stats_graph_screen() : array
     {
         $existing_kpis = [];
         $existing_kpis[] = [
@@ -274,7 +274,7 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__kpi_screen()
+    public function tpl_preview__administrative__kpi_screen() : array
     {
         $existing_kpis = [];
         $existing_kpis[] = [
@@ -321,7 +321,7 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__form_screen_input_stats_date_range_screen()
+    public function tpl_preview__administrative__form_screen_input_stats_date_range_screen() : array
     {
         $field = do_lorem_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
             'TABINDEX' => placeholder_number(),
@@ -372,7 +372,7 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__kpi_update_mail()
+    public function tpl_preview__administrative__kpi_update_mail() : array
     {
         $kpis = [];
         $kpis[] = [

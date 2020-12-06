@@ -40,7 +40,7 @@ function init__global4()
  * @param  ?array $row The database row (null: lookup directly from the database)
  * @return boolean Whether it is indexable
  */
-function comcode_page_include_on_sitemap($zone, $codename, $row = null)
+function comcode_page_include_on_sitemap(string $zone, string $codename, ?array $row = null) : bool
 {
     if ($row === null) {
         $include_on_sitemap = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_include_on_sitemap', ['the_zone' => $zone, 'the_page' => $codename]);
@@ -61,7 +61,7 @@ function comcode_page_include_on_sitemap($zone, $codename, $row = null)
  * @param  ID_TEXT $codename Page name
  * @return boolean Whether it is indexable
  */
-function _comcode_page_include_on_sitemap_default($zone, $codename)
+function _comcode_page_include_on_sitemap_default(string $zone, string $codename) : bool
 {
     // These are the defaults...
 
@@ -99,7 +99,7 @@ function _comcode_page_include_on_sitemap_default($zone, $codename)
  *
  * @param  Tempcode $messages_bottom Where to place the message
  */
-function attach_message_site_closed(&$messages_bottom)
+function attach_message_site_closed(object &$messages_bottom)
 {
     if ((!in_array(get_page_name(), ['login', 'join'])) && (get_param_integer('wide_high', 0) == 0) && (($GLOBALS['IS_ACTUALLY_ADMIN']) || (has_privilege(get_member(), 'access_closed_site')))) {
         $messages_bottom->attach(do_template('MESSAGE', [
@@ -115,7 +115,7 @@ function attach_message_site_closed(&$messages_bottom)
  *
  * @param  Tempcode $messages_bottom Where to place the message
  */
-function attach_message_su(&$messages_bottom)
+function attach_message_su(object &$messages_bottom)
 {
     $unsu_url = get_self_url(true, true, ['keep_su' => null]);
     $su_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -132,7 +132,7 @@ function attach_message_su(&$messages_bottom)
  * @param  object $global Tempcode object
  * @return object Tempcode object (no longer cache safe)
  */
-function make_xhtml_strict($global)
+function make_xhtml_strict(object $global) : object
 {
     $_global = $global->evaluate();
     $_global = str_replace(
@@ -160,7 +160,7 @@ function make_xhtml_strict($global)
  * @param  MEMBER $member_id A member ID
  * @return array A tuple: links (Tempcode), eCommerce links (Tempcode), details (Tempcode), number of unread inline personal posts or private topics
  */
-function member_personal_links_and_details($member_id)
+function member_personal_links_and_details(int $member_id) : array
 {
     static $cache = [];
     if (isset($cache[$member_id])) {
@@ -430,7 +430,7 @@ function member_personal_links_and_details($member_id)
  * @set 0 1 2
  * @return mixed Typically a list - the words of the input string
  */
-function cms_mb_str_word_count($input, $format = 0)
+function cms_mb_str_word_count(string $input, int $format = 0)
 {
     $matches = [];
     if ($format == 1) {
@@ -464,7 +464,7 @@ function cms_mb_str_word_count($input, $format = 0)
  * @param  boolean $force Whether to force unicode as on
  * @return array Output
  */
-function cms_mb_str_split($str, $force = false)
+function cms_mb_str_split(string $str, bool $force = false) : array
 {
     $len = cms_mb_strlen($str, $force);
     $array = [];
@@ -483,7 +483,7 @@ function cms_mb_str_split($str, $force = false)
  * @param  boolean $force Whether to force unicode as on
  * @return string The chunked version of the input string
  */
-function cms_mb_chunk_split($str, $len = 76, $glue = "\r\n", $force = false)
+function cms_mb_chunk_split(string $str, int $len = 76, string $glue = "\r\n", bool $force = false) : string
 {
     if ($str == '') {
         return '';
@@ -510,7 +510,7 @@ function cms_mb_chunk_split($str, $len = 76, $glue = "\r\n", $force = false)
  * @param  ?SHORT_TEXT $a The most important parameter of the activity (e.g. ID) (null: none / cannot match against)
  * @param  ?SHORT_TEXT $b A secondary (perhaps, human readable) parameter of the activity (e.g. caption) (null: none / cannot match against)
  */
-function prevent_double_submit($type, $a = null, $b = null)
+function prevent_double_submit(string $type, ?string $a = null, ?string $b = null)
 {
     if (get_mass_import_mode()) {
         return;
@@ -574,7 +574,7 @@ function prevent_double_submit($type, $a = null, $b = null)
  *
  * @param  ?integer $warning_id The ID of the warning (null: do not reference a warning id anymore in future logs)
  */
-function set_related_warning_id($warning_id)
+function set_related_warning_id(?int $warning_id)
 {
     global $RELATED_WARNING_ID;
     $RELATED_WARNING_ID = $warning_id;
@@ -590,7 +590,7 @@ function set_related_warning_id($warning_id)
  * @return ?AUTO_LINK Log ID (null: did not save a log)
  * @ignore
  */
-function _log_it($type, $a = null, $b = null, $related_warning_id = null)
+function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $related_warning_id = null) : ?int
 {
     if (!function_exists('get_member')) {
         return null; // If this is during installation
@@ -688,7 +688,7 @@ function _log_it($type, $a = null, $b = null, $related_warning_id = null)
  *
  * @return ID_TEXT A GUID
  */
-function generate_guid()
+function generate_guid() : string
 {
     // Calculate hash value
     $hash = md5(uniqid('', true));
@@ -722,7 +722,7 @@ function generate_guid()
  *
  * @return float Performance figure
  */
-function find_normative_performance()
+function find_normative_performance() : float
 {
     static $percentage = null;
     if ($percentage !== null) {
@@ -742,7 +742,7 @@ function find_normative_performance()
  *
  * @return TIME The time
  */
-function get_site_start_time()
+function get_site_start_time() : int
 {
     $time_a = $GLOBALS['SITE_DB']->query_select_value_if_there('actionlogs', 'MIN(date_and_time)');
     if ($time_a === null) {
@@ -758,7 +758,7 @@ function get_site_start_time()
  * @param  string $redirect Redirect to check
  * @return boolean If it is unhelpful
  */
-function is_unhelpful_redirect($redirect)
+function is_unhelpful_redirect(string $redirect) : bool
 {
     $unhelpful_url_stubs = [
         static_evaluate_tempcode(build_url(['page' => 'login'], '', [], false, false, true)),

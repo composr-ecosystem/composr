@@ -24,7 +24,7 @@
  * @param  string $in Boring name
  * @return string Nice name
  */
-function make_nice_timezone_name($in)
+function make_nice_timezone_name(string $in) : string
 {
     $list = get_timezone_list();
     if (array_key_exists($in, $list)) {
@@ -40,7 +40,7 @@ function make_nice_timezone_name($in)
  *
  * @ignore
  */
-function _get_timezone_list()
+function _get_timezone_list() : array
 {
     $ret = [
         'Pacific/Niue' => '(UTC-11:00) Niue, Pago Pago',
@@ -288,7 +288,7 @@ function _get_timezone_list()
  * @param  boolean $get_also Whether to allow over get parameters also
  * @return array The date/time components
  */
-function post_param_date_components($stub, $year = null, $month = null, $day = null, $get_also = false)
+function post_param_date_components(string $stub, ?int $year = null, ?int $month = null, ?int $day = null, bool $get_also = false) : array
 {
     $default_ret = [$year, $month, $day, 0, 0, 0];
 
@@ -419,7 +419,7 @@ function post_param_date_components($stub, $year = null, $month = null, $day = n
  * @return ?TIME The timestamp of the date (null: no input date was chosen)
  * @ignore
  */
-function _post_param_date($stub, $get_also = false, $do_timezone_conversion = true)
+function _post_param_date(string $stub, bool $get_also = false, bool $do_timezone_conversion = true) : ?int
 {
     $timezone = post_param_string('timezone', get_users_timezone());
 

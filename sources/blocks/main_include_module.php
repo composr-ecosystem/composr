@@ -28,7 +28,7 @@ class Block_main_include_module
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -47,7 +47,7 @@ class Block_main_include_module
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         // Settings
         $strip_title = array_key_exists('strip_title', $map) ? intval($map['strip_title']) : 1;

@@ -53,7 +53,7 @@ function init__galleries()
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The rendered box
  */
-function render_image_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '')
+function render_image_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -124,7 +124,7 @@ function render_image_box($row, $zone = '_SEARCH', $give_context = true, $includ
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The rendered box
  */
-function render_video_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '')
+function render_video_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -208,7 +208,7 @@ function render_video_box($row, $zone = '_SEARCH', $give_context = true, $includ
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The preview
  */
-function render_gallery_box($myrow, $root = 'root', $show_member_stats_if_appropriate = false, $zone = '_SEARCH', $quit_if_empty = true, $preview = false, $give_context = true, $include_breadcrumbs = true, $attach_to_url_filter = false, $guid = '')
+function render_gallery_box(array $myrow, string $root = 'root', bool $show_member_stats_if_appropriate = false, string $zone = '_SEARCH', bool $quit_if_empty = true, bool $preview = false, bool $give_context = true, bool $include_breadcrumbs = true, bool $attach_to_url_filter = false, string $guid = '') : object
 {
     if ($myrow === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -363,7 +363,7 @@ function render_gallery_box($myrow, $root = 'root', $show_member_stats_if_approp
  *
  * @return integer Images per page
  */
-function get_default_gallery_max()
+function get_default_gallery_max() : int
 {
     $option = get_option('gallery_selectors');
     if ($option == '') {
@@ -380,7 +380,7 @@ function get_default_gallery_max()
  * @param  ID_TEXT $name The name of the gallery
  * @return boolean The answer
  */
-function gallery_has_content($name)
+function gallery_has_content(string $name) : bool
 {
     $num_galleries = null;
 
@@ -437,7 +437,7 @@ function gallery_has_content($name)
  * @param  boolean $only_if_personal_gallery Only non-null if it is a personal gallery
  * @return ?MEMBER The owner of the gallery (null: not a member owned gallery)
  */
-function get_member_id_from_gallery_name($gallery_name, $row = null, $only_if_personal_gallery = false)
+function get_member_id_from_gallery_name(string $gallery_name, ?array $row = null, bool $only_if_personal_gallery = false) : ?int
 {
     $is_member = (substr($gallery_name, 0, 7) == 'member_');
     if (!$is_member) {
@@ -474,7 +474,7 @@ function get_member_id_from_gallery_name($gallery_name, $row = null, $only_if_pe
  * @param  array $myrow The database row of the video
  * @return Tempcode The preview
  */
-function show_video_details($myrow)
+function show_video_details(array $myrow) : object
 {
     return do_template('GALLERY_VIDEO_INFO', [
         '_GUID' => '46d32c84cb2f6ab77d825ad711e24e13',
@@ -493,7 +493,7 @@ function show_video_details($myrow)
  * @param  boolean $test_images Whether to test for images when making counts (ignore this parameter - used internally)
  * @return array A triplet: (num children, num images, num videos)
  */
-function get_recursive_gallery_details($name, $test_videos = true, $test_images = true)
+function get_recursive_gallery_details(string $name, bool $test_videos = true, bool $test_images = true) : array
 {
     static $total_categories = null;
     if ($total_categories === null) {
@@ -529,7 +529,7 @@ function get_recursive_gallery_details($name, $test_videos = true, $test_images 
  * @param  ID_TEXT $cat The gallery name
  * @return boolean Whether the gallery is a download gallery
  */
-function only_download_galleries($cat)
+function only_download_galleries(string $cat) : bool
 {
     return (substr($cat, 0, 9) == 'download_');
 }
@@ -540,7 +540,7 @@ function only_download_galleries($cat)
  * @param  ID_TEXT $cat The gallery name
  * @return boolean Whether the gallery is NOT a download gallery
  */
-function only_conventional_galleries($cat)
+function only_conventional_galleries(string $cat) : bool
 {
     return (substr($cat, 0, 9) != 'download_');
 }
@@ -551,7 +551,7 @@ function only_conventional_galleries($cat)
  * @param  ID_TEXT $cat The gallery name
  * @return boolean Whether the gallery accepts some media
  */
-function only_galleries_accepting_media($cat)
+function only_galleries_accepting_media(string $cat) : bool
 {
     $_gallery_info = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos'], ['name' => $cat], '', 1);
     if (!array_key_exists(0, $_gallery_info)) {
@@ -569,7 +569,7 @@ function only_galleries_accepting_media($cat)
  * @param  integer $child_count The number of children for this gallery
  * @return boolean The answer
  */
-function only_member_galleries_of_id($cat, $member_id, $child_count)
+function only_member_galleries_of_id(string $cat, ?int $member_id, int $child_count) : bool
 {
     if (substr($cat, 0, 7) != 'member_') {
         return ($child_count != 0);
@@ -592,7 +592,7 @@ function only_member_galleries_of_id($cat, $member_id, $child_count)
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode The tree list
  */
-function create_selection_list_gallery_tree($it = null, $filter = null, $must_accept_images = false, $must_accept_videos = false, $purity = false, $use_compound_list = false, $member_id = null, $addable_filter = false, $editable_filter = false, $updated_since = null)
+function create_selection_list_gallery_tree(?string $it = null, ?string $filter = null, bool $must_accept_images = false, bool $must_accept_videos = false, bool $purity = false, bool $use_compound_list = false, ?int $member_id = null, bool $addable_filter = false, bool $editable_filter = false, ?int $updated_since = null) : object
 {
     $tree = get_gallery_tree('root', '', null, $updated_since !== null, $filter, $must_accept_images, $must_accept_videos, $purity, $use_compound_list, null, $member_id, $addable_filter, $editable_filter);
     if ($use_compound_list) {
@@ -638,7 +638,7 @@ function create_selection_list_gallery_tree($it = null, $filter = null, $must_ac
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
  * @return array The tree structure, or if $use_compound_list, the tree structure built with pairs containing the compound list in addition to the child branches
  */
-function get_gallery_tree($gallery = 'root', $breadcrumbs = '', $gallery_info = null, $do_stats = false, $filter = null, $must_accept_images = false, $must_accept_videos = false, $purity = false, $use_compound_list = false, $levels = null, $member_id = null, $addable_filter = false, $editable_filter = false)
+function get_gallery_tree(?string $gallery = 'root', string $breadcrumbs = '', ?array $gallery_info = null, bool $do_stats = false, ?string $filter = null, bool $must_accept_images = false, bool $must_accept_videos = false, bool $purity = false, bool $use_compound_list = false, ?int $levels = null, ?int $member_id = null, bool $addable_filter = false, bool $editable_filter = false) : array
 {
     if ($levels == -1) {
         return $use_compound_list ? [[], ''] : [];
@@ -863,7 +863,7 @@ function get_gallery_tree($gallery = 'root', $breadcrumbs = '', $gallery_info = 
  * @param  ?array $gallery_info Gallery database row (null: lookup)
  * @return ~integer The owner of the gallery (false: we aren't allowed to submit to it) (-2: not a member gallery)
  */
-function can_submit_to_gallery($name, $gallery_info = null)
+function can_submit_to_gallery(string $name, ?array $gallery_info = null)
 {
     if (substr($name, 0, 7) != 'member_') {
         if ($name == 'root') {
@@ -903,7 +903,7 @@ function can_submit_to_gallery($name, $gallery_info = null)
  * @param  boolean $attach_to_url_filter Whether to copy through any filter parameters in the URL, under the basis that they are associated with what this box is browsing
  * @return array The navigation element
  */
-function gallery_breadcrumbs($gallery, $root = 'root', $include_link = false, $zone = '', $attach_to_url_filter = false)
+function gallery_breadcrumbs(string $gallery, ?string $root = 'root', bool $include_link = false, string $zone = '', bool $attach_to_url_filter = false) : array
 {
     if ($root === null) {
         $root = 'root';
@@ -992,7 +992,7 @@ function gallery_breadcrumbs($gallery, $root = 'root', $include_link = false, $z
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
  * @return Tempcode The list of entries
  */
-function create_selection_list_gallery_content_tree($table, $it = null, $submitter = null, $use_compound_list = false, $editable_filter = false)
+function create_selection_list_gallery_content_tree(string $table, ?string $it = null, ?int $submitter = null, bool $use_compound_list = false, bool $editable_filter = false) : object
 {
     $tree = get_gallery_content_tree($table, $submitter, null, null, null, null, $use_compound_list, $editable_filter);
     if ($use_compound_list) {
@@ -1029,7 +1029,7 @@ function create_selection_list_gallery_content_tree($table, $it = null, $submitt
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
  * @return array A list of maps for all galleries. Each map entry containing the fields 'id' (gallery ID) and 'breadcrumbs' (path to the category, including the categories own title), and more. Or if $use_compound_list, the tree structure built with pairs containing the compound list in addition to the child branches
  */
-function get_gallery_content_tree($table, $submitter = null, $gallery = null, $breadcrumbs = null, $title = null, $levels = null, $use_compound_list = false, $editable_filter = false)
+function get_gallery_content_tree(string $table, ?int $submitter = null, ?string $gallery = null, ?string $breadcrumbs = null, ?string $title = null, ?int $levels = null, bool $use_compound_list = false, bool $editable_filter = false) : array
 {
     if ($gallery === null) {
         $gallery = 'root';
@@ -1119,7 +1119,7 @@ function get_gallery_content_tree($table, $submitter = null, $gallery = null, $b
  * @param  URLPATH $closed_captions_url The URL to the closed captions file for this video
  * @return Tempcode Displayed media
  */
-function show_gallery_video_media($url, $thumb_url, $width, $height, $length, $submitter, $closed_captions_url)
+function show_gallery_video_media(string $url, string $thumb_url, int $width, int $height, int $length, int $submitter, string $closed_captions_url) : object
 {
     require_code('media_renderer');
     require_code('mime_types');

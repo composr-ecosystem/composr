@@ -28,7 +28,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      *
      * @return ?array Map of installprofile details (null: profile is unavailable)
      */
-    public function info()
+    public function info() : ?array
     {
         return [
             'title' => do_lang('MINIMALISTIC_SITE'),
@@ -40,7 +40,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      *
      * @return array Triple: List of addons in the profile, Separated list of ones to show under advanced, Ones we really are shunning
      */
-    public function get_addon_list()
+    public function get_addon_list() : array
     {
         return [
             [],
@@ -76,7 +76,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      *
      * @return array Map of default settings
      */
-    public function field_defaults()
+    public function field_defaults() : array
     {
         return [
             'have_default_banners_hosting' => '0',
@@ -105,7 +105,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      *
      * @return array Details of what blocks are wanted
      */
-    public function default_blocks()
+    public function default_blocks() : array
     {
         // Usually these won't be here (except side_personal_stats), because the addons won't have been installed -- but if they were, we do want to represent those block-driven addons
         return [
@@ -125,7 +125,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      *
      * @return array Details of what block options are wanted
      */
-    public function block_options()
+    public function block_options() : array
     {
         return [];
     }

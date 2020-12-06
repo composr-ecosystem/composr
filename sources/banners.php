@@ -41,7 +41,7 @@ function init__banners()
  * @param  ?string $region Region to show for (null: auto-detect)
  * @return string Banner selection SQL
  */
-function banner_select_sql($b_type = null, $do_type_join = false, $banner_to_avoid = null, $region = null)
+function banner_select_sql(?string $b_type = null, bool $do_type_join = false, ?string $banner_to_avoid = null, ?string $region = null) : string
 {
     require_code('database');
     $sql = 'SELECT * FROM ' . get_table_prefix() . 'banners b';
@@ -86,7 +86,7 @@ function banner_select_sql($b_type = null, $do_type_join = false, $banner_to_avo
  * @param  ?string $region Region to show for (null: auto-detect)
  * @return ?Tempcode Result (null: we weren't asked to return the result)
  */
-function banners_script($ret = false, $type = null, $dest = null, $b_type = null, $source = null, $width = null, $height = null, $region = null)
+function banners_script(bool $ret = false, ?string $type = null, ?string $dest = null, ?string $b_type = null, ?string $source = null, ?int $width = null, ?int $height = null, ?string $region = null) : ?object
 {
     require_code('images');
     require_lang('banners');
@@ -356,7 +356,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
  * @param  ?integer $height The height (null: standard for banner type)
  * @return Tempcode The rendered banner
  */
-function show_banner($name, $title_text, $caption, $direct_code, $img_url, $source, $url, $b_type, $submitter, $width = null, $height = null)
+function show_banner(string $name, string $title_text, object $caption, string $direct_code, string $img_url, string $source, string $url, string $b_type, int $submitter, ?int $width = null, ?int $height = null) : object
 {
     // If this is an image, we <img> it, else we <iframe> it
     require_code('images');

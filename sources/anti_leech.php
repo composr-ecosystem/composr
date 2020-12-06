@@ -23,7 +23,7 @@
  *
  * @return boolean Whether there is
  */
-function has_regular_anti_leech_protection()
+function has_regular_anti_leech_protection() : bool
 {
     if (get_option('anti_leech') == '1') {
         global $SITE_INFO;
@@ -39,7 +39,7 @@ function has_regular_anti_leech_protection()
  *
  * @param  Tempcode $url The URL
  */
-function apply_anti_leech_to_tempcode_url($url)
+function apply_anti_leech_to_tempcode_url(object $url)
 {
     if (has_regular_anti_leech_protection()) {
         $url->attach('&for_session=');

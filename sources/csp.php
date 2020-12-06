@@ -128,7 +128,7 @@ function init__csp()
  * @param  ?array $options Overrides for options; any non-set properties will result in no-change to the current CSP state or if for a new state CSP_VERY_STRICT (null: load full clean state from configuration)
  * @param  ?MEMBER $enable_more_open_html_for Allow more open HTML for a particular member ID (null: no member). It still will use the HTML blocklist functionality (unless they have even higher access already), but will remove the more restrictive safelist functionality. Should only be used with CSP_PRETTY_STRICT/CSP_VERY_STRICT which will further decreasing the risk from dangerous HTML, even though the risk should be very low anyway due to the blocklist filter.
  */
-function load_csp($options = null, $enable_more_open_html_for = null)
+function load_csp(?array $options = null, ?int $enable_more_open_html_for = null)
 {
     global $CSP_NONCE;
 
@@ -343,7 +343,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
  * @param  boolean $include_self Include a self reference
  * @return ?array CSP sources (null: allow all, only possible when $sources_csp is passed) (empty: disallow all except local)
  */
-function _csp_extract_sources_list($level, $sources_csp = '', $include_self = true)
+function _csp_extract_sources_list(int $level, string $sources_csp = '', bool $include_self = true) : ?array
 {
     $sources_csp = trim($sources_csp);
 
@@ -383,7 +383,7 @@ function _csp_extract_sources_list($level, $sources_csp = '', $include_self = tr
  * @param  string $_source Raw value
  * @return ?string Fixed value (null: corrupt, don't use)
  */
-function _csp_clean_source($_source)
+function _csp_clean_source(string $_source) : ?string
 {
     $source = trim($_source);
 
@@ -470,7 +470,7 @@ function disable_browser_reflective_xss_detection()
  *
  * @return string HTML to insert
  */
-function csp_nonce_html()
+function csp_nonce_html() : string
 {
     global $CSP_NONCE;
     return isset($CSP_NONCE) ? ('nonce="' . escape_html($CSP_NONCE) . '"') : '';

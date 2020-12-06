@@ -42,7 +42,7 @@ function init__currency()
  * @param  ID_TEXT $country The country code
  * @return ID_TEXT The currency code
  */
-function country_to_currency($country)
+function country_to_currency(string $country) : string
 {
     $map = get_currency_map();
     $currency = null;
@@ -60,7 +60,7 @@ function country_to_currency($country)
  *
  * @return string The active currency
  */
-function get_currency()
+function get_currency() : string
 {
     // Perform a preferential guessing sequence
     // ========================================
@@ -100,7 +100,7 @@ function get_currency()
  * @param  integer $display_method A CURRENCY_DISPLAY_* constant
  * @return mixed The new amount with the specified display method (CURRENCY_DISPLAY_RAW is a float, otherwise a string)
  */
-function currency_convert_wrap($amount, $from_currency = null, $display_method = 6)
+function currency_convert_wrap($amount, ?string $from_currency = null, int $display_method = 6)
 {
     if ($from_currency === null) {
         $from_currency = get_option('currency');
@@ -122,7 +122,7 @@ function currency_convert_wrap($amount, $from_currency = null, $display_method =
  * @set conv_api
  * @return mixed The new amount with the specified display method (CURRENCY_DISPLAY_RAW is a float, otherwise a string)
  */
-function currency_convert($amount, $from_currency = null, $to_currency = null, $display_method = 0, $force_via = null)
+function currency_convert($amount, ?string $from_currency = null, ?string $to_currency = null, int $display_method = 0, ?string $force_via = null)
 {
     if (is_integer($amount)) {
         $amount = floatval($amount);
@@ -234,7 +234,7 @@ function currency_convert($amount, $from_currency = null, $to_currency = null, $
  * @param  ID_TEXT $to_currency The end currency code
  * @return ?float The new amount (null: could not look up)
  */
-function _currency_convert__currency_conv_api($amount, $from_currency, $to_currency)
+function _currency_convert__currency_conv_api($amount, string $from_currency, string $to_currency) : ?float
 {
     $api_key = get_option('currency_api_key');
     if ($api_key == '') {
@@ -282,7 +282,7 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
  * @param  ID_TEXT $currency The currency
  * @return array A pair: The symbol, and whether the symbol is okay to use on its own (as it is the accepted default for the symbol)
  */
-function get_currency_symbol($currency)
+function get_currency_symbol(string $currency) : array
 {
     static $cache = [];
     if (isset($cache[$currency])) {
@@ -476,7 +476,7 @@ function get_currency_symbol($currency)
  *
  * @return array The currency map, currency code, to an array of country codes
  */
-function get_currency_map()
+function get_currency_map() : array
 {
     return [
         'AED' => [

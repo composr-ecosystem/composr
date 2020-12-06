@@ -27,7 +27,7 @@
  * @param  ?TIME $dob The date of birth that will go with the password (null: unknown)
  * @return integer Password strength (1-10)
  */
-function test_password($password, $username = '', $email_address = '', $dob = null)
+function test_password(string $password, string $username = '', string $email_address = '', ?int $dob = null) : int
 {
     // Take out completely insecure elements from the password so that they won't contribute to the scoring...
 
@@ -167,7 +167,7 @@ function bump_password_times_forward()
  * @param  MEMBER $member_id The member this is for
  * @return boolean Whether it is
  */
-function member_password_expired($member_id)
+function member_password_expired(int $member_id) : bool
 {
     $expiry_days = intval(get_option('password_expiry_days'));
 
@@ -187,7 +187,7 @@ function member_password_expired($member_id)
  * @param  MEMBER $member_id The member this is for
  * @return boolean Whether it is
  */
-function member_password_too_old($member_id)
+function member_password_too_old(int $member_id) : bool
 {
     $change_days = intval(get_option('password_change_days'));
 
@@ -216,7 +216,7 @@ function member_password_too_old($member_id)
  * @param  boolean $return_errors Whether to return errors instead of dying on them
  * @return ?Tempcode Error (null: none)
  */
-function check_password_complexity($password, $username, $email_address, $dob, $return_errors = false)
+function check_password_complexity(string $password, string $username, string $email_address, ?int $dob, bool $return_errors = false) : ?object
 {
     $_maximum_password_length = get_option('maximum_password_length');
     $maximum_password_length = min(255, intval($_maximum_password_length));
@@ -263,7 +263,7 @@ function check_password_complexity($password, $username, $email_address, $dob, $
  * @param  boolean $check_correctness Whether to check details for correctness
  * @param  ?TIME $time The time this is logged to be happening at (null: now)
  */
-function bump_password_change_date($member_id, $password, $password_salted, $salt, $check_correctness = true, $time = null)
+function bump_password_change_date(int $member_id, string $password, string $password_salted, string $salt, bool $check_correctness = true, ?int $time = null)
 {
     if ($time === null) {
         $time = time();

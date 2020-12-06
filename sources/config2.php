@@ -27,7 +27,7 @@
  * @param  boolean $is_override Whether this is an override (which may change inputting style)
  * @return Tempcode Inputter
  */
-function build_config_inputter($name, $details, $current_value = null, $is_override = false)
+function build_config_inputter(string $name, array $details, ?string $current_value = null, bool $is_override = false) : object
 {
     if ($current_value === null) {
         $current_value = get_option($name);
@@ -219,7 +219,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
  * @param  array $details Option details
  * @return string Value
  */
-function get_submitted_config_value($name, $details)
+function get_submitted_config_value(string $name, array $details) : string
 {
     // Work out new value
     if ($details['type'] == 'tax_code') {
@@ -279,7 +279,7 @@ function get_submitted_config_value($name, $details)
  *
  * @ignore
  */
-function _multi_lang()
+function _multi_lang() : bool
 {
     global $MULTI_LANG_CACHE;
 
@@ -347,7 +347,7 @@ function _multi_lang()
  * @param  ID_TEXT $name The name of the option
  * @return ?SHORT_TEXT The value (null: disabled / no such option)
  */
-function get_default_option($name)
+function get_default_option(string $name) : ?string
 {
     $path = 'hooks/systems/config/' . filter_naughty_harsh($name, true);
     clearstatcache();
@@ -374,7 +374,7 @@ function get_default_option($name)
  * @param  LONG_TEXT $value The value
  * @param  BINARY $will_be_formally_set Whether this was a human-set value
  */
-function set_option($name, $value, $will_be_formally_set = 1)
+function set_option(string $name, string $value, int $will_be_formally_set = 1)
 {
     global $CONFIG_OPTIONS_CACHE;
 
@@ -458,7 +458,7 @@ function set_option($name, $value, $will_be_formally_set = 1)
  * @param  SHORT_TEXT $setting The name value
  * @param  ID_TEXT $type The type
  */
-function config_update_value_ref($old_setting, $setting, $type)
+function config_update_value_ref(string $old_setting, string $setting, string $type)
 {
     $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
     $all_options = [];
@@ -476,7 +476,7 @@ function config_update_value_ref($old_setting, $setting, $type)
  * @param  ID_TEXT $name The config option name
  * @return ?Tempcode URL to set the config option (null: no such option exists)
  */
-function config_option_url($name)
+function config_option_url(string $name) : ?object
 {
     $value = get_option($name, true);
     if ($value === null) {
@@ -496,7 +496,7 @@ function config_option_url($name)
  *
  * @param  ID_TEXT $name The codename of the config option
  */
-function delete_config_option($name)
+function delete_config_option(string $name)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('config', ['*'], ['c_name' => $name], '', 1);
     if (array_key_exists(0, $rows)) {
@@ -519,7 +519,7 @@ function delete_config_option($name)
  * @param  ID_TEXT $old The old name
  * @param  ID_TEXT $new The new name
  */
-function rename_config_option($old, $new)
+function rename_config_option(string $old, string $new)
 {
     $GLOBALS['SITE_DB']->query_delete('config', ['c_name' => $new], '', 1);
 

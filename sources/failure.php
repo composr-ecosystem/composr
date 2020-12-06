@@ -86,7 +86,7 @@ function suggest_fatalistic()
  * @param  boolean $mzip Whether mzip was used
  * @return Tempcode Error message
  */
-function zip_error($errno, $mzip = false)
+function zip_error(int $errno, bool $mzip = false) : object
 {
     $zip_file_function_errors = [
         // Based on comment from php.net
@@ -132,7 +132,7 @@ function zip_error($errno, $mzip = false)
  * @return string Fixed parameter (usually the function won't return [instead will give an error], but in special cases, it can filter an invalid return)
  * @ignore
  */
-function _param_invalid($name, $ret, $posted)
+function _param_invalid(string $name, ?string $ret, bool $posted) : string
 {
     // Invalid params can happen for many reasons:
     //  [/url] getting onto the end of URLs by bad URL extractors getting URLs out of Comcode
@@ -179,7 +179,7 @@ function _param_invalid($name, $ret, $posted)
  * @param  ?boolean $posted Whether the parameter is a POST parameter (null: undetermined)
  * @param  array $array The array we're extracting parameters from
  */
-function improperly_filled_in($name, $posted, $array)
+function improperly_filled_in(string $name, ?bool $posted, array $array)
 {
     require_code('tempcode');
 
@@ -205,7 +205,7 @@ function improperly_filled_in($name, $posted, $array)
  *
  * @param  string $name The name of the parameter
  */
-function improperly_filled_in_post($name)
+function improperly_filled_in_post(string $name)
 {
     require_code('global3');
     set_http_status_code(400);
@@ -235,7 +235,7 @@ function improperly_filled_in_post($name)
  * @set LOG ATTACH FATAL
  * @ignore
  */
-function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $syslog_type, $handling_method)
+function _composr_error_handler(string $type, int $errno, string $errstr, string $errfile, int $errline, int $syslog_type, string $handling_method)
 {
     $fatal = (!peek_suppress_error_death()) && ($handling_method == 'FATAL');
 
@@ -327,7 +327,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
  *
  * @ignore
  */
-function _warn_screen($title, $text, $provide_back = true, $support_match_key_messages = false)
+function _warn_screen(object $title, $text, bool $provide_back = true, bool $support_match_key_messages = false) : object
 {
     $text_eval = is_object($text) ? $text->evaluate() : $text;
 
@@ -365,7 +365,7 @@ function _warn_screen($title, $text, $provide_back = true, $support_match_key_me
  *
  * @ignore
  */
-function _sanitise_error_msg($text)
+function _sanitise_error_msg(string $text) : string
 {
     // Strip paths, for security reasons
     return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
@@ -385,7 +385,7 @@ function _sanitise_error_msg($text)
  * @ignore
  * @exits
  */
-function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null, $title = null, $image_url = null)
+function _generic_exit($text, string $template, ?bool $support_match_key_messages = false, bool $log_error = false, ?int $http_status = null, ?object $title = null, ?string $image_url = null)
 {
     if (($template != 'FATAL_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
         _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
@@ -569,7 +569,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
  *
  * @ignore
  */
-function _inet_pton($ip)
+function _inet_pton(string $ip) : string
 {
     $_ip = explode(':', $ip);
     $normalised_ip = '';
@@ -591,7 +591,7 @@ function _inet_pton($ip)
  * @ignore
  * @exits
  */
-function _log_hack_attack_matches($specifier, $reason, $reason_param_a, $reason_param_b)
+function _log_hack_attack_matches(array $specifier, string $reason, string $reason_param_a, string $reason_param_b) : bool
 {
     return ($specifier['codename'] == $reason) &&
         (($specifier['param_a_pattern'] === null) || (simulated_wildcard_match($reason_param_a, $specifier['param_a_pattern'], true, true))) &&
@@ -607,7 +607,7 @@ function _log_hack_attack_matches($specifier, $reason, $reason_param_a, $reason_
  * @ignore
  * @exits
  */
-function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')
+function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '')
 {
     // Default control settings
     $silent_to_user = false;
@@ -819,7 +819,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
  * @param  IP $ip The IP address
  * @return boolean Whether it is unbannable
  */
-function is_unbannable_bot_dns($ip)
+function is_unbannable_bot_dns(string $ip) : bool
 {
     $dns = cms_gethostbyaddr($ip);
     if ($dns == $ip) {
@@ -859,7 +859,7 @@ function is_unbannable_bot_dns($ip)
  * @param  IP $ip The IP address
  * @return boolean Whether it is unbannable
  */
-function is_unbannable_bot_ip($ip)
+function is_unbannable_bot_ip(string $ip) : bool
 {
     $ip_lists = [
         get_file_base() . '/text/unbannable_ips.txt',
@@ -908,7 +908,7 @@ function is_unbannable_bot_ip($ip)
  * @param  boolean $ban_positive Whether this is a positive ban (as opposed to a cached negative)
  * @return boolean Whether a change actually happened
  */
-function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
+function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bool $ban_positive = true) : bool
 {
     if (!addon_installed('securitylogging')) {
         return false;
@@ -947,7 +947,7 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
  * @param  IP $ip The IP address (potentially encoded with *'s)
  * @return string The Apache-style IP
  */
-function ip_wild_to_apache($ip)
+function ip_wild_to_apache(string $ip) : string
 {
     $ip = normalise_ip_address($ip, 4);
     if ($ip == '') {
@@ -994,7 +994,7 @@ function ip_wild_to_apache($ip)
  *
  * @param  IP $ip The IP address to unban (potentially encoded with *'s, although this will only unban an exact matching wildcard ban)
  */
-function remove_ip_ban($ip)
+function remove_ip_ban(string $ip)
 {
     if (!addon_installed('securitylogging')) {
         return;
@@ -1022,7 +1022,7 @@ function remove_ip_ban($ip)
  * @param  mixed $error_message The error message (string or Tempcode)
  * @return ?string The result from the web service (null: no result)
  */
-function get_webservice_result($error_message)
+function get_webservice_result($error_message) : ?string
 {
     if (in_array(get_base_url_hostname(), ['compo.sr', 'ocproducts.com'])) {
         return null;
@@ -1111,7 +1111,7 @@ function get_webservice_result($error_message)
  * @param  string $errormsg A error message
  * @param  ID_TEXT $notification_type The notification type
  */
-function cms_error_log($errormsg, $notification_type = 'error_occurred')
+function cms_error_log(string $errormsg, string $notification_type = 'error_occurred')
 {
     if (php_function_allowed('error_log')) {
         @error_log($errormsg);
@@ -1126,7 +1126,7 @@ function cms_error_log($errormsg, $notification_type = 'error_occurred')
  * @param  boolean $ocproducts Also send to ocProducts
  * @param  ID_TEXT $notification_type The notification type
  */
-function relay_error_notification($text, $ocproducts = true, $notification_type = 'error_occurred')
+function relay_error_notification(string $text, bool $ocproducts = true, string $notification_type = 'error_occurred')
 {
     if (isset($GLOBALS['SENDING_MAIL']) && $GLOBALS['SENDING_MAIL']) {
         return;
@@ -1252,7 +1252,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
  *
  * @return boolean Whether the current user may see stack traces
  */
-function may_see_stack_traces()
+function may_see_stack_traces() : bool
 {
     if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
         return true; // Demonstratr exception
@@ -1281,7 +1281,7 @@ function may_see_stack_traces()
  *
  * @param  string $message An error message
  */
-function die_html_trace($message)
+function die_html_trace(string $message)
 {
     $_trace = debug_backtrace();
     $trace = '<div class="box guid-{_GUID}"><div class="box-inner"><h2>Stack trace&hellip;</h2>';
@@ -1321,7 +1321,7 @@ function die_html_trace($message)
  * @param  mixed $value Complex value
  * @return string String version
  */
-function put_value_in_stack_trace($value)
+function put_value_in_stack_trace($value) : string
 {
     try {
         if (($value === null) || (is_array($value) && (strlen(serialize($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
@@ -1370,7 +1370,7 @@ function put_value_in_stack_trace($value)
  *
  * @return Tempcode Debugging backtrace
  */
-function get_html_trace()
+function get_html_trace() : object
 {
     require_code('templates');
 
@@ -1431,7 +1431,7 @@ function get_html_trace()
  * @return ?Tempcode The message (null: no change)
  * @ignore
  */
-function _look_for_match_key_message($natural_text, $only_if_zone = false, $only_text_match = false)
+function _look_for_match_key_message(string $natural_text, bool $only_if_zone = false, bool $only_text_match = false) : ?object
 {
     // Protect against potentially fatal loops if there's an error with match_key_messages
     static $done_once = false;
@@ -1509,7 +1509,7 @@ function _look_for_match_key_message($natural_text, $only_if_zone = false, $only
  * @param  boolean $force_login Force the user to login (even if perhaps they are logged in already)
  * @ignore
  */
-function _access_denied($class, $param, $force_login)
+function _access_denied(string $class, string $param, bool $force_login)
 {
     require_code('global3');
     set_http_status_code(401); // Stop spiders ever storing the URL that caused this
@@ -1588,7 +1588,7 @@ function _access_denied($class, $param, $force_login)
  * @param  ?string $reasoned_ban The reasoned ban type (null: none)
  * @exits
  */
-function banned_exit($reasoned_ban = null)
+function banned_exit(?string $reasoned_ban = null)
 {
     $text = do_lang_tempcode('YOU_ARE_BANNED');
 
@@ -1636,7 +1636,7 @@ function banned_exit($reasoned_ban = null)
  *
  * @param  boolean $_throwing_errors Whether we should throw errors
  */
-function set_throw_errors($_throwing_errors = true)
+function set_throw_errors(bool $_throwing_errors = true)
 {
     global $THROWING_ERRORS;
     $THROWING_ERRORS = $_throwing_errors;
@@ -1647,7 +1647,7 @@ function set_throw_errors($_throwing_errors = true)
  *
  * @return boolean Whether to are throwing errors
  */
-function throwing_errors()
+function throwing_errors() : bool
 {
     global $THROWING_ERRORS;
     return $THROWING_ERRORS;

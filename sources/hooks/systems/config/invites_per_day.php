@@ -28,7 +28,7 @@ class Hook_config_invites_per_day
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'INVITES_PER_DAY',
@@ -52,7 +52,7 @@ class Hook_config_invites_per_day
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

@@ -41,7 +41,7 @@ function init__content2()
  * @param  array $page_metadata Page metadata for multiple pages (see function code for an example; description and keywords go to SEO metadata, rest goes to custom fields which will auto-create as needed)
  * @param  string $zone The zone to do this in
  */
-function define_page_metadata($page_metadata, $zone = '')
+function define_page_metadata(array $page_metadata, string $zone = '')
 {
     /*
         CALLING SAMPLE:
@@ -95,7 +95,7 @@ function define_page_metadata($page_metadata, $zone = '')
  * @param  ?Tempcode $description Description for field input (null: {!ORDER})
  * @return Tempcode Ordering field
  */
-function get_order_field($entry_type, $category_type, $current_order, $max = null, $total = null, $order_field = 'order', $description = null)
+function get_order_field(string $entry_type, ?string $category_type, ?int $current_order, ?int $max = null, ?int $total = null, string $order_field = 'order', ?object $description = null) : object
 {
     $new = ($current_order === null);
 
@@ -163,7 +163,7 @@ function get_order_field($entry_type, $category_type, $current_order, $max = nul
  * @param  ID_TEXT $order_field The POST field
  * @return integer The order value
  */
-function post_param_order_field($order_field = 'order')
+function post_param_order_field(string $order_field = 'order') : int
 {
     $ret = post_param_integer($order_field, null);
     if ($ret === null) {
@@ -182,7 +182,7 @@ function post_param_order_field($order_field = 'order')
  * @param  integer $show_header Whether to show a header (a METADATA_HEADER_* constant)
  * @return Tempcode Form page Tempcode fragment
  */
-function metadata_get_fields($content_type, $content_id, $require_owner = true, $fields_to_skip = [], $show_header = 1)
+function metadata_get_fields(string $content_type, ?string $content_id, bool $require_owner = true, array $fields_to_skip = [], int $show_header = 1) : object
 {
     require_lang('metadata');
 
@@ -294,7 +294,7 @@ function metadata_get_fields($content_type, $content_id, $require_owner = true, 
  * @param  ?ID_TEXT $new_content_id The new ID of the resource (null: not being renamed)
  * @return array A map of standard metadata fields (name to value). If adding, this map is accurate for adding. If editing, nulls mean do-not-edit or non-editable.
  */
-function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip = [], $new_content_id = null)
+function actual_metadata_get_fields(string $content_type, ?string $content_id, array $fields_to_skip = [], ?string $new_content_id = null) : array
 {
     require_lang('metadata');
 
@@ -410,7 +410,7 @@ function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip 
  * @param  array $fields_to_skip List of fields to NOT take in
  * @param  ?ID_TEXT $new_content_id The new ID of the resource (null: not being renamed)
  */
-function set_url_moniker($content_type, $content_id, $fields_to_skip = [], $new_content_id = null)
+function set_url_moniker(string $content_type, string $content_id, array $fields_to_skip = [], ?string $new_content_id = null)
 {
     require_lang('metadata');
 
@@ -572,7 +572,7 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = [], $new_
  * @param  ID_TEXT $key The parameter name
  * @param  mixed $default The default if it was not set
  */
-function actual_metadata_get_fields__special(&$metadata, $key, $default)
+function actual_metadata_get_fields__special(array &$metadata, string $key, $default)
 {
     $metadata[$key] = $default;
     if (has_privilege(get_member(), 'edit_meta_fields')) {
@@ -607,7 +607,7 @@ function actual_metadata_get_fields__special(&$metadata, $key, $default)
  * @param  ID_TEXT $type The type of resource (e.g. download)
  * @param  ID_TEXT $id The ID of the resource
  */
-function seo_meta_clear_caching($type, $id)
+function seo_meta_clear_caching(string $type, string $id)
 {
     if (function_exists('delete_cache_entry')) {
         delete_cache_entry('side_tag_cloud');
@@ -625,7 +625,7 @@ function seo_meta_clear_caching($type, $id)
  * @param  ID_TEXT $id The ID of the resource
  * @param  boolean $do_decache Whether to clear caching for this too
  */
-function seo_meta_erase_storage($type, $id, $do_decache = true)
+function seo_meta_erase_storage(string $type, string $id, bool $do_decache = true)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description'], ['meta_for_type' => $type, 'meta_for_id' => $id], '', 1);
     if (array_key_exists(0, $rows)) {
@@ -652,7 +652,7 @@ function seo_meta_erase_storage($type, $id, $do_decache = true)
  * @param  boolean $show_header Whether to show a header
  * @return Tempcode Form page Tempcode fragment
  */
-function seo_get_fields($type, $id = null, $show_header = true)
+function seo_get_fields(string $type, ?string $id = null, bool $show_header = true) : object
 {
     require_code('form_templates');
     if ($id === null) {
@@ -685,7 +685,7 @@ function seo_get_fields($type, $id = null, $show_header = true)
  * @param  SHORT_TEXT $keywords The keywords to use
  * @param  SHORT_TEXT $description The description to use
  */
-function seo_meta_set_for_explicit($type, $id, $keywords, $description)
+function seo_meta_set_for_explicit(string $type, string $id, string $keywords, string $description)
 {
     if ($description == STRING_MAGIC_NULL) {
         return;
@@ -755,7 +755,7 @@ function seo_meta_set_for_explicit($type, $id, $keywords, $description)
  *
  * @ignore
  */
-function _seo_meta_find_data($keyword_sources, $description = '')
+function _seo_meta_find_data(array $keyword_sources, string $description = '') : array
 {
     // These characters are considered to be word-characters
     require_code('textfiles');
@@ -989,7 +989,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
  * @param  SHORT_TEXT $description The description to use
  * @return SHORT_TEXT Keyword string generated (it's also saved in the DB, so usually you won't want to collect this)
  */
-function seo_meta_set_for_implicit($type, $id, $keyword_sources, $description)
+function seo_meta_set_for_implicit(string $type, string $id, array $keyword_sources, string $description) : string
 {
     if ((post_param_string('meta_keywords', null) !== null) && ((post_param_string('meta_keywords') != '') || (post_param_string('meta_description') != ''))) {
         seo_meta_set_for_explicit($type, $id, post_param_string('meta_keywords'), post_param_string('meta_description'));
@@ -1018,7 +1018,7 @@ function seo_meta_set_for_implicit($type, $id, $keyword_sources, $description)
  * @param  string $codename Predefined content codename
  * @return boolean Whether it is
  */
-function has_predefined_content($addon, $codename)
+function has_predefined_content(string $addon, string $codename) : bool
 {
     $enumerated = enumerate_predefined_content($addon);
     return $enumerated[$codename]['installed'];
@@ -1030,7 +1030,7 @@ function has_predefined_content($addon, $codename)
  * @param  string $addon Addon to do for
  * @return array A map of available predefined content codenames, and details (if installed, and title)
  */
-function enumerate_predefined_content($addon)
+function enumerate_predefined_content(string $addon) : array
 {
     static $ret = [];
     if (!array_key_exists($addon, $ret)) {
@@ -1048,7 +1048,7 @@ function enumerate_predefined_content($addon)
  * @param  string $addon Addon to do for
  * @param  ?array $content A map of predefined content labels to install, codename to installation state (null: install all)
  */
-function install_predefined_content($addon, $content = null)
+function install_predefined_content(string $addon, ?array $content = null)
 {
     require_code('hooks/systems/addon_registry/' . filter_naughty($addon));
     $ob = object_factory('Hook_addon_registry_' . $addon);
@@ -1081,7 +1081,7 @@ function install_predefined_content($addon, $content = null)
  * @param  ?array $only List of predefined content codenames to limit to (null: no limit)
  * @return Tempcode UI
  */
-function predefined_content_changes_ui($addon, $title, $url, $skip = [], $only = null)
+function predefined_content_changes_ui(string $addon, object $title, object $url, array $skip = [], ?array $only = null) : object
 {
     check_privilege('mass_import');
 
@@ -1143,7 +1143,7 @@ function predefined_content_changes_ui($addon, $title, $url, $skip = [], $only =
  * @param  ?array $only List of predefined content codenames to limit to (null: no limit)
  * @return Tempcode UI
  */
-function predefined_content_changes_actualiser($addon, $title, $skip = [], $only = null)
+function predefined_content_changes_actualiser(string $addon, object $title, array $skip = [], ?array $only = null) : object
 {
     check_privilege('mass_import');
 

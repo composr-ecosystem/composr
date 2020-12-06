@@ -34,7 +34,7 @@ class Hook_task_privacy_download
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($table_actions, $member_id_username, $ip_addresses, $member_id, $email_address, $others)
+    public function run(array $table_actions, ?int $member_id_username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
     {
         require_code('privacy');
 

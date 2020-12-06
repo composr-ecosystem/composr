@@ -27,7 +27,7 @@
  * @param  ?ID_TEXT $username The username of the member who is being viewed (null: work out from member_id_of)
  * @return Tempcode The rendered profile
  */
-function render_profile_tabset($title, $member_id_of, $member_id_viewing = null, $username = null)
+function render_profile_tabset(object $title, int $member_id_of, ?int $member_id_viewing = null, ?string $username = null) : object
 {
     // Force-disable CSP as CKEditor (used in tabs) doesn't yet support CSP
     load_csp(['csp_enabled' => '0']); // TODO: Remove once CKEditor supports CSP (#651)

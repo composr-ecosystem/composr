@@ -28,7 +28,7 @@ class Module_downloads
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -79,7 +79,7 @@ class Module_downloads
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             require_lang('downloads');
@@ -211,7 +211,7 @@ class Module_downloads
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('downloads')) {
             return null;
@@ -237,7 +237,7 @@ class Module_downloads
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('downloads', $error_msg)) {
@@ -428,7 +428,7 @@ class Module_downloads
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('feedback');
         require_css('downloads');
@@ -455,7 +455,7 @@ class Module_downloads
      *
      * @return Tempcode The UI
      */
-    public function view_category_screen()
+    public function view_category_screen() : object
     {
         $category_id = $this->category_id;
         $root = $this->root;
@@ -577,7 +577,7 @@ class Module_downloads
      *
      * @return Tempcode The UI
      */
-    public function view_atoz_screen()
+    public function view_atoz_screen() : object
     {
         $id = get_param_string('id', strval(db_get_first_id()));
 
@@ -672,7 +672,7 @@ class Module_downloads
      *
      * @return Tempcode The UI
      */
-    public function view_download_screen()
+    public function view_download_screen() : object
     {
         $id = $this->id;
         $myrow = $this->myrow;

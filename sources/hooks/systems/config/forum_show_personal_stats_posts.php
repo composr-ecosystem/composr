@@ -28,7 +28,7 @@ class Hook_config_forum_show_personal_stats_posts
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COUNT_POSTSCOUNT',
@@ -51,7 +51,7 @@ class Hook_config_forum_show_personal_stats_posts
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return has_no_forum() ? null : '1';
     }

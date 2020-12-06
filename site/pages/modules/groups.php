@@ -28,7 +28,7 @@ class Module_groups
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_groups
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -71,7 +71,7 @@ class Module_groups
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -171,7 +171,7 @@ class Module_groups
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('cns_groups_action');
         require_code('cns_groups_action2');
@@ -212,7 +212,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function directory()
+    public function directory() : object
     {
         $staff_groups = array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups());
 
@@ -458,7 +458,7 @@ class Module_groups
      * @param  boolean $has_rank Whether there are rank promotions
      * @return array A pair: column widths, table headings
      */
-    protected function _find_table_headings($has_images, $has_rank)
+    protected function _find_table_headings(bool $has_images, bool $has_rank) : array
     {
         if ($has_images) {
             if ($has_rank) {
@@ -506,7 +506,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function usergroup()
+    public function usergroup() : object
     {
         $id = $this->id;
         $group = $this->group;
@@ -693,7 +693,7 @@ class Module_groups
      * @param  array $member_row The member row
      * @return boolean Filter out
      */
-    public function filter_out($member_row)
+    public function filter_out(array $member_row) : bool
     {
         // Some special non-documented filters to help find likely spammers
         if ((get_param_integer('with_sig', 0) == 1) && ($member_row['m_signature'] == '')) {
@@ -724,7 +724,7 @@ class Module_groups
      * @param  ?string $username Username to add (null: read from environment)
      * @return Tempcode The UI
      */
-    public function add_to($special_permission = false, $username = null)
+    public function add_to(bool $special_permission = false, ?string $username = null) : object
     {
         $id = get_param_integer('id');
 
@@ -765,7 +765,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function remove_from()
+    public function remove_from() : object
     {
         $member_id = get_param_integer('member_id');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
@@ -803,7 +803,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function apply()
+    public function apply() : object
     {
         $group_name = $this->group_name;
 
@@ -865,7 +865,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function accept()
+    public function accept() : object
     {
         $id = post_param_integer('id', null);
         if ($id === null) {
@@ -900,7 +900,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function decline()
+    public function decline() : object
     {
         $id = post_param_integer('id', null);
         if ($id === null) {
@@ -945,7 +945,7 @@ class Module_groups
      *
      * @return Tempcode The UI
      */
-    public function resign()
+    public function resign() : object
     {
         $id = post_param_integer('id', null);
         if ($id === null) {

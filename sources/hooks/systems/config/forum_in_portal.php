@@ -28,7 +28,7 @@ class Hook_config_forum_in_portal
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'FORUM_IN_PORTAL',
@@ -53,7 +53,7 @@ class Hook_config_forum_in_portal
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return has_no_forum() ? null : '0';
     }

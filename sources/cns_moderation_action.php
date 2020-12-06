@@ -30,7 +30,7 @@
  * @param  SHORT_TEXT $title_suffix The title suffix
  * @return AUTO_LINK The ID of the Multi Moderation just added
  */
-function cns_make_multi_moderation($name, $post_text, $move_to, $pin_state, $open_state, $forum_multi_code = '*', $title_suffix = '')
+function cns_make_multi_moderation(string $name, string $post_text, ?int $move_to, ?int $pin_state, ?int $open_state, string $forum_multi_code = '*', string $title_suffix = '') : int
 {
     if (!addon_installed('cns_multi_moderations')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));

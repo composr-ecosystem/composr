@@ -28,7 +28,7 @@ class Hook_media_rendering_pdf extends Media_renderer_with_fallback
      *
      * @return string The label
      */
-    public function get_type_label()
+    public function get_type_label() : string
     {
         require_lang('comcode');
         return do_lang('MEDIA_TYPE_' . preg_replace('#^Hook_media_rendering_#', '', __CLASS__));
@@ -39,7 +39,7 @@ class Hook_media_rendering_pdf extends Media_renderer_with_fallback
      *
      * @return integer The media type(s), as a bitmask
      */
-    public function get_media_type()
+    public function get_media_type() : int
     {
         return MEDIA_TYPE_OTHER;
     }
@@ -50,7 +50,7 @@ class Hook_media_rendering_pdf extends Media_renderer_with_fallback
      * @param  ID_TEXT $mime_type The mime type
      * @return integer Recognition precedence
      */
-    public function recognises_mime_type($mime_type)
+    public function recognises_mime_type(string $mime_type) : int
     {
         if ($mime_type == 'application/pdf') {
             return MEDIA_RECOG_PRECEDENCE_HIGH;
@@ -64,7 +64,7 @@ class Hook_media_rendering_pdf extends Media_renderer_with_fallback
      * @param  URLPATH $url URL to pattern match
      * @return integer Recognition precedence
      */
-    public function recognises_url($url)
+    public function recognises_url(string $url) : int
     {
         return MEDIA_RECOG_PRECEDENCE_NONE;
     }
@@ -79,7 +79,7 @@ class Hook_media_rendering_pdf extends Media_renderer_with_fallback
      * @param  ?MEMBER $source_member Member to run as (null: current member)
      * @return Tempcode Rendered version
      */
-    public function render($url, $url_safe, $attributes, $as_admin = false, $source_member = null)
+    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null) : object
     {
         $ret = $this->fallback_render($url, $url_safe, $attributes, $as_admin, $source_member, $url);
         if ($ret !== null) {

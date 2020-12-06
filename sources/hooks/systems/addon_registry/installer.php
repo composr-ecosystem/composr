@@ -29,7 +29,7 @@ class Hook_addon_registry_installer
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_installer
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_installer
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_installer
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'The installer files (can be removed immediately after installing; in fact Composr makes you remove install.php manually).';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_installer
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_install',
@@ -86,7 +86,7 @@ class Hook_addon_registry_installer
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -100,7 +100,7 @@ class Hook_addon_registry_installer
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -110,7 +110,7 @@ class Hook_addon_registry_installer
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/addon_registry/installer.php',
@@ -141,7 +141,7 @@ class Hook_addon_registry_installer
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/INSTALLER_HTML_WRAP.tpl' => 'administrative__installer_wrap',
@@ -174,7 +174,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_wrap()
+    public function tpl_preview__administrative__installer_wrap() : array
     {
         require_css('install');
         require_lang('installer');
@@ -202,7 +202,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_step_1()
+    public function tpl_preview__administrative__installer_step_1() : array
     {
         require_css('install');
         require_css('forms');
@@ -258,7 +258,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_step_2()
+    public function tpl_preview__administrative__installer_step_2() : array
     {
         require_css('install');
         require_css('forms');
@@ -292,7 +292,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_step_3()
+    public function tpl_preview__administrative__installer_step_3() : array
     {
         require_css('forms');
         require_css('install');
@@ -382,7 +382,7 @@ class Hook_addon_registry_installer
      * @param  BINARY $value The default/current value of the option
      * @return Tempcode The list of usergroups
      */
-    public function make_tick($nice_name, $description, $name, $value)
+    public function make_tick(string $nice_name, string $description, string $name, int $value) : object
     {
         $input = do_lorem_template('INSTALLER_INPUT_TICK', [
             'CHECKED' => $value == 1,
@@ -408,7 +408,7 @@ class Hook_addon_registry_installer
      * @param  boolean $required Whether the option is required
      * @return Tempcode The option
      */
-    public function make_option($nice_name, $description, $name, $value, $hidden = false, $required = false)
+    public function make_option(string $nice_name, string $description, string $name, string $value, bool $hidden = false, bool $required = false) : object
     {
         if ($hidden) {
             $input = do_lorem_template('INSTALLER_INPUT_PASSWORD', [
@@ -439,7 +439,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_step_4()
+    public function tpl_preview__administrative__installer_step_4() : array
     {
         require_css('forms');
         require_css('install');
@@ -497,7 +497,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_step_log()
+    public function tpl_preview__administrative__installer_step_log() : array
     {
         $message = do_lorem_template('INSTALLER_DONE_SOMETHING', [
             'SOMETHING' => lorem_sentence(),
@@ -524,7 +524,7 @@ class Hook_addon_registry_installer
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__installer_step_10()
+    public function tpl_preview__administrative__installer_step_10() : array
     {
         require_css('install');
         require_lang('installer');

@@ -31,7 +31,7 @@ class Hook_ajax_tree_choose_gallery
      * @param  ?ID_TEXT $default The ID to select by default (null: none)
      * @return string XML in the special category,entry format
      */
-    public function run($id, $options, $default = null)
+    public function run(?string $id, array $options, ?string $default = null) : string
     {
         require_code('galleries');
         require_lang('galleries');
@@ -133,7 +133,7 @@ class Hook_ajax_tree_choose_gallery
      * @param  ?ID_TEXT $it The ID to select by default (null: none)
      * @return Tempcode The nice list
      */
-    public function simple($id, $options, $it = null)
+    public function simple(?string $id, array $options, ?string $it = null) : object
     {
         $must_accept_images = array_key_exists('must_accept_images', $options) ? $options['must_accept_images'] : false;
         $must_accept_videos = array_key_exists('must_accept_videos', $options) ? $options['must_accept_videos'] : false;

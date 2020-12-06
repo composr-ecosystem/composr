@@ -29,7 +29,7 @@
  * @param  ?Tempcode $fields Form fields to pass through as post data on confirmation (null: none)
  * @return Tempcode The confirmation page
  */
-function confirm_screen($title, $preview, $url_type, $back_url_type = null, $sup_post = [], $fields = null)
+function confirm_screen(object $title, object $preview, $url_type, $back_url_type = null, array $sup_post = [], ?object $fields = null) : object
 {
     if ((is_string($back_url_type)) && (strlen($back_url_type) < 10)) {
         $back_url = build_url(['page' => '_SELF', 'type' => $back_url_type], '_SELF', [], true);

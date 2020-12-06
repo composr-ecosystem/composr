@@ -68,7 +68,7 @@
  * @param  ?TIME $edit_date The edit date (null: never)
  * @return AUTO_LINK The poll ID of our new poll
  */
-function add_poll($question, $a1, $a2, $a3 = '', $a4 = '', $a5 = '', $a6 = '', $a7 = '', $a8 = '', $a9 = '', $a10 = '', $num_options = null, $current = 0, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '', $time = null, $submitter = null, $use_time = null, $v1 = 0, $v2 = 0, $v3 = 0, $v4 = 0, $v5 = 0, $v6 = 0, $v7 = 0, $v8 = 0, $v9 = 0, $v10 = 0, $views = 0, $edit_date = null)
+function add_poll(string $question, string $a1, string $a2, string $a3 = '', string $a4 = '', string $a5 = '', string $a6 = '', string $a7 = '', string $a8 = '', string $a9 = '', string $a10 = '', ?int $num_options = null, int $current = 0, int $allow_rating = 1, int $allow_comments = 1, int $allow_trackbacks = 1, string $notes = '', ?int $time = null, ?int $submitter = null, ?int $use_time = null, int $v1 = 0, int $v2 = 0, int $v3 = 0, int $v4 = 0, int $v5 = 0, int $v6 = 0, int $v7 = 0, int $v8 = 0, int $v9 = 0, int $v10 = 0, int $views = 0, ?int $edit_date = null) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_POLL', null, $question);
@@ -195,7 +195,7 @@ function add_poll($question, $a1, $a2, $a3 = '', $a4 = '', $a5 = '', $a6 = '', $
  * @param  ?MEMBER $submitter Submitter (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, $a10, $num_options, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $edit_time = null, $add_time = null, $views = null, $submitter = null, $null_is_literal = false)
+function edit_poll(int $id, string $question, string $a1, string $a2, string $a3, string $a4, string $a5, string $a6, string $a7, string $a8, string $a9, string $a10, int $num_options, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -287,7 +287,7 @@ function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, 
  *
  * @param  AUTO_LINK $id The ID of the poll to delete
  */
-function delete_poll($id)
+function delete_poll(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -332,7 +332,7 @@ function delete_poll($id)
  *
  * @param  AUTO_LINK $id The poll ID to set
  */
-function set_poll($id)
+function set_poll(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('poll', ['question', 'submitter'], ['id' => $id]);
     $question = $rows[0]['question'];

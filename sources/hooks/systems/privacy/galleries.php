@@ -28,7 +28,7 @@ class Hook_privacy_galleries extends Hook_privacy_base
      *
      * @return ?array A map of privacy details in a standardised format (null: disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('galleries')) {
             return null;
@@ -91,7 +91,7 @@ class Hook_privacy_galleries extends Hook_privacy_base
      * @param  ID_TEXT $table_name Table name
      * @param  array $row Row raw from the database
      */
-    public function delete($table_name, $row)
+    public function delete(string $table_name, array $row)
     {
         require_lang('galleries');
 

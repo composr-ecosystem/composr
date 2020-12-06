@@ -28,7 +28,7 @@ class Hook_config_comment_topic_subject
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMMENT_TOPIC_SUBJECT',
@@ -51,7 +51,7 @@ class Hook_config_comment_topic_subject
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '0';
     }

@@ -26,7 +26,7 @@
  * @param  array $matches The matches
  * @return string The replacement
  */
-function extract_plain_links($matches)
+function extract_plain_links(array $matches) : string
 {
     return '<a href="' . @html_entity_decode($matches[0], ENT_QUOTES) . '">' . $matches[0] . '</a>';
 }
@@ -59,7 +59,7 @@ class CMS_RSS
      * @param  URLPATH $url The URL to the RSS we will be reading
      * @param  boolean $is_filesystem_path Whether the 'url' is actually a filesystem path
      */
-    public function __construct($url, $is_filesystem_path = false)
+    public function __construct(string $url, bool $is_filesystem_path = false)
     {
         require_lang('rss');
         require_code('xml');
@@ -196,7 +196,7 @@ class CMS_RSS
     /* *
      * Standard PHP XML parser function.
      *
-     * @param  object $parser A reference to the XML parser calling the handler
+     * @param  $parser The parser
      * @param  string $open_entity_names A space-separated list of the names of the entities that are open for the parse of this entity (including the name of the referenced entity)
      * @param  string $base The base for resolving the system identifier (system_id) of the external entity. Currently this parameter will always be set to an empty string.
      * @param  string $system_id The system identifier as specified in the entity declaration
@@ -212,11 +212,11 @@ class CMS_RSS
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $prefix N/A
      * @param  ?URLPATH $uri The URI of the name space we are entering (null: not given)
      */
-    public function startNameSpace($parser, $prefix, $uri = null)
+    public function startNameSpace($parser, string $prefix, ?string $uri = null)
     {
         if ((($uri == 'http://purl.org/atom/ns#') || ($uri == 'http://www.w3.org/2005/Atom')) && ($this->type != 'RSS')) {
             array_push($this->namespace_stack, 'ATOM');
@@ -229,7 +229,7 @@ class CMS_RSS
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      */
     public function endNameSpace($parser)
     {
@@ -239,11 +239,11 @@ class CMS_RSS
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $name The name of the element found
      * @param  array $attributes Array of attributes of the element
      */
-    public function startElement($parser, $name, $attributes)
+    public function startElement($parser, string $name, array $attributes)
     {
         if ((strpos($name, 'HTTP://PURL.ORG/RSS/1.0/:') !== false)) {
             $this->type = 'RSS';
@@ -283,7 +283,7 @@ class CMS_RSS
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      */
     public function endElement($parser)
     {
@@ -296,10 +296,10 @@ class CMS_RSS
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $data The text
      */
-    public function startText($parser, $data)
+    public function startText($parser, string $data)
     {
         $this->text_so_far .= $data;
     }
@@ -307,10 +307,10 @@ class CMS_RSS
     /**
      * Parse the complete text of the inside of the tag.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $data The text
      */
-    public function trueStartText($parser, $data)
+    public function trueStartText($parser, string $data)
     {
         $prelast_tag = array_peek($this->tag_stack, 2);
         $last_tag = array_peek($this->tag_stack);
@@ -797,7 +797,7 @@ class CMS_RSS
  * @param  string $date The ISO date
  * @return array If only one element, it contains the timestamp. Otherwise it is a pair: (string format, timestamp)
  */
-function cleanup_date($date)
+function cleanup_date(string $date) : array
 {
     $remap_month = ['Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12];
     $matches = [];

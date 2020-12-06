@@ -28,7 +28,7 @@ class Hook_preview_cns_welcome_email
      *
      * @return array A pair: The preview, the updated post Comcode
      */
-    public function applies()
+    public function applies() : array
     {
         $member_id = get_param_integer('id', get_member());
 
@@ -61,7 +61,7 @@ class Hook_preview_cns_welcome_email
      *
      * @return array A pair: The preview, the updated post Comcode
      */
-    public function run()
+    public function run() : array
     {
         $mail = $this->get_mail_row();
 
@@ -78,7 +78,7 @@ class Hook_preview_cns_welcome_email
      *
      * @return array Row
      */
-    protected function get_mail_row()
+    protected function get_mail_row() : array
     {
         $name = post_param_string('name');
         $subject = post_param_string('subject');

@@ -28,7 +28,7 @@ class Hook_admin_themewizard_calendar
      *
      * @return array A pair: List of theme image patterns to include, List of theme image patterns to exclude
      */
-    public function run()
+    public function run() : array
     {
         if (!addon_installed('calendar')) {
             return [[], []];

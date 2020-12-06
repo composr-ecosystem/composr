@@ -28,7 +28,7 @@ class Hook_commandr_scheduled_publish_news
      *
      * @return ?array Map of hook details (null: addon not available)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('news')) {
             return null;
@@ -48,7 +48,7 @@ class Hook_commandr_scheduled_publish_news
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $_id, $parameters, &$commandr_fs)
+    public function run(array $options, string $_id, array $parameters, object &$commandr_fs) : array
     {
         $id = intval($_id);
 

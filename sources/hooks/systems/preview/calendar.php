@@ -28,7 +28,7 @@ class Hook_preview_calendar
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         require_code('uploads');
         $applies = (addon_installed('calendar')) && (get_page_name() == 'cms_calendar') && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit')) && ((is_plupload()) || (!empty($_FILES)));

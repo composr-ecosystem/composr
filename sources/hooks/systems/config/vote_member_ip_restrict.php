@@ -28,7 +28,7 @@ class Hook_config_vote_member_ip_restrict
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'VOTE_MEMBER_IP_RESTRICT',
@@ -51,7 +51,7 @@ class Hook_config_vote_member_ip_restrict
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '0';
     }

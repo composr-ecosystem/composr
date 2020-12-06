@@ -51,7 +51,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('news')) {
             return null;
@@ -86,7 +86,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('news');
         return [
@@ -130,7 +130,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('news', $error_msg)) {
@@ -185,7 +185,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         $this->posting_form_title = do_lang_tempcode('NEWS_ARTICLE');
 
@@ -220,7 +220,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         require_code('fields');
@@ -245,7 +245,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -322,7 +322,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $only_owned = has_privilege(get_member(), 'edit_highrange_content', 'cms_news') ? null : get_member();
         return create_selection_list_news(null, $only_owned, false);
@@ -358,7 +358,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields($id = null, $main_news_category = null, $news_category = null, $title = '', $news = '', $author = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $send_trackbacks = 1, $notes = '', $image = '', $scheduled = null, $regions = [])
+    public function get_form_fields(?int $id = null, ?int $main_news_category = null, ?array $news_category = null, string $title = '', string $news = '', string $author = '', int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, int $send_trackbacks = 1, string $notes = '', string $image = '', ?array $scheduled = null, array $regions = []) : array
     {
         if ($id === null) {
             // Cloning support
@@ -504,7 +504,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['submitter', 'date_and_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -519,7 +519,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', ['id' => intval($id)]);
         if ($temp === null) {
@@ -534,7 +534,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -582,7 +582,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $author = post_param_string('author', $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
         $news = post_param_string('news');
@@ -687,7 +687,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -801,7 +801,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -824,7 +824,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type);
     }
@@ -834,7 +834,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import_news()
+    public function import_news() : object
     {
         check_privilege('mass_import');
 
@@ -867,7 +867,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _import_news()
+    public function _import_news() : object
     {
         check_privilege('mass_import');
 
@@ -918,7 +918,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('news', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
@@ -929,7 +929,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('news', $this->title);
@@ -957,7 +957,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -1010,7 +1010,7 @@ class Module_cms_news_cat extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         return create_selection_list_news_categories(null, false, false, true);
     }
@@ -1036,7 +1036,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ?AUTO_LINK $category_id The ID of this news category (null: we haven't added it yet)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $img = '', $notes = '', $owner = null, $category_id = null)
+    public function get_form_fields(?int $id = null, string $title = '', string $img = '', string $notes = '', ?int $owner = null, ?int $category_id = null) : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -1075,7 +1075,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -1093,7 +1093,7 @@ class Module_cms_news_cat extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $title = post_param_string('title');
 
@@ -1127,7 +1127,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $title = post_param_string('title');
 
@@ -1167,7 +1167,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         return [$GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'nc_owner', ['id' => intval($id)]), null];
     }
@@ -1177,7 +1177,7 @@ class Module_cms_news_cat extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_news_category(intval($id));
     }
@@ -1190,7 +1190,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, ($id === null) ? null : intval($id));
     }
@@ -1204,7 +1204,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ?AUTO_LINK $cat The category ID we were working in (null: deleted)
      * @return Tempcode The UI
      */
-    public function _do_next_manager($title, $description, $id = null, $cat = null)
+    public function _do_next_manager(object $title, object $description, ?int $id = null, ?int $cat = null) : object
     {
         require_code('templates_donext');
 

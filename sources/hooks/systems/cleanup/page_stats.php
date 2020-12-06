@@ -28,7 +28,7 @@ class Hook_cleanup_page_stats
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('stats')) {
             return null;
@@ -49,7 +49,7 @@ class Hook_cleanup_page_stats
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         $GLOBALS['SITE_DB']->query_delete('stats');
         $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');

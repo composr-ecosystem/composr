@@ -48,7 +48,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      * @param  boolean $fail_ok Whether to on error echo an error and return with a null, rather than giving a critical error
      * @return ?mixed A database connection (null: failed)
      */
-    public function get_connection($persistent, $db_name, $db_host, $db_user, $db_password, $fail_ok = false)
+    public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         // Potential caching
         if (isset($this->cache_db[$db_name][$db_host])) {
@@ -95,7 +95,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false)
+    public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false)
     {
         if ($max === 0) {
             return [];
@@ -157,7 +157,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      * @param  integer $start Where to start reading from
      * @return array A list of row maps
      */
-    protected function get_query_rows($results, $query, $start)
+    protected function get_query_rows($results, string $query, int $start) : array
     {
         $out = [];
 
@@ -182,7 +182,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      *
      * @param  array $connection A DB connection
      */
-    public function start_transaction($connection)
+    public function start_transaction(array $connection)
     {
         if (function_exists('sqlsrv_begin_transaction')) {
             sqlsrv_begin_transaction($connection);
@@ -194,7 +194,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      *
      * @param  array $connection A DB connection
      */
-    public function end_transaction($connection)
+    public function end_transaction(array $connection)
     {
         if (function_exists('sqlsrv_commit')) {
             sqlsrv_commit($connection);

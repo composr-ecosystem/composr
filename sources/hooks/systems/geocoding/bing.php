@@ -29,7 +29,7 @@ class Hook_geocoding_bing
      * @param  boolean $reverse Whether reverse geocoding is requested
      * @return boolean Whether it is
      */
-    public function is_available($reverse = false)
+    public function is_available(bool $reverse = false) : bool
     {
         $key = get_option('bing_geocoding_api_key');
         return ($key != '');
@@ -42,7 +42,7 @@ class Hook_geocoding_bing
      * @param  ?Tempcode $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?array A tuple: Latitude, Longitude, NE lat, NE lng, SW lat, SW lng (null: error)
      */
-    public function geocode($location, &$errormsg = null)
+    public function geocode(string $location, ?object &$errormsg = null) : ?array
     {
         $url_params = urlencode($location);
         $result = $this->_geocode($url_params, $errormsg);
@@ -80,7 +80,7 @@ class Hook_geocoding_bing
      * @param  ?Tempcode $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?array A tuple: Formatted address, Street Address, City, County, State, Zip/Postcode, Country, NE lat, NE lng, SW lat, SW lng (null: error)
      */
-    public function reverse_geocode($latitude, $longitude, &$errormsg = null)
+    public function reverse_geocode(float $latitude, float $longitude, ?object &$errormsg = null) : ?array
     {
         $url_params = urlencode(float_to_raw_string($latitude, 30)) . ',' . urlencode(float_to_raw_string($longitude, 30));
         $result = $this->_geocode($url_params, $errormsg);
@@ -132,7 +132,7 @@ class Hook_geocoding_bing
      * @return ?array Geocode results (null: error)
      * @ignore
      */
-    protected function _geocode($url_params, &$errormsg = null)
+    protected function _geocode(string $url_params, ?object &$errormsg = null) : ?array
     {
         // Test to see if we know we were over the limit in the last 24h
         $limit_test = get_value_newer_than('over_geocode_query_limit', time() - 60 * 60 * 24, true);

@@ -27,7 +27,7 @@
  * @param  ?object $db The database connector to use (null: standard site connector)
  * @param  boolean $attachment_possibility Whether there might be new attachments. If there are, we will check as lax- as attachments are always preserved by forcing lax parsing.
  */
-function check_comcode($comcode, $source_member = null, $as_admin = false, $db = null, $attachment_possibility = false)
+function check_comcode(string $comcode, ?int $source_member = null, bool $as_admin = false, ?object $db = null, bool $attachment_possibility = false)
 {
     if (running_script('stress_test_loader')) {
         return;

@@ -29,7 +29,7 @@ class Hook_addon_registry_securitylogging
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Admin Utilities';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Log/display security alerts.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_security',
@@ -82,7 +82,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -97,7 +97,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/audit/security_log.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/securitylogging.php',
@@ -145,7 +145,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/SECURITY_SCREEN.tpl' => 'administrative__security_screen',
@@ -165,7 +165,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ip_ban_screen()
+    public function tpl_preview__ip_ban_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('IP_BAN_SCREEN', [
@@ -187,7 +187,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__hack_attempt_mail()
+    public function tpl_preview__administrative__hack_attempt_mail() : array
     {
         return [
             lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', [
@@ -214,7 +214,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__security_screen()
+    public function tpl_preview__administrative__security_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('SECURITY_SCREEN', [
@@ -235,7 +235,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__security_alert_screen()
+    public function tpl_preview__administrative__security_alert_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
@@ -260,7 +260,7 @@ class Hook_addon_registry_securitylogging
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__lookup_screen()
+    public function tpl_preview__administrative__lookup_screen() : array
     {
         $inner_ip_list = new Tempcode();
         foreach (placeholder_array() as $value) {

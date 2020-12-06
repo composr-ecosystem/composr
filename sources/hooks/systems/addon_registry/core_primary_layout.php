@@ -29,7 +29,7 @@ class Hook_addon_registry_core_primary_layout
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Core rendering functionality.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_themes',
@@ -82,7 +82,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -96,7 +96,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/addon_registry/core_primary_layout.php',
@@ -135,7 +135,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BREADCRUMB_SEPARATOR.tpl' => 'breadcrumb',
@@ -162,7 +162,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__breadcrumb()
+    public function tpl_preview__breadcrumb() : array
     {
         $out = new Tempcode();
         $out->attach(do_lorem_template('BREADCRUMB_LINK_WRAP', ['URL' => placeholder_url(), 'TOOLTIP' => '', 'LABEL' => lorem_phrase()]));
@@ -180,7 +180,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__closed_site()
+    public function tpl_preview__closed_site() : array
     {
         return [
             lorem_globalise(do_lorem_template('CLOSED_SITE', [
@@ -198,7 +198,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__message()
+    public function tpl_preview__message() : array
     {
         return [
             lorem_globalise(do_lorem_template('MESSAGE', [
@@ -215,7 +215,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__mail_subject()
+    public function tpl_preview__mail_subject() : array
     {
         return [
             lorem_globalise(do_lorem_template('MAIL_SUBJECT', [
@@ -231,7 +231,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__mail()
+    public function tpl_preview__mail() : array
     {
         return $this->do_mail_template_preview('MAIL');
     }
@@ -243,7 +243,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__mail_raw()
+    public function tpl_preview__mail_raw() : array
     {
         return $this->do_mail_template_preview('MAIL_RAW');
     }
@@ -254,7 +254,7 @@ class Hook_addon_registry_core_primary_layout
      * @param  ID_TEXT $tpl Template name
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    protected function do_mail_template_preview($tpl)
+    protected function do_mail_template_preview(string $tpl) : array
     {
         $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), [lorem_phrase(), lorem_paragraph(), static_evaluate_tempcode(placeholder_url()), lorem_phrase(), placeholder_id(), lorem_phrase()]));
 
@@ -288,7 +288,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__global_html_wrap()
+    public function tpl_preview__global_html_wrap() : array
     {
         $out = do_lorem_template('GLOBAL_HTML_WRAP', [
             'MIDDLE' => lorem_paragraph_html(),
@@ -306,7 +306,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__screen_title()
+    public function tpl_preview__screen_title() : array
     {
         $awards = null;
         if (addon_installed('awards')) {
@@ -333,7 +333,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__header_classic()
+    public function tpl_preview__header_classic() : array
     {
         $out = do_lorem_template('HEADER_CLASSIC', []);
 
@@ -349,7 +349,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__header_modern()
+    public function tpl_preview__header_modern() : array
     {
         $out = do_lorem_template('HEADER_MODERN', []);
 
@@ -365,7 +365,7 @@ class Hook_addon_registry_core_primary_layout
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__header_side()
+    public function tpl_preview__header_side() : array
     {
         $out = do_lorem_template('HEADER_SIDE', []);
 

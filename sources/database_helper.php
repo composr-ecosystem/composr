@@ -59,7 +59,7 @@ function init__database_helper()
  *
  * @ignore
  */
-function _check_sizes($table_name, $primary_key, $fields, $id_name, $skip_size_check = false, $skip_null_check = false, $save_bytes = false, $return_on_error = false)
+function _check_sizes(string $table_name, bool $primary_key, array $fields, string $id_name, bool $skip_size_check = false, bool $skip_null_check = false, bool $save_bytes = false, bool $return_on_error = false) : bool
 {
     // Check constraints
     $take_unicode_into_account = $save_bytes ? 3 : 4;
@@ -191,7 +191,7 @@ function _check_sizes($table_name, $primary_key, $fields, $id_name, $skip_size_c
  *
  * @ignore
  */
-function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check = false, $skip_null_check = false, $save_bytes = false)
+function _helper_create_table(object $this_ref, string $table_name, array $fields, bool $skip_size_check = false, bool $skip_null_check = false, ?bool $save_bytes = false)
 {
     if (preg_match('#^[\w]+$#', $table_name) == 0) {
         fatal_exit('Inappropriate identifier: ' . $table_name); // (the +7 is for prefix: max length of 7 chars allocated for prefix)
@@ -282,7 +282,7 @@ function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check 
  *
  * @ignore
  */
-function _helper_create_index($this_ref, $table_name, $index_name, $fields, $unique_key_fields = null)
+function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null)
 {
     $fields_with_types = [];
     if ($table_name != 'db_meta') {
@@ -365,7 +365,7 @@ function _helper_create_index($this_ref, $table_name, $index_name, $fields, $uni
  *
  * @ignore
  */
-function _helper_get_table_key_fields($table_name)
+function _helper_get_table_key_fields(string $table_name) : array
 {
     return collapse_1d_complexity('m_name', $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name'], ['m_table' => $table_name], ' AND m_type LIKE \'' . db_encode_like('*%') . '\''));
 }
@@ -380,7 +380,7 @@ function _helper_get_table_key_fields($table_name)
  *
  * @ignore
  */
-function _helper_generate_index_fields($table_name, $fields, $is_full_text)
+function _helper_generate_index_fields(string $table_name, array $fields, bool $is_full_text) : ?string
 {
     $_fields = '';
     foreach ($fields as $field_name => $db_type) {
@@ -416,7 +416,7 @@ function _helper_generate_index_fields($table_name, $fields, $is_full_text)
  *
  * @ignore
  */
-function _helper_delete_index_if_exists($this_ref, $table_name, $index_name)
+function _helper_delete_index_if_exists(object $this_ref, string $table_name, string $index_name)
 {
     $full_index_name = $index_name;
     if ($index_name[0] == '#') {
@@ -447,7 +447,7 @@ function _helper_delete_index_if_exists($this_ref, $table_name, $index_name)
  *
  * @ignore
  */
-function _helper_drop_table_if_exists($this_ref, $table)
+function _helper_drop_table_if_exists(object $this_ref, string $table)
 {
     if (($table != 'db_meta') && ($table != 'db_meta_indices')) {
         if ((!running_script('install')) && (multi_lang_content())) {
@@ -496,7 +496,7 @@ function _helper_drop_table_if_exists($this_ref, $table)
  *
  * @ignore
  */
-function _helper_needs_to_save_bytes($table_name, $fields)
+function _helper_needs_to_save_bytes(string $table_name, array $fields) : bool
 {
     $save_bytes = false;
     if (!_check_sizes($table_name, true, $fields, $table_name, false, false, $save_bytes, true)) {
@@ -514,7 +514,7 @@ function _helper_needs_to_save_bytes($table_name, $fields)
  *
  * @ignore
  */
-function _helper_rename_table($this_ref, $old, $new)
+function _helper_rename_table(object $this_ref, string $old, string $new)
 {
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $old . ' RENAME ' . $this_ref->table_prefix . $new;
     $this_ref->query($query);
@@ -537,7 +537,7 @@ function _helper_rename_table($this_ref, $old, $new)
  * @param  ?mixed $default The default value; for a translatable field should still be a string value (null: null default / default default)
  * @ignore
  */
-function _helper_add_table_field($this_ref, $table_name, $name, $_type, $default = null)
+function _helper_add_table_field(object $this_ref, string $table_name, string $name, string $_type, $default = null)
 {
     if (($default === null) && (substr($_type, 0, 1) != '?')) {
         switch ($_type) {
@@ -643,7 +643,7 @@ function _helper_add_table_field($this_ref, $table_name, $name, $_type, $default
  *
  * @ignore
  */
-function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $default = null)
+function _helper_add_table_field_sql(object $this_ref, string $table_name, string $name, string $_type, $default = null) : array
 {
     $default_st = null;
 
@@ -731,7 +731,7 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
  * @param  ?ID_TEXT $new_name The new field name (null: leave name)
  * @ignore
  */
-function _helper_alter_table_field($this_ref, $table_name, $name, $_type, $new_name = null)
+function _helper_alter_table_field(object $this_ref, string $table_name, string $name, string $_type, ?string $new_name = null)
 {
     $query = _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $new_name);
 
@@ -777,7 +777,7 @@ function _helper_alter_table_field($this_ref, $table_name, $name, $_type, $new_n
  *
  * @ignore
  */
-function _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $new_name = null)
+function _helper_alter_table_field_sql(object $this_ref, string $table_name, string $name, string $_type, ?string $new_name = null) : string
 {
     $type_remap = $this_ref->static_ob->get_type_remap();
 
@@ -829,7 +829,7 @@ function _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $n
  *
  * @ignore
  */
-function _helper_change_primary_key($this_ref, $table_name, $new_key)
+function _helper_change_primary_key(object $this_ref, string $table_name, array $new_key)
 {
     $this_ref->ensure_connected();
 
@@ -850,7 +850,7 @@ function _helper_change_primary_key($this_ref, $table_name, $new_key)
  *
  * @ignore
  */
-function _helper_add_auto_key($this_ref, $table_name, $field_name)
+function _helper_add_auto_key(object $this_ref, string $table_name, string $field_name)
 {
     push_query_limiting(false);
 
@@ -894,7 +894,7 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
  *
  * @ignore
  */
-function _helper_promote_text_field_to_comcode($this_ref, $table_name, $name, $key = 'id', $level = 2, $in_assembly = false)
+function _helper_promote_text_field_to_comcode(object $this_ref, string $table_name, string $name, string $key = 'id', int $level = 2, bool $in_assembly = false)
 {
     $rows = $this_ref->query_select($table_name, [$name, $key]);
     if ($rows === null) {
@@ -925,7 +925,7 @@ function _helper_promote_text_field_to_comcode($this_ref, $table_name, $name, $k
  *
  * @ignore
  */
-function _helper_delete_table_field($this_ref, $table_name, $name)
+function _helper_delete_table_field(object $this_ref, string $table_name, string $name)
 {
     $type = $this_ref->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $name]);
     if ($type === null) {
@@ -966,7 +966,7 @@ function _helper_delete_table_field($this_ref, $table_name, $name)
  *
  * @ignore
  */
-function _helper_refresh_field_definition($this_ref, $type)
+function _helper_refresh_field_definition(object $this_ref, string $type)
 {
     $do = [];
     $rows = $this_ref->query_select('db_meta', ['*'], ['m_type' => $type]);
@@ -984,7 +984,7 @@ function _helper_refresh_field_definition($this_ref, $type)
  *
  * @return array List of pairs
  */
-function get_db_keywords()
+function get_db_keywords() : array
 {
     $words = [
         'ABSOLUTE', 'ACCESS', 'ACCESSIBLE', 'ACTION', 'ACTIVE', 'ADA', 'ADD', 'ADMIN',

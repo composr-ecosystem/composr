@@ -37,7 +37,7 @@ function init__temporal()
  * @param  integer $seconds Number of seconds
  * @return string Human-readable period
  */
-function display_seconds_period($seconds)
+function display_seconds_period(int $seconds) : string
 {
     $hours = intval(floor(floatval($seconds) / 60.0 / 60.0));
     $minutes = intval(floor(floatval($seconds) / 60.0)) - 60 * $hours;
@@ -59,7 +59,7 @@ function display_seconds_period($seconds)
  * @param  integer $seconds Number of seconds
  * @return string Human-readable period
  */
-function display_time_period($seconds)
+function display_time_period(int $seconds) : string
 {
     if ($seconds < 0) {
         return '-' . display_time_period(-$seconds);
@@ -82,7 +82,7 @@ function display_time_period($seconds)
  *
  * @return string Server timezone in "boring" format
  */
-function get_server_timezone()
+function get_server_timezone() : string
 {
     global $SERVER_TIMEZONE_CACHE;
     if (is_string($SERVER_TIMEZONE_CACHE)) {
@@ -99,7 +99,7 @@ function get_server_timezone()
  *
  * @return string Site timezone in "boring" format
  */
-function get_site_timezone()
+function get_site_timezone() : string
 {
     return get_option('timezone');
 }
@@ -110,7 +110,7 @@ function get_site_timezone()
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current user)
  * @return string Users timezone in "boring" format
  */
-function get_users_timezone($member_id = null)
+function get_users_timezone(?int $member_id = null) : string
 {
     if ($member_id === null) {
         if (!function_exists('get_member')) {
@@ -165,7 +165,7 @@ function get_users_timezone($member_id = null)
  * @param  float $offset Timezone offset
  * @return string Users timezone in "boring" format
  */
-function convert_timezone_offset_to_formal_timezone($offset)
+function convert_timezone_offset_to_formal_timezone(float $offset) : string
 {
     $time_now = time();
     $expected = $time_now + intval(60 * 60 * $offset);
@@ -197,7 +197,7 @@ function convert_timezone_offset_to_formal_timezone($offset)
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current member)
  * @return TIME Output timestamp
  */
-function utctime_to_usertime($timestamp = null, $member_id = null)
+function utctime_to_usertime(?int $timestamp = null, ?int $member_id = null) : int
 {
     if ($timestamp === null) {
         $timestamp = time();
@@ -216,7 +216,7 @@ function utctime_to_usertime($timestamp = null, $member_id = null)
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current member)
  * @return TIME Output timestamp
  */
-function usertime_to_utctime($timestamp = null, $member_id = null)
+function usertime_to_utctime(?int $timestamp = null, ?int $member_id = null) : int
 {
     if ($timestamp === null) {
         $timestamp = time();
@@ -235,7 +235,7 @@ function usertime_to_utctime($timestamp = null, $member_id = null)
  * @param  string $zone Timezone (boring style)
  * @return TIME Virtualised local time
  */
-function tz_time($time, $zone)
+function tz_time(int $time, string $zone) : int
 {
     return $time + find_timezone_offset($time, $zone);
 }
@@ -247,7 +247,7 @@ function tz_time($time, $zone)
  * @param  string $zone Timezone (boring style)
  * @return integer Timezone offset in seconds
  */
-function find_timezone_offset($time, $zone)
+function find_timezone_offset(int $time, string $zone) : int
 {
     if ($zone == '') {
         $zone = get_server_timezone();
@@ -264,7 +264,7 @@ function find_timezone_offset($time, $zone)
  *
  * @return array Timezone (map between boring-style and human-readable name). Sorted in offset order then likelihood order.
  */
-function get_timezone_list()
+function get_timezone_list() : array
 {
     require_code('temporal2');
     return _get_timezone_list();
@@ -279,7 +279,7 @@ function get_timezone_list()
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current member). Use $GLOBALS['FORUM_DRIVER']->get_guest_id() for server times
  * @return string Formatted time
  */
-function get_timezoned_date_time($timestamp, $use_contextual_dates = true, $utc_time = false, $member_id = null)
+function get_timezoned_date_time(int $timestamp, bool $use_contextual_dates = true, bool $utc_time = false, ?int $member_id = null) : string
 {
     return _get_timezoned_date_time(true, $timestamp, $use_contextual_dates, $utc_time, $member_id);
 }
@@ -293,7 +293,7 @@ function get_timezoned_date_time($timestamp, $use_contextual_dates = true, $utc_
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current member). Use $GLOBALS['FORUM_DRIVER']->get_guest_id() for server times
  * @return string Formatted time
  */
-function get_timezoned_date($timestamp, $use_contextual_dates = true, $utc_time = false, $member_id = null)
+function get_timezoned_date(int $timestamp, bool $use_contextual_dates = true, bool $utc_time = false, ?int $member_id = null) : string
 {
     return _get_timezoned_date_time(false, $timestamp, $use_contextual_dates, $utc_time, $member_id);
 }
@@ -308,7 +308,7 @@ function get_timezoned_date($timestamp, $use_contextual_dates = true, $utc_time 
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current member). Use $GLOBALS['FORUM_DRIVER']->get_guest_id() for server times
  * @return string Formatted time
  */
-function _get_timezoned_date_time($include_time, $timestamp, $use_contextual_dates, $utc_time, $member_id)
+function _get_timezoned_date_time(bool $include_time, int $timestamp, bool $use_contextual_dates, bool $utc_time, ?int $member_id) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -377,7 +377,7 @@ function _get_timezoned_date_time($include_time, $timestamp, $use_contextual_dat
  * @param  TIME $timestamp Input timestamp
  * @return Tempcode Formatted date/time
  */
-function get_timezoned_date_time_tempcode($timestamp)
+function get_timezoned_date_time_tempcode(int $timestamp) : object
 {
     return symbol_tempcode('DATE_TIME', [strval($timestamp), '0']);
 }
@@ -388,7 +388,7 @@ function get_timezoned_date_time_tempcode($timestamp)
  * @param  TIME $timestamp Input timestamp
  * @return Tempcode Formatted date
  */
-function get_timezoned_date_tempcode($timestamp)
+function get_timezoned_date_tempcode(int $timestamp) : object
 {
     return symbol_tempcode('DATE', [strval($timestamp), '0']);
 }
@@ -402,7 +402,7 @@ function get_timezoned_date_tempcode($timestamp)
  * @param  ?MEMBER $member_id Member for which the time is being rendered (null: current member). Use $GLOBALS['FORUM_DRIVER']->get_guest_id() for server times
  * @return string Formatted time
  */
-function get_timezoned_time($timestamp, $use_contextual_times = true, $utc_time = false, $member_id = null)
+function get_timezoned_time(int $timestamp, bool $use_contextual_times = true, bool $utc_time = false, ?int $member_id = null) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -426,7 +426,7 @@ function get_timezoned_time($timestamp, $use_contextual_times = true, $utc_time 
  * @param  ?TIME $timestamp The timestamp (null: now). Assumed to already be timezone-shifted as required
  * @return string The formatted string
  */
-function cms_strftime($format, $timestamp = null)
+function cms_strftime(string $format, ?int $timestamp = null) : string
 {
     if ($timestamp === null) {
         $timestamp = time();
@@ -520,7 +520,7 @@ function cms_strftime($format, $timestamp = null)
  * @param  boolean $do_timezone_conversion Whether to do timezone conversion
  * @return ?TIME The timestamp of the date (null: no input date was chosen)
  */
-function post_param_date($stub, $get_also = false, $do_timezone_conversion = true)
+function post_param_date(string $stub, bool $get_also = false, bool $do_timezone_conversion = true) : ?int
 {
     require_code('temporal2');
     return _post_param_date($stub, $get_also, $do_timezone_conversion);

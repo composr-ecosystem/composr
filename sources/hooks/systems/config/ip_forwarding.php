@@ -28,7 +28,7 @@ class Hook_config_ip_forwarding
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'IP_FORWARDING',
@@ -52,7 +52,7 @@ class Hook_config_ip_forwarding
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '';
     }

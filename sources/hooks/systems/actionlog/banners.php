@@ -28,7 +28,7 @@ class Hook_actionlog_banners extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (!addon_installed('banners')) {
             return [];
@@ -108,7 +108,7 @@ class Hook_actionlog_banners extends Hook_actionlog
      * @param  ?string $written_context The written context associated with this action log entry (null: unknown / none)
      * @param  array $bindings Default bindings
      */
-    protected function get_extended_actionlog_bindings($actionlog_row, $identifier, $written_context, &$bindings)
+    protected function get_extended_actionlog_bindings(array $actionlog_row, ?string $identifier, ?string $written_context, array &$bindings)
     {
         switch ($actionlog_row['the_type']) {
             case 'ADD_BANNER':

@@ -181,7 +181,7 @@ function init__global3()
  *
  * @return URLPATH The base URL for documentation
  */
-function get_brand_base_url()
+function get_brand_base_url() : string
 {
     $value = function_exists('get_value') ? get_value('rebrand_base_url') : null;
     if (empty($value)) {
@@ -196,7 +196,7 @@ function get_brand_base_url()
  * @param  ?ID_TEXT $tutorial Name of a tutorial (null: don't include the page part)
  * @return URLPATH URL to a tutorial
  */
-function get_tutorial_url($tutorial)
+function get_tutorial_url(?string $tutorial) : string
 {
     $ret = get_brand_page_url(['page' => ($tutorial === null) ? 'abcdef' : $tutorial], 'docs' . strval(cms_version()));
     if ($tutorial === null) {
@@ -212,7 +212,7 @@ function get_tutorial_url($tutorial)
  * @param  ID_TEXT $zone Zone
  * @return URLPATH URL to page
  */
-function get_brand_page_url($params, $zone)
+function get_brand_page_url(array $params, string $zone) : string
 {
     // Assumes brand site supports .htm URLs, which it should
     return get_brand_base_url() . (($zone == '') ? '' : '/') . $zone . '/' . urlencode(str_replace('_', '-', $params['page'])) . '.htm';
@@ -223,7 +223,7 @@ function get_brand_page_url($params, $zone)
  *
  * @return string The brand name
  */
-function brand_name()
+function brand_name() : string
 {
     $value = function_exists('get_value') ? get_value('rebrand_name') : null;
     if ($value === null) {
@@ -239,7 +239,7 @@ function brand_name()
  * @param  ?string $mime_type The mime-type (null: unknown)
  * @return string The filename extension (no dot)
  */
-function get_file_extension($name, $mime_type = null)
+function get_file_extension(?string $name, ?string $mime_type = null) : string
 {
     if ($mime_type !== null) {
         require_code('mime_types');
@@ -262,7 +262,7 @@ function get_file_extension($name, $mime_type = null)
  *
  * @return boolean Whether we have this
  */
-function is_suexec_like()
+function is_suexec_like() : bool
 {
     if (running_script('webdav')) {
         return true; // Has to assume so, as cannot intercede
@@ -301,7 +301,7 @@ function is_suexec_like()
  * @param  PATH $path The full pathname to the file/directory
  * @param  ?integer $perms The permissions to make (not the permissions are reduced if the function finds that the file is owned by the web user [doesn't need world permissions then]) (null: default for file/dir)
  */
-function fix_permissions($path, $perms = null)
+function fix_permissions(string $path, ?int $perms = null)
 {
     if ($perms === null) {
         $perms = is_dir($path) ? 0777 : 0666;
@@ -342,7 +342,7 @@ function fix_permissions($path, $perms = null)
  * @param  ?string $default_charset The default character set if none is specified (null: website character set)
  * @return ~array The array (each line being an entry in the array, and newlines still attached) (false: error)
  */
-function cms_file_safe($path, $default_charset = null)
+function cms_file_safe(string $path, ?string $default_charset = null)
 {
     $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM | FILE_READ_UNIXIFIED_TEXT, $default_charset);
     if ($c === false) {
@@ -362,7 +362,7 @@ function cms_file_safe($path, $default_charset = null)
  * @param  ?integer $max_bytes Maximum number of bytes to read (null: read all bytes)
  * @return ~string File contents (false: error)
  */
-function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null, $max_bytes = null)
+function cms_file_get_contents_safe(string $path, int $flags = 0, ?string $default_charset = null, ?int $max_bytes = null)
 {
     $locking = ($flags & FILE_READ_LOCK) != 0;
     $handle_file_bom = ($flags & FILE_READ_BOM) != 0;
@@ -396,7 +396,7 @@ function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null, 
  *
  * @return array A map between character sets and BOM byte strings
  */
-function _get_boms()
+function _get_boms() : array
 {
     return [
         'utf-32' => hex2bin('fffe0000'), // LE, which is de facto standard that convert_to_internal_encoding assumes
@@ -415,7 +415,7 @@ function _get_boms()
  * @param  ?string $default_charset The default character set to assume if none is specified in the input string (null: website character set)
  * @return string Altered string
  */
-function handle_string_bom($contents, $default_charset = null)
+function handle_string_bom(string $contents, ?string $default_charset = null) : string
 {
     require_code('character_sets');
 
@@ -436,7 +436,7 @@ function handle_string_bom($contents, $default_charset = null)
  * @param  string $contents Input string
  * @return array A pair: The character set (null is unknown), The BOM (null is unknown)
  */
-function detect_string_bom($contents)
+function detect_string_bom(string $contents) : array
 {
     $file_charset = null;
     $bom_found = null;
@@ -469,7 +469,7 @@ function detect_string_bom($contents)
  * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
  * @return ?string The data downloaded (null: error)
  */
-function http_get_contents($url, $options = [])
+function http_get_contents(string $url, array $options = []) : ?string
 {
     cms_profile_start_for('http_get_contents');
     $ob = cms_http_request($url, $options);
@@ -485,7 +485,7 @@ function http_get_contents($url, $options = [])
  * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
  * @return object HttpDownloader object, which can be checked for return data
  */
-function cms_http_request($url, $options = [])
+function cms_http_request(string $url, array $options = []) : object
 {
     require_code('http');
     return _cms_http_request($url, $options);
@@ -497,7 +497,7 @@ function cms_http_request($url, $options = [])
  * @param  PATH $path The file path
  * @return boolean Whether the file is writeable
  */
-function cms_is_writable($path)
+function cms_is_writable(string $path) : bool
 {
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
         return is_writable($path);
@@ -534,7 +534,7 @@ function cms_is_writable($path)
  *
  * @param  PATH $path File path that could not be written (full path, not relative)
  */
-function intelligent_write_error($path)
+function intelligent_write_error(string $path)
 {
     require_code('files2');
     _intelligent_write_error($path);
@@ -546,7 +546,7 @@ function intelligent_write_error($path)
  * @param  PATH $path File path that could not be written
  * @return mixed Message (Tempcode or string)
  */
-function intelligent_write_error_inline($path)
+function intelligent_write_error_inline(string $path)
 {
     require_code('files2');
     return _intelligent_write_error_inline($path);
@@ -562,7 +562,7 @@ function intelligent_write_error_inline($path)
  *
  * @ignore
  */
-function _load_blank_output_state($just_tempcode = false, $true_blank = false)
+function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank = false)
 {
     /*
     Now lots of stuff all relating to output state (unless commented, these GLOBALs should not be written to directly, we have API calls for it)
@@ -678,7 +678,7 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
  * @param  boolean $just_tempcode Whether to only restore the Tempcode execution part of the state
  * @param  boolean $true_blank Whether to go for a completely blank state (no defaults!), not just a default fresh state
  */
-function push_output_state($just_tempcode = false, $true_blank = false)
+function push_output_state(bool $just_tempcode = false, bool $true_blank = false)
 {
     global $OUTPUT_STATE_STACK, $OUTPUT_STATE_VARS;
     $current_state = [];
@@ -698,7 +698,7 @@ function push_output_state($just_tempcode = false, $true_blank = false)
  * @param  boolean $merge_current Whether to merge the current output state in (or take precedence when merging isn't applicable)
  * @param  ?array $keep Settings to keep (not replace) / merge if possible (null: merge all)
  */
-function restore_output_state($just_tempcode = false, $merge_current = false, $keep = null)
+function restore_output_state(bool $just_tempcode = false, bool $merge_current = false, ?array $keep = null)
 {
     global $OUTPUT_STATE_STACK;
 
@@ -747,7 +747,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
  * @param  boolean $show_border Whether to include a full screen rendering layout (will be overridable by 'show_border' GET parameter if present or if main page view)
  * @return Tempcode Standalone page
  */
-function globalise($middle, $message = null, $type = '', $include_header_and_footer = false, $show_border = false)
+function globalise(object $middle, $message = null, string $type = '', bool $include_header_and_footer = false, bool $show_border = false) : object
 {
     if (!$include_header_and_footer) { // FUDGE
         $old = null;
@@ -830,7 +830,7 @@ function attach_to_screen_footer($data)
  * @param  ?ID_TEXT $content_type Content type (null: unknown)
  * @param  ?ID_TEXT $content_id Content ID, used for some cases of deeper probing (null: unknown)
  */
-function set_extra_request_metadata($metadata, $row = null, $content_type = null, $content_id = null)
+function set_extra_request_metadata(array $metadata, ?array $row = null, ?string $content_type = null, ?string $content_id = null)
 {
     // Add in specific data passed...
 
@@ -986,7 +986,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
  * @param  URLPATH $url The URL
  * @return boolean Whether it is
  */
-function is_valid_opengraph_image($url)
+function is_valid_opengraph_image(string $url) : bool
 {
     $ext = get_file_extension($url);
 
@@ -1011,7 +1011,7 @@ function is_valid_opengraph_image($url)
  *
  * @param  integer $code The HTTP status code
  */
-function set_http_status_code($code)
+function set_http_status_code(int $code)
 {
     global $HTTP_STATUS_CODE;
     $HTTP_STATUS_CODE = $code; // So we can keep track
@@ -1034,7 +1034,7 @@ function set_http_status_code($code)
  * @param  boolean $fallback_other_themes Allow fallback to other themes, in case it is defined only in a specific theme we would not normally look in
  * @return ?array List of parameters needed for the _do_template function to be able to load the template (null: could not find the template)
  */
-function find_template_place($codename, $lang, $theme, $suffix, $directory, $non_custom_only = false, $fallback_other_themes = true)
+function find_template_place(string $codename, ?string $lang, string $theme, string $suffix, string $directory, bool $non_custom_only = false, bool $fallback_other_themes = true) : ?array
 {
     global $FILE_ARRAY, $CURRENT_SHARE_USER;
 
@@ -1094,7 +1094,7 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
  *
  * @return BINARY Result
  */
-function is_wide_high()
+function is_wide_high() : int
 {
     global $IS_WIDE_HIGH_CACHE;
     if ($IS_WIDE_HIGH_CACHE !== null) {
@@ -1110,7 +1110,7 @@ function is_wide_high()
  *
  * @return BINARY Result
  */
-function is_wide()
+function is_wide() : int
 {
     global $IS_WIDE_CACHE;
     if ($IS_WIDE_CACHE !== null) {
@@ -1141,7 +1141,7 @@ function is_wide()
  * @param  boolean $definitely_unicode If we know the input is meant to be unicode
  * @return string Guaranteed valid utf-8, if we're using it, otherwise the same as the input string
  */
-function fix_bad_unicode($input, $definitely_unicode = false)
+function fix_bad_unicode(string $input, bool $definitely_unicode = false) : string
 {
     // Fix bad unicode
     if (get_charset() == 'utf-8' || $definitely_unicode) {
@@ -1172,7 +1172,7 @@ function fix_bad_unicode($input, $definitely_unicode = false)
  * @param  boolean $force Whether to force unicode as on
  * @return integer The string length
  */
-function cms_mb_strlen($in, $force = false)
+function cms_mb_strlen(string $in, bool $force = false) : int
 {
     if (!$force && get_charset() != 'utf-8') {
         return strlen($in);
@@ -1195,7 +1195,7 @@ function cms_mb_strlen($in, $force = false)
  * @param  boolean $force Whether to force unicode as on
  * @return ~string String part (false: $start was over the end of the string)
  */
-function cms_mb_substr($in, $from, $amount = null, $force = false)
+function cms_mb_substr(string $in, int $from, ?int $amount = null, bool $force = false)
 {
     if ($amount === null) {
         $amount = cms_mb_strlen($in, $force) - $from;
@@ -1236,7 +1236,7 @@ function cms_mb_substr($in, $from, $amount = null, $force = false)
  * @param  string $in Subject
  * @return string Result
  */
-function cms_mb_ucwords($in)
+function cms_mb_ucwords(string $in) : string
 {
     if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
         $ret = cms_ucwords_ascii($in);
@@ -1257,7 +1257,7 @@ function cms_mb_ucwords($in)
  * @param  string $in Subject
  * @return string Result
  */
-function cms_mb_ucfirst($in)
+function cms_mb_ucfirst(string $in) : string
 {
     if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
         $ret = cms_ucfirst_ascii($in);
@@ -1278,7 +1278,7 @@ function cms_mb_ucfirst($in)
  * @param  string $in Subject
  * @return string Result
  */
-function cms_mb_strtolower($in)
+function cms_mb_strtolower(string $in) : string
 {
     if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
         $ret = cms_strtolower_ascii($in);
@@ -1299,7 +1299,7 @@ function cms_mb_strtolower($in)
  * @param  string $in Subject
  * @return string Result
  */
-function cms_mb_strtoupper($in)
+function cms_mb_strtoupper(string $in) : string
 {
     if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
         $ret = cms_strtoupper_ascii($in);
@@ -1322,7 +1322,7 @@ function cms_mb_strtoupper($in)
  * @param  string $str2 The second string
  * @return integer <0 if s1<s2, 0 if s1=s2, >1 if s1>s2
  */
-function cms_mb_strcmp($str1, $str2)
+function cms_mb_strcmp(string $str1, string $str2) : int
 {
     if (function_exists('collator_create')) {
         $collator = cms_collator_create();
@@ -1349,7 +1349,7 @@ function cms_mb_strcmp($str1, $str2)
  * @param  string $str2 The second string
  * @return integer <0 if s1<s2, 0 if s1=s2, >1 if s1>s2
  */
-function cms_mb_strnatcmp($str1, $str2)
+function cms_mb_strnatcmp(string $str1, string $str2) : int
 {
     if (function_exists('collator_create')) {
         $collator = cms_collator_create();
@@ -1372,7 +1372,7 @@ function cms_mb_strnatcmp($str1, $str2)
  *
  * @return ?object Collator (null: none)
  */
-function cms_collator_create()
+function cms_collator_create() : ?object
 {
     static $collator = null;
     if ($collator !== null) {
@@ -1399,7 +1399,7 @@ function cms_collator_create()
  * @param  string $str Subject
  * @return string Result
  */
-function cms_strtoupper_ascii($str)
+function cms_strtoupper_ascii(string $str) : string
 {
     global $ASCII_LCASE_MAP;
     $ret = '';
@@ -1417,7 +1417,7 @@ function cms_strtoupper_ascii($str)
  * @param  string $str Subject
  * @return string Result
  */
-function cms_strtolower_ascii($str)
+function cms_strtolower_ascii(string $str) : string
 {
     global $ASCII_UCASE_MAP;
     $ret = '';
@@ -1435,7 +1435,7 @@ function cms_strtolower_ascii($str)
  * @param  string $str Subject
  * @return string Result
  */
-function cms_lcfirst_ascii($str)
+function cms_lcfirst_ascii(string $str) : string
 {
     return cms_strtolower_ascii(substr($str, 0, 1)) . substr($str, 1);
 }
@@ -1446,7 +1446,7 @@ function cms_lcfirst_ascii($str)
  * @param  string $str Subject
  * @return string Result
  */
-function cms_ucfirst_ascii($str)
+function cms_ucfirst_ascii(string $str) : string
 {
     return cms_strtoupper_ascii(substr($str, 0, 1)) . substr($str, 1);
 }
@@ -1457,7 +1457,7 @@ function cms_ucfirst_ascii($str)
  * @param  string $str Subject
  * @return string Result
  */
-function cms_ucwords_ascii($str)
+function cms_ucwords_ascii(string $str) : string
 {
     $starting_word = true;
     global $ASCII_LCASE_MAP;
@@ -1485,7 +1485,7 @@ function cms_ucwords_ascii($str)
  * @param  array $array The array
  * @param  integer $sort_flags Sort flags
  */
-function cms_mb_sort(&$array, $sort_flags = 0)
+function cms_mb_sort(array &$array, int $sort_flags = 0)
 {
     usort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
 }
@@ -1496,7 +1496,7 @@ function cms_mb_sort(&$array, $sort_flags = 0)
  * @param  array $array The array to sort
  * @param  integer $sort_flags Sort flags
  */
-function cms_mb_rsort(&$array, $sort_flags = 0)
+function cms_mb_rsort(array &$array, int $sort_flags = 0)
 {
     cms_mb_sort($array, $sort_flags);
     $array = array_reverse($array);
@@ -1508,7 +1508,7 @@ function cms_mb_rsort(&$array, $sort_flags = 0)
  * @param  array $array Array
  * @param  integer $sort_flags Sort flags
  */
-function cms_mb_asort(&$array, $sort_flags = 0)
+function cms_mb_asort(array &$array, int $sort_flags = 0)
 {
     uasort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
 }
@@ -1519,7 +1519,7 @@ function cms_mb_asort(&$array, $sort_flags = 0)
  * @param  array $array Array
  * @param  integer $sort_flags Sort flags
  */
-function cms_mb_arsort(&$array, $sort_flags = 0)
+function cms_mb_arsort(array &$array, int $sort_flags = 0)
 {
     cms_mb_asort($array, $sort_flags);
     $array = array_reverse($array);
@@ -1531,7 +1531,7 @@ function cms_mb_arsort(&$array, $sort_flags = 0)
  * @param  array $array The array to sort
  * @param  integer $sort_flags Sort flags
  */
-function cms_mb_ksort(&$array, $sort_flags = 0)
+function cms_mb_ksort(array &$array, int $sort_flags = 0)
 {
     uksort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
 }
@@ -1542,7 +1542,7 @@ function cms_mb_ksort(&$array, $sort_flags = 0)
  * @param  array $array The array to sort
  * @param  integer $sort_flags Sort flags
  */
-function cms_mb_krsort(&$array, $sort_flags = 0)
+function cms_mb_krsort(array &$array, int $sort_flags = 0)
 {
     cms_mb_ksort($array, $sort_flags);
     $array = array_reverse($array);
@@ -1554,7 +1554,7 @@ function cms_mb_krsort(&$array, $sort_flags = 0)
  * @param  string $x String to test
  * @return boolean Whether it is ASCII
  */
-function is_ascii_string($x)
+function is_ascii_string(string $x) : bool
 {
     $l = strlen($x);
     for ($i = 0; $i < $l; $i++) {
@@ -1570,7 +1570,7 @@ function is_ascii_string($x)
  *
  * @return boolean Whether we have no forum on this website
  */
-function has_no_forum()
+function has_no_forum() : bool
 {
     if (get_forum_type() == 'none') {
         return true;
@@ -1592,7 +1592,7 @@ function has_no_forum()
  * @param  boolean $disabled_scan Consider whether the addon is set as disabled
  * @return boolean Whether it is
  */
-function addon_installed($addon_name, $check_hookless = false, $deep_scan = true, $disabled_scan = true)
+function addon_installed(string $addon_name, bool $check_hookless = false, bool $deep_scan = true, bool $disabled_scan = true) : bool
 {
     global $ADDON_INSTALLED_CACHE;
     if (empty($ADDON_INSTALLED_CACHE)) {
@@ -1670,7 +1670,7 @@ function addon_installed($addon_name, $check_hookless = false, $deep_scan = true
  * @param  Tempcode $error_msg Put an error message in here
  * @return boolean Whether it is
  */
-function addon_installed__messaged($addon_name, &$error_msg)
+function addon_installed__messaged(string $addon_name, object &$error_msg) : bool
 {
     if (!addon_installed($addon_name)) {
         $_error_msg = do_lang('MISSING_ADDON', escape_html($addon_name));
@@ -1690,7 +1690,7 @@ function addon_installed__messaged($addon_name, &$error_msg)
  * @param  boolean $only_needed_decs Whether to trim trailing zeros
  * @return string The string converted
  */
-function float_to_raw_string($num, $decs_wanted = 2, $only_needed_decs = false)
+function float_to_raw_string(float $num, int $decs_wanted = 2, bool $only_needed_decs = false) : string
 {
     $str = number_format($num, $decs_wanted, '.', '');
     $dot_pos = strpos($str, '.');
@@ -1719,7 +1719,7 @@ function float_to_raw_string($num, $decs_wanted = 2, $only_needed_decs = false)
  * @param  boolean $only_needed_decs Whether to trim trailing zeros
  * @return string Nicely formatted string
  */
-function float_format($val, $decs_wanted = 2, $only_needed_decs = false)
+function float_format(float $val, int $decs_wanted = 2, bool $only_needed_decs = false) : string
 {
     $str = number_format($val, $decs_wanted, do_lang('locale_decimal_point'), do_lang('locale_thousands_sep'));
     $dot_pos = strpos($str, '.');
@@ -1747,7 +1747,7 @@ function float_format($val, $decs_wanted = 2, $only_needed_decs = false)
  * @param  boolean $includes_thousands_sep Whether we expect a thousands separator, knowing this means we can be a bit smarter
  * @return float Native float
  */
-function float_unformat($str, $includes_thousands_sep = true)
+function float_unformat(string $str, bool $includes_thousands_sep = true) : float
 {
     // Simplest case?
     if (preg_match('#^\d+$#', $str) != 0) { // E.g. "123"
@@ -1781,7 +1781,7 @@ function float_unformat($str, $includes_thousands_sep = true)
  * @param  integer $val The value to format
  * @return string Nicely formatted string
  */
-function integer_format($val)
+function integer_format(int $val) : string
 {
     return number_format(floatval($val), 0, do_lang('locale_decimal_point'), do_lang('locale_thousands_sep'));
 }
@@ -1828,7 +1828,7 @@ function require_all_core_cms_code()
  * @param  string $prefix The prefix of the temporary file name
  * @return ~string The name of the temporary file (false: error)
  */
-function cms_tempnam($prefix = 'cms')
+function cms_tempnam(string $prefix = 'cms')
 {
     require_code('files2');
     return _cms_tempnam($prefix);
@@ -1841,7 +1841,7 @@ function cms_tempnam($prefix = 'cms')
  * @param  boolean $simplified Generate simplified IDs
  * @return string The escaped value
  */
-function fix_id($param, $simplified = false)
+function fix_id(string $param, bool $simplified = false) : string
 {
     if (preg_match('#^[A-Za-z][\w]*$#', $param) !== 0) {
         return $param; // Optimisation
@@ -1924,7 +1924,7 @@ function fix_id($param, $simplified = false)
  * @param  ?ID_TEXT $current_page_name Current page name (null: get from environment)
  * @return boolean Whether there is a match
  */
-function match_key_match($match_keys, $support_post = false, $current_params = null, $current_zone_name = null, $current_page_name = null)
+function match_key_match($match_keys, bool $support_post = false, ?array $current_params = null, ?string $current_zone_name = null, ?string $current_page_name = null) : bool
 {
     $req_func = $support_post ? 'either_param_string' : 'get_param_string';
 
@@ -2022,7 +2022,7 @@ function match_key_match($match_keys, $support_post = false, $current_params = n
  *
  * @return ID_TEXT The current page/script name
  */
-function get_page_or_script_name()
+function get_page_or_script_name() : string
 {
     global $IN_SELF_ROUTING_SCRIPT;
     if ($IN_SELF_ROUTING_SCRIPT) {
@@ -2038,7 +2038,7 @@ function get_page_or_script_name()
  *
  * @return ID_TEXT The current page name
  */
-function get_page_name()
+function get_page_name() : string
 {
     global $PAGE_NAME_CACHE;
     if (isset($PAGE_NAME_CACHE)) {
@@ -2086,7 +2086,7 @@ function get_page_name()
  * @param  string $page Page
  * @return string The fixed page name
  */
-function fix_page_name_dashing($zone, $page)
+function fix_page_name_dashing(string $zone, string $page) : string
 {
     if (strpos($page, '/') !== false) {
         return $page; // It's a moniker that hasn't been processed yet
@@ -2114,7 +2114,7 @@ function fix_page_name_dashing($zone, $page)
  * @param  integer $depth_down The depth into the stack we are peaking
  * @return mixed The result of the peeking
  */
-function array_peek($array, $depth_down = 1)
+function array_peek(array $array, int $depth_down = 1)
 {
     $count = count($array);
     if ($count - $depth_down < 0) {
@@ -2134,7 +2134,7 @@ function array_peek($array, $depth_down = 1)
  * @param  array $list The list of maps
  * @return array The collapsed map
  */
-function list_to_map($map_value, $list)
+function list_to_map(string $map_value, array $list) : array
 {
     $i = 0;
 
@@ -2161,7 +2161,7 @@ function list_to_map($map_value, $list)
  * @param  array $list The map of maps
  * @return array The collapsed map
  */
-function collapse_2d_complexity($key, $value, $list)
+function collapse_2d_complexity(string $key, string $value, array $list) : array
 {
     return array_column($list, $value, $key);
 }
@@ -2173,7 +2173,7 @@ function collapse_2d_complexity($key, $value, $list)
  * @param  array $list The map of maps
  * @return array The collapsed map
  */
-function collapse_1d_complexity($key, $list)
+function collapse_1d_complexity(?string $key, array $list) : array
 {
     if ($key !== null) {
         return array_column($list, $key); // Faster
@@ -2197,7 +2197,7 @@ function collapse_1d_complexity($key, $list)
  * @param  array $rows List of maps to sort
  * @param  mixed $sort_key Either an integer sort key (to sort by integer key ID of contained arrays) or a String sort key (to sort by string key ID of contained arrays)
  */
-function sort_maps_by__strlen($rows, $sort_key)
+function sort_maps_by__strlen(array $rows, $sort_key)
 {
     global $M_SORT_KEY;
     $M_SORT_KEY = $sort_key;
@@ -2220,7 +2220,7 @@ function sort_maps_by__strlen($rows, $sort_key)
  * @return integer The comparison result (0 for equal, -1 for less, 1 for more)
  * @ignore
  */
-function _strlen_sort($a, $b)
+function _strlen_sort(string $a, string $b) : int
 {
     if (!isset($a)) {
         $a = '';
@@ -2246,7 +2246,7 @@ function _strlen_sort($a, $b)
  * @param  boolean $preserve_order_if_possible Don't shuffle order unnecessarily (i.e. do a merge sort)
  * @param  boolean $natural Whether to do a natural sort
  */
-function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $natural = false)
+function sort_maps_by(array &$rows, $sort_keys, bool $preserve_order_if_possible = false, bool $natural = false)
 {
     if (empty($rows)) {
         return;
@@ -2281,7 +2281,7 @@ function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $
  * @param  array $array Sort array
  * @param  mixed $cmp_function Comparison function
  */
-function merge_sort(&$array, $cmp_function = 'cms_mb_strcmp')
+function merge_sort(array &$array, $cmp_function = 'cms_mb_strcmp')
 {
     // Arrays of size<2 require no action.
     if (count($array) < 2) {
@@ -2368,7 +2368,7 @@ function merge_sort(&$array, $cmp_function = 'cms_mb_strcmp')
  * @return integer The comparison result (0 for equal, -1 for less, 1 for more)
  * @ignore
  */
-function _multi_sort($a, $b)
+function _multi_sort(array $a, array $b) : int
 {
     global $M_SORT_KEY, $M_SORT_NATURAL;
     $keys = explode(',', is_string($M_SORT_KEY) ? $M_SORT_KEY : strval($M_SORT_KEY));
@@ -2452,7 +2452,7 @@ function _multi_sort($a, $b)
  *
  * @ignore
  */
-function _cms_strip_tags_callback($matches)
+function _cms_strip_tags_callback(array $matches) : string
 {
     global $STRIP_TAGS_TAGS, $STRIP_TAGS_TAGS_AS_ALLOW;
     $tag_covered = stripos($STRIP_TAGS_TAGS, '<' . $matches[1] . '>');
@@ -2471,7 +2471,7 @@ function _cms_strip_tags_callback($matches)
  * @param  boolean $tags_as_allow Whether tags represents a safelist (set for false to allow all by default and make $tags a blocklist)
  * @return string Result
  */
-function cms_strip_tags($str, $tags, $tags_as_allow = true)
+function cms_strip_tags(string $str, string $tags, bool $tags_as_allow = true) : string
 {
     global $STRIP_TAGS_TAGS, $STRIP_TAGS_TAGS_AS_ALLOW;
     $STRIP_TAGS_TAGS = $tags;
@@ -2487,7 +2487,7 @@ function cms_strip_tags($str, $tags, $tags_as_allow = true)
  * @param  boolean $allow_wildcards Allow wildcards
  * @return boolean Whether the IP address is valid
  */
-function is_valid_ip($ip, $allow_wildcards = false)
+function is_valid_ip(string $ip, bool $allow_wildcards = false) : bool
 {
     $parts = [];
 
@@ -2576,7 +2576,7 @@ function is_valid_ip($ip, $allow_wildcards = false)
  * @param  ?IP $ip IP address to use, normally left null (null: current user's)
  * @return IP The users IP address (blank: could not find a valid one)
  */
-function get_ip_address($amount = 4, $ip = null)
+function get_ip_address(int $amount = 4, ?string $ip = null) : string
 {
     require_code('config');
 
@@ -2603,7 +2603,7 @@ function get_ip_address($amount = 4, $ip = null)
  * @param  ?integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled. (null: wildcards not allowed)
  * @return IP The normalised IP address
  */
-function normalise_ip_address($ip, $amount = null)
+function normalise_ip_address(string $ip, ?int $amount = null) : string
 {
     if ($ip == '') {
         return '';
@@ -2680,7 +2680,7 @@ function normalise_ip_address($ip, $amount = null)
  *
  * @return array IP addresses
  */
-function get_localhost_ips()
+function get_localhost_ips() : array
 {
     return [
         '0000:0000:0000:0000:0000:0000:0000:0001',
@@ -2695,7 +2695,7 @@ function get_localhost_ips()
  *
  * @return array Hostnames and IP addresses
  */
-function get_localhost_names()
+function get_localhost_names() : array
 {
     return [
         'localhost',
@@ -2708,7 +2708,7 @@ function get_localhost_names()
  *
  * @return array Hostnames
  */
-function get_localhost_names_and_ips()
+function get_localhost_names_and_ips() : array
 {
     return array_unique(array_merge(get_localhost_ips(), get_localhost_names()));
 }
@@ -2719,7 +2719,7 @@ function get_localhost_names_and_ips()
  * @param  IP $ip_address IP address
  * @return boolean Whether the IP address is local
  */
-function ip_address_is_local($ip_address)
+function ip_address_is_local(string $ip_address) : bool
 {
     return ((in_array($ip_address, get_localhost_ips())) || (substr($ip_address, 0, 3) == '10.') || (substr($ip_address, 0, 8) == '192.168.'));
 }
@@ -2731,7 +2731,7 @@ function ip_address_is_local($ip_address)
  * @param  ?IP $ip_or_hostname IP address or hostname (null: currently requested hostname)
  * @return boolean If it is running locally
  */
-function is_local_machine($ip_or_hostname = null)
+function is_local_machine(?string $ip_or_hostname = null) : bool
 {
     if ($ip_or_hostname === null) {
         $ip_or_hostname = get_request_hostname();
@@ -2745,7 +2745,7 @@ function is_local_machine($ip_or_hostname = null)
  *
  * @return IP IP address
  */
-function get_server_external_looparound_ip()
+function get_server_external_looparound_ip() : string
 {
     if (get_option('ip_forwarding') == '1') {
         $server_ips = get_server_ips(true);
@@ -2764,7 +2764,7 @@ function get_server_external_looparound_ip()
  * @param  boolean $local_interface_only Whether to only get IP addresses that are on a local network interface
  * @return array IP addresses
  */
-function get_server_ips($local_interface_only = false)
+function get_server_ips(bool $local_interface_only = false) : array
 {
     static $arr = null;
 
@@ -2805,7 +2805,7 @@ function get_server_ips($local_interface_only = false)
  * @param  boolean $include_equivalents Whether to include www vs non-www equivalents
  * @return array Host names
  */
-function get_server_names($include_non_web_names = true, $include_equivalents = true)
+function get_server_names(bool $include_non_web_names = true, bool $include_equivalents = true) : array
 {
     $arr = [];
     if ($include_non_web_names) {
@@ -2872,7 +2872,7 @@ function get_server_names($include_non_web_names = true, $include_equivalents = 
  *
  * @return array Hostnames and IP addresses
  */
-function get_server_names_and_ips()
+function get_server_names_and_ips() : array
 {
     return array_unique(array_merge(get_server_ips(), get_server_names()));
 }
@@ -2884,7 +2884,7 @@ function get_server_names_and_ips()
  * @param  ?IP $ip_or_hostname IP address or hostname (null: current user's IP address)
  * @return boolean If it is our server
  */
-function is_our_server($ip_or_hostname = null)
+function is_our_server(?string $ip_or_hostname = null) : bool
 {
     if ($ip_or_hostname === null) {
         $ip_or_hostname = get_ip_address();
@@ -2898,7 +2898,7 @@ function is_our_server($ip_or_hostname = null)
  * @param  IP $ip IP address of tester
  * @param  mixed $data Data to display
  */
-function me_debug($ip, $data)
+function me_debug(string $ip, $data)
 {
     if (get_ip_address() == $ip) {
         @var_dump($data);
@@ -2911,7 +2911,7 @@ function me_debug($ip, $data)
  *
  * @return string The web browser string
  */
-function get_browser_string()
+function get_browser_string() : string
 {
     static $ret = null;
     if ($ret === null) {
@@ -2926,7 +2926,7 @@ function get_browser_string()
  *
  * @return string The operating system string
  */
-function get_os_string()
+function get_os_string() : string
 {
     static $ret = null;
     if ($ret === null) {
@@ -2948,7 +2948,7 @@ function get_os_string()
  * @param  boolean $absolutely_sure Whether the system scheduler really needs to be installed (if set to false it will be assumed installed on dev-mode)
  * @return boolean Whether The system scheduler is installed
  */
-function cron_installed($absolutely_sure = false)
+function cron_installed(bool $absolutely_sure = false) : bool
 {
     $test = get_param_integer('keep_has_cron', null);
     if ($test !== null) {
@@ -2975,7 +2975,7 @@ function cron_installed($absolutely_sure = false)
  * @param  IP $full The specific IP address we are checking
  * @return boolean Whether the IP addresses correlate
  */
-function compare_ip_address($wild, $full)
+function compare_ip_address(string $wild, string $full) : bool
 {
     $full = normalise_ip_address($full);
     if ($full == '') {
@@ -2995,7 +2995,7 @@ function compare_ip_address($wild, $full)
  * @param  string $delimiter The delimiter
  * @return boolean Whether the IP addresses correlate
  */
-function _compare_ip_address($wild, $full_parts, $delimiter)
+function _compare_ip_address(string $wild, array $full_parts, string $delimiter) : bool
 {
     $wild = normalise_ip_address($wild, 4);
     if ($wild == '') {
@@ -3018,7 +3018,7 @@ function _compare_ip_address($wild, $full_parts, $delimiter)
  * @param  boolean $handle_uncertainties Handle uncertainties (used for the external bans - if true, we may return null, showing we need to do an external check). Only works with $force_db.
  * @return ?boolean Whether the IP address is banned (null: unknown)
  */
-function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
+function ip_banned(string $ip, bool $force_db = false, bool $handle_uncertainties = false) : ?bool
 {
     // NB: This function will make the first query called, so we will be a bit smarter, checking for errors
 
@@ -3124,7 +3124,7 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
  * @param  boolean $return_id Whether to return an ID to the log entry (forces immediate logging, rather than at script end)
  * @return ?AUTO_LINK Log ID (null: did not save a log)
  */
-function log_it($type, $a = null, $b = null, $return_id = false)
+function log_it(string $type, ?string $a = null, ?string $b = null, bool $return_id = false) : ?int
 {
     require_code('global4');
 
@@ -3148,7 +3148,7 @@ function log_it($type, $a = null, $b = null, $return_id = false)
  * @param  string $in String in
  * @return string Resultant string
  */
-function php_addslashes($in)
+function php_addslashes(string $in) : string
 {
     global $PHP_REP_FROM, $PHP_REP_TO;
     return str_replace($PHP_REP_FROM, $PHP_REP_TO, $in);
@@ -3161,7 +3161,7 @@ function php_addslashes($in)
  * @param  ID_TEXT $type The type
  * @param  ID_TEXT $id The ID
  */
-function member_tracking_update($page, $type, $id)
+function member_tracking_update(string $page, string $type, string $id)
 {
     if (get_value('disable_member_tracking') === '1') {
         return;
@@ -3197,7 +3197,7 @@ function member_tracking_update($page, $type, $id)
  *
  * @return boolean Whether the current user is invisible
  */
-function is_invisible()
+function is_invisible() : bool
 {
     global $SESSION_CACHE;
     $s = get_session_id();
@@ -3210,7 +3210,7 @@ function is_invisible()
  * @param  ?EMAIL $email_address A new user's e-mail address, to be used to track an inviter/recommender (null: N/A)
  * @return array The tracking codes
  */
-function find_session_tracking_codes($email_address = null)
+function find_session_tracking_codes(?string $email_address = null) : array
 {
     $tracking_codes = [];
 
@@ -3249,7 +3249,7 @@ function find_session_tracking_codes($email_address = null)
  *
  * @return integer The number of users on the site
  */
-function get_num_users_site()
+function get_num_users_site() : int
 {
     if (get_value('disable_user_online_counting') === '1') {
         return 1;
@@ -3311,7 +3311,7 @@ function get_num_users_site()
  *
  * @return integer The number of peak users
  */
-function get_num_users_peak()
+function get_num_users_peak() : int
 {
     global $PEAK_USERS_EVER_CACHE;
     return intval($PEAK_USERS_EVER_CACHE);
@@ -3323,7 +3323,7 @@ function get_num_users_peak()
  * @param  mixed $string The input string
  * @return string The escaped string
  */
-function escape_html($string)
+function escape_html($string) : string
 {
     //if ($string === '') return $string; // Optimisation, but doesn't work well
     if (isset($string->codename)/*faster than is_object*/) {
@@ -3360,7 +3360,7 @@ function escape_html($string)
  * @param  ?string $comcode Comcode that might be WYSIWYG edited; used to determine whether WYSIWYG may load when we'd prefer it to not do so (null: none)
  * @return boolean Whether there is a match
  */
-function browser_matches($code, $comcode = null)
+function browser_matches(string $code, ?string $comcode = null) : bool
 {
     static $browser_matches_cache = [];
     if (isset($browser_matches_cache[$code])) {
@@ -3440,7 +3440,7 @@ function browser_matches($code, $comcode = null)
  * @param  boolean $truth Whether to always tell the truth (even if the current page does not have mobile support)
  * @return boolean Whether the user is using a mobile device
  */
-function is_mobile($user_agent = null, $truth = false)
+function is_mobile(?string $user_agent = null, bool $truth = false) : bool
 {
     $user_agent_given = ($user_agent !== null);
 
@@ -3562,7 +3562,7 @@ function is_mobile($user_agent = null, $truth = false)
  * @param  ?string $agent User agent (null: read from environment)
  * @return ?string Webcrawling bot name (null: not a bot)
  */
-function get_bot_type($agent = null)
+function get_bot_type(?string $agent = null) : ?string
 {
     $agent_given = ($agent !== null);
 
@@ -3663,7 +3663,7 @@ function get_bot_type($agent = null)
  *
  * @return boolean Whether the user has definitely got cookies
  */
-function has_cookies() // Will fail on users first visit, but then will catch on
+function has_cookies() // Will fail on users first visit, but then will catch on : bool
 {
     static $has_cookies_cache = null;
     if ($has_cookies_cache !== null) {
@@ -3694,7 +3694,7 @@ function has_cookies() // Will fail on users first visit, but then will catch on
  *
  * @return boolean Whether the user has definitely got JavaScript
  */
-function has_js()
+function has_js() : bool
 {
     if (!function_exists('get_option')) {
         return true;
@@ -3717,7 +3717,7 @@ function has_js()
  * @param  string $text Text to filter
  * @return string Filtered version of the input text
  */
-function wordfilter_text($text)
+function wordfilter_text(string $text) : string
 {
     if (!addon_installed('wordfilter')) {
         return $text;
@@ -3747,7 +3747,7 @@ function mixed()
  * @param  ID_TEXT $id The ID of the resource
  * @return array A tuple: The first element is the meta keyword string for the specified resource, the second is the meta description string, the third is meta keywords that are for syndication only
  */
-function seo_meta_get_for($type, $id)
+function seo_meta_get_for(string $type, string $id) : array
 {
     $cache = function_exists('persistent_cache_get') ? persistent_cache_get(['seo', $type, $id]) : null;
     if ($cache !== null) {
@@ -3791,7 +3791,7 @@ function seo_meta_get_for($type, $id)
  * @param  ID_TEXT $id The ID of the resource
  * @param  ?string $title The page-specific title to use, in Comcode or plain-text format with possible HTML entities included [Comcode will later be stripped] (null: none)
  */
-function seo_meta_load_for($type, $id, $title = null)
+function seo_meta_load_for(string $type, string $id, ?string $title = null)
 {
     if (!$GLOBALS['IS_VIRTUALISED_REQUEST']) {
         $result = seo_meta_get_for($type, $id);
@@ -3816,7 +3816,7 @@ function seo_meta_load_for($type, $id, $title = null)
  * @param  ?array $the_tags Explicitly pass a list of tags instead (null: use loaded ones)
  * @return Tempcode Loaded tag output (or blank if there are none)
  */
-function get_loaded_tags($limit_to = null, $the_tags = null)
+function get_loaded_tags(?string $limit_to = null, ?array $the_tags = null) : object
 {
     if (get_value('disable_tags') === '1') {
         return new Tempcode();
@@ -3870,7 +3870,7 @@ function get_loaded_tags($limit_to = null, $the_tags = null)
  * @param  boolean $zone_missing Whether the zone is missing (returned by reference)
  * @return ID_TEXT Default page
  */
-function get_zone_default_page($zone_name, &$zone_missing = false)
+function get_zone_default_page(string $zone_name, bool &$zone_missing = false) : string
 {
     $zone_missing = false;
 
@@ -3922,7 +3922,7 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
  * @param  ID_TEXT $boring The codename
  * @return string The title
  */
-function titleify($boring)
+function titleify(string $boring) : string
 {
     $ret = $boring;
 
@@ -3989,7 +3989,7 @@ function titleify($boring)
  * @param  ID_TEXT $prefix Prefix for main filter environment variable
  * @return array Extra URL mappings
  */
-function propagate_filtercode($prefix = '')
+function propagate_filtercode(string $prefix = '') : array
 {
     $active_filter = either_param_string(($prefix == '') ? 'active_filter' : ($prefix . '_active_filter'), '');
     $map = [];
@@ -4009,7 +4009,7 @@ function propagate_filtercode($prefix = '')
  *
  * @return string Extra page-link mappings
  */
-function propagate_filtercode_page_link()
+function propagate_filtercode_page_link() : string
 {
     $map = propagate_filtercode();
     $_map = '';
@@ -4027,7 +4027,7 @@ function propagate_filtercode_page_link()
  * @param  mixed $title Content title (either unescaped string, or Compiled Comcode [i.e. Tempcode])
  * @return Tempcode Inline editable HTML to put into output
  */
-function make_fractionable_editable($content_type, $id, $title)
+function make_fractionable_editable(string $content_type, $id, $title) : object
 {
     require_code('content');
     $ob = get_content_object($content_type);
@@ -4052,7 +4052,7 @@ function make_fractionable_editable($content_type, $id, $title)
  *
  * @return boolean Whether a fractional edit is underway
  */
-function fractional_edit()
+function fractional_edit() : bool
 {
     return post_param_integer('fractional_edit', 0) == 1;
 }
@@ -4063,7 +4063,7 @@ function fractional_edit()
  * @param  string $in HTML
  * @return string Plain text
  */
-function strip_html($in)
+function strip_html(string $in) : string
 {
     if ((strpos($in, '<') === false) && (strpos($in, '&') === false)) {
         return $in; // Optimisation
@@ -4115,7 +4115,7 @@ function strip_html($in)
  * @param  string $text Input text
  * @return string Output text
  */
-function convert_guids_to_ids($text)
+function convert_guids_to_ids(string $text) : string
 {
     if (!addon_installed('commandr')) {
         return $text;
@@ -4142,7 +4142,7 @@ function convert_guids_to_ids($text)
  *
  * @param  boolean $doing_mass_import If it is
  */
-function set_mass_import_mode($doing_mass_import = true)
+function set_mass_import_mode(bool $doing_mass_import = true)
 {
     global $MASS_IMPORT_HAPPENING;
     $MASS_IMPORT_HAPPENING = $doing_mass_import;
@@ -4153,7 +4153,7 @@ function set_mass_import_mode($doing_mass_import = true)
  *
  * @return boolean If it is
  */
-function get_mass_import_mode()
+function get_mass_import_mode() : bool
 {
     global $MASS_IMPORT_HAPPENING;
     return $MASS_IMPORT_HAPPENING;
@@ -4168,7 +4168,7 @@ function get_mass_import_mode()
  * @param  boolean $trigger_error Trigger fatal error; even if false an error will be attached
  * @return mixed The error response
  */
-function cms_eval($code, $context, $trigger_error = true)
+function cms_eval(string $code, string $context, bool $trigger_error = true)
 {
     push_suppress_error_death(true);
 
@@ -4242,7 +4242,7 @@ function appengine_live_guard()
  * @param  ID_TEXT $from Old value
  * @param  ID_TEXT $to New value
  */
-function update_catalogue_content_ref($type, $from, $to)
+function update_catalogue_content_ref(string $type, string $from, string $to)
 {
     if ($GLOBALS['DB_STATIC_OBJECT']->has_update_joins()) {
         $GLOBALS['SITE_DB']->query_update('catalogue_fields f JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short v ON v.cf_id=f.id', ['cv_value' => $to], ['cv_value' => $from, 'cf_type' => $type]);
@@ -4259,7 +4259,7 @@ function update_catalogue_content_ref($type, $from, $to)
  *
  * @param  ID_TEXT $identifier Identifier
  */
-function cms_profile_start_for($identifier)
+function cms_profile_start_for(string $identifier)
 {
     require_code('profiler');
     _cms_profile_start_for($identifier);
@@ -4271,7 +4271,7 @@ function cms_profile_start_for($identifier)
  * @param  ID_TEXT $identifier Identifier
  * @param  ?string $specifics Longer details of what happened (e.g. a specific SQL query that ran) (null: none provided)
  */
-function cms_profile_end_for($identifier, $specifics = null)
+function cms_profile_end_for(string $identifier, ?string $specifics = null)
 {
     require_code('profiler');
     _cms_profile_end_for($identifier, $specifics);
@@ -4286,7 +4286,7 @@ function cms_profile_end_for($identifier, $specifics = null)
  *
  * @ignore
  */
-function get_dynamic_file_parameter($file)
+function get_dynamic_file_parameter(string $file) : string
 {
     return str_replace(['/', ':', '.'], ['__', '__', '__'], $file);
 }
@@ -4297,7 +4297,7 @@ function get_dynamic_file_parameter($file)
  * @param  boolean $support_temporary_disable Support it being temporarily disabled
  * @return boolean If smart decaching is enabled
  */
-function support_smart_decaching($support_temporary_disable = false)
+function support_smart_decaching(bool $support_temporary_disable = false) : bool
 {
     if ($support_temporary_disable) {
         global $DISABLE_SMART_DECACHING_TEMPORARILY;
@@ -4352,7 +4352,7 @@ function disable_smart_decaching_temporarily()
  *
  * @return boolean Whether it does
  */
-function has_interesting_post_fields()
+function has_interesting_post_fields() : bool
 {
     foreach (array_keys($_POST) as $field_name) {
         if (!is_control_field($field_name, false, true)) {
@@ -4368,7 +4368,7 @@ function has_interesting_post_fields()
  * @param  string $field_name Field to check
  * @return boolean If it's a password field
  */
-function is_password_field($field_name)
+function is_password_field(string $field_name) : bool
 {
     $password_fields = [
         'password',
@@ -4390,7 +4390,7 @@ function is_password_field($field_name)
  * @param  boolean $include_password_fields Consider password fields as control fields
  * @return boolean If it's a control field
  */
-function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [], $include_password_fields = false)
+function is_control_field(string $field_name, bool $include_email_metafields = false, bool $include_login_fields = false, array $extra_boring_fields = [], bool $include_password_fields = false) : bool
 {
     // NB: Keep this function synced with the copy of it in static_export.php
 
@@ -4535,7 +4535,7 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
  * @param  boolean $within_quotes Text is between quotes
  * @return string Escaped text
  */
-function escape_header($str, $within_quotes = false)
+function escape_header(string $str, bool $within_quotes = false) : string
 {
     if ($within_quotes) {
         $str = addslashes($str);
@@ -4548,7 +4548,7 @@ function escape_header($str, $within_quotes = false)
  *
  * @return boolean Whether running as CLI
  */
-function is_cli()
+function is_cli() : bool
 {
     return (php_function_allowed('php_sapi_name')) && (php_sapi_name() == 'cli') && ($_SERVER['REMOTE_ADDR'] == '');
 }
@@ -4558,7 +4558,7 @@ function is_cli()
  *
  * @return array A triple: URL to log in from, URL to direct login form posts to, URL to join from
  */
-function get_login_url()
+function get_login_url() : array
 {
     $_lead_source_description = either_param_string('_lead_source_description', '');
     if ($_lead_source_description == '') {
@@ -4611,7 +4611,7 @@ function get_login_url()
  *
  * @return integer Owner
  */
-function website_file_owner()
+function website_file_owner() : int
 {
     return fileowner(get_file_base() . '/sources/global.php');
 }
@@ -4622,7 +4622,7 @@ function website_file_owner()
  *
  * @return integer Group
  */
-function website_file_group()
+function website_file_group() : int
 {
     return filegroup(get_file_base() . '/sources/global.php');
 }
@@ -4632,7 +4632,7 @@ function website_file_group()
  *
  * @return TIME Time
  */
-function website_creation_time()
+function website_creation_time() : int
 {
     return filemtime(get_file_base() . '/sources/global.php');
 }
@@ -4643,7 +4643,7 @@ function website_creation_time()
  * @param  ID_TEXT $code Feature
  * @return boolean Maintained status
  */
-function is_maintained($code)
+function is_maintained(string $code) : bool
 {
     static $cache = [];
     if (empty($cache)) {
@@ -4677,7 +4677,7 @@ function is_maintained($code)
  * @param  mixed $text Text to show (string or Tempcode)
  * @return Tempcode Text
  */
-function is_maintained_description($code, $text)
+function is_maintained_description(string $code, $text) : object
 {
     if (is_string($text)) {
         $text = protect_from_escaping($text);
@@ -4695,7 +4695,7 @@ function is_maintained_description($code, $text)
  * @param  string $post The spacer post
  * @return array A pair: Whether it is, and the language it is in
  */
-function is_spacer_post($post)
+function is_spacer_post(string $post) : array
 {
     if (substr($post, 0, 10) == '[semihtml]') {
         $post = substr($post, 10);
@@ -4717,7 +4717,7 @@ function is_spacer_post($post)
  * @param  string $arg The argument
  * @return string Escaped
  */
-function cms_escapeshellarg($arg)
+function cms_escapeshellarg(string $arg) : string
 {
     if (php_function_allowed('escapeshellarg')) {
         return escapeshellarg($arg);
@@ -4731,7 +4731,7 @@ function cms_escapeshellarg($arg)
  * @param  string $ip_address IP address
  * @return string Host name OR IP address if failed to look up
  */
-function cms_gethostbyaddr($ip_address)
+function cms_gethostbyaddr(string $ip_address) : string
 {
     $hostname = '';
 
@@ -4760,7 +4760,7 @@ function cms_gethostbyaddr($ip_address)
  * @param  string $hostname Host name
  * @return string IP address OR host name if failed to look up
  */
-function cms_gethostbyname($hostname)
+function cms_gethostbyname(string $hostname) : string
 {
     $ip_address = '';
 
@@ -4811,7 +4811,7 @@ function cms_gethostbyname($hostname)
  * @param  boolean $little_endian Whether to use little endian (Intel order) as opposed to big endian (network/natural order)
  * @return integer Read integer
  */
-function cms_unpack_to_uinteger($str, $bytes = null, $little_endian = false)
+function cms_unpack_to_uinteger(string $str, ?int $bytes = null, bool $little_endian = false) : int
 {
     if ($bytes === null) {
         $bytes = strlen($str);
@@ -4845,7 +4845,7 @@ function cms_unpack_to_uinteger($str, $bytes = null, $little_endian = false)
  * @param  integer $offset Offset to start from. Usually use with 'A' modifier to anchor it (using '^' in the pattern will not work)
  * @return ~integer The number of matches (false: error)
  */
-function cms_preg_match_safe($pattern, $subject, &$matches = null, $flags = 0, $offset = 0)
+function cms_preg_match_safe(string $pattern, string $subject, ?array &$matches = null, int $flags = 0, int $offset = 0)
 {
     $pattern .= 'D';
     if (get_charset() == 'utf-8') {
@@ -4867,7 +4867,7 @@ function cms_preg_match_safe($pattern, $subject, &$matches = null, $flags = 0, $
  * @param  integer $flags Either 0, or PREG_GREP_INVERT
  * @return array Matches
  */
-function cms_preg_grep_safe($pattern, $subject, $flags = 0)
+function cms_preg_grep_safe(string $pattern, array $subject, int $flags = 0) : array
 {
     $pattern .= 'D';
     if (get_charset() == 'utf-8') {
@@ -4890,7 +4890,7 @@ function cms_preg_grep_safe($pattern, $subject, $flags = 0)
  * @param  integer $flags Either 0, or PREG_OFFSET_CAPTURE
  * @return ~integer The number of matches (false: error)
  */
-function cms_preg_match_all_safe($pattern, $subject, &$matches, $flags = 0)
+function cms_preg_match_all_safe(string $pattern, string $subject, ?array &$matches, int $flags = 0)
 {
     $pattern .= 'D';
     if (get_charset() == 'utf-8') {
@@ -4913,7 +4913,7 @@ function cms_preg_match_all_safe($pattern, $subject, &$matches, $flags = 0)
  * @param  integer $limit The limit of replacements (-1: no limit)
  * @return ~string The string with replacements made (false: error)
  */
-function cms_preg_replace_safe($pattern, $replacement, $subject, $limit = -1)
+function cms_preg_replace_safe($pattern, $replacement, string $subject, int $limit = -1)
 {
     $pattern .= 'D';
     if (get_charset() == 'utf-8') {
@@ -4936,7 +4936,7 @@ function cms_preg_replace_safe($pattern, $replacement, $subject, $limit = -1)
  * @param  integer $limit The limit of replacements (-1: no limit)
  * @return ~string The string with replacements made (false: error)
  */
-function cms_preg_replace_callback_safe($pattern, $callback, $subject, $limit = -1)
+function cms_preg_replace_callback_safe(string $pattern, $callback, string $subject, int $limit = -1)
 {
     $pattern .= 'D';
     if (get_charset() == 'utf-8') {
@@ -4959,7 +4959,7 @@ function cms_preg_replace_callback_safe($pattern, $callback, $subject, $limit = 
  * @param  ?integer $mode The special mode (null: none)
  * @return array The array due to splitting
  */
-function cms_preg_split_safe($pattern, $subject, $max_splits = null, $mode = null)
+function cms_preg_split_safe(string $pattern, string $subject, ?int $max_splits = null, ?int $mode = null) : array
 {
     $pattern .= 'D';
     if (get_charset() == 'utf-8') {
@@ -4999,7 +4999,7 @@ function send_http_output_ping()
  * @param  integer $secs Number of seconds to extend (likely a TIME_LIMIT_EXTEND_* constant)
  * @return integer The old time limit
  */
-function cms_set_time_limit($secs)
+function cms_set_time_limit(int $secs) : int
 {
     $previous = intval(ini_get('max_execution_time'));
 
@@ -5015,7 +5015,7 @@ function cms_set_time_limit($secs)
  *
  * @return integer The old time limit
  */
-function cms_disable_time_limit()
+function cms_disable_time_limit() : int
 {
     return cms_set_time_limit(0);
 }
@@ -5026,7 +5026,7 @@ function cms_disable_time_limit()
  * @param  integer $secs Number of seconds to extend (likely a TIME_LIMIT_EXTEND_* constant)
  * @return integer The old time limit
  */
-function cms_extend_time_limit($secs)
+function cms_extend_time_limit(int $secs) : int
 {
     $previous = intval(ini_get('max_execution_time'));
 
@@ -5057,7 +5057,7 @@ function cms_extend_time_limit($secs)
  * @param  ?mixed $param_m Parameter (null: not used)
  * @return boolean Whether it scheduled for later (as normally expected)
  */
-function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null)
+function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null) : bool
 {
     if (get_value('avoid_register_shutdown_function') === '1') {
         $args = [$param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
@@ -5084,7 +5084,7 @@ function cms_register_shutdown_function_safe($callback, $param_a = null, $param_
  * @param  integer $view_count Current view count
  * @return integer How much to increment the view count by
  */
-function statistical_update_model($table, $view_count)
+function statistical_update_model(string $table, int $view_count) : int
 {
     if (get_db_type() == 'xml') {
         return 0;

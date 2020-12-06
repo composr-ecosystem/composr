@@ -23,7 +23,7 @@
  *
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  */
-function check_joining_allowed($adjusted_config_options = null)
+function check_joining_allowed(?array $adjusted_config_options = null)
 {
     if (get_forum_type() != 'cns') {
         warn_exit(do_lang_tempcode('NO_CNS'));
@@ -54,7 +54,7 @@ function check_joining_allowed($adjusted_config_options = null)
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return Tempcode The form
  */
-function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabled = true, $invites_if_enabled = true, $adjusted_config_options = null)
+function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, ?array $adjusted_config_options = null) : object
 {
     cns_require_all_forum_stuff();
 
@@ -152,7 +152,7 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return array A tuple: Messages to show, member ID of new member, whether the account is ready
  */
-function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled = true, $invites_if_enabled = true, $instant_login = true, $username = null, $email_address = null, $password = null, $actual_custom_fields = null, $adjusted_config_options = null)
+function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, bool $instant_login = true, ?string $username = null, ?string $email_address = null, ?string $password = null, ?array $actual_custom_fields = null, ?array $adjusted_config_options = null) : array
 {
     cns_require_all_forum_stuff();
 

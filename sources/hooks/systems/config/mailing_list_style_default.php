@@ -28,7 +28,7 @@ class Hook_config_mailing_list_style_default
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAILING_LIST_STYLE',
@@ -51,7 +51,7 @@ class Hook_config_mailing_list_style_default
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('cns_forum')) {
             return null;

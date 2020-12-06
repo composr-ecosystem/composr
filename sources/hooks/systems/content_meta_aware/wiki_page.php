@@ -30,7 +30,7 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info($zone = null, $get_extended_data = false)
+    public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
         if (!addon_installed('wiki')) {
             return null;
@@ -132,7 +132,7 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box(array $row, string $zone, bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
     {
         require_code('wiki');
 
@@ -144,7 +144,7 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
      *
      * @return ?string Hook name (null: none)
      */
-    public function create_selection_tree_list()
+    public function create_selection_tree_list() : ?string
     {
         return 'choose_wiki_page';
     }
@@ -159,7 +159,7 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
  * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
  * @return ?mixed Content description (string or Tempcode, depending on $render_type) (null: could not generate)
  */
-function generate_wiki_page_entry_description($row, $render_type = 1, $resource_fs_style = false)
+function generate_wiki_page_entry_description(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
     $ret = get_translated_text($row['the_description']);
 

@@ -28,7 +28,7 @@ class Module_cms_authors
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_cms_authors
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('authors')) {
             return null;
@@ -74,7 +74,7 @@ class Module_cms_authors
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('authors');
         return ['submit_midrange_content' => [0, 'ADD_AUTHOR'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_AUTHOR'], 'edit_midrange_content' => [0, 'EDIT_MERGE_AUTHORS'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_AUTHOR'], 'delete_midrange_content' => [0, 'DELETE_AUTHOR']];
@@ -88,7 +88,7 @@ class Module_cms_authors
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('authors', $error_msg)) {
@@ -138,7 +138,7 @@ class Module_cms_authors
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('authors');
 
@@ -169,7 +169,7 @@ class Module_cms_authors
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('fields');
         require_code('templates_donext');
@@ -189,7 +189,7 @@ class Module_cms_authors
      *
      * @return Tempcode The UI
      */
-    public function _add()
+    public function _add() : object
     {
         require_code('form_templates');
 
@@ -297,7 +297,7 @@ class Module_cms_authors
      *
      * @return Tempcode The UI
      */
-    public function __add()
+    public function __add() : object
     {
         require_code('content2');
         $author = post_param_string('author', get_param_string('author'));
@@ -370,7 +370,7 @@ class Module_cms_authors
      * @param  ?SHORT_TEXT $author The author we were working with (null: not working with one)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $author = null)
+    public function do_next_manager(object $title, object $description, ?string $author = null) : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -407,7 +407,7 @@ class Module_cms_authors
      *
      * @return Tempcode The UI
      */
-    public function edit()
+    public function edit() : object
     {
         $authors = $this->create_selection_list_authors();
         if ($authors->is_empty()) {
@@ -460,7 +460,7 @@ class Module_cms_authors
      *
      * @return Tempcode The UI
      */
-    public function _merge()
+    public function _merge() : object
     {
         check_privilege('delete_midrange_content');
 
@@ -478,7 +478,7 @@ class Module_cms_authors
      * @param  ?ID_TEXT $it The author to select by default (null: no specific default)
      * @return Tempcode The list
      */
-    public function create_selection_list_authors($it = null)
+    public function create_selection_list_authors(?string $it = null) : object
     {
         $author_fields = $GLOBALS['SITE_DB']->query('SELECT m_name,m_table FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_name LIKE \'' . db_encode_like('%author') . '\'');
         $authors = [];

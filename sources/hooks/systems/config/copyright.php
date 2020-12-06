@@ -28,7 +28,7 @@ class Hook_config_copyright
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COPYRIGHT',
@@ -52,7 +52,7 @@ class Hook_config_copyright
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . get_site_name() . ', ' . do_lang('POWERED_BY', 'Composr CMS');
     }

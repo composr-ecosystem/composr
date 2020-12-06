@@ -28,7 +28,7 @@ class Hook_snippet_exists_email
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         $val = get_param_string('name');
 

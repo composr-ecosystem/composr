@@ -28,7 +28,7 @@ class Hook_config_categories_user_interaction
      *
      * @return boolean Whether it is enabled
      */
-    public function is_enabled()
+    public function is_enabled() : bool
     {
         return true;
     }

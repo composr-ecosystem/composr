@@ -28,7 +28,7 @@ class Hook_config_valid_images
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'IMAGE_TYPES',
@@ -51,7 +51,7 @@ class Hook_config_valid_images
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         $ret = 'jpg,jpe,jpeg,gif,png,ico,cur,svg'; // Web-safe images only
         if (function_exists('imagecreatefrombmp')) {

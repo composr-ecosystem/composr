@@ -30,7 +30,7 @@
  * @param  ?boolean $new_in_self_routing_script Whether we are in a self-routing script (null: if new_current_script is 'index')
  * @return array A list of parameters that would be required to be passed back to reset the state
  */
-function set_execution_context($new_get, $new_zone = '_SEARCH', $new_current_script = 'index', $erase_keep_also = false, $new_in_self_routing_script = null)
+function set_execution_context(array $new_get, string $new_zone = '_SEARCH', string $new_current_script = 'index', bool $erase_keep_also = false, ?bool $new_in_self_routing_script = null) : array
 {
     global $IN_SELF_ROUTING_SCRIPT;
 
@@ -80,7 +80,7 @@ function set_execution_context($new_get, $new_zone = '_SEARCH', $new_current_scr
  * @param  URLPATH $url The URL to fix
  * @return URLPATH The fixed result
  */
-function remove_url_mistakes($url)
+function remove_url_mistakes(string $url) : string
 {
     if (substr($url, 0, 4) == 'www.') {
         $url = 'https://' . $url;
@@ -101,7 +101,7 @@ function remove_url_mistakes($url)
  *
  * @ignore
  */
-function _build_keep_form_fields($page = '', $keep_all = false, $exclude = [])
+function _build_keep_form_fields(string $page = '', bool $keep_all = false, array $exclude = []) : object
 {
     if ($page == '_SELF') {
         $page = get_page_name();
@@ -153,7 +153,7 @@ function _build_keep_form_fields($page = '', $keep_all = false, $exclude = [])
  *
  * @ignore
  */
-function _fixed_post_parser($key, $value)
+function _fixed_post_parser(string $key, $value) : string
 {
     $out = '';
 
@@ -185,7 +185,7 @@ function _fixed_post_parser($key, $value)
  *
  * @ignore
  */
-function _build_keep_post_fields($exclude = [], $force_everything = false)
+function _build_keep_post_fields(array $exclude = [], bool $force_everything = false) : object
 {
     $out = '';
     foreach ($_POST as $key => $val) {
@@ -222,7 +222,7 @@ function _build_keep_post_fields($exclude = [], $force_everything = false)
  *
  * @ignore
  */
-function _url_to_filename($url_full)
+function _url_to_filename(string $url_full) : string
 {
     $bad_chars = ['!', '/', '\\', '?', '*', '<', '>', '|', '"', ':', '%', '!', ';', '~', ' '];
     $new_name = $url_full;
@@ -255,7 +255,7 @@ function _url_to_filename($url_full)
  *
  * @ignore
  */
-function _qualify_url($url, $url_base, $base_is_full_url)
+function _qualify_url(string $url, string $url_base, bool $base_is_full_url) : string
 {
     if ($base_is_full_url) {
         $url_base = dirname($url_base);
@@ -308,7 +308,7 @@ function _qualify_url($url, $url_base, $base_is_full_url)
  * @return ?PATH File path (null: is not local)
  * @ignore
  */
-function _convert_url_to_path($url)
+function _convert_url_to_path(string $url) : ?string
 {
     $url = preg_replace('#\?\d+$#', '', $url);
     if (strpos($url, '?') !== false) {
@@ -360,7 +360,7 @@ function _convert_url_to_path($url)
  * @return URLPATH The fixed URL (or original one if no fix was needed)
  * @ignore
  */
-function _fixup_protocolless_urls($in)
+function _fixup_protocolless_urls(string $in) : string
 {
     if ($in == '') {
         return $in;
@@ -404,7 +404,7 @@ function _fixup_protocolless_urls($in)
  *
  * @ignore
  */
-function _url_to_page_link($url, $abs_only = false, $perfect_only = true)
+function _url_to_page_link(string $url, bool $abs_only = false, bool $perfect_only = true) : string
 {
     if (($abs_only) && (substr($url, 0, 7) != 'http://') && (substr($url, 0, 8) != 'https://')) {
         return '';
@@ -591,7 +591,7 @@ function _url_to_page_link($url, $abs_only = false, $perfect_only = true)
  * @param  ID_TEXT $zone The URL zone name (only used for Comcode Page URL monikers)
  * @return ?string The moniker ID (null: error generating it somehow, can not do it)
  */
-function autogenerate_new_url_moniker($ob_info, $url_parts, $zone)
+function autogenerate_new_url_moniker(array $ob_info, array $url_parts, string $zone) : ?string
 {
     $effective_id = ($url_parts['type'] == '') ? $url_parts['page'] : $url_parts['id'];
 
@@ -651,7 +651,7 @@ function autogenerate_new_url_moniker($ob_info, $url_parts, $zone)
  * @param  ?string $moniker Actual moniker to use (null: generate from $moniker_src). Usually this is left null.
  * @return string The chosen moniker
  */
-function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_new = false, $moniker = null)
+function suggest_new_idmoniker_for(string $page, string $type, string $id, string $zone, string $moniker_src, bool $is_new = false, ?string $moniker = null) : string
 {
     if (get_option('url_monikers_enabled') == '0') {
         return '';
@@ -762,7 +762,7 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
  *
  * @ignore
  */
-function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for = null, $scope_context = null)
+function _choose_moniker(string $page, string $type, string $id, string $moniker_src, ?string $no_exists_check_for = null, ?string $scope_context = null) : string
 {
     $moniker = _generate_moniker($moniker_src);
 
@@ -824,7 +824,7 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
  *
  * @ignore
  */
-function _generate_moniker($moniker_src)
+function _generate_moniker(string $moniker_src) : string
 {
     $moniker = strip_comcode($moniker_src);
 
@@ -893,7 +893,7 @@ function _generate_moniker($moniker_src)
  *
  * @ignore
  */
-function _give_moniker_scope($page, $type, $id, $zone, $main)
+function _give_moniker_scope(string $page, string $type, string $id, string $zone, string $main) : string
 {
     // Does this URL arrangement support monikers?
     global $CONTENT_OBS;
@@ -968,7 +968,7 @@ function _give_moniker_scope($page, $type, $id, $zone, $main)
  * @param  SHORT_TEXT $url_moniker The URL moniker
  * @return ?ID_TEXT The ID (null: not found)
  */
-function find_id_via_url_moniker($content_type, $url_moniker)
+function find_id_via_url_moniker(string $content_type, string $url_moniker) : ?string
 {
     $path = 'hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type, true);
     if ((!file_exists(get_file_base() . '/sources/' . $path . '.php')) && (!file_exists(get_file_base() . '/sources_custom/' . $path . '.php'))) {
@@ -1000,7 +1000,7 @@ function find_id_via_url_moniker($content_type, $url_moniker)
  * @param  ?string $conflict_okay_if_matching Can use a duplicated file path if it matches this data (null: no check)
  * @return array A tuple: path, relative URL for path, filename used
  */
-function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict_okay_if_matching = null)
+function find_unique_path(string $subdir, ?string $filename = null, bool $lock_in = false, ?string $conflict_okay_if_matching = null) : array
 {
     if ($filename === null) {
         require_code('crypt');
@@ -1053,7 +1053,7 @@ function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict
  * @param  string $destination_url HTTP destination URL
  * @return boolean Whether it does
  */
-function check_url_exists($url, $test_freq_secs = null, $retry_on_failed = true, $attempts = 1, &$message = '', &$destination_url = '')
+function check_url_exists(string $url, ?int $test_freq_secs = null, bool $retry_on_failed = true, int $attempts = 1, string &$message = '', string &$destination_url = '') : bool
 {
     if ($test_freq_secs === null) {
         $test_freq_secs = 2678400;
@@ -1102,7 +1102,7 @@ function check_url_exists($url, $test_freq_secs = null, $retry_on_failed = true,
  * @param  string $message HTTP response code (blank: unknown)
  * @param  URLPATH $destination_url Destination URL (blank: unknown)
  */
-function mark_if_url_exists($url, $exists = true, $message = '', $destination_url = '')
+function mark_if_url_exists(string $url, bool $exists = true, string $message = '', string $destination_url = '')
 {
     $GLOBALS['SITE_DB']->query_insert_or_replace(
         'urls_checked',
@@ -1124,7 +1124,7 @@ function mark_if_url_exists($url, $exists = true, $message = '', $destination_ur
  * @param  URLPATH $url The full URL
  * @return URLPATH Shortened URL
  */
-function shorten_url($url)
+function shorten_url(string $url) : string
 {
     $shortened = cms_http_request('https://is.gd/api.php?longurl=' . urlencode($url), ['trigger_error' => false, 'convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
     if ($shortened->data === null) {

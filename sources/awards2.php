@@ -29,7 +29,7 @@
  * @param  integer $update_time_hours The approximate time in hours between awards (e.g. 168 for a week)
  * @return AUTO_LINK The ID
  */
-function add_award_type($title, $description, $points, $content_type, $show_awardee, $update_time_hours)
+function add_award_type(string $title, string $description, int $points, string $content_type, int $show_awardee, int $update_time_hours) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_AWARD_TYPE', null, $title);
@@ -65,7 +65,7 @@ function add_award_type($title, $description, $points, $content_type, $show_awar
  * @param  BINARY $show_awardee Whether to show the awardee when displaying this award
  * @param  integer $update_time_hours The approximate time in hours between awards (e.g. 168 for a week)
  */
-function edit_award_type($id, $title, $description, $points, $content_type, $show_awardee, $update_time_hours)
+function edit_award_type(int $id, string $title, string $description, int $points, string $content_type, int $show_awardee, int $update_time_hours)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_title', ['id' => $id]);
     if ($_title === null) {
@@ -95,7 +95,7 @@ function edit_award_type($id, $title, $description, $points, $content_type, $sho
  *
  * @param  AUTO_LINK $id The ID
  */
-function delete_award_type($id)
+function delete_award_type(int $id)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_title', ['id' => $id]);
     if ($_title === null) {

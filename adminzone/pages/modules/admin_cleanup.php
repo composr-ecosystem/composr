@@ -28,7 +28,7 @@ class Module_admin_cleanup
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_cleanup
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             'browse' => ['CLEANUP_TOOLS', 'menu/adminzone/tools/cleanup'],
@@ -63,7 +63,7 @@ class Module_admin_cleanup
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -88,7 +88,7 @@ class Module_admin_cleanup
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('caches3');
 
@@ -110,7 +110,7 @@ class Module_admin_cleanup
      *
      * @return Tempcode The UI
      */
-    public function choose_cache_type()
+    public function choose_cache_type() : object
     {
         $url = build_url(['page' => '_SELF', 'type' => 'rebuild'], '_SELF');
 
@@ -217,7 +217,7 @@ class Module_admin_cleanup
      *
      * @return Tempcode The UI
      */
-    public function do_rebuild()
+    public function do_rebuild() : object
     {
         $hooks = find_all_hooks('systems', 'cleanup');
 

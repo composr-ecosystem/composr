@@ -28,7 +28,7 @@ class Hook_config_breadcrumb_crop_length
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'BREADCRUMB_CROP_LENGTH',
@@ -51,7 +51,7 @@ class Hook_config_breadcrumb_crop_length
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '26';
     }

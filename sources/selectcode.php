@@ -61,7 +61,7 @@ $results = selectcode_to_idlist_using_callback('1,3-10,!6,12*', '_callback_get_d
  * @param  ?object $db Database connector to use (null: website)
  * @return array A list of ID numbers
  */
-function selectcode_to_idlist_using_db($filter, $field_name, $table_name, $parent_spec__table_name = null, $parent_spec__parent_name = null, $category_field_name = null, $parent_spec__field_name = null, $numeric_record_set_ids = true, $numeric_category_set_ids = true, $db = null)
+function selectcode_to_idlist_using_db(string $filter, string $field_name, string $table_name, ?string $parent_spec__table_name = null, ?string $parent_spec__parent_name = null, ?string $category_field_name = null, ?string $parent_spec__field_name = null, bool $numeric_record_set_ids = true, bool $numeric_category_set_ids = true, ?object $db = null) : array
 {
     return _selectcode_to_generic($filter, $field_name, $table_name, null, null, $parent_spec__table_name, $parent_spec__parent_name, $category_field_name, $parent_spec__field_name, $numeric_record_set_ids, $numeric_category_set_ids, $db);
 }
@@ -80,7 +80,7 @@ function selectcode_to_idlist_using_db($filter, $field_name, $table_name, $paren
  * @param  ?object $db Database connector to use (null: website)
  * @return array A list of ID numbers
  */
-function selectcode_to_idlist_using_memory($filter, $ids_and_parents, $parent_spec__table_name = null, $parent_spec__parent_name = null, $category_field_name = null, $parent_spec__field_name = null, $numeric_record_set_ids = true, $numeric_category_set_ids = true, $db = null)
+function selectcode_to_idlist_using_memory(string $filter, array $ids_and_parents, ?string $parent_spec__table_name = null, ?string $parent_spec__parent_name = null, ?string $category_field_name = null, ?string $parent_spec__field_name = null, bool $numeric_record_set_ids = true, bool $numeric_category_set_ids = true, ?object $db = null) : array
 {
     return _selectcode_to_generic($filter, null, null, $ids_and_parents, null, $parent_spec__table_name, $parent_spec__parent_name, $category_field_name, $parent_spec__field_name, $numeric_record_set_ids, $numeric_category_set_ids, $db);
 }
@@ -99,7 +99,7 @@ function selectcode_to_idlist_using_memory($filter, $ids_and_parents, $parent_sp
  * @param  ?object $db Database connector to use (null: website)
  * @return array A list of ID numbers
  */
-function selectcode_to_idlist_using_callback($filter, $ids_and_parents_callback, $parent_spec__table_name = null, $parent_spec__parent_name = null, $category_field_name = null, $parent_spec__field_name = null, $numeric_record_set_ids = true, $numeric_category_set_ids = true, $db = null)
+function selectcode_to_idlist_using_callback(string $filter, $ids_and_parents_callback, ?string $parent_spec__table_name = null, ?string $parent_spec__parent_name = null, ?string $category_field_name = null, ?string $parent_spec__field_name = null, bool $numeric_record_set_ids = true, bool $numeric_category_set_ids = true, ?object $db = null) : array
 {
     return _selectcode_to_generic($filter, null, null, null, $ids_and_parents_callback, $parent_spec__table_name, $parent_spec__parent_name, $category_field_name, $parent_spec__field_name, $numeric_record_set_ids, $numeric_category_set_ids, $db);
 }
@@ -118,7 +118,7 @@ function selectcode_to_idlist_using_callback($filter, $ids_and_parents_callback,
  * @param  ?object $db Database connector to use (null: website)
  * @return string SQL query fragment. Note that parentheses will be put around this automatically if required, so there's no need to do this yourself.
  */
-function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_name = null, $parent_spec__parent_name = null, $category_field_name = null, $parent_spec__field_name = null, $numeric_record_set_ids = true, $numeric_category_set_ids = true, $db = null)
+function selectcode_to_sqlfragment(string $filter, string $field_name, ?string $parent_spec__table_name = null, ?string $parent_spec__parent_name = null, ?string $category_field_name = null, ?string $parent_spec__field_name = null, bool $numeric_record_set_ids = true, bool $numeric_category_set_ids = true, ?object $db = null) : string
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -262,7 +262,7 @@ function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_nam
  *
  * @ignore
  */
-function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_parents, $ids_and_parents_callback, $parent_spec__table_name, $parent_spec__parent_name, $category_field_name, $parent_spec__field_name, $numeric_record_set_ids, $numeric_category_set_ids, $db)
+function _selectcode_to_generic(string $filter, ?string $field_name, ?string $table_name, ?array $ids_and_parents, $ids_and_parents_callback, ?string $parent_spec__table_name, ?string $parent_spec__parent_name, ?string $category_field_name, ?string $parent_spec__field_name, bool $numeric_record_set_ids, bool $numeric_category_set_ids, ?object $db) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -416,7 +416,7 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
  *
  * @ignore
  */
-function _ensure_loaded__ids_and_parents($field_name, $table_name, &$ids_and_parents, $ids_and_parents_callback, $category_field_name, $db)
+function _ensure_loaded__ids_and_parents(?string $field_name, ?string $table_name, ?array &$ids_and_parents, $ids_and_parents_callback, ?string $category_field_name, ?object $db)
 {
     if ($ids_and_parents === null) {
         if ($field_name === null) {
@@ -439,7 +439,7 @@ function _ensure_loaded__ids_and_parents($field_name, $table_name, &$ids_and_par
  *
  * @ignore
  */
-function _selectcode_to_generic_callback($table_name, $field_name, $category_field_name, $has_no_parents, $db)
+function _selectcode_to_generic_callback(?string $table_name, ?string $field_name, ?string $category_field_name, bool $has_no_parents, ?object $db) : array
 {
     $vals = $db->query_select($table_name, $has_no_parents ? [$field_name] : [$field_name, $category_field_name]);
     $out = [];
@@ -459,7 +459,7 @@ function _selectcode_to_generic_callback($table_name, $field_name, $category_fie
  *
  * @ignore
  */
-function _selectcode_neq($field_name, $var, $numeric)
+function _selectcode_neq(string $field_name, string $var, bool $numeric) : string
 {
     if ($numeric) {
         return $field_name . '<>' . strval(intval($var));
@@ -478,7 +478,7 @@ function _selectcode_neq($field_name, $var, $numeric)
  *
  * @ignore
  */
-function _selectcode_eq($field_name, $var, $numeric)
+function _selectcode_eq(string $field_name, string $var, bool $numeric) : string
 {
     if ($numeric) {
         return $field_name . '=' . strval(intval($var));
@@ -503,7 +503,7 @@ function _selectcode_eq($field_name, $var, $numeric)
  *
  * @ignore
  */
-function _selectcode_subtree_fetch($look_under, $table_name, $parent_name, $field_name, $numeric_ids, $db, &$cached_mappings, $first = true, $recurse = true)
+function _selectcode_subtree_fetch(string $look_under, ?string $table_name, ?string $parent_name, string $field_name, bool $numeric_ids, object $db, array &$cached_mappings, bool $first = true, bool $recurse = true) : array
 {
     $under = [];
 
@@ -561,7 +561,7 @@ function _selectcode_subtree_fetch($look_under, $table_name, $parent_name, $fiel
  *
  * @ignore
  */
-function _selectcode_find_ids_and_parents($field_name, $table_name, $category_field_name, $db)
+function _selectcode_find_ids_and_parents(string $field_name, string $table_name, ?string $category_field_name, object $db) : array
 {
     if ($category_field_name === null) {
         return [];

@@ -29,7 +29,7 @@ class Hook_symbol_SYMBOL_DATA_AS_JSON
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         global $ZONE;
 

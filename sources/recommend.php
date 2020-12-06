@@ -29,7 +29,7 @@
  * @param  ?string $subject The subject (null: default)
  * @param  ?array $names List of names (null: use e-mail addresses as names)
  */
-function send_recommendation_email($name, $email_address, $message, $is_invite = false, $recommender_email = null, $subject = null, $names = null)
+function send_recommendation_email(string $name, $email_address, string $message, bool $is_invite = false, ?string $recommender_email = null, ?string $subject = null, ?array $names = null)
 {
     require_lang('recommend');
 
@@ -59,7 +59,7 @@ function send_recommendation_email($name, $email_address, $message, $is_invite =
  * @param  MEMBER $member_id Member to look for
  * @return integer Number of invites
  */
-function get_num_invites($member_id)
+function get_num_invites(int $member_id) : int
 {
     if (get_forum_type() != 'cns') {
         return 0;
@@ -79,7 +79,7 @@ function get_num_invites($member_id)
  *
  * @return boolean Whether they may
  */
-function may_use_invites()
+function may_use_invites() : bool
 {
     if (get_forum_type() != 'cns') {
         return false;

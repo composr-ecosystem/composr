@@ -47,7 +47,7 @@ function init__cns_members()
  * @param  boolean $only_exists_now Whether to only show ones that already have things in (i.e. not default ones)
  * @return array List of filter categories
  */
-function cns_get_filter_cats($only_exists_now = false)
+function cns_get_filter_cats(bool $only_exists_now = false) : array
 {
     $filter_rows_a = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_from_category'], ['t_pt_from' => get_member()]);
     $filter_rows_b = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_to_category'], ['t_pt_to' => get_member()]);
@@ -74,7 +74,7 @@ function cns_get_filter_cats($only_exists_now = false)
  * @param  string $authusername The username
  * @return ?integer The member ID, if it is (null: not bound)
  */
-function cns_authusername_is_bound_via_httpauth($authusername)
+function cns_authusername_is_bound_via_httpauth(string $authusername) : ?int
 {
     $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_password_compat_scheme' => 'httpauth', 'm_pass_hash_salted' => $authusername]);
     if ($ret === null) {
@@ -89,7 +89,7 @@ function cns_authusername_is_bound_via_httpauth($authusername)
  * @param  MEMBER $member_id The member
  * @return boolean The answer
  */
-function cns_is_ldap_member($member_id)
+function cns_is_ldap_member(int $member_id) : bool
 {
     global $LDAP_CONNECTION;
     if ($LDAP_CONNECTION === null) {
@@ -106,7 +106,7 @@ function cns_is_ldap_member($member_id)
  * @param  MEMBER $member_id The member
  * @return boolean The answer
  */
-function cns_is_httpauth_member($member_id)
+function cns_is_httpauth_member(int $member_id) : bool
 {
     $scheme = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
     return $scheme == 'httpauth';
@@ -127,7 +127,7 @@ function cns_is_httpauth_member($member_id)
  * @param  array $adjusted_config_options A map of adjusted config options; actually it is field_<id>=0|1 for the purposes of this function, and overrides cf_show_on_join_form
  * @return array A list of rows of such fields
  */
-function cns_get_all_custom_fields_match($groups = null, $public_view = null, $owner_view = null, $owner_set = null, $required = null, $show_in_posts = null, $show_in_post_previews = null, $special_start = null, $show_on_join_form = null, $adjusted_config_options = [])
+function cns_get_all_custom_fields_match(?array $groups = null, ?int $public_view = null, ?int $owner_view = null, ?int $owner_set = null, ?int $required = null, ?int $show_in_posts = null, ?int $show_in_post_previews = null, ?int $special_start = null, ?bool $show_on_join_form = null, array $adjusted_config_options = []) : array
 {
     global $CUSTOM_FIELD_CACHE;
     $x = serialize([$public_view, $owner_view, $owner_set, $required, $show_in_posts, $show_in_post_previews, $special_start, $show_on_join_form]);
@@ -243,7 +243,7 @@ function cns_get_all_custom_fields_match($groups = null, $public_view = null, $o
  * @param  ?boolean $show_on_join_form That are to go on the join form (null: don't care)
  * @return array A mapping of field title to a map of details: 'RAW' as the raw field value, 'RENDERED' as the rendered field value, 'FIELD_ID' to the field ID, 'EDITABILITY' defining if fractional editing can work on this
  */
-function cns_get_all_custom_fields_match_member($member_id, $public_view = null, $owner_view = null, $owner_set = null, $encrypted = null, $required = null, $show_in_posts = null, $show_in_post_previews = null, $special_start = null, $show_on_join_form = null)
+function cns_get_all_custom_fields_match_member(int $member_id, ?int $public_view = null, ?int $owner_view = null, ?int $owner_set = null, ?int $encrypted = null, ?int $required = null, ?int $show_in_posts = null, ?int $show_in_post_previews = null, ?int $special_start = null, ?bool $show_on_join_form = null) : array
 {
     $fields_to_show = cns_get_all_custom_fields_match($GLOBALS['FORUM_DRIVER']->get_members_groups($member_id), $public_view, $owner_view, $owner_set, $required, $show_in_posts, $show_in_post_previews, $special_start, $show_on_join_form);
     $custom_fields = [];
@@ -394,7 +394,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
  * @param  SHORT_TEXT $title The title
  * @return ?AUTO_LINK The ID (null: could not find)
  */
-function find_cpf_field_id($title)
+function find_cpf_field_id(string $title) : ?int
 {
     static $cache = [];
     if (array_key_exists($title, $cache)) {
@@ -417,7 +417,7 @@ function find_cpf_field_id($title)
  * @param  SHORT_TEXT $title The title
  * @return ?AUTO_LINK The ID (null: could not find)
  */
-function find_cms_cpf_field_id($title)
+function find_cms_cpf_field_id(string $title) : ?int
 {
     static $cache = [];
     if (array_key_exists($title, $cache)) {
@@ -452,7 +452,7 @@ function find_cms_cpf_field_id($title)
  * @param  MEMBER $member_id The member
  * @return array The mapping, field_<id> to value
  */
-function cns_get_custom_field_mappings($member_id)
+function cns_get_custom_field_mappings(int $member_id) : array
 {
     require_code('fields');
 
@@ -521,7 +521,7 @@ function cns_get_custom_field_mappings($member_id)
  * @param  MEMBER $member_id The member
  * @return array The mapping
  */
-function cns_get_custom_fields_member($member_id)
+function cns_get_custom_fields_member(int $member_id) : array
 {
     $row = cns_get_custom_field_mappings($member_id);
     $result = [];
@@ -539,7 +539,7 @@ function cns_get_custom_fields_member($member_id)
  * @param  MEMBER $member_id The member
  * @return GROUP The primary
  */
-function cns_get_member_primary_group($member_id)
+function cns_get_member_primary_group(int $member_id) : int
 {
     global $PRIMARY_GROUP_MEMBERS_CACHE;
     if (isset($PRIMARY_GROUP_MEMBERS_CACHE[$member_id])) {

@@ -40,7 +40,7 @@ class Hook_task_send_newsletter
      * @param  ID_TEXT $mail_template The template used to show the e-mail
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($message_id, $message, $subject, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template)
+    public function run(int $message_id, string $message, string $subject, string $lang, array $send_details, int $html_only, string $from_email, string $from_name, int $priority, array $spreadsheet_data, string $mail_template) : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;

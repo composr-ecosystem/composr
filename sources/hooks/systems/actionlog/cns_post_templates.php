@@ -28,7 +28,7 @@ class Hook_actionlog_cns_post_templates extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (get_forum_type() != 'cns') {
             return [];

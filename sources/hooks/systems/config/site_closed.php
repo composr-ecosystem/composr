@@ -28,7 +28,7 @@ class Hook_config_site_closed
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'CLOSED_SITE_OPTION',
@@ -52,7 +52,7 @@ class Hook_config_site_closed
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return $GLOBALS['DEV_MODE'] ? '0' : '1';
     }
@@ -66,7 +66,7 @@ class Hook_config_site_closed
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter($name, $myrow, $human_name, $explanation)
+    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
     {
         $list = '';
         $list .= static_evaluate_tempcode(form_input_radio_entry($name, '0', '0' == get_option($name), do_lang('OPEN')));

@@ -30,7 +30,7 @@ class Hook_cron_log_purging
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         return [
             'label' => 'Log purging',
@@ -44,7 +44,7 @@ class Hook_cron_log_purging
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         disable_php_memory_limit();
 
@@ -66,7 +66,7 @@ class Hook_cron_log_purging
      * @param  PATH $path Path to the log
      * @param  integer $days_to_keep Number of days to keep for
      */
-    protected function purge_log($path, $days_to_keep)
+    protected function purge_log(string $path, int $days_to_keep)
     {
         require_code('files');
 

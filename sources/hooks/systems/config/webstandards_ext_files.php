@@ -28,7 +28,7 @@ class Hook_config_webstandards_ext_files
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'WEBSTANDARDS_EXT_FILES',
@@ -51,7 +51,7 @@ class Hook_config_webstandards_ext_files
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return null;//'0'; Way too slow for modern sites
     }

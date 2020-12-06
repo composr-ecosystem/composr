@@ -32,7 +32,7 @@ However in some cases legacy APIs may force us to use XML-RPC.
  * @param  boolean $accept_failure Whether to accept failure
  * @return ?string The result (null: failed)
  */
-function xml_rpc($url, $method, $params, $accept_failure = false)
+function xml_rpc(string $url, string $method, array $params, bool $accept_failure = false) : ?string
 {
     require_code('xml');
 
@@ -73,7 +73,7 @@ END;
  *
  * @ignore
  */
-function _xml_rpc_type_convert($_value)
+function _xml_rpc_type_convert($_value) : string
 {
     switch (gettype($_value)) {
         case 'boolean':

@@ -32,7 +32,7 @@ class Hook_snippet_member_tooltip
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         require_lang('cns');
         require_code('cns_members2');

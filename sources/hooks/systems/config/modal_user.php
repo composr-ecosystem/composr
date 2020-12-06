@@ -28,7 +28,7 @@ class Hook_config_modal_user
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MODAL_USER',
@@ -51,7 +51,7 @@ class Hook_config_modal_user
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '';
     }

@@ -40,7 +40,7 @@ function init__http()
  * @param  boolean $cache_errors Whether to cache HTTP statuses that do not start '2'
  * @return mixed The function result OR for cms_http_request calls a tuple of result details
  */
-function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
+function cache_and_carry($func, array $args, ?int $timeout = null, bool $cache_errors = false)
 {
     $ret = mixed();
 
@@ -84,7 +84,7 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
  * @param  URLPATH $url Webpage URL
  * @return array A map of meta details extracted from the webpage
  */
-function get_webpage_meta_details($url)
+function get_webpage_meta_details(string $url) : array
 {
     static $cache = [];
 
@@ -254,7 +254,7 @@ function get_webpage_meta_details($url)
  * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
  * @return object HttpDownloader object, which can be checked for return data
  */
-function _cms_http_request($url, $options = [])
+function _cms_http_request(string $url, array $options = []) : object
 {
     $curl = new HttpDownloaderCurl();
     $curl_priority = $curl->may_run_for($url, $options);
@@ -369,7 +369,8 @@ abstract class HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    abstract public function may_run_for($url, $options = []);
+    abstract public function may_run_for(string $url, array $options = []) : int;
+
 
     /**
      * Return the file in the URL by downloading it over HTTP. If a byte limit is given, it will only download that many bytes. It outputs warnings, returning null, on error.
@@ -378,7 +379,7 @@ abstract class HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    public function run($url, $options = [])
+    public function run(string $url, array $options = [])
     {
         global $DOWNLOAD_LEVEL;
 
@@ -606,7 +607,7 @@ abstract class HttpDownloader
      * @param  string $status Status returned
      * @return string Fixed status
      */
-    protected function fix_non_standard_statuses($status)
+    protected function fix_non_standard_statuses(string $status) : string
     {
         $status = preg_replace('#^(\d\d\d)\.\d+$#', '$1', $status); // IIS
         return $status;
@@ -617,7 +618,7 @@ abstract class HttpDownloader
      *
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      */
-    protected function read_in_options($options)
+    protected function read_in_options(array $options)
     {
         if (array_key_exists('byte_limit', $options)) {
             $this->byte_limit = $options['byte_limit'];
@@ -711,14 +712,15 @@ abstract class HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    abstract protected function _run($url, $options);
+    abstract protected function _run(string $url, array $options);
+
 
     /**
      * Find the cookie HTTP header contents.
      *
      * @return string The cookie line
      */
-    protected function get_cookie_string()
+    protected function get_cookie_string() : string
     {
         // Prep cookies
         if (!empty($this->cookies)) {
@@ -753,7 +755,7 @@ abstract class HttpDownloader
      *
      * @return string The header contents
      */
-    protected function get_header_string()
+    protected function get_header_string() : string
     {
         $headers = '';
         if (!empty($this->cookies)) {
@@ -790,7 +792,7 @@ abstract class HttpDownloader
      *
      * @param  string $line The line
      */
-    protected function read_in_headers($line)
+    protected function read_in_headers(string $line)
     {
         $matches = [];
         if (preg_match("#Content-Disposition: [^\r\n]*filename=\"([^;\r\n]*)\"\r\n#i", $line, $matches) != 0) {
@@ -881,7 +883,7 @@ abstract class HttpDownloader
      * @param  object $to The parent response
      * @return ?string The data downloaded (null: error)
      */
-    protected function copy_from_other($from, $to)
+    protected function copy_from_other(object $from, object $to) : ?string
     {
         $to->download_mime_type = $from->download_mime_type;
         $to->download_size = $from->download_size;
@@ -934,7 +936,7 @@ class HttpDownloaderCurl extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = [])
+    public function may_run_for(string $url, array $options = []) : int
     {
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
@@ -970,7 +972,7 @@ class HttpDownloaderCurl extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    protected function _run($url, $options)
+    protected function _run(string $url, array $options)
     {
         $ch = curl_init($this->do_ip_forwarding ? $this->connecting_url : $url);
 
@@ -1255,7 +1257,7 @@ class HttpDownloaderCurl extends HttpDownloader
     *
     * @ignore
     */
-    protected function file_curl_headers($ch, $header)
+    protected function file_curl_headers($ch, string $header) : int
     {
         $this->curl_headers[] = $header;
         return strlen($header);
@@ -1270,7 +1272,7 @@ class HttpDownloaderCurl extends HttpDownloader
     *
     * @ignore
     */
-    protected function file_curl_body($ch, $str)
+    protected function file_curl_body($ch, string $str) : int
     {
         if ($this->write_to_file !== null) {
             fwrite($this->write_to_file, $str);
@@ -1298,7 +1300,7 @@ class HttpDownloaderSockets extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = [])
+    public function may_run_for(string $url, array $options = []) : int
     {
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
@@ -1317,7 +1319,7 @@ class HttpDownloaderSockets extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    protected function _run($url, $options)
+    protected function _run(string $url, array $options)
     {
         static $has_ctype_xdigit = null;
         if ($has_ctype_xdigit === null) {
@@ -1763,7 +1765,7 @@ class HttpDownloaderFileWrapper extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = [])
+    public function may_run_for(string $url, array $options = []) : int
     {
         return HttpDownloader::RUN_PRIORITY_LOW;
     }
@@ -1775,7 +1777,7 @@ class HttpDownloaderFileWrapper extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    protected function _run($url, $options)
+    protected function _run(string $url, array $options)
     {
         // PHP streams method
         //  Imperfect, does not support $this->download_url
@@ -1911,7 +1913,7 @@ class HttpDownloaderFilesystem extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = [])
+    public function may_run_for(string $url, array $options = []) : int
     {
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
@@ -1936,7 +1938,7 @@ class HttpDownloaderFilesystem extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    protected function _run($url, $options)
+    protected function _run(string $url, array $options)
     {
         $parsed = parse_url(normalise_idn_url($url));
         $parsed_base_url = parse_url(get_custom_base_url());

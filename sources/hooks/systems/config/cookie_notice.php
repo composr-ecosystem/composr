@@ -28,7 +28,7 @@ class Hook_config_cookie_notice
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COOKIE_NOTICE_OPTION',
@@ -50,7 +50,7 @@ class Hook_config_cookie_notice
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

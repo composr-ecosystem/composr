@@ -28,7 +28,7 @@ class Hook_config_is_on_comcode_page_children
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'IS_ON_COMCODE_PAGE_CHILDREN',
@@ -51,7 +51,7 @@ class Hook_config_is_on_comcode_page_children
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1';
     }

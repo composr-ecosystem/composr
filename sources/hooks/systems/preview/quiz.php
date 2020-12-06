@@ -28,7 +28,7 @@ class Hook_preview_quiz
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('quizzes')) && (get_page_name() == 'cms_quiz') && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_quiz
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_code('quiz');
         require_code('quiz2');

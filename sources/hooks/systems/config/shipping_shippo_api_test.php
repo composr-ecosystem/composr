@@ -28,7 +28,7 @@ class Hook_config_shipping_shippo_api_test
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SHIPPING_SHIPPO_API_TEST',
@@ -54,7 +54,7 @@ class Hook_config_shipping_shippo_api_test
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('ecommerce')) {
             return null;

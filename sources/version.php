@@ -49,7 +49,7 @@ function init__version()
  *
  * @return string The minor/patch version number of your installation (e.g. 0.1 or 1.1 or RC1 or 1.RC1)
  */
-function cms_version_minor()
+function cms_version_minor() : string
 {
     return 'alpha1';
 }
@@ -59,7 +59,7 @@ function cms_version_minor()
  *
  * @return float The general version number of your installation
  */
-function cms_version_number()
+function cms_version_number() : float
 {
     return 11.0;
 }
@@ -69,7 +69,7 @@ function cms_version_number()
  *
  * @return integer The timestamp at which this version was released
  */
-function cms_version_time()
+function cms_version_time() : int
 {
     return 1211025869;
 }
@@ -79,7 +79,7 @@ function cms_version_time()
  *
  * @return integer The timestamp at which this MAJOR version was released
  */
-function cms_version_time_major()
+function cms_version_time_major() : int
 {
     return 1211025869;
 }
@@ -89,7 +89,7 @@ function cms_version_time_major()
  *
  * @return string A VERSION_* constant
  */
-function cms_version_branch_status()
+function cms_version_branch_status() : string
 {
     return VERSION_ALPHA;
 }
@@ -99,7 +99,7 @@ function cms_version_branch_status()
  *
  * @return ?integer Timestamp of EOL (null: unknown)
  */
-function cms_version_branch_eol()
+function cms_version_branch_eol() : ?int
 {
     return null;
 }

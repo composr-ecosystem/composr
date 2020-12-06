@@ -28,7 +28,7 @@ class Hook_snippet_count
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('counting_blocks')) {
             return new Tempcode();

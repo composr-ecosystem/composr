@@ -32,7 +32,7 @@ class Module_admin_import
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -63,7 +63,7 @@ class Module_admin_import
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('import_id_remap', 'id_session', '*ID_TEXT');
@@ -128,7 +128,7 @@ class Module_admin_import
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('import')) {
             return null;
@@ -150,7 +150,7 @@ class Module_admin_import
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('import', $error_msg)) {
@@ -197,7 +197,7 @@ class Module_admin_import
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
@@ -241,7 +241,7 @@ class Module_admin_import
      *
      * @return Tempcode The UI
      */
-    public function choose_importer()
+    public function choose_importer() : object
     {
         $hooks = new Tempcode();
         $_hooks = find_all_hook_obs('modules', 'admin_import', 'Hook_import_');
@@ -281,7 +281,7 @@ class Module_admin_import
      *
      * @return Tempcode The UI
      */
-    public function choose_session()
+    public function choose_session() : object
     {
         // Get importer details
         $importer = filter_naughty(get_param_string('importer'));
@@ -336,7 +336,7 @@ class Module_admin_import
      *
      * @return Tempcode The UI
      */
-    public function choose_session2()
+    public function choose_session2() : object
     {
         // Handle selected session
         /* These cases:
@@ -423,7 +423,7 @@ class Module_admin_import
      * @param  mixed $extra Output to show from last action (blank: none)
      * @return Tempcode The UI
      */
-    public function choose_actions($extra = '')
+    public function choose_actions($extra = '') : object
     {
         require_code('input_filter_2');
         modsecurity_workaround_enable();
@@ -595,7 +595,7 @@ class Module_admin_import
      *
      * @return Tempcode The UI
      */
-    public function do_import()
+    public function do_import() : object
     {
         if (!$GLOBALS['DEV_MODE']) {
             require_code('developer_tools');
@@ -746,7 +746,7 @@ class Module_admin_import
      *
      * @return Tempcode Information about progress
      */
-    public function cns_switch()
+    public function cns_switch() : object
     {
         $out = new Tempcode();
 
@@ -832,7 +832,7 @@ class Module_admin_import
      *
      * @param  string $session Import session
      */
-    protected function appropriate_import_session_to_current(&$session)
+    protected function appropriate_import_session_to_current(string &$session)
     {
         if ($session != get_session_id()) {
             // Remap given to current

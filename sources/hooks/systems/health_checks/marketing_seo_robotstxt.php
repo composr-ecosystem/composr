@@ -42,7 +42,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
      * @return array A pair: category label, list of results
      */
-    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
+    public function run(?array $sections_to_run, int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, bool $show_unusable_categories = false) : array
     {
         $this->process_checks_section('testRobotsTxtValidity', 'robots.txt validity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testRobotsTxtCorrectness', 'robots.txt correctness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -62,7 +62,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testRobotsTxtValidity($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testRobotsTxtValidity(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -86,7 +86,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testRobotsTxtCorrectness($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testRobotsTxtCorrectness(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -159,7 +159,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testRobotsTxtCompleteness($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testRobotsTxtCompleteness(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -194,7 +194,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testRobotsTxtSitemapLinkage($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testRobotsTxtSitemapLinkage(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -254,7 +254,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  boolean $google_style Whether to evaluate robots.txt like Google would (Google is slightly non-standard)
      * @return boolean Whether robots access is allowed
      */
-    protected function robots_allowed($url, $user_agent, $google_style)
+    protected function robots_allowed(string $url, string $user_agent, bool $google_style) : bool
     {
         $rules = $this->robots_parse($user_agent);
 
@@ -300,7 +300,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
      * @param  boolean $error_messages Show error messages for any parsing issues
      * @return ?array List of rules (null: could not parse)
      */
-    protected function robots_parse($user_agent, $error_messages = false)
+    protected function robots_parse(?string $user_agent, bool $error_messages = false) : ?array
     {
         // The best specification is by Google now:
         //  https://developers.google.com/search/reference/robots_txt

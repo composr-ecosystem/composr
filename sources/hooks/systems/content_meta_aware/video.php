@@ -30,7 +30,7 @@ class Hook_content_meta_aware_video extends Hook_CMA
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info($zone = null, $get_extended_data = false)
+    public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
         if (!addon_installed('galleries')) {
             return null;
@@ -131,7 +131,7 @@ class Hook_content_meta_aware_video extends Hook_CMA
      * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
      * @return mixed Content title (string or Tempcode, depending on $render_type)
      */
-    public function get_title($row, $render_type = 1, &$falled_back_to_id = false, $resource_fs_style = false)
+    public function get_title(array $row, int $render_type = 1, bool &$falled_back_to_id = false, bool $resource_fs_style = false)
     {
         $falled_back_to_id = null;
         $ret = parent::get_title($row, $render_type, $falled_back_to_id, $resource_fs_style);
@@ -157,7 +157,7 @@ class Hook_content_meta_aware_video extends Hook_CMA
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box(array $row, string $zone, bool $give_context = true, bool $include_breadcrumbs = true, ?string $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
     {
         require_code('galleries');
 
@@ -169,7 +169,7 @@ class Hook_content_meta_aware_video extends Hook_CMA
      *
      * @return ?string Hook name (null: none)
      */
-    public function create_selection_tree_list()
+    public function create_selection_tree_list() : ?string
     {
         return 'choose_video';
     }
@@ -181,7 +181,7 @@ class Hook_content_meta_aware_video extends Hook_CMA
  * @param  array $row Database row of entry
  * @return array A tuple: Video URL, Video width, Video height, Video mime-type
  */
-function generate_video_entry_video_details($row)
+function generate_video_entry_video_details(array $row) : array
 {
     $url = $row['url'];
 

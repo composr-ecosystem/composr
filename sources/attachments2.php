@@ -35,7 +35,7 @@ Adding attachments.
  * @param  ?MEMBER $for_member The member to use for ownership permissions (null: current member)
  * @return array A map containing 'Comcode' (after substitution for tying down the new attachments) and 'tempcode'
  */
-function do_comcode_attachments($comcode, $type = 'null', $id = '', $previewing_only = false, $db = null, $insert_as_admin = null, $for_member = null)
+function do_comcode_attachments(string $comcode, string $type = 'null', string $id = '', bool $previewing_only = false, ?object $db = null, ?bool $insert_as_admin = null, ?int $for_member = null) : array
 {
     require_lang('comcode');
     require_code('comcode_compiler');
@@ -178,7 +178,7 @@ function do_comcode_attachments($comcode, $type = 'null', $id = '', $previewing_
  *
  * @ignore
  */
-function _handle_data_url_attachments(&$comcode, $type, $id, $db)
+function _handle_data_url_attachments(string &$comcode, string $type, string $id, object $db)
 {
     if (substr($comcode, 0, 6) == '[html]') {
         return; // The whole thing is probably [html]. Probably came from WYSIWYG. We can't do the "data:" conversion during semihtml_to_comcode as that doesn't know $type and $id. And would be a bad idea to re-parse [html] context here.
@@ -296,7 +296,7 @@ function _check_attachment_count()
  * @param  ?MEMBER $for_member The member to use for ownership permissions (null: current member)
  * @return array The content language string save fields
  */
-function insert_lang_comcode_attachments($field_name, $level, $text, $type = 'null', $id = '', $db = null, $insert_as_admin = false, $for_member = null)
+function insert_lang_comcode_attachments(string $field_name, int $level, string $text, string $type = 'null', string $id = '', ?object $db = null, bool $insert_as_admin = false, ?int $for_member = null) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -383,7 +383,7 @@ function insert_lang_comcode_attachments($field_name, $level, $text, $type = 'nu
  * @param  ID_TEXT $id The ID in the set of the arbitrary types that the attached is for
  * @param  ?object $db The database connector to use (null: standard site connector)
  */
-function final_attachments_from_preview($id, $db = null)
+function final_attachments_from_preview(string $id, ?object $db = null)
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];

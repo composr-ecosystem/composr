@@ -24,7 +24,7 @@
  * @param  AUTO_LINK $id The quiz ID
  * @return string The text string
  */
-function load_quiz_questions_to_string($id)
+function load_quiz_questions_to_string(int $id) : string
 {
     $text = '';
     $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $id], 'ORDER BY q_order');
@@ -63,7 +63,7 @@ function load_quiz_questions_to_string($id)
  * @param  boolean $do_validation Whether to perform validation / corrections
  * @return array A tuple: Question, question type, required?, marked?, question extra text (description)
  */
-function parse_quiz_question_line($question, $answers, $question_extra_text = '', $do_validation = true)
+function parse_quiz_question_line(string $question, array $answers, string $question_extra_text = '', bool $do_validation = true) : array
 {
     $question = trim($question);
 
@@ -116,7 +116,7 @@ function parse_quiz_question_line($question, $answers, $question_extra_text = ''
  *
  * @ignore
  */
-function _save_available_quiz_answers($id, $text, $type)
+function _save_available_quiz_answers(int $id, string $text, string $type)
 {
     // Basic pre-parse
     $_qs = explode("\n\n", $text);
@@ -337,7 +337,7 @@ function _save_available_quiz_answers($id, $text, $type)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @return AUTO_LINK The ID
  */
-function add_quiz($name, $timeout, $start_text, $end_text, $end_text_fail, $notes, $percentage, $open_time, $close_time, $num_winners, $redo_time, $type, $validated, $text, $submitter = null, $points_for_passing = 0, $tied_newsletter = null, $reveal_answers = 0, $shuffle_questions = 0, $shuffle_answers = 0, $add_time = null, $meta_keywords = '', $meta_description = '')
+function add_quiz(string $name, ?int $timeout, string $start_text, string $end_text, string $end_text_fail, string $notes, int $percentage, ?int $open_time, ?int $close_time, int $num_winners, int $redo_time, string $type, int $validated, string $text, ?int $submitter = null, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0, ?int $add_time = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_QUIZ', null, $name);
@@ -433,7 +433,7 @@ function add_quiz($name, $timeout, $start_text, $end_text, $end_text_fail, $note
  * @param  ?MEMBER $submitter Submitter (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail, $notes, $percentage, $open_time, $close_time, $num_winners, $redo_time, $type, $validated, $text, $meta_keywords, $meta_description, $points_for_passing = 0, $tied_newsletter = null, $reveal_answers = 0, $shuffle_questions = 0, $shuffle_answers = 0, $add_time = null, $submitter = null, $null_is_literal = false)
+function edit_quiz(int $id, string $name, ?int $timeout, string $start_text, string $end_text, string $end_text_fail, string $notes, int $percentage, ?int $open_time, ?int $close_time, int $num_winners, int $redo_time, string $type, int $validated, string $text, string $meta_keywords, string $meta_description, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0, ?int $add_time = null, ?int $submitter = null, bool $null_is_literal = false)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -518,7 +518,7 @@ function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail,
  *
  * @param  AUTO_LINK $id The ID
  */
-function delete_quiz($id)
+function delete_quiz(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {

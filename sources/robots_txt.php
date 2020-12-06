@@ -23,7 +23,7 @@
  *
  * @return string The URL path
  */
-function get_base_url_path()
+function get_base_url_path() : string
 {
     $base_url = get_base_url();
     $base_url_path = parse_url($base_url, PHP_URL_PATH);
@@ -38,7 +38,7 @@ function get_base_url_path()
  *
  * @return ?PATH robots.txt path (null: unknown)
  */
-function find_robots_txt_path()
+function find_robots_txt_path() : ?string
 {
     $base_url_path = get_base_url_path();
 
@@ -58,7 +58,7 @@ function find_robots_txt_path()
  *
  * @return string Domain base URL
  */
-function find_domain_base_url()
+function find_domain_base_url() : string
 {
     $base_url = get_base_url();
     $base_url_path = get_base_url_path();
@@ -74,7 +74,7 @@ function find_domain_base_url()
  * @param  boolean $overwrite Overwrite it if it currently exists
  * @return boolean Whether the file was written
  */
-function create_robots_txt($robots_txt = null, &$msg = '', $overwrite = false)
+function create_robots_txt(?string $robots_txt = null, string &$msg = '', bool $overwrite = false) : bool
 {
     require_lang('robots_txt');
 
@@ -111,7 +111,7 @@ function create_robots_txt($robots_txt = null, &$msg = '', $overwrite = false)
  *
  * @return string robots.txt file
  */
-function get_robots_txt()
+function get_robots_txt() : string
 {
     $default = cms_file_get_contents_safe(get_file_base() . '/data/robots.txt.template', FILE_READ_LOCK);
 

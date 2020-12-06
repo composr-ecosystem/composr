@@ -242,7 +242,7 @@ function rss_backend_script()
  * @param  URLPATH $enclosure_url The full URL to get details for
  * @return array A pair: the length of the data, the mime type
  */
-function get_enclosure_details($url, $enclosure_url)
+function get_enclosure_details(string $url, string $enclosure_url) : array
 {
     $enclosure_length = '0';
     if ((url_is_local($url)) && (file_exists(get_custom_file_base() . '/' . rawurldecode($url)))) {

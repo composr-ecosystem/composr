@@ -31,7 +31,7 @@ class Hook_commandr_command_whois
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $parameters, &$commandr_fs)
+    public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         require_code('lookup');
 

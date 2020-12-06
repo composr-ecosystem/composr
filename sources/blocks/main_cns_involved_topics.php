@@ -28,7 +28,7 @@ class Block_main_cns_involved_topics
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -51,7 +51,7 @@ class Block_main_cns_involved_topics
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_forum', $error_msg)) {

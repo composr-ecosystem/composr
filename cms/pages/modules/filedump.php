@@ -28,7 +28,7 @@ class Module_filedump
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -64,7 +64,7 @@ class Module_filedump
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('filedump', [
@@ -108,7 +108,7 @@ class Module_filedump
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('filedump')) {
             return null;
@@ -137,7 +137,7 @@ class Module_filedump
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('filedump', $error_msg)) {
@@ -234,7 +234,7 @@ class Module_filedump
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_lang('filedump');
         require_css('filedump');
@@ -276,7 +276,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function do_gui()
+    public function do_gui() : object
     {
         require_code('form_templates');
         require_code('images');
@@ -702,7 +702,7 @@ class Module_filedump
      * @param  boolean $recursive Whether to search recursively
      * @return boolean Whether it passes the filter
      */
-    public function _folder_search($subpath, $description, $search, $type_filter, $recursive = true)
+    public function _folder_search(string $subpath, string $description, string $search, string $type_filter, bool $recursive = true) : bool
     {
         if ($type_filter == '') {
             if ($search != '') {
@@ -756,7 +756,7 @@ class Module_filedump
      * @set images videos audios others
      * @return boolean Whether it passes the filter
      */
-    public function _matches_filter($filename, $_description, $search, $type_filter)
+    public function _matches_filter(string $filename, string $_description, string $search, string $type_filter) : bool
     {
         if ($search != '') {
             if ((stripos($filename, $search) === false) && (stripos($_description, $search) === false)) {
@@ -807,7 +807,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function do_embed()
+    public function do_embed() : object
     {
         require_code('form_templates');
         require_code('images');
@@ -1012,7 +1012,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function do_mass()
+    public function do_mass() : object
     {
         $action = post_param_string('action');
         switch ($action) {
@@ -1253,7 +1253,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function do_add_folder()
+    public function do_add_folder() : object
     {
         if (!has_privilege(get_member(), 'upload_filedump')) {
             access_denied('I_ERROR');
@@ -1296,7 +1296,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function do_upload()
+    public function do_upload() : object
     {
         $subpath = filter_naughty(post_param_string('subpath'));
         $description = post_param_string('description', '');
@@ -1413,7 +1413,7 @@ class Module_filedump
      *
      * @return Tempcode The result
      */
-    public function do_uploaded_resolved_conflicts()
+    public function do_uploaded_resolved_conflicts() : object
     {
         $subpath = filter_naughty(post_param_string('subpath'));
         $description = post_param_string('description', '');
@@ -1471,7 +1471,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function broken()
+    public function broken() : object
     {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             access_denied('ADMIN_ONLY');
@@ -1520,7 +1520,7 @@ class Module_filedump
      *
      * @return Tempcode The UI
      */
-    public function _broken()
+    public function _broken() : object
     {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             access_denied('ADMIN_ONLY');

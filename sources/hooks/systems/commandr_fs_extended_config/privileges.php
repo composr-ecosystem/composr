@@ -28,7 +28,7 @@ class Hook_commandr_fs_extended_config__privileges
      *
      * @return boolean Whether it is
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return true;
     }
@@ -38,7 +38,7 @@ class Hook_commandr_fs_extended_config__privileges
      *
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    public function get_edit_date()
+    public function get_edit_date() : ?int
     {
         $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('the_type', 'PAGE_ACCESS') . ' OR ' . db_string_equal_to('the_type', 'PRIVILEGES');
         return $GLOBALS['SITE_DB']->query_value_if_there($query);
@@ -53,7 +53,7 @@ class Hook_commandr_fs_extended_config__privileges
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         require_code('resource_fs');
 
@@ -81,7 +81,7 @@ class Hook_commandr_fs_extended_config__privileges
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
+    public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
         $all = @json_decode($contents, true);
         if ($all === false) {

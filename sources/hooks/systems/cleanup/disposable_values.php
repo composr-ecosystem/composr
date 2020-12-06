@@ -28,7 +28,7 @@ class Hook_cleanup_disposable_values
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('stats')) {
             return null;
@@ -51,7 +51,7 @@ class Hook_cleanup_disposable_values
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
             return new Tempcode();

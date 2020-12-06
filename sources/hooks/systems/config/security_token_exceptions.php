@@ -28,7 +28,7 @@ class Hook_config_security_token_exceptions
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SECURITY_TOKEN_EXCEPTIONS',
@@ -52,7 +52,7 @@ class Hook_config_security_token_exceptions
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'purchase
 shopping

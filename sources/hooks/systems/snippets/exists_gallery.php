@@ -28,7 +28,7 @@ class Hook_snippet_exists_gallery
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('galleries')) {
             return new Tempcode();

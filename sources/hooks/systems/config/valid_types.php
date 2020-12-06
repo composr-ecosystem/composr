@@ -28,7 +28,7 @@ class Hook_config_valid_types
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'FILE_TYPES',
@@ -51,7 +51,7 @@ class Hook_config_valid_types
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '1st,3g2,3gp,3gp2,3gpp,3p,7z,aac,ai,aif,aifc,aiff,asf,atom,avi,bmp,br,bz2,css,csv,cur,diff,doc,docx,dot,dotx,eml,f4v,gif,gz,htm,html,ico,ics,ini,iso,jpe,jpeg,jpg,js,json,keynote,log,m2v,m4v,mdb,mid,mov,mp2,mp3,mp4,mpa,mpe,mpeg,mpg,mpv2,numbers,odb,odc,odg,odi,odp,ods,odt,ogg,ogv,otf,pages,patch,pdf,php,png,ppt,pptx,ps,psd,pub,qt,ra,ram,rar,rm,rss,rtf,sql,svg,tar,tga,tgz,tif,tiff,torrent,tpl,ttf,txt,vsd,vtt,yaml,yml,wav,weba,webm,webp,woff,woff2,wma,wmv,xls,xlsx,xml,xsd,xsl,zip';
     }

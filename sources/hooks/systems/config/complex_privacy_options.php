@@ -28,7 +28,7 @@ class Hook_config_complex_privacy_options
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMPLEX_PRIVACY_OPTIONS',
@@ -51,7 +51,7 @@ class Hook_config_complex_privacy_options
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (get_forum_type() != 'cns') ? null : '0';
     }

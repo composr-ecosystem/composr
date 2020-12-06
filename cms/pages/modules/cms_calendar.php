@@ -55,7 +55,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('calendar')) {
             return null;
@@ -90,7 +90,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('calendar');
         return [
@@ -126,7 +126,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('calendar', $error_msg)) {
@@ -179,7 +179,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_javascript('calendar');
         $this->js_function_calls[] = 'cmsCalendarRunStart';
@@ -227,7 +227,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         require_code('fields');
@@ -253,7 +253,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -321,7 +321,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $only_owned = has_privilege(get_member(), 'edit_lowrange_content', 'cms_calendar') ? null : get_member();
         return create_selection_list_events($only_owned, null, has_privilege(get_member(), 'edit_midrange_content', 'cms_calendar'));
@@ -374,7 +374,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields($id = null, $type = null, $start_year = null, $start_month = null, $start_day = null, $start_monthly_spec_type = 'day_of_month', $start_hour = null, $start_minute = null, $title = '', $content = '', $recurrence = 'none', $recurrences = null, $seg_recurrences = 0, $priority = 3, $end_year = null, $end_month = null, $end_day = null, $end_monthly_spec_type = 'day_of_month', $end_hour = null, $end_minute = null, $timezone = null, $do_timezone_conv = 0, $member_calendar = null, $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
+    public function get_form_fields(?int $id = null, ?int $type = null, ?int $start_year = null, ?int $start_month = null, ?int $start_day = null, string $start_monthly_spec_type = 'day_of_month', ?int $start_hour = null, ?int $start_minute = null, string $title = '', string $content = '', string $recurrence = 'none', ?int $recurrences = null, int $seg_recurrences = 0, int $priority = 3, ?int $end_year = null, ?int $end_month = null, ?int $end_day = null, string $end_monthly_spec_type = 'day_of_month', ?int $end_hour = null, ?int $end_minute = null, ?string $timezone = null, int $do_timezone_conv = 0, ?int $member_calendar = null, int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', array $regions = []) : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -658,7 +658,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return array A list of parameters in a certain order (see the return command to see the order)
      */
-    public function get_event_parameters()
+    public function get_event_parameters() : array
     {
         $type = post_param_integer('type', fractional_edit() ? INTEGER_MAGIC_NULL : false);
         if ((!has_actual_page_access(get_member(), 'admin_commandr')) && ($type == db_get_first_id())) {
@@ -795,7 +795,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', ['e_submitter', 'e_add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -810,7 +810,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'e_type', ['id' => intval($id)]);
         if ($temp === null) {
@@ -825,7 +825,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -860,7 +860,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list($type, $recurrence, $recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar) = $this->get_event_parameters();
 
@@ -1029,7 +1029,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return Tempcode Description shown after editing
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : object
     {
         $id = intval($_id);
 
@@ -1207,7 +1207,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -1237,7 +1237,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type, $this->donext_date);
     }
@@ -1247,7 +1247,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import_ical()
+    public function import_ical() : object
     {
         check_privilege('mass_import');
 
@@ -1284,7 +1284,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _import_ical()
+    public function _import_ical() : object
     {
         check_privilege('mass_import');
 
@@ -1316,7 +1316,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function export_ical()
+    public function export_ical() : object
     {
         $fields = new Tempcode();
         $type_list = create_selection_list_event_types();
@@ -1355,7 +1355,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('calendar', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
@@ -1366,7 +1366,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('calendar', $this->title);
@@ -1410,7 +1410,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * @param  URLPATH $external_feed URL to external feed to associate with this event type
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $logo = '', $external_feed = '')
+    public function get_form_fields(?int $id = null, string $title = '', string $logo = '', string $external_feed = '') : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -1464,7 +1464,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -1509,7 +1509,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -1527,7 +1527,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $metadata = actual_metadata_get_fields('calendar_type', null);
 
@@ -1557,7 +1557,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $metadata = actual_metadata_get_fields('calendar_type', $id);
 
@@ -1590,7 +1590,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_event_type(intval($id));
     }
@@ -1603,7 +1603,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, null, ($id === null) ? null : intval($id), '');
     }
@@ -1618,7 +1618,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * @param  string $date The Y-m-d of the added/edited event (first recurrence) (blank: whatever)
      * @return Tempcode The UI
      */
-    public function _do_next_manager($title, $description, $id, $type, $date)
+    public function _do_next_manager(object $title, object $description, ?int $id, ?int $type, string $date) : object
     {
         $archive_map = ['type' => 'browse', 'view' => 'day'];
         if ($date != '') {

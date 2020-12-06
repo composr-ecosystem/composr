@@ -29,7 +29,7 @@ class Hook_addon_registry_realtime_rain
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Admin Utilities';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Real-time/historic display of website activity.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_statistics',
@@ -81,7 +81,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -97,7 +97,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/audit/realtime_rain.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/images/icons/menu/adminzone/audit/realtime_rain.svg',
@@ -409,7 +409,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/REALTIME_RAIN_OVERLAY.tpl' => 'administrative__realtime_rain_overlay',
@@ -424,7 +424,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__realtime_rain_overlay()
+    public function tpl_preview__administrative__realtime_rain_overlay() : array
     {
         return [
             lorem_globalise(do_lorem_template('REALTIME_RAIN_OVERLAY', [
@@ -440,7 +440,7 @@ class Hook_addon_registry_realtime_rain
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__realtime_rain_bubble()
+    public function tpl_preview__administrative__realtime_rain_bubble() : array
     {
         return [
             lorem_globalise(do_lorem_template('REALTIME_RAIN_BUBBLE', [

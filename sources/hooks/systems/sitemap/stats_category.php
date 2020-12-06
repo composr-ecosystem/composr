@@ -30,7 +30,7 @@ class Hook_sitemap_stats_category extends Hook_sitemap_base
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return integer A SITEMAP_NODE_* constant
      */
-    public function handles_page_link($page_link, $options)
+    public function handles_page_link(string $page_link, int $options) : int
     {
         $matches = [];
         if (preg_match('#^([^:]*):admin_stats(:(browse|category|graph)|$)#', $page_link, $matches) != 0) {
@@ -64,7 +64,7 @@ class Hook_sitemap_stats_category extends Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array List of node structures (null: working via callback)
      */
-    public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
+    public function get_virtual_nodes(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, bool $return_anyway = false) : ?array
     {
         if (!addon_installed('stats')) {
             return [];
@@ -117,7 +117,7 @@ class Hook_sitemap_stats_category extends Hook_sitemap_base
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array Node structure (null: working via callback / error)
      */
-    public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
+    public function get_node(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array
     {
         if (!addon_installed('stats')) {
             return null;

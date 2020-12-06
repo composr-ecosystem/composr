@@ -28,7 +28,7 @@ class Block_top_notifications
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -47,7 +47,7 @@ class Block_top_notifications
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         if (is_guest()) {
             return new Tempcode();

@@ -43,7 +43,7 @@ function init__translation()
  * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
  * @return boolean Whether it is
  */
-function has_translation($from = null, $to = null, &$translation_object = null, &$errormsg = null)
+function has_translation(?string $from = null, ?string $to = null, ?object &$translation_object = null, ?string &$errormsg = null) : bool
 {
     if ($translation_object !== null) {
         return $translation_object->has_translation($from, $to, $errormsg);
@@ -74,7 +74,7 @@ function has_translation($from = null, $to = null, &$translation_object = null, 
  * @param  string $hook Specific hook to use
  * @return ?object Translation object (null: could not find)
  */
-function get_translation_object_for_hook($hook)
+function get_translation_object_for_hook(string $hook) : ?object
 {
     if ($hook === null) {
         return null;
@@ -95,7 +95,7 @@ function get_translation_object_for_hook($hook)
  * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
  * @return ?string Translated text (null: some kind of error)
  */
-function translate_text($text, $context = 0, $from = null, $to = null, $hook = null, &$errormsg = null)
+function translate_text(string $text, int $context = 0, ?string $from = null, ?string $to = null, ?string $hook = null, ?string &$errormsg = null) : ?string
 {
     if ($text == '') {
         return '';
@@ -153,7 +153,7 @@ function translate_text($text, $context = 0, $from = null, $to = null, $hook = n
  * @param  ?string $hook Specific hook to use (null: first that'll do it)
  * @return string Credit HTML
  */
-function get_translation_credit($from = null, $to = null, $hook = null)
+function get_translation_credit(?string $from = null, ?string $to = null, ?string $hook = null) : string
 {
     $translation_object = get_translation_object_for_hook($hook);
     if (!has_translation($from, $to, $translation_object)) {

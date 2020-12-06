@@ -175,7 +175,7 @@ function init__google_appengine()
  *
  * @ignore
  */
-function _roll_gae_redirect($matches, $to)
+function _roll_gae_redirect(array $matches, string $to)
 {
     $to = str_replace('\\?', '?', $to);
     foreach ($matches as $i => $match) {
@@ -201,7 +201,7 @@ function _roll_gae_redirect($matches, $to)
  *
  * @return boolean Current user is admin
  */
-function gae_is_admin()
+function gae_is_admin() : bool
 {
     require_once('google/appengine/api/users/User.php');
     require_once('google/appengine/api/users/UserService.php');
@@ -245,7 +245,7 @@ function gae_debugger()
  *
  * @param  boolean $enabled Whether the cache is enabled
  */
-function gae_optimistic_cache($enabled)
+function gae_optimistic_cache(bool $enabled)
 {
     static $gs_options_enabled = ['gs' => [
         'enable_optimistic_cache' => true,

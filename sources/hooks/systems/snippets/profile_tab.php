@@ -28,7 +28,7 @@ class Hook_snippet_profile_tab
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         $member_id_viewing = get_member();
         $member_id_of = get_param_integer('member_id');

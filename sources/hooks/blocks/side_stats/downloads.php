@@ -28,7 +28,7 @@ class Hook_stats_downloads
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('downloads')) {
             return new Tempcode();

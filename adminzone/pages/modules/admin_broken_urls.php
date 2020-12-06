@@ -28,7 +28,7 @@ class Module_admin_broken_urls
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_broken_urls
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             'browse' => ['BROKEN_URLS', 'menu/adminzone/tools/broken_urls'],
@@ -63,7 +63,7 @@ class Module_admin_broken_urls
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $type = get_param_string('type', 'browse');
 
@@ -96,7 +96,7 @@ class Module_admin_broken_urls
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('form_templates');
         require_code('broken_urls');
@@ -138,7 +138,7 @@ class Module_admin_broken_urls
      *
      * @return Tempcode The result of execution
      */
-    public function browse()
+    public function browse() : object
     {
         $fields = new Tempcode();
 
@@ -176,7 +176,7 @@ class Module_admin_broken_urls
      *
      * @return Tempcode The result of execution
      */
-    public function choose()
+    public function choose() : object
     {
         disable_php_memory_limit();
         cms_disable_time_limit();
@@ -304,7 +304,7 @@ class Module_admin_broken_urls
      *
      * @return Tempcode The result of execution
      */
-    public function check()
+    public function check() : object
     {
         $urls = unserialize(post_param_string('urls'));
 

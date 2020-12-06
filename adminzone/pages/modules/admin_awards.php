@@ -41,7 +41,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -69,7 +69,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('award_archive', [
@@ -110,7 +110,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('awards')) {
             return null;
@@ -144,7 +144,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('awards', $error_msg)) {
@@ -178,7 +178,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_code('awards');
         require_code('awards2');
@@ -207,7 +207,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -228,7 +228,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -317,7 +317,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  integer $update_time_hours The approximate time in hours between awards (e.g. 168 for a week)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $description = '', $points = 0, $content_type = 'download', $show_awardee = null, $update_time_hours = 168)
+    public function get_form_fields(?int $id = null, string $title = '', string $description = '', int $points = 0, string $content_type = 'download', ?int $show_awardee = null, int $update_time_hours = 168) : array
     {
         if ($show_awardee === null) {
             $val = $GLOBALS['SITE_DB']->query_select_value('award_types', 'AVG(a_show_awardee)');
@@ -366,7 +366,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $_m = $GLOBALS['SITE_DB']->query_select('award_types', ['id', 'a_title']);
         $entries = new Tempcode();
@@ -383,7 +383,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -401,7 +401,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $id = add_award_type(post_param_string('title'), post_param_string('description'), post_param_integer('points', 0), post_param_string('content_type'), post_param_integer('show_awardee', 0), post_param_integer('update_time_hours'));
 
@@ -416,7 +416,7 @@ class Module_admin_awards extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         edit_award_type(intval($id), post_param_string('title'), post_param_string('description'), post_param_integer('points', 0), post_param_string('content_type'), post_param_integer('show_awardee', 0), post_param_integer('update_time_hours'));
 
@@ -430,7 +430,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_award_type(intval($id));
     }
@@ -440,7 +440,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('awards', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
@@ -451,7 +451,7 @@ class Module_admin_awards extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('awards', $this->title);

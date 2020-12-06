@@ -28,7 +28,7 @@ class Hook_preview_cns_signature
      *
      * @return array Quartet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional], list of fields to limit to [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         require_lang('cns');
 

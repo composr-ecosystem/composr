@@ -28,7 +28,7 @@ class Hook_snippet_backup_size
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('backup')) {
             return new Tempcode();

@@ -31,7 +31,7 @@ The default tags need to have a great UI out of the box: we need a great base ex
  *
  * @ignore
  */
-function _get_details_comcode_tags()
+function _get_details_comcode_tags() : array
 {
     $tag_list = [
         'list' => ['param'],
@@ -187,7 +187,7 @@ function _get_details_comcode_tags()
  *
  * @ignore
  */
-function _get_group_tags($group = null)
+function _get_group_tags(?string $group = null) : array
 {
     $group_tags = [
         'structure' => ['title', 'contents', 'include', 'concepts', 'concept', 'staff_note', 'menu', 'surround'],
@@ -239,7 +239,7 @@ function _get_group_tags($group = null)
  *
  * @ignore
  */
-function _get_non_wysiwyg_tags()
+function _get_non_wysiwyg_tags() : array
 {
     $ret = [
         'indent',
@@ -334,7 +334,7 @@ function comcode_helper_script()
  *
  * @return Tempcode The step UI
  */
-function comcode_helper_script_replace()
+function comcode_helper_script_replace() : object
 {
     $title = get_screen_title('COMCODE_HELPER');
 
@@ -411,7 +411,7 @@ function comcode_helper_script_replace()
  *
  * @return Tempcode The step UI
  */
-function comcode_helper_script_step1()
+function comcode_helper_script_step1() : object
 {
     global $DANGEROUS_TAGS;
 
@@ -466,7 +466,7 @@ function comcode_helper_script_step1()
  *
  * @return Tempcode The step UI
  */
-function comcode_helper_script_step2()
+function comcode_helper_script_step2() : object
 {
     global $TEXTUAL_TAGS;
 
@@ -733,7 +733,7 @@ function comcode_helper_script_step2()
  *
  * @ignore
  */
-function _find_comcode_tag_embed_required($tag)
+function _find_comcode_tag_embed_required(string $tag) : bool
 {
     $embed_required = true;
 
@@ -761,7 +761,7 @@ function _find_comcode_tag_embed_required($tag)
  *
  * @ignore
  */
-function _try_for_special_comcode_tag_all_params_ui($tag, $actual_tag, &$fields, &$fields_advanced, $hidden, &$done_tag_contents, $defaults, $params, &$js_function_calls, $preview)
+function _try_for_special_comcode_tag_all_params_ui(string $tag, string $actual_tag, object &$fields, object &$fields_advanced, object $hidden, bool &$done_tag_contents, array $defaults, array $params, array &$js_function_calls, bool $preview) : bool
 {
     if ($tag == 'currency') {
         $default = array_key_exists('param', $defaults) ? $defaults['param'] : get_param_string('default_param', get_option('currency'));
@@ -893,7 +893,7 @@ function _try_for_special_comcode_tag_all_params_ui($tag, $actual_tag, &$fields,
  *
  * @ignore
  */
-function _try_for_special_comcode_tag_specific_param_ui($tag, $actual_tag, $param, $parameter_name, $descriptiont, &$fields, &$fields_advanced, $hidden, $default)
+function _try_for_special_comcode_tag_specific_param_ui(string $tag, string $actual_tag, string $param, string $parameter_name, string $descriptiont, object &$fields, object &$fields_advanced, object $hidden, string $default) : bool
 {
     // Don't show fields that can't apply across multiple attachments
     if (($tag == 'attachment') && (get_param_integer('multi', 0) == 1) && (($param == 'description') || ($param == 'filename') || ($param == 'thumb_url'))) {
@@ -964,7 +964,7 @@ function _try_for_special_comcode_tag_specific_param_ui($tag, $actual_tag, $para
  *
  * @ignore
  */
-function _get_comcode_tag_param_name($actual_tag, $param)
+function _get_comcode_tag_param_name(string $actual_tag, string $param) : string
 {
     $parameter_name = do_lang('COMCODE_TAG_' . $actual_tag . '_PARAM_' . $param . '_TITLE', null, null, null, null, false);
     if ($parameter_name === null) {
@@ -985,7 +985,7 @@ function _get_comcode_tag_param_name($actual_tag, $param)
  *
  * @ignore
  */
-function _try_for_special_comcode_tag_extra_param_ui($tag, $actual_tag, &$fields, &$fields_advanced, $hidden, $defaults)
+function _try_for_special_comcode_tag_extra_param_ui(string $tag, string $actual_tag, object &$fields, object &$fields_advanced, object $hidden, array $defaults)
 {
     if ($tag == 'attachment') {
         if ((!isset($_COOKIE['use_wysiwyg'])) || ($_COOKIE['use_wysiwyg'] != '0')) {
@@ -1010,7 +1010,7 @@ function _try_for_special_comcode_tag_extra_param_ui($tag, $actual_tag, &$fields
  *
  * @ignore
  */
-function _try_for_special_comcode_tag_specific_contents_ui($tag, $actual_tag, &$fields, &$fields_advanced, $hidden, $default_embed, &$js_function_calls, &$preview)
+function _try_for_special_comcode_tag_specific_contents_ui(string $tag, string $actual_tag, object &$fields, object &$fields_advanced, object $hidden, string $default_embed, array &$js_function_calls, bool &$preview) : bool
 {
     global $TEXTUAL_TAGS;
 
@@ -1088,7 +1088,7 @@ page=URL';
  *
  * @return Tempcode The step UI
  */
-function comcode_helper_script_step3()
+function comcode_helper_script_step3() : object
 {
     require_javascript('posting');
     require_javascript('editing');
@@ -1130,7 +1130,7 @@ function comcode_helper_script_step3()
  *
  * @ignore
  */
-function _get_preview_environment_comcode($tag)
+function _get_preview_environment_comcode(string $tag) : string
 {
     $actual_tag = $tag;
     if ($tag == 'attachment_safe') {
@@ -1342,7 +1342,7 @@ function _get_preview_environment_comcode($tag)
  * @param  ID_TEXT $param Match name for the parameter set
  * @return array List of values
  */
-function get_defaults_multi($defaults, $param)
+function get_defaults_multi(array $defaults, string $param) : array
 {
     $values = [];
     foreach ($defaults as $key => $val) {

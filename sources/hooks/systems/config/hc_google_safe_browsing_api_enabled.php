@@ -28,7 +28,7 @@ class Hook_config_hc_google_safe_browsing_api_enabled
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HC_GOOGLE_SAFE_BROWSING_API_KEY',
@@ -53,7 +53,7 @@ class Hook_config_hc_google_safe_browsing_api_enabled
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('health_check')) {
             return null;

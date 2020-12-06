@@ -95,7 +95,7 @@ function _record_templates_used()
  *
  * @param  Tempcode $out Tempcode structure
  */
-function record_template_tree_used($out)
+function record_template_tree_used(object $out)
 {
     if (strpos($_SERVER['SCRIPT_NAME'], '/_tests/') !== false) {
         return;
@@ -148,7 +148,7 @@ function record_template_tree_used($out)
  * @param  array $metadata Metadata structure (with 'type', 'identifier', and 'children')
  * @return ?array Screen tree structure (null: omitted node)
  */
-function convert_template_tree_metadata_to_screen_tree($metadata)
+function convert_template_tree_metadata_to_screen_tree(array $metadata) : ?array
 {
     if (!in_array($metadata['type'], [TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE, TEMPLATE_TREE_NODE__PANEL, TEMPLATE_TREE_NODE__PAGE])) {
         if (empty($metadata['children'])) {
@@ -233,7 +233,7 @@ function convert_template_tree_metadata_to_screen_tree($metadata)
  * @param  mixed $children Child nodes (array) or Tempcode node to get children from (Tempcode)
  * @return array Metadata structure
  */
-function create_template_tree_metadata($type = 0, $identifier = '', $children = [])
+function create_template_tree_metadata(int $type = 0, $identifier = '', $children = []) : array
 {
     if (is_object($identifier)) {
         $identifier = $identifier->evaluate();
@@ -263,7 +263,7 @@ function create_template_tree_metadata($type = 0, $identifier = '', $children = 
  * @param  array $collected_templates A map of templates detected will be saved into here
  * @return string HTML representation
  */
-function find_template_tree_nice($metadata, &$collected_templates)
+function find_template_tree_nice(array $metadata, array &$collected_templates) : string
 {
     $identifier = $metadata['identifier'];
     $children = $metadata['children'];
@@ -440,7 +440,7 @@ class Meta_tree_builder
      * @param  ?string $filter_level_b The second level of filter (null: no filter)
      * @param  ?mixed $callback Callback to run on each iteration (null: none)
      */
-    public function refresh($filter_level_a = null, $filter_level_b = null, $callback = null)
+    public function refresh(?string $filter_level_a = null, ?string $filter_level_b = null, $callback = null)
     {
         require_code('themes2');
         $themes = array_keys(find_all_themes());
@@ -457,7 +457,7 @@ class Meta_tree_builder
      * @param  ?string $filter_level_b The second level of filter (null: no filter)
      * @param  ?mixed $callback Callback to run on each iteration (null: none)
      */
-    public function refresh_for_theme($theme, $filter_level_a = null, $filter_level_b = null, $callback = null)
+    public function refresh_for_theme(string $theme, ?string $filter_level_a = null, ?string $filter_level_b = null, $callback = null)
     {
         $full_rebuild = ($filter_level_a === null);
 
@@ -546,7 +546,7 @@ class Meta_tree_builder
      * @param  ?string $filter_level_b The second level of filter (null: no filter)
      * @param  ?mixed $callback Callback to run on each iteration (null: none)
      */
-    protected function put_in_screens($path, $theme, $filter_level_b = null, $callback = null)
+    protected function put_in_screens(string $path, string $theme, ?string $filter_level_b = null, $callback = null)
     {
         if ($filter_level_b === null) {
             $where = [];
@@ -613,7 +613,7 @@ class Meta_tree_builder
      * @param  array $node The tree node
      * @param  ID_TEXT $theme The theme
      */
-    protected function put_in_screen($path, $node, $theme)
+    protected function put_in_screen(string $path, array $node, string $theme)
     {
         // Create directory for this level
         $_path = $path . '/' . urlencode($node['name']);
@@ -680,7 +680,7 @@ class Meta_tree_builder
      * @param  boolean $relationships_mode Whether we have an extra level, the relationships mode
      * @param  ?mixed $callback Callback to run on each iteration (null: none)
      */
-    protected function put_in_addon_tree($path, $subdir, $theme, $filter_level_b = null, $relationships_mode = false, $callback = null)
+    protected function put_in_addon_tree(string $path, string $subdir, string $theme, ?string $filter_level_b = null, bool $relationships_mode = false, $callback = null)
     {
         $_all_path = $path . '/_all';
         if (is_dir($_all_path)) {
@@ -768,7 +768,7 @@ class Meta_tree_builder
      * @param  ID_TEXT $theme The theme
      * @return array The files
      */
-    protected function find_theme_files_from_addon($addon_name, $subdir, $theme)
+    protected function find_theme_files_from_addon(string $addon_name, string $subdir, string $theme) : array
     {
         static $cache = [];
         if (isset($cache[$addon_name][$subdir])) {
@@ -810,7 +810,7 @@ class Meta_tree_builder
      *
      * @param  PATH $path The path
      */
-    protected function put_in_standard_dir_files($path)
+    protected function put_in_standard_dir_files(string $path)
     {
         copy(get_custom_file_base() . '/themes/default/templates/index.html', $path . '/index.html');
         fix_permissions($path . '/index.html');

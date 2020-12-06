@@ -28,7 +28,7 @@ class Module_catalogues
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -83,7 +83,7 @@ class Module_catalogues
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_lang('catalogues');
         require_code('catalogues');
@@ -661,7 +661,7 @@ class Module_catalogues
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -702,7 +702,7 @@ class Module_catalogues
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('catalogues', $error_msg)) {
@@ -914,7 +914,7 @@ class Module_catalogues
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_css('catalogues');
 
@@ -946,7 +946,7 @@ class Module_catalogues
      *
      * @return Tempcode The UI
      */
-    public function list_catalogues()
+    public function list_catalogues() : object
     {
         $ecommerce = get_param_integer('ecommerce', null);
 
@@ -993,7 +993,7 @@ class Module_catalogues
      *
      * @return Tempcode The UI
      */
-    public function view_catalogue_index()
+    public function view_catalogue_index() : object
     {
         $catalogue_name = $this->catalogue_name;
         $catalogue = $this->catalogue;
@@ -1055,7 +1055,7 @@ class Module_catalogues
      *
      * @return Tempcode The UI
      */
-    public function view_atoz()
+    public function view_atoz() : object
     {
         $id = $this->id;
         $true_id = get_param_integer('id', null); // Needs to be true URL $id, not one automatically set to root category if not passed
@@ -1190,7 +1190,7 @@ class Module_catalogues
      *
      * @return Tempcode The UI
      */
-    public function view_catalogue_category()
+    public function view_catalogue_category() : object
     {
         require_code('feedback');
         require_code('images');
@@ -1291,7 +1291,7 @@ class Module_catalogues
      *
      * @return Tempcode The UI
      */
-    public function view_catalogue_entry()
+    public function view_catalogue_entry() : object
     {
         return $this->screen;
     }

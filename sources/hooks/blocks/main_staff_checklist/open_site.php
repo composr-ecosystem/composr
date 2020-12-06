@@ -28,7 +28,7 @@ class Hook_checklist_open_site
      *
      * @return array An array of tuples: The task row to show, the number of seconds until it is due (or null if not on a timer), the number of things to sort out (or null if not on a queue), The name of the config option that controls the schedule (or null if no option)
      */
-    public function run()
+    public function run() : array
     {
         $url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-CLOSED_SITE');
         $task = do_lang_tempcode('NAG_OPEN_WEBSITE', escape_html_tempcode($url));

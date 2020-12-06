@@ -28,7 +28,7 @@ class Hook_import_newsletter_subscribers
      *
      * @return ?array Importer handling details (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;

@@ -122,7 +122,7 @@ function handle_logins()
  * @param  boolean $quick_only Whether to just do a quick check, don't establish new sessions
  * @return boolean Whether the current member is a guest
  */
-function is_guest($member_id = null, $quick_only = false)
+function is_guest(?int $member_id = null, bool $quick_only = false) : bool
 {
     if (!isset($GLOBALS['FORUM_DRIVER'])) {
         return true;
@@ -140,7 +140,7 @@ function is_guest($member_id = null, $quick_only = false)
  * @param  boolean $quick_only Whether to just do a quick check, don't establish new sessions
  * @return MEMBER The member requesting this web page (possibly the guest member - which strictly speaking, is not a member)
  */
-function get_member($quick_only = false)
+function get_member(bool $quick_only = false) : int
 {
     global $SESSION_CACHE, $MEMBER_CACHED, $GETTING_MEMBER, $SITE_INFO;
 
@@ -333,7 +333,7 @@ function get_member($quick_only = false)
  *
  * @param  MEMBER $member_id The current member
  */
-function enforce_temporary_passwords($member_id)
+function enforce_temporary_passwords(int $member_id)
 {
     if ((get_forum_type() == 'cns') && (running_script('index')) && ($member_id != db_get_first_id()) && (!$GLOBALS['IS_ACTUALLY_ADMIN']) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'temporary') && (get_page_name() != 'lost_password') && ((get_page_name() != 'members') || (get_param_string('type', 'browse') != 'view'))) {
         require_code('users_active_actions');
@@ -348,7 +348,7 @@ function enforce_temporary_passwords($member_id)
  * @param  ID_TEXT $username The username
  * @return SHORT_TEXT The display name
  */
-function get_displayname($username)
+function get_displayname(string $username) : string
 {
     if ($username == do_lang('UNKNOWN')) {
         return $username;
@@ -376,7 +376,7 @@ function get_displayname($username)
  * @param  string $key The string converted member-ID in actuality, although this function is more general
  * @return string The hashed data
  */
-function apply_forum_driver_md5_variant($data, $key)
+function apply_forum_driver_md5_variant(string $data, string $key) : string
 {
     if (method_exists($GLOBALS['FORUM_DRIVER'], 'forum_md5')) {
         return $GLOBALS['FORUM_DRIVER']->forum_md5($data, $key);
@@ -390,7 +390,7 @@ function apply_forum_driver_md5_variant($data, $key)
  * @param  boolean $ignore_static_cache Whether to ignore the fact there may be a static cache; used to get true session ID during authentication code to break a paradox
  * @return ID_TEXT The current session ID (blank: none)
  */
-function get_session_id($ignore_static_cache = false)
+function get_session_id(bool $ignore_static_cache = false) : string
 {
     require_code('static_cache');
     if ((!$ignore_static_cache) && (can_static_cache_request())) {
@@ -415,7 +415,7 @@ function get_session_id($ignore_static_cache = false)
  *
  * @return ID_TEXT The current pseudo session ID
  */
-function get_pseudo_session_id()
+function get_pseudo_session_id() : string
 {
     $session_id = get_session_id();
     if ($session_id == '') {
@@ -429,7 +429,7 @@ function get_pseudo_session_id()
  *
  * @return boolean Whether the current member is logged in via httpauth
  */
-function is_httpauth_login()
+function is_httpauth_login() : bool
 {
     if (get_forum_type() != 'cns') {
         return false;
@@ -449,7 +449,7 @@ function is_httpauth_login()
  * @param  URLPATH $url The URL to enforce results in session persistence for the user
  * @return URLPATH The fixed URL (potentially nothing was done, depending on cookies)
  */
-function enforce_sessioned_url($url)
+function enforce_sessioned_url(string $url) : string
 {
     if ((!has_cookies()) && (get_bot_type() === null)) {
         require_code('users_inactive_occasionals');
@@ -465,7 +465,7 @@ function enforce_sessioned_url($url)
  * @param  boolean $force_cleanup Force cleanup of expired sessions (otherwise happens randomly, to reduce load)
  * @return array A tuple: The session ID we rebound to (null means did not rebind), The number of member sessions, The number of Guest sessions
  */
-function delete_expired_sessions_or_recover($member_id = null, $force_cleanup = false)
+function delete_expired_sessions_or_recover(?int $member_id = null, bool $force_cleanup = false) : array
 {
     $new_session = null;
 
@@ -526,7 +526,7 @@ function delete_expired_sessions_or_recover($member_id = null, $force_cleanup = 
  *
  * @return string The member username/ID (depending on forum driver) cookie's name
  */
-function get_member_cookie()
+function get_member_cookie() : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['user_cookie'])) {
@@ -540,7 +540,7 @@ function get_member_cookie()
  *
  * @return string The session ID cookie's name
  */
-function get_session_cookie()
+function get_session_cookie() : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['session_cookie'])) {
@@ -554,7 +554,7 @@ function get_session_cookie()
  *
  * @return string The member password cookie's name
  */
-function get_pass_cookie()
+function get_pass_cookie() : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['pass_cookie'])) {
@@ -570,7 +570,7 @@ function get_pass_cookie()
  * @param  ?string $default The default value (null: just use the value null)
  * @return ?string The value stored in the cookie (null: the default default)
  */
-function cms_admirecookie($name, $default = null)
+function cms_admirecookie(string $name, ?string $default = null) : ?string
 {
     if (!isset($_COOKIE[$name])) {
         return $default;
@@ -586,7 +586,7 @@ function cms_admirecookie($name, $default = null)
  * @param  ?MEMBER $member_id Member to lookup for (null: current member)
  * @return string The value (blank: has a blank value, or does not exist)
  */
-function get_cms_cpf($cpf, $member_id = null)
+function get_cms_cpf(string $cpf, ?int $member_id = null) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -620,7 +620,7 @@ function get_cms_cpf($cpf, $member_id = null)
  *
  * @return string Theme name
  */
-function get_default_theme_name()
+function get_default_theme_name() : string
 {
     return substr(preg_replace('#[^A-Za-z\d]#', '_', get_site_name()), 0, 80);
 }

@@ -28,7 +28,7 @@ class Hook_cleanup_template_usage
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('TEMPLATE_USAGE');
@@ -43,7 +43,7 @@ class Hook_cleanup_template_usage
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         $GLOBALS['SITE_DB']->query_delete('theme_screen_tree');
         $GLOBALS['SITE_DB']->query_delete('theme_template_relations');

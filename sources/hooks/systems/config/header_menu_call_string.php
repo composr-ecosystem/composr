@@ -28,7 +28,7 @@ class Hook_config_header_menu_call_string
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HEADER_MENU_CALL_STRING',
@@ -51,7 +51,7 @@ class Hook_config_header_menu_call_string
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'site:' . DEFAULT_ZONE_PAGE_NAME . ',include=node,title=' . do_lang('HOME') . ',icon=menu/' . DEFAULT_ZONE_PAGE_NAME . ' + site:,use_page_groupings=1,max_recurse_depth=4,child_cutoff=15,collapse_zones=1';
     }

@@ -26,7 +26,7 @@
  * @param  ?MEMBER $member_id Member to only decache for (null: no limit)
  * @ignore
  */
-function _delete_cache_entry($cached_for, $identifier = null, $member_id = null)
+function _delete_cache_entry($cached_for, ?array $identifier = null, ?int $member_id = null)
 {
     if (!is_array($cached_for)) {
         $cached_for = [$cached_for];
@@ -95,7 +95,7 @@ function _delete_cache_entry($cached_for, $identifier = null, $member_id = null)
  * @param  integer $special_cache_flags Flags representing how we should cache
  * @param  boolean $tempcode Whether we are caching Tempcode (needs special care)
  */
-function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
+function request_via_cron(string $codename, array $map, int $special_cache_flags, bool $tempcode)
 {
     $staff_status = null;
     $member_id = null;
@@ -144,7 +144,7 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
  * @param  ?ID_TEXT $theme The theme this is being cached for (null: Get from environment)
  * @param  ?LANGUAGE_NAME $lang The language this is being cached for (null: Get from environment)
  */
-function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags = CACHE_AGAINST_DEFAULT, $_langs_required = [], $_javascripts_required = [], $_csss_required = [], $tempcode = false, $staff_status = null, $member_id = null, $groups = null, $is_bot = null, $timezone = null, $theme = null, $lang = null)
+function set_cache_entry(string $codename, int $ttl, string $cache_identifier, $cache, int $special_cache_flags = CACHE_AGAINST_DEFAULT, array $_langs_required = [], array $_javascripts_required = [], array $_csss_required = [], bool $tempcode = false, ?int $staff_status = null, ?int $member_id = null, ?string $groups = null, ?int $is_bot = null, ?string $timezone = null, ?string $theme = null, ?string $lang = null)
 {
     get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
 

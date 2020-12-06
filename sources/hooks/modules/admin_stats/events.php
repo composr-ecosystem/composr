@@ -30,7 +30,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
      *
      * @return array List of events
      */
-    protected function get_top_events()
+    protected function get_top_events() : array
     {
         static $events = null;
         if ($events !== null) {
@@ -54,7 +54,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
      *
      * @return array List of tracking codes
      */
-    protected function get_top_tracking_codes()
+    protected function get_top_tracking_codes() : array
     {
         static $tracking_codes = null;
         if ($tracking_codes !== null) {
@@ -75,7 +75,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
      * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info($for_kpi = false)
+    public function info(bool $for_kpi = false) : ?array
     {
         require_code('locations');
 
@@ -139,7 +139,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
      * @param  TIME $end_time End timestamp
      * @param  array $data_buckets Map of data buckets; a map of bucket name to nested maps with the following maps in sequence: 'month', 'pivot', 'value' (then further map data) ; extended and returned by reference
      */
-    public function preprocess_raw_data($start_time, $end_time, &$data_buckets)
+    public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
         $server_timezone = get_server_timezone();
 
@@ -332,7 +332,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
      * @param  array $filters Map of filters (including pivot if applicable)
      * @return array Final data in standardised map format
      */
-    public function generate_final_data($bucket, $pivot, $filters)
+    public function generate_final_data(string $bucket, string $pivot, array $filters) : array
     {
         $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
 

@@ -28,7 +28,7 @@ class Hook_sw_syndication_blocks
      *
      * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
-    public function get_blocks()
+    public function get_blocks() : array
     {
         if (!addon_installed('syndication_blocks')) {
             return [];

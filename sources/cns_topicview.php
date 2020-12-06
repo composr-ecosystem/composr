@@ -24,7 +24,7 @@
  * @param  AUTO_LINK $post_id The post ID
  * @return URLPATH The URL
  */
-function find_post_id_url($post_id)
+function find_post_id_url(int $post_id) : string
 {
     $max = intval(get_option('forum_posts_per_page'));
     if ($max == 0) {
@@ -63,7 +63,7 @@ function find_post_id_url($post_id)
  * @param  AUTO_LINK $id The topic ID
  * @return URLPATH The URL
  */
-function find_first_unread_url($id)
+function find_first_unread_url(int $id) : string
 {
     $max = intval(get_option('forum_posts_per_page'));
     if ($max == 0) {
@@ -122,7 +122,7 @@ function find_first_unread_url($id)
  * @param  boolean $only_post Whether the post is the only post in the topic
  * @return array The detailed map
  */
-function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = false)
+function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bool $only_post = false) : array
 {
     $forum_id = $_postdetails['p_cache_forum_id'];
 
@@ -231,7 +231,7 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
  * @param  boolean $check_perms Whether to check permissions
  * @return array The map of details
  */
-function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, $check_perms = true)
+function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll_results = false, bool $check_perms = true) : array
 {
     if ($topic_id !== null) {
         $table = 'f_topics t LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums f ON f.id=t.t_forum_id';
@@ -570,7 +570,7 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
  *
  * @param  array $members List of members
  */
-function cns_cache_member_details($members)
+function cns_cache_member_details(array $members)
 {
     require_code('cns_members');
 
@@ -625,7 +625,7 @@ function cns_cache_member_details($members)
  * @param  ID_TEXT $rendering_context Rendering context
  * @return Tempcode The buttons
  */
-function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $rendering_context = 'cns')
+function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $may_reply, string $rendering_context = 'cns') : object
 {
     $may_reply_private_post = array_key_exists('may_reply_private_post', $topic_info);
 
@@ -857,7 +857,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
  * @param  array $_postdetails Map of post info
  * @return Tempcode The Tempcode
  */
-function cns_get_post_emphasis($_postdetails)
+function cns_get_post_emphasis(array $_postdetails) : object
 {
     $emphasis = new Tempcode();
     if ($_postdetails['is_emphasised']) {

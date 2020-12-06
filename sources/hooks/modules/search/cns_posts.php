@@ -30,7 +30,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      * @param  ?MEMBER $member_id The member ID to check with (null: current member)
      * @return ~?array Map of search hook details (null: hook is disabled) (false: access denied)
      */
-    public function info($check_permissions = true, $member_id = null)
+    public function info(bool $check_permissions = true, ?int $member_id = null)
     {
         if (!addon_installed('cns_forum')) {
             return null;
@@ -114,7 +114,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
      * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
      */
-    public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    public function index_for_search(?int $since = null, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null)
     {
         $engine = new Composr_fast_custom_index();
 
@@ -192,7 +192,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      *
      * @return array A pair: the hook, and the options
      */
-    public function ajax_tree()
+    public function ajax_tree() : array
     {
         return ['choose_forum', ['compound_list' => true]];
     }
@@ -202,7 +202,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      *
      * @return ?array A list of maps specifying extra fields (null: no tree)
      */
-    public function get_fields()
+    public function get_fields() : ?array
     {
         return $this->_get_fields('_post');
     }
@@ -225,7 +225,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
      * @return array List of maps (template, orderer)
      */
-    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
+    public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array
     {
         if (in_array($search_query, [
             do_lang('POSTS_WITHIN_TOPIC'),
@@ -412,7 +412,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      * @param  array $row The data row stored when we retrieved the result
      * @return Tempcode The output
      */
-    public function render($row)
+    public function render(array $row) : object
     {
         global $SEARCH_QUERY_TERMS;
         $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;

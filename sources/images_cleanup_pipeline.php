@@ -53,7 +53,7 @@ function init__images_cleanup_pipeline()
  * @param  ?integer $maximum_dimension The size of the bounding box (null: none)
  * @param  ?array $watermarks Watermark corners (top-left, top-right, bottom-left, bottom-right) (null: none)
  */
-function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mode = 1, $maximum_dimension = null, $watermarks = null)
+function handle_images_cleanup_pipeline(string $path, ?string $filename = null, int $recompress_mode = 1, ?int $maximum_dimension = null, ?array $watermarks = null)
 {
     disable_php_memory_limit();
     if (!check_memory_limit_for($path, false)) {
@@ -213,7 +213,7 @@ function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mod
  * @param  string $ext Image extension
  * @return boolean Whether it is animated
  */
-function is_animated_image($c, $ext)
+function is_animated_image(string $c, string $ext) : bool
 {
     if ($ext == 'png') {
         $idat_pos = strpos($c, 'IDAT');
@@ -262,7 +262,7 @@ function is_animated_image($c, $ext)
  * @param  ~array $exif EXIF details (false: could not load)
  * @return array A pair: Adjusted GD image resource, Whether a change was made
  */
-function adjust_pic_orientation($image, $exif)
+function adjust_pic_orientation($image, $exif) : array
 {
     if ((function_exists('imagerotate')) && ($exif !== false) && (isset($exif['Orientation']))) {
         $orientation = $exif['Orientation'];
@@ -339,7 +339,7 @@ function adjust_pic_orientation($image, $exif)
  * @param  integer $maximum_dimension The size of the bounding box
  * @return array A pair: Adjusted GD image resource, Whether a change was made
  */
-function adjust_pic_size($image, $maximum_dimension)
+function adjust_pic_size($image, int $maximum_dimension) : array
 {
     $width = imagesx($image);
     $height = imagesy($image);
@@ -381,7 +381,7 @@ function adjust_pic_size($image, $maximum_dimension)
  * @param  array $watermarks Watermark corners (top-left, top-right, bottom-left, bottom-right)
  * @return array A pair: Adjusted GD image resource, Whether a change was made
  */
-function add_pic_watermarking($image, $watermarks)
+function add_pic_watermarking($image, array $watermarks) : array
 {
     if (!addon_installed('galleries')) {
         return [$image, false];
@@ -421,7 +421,7 @@ function add_pic_watermarking($image, $watermarks)
  * @param  boolean $reorientated Whether we did a reorientation and thus need to throw out the reorientation header
  * @return boolean Success status
  */
-function copy_exif_data($src_path, $dest_path, $reorientated = false)
+function copy_exif_data(string $src_path, string $dest_path, bool $reorientated = false) : bool
 {
     // Function transfers EXIF (APP1) and IPTC (APP13) from $src_path and adds it to $dest_path
     // JPEG file has format 0xFFD8 + [APP0] + [APP1] + ... [APP15] + <image data> where [APPi] are optional
@@ -571,7 +571,7 @@ function copy_exif_data($src_path, $dest_path, $reorientated = false)
  * @param  PATH $path File path
  * @param  boolean $lossy Whether to do a lossy convert
  */
-function png_compress($path, $lossy = false)
+function png_compress(string $path, bool $lossy = false)
 {
     if (!is_file($path)) {
         return;

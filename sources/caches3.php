@@ -46,7 +46,7 @@ function init__caches3()
  *
  * @param  boolean $changed_base_url Whether the base URL has just been changed
  */
-function auto_decache($changed_base_url)
+function auto_decache(bool $changed_base_url)
 {
     delete_value('cdn');
     erase_block_cache();
@@ -69,7 +69,7 @@ function auto_decache($changed_base_url)
  * @param  ?array $cleanup_tools The cleanup tools to run (null: all)
  * @return Tempcode Any messages returned
  */
-function composr_cleanup($cleanup_tools = null)
+function composr_cleanup(?array $cleanup_tools = null) : object
 {
     require_lang('cleanup');
 
@@ -130,7 +130,7 @@ function composr_cleanup($cleanup_tools = null)
  * @param  boolean $erase_cache_signatures_too Erase cache signatures too
  * @param  ?ID_TEXT $theme Only erase caching for this theme (null: all themes)
  */
-function erase_block_cache($erase_cache_signatures_too = false, $theme = null)
+function erase_block_cache(bool $erase_cache_signatures_too = false, ?string $theme = null)
 {
     cms_profile_start_for('erase_tempcode_cache');
 
@@ -269,7 +269,7 @@ function erase_cached_language()
  * @param  ?string $raw_file_regexp The original template must contain a match for this regular expression (null: no restriction)
  * @param  boolean $rebuild_some_deleted_files Whether to rebuild some files that are deleted (be very careful about this, it is high-intensity, and may break due to in-memory caches still existing)
  */
-function erase_cached_templates($preserve_some = false, $only_templates = null, $raw_file_regexp = null, $rebuild_some_deleted_files = false)
+function erase_cached_templates(bool $preserve_some = false, ?array $only_templates = null, ?string $raw_file_regexp = null, bool $rebuild_some_deleted_files = false)
 {
     if ($only_templates === []) {
         return; // Optimisation

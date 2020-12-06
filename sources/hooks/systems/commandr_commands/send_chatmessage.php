@@ -31,7 +31,7 @@ class Hook_commandr_command_send_chatmessage
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $parameters, &$commandr_fs)
+    public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if (!addon_installed('chat')) {
             return ['', '', '', do_lang('INTERNAL_ERROR')];

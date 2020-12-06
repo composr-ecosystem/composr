@@ -37,7 +37,7 @@ function init__cns_posts()
  * @param  ?array $post_details Post row (null: lookup)
  * @return boolean Whether they can
  */
-function has_post_access($post_id, $member_id = null, $post_details = null)
+function has_post_access(int $post_id, ?int $member_id = null, ?array $post_details = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -82,7 +82,7 @@ function has_post_access($post_id, $member_id = null, $post_details = null)
  * @param  boolean $will_be_private_post Whether this post will be private
  * @return boolean The answer
  */
-function cns_may_post_in_topic($forum_id, $topic_id, $last_member_id = null, $closed = false, $member_id = null, $will_be_private_post = false)
+function cns_may_post_in_topic(?int $forum_id, int $topic_id, ?int $last_member_id = null, bool $closed = false, ?int $member_id = null, bool $will_be_private_post = false) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -144,7 +144,7 @@ function cns_may_post_in_topic($forum_id, $topic_id, $last_member_id = null, $cl
  * @param  ?string $reason The reason for the topic being closed is put here (null: no interesting reason)
  * @return boolean The answer
  */
-function cns_may_edit_post_by($post_id, $post_time, $resource_owner, $forum_id, $member_id = null, $topic_is_closed = null, &$reason = null)
+function cns_may_edit_post_by(int $post_id, ?int $post_time, ?int $resource_owner, ?int $forum_id, ?int $member_id = null, ?bool $topic_is_closed = null, ?string &$reason = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -217,7 +217,7 @@ function cns_may_edit_post_by($post_id, $post_time, $resource_owner, $forum_id, 
  * @param  ?string $reason The reason for the topic being closed is put here (null: no interesting reason)
  * @return boolean The answer
  */
-function cns_may_delete_post_by($post_id, $post_time, $resource_owner, $forum_id, $member_id = null, $topic_is_closed = null, &$reason = null)
+function cns_may_delete_post_by(int $post_id, ?int $post_time, ?int $resource_owner, ?int $forum_id, ?int $member_id = null, ?bool $topic_is_closed = null, ?string &$reason = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -278,7 +278,7 @@ function cns_may_delete_post_by($post_id, $post_time, $resource_owner, $forum_id
  * @param  ID_TEXT $linked_id Content ID
  * @return array A pair: better description (may be null), better post (may be null)
  */
-function cns_display_spacer_post($linked_type, $linked_id)
+function cns_display_spacer_post(string $linked_type, string $linked_id) : array
 {
     $new_description = null;
     $new_post = null;

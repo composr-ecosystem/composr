@@ -42,7 +42,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_cpfs')) {
             return null;
@@ -90,7 +90,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_cpfs', $error_msg)) {
@@ -146,7 +146,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         cns_require_all_forum_stuff();
 
@@ -182,7 +182,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -236,7 +236,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($name = '', $description = '', $default = '', $public_view = 1, $owner_view = 1, $owner_set = 1, $encrypted = 0, $type = 'long_text', $required = 0, $show_on_join_form = 0, $show_in_posts = 0, $show_in_post_previews = 0, $order = null, $only_group = '', $locked = 0, $options = '', $include_in_main_search = 0, $allow_template_search = 0, $icon = '', $section = '', $tempcode = '', $autofill_type = '', $autofill_hint = '')
+    public function get_form_fields(string $name = '', string $description = '', string $default = '', int $public_view = 1, int $owner_view = 1, int $owner_set = 1, int $encrypted = 0, string $type = 'long_text', int $required = 0, int $show_on_join_form = 0, int $show_in_posts = 0, int $show_in_post_previews = 0, ?int $order = null, string $only_group = '', int $locked = 0, string $options = '', int $include_in_main_search = 0, int $allow_template_search = 0, string $icon = '', string $section = '', string $tempcode = '', string $autofill_type = '', string $autofill_hint = '') : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -398,7 +398,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
         $form_id = 'selection_table';
@@ -550,7 +550,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  integer $old_order Old order
      * @param  integer $new_order New order
      */
-    public function change_order($id, $old_order, $new_order)
+    public function change_order(int $id, int $old_order, int $new_order)
     {
         $sql = 'SELECT r.id AS r_id,r.cf_order FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields r WHERE cf_order BETWEEN ';
         $sql .= strval(min($old_order, $new_order)) . ' AND ' . strval(max($old_order, $new_order));
@@ -578,7 +578,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($_id)
+    public function may_delete_this(string $_id) : bool
     {
         $id = intval($_id);
         $locked = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_locked', ['id' => $id]);
@@ -591,7 +591,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
@@ -638,7 +638,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $only_group = array_key_exists('only_group', $_POST) ? (is_array($_POST['only_group']) ? implode(',', $_POST['only_group']) : post_param_string('only_group')) : '';
         $id = cns_make_custom_field(
@@ -676,7 +676,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $only_group = array_key_exists('only_group', $_POST) ? (is_array($_POST['only_group']) ? implode(',', $_POST['only_group']) : post_param_string('only_group')) : '';
 
@@ -714,7 +714,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         cns_delete_custom_field(intval($id));
     }
@@ -724,7 +724,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         check_privilege('mass_import');
 
@@ -801,7 +801,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('core_cns', $this->title, ['have_default_full_emoticon_set']);
@@ -812,7 +812,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function stats()
+    public function stats() : object
     {
         $fields = new Tempcode();
 
@@ -867,7 +867,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      *
      * @return Tempcode The statistics
      */
-    public function _stats()
+    public function _stats() : object
     {
         $f_name = 'field_' . strval(get_param_integer('id'));
         $_a = post_param_date('start');

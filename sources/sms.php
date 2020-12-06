@@ -24,7 +24,7 @@
  * @param  string $number The number
  * @return string Cleaned number
  */
-function cleanup_mobile_number($number)
+function cleanup_mobile_number(string $number) : string
 {
     return str_replace('-', '', str_replace('(', '', str_replace(')', '', str_replace(' ', '', $number))));
 }
@@ -36,7 +36,7 @@ function cleanup_mobile_number($number)
  * @param  array $to_sms The member IDs of those receiving messages
  * @return integer How many were sent
  */
-function dispatch_sms($message, $to_sms)
+function dispatch_sms(string $message, array $to_sms) : int
 {
     // 140 byte limit for single packet
     // 134*255 byte limit for multiple packets (but there's cost for each additional 134 byte segment)

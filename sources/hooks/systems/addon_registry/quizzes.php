@@ -29,7 +29,7 @@ class Hook_addon_registry_quizzes
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_quizzes
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_quizzes
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'New Features';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_quizzes
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_quizzes',
@@ -81,7 +81,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_quizzes
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/rich_content/quiz.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/quizzes.php',
@@ -160,7 +160,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/QUIZ_RESULTS_SCREEN.tpl' => 'administrative__quiz_results_screen',
@@ -183,7 +183,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__quiz_results_screen()
+    public function tpl_preview__administrative__quiz_results_screen() : array
     {
         $fields = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -214,7 +214,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__quiz_result_screen()
+    public function tpl_preview__administrative__quiz_result_screen() : array
     {
         $given_answers_arr = [];
         foreach ([true, false, null] as $was_correct) {
@@ -256,7 +256,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__quiz_results()
+    public function tpl_preview__quiz_results() : array
     {
         $given_answers_arr = [];
         foreach ([true, false, null] as $was_correct) {
@@ -283,7 +283,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__quiz_archive_screen()
+    public function tpl_preview__quiz_archive_screen() : array
     {
         $content_tests = new Tempcode();
         $content_competitions = new Tempcode();
@@ -325,7 +325,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__quiz_screen()
+    public function tpl_preview__quiz_screen() : array
     {
         // This is for getting the $cms.doAjaxRequest() javascript function.
         $warning_details = do_lorem_template('WARNING_BOX', [
@@ -355,7 +355,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__quiz_survey_answers_mail()
+    public function tpl_preview__quiz_survey_answers_mail() : array
     {
         $given_answers = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -393,7 +393,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__quiz_test_answers_mail()
+    public function tpl_preview__quiz_test_answers_mail() : array
     {
         $unknowns = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -442,7 +442,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__quiz_done_screen()
+    public function tpl_preview__quiz_done_screen() : array
     {
         $given_answers_arr = [];
         foreach ([true, false, null] as $was_correct) {
@@ -486,7 +486,7 @@ class Hook_addon_registry_quizzes
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__member_quiz_entries()
+    public function tpl_preview__member_quiz_entries() : array
     {
         $categories = [];
         $categories[do_lang('OTHER')] = [

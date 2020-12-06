@@ -28,7 +28,7 @@ class Hook_config_hc_error_log_day_flood_threshold
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HC_ERRORLOG_DAY_FLOOD_THRESHOLD',
@@ -51,7 +51,7 @@ class Hook_config_hc_error_log_day_flood_threshold
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('health_check')) {
             return null;

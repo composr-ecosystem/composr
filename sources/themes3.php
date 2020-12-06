@@ -120,7 +120,7 @@ function compile_all_templates()
  *
  * @param  ID_TEXT $name The theme name
  */
-function actual_add_theme($name)
+function actual_add_theme(string $name)
 {
     push_query_limiting(false);
 
@@ -192,7 +192,7 @@ function actual_add_theme($name)
  * @param  ID_TEXT $theme The original theme name
  * @param  ID_TEXT $to The new theme name
  */
-function actual_rename_theme($theme, $to)
+function actual_rename_theme(string $theme, string $to)
 {
     if ($theme == 'default') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -230,7 +230,7 @@ function actual_rename_theme($theme, $to)
  * @param  ID_TEXT $theme The original theme name
  * @param  ID_TEXT $to The copy's theme name
  */
-function actual_copy_theme($theme, $to)
+function actual_copy_theme(string $theme, string $to)
 {
     if ($theme == 'default') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -281,7 +281,7 @@ function actual_copy_theme($theme, $to)
  *
  * @param  ID_TEXT $theme The theme name
  */
-function actual_delete_theme($theme)
+function actual_delete_theme(string $theme)
 {
     if ($theme == 'default') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -305,7 +305,7 @@ function actual_delete_theme($theme)
  *
  * @param  SHORT_TEXT $theme_name The theme to make live
  */
-function set_live_theme($theme_name)
+function set_live_theme(string $theme_name)
 {
     $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'zones SET zone_theme=\'' . db_escape_string($theme_name) . '\' WHERE ' . db_string_not_equal_to('zone_name', 'cms') . ' AND ' . db_string_not_equal_to('zone_name', 'adminzone'));
 }
@@ -350,7 +350,7 @@ function tempcode_tester_script()
  * @param  URLPATH $url The URL to the theme image
  * @param  boolean $fail_ok Whether to allow failure without bombing out
  */
-function actual_add_theme_image($theme, $lang, $id, $url, $fail_ok = false)
+function actual_add_theme_image(string $theme, string $lang, string $id, string $url, bool $fail_ok = false)
 {
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['id' => $id, 'theme' => $theme, 'lang' => $lang]);
     if ($test !== null) {
@@ -377,7 +377,7 @@ function actual_add_theme_image($theme, $lang, $id, $url, $fail_ok = false)
  * @param  URLPATH $url The URL to the theme image
  * @param  boolean $quick Whether to avoid cleanup, etc
  */
-function actual_edit_theme_image($old_id, $theme, $lang, $id, $url, $quick = false)
+function actual_edit_theme_image(string $old_id, string $theme, string $lang, string $id, string $url, bool $quick = false)
 {
     if ($old_id != $id) {
         $where_map = ['theme' => $theme, 'id' => $id];
@@ -439,7 +439,7 @@ function actual_edit_theme_image($old_id, $theme, $lang, $id, $url, $quick = fal
  * @param  ?ID_TEXT $theme The theme to delete in (null: all themes)
  * @param  ?LANGUAGE_NAME $lang The language to delete in (null: all languages) (blank: all languages)
  */
-function actual_delete_theme_image($id, $theme = null, $lang = null)
+function actual_delete_theme_image(string $id, ?string $theme = null, ?string $lang = null)
 {
     if ($theme !== null) {
         $old_url = find_theme_image($id, true, true, $theme, $lang);
@@ -493,7 +493,7 @@ function export_theme_images()
  * @param  ?array $langs A map of languages (lang=>true) (null: find it in-function)
  * @param  ?ID_TEXT $target_theme The theme we're storing in (null: same as $theme)
  */
-function regen_theme_images($theme, $langs = null, $target_theme = null)
+function regen_theme_images(string $theme, ?array $langs = null, ?string $target_theme = null)
 {
     if ($langs === null) {
         $langs = find_all_langs(true);
@@ -553,7 +553,7 @@ function regen_theme_images($theme, $langs = null, $target_theme = null)
  *
  * @param  URLPATH $old_url The URL to the theme image being deleted
  */
-function cleanup_theme_images($old_url)
+function cleanup_theme_images(string $old_url)
 {
     $files_referenced = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('theme_images', ['DISTINCT url']));
 

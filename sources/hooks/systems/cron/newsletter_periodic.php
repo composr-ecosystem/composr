@@ -30,7 +30,7 @@ class Hook_cron_newsletter_periodic
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -62,7 +62,7 @@ class Hook_cron_newsletter_periodic
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         // This hook looks for a 'periodic newsletter', which is a 'new content'
         // newsletter that should be sent out automatically.
@@ -85,7 +85,7 @@ class Hook_cron_newsletter_periodic
      * @param  boolean $test_run See if this needs to run
      * @return ?TIME Time was sent (null: not sent)
      */
-    public function newsletter_periodic_handle($periodic_row, $test_run = false)
+    public function newsletter_periodic_handle(array $periodic_row, bool $test_run = false) : ?int
     {
         require_code('newsletter');
 

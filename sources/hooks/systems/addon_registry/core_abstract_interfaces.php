@@ -29,7 +29,7 @@ class Hook_addon_registry_core_abstract_interfaces
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Core rendering functionality.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_themes',
@@ -81,7 +81,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/images/icons/status/inform.svg',
@@ -205,7 +205,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/AJAX_PAGINATION.tpl' => 'ajax_pagination',
@@ -279,7 +279,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ajax_pagination()
+    public function tpl_preview__ajax_pagination() : array
     {
         return [
             do_lorem_template('AJAX_PAGINATION', [
@@ -297,7 +297,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__redirect_screen()
+    public function tpl_preview__redirect_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('REDIRECT_SCREEN', [
@@ -315,7 +315,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__confirm_screen()
+    public function tpl_preview__confirm_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('CONFIRM_SCREEN', [
@@ -335,7 +335,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__index_screen()
+    public function tpl_preview__index_screen() : array
     {
         $entry = new Tempcode();
 
@@ -364,7 +364,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__index_screen_fancier_screen()
+    public function tpl_preview__index_screen_fancier_screen() : array
     {
         $entries = new Tempcode();
         foreach (placeholder_array() as $value) {
@@ -395,7 +395,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__map_table()
+    public function tpl_preview__map_table() : array
     {
         $fields = new Tempcode();
         $fields->attach(do_lorem_template('MAP_TABLE_FIELD', [
@@ -419,7 +419,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__map_table_screen()
+    public function tpl_preview__map_table_screen() : array
     {
         $fields = do_lorem_template('MAP_TABLE_FIELD', [
             'ABBR' => lorem_phrase(),
@@ -443,7 +443,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__warning_box()
+    public function tpl_preview__warning_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('WARNING_BOX', [
@@ -459,7 +459,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__simple_preview_box()
+    public function tpl_preview__simple_preview_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('SIMPLE_PREVIEW_BOX', [
@@ -477,7 +477,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__fatal_screen()
+    public function tpl_preview__administrative__fatal_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('FATAL_SCREEN', [
@@ -496,7 +496,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__stack_trace()
+    public function tpl_preview__administrative__stack_trace() : array
     {
         $trace = [];
         foreach (placeholder_array() as $value) {
@@ -529,7 +529,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__inline_wip_message()
+    public function tpl_preview__inline_wip_message() : array
     {
         return [
             lorem_globalise(do_lorem_template('INLINE_WIP_MESSAGE', [
@@ -545,7 +545,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__missing_screen()
+    public function tpl_preview__missing_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('MISSING_SCREEN', [
@@ -566,7 +566,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__inform_screen()
+    public function tpl_preview__inform_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('INFORM_SCREEN', [
@@ -583,7 +583,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__internalised_ajax_screen()
+    public function tpl_preview__internalised_ajax_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('INTERNALISED_AJAX_SCREEN', [
@@ -603,7 +603,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__warn_screen()
+    public function tpl_preview__warn_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('WARN_SCREEN', [
@@ -622,7 +622,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__do_next_screen()
+    public function tpl_preview__administrative__do_next_screen() : array
     {
         require_lang('do_next');
         $list = [
@@ -694,7 +694,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__question_ui_buttons()
+    public function tpl_preview__question_ui_buttons() : array
     {
         return [
             lorem_globalise(do_lorem_template('QUESTION_UI_BUTTONS', [
@@ -713,7 +713,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__pagination_screen()
+    public function tpl_preview__pagination_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('PAGINATION_SCREEN', [
@@ -731,7 +731,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__full_message_screen()
+    public function tpl_preview__full_message_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('FULL_MESSAGE_SCREEN', [
@@ -748,7 +748,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__full_table_screen()
+    public function tpl_preview__full_table_screen() : array
     {
         $table_rows = new Tempcode();
         foreach (placeholder_array() as $row) {
@@ -851,7 +851,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__result_table_screen()
+    public function tpl_preview__result_table_screen() : array
     {
         $array = placeholder_array();
         $cells = new Tempcode();
@@ -931,7 +931,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__result_table_screen_2()
+    public function tpl_preview__result_table_screen_2() : array
     {
         $array = placeholder_array();
         $cells = new Tempcode();
@@ -1011,7 +1011,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__result_launcher_screen()
+    public function tpl_preview__result_launcher_screen() : array
     {
         require_lang('cns');
         $part = new Tempcode();
@@ -1045,7 +1045,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__columned_table_screen()
+    public function tpl_preview__administrative__columned_table_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('COLUMNED_TABLE_SCREEN', [
@@ -1066,7 +1066,7 @@ class Hook_addon_registry_core_abstract_interfaces
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__member_tooltip()
+    public function tpl_preview__member_tooltip() : array
     {
         return [
             lorem_globalise(do_lorem_template('MEMBER_TOOLTIP', [

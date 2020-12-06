@@ -28,7 +28,7 @@ class Hook_cleanup_rebuild_all_cpf_indices
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('REBUILD_ALL_CPF_INDICES');
@@ -43,7 +43,7 @@ class Hook_cleanup_rebuild_all_cpf_indices
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('tasks');
         call_user_func_array__long_task(do_lang('REBUILD_ALL_CPF_INDICES'), get_screen_title('REBUILD_ALL_CPF_INDICES'), 'rebuild_all_cpf_indices', [true], false, false, false);

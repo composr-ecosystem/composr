@@ -28,7 +28,7 @@ class Module_join
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_join
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -70,7 +70,7 @@ class Module_join
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $type = get_param_string('type', 'browse');
 
@@ -107,7 +107,7 @@ class Module_join
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('cns_join');
 
@@ -137,7 +137,7 @@ class Module_join
      *
      * @return Tempcode The UI
      */
-    public function step1()
+    public function step1() : object
     {
         if (!is_guest()) {
             warn_exit(do_lang_tempcode('NO_JOIN_LOGGED_IN'));
@@ -192,7 +192,7 @@ class Module_join
      *
      * @return Tempcode The UI
      */
-    public function step2()
+    public function step2() : object
     {
         if (!is_guest()) {
             warn_exit(do_lang_tempcode('NO_JOIN_LOGGED_IN'));
@@ -220,7 +220,7 @@ class Module_join
      *
      * @return Tempcode The UI
      */
-    public function step3()
+    public function step3() : object
     {
         if ((get_option('show_first_join_page') == '1') && (!$this->declarations_made())) {
             warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
@@ -236,7 +236,7 @@ class Module_join
      *
      * @return array List of declarations
      */
-    protected function get_declarations()
+    protected function get_declarations() : array
     {
         return explode("\n", trim(preg_replace('#\n+#', "\n", get_option('join_declarations'))));
     }
@@ -246,7 +246,7 @@ class Module_join
      *
      * @return boolean Whether they have
      */
-    protected function declarations_made()
+    protected function declarations_made() : bool
     {
         $declarations = $this->get_declarations();
         foreach ($declarations as $i => $declaration) {
@@ -262,7 +262,7 @@ class Module_join
      *
      * @return Tempcode The UI
      */
-    public function step4()
+    public function step4() : object
     {
         // Check confirm code correct
         $_code = get_param_string('code', '-1'); // -1 allowed because people often seem to mess the e-mail link up

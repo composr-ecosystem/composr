@@ -28,7 +28,7 @@ class Hook_config_simplify_wysiwyg_by_permissions
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SIMPLIFY_WYSIWYG_BY_PERMISSIONS',
@@ -51,7 +51,7 @@ class Hook_config_simplify_wysiwyg_by_permissions
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '0';
     }

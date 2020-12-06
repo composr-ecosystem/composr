@@ -157,7 +157,7 @@ class Virtual_shell
      * @param  string $inputted_command The inputted command, unparsed
      * @param  array $parameters An array of prior parameters
      */
-    public function __construct($inputted_command, $parameters = [])
+    public function __construct(string $inputted_command, array $parameters = [])
     {
         if (!defined('MODE_NORMAL')) {
             define('MODE_NORMAL', 0); // Not in quotes
@@ -237,7 +237,7 @@ class Virtual_shell
      *
      * @return boolean Success?
      */
-    public function output_xml()
+    public function output_xml() : bool
     {
         if (count($this->parsed_input) < 1) {
             return false;
@@ -324,7 +324,7 @@ class Virtual_shell
      * @param  boolean $blank_ok Whether it is okay to have blank output
      * @return ~Tempcode The HTML (false: error)
      */
-    public function output_html($blank_ok = false)
+    public function output_html(bool $blank_ok = false)
     {
         if (count($this->parsed_input) < 1) {
             return false;
@@ -820,7 +820,7 @@ class Virtual_shell
      *
      * @return boolean Redirection instruction?
      */
-    protected function _check_is_redirection()
+    protected function _check_is_redirection() : bool
     {
         // Take the current block (delimited by spaces (' ')), and check to see if it's a valid redirect instruction
         $start_pos = $this->parse_runtime['parse_position'];
@@ -1087,7 +1087,7 @@ class Virtual_shell
      * @param  array $stream2 Stream 2
      * @return array Combined streams
      */
-    protected function _combine_streams($stream1, $stream2)
+    protected function _combine_streams(array $stream1, array $stream2) : array
     {
         // Combine two streams, taking account of arrays, Tempcode and other stuff
         $stream_identifiers = [STREAM_STDCOMMAND, STREAM_STDHTML, STREAM_STDOUT, STREAM_STDERR];
@@ -1136,7 +1136,7 @@ class Virtual_shell
      * @param  array $array Array to display
      * @return Tempcode Tempcode for array
      */
-    protected function _array_to_html($array)
+    protected function _array_to_html(array $array) : object
     {
         // Convert an array to an HTML format
         $output = [];
@@ -1157,7 +1157,7 @@ class Virtual_shell
      * @param  integer $indentation Global indentation
      * @return string Text representation of array
      */
-    protected function _array_to_text($array, $indentation = 0)
+    protected function _array_to_text(array $array, int $indentation = 0) : string
     {
         // Convert an array to a text format
         $output = $this->_do_indentation($indentation) . '[';
@@ -1178,7 +1178,7 @@ class Virtual_shell
      * @param  integer $indentation Number of tabs to return
      * @return string Tabs
      */
-    protected function _do_indentation($indentation)
+    protected function _do_indentation(int $indentation) : string
     {
         // Return some tabs
         $output = '';
@@ -1353,7 +1353,7 @@ class Virtual_shell
      * @param  ?string $dir Directory (null: Commandr module data dir)
      * @return ~string Path or failure (false: failure)
      */
-    protected function _find_script_file($script_name, $dir = null)
+    protected function _find_script_file(string $script_name, ?string $dir = null)
     {
         require_code('files');
 
@@ -1387,7 +1387,7 @@ class Virtual_shell
  * @param  array $parameters Parameters (keys are the parameters, values are always set to true, i.e. it is an array of as many trues as there are parameters)
  * @return Tempcode Help template
  */
-function do_command_help($command, $options, $parameters)
+function do_command_help(string $command, array $options, array $parameters) : object
 {
     $_options = [];
     $_parameters = [];
@@ -1434,7 +1434,7 @@ function do_command_help($command, $options, $parameters)
  * @param  mixed $html HTML (string or Tempcode)
  * @return Tempcode Boxed HTML
  */
-function commandr_make_normal_html_visible($html)
+function commandr_make_normal_html_visible($html) : object
 {
     return do_template('COMMANDR_BOX', ['_GUID' => '1a77370b0230fafda432c2d325d83ef1', 'HTML' => $html]);
 }
@@ -1445,7 +1445,7 @@ function commandr_make_normal_html_visible($html)
  * @param  string $str Text
  * @return boolean Whether it has Unicode smart quotes
  */
-function has_smart_quotes($str)
+function has_smart_quotes(string $str) : bool
 {
     if (get_charset() != 'utf-8') {
         return false;

@@ -28,7 +28,7 @@ class Block_main_custom_comcode_tags
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -47,7 +47,7 @@ class Block_main_custom_comcode_tags
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('custom_comcode', $error_msg)) {

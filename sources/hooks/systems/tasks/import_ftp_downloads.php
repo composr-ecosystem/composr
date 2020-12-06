@@ -33,7 +33,7 @@ class Hook_task_import_ftp_downloads
      * @param  boolean $subfolders Whether to import subfolders
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($destination, $server_url, $subfolders)
+    public function run(int $destination, string $server_url, bool $subfolders) : ?array
     {
         if (!addon_installed('downloads')) {
             return null;
@@ -112,7 +112,7 @@ class Hook_task_import_ftp_downloads
      * @param  boolean $make_subfolders Whether we add hierarchically (as opposed to a flat category fill)
      * @return integer Number of downloads added
      */
-    public function ftp_recursive_downloads_scan($conn_id, $url, $directory, $dest_cat, $make_subfolders)
+    public function ftp_recursive_downloads_scan($conn_id, string $url, string $directory, int $dest_cat, bool $make_subfolders) : int
     {
         task_log($this, 'Processing ' . $directory . ' directory for files');
 

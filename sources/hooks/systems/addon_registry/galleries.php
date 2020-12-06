@@ -29,7 +29,7 @@ class Hook_addon_registry_galleries
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_galleries
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_galleries
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Information Display';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_galleries
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Galleries, including support for video galleries, and member personal galleries.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_galleries
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_galleries',
@@ -82,7 +82,7 @@ class Hook_addon_registry_galleries
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -96,7 +96,7 @@ class Hook_addon_registry_galleries
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/rich_content/galleries.svg';
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_galleries
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/galleries.php',
@@ -288,7 +288,7 @@ class Hook_addon_registry_galleries
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BLOCK_MAIN_IMAGE_FADER.tpl' => 'block_main_image_fader',
@@ -334,7 +334,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_image_box()
+    public function tpl_preview__gallery_image_box() : array
     {
         $tab_content = do_lorem_template('GALLERY_IMAGE_BOX', [
             'TITLE' => lorem_phrase(),
@@ -362,7 +362,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_video_box()
+    public function tpl_preview__gallery_video_box() : array
     {
         $tab_content = do_lorem_template('GALLERY_VIDEO_BOX', [
             'TITLE' => lorem_phrase(),
@@ -395,7 +395,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_profile_galleries()
+    public function tpl_preview__cns_member_profile_galleries() : array
     {
         $galleries = do_lorem_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', [
             'BLOCK_ID' => lorem_word(),
@@ -430,7 +430,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_image_fader()
+    public function tpl_preview__block_main_image_fader() : array
     {
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_IMAGE_FADER', [
@@ -454,7 +454,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__gallery_import_screen()
+    public function tpl_preview__administrative__gallery_import_screen() : array
     {
         require_css('forms');
 
@@ -524,7 +524,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_popular()
+    public function tpl_preview__gallery_popular() : array
     {
         return [
             lorem_globalise(do_lorem_template('GALLERY_POPULAR', [
@@ -541,7 +541,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_gallery_embed()
+    public function tpl_preview__block_main_gallery_embed() : array
     {
         // Create the 'GALLERY_ENTRY_WRAP' template
         $entries = new Tempcode();
@@ -593,7 +593,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with andplaceholder_date_raw() without blank data).
      */
-    public function tpl_preview__block_side_galleries()
+    public function tpl_preview__block_side_galleries() : array
     {
         $content = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -624,7 +624,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_video_info()
+    public function tpl_preview__gallery_video_info() : array
     {
         return [
             lorem_globalise(do_lorem_template('GALLERY_VIDEO_INFO', [
@@ -643,7 +643,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_entry_list_line()
+    public function tpl_preview__gallery_entry_list_line() : array
     {
         return [
             lorem_globalise(do_lorem_template('GALLERY_ENTRY_LIST_LINE', [
@@ -660,7 +660,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_carousel_mode_video()
+    public function tpl_preview__gallery_carousel_mode_video() : array
     {
         $video = do_lorem_template('GALLERY_CAROUSEL_MODE_VIDEO', [
             'MAIN' => lorem_phrase(),
@@ -777,7 +777,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_carousel_mode_image()
+    public function tpl_preview__gallery_carousel_mode_image() : array
     {
         $image = do_lorem_template('GALLERY_CAROUSEL_MODE_IMAGE', [
             'MAIN' => lorem_phrase(),
@@ -892,7 +892,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_gallery_box()
+    public function tpl_preview__gallery_gallery_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('GALLERY_BOX', [
@@ -921,7 +921,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_entries()
+    public function tpl_preview__gallery_entries() : array
     {
         $entry = new Tempcode();
         $map = [
@@ -987,7 +987,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_grid_mode_screen()
+    public function tpl_preview__gallery_grid_mode_screen() : array
     {
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
@@ -1049,7 +1049,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_entry_screen()
+    public function tpl_preview__gallery_entry_screen() : array
     {
         $nav = do_lorem_template('GALLERY_NAV', [
             'BACK_URL' => placeholder_url(),
@@ -1138,7 +1138,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_hero_slider()
+    public function tpl_preview__block_main_hero_slider() : array
     {
         $content_html = do_lorem_template('GALLERY_HOMEPAGE_HERO_SLIDE', [
             'HEADLINE' => lorem_phrase(),
@@ -1180,7 +1180,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_gallery_mosaic()
+    public function tpl_preview__block_main_gallery_mosaic() : array
     {
         $entries = new Tempcode();
 
@@ -1263,7 +1263,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_mosaic_mode_screen()
+    public function tpl_preview__gallery_mosaic_mode_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', [
@@ -1301,7 +1301,7 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_slideshow_screen()
+    public function tpl_preview__gallery_slideshow_screen() : array
     {
         $carousel_entries = new Tempcode();
 
@@ -1398,7 +1398,7 @@ class Hook_addon_registry_galleries
      *
      * @return array A map of available predefined content codenames, and details (if installed, and title)
      */
-    public function enumerate_predefined_content()
+    public function enumerate_predefined_content() : array
     {
         require_lang('homepage_hero_slider');
 
@@ -1432,7 +1432,7 @@ class Hook_addon_registry_galleries
      *
      * @param  ?array $content A list of predefined content labels to install (null: all)
      */
-    public function install_predefined_content($content = null)
+    public function install_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_homepage_hero_slides', $content))) && (!has_predefined_content('galleries', 'have_default_homepage_hero_slides'))) {
             require_lang('homepage_hero_slider');
@@ -1491,7 +1491,7 @@ class Hook_addon_registry_galleries
      *
      * @param  ?array $content A list of predefined content labels to uninstall (null: all)
      */
-    public function uninstall_predefined_content($content = null)
+    public function uninstall_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_homepage_hero_slides', $content))) && (has_predefined_content('galleries', 'have_default_homepage_hero_slides'))) {
             require_code('galleries2');

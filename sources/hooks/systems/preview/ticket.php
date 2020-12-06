@@ -28,7 +28,7 @@ class Hook_preview_ticket
      *
      * @return array Quartet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional], list of fields to limit to [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('tickets')) && (get_page_name() == 'tickets');
         return [$applies, 'cns_post', false, ['post']];
@@ -39,7 +39,7 @@ class Hook_preview_ticket
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         return [null, null, false];
     }

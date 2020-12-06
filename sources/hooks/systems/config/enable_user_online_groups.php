@@ -28,7 +28,7 @@ class Hook_config_enable_user_online_groups
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ENABLE_USER_ONLINE_GROUPS',
@@ -51,7 +51,7 @@ class Hook_config_enable_user_online_groups
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (get_forum_type() != 'cns') ? null : '1';
     }

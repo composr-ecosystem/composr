@@ -28,7 +28,7 @@ class Module_admin_version
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -116,7 +116,7 @@ class Module_admin_version
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         // A lot of "peripheral architectural" tables are defined here. Central ones are defined in the installer -- as they need to be installed before any module.
         // This is always the first module to be installed.
@@ -1197,7 +1197,7 @@ class Module_admin_version
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             // Keep it off for now 'browse' => ['PROJECT_SPONSORS', 'menu/adminzone/sponsors'],
@@ -1211,7 +1211,7 @@ class Module_admin_version
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_lang('version');
         $this->title = get_screen_title('PROJECT_SPONSORS');
@@ -1224,7 +1224,7 @@ class Module_admin_version
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $level = get_param_integer('level', 50);
 

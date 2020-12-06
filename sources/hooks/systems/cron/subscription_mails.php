@@ -30,7 +30,7 @@ class Hook_cron_subscription_mails
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -52,7 +52,7 @@ class Hook_cron_subscription_mails
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         require_code('ecommerce_subscriptions');
         $_subscribers_1 = collapse_1d_complexity('s_member_id', $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['DISTINCT s_member_id']));

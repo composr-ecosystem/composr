@@ -28,7 +28,7 @@ class Hook_task_meta_tree_rebuild
      *
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run()
+    public function run() : ?array
     {
         require_code('themes_meta_tree');
         $meta_tree_builder = new Meta_tree_builder();
@@ -44,7 +44,7 @@ class Hook_task_meta_tree_rebuild
      * @param  integer $i Iterator position
      * @param  integer $total Total iterating through
      */
-    public function log($message, $i, $total)
+    public function log(string $message, int $i, int $total)
     {
         static $i = 0;
 

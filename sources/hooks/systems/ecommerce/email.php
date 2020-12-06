@@ -28,7 +28,7 @@ class Hook_ecommerce_email
      *
      * @return ?array A tuple: list of [fields to shown, hidden fields], title for add form, add form (null: disabled)
      */
-    public function config()
+    public function config() : ?array
     {
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_prods_prices WHERE name LIKE \'' . db_encode_like('forw\_%') . '\'');
         $out_forw = [];
@@ -77,7 +77,7 @@ class Hook_ecommerce_email
      *
      * @return Tempcode The fields
      */
-    protected function _get_fields_forw()
+    protected function _get_fields_forw() : object
     {
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('MAIL_DOMAIN'), do_lang_tempcode('DESCRIPTION_MAIL_DOMAIN'), 'dforw', '', true));
@@ -94,7 +94,7 @@ class Hook_ecommerce_email
      *
      * @return Tempcode The fields
      */
-    protected function _get_fields_pop3()
+    protected function _get_fields_pop3() : object
     {
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('MAIL_DOMAIN'), do_lang_tempcode('DESCRIPTION_MAIL_DOMAIN'), 'dpop3', '', true));
@@ -235,7 +235,7 @@ class Hook_ecommerce_email
      *
      * @return ?array A map of product categorisation details (null: disabled)
      */
-    public function get_product_category()
+    public function get_product_category() : ?array
     {
         return [
             'category_name' => do_lang('EMAIL_ACCOUNTS', integer_format(intval(get_option('initial_quota')))),
@@ -253,7 +253,7 @@ class Hook_ecommerce_email
      * @param  ?ID_TEXT $search Product being searched for (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products($search = null)
+    public function get_products(?string $search = null) : array
     {
         $products = [];
 
@@ -355,7 +355,7 @@ class Hook_ecommerce_email
      * @param  boolean $must_be_listed Whether the product must be available for public listing
      * @return integer The availability code (a ECOMMERCE_PRODUCT_* constant)
      */
-    public function is_available($type_code, $member_id, $req_quantity = 1, $must_be_listed = false)
+    public function is_available(string $type_code, int $member_id, int $req_quantity = 1, bool $must_be_listed = false) : int
     {
         if (is_guest($member_id)) {
             return ECOMMERCE_PRODUCT_NO_GUESTS;
@@ -408,7 +408,7 @@ class Hook_ecommerce_email
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
      */
-    public function get_needed_fields($type_code, $from_admin = false)
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
     {
         $fields = new Tempcode();
         $js_function_calls = [];
@@ -458,7 +458,7 @@ class Hook_ecommerce_email
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null no specific confirmation)
      */
-    public function handle_needed_fields($type_code, $from_admin = false)
+    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         $member_id = get_member();
 
@@ -529,7 +529,7 @@ class Hook_ecommerce_email
      * @param  ID_TEXT $prefix The prefix (mailbox name)
      * @param  ID_TEXT $suffix The suffix (domain name)
      */
-    protected function _ecom_product_handle_error_taken($prefix, $suffix)
+    protected function _ecom_product_handle_error_taken(string $prefix, string $suffix)
     {
         // Has this e-mail address been taken?
         $taken = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', ['details' => $prefix, 'details2' => '@' . $suffix], ' AND (t_type_code LIKE \'POP3%\' OR t_type_code LIKE \'FORW%\')');
@@ -546,7 +546,7 @@ class Hook_ecommerce_email
      * @param  array $details Details of the product, with added keys: TXN_ID, STATUS, ORDER_STATUS
      * @return boolean Whether the product was automatically dispatched (if not then hopefully this function sent a staff notification)
      */
-    public function actualiser($type_code, $purchase_id, $details)
+    public function actualiser(string $type_code, string $purchase_id, array $details) : bool
     {
         if ($details['STATUS'] != 'Completed') {
             return false;
@@ -657,7 +657,7 @@ class Hook_ecommerce_email
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return ?MEMBER The member ID (null: none)
      */
-    public function member_for($type_code, $purchase_id)
+    public function member_for(string $type_code, string $purchase_id) : ?int
     {
         switch (preg_replace('#_.*$#', '', $type_code)) {
             case 'POP3':

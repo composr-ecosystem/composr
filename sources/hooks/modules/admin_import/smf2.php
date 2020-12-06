@@ -45,7 +45,7 @@ class Hook_import_smf2
      *
      * @return ?array Importer handling details, including lists of all the import types covered (import types are not necessarily the same as actual tables) (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['supports_advanced_import'] = false;
@@ -100,7 +100,7 @@ class Hook_import_smf2
      * @param  string $file_base The probe path
      * @return array A quartet of the details (db_name, db_user, db_pass, table_prefix)
      */
-    public function probe_db_access($file_base)
+    public function probe_db_access(string $file_base) : array
     {
         $db_name = '';
         $db_user = '';
@@ -122,7 +122,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_config($db, $table_prefix, $file_base)
+    public function import_config(object $db, string $table_prefix, string $file_base)
     {
         $webmaster_email = '';
         $mbname = '';
@@ -228,7 +228,7 @@ class Hook_import_smf2
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    public function import_cns_groups($db, $table_prefix)
+    public function import_cns_groups(object $db, string $table_prefix)
     {
         global $ADDITIONAL_DATA;
 
@@ -279,7 +279,7 @@ class Hook_import_smf2
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    public function update_group_promotions($db, $table_prefix)
+    public function update_group_promotions(object $db, string $table_prefix)
     {
         // This will be needed when we finish our cycle to point to the last updated group
         $default_group = get_first_default_group();
@@ -319,7 +319,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_members($db, $table_prefix, $file_base)
+    public function import_cns_members(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -476,7 +476,7 @@ class Hook_import_smf2
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    public function import_cns_custom_profile_fields($db, $table_prefix)
+    public function import_cns_custom_profile_fields(object $db, string $table_prefix)
     {
         $rows = $db->query_select('custom_fields', ['*']);
 
@@ -589,7 +589,7 @@ class Hook_import_smf2
      * @param  string $options List of coma separated options
      * @return string Imploded with pipe
      */
-    public function cpf_options_string($default, $options)
+    public function cpf_options_string(string $default, string $options) : string
     {
         $temp_array = [];
         $default = trim($default);
@@ -615,7 +615,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_member_files($db, $table_prefix, $file_base)
+    public function import_cns_member_files(object $db, string $table_prefix, string $file_base)
     {
         $boardurl = '';
         $boarddir = '';
@@ -721,7 +721,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_ip_bans($db, $table_prefix, $file_base)
+    public function import_ip_bans(object $db, string $table_prefix, string $file_base)
     {
         global $SITE_INFO;
 
@@ -773,7 +773,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forum_groupings($db, $table_prefix, $old_base_dir)
+    public function import_cns_forum_groupings(object $db, string $table_prefix, string $old_base_dir)
     {
         $rows = $db->query_select('categories');
         foreach ($rows as $row) {
@@ -803,7 +803,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forums($db, $table_prefix, $old_base_dir)
+    public function import_cns_forums(object $db, string $table_prefix, string $old_base_dir)
     {
         require_code('cns_forums_action2');
 
@@ -912,7 +912,7 @@ class Hook_import_smf2
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
      */
-    public function fill_static_perms_all($pid, $fid, $db, $table_prefix)
+    public function fill_static_perms_all(int $pid, int $fid, object $db, string $table_prefix)
     {
         // Get the permission profile
         $v = $this->get_role_value(0, $pid, $db, $table_prefix);
@@ -938,7 +938,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @return integer The role value
      */
-    public function get_role_value($gid, $pid, $db, $table_prefix)
+    public function get_role_value(int $gid, int $pid, object $db, string $table_prefix) : int
     {
         // Set default 0 as Read Only
         $v = 0;
@@ -970,7 +970,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_topics($db, $table_prefix, $file_base)
+    public function import_cns_topics(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -999,7 +999,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_posts($db, $table_prefix, $file_base)
+    public function import_cns_posts(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -1062,7 +1062,7 @@ class Hook_import_smf2
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_topic($m)
+    protected function _fix_links_callback_topic(array $m) : string
     {
         return 'index.php?topic=' . strval(import_id_remap_get('topic', $m[2], true));
     }
@@ -1073,7 +1073,7 @@ class Hook_import_smf2
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_forum($m)
+    protected function _fix_links_callback_forum(array $m) : string
     {
         return 'index.php?board=' . strval(import_id_remap_get('forum', $m[2], true));
     }
@@ -1084,7 +1084,7 @@ class Hook_import_smf2
      * @param  array $m The match
      * @return string The substitution string
      */
-    protected function _fix_links_callback_member($m)
+    protected function _fix_links_callback_member(array $m) : string
     {
         return 'index.php?action=profile;u=' . strval(import_id_remap_get('member', $m[2], true));
     }
@@ -1098,7 +1098,7 @@ class Hook_import_smf2
      * @param  PATH $file_base The base directory we are importing from
      * @return string The new text field text
      */
-    public function fix_links($post, $db, $table_prefix, $file_base = '')
+    public function fix_links(string $post, object $db, string $table_prefix, string $file_base = '') : string
     {
         $boardurl = '';
 
@@ -1126,7 +1126,7 @@ class Hook_import_smf2
      * @param  string $ext The file extension to use
      * @return URLPATH The URL
      */
-    public function data_to_disk($data, $filename, $sections, $db, $table_prefix = '', $output_filename = '', $file_base = '', $attachment_id = '', $ext = '.png')
+    public function data_to_disk(string $data, string $filename, string $sections, object $db, string $table_prefix = '', string $output_filename = '', string $file_base = '', string $attachment_id = '', string $ext = '.png') : string
     {
         $boardurl = '';
         $boarddir = '';
@@ -1157,7 +1157,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_post_files($db, $table_prefix, $file_base)
+    public function import_cns_post_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
         require_code('attachments2');
@@ -1209,7 +1209,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
+    public function import_cns_polls_and_votes(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('polls', ['*']);
         foreach ($rows as $row) {
@@ -1280,7 +1280,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_personal_topics($db, $table_prefix, $old_base_dir)
+    public function import_cns_personal_topics(object $db, string $table_prefix, string $old_base_dir)
     {
         $member_rows = $db->query_select('members', ['id_member']);
         foreach ($member_rows as $member_row) {
@@ -1363,7 +1363,7 @@ class Hook_import_smf2
      * @param  string $icon smf icon
      * @return ID_TEXT Composr code
      */
-    public function convert_topic_emoticon($icon)
+    public function convert_topic_emoticon(string $icon) : string
     {
         switch ($icon) {
             case 'smiley':
@@ -1401,7 +1401,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_notifications($db, $table_prefix, $file_base)
+    public function import_notifications(object $db, string $table_prefix, string $file_base)
     {
         require_code('notifications');
 
@@ -1438,7 +1438,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_wordfilter($db, $table_prefix, $file_base)
+    public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE ' . db_string_equal_to('variable', 'censor_vulgar') . ' OR ' . db_string_equal_to('variable', 'censor_proper'));
 
@@ -1466,7 +1466,7 @@ class Hook_import_smf2
      * @param  boolean $r Whether to return the map or not
      * @return array The mapped Groups and Profile with highest privilege calculated
      */
-    public function static_perm_arr($gid, $pid, $v, $r = false)
+    public function static_perm_arr(int $gid, int $pid, int $v, bool $r = false) : array
     {
         // Create the static array
         static $st = [];
@@ -1505,7 +1505,7 @@ class Hook_import_smf2
      * @param  integer $gid The group ID to set
      * @param  integer $fid The forum ID to set
      */
-    public function set_forum_view_access($gid, $fid)
+    public function set_forum_view_access(int $gid, int $fid)
     {
         // Make a Compounded Name ID for the importer map
         $check_import_id = strval($gid) . '_' . strval($fid);
@@ -1528,7 +1528,7 @@ class Hook_import_smf2
      * @param  array $arr The static array map built from static_perm_arr
      * @param  integer $forum_id The forum ID to set
      */
-    public function sort_set_forum_perms_array($arr, $forum_id)
+    public function sort_set_forum_perms_array(array $arr, int $forum_id)
     {
         // Let's start the cycle
         foreach ($arr as $key => $val) {
@@ -1563,7 +1563,7 @@ class Hook_import_smf2
      * @param  integer $forum_id The forum ID to set
      * @param  integer $role The basic Role they have: 0=ReadOnly, 1=Post/Submit, 2=Unvetted, 3=Moderate
      */
-    public function set_forums_perms($group_id, $forum_id, $role = 0)
+    public function set_forums_perms(int $group_id, int $forum_id, int $role = 0)
     {
         // Make a Compounded Name ID for the importer map
         $check_import_id = strval($group_id) . '_' . strval($forum_id);
@@ -1643,7 +1643,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_calendar($db, $table_prefix, $file_base)
+    public function import_calendar(object $db, string $table_prefix, string $file_base)
     {
         require_code('calendar2');
 
@@ -1722,7 +1722,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_banners($db, $table_prefix, $file_base)
+    public function import_banners(object $db, string $table_prefix, string $file_base)
     {
         require_code('banners');
         require_code('banners2');
@@ -1747,7 +1747,7 @@ class Hook_import_smf2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_news_and_categories($db, $table_prefix, $file_base)
+    public function import_news_and_categories(object $db, string $table_prefix, string $file_base)
     {
         require_code('news');
         require_code('news2');

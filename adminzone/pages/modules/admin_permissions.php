@@ -28,7 +28,7 @@ class Module_admin_permissions
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -73,7 +73,7 @@ class Module_admin_permissions
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('match_key_messages', [
@@ -192,7 +192,7 @@ class Module_admin_permissions
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         $ret = [
             'browse' => ['PERMISSIONS_TREE', 'menu/adminzone/security/permissions/permission_tree_editor'],
@@ -218,7 +218,7 @@ class Module_admin_permissions
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -326,7 +326,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_css('permissions_editor');
         require_css('forms');
@@ -371,7 +371,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function absorb()
+    public function absorb() : object
     {
         $groups_without = [];
         $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -426,7 +426,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function _absorb()
+    public function _absorb() : object
     {
         $to = post_param_integer('to');
         $from = post_param_integer('from');
@@ -448,7 +448,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function tree_editor()
+    public function tree_editor() : object
     {
         require_javascript('tree_list');
 
@@ -493,7 +493,7 @@ class Module_admin_permissions
      * @param  array $groups Map of usergroups (id=>name)
      * @return Tempcode The header row
      */
-    public function _access_header($admin_groups, $groups)
+    public function _access_header(array $admin_groups, array $groups) : object
     {
         $css_path = get_custom_file_base() . '/themes/' . $GLOBALS['FORUM_DRIVER']->get_theme() . '/templates_cached/' . user_lang() . '/global.css';
         require_code('themes2');
@@ -522,7 +522,7 @@ class Module_admin_permissions
      * @param  Tempcode $title The title to use (output of get_screen_title)
      * @return Tempcode The UI
      */
-    public function _choose_zone($title)
+    public function _choose_zone(object $title) : object
     {
         $fields = new Tempcode();
         require_lang('zones');
@@ -552,7 +552,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function interface_match_keys_access()
+    public function interface_match_keys_access() : object
     {
         require_css('permissions_editor');
 
@@ -644,7 +644,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function set_match_keys_access()
+    public function set_match_keys_access() : object
     {
         // Delete to cleanup
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_page_access WHERE ' . db_string_equal_to('zone_name', '/'));
@@ -702,7 +702,7 @@ class Module_admin_permissions
      *
      * @return array The section list
      */
-    public function _get_ordered_sections()
+    public function _get_ordered_sections() : array
     {
         $_sections = list_to_map('p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', ['DISTINCT p_section']));
         foreach ($_sections as $i => $s) {
@@ -732,7 +732,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function interface_content_access_choose_group()
+    public function interface_content_access_choose_group() : object
     {
         $options = new Tempcode();
         $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_private_club' => 0, 'g_is_super_admin' => 0], 'ORDER BY ' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
@@ -766,7 +766,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function interface_content_access()
+    public function interface_content_access() : object
     {
         $group_id = get_param_integer('group_id', null);
         if ($group_id === null) {
@@ -900,7 +900,7 @@ class Module_admin_permissions
      * @param  integer $max Maximum number of items to show from any one content type
      * @return array List of item maps, ready for template
      */
-    protected function build_content_item_tree($filters, $group_id, $overridables, $hook_ob, $info, $max)
+    protected function build_content_item_tree(?array $filters, int $group_id, array $overridables, object $hook_ob, array $info, int $max) : array
     {
         $save_id_stub = get_module_zone($info['cms_page']) . ':' . $info['permissions_type_code'] . ':';
 
@@ -962,7 +962,7 @@ class Module_admin_permissions
      * @param  integer $depth Current recursion depth
      * @return array List of item maps, ready for template
      */
-    protected function _build_content_item_tree($filters, $overridables, $group_category_access, $_group_privileges, $save_id_stub, $hook_ob, $info, $row, &$rows, $depth = 1)
+    protected function _build_content_item_tree(?array $filters, array $overridables, array $group_category_access, array $_group_privileges, string $save_id_stub, object $hook_ob, array $info, array $row, array &$rows, int $depth = 1) : array
     {
         $item_label = $row['_title'];
         $id = $row[$info['id_field']];
@@ -1041,7 +1041,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function set_content_access()
+    public function set_content_access() : object
     {
         require_code('input_filter_2');
         rescue_shortened_post_request();
@@ -1108,7 +1108,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function interface_privileges()
+    public function interface_privileges() : object
     {
         require_all_lang();
         require_code('zones2');
@@ -1327,7 +1327,7 @@ class Module_admin_permissions
      *
      * @return Tempcode The UI
      */
-    public function set_privileges()
+    public function set_privileges() : object
     {
         require_all_lang();
 

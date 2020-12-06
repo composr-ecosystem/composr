@@ -23,7 +23,7 @@
  *
  * @return string Graph ID
  */
-function _generate_graph_id()
+function _generate_graph_id() : string
 {
     return md5(uniqid('', true));
 }
@@ -34,7 +34,7 @@ function _generate_graph_id()
  * @param  ?string $width Width (null: responsive)
  * @param  ?string $height Height (null: responsive)
  */
-function _normalise_graph_dims(&$width, &$height)
+function _normalise_graph_dims(?string &$width, ?string &$height)
 {
     if ($width === null) {
         $width = '';
@@ -57,7 +57,7 @@ function _normalise_graph_dims(&$width, &$height)
  *
  * @param  array $color_pool Existing colour pool
  */
-function _generate_graph_color_pool(&$color_pool)
+function _generate_graph_color_pool(array &$color_pool)
 {
     $color_pool[] = '#c24a4a';
     $color_pool[] = '#4a4ac2';
@@ -71,7 +71,7 @@ function _generate_graph_color_pool(&$color_pool)
  * @param  array $color_pool Colour pool
  * @return string Colour
  */
-function _search_graph_color_pool($i, $color_pool)
+function _search_graph_color_pool(int $i, array $color_pool) : string
 {
     return $color_pool[$i % count($color_pool)];
 }
@@ -89,7 +89,7 @@ function _search_graph_color_pool($i, $color_pool)
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The diagram
  */
-function graph_scatter_diagram($datapoints, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = false, $color = null, $width = null, $height = null)
+function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', string $y_axis_label = '', bool $begin_at_zero = false, ?string $color = null, ?string $width = null, ?string $height = null) : object
 {
     if ($color === null) {
         $color_pool = [];
@@ -138,7 +138,7 @@ function graph_scatter_diagram($datapoints, $x_axis_label = '', $y_axis_label = 
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = true, $show_data_labels = true, $color_pool = [], $width = null, $height = null)
+function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_label = '', $y_axis_label = '', bool $begin_at_zero = true, bool $show_data_labels = true, ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 
@@ -211,7 +211,7 @@ function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_ax
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_pie_chart($datapoints, $show_data_labels = true, $color_pool = [], $width = null, $height = null)
+function graph_pie_chart(array $datapoints, bool $show_data_labels = true, ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 
@@ -268,7 +268,7 @@ function graph_pie_chart($datapoints, $show_data_labels = true, $color_pool = []
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_bar_chart($datapoints, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = true, $show_data_labels = true, $color_pool = [], $width = null, $height = null)
+function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = '', bool $begin_at_zero = true, bool $show_data_labels = true, ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 
@@ -320,7 +320,7 @@ function graph_bar_chart($datapoints, $x_axis_label = '', $y_axis_label = '', $b
  * @param  mixed $value Value
  * @return string Value for chart.js
  */
-function number_raw_string($value)
+function number_raw_string($value) : string
 {
     if (is_integer($value)) {
         return strval($value);

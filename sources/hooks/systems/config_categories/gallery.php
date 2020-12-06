@@ -28,7 +28,7 @@ class Hook_config_categories_gallery
      *
      * @return boolean Whether it is enabled
      */
-    public function is_enabled()
+    public function is_enabled() : bool
     {
         return addon_installed('galleries');
     }

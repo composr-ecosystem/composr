@@ -28,7 +28,7 @@ class Hook_cleanup_cns_members
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -55,7 +55,7 @@ class Hook_cleanup_cns_members
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         if (get_forum_type() != 'cns') {
             return new Tempcode();

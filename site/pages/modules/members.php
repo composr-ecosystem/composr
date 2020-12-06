@@ -28,7 +28,7 @@ class Module_members
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_members
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -73,7 +73,7 @@ class Module_members
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -173,7 +173,7 @@ class Module_members
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -195,7 +195,7 @@ class Module_members
      *
      * @return Tempcode The UI
      */
-    public function directory()
+    public function directory() : object
     {
         $tpl = do_template('CNS_MEMBER_DIRECTORY_SCREEN', [
             '_GUID' => '096767e9aaabce9cb3e6591b7bcf95b8',
@@ -211,7 +211,7 @@ class Module_members
      *
      * @return Tempcode The UI
      */
-    public function profile()
+    public function profile() : object
     {
         disable_php_memory_limit();
 
@@ -228,7 +228,7 @@ class Module_members
      *
      * @return Tempcode The UI
      */
-    public function newsletter_unsubscribe()
+    public function newsletter_unsubscribe() : object
     {
         $id = get_param_integer('id');
         $hash = get_param_string('hash');

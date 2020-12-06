@@ -31,7 +31,7 @@ class Module_admin
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -52,7 +52,7 @@ class Module_admin
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         return [
             'browse' => ['ADMIN_ZONE', 'menu/adminzone/adminzone'],
@@ -73,7 +73,7 @@ class Module_admin
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $type = get_param_string('type', 'browse');
 
@@ -129,7 +129,7 @@ class Module_admin
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('templates_donext');
         require_code('files');
@@ -167,7 +167,7 @@ class Module_admin
      *
      * @return array Synonyms (each element is an array of synonyms)
      */
-    public function _synonyms()
+    public function _synonyms() : array
     {
         require_code('textfiles');
         $sets = explode("\n", read_text_file('synonyms', user_lang()));
@@ -194,7 +194,7 @@ class Module_admin
      * @param  array $words Input words
      * @return array Replaced, with junk words removed
      */
-    public function _strip_junk_words($words)
+    public function _strip_junk_words(array $words) : array
     {
         require_code('textfiles');
         $bad = array_flip(explode("\n", read_text_file('too_common_words', user_lang())));
@@ -220,7 +220,7 @@ class Module_admin
      * @param  ?string $t Search string (null: nothing)
      * @return boolean Whether there is a match
      */
-    public function _keyword_match($t)
+    public function _keyword_match(?string $t) : bool
     {
         if ($t === null) {
             return false;
@@ -265,7 +265,7 @@ class Module_admin
      * @param  string $results_type Current section
      * @return boolean Whether there is a match
      */
-    public function _section_match($section_limitations, $results_type)
+    public function _section_match(array $section_limitations, string $results_type) : bool
     {
         if (empty($section_limitations)) {
             return true;
@@ -285,7 +285,7 @@ class Module_admin
      *
      * @return Tempcode Interface
      */
-    public function search()
+    public function search() : object
     {
         require_code('zones2');
         disable_php_memory_limit();

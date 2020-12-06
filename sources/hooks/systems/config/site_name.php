@@ -28,7 +28,7 @@ class Hook_config_site_name
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SITE_NAME',
@@ -52,7 +52,7 @@ class Hook_config_site_name
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return get_domain();
     }

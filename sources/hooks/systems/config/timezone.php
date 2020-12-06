@@ -28,7 +28,7 @@ class Hook_config_timezone
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TIMEZONE',
@@ -52,7 +52,7 @@ class Hook_config_timezone
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return get_server_timezone();
     }
@@ -66,7 +66,7 @@ class Hook_config_timezone
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter($name, $myrow, $human_name, $explanation)
+    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
     {
         $current_value = get_option($name);
         if (is_numeric($current_value)) {

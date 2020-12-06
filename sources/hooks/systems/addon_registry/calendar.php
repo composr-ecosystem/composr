@@ -29,7 +29,7 @@ class Hook_addon_registry_calendar
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_calendar
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_calendar
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Information Display';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_calendar
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'An advanced community calendar.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_calendar
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_calendar',
@@ -81,7 +81,7 @@ class Hook_addon_registry_calendar
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_calendar
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/rich_content/calendar.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_calendar
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/calendar.php',
@@ -227,7 +227,7 @@ class Hook_addon_registry_calendar
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/CALENDAR_YEAR_MONTH_DAY_SPACER.tpl' => 'calendar_year_view',
@@ -269,7 +269,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_year_view()
+    public function tpl_preview__calendar_year_view() : array
     {
         return [
             lorem_globalise($this->calendar_main_screen('year'), null, '', true)
@@ -283,7 +283,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_month_view()
+    public function tpl_preview__calendar_month_view() : array
     {
         return [
             lorem_globalise($this->calendar_main_screen('month'), null, '', true)
@@ -297,7 +297,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_week_view()
+    public function tpl_preview__calendar_week_view() : array
     {
         return [
             lorem_globalise($this->calendar_main_screen('week'), null, '', true)
@@ -311,7 +311,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_day_view()
+    public function tpl_preview__calendar_day_view() : array
     {
         return [
             lorem_globalise($this->calendar_main_screen('day'), null, '', true)
@@ -325,7 +325,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_side_calendar()
+    public function tpl_preview__block_side_calendar() : array
     {
         require_lang('dates');
 
@@ -390,7 +390,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_side_calendar_listing()
+    public function tpl_preview__block_side_calendar_listing() : array
     {
         $days = [
             [
@@ -436,7 +436,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_event_conflict()
+    public function tpl_preview__calendar_event_conflict() : array
     {
         return [
             lorem_globalise(do_lorem_template('CALENDAR_EVENT_CONFLICT', [
@@ -454,7 +454,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_event_box()
+    public function tpl_preview__calendar_event_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('CALENDAR_EVENT_BOX', [
@@ -475,7 +475,7 @@ class Hook_addon_registry_calendar
      * @param  string $view View type
      * @return Tempcode Preview
      */
-    public function calendar_main_screen($view)
+    public function calendar_main_screen(string $view) : object
     {
         require_lang('dates');
 
@@ -766,7 +766,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__calendar_event_screen()
+    public function tpl_preview__calendar_event_screen() : array
     {
         $subscriptions = [];
         foreach (placeholder_array() as $v) {
@@ -891,7 +891,7 @@ class Hook_addon_registry_calendar
      *
      * @return array Predefined event category icons
      */
-    protected function predefined_event_types()
+    protected function predefined_event_types() : array
     {
         return ['birthday', 'public_holiday', 'vacation', 'appointment', 'commitment', 'anniversary'];
     }
@@ -901,7 +901,7 @@ class Hook_addon_registry_calendar
      *
      * @return array A map of available predefined content codenames, and details (if installed, and title)
      */
-    public function enumerate_predefined_content()
+    public function enumerate_predefined_content() : array
     {
         require_lang('calendar');
 
@@ -927,7 +927,7 @@ class Hook_addon_registry_calendar
      *
      * @param  ?array $content A list of predefined content labels to install (null: all)
      */
-    public function install_predefined_content($content = null)
+    public function install_predefined_content(?array $content = null)
     {
         $event_types = $this->predefined_event_types();
         foreach ($event_types as $type) {
@@ -949,7 +949,7 @@ class Hook_addon_registry_calendar
      *
      * @param  ?array $content A list of predefined content labels to uninstall (null: all)
      */
-    public function uninstall_predefined_content($content = null)
+    public function uninstall_predefined_content(?array $content = null)
     {
         $event_types = $this->predefined_event_types();
         foreach ($event_types as $type) {

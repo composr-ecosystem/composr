@@ -32,7 +32,7 @@
  * @param  LONG_TEXT $reason The reason for editing the poll
  * @return AUTO_LINK The ID of the topic the poll is on
  */
-function cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $reason = '')
+function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, string $reason = '') : int
 {
     require_code('cns_polls');
 
@@ -96,7 +96,7 @@ function cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_sele
  * @param  boolean $check_perms Whether to check permissions
  * @return AUTO_LINK The ID of the topic the poll is on
  */
-function cns_delete_poll($poll_id, $reason = '', $check_perms = true)
+function cns_delete_poll(int $poll_id, string $reason = '', bool $check_perms = true) : int
 {
     require_code('cns_polls');
 
@@ -138,7 +138,7 @@ function cns_delete_poll($poll_id, $reason = '', $check_perms = true)
  * @param  ?MEMBER $member_id The member that's voting (null: current member)
  * @param  ?array $topic_info The row of the topic the poll is for (null: get it from the DB)
  */
-function cns_vote_in_poll($poll_id, $votes, $member_id = null, $topic_info = null)
+function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?array $topic_info = null)
 {
     // Who's voting
     if ($member_id === null) {

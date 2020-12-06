@@ -28,7 +28,7 @@ class Hook_preview_wiki_page
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('wiki')) && (get_page_name() == 'cms_wiki');
         return [$applies, 'wiki_page', false];

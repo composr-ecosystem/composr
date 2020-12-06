@@ -44,7 +44,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_clubs')) {
             return null;
@@ -64,7 +64,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('cns_clubs', $error_msg)) {
@@ -90,7 +90,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         cns_require_all_forum_stuff();
 
@@ -116,7 +116,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -149,7 +149,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  BINARY $open_membership Whether members may join this usergroup without requiring any special permission
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $name = '', $group_leader = null, $open_membership = 1)
+    public function get_form_fields(?int $id = null, string $name = '', ?string $group_leader = null, int $open_membership = 1) : array
     {
         if ($group_leader === null) {
             $group_leader = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_BLANK);
@@ -169,7 +169,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -220,7 +220,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $fields = new Tempcode();
         $count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 1]);
@@ -248,7 +248,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         return !in_array(intval($id), get_all_preserved_groups(true));
     }
@@ -259,7 +259,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['id' => intval($id), 'g_is_private_club' => 1]);
         if (!array_key_exists(0, $rows)) {
@@ -276,7 +276,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('cns_forums_action2');
 
@@ -340,7 +340,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  AUTO_LINK $id Club (usergroup) ID
      * @param  AUTO_LINK $forum_id Forum ID
      */
-    public function _set_permissions($id, $forum_id)
+    public function _set_permissions(int $id, int $forum_id)
     {
         // Cleanup
         $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id)]);
@@ -371,7 +371,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $group_id = intval($id);
         require_code('cns_groups');
@@ -414,7 +414,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         $group_id = intval($id);
         require_code('cns_groups');

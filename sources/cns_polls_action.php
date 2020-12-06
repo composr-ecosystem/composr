@@ -32,7 +32,7 @@
  * @param  boolean $check_permissions Whether to check there are permissions to make the poll
  * @return AUTO_LINK The ID of the newly created forum poll
  */
-function cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $check_permissions = true)
+function cns_make_poll(int $topic_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, bool $check_permissions = true) : int
 {
     require_code('cns_polls');
 

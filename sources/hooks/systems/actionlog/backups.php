@@ -28,7 +28,7 @@ class Hook_actionlog_backups extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (!addon_installed('backup')) {
             return [];
@@ -66,7 +66,7 @@ class Hook_actionlog_backups extends Hook_actionlog
      * @param  ?string $identifier Identifier (null: none)
      * @return string Written context
      */
-    protected function get_written_context($actionlog_row, $handler_data, $identifier)
+    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : string
     {
         switch ($actionlog_row['the_type']) {
             case 'BACKUP':

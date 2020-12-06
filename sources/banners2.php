@@ -27,7 +27,7 @@
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_banner_type_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_banner_type_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -66,7 +66,7 @@ function render_banner_type_box($row, $zone = '_SEARCH', $give_context = true, $
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_banner_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_banner_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -103,7 +103,7 @@ function render_banner_box($row, $zone = '_SEARCH', $give_context = true, $guid 
  * @param  ?mixed $it The currently selected banner type (null: none selected)
  * @return Tempcode The list of banner types
  */
-function create_selection_list_banner_types($it = null)
+function create_selection_list_banner_types($it = null) : object
 {
     if (is_string($it)) {
         $it = [$it];
@@ -132,7 +132,7 @@ function create_selection_list_banner_types($it = null)
  * @param  ?MEMBER $only_owned Only show banners owned by the member (null: no such restriction)
  * @return Tempcode The list
  */
-function create_selection_list_banners($it = null, $only_owned = null)
+function create_selection_list_banners(?string $it = null, ?int $only_owned = null) : object
 {
     $where = ($only_owned === null) ? null : ['submitter' => $only_owned];
     $rows = $GLOBALS['SITE_DB']->query_select('banners', ['name'], $where, 'ORDER BY name', 150);
@@ -172,7 +172,7 @@ function create_selection_list_banners($it = null, $only_owned = null)
  * @param  SHORT_TEXT $title_text The title text for the banner (only used for text banners, and functions as the 'trigger text' if the banner type is shown inline)
  * @return array A pair: The input field Tempcode, JavaScript code
  */
-function get_banner_form_fields($simplified = false, $name = '', $image_url = '', $site_url = '', $caption = '', $direct_code = '', $notes = '', $display_likelihood = 3, $campaign_remaining = 50, $deployment_agreement = 1, $expiry_date = null, $submitter = null, $validated = 1, $b_type = '', $b_types = [], $regions = [], $title_text = '')
+function get_banner_form_fields(bool $simplified = false, string $name = '', string $image_url = '', string $site_url = '', string $caption = '', string $direct_code = '', string $notes = '', int $display_likelihood = 3, ?int $campaign_remaining = 50, int $deployment_agreement = 1, ?int $expiry_date = null, ?int $submitter = null, int $validated = 1, string $b_type = '', array $b_types = [], array $regions = [], string $title_text = '') : array
 {
     require_code('images');
 
@@ -280,7 +280,7 @@ function get_banner_form_fields($simplified = false, $name = '', $image_url = ''
  * @param  string $file_param_name Param name for possible upload field
  * @return array A pair: The URL, and the title text
  */
-function check_banner($title_text = '', $direct_code = '', $b_type = '', $b_types = [], $url_param_name = 'image_url', $file_param_name = 'file')
+function check_banner(string $title_text = '', string $direct_code = '', string $b_type = '', array $b_types = [], string $url_param_name = 'image_url', string $file_param_name = 'file') : array
 {
     require_code('uploads');
     is_plupload(true);
@@ -405,7 +405,7 @@ function check_banner($title_text = '', $direct_code = '', $b_type = '', $b_type
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function add_banner($name, $imgurl, $title_text, $caption, $direct_code, $campaign_remaining, $site_url, $display_likelihood, $notes, $deployment_agreement, $expiry_date, $submitter, $validated = 0, $b_type = '', $b_types = [], $regions = [], $time = null, $hits_from = 0, $hits_to = 0, $views_from = 0, $views_to = 0, $edit_date = null, $uniqify = false)
+function add_banner(string $name, string $imgurl, string $title_text, string $caption, string $direct_code, ?int $campaign_remaining, string $site_url, int $display_likelihood, string $notes, int $deployment_agreement, ?int $expiry_date, ?int $submitter, int $validated = 0, string $b_type = '', array $b_types = [], array $regions = [], ?int $time = null, int $hits_from = 0, int $hits_to = 0, int $views_from = 0, int $views_to = 0, ?int $edit_date = null, bool $uniqify = false) : string
 {
     if ($campaign_remaining === null) {
         $campaign_remaining = 0;
@@ -509,7 +509,7 @@ function add_banner($name, $imgurl, $title_text, $caption, $direct_code, $campai
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function edit_banner($old_name, $name, $imgurl, $title_text, $caption, $direct_code, $campaign_remaining, $site_url, $display_likelihood, $notes, $deployment_agreement, $expiry_date, $submitter, $validated, $b_type, $b_types = [], $regions = [], $edit_time = null, $add_time = null, $null_is_literal = false, $uniqify = false)
+function edit_banner(string $old_name, string $name, string $imgurl, string $title_text, string $caption, string $direct_code, ?int $campaign_remaining, string $site_url, int $display_likelihood, string $notes, int $deployment_agreement, ?int $expiry_date, ?int $submitter, int $validated, string $b_type, array $b_types = [], array $regions = [], ?int $edit_time = null, ?int $add_time = null, bool $null_is_literal = false, bool $uniqify = false) : string
 {
     $_caption = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'caption', ['name' => $old_name]);
     if ($_caption === null) {
@@ -607,7 +607,7 @@ function edit_banner($old_name, $name, $imgurl, $title_text, $caption, $direct_c
  *
  * @param  ID_TEXT $name The name of the banner
  */
-function delete_banner($name)
+function delete_banner(string $name)
 {
     $caption = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'caption', ['name' => $name]);
     if ($caption === null) {
@@ -656,7 +656,7 @@ function delete_banner($name)
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function add_banner_type($id, $is_textual, $image_width, $image_height, $max_file_size, $comcode_inline, $uniqify = false)
+function add_banner_type(string $id, int $is_textual, int $image_width, int $image_height, int $max_file_size, int $comcode_inline, bool $uniqify = false) : string
 {
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banner_types', 'id', ['id' => $id]);
     if ($test !== null) {
@@ -702,7 +702,7 @@ function add_banner_type($id, $is_textual, $image_width, $image_height, $max_fil
  * @param  boolean $uniqify Whether to force the name as unique, if there's a conflict
  * @return ID_TEXT The name
  */
-function edit_banner_type($old_id, $id, $is_textual, $image_width, $image_height, $max_file_size, $comcode_inline, $uniqify = false)
+function edit_banner_type(string $old_id, string $id, int $is_textual, int $image_width, int $image_height, int $max_file_size, int $comcode_inline, bool $uniqify = false) : string
 {
     $rows = $GLOBALS['SITE_DB']->query_select('banner_types', ['id'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -749,7 +749,7 @@ function edit_banner_type($old_id, $id, $is_textual, $image_width, $image_height
  *
  * @param  ID_TEXT $id The ID of the banner type
  */
-function delete_banner_type($id)
+function delete_banner_type(string $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('banner_types', ['id'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -778,7 +778,7 @@ function delete_banner_type($id)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__banners($where = [], $tolerate_errors = false)
+function reorganise_uploads__banners(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('banner', 'uploads/banners', 'img_url', $where, false, $tolerate_errors);

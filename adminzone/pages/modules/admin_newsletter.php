@@ -42,7 +42,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -72,7 +72,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('newsletter', $error_msg)) {
@@ -141,7 +141,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         push_query_limiting(false);
 
@@ -230,7 +230,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         $set_pause = post_param_integer('set_pause', null);
         if ($set_pause !== null) {
@@ -277,7 +277,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  ID_TEXT $lang The language
      * @return integer The count
      */
-    public function _count_on_newsletter($key, $lang)
+    public function _count_on_newsletter(string $key, string $lang) : int
     {
         $send_details = [
             $key => true,
@@ -291,7 +291,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import_subscribers()
+    public function import_subscribers() : object
     {
         $_language = choose_language($this->title);
         if (is_object($_language)) {
@@ -381,7 +381,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function view_subscribers()
+    public function view_subscribers() : object
     {
         $lang = choose_language($this->title);
         if (is_object($lang)) {
@@ -513,7 +513,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function bounce_filter_a()
+    public function bounce_filter_a() : object
     {
         if (!function_exists('imap_open')) {
             warn_exit(do_lang_tempcode('IMAP_NEEDED'));
@@ -558,7 +558,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function bounce_filter_b()
+    public function bounce_filter_b() : object
     {
         require_code('mail');
         require_code('mail2');
@@ -602,7 +602,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function bounce_filter_c()
+    public function bounce_filter_c() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -669,7 +669,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function bounce_filter_d()
+    public function bounce_filter_d() : object
     {
         require_code('input_filter_2');
         if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -699,7 +699,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function whatsnew_1()
+    public function whatsnew_1() : object
     {
         $lang = choose_language($this->title);
         if (is_object($lang)) {
@@ -776,7 +776,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function whatsnew_2()
+    public function whatsnew_2() : object
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
         disable_php_memory_limit();
@@ -812,7 +812,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function whatsnew_3()
+    public function whatsnew_3() : object
     {
         // Handle requested periodic "What's new" newsletter maintenance
         // =============================================================
@@ -861,7 +861,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  LONG_TEXT $_message Default newsletter to put in
      * @return Tempcode The UI
      */
-    public function send_gui($_message = '')
+    public function send_gui(string $_message = '') : object
     {
         $blocked = newsletter_block_list();
         if (!empty($blocked)) {
@@ -1192,7 +1192,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function confirm_send()
+    public function confirm_send() : object
     {
         // Read in details
         $message = post_param_string('message');
@@ -1307,7 +1307,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function send_message()
+    public function send_message() : object
     {
         $lang = choose_language($this->title);
         if (is_object($lang)) {
@@ -1421,7 +1421,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function archive()
+    public function archive() : object
     {
         $lang = choose_language($this->title);
         if (is_object($lang)) {
@@ -1478,7 +1478,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function view()
+    public function view() : object
     {
         $id = get_param_integer('id');
 
@@ -1579,7 +1579,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  LONG_TEXT $description The description
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($title = '', $description = '')
+    public function get_form_fields(string $title = '', string $description = '') : array
     {
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
@@ -1594,7 +1594,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -1633,7 +1633,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $_m = $GLOBALS['SITE_DB']->query_select('newsletters', ['id', 'title']);
         $entries = new Tempcode();
@@ -1650,7 +1650,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -1666,7 +1666,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $title = post_param_string('title');
         $description = post_param_string('description');
@@ -1682,7 +1682,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $title = post_param_string('title');
         $description = post_param_string('description');
@@ -1697,7 +1697,7 @@ class Module_admin_newsletter extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_newsletter(intval($id));
     }

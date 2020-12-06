@@ -39,7 +39,7 @@ class Hook_task_import_gallery_media
      * @param  array $additional_access Array of additional members who should have access to this content
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($files, $member_id, $cat, $set_title, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access)
+    public function run(array $files, int $member_id, string $cat, string $set_title, int $allow_rating, int $allow_comments_reviews, int $allow_trackbacks, bool $watermark, string $notes, string $privacy_level, array $additional_access) : ?array
     {
         if (!addon_installed('galleries')) {
             return null;

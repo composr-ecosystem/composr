@@ -72,7 +72,7 @@ function approve_ip_script()
  *
  * @return boolean Whether it is
  */
-function maintenance_script_htaccess_option_available()
+function maintenance_script_htaccess_option_available() : bool
 {
     if (get_forum_type() != 'cns') {
         return false;

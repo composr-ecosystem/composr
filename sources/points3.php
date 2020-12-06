@@ -25,7 +25,7 @@
  * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
  * @return Tempcode The UI
  */
-function points_profile($member_id_of, $member_id_viewing)
+function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 {
     require_code('points');
     require_css('points');
@@ -162,7 +162,7 @@ function points_profile($member_id_of, $member_id_viewing)
  * @param  MEMBER $member_id_viewing Who we are looking at transactions using the account of
  * @return Tempcode The UI
  */
-function points_get_transactions($type, $member_id_of, $member_id_viewing)
+function points_get_transactions(string $type, int $member_id_of, int $member_id_viewing) : object
 {
     $where = ['gift_' . $type => $member_id_of];
     if ($type == 'from') {

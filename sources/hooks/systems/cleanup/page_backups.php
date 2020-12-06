@@ -28,7 +28,7 @@ class Hook_cleanup_page_backups
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!is_suexec_like()) {
             return null;
@@ -47,7 +47,7 @@ class Hook_cleanup_page_backups
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         $langs = array_keys(find_all_langs());
 
@@ -92,7 +92,7 @@ class Hook_cleanup_page_backups
      *
      * @param  PATH $path Path
      */
-    public function process($path)
+    public function process(string $path)
     {
         $dh = @opendir($path);
         if ($dh !== false) {

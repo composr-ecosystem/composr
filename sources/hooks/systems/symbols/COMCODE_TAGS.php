@@ -29,7 +29,7 @@ class Hook_symbol_COMCODE_TAGS
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         require_code('comcode_renderer');
         _custom_comcode_import($GLOBALS['SITE_DB']);

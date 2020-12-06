@@ -34,7 +34,7 @@ class Hook_rss_comments
      * @param  integer $max The maximum number of entries to return, ordering by date
      * @return ?array A pair: The main syndication section, and a title (null: error)
      */
-    public function run($full_title, $cutoff, $prefix, $date_string, $max)
+    public function run(string $full_title, int $cutoff, string $prefix, string $date_string, int $max) : ?array
     {
         if ($full_title == '*') {
             return null; // We cannot get 'all' comments, as there's no API for that, and no easy way to check permissions

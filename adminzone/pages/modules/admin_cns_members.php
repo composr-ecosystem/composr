@@ -28,7 +28,7 @@ class Module_admin_cns_members
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_cns_members
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -108,7 +108,7 @@ class Module_admin_cns_members
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -192,7 +192,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         cns_require_all_forum_stuff();
 
@@ -240,7 +240,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         if (addon_installed('securitylogging')) {
             require_lang('lookup');
@@ -282,7 +282,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function step1()
+    public function step1() : object
     {
         url_default_parameters__enable();
         list($fields, $hidden) = cns_get_member_fields(false);
@@ -329,7 +329,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function step2()
+    public function step2() : object
     {
         // Read in data...
 
@@ -518,7 +518,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function delurk()
+    public function delurk() : object
     {
         require_lang('cns_lurkers');
 
@@ -626,7 +626,7 @@ class Module_admin_cns_members
      * @param  array $usergroups List of usergroups
      * @return array Mapping of lurkers
      */
-    public function find_lurkers($max_posts, $max_points, $max_logged_actions, $min_days_since_login, $min_days_since_join, $non_confirmed, $usergroups)
+    public function find_lurkers(int $max_posts, int $max_points, int $max_logged_actions, int $min_days_since_login, int $min_days_since_join, bool $non_confirmed, array $usergroups) : array
     {
         $start = 0;
         do {
@@ -680,7 +680,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function _delurk()
+    public function _delurk() : object
     {
         cms_disable_time_limit();
 
@@ -734,7 +734,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function __delurk()
+    public function __delurk() : object
     {
         require_lang('cns_lurkers');
 
@@ -757,7 +757,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function export_spreadsheet()
+    public function export_spreadsheet() : object
     {
         $hidden = new Tempcode();
         $fields = new Tempcode();
@@ -817,7 +817,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function _export_spreadsheet()
+    public function _export_spreadsheet() : object
     {
         $filter_by_allow = post_param_integer('filter_by_allow', 0);
         $fields_to_use = isset($_POST['fields_to_use']) ? $_POST['fields_to_use'] : [];
@@ -835,7 +835,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function import_spreadsheet()
+    public function import_spreadsheet() : object
     {
         check_privilege('mass_import');
 
@@ -869,7 +869,7 @@ class Module_admin_cns_members
      *
      * @return Tempcode The UI
      */
-    public function _import_spreadsheet()
+    public function _import_spreadsheet() : object
     {
         check_privilege('mass_import');
 

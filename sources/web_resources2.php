@@ -41,7 +41,7 @@ function init__web_resources2()
  * @set equations hsv
  * @return string The sheet
  */
-function css_inherit($css_file, $theme, $destination_theme, $seed, $dark, $algorithm)
+function css_inherit(string $css_file, string $theme, string $destination_theme, ?string $seed, bool $dark, string $algorithm) : string
 {
     // Find source
     $full_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/' . $css_file . '.css';
@@ -111,7 +111,7 @@ function css_inherit($css_file, $theme, $destination_theme, $seed, $dark, $algor
  * @param  boolean $minify Whether to also do minification
  * @param  ?ID_TEXT $theme Theme to use (null: current theme)
  */
-function js_compile($j, $js_cache_path, $minify = true, $theme = null)
+function js_compile(string $j, string $js_cache_path, bool $minify = true, ?string $theme = null)
 {
     $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -164,7 +164,7 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
  * @param  PATH $css_cache_path Full path to where the cached CSS file will go
  * @param  boolean $minify Whether to also do minification
  */
-function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $minify = true)
+function css_compile(string $active_theme, string $theme, string $c, string $full_path, string $css_cache_path, bool $minify = true)
 {
     cms_profile_start_for('css_compile');
 
@@ -199,7 +199,7 @@ function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $mi
  *
  * @ignore
  */
-function _css_cms_include($matches)
+function _css_cms_include(array $matches) : array
 {
     global $CSS_COMPILE_ACTIVE_THEME;
 
@@ -231,7 +231,7 @@ function _css_cms_include($matches)
  *
  * @ignore
  */
-function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
+function _css_compile(string $active_theme, string $theme, string $c, string $full_path, bool $minify = true) : array
 {
     // Book-keeping, then loading up the CSS text
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS;
@@ -294,7 +294,7 @@ function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
  * @param  PATH $stub_file Full path to the file to compress
  * @return boolean Success status
  */
-function compress_cms_stub_file($stub_file)
+function compress_cms_stub_file(string $stub_file) : bool
 {
     $a = compress_cms_stub_file_br($stub_file);
     $b = compress_cms_stub_file_gz($stub_file);
@@ -307,7 +307,7 @@ function compress_cms_stub_file($stub_file)
  * @param  PATH $stub_file Full path to the file to compress
  * @return boolean Success status
  */
-function compress_cms_stub_file_br($stub_file)
+function compress_cms_stub_file_br(string $stub_file) : bool
 {
     if (!supports_brotli(false)) {
         return false;
@@ -333,7 +333,7 @@ function compress_cms_stub_file_br($stub_file)
  * @param  PATH $stub_file Full path to the file to compress
  * @return boolean Success status
  */
-function compress_cms_stub_file_gz($stub_file)
+function compress_cms_stub_file_gz(string $stub_file) : bool
 {
     if (!supports_gzip(false)) {
         return false;
@@ -359,7 +359,7 @@ function compress_cms_stub_file_gz($stub_file)
  * @param  string $js JavaScript to minimise
  * @return string Minimised JavaScript
  */
-function js_minify($js)
+function js_minify(string $js) : string
 {
     if (strpos(substr($js, 0, 1000), 'no minify') !== false) {
         return str_replace('/*no minify*/', '', $js);
@@ -412,7 +412,7 @@ function js_minify($js)
  * @param  string $v Stylesheet definitions as string
  * @return string Minified stylesheet definitions
  */
-function css_minify($v)
+function css_minify(string $v) : string
 {
     $search = ['/\/\*[\d\D]*?\*\/|\t+/', '/\s+/'];
     $replace = ['', ' '];

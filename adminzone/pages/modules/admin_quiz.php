@@ -28,7 +28,7 @@ class Module_admin_quiz
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_quiz
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('quizzes')) {
             return null;
@@ -71,7 +71,7 @@ class Module_admin_quiz
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('quizzes', $error_msg)) {
@@ -147,7 +147,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('quiz');
 
@@ -189,7 +189,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_lang('quiz');
 
@@ -211,7 +211,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_add_date'], [], 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
@@ -227,7 +227,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The UI
      */
-    public function export_quiz()
+    public function export_quiz() : object
     {
         $fields = new Tempcode();
 
@@ -259,7 +259,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function _export_quiz()
+    public function _export_quiz() : object
     {
         $quiz_id = post_param_integer('quiz_id');
 
@@ -272,7 +272,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function find_winner()
+    public function find_winner() : object
     {
         $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_validated', 'q_add_date'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
@@ -308,7 +308,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function _find_winner()
+    public function _find_winner() : object
     {
         $id = post_param_integer('id');
 
@@ -413,7 +413,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function quiz_results()
+    public function quiz_results() : object
     {
         $where = [];
         $type = get_param_string('q_type', null);
@@ -455,7 +455,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function _quiz_results()
+    public function _quiz_results() : object
     {
         $id = get_param_integer('id', null); // quiz ID
 
@@ -570,7 +570,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function __quiz_results()
+    public function __quiz_results() : object
     {
         $id = get_param_integer('id'); // entry ID
 
@@ -641,7 +641,7 @@ class Module_admin_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function delete_quiz_results()
+    public function delete_quiz_results() : object
     {
         $to_delete = [];
 

@@ -28,7 +28,7 @@ class Hook_config_store_credit_card_numbers
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'STORE_CREDIT_CARD_NUMBERS',
@@ -51,7 +51,7 @@ class Hook_config_store_credit_card_numbers
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('ecommerce')) {
             return null;

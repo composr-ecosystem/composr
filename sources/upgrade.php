@@ -197,7 +197,7 @@ function upgrade_script()
  *
  * @return string The hidden form fields for relaying POST information
  */
-function post_fields_relay()
+function post_fields_relay() : string
 {
     $hidden = '';
     foreach (array_keys($_POST) as $key) {
@@ -217,7 +217,7 @@ function post_fields_relay()
  * @param  string $js Extra JavaScript
  * @return string The form-based link
  */
-function upgrader_link($url, $text, $disabled = false, $js = '')
+function upgrader_link(string $url, string $text, bool $disabled = false, string $js = '') : string
 {
     $hidden = (strpos($url, 'http://compo.sr') !== false || strpos($url, '/index.php') !== false) ? '' : post_fields_relay();
     if (get_param_integer('keep_safe_mode', 0) == 1) {
@@ -244,7 +244,7 @@ function upgrader_link($url, $text, $disabled = false, $js = '')
  *
  * @param  ?string $message Error message (null: none)
  */
-function upgrader_output_login($message = null)
+function upgrader_output_login(?string $message = null)
 {
     $type = get_param_string('type', 'browse');
     global $SITE_INFO;
@@ -412,7 +412,7 @@ END;
  * @ignore
  * @return string Output messages
  */
-function upgrader_menu_screen()
+function upgrader_menu_screen() : string
 {
     // Clear cache automatically
     clear_caches_1();
@@ -588,7 +588,7 @@ function upgrader_menu_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader_decache_screen()
+function upgrader_decache_screen() : string
 {
     clear_caches_2();
     return '<p>' . do_lang('SUCCESS') . '</p>';
@@ -600,7 +600,7 @@ function upgrader_decache_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader_open_site_screen()
+function upgrader_open_site_screen() : string
 {
     log_it('UPGRADER_OPEN_SITE');
 
@@ -614,7 +614,7 @@ function upgrader_open_site_screen()
  * @ignore
  * @return string Output messages
  */
-function upgrader_close_site_screen()
+function upgrader_close_site_screen() : string
 {
     log_it('UPGRADER_CLOSE_SITE');
 

@@ -34,7 +34,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ID_TEXT $resource_type The resource type
      * @return integer How many resources there are
      */
-    public function get_resources_count($resource_type)
+    public function get_resources_count(string $resource_type) : int
     {
         switch ($resource_type) {
             case 'post':
@@ -56,7 +56,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  LONG_TEXT $label The resource label
      * @return array A list of resource IDs
      */
-    public function find_resource_by_label($resource_type, $label)
+    public function find_resource_by_label(string $resource_type, string $label) : array
     {
         switch ($resource_type) {
             case 'post':
@@ -91,7 +91,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      *
      * @return boolean Whether it is
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return (addon_installed('cns_forum')) && (get_forum_type() == 'cns') && (!is_on_multi_site_network());
     }
@@ -103,7 +103,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ID_TEXT $under Resource type (may be file or folder)
      * @return ?array A map: The parent referencing field, the table it is in, and the ID field of that table (null: cannot be under)
      */
-    protected function _has_parent_child_relationship($above, $under)
+    protected function _has_parent_child_relationship(?string $above, string $under) : ?array
     {
         if ($above === null) {
             $above = '';
@@ -158,7 +158,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_folder_edit_date($row, $category = '')
+    protected function _get_folder_edit_date(array $row, string $category = '') : ?int
     {
         if (substr($category, 0, 6) == 'FORUM-') {
             $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', strval($row['id'])) . ' AND  (' . db_string_equal_to('the_type', 'ADD_FORUM') . ' OR ' . db_string_equal_to('the_type', 'EDIT_FORUM') . ')';
@@ -175,7 +175,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ID_TEXT $resource_id The resource ID
      * @return ?ID_TEXT The filename (null: could not find)
      */
-    public function folder_convert_id_to_filename($resource_type, $resource_id)
+    public function folder_convert_id_to_filename(string $resource_type, string $resource_id) : ?string
     {
         if ($resource_type == 'forum') {
             $f = parent::folder_convert_id_to_filename('forum', $resource_id);
@@ -195,7 +195,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ?ID_TEXT $resource_type The resource type (null: assumption of only one folder resource type for this hook; only passed as non-null from overridden functions within hooks that are calling this as a helper function)
      * @return array A pair: The resource type, the resource ID
      */
-    public function folder_convert_filename_to_id($filename, $resource_type = null)
+    public function folder_convert_filename_to_id(string $filename, ?string $resource_type = null) : array
     {
         $filename = preg_replace('#^.*/#', '', $filename); // Paths not needed, as filenames are globally unique; paths would not be in alternative_ids table
 
@@ -222,7 +222,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
      * @return array Properties
      */
-    protected function __folder_read_in_properties_forum($path, $properties)
+    protected function __folder_read_in_properties_forum(string $path, array $properties) : array
     {
         $description = $this->_default_property_str($properties, 'description');
         $forum_grouping_id = $this->_default_property_resource_id_null('forum_grouping', $properties, 'forum_grouping_id');
@@ -272,7 +272,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
      * @return array Properties
      */
-    protected function __folder_read_in_properties_topic($path, $properties)
+    protected function __folder_read_in_properties_topic(string $path, array $properties) : array
     {
         $description = $this->_default_property_str($properties, 'description');
         $emoticon = $this->_default_property_str($properties, 'emoticon');
@@ -297,7 +297,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error)
      */
-    public function folder_add($filename, $path, $properties, $force_type = null)
+    public function folder_add(string $filename, string $path, array $properties, ?string $force_type = null)
     {
         if ((($path == '') || (substr($filename, 0, 6) == 'FORUM-') || ($force_type === 'forum')) && ($force_type !== 'topic')) {
             list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
@@ -377,7 +377,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  array $properties Properties
      * @param  AUTO_LINK $topic_id The topic ID
      */
-    protected function save_ticket_associations($properties, $topic_id)
+    protected function save_ticket_associations(array $properties, int $topic_id)
     {
         if (addon_installed('tickets')) {
             if (isset($properties['ticket_associations'])) {
@@ -405,7 +405,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
      * @return ~array Details of the resource (false: error)
      */
-    public function folder_load($filename, $path)
+    public function folder_load(string $filename, string $path)
     {
         if (substr($filename, 0, 6) == 'FORUM-') {
             list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'forum');
@@ -513,7 +513,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_edit($filename, $path, $properties, $explicit_move = false)
+    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
     {
         if (substr($filename, 0, 6) == 'FORUM-') {
             list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'forum');
@@ -595,7 +595,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    public function folder_delete($filename, $path)
+    public function folder_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
@@ -619,7 +619,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_add($filename, $path, $properties, $force_type = null)
+    public function file_add(string $filename, string $path, array $properties, ?string $force_type = null)
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'topic');
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
@@ -665,7 +665,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
      * @return ~array Details of the resource (false: error)
      */
-    public function file_load($filename, $path)
+    public function file_load(string $filename, string $path)
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
@@ -703,7 +703,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_edit($filename, $path, $properties, $explicit_move = false)
+    public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'topic');
@@ -750,7 +750,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
      * @param  string $path The path (blank: root / not applicable)
      * @return boolean Success status
      */
-    public function file_delete($filename, $path)
+    public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'topic');

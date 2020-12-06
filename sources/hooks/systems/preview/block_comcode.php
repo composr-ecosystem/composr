@@ -28,7 +28,7 @@ class Hook_preview_block_comcode
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         if (!has_privilege(get_member(), 'comcode_dangerous')) {
             return [false, null, false];
@@ -43,7 +43,7 @@ class Hook_preview_block_comcode
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         if (!has_privilege(get_member(), 'comcode_dangerous')) {
             access_denied('I_ERROR');

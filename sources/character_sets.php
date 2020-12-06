@@ -26,7 +26,7 @@
  * @param  string $str String to transliterate
  * @return string Transliterated string
  */
-function transliterate_string($str)
+function transliterate_string(string $str) : string
 {
     if ((get_charset() == 'utf-8') && (get_option('moniker_transliteration') == '1')) {
         if (function_exists('transliterator_transliterate')) {
@@ -54,7 +54,7 @@ function transliterate_string($str)
  *
  * @ignore
  */
-function _convert_request_data_encodings($known_utf8 = false)
+function _convert_request_data_encodings(bool $known_utf8 = false)
 {
     global $VALID_ENCODING, $CONVERTED_ENCODING;
 
@@ -295,11 +295,11 @@ function _convert_request_data_encodings($known_utf8 = false)
  * Convert some data from one encoding to the internal encoding.
  *
  * @param  ?string $data Data to convert (null: none)
- * @param  string $input_charset Charset to convert from
+ * @param  ?string $input_charset Charset to convert from (null: unknown)
  * @param  ?string $internal_charset Charset to convert to (null: current encoding)
  * @return ?string Converted data (null: $data was null)
  */
-function convert_to_internal_encoding($data, $input_charset, $internal_charset = null)
+function convert_to_internal_encoding(?string $data, ?string $input_charset, ?string $internal_charset = null) : ?string
 {
     if ($data === null) {
         return null;
@@ -411,7 +411,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
  * @param  string $data Data to check
  * @return boolean Whether we are good to execute entity_utf8_decode
  */
-function _will_be_successfully_unicode_neutered($data)
+function _will_be_successfully_unicode_neutered(string $data) : bool
 {
     $data = @htmlentities($data, ENT_COMPAT, 'utf-8');
     if ($data == '') {
@@ -432,7 +432,7 @@ function _will_be_successfully_unicode_neutered($data)
  * @param  string $internal_charset Charset to convert to
  * @return ~string Converted data (false: could not convert)
  */
-function entity_utf8_decode($data, $internal_charset)
+function entity_utf8_decode(string $data, string $internal_charset)
 {
     // Encode to create entities for difficult characters
     $encoded = htmlentities($data, ENT_COMPAT, 'utf-8'); // Only works on some servers, which is why we test the utility of it before running this function. NB: It is fine that this will double encode any pre-existing entities- as the double encoding will trivially be undone again later (amp can always decode to a lower ascii character)
@@ -483,7 +483,7 @@ function entity_utf8_decode($data, $internal_charset)
  * @param  array $matches Regular expression match array
  * @return ~string Converted data (false: could not convert)
  */
-function _unichrm_hex($matches)
+function _unichrm_hex(array $matches)
 {
     return _unichr(hexdec($matches[1]));
 }
@@ -494,7 +494,7 @@ function _unichrm_hex($matches)
  * @param  array $matches Regular expression match array
  * @return ~string Converted data (false: could not convert)
  */
-function _unichrm($matches)
+function _unichrm(array $matches)
 {
     return _unichr(intval($matches[1]));
 }
@@ -505,7 +505,7 @@ function _unichrm($matches)
  * @param  integer $c Character number
  * @return ~string Converted data (false: could not convert)
  */
-function _unichr($c)
+function _unichr(int $c)
 {
     if ($c <= 0x7F) {
         return chr($c);
@@ -521,7 +521,7 @@ function _unichr($c)
  * @param  string $text Input
  * @return string Output
  */
-function convert_to_html_encoding($text)
+function convert_to_html_encoding(string $text) : string
 {
     $text = convert_to_internal_encoding($text, get_charset(), 'utf-8');
 

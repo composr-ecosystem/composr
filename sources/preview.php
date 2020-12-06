@@ -24,7 +24,7 @@
  * @param  boolean $multi_return Whether to return additional data
  * @return mixed Either Tempcode for the preview, or a tuple of details
  */
-function build_preview($multi_return = false)
+function build_preview(bool $multi_return = false)
 {
     require_code('input_filter_2');
     if (get_value('disable_modsecurity_workaround') !== '1') {

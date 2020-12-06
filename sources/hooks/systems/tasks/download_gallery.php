@@ -29,7 +29,7 @@ class Hook_task_download_gallery
      * @param  ID_TEXT $cat The gallery to download
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($cat)
+    public function run(string $cat) : ?array
     {
         if (!addon_installed('galleries')) {
             return null;

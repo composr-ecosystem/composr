@@ -55,7 +55,7 @@ function init__health_check()
  * @param  array $default List of sections to select by default
  * @return Tempcode The list of sections
  */
-function create_selection_list_health_check_sections($default)
+function create_selection_list_health_check_sections(array $default) : object
 {
     $categories = find_health_check_categories_and_sections();
 
@@ -78,7 +78,7 @@ function create_selection_list_health_check_sections($default)
  * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
  * @return array List of result categories
  */
-function find_health_check_categories_and_sections($show_unusable_categories = false)
+function find_health_check_categories_and_sections(bool $show_unusable_categories = false) : array
 {
     $check_context = CHECK_CONTEXT__PROBING_FOR_SECTIONS;
 
@@ -145,7 +145,7 @@ function health_check_script()
  * @param  array $categories Results
  * @return string Output
  */
-function display_health_check_results_as_text($categories)
+function display_health_check_results_as_text(array $categories) : string
 {
     $out = '';
     foreach ($categories as $category_label => $sections) {
@@ -173,7 +173,7 @@ function display_health_check_results_as_text($categories)
  * @param  ?integer $check_context The current state of the website (a CHECK_CONTEXT__* constant) (null: auto-decide)
  * @return array List of result categories with results, template-ready
  */
-function run_health_check(&$has_fails, $sections_to_run = null, $passes = false, $skips = false, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $check_context = null)
+function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool $passes = false, bool $skips = false, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null, ?int $check_context = null) : array
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -312,7 +312,7 @@ abstract class Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    protected function process_checks_section($method, $section_label, $sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    protected function process_checks_section(string $method, string $section_label, ?array $sections_to_run, int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
     {
         if (($sections_to_run !== null) && (!in_array($this->category_label . ' \\ ' . $section_label, $sections_to_run)) && (!in_array($method, $sections_to_run))) {
             return;
@@ -350,7 +350,7 @@ abstract class Hook_Health_Check
      * @param  boolean $result Whether the check passed
      * @param  string $message Failure message
      */
-    protected function assertTrue($result, $message)
+    protected function assertTrue(bool $result, string $message)
     {
         if (!isset($this->results[$this->current_section_label])) {
             $this->results[$this->current_section_label] = [];
@@ -367,7 +367,7 @@ abstract class Hook_Health_Check
      *
      * @param  string $message What to check
      */
-    protected function stateCheckManual($message)
+    protected function stateCheckManual(string $message)
     {
         if (!isset($this->results[$this->current_section_label])) {
             $this->results[$this->current_section_label] = [];
@@ -381,7 +381,7 @@ abstract class Hook_Health_Check
      *
      * @param  string $message The reason for the skip, with possible details of exactly what was skipped
      */
-    protected function stateCheckSkipped($message)
+    protected function stateCheckSkipped(string $message)
     {
         if (!isset($this->results[$this->current_section_label])) {
             $this->results[$this->current_section_label] = [];
@@ -399,7 +399,7 @@ abstract class Hook_Health_Check
      * @param  string $page_link The page-link
      * @return string The URL
      */
-    protected function get_page_url($page_link = ':')
+    protected function get_page_url(string $page_link = ':') : string
     {
         global $HEALTH_CHECK_PAGE_URLS_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_URLS_CACHE)) {
@@ -420,7 +420,7 @@ abstract class Hook_Health_Check
      * @param  ?array $_urls_or_page_links List of URLs and/or page-links (null: those configured)
      * @return array List of page-links
      */
-    protected function process_urls_into_page_links($_urls_or_page_links = null)
+    protected function process_urls_into_page_links(?array $_urls_or_page_links = null) : array
     {
         if ($_urls_or_page_links === null) {
             $__urls_or_page_links = trim(get_option('hc_scan_page_links'));
@@ -451,7 +451,7 @@ abstract class Hook_Health_Check
      * @param  boolean $include_all Include all e-mail domains, as opposed to just the main outgoing one
      * @return array Map of e-mail domains to e-mail addresses on the  domain
      */
-    protected function get_mail_domains($include_all = true)
+    protected function get_mail_domains(bool $include_all = true) : array
     {
         require_code('mail');
 
@@ -477,7 +477,7 @@ abstract class Hook_Health_Check
      * @param  boolean $inner_screen_only Whether to try and restrict to just an inner Comcode screen
      * @return string Page content
      */
-    protected function get_page_content($page_link = ':', $inner_screen_only = false)
+    protected function get_page_content(string $page_link = ':', bool $inner_screen_only = false) : string
     {
         if ($inner_screen_only) {
             $test = $this->get_comcode_page_content($page_link);
@@ -496,7 +496,7 @@ abstract class Hook_Health_Check
      * @param  string $page_link Page-link
      * @return object Response data
      */
-    protected function get_page_http_content($page_link = ':')
+    protected function get_page_http_content(string $page_link = ':') : object
     {
         global $HEALTH_CHECK_PAGE_RESPONSE_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_RESPONSE_CACHE)) {
@@ -516,7 +516,7 @@ abstract class Hook_Health_Check
      * @param  string $page_link Page-link
      * @return ?array A tuple: Comcode, HTML, Zone name, Page name (null: not a Comcode page or not a page at all)
      */
-    protected function get_comcode_page_content($page_link)
+    protected function get_comcode_page_content(string $page_link) : ?array
     {
         global $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE)) {
@@ -548,7 +548,7 @@ abstract class Hook_Health_Check
      * @param  string $data HTML
      * @return array List of URLs
      */
-    protected function get_embed_urls_from_data($data)
+    protected function get_embed_urls_from_data(string $data) : array
     {
         $urls = [];
 
@@ -593,7 +593,7 @@ abstract class Hook_Health_Check
      * @param  string $data HTML
      * @return array List of URLs
      */
-    protected function get_link_urls_from_data($data)
+    protected function get_link_urls_from_data(string $data) : array
     {
         $urls = [];
 
@@ -623,7 +623,7 @@ abstract class Hook_Health_Check
      * @param  array $params Map of parameters
      * @return mixed API result
      */
-    protected function call_composr_homesite_api($type, $params)
+    protected function call_composr_homesite_api(string $type, array $params)
     {
         $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/api.php?type=' . urlencode($type);
         foreach ($params as $key => $_val) {
@@ -665,7 +665,7 @@ abstract class Hook_Health_Check
  *
  * @return boolean Whether it is
  */
-function health_check__is_test_site()
+function health_check__is_test_site() : bool
 {
     return (get_option('hc_is_test_site') == '1') || ((get_option('hc_is_test_site') == '-1') && (get_option('site_closed') == '1'));
 }

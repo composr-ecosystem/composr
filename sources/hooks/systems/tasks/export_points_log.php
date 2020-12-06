@@ -31,7 +31,7 @@ class Hook_task_export_points_log
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($from, $to, $file_type = null)
+    public function run(int $from, int $to, ?string $file_type = null) : ?array
     {
         if (!addon_installed('points')) {
             return null;

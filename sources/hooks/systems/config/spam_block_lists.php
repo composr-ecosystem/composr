@@ -28,7 +28,7 @@ class Hook_config_spam_block_lists
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SPAM_BLOCK_LISTS',
@@ -52,7 +52,7 @@ class Hook_config_spam_block_lists
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '';
         // Not listing "*.dnsbl.tornevall.org" by default, because it keeps IPs for over 365 days, which is okay for blocking e-mail servers/proxies, but not for normal dynamic web IPs

@@ -30,7 +30,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return boolean Whether it is valid
      */
-    public function check_db()
+    public function check_db() : bool
     {
         $test = $this->db->query('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'members', null, 0, true); // Suppress errors as we're checking to see if the table is there
         return $test !== null;
@@ -42,7 +42,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  integer $limit The limit to the number of top posters to fetch
      * @return array The rows for the given number of top posters in the forum
      */
-    public function get_top_posters($limit)
+    public function get_top_posters(int $limit) : array
     {
         return $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member<>' . strval($this->get_guest_id()) . ' ORDER BY posts DESC', $limit);
     }
@@ -53,7 +53,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member who's language needs to be fetched
      * @return ?LANGUAGE_NAME The member's language (null: unknown)
      */
-    public function forum_get_lang($member)
+    public function forum_get_lang(int $member) : ?string
     {
         return $this->get_member_row_field($member, 'lngfile');
     }
@@ -63,7 +63,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return boolean Whether the login cookie contains a login name or a member ID
      */
-    public function is_cookie_login_name()
+    public function is_cookie_login_name() : bool
     {
         return false;
     }
@@ -73,7 +73,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return boolean Whether the login cookie is md5-hashed
      */
-    public function is_hashed()
+    public function is_hashed() : bool
     {
         return true;
     }
@@ -83,7 +83,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return MEMBER The member ID of the forum guest member
      */
-    public function get_guest_id()
+    public function get_guest_id() : int
     {
         return 0;
     }
@@ -93,7 +93,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return string The forum database table prefix
      */
-    public function get_drivered_table_prefix()
+    public function get_drivered_table_prefix() : string
     {
         global $SITE_INFO;
         return $SITE_INFO['smf_table_prefix'];
@@ -106,7 +106,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  integer $length The length of the new custom field
      * @return boolean Whether the custom field was created successfully
      */
-    public function install_create_custom_field($name, $length)
+    public function install_create_custom_field(string $name, int $length) : bool
     {
         $this->db->query('ALTER TABLE ' . $this->db->get_table_prefix() . 'members ADD cms_' . $name . ' TEXT', null, 0, true); // Suppress errors in case field already exists
         return true;
@@ -122,7 +122,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The attributes for the forum
      */
-    public function install_specifics()
+    public function install_specifics() : array
     {
         global $PROBED_FORUM_CONFIG;
         $a = [];
@@ -139,7 +139,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  PATH $path The path in which to search
      * @return boolean Whether the forum auto-config could be found
      */
-    public function install_test_load_from($path)
+    public function install_test_load_from(string $path) : bool
     {
         global $PROBED_FORUM_CONFIG;
         if (@file_exists($path . '/Settings.php')) {
@@ -168,7 +168,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The paths in which to search for the forum config
      */
-    public function install_get_path_search_list()
+    public function install_get_path_search_list() : array
     {
         return [
             0 => 'forums',
@@ -191,7 +191,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  string $field_name The ID of the form field the emoticon chooser adds to
      * @return Tempcode The emoticon chooser template
      */
-    public function get_emoticon_chooser($field_name = 'post')
+    public function get_emoticon_chooser(string $field_name = 'post') : object
     {
         require_code('comcode_compiler');
         $emoticons = $this->db->query_select('smileys', ['*'], ['hidden' => 0]);
@@ -210,7 +210,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  AUTO_LINK $id The topic ID
      * @param  boolean $pin True: pin it, False: unpin it
      */
-    public function pin_topic($id, $pin = true)
+    public function pin_topic(int $id, bool $pin = true)
     {
         $this->db->query_update('topics', ['is_sticky' => $pin ? 1 : 0], ['id_topic' => $id], '', 1);
     }
@@ -222,7 +222,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  string $field The field name (e.g. "firstname" for the CPF with a title of "cms_firstname")
      * @param  string $value The value
      */
-    public function set_custom_field($member, $field, $value)
+    public function set_custom_field(int $member, string $field, string $value)
     {
         $this->db->query_update('members', ['cms_' . $field => $value], ['id_member' => $member], '', null, 0, false, true); // Errors suppressed in case field gone missing
     }
@@ -233,7 +233,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return ?array A map of the Custom Profile Fields, key_suffix=>value (null: no fields)
      */
-    public function get_custom_fields($member)
+    public function get_custom_fields(int $member) : ?array
     {
         $row = $this->get_member_row($member);
         $out = [];
@@ -251,7 +251,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  SHORT_TEXT $name The member name
      * @return ?array The profile-row (null: could not find)
      */
-    public function get_mrow($name)
+    public function get_mrow(string $name) : ?array
     {
         $rows = $this->db->query_select('members', ['*'], ['real_name' => $name], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -266,7 +266,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return GROUP The member's primary usergroup
      */
-    public function mrow_group($r)
+    public function mrow_group(array $r) : int
     {
         return $r['id_group'];
     }
@@ -277,7 +277,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return MEMBER The member ID
      */
-    public function mrow_id($r)
+    public function mrow_id(array $r) : int
     {
         return $r['id_member'];
     }
@@ -288,7 +288,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return TIME The last visit date
      */
-    public function mrow_lastvisit($r)
+    public function mrow_lastvisit(array $r) : int
     {
         return $r['last_login'];
     }
@@ -299,7 +299,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return string The member name
      */
-    public function mrow_username($r)
+    public function mrow_username(array $r) : string
     {
         return $r['real_name'];
     }
@@ -310,7 +310,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  array $r The profile-row
      * @return SHORT_TEXT The member e-mail address
      */
-    public function mrow_email($r)
+    public function mrow_email(array $r) : string
     {
         return $r['email_address'];
     }
@@ -322,7 +322,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  boolean $full Get full photo
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_photo_url($member, $full = false)
+    public function get_member_photo_url(int $member, bool $full = false) : string
     {
         return '';
     }
@@ -333,7 +333,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url($member)
+    public function get_member_avatar_url(int $member) : string
     {
         $ret = $this->get_member_row_field($member, 'avatar');
         if ($ret == '') {
@@ -359,7 +359,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return URLPATH The URL to the members home
      */
-    public function member_home_url($id)
+    public function member_home_url(int $id) : string
     {
         return $this->_member_profile_url($id);
     }
@@ -370,7 +370,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return URLPATH The URL to the member profile
      */
-    protected function _member_profile_url($id)
+    protected function _member_profile_url(int $id) : string
     {
         return get_forum_base_url() . '/index.php?action=profile&u=' . strval($id);
     }
@@ -380,7 +380,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return URLPATH The URL to the registration page
      */
-    protected function _join_url()
+    protected function _join_url() : string
     {
         return get_forum_base_url() . '/index.php?action=register';
     }
@@ -390,7 +390,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return URLPATH The URL to the members-online page
      */
-    protected function _users_online_url()
+    protected function _users_online_url() : string
     {
         return get_forum_base_url() . '/index.php?action=who';
     }
@@ -401,7 +401,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return URLPATH The URL to the private/personal message page
      */
-    protected function _member_pm_url($id)
+    protected function _member_pm_url(int $id) : string
     {
         return get_forum_base_url() . '/index.php?action=pm&sa=send&u=' . strval($id);
     }
@@ -412,7 +412,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  integer $id The forum ID
      * @return URLPATH The URL to the specified forum
      */
-    protected function _forum_url($id)
+    protected function _forum_url(int $id) : string
     {
         return get_forum_base_url() . '/index.php?board=' . strval($id);
     }
@@ -423,7 +423,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  SHORT_TEXT $forum_name The forum name
      * @return ?integer The forum ID (null: not found)
      */
-    public function forum_id_from_name($forum_name)
+    public function forum_id_from_name(string $forum_name) : ?int
     {
         return is_numeric($forum_name) ? intval($forum_name) : $this->db->query_select_value_if_there('boards', 'id_board', ['name' => escape_html($forum_name)]);
     }
@@ -435,7 +435,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  SHORT_TEXT $topic_identifier The topic identifier
      * @return ?integer The topic ID (null: not found)
      */
-    public function find_topic_id_for_topic_identifier($forum, $topic_identifier)
+    public function find_topic_id_for_topic_identifier(string $forum, string $topic_identifier) : ?int
     {
         if (is_integer($forum)) {
             $forum_id = intval($forum);
@@ -467,7 +467,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  boolean $staff_only Whether the reply is only visible to staff
      * @return array Topic ID (may be null), and whether a hidden post has been made
      */
-    public function make_post_forum_topic($forum_name, $topic_identifier, $member, $post_title, $post, $content_title, $topic_identifier_encapsulation_prefix, $content_url = null, $time = null, $ip = null, $validated = null, $topic_validated = 1, $skip_post_checks = false, $poster_name_if_guest = '', $parent_id = null, $staff_only = false)
+    public function make_post_forum_topic(string $forum_name, string $topic_identifier, int $member, string $post_title, string $post, string $content_title, string $topic_identifier_encapsulation_prefix, ?string $content_url = null, ?int $time = null, ?string $ip = null, ?int $validated = null, ?int $topic_validated = 1, bool $skip_post_checks = false, string $poster_name_if_guest = '', ?int $parent_id = null, bool $staff_only = false) : array
     {
         $post = str_replace("\n", '<br />', $post);
 
@@ -525,7 +525,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  boolean $reverse Whether to show in reverse
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts($topic_id, &$count = null, $max = 100, $start = 0, $mark_read = true, $reverse = false)
+    public function get_forum_topic_posts(int $topic_id, ?int &$count = null, int $max = 100, int $start = 0, bool $mark_read = true, bool $reverse = false)
     {
         if ($topic_id === null) {
             return (-2);
@@ -561,7 +561,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  string $forum The forum ID
      * @return URLPATH The URL to the topic
      */
-    public function topic_url($id, $forum)
+    public function topic_url(int $id, string $forum) : string
     {
         return get_forum_base_url() . '/index.php?topic=' . strval($id) . '.0';
     }
@@ -573,7 +573,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  string $forum The forum ID
      * @return URLPATH The URL to the post
      */
-    public function post_url($id, $forum)
+    public function post_url(int $id, string $forum) : string
     {
         $topic_id = $this->db->query_select_value_if_there('messages', 'id_topic', ['id_msg' => $id]);
         if ($topic_id === null) {
@@ -605,7 +605,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  SHORT_TEXT $filter_topic_description The topic description filter
      * @return ?array The array of topics (null: error)
      */
-    public function show_forum_topics($name, $limit, $start, &$max_rows, $filter_topic_title = '', $show_first_posts = false, $date_key = 'lasttime', $hot = false, $filter_topic_description = '')
+    public function show_forum_topics($name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, string $filter_topic_description = '') : ?array
     {
         if (is_integer($name)) {
             $id_list = 't.id_board=' . strval($name);
@@ -672,7 +672,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  integer $start Return primary members after this offset and secondary members after this offset
      * @return ?array The array of members (null: no members)
      */
-    public function member_group_query($groups, $max = null, $start = 0) // Doesn't support multi usergroups currently. I don't think it's needed
+    public function member_group_query(array $groups, ?int $max = null, int $start = 0) // Doesn't support multi usergroups currently. I don't think it's needed : ?array
     {
         $_groups = '';
         foreach ($groups as $group) {
@@ -690,7 +690,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID to decrement
      * @return ?MEMBER The previous member ID (null: no previous member)
      */
-    public function get_previous_member($member)
+    public function get_previous_member(int $member) : ?int
     {
         $tempid = $this->db->query_value_if_there('SELECT id_member FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member<' . strval($member) . ' ORDER BY id_member DESC');
         return $tempid;
@@ -703,7 +703,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID to increment
      * @return ?MEMBER The next member ID (null: no next member)
      */
-    public function get_next_member($member)
+    public function get_next_member(int $member) : ?int
     {
         $tempid = $this->db->query_value_if_there('SELECT id_member FROM ' . $this->db->get_table_prefix() . 'members WHERE id_member>' . strval($member) . ' ORDER BY id_member');
         return $tempid;
@@ -715,7 +715,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  IP $ip The IP address
      * @return array The distinct rows found
      */
-    public function probe_ip($ip)
+    public function probe_ip(string $ip) : array
     {
         $a = $this->db->query_select('members', ['DISTINCT id_member AS id'], ['member_ip' => $ip]);
         $b = $this->db->query_select('messages', ['DISTINCT id_member AS id'], ['poster_ip' => $ip]);
@@ -729,7 +729,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return ?SHORT_TEXT The member name (null: member deleted)
      */
-    protected function _get_username($member)
+    protected function _get_username(int $member) : ?string
     {
         if ($member == $this->get_guest_id()) {
             return do_lang('GUEST');
@@ -744,7 +744,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  ID_TEXT $username The username
      * @return SHORT_TEXT The display name
      */
-    public function get_displayname($username)
+    public function get_displayname(string $username) : string
     {
         return $this->db->query_select_value_if_there('members', 'real_name', ['member_name' => $username]);
     }
@@ -755,7 +755,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return SHORT_TEXT The e-mail address
      */
-    protected function _get_member_email_address($member)
+    protected function _get_member_email_address(int $member) : string
     {
         return $this->get_member_row_field($member, 'email_address');
     }
@@ -766,7 +766,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member may have e-mails sent to them
      */
-    public function get_member_email_allowed($member)
+    public function get_member_email_allowed(int $member) : bool
     {
         $r = $this->get_member_row($member);
         $v = array_key_exists('im_email_notify', $r) ? $r['im_email_notify'] : $r['pm_email_notify'];
@@ -782,7 +782,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return TIME The timestamp
      */
-    public function get_member_join_timestamp($member)
+    public function get_member_join_timestamp(int $member) : int
     {
         return $this->get_member_row_field($member, 'date_registered');
     }
@@ -794,7 +794,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  ?integer $limit Maximum number to return (limits to the most recent active) (null: no limit)
      * @return ?array The array of matched members (null: none found)
      */
-    public function get_matching_members($pattern, $limit = null)
+    public function get_matching_members(string $pattern, ?int $limit = null) : ?array
     {
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'members WHERE real_name LIKE \'' . db_encode_like($pattern) . '\'' . ' ORDER BY last_login DESC', $limit);
         sort_maps_by($rows, 'real_name');
@@ -807,7 +807,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return integer The post count
      */
-    public function get_post_count($member)
+    public function get_post_count(int $member) : int
     {
         $c = $this->get_member_row_field($member, 'posts');
         if ($c === null) {
@@ -822,7 +822,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return integer The topic count
      */
-    public function get_topic_count($member)
+    public function get_topic_count(int $member) : int
     {
         return $this->db->query_select_value('topics', 'COUNT(*)', ['id_member_started' => $member]);
     }
@@ -834,7 +834,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member, &$reasoned_ban = null)
+    public function is_banned(int $member, ?string &$reasoned_ban = null) : bool
     {
         $rows = $this->db->query('SELECT id_ban FROM ' . $this->db->get_table_prefix() . 'banned WHERE id_member=' . strval($member) . ' AND expire_time IS NULL OR expire_time>' . strval(time()), null, 0, true); // Suppress errors in case of other table name
         if ($rows === null) {
@@ -848,7 +848,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return URLPATH The base URL
      */
-    public function get_emo_dir()
+    public function get_emo_dir() : string
     {
         return get_forum_base_url() . '/Smileys/default/';
     }
@@ -858,7 +858,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The map
      */
-    public function find_emoticons()
+    public function find_emoticons() : array
     {
         if ($this->EMOTICON_CACHE !== null) {
             return $this->EMOTICON_CACHE;
@@ -882,7 +882,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The list of skins
      */
-    public function get_skin_list()
+    public function get_skin_list() : array
     {
         $rows = $this->db->query_select('themes', ['value'], ['variable' => 'name']);
         return collapse_1d_complexity('value', $rows);
@@ -896,7 +896,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  ?MEMBER $member The member to find for (null: current member)
      * @return ID_TEXT The theme
      */
-    public function _get_theme($skip_member_specific = false, $member = null)
+    public function _get_theme(bool $skip_member_specific = false, ?int $member = null) : string
     {
         $def = '';
 
@@ -942,7 +942,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member is staff
      */
-    protected function _is_staff($member)
+    protected function _is_staff(int $member) : bool
     {
         $usergroups = $this->get_members_groups($member);
         return ((in_array(1, $usergroups)) || (in_array(2, $usergroups)));
@@ -954,7 +954,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member is a super admin
      */
-    protected function _is_super_admin($member)
+    protected function _is_super_admin(int $member) : bool
     {
         $usergroups = $this->get_members_groups($member);
         return (in_array(1, $usergroups));
@@ -965,7 +965,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return integer The number of members
      */
-    public function get_num_users_forums()
+    public function get_num_users_forums() : int
     {
         return $this->db->query_value_if_there('SELECT COUNT(DISTINCT session_id) FROM ' . $this->db->get_table_prefix() . 'sessions WHERE last_update>' . strval(time() - 60 * intval(get_option('users_online_time'))));
     }
@@ -975,7 +975,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return integer The number of members
      */
-    public function get_num_members()
+    public function get_num_members() : int
     {
         return $this->db->query_select_value('members', 'COUNT(*)');
     }
@@ -985,7 +985,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return integer The number of topics
      */
-    public function get_num_topics()
+    public function get_num_topics() : int
     {
         return $this->db->query_select_value('topics', 'COUNT(*)');
     }
@@ -995,7 +995,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return integer The number of posts
      */
-    public function get_num_forum_posts()
+    public function get_num_forum_posts() : int
     {
         return $this->db->query_select_value('messages', 'COUNT(*)');
     }
@@ -1005,7 +1005,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return integer The number of posts
      */
-    protected function _get_num_new_forum_posts()
+    protected function _get_num_new_forum_posts() : int
     {
         return $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'messages WHERE poster_time>' . strval(time() - 60 * 60 * 24));
     }
@@ -1016,7 +1016,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  SHORT_TEXT $name The member name
      * @return MEMBER The member ID
      */
-    public function get_member_from_username($name)
+    public function get_member_from_username(string $name) : int
     {
         return $this->db->query_select_value_if_there('members', 'id_member', ['real_name' => $name]);
     }
@@ -1027,7 +1027,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  SHORT_TEXT $email_address The member e-mail address
      * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_email_address($email_address)
+    public function get_member_from_email_address(string $email_address) : ?int
     {
         $results = $this->db->query_select('members', ['id_member', 'date_registered'], ['email_address' => $email_address], 'ORDER BY date_registered DESC', 1);
         return array_key_exists(0, $results) ? $results[0]['id_member'] : null;
@@ -1038,7 +1038,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The admin usergroup ids
      */
-    protected function _get_super_admin_groups()
+    protected function _get_super_admin_groups() : array
     {
         return [1];
     }
@@ -1049,7 +1049,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The moderator usergroup ids
      */
-    protected function _get_moderator_groups()
+    protected function _get_moderator_groups() : array
     {
         return [2];
     }
@@ -1059,7 +1059,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      *
      * @return array The usergroup list
      */
-    protected function _get_usergroup_list()
+    protected function _get_usergroup_list() : array
     {
         return [0 => do_lang('GUESTS')] + collapse_2d_complexity('id_group', 'group_name', $this->db->query_select('membergroups', ['id_group', 'group_name']));
     }
@@ -1070,7 +1070,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return array The array of forum usergroups
      */
-    protected function _get_members_groups($member)
+    protected function _get_members_groups(int $member) : array
     {
         if ($member == $this->get_guest_id()) {
             return [0];
@@ -1098,7 +1098,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  boolean $just_first Whether to just get the old style hash
      * @return string The hashed data
      */
-    public function forum_md5($data, $key, $just_first = false)
+    public function forum_md5(string $data, string $key, bool $just_first = false) : string
     {
         $key = cms_strtolower_ascii($key);
         $new_key = str_pad((strlen($key) <= 64) ? $key : pack('H*', md5($key)), 64, chr(0x00));
@@ -1119,7 +1119,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  ?SHORT_TEXT $name The username (null: lookup)
      * @param  string $password The password
      */
-    public function forum_create_cookie($id, $name, $password)
+    public function forum_create_cookie(int $id, ?string $name, string $password)
     {
         list($stub,) = explode(':', get_member_cookie());
 
@@ -1150,7 +1150,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  boolean $from_cookie Whether this is a cookie login
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function forum_authorise_login($username, $user_id, $password_hashed, $password_raw, $from_cookie = false)
+    public function forum_authorise_login(?string $username, int $user_id, string $password_hashed, string $password_raw, bool $from_cookie = false) : array
     {
         $out = [];
         $out['id'] = null;
@@ -1209,7 +1209,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return IP The IP address
      */
-    public function get_member_ip($member)
+    public function get_member_ip(int $member) : string
     {
         return $this->get_member_row_field($member, 'member_ip');
     }
@@ -1220,7 +1220,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return ?array The member row (null: no such member)
      */
-    public function get_member_row($member)
+    public function get_member_row(int $member) : ?array
     {
         if (array_key_exists($member, $this->MEMBER_ROWS_CACHED)) {
             return $this->MEMBER_ROWS_CACHED[$member];
@@ -1255,7 +1255,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  string $field The field identifier
      * @return mixed The field
      */
-    public function get_member_row_field($member, $field)
+    public function get_member_row_field(int $member, string $field)
     {
         $row = $this->get_member_row($member);
         return ($row === null) ? null : $row[$field];
@@ -1267,7 +1267,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @param  GROUP $group_id The usergroup ID
      */
-    public function add_member_to_group($member, $group_id)
+    public function add_member_to_group(int $member, int $group_id)
     {
         $additional = $this->get_member_row_field($member, 'additional_groups');
         if ($additional != '') {
@@ -1286,7 +1286,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @param  GROUP $group_id The usergroup ID
      */
-    public function remove_member_from_group($member, $group_id)
+    public function remove_member_from_group(int $member, int $group_id)
     {
         $additional = $this->get_member_row_field($member, 'additional_groups');
         if ($additional != '') {

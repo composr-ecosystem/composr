@@ -34,7 +34,7 @@ The concept of a chain is crucial to proper understanding of the Wiki+ system. P
  * @param  ?Tempcode $text_summary Text summary for result (e.g. highlighted portion of actual file from search result) (null: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_wiki_post_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '', $text_summary = null)
+function render_wiki_post_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '', ?object $text_summary = null) : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -89,7 +89,7 @@ function render_wiki_post_box($row, $zone = '_SEARCH', $give_context = true, $in
  * @param  ?Tempcode $text_summary Text summary for result (e.g. highlighted portion of actual file from search result) (null: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_wiki_page_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '', $text_summary = null)
+function render_wiki_page_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '', ?object $text_summary = null) : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -146,7 +146,7 @@ function render_wiki_page_box($row, $zone = '_SEARCH', $give_context = true, $in
  * @param  ?TIME $edit_date The edit time (null: N/A)
  * @return AUTO_LINK The post ID
  */
-function wiki_add_post($page_id, $message, $validated = 1, $member_id = null, $send_notification = true, $add_time = null, $views = 0, $edit_date = null)
+function wiki_add_post(int $page_id, string $message, int $validated = 1, ?int $member_id = null, bool $send_notification = true, ?int $add_time = null, int $views = 0, ?int $edit_date = null) : int
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -236,7 +236,7 @@ function wiki_add_post($page_id, $message, $validated = 1, $member_id = null, $s
  * @param  ?integer $views Number of views (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function wiki_edit_post($post_id, $message, $validated, $member_id = null, $page_id = null, $edit_time = null, $add_time = null, $views = null, $null_is_literal = false)
+function wiki_edit_post(int $post_id, string $message, int $validated, ?int $member_id = null, ?int $page_id = null, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -322,7 +322,7 @@ function wiki_edit_post($post_id, $message, $validated, $member_id = null, $page
  * @param  AUTO_LINK $post_id The post ID
  * @param  ?MEMBER $member_id The member doing the action (null: current member)
  */
-function wiki_delete_post($post_id, $member_id = null)
+function wiki_delete_post(int $post_id, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -389,7 +389,7 @@ function wiki_delete_post($post_id, $member_id = null)
  * @param  boolean $send_notification Whether to send a notification
  * @return AUTO_LINK The page ID
  */
-function wiki_add_page($title, $description, $notes, $show_posts, $member_id = null, $add_time = null, $views = 0, $meta_keywords = '', $meta_description = '', $edit_date = null, $send_notification = true)
+function wiki_add_page(string $title, string $description, string $notes, int $show_posts, ?int $member_id = null, ?int $add_time = null, int $views = 0, ?string $meta_keywords = '', ?string $meta_description = '', ?int $edit_date = null, bool $send_notification = true) : int
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -483,7 +483,7 @@ function wiki_add_page($title, $description, $notes, $show_posts, $member_id = n
  * @param  ?integer $views Views (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function wiki_edit_page($page_id, $title, $description, $notes, $show_posts, $meta_keywords, $meta_description, $member_id = null, $edit_time = null, $add_time = null, $views = null, $null_is_literal = false)
+function wiki_edit_page(int $page_id, string $title, string $description, string $notes, int $show_posts, string $meta_keywords, string $meta_description, ?int $member_id = null, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -560,7 +560,7 @@ function wiki_edit_page($page_id, $title, $description, $notes, $show_posts, $me
  *
  * @param  AUTO_LINK $page_id The page ID
  */
-function wiki_delete_page($page_id)
+function wiki_delete_page(int $page_id)
 {
     $old_limit = cms_disable_time_limit();
 
@@ -632,7 +632,7 @@ function wiki_delete_page($page_id)
  * @param  ?string $default_value The default value for the chain (null: no default)
  * @return array An array of two elements: an ID and a chain
  */
-function get_param_wiki_chain($parameter_name, $default_value = null)
+function get_param_wiki_chain(string $parameter_name, ?string $default_value = null) : array
 {
     if ($default_value === null) {
         $default_value = strval(db_get_first_id());
@@ -671,7 +671,7 @@ function get_param_wiki_chain($parameter_name, $default_value = null)
  * @param  boolean $this_link_virtual_root Whether to make the link as a virtual-root link (only applies if $final_link is true)
  * @return array Breadcrumbs
  */
-function wiki_breadcrumbs($chain, $current_title = null, $final_link = false, $links = true, $this_link_virtual_root = false)
+function wiki_breadcrumbs(string $chain, ?string $current_title = null, bool $final_link = false, bool $links = true, bool $this_link_virtual_root = false) : array
 {
     $segments = [];
     $token = strtok($chain, '/');
@@ -731,7 +731,7 @@ function wiki_breadcrumbs($chain, $current_title = null, $final_link = false, $l
  * @param  ?AUTO_LINK $root Virtual root to use (null: none)
  * @return string The Wiki+ chain derived
  */
-function wiki_derive_chain($id, $root = null)
+function wiki_derive_chain(int $id, ?int $root = null) : string
 {
     static $parent_details = null;
     if ($parent_details === null) {
@@ -800,7 +800,7 @@ function wiki_derive_chain($id, $root = null)
  * @param  boolean $ins_format Whether to use titles in IDs after a ! (used on tree edit page)
  * @return mixed Tempcode for the list / pair of Tempcode and compound
  */
-function create_selection_list_wiki_page_tree($select = null, $id = null, $breadcrumbs = '', $include_orphans = true, $use_compound_list = false, $ins_format = false)
+function create_selection_list_wiki_page_tree(?int $select = null, ?int $id = null, string $breadcrumbs = '', bool $include_orphans = true, bool $use_compound_list = false, bool $ins_format = false)
 {
     if ($id === null) {
         $id = db_get_first_id();
@@ -851,7 +851,7 @@ function create_selection_list_wiki_page_tree($select = null, $id = null, $bread
  *
  * @ignore
  */
-function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $breadcrumbs, $title, $use_compound_list = false, $ins_format = false)
+function _create_selection_list_wiki_page_tree(array &$wiki_seen, ?int $select, int $id, string $breadcrumbs, string $title, bool $use_compound_list = false, bool $ins_format = false)
 {
     $wiki_seen[] = $id;
 
@@ -908,7 +908,7 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
  * @param  ?integer $levels The number of recursive levels to search (null: all)
  * @return array A list of maps for all subcategories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title). There is also an additional 'downloadcount' entry if stats were requested
  */
-function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $page_details = null, $do_stats = false, $use_compound_list = false, $levels = null)
+function get_wiki_page_tree(array &$wiki_seen, ?int $page_id = null, ?string $breadcrumbs = null, ?array $page_details = null, bool $do_stats = false, bool $use_compound_list = false, ?int $levels = null) : array
 {
     if (!$use_compound_list) {
         if ($levels == -1) {
@@ -996,7 +996,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
  * @param  ID_TEXT $type The action type
  * @set ADD EDIT
  */
-function dispatch_wiki_post_notification($post_id, $type)
+function dispatch_wiki_post_notification(int $post_id, string $type)
 {
     require_lang('wiki');
 
@@ -1025,7 +1025,7 @@ function dispatch_wiki_post_notification($post_id, $type)
  * @param  ID_TEXT $type The action type
  * @set ADD EDIT
  */
-function dispatch_wiki_page_notification($page_id, $type)
+function dispatch_wiki_page_notification(int $page_id, string $type)
 {
     require_lang('wiki');
 

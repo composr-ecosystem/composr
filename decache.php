@@ -86,7 +86,7 @@ if (strpos($_SERVER['argv'][0], 'decache.php') !== false) {
  *
  * @return boolean Whether running as CLI
  */
-function decache_is_cli()
+function decache_is_cli() : bool
 {
     return (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
 }

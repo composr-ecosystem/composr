@@ -24,7 +24,7 @@
  * @param  MEMBER $member_id The member to check
  * @return boolean Whether they are online
  */
-function member_is_online($member_id)
+function member_is_online(int $member_id) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -68,7 +68,7 @@ function member_is_online($member_id)
  * @param  integer $count The total online members, returned by reference
  * @return ?array Database rows (null: too many)
  */
-function get_users_online($longer_time, $filter, &$count)
+function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
 {
     if (get_value('disable_member_tracking') === '1') {
         return [];
@@ -126,7 +126,7 @@ function get_users_online($longer_time, $filter, &$count)
  * @param  ?MEMBER $member_blocker The member who may be blocking (null: current member)
  * @return boolean Whether the member is blocked
  */
-function member_blocked($member_id, $member_blocker = null)
+function member_blocked(int $member_id, ?int $member_blocker = null) : bool
 {
     if (!addon_installed('chat')) {
         return false;
@@ -175,7 +175,7 @@ function member_blocked($member_id, $member_blocker = null)
  * @param  boolean $forum_layer Whether this has to be done over the forum driver (multi site network)
  * @return ?array A map of member-IDs to rows about them (null: Too many)
  */
-function get_members_viewing_wrap($page = null, $type = null, $id = null, $forum_layer = false)
+function get_members_viewing_wrap(?string $page = null, ?string $type = null, ?string $id = null, bool $forum_layer = false) : ?array
 {
     $members = ($id === null) ? [] : get_members_viewing($page, $type, $id, $forum_layer);
     $num_guests = 0;
@@ -230,7 +230,7 @@ function get_members_viewing_wrap($page = null, $type = null, $id = null, $forum
  * @param  boolean $forum_layer Whether this has to be done over the forum driver (multi site network)
  * @return ?array A map of member-IDs to rows about them (except for guest, which is a count) (null: Too many / disabled)
  */
-function get_members_viewing($page = null, $type = null, $id = null, $forum_layer = false)
+function get_members_viewing(?string $page = null, ?string $type = null, ?string $id = null, bool $forum_layer = false) : ?array
 {
     if (get_value('disable_member_tracking') === '1') {
         return null;
@@ -292,7 +292,7 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
  *
  * @return MEMBER The modal member
  */
-function get_modal_user()
+function get_modal_user() : int
 {
     $modal_user = get_option('modal_user');
     if ($modal_user != '') {

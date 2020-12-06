@@ -28,7 +28,7 @@ class Hook_admin_import_types_banners
      *
      * @return array A map from codename to the language string that names them to the user
      */
-    public function run()
+    public function run() : array
     {
         if (!addon_installed('banners')) {
             return [];

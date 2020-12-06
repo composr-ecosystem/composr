@@ -30,7 +30,7 @@ class Hook_cron_notification_digests
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         return [
             'label' => 'Send notification digests',
@@ -44,7 +44,7 @@ class Hook_cron_notification_digests
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         if (!defined('MAXIMUM_DIGEST_LENGTH')) {
             define('MAXIMUM_DIGEST_LENGTH', 1024 * 100); // 100KB

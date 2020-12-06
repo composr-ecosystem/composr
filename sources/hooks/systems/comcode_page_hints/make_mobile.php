@@ -28,7 +28,7 @@ class Hook_comcode_page_hints_make_mobile
      *
      * @return ?array Map of details (null: UI disabled for this hint)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         require_lang('comcode');
         return [

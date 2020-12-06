@@ -35,7 +35,7 @@
  *
  * @param  object $ob Optimise a Tempcode object
  */
-function optimise_tempcode(&$ob)
+function optimise_tempcode(object &$ob)
 {
     // Merge seq_part groups (they were only put in separately to make attach super-fast)
     if (isset($ob->seq_parts[0])) {

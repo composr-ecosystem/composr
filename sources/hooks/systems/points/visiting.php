@@ -31,7 +31,7 @@ class Hook_points_visiting
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return integer the number of points the member has
      */
-    public function total_points($member_id, $timestamp, $point_info)
+    public function total_points(int $member_id, int $timestamp, array $point_info) : int
     {
         $points_gained_visiting = isset($point_info['points_gained_visiting']) ? $point_info['points_gained_visiting'] : 0;
         $points_visiting = intval(get_option('points_per_daily_visit'));
@@ -47,7 +47,7 @@ class Hook_points_visiting
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
-    public function points_profile($member_id_of, $member_id_viewing, $point_info)
+    public function points_profile(int $member_id_of, ?int $member_id_viewing, array $point_info) : ?array
     {
         $points_gained_visiting = array_key_exists('points_gained_visiting', $point_info) ? $point_info['points_gained_visiting'] : 0;
         $points_per_daily_visit = intval(get_option('points_per_daily_visit'));

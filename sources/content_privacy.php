@@ -28,7 +28,7 @@
  * @param  ?MEMBER $submitter Member owning the content (null: do dynamically in query via content hook). Usually pass as null
  * @return array A tuple: extra JOIN clause, extra WHERE clause, table clause (rarely used), direct table WHERE clause (rarely used)
  */
-function get_privacy_where_clause($content_type, $table_alias, $viewing_member_id = null, $additional_or = '', $submitter = null)
+function get_privacy_where_clause(string $content_type, string $table_alias, ?int $viewing_member_id = null, string $additional_or = '', ?int $submitter = null) : array
 {
     if ($viewing_member_id === null) {
         $viewing_member_id = get_member();
@@ -121,7 +121,7 @@ function get_privacy_where_clause($content_type, $table_alias, $viewing_member_i
  * @param  ?MEMBER $submitter Member owning the content (null: do dynamically in query via content hook). Usually pass as null
  * @return boolean Whether there is access
  */
-function has_privacy_access($content_type, $content_id, $viewing_member_id = null, $additional_or = '', $submitter = null)
+function has_privacy_access(string $content_type, string $content_id, ?int $viewing_member_id = null, string $additional_or = '', ?int $submitter = null) : bool
 {
     if ($viewing_member_id === null) {
         $viewing_member_id = get_member();
@@ -173,7 +173,7 @@ function has_privacy_access($content_type, $content_id, $viewing_member_id = nul
  * @param  ID_TEXT $content_id The content ID
  * @param  ?MEMBER $viewing_member_id Viewing member to check privacy against (null: current member)
  */
-function check_privacy($content_type, $content_id, $viewing_member_id = null)
+function check_privacy(string $content_type, string $content_id, ?int $viewing_member_id = null)
 {
     if (!has_privacy_access($content_type, $content_id, $viewing_member_id)) {
         require_lang('content_privacy');
@@ -189,7 +189,7 @@ function check_privacy($content_type, $content_id, $viewing_member_id = null)
  * @param  boolean $strict_all Whether to get a full list including friends even when there are over a thousand friends
  * @return ?array A list of member IDs that have access (null: no restrictions)
  */
-function privacy_limits_for($content_type, $content_id, $strict_all = false)
+function privacy_limits_for(string $content_type, string $content_id, bool $strict_all = false) : ?array
 {
     $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
     if (array_key_exists(0, $rows)) {

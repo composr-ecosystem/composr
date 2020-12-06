@@ -28,7 +28,7 @@ class Module_admin_backup
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_backup
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('backup')) {
             return null;
@@ -82,7 +82,7 @@ class Module_admin_backup
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
     }
 
@@ -93,7 +93,7 @@ class Module_admin_backup
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('backup', $error_msg)) {
@@ -133,7 +133,7 @@ class Module_admin_backup
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         appengine_general_guard();
 
@@ -170,7 +170,7 @@ class Module_admin_backup
      *
      * @return Tempcode The UI
      */
-    public function backup_interface()
+    public function backup_interface() : object
     {
         $last_backup = intval(get_value('last_backup'));
         if ($last_backup == 0) {
@@ -241,7 +241,7 @@ class Module_admin_backup
      *
      * @return Tempcode The UI
      */
-    public function get_results()
+    public function get_results() : object
     {
         // Find all files in the incoming directory
         $path = get_custom_file_base() . '/exports/backups/';
@@ -310,7 +310,7 @@ class Module_admin_backup
      *
      * @return Tempcode The UI
      */
-    public function make_backup()
+    public function make_backup() : object
     {
         require_code('crypt');
         $b_type = post_param_string('b_type', 'full');
@@ -354,7 +354,7 @@ class Module_admin_backup
      *
      * @return Tempcode The UI
      */
-    public function confirm_delete()
+    public function confirm_delete() : object
     {
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
 
@@ -371,7 +371,7 @@ class Module_admin_backup
      *
      * @return Tempcode The UI
      */
-    public function delete()
+    public function delete() : object
     {
         $file = post_param_string('file');
 

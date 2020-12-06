@@ -55,7 +55,7 @@ function init__themes()
  * @param  boolean $pure_only Whether to only search the default 'images' filesystem
  * @return URLPATH The URL found (blank: not found)
  */
-function find_theme_image($id, $silent_fail = false, $leave_local = false, $theme = null, $lang = null, $db = null, $pure_only = false)
+function find_theme_image(string $id, bool $silent_fail = false, bool $leave_local = false, ?string $theme = null, ?string $lang = null, ?object $db = null, bool $pure_only = false) : string
 {
     global $THEME_IMAGES_CACHE, $USER_LANG_CACHED, $THEME_IMAGES_LOAD_INTENSITY, $RECORD_THEME_IMAGES_CACHE, $SMART_CACHE, $SITE_INFO;
 
@@ -288,7 +288,7 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
  * @param  ID_TEXT $true_theme Theme0
  * @param  LANGUAGE_NAME $true_lang Language
  */
-function load_theme_image_cache($db, $db_place, $true_theme, $true_lang)
+function load_theme_image_cache(object $db, int $db_place, string $true_theme, string $true_lang)
 {
     global $THEME_IMAGES_CACHE, $THEME_IMAGES_LOAD_INTENSITY, $SMART_CACHE;
 
@@ -321,7 +321,7 @@ function load_theme_image_cache($db, $db_place, $true_theme, $true_lang)
  * @param  URLPATH $url Input URL
  * @return URLPATH Output URL
  */
-function cdn_filter($url)
+function cdn_filter(string $url) : string
 {
     static $cdn = null;
     if ($cdn === null) {
@@ -406,7 +406,7 @@ function cdn_filter($url)
  * @return ?URLPATH The URL to the image (null: was not found)
  * @ignore
  */
-function _search_img_file($theme, $lang, $id, $dir = 'images')
+function _search_img_file(string $theme, ?string $lang, string $id, string $dir = 'images') : ?string
 {
     $places = array_unique([get_custom_file_base(), get_file_base()]);
     $extensions = ['png', 'jpg', 'jpe', 'jpeg', 'gif', 'ico', 'cur', 'svg', 'webp', 'bmp'];
@@ -447,7 +447,7 @@ function _search_img_file($theme, $lang, $id, $dir = 'images')
  * @param  integer $blue Blue colour (0-255)
  * @return array Triplet of components: H, S, L (0.0-1.0)
  */
-function rgb_to_hsl($red, $green, $blue)
+function rgb_to_hsl(int $red, int $green, int $blue) : array
 {
     $_red = $red / 255;
     $_green = $green / 255;
@@ -494,7 +494,7 @@ function rgb_to_hsl($red, $green, $blue)
  * @param  float $t (0.0-1.0)
  * @return float
  */
-function hue_to_rgb($p, $q, $t)
+function hue_to_rgb(float $p, float $q, float $t) : float
 {
     if ($t < 0.0) {
         $t += 1;
@@ -530,7 +530,7 @@ function hue_to_rgb($p, $q, $t)
  * @param  float $lht (0.0-1.0)
  * @return array Triplet of components: R, G, B (0-255)
  */
-function hsl_to_rgb($hue, $sat, $lht)
+function hsl_to_rgb(float $hue, float $sat, float $lht) : array
 {
     if ($sat == 0.0) {
         // achromatic

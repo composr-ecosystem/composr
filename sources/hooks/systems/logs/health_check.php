@@ -28,7 +28,7 @@ class Hook_logs_health_check
      *
      * @return array List of logs
      */
-    public function enumerate_logs()
+    public function enumerate_logs() : array
     {
         if (!addon_installed('health_check')) {
             return [

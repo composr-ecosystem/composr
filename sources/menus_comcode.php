@@ -27,7 +27,7 @@
  * @param  ID_TEXT $type The menu type (determines what templates get used)
  * @return Tempcode The generated Tempcode of the menu
  */
-function build_comcode_menu($comcode, $menu, $source_member, $type)
+function build_comcode_menu(string $comcode, string $menu, int $source_member, string $type) : object
 {
     // Reset
     $level = -1;

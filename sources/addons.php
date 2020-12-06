@@ -34,7 +34,7 @@ function init__addons()
  *
  * @return array Map of default addon info
  */
-function get_default_addon_info()
+function get_default_addon_info() : array
 {
     return [
         'name' => '',
@@ -88,7 +88,7 @@ function preload_all_ocproducts_addons_info()
  * @param  ?PATH $path Force reading from a particular path (null: no path)
  * @return array The map of details
  */
-function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = null, $ini_info = null, $path = null)
+function read_addon_info(string $addon_name, bool $get_dependencies_on_this = false, ?array $row = null, ?array $ini_info = null, ?string $path = null) : array
 {
     global $ADDON_INFO_CACHE;
     if ((isset($ADDON_INFO_CACHE[$addon_name])) && ((!$get_dependencies_on_this) || (isset($ADDON_INFO_CACHE[$addon_name]['dependencies_on_this'])))) {
@@ -267,7 +267,7 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
  * @param  ?PATH $tar_path Path to TAR file (null: don't look inside a TAR / it's installed already)
  * @return ?string Theme image URL (may be a "data:" URL rather than a normal URLPATH) (null: not found)
  */
-function find_addon_icon($addon_name, $pick_default = true, $tar_path = null)
+function find_addon_icon(string $addon_name, bool $pick_default = true, ?string $tar_path = null) : ?string
 {
     $matches = [];
 

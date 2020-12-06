@@ -24,7 +24,7 @@
  * @param  ?AUTO_LINK $forum_id Forum ID of forum to check (null: no filter, find a count for all)
  * @return array A pair: How many that do, If all do
  */
-function cns_has_mailing_list_style($forum_id = null)
+function cns_has_mailing_list_style(?int $forum_id = null) : array
 {
     $sql = 'SELECT id,f_mail_username,f_mail_email_address,f_mail_server_type,f_mail_server_host,f_mail_server_port,f_mail_folder,f_mail_username,f_mail_password FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums';
     $sql_sup = ' WHERE ' . db_string_not_equal_to('f_mail_username', '') . ' AND ' . db_string_not_equal_to('f_mail_email_address', '');
@@ -62,7 +62,7 @@ function cns_has_mailing_list_style($forum_id = null)
  * @param  array $row The forum row
  * @return boolean Whether it does
  */
-function cns_supports_mailing_list_style($row)
+function cns_supports_mailing_list_style(array $row) : bool
 {
     $ret =
         ($row['f_mail_username'] != '') &&
@@ -84,7 +84,7 @@ function cns_supports_mailing_list_style($row)
  * @param  ?AUTO_LINK $it Category selected by default (null: no specific default)
  * @return Tempcode The list
  */
-function cns_create_selection_list_forum_groupings($avoid = null, $it = null)
+function cns_create_selection_list_forum_groupings(?int $avoid = null, ?int $it = null) : object
 {
     $_m = $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', ['*']);
     $entries = new Tempcode();
@@ -103,7 +103,7 @@ function cns_create_selection_list_forum_groupings($avoid = null, $it = null)
  * @param  ?AUTO_LINK $it The currently selected topic (null: none selected)
  * @return Tempcode The list of topics
  */
-function cns_create_selection_list_topic_tree($it = null)
+function cns_create_selection_list_topic_tree(?int $it = null) : object
 {
     $tree = cns_get_topic_tree();
 
@@ -132,7 +132,7 @@ function cns_create_selection_list_topic_tree($it = null)
  * @param  ?integer $levels The number of recursive levels to search (null: all)
  * @return array A list of maps for all forums. Each map entry containing the fields 'id' (forum ID) and 'breadcrumbs' (path to the forum, including the forums own title), and more.
  */
-function cns_get_topic_tree($forum_id = null, $breadcrumbs = null, $title = null, $levels = null)
+function cns_get_topic_tree(?int $forum_id = null, ?string $breadcrumbs = null, ?string $title = null, ?int $levels = null) : array
 {
     if ($forum_id === null) {
         $forum_id = db_get_first_id();
@@ -200,7 +200,7 @@ function cns_get_topic_tree($forum_id = null, $breadcrumbs = null, $title = null
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode Forum selection list
  */
-function create_selection_list_forum_tree($member_id = null, $base_forum = null, $selected_forum = null, $use_compound_list = false, $levels = null, $updated_since = null)
+function create_selection_list_forum_tree(?int $member_id = null, ?int $base_forum = null, ?array $selected_forum = null, bool $use_compound_list = false, ?int $levels = null, ?int $updated_since = null) : object
 {
     $tree = cns_get_forum_tree($member_id, $base_forum, '', null, null, $use_compound_list, $levels, $updated_since !== null, $updated_since);
     if ($use_compound_list) {
@@ -260,7 +260,7 @@ function create_selection_list_forum_tree($member_id = null, $base_forum = null,
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return array A list of maps, OR (if $use_compound_list) a pair of the Tempcode and the compound list
  */
-function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs = '', $skip = null, $forum_details = null, $use_compound_list = false, $levels = null, $do_stats = false, $updated_since = null)
+function cns_get_forum_tree(?int $member_id = null, ?int $base_forum = null, string $breadcrumbs = '', ?int $skip = null, ?array $forum_details = null, bool $use_compound_list = false, ?int $levels = null, bool $do_stats = false, ?int $updated_since = null) : array
 {
     if (($levels == -1) && (!$use_compound_list)) {
         return $use_compound_list ? [[], ''] : [];

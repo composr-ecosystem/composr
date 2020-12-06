@@ -117,7 +117,7 @@ abstract class Standard_crud_module
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = $this->author;
@@ -138,7 +138,7 @@ abstract class Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if ($member_id === null) {
             $member_id = get_member();
@@ -197,7 +197,7 @@ abstract class Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -413,7 +413,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         @ignore_user_abort(true); // Must keep going till completion
 
@@ -579,7 +579,7 @@ abstract class Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         return '';
     }
@@ -590,7 +590,7 @@ abstract class Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat_b($id)
+    public function get_cat_b(string $id)
     {
         return '';
     }
@@ -601,7 +601,7 @@ abstract class Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         return [null, null];
     }
@@ -613,7 +613,7 @@ abstract class Standard_crud_module
      * @param  string $stub Type code for current flow (e.g. '' or 'category')
      * @return string Complete screen type code
      */
-    protected function get_screen_type_for($type_code, $stub)
+    protected function get_screen_type_for(string $type_code, string $stub) : string
     {
         if ($stub != '') {
             return $type_code . '_' . $stub;
@@ -629,7 +629,7 @@ abstract class Standard_crud_module
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
      * @return array Array of all input parameters, converted
      */
-    public function choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks)
+    public function choose_feedback_fields_statistically(?int $allow_rating, ?int $allow_comments, ?int $allow_trackbacks) : array
     {
         if ($allow_rating === null) {
             $query = 'SELECT allow_rating,count(allow_rating) AS qty FROM ' . get_table_prefix() . $this->table;
@@ -666,7 +666,7 @@ abstract class Standard_crud_module
      * @param  ?Tempcode $pinterface_view Label for view permissions (null: default)
      * @return Tempcode The permission fields
      */
-    public function get_permission_fields($category_id, $help = null, $new_category = false, $pinterface_view = null)
+    public function get_permission_fields(?string $category_id, ?object $help = null, bool $new_category = false, ?object $pinterface_view = null) : object
     {
         return get_category_permissions_for_environment($this->permission_module, $category_id, $this->privilege_page, $help, $new_category, $pinterface_view);
     }
@@ -676,7 +676,7 @@ abstract class Standard_crud_module
      *
      * @param  ID_TEXT $id The category to set permissions for
      */
-    public function set_permissions($id)
+    public function set_permissions(string $id)
     {
         set_category_permissions_from_environment($this->permission_module, $id, $this->privilege_page);
     }
@@ -686,7 +686,7 @@ abstract class Standard_crud_module
      *
      * @return boolean Whether it has
      */
-    public function has_tied_catalogue()
+    public function has_tied_catalogue() : bool
     {
         if ($this->content_type !== null) {
             require_code('fields');
@@ -702,7 +702,7 @@ abstract class Standard_crud_module
      * @param  string $icon The icon to use
      * @return ?Tempcode The Tempcode for the catalogue chooser (null: already chosen)
      */
-    public function choose_catalogue($title, $icon = 'buttons/proceed')
+    public function choose_catalogue(object $title, string $icon = 'buttons/proceed') : ?object
     {
         if (!$this->catalogue) {
             return null;
@@ -743,7 +743,7 @@ abstract class Standard_crud_module
      * @param  Tempcode $title The page title
      * @return Tempcode The UI
      */
-    public function preview_intercept($title)
+    public function preview_intercept(object $title) : object
     {
         require_code('preview');
         $output = build_preview();
@@ -761,7 +761,7 @@ abstract class Standard_crud_module
      * @param  Tempcode $title The page title for what's being done
      * @return ?Tempcode The confirmation UI (null: all is clear - no confirmation needed)
      */
-    public function handle_confirmations($title)
+    public function handle_confirmations(object $title) : ?object
     {
         return null;
     }
@@ -778,7 +778,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function add()
+    public function add() : object
     {
         if (($this->permissions_require !== null) && ($this->permissions_cat_require === null)) {
             check_submit_permission($this->permissions_require, $this->privilege_page_name);
@@ -975,7 +975,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _add()
+    public function _add() : object
     {
         if ($this->permissions_require !== null) {
             check_submit_permission($this->permissions_require, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? '' : post_param_string($this->permissions_cat_name), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? '' : post_param_string($this->permissions_cat_name_b)], $this->privilege_page_name);
@@ -1057,7 +1057,8 @@ abstract class Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    abstract public function add_actualisation();
+    abstract public function add_actualisation() : array;
+
 
     /**
      * Standard CRUD-module entry function to get rows for selection from.
@@ -1070,7 +1071,7 @@ abstract class Standard_crud_module
      * @param  ?integer $max Maximum to show (null: standard)
      * @return array A pair: Rows for selection from, Total results
      */
-    public function get_entry_rows($recache = false, $orderer = null, $where = [], $force_site_db = false, $join = '', $max = null)
+    public function get_entry_rows(bool $recache = false, ?string $orderer = null, array $where = [], bool $force_site_db = false, string $join = '', ?int $max = null) : array
     {
         if ((!$recache) && ($orderer === null) && ($where === null)) {
             if (isset($this->cached_entry_rows)) {
@@ -1144,7 +1145,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         list($_entries,) = $this->get_entry_rows(false, null, [], false, '', intval(get_option('general_safety_listing_limit')));
 
@@ -1161,7 +1162,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function edit()
+    public function edit() : object
     {
         if (($this->permissions_require !== null) && ($this->permissions_cat_require === null)) {
             check_some_edit_permission($this->permissions_require, null, $this->privilege_page_name);
@@ -1332,7 +1333,7 @@ abstract class Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    abstract public function fill_in_edit_form($id);
+    abstract public function fill_in_edit_form(string $id);
 
     /**
      * Standard crud_module delete possibility checker.
@@ -1340,7 +1341,7 @@ abstract class Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         list($submitter, $timestamp) = $this->get_submitter($id);
 
@@ -1367,7 +1368,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _edit()
+    public function _edit() : object
     {
         require_code('lang3');
         attach_translation_notice();
@@ -1633,7 +1634,7 @@ abstract class Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function __edit()
+    public function __edit() : object
     {
         $id = null; // Define type as mixed
         $id = $this->non_integer_id ? get_param_string('id', false, INPUT_FILTER_GET_COMPLEX) : strval(get_param_integer('id'));
@@ -1756,14 +1757,15 @@ abstract class Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    abstract public function edit_actualisation($id);
+    abstract public function edit_actualisation(string $id) : ?object;
+
 
     /**
      * Standard crud_module delete actualiser.
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    abstract public function delete_actualisation($id);
+    abstract public function delete_actualisation(string $id);
 
     /**
      * Mass delete some entries/categories.
@@ -1771,7 +1773,7 @@ abstract class Standard_crud_module
      * @param  boolean $top_level Whether this is a top level mass delete op (i.e. not a recursion)
      * @return ?Tempcode The UI (null: not top level)
      */
-    public function mass_delete($top_level = true)
+    public function mass_delete(bool $top_level = true) : ?object
     {
         $delete = [];
         if ($this->supports_mass_delete) {
@@ -1832,7 +1834,7 @@ abstract class Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         $archive_url = null;
         if ($this->archive_entry_point !== null) {

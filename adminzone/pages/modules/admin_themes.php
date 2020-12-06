@@ -28,7 +28,7 @@ class Module_admin_themes
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -64,7 +64,7 @@ class Module_admin_themes
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_code('themes2');
 
@@ -106,7 +106,7 @@ class Module_admin_themes
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         $ret = [
             'browse' => ['MANAGE_THEMES', 'menu/adminzone/style/themes/themes'],
@@ -132,7 +132,7 @@ class Module_admin_themes
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
@@ -281,7 +281,7 @@ class Module_admin_themes
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_lang('themes');
         require_code('view_modes');
@@ -346,7 +346,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function manage_themes()
+    public function manage_themes() : object
     {
         $_themes = find_all_themes();
 
@@ -485,7 +485,7 @@ class Module_admin_themes
      * @param  boolean $use_on_all_zones Whether to use this theme on all zones
      * @return Tempcode The fields
      */
-    public function get_theme_fields($name = '', $use_on_all_zones = false)
+    public function get_theme_fields(string $name = '', bool $use_on_all_zones = false) : object
     {
         require_code('form_templates');
         require_code('permissions2');
@@ -625,7 +625,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function add_theme()
+    public function add_theme() : object
     {
         $fields = $this->get_theme_fields();
 
@@ -659,7 +659,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function _add_theme()
+    public function _add_theme() : object
     {
         $theme = post_param_string('theme');
         require_code('type_sanitisation');
@@ -685,7 +685,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function edit_theme()
+    public function edit_theme() : object
     {
         $theme = $this->theme;
 
@@ -733,7 +733,7 @@ class Module_admin_themes
      * @param  ID_TEXT $theme The theme codename
      * @return ?Tempcode The theme date (null: theme not found)
      */
-    protected function _get_theme_date($theme)
+    protected function _get_theme_date(string $theme) : ?object
     {
         $path = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . $theme;
         if (!is_dir($path)) {
@@ -748,7 +748,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function _edit_theme()
+    public function _edit_theme() : object
     {
         $theme = get_param_string('old_theme', false, INPUT_FILTER_GET_COMPLEX);
 
@@ -800,7 +800,7 @@ class Module_admin_themes
      *
      * @param  ID_TEXT $theme The name of the theme
      */
-    protected function save_theme_changes($theme)
+    protected function save_theme_changes(string $theme)
     {
         // Make live if requested
         if (post_param_integer('use_on_all', 0) == 1) {
@@ -875,7 +875,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function edit_templates()
+    public function edit_templates() : object
     {
         $theme = $this->theme;
 
@@ -946,7 +946,7 @@ class Module_admin_themes
      * @param  URLPATH $url The URL to the theme image
      * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
      */
-    public function get_image_form_fields($theme, $lang, $id = '', $url = '')
+    public function get_image_form_fields(string $theme, string $lang, string $id = '', string $url = '') : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -985,7 +985,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function manage_images()
+    public function manage_images() : object
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -1038,7 +1038,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function add_image()
+    public function add_image() : object
     {
         $theme = $this->theme;
         $lang = get_param_string('lang', user_lang());
@@ -1079,7 +1079,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function _add_image()
+    public function _add_image() : object
     {
         require_code('uploads');
 
@@ -1131,7 +1131,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function edit_image()
+    public function edit_image() : object
     {
         $lang = choose_language($this->title, true, true);
         if (is_object($lang)) {
@@ -1204,7 +1204,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function _edit_image()
+    public function _edit_image() : object
     {
         require_code('uploads');
 
@@ -1262,7 +1262,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function screen_previews()
+    public function screen_previews() : object
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -1373,7 +1373,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function screen_preview()
+    public function screen_preview() : object
     {
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
@@ -1394,7 +1394,7 @@ class Module_admin_themes
      *
      * @return Tempcode The UI
      */
-    public function tempcode_tester()
+    public function tempcode_tester() : object
     {
         if (get_option('editarea') == '1') {
             attach_to_screen_header(make_string_tempcode(/**@lang HTML*/'
@@ -1420,7 +1420,7 @@ class Module_admin_themes
      * @param  ID_TEXT $file ID of file that an edit link should load (blank: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $theme, $lang, $type, $file)
+    public function do_next_manager(object $title, object $description, string $theme, ?string $lang, string $type, string $file) : object
     {
         if ($lang === null) {
             $lang = '';

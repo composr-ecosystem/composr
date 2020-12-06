@@ -29,7 +29,7 @@ class Hook_addon_registry_points
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_points
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_points
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Fun and Games';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_points
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_points
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_points',
@@ -81,7 +81,7 @@ class Hook_addon_registry_points
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_points
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/social/points.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_points
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/points.php',
@@ -190,7 +190,7 @@ class Hook_addon_registry_points
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board',
@@ -212,7 +212,7 @@ class Hook_addon_registry_points
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__points_leader_board()
+    public function tpl_preview__points_leader_board() : array
     {
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -242,7 +242,7 @@ class Hook_addon_registry_points
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__points_leader_board_screen()
+    public function tpl_preview__points_leader_board_screen() : array
     {
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -278,7 +278,7 @@ class Hook_addon_registry_points
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__points_search_screen()
+    public function tpl_preview__points_search_screen() : array
     {
         $results = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -304,7 +304,7 @@ class Hook_addon_registry_points
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__points_screen()
+    public function tpl_preview__points_screen() : array
     {
         $chargelog_details = placeholder_table();
 

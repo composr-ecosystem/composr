@@ -28,7 +28,7 @@ class Block_main_staff_links
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Jack Franklin';
@@ -55,7 +55,7 @@ class Block_main_staff_links
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         // No cache on POST as this is when we save text data
@@ -77,7 +77,7 @@ PHP;
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
             $GLOBALS['SITE_DB']->create_table('staff_links', [
@@ -107,7 +107,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         require_lang('staff_checklist');
 

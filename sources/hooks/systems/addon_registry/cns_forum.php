@@ -29,7 +29,7 @@ class Hook_addon_registry_cns_forum
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Community';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'The Conversr forum- a modern advanced forum for members to interact on.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_forums',
@@ -85,7 +85,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -101,7 +101,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/social/forum/forums.svg';
     }
@@ -111,7 +111,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
 
@@ -360,7 +360,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/CNS_TOPIC_POST_AVATAR.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
@@ -429,7 +429,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_vforum_filtering()
+    public function tpl_preview__cns_vforum_filtering() : array
     {
         $filtering = do_lorem_template('CNS_VFORUM_FILTERING', []);
 
@@ -480,7 +480,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_private_topic_link()
+    public function tpl_preview__cns_private_topic_link() : array
     {
         require_css('cns');
 
@@ -515,7 +515,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__cns_edit_forum_screen()
+    public function tpl_preview__administrative__cns_edit_forum_screen() : array
     {
         require_css('cns');
         require_css('cns_editor');
@@ -558,7 +558,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_rank_image()
+    public function tpl_preview__cns_rank_image() : array
     {
         require_css('cns');
 
@@ -579,7 +579,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_isolated_post()
+    public function tpl_preview__cns_isolated_post() : array
     {
         require_css('cns');
 
@@ -680,7 +680,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_cns_involved_topics()
+    public function tpl_preview__block_main_cns_involved_topics() : array
     {
         require_css('cns');
 
@@ -707,7 +707,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_side_cns_private_topics()
+    public function tpl_preview__block_side_cns_private_topics() : array
     {
         require_css('cns');
 
@@ -755,7 +755,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_forum_topic_list_line()
+    public function tpl_preview__cns_forum_topic_list_line() : array
     {
         require_css('cns');
 
@@ -774,7 +774,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_forum_list_line()
+    public function tpl_preview__cns_forum_list_line() : array
     {
         require_css('cns');
 
@@ -794,7 +794,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_forum_intro_question_popup()
+    public function tpl_preview__cns_forum_intro_question_popup() : array
     {
         require_css('cns');
 
@@ -817,7 +817,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_member_bar_guest()
+    public function tpl_preview__block_main_member_bar_guest() : array
     {
         require_css('cns');
 
@@ -848,7 +848,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_member_bar_search()
+    public function tpl_preview__block_main_member_bar_search() : array
     {
         require_css('cns');
 
@@ -868,7 +868,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_member_bar_member()
+    public function tpl_preview__block_main_member_bar_member() : array
     {
         require_css('cns');
 
@@ -934,7 +934,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_bottom_bar()
+    public function tpl_preview__block_main_bottom_bar() : array
     {
         require_css('cns');
 
@@ -986,7 +986,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_forum_intro_question_screen()
+    public function tpl_preview__cns_forum_intro_question_screen() : array
     {
         require_css('cns');
 
@@ -1009,7 +1009,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_forum()
+    public function tpl_preview__cns_forum() : array
     {
         require_css('cns');
 
@@ -1212,7 +1212,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_vforum()
+    public function tpl_preview__cns_vforum() : array
     {
         require_css('cns');
 
@@ -1235,7 +1235,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_whisper_choice_screen()
+    public function tpl_preview__cns_whisper_choice_screen() : array
     {
         require_css('cns');
 
@@ -1257,7 +1257,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_quote_fcomcode()
+    public function tpl_preview__cns_quote_fcomcode() : array
     {
         require_css('cns');
 
@@ -1279,7 +1279,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_pt_rules_screen()
+    public function tpl_preview__cns_member_pt_rules_screen() : array
     {
         require_css('cns');
 
@@ -1303,7 +1303,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_posting_screen_posts()
+    public function tpl_preview__cns_posting_screen_posts() : array
     {
         require_css('cns');
 
@@ -1328,7 +1328,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_profile_posts()
+    public function tpl_preview__cns_member_profile_posts() : array
     {
         require_css('cns');
 
@@ -1438,7 +1438,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_profile_pts()
+    public function tpl_preview__cns_member_profile_pts() : array
     {
         require_css('cns');
 
@@ -1456,7 +1456,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_topic_not_voted_checkboxes_wrap()
+    public function tpl_preview__cns_topic_not_voted_checkboxes_wrap() : array
     {
         return $this->_tpl_preview__cns_topic_screen(false, true);
     }
@@ -1468,7 +1468,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_topic_not_voted_radio_wrap()
+    public function tpl_preview__cns_topic_not_voted_radio_wrap() : array
     {
         return $this->_tpl_preview__cns_topic_screen(false, false);
     }
@@ -1480,7 +1480,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_topic_voted_wrap()
+    public function tpl_preview__cns_topic_voted_wrap() : array
     {
         return $this->_tpl_preview__cns_topic_screen(true, false);
     }
@@ -1494,7 +1494,7 @@ class Hook_addon_registry_cns_forum
      * @param  boolean $checkboxes Whether to show checkboxes (as oppose to radio buttons). Irrelevant if !$voted.
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function _tpl_preview__cns_topic_screen($voted, $checkboxes)
+    public function _tpl_preview__cns_topic_screen(bool $voted, bool $checkboxes) : array
     {
         require_css('cns');
 
@@ -1922,7 +1922,7 @@ class Hook_addon_registry_cns_forum
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_post_from_mailing_list()
+    public function tpl_preview__cns_post_from_mailing_list() : array
     {
         require_lang('cns');
         require_lang('cns_mailinglists');

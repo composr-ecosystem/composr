@@ -28,7 +28,7 @@ class Hook_config_is_on_strong_forum_tie
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'STRONG_FORUM_TIE',
@@ -51,7 +51,7 @@ class Hook_config_is_on_strong_forum_tie
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '0';
     }

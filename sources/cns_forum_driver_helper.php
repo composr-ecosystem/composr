@@ -29,7 +29,7 @@
  *
  * @ignore
  */
-function _helper_apply_emoticons($this_ref, $member_id = null)
+function _helper_apply_emoticons(object $this_ref, ?int $member_id = null) : array
 {
     global $IN_MINIKERNEL_VERSION;
     if ($IN_MINIKERNEL_VERSION) {
@@ -94,7 +94,7 @@ function _helper_apply_emoticons($this_ref, $member_id = null)
  *
  * @ignore
  */
-function _helper_make_post_forum_topic($this_ref, $forum_name, $topic_identifier, $member_id, $post_title, $post, $content_title, $topic_identifier_encapsulation_prefix, $content_url, $time, $ip, $validated, $topic_validated, $skip_post_checks, $poster_name_if_guest, $parent_id, $staff_only, $no_notify_for__notification_code, $no_notify_for__code_category, $time_post, $spacer_post_member_id)
+function _helper_make_post_forum_topic(object $this_ref, string $forum_name, string $topic_identifier, int $member_id, string $post_title, string $post, string $content_title, string $topic_identifier_encapsulation_prefix, ?string $content_url, ?int $time, ?string $ip, ?int $validated, ?int $topic_validated, bool $skip_post_checks, string $poster_name_if_guest, ?int $parent_id, bool $staff_only, ?string $no_notify_for__notification_code, ?string $no_notify_for__code_category, ?int $time_post, ?int $spacer_post_member_id) : array
 {
     if ($time === null) {
         $time = time();
@@ -244,7 +244,7 @@ function _helper_make_post_forum_topic($this_ref, $forum_name, $topic_identifier
  * @return ?array The array of topics (null: error/none)
  * @ignore
  */
-function _helper_show_forum_topics($this_ref, $name, $limit, $start, &$max_rows, $filter_topic_title, $filter_topic_description, $show_first_posts, $date_key, $hot, $open_only)
+function _helper_show_forum_topics(object $this_ref, $name, int $limit, int $start, int &$max_rows, string $filter_topic_title, string $filter_topic_description, bool $show_first_posts, string $date_key, bool $hot, bool $open_only) : ?array
 {
     if (is_integer($name)) {
         $id_list = 't_forum_id=' . strval(intval($name));
@@ -400,7 +400,7 @@ function _helper_show_forum_topics($this_ref, $name, $limit, $start, &$max_rows,
  * @param  ID_TEXT $field The field name
  * @return string The SQL
  */
-function not_like_spacer_posts($field)
+function not_like_spacer_posts(string $field) : string
 {
     $ret = '';
     $langs = find_all_langs();
@@ -430,7 +430,7 @@ function not_like_spacer_posts($field)
  * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
  * @ignore
  */
-function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $start, $mark_read = true, $reverse = false, $light_if_threaded = false, $post_ids = null, $load_spacer_posts_too = false, $sort = 'date')
+function _helper_get_forum_topic_posts(object $this_ref, ?int $topic_id, ?int &$count, ?int $max, int $start, bool $mark_read = true, bool $reverse = false, bool $light_if_threaded = false, ?array $post_ids = null, bool $load_spacer_posts_too = false, string $sort = 'date')
 {
     if ($topic_id === null) {
         if ($count !== null) {
@@ -542,7 +542,7 @@ function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $sta
  *
  * @ignore
  */
-function _helper_get_post_remaining_details($this_ref, $topic_id, $post_ids)
+function _helper_get_post_remaining_details(object $this_ref, int $topic_id, array $post_ids) : array
 {
     $count = null;
     $ret = _helper_get_forum_topic_posts($this_ref, $topic_id, $count, null, 0, false, false, false, $post_ids, true);
@@ -561,7 +561,7 @@ function _helper_get_post_remaining_details($this_ref, $topic_id, $post_ids)
  *
  * @ignore
  */
-function _helper_get_emoticon_chooser($this_ref, $field_name)
+function _helper_get_emoticon_chooser(object $this_ref, string $field_name) : object
 {
     if (get_option('is_on_emoticon_choosers') == '0') {
         return new Tempcode();

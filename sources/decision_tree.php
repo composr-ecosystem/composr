@@ -87,7 +87,7 @@ class DecisionTree
      * @param  array $decision_tree Decision tree structure to work from
      * @param  ID_TEXT $default_screen Name of the default screen to start from
      */
-    public function __construct($decision_tree, $default_screen = 'start')
+    public function __construct(array $decision_tree, string $default_screen = 'start')
     {
         require_lang('decision_tree');
 
@@ -140,7 +140,7 @@ class DecisionTree
      * @param  boolean $recurse Whether we are running recursively, after just processing a prior result
      * @return Tempcode Screen output
      */
-    public function run($recurse = false)
+    public function run(bool $recurse = false) : object
     {
         $tree_position = get_param_string('type', 'browse');
         if ($tree_position != '' && $tree_position[0] == '_') {
@@ -214,7 +214,7 @@ class DecisionTree
      * @param  ID_TEXT $target_position Tree position to go to
      * @return Tempcode URL
      */
-    protected function build_url($target_position)
+    protected function build_url(string $target_position) : object
     {
         return build_url(['page' => '_SELF', 'type' => $target_position], '_SELF', [], true);
     }
@@ -225,7 +225,7 @@ class DecisionTree
      * @param  ID_TEXT $tree_position Tree position at
      * @return Tempcode Screen output
      */
-    protected function render($tree_position)
+    protected function render(string $tree_position) : object
     {
         $details = $this->decision_tree[$tree_position];
 
@@ -379,7 +379,7 @@ class DecisionTree
      * @param  integer $i Question number in sequence
      * @return array Tuple of field details: hook object, field details map, default field value
      */
-    protected function get_question_field_details($question_name, $question_details, $i)
+    protected function get_question_field_details(string $question_name, array $question_details, int $i) : array
     {
         $default = either_param_string($question_name, isset($question_details['default']) ? $question_details['default'] : '');
         $default_list = isset($question_details['default_list']) ? $question_details['default_list'] : [$default];
@@ -410,7 +410,7 @@ class DecisionTree
      * @param  ID_TEXT $tree_position Tree position coming from
      * @return mixed Tree position going to or Tempcode URL
      */
-    protected function process_input($tree_position)
+    protected function process_input(string $tree_position)
     {
         $details = $this->decision_tree[$tree_position];
 

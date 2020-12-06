@@ -28,7 +28,7 @@ class Hook_snippet_template_editor_load
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!has_actual_page_access(get_member(), 'admin_themes', get_module_zone('admin_themes'))) {
             access_denied('I_ERROR');
@@ -238,7 +238,7 @@ class Hook_snippet_template_editor_load
      * @param  string $file_id The ID of the actual template editor we are working with
      * @return array Tuple of dropdowns
      */
-    protected function get_tempcode_editing_toolbar_dropdowns($file, $file_id)
+    protected function get_tempcode_editing_toolbar_dropdowns(?string $file, string $file_id) : array
     {
         $parameters = new Tempcode();
         if ($file !== null) {
@@ -379,7 +379,7 @@ class Hook_snippet_template_editor_load
      * @param  string $file_id The ID of the actual template editor we are working with
      * @return Tempcode The Tempcode
      */
-    protected function generate_dropdown_from($array, $stub, $file_id)
+    protected function generate_dropdown_from(array $array, string $stub, string $file_id) : object
     {
         $out = new Tempcode();
         foreach ($array as $x) {

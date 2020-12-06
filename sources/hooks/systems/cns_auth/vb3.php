@@ -34,7 +34,7 @@ class Hook_cns_auth_vb3
      * @param  array $row Row of Conversr account
      * @return ?Tempcode Error message (null: none)
      */
-    public function auth($username, $user_id, $password_hashed, $password_raw, $cookie_login, $row)
+    public function auth(?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login, array $row) : ?object
     {
         if ($cookie_login) {
             if ($row['m_pass_hash_salted'] != $password_hashed) {

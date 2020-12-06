@@ -45,7 +45,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('custom_comcode')) {
             return null;
@@ -61,7 +61,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -88,7 +88,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('custom_comcode', [
@@ -119,7 +119,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('custom_comcode', $error_msg)) {
@@ -143,7 +143,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_code('custom_comcode');
 
@@ -167,7 +167,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -187,7 +187,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -255,7 +255,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  BINARY $textual_tag Whether it is a textual tag
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($title = '', $description = '', $enabled = 1, $tag = 'this', $replace = '<span class="example" style="color: {color}">{content}</span>', $example = '[this color="red"]blah[/this]', $parameters = 'color=black', $dangerous_tag = 0, $block_tag = 0, $textual_tag = 1)
+    public function get_form_fields(string $title = '', string $description = '', int $enabled = 1, string $tag = 'this', string $replace = '<span class="example" style="color: {color}">{content}</span>', string $example = '[this color="red"]blah[/this]', string $parameters = 'color=black', int $dangerous_tag = 0, int $block_tag = 0, int $textual_tag = 1) : array
     {
         if ((get_forum_type() == 'cns') && (is_on_multi_site_network())) {
             attach_message(do_lang_tempcode('EDITING_ON_WRONG_MSN'), 'warn');
@@ -283,7 +283,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $m = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['*'], ['tag_tag' => $id], '', 1);
         if (!array_key_exists(0, $m)) {
@@ -299,7 +299,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $tag = post_param_string('tag');
 
@@ -339,7 +339,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $tag = post_param_string('tag');
 
@@ -381,7 +381,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * @param  array $_parameters Parameters configured
      * @param  string $replace Text to replace within
      */
-    protected function check_parameters_all_there($_parameters, $replace)
+    protected function check_parameters_all_there(array $_parameters, string $replace)
     {
         $parameters = [];
         foreach ($_parameters as $param) {
@@ -414,7 +414,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_custom_comcode_tag($id);
     }

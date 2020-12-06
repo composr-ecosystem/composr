@@ -28,7 +28,7 @@ class Hook_snippet_themewizard_equation
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('themewizard')) {
             return new Tempcode();

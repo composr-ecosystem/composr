@@ -30,7 +30,7 @@ class Hook_realtime_rain_cns
      * @param  TIME $to End of time range
      * @return array A list of template parameter sets for rendering a 'drop'
      */
-    public function run($from, $to)
+    public function run(int $from, int $to) : array
     {
         $drops = [];
         if (get_forum_type() == 'cns') {

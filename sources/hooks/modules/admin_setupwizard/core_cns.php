@@ -28,7 +28,7 @@ class Hook_sw_core_cns
      *
      * @return array Current settings
      */
-    public function get_current_settings()
+    public function get_current_settings() : array
     {
         $settings = [];
 
@@ -79,7 +79,7 @@ class Hook_sw_core_cns
      * @param  array $field_defaults Default values for the fields, from the install-profile
      * @return array A pair: Input fields, Hidden fields
      */
-    public function get_fields($field_defaults)
+    public function get_fields(array $field_defaults) : array
     {
         if (!addon_installed('cns_forum') || get_forum_type() != 'cns' || post_param_integer('addon_cns_forum', null) === 0) {
             return [new Tempcode(), new Tempcode()];
@@ -140,7 +140,7 @@ class Hook_sw_core_cns
      *
      * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
-    public function get_blocks()
+    public function get_blocks() : array
     {
         if (get_forum_type() == 'cns') {
             return ['side_cns_private_topics' => [BLOCK_POSITION_PANEL, null]];

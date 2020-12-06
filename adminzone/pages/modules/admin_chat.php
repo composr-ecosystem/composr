@@ -43,7 +43,7 @@ class Module_admin_chat extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('chat')) {
             return null;
@@ -68,7 +68,7 @@ class Module_admin_chat extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('chat', $error_msg)) {
@@ -99,7 +99,7 @@ class Module_admin_chat extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         $this->extra_donext_entries = [
             ['admin/delete3', ['_SELF', ['type' => 'delete_all'], '_SELF'], do_lang('DELETE_ALL_CHATROOMS')],
@@ -126,7 +126,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         $this->add_one_label = do_lang_tempcode('ADD_CHATROOM');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_CHATROOM');
@@ -160,7 +160,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields()
+    public function get_form_fields() : array
     {
         list($fields, $hidden) = get_chatroom_fields();
 
@@ -179,7 +179,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         require_code('chat_lobby');
 
@@ -203,7 +203,7 @@ class Module_admin_chat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -238,7 +238,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list($allow2, $allow2_groups, $disallow2, $disallow2_groups) = read_in_chat_perm_fields();
 
@@ -267,7 +267,7 @@ class Module_admin_chat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $_room_owner = post_param_string('room_owner', STRING_MAGIC_NULL);
         $room_owner = ($_room_owner == STRING_MAGIC_NULL) ? INTEGER_MAGIC_NULL : $GLOBALS['FORUM_DRIVER']->get_member_from_username($_room_owner);
@@ -302,7 +302,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_chatroom(intval($id));
     }
@@ -312,7 +312,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function delete_all()
+    public function delete_all() : object
     {
         $fields = new Tempcode();
         $fields->attach(form_input_tick(do_lang_tempcode('PROCEED'), do_lang_tempcode('Q_SURE'), 'continue_delete', false));
@@ -337,7 +337,7 @@ class Module_admin_chat extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _delete_all()
+    public function _delete_all() : object
     {
         $delete = post_param_integer('continue_delete', 0);
         if ($delete != 1) {

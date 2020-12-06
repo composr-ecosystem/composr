@@ -30,7 +30,7 @@ class Hook_login_provider_httpauth
      * @param  boolean $quick_only Whether to just do a quick check, don't establish new sessions
      * @return ?MEMBER Member ID now detected as logged in (null: none). May be a guest ID.
      */
-    public function try_login($member_id, $quick_only = false)
+    public function try_login(?int $member_id, bool $quick_only = false) : ?int
     {
         // Various kinds of possible HTTP authentication
         // NB: We do even if we already have a session, as parts of the site may be HTTP-auth, and others not - so we need to let it work as an override

@@ -26,7 +26,7 @@
  * @param  ?mixed $refresh_if_changed Data. A refresh will only happen if an AJAX-check indicates this data has changed (null: no check)
  * @return Tempcode The screen output, wrapped with some AJAX code
  */
-function internalise_own_screen($screen_content, $refresh_time = null, $refresh_if_changed = null)
+function internalise_own_screen(object $screen_content, ?int $refresh_time = null, $refresh_if_changed = null) : object
 {
     if (get_bot_type() !== null) {
         return $screen_content;

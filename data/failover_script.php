@@ -85,7 +85,7 @@ handle_failover_auto_switching();
  *
  * @param  integer $iteration The check iteration (if deactivating we check a number of times to ensure all is still okay)
  */
-function handle_failover_auto_switching($iteration = 0)
+function handle_failover_auto_switching(int $iteration = 0)
 {
     global $SITE_INFO;
 
@@ -227,7 +227,7 @@ function handle_failover_auto_switching($iteration = 0)
  *
  * @param  string $url Check that failed
  */
-function is_failing($url)
+function is_failing(string $url)
 {
     global $SITE_INFO;
     if ($SITE_INFO['failover_mode'] == 'auto_off') {
@@ -250,7 +250,7 @@ function is_failing($url)
  * @param  string $subject Subject
  * @param  string $message Body
  */
-function send_failover_email($subject, $message)
+function send_failover_email(string $subject, string $message)
 {
     global $SITE_INFO;
     $emails = explode(';', $SITE_INFO['failover_email_contact']);
@@ -264,7 +264,7 @@ function send_failover_email($subject, $message)
  *
  * @param  string $new_mode New failover mode
  */
-function set_failover_mode($new_mode)
+function set_failover_mode(string $new_mode)
 {
     global $FILE_BASE, $SITE_INFO;
 

@@ -34,7 +34,7 @@ class Hook_task_privacy_purge
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($table_actions, $member_id_username, $ip_addresses, $member_id, $email_address, $others)
+    public function run(array $table_actions, ?int $member_id_username, array $ip_addresses, ?int $member_id, string $email_address, array $others) : ?array
     {
         // See also warnings.php - this code will delete/anonymise on mass for any kinds of database record, while warnings.php handles deletion of individually-identified high-level content items
 
@@ -77,7 +77,7 @@ class Hook_task_privacy_purge
      * @param  string $email_address E-mail address to search for (blank: none)
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      */
-    protected function handle_for_table($hook_ob, $table_name, $table_details, $table_action, $member_id_username, $ip_addresses, $member_id, $email_address, $others)
+    protected function handle_for_table(object $hook_ob, string $table_name, array $table_details, int $table_action, ?int $member_id_username, array $ip_addresses, ?int $member_id, string $email_address, array $others)
     {
         $db = get_db_for($table_name);
 

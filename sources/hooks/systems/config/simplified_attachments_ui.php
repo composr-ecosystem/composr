@@ -28,7 +28,7 @@ class Hook_config_simplified_attachments_ui
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SIMPLIFIED_ATTACHMENTS_UI',
@@ -51,7 +51,7 @@ class Hook_config_simplified_attachments_ui
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (get_option('complex_uploader') == '0') {
             return null;

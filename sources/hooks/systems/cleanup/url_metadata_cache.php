@@ -28,7 +28,7 @@ class Hook_cleanpu_url_metadata_cache
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('URL_METADATA_CACHE');
@@ -43,7 +43,7 @@ class Hook_cleanpu_url_metadata_cache
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         $GLOBALS['SITE_DB']->query_delete('url_title_cache');
         $GLOBALS['SITE_DB']->query_delete('urls_checked');

@@ -65,7 +65,7 @@ class Hook_commandr_fs_members
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~array The final directory listing (false: failure)
      */
-    public function listing($meta_dir, $meta_root_node, &$commandr_fs)
+    public function listing(array $meta_dir, string $meta_root_node, object &$commandr_fs)
     {
         if (get_forum_type() != 'cns') {
             return false;
@@ -186,7 +186,7 @@ class Hook_commandr_fs_members
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function make_directory($meta_dir, $meta_root_node, $new_dir_name, &$commandr_fs)
+    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         if (get_forum_type() != 'cns') {
             return false;
@@ -252,7 +252,7 @@ class Hook_commandr_fs_members
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_directory($meta_dir, $meta_root_node, $dir_name, &$commandr_fs)
+    public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
         if (get_forum_type() != 'cns') {
             return false;
@@ -283,7 +283,7 @@ class Hook_commandr_fs_members
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function remove_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
         if (get_forum_type() != 'cns') {
             return false;
@@ -334,7 +334,7 @@ class Hook_commandr_fs_members
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
+    public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         if (get_forum_type() != 'cns') {
             return false;
@@ -384,7 +384,7 @@ class Hook_commandr_fs_members
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
+    public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
         if (get_forum_type() != 'cns') {
             return false;
@@ -458,7 +458,7 @@ class Hook_commandr_fs_members
      * @param  boolean $missing_ok If the field may be missing
      * @return ?AUTO_LINK CPF ID (null: none)
      */
-    protected function get_field_id_for($file_name, $missing_ok = false)
+    protected function get_field_id_for(string $file_name, bool $missing_ok = false) : ?int
     {
         $matches = [];
         if (preg_match('#^field_(\d+)#', $file_name, $matches) != 0) {

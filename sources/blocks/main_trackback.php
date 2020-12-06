@@ -28,7 +28,7 @@ class Block_main_trackback
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Philip Withnall';
@@ -47,7 +47,7 @@ class Block_main_trackback
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         if (!array_key_exists('page', $map)) {
             $map['page'] = get_page_name();

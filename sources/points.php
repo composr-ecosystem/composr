@@ -39,7 +39,7 @@ function init__points()
  * @param  ID_TEXT $item The name of the item
  * @return integer The price of the item
  */
-function get_product_price_points($item)
+function get_product_price_points(string $item) : int
 {
     return $GLOBALS['SITE_DB']->query_select_value('ecom_prods_prices', 'price_points', ['name' => $item]);
 }
@@ -51,7 +51,7 @@ function get_product_price_points($item)
  * @param  ?TIME $timestamp Time to get for (null: now)
  * @return integer The number of points the member has
  */
-function total_points($member_id, $timestamp = null)
+function total_points(int $member_id, ?int $timestamp = null) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
@@ -87,7 +87,7 @@ function total_points($member_id, $timestamp = null)
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has spent
  */
-function points_used($member_id)
+function points_used(int $member_id) : int
 {
     global $POINTS_USED_CACHE;
     if (isset($POINTS_USED_CACHE[$member_id])) {
@@ -107,7 +107,7 @@ function points_used($member_id)
  * @param  MEMBER $member_id The member
  * @return integer The number of points the member has
  */
-function available_points($member_id)
+function available_points(int $member_id) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
@@ -122,7 +122,7 @@ function available_points($member_id)
  * @param  MEMBER $member_id The member the point info is of
  * @return array The map containing the members point info (fields as enumerated in description)
  */
-function point_info($member_id)
+function point_info(int $member_id) : array
 {
     require_code('lang');
     require_lang('points');
@@ -153,7 +153,7 @@ function point_info($member_id)
  * @param  MEMBER $member_id The member we want it for
  * @return integer The number of gift points used by the member
  */
-function get_gift_points_used($member_id)
+function get_gift_points_used(int $member_id) : int
 {
     $_actual_used = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'SUM(amount)', ['gift_from' => $member_id]);
     $actual_used = @intval($_actual_used); // Most reliable way
@@ -171,7 +171,7 @@ function get_gift_points_used($member_id)
  * @param  MEMBER $member_id The member we want it for
  * @return integer The number of gifts points to give that the given member has
  */
-function get_gift_points_to_give($member_id)
+function get_gift_points_to_give(int $member_id) : int
 {
     $used = get_gift_points_used($member_id);
     if (get_forum_type() == 'cns') {

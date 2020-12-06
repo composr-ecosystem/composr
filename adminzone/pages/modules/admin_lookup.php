@@ -28,7 +28,7 @@ class Module_admin_lookup
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_lookup
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('securitylogging')) {
             return null;
@@ -72,7 +72,7 @@ class Module_admin_lookup
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('securitylogging', $error_msg)) {
@@ -136,7 +136,7 @@ class Module_admin_lookup
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('lookup');
 
@@ -162,7 +162,7 @@ class Module_admin_lookup
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         $submit_name = do_lang_tempcode('INVESTIGATE_USER');
         $post_url = build_url(['page' => '_SELF', 'type' => 'results'], '_SELF', [], false, true);
@@ -187,7 +187,7 @@ class Module_admin_lookup
      *
      * @return Tempcode The UI
      */
-    public function results()
+    public function results() : object
     {
         $param = $this->param;
 
@@ -401,7 +401,7 @@ class Module_admin_lookup
      *
      * @return Tempcode The UI
      */
-    public function request_view()
+    public function request_view() : object
     {
         $fields = [];
 

@@ -40,7 +40,7 @@ function init__uploads2()
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  * @param  ?array $fake_cma_info A map of CMA info overriddes, for complicated cases (null: real info from $content_type)
  */
-function reorganise_uploads($content_type, $upload_directory, $upload_field, $where = [], $append_content_type_to_upload_dir = false, $tolerate_errors = false, $fake_cma_info = null)
+function reorganise_uploads(string $content_type, string $upload_directory, string $upload_field, ?array $where = [], bool $append_content_type_to_upload_dir = false, bool $tolerate_errors = false, ?array $fake_cma_info = null)
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -133,7 +133,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  * @return ?URLPATH New URL (null: no change)
  */
-function _reorganise_content_row_upload($row, $content_type, $upload_directory, $upload_field, $cma_ob, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors)
+function _reorganise_content_row_upload(array $row, string $content_type, string $upload_directory, string $upload_field, object $cma_ob, array $cma_info, bool $flat, bool $append_content_type_to_upload_dir, bool $tolerate_errors) : ?string
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -269,7 +269,7 @@ function _reorganise_content_row_upload($row, $content_type, $upload_directory, 
  * @param  string $upload_directory Upload directory
  * @return ?string Tree path (null: error)
  */
-function _get_upload_tree_path($content_type, $parent_id, $cma_info, $upload_directory)
+function _get_upload_tree_path(string $content_type, $parent_id, array $cma_info, string $upload_directory) : ?string
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -343,7 +343,7 @@ function _get_upload_tree_path($content_type, $parent_id, $cma_info, $upload_dir
  * @param  boolean $top_level Whether this is the top level directory (which will not be deleted)
  * @return boolean Whether this subdirectory has been deleted
  */
-function clean_empty_upload_directories($upload_directory, $top_level = true)
+function clean_empty_upload_directories(string $upload_directory, bool $top_level = true) : bool
 {
     require_code('files');
 

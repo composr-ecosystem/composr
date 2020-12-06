@@ -28,7 +28,7 @@ class Hook_cleanup_lost_disk_content
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('LOST_DISK_CONTENT');
@@ -43,7 +43,7 @@ class Hook_cleanup_lost_disk_content
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('zones3');
 

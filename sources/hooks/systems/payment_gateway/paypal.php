@@ -28,7 +28,7 @@ class Hook_payment_gateway_paypal
      *
      * @return array The config
      */
-    public function get_config()
+    public function get_config() : array
     {
         return [
             'supports_remote_memo' => true,
@@ -41,7 +41,7 @@ class Hook_payment_gateway_paypal
      * @param  float $amount A transaction amount
      * @return float The fee
      */
-    public function get_transaction_fee($amount)
+    public function get_transaction_fee(float $amount) : float
     {
         return round(0.25 + 0.034 * $amount, 2);
     }
@@ -51,7 +51,7 @@ class Hook_payment_gateway_paypal
      *
      * @return string The answer
      */
-    protected function _get_payment_address()
+    protected function _get_payment_address() : string
     {
         return ecommerce_test_mode() ? get_option('payment_gateway_test_username') : get_option('payment_gateway_username');
     }
@@ -61,7 +61,7 @@ class Hook_payment_gateway_paypal
      *
      * @return URLPATH The remote form URL
      */
-    protected function _get_remote_form_url()
+    protected function _get_remote_form_url() : string
     {
         return ecommerce_test_mode() ? 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr' : 'https://ipnpb.paypal.com/cgi-bin/webscr';
     }
@@ -71,7 +71,7 @@ class Hook_payment_gateway_paypal
      *
      * @return string A transaction ID
      */
-    public function generate_trans_id()
+    public function generate_trans_id() : string
     {
         require_code('crypt');
         return get_secure_random_string();
@@ -90,7 +90,7 @@ class Hook_payment_gateway_paypal
      * @param  ID_TEXT $currency The currency to use
      * @return Tempcode The button
      */
-    public function make_transaction_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $currency)
+    public function make_transaction_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, float $shipping_cost, string $currency) : object
     {
         // https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/
 
@@ -125,7 +125,7 @@ class Hook_payment_gateway_paypal
      * @param  AUTO_LINK $order_id Order ID
      * @return Tempcode The button
      */
-    public function make_cart_transaction_button($trans_expecting_id, $items, $shipping_cost, $currency, $order_id)
+    public function make_cart_transaction_button(string $trans_expecting_id, array $items, float $shipping_cost, object $currency, int $order_id) : object
     {
         if (!addon_installed('shopping')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -164,7 +164,7 @@ class Hook_payment_gateway_paypal
      * @set d w m y
      * @return Tempcode The button
      */
-    public function make_subscription_button($trans_expecting_id, $type_code, $item_name, $purchase_id, $price, $tax, $currency, $length, $length_units)
+    public function make_subscription_button(string $trans_expecting_id, string $type_code, string $item_name, string $purchase_id, float $price, float $tax, string $currency, int $length, string $length_units) : object
     {
         $payment_address = $this->_get_payment_address();
         $form_url = $this->_get_remote_form_url();
@@ -191,7 +191,7 @@ class Hook_payment_gateway_paypal
      *
      * @return array A map of member address details (form field name => address value)
      */
-    protected function _build_member_address()
+    protected function _build_member_address() : array
     {
         $shipping_email = '';
         $shipping_phone = '';
@@ -267,7 +267,7 @@ class Hook_payment_gateway_paypal
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return Tempcode The button
      */
-    public function make_cancel_button($purchase_id)
+    public function make_cancel_button(string $purchase_id) : object
     {
         return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', ['_GUID' => '091d7449161eb5c4f6129cf89e5e8e7e', 'PURCHASE_ID' => $purchase_id]);
     }
@@ -278,7 +278,7 @@ class Hook_payment_gateway_paypal
      * @param  boolean $silent_fail Return null on failure rather than showing any error message. Used when not sure a valid & finalised transaction is in the POST environment, but you want to try just in case (e.g. on a redirect back from the gateway).
      * @return ?array A long tuple of collected data. Emulates some of the key variables of the PayPal IPN response (null: no transaction; will only return null when $silent_fail is set).
      */
-    public function handle_ipn_transaction($silent_fail)
+    public function handle_ipn_transaction(bool $silent_fail) : ?array
     {
         $trans_expecting_id = post_param_string('custom');
 
@@ -524,7 +524,7 @@ class Hook_payment_gateway_paypal
      * @param  ID_TEXT $txn_id Transaction ID
      * @return AUTO_LINK Address ID
      */
-    public function store_shipping_address($trans_expecting_id, $txn_id)
+    public function store_shipping_address(string $trans_expecting_id, string $txn_id) : int
     {
         $shipping_address = [
             'a_firstname' => post_param_string('first_name', ''),
@@ -546,7 +546,7 @@ class Hook_payment_gateway_paypal
      *
      * @return ?string Message (null: none)
      */
-    public function get_callback_url_message()
+    public function get_callback_url_message() : ?string
     {
         return get_param_string('message', null, INPUT_FILTER_GET_COMPLEX);
     }
@@ -557,7 +557,7 @@ class Hook_payment_gateway_paypal
      * @param  AUTO_LINK $subscription_id ID of the subscription to cancel
      * @return ?boolean True: yes. False: no. (null: cancels via a user-URL-directioning)
      */
-    public function auto_cancel($subscription_id)
+    public function auto_cancel(int $subscription_id) : ?bool
     {
         // To implement this automatically we need to implement the REST API with oAuth, which is quite a lot of work.
         // Should work for make_subscription_button-created subscriptions though, as long as they start "I-" not "S-"

@@ -29,7 +29,7 @@ class Hook_addon_registry_downloads
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_downloads
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_downloads
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'New Features';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_downloads
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Host a downloads directory.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_downloads
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_downloads',
@@ -83,7 +83,7 @@ class Hook_addon_registry_downloads
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -97,7 +97,7 @@ class Hook_addon_registry_downloads
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/rich_content/downloads.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_downloads
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/downloads.php',
@@ -199,7 +199,7 @@ class Hook_addon_registry_downloads
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/DOWNLOAD_LIST_LINE.tpl' => 'download_list_line',
@@ -224,7 +224,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_and_images_simple_box()
+    public function tpl_preview__download_and_images_simple_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', [
@@ -241,7 +241,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_list_line()
+    public function tpl_preview__download_list_line() : array
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_LIST_LINE', [
@@ -258,7 +258,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_list_line_2()
+    public function tpl_preview__download_list_line_2() : array
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_LIST_LINE_2', [
@@ -276,7 +276,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_box()
+    public function tpl_preview__download_box() : array
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_BOX', [
@@ -311,7 +311,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_category_screen()
+    public function tpl_preview__download_category_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', [
@@ -340,7 +340,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_all_screen()
+    public function tpl_preview__download_all_screen() : array
     {
         $subcats = [];
         foreach (placeholder_array() as $cat) {
@@ -392,7 +392,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_screen()
+    public function tpl_preview__download_screen() : array
     {
         $images_details = new Tempcode();
         if (addon_installed('galleries')) {
@@ -462,7 +462,7 @@ class Hook_addon_registry_downloads
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__download_gateway_screen()
+    public function tpl_preview__download_gateway_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_GATEWAY_SCREEN', [

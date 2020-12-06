@@ -31,7 +31,7 @@
  * @param  boolean $allow_multiple_matches Allow multiple matches of source strings (false if we'll require exactly one match)
  * @return array A List of error message strings, problems that happened
  */
-function content_lang_string_translation($lang_from, $lang_to, $content_lang_string_changes, $test_run = false, $allow_multiple_matches = true)
+function content_lang_string_translation(string $lang_from, string $lang_to, array $content_lang_string_changes, bool $test_run = false, bool $allow_multiple_matches = true) : array
 {
     if (!multi_lang_content()) {
         warn_exit('multi_lang_content must be enabled');
@@ -98,7 +98,7 @@ function content_lang_string_translation($lang_from, $lang_to, $content_lang_str
  * @param  boolean $allow_multiple_matches Allow multiple matches of source strings (false if we'll require exactly one match)
  * @return array A List of error message strings, problems that happened
  */
-function lang_string_translation($lang_from, $lang_to, $lang_string_changes, $test_run = false, $allow_multiple_matches = false)
+function lang_string_translation(string $lang_from, string $lang_to, array $lang_string_changes, bool $test_run = false, bool $allow_multiple_matches = false) : array
 {
     require_code('files2');
 
@@ -169,7 +169,7 @@ function lang_string_translation($lang_from, $lang_to, $lang_string_changes, $te
  * @param  ID_TEXT $codename The language string codename
  * @param  ?LANGUAGE_NAME $lang The language to use (null: user's language)
  */
-function inline_language_editing(&$codename, $lang)
+function inline_language_editing(string &$codename, ?string $lang)
 {
     global $LANGS_REQUESTED, $LANGUAGE_STRINGS_CACHE;
 
@@ -255,7 +255,7 @@ function inline_language_editing(&$codename, $lang)
  * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
  * @return array The language files (a map between language file name -and- lang or lang_custom)
  */
-function get_lang_files($lang = null)
+function get_lang_files(?string $lang = null) : array
 {
     require_code('files');
 
@@ -306,7 +306,7 @@ function get_lang_files($lang = null)
  * @param  array $ids The content language string IDs (array of AUTO_LINK)
  * @return array Human readable names (List of string against same IDs in input array or null for orphan strings)
  */
-function find_lang_content_names($ids)
+function find_lang_content_names(array $ids) : array
 {
     require_code('content');
 
@@ -387,7 +387,7 @@ function find_lang_content_names($ids)
  * @param  ?LANGUAGE_NAME $lang The language (null: uses the current language)
  * @return Tempcode The language file selector
  */
-function create_selection_list_lang_files($lang = null)
+function create_selection_list_lang_files(?string $lang = null) : object
 {
     $_lang_files = get_lang_files(($lang === null) ? get_site_default_lang() : $lang);
 
@@ -426,7 +426,7 @@ function create_selection_list_lang_files($lang = null)
  * @param  LANGUAGE_NAME $code The language
  * @return string The full name of the language
  */
-function lookup_language_full_name($code)
+function lookup_language_full_name(string $code) : string
 {
     global $LANGS_MAP_CACHE;
 

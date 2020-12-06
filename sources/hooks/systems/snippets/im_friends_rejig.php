@@ -28,7 +28,7 @@ class Hook_snippet_im_friends_rejig
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('chat')) {
             return new Tempcode();

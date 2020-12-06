@@ -382,7 +382,7 @@ function init__locations()
  *
  * @return array Structure of continents and countries
  */
-function find_continents_and_countries()
+function find_continents_and_countries() : array
 {
     global $COUNTRY_LIST;
     return $COUNTRY_LIST;
@@ -393,7 +393,7 @@ function find_continents_and_countries()
  *
  * @return array List of continents
  */
-function find_continents()
+function find_continents() : array
 {
     global $COUNTRY_LIST;
     return array_keys($COUNTRY_LIST);
@@ -404,7 +404,7 @@ function find_continents()
  *
  * @return array List of countries
  */
-function find_countries()
+function find_countries() : array
 {
     global $COUNTRY_LIST;
     $countries = [];
@@ -421,7 +421,7 @@ function find_countries()
  * @param  string $country ISO country code
  * @return ?string Continent (null: not found)
  */
-function find_continent($country)
+function find_continent(string $country) : ?string
 {
     static $cache = [];
 
@@ -446,7 +446,7 @@ function find_continent($country)
  * @param  string $country Country name
  * @return ?string ISO country code (null: not found)
  */
-function find_iso_country_from_name($country)
+function find_iso_country_from_name(string $country) : ?string
 {
     static $cache = [];
 
@@ -472,7 +472,7 @@ function find_iso_country_from_name($country)
  * @param  string $iso ISO country code
  * @return ?string Country name (null: not found)
  */
-function find_country_name_from_iso($iso)
+function find_country_name_from_iso(string $iso) : ?string
 {
     static $cache = [];
 
@@ -497,7 +497,7 @@ function find_country_name_from_iso($iso)
  * @param  array $selected_countries The currently selected countries
  * @return Tempcode The list of countries
  */
-function create_country_selection_list($selected_countries = [])
+function create_country_selection_list(array $selected_countries = []) : object
 {
     $continents_and_countries = find_continents_and_countries();
 
@@ -518,7 +518,7 @@ function create_country_selection_list($selected_countries = [])
  * @param  array $selected_regions The currently selected regions
  * @return Tempcode The list of regions
  */
-function create_region_selection_list($selected_regions = [])
+function create_region_selection_list(array $selected_regions = []) : object
 {
     return create_country_selection_list($selected_regions); // The standard implementation is for a region to just be a country
 }
@@ -529,7 +529,7 @@ function create_region_selection_list($selected_regions = [])
  * @param  array $selected_states The currently selected states
  * @return Tempcode The list of states
  */
-function create_usa_state_selection_list($selected_states = [])
+function create_usa_state_selection_list(array $selected_states = []) : object
 {
     $state_list = new Tempcode();
 
@@ -547,7 +547,7 @@ function create_usa_state_selection_list($selected_states = [])
  *
  * @return ?string The active region (null: none found, unfiltered)
  */
-function get_region()
+function get_region() : ?string
 {
     $region = get_param_string('keep_region', null);
     if ($region !== null) {
@@ -565,7 +565,7 @@ function get_region()
  *
  * @return ?string The active region (null: none found, unfiltered)
  */
-function get_country()
+function get_country() : ?string
 {
     $country = get_param_string('keep_country', null);
     if ($country !== null) {
@@ -598,7 +598,7 @@ function get_country()
  * @param  ?IP $ip The IP to geolocate (null: current user's IP)
  * @return ?string The country initials (null: unknown)
  */
-function geolocate_ip($ip = null)
+function geolocate_ip(?string $ip = null) : ?string
 {
     static $result = [];
 
@@ -650,7 +650,7 @@ function geolocate_ip($ip = null)
  * @param  array $regions The currently selected regions
  * @return Tempcode The region inputter
  */
-function form_input_regions($regions = [])
+function form_input_regions(array $regions = []) : object
 {
     require_code('form_templates');
     $list_groups = create_region_selection_list($regions);
@@ -665,7 +665,7 @@ function form_input_regions($regions = [])
  * @param  ?string $region Region to show for (null: auto-detect)
  * @return string SQL
  */
-function sql_region_filter($content_type, $field_name_to_join, $region = null)
+function sql_region_filter(string $content_type, string $field_name_to_join, ?string $region = null) : string
 {
     if ($region === null) {
         $region = get_region();

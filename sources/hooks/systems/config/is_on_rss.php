@@ -28,7 +28,7 @@ class Hook_config_is_on_rss
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ENABLE_RSS',
@@ -51,7 +51,7 @@ class Hook_config_is_on_rss
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('syndication_blocks')) {
             return null;

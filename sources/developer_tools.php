@@ -148,7 +148,7 @@ function semi_dev_mode_startup()
  *
  * @param  boolean $db_too Whether to destrictify database commands over the Composr database driver
  */
-function destrictify($db_too = false)
+function destrictify(bool $db_too = false)
 {
     // Turn off strictness
     $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
@@ -255,7 +255,7 @@ function inspect_plain()
  *
  * @ignore
  */
-function _inspect($args, $force_plain = false)
+function _inspect(array $args, bool $force_plain = false)
 {
     $plain = headers_sent() || $force_plain || !running_script('index');
 
@@ -311,7 +311,7 @@ function _inspect($args, $force_plain = false)
  *
  * @param  ?string $name The name of the memory point (null: use a simple counter)
  */
-function memory_trace_point($name = null)
+function memory_trace_point(?string $name = null)
 {
     global $MEMORY_PROFILING_POINTS;
     if ($name === null) {
@@ -369,7 +369,7 @@ function show_memory_points()
  *
  * @param  boolean $dev_only Whether to only run the checks in dev-mode
  */
-function cms_verify_parameters_phpdoc($dev_only = false)
+function cms_verify_parameters_phpdoc(bool $dev_only = false)
 {
     if ($dev_only) {
         if (!$GLOBALS['DEV_MODE']) {

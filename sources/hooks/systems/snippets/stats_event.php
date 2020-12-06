@@ -28,7 +28,7 @@ class Hook_snippet_stats_event
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('stats')) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('stats')));

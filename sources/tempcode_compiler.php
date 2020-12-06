@@ -192,7 +192,7 @@ function init__tempcode_compiler()
  *
  * @ignore
  */
-function _length_so_far($bits, $i)
+function _length_so_far(array $bits, int $i) : int
 {
     $len = 0;
     foreach ($bits as $_i => $x) {
@@ -211,7 +211,7 @@ function _length_so_far($bits, $i)
  * @param  string $data Input Tempcode
  * @return string Output Tempcode
  */
-function substitute_comment_encapsulated_tempcode($data)
+function substitute_comment_encapsulated_tempcode(string $data) : string
 {
     // HTML comment
     $data = cms_preg_replace_safe('#<!--\s*\{(((?!-->).)*)\}\s*-->#', '{${1}}', $data);
@@ -237,7 +237,7 @@ function substitute_comment_encapsulated_tempcode($data)
  * @param  ?array $parameters_used Parameters used in final Tempcode will be written into here (null: don't)
  * @return array A pair: array Compiled result structure, array preprocessable bits (special stuff needing attention that is referenced within the template)
  */
-function compile_template($data, $template_name, $theme, $lang, $tolerate_errors = false, &$parameters = null, &$parameters_used = null)
+function compile_template(string $data, string $template_name, string $theme, string $lang, bool $tolerate_errors = false, ?array &$parameters = null, ?array &$parameters_used = null) : array
 {
     if (strpos($data, '/*{$,parser hint: pure}*/') !== false) {
         return [['"' . php_addslashes(preg_replace('#\{\$,.*\}#U', '', str_replace('/*{$,parser hint: pure}*/', '/*no minify*/', $data))) . '"'], []];
@@ -984,7 +984,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
  * @param  string $_opener_params The parameters in PHP code format
  * @return ?array Parameters (null: could not evaluate, probably due to dynamism)
  */
-function tc_eval_opener_params($_opener_params)
+function tc_eval_opener_params(string $_opener_params) : ?array
 {
     $cl = fallback_lang();
 
@@ -998,7 +998,7 @@ function tc_eval_opener_params($_opener_params)
  * @param  string $_opener_params The parameters in PHP code format
  * @return boolean Is static
  */
-function tc_is_all_static($_opener_params)
+function tc_is_all_static(string $_opener_params) : bool
 {
     if (strpos($_opener_params, '$bound_') !== false) {
         return false;
@@ -1025,7 +1025,7 @@ function tc_is_all_static($_opener_params)
  * @param  string $symbol The symbol
  * @return boolean May optimise
  */
-function may_optimise_out_symbol($symbol)
+function may_optimise_out_symbol(string $symbol) : bool
 {
     global $COMPILABLE_SYMBOLS, $SITE_INFO;
 
@@ -1083,7 +1083,7 @@ function may_optimise_out_symbol($symbol)
  *
  * @ignore
  */
-function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix, $theme_orig = null, &$parameters = null)
+function _do_template(string $theme, string $directory, string $codename, string $_codename, string $lang, string $suffix, ?string $theme_orig = null, ?array &$parameters = null) : object
 {
     if ($theme_orig === null) {
         $theme_orig = $theme;
@@ -1161,7 +1161,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
  * @param  ?array $parameters Parameters to hard-code in during compilation (null: no hard-coding)
  * @return mixed The converted/compiled template as Tempcode, OR if a directive, encoded directive information
  */
-function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false, $codename = '', $theme = null, $lang = null, $tolerate_errors = false, &$parameters = null)
+function template_to_tempcode(string $text, int $symbol_pos = 0, bool $inside_directive = false, string $codename = '', ?string $theme = null, ?string $lang = null, bool $tolerate_errors = false, ?array &$parameters = null)
 {
     if ($theme === null) {
         $theme = isset($GLOBALS['FORUM_DRIVER']) ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
@@ -1243,7 +1243,7 @@ function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false,
  * @param  array $parts An array of lines to be output, each one in PHP format
  * @return string Finished PHP code
  */
-function build_closure_function($myfunc, $parts)
+function build_closure_function(string $myfunc, array $parts) : string
 {
     if (empty($parts)) {
         $parts = ['""'];
@@ -1288,7 +1288,7 @@ function build_closure_function($myfunc, $parts)
  *
  * @ignore
  */
-function tempcode_compiler_eval($code, &$tpl_funcs = null, $parameters = null, $cl = null)
+function tempcode_compiler_eval(?string $code, ?array &$tpl_funcs = null, ?array $parameters = null, ?string $cl = null)
 {
     global $NO_EVAL_CACHE, $XSS_DETECT, $KEEP_TPL_FUNCS, $FULL_RESET_VAR_CODE, $RESET_VAR_CODE;
 

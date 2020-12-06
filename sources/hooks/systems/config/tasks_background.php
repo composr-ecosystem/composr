@@ -28,7 +28,7 @@ class Hook_config_tasks_background
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TASKS_BACKGROUND',
@@ -51,7 +51,7 @@ class Hook_config_tasks_background
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (GOOGLE_APPENGINE) {
             return '1';

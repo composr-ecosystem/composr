@@ -29,7 +29,7 @@ class Hook_symbol_FORM_TO_EMAIL_URL
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         $url = find_script('form_to_email');
         if (isset($param[0])) {

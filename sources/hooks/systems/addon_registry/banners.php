@@ -29,7 +29,7 @@ class Hook_addon_registry_banners
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_banners
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_banners
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'eCommerce';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_banners
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'An advanced banner system, with support for multiple banner rotations, commercial banner campaigns, and webring-style systems. Support for graphical, text, and HTML banners. Hotword activation support.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_banners
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_banners',
@@ -81,7 +81,7 @@ class Hook_addon_registry_banners
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_banners
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/cms/banners.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_banners
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/banners.php',
@@ -169,7 +169,7 @@ class Hook_addon_registry_banners
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BANNER_PREVIEW.tpl' => 'banner_preview',
@@ -193,7 +193,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__banner_preview()
+    public function tpl_preview__banner_preview() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_PREVIEW', [
@@ -209,7 +209,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__banner_show_code()
+    public function tpl_preview__banner_show_code() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_SHOW_CODE', [
@@ -228,7 +228,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__banner_added_screen()
+    public function tpl_preview__administrative__banner_added_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_ADDED_SCREEN', [
@@ -248,7 +248,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_top_sites()
+    public function tpl_preview__block_main_top_sites() : array
     {
         $banners = [];
         foreach (placeholder_array() as $k => $v) {
@@ -277,7 +277,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_banner_wave()
+    public function tpl_preview__block_main_banner_wave() : array
     {
         $banners = new Tempcode();
         $banners->attach(do_lorem_template('BANNER_IMAGE', [
@@ -323,7 +323,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__banners_none()
+    public function tpl_preview__banners_none() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNERS_NONE', [
@@ -339,7 +339,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__banner_image()
+    public function tpl_preview__banner_image() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_IMAGE', [
@@ -363,7 +363,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__banner_iframe()
+    public function tpl_preview__banner_iframe() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_IFRAME', [
@@ -382,7 +382,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__banner_text()
+    public function tpl_preview__banner_text() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_TEXT', [
@@ -404,7 +404,7 @@ class Hook_addon_registry_banners
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__banner_view_screen()
+    public function tpl_preview__administrative__banner_view_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_VIEW_SCREEN', [
@@ -424,7 +424,7 @@ class Hook_addon_registry_banners
      *
      * @return array A map of available predefined content codenames, and details (if installed, and title)
      */
-    public function enumerate_predefined_content()
+    public function enumerate_predefined_content() : array
     {
         require_lang('banners');
 
@@ -450,7 +450,7 @@ class Hook_addon_registry_banners
      *
      * @param  ?array $content A list of predefined content labels to install (null: all)
      */
-    public function install_predefined_content($content = null)
+    public function install_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_banners_donation', $content))) && (!has_predefined_content('banners', 'have_default_banners_donation'))) {
             require_lang('banners');
@@ -522,7 +522,7 @@ class Hook_addon_registry_banners
      *
      * @param  ?array $content A list of predefined content labels to uninstall (null: all)
      */
-    public function uninstall_predefined_content($content = null)
+    public function uninstall_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_banners_donation', $content))) && (has_predefined_content('banners', 'have_default_banners_donation'))) {
             require_code('banners2');

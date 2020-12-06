@@ -28,7 +28,7 @@ class Module_quiz
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -68,7 +68,7 @@ class Module_quiz
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('quiz_questions', 'q_required', 'BINARY');
@@ -199,7 +199,7 @@ class Module_quiz
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('quizzes')) {
             return null;
@@ -222,7 +222,7 @@ class Module_quiz
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('quizzes', $error_msg)) {
@@ -314,7 +314,7 @@ class Module_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -336,7 +336,7 @@ class Module_quiz
      *
      * @return Tempcode The UI
      */
-    public function archive()
+    public function archive() : object
     {
         $start = get_param_integer('quizzes_start', 0);
         $max = get_param_integer('quizzes_max', 20);
@@ -405,7 +405,7 @@ class Module_quiz
      *
      * @param  array $quiz The DB row of the quiz
      */
-    public function enforcement_checks($quiz)
+    public function enforcement_checks(array $quiz)
     {
         // Check they are not a guest trying to do a quiz a guest could not do
         if ((is_guest()) && (($quiz['q_points_for_passing'] != 0) || ($quiz['q_redo_time'] !== null) || ($quiz['q_num_winners'] != 0))) {
@@ -439,7 +439,7 @@ class Module_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function do_quiz()
+    public function do_quiz() : object
     {
         $quiz_id = $this->quiz_id;
         $quiz = $this->quiz;
@@ -535,7 +535,7 @@ class Module_quiz
      *
      * @return Tempcode The result of execution
      */
-    public function _do_quiz()
+    public function _do_quiz() : object
     {
         $quiz_id = $this->quiz_id;
         $quiz = $this->quiz;

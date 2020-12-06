@@ -28,7 +28,7 @@ class Hook_preview_cns_post
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('cns_forum')) && ((get_page_name() == 'topics') && (in_array(get_param_string('type'), ['birthday', 'edit_post', 'new_post', 'edit_topic', 'new_pt', 'new_topic', 'multimod']))) || (get_page_name() == 'topicview');
         return [$applies, 'cns_post', true];
@@ -39,7 +39,7 @@ class Hook_preview_cns_post
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_lang('cns');
         require_css('cns');

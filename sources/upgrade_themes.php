@@ -34,7 +34,7 @@ function init__upgrade_themes()
  * @ignore
  * @return string Output messages
  */
-function upgrader_theme_upgrade_screen()
+function upgrader_theme_upgrade_screen() : string
 {
     $test_run = (get_param_integer('live_run', 0) == 0);
 
@@ -83,7 +83,7 @@ function upgrader_theme_upgrade_screen()
  * @param  boolean $test_run Whether executing a test run (i.e. not do anything)
  * @return array A pair: List of errors, List of successes
  */
-function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
+function upgrade_theme(string $theme, float $from_version, float $to_version, bool $test_run = true) : array
 {
     $errors = [];
     $successes = [];

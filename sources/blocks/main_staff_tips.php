@@ -28,7 +28,7 @@ class Block_main_staff_tips
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -55,7 +55,7 @@ class Block_main_staff_tips
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         $GLOBALS['SITE_DB']->create_table('staff_tips_dismissed', [
             't_member' => '*MEMBER',
@@ -69,7 +69,7 @@ class Block_main_staff_tips
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         require_css('adminzone_dashboard');
         require_lang('tips');

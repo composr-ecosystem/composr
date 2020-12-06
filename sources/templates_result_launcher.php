@@ -31,7 +31,7 @@
  * @param  string $start_name GET parameter for start position
  * @return Tempcode The results launcher
  */
-function results_launcher($title, $page, $category_id, $max, $max_rows, $type, $max_page_links = 5, $start_name = 'start')
+function results_launcher(object $title, string $page, int $category_id, int $max, int $max_rows, string $type, int $max_page_links = 5, string $start_name = 'start') : object
 {
     if ($max < 1) {
         $max = 1;

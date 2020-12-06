@@ -41,7 +41,7 @@ function init__cns_groups()
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The usergroup box
  */
-function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_group_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -81,7 +81,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
  * @param  boolean $allow_guest_group Allow the guest usergroup to be in the list
  * @return Tempcode The list
  */
-function cns_create_selection_list_usergroups($it = null, $allow_guest_group = true)
+function cns_create_selection_list_usergroups(?int $it = null, bool $allow_guest_group = true) : object
 {
     $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
     $_m = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_order'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
@@ -102,7 +102,7 @@ function cns_create_selection_list_usergroups($it = null, $allow_guest_group = t
  *
  * @return GROUP The first default group
  */
-function get_first_default_group()
+function get_first_default_group() : int
 {
     $default_groups = cns_get_all_default_groups(true);
     return array_pop($default_groups);
@@ -115,7 +115,7 @@ function get_first_default_group()
  * @param  boolean $include_all_configured_default_groups The functionality does not usually consider configured default groups [unless there's just one], because this is a layer of uncertainty (the user PICKS one of these). If you want to return all configured default groups, set this parameter to true.
  * @return array The list of default IDs
  */
-function cns_get_all_default_groups($include_primary = false, $include_all_configured_default_groups = false)
+function cns_get_all_default_groups(bool $include_primary = false, bool $include_all_configured_default_groups = false) : array
 {
     if ((!$include_primary) && ($include_all_configured_default_groups)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -149,7 +149,7 @@ function cns_get_all_default_groups($include_primary = false, $include_all_confi
  *
  * @return ?GROUP Probation usergroup ID (null: none)
  */
-function get_probation_group()
+function get_probation_group() : ?int
 {
     static $probation_group_cache = null;
     static $filled_probation_group_cache = false;
@@ -172,7 +172,7 @@ function get_probation_group()
  * @param  mixed $groups The list of usergroups (array) or '*'
  * @param  boolean $tolerant Be tolerant of missing usergroups
  */
-function cns_ensure_groups_cached($groups, $tolerant = false)
+function cns_ensure_groups_cached($groups, bool $tolerant = false)
 {
     global $USER_GROUPS_CACHED;
 
@@ -239,7 +239,7 @@ function cns_ensure_groups_cached($groups, $tolerant = false)
  * @param  boolean $hide_hidden Whether to hide the name if it is a hidden group
  * @return Tempcode The link
  */
-function cns_get_group_link($id, $hide_hidden = true)
+function cns_get_group_link(int $id, bool $hide_hidden = true) : object
 {
     static $cache = [];
 
@@ -282,7 +282,7 @@ function cns_get_group_link($id, $hide_hidden = true)
  * @param  boolean $hide_hidden Whether to hide the name if it is a hidden group
  * @return string The usergroup name
  */
-function cns_get_group_name($group, $hide_hidden = true)
+function cns_get_group_name(int $group, bool $hide_hidden = true) : string
 {
     $name = cns_get_group_property($group, 'name', $hide_hidden);
     if (is_string($name)) {
@@ -299,7 +299,7 @@ function cns_get_group_name($group, $hide_hidden = true)
  * @param  boolean $hide_hidden Whether to hide the name if it is a hidden group
  * @return mixed The property value
  */
-function cns_get_group_property($group, $property, $hide_hidden = true)
+function cns_get_group_property(int $group, string $property, bool $hide_hidden = true)
 {
     cns_ensure_groups_cached([$group], true);
     global $USER_GROUPS_CACHED;
@@ -337,7 +337,7 @@ function cns_get_group_property($group, $property, $hide_hidden = true)
  * @param  ID_TEXT $property The identifier of the property
  * @return mixed The property value
  */
-function cns_get_member_best_group_property($member_id, $property)
+function cns_get_member_best_group_property(int $member_id, string $property)
 {
     return cns_get_best_group_property($GLOBALS['CNS_DRIVER']->get_members_groups($member_id, false, true), $property);
 }
@@ -349,7 +349,7 @@ function cns_get_member_best_group_property($member_id, $property)
  * @param  ID_TEXT $property The identifier of the property
  * @return mixed The best property value ('best' is dependant on the property we are looking at)
  */
-function cns_get_best_group_property($groups, $property)
+function cns_get_best_group_property(array $groups, string $property)
 {
     $big_is_better = ['gift_points_per_day', 'gift_points_base', 'enquire_on_new_ips', 'is_super_admin', 'is_super_moderator', 'max_daily_upload_mb', 'max_attachments_per_post', 'max_avatar_width', 'max_avatar_height', 'max_post_length_comcode', 'max_sig_length_comcode'];
     //$small_and_perfectly_formed = ['flood_control_submit_secs', 'flood_control_access_secs']; Not needed by elimination, but nice to have here as a note
@@ -385,7 +385,7 @@ function cns_get_best_group_property($groups, $property)
  * @param  boolean $include_implicit Whether to include implicit groups
  * @return array Flipped list (e.g. [1=>true,2=>true,3=>true] for someone in (1,2,3)).
  */
-function cns_get_members_groups($member_id = null, $skip_secret = false, $handle_probation = true, $include_implicit = true)
+function cns_get_members_groups(?int $member_id = null, bool $skip_secret = false, bool $handle_probation = true, bool $include_implicit = true) : array
 {
     if (is_guest($member_id)) {
         $ret = [];
@@ -504,7 +504,7 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
  * @param  SHORT_TEXT $title The title
  * @return ?AUTO_LINK The ID (null: could not find)
  */
-function find_usergroup_id($title)
+function find_usergroup_id(string $title) : ?int
 {
     $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
     foreach ($usergroups as $id => $usergroup) {

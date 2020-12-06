@@ -23,7 +23,7 @@
  *
  * @return integer The number of people on the chat system
  */
-function get_num_chatters()
+function get_num_chatters() : int
 {
     // We need to get all the messages that were posted in the last x minutes, and count them
     if (!defined('CHAT_ACTIVITY_PRUNE')) {
@@ -37,7 +37,7 @@ function get_num_chatters()
  *
  * @return integer The number of chatrooms in the database
  */
-function get_num_chatrooms()
+function get_num_chatrooms() : int
 {
     return $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', ['is_im' => 0]);
 }
@@ -47,7 +47,7 @@ function get_num_chatrooms()
  *
  * @return integer The number of chat posts in the database
  */
-function get_num_chatposts()
+function get_num_chatposts() : int
 {
     return $GLOBALS['SITE_DB']->get_table_count_approx('chat_messages');
 }

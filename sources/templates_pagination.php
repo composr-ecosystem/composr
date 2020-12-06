@@ -44,7 +44,7 @@ function init__templates_pagination()
  * @param  ?string $sort_filter_func Function to turn sort parameter into actual database field SQL plus a keyset field parameter [see get_forum_sort_order function as an example] (null: none). This can also be used to define an important security filter, so you should always use it.
  * @return array A tuple Max to select, Start position, SQL sort order, SQL to append for where clause, SQL to append as order clause, True start position (ignores keyset pagination), Compound parameter, Keyset field name so that we can extract values from DB result sets
  */
-function get_keyset_pagination_settings($max_name, $max_default, $start_name, $compound_name = null, $sort_name = null, $sort_default = null, $sort_filter_func = null)
+function get_keyset_pagination_settings(string $max_name, int $max_default, string $start_name, ?string $compound_name = null, ?string $sort_name = null, ?string $sort_default = null, ?string $sort_filter_func = null) : array
 {
     // Work out $max...
 
@@ -149,7 +149,7 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
  * @param  ?string $keyset_value Keyset-pagination reference value for the 'next' page of results (null: no keyset pagination)
  * @return Tempcode The pagination
  */
-function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $keep_post = false, $max_page_links = 5, $_selectors = null, $hash = '', $keyset_value = null)
+function pagination(object $title, int $start, string $start_name, int $max, string $max_name, int $max_rows, bool $keep_post = false, int $max_page_links = 5, ?array $_selectors = null, string $hash = '', ?string $keyset_value = null) : object
 {
     inform_non_canonical_parameter($max_name);
     inform_non_canonical_parameter($start_name);
@@ -406,7 +406,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
  *
  * @ignore
  */
-function _build_pagination_cat_url($url_array, $post_array, $hash)
+function _build_pagination_cat_url(array $url_array, array $post_array, string $hash)
 {
     global $COMPOUND_PARAMS_TO_SKIP;
 

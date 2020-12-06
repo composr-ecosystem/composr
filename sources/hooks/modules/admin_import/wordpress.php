@@ -28,7 +28,7 @@ class Hook_import_wordpress
      *
      * @return ?array Importer handling details (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['product'] = 'Wordpress blog';

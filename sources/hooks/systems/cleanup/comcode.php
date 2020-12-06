@@ -28,7 +28,7 @@ class Hook_cleanup_comcode
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (multi_lang_content()) {
             if ($GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 100000) {
@@ -49,7 +49,7 @@ class Hook_cleanup_comcode
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         erase_comcode_cache();
 

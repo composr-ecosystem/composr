@@ -31,7 +31,7 @@ build_rewrite_rules.php is in Git / the composr_release_build addon.
  * @param  ID_TEXT $url_scheme The URL scheme to use
  * @return array The list of URL remappings
  */
-function get_remappings($url_scheme)
+function get_remappings(string $url_scheme) : array
 {
     // The target mapping... upper case means variable substitution, lower case means constant-string
     // The source mapping... null means 'anything' (we'll use it in a variable substitution), else we require a certain value

@@ -28,7 +28,7 @@ class Hook_config_spam_heuristic_frequency_threshold
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SPAM_HEURISTIC_FREQUENCY_THRESHOLD',
@@ -52,7 +52,7 @@ class Hook_config_spam_heuristic_frequency_threshold
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '3';
     }

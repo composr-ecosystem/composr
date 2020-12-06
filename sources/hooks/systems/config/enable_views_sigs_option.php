@@ -28,7 +28,7 @@ class Hook_config_enable_views_sigs_option
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ENABLE_VIEWS_SIGS_OPTION',
@@ -51,7 +51,7 @@ class Hook_config_enable_views_sigs_option
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('cns_signatures')) {
             return null;

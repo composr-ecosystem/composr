@@ -24,7 +24,7 @@
  * @param  Tempcode $html What to hide away
  * @return Tempcode Hidden away version
  */
-function hide_the_evidence($html)
+function hide_the_evidence(object $html) : object
 {
     return do_template('POOR_XHTML_WRAPPER', ['_GUID' => '4304e51390cd4c4dd5761b6af9682205', 'CONTENT' => $html]);
 }
@@ -37,7 +37,7 @@ function hide_the_evidence($html)
  * @param  boolean $snippet Whether this is a partial snippet of HTML, embeddable in some unknown context
  * @return string The converted string
  */
-function xhtmlise_html($html, $definitely_want = false, $snippet = false)
+function xhtmlise_html(string $html, bool $definitely_want = false, bool $snippet = false) : string
 {
     // Tests...
     // echo xhtmlise_html('test<a></a><br /><po></p><p></po>'); // expect: test<a></a><br /><po><p></p></po>
@@ -247,7 +247,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
  * @param  string $html The document
  * @return string The fragment
  */
-function extract_html_body($html)
+function extract_html_body(string $html) : string
 {
     $matches = [];
     if (preg_match('#<body[^>]*>(.*)</body>#', $html, $matches) != 0) {
@@ -267,7 +267,7 @@ function extract_html_body($html)
  * @param  float $grammar_completeness_tolerance A fraction of the length we may exceed by in order to maintain grammar tolerance (finish sentences, finish paragraphs, finish the whole thing)
  * @return string The result
  */
-function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellipses = false, $grammar_completeness_tolerance = 0.0)
+function xhtml_substr(string $html, int $from, ?int $length = null, bool $literal_pos = false, bool $ellipses = false, float $grammar_completeness_tolerance = 0.0) : string
 {
     $html = preg_replace('#<\!--.*($|-->)#Us', '', $html); // Strip comments
     $html = preg_replace('#[ \t]+#', ' ', $html); // Remove double spaces
@@ -558,7 +558,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
  *
  * @ignore
  */
-function _smart_grammar_says_futile($naive_end_pos, $grammar_completeness_tolerance, $real_offset, $html, $desired_length)
+function _smart_grammar_says_futile(int $naive_end_pos, float $grammar_completeness_tolerance, int $real_offset, string $html, int $desired_length) : bool
 {
     // See if we're starting a paragraph
     $look_out = [
@@ -613,7 +613,7 @@ function _smart_grammar_says_futile($naive_end_pos, $grammar_completeness_tolera
  *
  * @ignore
  */
-function _smart_grammar_says_continue($naive_end_pos, $grammar_completeness_tolerance, $real_offset, $html, $desired_length, $testing_ahead = false)
+function _smart_grammar_says_continue(int $naive_end_pos, float $grammar_completeness_tolerance, int $real_offset, string $html, int $desired_length, bool $testing_ahead = false) : bool
 {
     // NOTE: This algorithm isn't perfect. Grammar is exceptionally complex and it does not do a parse as such.
 

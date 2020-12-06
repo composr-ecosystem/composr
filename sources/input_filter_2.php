@@ -106,7 +106,7 @@ function rescue_shortened_post_request()
  * @param  array $arr The array
  * @return integer The count
  */
-function array_count_recursive($arr)
+function array_count_recursive(array $arr) : int
 {
     $count = 0;
     foreach (array_values($arr) as $val) {
@@ -126,7 +126,7 @@ function array_count_recursive($arr)
  *
  * @return ?array Associative array of request data (null: could not rescue)
  */
-function parse_raw_http_request()
+function parse_raw_http_request() : ?array
 {
     if (!isset($_SERVER['CONTENT_TYPE'])) {
         return null;
@@ -159,7 +159,7 @@ function parse_raw_http_request()
  * @param  string $input Data
  * @return ?array Associative array of request data (null: could not rescue)
  */
-function _parse_raw_http_request_urlencoded($input)
+function _parse_raw_http_request_urlencoded(string $input) : ?array
 {
     $post_data = [];
 
@@ -194,7 +194,7 @@ function _parse_raw_http_request_urlencoded($input)
  * @param  string $boundary Multi-part boundary
  * @return ?array Associative array of request data (null: could not rescue)
  */
-function _parse_raw_http_request_multipart($input, $boundary)
+function _parse_raw_http_request_multipart(string $input, string $boundary) : ?array
 {
     $post_data = [];
 

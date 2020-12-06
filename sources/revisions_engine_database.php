@@ -34,7 +34,7 @@ class RevisionEngineDatabase
      * @param  boolean $is_log_mod Whether the logs are done via the forum moderator's log
      * @param  ?object $db Database connector to use (null: work out using norms for $is_log_mod value)
      */
-    public function __construct($is_log_mod = false, $db = null)
+    public function __construct(bool $is_log_mod = false, ?object $db = null)
     {
         $this->is_log_mod = $is_log_mod;
 
@@ -51,7 +51,7 @@ class RevisionEngineDatabase
      * @param  boolean $check_privilege Whether to check privileges
      * @return boolean Whether revisions are enabled
      */
-    public function enabled($check_privilege)
+    public function enabled(bool $check_privilege) : bool
     {
         if (get_option('store_revisions') == '0') {
             return false;
@@ -78,7 +78,7 @@ class RevisionEngineDatabase
      * @param  TIME $original_content_timestamp Original timestamp of the content (gathered so if deleted we can still see some meta context for this resource)
      * @param  ?AUTO_LINK $log_id Log ID (null: no ID, meaning actually we cannot save a revision at all)
      */
-    public function add_revision($resource_type, $resource_id, $category_id, $original_title, $original_text, $original_content_owner, $original_content_timestamp, $log_id)
+    public function add_revision(string $resource_type, string $resource_id, string $category_id, string $original_title, string $original_text, int $original_content_owner, int $original_content_timestamp, ?int $log_id)
     {
         if (!$this->enabled(false)) {
             return;
@@ -120,7 +120,7 @@ class RevisionEngineDatabase
      *
      * @param  AUTO_LINK $id Revision ID
      */
-    public function delete_revision($id)
+    public function delete_revision(int $id)
     {
         $GLOBALS['SITE_DB']->query_delete('revisions', ['id' => $id], '', 1);
     }
@@ -138,7 +138,7 @@ class RevisionEngineDatabase
      * @param  boolean $limited_data Whether to only collect IDs and other simple low-bandwidth data
      * @return array List of revision maps
      */
-    public function find_revisions($resource_types = null, $resource_id = null, $category_id = null, $member_id = null, $revision_id = null, $max = 100, $start = 0, $limited_data = false)
+    public function find_revisions(?array $resource_types = null, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null, ?int $revision_id = null, ?int $max = 100, int $start = 0, bool $limited_data = false) : array
     {
         if (!$this->enabled(true)) {
             return [];
@@ -237,7 +237,7 @@ class RevisionEngineDatabase
      * @param  ?MEMBER $member_id Member ID (null: no filter)
      * @return boolean Whether there are revisions
      */
-    public function has_revisions($resource_types, $resource_id = null, $category_id = null, $member_id = null)
+    public function has_revisions(array $resource_types, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null) : bool
     {
         if (!$this->enabled(true)) {
             return false;
@@ -255,7 +255,7 @@ class RevisionEngineDatabase
      * @param  ?MEMBER $member_id Member ID (null: no filter)
      * @return integer Total revisions
      */
-    public function total_revisions($resource_types, $resource_id = null, $category_id = null, $member_id = null)
+    public function total_revisions(array $resource_types, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null) : int
     {
         return count($this->find_revisions($resource_types, $resource_id, $category_id, $member_id, null, null, 0, true));
     }
@@ -266,7 +266,7 @@ class RevisionEngineDatabase
      * @param  AUTO_LINK $log_id The action log entry's ID
      * @return ?array A revision map (null: not found)
      */
-    public function find_revision_for_log($log_id)
+    public function find_revision_for_log(int $log_id) : ?array
     {
         if (!$this->enabled(true)) {
             return null;
@@ -298,7 +298,7 @@ class RevisionEngineDatabase
      * @param  string $category_id Category ID
      * @return TIME Last revision (0 if no revisions ever)
      */
-    public function find_most_recent_category_change($resource_type, $category_id)
+    public function find_most_recent_category_change(string $resource_type, string $category_id) : int
     {
         $join_table = ($this->is_log_mod) ? 'f_moderator_logs' : 'actionlogs';
         $join_field = ($this->is_log_mod) ? 'r_moderatorlog_id' : 'r_actionlog_id';
@@ -318,7 +318,7 @@ class RevisionEngineDatabase
      * @param  string $resource_id Resource ID
      * @param  string $new_category_id Category ID
      */
-    public function recategorise_old_revisions($resource_type, $resource_id, $new_category_id)
+    public function recategorise_old_revisions(string $resource_type, string $resource_id, string $new_category_id)
     {
         $GLOBALS['SITE_DB']->query_update('revisions', ['r_category_id' => $new_category_id], ['r_resource_type' => $resource_type, 'r_resource_id' => $resource_id]);
     }
@@ -340,7 +340,7 @@ class RevisionEngineDatabase
      * @param  boolean $include_filter_form Include a form for filtering revisions
      * @return Tempcode Revision UI
      */
-    public function ui_browse_revisions($title, $_header_row, $resource_types, $row_renderer, $resource_id = null, $category_id = null, $member_id = null, $category_permission_type = null, $include_filter_form = false)
+    public function ui_browse_revisions(?object $title, array $_header_row, ?array $resource_types, $row_renderer, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null, ?string $category_permission_type = null, bool $include_filter_form = false) : object
     {
         if (!$this->enabled(false)) {
             return new Tempcode();
@@ -433,7 +433,7 @@ class RevisionEngineDatabase
      * @param  ?boolean $revision_loaded Whether a revision was loaded, passed by reference (null: initial value)
      * @return Tempcode UI
      */
-    public function ui_revision_undoer($resource_type, $resource_id, &$text, &$revision_loaded)
+    public function ui_revision_undoer(string $resource_type, string $resource_id, string &$text, ?bool &$revision_loaded) : object
     {
         $revision_loaded = false;
 

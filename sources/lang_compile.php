@@ -40,7 +40,7 @@ function init__lang_compile()
  * @param  boolean $ignore_errors Whether to just return if there was a loading error
  * @return boolean Whether we FAILED to load
  */
-function require_lang_compile($codename, $lang, $type, $cache_path, $ignore_errors = false)
+function require_lang_compile(string $codename, ?string $lang, ?string $type, string $cache_path, bool $ignore_errors = false) : bool
 {
     global $LANGUAGE_STRINGS_CACHE, $REQUIRE_LANG_LOOP, $LANG_LOADED_LANG;
 
@@ -163,7 +163,7 @@ function require_lang_compile($codename, $lang, $type, $cache_path, $ignore_erro
  * @param  string $section The section
  * @return array The INI entries
  */
-function get_lang_file_section($lang, $file = null, $section = 'descriptions')
+function get_lang_file_section(string $lang, ?string $file = null, string $section = 'descriptions') : array
 {
     $entries = [];
 
@@ -207,7 +207,7 @@ function get_lang_file_section($lang, $file = null, $section = 'descriptions')
  * @param  boolean $apply_filter Apply the language pack filter
  * @return array The language entries
  */
-function get_lang_file_map($lang, $file, $non_custom = false, $apply_filter = true)
+function get_lang_file_map(string $lang, string $file, bool $non_custom = false, bool $apply_filter = true) : array
 {
     $a = get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
     if ((get_custom_file_base() !== get_file_base()) && (!is_file($a))) {
@@ -243,7 +243,7 @@ function get_lang_file_map($lang, $file, $non_custom = false, $apply_filter = tr
  *
  * @ignore
  */
-function _get_lang_file_map($b, &$entries, $section = 'strings', $given_whole_file = false, $apply_filter = true, $lang = null)
+function _get_lang_file_map(string $b, array &$entries, string $section = 'strings', bool $given_whole_file = false, bool $apply_filter = true, ?string $lang = null)
 {
     if (!$given_whole_file) {
         if (!is_file($b)) {

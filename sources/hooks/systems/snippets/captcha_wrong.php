@@ -28,7 +28,7 @@ class Hook_snippet_captcha_wrong
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('captcha')) {
             return new Tempcode();

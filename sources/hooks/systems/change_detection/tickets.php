@@ -29,7 +29,7 @@ class Hook_change_detection_tickets
      * @param  string $data The sample data, serialised and then MD5'd
      * @return boolean Whether the something has changed
      */
-    public function run($data)
+    public function run(string $data) : bool
     {
         if (!addon_installed('tickets')) {
             return false;

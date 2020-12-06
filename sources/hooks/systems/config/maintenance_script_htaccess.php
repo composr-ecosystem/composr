@@ -28,7 +28,7 @@ class Hook_config_maintenance_script_htaccess
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAINTENANCE_SCRIPT_ACCESS',
@@ -51,7 +51,7 @@ class Hook_config_maintenance_script_htaccess
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         require_code('two_factor');
         if (!maintenance_script_htaccess_option_available()) {

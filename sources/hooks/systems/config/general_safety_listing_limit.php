@@ -28,7 +28,7 @@ class Hook_config_general_safety_listing_limit
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'GENERAL_SAFETY_LISTING_LIMIT',
@@ -51,7 +51,7 @@ class Hook_config_general_safety_listing_limit
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '400';
     }

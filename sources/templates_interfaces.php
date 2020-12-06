@@ -25,7 +25,7 @@
  * @param  integer $len The length to crop at
  * @return Tempcode The cropped text
  */
-function tpl_crop_text_mouse_over($text, $len)
+function tpl_crop_text_mouse_over(string $text, int $len) : object
 {
     if (cms_mb_strlen($text) > $len) {
         $text2 = escape_html(cms_mb_substr($text, 0, $len - 2)) . '&hellip;';

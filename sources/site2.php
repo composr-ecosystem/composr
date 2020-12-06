@@ -23,7 +23,7 @@
  *
  * @return string The list
  */
-function get_staff_actions_list()
+function get_staff_actions_list() : string
 {
     require_lang('lang');
     require_lang('themes');
@@ -92,7 +92,7 @@ function get_staff_actions_list()
  * @param  Tempcode $edit_url The edit URL (blank if no edit access)
  * @return Tempcode The warning
  */
-function get_page_warning_details($zone, $codename, $edit_url)
+function get_page_warning_details(string $zone, string $codename, object $edit_url) : object
 {
     $warning_details = new Tempcode();
     if ((!has_privilege(get_member(), 'jump_to_unvalidated')) && (addon_installed('unvalidated'))) {
@@ -131,7 +131,7 @@ function get_page_warning_details($zone, $codename, $edit_url)
  * @set warn inform fatal
  * @exits
  */
-function redirect_exit($url, $title = null, $text = null, $intermediary_hop = false, $msg_type = 'inform')
+function redirect_exit($url, ?object $title = null, $text = null, bool $intermediary_hop = false, string $msg_type = 'inform')
 {
     assign_refresh($url, 0.0);
 
@@ -151,7 +151,7 @@ function redirect_exit($url, $title = null, $text = null, $intermediary_hop = fa
  * @param  mixed $url Refresh to this URL (URLPATH or Tempcode URL)
  * @param  float $multiplier Take this many times longer than a 'standard Composr refresh'
  */
-function assign_refresh($url, $multiplier = 0.0)
+function assign_refresh($url, float $multiplier = 0.0)
 {
     if ($url === '') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -253,7 +253,7 @@ function closed_site_exit()
  * @param  ID_TEXT $zone The zone the page is being loaded in
  * @return Tempcode Message
  */
-function page_not_found($codename, $zone)
+function page_not_found(string $codename, string $zone) : object
 {
     global $PAGE_NAME_CACHE;
     $PAGE_NAME_CACHE = '404';
@@ -334,7 +334,7 @@ function page_not_found($codename, $zone)
  *
  * @ignore
  */
-function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $comcode_page_row, $new_comcode_page_row, $being_included = false)
+function _load_comcode_page_not_cached(string $string, string $zone, string $codename, string $file_base, ?array $comcode_page_row, array $new_comcode_page_row, bool $being_included = false) : array
 {
     global $COMCODE_PARSE_TITLE;
 
@@ -481,7 +481,7 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
  *
  * @param  MEMBER $member_id The member ID
  */
-function declare_if_member_has_historic_comcode_admin_privileges($member_id)
+function declare_if_member_has_historic_comcode_admin_privileges(int $member_id)
 {
     if ((has_privilege($member_id, 'allow_html')) && (has_privilege($member_id, 'comcode_dangerous'))) {
         set_value('member_comcode_admin_' . strval($member_id), strval(time()), true);
@@ -496,7 +496,7 @@ function declare_if_member_has_historic_comcode_admin_privileges($member_id)
  * @param  TIME $timestamp_of_content Timestamp of content to check point in time for
  * @return boolean Whether they did
  */
-function member_has_historic_comcode_admin_privileges($member_id, $timestamp_of_content)
+function member_has_historic_comcode_admin_privileges(int $member_id, int $timestamp_of_content) : bool
 {
     $timestamp_known_admin = intval(get_value('member_comcode_admin_' . strval($member_id), '0', true));
     return $timestamp_of_content <= $timestamp_known_admin;
@@ -507,7 +507,7 @@ function member_has_historic_comcode_admin_privileges($member_id, $timestamp_of_
  *
  * @param  string $comcode The Comcode page contents
  */
-function apply_comcode_page_substitutions(&$comcode)
+function apply_comcode_page_substitutions(string &$comcode)
 {
     global $SITE_INFO;
     if (isset($SITE_INFO['reps'])) {
@@ -530,7 +530,7 @@ function apply_comcode_page_substitutions(&$comcode)
  *
  * @ignore
  */
-function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $new_comcode_page_row, $being_included = false)
+function _load_comcode_page_cache_off(string $string, string $zone, string $codename, string $file_base, array $new_comcode_page_row, bool $being_included = false) : array
 {
     global $COMCODE_PARSE_TITLE;
 
@@ -585,7 +585,7 @@ function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $ne
  * @param  string $title The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @return string Fixed
  */
-function clean_html_title($title)
+function clean_html_title(string $title) : string
 {
     $_title = trim(strip_html($title));
     if ($_title == '') { // Complex case

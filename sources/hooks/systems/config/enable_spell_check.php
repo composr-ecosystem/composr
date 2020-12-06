@@ -28,7 +28,7 @@ class Hook_config_enable_spell_check
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ENABLE_SPELL_CHECK',
@@ -51,7 +51,7 @@ class Hook_config_enable_spell_check
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (function_exists('pspell_check') || function_exists('enchant_dict_check')) ? '0' : null;
     }

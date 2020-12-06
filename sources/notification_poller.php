@@ -177,7 +177,7 @@ function notification_poller_script()
  * @param  integer $start Start offset
  * @return array A pair: Templating, Max rows
  */
-function get_web_notifications($max = null, $start = 0)
+function get_web_notifications(?int $max = null, int $start = 0) : array
 {
     if (is_guest()) {
         return [new Tempcode(), 0];
@@ -258,7 +258,7 @@ function get_web_notifications($max = null, $start = 0)
  * @param  array $row Notification row
  * @return string The XML
  */
-function web_notification_to_xml($row)
+function web_notification_to_xml(array $row) : string
 {
     $member_id = $row['d_from_member_id'];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
@@ -312,7 +312,7 @@ function web_notification_to_xml($row)
  * @param  integer $start Start offset
  * @return array A pair: Templating, Max rows
  */
-function get_pts($max = null, $start = 0)
+function get_pts(?int $max = null, int $start = 0) : array
 {
     if (get_forum_type() != 'cns') {
         return [new Tempcode(), 0];
@@ -415,7 +415,7 @@ function get_pts($max = null, $start = 0)
  * @param  array $row Notification row
  * @return string The XML
  */
-function pt_to_xml($row)
+function pt_to_xml(array $row) : string
 {
     $member_id = $row['p_poster'];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);

@@ -104,7 +104,7 @@ class Commandr_fs
      *
      * @return array Current directory
      */
-    protected function _start_pwd()
+    protected function _start_pwd() : array
     {
         // Fetch the pwd from a cookie, or generate a new one
         if (array_key_exists('commandr_dir', $_COOKIE)) {
@@ -124,7 +124,7 @@ class Commandr_fs
      * @param  boolean $full_paths Whether to use full paths
      * @return ~array Directory contents (false: failure)
      */
-    protected function _get_current_dir_contents($dir = null, $full_paths = false)
+    protected function _get_current_dir_contents(?array $dir = null, bool $full_paths = false)
     {
         if ($dir === null) {
             $dir = $this->pwd;
@@ -185,7 +185,7 @@ class Commandr_fs
      * @param  string $pwd Path
      * @return array Array-form path
      */
-    public function _pwd_to_array($pwd)
+    public function _pwd_to_array(string $pwd) : array
     {
         // Convert a string-form pwd to an array-form pwd, and sanitise it
         if ($pwd == '') {
@@ -208,7 +208,7 @@ class Commandr_fs
      * @param  array $pwd2 Non-absolute path
      * @return array Merged path
      */
-    protected function _merge_pwds($pwd1, $pwd2)
+    protected function _merge_pwds(array $pwd1, array $pwd2) : array
     {
         // Merge two array-form pwds, assuming the former is absolute and the latter isn't
         $target_directory = $pwd1;
@@ -228,7 +228,7 @@ class Commandr_fs
      * @param  ?array $pwd Path (null: use $this->pwd)
      * @return string String-form path
      */
-    public function pwd_to_string($pwd = null)
+    public function pwd_to_string(?array $pwd = null) : string
     {
         if ($pwd === null) {
             $pwd = $this->pwd;
@@ -249,7 +249,7 @@ class Commandr_fs
      * @param  string $filename Path
      * @return string Filename
      */
-    protected function _get_filename($filename)
+    protected function _get_filename(string $filename) : string
     {
         // Make sure no directories are included with the filename
         $parts = explode('/', $filename);
@@ -262,7 +262,7 @@ class Commandr_fs
      * @param  ?array $dir Path to check (null: current dir is used)
      * @return boolean Directory?
      */
-    public function _is_dir($dir = null)
+    public function _is_dir(?array $dir = null) : bool
     {
         if ($dir === null) {
             $dir = $this->pwd;
@@ -297,7 +297,7 @@ class Commandr_fs
      * @param  array $dir Path (with filename) to use
      * @return boolean Directory?
      */
-    public function _is_file($dir)
+    public function _is_file(array $dir) : bool
     {
         $filename = array_pop($dir);
 
@@ -324,7 +324,7 @@ class Commandr_fs
      * @param  ?array $target_dir Directory (null: current directory is used)
      * @return ~array Current directory contents (false: error)
      */
-    protected function _discern_meta_dir(&$meta_dir, &$meta_root_node, &$meta_root_node_type, $target_dir = null)
+    protected function _discern_meta_dir(array &$meta_dir, string &$meta_root_node, string &$meta_root_node_type, ?array $target_dir = null)
     {
         // Get the details of the current meta dir (re: object creation) and where the pwd is in relation to it
         $inspected_dir = $this->_convert_meta_dir_to_detailed_dir($this->commandr_fs); // Start at the root
@@ -363,7 +363,7 @@ class Commandr_fs
      * @param  array $_inspected_dir Simple list of directories under here
      * @return array Full detailed directory contents
      */
-    protected function _convert_meta_dir_to_detailed_dir($_inspected_dir)
+    protected function _convert_meta_dir_to_detailed_dir(array $_inspected_dir) : array
     {
         $inspected_dir = [];
         foreach ($_inspected_dir as $dir_name => $contents) {
@@ -384,7 +384,7 @@ class Commandr_fs
      * @param  array $entries Structure
      * @return array Template parameter structure
      */
-    public function prepare_dir_contents_for_listing($entries)
+    public function prepare_dir_contents_for_listing(array $entries) : array
     {
         $out = [];
         require_code('files');
@@ -406,7 +406,7 @@ class Commandr_fs
      * @param  boolean $array_form Return the pwd in array form?
      * @return mixed The current working directory (array or string)
      */
-    public function print_working_directory($array_form = false)
+    public function print_working_directory(bool $array_form = false)
     {
         // Return the current working directory
         if ($array_form) {
@@ -422,7 +422,7 @@ class Commandr_fs
      * @param  ?array $dir An alternate directory in which to perform the action (null: current directory is used)
      * @return array Directories and files in the current working directory
      */
-    public function listing($dir = null)
+    public function listing(?array $dir = null) : array
     {
         // Return an array list of all the directories and files in the pwd
         $current_dir_contents = $this->_get_current_dir_contents($dir);
@@ -461,7 +461,7 @@ class Commandr_fs
      * @param  ?array $dir Directory (null: current directory is used)
      * @return array The search results
      */
-    public function search($pattern, $regexp = false, $recursive = false, $files = true, $directories = false, $dir = null)
+    public function search(string $pattern, bool $regexp = false, bool $recursive = false, bool $files = true, bool $directories = false, ?array $dir = null) : array
     {
         // Search!
         $current_dir_contents = $this->listing($dir);
@@ -515,7 +515,7 @@ class Commandr_fs
      * @param  array $target_directory The target directory path
      * @return boolean Success?
      */
-    public function change_directory($target_directory)
+    public function change_directory(array $target_directory) : bool
     {
         // Change the current directory
         if ($this->_is_dir($target_directory)) {
@@ -535,7 +535,7 @@ class Commandr_fs
      * @param  array $directory The new directory's path and name
      * @return boolean Success?
      */
-    public function make_directory($directory)
+    public function make_directory(array $directory) : bool
     {
         $directory_name = array_pop($directory);
         $meta_dir = [];
@@ -559,7 +559,7 @@ class Commandr_fs
      * @param  array $directory The directory-to-remove's path and name
      * @return boolean Success?
      */
-    public function remove_directory($directory)
+    public function remove_directory(array $directory) : bool
     {
         $directory_name = $directory[count($directory) - 1];
         $meta_dir = [];
@@ -601,7 +601,7 @@ class Commandr_fs
      * @param  array $destination The destination path
      * @return boolean Success?
      */
-    public function copy_directory($to_copy, $destination)
+    public function copy_directory(array $to_copy, array $destination) : bool
     {
         $directory_contents = $this->_get_current_dir_contents($to_copy);
         $success = true;
@@ -638,7 +638,7 @@ class Commandr_fs
      * @param  array $destination The destination path
      * @return boolean Success?
      */
-    public function move_directory($to_move, $destination)
+    public function move_directory(array $to_move, array $destination) : bool
     {
         $to_move_meta_dir = [];
         $to_move_meta_root_node = '';
@@ -676,7 +676,7 @@ class Commandr_fs
      * @param  array $destination The destination path
      * @return boolean Success?
      */
-    public function copy_file($to_copy, $destination)
+    public function copy_file(array $to_copy, array $destination) : bool
     {
         $contents = $this->read_file($to_copy);
         $destination[] = $to_copy[count($to_copy) - 1];
@@ -690,7 +690,7 @@ class Commandr_fs
      * @param  array $destination The destination path
      * @return boolean Success?
      */
-    public function move_file($to_move, $destination)
+    public function move_file(array $to_move, array $destination) : bool
     {
         $to_move_meta_dir = [];
         $to_move_meta_root_node = '';
@@ -726,7 +726,7 @@ class Commandr_fs
      * @param  array $to_remove The file to remove
      * @return boolean Success?
      */
-    public function remove_file($to_remove)
+    public function remove_file(array $to_remove) : bool
     {
         $filename = array_pop($to_remove);
         $meta_dir = [];
@@ -750,7 +750,7 @@ class Commandr_fs
      * @param  array $to_read The file to read
      * @return ~string The file contents (false: failure)
      */
-    public function read_file($to_read)
+    public function read_file(array $to_read)
     {
         $filename = array_pop($to_read);
         $meta_dir = [];
@@ -775,7 +775,7 @@ class Commandr_fs
      * @param  string $contents The contents to write
      * @return boolean Success?
      */
-    public function write_file($to_write, $contents)
+    public function write_file(array $to_write, string $contents) : bool
     {
         $filename = array_pop($to_write);
         $meta_dir = [];
@@ -800,7 +800,7 @@ class Commandr_fs
      * @param  string $contents The contents to append
      * @return boolean Success?
      */
-    public function append_file($to_append, $contents)
+    public function append_file(array $to_append, string $contents) : bool
     {
         $filename = array_pop($to_append);
         $meta_dir = [];

@@ -30,7 +30,7 @@ class Hook_cron_group_member_timeouts
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if ($calculate_num_queued) {
             $db = get_db_for('f_group_member_timeouts');
@@ -51,7 +51,7 @@ class Hook_cron_group_member_timeouts
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         require_code('group_member_timeouts');
 

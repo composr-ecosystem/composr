@@ -73,7 +73,7 @@ function enable_output_compression()
  *
  * @param  boolean $during_init Whether this is just during initialisation (useful for debugging)
  */
-function disable_output_compression($during_init = false)
+function disable_output_compression(bool $during_init = false)
 {
     if (headers_sent()) {
         return; // Not safe to change
@@ -91,7 +91,7 @@ function disable_output_compression($during_init = false)
  *
  * @return array Map of PHP .ini settings
  */
-function _disable_output_compression()
+function _disable_output_compression() : array
 {
     return [
         'zlib.output_compression' => 'Off',
@@ -106,7 +106,7 @@ function _disable_output_compression()
  * @param  boolean $use_cmd_line Whether a command line call is needed to do the compression (returned by reference)
  * @return boolean Whether it is
  */
-function supports_brotli($live = true, &$use_cmd_line = false)
+function supports_brotli(bool $live = true, bool &$use_cmd_line = false) : bool
 {
     $use_cmd_line = false;
 
@@ -174,7 +174,7 @@ function supports_brotli($live = true, &$use_cmd_line = false)
  * @range 0 11
  * @return ~string Compressed data (false: error)
  */
-function cms_brotli_compress($in, $level)
+function cms_brotli_compress(string $in, int $level)
 {
     if (php_function_allowed('brotli_compress')) {
         return brotli_compress($in, $level);
@@ -202,7 +202,7 @@ function cms_brotli_compress($in, $level)
  * @param  string $in Data to uncompress
  * @return ~string Uncompressed data (false: error)
  */
-function cms_brotli_uncompress($in)
+function cms_brotli_uncompress(string $in)
 {
     if (php_function_allowed('brotli_uncompress')) {
         return brotli_uncompress($in);
@@ -231,7 +231,7 @@ function cms_brotli_uncompress($in)
  * @param  boolean $use_cmd_line Whether a command line call is needed to do the compression (returned by reference)
  * @return boolean Whether it is
  */
-function supports_gzip($live = true, &$use_cmd_line = false)
+function supports_gzip(bool $live = true, bool &$use_cmd_line = false) : bool
 {
     $use_cmd_line = false;
 
@@ -294,7 +294,7 @@ function supports_gzip($live = true, &$use_cmd_line = false)
  * @range 0 9
  * @return ~string Compressed data (false: error)
  */
-function cms_gzencode($in, $level)
+function cms_gzencode(string $in, int $level)
 {
     if (php_function_allowed('gzencode')) {
         return gzencode($in, $level);
@@ -322,7 +322,7 @@ function cms_gzencode($in, $level)
  * @param  string $in Data to uncompress
  * @return ~string Uncompressed data (false: error)
  */
-function cms_gzdecode($in)
+function cms_gzdecode(string $in)
 {
     if (php_function_allowed('gzdecode')) {
         return gzdecode($in);
@@ -350,7 +350,7 @@ function cms_gzdecode($in)
  * @param  string $encoding Encoding to check
  * @return boolean Whether it does
  */
-function accepts_encoding($encoding)
+function accepts_encoding(string $encoding) : bool
 {
     $encodings = isset($_SERVER['HTTP_ACCEPT_ENCODING']) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : '';
     foreach (explode(',', $encodings) as $accepted_encoding) {

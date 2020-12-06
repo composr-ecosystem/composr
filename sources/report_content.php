@@ -49,7 +49,7 @@ function check_report_content_access()
  *
  * @return AUTO_LINK The ticket type ID
  */
-function find_reported_content_ticket_type()
+function find_reported_content_ticket_type() : int
 {
     static $ticket_type_id = null;
     if ($ticket_type_id === null) {
@@ -69,7 +69,7 @@ function find_reported_content_ticket_type()
  * @param  ID_TEXT $content_id The content ID being reported
  * @return Tempcode The UI
  */
-function report_content_form($title, $content_type, $content_id)
+function report_content_form(object $title, string $content_type, string $content_id) : object
 {
     check_report_content_access();
 
@@ -120,7 +120,7 @@ function report_content_form($title, $content_type, $content_id)
  * @param  ?array $post_info The topic row (returned by reference) (null: )
  * @return Tempcode The UI
  */
-function report_post_form($title, $post_id, $js_function_calls, &$topic_info = null, &$post_info = null)
+function report_post_form(object $title, int $post_id, array $js_function_calls, ?array &$topic_info = null, ?array &$post_info = null) : object
 {
     check_report_content_access();
 
@@ -188,7 +188,7 @@ function report_post_form($title, $post_id, $js_function_calls, &$topic_info = n
  * @param  ?string $content_poster_name_if_guest Member name if a guest (null: unknown)
  * @return string Member link
  */
-function report_content_member_link($content_member_id, $content_poster_name_if_guest)
+function report_content_member_link(?int $content_member_id, ?string $content_poster_name_if_guest) : string
 {
     if ($content_poster_name_if_guest === null) {
         $content_poster_name_if_guest = do_lang('UNKNOWN');
@@ -212,7 +212,7 @@ function report_content_member_link($content_member_id, $content_poster_name_if_
  * @param  Tempcode $hidden Hidden fields (returned by reference)
  * @return Tempcode Form fields
  */
-function report_content_form_fields(&$hidden)
+function report_content_form_fields(object &$hidden) : object
 {
     require_code('form_templates');
 
@@ -259,7 +259,7 @@ function report_content_form_fields(&$hidden)
  * @param  Tempcode $text Append the text here
  * @param  ID_TEXT $ticket_id Ticket ID
  */
-function report_content_append_text(&$text, $ticket_id)
+function report_content_append_text(object &$text, string $ticket_id)
 {
     if (ticket_exists($ticket_id)) {
         // If session already reported this content and the associated ticket is still open, tell the user that report will go as another post in same ticket
@@ -294,7 +294,7 @@ function report_content_append_text(&$text, $ticket_id)
  * @param  ?MEMBER $member_id Reporting member (null: current member)
  * @return object URL to content
  */
-function report_content($content_type, $content_id, $report_post, $anonymous = 0, $open = 1, $time = null, $member_id = null)
+function report_content(string $content_type, string $content_id, string $report_post, int $anonymous = 0, int $open = 1, ?int $time = null, ?int $member_id = null) : object
 {
     require_code('content');
     list($content_title, $content_member_id, $cma_info, $content_row, $content_url) = content_get_details($content_type, $content_id);
@@ -347,7 +347,7 @@ function report_content($content_type, $content_id, $report_post, $anonymous = 0
  * @param  ?MEMBER $member_id Reporting member (null: current member)
  * @return object URL to content
  */
-function report_post($post_id, $report_post, $anonymous = 0, $open = 1, $time = null, $member_id = null)
+function report_post(int $post_id, string $report_post, int $anonymous = 0, int $open = 1, ?int $time = null, ?int $member_id = null) : object
 {
     check_report_content_access();
 
@@ -408,7 +408,7 @@ function report_post($post_id, $report_post, $anonymous = 0, $open = 1, $time = 
  * @param  ?MEMBER $member_id Reporting member (null: current member)
  * @return object URL to content
  */
-function _report_content($content_type, $content_id, $report_title, $report_post, $anonymous = 0, $open = 1, $time = null, $member_id = null)
+function _report_content(string $content_type, string $content_id, string $report_title, string $report_post, int $anonymous = 0, int $open = 1, ?int $time = null, ?int $member_id = null) : object
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -511,7 +511,7 @@ function _report_content($content_type, $content_id, $report_title, $report_post
  * @param  ?AUTO_LINK $topic_id Topic ID (null: )
  * @return boolean Whether it exists
  */
-function ticket_exists($ticket_id, &$topic_id = null)
+function ticket_exists(string $ticket_id, ?int &$topic_id = null) : bool
 {
     $details = get_ticket_meta_details($ticket_id, false);
     if ($details !== null) {
@@ -528,7 +528,7 @@ function ticket_exists($ticket_id, &$topic_id = null)
  *
  * @return boolean Whether anonymous posts are allowed
  */
-function ticket_allow_anonymous_posts()
+function ticket_allow_anonymous_posts() : bool
 {
     require_code('cns_forums');
     $forum_id = get_ticket_forum_id();

@@ -244,7 +244,7 @@ rd_do_footer();
  * @param  SHORT_TEXT $dir The directory path to search
  * @return array The HTML for the list box selection
  */
-function rd_do_dir($dir)
+function rd_do_dir(string $dir) : array
 {
     $out = [];
     $_dir = ($dir == '') ? '.' : $dir;
@@ -311,7 +311,7 @@ END;
  * @param  SHORT_TEXT $password_given Given master password
  * @return boolean Whether it is valid
  */
-function rk_check_master_password($password_given)
+function rk_check_master_password(string $password_given) : bool
 {
     global $FILE_BASE;
     require_once($FILE_BASE . '/sources/crypt_master.php');

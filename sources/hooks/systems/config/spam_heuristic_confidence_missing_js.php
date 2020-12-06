@@ -28,7 +28,7 @@ class Hook_config_spam_heuristic_confidence_missing_js
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SPAM_HEURISTIC_CONFIDENCE_MISSING_JS',
@@ -52,7 +52,7 @@ class Hook_config_spam_heuristic_confidence_missing_js
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return (get_option('detect_javascript') == '0') ? null : '40';
     }

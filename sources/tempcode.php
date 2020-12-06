@@ -111,7 +111,7 @@ function init__tempcode()
  *
  * @param  boolean $m The current Tempcode parameter inlining mode
  */
-function push_tempcode_parameter_inlining_mode($m)
+function push_tempcode_parameter_inlining_mode(bool $m)
 {
     global $TEMPCODE_PARAMETER_INLINING_MODE;
     array_push($TEMPCODE_PARAMETER_INLINING_MODE, $m);
@@ -132,7 +132,7 @@ function pop_tempcode_parameter_inlining_mode()
  * @param  Tempcode $ob Tempcode object
  * @return string Evaluated string
  */
-function static_evaluate_tempcode($ob)
+function static_evaluate_tempcode(object $ob) : string
 {
     return $ob->evaluate();
 }
@@ -143,7 +143,7 @@ function static_evaluate_tempcode($ob)
  * @param  string $in String in
  * @return string Resultant string
  */
-function php_addslashes_twice($in)
+function php_addslashes_twice(string $in) : string
 {
     global $PHP_REP_FROM, $PHP_REP_TO_TWICE;
     return str_replace($PHP_REP_FROM, $PHP_REP_TO_TWICE, $in);
@@ -154,7 +154,7 @@ function php_addslashes_twice($in)
  *
  * @return string Unique Identifier
  */
-function fast_uniqid()
+function fast_uniqid() : string
 {
     return uniqid('', true);
 }
@@ -166,7 +166,7 @@ function fast_uniqid()
  * @param  ID_TEXT $origin Where this parameter is referenced, in a compressed reference form
  * @return string Value
  */
-function otp($var, $origin = '')
+function otp($var, string $origin = '') : string
 {
     switch (gettype($var)) {
         case 'NULL':
@@ -194,7 +194,7 @@ function otp($var, $origin = '')
  * @param  ID_TEXT $origin Where this parameter is referenced, in a slash-combined reference form
  * @return string Always ""
  */
-function missing_template_parameter($origin)
+function missing_template_parameter(string $origin) : string
 {
     if ((error_reporting() & E_WARNING) === 0) { // Errors disabled via @ most likely, probably we're doing a test in tempcode_compiler.php
         return '';
@@ -220,7 +220,7 @@ function missing_template_parameter($origin)
  * @param  array $escaping Escaping for the symbol
  * @return Tempcode Tempcode object
  */
-function build_closure_tempcode($type, $name, $parameters, $escaping = [])
+function build_closure_tempcode(int $type, string $name, array $parameters, array $escaping = []) : object
 {
     if ($escaping === null) {
         $_escaping = '[]';
@@ -321,7 +321,7 @@ function build_closure_tempcode($type, $name, $parameters, $escaping = [])
  * @param  array $escape Escaping
  * @return Tempcode A symbol Tempcode object
  */
-function symbol_tempcode($symbol, $parameters = [], $escape = [])
+function symbol_tempcode(string $symbol, array $parameters = [], array $escape = []) : object
 {
     return build_closure_tempcode(TC_SYMBOL, $symbol, $parameters, $escape);
 }
@@ -334,7 +334,7 @@ function symbol_tempcode($symbol, $parameters = [], $escape = [])
  * @param  array $parameters Directive parameters
  * @return Tempcode A directive Tempcode object
  */
-function directive_tempcode($directive, $content, $parameters = [])
+function directive_tempcode(string $directive, $content, array $parameters = []) : object
 {
     $parameters[] = $content;
 
@@ -349,7 +349,7 @@ function directive_tempcode($directive, $content, $parameters = [])
  * @param  array $main_function The loop execution function
  * @return string Result
  */
-function closure_while_loop($args, $control_function, $main_function)
+function closure_while_loop(array $args, array $control_function, array $main_function) : string
 {
     $out = '';
     while (call_user_func_array($control_function, $args)) {
@@ -365,7 +365,7 @@ function closure_while_loop($args, $control_function, $main_function)
  * @param  array $parameters Template parameters
  * @return string Result
  */
-function closure_eval($code, $parameters)
+function closure_eval(string $code, array $parameters) : string
 {
     if (get_value('allow_php_in_templates') !== '1') {
         return do_lang('NO_PHP_IN_TEMPLATES');
@@ -387,10 +387,10 @@ function closure_eval($code, $parameters)
  *
  * @param  array $param The template bound parameters
  * @param  array $args The loop directive parameters
- * @param  string $main_function The loop execution function
+ * @param  mixed $main_function The loop execution function
  * @return string Result
  */
-function closure_loop($param, $args, $main_function)
+function closure_loop(array $param, array $args, callable $main_function) : string
 {
     $value = '';
     if (isset($param[0])) {
@@ -485,10 +485,10 @@ function closure_loop($param, $args, $main_function)
  *
  * @param  array $param The template bound parameters
  * @param  array $args The loop directive parameters
- * @param  string $main_function The loop execution function
+ * @param  mixed $main_function The loop execution function
  * @return string Result
  */
-function closure_params_json($param, $args, $main_function)
+function closure_params_json(array $param, array $args, $main_function) : string
 {
     global $TEMPCODE_SETGET;
 
@@ -528,7 +528,7 @@ function closure_params_json($param, $args, $main_function)
  * @param  array $arr Template map
  * @return array Adjusted map
  */
-function evaluate_tempcode_elements($arr)
+function evaluate_tempcode_elements(array $arr) : array
 {
     foreach ($arr as $k => $v) {
         if (is_array($v)) {
@@ -550,7 +550,7 @@ function evaluate_tempcode_elements($arr)
  * @param  array $arr Template map
  * @return array Adjusted map
  */
-function camel_case_array_keys($arr)
+function camel_case_array_keys(array $arr) : array
 {
     $new_arr = [];
 
@@ -582,7 +582,7 @@ function camel_case_array_keys($arr)
  * @param  string $string String
  * @return Tempcode Tempcode
  */
-function make_string_tempcode($string)
+function make_string_tempcode(string $string) : object
 {
     static $generator_base = null;
     static $generator_num = 0;
@@ -605,7 +605,7 @@ function make_string_tempcode($string)
  * @param  mixed $data String
  * @return Tempcode Tempcode
  */
-function escape_html_tempcode($data)
+function escape_html_tempcode($data) : object
 {
     // This is a bit of a hack, but it works. We don't want to have to have a route for altering Tempcode structure (because that has a performance hit, so we piggy-back on recursing through a null language string and add escaping when we do it)
     return build_closure_tempcode(TC_LANGUAGE_REFERENCE, 'dont_escape_trick', [$data], [FORCIBLY_ENTITY_ESCAPED]);
@@ -618,7 +618,7 @@ function escape_html_tempcode($data)
  * @param  string $value The string to apply the escapings to
  * @return string Output string (you do not need to collect this, as $value is pass-by-reference -- but this is useful for chaining)
  */
-function apply_tempcode_escaping($escaped, &$value)
+function apply_tempcode_escaping(array $escaped, string &$value) : string
 {
     static $charset = null;
     if ($charset === null) {
@@ -671,7 +671,7 @@ function apply_tempcode_escaping($escaped, &$value)
  * @param  string $value The string to apply the escapings to
  * @return string Output string
  */
-function apply_tempcode_escaping_inline($escaped, $value)
+function apply_tempcode_escaping_inline(array $escaped, string $value) : string
 {
     static $charset = null;
     if ($charset === null) {
@@ -726,7 +726,7 @@ function apply_tempcode_escaping_inline($escaped, $value)
  * @param  ?mixed $token3 The third token (replaces {3}). May be an array of [of string], to allow any number of additional args (null: none)
  * @return Tempcode A language Tempcode object
  */
-function do_lang_tempcode($lang_string, $token1 = null, $token2 = null, $token3 = null)
+function do_lang_tempcode(string $lang_string, $token1 = null, $token2 = null, $token3 = null) : object
 {
     $parameters = [];
     if (isset($token1)) {
@@ -751,7 +751,7 @@ function do_lang_tempcode($lang_string, $token1 = null, $token2 = null, $token3 
  *
  * @param  array $parameters Template parameters
  */
-function kid_gloves_html_escaping(&$parameters)
+function kid_gloves_html_escaping(array &$parameters)
 {
     if (get_value('disable_kid_gloves_html') === '1') {
         return;
@@ -778,7 +778,7 @@ function kid_gloves_html_escaping(&$parameters)
  *
  * @param  string $param Parameter
  */
-function kid_gloves_html_escaping_singular(&$param)
+function kid_gloves_html_escaping_singular(string &$param)
 {
     if (get_value('disable_kid_gloves_html') === '1') {
         return;
@@ -818,7 +818,7 @@ function fill_template_preview_op_cache()
  * @param  boolean $non_custom_only Whether to only search in the default templates
  * @return Tempcode The Tempcode for this template
  */
-function do_template($codename, $parameters = [], $lang = null, $light_error = false, $fallback = null, $suffix = '.tpl', $directory = 'templates', $theme = null, $non_custom_only = false)
+function do_template(string $codename, array $parameters = [], ?string $lang = null, bool $light_error = false, ?string $fallback = null, string $suffix = '.tpl', string $directory = 'templates', ?string $theme = null, bool $non_custom_only = false) : object
 {
     if (empty($lang)) {
         global $USER_LANG_CACHED;
@@ -1060,7 +1060,7 @@ function do_template($codename, $parameters = [], $lang = null, $light_error = f
  * @param  string $string Input
  * @return string Output
  */
-function invisible_output_encode($string)
+function invisible_output_encode(string $string) : string
 {
     $ret = '';
 
@@ -1104,7 +1104,7 @@ function invisible_output_encode($string)
  * @param  string $string Input
  * @return string Output
  */
-function strip_invisible_output_encoding($string)
+function strip_invisible_output_encoding(string $string) : string
 {
     if (get_charset() === 'utf-8') {
         $string = str_replace([chr(0xE2) . chr(0x80) . chr(0x8B), chr(0xEF) . chr(0xBB) . chr(0xBF)], ['', ''], $string);
@@ -1121,7 +1121,7 @@ function strip_invisible_output_encoding($string)
  * @param  TIME $tcp_time Time of cache file
  * @return boolean Whether decache is NOT needed
  */
-function dependencies_are_good($dep, $tcp_time)
+function dependencies_are_good(array $dep, int $tcp_time) : bool
 {
     foreach ($dep as $d) {
         if (@filemtime($d) > $tcp_time) {
@@ -1137,7 +1137,7 @@ function dependencies_are_good($dep, $tcp_time)
  * @param  array $seq_part Symbol details
  * @param  array $children Where we store children stuff
  */
-function handle_symbol_preprocessing($seq_part, &$children)
+function handle_symbol_preprocessing(array $seq_part, array &$children)
 {
     switch ($seq_part[2]) {
         case 'PAGE_LINK':
@@ -1620,7 +1620,7 @@ class Tempcode
      *
      * @param  ?array $details Pair: Code to pre-execute, Initialisation seq-parts (null: start as empty)
      */
-    public function __construct($details = null)
+    public function __construct(?array $details = null)
     {
         $this->codename = ':container';
 
@@ -1688,7 +1688,7 @@ class Tempcode
      *
      * @return array What is to be serialised
      */
-    public function __sleep()
+    public function __sleep() : array
     {
         $ret = ['code_to_preexecute', 'seq_parts', 'codename'];
         if (isset($this->preprocessable_bits)) {
@@ -1724,7 +1724,7 @@ class Tempcode
      * @param  integer $pos Start position of input string
      * @param  integer $len End position of input string
      */
-    public function parse_from(&$code, &$pos, &$len)
+    public function parse_from(string &$code, int &$pos, int &$len)
     {
         unset($this->cached_output);
         require_code('tempcode_compiler');
@@ -1745,7 +1745,7 @@ class Tempcode
      * @param  mixed $attach The Tempcode/string to attach
      * @param  boolean $enable_child_merge If we've already merged the children from what we're attaching into the child tree (at bind stage) then pass as false
      */
-    public function attach($attach, $enable_child_merge = true)
+    public function attach($attach, bool $enable_child_merge = true)
     {
         if ($attach === '') {
             return;
@@ -1828,7 +1828,7 @@ class Tempcode
      *
      * @return string The assembly result
      */
-    public function to_assembly()
+    public function to_assembly() : string
     {
         require_code('tempcode_optimiser');
         optimise_tempcode($this);
@@ -1843,7 +1843,7 @@ class Tempcode
      * @param  array $forced_reload_details List of parameters for a forced reload if required
      * @return boolean Success status (it can fail, if the compiled cache file is corrupt)
      */
-    public function from_assembly_executed($file, $forced_reload_details)
+    public function from_assembly_executed(string $file, array $forced_reload_details) : bool
     {
         if ($GLOBALS['RECORD_TEMPLATES_USED']) {
             require_code('themes_meta_tree');
@@ -1914,7 +1914,7 @@ class Tempcode
      *
      * @param  boolean $top_level Whether this is the top-level call
      */
-    protected function _mark_all_as_escaped($top_level = true)
+    protected function _mark_all_as_escaped(bool $top_level = true)
     {
         static $done = [];
 
@@ -1952,7 +1952,7 @@ class Tempcode
      * @param  boolean $allow_failure Return error code on failure, rather than exiting
      * @return boolean Success status (it can fail, if the compiled cache file is corrupt)
      */
-    public function from_assembly(&$raw_data, $allow_failure = false)
+    public function from_assembly(string &$raw_data, bool $allow_failure = false) : bool
     {
         if ($GLOBALS['RECORD_TEMPLATES_USED']) {
             require_code('themes_meta_tree');
@@ -1996,7 +1996,7 @@ class Tempcode
      * @param  integer $at Offset to the construct
      * @return boolean Whether it is parameterless
      */
-    public function parameterless($at)
+    public function parameterless(int $at) : bool
     {
         $i = 0;
         foreach ($this->seq_parts as $seq_parts_group) {
@@ -2017,7 +2017,7 @@ class Tempcode
      * @param  ID_TEXT $codename The codename of the template this Tempcode is from
      * @return Tempcode The new bound Tempcode object
      */
-    public function bind(&$parameters, $codename)
+    public function bind(array &$parameters, string $codename) : object
     {
         if (!isset($parameters['_GUID'])) {
             $parameters['_GUID'] = '';
@@ -2105,7 +2105,7 @@ class Tempcode
      * @param  string $key Named parameter
      * @param  mixed $value Specific value
      */
-    public function singular_bind($key, $value)
+    public function singular_bind(string $key, $value)
     {
         unset($this->cached_output);
 
@@ -2177,7 +2177,7 @@ class Tempcode
      *
      * @return boolean Whether it is entirely empty
      */
-    public function is_empty_shell()
+    public function is_empty_shell() : bool
     {
         foreach ($this->seq_parts as $seq_parts_group) {
             if (isset($seq_parts_group[0])) {
@@ -2192,7 +2192,7 @@ class Tempcode
      *
      * @return boolean Whether the Tempcode object is empty
      */
-    public function is_empty()
+    public function is_empty() : bool
     {
         if (isset($this->cached_output)) {
             return strlen($this->cached_output) === 0;
@@ -2295,7 +2295,7 @@ class Tempcode
      *
      * @return string The evaluated thing
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->evaluate();
     }
@@ -2306,7 +2306,7 @@ class Tempcode
      * @param  ?LANGUAGE_NAME $current_lang The language to evaluate with (null: current user's language)
      * @return string The evaluated thing. Voila, it's all over!
      */
-    public function evaluate($current_lang = null)
+    public function evaluate(?string $current_lang = null) : string
     {
         if (isset($this->cached_output)) {
             return $this->cached_output;
@@ -2391,7 +2391,7 @@ class Tempcode
      * @param  ?LANGUAGE_NAME $current_lang The language to evaluate with (null: current user's language)
      * @return string Blank string. Allows chaining within echo statements
      */
-    public function evaluate_echo($current_lang = null)
+    public function evaluate_echo(?string $current_lang = null) : string
     {
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
             return '';
@@ -2470,11 +2470,11 @@ class Tempcode
  * @param  string $id A randomised unique ID
  * @param  string $parameters Parameters
  * @param  string $code Function code
- * @return string The function reference
+ * @return mixed The function reference
  *
  * @ignore
  */
-function recall_named_function($id, $parameters, $code)
+function recall_named_function(string $id, string $parameters, string $code)
 {
     $k = 'TEMPCODE_FUNCTION__' . $id;
     if (!isset($GLOBALS[$k])) {
@@ -2496,7 +2496,7 @@ function recall_named_function($id, $parameters, $code)
  *
  * @ignore
  */
-function tempcode_include($filepath)
+function tempcode_include(string $filepath)
 {
     // NB: We suppress errors because the file may be missing, especially due to race conditions. If we fail we return false, and an alternative Tempcode technique is used
 
@@ -2516,7 +2516,7 @@ function tempcode_include($filepath)
  *
  * @param  string $tpl_path_descrip Template that's getting loaded
  */
-function record_template_used($tpl_path_descrip)
+function record_template_used(string $tpl_path_descrip)
 {
     static $called_once = false;
 
@@ -2543,7 +2543,7 @@ function record_template_used($tpl_path_descrip)
  * @param  string $text Comcode
  * @return string Simplified Comcode
  */
-function simplify_static_tempcode($text)
+function simplify_static_tempcode(string $text) : string
 {
     push_no_keep_context();
 
@@ -2590,7 +2590,7 @@ function simplify_static_tempcode($text)
  * @param  string $text Comcode
  * @return string Tempcode-enhanced Comcode
  */
-function reinstate_static_tempcode($text)
+function reinstate_static_tempcode(string $text) : string
 {
     $_base_url = str_replace(['http\://', 'https\://'], ['https?\://', 'https?\://'], preg_quote(escape_html(get_base_url() . '/'), '#'));
 
@@ -2620,7 +2620,7 @@ function reinstate_static_tempcode($text)
  * @param  object $e Error object
  * @param  string $code Eval'd code
  */
-function tempcode_error($e, $code)
+function tempcode_error(object $e, string $code)
 {
     $error_message = $e->getMessage();
 
@@ -2643,7 +2643,7 @@ function tempcode_error($e, $code)
  * @param  integer $max_length Maximum length
  * @return Tempcode Reduced length version of $text if required
  */
-function reasonable_html_reduce($text, $max_length = 1000)
+function reasonable_html_reduce(object $text, int $max_length = 1000) : object
 {
     $text_flat = $text->evaluate();
     if (strlen($text_flat) > $max_length) {

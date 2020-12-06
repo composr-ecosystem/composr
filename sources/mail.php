@@ -60,7 +60,7 @@ function _close_smtp_sockets()
  * @param  boolean $include_all Include all e-mail domains, as opposed to just the main outgoing one
  * @return array A map of system e-mail address to domain name it uses
  */
-function find_system_email_addresses($include_all = true)
+function find_system_email_addresses(bool $include_all = true) : array
 {
     $addresses = [];
     $addresses[get_option('website_email')] = true;
@@ -114,7 +114,7 @@ http://people.dsv.su.se/~jpalme/ietf/ietf-mail-attributes.html
  * @param  array $advanced_parameters A map of additional parameters. See comments within this function implementation to know what can be sent.
  * @return object Our dispatcher object, which may contain some result data
  */
-function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names = null, $from_email = '', $from_name = '', $advanced_parameters = [])
+function dispatch_mail(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '', array $advanced_parameters = []) : object
 {
     $dispatcher = null;
 
@@ -177,7 +177,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = [])
+    public function __construct(array $advanced_parameters = [])
     {
         // Line termination is tricky. SMTP requires \r\n (PHP uses SMTP on Windows), while CLI interface must use \n.
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
@@ -195,7 +195,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      * @param  array $advanced_parameters List of advanced parameters
      * @return boolean Whether the dispatcher instance is capable of sending e-mails
      */
-    public function is_dispatcher_available($advanced_parameters)
+    public function is_dispatcher_available(array $advanced_parameters) : bool
     {
         return true;
     }
@@ -215,7 +215,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain)
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
     {
         $worked = true;
         $error = null;
@@ -280,7 +280,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = [])
+    public function __construct(array $advanced_parameters = [])
     {
         $this->smtp_sockets_use = true;
         $this->smtp_sockets_host = get_option('smtp_sockets_host');
@@ -327,7 +327,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      * @param  array $advanced_parameters List of advanced parameters
      * @return boolean Whether the dispatcher instance is capable of sending e-mails
      */
-    public function is_dispatcher_available($advanced_parameters)
+    public function is_dispatcher_available(array $advanced_parameters) : bool
     {
         return (!empty($this->smtp_sockets_host)) && (php_function_allowed('fsockopen'));
     }
@@ -343,7 +343,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
-    public function dispatch($subject_line, $message_raw, $to_emails = null, $to_names = null, $from_email = '', $from_name = '')
+    public function dispatch(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
     {
         if ($from_email == '') {
             $from_email = $this->smtp_from_address;
@@ -367,7 +367,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain)
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
     {
         $worked = false;
         $error = null;
@@ -560,7 +560,7 @@ abstract class Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = [])
+    public function __construct(array $advanced_parameters = [])
     {
         require_code('site');
         require_code('mime_types');
@@ -631,7 +631,7 @@ abstract class Mail_dispatcher_base
      * @param  string $from_name The from name (blank: site name)
      * @return ?array A pair: Whether it worked, and an error message (null: skipped)
      */
-    public function dispatch($subject_line, $message_raw, $to_emails = null, $to_names = null, $from_email = '', $from_name = '')
+    public function dispatch(string $subject_line, string $message_raw, ?array $to_emails = null, $to_names = null, string $from_email = '', string $from_name = '') : ?array
     {
         // Attachments monitored for injection from the Comcode rendering system
         global $EMAIL_ATTACHMENTS;
@@ -748,7 +748,8 @@ abstract class Mail_dispatcher_base
      * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
      * @return array A pair: Whether it worked, and an error message
      */
-    abstract protected function _dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain);
+    abstract protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array;
+
 
     /**
      * Implementation-specific e-mail dispatcher, passed with pre-prepared/tidied e-mail component details for us to use.
@@ -763,7 +764,7 @@ abstract class Mail_dispatcher_base
      * @param  ID_TEXT $theme Theme
      * @return array A huge ordered list of mail components
      */
-    protected function build_mail_components($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme)
+    protected function build_mail_components(string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name, string $lang, string $theme) : array
     {
         global $EMAIL_ATTACHMENTS;
 
@@ -1098,7 +1099,7 @@ abstract class Mail_dispatcher_base
      * @param  string $to_line To line
      * @return string The mime message
      */
-    protected function assemble_full_mime_message($to_emails, $to_names, $i, $tightened_subject, $headers, $sending_message, &$to_line)
+    protected function assemble_full_mime_message(array $to_emails, array $to_names, int $i, string $tightened_subject, string $headers, string $sending_message, string &$to_line) : string
     {
         $full_mime_message = '';
 
@@ -1134,7 +1135,7 @@ abstract class Mail_dispatcher_base
      * @param  LANGUAGE_NAME $lang Language
      * @param  ID_TEXT $theme Theme
      */
-    protected function tidy_parameters(&$subject_line, &$message_raw, &$to_emails, &$to_names, &$from_email, &$from_name, &$lang, &$theme)
+    protected function tidy_parameters(string &$subject_line, string &$message_raw, array &$to_emails, array &$to_names, string &$from_email, string &$from_name, string &$lang, string &$theme)
     {
         escape_header($subject_line);
 
@@ -1246,7 +1247,7 @@ abstract class Mail_dispatcher_base
      * @param  EMAIL $from_email The from address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
      */
-    protected function log_message($queued, $subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name)
+    protected function log_message(bool $queued, string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name)
     {
         if (mt_rand(0, 100) == 1) {
             cms_register_shutdown_function_safe(function () {
@@ -1287,7 +1288,7 @@ abstract class Mail_dispatcher_base
      *
      * @return boolean Whether the message is going through the queue
      */
-    protected function is_through_queue()
+    protected function is_through_queue() : bool
     {
         $through_queue = (!$this->bypass_queue) && (((cron_installed()) && (get_option('mail_queue') === '1'))) || (get_option('mail_queue_debug') === '1');
         if ((!empty($this->attachments)) && (get_option('mail_queue_debug') === '0')) {
@@ -1305,7 +1306,7 @@ abstract class Mail_dispatcher_base
      *
      * @return boolean Whether the e-mailer is currently enabled
      */
-    protected function is_enabled()
+    protected function is_enabled() : bool
     {
         if (running_script('stress_test_loader')) {
             return false;
@@ -1324,7 +1325,7 @@ abstract class Mail_dispatcher_base
      * @param  array $advanced_parameters List of advanced parameters
      * @return boolean Whether the dispatcher instance is capable of sending e-mails
      */
-    public function is_dispatcher_available($advanced_parameters)
+    public function is_dispatcher_available(array $advanced_parameters) : bool
     {
         return true;
     }
@@ -1337,7 +1338,7 @@ abstract class Mail_dispatcher_base
      * @param  integer $total_filesize Reference to where total filesize is being held
      * @return ?array A tuple: Mime type filename, file contents (null: error)
      */
-    protected function get_image_for_cid($img, $as, &$total_filesize)
+    protected function get_image_for_cid(string $img, ?int $as, int &$total_filesize) : ?array
     {
         $file_path_stub = convert_url_to_path($img);
         $mime_type = get_mime_type(get_file_extension($img), has_privilege($as, 'comcode_dangerous'));
@@ -1410,7 +1411,7 @@ abstract class Mail_dispatcher_base
      *
      * @ignore
      */
-    protected function mail_img_rep_callback($matches)
+    protected function mail_img_rep_callback(array $matches) : string
     {
         if ((!url_is_local($matches[0])) && (substr($matches[2], 0, strlen(get_custom_base_url())) != get_custom_base_url()) && (substr($matches[2], 0, strlen(get_base_url())) != get_base_url())) {
             return $matches[0];
@@ -1429,7 +1430,7 @@ abstract class Mail_dispatcher_base
      *
      * @ignore
      */
-    protected function mail_css_rep_callback($matches)
+    protected function mail_css_rep_callback(array $matches) : string
     {
         $filename = preg_replace('#\?\d+$#', '', basename($matches[1]));
         if (($filename != 'email_link.svg') && ($filename != 'external_link.svg')) {
@@ -1461,7 +1462,7 @@ abstract class Mail_dispatcher_base
  * @param  string $context (X) HTML context under which CSS is filtered
  * @return string Filtered CSS
  */
-function filter_css($c, $theme, $context)
+function filter_css(string $c, ?string $theme, string $context) : string
 {
     if (($theme === null)) {
         $theme = $GLOBALS['FORUM_DRIVER']->get_theme();

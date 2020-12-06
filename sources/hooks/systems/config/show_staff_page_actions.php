@@ -28,7 +28,7 @@ class Hook_config_show_staff_page_actions
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PAGE_ACTIONS',
@@ -51,7 +51,7 @@ class Hook_config_show_staff_page_actions
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('actionlog')) {
             return null;

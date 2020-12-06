@@ -34,7 +34,7 @@ function init__cns_members_action2()
  *
  * @return array Triple: headings, CPFs, subscription type data
  */
-function member_get_spreadsheet_headings_extended()
+function member_get_spreadsheet_headings_extended() : array
 {
     // Read CPFs
     $cpfs = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_name', 'cf_order'], [], 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')));
@@ -77,7 +77,7 @@ function member_get_spreadsheet_headings_extended()
  *
  * @return array A map of heading information (human name to field name/encoding details)
  */
-function member_get_spreadsheet_headings()
+function member_get_spreadsheet_headings() : array
 {
     $headings = [
         'ID' => 'id',
@@ -118,7 +118,7 @@ function member_get_spreadsheet_headings()
  * @param  ?string $timezone Current timezone to select (null: server default)
  * @return Tempcode List of timezones
  */
-function create_selection_list_timezone_list($timezone = null)
+function create_selection_list_timezone_list(?string $timezone = null) : object
 {
     if ($timezone === null) {
         $timezone = get_site_timezone();
@@ -138,7 +138,7 @@ function create_selection_list_timezone_list($timezone = null)
  * @param  SHORT_TEXT $username The desired human name for the member profile
  * @return SHORT_TEXT A unique username
  */
-function get_username_from_human_name($username)
+function get_username_from_human_name(string $username) : string
 {
     $username = preg_replace('# \(\d+\)$#', '', $username);
     $_username = $username;
@@ -167,7 +167,7 @@ function get_username_from_human_name($username)
  * @param  ?ID_TEXT $language Auto-detected Language (null: unknown)
  * @return Tempcode The form
  */
-function cns_member_external_linker_ask($type, $username, $email_address = '', $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null)
+function cns_member_external_linker_ask(string $type, string $username, string $email_address = '', ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null) : object
 {
     require_lang('cns');
 
@@ -220,7 +220,7 @@ function cns_member_external_linker_ask($type, $username, $email_address = '', $
  * @param  URLPATH $photo_url The URL to the member's photo (blank: none)
  * @return MEMBER The member ID for the finished off profile
  */
-function cns_member_external_linker($type, $username, $password, $email_check = true, $email_address = '', $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null, $avatar_url = null, $photo_url = '')
+function cns_member_external_linker(string $type, string $username, string $password, bool $email_check = true, string $email_address = '', ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $avatar_url = null, string $photo_url = '') : int
 {
     // Read in data...
 
@@ -344,7 +344,7 @@ function cns_member_external_linker($type, $username, $password, $email_check = 
  * @param  ?MEMBER $member_id Member involved (null: new member)
  * @return array The CPF data
  */
-function cns_read_in_custom_fields($custom_fields, $member_id = null)
+function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null) : array
 {
     require_code('fields');
     require_code('cns_members_action');
@@ -406,7 +406,7 @@ function cns_read_in_custom_fields($custom_fields, $member_id = null)
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields($mini_mode = true, $special_type = '', $member_id = null, $username = '', $email_address = '', $primary_group = null, $groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = null, $timezone = null, $language = null, $theme = null, $preview_posts = 0, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $on_probation_until = null, $is_perm_banned = '0', $adjusted_config_options = null)
+function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', ?array $adjusted_config_options = null) : array
 {
     $fields = new Tempcode();
     $hidden = new Tempcode();
@@ -466,7 +466,7 @@ function cns_get_member_fields($mini_mode = true, $special_type = '', $member_id
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return array A pair: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $member_id = null, $username = '', $email_address = '', $primary_group = null, $groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null, $theme = null, $preview_posts = null, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $on_probation_until = null, $is_perm_banned = '0', $adjusted_config_options = null)
+function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', ?array $adjusted_config_options = null) : array
 {
     require_code('form_templates');
     require_code('cns_members_action');
@@ -800,7 +800,7 @@ function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $groups = null, $custom_fields = null, $adjusted_config_options = null)
+function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id = null, ?array $groups = null, ?array $custom_fields = null, ?array $adjusted_config_options = null) : array
 {
     require_code('cns_members_action');
 
@@ -947,7 +947,7 @@ function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $gr
  * @param  ?SHORT_TEXT $salt Password salt (null: don't change)
  * @param  ?TIME $join_time When the member joined (null: don't change)
  */
-function cns_edit_member($member_id, $username = null, $password = null, $email_address = null, $primary_group = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = null, $timezone = null, $language = null, $theme = null, $title = null, $photo_url = null, $avatar_url = null, $signature = null, $preview_posts = null, $reveal_age = null, $views_signatures = null, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = null, $sound_enabled = null, $allow_emails = null, $allow_emails_from_staff = null, $highlighted_name = null, $pt_allow = '*', $pt_rules_text = '', $validated = null, $on_probation_until = null, $is_perm_banned = null, $check_correctness = true, $password_compatibility_scheme = null, $salt = null, $join_time = null)
+function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $on_probation_until = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compatibility_scheme = null, ?string $salt = null, ?int $join_time = null)
 {
     require_code('type_sanitisation');
     require_code('cns_members_action');
@@ -1278,7 +1278,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
  *
  * @param  AUTO_LINK $member_id The ID of the member
  */
-function cns_delete_member($member_id)
+function cns_delete_member(int $member_id)
 {
     $info = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], ['id' => $member_id], '', 1);
     if (!array_key_exists(0, $info)) {
@@ -1364,7 +1364,7 @@ function cns_delete_member($member_id)
  * @param  ID_TEXT $reasoned_ban The reasoned ban value ('1' is just a regular ban, the norm)
  * @param  boolean $automatic Whether it is an automatic ban
  */
-function cns_ban_member($member_id, $reasoned_ban = '1', $automatic = false)
+function cns_ban_member(int $member_id, string $reasoned_ban = '1', bool $automatic = false)
 {
     if ($reasoned_ban == '0') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1400,7 +1400,7 @@ function cns_ban_member($member_id, $reasoned_ban = '1', $automatic = false)
  *
  * @param  AUTO_LINK $member_id The ID of the member
  */
-function cns_unban_member($member_id)
+function cns_unban_member(int $member_id)
 {
     if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == '0') {
         return;
@@ -1453,7 +1453,7 @@ function cns_unban_member($member_id)
  * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
  * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
  */
-function cns_edit_custom_field($id, $name, $description, $default, $public_view, $owner_view, $owner_set, $encrypted, $required, $show_in_posts, $show_in_post_previews, $order, $only_group, $type, $show_on_join_form, $options, $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, $autofill_type, $autofill_hint)
+function cns_edit_custom_field(int $id, string $name, string $description, string $default, int $public_view, int $owner_view, int $owner_set, int $encrypted, int $required, int $show_in_posts, int $show_in_post_previews, int $order, string $only_group, string $type, int $show_on_join_form, string $options, int $include_in_main_search, int $allow_template_search, string $icon, string $section, string $tempcode, string $autofill_type, string $autofill_hint)
 {
     if ($only_group == '-1') {
         $only_group = '';
@@ -1523,7 +1523,7 @@ function cns_edit_custom_field($id, $name, $description, $default, $public_view,
  *
  * @param  AUTO_LINK $id The ID of the Custom Profile Field
  */
-function cns_delete_custom_field($id)
+function cns_delete_custom_field(int $id)
 {
     $info = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['cf_name', 'cf_description'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $info)) {
@@ -1569,7 +1569,7 @@ function cns_delete_custom_field($id)
  * @param  boolean $defer Whether to defer the change, by returning a result change rather than doing it right away
  * @return ?array Mapping change (null: none / can't defer)
  */
-function cns_set_custom_field($member_id, $field_id, $value, $type = null, $defer = false)
+function cns_set_custom_field(int $member_id, int $field_id, $value, ?string $type = null, bool $defer = false) : ?array
 {
     if ($value === STRING_MAGIC_NULL) {
         return null;
@@ -1703,7 +1703,7 @@ function cns_set_custom_field($member_id, $field_id, $value, $type = null, $defe
  * @param  boolean $return_errors Whether to return errors instead of dying on them
  * @return ?Tempcode Error (null: none)
  */
-function cns_check_name_valid(&$username, $member_id = null, $password = null, $email_address = null, $dob = null, $return_errors = false)
+function cns_check_name_valid(?string &$username, ?int $member_id = null, ?string $password = null, ?string $email_address = null, ?int $dob = null, bool $return_errors = false) : ?object
 {
     /* This would be an internationalisation mistake
     $striped_username = $username;
@@ -1844,7 +1844,7 @@ function cns_check_name_valid(&$username, $member_id = null, $password = null, $
  * @param  SHORT_TEXT $new_title The new title
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_title($new_title, $member_id = null)
+function cns_member_choose_title(string $new_title, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1874,7 +1874,7 @@ function cns_member_choose_title($new_title, $member_id = null)
  * @param  LONG_TEXT $new_signature The new signature
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_signature($new_signature, $member_id = null)
+function cns_member_choose_signature(string $new_signature, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1914,7 +1914,7 @@ function cns_member_choose_signature($new_signature, $member_id = null)
  * @param  URLPATH $avatar_url The new avatar URL
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_avatar($avatar_url, $member_id = null)
+function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1993,7 +1993,7 @@ function cns_member_choose_avatar($avatar_url, $member_id = null)
  * @param  ID_TEXT $upload_name The identifier for the name of the posted upload
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_photo($param_name, $upload_name, $member_id = null)
+function cns_member_choose_photo(string $param_name, string $upload_name, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -2033,7 +2033,7 @@ function cns_member_choose_photo($param_name, $upload_name, $member_id = null)
  * @param  URLPATH $url URL to photo
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_photo_concrete($url, $member_id = null)
+function cns_member_choose_photo_concrete(string $url, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -2090,7 +2090,7 @@ function cns_member_choose_photo_concrete($url, $member_id = null)
  * @param  MEMBER $member_id The member ID
  * @param  ID_TEXT $username The new username that is being set for them
  */
-function update_member_username_caching($member_id, $username)
+function update_member_username_caching(int $member_id, string $username)
 {
     // Fix caching for usernames
     $to_fix = [
@@ -2112,7 +2112,7 @@ function update_member_username_caching($member_id, $username)
  *
  * @return array List of predefined templated fields, each being a map
  */
-function cns_predefined_custom_field_details()
+function cns_predefined_custom_field_details() : array
 {
     return [
         'sn_twitter' => [
@@ -2473,7 +2473,7 @@ function cns_predefined_custom_field_details()
  * @param  ID_TEXT $type The identifier of the predefined Custom Profile Field
  * @return AUTO_LINK The ID of the new Custom Profile Field
  */
-function cns_make_predefined_content_field($type)
+function cns_make_predefined_content_field(string $type) : int
 {
     require_lang('cns');
     require_lang('cns_special_cpf');
@@ -2521,7 +2521,7 @@ function cns_make_predefined_content_field($type)
  *
  * @param  boolean $leave_existing Whether to leave existing indexes alone (may be useful as deleting then recreating indexes can be very slow)
  */
-function rebuild_all_cpf_indices($leave_existing = false)
+function rebuild_all_cpf_indices(bool $leave_existing = false)
 {
     push_query_limiting(false);
 

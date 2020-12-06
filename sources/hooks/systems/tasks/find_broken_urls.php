@@ -30,7 +30,7 @@ class Hook_task_find_broken_urls
      * @param  boolean $show_passes Whether to show passes
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($urls, $show_passes)
+    public function run(array $urls, bool $show_passes) : ?array
     {
         require_lang('cleanup');
         require_code('broken_urls');

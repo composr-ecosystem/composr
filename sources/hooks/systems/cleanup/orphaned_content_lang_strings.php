@@ -28,7 +28,7 @@ class Hook_cleanup_orphaned_content_lang_strings
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!multi_lang_content()) {
             return null;
@@ -57,7 +57,7 @@ class Hook_cleanup_orphaned_content_lang_strings
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('tasks');
         return call_user_func_array__long_task(do_lang('ORPHANED_CONTENT_LANG_STRINGS'), null, 'find_orphaned_content_lang_strings');

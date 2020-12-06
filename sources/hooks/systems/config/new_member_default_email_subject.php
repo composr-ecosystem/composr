@@ -28,7 +28,7 @@ class Hook_config_new_member_default_email_subject
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'NEW_MEMBER_DEFAULT_EMAIL_SUBJECT',
@@ -52,7 +52,7 @@ class Hook_config_new_member_default_email_subject
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (get_forum_type() != 'cns') {
             return null;

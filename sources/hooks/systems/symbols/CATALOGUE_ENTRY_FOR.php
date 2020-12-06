@@ -29,7 +29,7 @@ class Hook_symbol_CATALOGUE_ENTRY_FOR
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         $value = '';
         if ((!empty($param[0])) && (!@cms_empty_safe($param[1])) && (addon_installed('catalogues'))) {

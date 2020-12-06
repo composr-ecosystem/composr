@@ -44,7 +44,7 @@
  * @param  boolean $interactive Whether to allow interactive sorting and filtering
  * @return Tempcode The results table
  */
-function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows, $header_row, $result_entries, $sortables = [], $sortable = null, $sort_order = null, $sort_name = 'sort', $message = null, $widths = [], $tpl_set = null, $max_page_links = 8, $guid = '1c8645bc2a3ff5bec2e003142185561f', $skip_sortables_form = false, $hash = null, $interactive = false)
+function results_table($text_id, int $start, string $start_name, int $max, string $max_name, int $max_rows, object $header_row, object $result_entries, array $sortables = [], ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?object $message = null, array $widths = [], ?string $tpl_set = null, int $max_page_links = 8, string $guid = '1c8645bc2a3ff5bec2e003142185561f', bool $skip_sortables_form = false, ?string $hash = null, bool $interactive = false) : object
 {
     require_code('templates_pagination');
 
@@ -107,7 +107,7 @@ function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows
  * @param  ?array $interactive_options Array of tuples matching the indices of $values, each pair being a boolean whether the value is searchable, boolean whether the value is filterable, and a sortable type supported by sortable_tables.js (or null) (null: no interactivity)
  * @return Tempcode The generated header row
  */
-function results_header_row($values, $sortables = [], $order_param = 'sort', $current_ordering = '', $guid = 'fbcaf8b021e3939bfce1dce9ff8ed63a', $interactive_options = null)
+function results_header_row(array $values, array $sortables = [], string $order_param = 'sort', string $current_ordering = '', string $guid = 'fbcaf8b021e3939bfce1dce9ff8ed63a', ?array $interactive_options = null) : object
 {
     $cells = new Tempcode();
     $cnt = count($values);
@@ -183,7 +183,7 @@ function results_header_row($values, $sortables = [], $order_param = 'sort', $cu
  * @param  string $guid GUID to pass to template
  * @return Tempcode The generated entry
  */
-function results_entry($values, $auto_escape, $tpl_set = null, $guid = '9e340dd14173c7320b57243d607718ab')
+function results_entry(array $values, bool $auto_escape, ?string $tpl_set = null, string $guid = '9e340dd14173c7320b57243d607718ab') : object
 {
     $i = 0;
     $cells = new Tempcode();
@@ -238,7 +238,7 @@ function results_entry($values, $auto_escape, $tpl_set = null, $guid = '9e340dd1
  * @param  ?ID_TEXT $hash URL hash component (null: none)
  * @return Tempcode The results sorter
  */
-function results_sorter($sortables, $sortable = null, $sort_order = null, $sort_name = 'sort', $hash = '')
+function results_sorter(array $sortables, ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?string $hash = '') : object
 {
     require_code('templates_pagination'); // Required because INCREMENTAL_ID_GENERATOR defined there
 

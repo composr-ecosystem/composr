@@ -168,7 +168,7 @@ function uninstall_cns()
  *
  * @param  ?float $upgrade_from The version to upgrade from (null: fresh install)
  */
-function install_cns($upgrade_from = null)
+function install_cns(?float $upgrade_from = null)
 {
     require_code('cns_members');
     require_code('cns_topics');

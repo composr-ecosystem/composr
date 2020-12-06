@@ -57,7 +57,7 @@ function init__sitemap_xml()
  * @param  SHORT_TEXT $page_link The page-link
  * @return boolean Whether anything happened
  */
-function purge_sitemap_xml_node_immediately($page_link)
+function purge_sitemap_xml_node_immediately(string $page_link) : bool
 {
     $ret = notify_sitemap_node_delete($page_link);
     if ($ret) {
@@ -73,7 +73,7 @@ function purge_sitemap_xml_node_immediately($page_link)
  * @param  SHORT_TEXT $url The URL
  * @return boolean Whether anything happened
  */
-function purge_sitemap_xml_node_immediately_by_url($url)
+function purge_sitemap_xml_node_immediately_by_url(string $url) : bool
 {
     $page_link = url_to_page_link($url);
     $ret = notify_sitemap_node_delete($page_link);
@@ -89,7 +89,7 @@ function purge_sitemap_xml_node_immediately_by_url($url)
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  * @param  boolean $force Force reconstruction regardless of update-dates (should not be needed)
  */
-function sitemap_xml_build($callback = null, $force = false)
+function sitemap_xml_build($callback = null, bool $force = false)
 {
     $last_time = intval(get_value('last_sitemap_time_calc_inner', null, true));
     $time = time();
@@ -123,7 +123,7 @@ function sitemap_xml_build($callback = null, $force = false)
  * @param  TIME $last_time Last sitemap generation time
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  */
-function rebuild_sitemap_set($set_number, $last_time, $callback = null)
+function rebuild_sitemap_set(int $set_number, int $last_time, $callback = null)
 {
     require_code('files');
 
@@ -272,7 +272,7 @@ function rebuild_sitemap_index()
  * @param  boolean $trigger_error Whether to throw a Composr error, on error
  * @return string HTTP result output
  */
-function ping_sitemap_xml($url, $trigger_error = false)
+function ping_sitemap_xml(string $url, bool $trigger_error = false) : string
 {
     // Ping search engines
     $out = '';
@@ -379,7 +379,7 @@ function build_sitemap_cache_table()
  *
  * @ignore
  */
-function _sitemap_cache_node__nonguest($node)
+function _sitemap_cache_node__nonguest(array $node)
 {
     _sitemap_cache_node($node, false);
 }
@@ -391,7 +391,7 @@ function _sitemap_cache_node__nonguest($node)
  *
  * @ignore
  */
-function _sitemap_cache_node__guest($node)
+function _sitemap_cache_node__guest(array $node)
 {
     _sitemap_cache_node($node, true);
 }
@@ -404,7 +404,7 @@ function _sitemap_cache_node__guest($node)
  *
  * @ignore
  */
-function _sitemap_cache_node($node, $guest_access)
+function _sitemap_cache_node(array $node, bool $guest_access)
 {
     $page_link = $node['page_link'];
     if ($page_link === null) {
@@ -424,7 +424,7 @@ function _sitemap_cache_node($node, $guest_access)
  *
  * @param  SHORT_TEXT $page_link The page-link
  */
-function canonicalise_sitemap_page_link(&$page_link)
+function canonicalise_sitemap_page_link(string &$page_link)
 {
     // We don't want to leave _SEARCH in there, as it's inconsistent with what the regular Sitemap code goes
     list($zone, $map) = page_link_decode($page_link);
@@ -447,7 +447,7 @@ function canonicalise_sitemap_page_link(&$page_link)
  * @set always hourly daily weekly monthly yearly never
  * @param  ?boolean $guest_access Whether guests may access this resource in terms of category permissions not zone/page permissions (if not set to true then it will not end up in an XML Sitemap, but we'll keep tabs of it for other possible uses) (null: unknown - and trigger a Sitemap tail call to find it)
  */
-function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null, $priority = null, $refreshfreq = null, $guest_access = null)
+function notify_sitemap_node_add(string $page_link, ?int $add_date = null, ?int $edit_date = null, ?float $priority = null, ?string $refreshfreq = null, ?bool $guest_access = null)
 {
     // Maybe we're still installing
     if (running_script('install') || !$GLOBALS['SITE_DB']->table_exists('sitemap_cache')) {
@@ -584,7 +584,7 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
  * @param  SHORT_TEXT $page_link The page-link
  * @param  ?boolean $guest_access Whether guests may access this resource in terms of category permissions not zone/page permissions (if not set to 1 then it will not end up in an XML Sitemap, but we'll keep tabs of it for other possible uses) (null: unknown)
  */
-function notify_sitemap_node_edit($page_link, $guest_access = null)
+function notify_sitemap_node_edit(string $page_link, ?bool $guest_access = null)
 {
     canonicalise_sitemap_page_link($page_link);
 
@@ -620,7 +620,7 @@ function notify_sitemap_node_edit($page_link, $guest_access = null)
  * @param  SHORT_TEXT $page_link The page-link
  * @return boolean Whether anything happened
  */
-function notify_sitemap_node_delete($page_link)
+function notify_sitemap_node_delete(string $page_link) : bool
 {
     canonicalise_sitemap_page_link($page_link);
 

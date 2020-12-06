@@ -55,7 +55,7 @@ function init__comcode()
  *
  * @param  boolean $setting New setting
  */
-function push_lax_comcode($setting)
+function push_lax_comcode(bool $setting)
 {
     global $LAX_COMCODE;
     array_push($LAX_COMCODE, $setting);
@@ -75,7 +75,7 @@ function pop_lax_comcode()
  *
  * @return boolean Last setting
  */
-function peek_lax_comcode()
+function peek_lax_comcode() : bool
 {
     global $LAX_COMCODE;
     return end($LAX_COMCODE);
@@ -136,7 +136,7 @@ function init_potential_js_naughty_array()
  * @param  string $in Raw text
  * @return string Escaped text
  */
-function comcode_escape($in)
+function comcode_escape(string $in) : string
 {
     return str_replace('{', '\\{', str_replace('[', '\\[', str_replace('"', '\\"', str_replace('\\', '\\\\', $in))));
 }
@@ -148,7 +148,7 @@ function comcode_escape($in)
  * @param  boolean $force Whether to force full conversion regardless of settings
  * @return LONG_TEXT The equivalent Comcode
  */
-function html_to_comcode($html, $force = true)
+function html_to_comcode(string $html, bool $force = true) : string
 {
     // As this is not semi-html, but will be converted as if it is, we need to fiddle any Comcode trigger characters into neutered entities
     $html = str_replace('[', '&#091;', $html);
@@ -168,7 +168,7 @@ function html_to_comcode($html, $force = true)
  * @param  string $text The text to add emoticons to (assumption: that this is XHTML)
  * @return string The XHTML with the image-substitution of emoticons
  */
-function apply_emoticons($text)
+function apply_emoticons(string $text) : string
 {
     if ($text == '') {
         return '';
@@ -194,7 +194,7 @@ function apply_emoticons($text)
  * @param  ?MEMBER $on_behalf_of_member The member we are running on behalf of, with respect to how attachments are handled; we may use this members attachments that are already within this post, and our new attachments will be handed to this member (null: member evaluating)
  * @return Tempcode The Tempcode generated
  */
-function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false, $pass_id = null, $db = null, $flags = 0, $highlight_bits = [], $on_behalf_of_member = null)
+function comcode_to_tempcode(string $comcode, ?int $source_member = null, bool $as_admin = false, ?string $pass_id = null, ?object $db = null, int $flags = 0, array $highlight_bits = [], ?int $on_behalf_of_member = null) : object
 {
     $matches = [];
     if (preg_match('#^\{\!([A-Z_]+)\}$#', $comcode, $matches) != 0) {
@@ -242,7 +242,7 @@ function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false,
  * @param  boolean $include_urls Whether to include URLs in the text version
  * @return string Purified plain-text
  */
-function strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $include_urls = false)
+function strip_comcode(string $in, bool $for_extract = false, array $tags_to_preserve = [], bool $include_urls = false) : string
 {
     $text = $in;
 

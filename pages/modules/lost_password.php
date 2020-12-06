@@ -28,7 +28,7 @@ class Module_lost_password
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -47,7 +47,7 @@ class Module_lost_password
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -84,7 +84,7 @@ class Module_lost_password
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         cns_require_all_forum_stuff();
 
@@ -114,7 +114,7 @@ class Module_lost_password
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -133,7 +133,7 @@ class Module_lost_password
      *
      * @return Tempcode The field inputter
      */
-    protected function input_identifying_field()
+    protected function input_identifying_field() : object
     {
         require_code('form_templates');
 
@@ -155,7 +155,7 @@ class Module_lost_password
      *
      * @return Tempcode The UI
      */
-    public function step1()
+    public function step1() : object
     {
         $password_reset_process = get_password_reset_process();
         $temporary_passwords = ($password_reset_process != 'emailed');
@@ -198,7 +198,7 @@ class Module_lost_password
      *
      * @return Tempcode The UI
      */
-    public function step2()
+    public function step2() : object
     {
         if (addon_installed('captcha')) {
             require_code('captcha');
@@ -245,7 +245,7 @@ class Module_lost_password
      *
      * @return Tempcode The UI
      */
-    public function step3()
+    public function step3() : object
     {
         // We need to disable static caching for 'ultra' mode to work (it is a GET request, so static cache may be enabled otherwise)
         require_code('static_cache');

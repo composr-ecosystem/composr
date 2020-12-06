@@ -28,7 +28,7 @@ class Hook_config_downloads_default_sort_order
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'DOWNLOADS_DEFAULT_SORT_ORDER',
@@ -51,7 +51,7 @@ class Hook_config_downloads_default_sort_order
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('downloads')) {
             return null;

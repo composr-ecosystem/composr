@@ -23,7 +23,7 @@
  *
  * @return integer The currently used download bandwidth (forever)
  */
-function get_download_bandwidth()
+function get_download_bandwidth() : int
 {
     $value = intval(get_value_newer_than('download_bandwidth', time() - 60 * 60 * 24));
 
@@ -58,7 +58,7 @@ function get_download_bandwidth()
  *
  * @return string The total size of all the currently available downloads
  */
-function get_download_archive_size()
+function get_download_archive_size() : string
 {
     $value = intval(get_value_newer_than('archive_size', time() - 60 * 60 * 24));
     if ($value == 0) {
@@ -78,7 +78,7 @@ function get_download_archive_size()
  *
  * @return integer The total number of downloads available
  */
-function get_num_archive_downloads()
+function get_num_archive_downloads() : int
 {
     $value = intval(get_value_newer_than('num_archive_downloads', time() - 60 * 60 * 24));
 
@@ -100,7 +100,7 @@ function get_num_archive_downloads()
  *
  * @return integer The total number of files downloaded since installation
  */
-function get_num_downloads_downloaded()
+function get_num_downloads_downloaded() : int
 {
     $value = intval(get_value_newer_than('num_downloads_downloaded', time() - 60 * 60 * 24));
 

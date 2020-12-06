@@ -23,7 +23,7 @@
  *
  * @return MEMBER Member ID
  */
-function get_active_support_user()
+function get_active_support_user() : int
 {
     $member_id = get_member();
 
@@ -46,7 +46,7 @@ function get_active_support_user()
  * @param  string $ticket_id The ticket ID to check
  * @return MEMBER The ticket owner
  */
-function check_ticket_access($ticket_id)
+function check_ticket_access(string $ticket_id) : int
 {
     // Never for a guest
     if (is_guest()) {
@@ -84,7 +84,7 @@ function check_ticket_access($ticket_id)
  * @param  ID_TEXT $ticket_id The support ticket ID
  * @return URLPATH The ticket URL
  */
-function ticket_url($ticket_id)
+function ticket_url(string $ticket_id) : string
 {
     $_ticket_url = build_url(['page' => 'tickets', 'type' => 'ticket', 'id' => $ticket_id], get_module_zone('tickets'), [], false, true, true);
     $ticket_url = $_ticket_url->evaluate();
@@ -99,7 +99,7 @@ function ticket_url($ticket_id)
  * @param  boolean $silent_error_handling Whether to skip showing errors, returning null instead
  * @return ?AUTO_LINK Forum ID (null: not found)
  */
-function get_ticket_forum_id($ticket_type_id = null, $create = false, $silent_error_handling = false)
+function get_ticket_forum_id(?int $ticket_type_id = null, bool $create = false, bool $silent_error_handling = false) : ?int
 {
     static $fid_cache = [];
     if (isset($fid_cache[$ticket_type_id])) {
@@ -151,7 +151,7 @@ function get_ticket_forum_id($ticket_type_id = null, $create = false, $silent_er
  * @param  ?AUTO_LINK $forum_id The forum ID (null: private topics)
  * @return boolean Whether the given forum is a ticket forum
  */
-function is_ticket_forum($forum_id)
+function is_ticket_forum(?int $forum_id) : bool
 {
     static $cache = [];
     if (isset($cache[$forum_id])) {
@@ -194,7 +194,7 @@ function is_ticket_forum($forum_id)
  * @param  boolean $silent_error_handling Whether to skip showing errors, returning null instead
  * @return array Array of tickets, empty on failure
  */
-function get_tickets($filters = [], $include_first_posts = false, $silent_error_handling = false)
+function get_tickets(array $filters = [], bool $include_first_posts = false, bool $silent_error_handling = false) : array
 {
     $ticket_type_id = array_key_exists('ticket_type_id', $filters) ? $filters['ticket_type_id'] : null;
     if (($ticket_type_id !== null) && (!has_category_access(get_member(), 'tickets', strval($ticket_type_id)))) {

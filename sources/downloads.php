@@ -25,7 +25,7 @@
  * @param  AUTO_LINK $category_id The category
  * @return boolean Whether they can
  */
-function may_enter_download_category($member_id, $category_id)
+function may_enter_download_category(int $member_id, int $category_id) : bool
 {
     if (get_option('download_cat_access_late') == '1') {
         return true;
@@ -40,7 +40,7 @@ function may_enter_download_category($member_id, $category_id)
  * @param  AUTO_LINK $category_id The category
  * @return ?Tempcode The purchase URL (null: cannot be purchased)
  */
-function get_download_category_purchase_url($category_id)
+function get_download_category_purchase_url(int $category_id) : ?object
 {
     if (addon_installed('ecommerce')) {
         $product_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_prods_permissions', 'id', ['p_module' => 'downloads', 'p_category' => strval($category_id), 'p_enabled' => 1]);
@@ -91,7 +91,7 @@ function download_licence_script()
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for this download, linking to the full download page
  */
-function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zone = null, $text_summary = null, $give_context = true, $root = null, $guid = '')
+function render_download_box(array $row, bool $pic = true, bool $include_breadcrumbs = true, ?string $zone = null, ?object $text_summary = null, bool $give_context = true, ?int $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -224,7 +224,7 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_download_category_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+function render_download_category_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, bool $attach_to_url_filter = false, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -293,7 +293,7 @@ function render_download_category_box($row, $zone = '_SEARCH', $give_context = t
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
  * @return Tempcode The list of entries
  */
-function create_selection_list_downloads_tree($it = null, $submitter = null, $shun = null, $use_compound_list = false, $editable_filter = false)
+function create_selection_list_downloads_tree(?int $it = null, ?int $submitter = null, ?int $shun = null, bool $use_compound_list = false, bool $editable_filter = false) : object
 {
     $tree = get_downloads_tree($submitter, null, null, null, $shun, null, $use_compound_list, $editable_filter);
     if ($use_compound_list) {
@@ -330,7 +330,7 @@ function create_selection_list_downloads_tree($it = null, $submitter = null, $sh
  * @param  boolean $tar_filter Whether to only show entries that are TAR files (addons)
  * @return array A list of maps for all categories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (to the category, including the categories own title), and more. Or if $use_compound_list, the tree structure built with pairs containing the compound list in addition to the child branches
  */
-function get_downloads_tree($submitter = null, $category_id = null, $breadcrumbs = null, $title = null, $shun = null, $levels = null, $use_compound_list = false, $editable_filter = false, $tar_filter = false)
+function get_downloads_tree(?int $submitter = null, ?int $category_id = null, ?string $breadcrumbs = null, ?string $title = null, ?int $shun = null, ?int $levels = null, bool $use_compound_list = false, bool $editable_filter = false, bool $tar_filter = false) : array
 {
     if ($category_id === null) {
         $category_id = db_get_first_id();
@@ -424,7 +424,7 @@ function get_downloads_tree($submitter = null, $category_id = null, $breadcrumbs
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode The list of categories
  */
-function create_selection_list_download_category_tree($it = null, $use_compound_list = false, $addable_filter = false, $updated_since = null)
+function create_selection_list_download_category_tree(?int $it = null, bool $use_compound_list = false, bool $addable_filter = false, ?int $updated_since = null) : object
 {
     $tree = get_download_category_tree(null, null, null, $updated_since !== null, $use_compound_list, null, $addable_filter);
     if ($use_compound_list) {
@@ -465,7 +465,7 @@ function create_selection_list_download_category_tree($it = null, $use_compound_
  * @param  boolean $addable_filter Whether to only show for what may be added to by the current member
  * @return array A list of maps for all subcategories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title). There is also an additional 'downloadcount' entry if stats were requested
  */
-function get_download_category_tree($category_id = null, $breadcrumbs = null, $category_info = null, $do_stats = false, $use_compound_list = false, $levels = null, $addable_filter = false)
+function get_download_category_tree(?int $category_id = null, ?string $breadcrumbs = null, ?array $category_info = null, bool $do_stats = false, bool $use_compound_list = false, ?int $levels = null, bool $addable_filter = false) : array
 {
     if (!$use_compound_list) {
         if ($levels == -1) {
@@ -543,7 +543,7 @@ function get_download_category_tree($category_id = null, $breadcrumbs = null, $c
  * @param  boolean $allow_na Whether to allow an N/A selection
  * @return Tempcode The list of categories
  */
-function create_selection_list_download_licences($it = null, $allow_na = false)
+function create_selection_list_download_licences(?int $it = null, bool $allow_na = false) : object
 {
     $list = new Tempcode();
     if ($allow_na) {
@@ -566,7 +566,7 @@ function create_selection_list_download_licences($it = null, $allow_na = false)
  * @param  boolean $attach_to_url_filter Whether to copy through any filter parameters in the URL, under the basis that they are associated with what this box is browsing
  * @return array The breadcrumb segments
  */
-function download_breadcrumbs($category_id, $root = null, $include_link = false, $zone = null, $attach_to_url_filter = false)
+function download_breadcrumbs(int $category_id, ?int $root = null, bool $include_link = false, ?string $zone = null, bool $attach_to_url_filter = false) : array
 {
     if ($root === null) {
         $root = db_get_first_id();
@@ -621,7 +621,7 @@ function download_breadcrumbs($category_id, $root = null, $include_link = false,
  * @param  AUTO_LINK $category_id The ID of the category for which count details are collected
  * @return array The number of downloads is returned in $output['num_downloads'], and the number of subcategories is returned in $output['num_children'], and the (possibly recursive) number of downloads is returned in $output['num_downloads_children']
  */
-function count_download_category_children($category_id)
+function count_download_category_children(int $category_id) : array
 {
     static $total_categories = null;
     if ($total_categories === null) {
@@ -659,7 +659,7 @@ function count_download_category_children($category_id)
  * @param  boolean $use_gateway Whether to use the gateway script
  * @return Tempcode The URL
  */
-function generate_dload_url($id, $use_gateway)
+function generate_dload_url(int $id, bool $use_gateway) : object
 {
     if (get_option('immediate_downloads') == '1') {
         $use_gateway = false;

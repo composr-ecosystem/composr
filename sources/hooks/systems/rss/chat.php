@@ -34,7 +34,7 @@ class Hook_rss_chat
      * @param  integer $max The maximum number of entries to return, ordering by date
      * @return ?array A pair: The main syndication section, and a title (null: error)
      */
-    public function run($_filters, $cutoff, $prefix, $date_string, $max)
+    public function run(string $_filters, int $cutoff, string $prefix, string $date_string, int $max) : ?array
     {
         if (!addon_installed('chat')) {
             return null;

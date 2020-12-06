@@ -28,7 +28,7 @@ class Hook_actionlog_newsletter extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (!addon_installed('newsletter')) {
             return [];

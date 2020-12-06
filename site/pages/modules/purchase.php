@@ -55,7 +55,7 @@ class Module_purchase
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -110,7 +110,7 @@ class Module_purchase
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             add_privilege('ECOMMERCE', 'access_ecommerce_in_test_mode', false);
@@ -412,7 +412,7 @@ class Module_purchase
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -430,7 +430,7 @@ class Module_purchase
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('ecommerce', $error_msg)) {
@@ -507,7 +507,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         @ignore_user_abort(true); // Must keep going till completion
 
@@ -576,7 +576,7 @@ class Module_purchase
      * @param  string $icon CSS icon label to use
      * @return Tempcode Wrapped
      */
-    protected function _wrap($content, $title, $url, $get = false, $submit_name = null, $icon = 'buttons/proceed')
+    protected function _wrap(object $content, object $title, $url, bool $get = false, ?object $submit_name = null, string $icon = 'buttons/proceed') : object
     {
         if ($url === null) {
             $url = '';
@@ -604,7 +604,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function choose()
+    public function choose() : object
     {
         $filter = get_param_string('filter', '');
         $type_filter = get_param_integer('type_filter', null);
@@ -838,7 +838,7 @@ class Module_purchase
      * @param  boolean $must_support_points Filter out products that don't support points
      * @return boolean Is filtered
      */
-    protected function _is_filtered_out($product_object, $type_code, $details, $filter, $type_filter, $must_support_money, $must_support_points)
+    protected function _is_filtered_out(object $product_object, string $type_code, array $details, string $filter, int $type_filter, bool $must_support_money, bool $must_support_points) : bool
     {
         // Explicit filtering...
 
@@ -887,7 +887,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function message()
+    public function message() : object
     {
         $type_code = get_param_string('type_code');
 
@@ -932,7 +932,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function terms()
+    public function terms() : object
     {
         $type_code = get_param_string('type_code');
 
@@ -973,7 +973,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function details()
+    public function details() : object
     {
         if (get_param_integer('accepted', 0) == 1) {
             attach_message(do_lang_tempcode('LICENCE_WAS_ACCEPTED'), 'inform');
@@ -1033,7 +1033,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function pay()
+    public function pay() : object
     {
         $type_code = get_param_string('type_code');
 
@@ -1315,7 +1315,7 @@ class Module_purchase
      *
      * @return Tempcode The result of execution
      */
-    public function finish()
+    public function finish() : object
     {
         $payment_gateway = get_option('payment_gateway');
         require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
@@ -1456,7 +1456,7 @@ class Module_purchase
      * @param  ID_TEXT $type_code The product code
      * @return ?Tempcode Error screen (null: no error)
      */
-    protected function _check_availability($type_code)
+    protected function _check_availability(string $type_code) : ?object
     {
         list(, $product_object) = find_product_details($type_code);
         if (!method_exists($product_object, 'is_available')) {
@@ -1518,7 +1518,7 @@ class Module_purchase
      * @param  ID_TEXT $type_code The product code
      * @return ?Tempcode Error screen (null: no error)
      */
-    protected function _check_can_afford($type_code)
+    protected function _check_can_afford(string $type_code) : ?object
     {
         list($details) = find_product_details($type_code);
         list($discounted_price, $discounted_tax_code, $points_for_discount) = get_discounted_price($details, true);

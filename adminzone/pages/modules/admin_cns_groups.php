@@ -50,7 +50,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -77,7 +77,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -100,7 +100,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         cns_require_all_forum_stuff();
 
@@ -132,7 +132,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         require_code('fields');
@@ -189,7 +189,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  BINARY $is_private_club Whether this usergroup is a private club. Private clubs may be managed in the CMS zone, and do not have any special permissions - except over their own associated forum.
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $name = '', $is_default = 0, $is_super_admin = 0, $is_super_moderator = 0, $group_leader = '', $title = '', $rank_image = '', $promotion_target = null, $promotion_threshold = null, $flood_control_submit_secs = null, $flood_control_access_secs = null, $gift_points_base = null, $gift_points_per_day = 1, $max_daily_upload_mb = null, $max_attachments_per_post = null, $max_avatar_width = null, $max_avatar_height = null, $max_post_length_comcode = null, $max_sig_length_comcode = null, $enquire_on_new_ips = 0, $is_presented_at_install = 0, $group_is_hidden = 0, $order = null, $rank_image_pri_only = 1, $open_membership = 0, $is_private_club = 0)
+    public function get_form_fields(?int $id = null, string $name = '', int $is_default = 0, int $is_super_admin = 0, int $is_super_moderator = 0, string $group_leader = '', string $title = '', string $rank_image = '', ?int $promotion_target = null, ?int $promotion_threshold = null, ?int $flood_control_submit_secs = null, ?int $flood_control_access_secs = null, ?int $gift_points_base = null, ?int $gift_points_per_day = 1, ?int $max_daily_upload_mb = null, ?int $max_attachments_per_post = null, ?int $max_avatar_width = null, ?int $max_avatar_height = null, ?int $max_post_length_comcode = null, ?int $max_sig_length_comcode = null, int $enquire_on_new_ips = 0, int $is_presented_at_install = 0, int $group_is_hidden = 0, ?int $order = null, int $rank_image_pri_only = 1, int $open_membership = 0, int $is_private_club = 0) : array
     {
         if (is_on_multi_site_network()) {
             attach_message(do_lang_tempcode('EDITING_ON_WRONG_MSN'), 'warn');
@@ -347,7 +347,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -476,7 +476,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $fields = new Tempcode();
         $order = (get_param_integer('keep_id_order', 0) == 0) ? 'g_promotion_threshold,id' : 'id';
@@ -503,7 +503,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         return !in_array(intval($id), get_all_preserved_groups(true));
     }
@@ -514,7 +514,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -570,7 +570,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      *
      * @param  GROUP $g The usergroup to copy members from
      */
-    public function copy_members_into($g)
+    public function copy_members_into(int $g)
     {
         cms_disable_time_limit();
 
@@ -595,7 +595,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      *
      * @return array A triplet of integers: (group leader, promotion target, promotion threshold)
      */
-    public function read_in_data()
+    public function read_in_data() : array
     {
         $_group_leader = post_param_string('group_leader', '');
         if ($_group_leader != '') {
@@ -621,7 +621,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('themes2');
 
@@ -675,7 +675,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         require_code('themes2');
 
@@ -764,7 +764,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         cns_delete_group(intval($id), post_param_integer('new_usergroup'));
     }

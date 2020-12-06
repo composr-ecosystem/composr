@@ -30,7 +30,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  ?MEMBER $member_id The member ID to check with (null: current member)
      * @return ~?array Map of search hook details (null: hook is disabled) (false: access denied)
      */
-    public function info($check_permissions = true, $member_id = null)
+    public function info(bool $check_permissions = true, ?int $member_id = null)
     {
         if ($member_id === null) {
             $member_id = get_member();
@@ -65,7 +65,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
      * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
      */
-    public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    public function index_for_search(?int $since = null, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null)
     {
         $engine = new Composr_fast_custom_index();
 
@@ -138,7 +138,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  string $selected The default selected item
      * @return Tempcode Tree structure
      */
-    public function get_tree($selected)
+    public function get_tree(string $selected) : object
     {
         require_code('zones3');
         $tree = create_selection_list_zones($selected);
@@ -150,7 +150,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      *
      * @return ?array A list of maps specifying extra fields (null: no tree)
      */
-    public function get_fields()
+    public function get_fields() : ?array
     {
         return $this->_get_fields('_comcode_page');
     }
@@ -173,7 +173,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
      * @return array List of maps (template, orderer)
      */
-    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
+    public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array
     {
         $remapped_orderer = '';
         switch ($sort) {
@@ -398,7 +398,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  array $row The data row stored when we retrieved the result
      * @return Tempcode The output
      */
-    public function render($row)
+    public function render(array $row) : object
     {
         list($zone, $page, $limit_to) = $row['extra'];
         return $this->decide_template($zone, $page, $limit_to);
@@ -412,7 +412,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      * @param  string $limit_to What search hooks the search is being limited to (blank: not limited)
      * @return Tempcode The Tempcode showing the Comcode page
      */
-    public function decide_template($zone, $page, $limit_to)
+    public function decide_template(string $zone, string $page, string $limit_to) : object
     {
         global $SEARCH_QUERY_TERMS;
 

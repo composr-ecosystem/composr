@@ -26,7 +26,7 @@
  * @param  MEMBER $member_id The ID of the member
  * @return ID_TEXT Special type
  */
-function get_member_special_type($member_id)
+function get_member_special_type(int $member_id) : string
 {
     $special_type = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
     if ($special_type != '') {
@@ -48,7 +48,7 @@ function get_member_special_type($member_id)
  * @param  ID_TEXT $special_type The special type of the user (built-in types are: <blank>, ldap, httpauth, <name of import source>)
  * @return boolean Whether the field is editable
  */
-function cns_field_editable($field_name, $special_type)
+function cns_field_editable(string $field_name, string $special_type) : bool
 {
     switch ($field_name) {
         case 'username':

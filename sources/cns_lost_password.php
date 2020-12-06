@@ -23,7 +23,7 @@
  *
  * @return ID_TEXT Password reset process codename
  */
-function get_password_reset_process()
+function get_password_reset_process() : string
 {
     $password_reset_process = get_option('password_reset_process');
     if ($password_reset_process == 'ultra' && get_option('smtp_sockets_host') != '') {
@@ -39,7 +39,7 @@ function get_password_reset_process()
  * @param  EMAIL $email E-mail address to set for (may be blank if other is not)
  * @return array A tuple: e-mail address (may be blank), member ID (may be null if no member existed but we're not revealing such)
  */
-function lost_password_emailer_step($username, $email)
+function lost_password_emailer_step(string $username, string $email) : array
 {
     require_lang('cns_lost_password');
 
@@ -124,7 +124,7 @@ function lost_password_emailer_step($username, $email)
  * @param  MEMBER $member_id Member
  * @return ?Tempcode Error message (null: none)
  */
-function has_lost_password_error($member_id)
+function has_lost_password_error(int $member_id) : ?object
 {
     $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     if ($email == '') {
@@ -155,7 +155,7 @@ function has_lost_password_error($member_id)
  * @param  MEMBER $member_id Member ID
  * @return ID_TEXT Reset code
  */
-function generate_and_save_password_reset_code($password_reset_process, $member_id)
+function generate_and_save_password_reset_code(string $password_reset_process, int $member_id) : string
 {
     require_code('crypt');
     $code = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code'); // Re-use existing code if possible, so that overlapping reset e-mails don't cause chaos
@@ -184,7 +184,7 @@ function generate_and_save_password_reset_code($password_reset_process, $member_
  * @param  MEMBER $member_id Member ID
  * @param  ID_TEXT $code Reset code
  */
-function send_lost_password_reset_code($password_reset_process, $member_id, $code)
+function send_lost_password_reset_code(string $password_reset_process, int $member_id, string $code)
 {
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
     $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
@@ -243,7 +243,7 @@ function send_lost_password_reset_code($password_reset_process, $member_id, $cod
  * @param  EMAIL $email E-mail address
  * @return Tempcode Message
  */
-function lost_password_mailed_message($password_reset_process, $email)
+function lost_password_mailed_message(string $password_reset_process, string $email) : object
 {
     $email_masked = mask_email($email);
     if ($password_reset_process == 'ultra') {
@@ -266,7 +266,7 @@ function lost_password_mailed_message($password_reset_process, $email)
  * @param  EMAIL $email E-mail address (blank: none)
  * @return string Masked address
  */
-function mask_email($email)
+function mask_email(string $email) : string
 {
     if ($email == '') {
         $email = '?...@...?';

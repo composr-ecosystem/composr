@@ -28,7 +28,7 @@ class Hook_ecommerce_banners
      *
      * @return ?array A map of product categorisation details (null: disabled)
      */
-    public function get_product_category()
+    public function get_product_category() : ?array
     {
         if (!addon_installed('banners')) {
             return null;
@@ -50,7 +50,7 @@ class Hook_ecommerce_banners
      * @param  ?ID_TEXT $search Product being searched for (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products($search = null)
+    public function get_products(?string $search = null) : array
     {
         require_lang('banners');
 
@@ -165,7 +165,7 @@ class Hook_ecommerce_banners
      * @param  boolean $must_be_listed Whether the product must be available for public listing
      * @return integer The availability code (a ECOMMERCE_PRODUCT_* constant)
      */
-    public function is_available($type_code, $member_id, $req_quantity = 1, $must_be_listed = false)
+    public function is_available(string $type_code, int $member_id, int $req_quantity = 1, bool $must_be_listed = false) : int
     {
         if (!addon_installed('banners')) {
             return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
@@ -223,7 +223,7 @@ class Hook_ecommerce_banners
      * @param  ID_TEXT $type_code The product in question
      * @return ?Tempcode The message (null: no message)
      */
-    public function get_message($type_code)
+    public function get_message(string $type_code) : ?object
     {
         switch (preg_replace('#_\d+$#', '', $type_code)) {
             case 'BANNER_ACTIVATE':
@@ -246,7 +246,7 @@ class Hook_ecommerce_banners
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
      */
-    public function get_needed_fields($type_code, $from_admin = false)
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
     {
         require_lang('banners');
 
@@ -278,7 +278,7 @@ class Hook_ecommerce_banners
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null for no specific confirmation)
      */
-    public function handle_needed_fields($type_code, $from_admin = false)
+    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         require_lang('banners');
 
@@ -324,7 +324,7 @@ class Hook_ecommerce_banners
      * @param  array $details Details of the product, with added keys: TXN_ID, STATUS, ORDER_STATUS
      * @return boolean Whether the product was automatically dispatched (if not then hopefully this function sent a staff notification)
      */
-    public function actualiser($type_code, $purchase_id, $details)
+    public function actualiser(string $type_code, string $purchase_id, array $details) : bool
     {
         if ($details['STATUS'] != 'Completed') {
             return false;
@@ -416,7 +416,7 @@ class Hook_ecommerce_banners
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return ?MEMBER The member ID (null: none)
      */
-    public function member_for($type_code, $purchase_id)
+    public function member_for(string $type_code, string $purchase_id) : ?int
     {
         switch (preg_replace('#_\d+$#', '', $type_code)) {
             case 'BANNER_ACTIVATE':

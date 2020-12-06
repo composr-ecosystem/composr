@@ -25,7 +25,7 @@
  * @param  MEMBER $blocked The member being blocked
  * @param  ?TIME $time The logged time of the block (null: now)
  */
-function blocking_add($blocker, $blocked, $time = null)
+function blocking_add(int $blocker, int $blocked, ?int $time = null)
 {
     if ($time === null) {
         $time = time();
@@ -51,7 +51,7 @@ function blocking_add($blocker, $blocked, $time = null)
  * @param  MEMBER $blocker The member unblocking
  * @param  MEMBER $blocked The member being unblocked
  */
-function blocking_remove($blocker, $blocked)
+function blocking_remove(int $blocker, int $blocked)
 {
     $GLOBALS['SITE_DB']->query_delete('chat_blocking', [
         'member_blocker' => $blocker,
@@ -68,7 +68,7 @@ function blocking_remove($blocker, $blocked)
  * @param  MEMBER $liked The member being befriended
  * @param  ?TIME $time The logged time of the friendship (null: now)
  */
-function friend_add($likes, $liked, $time = null)
+function friend_add(int $likes, int $liked, ?int $time = null)
 {
     if ($time === null) {
         $time = time();
@@ -116,7 +116,7 @@ function friend_add($likes, $liked, $time = null)
  * @param  MEMBER $likes The member befriending
  * @param  MEMBER $liked The member being dumped
  */
-function friend_remove($likes, $liked)
+function friend_remove(int $likes, int $liked)
 {
     $GLOBALS['SITE_DB']->query_delete('chat_friends', [
         'member_likes' => $likes,
@@ -142,7 +142,7 @@ function friend_remove($likes, $liked)
  * @param  LONG_TEXT $disallow2_groups The comma-separated list of usergroups that may NOT access it (blank: no restriction)
  * @return array A pair: The input fields, Hidden fields
  */
-function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = '', $welcome = '', $username = '', $allow2 = '', $allow2_groups = '', $disallow2 = '', $disallow2_groups = '')
+function get_chatroom_fields(?int $id = null, bool $is_made_by_me = false, string $room_name = '', string $welcome = '', string $username = '', string $allow2 = '', string $allow2_groups = '', string $disallow2 = '', string $disallow2_groups = '') : array
 {
     require_code('form_templates');
 
@@ -241,7 +241,7 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
  *
  * @return array A tuple of permission fields
  */
-function read_in_chat_perm_fields()
+function read_in_chat_perm_fields() : array
 {
     $allow2 = '';
     $_x = post_param_string('allow_list_0', '');
@@ -317,7 +317,7 @@ function read_in_chat_perm_fields()
  * @param  BINARY $is_im Whether it is an IM room
  * @return AUTO_LINK The chatroom ID
  */
-function add_chatroom($welcome, $room_name, $room_owner, $allow2, $allow2_groups, $disallow2, $disallow2_groups, $room_language, $is_im = 0)
+function add_chatroom(string $welcome, string $room_name, int $room_owner, string $allow2, string $allow2_groups, string $disallow2, string $disallow2_groups, string $room_language, int $is_im = 0) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_CHATROOM', null, $room_name);
@@ -367,7 +367,7 @@ function add_chatroom($welcome, $room_name, $room_owner, $allow2, $allow2_groups
  * @param  LONG_TEXT $disallow2_groups The comma-separated list of usergroups that may NOT access it (blank: no restriction)
  * @param  LANGUAGE_NAME $room_language The room language
  */
-function edit_chatroom($id, $welcome, $room_name, $room_owner, $allow2, $allow2_groups, $disallow2, $disallow2_groups, $room_language)
+function edit_chatroom(int $id, string $welcome, string $room_name, int $room_owner, string $allow2, string $allow2_groups, string $disallow2, string $disallow2_groups, string $room_language)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['c_welcome', 'room_name', 'is_im'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -409,7 +409,7 @@ function edit_chatroom($id, $welcome, $room_name, $room_owner, $allow2, $allow2_
  *
  * @param  AUTO_LINK $id The chatroom ID
  */
-function delete_chatroom($id)
+function delete_chatroom(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['c_welcome', 'room_name', 'is_im'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -453,7 +453,7 @@ function delete_chatroom($id)
  *
  * @param  array $where Where query to specify what to delete
  */
-function delete_chat_messages($where)
+function delete_chat_messages(array $where)
 {
     $old_limit = cms_disable_time_limit();
     do {
@@ -497,7 +497,7 @@ function delete_all_chatrooms()
  * @param  MEMBER $member_id The member to ban
  * @param  AUTO_LINK $id The chatroom ID
  */
-function chatroom_ban_to($member_id, $id)
+function chatroom_ban_to(int $member_id, int $id)
 {
     log_it('CHAT_BAN', strval($id), strval($member_id));
 
@@ -516,7 +516,7 @@ function chatroom_ban_to($member_id, $id)
  * @param  MEMBER $member_id The member to unban
  * @param  AUTO_LINK $id The chatroom ID
  */
-function chatroom_unban_to($member_id, $id)
+function chatroom_unban_to(int $member_id, int $id)
 {
     log_it('CHAT_UNBAN', strval($id), strval($member_id));
 
@@ -538,7 +538,7 @@ function chatroom_unban_to($member_id, $id)
  *
  * @param  AUTO_LINK $id The chatroom ID
  */
-function delete_chatroom_messages($id)
+function delete_chatroom_messages(int $id)
 {
     delete_chat_messages(['room_id' => $id]);
 

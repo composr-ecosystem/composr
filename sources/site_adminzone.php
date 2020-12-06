@@ -48,7 +48,7 @@ function adminzone_common_pages_code()
  *
  * @param  ID_TEXT $codename The page being loaded
  */
-function adminzone_special_cases($codename)
+function adminzone_special_cases(string $codename)
 {
     adminzone_common_pages_code();
 
@@ -69,7 +69,7 @@ function adminzone_special_cases($codename)
  *
  * @return array Extra breadcrumbs
  */
-function adminzone_extended_breadcrumbs()
+function adminzone_extended_breadcrumbs() : array
 {
     global $BREADCRUMB_SET_PARENTS, $SMART_CACHE;
 

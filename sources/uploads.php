@@ -61,7 +61,7 @@ function reset_images_cleanup_pipeline_settings()
  * @param  ?integer $maximum_dimension The size of the bounding box (null: none)
  * @param  ?array $watermarks Watermark corners (top-left, top-right, bottom-left, bottom-right) (null: none)
  */
-function set_images_cleanup_pipeline_settings($recompress_mode = 0, $maximum_dimension = null, $watermarks = null)
+function set_images_cleanup_pipeline_settings(int $recompress_mode = 0, ?int $maximum_dimension = null, ?array $watermarks = null)
 {
     global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS;
     $ICPS__RECOMPRESS_MODE = $recompress_mode;
@@ -86,7 +86,7 @@ function set_images_cleanup_pipeline_settings($recompress_mode = 0, $maximum_dim
  * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (a OBFUSCATE_* constant)
  * @return ?URLPATH The URL (either to an independent upload, or the theme image, or a filedump URL) (null: leave alone, when doing an edit operation)
  */
-function post_param_multi_source_upload($name, $upload_to, $required = true, $is_edit = false, &$filename = null, &$thumb_url = null, $upload_type = 15, $copy_to_server = false, $obfuscate = 0)
+function post_param_multi_source_upload(string $name, ?string $upload_to, bool $required = true, bool $is_edit = false, ?string &$filename = null, ?string &$thumb_url = null, int $upload_type = 15, bool $copy_to_server = false, int $obfuscate = 0) : ?string
 {
     $thumb_specify_name = $name . '__thumb__url';
     $test = post_param_string($thumb_specify_name, '');
@@ -175,7 +175,7 @@ function post_param_multi_source_upload($name, $upload_to, $required = true, $is
  * @param  boolean $fake_prepopulation Simulate population of the $_FILES array
  * @return boolean Whether an plupload upload has just happened
  */
-function is_plupload($fake_prepopulation = false)
+function is_plupload(bool $fake_prepopulation = false) : bool
 {
     static $done_fake_prepopulation = false;
 
@@ -269,7 +269,7 @@ function is_plupload($fake_prepopulation = false)
  * @param  ?string $unsessioned_filename The unsessioned filename (null: not set yet)
  * @return PATH Upload path
  */
-function get_temporary_upload_path($attach_name, $prepend_session_id = false, &$unsessioned_filename = null)
+function get_temporary_upload_path(string $attach_name, bool $prepend_session_id = false, ?string &$unsessioned_filename = null) : string
 {
     require_code('files2');
 
@@ -320,7 +320,7 @@ function get_temporary_upload_path($attach_name, $prepend_session_id = false, &$
  * @param  ?integer $max_size Maximum file size in bytes (null: default from get_max_file_size function)
  * @return ?Tempcode Error message (null: none;
  */
-function get_upload_error_message($file_upload, $should_get_something = true, $max_size = null)
+function get_upload_error_message(array $file_upload, bool $should_get_something = true, ?int $max_size = null) : ?object
 {
     if (($file_upload['error'] != 4)/*no upload attempted*/ || ($should_get_something)) {
         if ($file_upload['error'] == 1) {
@@ -370,7 +370,7 @@ function get_upload_error_message($file_upload, $should_get_something = true, $m
  * @param  ?string $filename Filename to use (null: choose one)
  * @return array An array of 4 URL bits (URL, thumb URL, URL original filename, thumb original filename)
  */
-function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $enforce_type = 15, $make_thumbnail = false, $thumb_specify_name = '', $thumb_attach_name = '', $copy_to_server = false, $accept_errors = false, $should_get_something = false, $only_make_smaller = false, $member_id = null, $upload_folder_full = null, $thumb_folder_full = null, $filename = null)
+function get_url(string $specify_name, string $attach_name, string $upload_folder, int $obfuscate = 0, int $enforce_type = 15, bool $make_thumbnail = false, string $thumb_specify_name = '', string $thumb_attach_name = '', bool $copy_to_server = false, bool $accept_errors = false, bool $should_get_something = false, bool $only_make_smaller = false, ?int $member_id = null, ?string $upload_folder_full = null, ?string $thumb_folder_full = null, ?string $filename = null) : array
 {
     require_code('files2');
 
@@ -681,7 +681,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
  *
  * @ignore
  */
-function _get_specify_url($member_id, $specify_name, $upload_folder, $enforce_type = 15, $accept_errors = false)
+function _get_specify_url(int $member_id, string $specify_name, string $upload_folder, int $enforce_type = 15, bool $accept_errors = false) : array
 {
     // Security check against naughty URLs
     $url = [];
@@ -777,7 +777,7 @@ function _get_specify_url($member_id, $specify_name, $upload_folder, $enforce_ty
  *
  * @ignore
  */
-function _check_enforcement_of_type($member_id, $file, $enforce_type, $accept_errors = false)
+function _check_enforcement_of_type(int $member_id, string $file, int $enforce_type, bool $accept_errors = false) : bool
 {
     if (($enforce_type & CMS_UPLOAD_ANYTHING) != 0) {
         return true;
@@ -853,7 +853,7 @@ function _check_enforcement_of_type($member_id, $file, $enforce_type, $accept_er
  *
  * @ignore
  */
-function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folder_full, $enforce_type = 15, $obfuscate = 0, $accept_errors = false, $filename = null)
+function _get_upload_url(int $member_id, string $attach_name, string $upload_folder, string $upload_folder_full, int $enforce_type = 15, int $obfuscate = 0, bool $accept_errors = false, ?string $filename = null) : array
 {
     $filearrays = [];
     get_upload_file_array($attach_name, $filearrays);
@@ -928,7 +928,7 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
  * @param  boolean $accept_errors Whether to accept upload errors
  * @return ?URLPATH URL on syndicated server (null: did not syndicate)
  */
-function handle_upload_post_processing($enforce_type, $path, $upload_folder, $filename, $obfuscate = 0, $accept_errors = false)
+function handle_upload_post_processing(int $enforce_type, string $path, string $upload_folder, string $filename, int $obfuscate = 0, bool $accept_errors = false) : ?string
 {
     // Is a CDN transfer hook going to kick in?
     $hooks = find_all_hook_obs('systems', 'cdn_transfer', 'Hook_cdn_transfer_');
@@ -954,7 +954,7 @@ function handle_upload_post_processing($enforce_type, $path, $upload_folder, $fi
  * @param  ID_TEXT $name The name of the HTTP file parameter storing the upload
  * @param  array $filearrays Where we are storing our file arrays
  */
-function get_upload_file_array($name, &$filearrays)
+function get_upload_file_array(string $name, array &$filearrays)
 {
     if (!isset($_FILES[$name])) {
         $name = preg_replace('#\d+$#', '', $name);

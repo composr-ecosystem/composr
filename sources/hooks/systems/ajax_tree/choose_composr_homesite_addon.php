@@ -30,7 +30,7 @@ class Hook_ajax_tree_choose_composr_homesite_addon
      * @param  ?ID_TEXT $default The ID to select by default (null: none)
      * @return string The XML file
      */
-    protected function get_file($id, $default)
+    protected function get_file(?string $id, ?string $default) : string
     {
         $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'http://compo.sr';
         $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
@@ -57,7 +57,7 @@ class Hook_ajax_tree_choose_composr_homesite_addon
      * @param  ?ID_TEXT $default The ID to select by default (null: none)
      * @return string XML in the special category,entry format
      */
-    public function run($id, $options, $default = null)
+    public function run(?string $id, array $options, ?string $default = null) : string
     {
         return $this->get_file($id, $default);
     }
@@ -71,7 +71,7 @@ class Hook_ajax_tree_choose_composr_homesite_addon
      * @param  string $prefix Prefix titles with this
      * @return Tempcode The nice list
      */
-    public function simple($id, $options, $it = null, $prefix = '')
+    public function simple(?string $id, array $options, ?string $it = null, string $prefix = '') : object
     {
         $file = $this->get_file($id, $it);
 

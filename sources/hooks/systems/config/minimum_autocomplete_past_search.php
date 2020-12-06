@@ -28,7 +28,7 @@ class Hook_config_minimum_autocomplete_past_search
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MINIMUM_AUTOCOMPLETE_PAST_SEARCH',
@@ -52,7 +52,7 @@ class Hook_config_minimum_autocomplete_past_search
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('search')) {
             return null;

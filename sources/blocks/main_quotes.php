@@ -28,7 +28,7 @@ class Block_main_quotes
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -46,7 +46,7 @@ class Block_main_quotes
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -66,7 +66,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('random_quotes', $error_msg)) {
@@ -113,7 +113,7 @@ PHP;
      * @param  PATH $filename The filename
      * @return string The random line
      */
-    public function get_random_line($filename)
+    public function get_random_line(string $filename) : string
     {
         $myfile_charset = null;
         $myfile = @cms_fopen_text_read(filter_naughty($filename, true), $myfile_charset, true);

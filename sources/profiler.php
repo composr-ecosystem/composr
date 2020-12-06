@@ -62,7 +62,7 @@ function init__profiler()
  *
  * @return boolean Whether profiling is enabled
  */
-function cms_profile_is_enabled()
+function cms_profile_is_enabled() : bool
 {
     if (!function_exists('get_value')) {
         return false;
@@ -90,7 +90,7 @@ function cms_profile_is_enabled()
  *
  * @ignore
  */
-function _cms_profile_start_for($identifier)
+function _cms_profile_start_for(string $identifier)
 {
     if (!cms_profile_is_enabled()) {
         return;
@@ -116,7 +116,7 @@ function _cms_profile_start_for($identifier)
  * @param  ?string $specifics Longer details of what happened (e.g. a specific SQL query that ran) (null: none provided)
  * @ignore
  */
-function _cms_profile_end_for($identifier, $specifics = null)
+function _cms_profile_end_for(string $identifier, ?string $specifics = null)
 {
     if (!cms_profile_is_enabled()) {
         return;
@@ -152,7 +152,7 @@ function _cms_profile_end_for($identifier, $specifics = null)
  *
  * @ignore
  */
-function _cms_profile_generate_line($identifier, $at, $cnt)
+function _cms_profile_generate_line(string $identifier, array $at, int $cnt) : string
 {
     $line = $identifier;
     $line .= '(x' . strval($cnt) . ')';
@@ -170,7 +170,7 @@ function _cms_profile_generate_line($identifier, $at, $cnt)
  *
  * @ignore
  */
-function _cms_profile_log_line($line)
+function _cms_profile_log_line(string $line)
 {
     // Open up unique log file (per-request) if not yet done so
     global $PROFILER_FILEHANDLE, $PROFILER_PATH;

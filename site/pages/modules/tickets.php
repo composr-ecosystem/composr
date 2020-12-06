@@ -28,7 +28,7 @@ class Module_tickets
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -73,7 +73,7 @@ class Module_tickets
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_lang('tickets');
 
@@ -181,7 +181,7 @@ class Module_tickets
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('tickets')) {
             return null;
@@ -204,7 +204,7 @@ class Module_tickets
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('tickets', $error_msg)) {
@@ -276,7 +276,7 @@ class Module_tickets
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if (has_no_forum()) {
             warn_exit(do_lang_tempcode('NO_FORUM_INSTALLED'));
@@ -334,7 +334,7 @@ class Module_tickets
      *
      * @return ?AUTO_LINK The ticket type ID (null: none specified)
      */
-    protected function get_ticket_type_id()
+    protected function get_ticket_type_id() : ?int
     {
         $default_ticket_type_id = either_param_integer('ticket_type_id', null);
         if ($default_ticket_type_id === null) {
@@ -354,7 +354,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function list_tickets()
+    public function list_tickets() : object
     {
         require_code('feedback');
 
@@ -431,7 +431,7 @@ class Module_tickets
      * @param  array $topic Ticket details (from forum API)
      * @return array A tuple: Ticket row (Tempcode), Ticket type (ID), Ticket type (String)
      */
-    protected function render_ticket_row($topic)
+    protected function render_ticket_row(array $topic) : array
     {
         $ticket_id = extract_topic_identifier($topic['description']);
 
@@ -504,7 +504,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function display_ticket()
+    public function display_ticket() : object
     {
         require_lang('comcode');
         require_code('form_templates');
@@ -844,7 +844,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function update_ticket()
+    public function update_ticket() : object
     {
         @ignore_user_abort(true); // Must keep going till completion
 
@@ -970,7 +970,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function toggle_ticket_closed()
+    public function toggle_ticket_closed() : object
     {
         $ticket_id = get_param_string('id');
 
@@ -1005,7 +1005,7 @@ class Module_tickets
      * @param  string $search_query Search query
      * @return ?Tempcode The search results (null: could not search)
      */
-    public function do_search($title, $ticket_id, $search_query)
+    public function do_search(object $title, string $ticket_id, string $search_query) : ?object
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -1066,7 +1066,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function set_ticket_extra_access()
+    public function set_ticket_extra_access() : object
     {
         require_code('form_templates');
 
@@ -1107,7 +1107,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function _set_ticket_extra_access()
+    public function _set_ticket_extra_access() : object
     {
         $ticket_id = get_param_string('id');
 
@@ -1148,7 +1148,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function edit()
+    public function edit() : object
     {
         require_code('form_templates');
 
@@ -1196,7 +1196,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function _edit()
+    public function _edit() : object
     {
         $ticket_id = get_param_string('id');
 
@@ -1255,7 +1255,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function merge()
+    public function merge() : object
     {
         if (!has_privilege(get_member(), 'support_operator')) {
             access_denied('I_ERROR');
@@ -1278,7 +1278,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function _merge()
+    public function _merge() : object
     {
         if (!has_privilege(get_member(), 'support_operator')) {
             access_denied('I_ERROR');
@@ -1356,7 +1356,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function assign()
+    public function assign() : object
     {
         if (!has_privilege(get_member(), 'support_operator')) {
             access_denied('I_ERROR');
@@ -1416,7 +1416,7 @@ class Module_tickets
      *
      * @return Tempcode The UI
      */
-    public function unassign()
+    public function unassign() : object
     {
         if (!has_privilege(get_member(), 'support_operator')) {
             access_denied('I_ERROR');

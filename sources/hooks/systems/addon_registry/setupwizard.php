@@ -29,7 +29,7 @@ class Hook_addon_registry_setupwizard
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Admin Utilities';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Quick-start setup wizard.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_configuration',
@@ -82,7 +82,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -97,7 +97,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/adminzone/setup/setupwizard.svg';
     }
@@ -107,7 +107,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/images/icons/menu/adminzone/setup/setupwizard.svg',
@@ -146,7 +146,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/SETUPWIZARD_SCREEN.tpl' => 'administrative__setupwizard_2_screen',
@@ -163,7 +163,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__setupwizard_block_preview()
+    public function tpl_preview__administrative__setupwizard_block_preview() : array
     {
         return [
             lorem_globalise(do_lorem_template('SETUPWIZARD_BLOCK_PREVIEW', [
@@ -181,7 +181,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__setupwizard_2_screen()
+    public function tpl_preview__administrative__setupwizard_2_screen() : array
     {
         require_lang('config');
 
@@ -209,7 +209,7 @@ class Hook_addon_registry_setupwizard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__setupwizard_7_screen()
+    public function tpl_preview__administrative__setupwizard_7_screen() : array
     {
         require_lang('config');
 

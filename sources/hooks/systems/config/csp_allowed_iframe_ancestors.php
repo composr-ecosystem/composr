@@ -28,7 +28,7 @@ class Hook_config_csp_allowed_iframe_ancestors
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'CSP_ALLOWED_IFRAME_ANCESTORS',
@@ -52,7 +52,7 @@ class Hook_config_csp_allowed_iframe_ancestors
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return '*';
     }

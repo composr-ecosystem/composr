@@ -28,7 +28,7 @@ class Hook_config_hc_cron_regularity
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HC_CRON_REGULARITY',
@@ -52,7 +52,7 @@ class Hook_config_hc_cron_regularity
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('health_check')) {
             return null;

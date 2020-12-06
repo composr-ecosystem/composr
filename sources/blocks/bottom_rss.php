@@ -28,7 +28,7 @@ class Block_bottom_rss
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -46,7 +46,7 @@ class Block_bottom_rss
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = ['block_bottom_rss__cache_on'];
@@ -60,7 +60,7 @@ class Block_bottom_rss
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('syndication_blocks', $error_msg)) {
@@ -122,7 +122,7 @@ class Block_bottom_rss
  * @param  array $map The block parameters
  * @return array The cache signature
  */
-function block_bottom_rss__cache_on($map)
+function block_bottom_rss__cache_on(array $map) : array
 {
     return [array_key_exists('param', $map) ? $map['param'] : '', array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10];
 }

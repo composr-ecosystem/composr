@@ -26,7 +26,7 @@
  * @param  BINARY $search_faq Whether the FAQ should be searched before submitting a new ticket
  * @return AUTO_LINK The ticket type ID
  */
-function add_ticket_type($ticket_type_name, $guest_emails_mandatory = 0, $search_faq = 0)
+function add_ticket_type(string $ticket_type_name, int $guest_emails_mandatory = 0, int $search_faq = 0) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_TICKET_TYPE', null, $ticket_type_name);
@@ -57,7 +57,7 @@ function add_ticket_type($ticket_type_name, $guest_emails_mandatory = 0, $search
  * @param  BINARY $guest_emails_mandatory Whether guest e-mail addresses are mandatory for new tickets
  * @param  BINARY $search_faq Whether the FAQ should be searched before submitting a new ticket
  */
-function edit_ticket_type($ticket_type_id, $ticket_type_name, $guest_emails_mandatory, $search_faq)
+function edit_ticket_type(int $ticket_type_id, ?string $ticket_type_name, int $guest_emails_mandatory, int $search_faq)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], ['id' => $ticket_type_id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -86,7 +86,7 @@ function edit_ticket_type($ticket_type_id, $ticket_type_name, $guest_emails_mand
  *
  * @param  AUTO_LINK $ticket_type_id The ticket type ID
  */
-function delete_ticket_type($ticket_type_id)
+function delete_ticket_type(int $ticket_type_id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], ['id' => $ticket_type_id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -123,7 +123,7 @@ function delete_ticket_type($ticket_type_id)
  * @param  array $ticket_types_to_let_through List of ticket types to show regardless of access permissions
  * @return array A map between ticket types, and template-ready details about them
  */
-function build_types_list($selected_ticket_type_id, $ticket_types_to_let_through = [])
+function build_types_list(?int $selected_ticket_type_id, array $ticket_types_to_let_through = []) : array
 {
     $_types = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name'));
     $types = [];
@@ -153,7 +153,7 @@ function build_types_list($selected_ticket_type_id, $ticket_types_to_let_through
  * @param  ?AUTO_LINK $ticket_type_id The ticket type (null: fallback for malformed tickets)
  * @return array Array of properties
  */
-function get_ticket_type($ticket_type_id)
+function get_ticket_type(?int $ticket_type_id) : array
 {
     $default = [
         'ticket_type' => null,
@@ -185,7 +185,7 @@ function get_ticket_type($ticket_type_id)
  * @param  ?ID_TEXT $stem Ticket ID stem (null: randomise)
  * @return string New ticket ID
  */
-function ticket_generate_new_id($member_id = null, $stem = null)
+function ticket_generate_new_id(?int $member_id = null, ?string $stem = null) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -209,7 +209,7 @@ function ticket_generate_new_id($member_id = null, $stem = null)
  * @param  ?TIME $time_post The post time (null: use current time)
  * @return URLPATH The ticket URL
  */
-function ticket_add_post($ticket_id, $ticket_type_id, $title, $post, $staff_only = false, $member_id = null, $time_post = null)
+function ticket_add_post(string $ticket_id, ?int $ticket_type_id, string $title, string $post, bool $staff_only = false, ?int $member_id = null, ?int $time_post = null) : string
 {
     $ticket_url = ticket_url($ticket_id);
 
@@ -265,7 +265,7 @@ function ticket_add_post($ticket_id, $ticket_type_id, $title, $post, $staff_only
  * @param  boolean $mandatory_guest_email Whether an e-mail address is mandatory for guests
  * @return string The wrapped ticket post
  */
-function ticket_wrap_with_email_address($post, $email, $mandatory_guest_email = false)
+function ticket_wrap_with_email_address(string $post, string $email, bool $mandatory_guest_email = false) : string
 {
     // Do we need to tack on an e-mail address?
     if ($email != '') {
@@ -301,7 +301,7 @@ function ticket_wrap_with_email_address($post, $email, $mandatory_guest_email = 
  * @param  ?MEMBER $new_poster Posting member (null: current member)
  * @param  boolean $auto_created Whether the ticket was auto-created
  */
-function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = '', $ticket_type_id_if_new = null, $new_poster = null, $auto_created = false)
+function send_ticket_email(string $ticket_id, string $title, string $post, $ticket_url, string $uid_email = '', ?int $ticket_type_id_if_new = null, ?int $new_poster = null, bool $auto_created = false)
 {
     if ($new_poster === null) {
         $new_poster = get_active_support_user();
@@ -485,7 +485,7 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
  *
  * @param  AUTO_LINK $topic_id The associated topic ID
  */
-function delete_ticket_by_topic_id($topic_id)
+function delete_ticket_by_topic_id(int $topic_id)
 {
     $GLOBALS['SITE_DB']->query_delete('tickets', ['topic_id' => $topic_id], '', 1);
 }
@@ -497,7 +497,7 @@ function delete_ticket_by_topic_id($topic_id)
  * @param  boolean $hard_error Exit with an error message if it cannot find the ticket
  * @return ?array A tuple: The ticket title, the topic ID, the ticket type ID, the ticket owner (null: not found)
  */
-function get_ticket_meta_details($ticket_id, $hard_error = true)
+function get_ticket_meta_details(string $ticket_id, bool $hard_error = true) : ?array
 {
     $forum = 0; // Returned by reference
     $topic_id = 0; // Returned by reference
@@ -530,7 +530,7 @@ function get_ticket_meta_details($ticket_id, $hard_error = true)
  * @param  ?integer $max Max per page in pagination (null: no limit)
  * @return ?mixed The array of maps (Each map is: title, message, member, date) (null: no such ticket)
  */
-function get_ticket_posts($ticket_id, &$forum = null, &$topic_id = null, &$total_ticket_posts = null, $start = 0, $max = null)
+function get_ticket_posts(string $ticket_id, ?int &$forum = null, ?int &$topic_id = null, ?int &$total_ticket_posts = null, int $start = 0, ?int $max = null)
 {
     $ticket = $GLOBALS['SITE_DB']->query_select('tickets', ['*'], ['ticket_id' => $ticket_id], '', 1);
     if (count($ticket) == 1) {
@@ -573,7 +573,7 @@ function get_ticket_posts($ticket_id, &$forum = null, &$topic_id = null, &$total
  * @param  ID_TEXT $ticket_id Ticket ID
  * @return array Map of assigned members (member ID to display name)
  */
-function find_ticket_assigned_to($ticket_id)
+function find_ticket_assigned_to(string $ticket_id) : array
 {
     $assigned = [];
     $where = ['l_notification_code' => 'ticket_assigned_staff', 'l_code_category' => $ticket_id];

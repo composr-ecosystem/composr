@@ -29,7 +29,7 @@ class Hook_addon_registry_core_privacy
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Features relating to maintaining a privacy policy and complying with privacy regulations.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_legal',
@@ -81,7 +81,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/addon_registry/core_privacy.php',
@@ -151,7 +151,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BLOCK_MAIN_PRIVACY_POLICY_AUTO.tpl' => 'block_main_privacy_policy_auto_screen',
@@ -165,7 +165,7 @@ class Hook_addon_registry_core_privacy
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_privacy_policy_auto_screen()
+    public function tpl_preview__block_main_privacy_policy_auto_screen() : array
     {
         $cookies = [];
         $cookies[] = [

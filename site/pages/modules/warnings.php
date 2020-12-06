@@ -38,7 +38,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return string Icon
      */
-    public function get_wrapper_icon()
+    public function get_wrapper_icon() : string
     {
         return 'menu/social/warnings';
     }
@@ -52,7 +52,7 @@ class Module_warnings extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('cns_warnings')) {
             return null;
@@ -85,7 +85,7 @@ class Module_warnings extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         require_code('cns_warnings');
         require_lang('cns_warnings');
@@ -167,7 +167,7 @@ class Module_warnings extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_code('cns_moderation_action');
         require_code('cns_moderation_action2');
@@ -228,7 +228,7 @@ class Module_warnings extends Standard_crud_module
      * @param  ?MEMBER $member_id The member the warning is for (null: get from environment)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($new = true, $explanation = '', $is_warning = 1, $member_id = null)
+    public function get_form_fields(bool $new = true, string $explanation = '', int $is_warning = 1, ?int $member_id = null) : array
     {
         $spam_mode = (get_param_integer('spam', 0) == 1);
 
@@ -546,7 +546,7 @@ class Module_warnings extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -612,7 +612,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         $_m = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], 'ORDER BY w_time DESC');
         $entries = new Tempcode();
@@ -629,7 +629,7 @@ class Module_warnings extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $warning = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['w_explanation', 'w_by', 'w_member_id', 'w_is_warning'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $warning)) {
@@ -644,7 +644,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('global4');
 
@@ -948,7 +948,7 @@ class Module_warnings extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $member_id = cns_edit_warning(intval($id), post_param_string('explanation'), post_param_integer('is_warning', 0));
 
@@ -966,7 +966,7 @@ class Module_warnings extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['w_by', 'w_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -980,7 +980,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         $member_id = cns_delete_warning(intval($id));
 
@@ -995,7 +995,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode The output of the run
      */
-    public function history()
+    public function history() : object
     {
         require_code('templates_results_table');
 
@@ -1078,7 +1078,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode The output of the run
      */
-    public function view()
+    public function view() : object
     {
         require_code('actionlog');
         require_code('cns_topics');
@@ -1187,7 +1187,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_group_change()
+    public function undo_group_change() : object
     {
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
@@ -1206,7 +1206,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_charge()
+    public function undo_charge() : object
     {
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
@@ -1227,7 +1227,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_probation()
+    public function undo_probation() : object
     {
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
@@ -1251,7 +1251,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_banned_ip()
+    public function undo_banned_ip() : object
     {
         require_code('failure');
 
@@ -1273,7 +1273,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_banned_member()
+    public function undo_banned_member() : object
     {
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
@@ -1294,7 +1294,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_silence_from_topic()
+    public function undo_silence_from_topic() : object
     {
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
@@ -1321,7 +1321,7 @@ class Module_warnings extends Standard_crud_module
      *
      * @return Tempcode Result (redirect page)
      */
-    public function undo_silence_from_forum()
+    public function undo_silence_from_forum() : object
     {
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);

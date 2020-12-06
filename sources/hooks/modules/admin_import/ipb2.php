@@ -42,7 +42,7 @@ class Hook_import_ipb2
      *
      * @return ?array Importer handling details, including lists of all the import types covered (import types are not necessarily the same as actual tables) (null: importer is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['supports_advanced_import'] = false;
@@ -97,7 +97,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_custom_comcode($db, $table_prefix, $old_base_dir)
+    public function import_custom_comcode(object $db, string $table_prefix, string $old_base_dir)
     {
         require_code('custom_comcode');
         require_code('comcode_compiler');
@@ -141,7 +141,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forum_groupings($db, $table_prefix, $old_base_dir)
+    public function import_cns_forum_groupings(object $db, string $table_prefix, string $old_base_dir)
     {
         $rows = $db->query_select('forums', ['*'], ['parent_id' => -1], 'ORDER BY id');
         foreach ($rows as $row) {
@@ -177,7 +177,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_forums($db, $table_prefix, $old_base_dir)
+    public function import_cns_forums(object $db, string $table_prefix, string $old_base_dir)
     {
         require_code('cns_forums_action2');
 
@@ -260,7 +260,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_config($db, $table_prefix, $file_base)
+    public function import_config(object $db, string $table_prefix, string $file_base)
     {
         $config_remapping = [
             'board_offline' => 'site_closed',
@@ -324,7 +324,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $old_base_dir The base directory we are importing from
      */
-    public function import_cns_private_topics($db, $table_prefix, $old_base_dir)
+    public function import_cns_private_topics(object $db, string $table_prefix, string $old_base_dir)
     {
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'message_topics m LEFT JOIN ' . $table_prefix . 'message_text t ON m.mt_msg_id=t.msg_id WHERE ' . db_string_not_equal_to('mt_vid_folder', 'sent') . ' ORDER BY mt_date');
 
@@ -399,7 +399,7 @@ class Hook_import_ipb2
      * @param  LONG_TEXT $post IPB post
      * @return LONG_TEXT The cleaned post
      */
-    public function clean_ipb_post($post)
+    public function clean_ipb_post(string $post) : string
     {
         $post = str_replace('<br />', "\n", str_replace('<br>', "\n", $post));
         $post = preg_replace('#\[size="?(\d+)"?\]#', '[size="${1}of"]', $post);
@@ -412,7 +412,7 @@ class Hook_import_ipb2
      * @param  LONG_TEXT $post IPB post
      * @return LONG_TEXT The cleaned post
      */
-    public function clean_ipb_post_2($post)
+    public function clean_ipb_post_2(string $post) : string
     {
         $post = str_replace('<br>', '<br />', $post);
         return $post;
@@ -424,7 +424,7 @@ class Hook_import_ipb2
      * @param  string $file_base The probe path
      * @return array A quartet of the details (db_name, db_user, db_pass, table_prefix)
      */
-    public function probe_db_access($file_base)
+    public function probe_db_access(string $file_base) : array
     {
         global $INFO;
 
@@ -443,7 +443,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_groups($db, $table_prefix, $file_base)
+    public function import_cns_groups(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('conf_settings', ['*']);
         $PROBED_FORUM_CONFIG = [];
@@ -531,7 +531,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_calendar($db, $table_prefix, $file_base)
+    public function import_calendar(object $db, string $table_prefix, string $file_base)
     {
         require_code('calendar2');
 
@@ -602,7 +602,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_members($db, $table_prefix, $file_base)
+    public function import_cns_members(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -725,7 +725,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_member_files($db, $table_prefix, $file_base)
+    public function import_cns_member_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -829,7 +829,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_custom_profile_fields($db, $table_prefix, $file_base)
+    public function import_cns_custom_profile_fields(object $db, string $table_prefix, string $file_base)
     {
         $select = ['*'];
         $select[] = 'pf_position AS forder';
@@ -874,7 +874,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_topics($db, $table_prefix, $file_base)
+    public function import_cns_topics(object $db, string $table_prefix, string $file_base)
     {
         $row_start = 0;
         $rows = [];
@@ -953,7 +953,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_posts($db, $table_prefix, $file_base)
+    public function import_cns_posts(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
 
@@ -1039,7 +1039,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_post_files($db, $table_prefix, $file_base)
+    public function import_cns_post_files(object $db, string $table_prefix, string $file_base)
     {
         global $STRICT_FILE;
         require_code('attachments2');
@@ -1118,7 +1118,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
+    public function import_cns_polls_and_votes(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('polls', ['*']);
         foreach ($rows as $row) {
@@ -1180,7 +1180,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_multi_moderations($db, $table_prefix, $file_base)
+    public function import_cns_multi_moderations(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('topic_mmod', ['*']);
         foreach ($rows as $row) {
@@ -1218,7 +1218,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_notifications($db, $table_prefix, $file_base)
+    public function import_notifications(object $db, string $table_prefix, string $file_base)
     {
         require_code('notifications');
 
@@ -1272,7 +1272,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_cns_warnings($db, $table_prefix, $file_base)
+    public function import_cns_warnings(object $db, string $table_prefix, string $file_base)
     {
         $select = ['*'];
         $select[] = 'wlog_id AS id';
@@ -1305,7 +1305,7 @@ class Hook_import_ipb2
      * @param  string $table_prefix The table prefix the target prefix is using
      * @param  PATH $file_base The base directory we are importing from
      */
-    public function import_wordfilter($db, $table_prefix, $file_base)
+    public function import_wordfilter(object $db, string $table_prefix, string $file_base)
     {
         $rows = $db->query_select('badwords', ['*']);
         $done = [];

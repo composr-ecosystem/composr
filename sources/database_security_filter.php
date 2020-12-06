@@ -39,7 +39,7 @@ function init__database_security_filter()
  * @param  string $query The query
  * @return boolean Whether it is simple
  */
-function is_simple_query($query)
+function is_simple_query(string $query) : bool
 {
     if (strpos($query, get_table_prefix()) === false) {
         return false;
@@ -74,7 +74,7 @@ function is_simple_query($query)
  * @param  string $query The query
  * @return boolean Whether it is all good
  */
-function has_escaped_dynamic_sql($query)
+function has_escaped_dynamic_sql(string $query) : bool
 {
     if (strpos(get_db_type(), 'mysql') === false) {
         // Our scanning may not work right on non-MySQL
@@ -139,7 +139,7 @@ function has_escaped_dynamic_sql($query)
  *
  * @ignore
  */
-function _get_quoted_substrings($string, $recurse = false)
+function _get_quoted_substrings(string $string, bool $recurse = false) : array
 {
     $buffer = '';
     $output = [];
@@ -183,7 +183,7 @@ function _get_quoted_substrings($string, $recurse = false)
  *
  * @ignore
  */
-function _trim_quoted_substrings($string)
+function _trim_quoted_substrings(string $string) : string
 {
     $found_start = false;
     $ignore = null;

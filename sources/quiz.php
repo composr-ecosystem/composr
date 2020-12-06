@@ -27,7 +27,7 @@
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The rendered quiz link
  */
-function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_quiz_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -72,7 +72,7 @@ function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
  * @param  array $questions The quiz questions
  * @return Tempcode The rendered quiz
  */
-function render_quiz($questions)
+function render_quiz(array $questions) : object
 {
     require_lang('quiz');
 
@@ -134,7 +134,7 @@ function render_quiz($questions)
  * @param  boolean $reveal_all Whether to show answers, regardless of whether the quiz is set to do so
  * @return array A tuple of quiz result details
  */
-function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null, $reveal_all = false)
+function score_quiz(int $entry_id, ?int $quiz_id = null, ?array $quiz = null, ?array $questions = null, bool $reveal_all = false) : array
 {
     if ($quiz_id === null) {
         $quiz_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_quiz', ['id' => $entry_id]);
@@ -440,7 +440,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
  * @param  boolean $strict Whether to do a strict check
  * @return boolean Whether it is correct
  */
-function typed_answer_is_correct($given_answer, $all_answers, $strict = false)
+function typed_answer_is_correct(string $given_answer, array $all_answers, bool $strict = false) : bool
 {
     if ($strict) {
         $filtered_given_answer = trim($given_answer);

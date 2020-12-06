@@ -30,7 +30,7 @@
  * @return Tempcode Redirection message (likely to not actually be seen due to instant redirection)
  * @ignore
  */
-function _redirect_screen($title, $url, $text = null, $intermediary_hop = false, $msg_type = 'inform')
+function _redirect_screen(?object $title, $url, $text = null, bool $intermediary_hop = false, string $msg_type = 'inform') : object
 {
     if (is_object($url)) {
         $url = $url->evaluate();

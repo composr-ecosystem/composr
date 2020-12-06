@@ -27,7 +27,7 @@
  * @param  ?PATH $file_base The file base to load from (null: standard)
  * @return string The page
  */
-function load_html_page($string, $file_base = null)
+function load_html_page(string $string, ?string $file_base = null) : string
 {
     if ($file_base === null) {
         $file_base = get_file_base();

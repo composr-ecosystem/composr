@@ -28,7 +28,7 @@ class Hook_snippet_comments
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (get_option('is_on_comments') == '0') {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

@@ -29,7 +29,7 @@ Only works with MySQL.
  *
  * @return Tempcode Results
  */
-function database_repair_inbuilt()
+function database_repair_inbuilt() : object
 {
     require_lang('upgrade');
 
@@ -75,7 +75,7 @@ function database_repair_inbuilt()
  *
  * @return Tempcode Results
  */
-function database_repair_wrap()
+function database_repair_wrap() : object
 {
     require_lang('upgrade');
 
@@ -105,7 +105,7 @@ class DatabaseRepair
      *
      * @return array A pair: Phase where errors happened (1 or 2), SQL
      */
-    public function search_for_database_issues()
+    public function search_for_database_issues() : array
     {
         require_code('database_helper');
         require_code('database_relations');
@@ -264,7 +264,7 @@ class DatabaseRepair
      * @param  array $expected_tables Expected tables
      * @return boolean Whether there have been issues found
      */
-    private function search_for_meta_table_issues($existent_tables, $meta_tables, $expected_tables)
+    private function search_for_meta_table_issues(array $existent_tables, array $meta_tables, array $expected_tables) : bool
     {
         $needs_changes = false;
 
@@ -409,7 +409,7 @@ class DatabaseRepair
      * @param  array $meta_tables Meta tables
      * @return boolean Whether there have been issues found
      */
-    private function search_for_meta_index_issues($existent_indices, $meta_indices, $meta_tables)
+    private function search_for_meta_index_issues(array $existent_indices, array $meta_indices, array $meta_tables) : bool
     {
         $needs_changes = false;
 
@@ -459,7 +459,7 @@ class DatabaseRepair
      * @param  array $meta_tables Meta tables
      * @return boolean Whether there have been issues found
      */
-    private function search_for_table_issues($existent_tables, $expected_tables, $meta_tables)
+    private function search_for_table_issues(array $existent_tables, array $expected_tables, array $meta_tables) : bool
     {
         $needs_changes = false;
 
@@ -587,7 +587,7 @@ class DatabaseRepair
      * @param  ID_TEXT $raw_type Field type
      * @return ID_TEXT Field type
      */
-    private function cleanup_mysql_field_type($raw_type)
+    private function cleanup_mysql_field_type(string $raw_type) : string
     {
         $raw_type = cms_strtolower_ascii($raw_type);
         $raw_type = preg_replace('#\(.*#', '', $raw_type);
@@ -607,7 +607,7 @@ class DatabaseRepair
      * @param  array $meta_tables Meta tables
      * @return boolean Whether there have been issues found
      */
-    private function search_for_index_issues($existent_indices, $expected_indices, $meta_indices, $meta_tables)
+    private function search_for_index_issues(array $existent_indices, array $expected_indices, array $meta_indices, array $meta_tables) : bool
     {
         $needs_changes = false;
 
@@ -684,7 +684,7 @@ class DatabaseRepair
      * @param  array $expected_privileges Expected privileges
      * @return boolean Whether there have been issues found
      */
-    private function search_for_privilege_issues($existent_privileges, $expected_privileges)
+    private function search_for_privilege_issues(array $existent_privileges, array $expected_privileges) : bool
     {
         $needs_changes = false;
 
@@ -719,7 +719,7 @@ class DatabaseRepair
      * @param  string $field_name Field name
      * @param  string $field_type Field type
      */
-    private function fix_table_missing_in_meta__create_field($table_name, $field_name, $field_type)
+    private function fix_table_missing_in_meta__create_field(string $table_name, string $field_name, string $field_type)
     {
         $query = 'INSERT INTO ' . get_table_prefix() . 'db_meta (m_table,m_name,m_type) VALUES (\'' . db_escape_string($table_name) . '\',\'' . db_escape_string($field_name) . '\',\'' . db_escape_string($field_type) . '\')';
         $this->add_fixup_query($query);
@@ -731,7 +731,7 @@ class DatabaseRepair
      * @param  string $table_name Table name
      * @param  array $table Table details
      */
-    private function create_table_missing_in_meta($table_name, $table)
+    private function create_table_missing_in_meta(string $table_name, array $table)
     {
         foreach ($table as $field_name => $field_type) {
             $this->fix_table_missing_in_meta__create_field($table_name, $field_name, $field_type);
@@ -745,7 +745,7 @@ class DatabaseRepair
      * @param  array $table Table details
      * @param  boolean $include_meta Make meta changes too
      */
-    private function create_table_missing_from_db($table_name, $table, $include_meta)
+    private function create_table_missing_from_db(string $table_name, array $table, bool $include_meta)
     {
         if ($include_meta) {
             foreach ($table as $field_name => $field_type) {
@@ -781,7 +781,7 @@ class DatabaseRepair
      * @param  string $field_type Field type
      * @param  boolean $include_meta Make meta changes too
      */
-    private function fix_table_inconsistent_in_db__create_field($table_name, $field_name, $field_type, $include_meta)
+    private function fix_table_inconsistent_in_db__create_field(string $table_name, string $field_name, string $field_type, bool $include_meta)
     {
         if ($include_meta) {
             $this->fix_table_missing_in_meta__create_field($table_name, $field_name, $field_type);
@@ -815,7 +815,7 @@ class DatabaseRepair
      * @param  string $field_type Field type
      * @param  boolean $include_meta Make meta changes too
      */
-    private function fix_table_inconsistent_in_db__delete_field($table_name, $field_name, $field_type, $include_meta)
+    private function fix_table_inconsistent_in_db__delete_field(string $table_name, string $field_name, string $field_type, bool $include_meta)
     {
         if ($include_meta) {
             $query = 'DELETE FROM ' . get_table_prefix() . 'db_meta WHERE m_table=\'' . db_escape_string($table_name) . '\' AND m_name=\'' . db_escape_string($field_name) . '\'';
@@ -848,7 +848,7 @@ class DatabaseRepair
      * @param  string $field_type Field type
      * @param  boolean $include_meta Make meta changes too
      */
-    private function fix_table_inconsistent_in_db__bad_field_type($table_name, $field_name, $field_type, $include_meta)
+    private function fix_table_inconsistent_in_db__bad_field_type(string $table_name, string $field_name, string $field_type, bool $include_meta)
     {
         if ($include_meta) {
             $query = 'UPDATE ' . get_table_prefix() . 'db_meta SET m_type=\'' . db_escape_string($field_type) . '\' WHERE m_table=\'' . db_escape_string($table_name) . '\' AND m_name=\'' . db_escape_string($field_name) . '\'';
@@ -868,7 +868,7 @@ class DatabaseRepair
      * @param  boolean $return_queries Whether to return the main queries instead of inserting them
      * @return ?array Special queries (null: $return_queries not set)
      */
-    private function fix_table_inconsistent_in_db__bad_primary_key($table_name, $key_fields, $include_meta, $return_queries = false)
+    private function fix_table_inconsistent_in_db__bad_primary_key(string $table_name, array $key_fields, bool $include_meta, bool $return_queries = false) : ?array
     {
         if ($include_meta) {
             $query = 'UPDATE ' . get_table_prefix() . 'db_meta SET m_type=REPLACE(m_type,\'*\',\'\') WHERE m_table=\'' . db_escape_string($table_name) . '\'';
@@ -898,7 +898,7 @@ class DatabaseRepair
      * @param  string $table_name Table name
      * @param  boolean $include_meta Make meta changes too
      */
-    private function delete_table_alien_in_db($table_name, $include_meta)
+    private function delete_table_alien_in_db(string $table_name, bool $include_meta)
     {
         if ($include_meta) {
             $query = 'DELETE FROM ' . get_table_prefix() . 'db_meta_indices WHERE i_table=\'' . db_escape_string($table_name) . '\'';
@@ -927,7 +927,7 @@ class DatabaseRepair
      * @param  string $index_name Index name
      * @param  array $index Index details
      */
-    private function fix_index_inconsistent_in_meta($index_name, $index)
+    private function fix_index_inconsistent_in_meta(string $index_name, array $index)
     {
         $query = 'UPDATE ' . get_table_prefix() . 'db_meta_indices SET i_fields=\'' . db_escape_string(implode(',', $index['fields'])) . '\',i_name=\'' . db_escape_string((($index['is_full_text']) ? '#' : '') . $index['name']) . '\' WHERE i_table=\'' . db_escape_string($index['table']) . '\' AND i_name=\'' . db_escape_string((($index['is_full_text']) ? '#' : '') . $index_name) . '\'';
         $this->add_fixup_query($query);
@@ -940,7 +940,7 @@ class DatabaseRepair
      * @param  string $index_name Index name
      * @param  array $index Index details
      */
-    private function create_index_missing_in_meta($index_name, $index)
+    private function create_index_missing_in_meta(string $index_name, array $index)
     {
         $table_name = $index['table'];
         $fields = implode(',', $index['fields']);
@@ -957,7 +957,7 @@ class DatabaseRepair
      * @param  boolean $include_meta Make meta changes too
      * @param  array $meta_tables Meta tables
      */
-    private function create_index_missing_from_db($index_name, $index, $include_meta, $meta_tables)
+    private function create_index_missing_from_db(string $index_name, array $index, bool $include_meta, array $meta_tables)
     {
         if ($include_meta) {
             $this->create_index_missing_in_meta($index_name, $index);
@@ -994,7 +994,7 @@ class DatabaseRepair
      * @param  boolean $include_meta Make meta changes too
      * @param  array $meta_tables Meta tables
      */
-    private function fix_index_inconsistent_in_db($index_name, $index, $include_meta, $meta_tables)
+    private function fix_index_inconsistent_in_db(string $index_name, array $index, bool $include_meta, array $meta_tables)
     {
         if ($include_meta) {
             $this->fix_index_inconsistent_in_meta($index_name, $index);
@@ -1011,7 +1011,7 @@ class DatabaseRepair
      * @param  array $index Index details
      * @param  boolean $include_meta Make meta changes too
      */
-    private function delete_index_alien_in_db($index_name, $index, $include_meta)
+    private function delete_index_alien_in_db(string $index_name, array $index, bool $include_meta)
     {
         if ($include_meta) {
             $query = 'DELETE FROM ' . get_table_prefix() . 'db_meta_indices WHERE i_table=\'' . db_escape_string($index['table']) . '\' AND i_name=\'' . db_escape_string((($index['is_full_text']) ? '#' : '') . $index_name) . '\'';
@@ -1033,7 +1033,7 @@ class DatabaseRepair
      * @param  string $privilege_name Privilege name
      * @param  array $privilege Privilege details
      */
-    private function create_privilege_missing_from_db($privilege_name, $privilege)
+    private function create_privilege_missing_from_db(string $privilege_name, array $privilege)
     {
         $section = $privilege['section'];
         $default = $privilege['default'];
@@ -1048,7 +1048,7 @@ class DatabaseRepair
      * @param  string $privilege_name Privilege name
      * @param  array $privilege Privilege details
      */
-    private function fix_privilege_inconsistent_in_db($privilege_name, $privilege)
+    private function fix_privilege_inconsistent_in_db(string $privilege_name, array $privilege)
     {
         $section = $privilege['section'];
         $default = $privilege['default'];
@@ -1062,7 +1062,7 @@ class DatabaseRepair
      *
      * @param  string $privilege_name Privilege name
      */
-    private function delete_privilege_alien_in_db($privilege_name)
+    private function delete_privilege_alien_in_db(string $privilege_name)
     {
         $query = 'DELETE FROM ' . get_table_prefix() . 'privilege_list WHERE the_name=\'' . db_escape_string($privilege_name) . '\'';
         $this->add_fixup_query($query);
@@ -1078,7 +1078,7 @@ class DatabaseRepair
      * @param  boolean $null_ok Null-acceptable
      * @return string Field type (Composr-style)
      */
-    private function db_type_to_composr_type($field_name, $type_raw, $is_auto_increment, $is_primary, $null_ok)
+    private function db_type_to_composr_type(string $field_name, string $type_raw, bool $is_auto_increment, bool $is_primary, bool $null_ok) : string
     {
         $type = (strpos($type_raw, 'int') !== false) ? 'INTEGER' : 'SHORT_TEXT';
         switch ($type_raw) {
@@ -1154,7 +1154,7 @@ class DatabaseRepair
      *
      * @param  string $query Query
      */
-    private function add_fixup_query($query)
+    private function add_fixup_query(string $query)
     {
         $this->sql_fixup[md5($query)/*De-duplicates*/] = $query . ';';
 

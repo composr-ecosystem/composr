@@ -29,7 +29,7 @@ class Hook_addon_registry_core_cns
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_cns
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_cns
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_cns
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'The Composr member/usergroup system.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_members',
@@ -85,7 +85,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -99,7 +99,7 @@ class Hook_addon_registry_core_cns
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/social/profile.svg';
     }
@@ -109,7 +109,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/core_cns.php',
@@ -509,7 +509,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/CNS_DELURK_CONFIRM.tpl' => 'administrative__cns_delurk_confirm',
@@ -551,7 +551,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__cns_delurk_confirm()
+    public function tpl_preview__administrative__cns_delurk_confirm() : array
     {
         $lurkers = [
             [
@@ -582,7 +582,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_join_step1_screen()
+    public function tpl_preview__cns_join_step1_screen() : array
     {
         $group_select = new Tempcode();
 
@@ -609,7 +609,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_join_step2_screen()
+    public function tpl_preview__cns_join_step2_screen() : array
     {
         require_css('forms');
 
@@ -730,7 +730,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_user_member()
+    public function tpl_preview__cns_user_member() : array
     {
         return [
             lorem_globalise(do_lorem_template('CNS_USER_MEMBER', [
@@ -752,7 +752,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_emoticon_table()
+    public function tpl_preview__cns_emoticon_table() : array
     {
         $rows = [];
         $cols = 4;
@@ -794,7 +794,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_directory_username()
+    public function tpl_preview__cns_member_directory_username() : array
     {
         return [
             lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_USERNAME', [
@@ -816,7 +816,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_directory_screen()
+    public function tpl_preview__cns_member_directory_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_SCREEN', [
@@ -832,7 +832,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_members()
+    public function tpl_preview__block_main_members() : array
     {
         $out = [];
 
@@ -928,7 +928,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_member_profile_screen()
+    public function tpl_preview__cns_member_profile_screen() : array
     {
         $sections = [
             'contact' => lorem_word(),
@@ -1086,7 +1086,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_users_online_screen()
+    public function tpl_preview__cns_users_online_screen() : array
     {
         $rows = [];
         foreach (placeholder_array() as $key => $value) {
@@ -1114,7 +1114,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_group_directory_screen()
+    public function tpl_preview__cns_group_directory_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('CNS_GROUP_DIRECTORY_SCREEN', [
@@ -1133,7 +1133,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_view_group_screen()
+    public function tpl_preview__cns_view_group_screen() : array
     {
         $_primary_members = placeholder_array();
         $primary_members = new Tempcode();
@@ -1261,7 +1261,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__cns_post_map()
+    public function tpl_preview__cns_post_map() : array
     {
         $items = new Tempcode();
 
@@ -1319,7 +1319,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_join()
+    public function tpl_preview__block_main_join() : array
     {
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN', [
@@ -1337,7 +1337,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_join_done()
+    public function tpl_preview__block_main_join_done() : array
     {
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN_DONE', [
@@ -1357,7 +1357,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__join_form()
+    public function tpl_preview__join_form() : array
     {
         return [
             lorem_globalise(do_lorem_template('JOIN_FORM', [
@@ -1384,7 +1384,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__coppa_mail()
+    public function tpl_preview__coppa_mail() : array
     {
         $fields_done = [];
         $fields_done[] = ['LABEL' => lorem_phrase(), 'VALUE' => lorem_phrase()];
@@ -1405,7 +1405,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array A pair: Details of core extended emoticons, Details of non-core extended emoticons
      */
-    protected function extended_emoticons()
+    protected function extended_emoticons() : array
     {
         $core_emoticons = [
             ':dry:' => ['dry', false],
@@ -1472,7 +1472,7 @@ class Hook_addon_registry_core_cns
      *
      * @return array A map of available predefined content codenames, and details (if installed, and title)
      */
-    public function enumerate_predefined_content()
+    public function enumerate_predefined_content() : array
     {
         $ret = [];
 
@@ -1523,7 +1523,7 @@ class Hook_addon_registry_core_cns
      *
      * @param  ?array $content A list of predefined content labels to install (null: all)
      */
-    public function install_predefined_content($content = null)
+    public function install_predefined_content(?array $content = null)
     {
         if (($content === null) || (in_array('have_default_full_emoticon_set', $content))) {
             if (!has_predefined_content('core_cns', 'have_default_full_emoticon_set')) {
@@ -1554,7 +1554,7 @@ class Hook_addon_registry_core_cns
      *
      * @param  ?array $content A list of predefined content labels to uninstall (null: all)
      */
-    public function uninstall_predefined_content($content = null)
+    public function uninstall_predefined_content(?array $content = null)
     {
         if ((($content === null) || (in_array('have_default_full_emoticon_set', $content))) && (has_predefined_content('core_cns', 'have_default_full_emoticon_set'))) {
             list($core_emoticons, $supported_emoticons) = $this->extended_emoticons();
@@ -1583,7 +1583,7 @@ class Hook_addon_registry_core_cns
      *
      * @param  ID_TEXT $codename The identifier of the predefined Custom Profile Field
      */
-    protected function delete_predefined_content_field($codename)
+    protected function delete_predefined_content_field(string $codename)
     {
         require_lang('cns');
         require_lang('cns_special_cpf');

@@ -34,7 +34,7 @@ To use JSON in Composr, use standard PHP functions.
  *
  * @return string XML
  */
-function get_xml_entities()
+function get_xml_entities() : string
 {
     return '
         <!DOCTYPE xc:content [
@@ -73,7 +73,7 @@ function get_xml_entities()
  * @param  ?string $charset Charset (null: current)
  * @return string Escaped version of input string
  */
-function xmlentities($string, $charset = null)
+function xmlentities(string $string, ?string $charset = null) : string
 {
     if ($charset === null) {
         $charset = get_charset();
@@ -95,7 +95,7 @@ function xmlentities($string, $charset = null)
  * @param  string $charset The character set we are using for $data (both in and out)
  * @return string Valid XHTML
  */
-function convert_bad_entities($data, $charset = 'ISO-8859-1')
+function convert_bad_entities(string $data, string $charset = 'ISO-8859-1') : string
 {
     if ((cms_strtoupper_ascii($charset) != 'ISO-8859-1') && (cms_strtolower_ascii($charset) != 'utf-8')) {
         $charset = 'ISO-8859-1';
@@ -131,7 +131,7 @@ class CMS_simple_xml_reader
      *
      * @param  string $xml_data The XML data
      */
-    public function __construct($xml_data)
+    public function __construct(string $xml_data)
     {
         $this->gleamed = [];
         $this->error = null;
@@ -178,11 +178,11 @@ class CMS_simple_xml_reader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $name The name of the element found
      * @param  array $attributes Array of attributes of the element
      */
-    public function startElement($parser, $name, $attributes)
+    public function startElement($parser, string $name, array $attributes)
     {
         array_push($this->tag_stack, $name);
         array_push($this->attribute_stack, $attributes);
@@ -193,7 +193,7 @@ class CMS_simple_xml_reader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      */
     public function endElement($parser)
     {
@@ -214,10 +214,10 @@ class CMS_simple_xml_reader
     /**
      * Standard PHP XML parser function.
      *
-     * @param  object $parser The parser object (same as 'this')
+     * @param  mixed $parser The parser
      * @param  string $data The text
      */
-    public function startText($parser, $data)
+    public function startText($parser, string $data)
     {
         $next_top_tags_text = array_pop($this->text_stack);
         $next_top_tags_text .= $data;
@@ -235,7 +235,7 @@ class CMS_simple_xml_reader
      * @param  array $xml_namespaces XML namespaces [ 'ns-prefix:' => 'http://example.com/namespace-uri' ]
      * @return string The combined XML
      */
-    public function pull_together($xml_children, $xml_namespaces = [])
+    public function pull_together(array $xml_children, array $xml_namespaces = []) : string
     {
         $data = '';
         foreach ($xml_children as $_) {
@@ -267,7 +267,7 @@ class CMS_simple_xml_reader
      * @param  array $xml_namespaces XML namespaces [ 'ns-prefix:' => 'http://example.com/namespace-uri' ]
      * @return string
      */
-    protected function _fix_namespace($node_name, $xml_namespaces)
+    protected function _fix_namespace(string $node_name, array $xml_namespaces) : string
     {
         if (strpos($node_name, ':') === false) {
             return $node_name;

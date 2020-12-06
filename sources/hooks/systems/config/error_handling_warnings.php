@@ -28,7 +28,7 @@ class Hook_config_error_handling_warnings
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ERROR_HANDLING_WARNINGS',
@@ -52,7 +52,7 @@ class Hook_config_error_handling_warnings
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         return 'FATAL';
     }

@@ -35,7 +35,7 @@ class Module_calendar
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -80,7 +80,7 @@ class Module_calendar
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_lang('calendar');
 
@@ -295,7 +295,7 @@ class Module_calendar
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('calendar')) {
             return null;
@@ -322,7 +322,7 @@ class Module_calendar
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('calendar', $error_msg)) {
@@ -436,7 +436,7 @@ class Module_calendar
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_lang('dates');
         require_css('calendar');
@@ -479,7 +479,7 @@ class Module_calendar
      * @param  boolean $only_event_types Whether to only show event types
      * @return array The filter
      */
-    public function get_filter($only_event_types = false)
+    public function get_filter(bool $only_event_types = false) : array
     {
         $filter = [];
         static $types = null;
@@ -528,7 +528,7 @@ class Module_calendar
      * @param  boolean $only_event_types Whether to only show event types
      * @return array The filter
      */
-    public function get_and_filter($only_event_types = false)
+    public function get_and_filter(bool $only_event_types = false) : array
     {
         $and_filter = [];
         $filter = $this->get_filter($only_event_types);
@@ -545,7 +545,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function view_calendar()
+    public function view_calendar() : object
     {
         check_privilege('view_calendar');
 
@@ -835,7 +835,7 @@ class Module_calendar
      * @param  ?array $filter The type filter (null: no filter)
      * @return Tempcode The UI
      */
-    public function view_calendar_view_day($view_id, $day, $explode, $member_id, $filter)
+    public function view_calendar_view_day(string $view_id, string $day, array $explode, int $member_id, ?array $filter) : object
     {
         $start_year = intval($explode[0]);
         $start_month = intval($explode[1]);
@@ -972,7 +972,7 @@ class Module_calendar
      * @param  ?array $filter The type filter (null: no filter)
      * @return Tempcode The UI
      */
-    public function view_calendar_view_week($view_id, $day, $explode, $member_id, $filter)
+    public function view_calendar_view_week(string $view_id, string $day, array $explode, int $member_id, ?array $filter) : object
     {
         $start_year = intval($explode[0]);
         $start_week = intval($explode[1]);
@@ -1192,7 +1192,7 @@ class Module_calendar
      * @param  ?array $filter The type filter (null: no filter)
      * @return Tempcode The UI
      */
-    public function view_calendar_view_month($view_id, $day, $explode, $member_id, $filter)
+    public function view_calendar_view_month(string $view_id, string $day, array $explode, int $member_id, ?array $filter) : object
     {
         $period_start = mktime(0, 0, 0, intval($explode[1]), 1, intval($explode[0]));
         $period_end = mktime(0, 0, 0, intval($explode[1]) + 1, 1, intval($explode[0]));
@@ -1325,7 +1325,7 @@ class Module_calendar
      * @param  ?array $filter The type filter (null: no filter)
      * @return Tempcode The UI
      */
-    public function view_calendar_view_year($view_id, $day, $explode, $member_id, $filter)
+    public function view_calendar_view_year(string $view_id, string $day, array $explode, int $member_id, ?array $filter) : object
     {
         $period_start = mktime(0, 0, 0, 1, 1, intval($explode[0]));
         $period_end = mktime(0, 0, 0, 1, 0, intval($explode[0]) + 1);
@@ -1521,7 +1521,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function view_event()
+    public function view_event() : object
     {
         $id = $this->id;
         $event = $this->event;
@@ -1694,7 +1694,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function subscribe_event()
+    public function subscribe_event() : object
     {
         $this->title = get_screen_title('SUBSCRIBE_EVENT');
 
@@ -1742,7 +1742,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function _subscribe_event()
+    public function _subscribe_event() : object
     {
         $this->title = get_screen_title('SUBSCRIBE_EVENT');
 
@@ -1798,7 +1798,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function unsubscribe_event()
+    public function unsubscribe_event() : object
     {
         $this->title = get_screen_title('UNSUBSCRIBE_EVENT');
 
@@ -1818,7 +1818,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function interests()
+    public function interests() : object
     {
         $types = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id']);
 
@@ -1840,7 +1840,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function declare_interest()
+    public function declare_interest() : object
     {
         $this->title = get_screen_title('DECLARE_EVENT_INTEREST');
 
@@ -1855,7 +1855,7 @@ class Module_calendar
      *
      * @return Tempcode The UI
      */
-    public function undeclare_interest()
+    public function undeclare_interest() : object
     {
         $this->title = get_screen_title('UNDECLARE_EVENT_INTEREST');
 

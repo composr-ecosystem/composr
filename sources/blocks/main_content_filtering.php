@@ -28,7 +28,7 @@ class Block_main_content_filtering
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -47,7 +47,7 @@ class Block_main_content_filtering
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $block_id = get_block_id($map);
 
@@ -100,7 +100,7 @@ class Block_main_content_filtering
      * @param  string $separator Separator between pairs
      * @return array Mapping
      */
-    protected function interpret_pairs_from_string($str, $separator = ',')
+    protected function interpret_pairs_from_string(string $str, string $separator = ',') : array
     {
         $pairs = [];
         $matches = [];

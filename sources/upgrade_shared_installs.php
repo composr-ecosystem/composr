@@ -35,7 +35,7 @@ function init__upgrade_shared_installs()
  * @ignore
  * @return string Output messages
  */
-function upgrader_sharedinstall_screen()
+function upgrader_sharedinstall_screen() : string
 {
     // We typically will never use this function (called from main upgrader UI).
     // Instead we use demonstratr_upgrade.php, which steps things through better, and calls the same upgrade_sharedinstall_sites function.
@@ -56,7 +56,7 @@ function upgrader_sharedinstall_screen()
  *
  * @param  integer $from Position to proceed from
  */
-function upgrade_sharedinstall_sites($from = 0)
+function upgrade_sharedinstall_sites(int $from = 0)
 {
     global $CURRENT_SHARE_USER, $SITE_INFO, $TABLE_LANG_FIELDS_CACHE;
 

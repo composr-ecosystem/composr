@@ -28,7 +28,7 @@ class Hook_snippet_block
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         $sup = get_param_string('block_map_sup', '', INPUT_FILTER_GET_COMPLEX);
         $_map = get_param_string('block_map', false, INPUT_FILTER_GET_COMPLEX);

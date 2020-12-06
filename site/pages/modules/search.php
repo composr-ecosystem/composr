@@ -28,7 +28,7 @@ class Module_search
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -59,7 +59,7 @@ class Module_search
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('searches_logged', [
@@ -100,7 +100,7 @@ class Module_search
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('search')) {
             return null;
@@ -120,7 +120,7 @@ class Module_search
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('search', $error_msg)) {
@@ -188,7 +188,7 @@ class Module_search
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_css('search');
         require_css('forms');
@@ -210,7 +210,7 @@ class Module_search
      *
      * @return Tempcode The UI
      */
-    public function form()
+    public function form() : object
     {
         $id = get_param_string('id', '');
 
@@ -564,7 +564,7 @@ class Module_search
      * @param  string $search_under Comma-separated list of categories to search under
      * @return array A triple: The results, pagination, the number of results
      */
-    public function results($id, $author, $author_id, $cutoff, $sort, $direction, $only_titles, $search_under)
+    public function results(string $id, string $author, ?int $author_id, $cutoff, string $sort, string $direction, bool $only_titles, string $search_under) : array
     {
         cache_module_installed_status();
 

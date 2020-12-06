@@ -55,7 +55,7 @@ function init__wordfilter()
  * @param  boolean $perm_check Whether to allow permission-based skipping, and length-based skipping
  * @return string "Fixed" version
  */
-function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false, $perm_check = true)
+function check_wordfilter(string $a, ?string $name = null, bool $exit = true, bool $try_patterns = false, bool $perm_check = true) : string
 {
     global $WORDFILTERING_ALREADY;
     if ($WORDFILTERING_ALREADY) {
@@ -160,7 +160,7 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
  * @param  Tempcode $message Error message
  * @exits
  */
-function warn_exit_wordfilter($name, $message)
+function warn_exit_wordfilter(?string $name, object $message)
 {
     global $WORDFILTERING_ALREADY;
     $WORDFILTERING_ALREADY = true;
@@ -210,7 +210,7 @@ function warn_exit_wordfilter($name, $message)
  * @param  integer $length Desired length of string
  * @return string Generated grawlixes
  */
-function generate_grawlixes($length)
+function generate_grawlixes(int $length) : string
 {
     $symbols = ['!', '@', '#', '$', '%', '&', '*'];
 

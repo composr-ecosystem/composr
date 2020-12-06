@@ -46,7 +46,7 @@ function init__calendar()
  * @param  ?Tempcode $text_summary Text summary for result (e.g. highlighted portion of actual file from search result) (null: none)
  * @return Tempcode The event box
  */
-function render_event_box($row, $zone = '_SEARCH', $give_context = true, $guid = '', $text_summary = null)
+function render_event_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '', ?object $text_summary = null) : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -83,7 +83,7 @@ function render_event_box($row, $zone = '_SEARCH', $give_context = true, $guid =
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_calendar_type_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_calendar_type_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -124,7 +124,7 @@ function render_calendar_type_box($row, $zone = '_SEARCH', $give_context = true,
  * @param  boolean $within_year Whether to do it contextually to the year, rather than including the year
  * @return string The week number
  */
-function get_week_number_for($timestamp, $within_year = false)
+function get_week_number_for(int $timestamp, bool $within_year = false) : string
 {
     $ssw = (get_option('ssw') == '1');
 
@@ -144,7 +144,7 @@ function get_week_number_for($timestamp, $within_year = false)
  * @param  integer $week Week #
  * @return array Month #,Day #,Year #
  */
-function date_from_week_of_year($year, $week)
+function date_from_week_of_year(int $year, int $week) : array
 {
     $ssw = (get_option('ssw') == '1');
 
@@ -192,7 +192,7 @@ function date_from_week_of_year($year, $week)
  * @param  ?integer $max Maximum to return (null: no limit)
  * @return array A list of pairs for period times (timestamps, in user-time). Actually a series of pairs, 'window-bound timestamps' is first pair, then 'true coverage timestamps', then 'true coverage timestamps without timezone conversions'
  */
-function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $period_start = null, $period_end = null, $max = null)
+function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, ?int $start_hour, ?int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, string $recurrence, ?int $recurrences, ?int $period_start = null, ?int $period_end = null, ?int $max = null) : array
 {
     if ($recurrences === 0) {
         return [];
@@ -474,7 +474,7 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
  *
  * @ignore
  */
-function _compensate_for_dst_change(&$hour, &$minute, $day_of_month, $month, $year, $timezone, $do_timezone_conv, $dif_day, $dif_month, $dif_year)
+function _compensate_for_dst_change(?int &$hour, ?int &$minute, int $day_of_month, int $month, int $year, string $timezone, int $do_timezone_conv, int $dif_day, int $dif_month, int $dif_year)
 {
     // NB: When debugging this be a little careful that the DST change for viewing timezone may not be the same as $timezone, so the hour may indeed jump about in expected output  ---  also check e_do_timezone_conv may not be set on the event, as that heavily effects what you see in the timestamp pipeline
 
@@ -508,7 +508,7 @@ function _compensate_for_dst_change(&$hour, &$minute, $day_of_month, $month, $ye
  * @param  integer $initial_end_year End year
  * @return integer The number of days
  */
-function get_days_between($initial_start_month, $initial_start_day, $initial_start_year, $initial_end_month, $initial_end_day, $initial_end_year)
+function get_days_between(int $initial_start_month, int $initial_start_day, int $initial_start_year, int $initial_end_month, int $initial_end_day, int $initial_end_year) : int
 {
     $a_new = mktime(12, 0, 0, $initial_start_month, $initial_start_day, $initial_start_year);
     $b_new = mktime(12, 0, 0, $initial_end_month, $initial_end_day, $initial_end_year);
@@ -522,7 +522,7 @@ function get_days_between($initial_start_month, $initial_start_day, $initial_sta
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode The list
  */
-function create_selection_list_event_types($it = null, $updated_since = null)
+function create_selection_list_event_types(?int $it = null, ?int $updated_since = null) : object
 {
     $type_list = new Tempcode();
     $where = '1=1';
@@ -572,7 +572,7 @@ function create_selection_list_event_types($it = null, $updated_since = null)
  * @param  AUTO_LINK $id The ID of the event
  * @param  boolean $force Force evaluation even if it's in the past. Only valid for code events
  */
-function regenerate_event_reminder_jobs($id, $force = false)
+function regenerate_event_reminder_jobs(int $id, bool $force = false)
 {
     $events = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], ['id' => $id], '', 1);
 
@@ -630,7 +630,7 @@ function regenerate_event_reminder_jobs($id, $force = false)
  * @param  string $timezone Display timezone
  * @return string Textual specially-formatted range
  */
-function date_range($from, $to, $do_time = true, $force_absolute = false, $timezone = '')
+function date_range(int $from, ?int $to, bool $do_time = true, bool $force_absolute = false, string $timezone = '') : string
 {
     if ($to === null) {
         return get_timezoned_date($from, false);
@@ -696,7 +696,7 @@ function date_range($from, $to, $do_time = true, $force_absolute = false, $timez
  * @param  boolean $now_anchored_window Whether the time window is primarily anchored around the current time, allowing us to use e_previous_recurrence_time/e_next_recurrence_time to limit event search scope
  * @return array A list of events happening, with time details
  */
-function calendar_matches($auth_member_id, $member_id, $restrict, $period_start, $period_end, $filter = null, $do_rss = true, $private = null, $check_perms = true, $now_anchored_window = false)
+function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?int $period_start, ?int $period_end, ?array $filter = null, bool $do_rss = true, ?int $private = null, bool $check_perms = true, bool $now_anchored_window = false) : array
 {
     if ($period_start === null) {
         $period_start = utctime_to_usertime(time());
@@ -931,7 +931,7 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
  * @param  boolean $edit_viewable_events Whether owned public events should be shown
  * @return Tempcode The list
  */
-function create_selection_list_events($only_owned, $it, $edit_viewable_events = true)
+function create_selection_list_events(?int $only_owned, ?int $it, bool $edit_viewable_events = true) : object
 {
     $where = [];
     if ($only_owned !== null) {
@@ -980,7 +980,7 @@ function create_selection_list_events($only_owned, $it, $edit_viewable_events = 
  * @param  integer $scope_type The scope type, DETECT_CONFLICT_SCOPE_*
  * @return ?Tempcode Information about conflicts (null: none)
  */
-function detect_conflicts($member_id, $skip_id, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $type, $member_calendar, $scope_type)
+function detect_conflicts(int $member_id, ?int $skip_id, ?int $start_year, ?int $start_month, ?int $start_day, string $start_monthly_spec_type, ?int $start_hour, ?int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, string $recurrence, ?int $recurrences, int $type, ?int $member_calendar, int $scope_type) : ?object
 {
     if ($scope_type == DETECT_CONFLICT_SCOPE_NONE) {
         return null;
@@ -1070,7 +1070,7 @@ function detect_conflicts($member_id, $skip_id, $start_year, $start_month, $star
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return integer Hour
  */
-function find_timezone_start_hour_in_utc($timezone, $year, $month, $day, $monthly_spec_type)
+function find_timezone_start_hour_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
     $_hour = 0;
     $_minute = 0;
@@ -1093,7 +1093,7 @@ function find_timezone_start_hour_in_utc($timezone, $year, $month, $day, $monthl
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return integer Hour
  */
-function find_timezone_start_minute_in_utc($timezone, $year, $month, $day, $monthly_spec_type)
+function find_timezone_start_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
     $_hour = 0;
     $_minute = 0;
@@ -1116,7 +1116,7 @@ function find_timezone_start_minute_in_utc($timezone, $year, $month, $day, $mont
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return integer Hour
  */
-function find_timezone_end_hour_in_utc($timezone, $year, $month, $day, $monthly_spec_type)
+function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
     $_hour = 0;
     $_minute = 0;
@@ -1139,7 +1139,7 @@ function find_timezone_end_hour_in_utc($timezone, $year, $month, $day, $monthly_
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return integer Hour
  */
-function find_timezone_end_minute_in_utc($timezone, $year, $month, $day, $monthly_spec_type)
+function find_timezone_end_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
     $_hour = 0;
     $_minute = 0;
@@ -1158,7 +1158,7 @@ function find_timezone_end_minute_in_utc($timezone, $year, $month, $day, $monthl
  * @param  ID_TEXT $zone The timezone the components are in (this is important as DST-rollovers will vary, so we need to know this to interpret things correctly)
  * @return array Adjusted components
  */
-function normalise_time_array($arr, $zone)
+function normalise_time_array(array $arr, string $zone) : array
 {
     list($minute, $hour, $month, $day, $year) = $arr;
 
@@ -1197,7 +1197,7 @@ function normalise_time_array($arr, $zone)
  * @param  boolean $show_in_users_timezone Whether the time will be converted to the $timezone instead of UTC *later*. If not then the "UTC time" returned is actually gauged for $timezone, as that's how it was opted to be displayed.
  * @return TIME Timestamp
  */
-function cal_get_start_utctime_for_event($timezone, $year, $month, $day, $monthly_spec_type, $hour, $minute, $show_in_users_timezone)
+function cal_get_start_utctime_for_event(string $timezone, int $year, int $month, int $day, string $monthly_spec_type, ?int $hour, ?int $minute, bool $show_in_users_timezone) : int
 {
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $hour, $minute, $timezone, $show_in_users_timezone);
 
@@ -1234,7 +1234,7 @@ function cal_get_start_utctime_for_event($timezone, $year, $month, $day, $monthl
  * @param  boolean $show_in_users_timezone Whether the time will be converted to the $timezone instead of UTC *later*. If not then the "UTC time" returned is actually gauged for $timezone, as that's how it was opted to be displayed.
  * @return TIME Timestamp
  */
-function cal_get_end_utctime_for_event($timezone, $year, $month, $day, $monthly_spec_type, $hour, $minute, $show_in_users_timezone)
+function cal_get_end_utctime_for_event(string $timezone, int $year, int $month, int $day, string $monthly_spec_type, ?int $hour, ?int $minute, bool $show_in_users_timezone) : int
 {
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $hour, $minute, $timezone, $show_in_users_timezone);
 
@@ -1264,7 +1264,7 @@ function cal_get_end_utctime_for_event($timezone, $year, $month, $day, $monthly_
  * @param  boolean $show_in_users_timezone Whether the time should be converted to the viewer's own timezone instead (if so $timestamp must be in UTC)
  * @return TIME Altered timestamp
  */
-function cal_utctime_to_usertime($timestamp, $show_in_users_timezone)
+function cal_utctime_to_usertime(int $timestamp, bool $show_in_users_timezone) : int
 {
     if ((!$show_in_users_timezone) || (get_option('enable_timezones') === '0')) {
         return $timestamp;
@@ -1283,7 +1283,7 @@ function cal_utctime_to_usertime($timestamp, $show_in_users_timezone)
  * @param  ?TIME $period_end The timestamp that found times must not exceed. In user-time (null: use find_periods_recurrence default)
  * @return array A list of events happening, with time details
  */
-function detect_happening_at($member_id, $skip_id, $our_times, $restrict = true, $period_start = null, $period_end = null)
+function detect_happening_at(int $member_id, ?int $skip_id, array $our_times, bool $restrict = true, ?int $period_start = null, ?int $period_end = null) : array
 {
     if (empty($our_times)) {
         return [];
@@ -1389,7 +1389,7 @@ function detect_happening_at($member_id, $skip_id, $our_times, $restrict = true,
  * @param  boolean $show_in_users_timezone Whether to do a timezone conversion (NB: unused, as this is before conversion to what dates users see - we are only using timezones here to push the nth weekday appropriately to the correct timezone, due to alignment problems)
  * @return integer Concrete day
  */
-function find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $hour, $minute, $timezone, $show_in_users_timezone)
+function find_concrete_day_of_month(int $year, int $month, int $day, string $monthly_spec_type, int $hour, int $minute, string $timezone, bool $show_in_users_timezone) : int
 {
     switch ($monthly_spec_type) {
         case 'day_of_month':
@@ -1443,7 +1443,7 @@ function find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $ho
  * @return integer Concrete day
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  */
-function find_abstract_day($year, $month, $day_of_month, $monthly_spec_type)
+function find_abstract_day(int $year, int $month, int $day_of_month, string $monthly_spec_type) : int
 {
     switch ($monthly_spec_type) {
         case 'day_of_month':
@@ -1493,7 +1493,7 @@ function find_abstract_day($year, $month, $day_of_month, $monthly_spec_type)
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return Tempcode Chooser
  */
-function monthly_spec_type_chooser($day_of_month, $month, $year, $default_monthly_spec_type = 'day_of_month')
+function monthly_spec_type_chooser(int $day_of_month, int $month, int $year, string $default_monthly_spec_type = 'day_of_month') : object
 {
     require_code('form_templates');
     require_lang('calendar');
@@ -1530,7 +1530,7 @@ function monthly_spec_type_chooser($day_of_month, $month, $year, $default_monthl
  * @param  string $timezone Timezone of the viewer
  * @return array Adjusted event row
  */
-function adjust_event_dates_for_a_recurrence($day, $event, $timezone)
+function adjust_event_dates_for_a_recurrence(string $day, array $event, string $timezone) : array
 {
     $explode = explode('-', $day);
     if (count($explode) == 3) {
@@ -1614,7 +1614,7 @@ function adjust_event_dates_for_a_recurrence($day, $event, $timezone)
  * @param  ID_TEXT $timezone The timezone of the event
  * @return array A pair: shift in hours, shift in minutes
  */
-function dst_boundary_difference_for_recurrence($a_year, $a_month, $a_day, $b_year, $b_month, $b_day, $timezone)
+function dst_boundary_difference_for_recurrence(int $a_year, int $a_month, int $a_day, int $b_year, int $b_month, int $b_day, string $timezone) : array
 {
     $dif_hours = intval(date('H', tz_time(mktime(0, 0, 0, $a_month, $a_day, $a_year), $timezone))) - intval(date('H', tz_time(mktime(0, 0, 0, $b_month, $b_day, $b_year), $timezone)));
     $dif_minutes = intval(date('i', tz_time(mktime(0, 0, 0, $a_month, $a_day, $a_year), $timezone))) - intval(date('i', tz_time(mktime(0, 0, 0, $b_month, $b_day, $b_year), $timezone)));
@@ -1630,7 +1630,7 @@ function dst_boundary_difference_for_recurrence($a_year, $a_month, $a_day, $b_ye
  * @param  array $event Event row
  * @return array Event row
  */
-function resolve_complex_event_end_date($event)
+function resolve_complex_event_end_date(array $event) : array
 {
     if (($event['e_end_year'] !== null) && ($event['e_end_month'] !== null) && ($event['e_end_day'] !== null)) {
         if ($event['e_end_monthly_spec_type'] != 'day_of_month') {
@@ -1654,7 +1654,7 @@ function resolve_complex_event_end_date($event)
  * @param  array $event Event row
  * @return array A pair: timestamp, timestamp considering the viewing users timezone
  */
-function find_event_start_timestamp($event)
+function find_event_start_timestamp(array $event) : array
 {
     $time = cal_get_start_utctime_for_event($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type'], $event['e_start_hour'], $event['e_start_minute'], $event['e_do_timezone_conv'] == 1);
 
@@ -1672,7 +1672,7 @@ function find_event_start_timestamp($event)
  * @param  array $event Event row
  * @return array A pair: timestamp, timestamp considering the viewing users timezone
  */
-function find_event_end_timestamp($event)
+function find_event_end_timestamp(array $event) : array
 {
     $time = cal_get_end_utctime_for_event($event['e_timezone'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type'], $event['e_end_hour'], $event['e_end_minute'], $event['e_do_timezone_conv'] == 1);
 
@@ -1690,7 +1690,7 @@ function find_event_end_timestamp($event)
  * @param  array $event Event row
  * @return integer Concrete day
  */
-function start_find_concrete_day_of_month_wrap($event)
+function start_find_concrete_day_of_month_wrap(array $event) : int
 {
     $start_hour = ($event['e_start_hour'] === null) ? find_timezone_start_hour_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_hour'];
     $start_minute = ($event['e_start_minute'] === null) ? find_timezone_start_minute_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_minute'];
@@ -1703,7 +1703,7 @@ function start_find_concrete_day_of_month_wrap($event)
  * @param  array $event Event row
  * @return integer Concrete day
  */
-function end_find_concrete_day_of_month_wrap($event)
+function end_find_concrete_day_of_month_wrap(array $event) : int
 {
     $end_hour = ($event['e_end_hour'] === null) ? find_timezone_end_hour_in_utc($event['e_timezone'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type']) : $event['e_end_hour'];
     $end_minute = ($event['e_end_minute'] === null) ? find_timezone_end_minute_in_utc($event['e_timezone'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type']) : $event['e_end_minute'];
@@ -1716,7 +1716,7 @@ function end_find_concrete_day_of_month_wrap($event)
  * @param  array $row Event row
  * @return TIME Timestamp
  */
-function get_calendar_event_first_date_wrap($row)
+function get_calendar_event_first_date_wrap(array $row) : int
 {
     $timezone = $row['e_timezone'];
     $do_timezone_conv = $row['e_do_timezone_conv'];
@@ -1763,7 +1763,7 @@ function get_calendar_event_first_date_wrap($row)
  * @param  boolean $force_first Whether to forcibly get the first recurrence, not a future one
  * @return array A tuple: Written date [range], from timestamp, to timestamp
  */
-function get_calendar_event_first_date($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $force_first = false)
+function get_calendar_event_first_date(?string $timezone, int $do_timezone_conv, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, int $start_hour, int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, string $recurrence, ?int $recurrences, bool $force_first = false) : array
 {
     if ($timezone === null) {
         $timezone = get_users_timezone();

@@ -28,7 +28,7 @@ class Hook_config_payment_gateway
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PAYMENT_GATEWAY',
@@ -52,7 +52,7 @@ class Hook_config_payment_gateway
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -70,7 +70,7 @@ class Hook_config_payment_gateway
      * @param  Tempcode $explanation The field description
      * @return Tempcode The inputter
      */
-    public function field_inputter($name, $myrow, $human_name, $explanation)
+    public function field_inputter(string $name, array $myrow, object $human_name, object $explanation) : object
     {
         $list = new Tempcode();
         $all_payment_gateways = find_all_hooks('systems', 'payment_gateway');

@@ -28,7 +28,7 @@ class Hook_cleanup_orphaned_tags
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('ORPHANED_TAGS');
@@ -43,7 +43,7 @@ class Hook_cleanup_orphaned_tags
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('content');
         $hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');

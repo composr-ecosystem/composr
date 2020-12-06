@@ -28,7 +28,7 @@ class Hook_preview_setupwizard
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('setupwizard')) && (get_page_name() == 'admin_setupwizard') && (get_param_string('type', '') == 'step8');
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_setupwizard
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         $_GET['keep_theme_seed'] = post_param_string('seed_hex');
         $_GET['keep_theme_dark'] = post_param_string('dark', '0');

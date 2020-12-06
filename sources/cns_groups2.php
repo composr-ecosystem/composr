@@ -28,7 +28,7 @@
  * @param  boolean $include_unvalidated_members Whether to include those members who are not validated as site members at all yet (parameter currently ignored)
  * @return integer The count
  */
-function cns_get_group_members_raw_count($group_id, $include_primaries = true, $non_validated = false, $include_secondaries = true, $include_unvalidated_members = true)
+function cns_get_group_members_raw_count(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_unvalidated_members = true) : int
 {
     // Find for conventional members
     $where = ['gm_group_id' => $group_id];
@@ -94,7 +94,7 @@ function cns_get_group_members_raw_count($group_id, $include_primaries = true, $
  * @param  integer $start Return primary members after this offset and secondary members after this offset
  * @return array The list
  */
-function cns_get_group_members_raw($group_id, $include_primaries = true, $non_validated = false, $include_secondaries = true, $include_unvalidated_members = true, $max = null, $start = 0)
+function cns_get_group_members_raw(int $group_id, bool $include_primaries = true, bool $non_validated = false, bool $include_secondaries = true, bool $include_unvalidated_members = true, ?int $max = null, int $start = 0) : array
 {
     // Find for conventional members
     $where = ['gm_group_id' => $group_id];
@@ -161,7 +161,7 @@ function cns_get_group_members_raw($group_id, $include_primaries = true, $non_va
  *
  * @return array Rank ladder groups
  */
-function get_default_rank_ladder_groups()
+function get_default_rank_ladder_groups() : array
 {
     $groups = [];
     $group = get_first_default_group();
@@ -178,7 +178,7 @@ function get_default_rank_ladder_groups()
  * @param  boolean $only_preserve_first_admin_groups Whether to only preserve the first admin/moderator group
  * @return array Preserved groups
  */
-function get_all_preserved_groups($only_preserve_first_admin_groups = false)
+function get_all_preserved_groups(bool $only_preserve_first_admin_groups = false) : array
 {
     require_code('cns_groups');
     $all_groups_to_preserve = [];

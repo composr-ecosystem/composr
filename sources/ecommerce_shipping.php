@@ -45,7 +45,7 @@ function init__ecommerce_shipping()
  * @param  ?MEMBER $member_id The member this is for (null: current member)
  * @return REAL The shipping cost
  */
-function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$product_length, &$product_width, &$product_height, $member_id = null)
+function calculate_shipping_cost(?array $details, ?float $shipping_cost, ?float &$product_weight, ?float &$product_length, ?float &$product_width, ?float &$product_height, ?int $member_id = null) : float
 {
     // ADD CUSTOM CODE HERE BY OVERRIDING THIS FUNCTION
 
@@ -273,7 +273,7 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
  * @param  string $country ISO country code
  * @return string Shippo-compatible code
  */
-function _make_country_for_shippo($country)
+function _make_country_for_shippo(string $country) : string
 {
     if ($country == 'UK') {
         $country = 'GB'; // A quirk of ISO. Actually 'UK' should not be in the system
@@ -286,7 +286,7 @@ function _make_country_for_shippo($country)
  *
  * @return float Base shipping cost
  */
-function get_base_shipping_cost()
+function get_base_shipping_cost() : float
 {
     static $ret = null;
 
@@ -314,7 +314,7 @@ function get_base_shipping_cost()
  * @param  boolean $require_all_details Whether to require all details to be input
  * @return Tempcode Address fields
  */
-function get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $require_all_details = true)
+function get_shipping_address_fields(string $shipping_email, string $shipping_phone, string $shipping_firstname, string $shipping_lastname, string $shipping_street_address, string $shipping_city, string $shipping_county, string $shipping_state, string $shipping_post_code, string $shipping_country, bool $require_all_details = true) : object
 {
     $fields = new Tempcode();
 
@@ -333,7 +333,7 @@ function get_shipping_address_fields($shipping_email, $shipping_phone, $shipping
  * @param  boolean $require_all_details Whether to require all details to be input
  * @return Tempcode Name fields
  */
-function get_shipping_name_fields($shipping_firstname, $shipping_lastname, $require_all_details = true)
+function get_shipping_name_fields(string $shipping_firstname, string $shipping_lastname, bool $require_all_details = true) : object
 {
     $fields = new Tempcode();
 
@@ -351,7 +351,7 @@ function get_shipping_name_fields($shipping_firstname, $shipping_lastname, $requ
  * @param  boolean $require_all_details Whether to require all details to be input
  * @return Tempcode Contact fields
  */
-function get_shipping_contact_fields($shipping_email, $shipping_phone, $require_all_details = true)
+function get_shipping_contact_fields(string $shipping_email, string $shipping_phone, bool $require_all_details = true) : object
 {
     $fields = new Tempcode();
 
@@ -370,7 +370,7 @@ function get_shipping_contact_fields($shipping_email, $shipping_phone, $require_
  * @param  ?array $shipping_address Shipping address (null: get from POST parameters)
  * @return ?AUTO_LINK Address ID (null: none saved)
  */
-function store_shipping_address($trans_expecting_id, $txn_id = '', $shipping_address = null)
+function store_shipping_address(string $trans_expecting_id, string $txn_id = '', ?array $shipping_address = null) : ?int
 {
     $field_groups = [
         ['a_firstname', 'a_lastname'],

@@ -85,7 +85,7 @@ function init__m_zip()
          * @param  PATH $zip_file The ZIP file path
          * @return mixed The ZIP file resource (number if error)
          */
-        function zip_open($zip_file)
+        function zip_open(string $zip_file)
         {
             return m_zip_open($zip_file);
         }
@@ -96,7 +96,7 @@ function init__m_zip()
          * @param  array $open_zip_file The ZIP file resource
          * @return boolean Whether the file closed correctly
          */
-        function zip_close($open_zip_file)
+        function zip_close(array $open_zip_file) : bool
         {
             return m_zip_close($open_zip_file);
         }
@@ -107,7 +107,7 @@ function init__m_zip()
          * @param  array $open_zip_file The ZIP file resource
          * @return ~array A directory entry resource for later use with the m_zip_entry_...() functions (false: if there's no more entries to read).
          */
-        function zip_read($open_zip_file)
+        function zip_read(array $open_zip_file)
         {
             return m_zip_read($open_zip_file);
         }
@@ -121,7 +121,7 @@ function init__m_zip()
          * @set rb
          * @return boolean Whether the operation was successful
          */
-        function zip_entry_open($zip, $zip_entry, $mode = 'rb')
+        function zip_entry_open(array $zip, array $zip_entry, string $mode = 'rb') : bool
         {
             return m_zip_entry_open($zip, $zip_entry, $mode);
         }
@@ -132,7 +132,7 @@ function init__m_zip()
          * @param  array $zip_entry Directory entry resource returned by m_zip_read()
          * @return boolean Whether the operation was successful
          */
-        function zip_entry_close($zip_entry)
+        function zip_entry_close(array $zip_entry) : bool
         {
             return m_zip_entry_close($zip_entry);
         }
@@ -143,7 +143,7 @@ function init__m_zip()
          * @param  array $zip_entry Directory entry resource returned by m_zip_read()
          * @return string The entry name
          */
-        function zip_entry_name($zip_entry)
+        function zip_entry_name(array $zip_entry) : string
         {
             return m_zip_entry_name($zip_entry);
         }
@@ -154,7 +154,7 @@ function init__m_zip()
          * @param  array $zip_entry Directory entry resource returned by m_zip_read()
          * @return integer The file size
          */
-        function zip_entry_filesize($zip_entry)
+        function zip_entry_filesize(array $zip_entry) : int
         {
             return m_zip_entry_filesize($zip_entry);
         }
@@ -166,7 +166,7 @@ function init__m_zip()
          * @param  integer $zip_entry_file_size The maximum returned data size
          * @return ~string The data (false: failure)
          */
-        function zip_entry_read($zip_entry, $zip_entry_file_size = 1024)
+        function zip_entry_read(array $zip_entry, int $zip_entry_file_size = 1024)
         {
             return m_zip_entry_read($zip_entry, $zip_entry_file_size);
         }
@@ -179,7 +179,7 @@ function init__m_zip()
  * @param  PATH $zip_file The ZIP file path
  * @return mixed The ZIP file resource (number if error)
  */
-function m_zip_open($zip_file)
+function m_zip_open(string $zip_file)
 {
     global $M_ZIP_DIR_HANDLES, $M_ZIP_DIR_OPEN_PATHS;
 
@@ -246,7 +246,7 @@ function m_zip_open($zip_file)
  * @param  array $open_zip_file The ZIP file resource
  * @return boolean Whether the file closed correctly
  */
-function m_zip_close($open_zip_file)
+function m_zip_close(array $open_zip_file) : bool
 {
     global $M_ZIP_DIR_HANDLES, $M_ZIP_DIR_OPEN_PATHS;
 
@@ -277,7 +277,7 @@ function m_zip_close($open_zip_file)
  * @param  array $open_zip_file The ZIP file resource
  * @return ~array A directory entry resource for later use with the m_zip_entry_...() functions (false: if there's no more entries to read).
  */
-function m_zip_read($open_zip_file)
+function m_zip_read(array $open_zip_file)
 {
     global $M_ZIP_DIR_HANDLES, $M_ZIP_DIR_OPEN_PATHS;
 
@@ -361,7 +361,7 @@ function m_zip_read($open_zip_file)
  * @return PATH The relative path
  * @ignore
  */
-function _m_zip_RelPath($base_path, $path)
+function _m_zip_RelPath(string $base_path, string $path) : string
 {
     //echo("BasePath:$base_path, Path;$path");
     if ($path == $base_path) {
@@ -384,7 +384,7 @@ function _m_zip_RelPath($base_path, $path)
  * @set rb
  * @return boolean Whether the operation was successful
  */
-function m_zip_entry_open($zip, $zip_entry, $mode = 'rb')
+function m_zip_entry_open(array $zip, array $zip_entry, string $mode = 'rb') : bool
 {
     global $M_ZIP_FILE_HANDLES;
 
@@ -402,7 +402,7 @@ function m_zip_entry_open($zip, $zip_entry, $mode = 'rb')
  * @param  array $zip_entry Directory entry resource returned by m_zip_read()
  * @return boolean Whether the operation was successful
  */
-function m_zip_entry_close($zip_entry)
+function m_zip_entry_close(array $zip_entry) : bool
 {
     global $M_ZIP_FILE_HANDLES;
 
@@ -421,7 +421,7 @@ function m_zip_entry_close($zip_entry)
  * @param  array $zip_entry Directory entry resource returned by m_zip_read()
  * @return string The entry name
  */
-function m_zip_entry_name($zip_entry)
+function m_zip_entry_name(array $zip_entry) : string
 {
     return $zip_entry[1] . $zip_entry[0];
 }
@@ -432,7 +432,7 @@ function m_zip_entry_name($zip_entry)
  * @param  array $zip_entry Directory entry resource returned by m_zip_read()
  * @return integer The file size
  */
-function m_zip_entry_filesize($zip_entry)
+function m_zip_entry_filesize(array $zip_entry) : int
 {
     clearstatcache();
     return filesize($zip_entry[2] . $zip_entry[0]);
@@ -445,7 +445,7 @@ function m_zip_entry_filesize($zip_entry)
  * @param  integer $zip_entry_file_size The maximum returned data size
  * @return ~string The data (false: failure)
  */
-function m_zip_entry_read($zip_entry, $zip_entry_file_size = 1024)
+function m_zip_entry_read(array $zip_entry, int $zip_entry_file_size = 1024)
 {
     // Chris: Changed $zip_entry_file_size to default to 1024 as the proper zip_entry_read does -- no parameter does not mean read the whole file
 
@@ -478,7 +478,7 @@ function m_zip_entry_read($zip_entry, $zip_entry_file_size = 1024)
  *
  * @param  PATH $a_dir The path to the directory
  */
-function m_deldir($a_dir)
+function m_deldir(string $a_dir)
 {
     // Support for trailing slash
     if ((substr($a_dir, -1) == '/') || (substr($a_dir, -1) == '\\')) {

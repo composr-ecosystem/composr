@@ -28,7 +28,7 @@ class Hook_config_composr_fast_custom_index__count_estimate
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE',
@@ -51,7 +51,7 @@ class Hook_config_composr_fast_custom_index__count_estimate
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('search')) {
             return null;

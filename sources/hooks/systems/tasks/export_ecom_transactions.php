@@ -33,7 +33,7 @@ class Hook_task_export_ecom_transactions
      * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($start_date, $end_date, $transaction_status, $type_code, $file_type = null)
+    public function run(int $start_date, int $end_date, string $transaction_status, string $type_code, ?string $file_type = null) : ?array
     {
         if (!addon_installed('ecommerce')) {
             return null;

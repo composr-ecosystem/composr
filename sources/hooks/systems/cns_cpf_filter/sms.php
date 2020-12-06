@@ -28,7 +28,7 @@ class Hook_cns_cpf_filter_sms
      *
      * @return array A list of CPFs to enable
      */
-    public function to_enable()
+    public function to_enable() : array
     {
         if (!addon_installed('sms')) {
             return [];

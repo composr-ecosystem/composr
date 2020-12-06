@@ -24,7 +24,7 @@
  * @param  string $_sort Sort order keyword
  * @return array A tuple: Sort order in SQL form, keyset pagination field pattern, keyset pagination field
  */
-function get_forum_sort_order_vforums($_sort = 'first_post')
+function get_forum_sort_order_vforums(string $_sort = 'first_post') : array
 {
     return get_forum_sort_order($_sort, true);
 }
@@ -36,7 +36,7 @@ function get_forum_sort_order_vforums($_sort = 'first_post')
  * @param  boolean $simplified Whether to not include pinning etc in the order
  * @return array A tuple: Sort order in SQL form, keyset pagination field pattern, keyset pagination field
  */
-function get_forum_sort_order($_sort = 'first_post', $simplified = false)
+function get_forum_sort_order(string $_sort = 'first_post', bool $simplified = false) : array
 {
     $sort = 't_cascading DESC,t_pinned DESC,';
 
@@ -111,7 +111,7 @@ function get_forum_sort_order($_sort = 'first_post', $simplified = false)
  * @param  Tempcode $breadcrumbs The breadcrumbs
  * @return mixed Either Tempcode (an interface that must be shown) or a pair: The main Tempcode, the forum name (string). For a PT view, it is always a tuple, never raw Tempcode (as it can go inside a tabset).
  */
-function cns_render_forumview($id, $forum_info, $current_filter_cat, $max, $start, $true_start, $sql_sup, $sql_sup_order_by, $sort, $keyset_clause, $keyset_field, $root, $of_member_id, $breadcrumbs)
+function cns_render_forumview(?int $id, ?array $forum_info, string $current_filter_cat, int $max, int $start, int $true_start, string $sql_sup, string $sql_sup_order_by, string $sort, string $keyset_clause, string $keyset_field, int $root, ?int $of_member_id, object $breadcrumbs)
 {
     require_css('cns');
 
@@ -496,7 +496,7 @@ function cns_render_forumview($id, $forum_info, $current_filter_cat, $max, $star
  * @param  boolean $involved Whether the viewing member has a post in the topic
  * @return array The details
  */
-function cns_get_topic_array($topic_row, $member_id, $hot_topic_definition, $involved)
+function cns_get_topic_array(array $topic_row, int $member_id, int $hot_topic_definition, bool $involved) : array
 {
     $topic = [];
 
@@ -607,7 +607,7 @@ function cns_get_topic_array($topic_row, $member_id, $hot_topic_definition, $inv
  * @param  ?object $show_forum The forum name (null: do not show the forum name)
  * @return Tempcode The topic row
  */
-function cns_render_topic($topic, $has_topic_marking, $pt = false, $show_forum = null)
+function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = false, ?object $show_forum = null) : object
 {
     if ((array_key_exists('last_post_id', $topic)) && ($topic['last_post_id'] !== null) && (get_bot_type() === null)) {
         $last_post_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $topic['last_post_id']], get_module_zone('topicview'));
@@ -755,7 +755,7 @@ function cns_render_topic($topic, $has_topic_marking, $pt = false, $show_forum =
  * @param  ?string $keyset_field Keyset field name so that we can extract values from DB result sets (null: none)
  * @return array The details
  */
-function cns_get_forum_view($forum_id, $forum_info, $start = 0, $true_start = 0, $max = null, $sql_sup = '', $sql_sup_order_by = '', $sort = null, $keyset_clause = null, $keyset_field = null)
+function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, int $true_start = 0, ?int $max = null, string $sql_sup = '', string $sql_sup_order_by = '', ?string $sort = null, ?string $keyset_clause = null, ?string $keyset_field = null) : array
 {
     if ($max === null) {
         $max = intval(get_option('forum_topics_per_page'));

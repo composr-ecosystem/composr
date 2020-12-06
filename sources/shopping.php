@@ -30,7 +30,7 @@
  * @param  ID_TEXT $catalogue_name Catalogue name
  * @return array Shopping catalogue fields
  */
-function find_shopping_catalogue_fields($catalogue_name = 'products')
+function find_shopping_catalogue_fields(string $catalogue_name = 'products') : array
 {
     static $fields_maps = [];
     if (isset($fields_maps[$catalogue_name])) {
@@ -154,7 +154,7 @@ FOR CART MANAGEMENT
  *
  * @return array Product details in cart
  */
-function find_products_in_cart()
+function find_products_in_cart() : array
 {
     $where = [];
     if (is_guest()) {
@@ -172,7 +172,7 @@ function find_products_in_cart()
  * @param  ID_TEXT $purchase_id Purchase ID
  * @param  integer $quantity Quantity
  */
-function add_to_cart($type_code, $purchase_id = '', $quantity = 1)
+function add_to_cart(string $type_code, string $purchase_id = '', int $quantity = 1)
 {
     list($details, $product_object) = find_product_details($type_code);
 
@@ -208,7 +208,7 @@ function add_to_cart($type_code, $purchase_id = '', $quantity = 1)
  *
  * @param  array $products_in_cart List of product specifiers
  */
-function update_cart($products_in_cart)
+function update_cart(array $products_in_cart)
 {
     foreach ($products_in_cart as $_product) {
         list($type_code, $quantity) = $_product;
@@ -233,7 +233,7 @@ function update_cart($products_in_cart)
  *
  * @param  array $products_to_remove Products to remove
  */
-function remove_from_cart($products_to_remove)
+function remove_from_cart(array $products_to_remove)
 {
     foreach ($products_to_remove as $type_code) {
         $where = ['type_code' => $type_code];
@@ -267,7 +267,7 @@ function empty_cart()
  *
  * @param  ID_TEXT $action The data
  */
-function log_cart_actions($action)
+function log_cart_actions(string $action)
 {
     $GLOBALS['SITE_DB']->query_insert('shopping_logging', [
         'l_member_id' => get_member(),
@@ -289,7 +289,7 @@ FOR MAKING PURCHASE
  * @param  string $field_name_prefix Field name prefix. Pass as blank for cart items or 'p_' for order items.
  * @return array A tuple: total price, total tax derivation, total tax, total tax tracking ID, total shipping cost, total shipping tax, total shipping weight, total shipping length, total shipping width, total shipping height
  */
-function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
+function derive_cart_amounts(array $shopping_cart_rows, string $field_name_prefix = '') : array
 {
     // Filter out non-saleable items
     foreach ($shopping_cart_rows as $i => $item) {
@@ -451,7 +451,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
  *
  * @return AUTO_LINK Order ID
  */
-function copy_shopping_cart_to_order()
+function copy_shopping_cart_to_order() : int
 {
     // Prepare order...
 
@@ -560,7 +560,7 @@ function copy_shopping_cart_to_order()
  * @param  integer $price_points Transaction price in points
  * @return Tempcode The button
  */
-function make_cart_payment_button($order_id, $currency, $price_points = 0)
+function make_cart_payment_button(int $order_id, string $currency, int $price_points = 0) : object
 {
     require_css('shopping');
 
@@ -633,7 +633,7 @@ function make_cart_payment_button($order_id, $currency, $price_points = 0)
  *
  * @param  AUTO_LINK $order_id Order ID
  */
-function send_shopping_order_purchased_staff_mail($order_id)
+function send_shopping_order_purchased_staff_mail(int $order_id)
 {
     $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', ['id' => $order_id]);
     $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
@@ -673,7 +673,7 @@ function delete_incomplete_orders()
  * @param  ?AUTO_LINK $keep_order_id ID of order to not keep (null: none)
  * @param  ?string $purchase_through Only delete orders of this origin (null: no filter)
  */
-function delete_pending_orders_for_current_user($keep_order_id = null, $purchase_through = null)
+function delete_pending_orders_for_current_user(?int $keep_order_id = null, ?string $purchase_through = null)
 {
     $where = [
         'order_status' => 'ORDER_STATUS_awaiting_payment',
@@ -709,7 +709,7 @@ function delete_pending_orders_for_current_user($keep_order_id = null, $purchase
  *
  * @param  AUTO_LINK $order_id The order ID
  */
-function recalculate_order_costs($order_id)
+function recalculate_order_costs(int $order_id)
 {
     $product_rows = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id]);
 
@@ -734,7 +734,7 @@ function recalculate_order_costs($order_id)
  *
  * @return Tempcode Order status list entries
  */
-function get_order_status_list()
+function get_order_status_list() : object
 {
     $status = [
         'ORDER_STATUS_awaiting_payment' => do_lang_tempcode('ORDER_STATUS_awaiting_payment'),
@@ -761,7 +761,7 @@ function get_order_status_list()
  * @param  AUTO_LINK $order_id Order ID
  * @return LONG_TEXT Products names and quantity
  */
-function get_ordered_product_list_string($order_id)
+function get_ordered_product_list_string(int $order_id) : string
 {
     $product_list = [];
 

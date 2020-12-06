@@ -50,7 +50,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('galleries')) {
             return null;
@@ -116,7 +116,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('galleries');
         return [
@@ -147,7 +147,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('galleries', $error_msg)) {
@@ -224,7 +224,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_code('galleries');
         require_code('galleries2');
@@ -291,7 +291,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         $allow_images = ($GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['accept_images' => 1]) > 0);
         $allow_videos = ($GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['accept_videos' => 1]) > 0);
@@ -320,7 +320,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import()
+    public function import() : object
     {
         check_privilege('mass_import');
 
@@ -359,7 +359,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _import()
+    public function _import() : object
     {
         $cat = get_param_string('name', 'root');
         check_privilege('mass_import'/*Not currently scoped to categories, ['galleries', $cat]*/);
@@ -507,7 +507,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function __import()
+    public function __import() : object
     {
         $cat = get_param_string('cat');
 
@@ -581,7 +581,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _orphaned()
+    public function _orphaned() : object
     {
         $cat = post_param_string('ss_cat');
         $action = post_param_string('action');
@@ -681,7 +681,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  boolean $tolerate_non_exist Whether to tolerate the non-existence of the gallery
      * @return ?integer Number allowed remaining (null: no limit)
      */
-    public function check_images_allowed($cat, $tolerate_non_exist = false)
+    public function check_images_allowed(string $cat, bool $tolerate_non_exist = false) : ?int
     {
         // Check this cat allows images
         $gallery = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_videos', 'accept_images', 'is_member_synched'], ['name' => $cat], '', 1);
@@ -718,7 +718,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return array A triple: The tree field (Tempcode), Search URL, Archive URL
      */
-    public function create_selection_list_ajax_tree()
+    public function create_selection_list_ajax_tree() : array
     {
         if ($GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)') == 0) {
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'image'));
@@ -758,7 +758,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
+    public function get_form_fields(?int $id = null, string $title = '', string $cat = '', string $description = '', string $url = '', int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', array $regions = []) : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -891,7 +891,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('images', ['submitter', 'add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -906,7 +906,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($id)]);
         if ($temp === null) {
@@ -921,7 +921,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -965,7 +965,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list(
             $url,
@@ -1047,7 +1047,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -1145,7 +1145,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -1173,7 +1173,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ?ID_TEXT $cat The gallery (null: all the current user has access to)
      * @return boolean Whether watermarks are available
      */
-    public function has_at_least_one_watermark($cat = null)
+    public function has_at_least_one_watermark(?string $cat = null) : bool
     {
         $where = '';
         if ($cat !== null) {
@@ -1203,7 +1203,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id));
     }
@@ -1213,7 +1213,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('galleries', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
@@ -1224,7 +1224,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('galleries', $this->title);
@@ -1260,7 +1260,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  boolean $tolerate_non_exist Whether to tolerate the non-existence of the gallery
      * @return ?integer Number allowed remaining (null: no limit)
      */
-    public function check_videos_allowed($cat, $tolerate_non_exist = false)
+    public function check_videos_allowed(string $cat, bool $tolerate_non_exist = false) : ?int
     {
         // Check this cat allows images
         $gallery = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_videos', 'accept_images', 'is_member_synched'], ['name' => $cat], '', 1);
@@ -1297,7 +1297,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      *
      * @return array A triple: The tree field (Tempcode), Search URL, Archive URL
      */
-    public function create_selection_list_ajax_tree()
+    public function create_selection_list_ajax_tree() : array
     {
         if ($GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)') == 0) {
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'video'));
@@ -1342,7 +1342,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $video_length = null, $video_width = null, $video_height = null, $closed_captions_url = '', $regions = [])
+    public function get_form_fields(?int $id = null, string $title = '', string $cat = '', string $description = '', string $url = '', string $thumb_url = '', int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', ?int $video_length = null, ?int $video_width = null, ?int $video_height = null, string $closed_captions_url = '', array $regions = []) : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -1486,7 +1486,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('videos', ['submitter', 'add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -1501,7 +1501,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($id)]);
         if ($temp === null) {
@@ -1516,7 +1516,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -1561,7 +1561,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list(
             $url,
@@ -1633,7 +1633,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -1718,7 +1718,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -1748,7 +1748,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $GLOBALS['MODULE_CMS_GALLERIES']->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id), true);
     }
@@ -1778,7 +1778,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      *
      * @return array A triple: The tree field (Tempcode), Search URL, Archive URL
      */
-    public function create_selection_list_ajax_tree()
+    public function create_selection_list_ajax_tree() : array
     {
         $purity = true;
         $_member_id = null;
@@ -1821,7 +1821,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($name = '', $fullname = '', $description = '', $notes = '', $parent_id = '', $accept_images = null, $accept_videos = null, $is_member_synched = 0, $layout_mode = null, $rep_image = null, $watermark_top_left = null, $watermark_top_right = null, $watermark_bottom_left = null, $watermark_bottom_right = null, $allow_rating = null, $allow_comments = null)
+    public function get_form_fields(string $name = '', string $fullname = '', string $description = '', string $notes = '', string $parent_id = '', ?int $accept_images = null, ?int $accept_videos = null, int $is_member_synched = 0, ?string $layout_mode = null, ?string $rep_image = null, ?string $watermark_top_left = null, ?string $watermark_top_right = null, ?string $watermark_bottom_left = null, ?string $watermark_bottom_right = null, ?int $allow_rating = null, ?int $allow_comments = null) : array
     {
         list($allow_rating, $allow_comments,) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, 1);
 
@@ -1948,7 +1948,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['add_date', 'g_owner'], ['name' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -1963,7 +1963,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -1979,7 +1979,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $name = post_param_string('gallery_name', '');
         $fullname = post_param_string('fullname');
@@ -2030,7 +2030,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $name = post_param_string('gallery_name', fractional_edit() ? $id : '');
         $fullname = post_param_string('fullname');
@@ -2127,7 +2127,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         return $id != 'root';
     }
@@ -2137,7 +2137,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_gallery($id);
     }
@@ -2150,7 +2150,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return $this->_do_next_manager($title, $description, ($id === null) ? null : $id);
     }
@@ -2165,7 +2165,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  boolean $video Whether we were working with a video
      * @return Tempcode The UI
      */
-    public function _do_next_manager($title, $description, $cat = null, $id = null, $video = false)
+    public function _do_next_manager(object $title, object $description, ?string $cat = null, ?int $id = null, bool $video = false) : object
     {
         $extra = [];
         if ($cat !== null) {

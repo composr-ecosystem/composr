@@ -29,7 +29,7 @@ class Hook_spam_heuristics_missing_js
      * @param  string $post_data Posted data
      * @return integer Confidence score
      */
-    public function assess_confidence($post_data)
+    public function assess_confidence(string $post_data) : int
     {
         if (get_option('detect_javascript') == '0') {
             return 0;

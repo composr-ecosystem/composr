@@ -144,7 +144,7 @@ function opensearch_script()
  * @param  ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use Composr fast custom index) (null: unknown at this point)
  * @return boolean Whether we can
  */
-function can_use_composr_fast_custom_index($hook, $search_query = null, $has_heavy_filtering = null)
+function can_use_composr_fast_custom_index(string $hook, ?string $search_query = null, ?bool $has_heavy_filtering = null) : bool
 {
     if ($search_query !== null) {
         $tokeniser = Composr_fast_custom_index::get_tokeniser(user_lang());
@@ -249,7 +249,7 @@ class Composr_fast_custom_index
      * @param  ?string $force_index Force a specific index to be used (null: none)
      * @return array The rows found
      */
-    public function get_search_rows($db, $index_table, $content_table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $order, $direction, $permissions_module = null, $index_permissions_field = null, $permissions_field_is_string = false, $force_index = null)
+    public function get_search_rows(object $db, string $index_table, string $content_table, array $key_transfer_map, string $where_clause, string $extra_join_clause, string $search_query, bool $only_search_meta, bool $only_titles, int $max, int $start, string $order, string $direction, ?string $permissions_module = null, ?string $index_permissions_field = null, bool $permissions_field_is_string = false, ?string $force_index = null) : array
     {
         if ($only_search_meta) {
             $appearance_context = APPEARANCE_CONTEXT_META;
@@ -565,7 +565,7 @@ class Composr_fast_custom_index
      *
      * @return boolean Whether we have special filtering
      */
-    public static function active_search_has_special_filtering()
+    public static function active_search_has_special_filtering() : bool
     {
         foreach ($_GET as $key => $val) {
             if ((substr($key, 0, 7) == 'option_') && (substr($key, 0, 12) != 'option_tick_') && ($val != '')) {
@@ -584,7 +584,7 @@ class Composr_fast_custom_index
      * @param  integer $id Catalogue entry ID
      * @param  ?LANGUAGE_NAME $lang Language codename (null: default)
      */
-    public function get_content_fields_from_catalogue_entry(&$content_fields, &$fields_to_index, $c_name, $id, $lang = null)
+    public function get_content_fields_from_catalogue_entry(array &$content_fields, array &$fields_to_index, string $c_name, int $id, ?string $lang = null)
     {
         if (!addon_installed('catalogues')) {
             return;
@@ -613,7 +613,7 @@ class Composr_fast_custom_index
      * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
      * @return string Extra SQL
      */
-    public function generate_since_where_clause($db, $index_table, $since_index_fields, $since, &$statistics_map = null)
+    public function generate_since_where_clause(object $db, string $index_table, array $since_index_fields, ?int $since, ?array &$statistics_map = null) : string
     {
         $where_clauses = [];
 
@@ -658,7 +658,7 @@ class Composr_fast_custom_index
      * @param  ?LANGUAGE_NAME $lang Passed content is for this specific language only (null: lookup for all installed languages)
      * @param  boolean $clean_scan If we are doing a clean scan and hence do not need to clean up old records
      */
-    public function index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, &$total_singular_ngram_tokens = null, &$statistics_map = null, $lang = null, $clean_scan = false)
+    public function index_for_search(object $db, string $index_table, array $content_fields, array $fields_to_index, array $key_transfer_map, array $filter_field_transfer_map, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null, ?string $lang = null, bool $clean_scan = false)
     {
         // Clear out any previous indexing for this content resource
         $key_map = [];
@@ -722,7 +722,7 @@ class Composr_fast_custom_index
      * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
      * @return array Map between ngrams and number of occurrences
      */
-    protected function index_for_search__lang__appearance_context($db, $lang, $index_table, $content_fields, $appearance_context, $fields_to_index, $key_map, $filter_field_transfer_map, $ngrams_exclude, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    protected function index_for_search__lang__appearance_context(object $db, string $lang, string $index_table, array $content_fields, int $appearance_context, array $fields_to_index, array $key_map, array $filter_field_transfer_map, ?array $ngrams_exclude, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null) : array
     {
         $combined_text = '';
         foreach ($fields_to_index as $field) {
@@ -786,7 +786,7 @@ class Composr_fast_custom_index
      * @param  string $index_table Table containing our custom index
      * @param  array $index_key_map Map of index keys, defining what to delete
      */
-    public static function delete_from_index($db, $index_table, $index_key_map)
+    public static function delete_from_index(object $db, string $index_table, array $index_key_map)
     {
         $db->query_delete($index_table, $index_key_map);
     }
@@ -801,7 +801,7 @@ class Composr_fast_custom_index
      * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
      * @return array Map between ngrams and number of occurrences
      */
-    protected function tokenise_text($text, $lang, $ngrams_exclude = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    protected function tokenise_text(string $text, string $lang, ?array $ngrams_exclude = null, ?int &$total_singular_ngram_tokens = null, ?array &$statistics_map = null) : array
     {
         if (strpos($text, '&') !== false) {
             $text = html_entity_decode($text, ENT_QUOTES, get_charset());
@@ -866,7 +866,7 @@ class Composr_fast_custom_index
      * @param  LANGUAGE_NAME $lang Language codename
      * @return boolean Whether it is
      */
-    protected function singular_ngram_is_stop_word($ngram, $lang)
+    protected function singular_ngram_is_stop_word(string $ngram, string $lang) : bool
     {
         static $stop_list = [];
         if (!array_key_exists($lang, $stop_list)) {
@@ -885,7 +885,7 @@ class Composr_fast_custom_index
      * @param  array $ngrams List of ngrams
      * @return array Map between ngram and commonality
      */
-    protected function load_commonalities($db, $ngrams)
+    protected function load_commonalities(object $db, array $ngrams) : array
     {
         static $cache = [];
 
@@ -921,7 +921,7 @@ class Composr_fast_custom_index
      * @param  LANGUAGE_NAME $lang Language codename
      * @return integer Maximum ngram size
      */
-    public static function max_ngram_size($lang)
+    public static function max_ngram_size(string $lang) : int
     {
         return intval(get_value('composr_fast_custom_index__max_ngram_size__' . $lang, get_option('composr_fast_custom_index__max_ngram_size')));
     }
@@ -932,7 +932,7 @@ class Composr_fast_custom_index
      * @param  LANGUAGE_NAME $lang Language codename
      * @return object Tokeniser
      */
-    public static function get_tokeniser($lang)
+    public static function get_tokeniser(string $lang) : object
     {
         static $tokeniser = [];
         if (!array_key_exists($lang, $tokeniser)) {
@@ -953,7 +953,7 @@ class Composr_fast_custom_index
      * @param  LANGUAGE_NAME $lang Language codename
      * @return ?object Stemmer (null: none)
      */
-    public static function get_stemmer($lang)
+    public static function get_stemmer(string $lang) : ?object
     {
         static $stemmer = [];
         if (!array_key_exists($lang, $stemmer)) {
@@ -975,7 +975,7 @@ class Composr_fast_custom_index
      * @param  string $str String
      * @return integer CRC
      */
-    protected function crc($str)
+    protected function crc(string $str) : int
     {
         static $ob = null;
         if ($ob === null) {
@@ -999,7 +999,7 @@ abstract class FieldsSearchHook
      * @param  string $catalogue_name Catalogue we are searching in in (may be a special custom content fields catalogue)
      * @return array A map between parameter name and string label
      */
-    protected function _get_extra_sort_fields($catalogue_name)
+    protected function _get_extra_sort_fields(string $catalogue_name) : array
     {
         static $EXTRA_SORT_FIELDS_CACHE = [];
         if (array_key_exists($catalogue_name, $EXTRA_SORT_FIELDS_CACHE)) {
@@ -1032,7 +1032,7 @@ abstract class FieldsSearchHook
      * @param  string $catalogue_name Catalogue to search in (may be a special custom content fields catalogue)
      * @return array A list of maps specifying extra fields
      */
-    protected function _get_fields($catalogue_name)
+    protected function _get_fields(string $catalogue_name) : array
     {
         if (!addon_installed('catalogues')) {
             return [];
@@ -1064,7 +1064,7 @@ abstract class FieldsSearchHook
      * @param  string $table_alias Table alias for main content table
      * @return ?array A big tuple of details used to search with (null: no fields)
      */
-    protected function _get_search_parameterisation_advanced($catalogue_name, $table_alias = 'r')
+    protected function _get_search_parameterisation_advanced(string $catalogue_name, string $table_alias = 'r') : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -1233,7 +1233,7 @@ abstract class FieldsSearchHook
      * @param  array $nontrans_fields Non-translatable fields to add to
      * @param  ?string $content_id_field Content-ID field (null: default r.id field)
      */
-    protected function _get_search_parameterisation_advanced_for_content_type($catalogue_name, &$table, &$where_clause, &$trans_fields, &$nontrans_fields, $content_id_field = null)
+    protected function _get_search_parameterisation_advanced_for_content_type(string $catalogue_name, string &$table, string &$where_clause, array &$trans_fields, array &$nontrans_fields, ?string $content_id_field = null)
     {
         $advanced = $this->_get_search_parameterisation_advanced($catalogue_name, 'ce');
         if ($advanced === null) {
@@ -1262,7 +1262,7 @@ abstract class FieldsSearchHook
      * @param  string $field The field name of the timestamp field in the database
      * @param  string $where_clause Additional where clause will be written into here
      */
-    protected function _handle_date_check($cutoff, $field, &$where_clause)
+    protected function _handle_date_check($cutoff, string $field, string &$where_clause)
     {
         if ($cutoff !== null) {
             if (is_integer($cutoff)) {
@@ -1285,7 +1285,7 @@ abstract class FieldsSearchHook
      * @param  TIME $compare Timestamp to compare to
      * @return boolean Whether the date matches the requirements of $cutoff
      */
-    protected function _handle_date_check_runtime($cutoff, $compare)
+    protected function _handle_date_check_runtime($cutoff, int $compare) : bool
     {
         if ($cutoff !== null) {
             if (is_integer($cutoff)) {
@@ -1308,7 +1308,7 @@ abstract class FieldsSearchHook
  * @param  string $test The phrase
  * @return boolean Whether it is
  */
-function is_under_radar($test)
+function is_under_radar(string $test) : bool
 {
     return (strlen($test) < $GLOBALS['SITE_DB']->get_minimum_search_length()) && ($test != '');
 }
@@ -1319,7 +1319,7 @@ function is_under_radar($test)
  *
  * @return array List of stopwords (actually a map of stopword to true)
  */
-function get_stopwords_list()
+function get_stopwords_list() : array
 {
     // Hard-coded from MySQL manual (https://dev.mysql.com/doc/refman/5.5/en/fulltext-stopwords.html). No way to read it dynamically.
     return [
@@ -1877,7 +1877,7 @@ function get_stopwords_list()
  * @param  ?string $post The post to try and match (null: not used)
  * @return boolean Whether we have a match
  */
-function in_memory_search_match($filter, $title, $post = null)
+function in_memory_search_match(array $filter, string $title, ?string $post = null) : bool
 {
     if ((!array_key_exists('content', $filter)) || ($filter['content'] == '')) {
         return true;
@@ -1932,7 +1932,7 @@ function in_memory_search_match($filter, $title, $post = null)
  * @param  boolean $permissions_field_is_string Whether the permissions field is a string
  * @return array The rows found
  */
-function get_search_rows($meta_type, $id_field, $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, &$order, $direction, $table, $select = '*', $fields = [], $raw_fields = [], $permissions_module = null, $permissions_field = null, $permissions_field_is_string = false)
+function get_search_rows(?string $meta_type, string $id_field, string $search_query, string $content_where, string $where_clause, bool $only_search_meta, bool $only_titles, int $max, int $start, string &$order, string $direction, string $table, string $select = '*', array $fields = [], array $raw_fields = [], ?string $permissions_module = null, ?string $permissions_field = null, bool $permissions_field_is_string = false) : array
 {
     $db = get_db_for($table);
 
@@ -2427,7 +2427,7 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
  * @param  string $query The SQL query
  * @return string Optimised query
  */
-function remove_unneeded_joins_rough($query)
+function remove_unneeded_joins_rough(string $query) : string
 {
     $left_joins = [];
 
@@ -2475,7 +2475,7 @@ function remove_unneeded_joins_rough($query)
  * @param  boolean $force_like Whether to force LIKE syntax rather than full-text search
  * @return array A tuple (any SQL component may be blank): The combined where clause SQL, the boolean operator, body where clause SQL, positive where clause SQL, negative where clause SQL
  */
-function build_content_where($search_query, $full_coverage = false, $force_like = false)
+function build_content_where(string $search_query, bool $full_coverage = false, bool $force_like = false) : array
 {
     list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($search_query);
 
@@ -2510,7 +2510,7 @@ function build_content_where($search_query, $full_coverage = false, $force_like 
  * @param  boolean $full_coverage Whether we can assume we require full coverage
  * @return array A tuple (any SQL component may be blank): The combined where clause SQL, the boolean operator, body where clause SQL, positive where clause SQL, negative where clause SQL
  */
-function db_like_assemble($search_query, $full_coverage = false)
+function db_like_assemble(string $search_query, bool $full_coverage = false) : array
 {
     $search_query = str_replace('?', '_', $search_query);
     $search_query = str_replace('*', '%', $search_query);
@@ -2568,7 +2568,7 @@ function db_like_assemble($search_query, $full_coverage = false)
  *
  * @ignore
  */
-function _boolean_search_prepare($search_query)
+function _boolean_search_prepare(string $search_query) : array
 {
     $content_explode = explode(' ', $search_query);
 
@@ -2622,7 +2622,7 @@ function _boolean_search_prepare($search_query)
  * @param  ?ID_TEXT $author_field_name The field name for authors (null: Cannot match against member IDs)
  * @return ?string An SQL fragment (null: block query)
  */
-function build_search_submitter_clauses($member_field_name, $member_id, $author, $author_field_name = null)
+function build_search_submitter_clauses(?string $member_field_name, ?int $member_id, string $author, ?string $author_field_name = null) : ?string
 {
     $clauses = '';
 
@@ -2683,7 +2683,7 @@ function build_search_submitter_clauses($member_field_name, $member_id, $author,
  * @param  string $table_alias Table alias for catalogue entry table
  * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
  */
-function exact_match_sql($field, $i, $type = 'short', $param = null, $table_alias = 'r')
+function exact_match_sql(array $field, int $i, string $type = 'short', ?string $param = null, string $table_alias = 'r') : ?array
 {
     $table = ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_' . $type . ' f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
     $search_field = 'f' . strval($i) . '.cv_value';
@@ -2718,7 +2718,7 @@ function exact_match_sql($field, $i, $type = 'short', $param = null, $table_alia
  * @param  string $table_alias Table alias for catalogue entry table
  * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
  */
-function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_alias = 'r')
+function nl_delim_match_sql(array $field, int $i, string $type = 'short', ?string $param = null, string $table_alias = 'r') : ?array
 {
     $table = ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_' . $type . ' f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
     $search_field = 'f' . strval($i) . '.cv_value';
@@ -2742,7 +2742,7 @@ function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_a
  * @set ASC DESC
  * @return array Sorted results
  */
-function sort_search_results($hook_results, $results, $direction)
+function sort_search_results(array $hook_results, array $results, string $direction) : array
 {
     // Do a merge sort
     $results_position = 0;
@@ -2787,7 +2787,7 @@ function sort_search_results($hook_results, $results, $direction)
  * @param  ?integer $cnt Count of matched words (null: pass by reference)
  * @return string Highlighted portion
  */
-function generate_text_summary($_temp_summary, $words_searched, &$cnt = null)
+function generate_text_summary(string $_temp_summary, array $words_searched, ?int &$cnt = null) : string
 {
     require_code('xhtml');
 
@@ -2929,7 +2929,7 @@ function generate_text_summary($_temp_summary, $words_searched, &$cnt = null)
  * @param  boolean $general_search Whether this is a general search, rather than a search for a specific result-type (such as all members)
  * @return Tempcode Interface
  */
-function build_search_results_interface($results, $start, $max, $direction, $general_search = false)
+function build_search_results_interface(array $results, int $start, int $max, string $direction, bool $general_search = false) : object
 {
     require_code('content');
 

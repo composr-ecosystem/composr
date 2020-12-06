@@ -28,7 +28,7 @@ class Hook_config_max_member_title_length
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAX_MEMBER_TITLE_LENGTH',
@@ -51,7 +51,7 @@ class Hook_config_max_member_title_length
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('cns_member_titles')) {
             return null;

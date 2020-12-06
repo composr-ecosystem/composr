@@ -123,7 +123,7 @@ function init__ecommerce()
  * @param  array $details The product details
  * @return array The amended product details
  */
-function automatic_discount_calculation($details)
+function automatic_discount_calculation(array $details) : array
 {
     if ($details['discount_points__num_points'] !== null) {
         // Already has discount
@@ -154,7 +154,7 @@ function automatic_discount_calculation($details)
  * @param  ID_TEXT $step_before The step prior to the next step
  * @return ?ID_TEXT The next step (null: error)
  */
-function get_next_purchase_step($product_object, $type_code, $step_before)
+function get_next_purchase_step(object $product_object, string $type_code, string $step_before) : ?string
 {
     $steps = get_product_purchase_steps($product_object, $type_code, false);
     foreach ($steps as $i => $step) {
@@ -182,7 +182,7 @@ function get_next_purchase_step($product_object, $type_code, $step_before)
  * @param  boolean $consider_categories Whether to consider a category screen
  * @return array A structure describing the steps
  */
-function get_product_purchase_steps($product_object, $type_code, $consider_categories)
+function get_product_purchase_steps(object $product_object, string $type_code, bool $consider_categories) : array
 {
     $steps = [];
 
@@ -239,7 +239,7 @@ function get_product_purchase_steps($product_object, $type_code, $consider_categ
  * @param  boolean $force_extended Show all possible input fields
  * @return boolean Whether there are
  */
-function has_needed_fields($type_code, $force_extended = false)
+function has_needed_fields(string $type_code, bool $force_extended = false) : bool
 {
     if ($force_extended) {
         return true;
@@ -273,7 +273,7 @@ function has_needed_fields($type_code, $force_extended = false)
  * @param  boolean $force_extended Show all possible input fields
  * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
  */
-function get_needed_fields($type_code, $force_extended = false)
+function get_needed_fields(string $type_code, bool $force_extended = false) : ?array
 {
     list($details, $product_object) = find_product_details($type_code);
 
@@ -346,7 +346,7 @@ function get_needed_fields($type_code, $force_extended = false)
  *
  * @return boolean The answer
  */
-function ecommerce_test_mode()
+function ecommerce_test_mode() : bool
 {
     if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_ecommerce_local_test', 0) == 1)) {
         return true;
@@ -360,7 +360,7 @@ function ecommerce_test_mode()
  * @param  ?ID_TEXT $currency The currency (null: configured)
  * @return ID_TEXT The currency symbol
  */
-function ecommerce_get_currency_symbol($currency = null)
+function ecommerce_get_currency_symbol(?string $currency = null) : string
 {
     if ($currency === null) {
         $currency = get_option('currency');
@@ -380,7 +380,7 @@ function ecommerce_get_currency_symbol($currency = null)
  * @param  ID_TEXT $payment_gateway The payment gateway the payment went via
  * @return REAL The fee
  */
-function get_transaction_fee($amount, $payment_gateway)
+function get_transaction_fee(float $amount, string $payment_gateway) : float
 {
     if (get_option('transaction_flat_fee') . get_option('transaction_percentage_fee') != '') {
         $fee = 0.00;
@@ -417,7 +417,7 @@ function get_transaction_fee($amount, $payment_gateway)
  * @param  boolean $email_safe Whether to avoid keep_* parameters as it's going in an e-mail
  * @return Tempcode Product URL
  */
-function get_product_details_url($type_code, $post_purchase_access_url = false, $member_id = null, $email_safe = false)
+function get_product_details_url(string $type_code, bool $post_purchase_access_url = false, ?int $member_id = null, bool $email_safe = false) : object
 {
     static $permission_product_rows = null;
     if ($permission_product_rows === null) {
@@ -479,7 +479,7 @@ function get_product_details_url($type_code, $post_purchase_access_url = false, 
  * @param  ?array $transaction_row The transaction database row (null: look it up)
  * @return Tempcode The linker
  */
-function build_transaction_linker($txn_id, $awaiting_payment, $transaction_row = null)
+function build_transaction_linker(string $txn_id, bool $awaiting_payment, ?array $transaction_row = null) : object
 {
     if (($txn_id != '') && (!$awaiting_payment)) {
         if ($transaction_row === null) {
@@ -538,7 +538,7 @@ function build_transaction_linker($txn_id, $awaiting_payment, $transaction_row =
  * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect)
  * @return Tempcode The button
  */
-function make_transaction_button($type_code, $item_name, $purchase_id, $price, $tax_derivation, $tax, $tax_tracking, $shipping_cost, $shipping_tax, $currency, $price_points = 0, $payment_gateway = null)
+function make_transaction_button(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, float $shipping_cost, float $shipping_tax, string $currency, int $price_points = 0, ?string $payment_gateway = null) : object
 {
     if ($payment_gateway === null) {
         $payment_gateway = get_option('payment_gateway');
@@ -594,7 +594,7 @@ function make_transaction_button($type_code, $item_name, $purchase_id, $price, $
  * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect)
  * @return Tempcode The button
  */
-function make_subscription_button($type_code, $item_name, $purchase_id, $price, $tax_derivation, $tax, $tax_tracking, $currency, $price_points, $length, $length_units, $payment_gateway = null)
+function make_subscription_button(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, string $currency, int $price_points, int $length, string $length_units, ?string $payment_gateway = null) : object
 {
     if ($payment_gateway === null) {
         $payment_gateway = get_option('payment_gateway');
@@ -639,7 +639,7 @@ function make_subscription_button($type_code, $item_name, $purchase_id, $price, 
  * @param  ID_TEXT $payment_gateway The payment gateway the payment will go via
  * @return ?Tempcode The button (null: no special cancellation -- just delete the subscription row to stop Composr regularly re-charging)
  */
-function make_cancel_button($purchase_id, $payment_gateway)
+function make_cancel_button(int $purchase_id, string $payment_gateway) : ?object
 {
     if (in_array($payment_gateway, ['', 'manual', 'points'])) {
         return null;
@@ -657,7 +657,7 @@ function make_cancel_button($purchase_id, $payment_gateway)
  *
  * @return array A list of maps of product details. 'product_object' is added to each detail map.
  */
-function find_all_products()
+function find_all_products() : array
 {
     $_hooks = find_all_hook_obs('systems', 'ecommerce', 'Hook_ecommerce_');
     $products = [];
@@ -678,7 +678,7 @@ function find_all_products()
  * @param  ID_TEXT $search The product codename
  * @return array A triple: The product info row, the product object (all will be null if not found)
  */
-function find_product_details($search)
+function find_product_details(string $search) : array
 {
     static $cache = [];
     $sz = $search;
@@ -738,7 +738,7 @@ function find_product_details($search)
  *
  * @return boolean Whether local payment will be performed
  */
-function perform_local_payment()
+function perform_local_payment() : bool
 {
     if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_ecommerce_local_test', 0) == 1)) {
         require_code('config2');
@@ -772,7 +772,7 @@ function perform_local_payment()
  * @param  boolean $needs_shipping_address Whether a shipping address is needed
  * @return array A tuple: The form fields, Hidden fields, Confidence logos, Payment processor links
  */
-function get_transaction_form_fields($type_code, $item_name, $purchase_id, $price, $tax_derivation, $tax, $tax_tracking, $shipping_cost, $shipping_tax, $currency, $price_points, $length, $length_units, $payment_gateway = null, $needs_shipping_address = false)
+function get_transaction_form_fields(string $type_code, string $item_name, string $purchase_id, float $price, array $tax_derivation, float $tax, array $tax_tracking, float $shipping_cost, float $shipping_tax, string $currency, int $price_points, ?int $length, string $length_units, ?string $payment_gateway = null, bool $needs_shipping_address = false) : array
 {
     if ((!tacit_https()) && (!ecommerce_test_mode())) {
         warn_exit(do_lang_tempcode('NO_SSL_SETUP'));
@@ -919,7 +919,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
  * @param  boolean $require_all_details Whether to require all details to be input
  * @return Tempcode Address fields
  */
-function get_address_fields($prefix, $street_address, $city, $county, $state, $post_code, $country, $require_all_details = true)
+function get_address_fields(string $prefix, string $street_address, string $city, string $county, string $state, string $post_code, string $country, bool $require_all_details = true) : object
 {
     $fields = new Tempcode();
 
@@ -991,7 +991,7 @@ function get_address_fields($prefix, $street_address, $city, $county, $state, $p
  * @param  boolean $default_to_store Default to the store address if we don't know the shipping address. Useful for a default tax calculation.
  * @param  boolean $do_checking Check for accuracy of data. If $default_to_store is false, you probably want to set this to false also, as data may not be set properly.
  */
-function get_default_ecommerce_fields($member_id = null, &$shipping_email = '', &$shipping_phone = '', &$shipping_firstname = '', &$shipping_lastname = '', &$shipping_street_address = '', &$shipping_city = '', &$shipping_county = '', &$shipping_state = '', &$shipping_post_code = '', &$shipping_country = '', &$cardholder_name = '', &$card_type = '', &$card_number = null, &$card_start_date_year = null, &$card_start_date_month = null, &$card_expiry_date_year = null, &$card_expiry_date_month = null, &$card_issue_number = null, &$card_cv2 = null, &$billing_street_address = '', &$billing_city = '', &$billing_county = '', &$billing_state = '', &$billing_post_code = '', &$billing_country = '', $default_to_store = false, $do_checking = true)
+function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_email = '', string &$shipping_phone = '', string &$shipping_firstname = '', string &$shipping_lastname = '', string &$shipping_street_address = '', string &$shipping_city = '', string &$shipping_county = '', string &$shipping_state = '', string &$shipping_post_code = '', string &$shipping_country = '', string &$cardholder_name = '', string &$card_type = '', ?int &$card_number = null, ?int &$card_start_date_year = null, ?int &$card_start_date_month = null, ?int &$card_expiry_date_year = null, ?int &$card_expiry_date_month = null, ?int &$card_issue_number = null, ?int &$card_cv2 = null, string &$billing_street_address = '', string &$billing_city = '', string &$billing_county = '', string &$billing_state = '', string &$billing_post_code = '', string &$billing_country = '', bool $default_to_store = false, bool $do_checking = true)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -1190,7 +1190,7 @@ function get_default_ecommerce_fields($member_id = null, &$shipping_email = '', 
  *
  * @param  ?Tempcode $fields The fields to attach to (null: create new Tempcode object if needed)
  */
-function ecommerce_attach_memo_field_if_needed(&$fields)
+function ecommerce_attach_memo_field_if_needed(?object &$fields)
 {
     if (get_option('payment_memos') == '1') {
         if ((perform_local_payment()) || (get_page_name() == 'admin_ecommerce_logs')) {
@@ -1217,7 +1217,7 @@ function ecommerce_attach_memo_field_if_needed(&$fields)
  * @param  ID_TEXT $cpf_name The CPF name
  * @return string The CPF label
  */
-function do_lang_cpf($cpf_name)
+function do_lang_cpf(string $cpf_name) : string
 {
     require_lang('cns_special_cpf');
 
@@ -1233,7 +1233,7 @@ function do_lang_cpf($cpf_name)
  * @param  object $payment_gateway_object The payment gateway object
  * @return array A triple: success status, formatted status message, raw status message
  */
-function do_local_transaction($payment_gateway, $payment_gateway_object)
+function do_local_transaction(string $payment_gateway, object $payment_gateway_object) : array
 {
     // Grab transaction details...
 
@@ -1373,7 +1373,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
  * @param  boolean $send_notifications Whether to send notifications. Set to false if this is not the primary payment handling (e.g. a POST redirect rather than the real IPN).
  * @return ?ID_TEXT The ID of the purchase-type (meaning depends on item_name) (null: unknown)
  */
-function handle_ipn_transaction_script($silent_fail = false, $send_notifications = true)
+function handle_ipn_transaction_script(bool $silent_fail = false, bool $send_notifications = true) : ?string
 {
     if (!addon_installed('ecommerce')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce')));
@@ -1440,7 +1440,7 @@ function handle_ipn_transaction_script($silent_fail = false, $send_notifications
  * @param  boolean $send_notifications Whether to send notifications. Set to false if this is not the primary payment handling (e.g. a POST redirect rather than the real IPN).
  * @return ?array ID_TEXT A pair: The product purchased, The purchasing member ID (or null) (null: error)
  */
-function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type_code = null, $item_name = null, $purchase_id = null, $is_subscription = false, $status = 'Completed', $reason = '', $amount = null, $tax = null, $currency = null, $check_amounts = true, $parent_txn_id = '', $pending_reason = '', $memo = '', $period = '', $member_id_paying = null, $payment_gateway = '', $silent_fail = false, $send_notifications = true)
+function handle_confirmed_transaction(?string $trans_expecting_id, ?string $txn_id = null, ?string $type_code = null, ?string $item_name = null, ?string $purchase_id = null, bool $is_subscription = false, string $status = 'Completed', string $reason = '', ?float $amount = null, ?float $tax = null, ?string $currency = null, bool $check_amounts = true, string $parent_txn_id = '', string $pending_reason = '', string $memo = '', string $period = '', ?int $member_id_paying = null, string $payment_gateway = '', bool $silent_fail = false, bool $send_notifications = true) : ?array
 {
     if ($txn_id === null) {
         $txn_id = uniqid('trans', true);
@@ -1790,7 +1790,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
  * @param  integer $amount_points Points charge paid
  * @param  string $memo Customer memo
  */
-function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup, $member_id, $amount, $tax, $currency, $amount_points, $memo = '')
+function send_transaction_mails(string $txn_id, string $item_name, bool $shipped, bool $automatic_setup, ?int $member_id, float $amount, float $tax, string $currency, int $amount_points, string $memo = '')
 {
     require_code('notifications');
 
@@ -1908,7 +1908,7 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
  * @param  REAL $expected_tax Transaction tax amount expected
  * @return boolean Whether it is
  */
-function paid_amount_matches($amount, $tax, $expected_amount, $expected_tax)
+function paid_amount_matches(float $amount, float $tax, float $expected_amount, float $expected_tax) : bool
 {
     if ($expected_amount + $expected_tax > 0.10) {
         // A 3 cent tolerance for possible rounding errors
@@ -1928,7 +1928,7 @@ function paid_amount_matches($amount, $tax, $expected_amount, $expected_tax)
  * @param  boolean $dont_trigger Dont trigger an error
  * @exits
  */
-function fatal_ipn_exit($error, $dont_trigger = false)
+function fatal_ipn_exit(string $error, bool $dont_trigger = false)
 {
     if (get_param_integer('keep_fatalistic', 0) != 0) {
         fatal_exit($error);
@@ -1949,7 +1949,7 @@ function fatal_ipn_exit($error, $dont_trigger = false)
  * @param  ?MEMBER $member_id The member who this is for (null: current member)
  * @return array A tuple: Discounted price (null is no discount), Discounted price tax code, Points required to get discount (null is no discount), Whether this is a discount
  */
-function get_discounted_price($details, $consider_free = false, $member_id = null)
+function get_discounted_price(array $details, bool $consider_free = false, ?int $member_id = null) : array
 {
     if ((!addon_installed('points')) || (is_guest())) {
         return [
@@ -2003,7 +2003,7 @@ function get_discounted_price($details, $consider_free = false, $member_id = nul
  * @param  ID_TEXT $txn_id Transaction ID
  * @return array Row
  */
-function get_transaction_row($txn_id)
+function get_transaction_row(string $txn_id) : array
 {
     $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['*'], ['id' => $txn_id], '', 1);
     if (!array_key_exists(0, $transaction_rows)) {
@@ -2018,7 +2018,7 @@ function get_transaction_row($txn_id)
  * @param  ID_TEXT $_status PayPal-style transaction status
  * @return string The status
  */
-function get_transaction_status_string($_status)
+function get_transaction_status_string(string $_status) : string
 {
     $status = '';
     switch ($_status) {
@@ -2049,7 +2049,7 @@ function get_transaction_status_string($_status)
  *
  * @return Tempcode Order status list entries
  */
-function get_transaction_status_list()
+function get_transaction_status_list() : object
 {
     $status = [
         'Pending' => do_lang_tempcode('PAYMENT_STATE_pending'),
@@ -2073,7 +2073,7 @@ function get_transaction_status_list()
  *
  * @return string Full business address
  */
-function get_full_business_address()
+function get_full_business_address() : string
 {
     $_address_parts = [
         'name',
@@ -2098,7 +2098,7 @@ function get_full_business_address()
  * @param  array $address_parts A map of address parts
  * @return string Formatted address
  */
-function get_formatted_address($address_parts)
+function get_formatted_address(array $address_parts) : string
 {
     $address = '';
     foreach ($address_parts as $address_part_codename => $address_part) {
@@ -2129,7 +2129,7 @@ function get_formatted_address($address_parts)
  * @param  boolean $find_company_name The first part will be for a company name, which we'll try and detect intelligently but will be blank if we're not sure
  * @return array Parts
  */
-function split_street_address($compound_street_address, $num_parts, $find_company_name = false)
+function split_street_address(string $compound_street_address, int $num_parts, bool $find_company_name = false) : array
 {
     $parts = explode("\n", trim($compound_street_address), $num_parts);
     $parts[count($parts) - 1] = str_replace("\n", ", ", $parts[count($parts) - 1]);

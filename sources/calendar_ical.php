@@ -24,7 +24,7 @@
  * @param  string $in Input
  * @return string Output
  */
-function ical_escape($in)
+function ical_escape(string $in) : string
 {
     $ret = str_replace("\n", '\n', str_replace(',', '\,', str_replace(';', '\;', str_replace('\\', '\\\\', $in))));
     if (strpos($ret, ':') !== false) {
@@ -38,7 +38,7 @@ function ical_escape($in)
  *
  * @param  boolean $headers_and_exit Whether to output headers and exit (if this is false it will still echo out, but you can capture with an output buffer)
  */
-function output_ical($headers_and_exit = true)
+function output_ical(bool $headers_and_exit = true)
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
@@ -339,7 +339,7 @@ function output_ical($headers_and_exit = true)
  *
  * @param  PATH $file_path File path
  */
-function ical_import($file_path)
+function ical_import(string $file_path)
 {
     $data = cms_file_get_contents_safe($file_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
@@ -419,7 +419,7 @@ function ical_import($file_path)
  * @param  array $event_nodes Array of given event details
  * @return array Returns array of event details for mapping
  */
-function get_event_data_ical($event_nodes)
+function get_event_data_ical(array $event_nodes) : array
 {
     $url = '';
     $type = null; //default value

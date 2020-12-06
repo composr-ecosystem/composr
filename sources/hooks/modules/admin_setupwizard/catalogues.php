@@ -28,7 +28,7 @@ class Hook_sw_catalogues
      *
      * @return array Current settings
      */
-    public function get_current_settings()
+    public function get_current_settings() : array
     {
         $settings = [];
         $settings['have_default_catalogues_projects'] = has_predefined_content('catalogues', 'have_default_catalogues_projects') ? '1' : '0';
@@ -44,7 +44,7 @@ class Hook_sw_catalogues
      * @param  array $field_defaults Default values for the fields, from the install-profile
      * @return array A pair: Input fields, Hidden fields
      */
-    public function get_fields($field_defaults)
+    public function get_fields(array $field_defaults) : array
     {
         if (!addon_installed('catalogues') || post_param_integer('addon_catalogues', null) === 0) {
             return [new Tempcode(), new Tempcode()];

@@ -32,7 +32,7 @@ RSS IMPORT (works very well with Wordpress and Blogger, which use RSS as an inte
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of our new news category
  */
-function add_news_category($title, $img = 'icons/news/general', $notes = '', $owner = null, $id = null)
+function add_news_category(string $title, string $img = 'icons/news/general', string $notes = '', ?int $owner = null, ?int $id = null) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_NEWS_CATEGORY', null, $title);
@@ -77,7 +77,7 @@ function add_news_category($title, $img = 'icons/news/general', $notes = '', $ow
  * @param  ?LONG_TEXT $notes The notes (null: keep as-is)
  * @param  ?MEMBER $owner The owner (null: public)
  */
-function edit_news_category($id, $title, $img, $notes, $owner)
+function edit_news_category(int $id, ?string $title, ?string $img, ?string $notes, ?int $owner)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['nc_title', 'nc_img', 'notes'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -149,7 +149,7 @@ function edit_news_category($id, $title, $img, $notes, $owner)
  *
  * @param  AUTO_LINK $id The news category to delete
  */
-function delete_news_category($id)
+function delete_news_category(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['nc_title', 'nc_img'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -243,7 +243,7 @@ function delete_news_category($id)
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the news just added
  */
-function add_news($title, $news, $author = null, $validated = 1, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '', $news_article = '', $main_news_category = null, $news_categories = [], $time = null, $submitter = null, $views = 0, $edit_date = null, $id = null, $image = '', $meta_keywords = '', $meta_description = '', $regions = [])
+function add_news(string $title, string $news, ?string $author = null, int $validated = 1, int $allow_rating = 1, int $allow_comments = 1, int $allow_trackbacks = 1, string $notes = '', string $news_article = '', ?int $main_news_category = null, array $news_categories = [], ?int $time = null, ?int $submitter = null, int $views = 0, ?int $edit_date = null, ?int $id = null, string $image = '', ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
 {
     if ($author === null) {
         $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -417,7 +417,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
  * @param  boolean $show_errors Whether to show errors
  * @return string HTTP result output
  */
-function send_rss_ping($show_errors = false)
+function send_rss_ping(bool $show_errors = false) : string
 {
     $url = find_script('backend') . '?type=rss&mode=news';
 
@@ -463,7 +463,7 @@ function send_rss_ping($show_errors = false)
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_categories, $meta_keywords, $meta_description, $image, $add_time = null, $edit_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
+function edit_news(int $id, string $title, string $news, string $author, int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, string $news_article, ?int $main_news_category, ?array $news_categories, string $meta_keywords, string $meta_description, ?string $image, ?int $add_time = null, ?int $edit_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -602,7 +602,7 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
  * @param  SHORT_TEXT $title The title
  * @param  AUTO_LINK $main_news_category The main news category
  */
-function dispatch_news_notification($id, $title, $main_news_category)
+function dispatch_news_notification(int $id, string $title, int $main_news_category)
 {
     $self_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id], get_module_zone('news'), [], false, false, true);
 
@@ -633,7 +633,7 @@ function dispatch_news_notification($id, $title, $main_news_category)
  *
  * @param  AUTO_LINK $id The ID of the news to edit
  */
-function delete_news($id)
+function delete_news(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -699,7 +699,7 @@ function delete_news($id)
  * @param  boolean $import_to_blog Whether to import to blogs, by default
  * @return Tempcode UI fields
  */
-function import_rss_fields($import_to_blog)
+function import_rss_fields(bool $import_to_blog) : object
 {
     $fields = new Tempcode();
 
@@ -741,7 +741,7 @@ DIRECT WORDPRESS DATABASE IMPORT (imports more than RSS import can)
  *
  * @ignore
  */
-function _get_wordpress_db_data()
+function _get_wordpress_db_data() : array
 {
     $host_name = post_param_string('wp_host');
     $db_name = post_param_string('wp_db');
@@ -803,7 +803,7 @@ NEWS IMPORT UTILITY FUNCTIONS
  * @param  boolean $force_linebreaks Whether to add in HTML line breaks from whitespace ones
  * @return string Comcode
  */
-function import_foreign_news_html($html, $force_linebreaks = false)
+function import_foreign_news_html(string $html, bool $force_linebreaks = false) : string
 {
     if (($force_linebreaks) && (strpos($html, '<br') === false)) {
         $html = nl2br($html);
@@ -843,7 +843,7 @@ function import_foreign_news_html($html, $force_linebreaks = false)
  * @param  array $imported_news Imported items, in Composr's RSS-parsed format [list of maps containing full_url and import_id] (used to fix links)
  * @ignore
  */
-function _news_import_grab_images_and_fix_links($download_images, &$data, $imported_news)
+function _news_import_grab_images_and_fix_links(bool $download_images, string &$data, array $imported_news)
 {
     $matches = [];
     if ($download_images) {
@@ -885,7 +885,7 @@ function _news_import_grab_images_and_fix_links($download_images, &$data, $impor
  *
  * @ignore
  */
-function _news_import_grab_image(&$data, $url)
+function _news_import_grab_image(string &$data, string $url)
 {
     $url = qualify_url($url, get_base_url());
     if (substr($url, 0, strlen(get_custom_base_url() . '/')) == get_custom_base_url() . '/') {
@@ -925,7 +925,7 @@ function _news_import_grab_image(&$data, $url)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__news_categories($where = [], $tolerate_errors = false)
+function reorganise_uploads__news_categories(array $where = [], bool $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('news_category', 'uploads/repimages', 'nc_img', $where, true, $tolerate_errors);

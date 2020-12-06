@@ -28,7 +28,7 @@ class Hook_preview_newsletter_whatsnew
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = (addon_installed('newsletter')) && (get_page_name() == 'admin_newsletter') && ((get_param_string('type', 'browse') == 'whatsnew') || (get_param_string('type', 'browse') == 'whatsnew_2'));
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_newsletter_whatsnew
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         require_code('newsletter');
         require_lang('newsletter');

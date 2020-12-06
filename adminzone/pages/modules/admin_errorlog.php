@@ -28,7 +28,7 @@ class Module_admin_errorlog
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_errorlog
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('errorlog')) {
             return null;
@@ -67,7 +67,7 @@ class Module_admin_errorlog
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('errorlog', $error_msg)) {
@@ -121,7 +121,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -157,7 +157,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    public function show_logs()
+    public function show_logs() : object
     {
         require_code('files');
         require_css('errorlog');
@@ -394,7 +394,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The progression table
      */
-    protected function generate_cron_progression_table()
+    protected function generate_cron_progression_table() : object
     {
         require_code('templates_results_table');
         $_header_row = [
@@ -517,7 +517,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    protected function enable_cron_hook()
+    protected function enable_cron_hook() : object
     {
         $hook = get_param_string('id');
         return $this->configure_cron_hook($hook, 1);
@@ -528,7 +528,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    protected function disable_cron_hook()
+    protected function disable_cron_hook() : object
     {
         $hook = get_param_string('id');
         return $this->configure_cron_hook($hook, 0);
@@ -541,7 +541,7 @@ class Module_admin_errorlog
      * @param  BINARY $enabled Whether the hook is enabled
      * @return Tempcode The result of execution
      */
-    protected function configure_cron_hook($hook, $enabled)
+    protected function configure_cron_hook(string $hook, int $enabled) : object
     {
         // Update cron_progression table
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('cron_progression', 'c_hook', ['c_hook' => $hook]) !== null) {
@@ -565,7 +565,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    public function delete_log()
+    public function delete_log() : object
     {
         $log_file = filter_naughty(get_param_string('id'));
         if ($log_file == 'errorlog') {
@@ -585,7 +585,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    public function clear_log()
+    public function clear_log() : object
     {
         $log_file = filter_naughty(get_param_string('id'));
         if ($log_file == 'errorlog') {
@@ -606,7 +606,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The result of execution
      */
-    public function download_log()
+    public function download_log() : object
     {
         $log_file = filter_naughty(get_param_string('id'));
         if ($log_file == 'errorlog') {

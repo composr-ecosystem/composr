@@ -29,7 +29,7 @@
  * @param  ?MEMBER $member_id The member to get Private Topics of (null: current member)
  * @return array The details
  */
-function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_sup = '', $sql_sup_order_by = '', $member_id = null)
+function cns_get_private_topics(int $start = 0, int $true_start = 0, ?int $max = null, string $sql_sup = '', string $sql_sup_order_by = '', ?int $member_id = null) : array
 {
     if ($max === null) {
         $max = intval(get_option('forum_topics_per_page'));

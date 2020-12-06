@@ -28,7 +28,7 @@ class Hook_config_wiki_enable_children
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'WIKI_ENABLE_CHILDREN',
@@ -51,7 +51,7 @@ class Hook_config_wiki_enable_children
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('wiki')) {
             return null;

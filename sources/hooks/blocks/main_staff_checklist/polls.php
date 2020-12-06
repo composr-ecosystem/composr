@@ -28,7 +28,7 @@ class Hook_checklist_polls
      *
      * @return array An array of tuples: The task row to show, the number of seconds until it is due (or null if not on a timer), the number of things to sort out (or null if not on a queue), The name of the config option that controls the schedule (or null if no option)
      */
-    public function run()
+    public function run() : array
     {
         if (!addon_installed('polls')) {
             return [];
@@ -81,7 +81,7 @@ class Hook_checklist_polls
      *
      * @return integer Number in queue
      */
-    public function get_num_poll_queue()
+    public function get_num_poll_queue() : int
     {
         $c = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'poll WHERE votes1+votes2+votes3+votes4+votes5+votes6+votes7+votes8+votes9+votes10=0 AND is_current=0');
         if ($c === null) {

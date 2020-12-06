@@ -28,7 +28,7 @@ class Hook_config_galleries_show_stats_count_galleries
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'GALLERIES',
@@ -51,7 +51,7 @@ class Hook_config_galleries_show_stats_count_galleries
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('galleries')) {
             return null;

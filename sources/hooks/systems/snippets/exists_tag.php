@@ -28,7 +28,7 @@ class Hook_snippet_exists_tag
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('custom_comcode')) {
             return new Tempcode();

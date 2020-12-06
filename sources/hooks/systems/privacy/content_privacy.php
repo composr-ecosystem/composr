@@ -28,7 +28,7 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
      *
      * @return ?array A map of privacy details in a standardised format (null: disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('content_privacy')) {
             return null;
@@ -77,7 +77,7 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
      * @param  array $row Row raw from the database
      * @return array Row in a cleanly serialised format
      */
-    public function serialise($table_name, $row)
+    public function serialise(string $table_name, array $row) : array
     {
         $ret = parent::serialise($table_name, $row);
 

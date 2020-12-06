@@ -24,7 +24,7 @@
  *
  * @param  ?MEMBER $member_id Member ID to do for (null: all)
  */
-function autofill_geo_cpfs($member_id = null)
+function autofill_geo_cpfs(?int $member_id = null)
 {
     if (get_forum_type() != 'cns') {
         return;
@@ -53,7 +53,7 @@ function autofill_geo_cpfs($member_id = null)
  *
  * @ignore
  */
-function _autofill_geo_cpfs($row)
+function _autofill_geo_cpfs(array $row)
 {
     require_code('cns_members');
     require_code('locations');

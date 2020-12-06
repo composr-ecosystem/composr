@@ -31,7 +31,7 @@ class Hook_translation_google_translate
      * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
      * @return boolean Whether it is
      */
-    public function has_translation($from, $to, &$errormsg)
+    public function has_translation(?string $from, ?string $to, ?string &$errormsg) : bool
     {
         if (get_option('google_apis_api_key') == '') {
             return false;
@@ -65,7 +65,7 @@ class Hook_translation_google_translate
      * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
      * @return mixed Context metadata for the particular translation effort
      */
-    public function get_translation_context($context, $from, $to, &$errormsg)
+    public function get_translation_context(int $context, ?string $from, string $to, ?string &$errormsg)
     {
         if ($from !== null) {
             $_from = $this->get_google_lang_code($from, $errormsg);
@@ -94,7 +94,7 @@ class Hook_translation_google_translate
      * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?string Translated text (null: some kind of error)
      */
-    public function translate_text($text, $context, $context_metadata, $from, $to, &$errormsg)
+    public function translate_text(string $text, int $context, $context_metadata, ?string $from, string $to, ?string &$errormsg) : ?string
     {
         if ($context_metadata === null) {
             return null; // Should never happen as has_translation would have returned false
@@ -141,7 +141,7 @@ class Hook_translation_google_translate
      * @param  mixed $context_metadata Context metadata for the particular translation effort
      * @return string Output text
      */
-    public function put_result_into_context($text_result, $context, $context_metadata)
+    public function put_result_into_context(string $text_result, int $context, $context_metadata) : string
     {
         if ($context_metadata === null) {
             return $text_result; // Should never happen
@@ -175,7 +175,7 @@ class Hook_translation_google_translate
      *
      * @return string Credit HTML
      */
-    public function get_translation_credit()
+    public function get_translation_credit() : string
     {
         $powered_by = do_lang('POWERED_BY', 'Google Translate');
         $lnw = do_lang('LINK_NEW_WINDOW');
@@ -190,7 +190,7 @@ class Hook_translation_google_translate
      * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?string The converted code (null: none found)
      */
-    protected function get_google_lang_code($in, &$errormsg = null)
+    protected function get_google_lang_code(string $in, ?string &$errormsg = null) : ?string
     {
         $url = 'https://translation.googleapis.com/language/translate/v2/languages';
         $ret = str_replace('_', '-', cms_strtolower_ascii($in));
@@ -223,7 +223,7 @@ class Hook_translation_google_translate
      * @param  ?string $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?array Result (null: some kind of error)
      */
-    public function _google_translate_api_request($url, $request = null, &$errormsg = null)
+    public function _google_translate_api_request(string $url, ?array $request = null, ?string &$errormsg = null) : ?array
     {
         $key = get_option('google_apis_api_key');
         $url .= '?key=' . urlencode($key);

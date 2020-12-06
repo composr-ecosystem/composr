@@ -26,7 +26,7 @@
  * @param  string $wildcarded_page_link The wildcarded page-links
  * @return array A list of page-links
  */
-function expand_wildcarded_page_links($wildcarded_page_link)
+function expand_wildcarded_page_links(string $wildcarded_page_link) : array
 {
     $wildcarded_page_link = str_replace('_WILD', '*', $wildcarded_page_link);
 
@@ -90,7 +90,7 @@ function expand_wildcarded_page_links($wildcarded_page_link)
  * @param  ID_TEXT $parent Parent of current node in recursion (blank: no parent)
  * @param  boolean $overwrite_all Whether to flush out all existing data
  */
-function define_comcode_page_structure($structure, $zone = '', $parent = '', $overwrite_all = false)
+function define_comcode_page_structure(array $structure, string $zone = '', string $parent = '', bool $overwrite_all = false)
 {
     /*
         CALLING SAMPLE:
@@ -174,7 +174,7 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
  * @param  string $zone The zone to do this in
  * @param  boolean $overwrite_all Whether to flush out all existing data
  */
-function define_redirects($redirects, $zone = '', $overwrite_all = false)
+function define_redirects(array $redirects, string $zone = '', bool $overwrite_all = false)
 {
     /*
         CALLING SAMPLE:
@@ -225,7 +225,7 @@ function define_redirects($redirects, $zone = '', $overwrite_all = false)
  * @param  string $base_url The base URL (blank: natural)
  * @return ID_TEXT The name
  */
-function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $require_session, $new_zone, $uniqify = false, $skip_afm = false, $base_url = '')
+function actual_edit_zone(string $zone, string $title, string $default_page, string $header_text, string $theme, int $require_session, string $new_zone, bool $uniqify = false, bool $skip_afm = false, string $base_url = '') : string
 {
     if ($zone != $new_zone) {
         require_code('type_sanitisation');
@@ -303,7 +303,7 @@ function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $r
  * @param  ID_TEXT $new_zone The new name of the zone
  * @param  boolean $dont_bother_with_main_row Whether to assume the main zone row has already been renamed as part of a wider editing operation
  */
-function actual_rename_zone_lite($zone, $new_zone, $dont_bother_with_main_row = false)
+function actual_rename_zone_lite(string $zone, string $new_zone, bool $dont_bother_with_main_row = false)
 {
     if (!$dont_bother_with_main_row) {
         $GLOBALS['SITE_DB']->query_update('zones', ['zone_name' => $new_zone], ['zone_name' => $zone], '', 1);
@@ -348,7 +348,7 @@ function actual_rename_zone_lite($zone, $new_zone, $dont_bother_with_main_row = 
  * @param  boolean $force Force, even if it contains pages
  * @param  boolean $skip_afm Whether to skip the AFM because we know it's not needed (or can't be loaded)
  */
-function actual_delete_zone($zone, $force = false, $skip_afm = false)
+function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = false)
 {
     if ($zone == '') {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -395,7 +395,7 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
  *
  * @param  ID_TEXT $zone The name of the zone
  */
-function actual_delete_zone_lite($zone)
+function actual_delete_zone_lite(string $zone)
 {
     $zone_header_text = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
     if ($zone_header_text === null) {
@@ -451,7 +451,7 @@ function actual_delete_zone_lite($zone)
  * @param  Tempcode $completion_text The text to show (blank: default)
  * @return Tempcode The UI
  */
-function sitemap_do_next_manager($title, $page, $zone, $completion_text)
+function sitemap_do_next_manager(object $title, ?string $page, string $zone, object $completion_text) : object
 {
     if ($completion_text->is_empty()) {
         $completion_text = do_lang_tempcode('SUCCESS');
@@ -502,7 +502,7 @@ function sitemap_do_next_manager($title, $page, $zone, $completion_text)
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode The list
  */
-function create_selection_list_zones($sel = null, $no_go = [], $reorder = null, $updated_since = null)
+function create_selection_list_zones(?string $sel = null, array $no_go = [], ?array $reorder = null, ?int $updated_since = null) : object
 {
     if (($sel === 'site') && (get_option('single_public_zone') == '1')) {
         $sel = '';
@@ -546,7 +546,7 @@ function create_selection_list_zones($sel = null, $no_go = [], $reorder = null, 
  * @param  ?ID_TEXT $it The currently selected entry (null: none selected)
  * @return Tempcode The list of page templates
  */
-function create_selection_list_page_templates($it = null)
+function create_selection_list_page_templates(?string $it = null) : object
 {
     if ($it === null) {
         $it = get_value('page_template_default', '', true);
@@ -566,7 +566,7 @@ function create_selection_list_page_templates($it = null)
  *
  * @return array The names and titles of all available templates (title refers to the text within the first [title] tag in the template file)
  */
-function get_templates_list()
+function get_templates_list() : array
 {
     require_code('zones2');
 
@@ -601,7 +601,7 @@ function get_templates_list()
  * @param  string $name The name of the template (based on the filename) (blank: explicit no template)
  * @return string The contents of the file (blank if it does not exist)
  */
-function get_template_contents($name)
+function get_template_contents(string $name) : string
 {
     if ($name == '') {
         return '';
@@ -655,7 +655,7 @@ function get_template_contents($name)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (blank: implicit) (null: no change)
  * @return PATH The save path
  */
-function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $include_on_sitemap = 1, $parent_page = null, $order = null, $add_time = null, $edit_time = null, $show_as_edit = 0, $submitter = null, $file = null, $meta_keywords = '', $meta_description = '')
+function save_comcode_page(string $zone, string $new_file, string $lang, string $text, ?int $validated = null, ?int $include_on_sitemap = 1, ?string $parent_page = null, ?int $order = null, ?int $add_time = null, ?int $edit_time = null, int $show_as_edit = 0, ?int $submitter = null, ?string $file = null, ?string $meta_keywords = '', ?string $meta_description = '') : string
 {
     if ($submitter === null) {
         $submitter = get_member();
@@ -842,7 +842,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $i
  * @param  ID_TEXT $new_file The new page
  * @param  boolean $create_redirect Whether to create a redirect
  */
-function rename_live_comcode_page($zone, $file, $new_zone, $new_file, $create_redirect = false)
+function rename_live_comcode_page(string $zone, string $file, string $new_zone, string $new_file, bool $create_redirect = false)
 {
     $GLOBALS['SITE_DB']->query_update('attachment_refs', ['r_referer_id' => $new_zone . ':' . $new_file], ['r_referer_id' => $zone . ':' . $file, 'r_referer_type' => 'comcode_page']);
 
@@ -893,7 +893,7 @@ function rename_live_comcode_page($zone, $file, $new_zone, $new_file, $create_re
  * @param  ID_TEXT $type The page type (including any language subdirectory)
  * @return string The file extension
  */
-function get_page_type_file_extension($type)
+function get_page_type_file_extension(string $type) : string
 {
     $ext = '';
     if (substr($type, 0, 7) == 'modules') {
@@ -918,7 +918,7 @@ function get_page_type_file_extension($type)
  * @param  boolean $use_afm Whether to use the AFM
  * @param  ?LANGUAGE_NAME $only_lang Only delete this specific language (null: none)
  */
-function delete_cms_page($zone, $page, $type = 'comcode_custom', $use_afm = false, $only_lang = null)
+function delete_cms_page(string $zone, string $page, string $type = 'comcode_custom', bool $use_afm = false, ?string $only_lang = null)
 {
     $_page = $page . '.' . get_page_type_file_extension($type);
 

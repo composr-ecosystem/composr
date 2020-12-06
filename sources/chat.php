@@ -45,7 +45,7 @@ function init__chat()
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode A box for it, linking to the full page
  */
-function render_chat_box($row, $zone = '_SEARCH', $give_context = true, $guid = '')
+function render_chat_box(array $row, string $zone = '_SEARCH', bool $give_context = true, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -261,7 +261,7 @@ function messages_script()
  * @param  ?MEMBER $member_id_current Current member (null: true current member)
  * @return boolean Whether the member is befriended
  */
-function member_befriended($member_id, $member_id_current = null)
+function member_befriended(int $member_id, ?int $member_id_current = null) : bool
 {
     if ($member_id_current === null) {
         $member_id_current = get_member();
@@ -295,7 +295,7 @@ function member_befriended($member_id, $member_id_current = null)
  * @param  string $people Comma-separated people list
  * @return string Filtered comma-separated people list
  */
-function filter_invites_for_blocking($people)
+function filter_invites_for_blocking(string $people) : string
 {
     require_code('users2');
     $_people = explode(',', $people);
@@ -317,7 +317,7 @@ function filter_invites_for_blocking($people)
  *
  * @param  ?AUTO_LINK $room_id Room ID (null: all rooms)
  */
-function chat_room_prune($room_id)
+function chat_room_prune(?int $room_id)
 {
     // Find who may have gone offline
     $extra = '';
@@ -407,7 +407,7 @@ function chat_room_prune($room_id)
  *
  * @ignore
  */
-function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = null, $event_id = null, $events_output = '')
+function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $message_id = null, ?int $event_id = null, string $events_output = '')
 {
     if ($event_id == -1 && $room_id > -1/*if we're not checking IMs we don't need historic events*/) {
         $event_id = null;
@@ -655,7 +655,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
  * @param  IP $ip_address The IP address of the guest
  * @return string The guest chat name
  */
-function generate_guest_chat_name($ip_address)
+function generate_guest_chat_name(string $ip_address) : string
 {
     return do_lang('GUEST') . '-' . substr(md5($ip_address), 0, 5);
 }
@@ -667,7 +667,7 @@ function generate_guest_chat_name($ip_address)
  * @param  ?AUTO_LINK $room_id Room ID (null: lobby)
  * @return boolean Whether the member is active
  */
-function chatter_active($member_id, $room_id = null)
+function chatter_active(int $member_id, ?int $room_id = null) : bool
 {
     if ($room_id === null) {
         $room_clause = 'room_id IS NULL';
@@ -686,7 +686,7 @@ function chatter_active($member_id, $room_id = null)
  * @param  ?MEMBER $room_owner Room owner (null: none)
  * @return boolean Whether the member is a moderator of the chatroom
  */
-function is_chat_moderator($member_id, $room_id, $room_owner)
+function is_chat_moderator(int $member_id, int $room_id, ?int $room_owner) : bool
 {
     return has_actual_page_access(get_member(), 'cms_chat', null, ['chat', strval($room_id)], ['edit_lowrange_content', ($room_owner == $member_id) ? 'moderate_my_private_rooms' : null]);
 }
@@ -702,7 +702,7 @@ function is_chat_moderator($member_id, $room_id, $room_owner)
  *
  * @ignore
  */
-function _chat_post_message_ajax($room_id, $message, $font, $colour, $first_message)
+function _chat_post_message_ajax(int $room_id, string $message, string $font, string $colour, int $first_message)
 {
     $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
 
@@ -874,7 +874,7 @@ function _chat_post_message_ajax($room_id, $message, $font, $colour, $first_mess
  * @param  SHORT_TEXT $text_colour The text colour for the message
  * @return boolean Whether the message was successfully posted or not
  */
-function chat_post_message($room_id, $message, $font_name, $text_colour)
+function chat_post_message(int $room_id, string $message, string $font_name, string $text_colour) : bool
 {
     $member_id = get_member();
 
@@ -1036,7 +1036,7 @@ function chat_post_message($room_id, $message, $font_name, $text_colour)
  * @param  ?AUTO_LINK $room_id The room ID (null: lobby)
  * @return array A map of members in the room. User ID=>Username
  */
-function get_chatters_in_room($room_id)
+function get_chatters_in_room(?int $room_id) : array
 {
     if ($room_id === null) {
         $extra2 = 'room_id IS NULL';
@@ -1074,7 +1074,7 @@ function get_chatters_in_room($room_id)
  * @param  array $users A mapping (user=>username) of the chatters in the room
  * @return Tempcode The Tempcode
  */
-function get_chatters_in_room_tpl($users)
+function get_chatters_in_room_tpl(array $users) : object
 {
     require_code('users2');
     $usernames = new Tempcode();
@@ -1124,7 +1124,7 @@ function get_chatters_in_room_tpl($users)
  * @param  boolean $allow_null Allow the chatroom to not be found (i.e. don't die if it can't be)
  * @return ?SHORT_TEXT The room name (null: not found)
  */
-function get_chatroom_name($room_id, $allow_null = false)
+function get_chatroom_name(int $room_id, bool $allow_null = false) : ?string
 {
     if ($allow_null) {
         return $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'room_name', ['id' => $room_id]);
@@ -1139,7 +1139,7 @@ function get_chatroom_name($room_id, $allow_null = false)
  * @param  boolean $must_not_be_im Make sure the room is not an IM room. If it is an IM room, pretend it does not exist.
  * @return ?AUTO_LINK The ID of the chatroom (null: no such chatroom)
  */
-function get_chatroom_id($room_name, $must_not_be_im = false)
+function get_chatroom_id(string $room_name, bool $must_not_be_im = false) : ?int
 {
     $map = ['room_name' => $room_name];
     if ($must_not_be_im) {
@@ -1153,7 +1153,7 @@ function get_chatroom_id($room_name, $must_not_be_im = false)
  *
  * @return array An array of all the chatrooms
  */
-function chat_get_all_rooms()
+function chat_get_all_rooms() : array
 {
     return $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0], 'ORDER BY room_name DESC');
 }
@@ -1176,7 +1176,7 @@ function chat_get_all_rooms()
  * @param  boolean $return_system_messages Return system messages
  * @return array An array of all the messages collected according to the search criteria
  */
-function chat_get_room_content($room_id, $_rooms, $max_messages = null, $dereference = false, $downloading = false, $start = null, $finish = null, $uptoid = null, $zone = null, $entering_room = null, $return_my_messages = true, $return_system_messages = true)
+function chat_get_room_content(?int $room_id, array $_rooms, ?int $max_messages = null, bool $dereference = false, bool $downloading = false, ?int $start = null, ?int $finish = null, ?int $uptoid = null, ?string $zone = null, ?int $entering_room = null, bool $return_my_messages = true, bool $return_system_messages = true) : array
 {
     if ($zone === null) {
         $zone = get_module_zone('chat');
@@ -1356,7 +1356,7 @@ function chat_get_room_content($room_id, $_rooms, $max_messages = null, $derefer
  *
  * @ignore
  */
-function _deal_with_chatcode_tags($text, $tag, $pm_user, $pm_message, $username, $max_messages, $zone, $room_id, $system_message)
+function _deal_with_chatcode_tags(string $text, string $tag, string $pm_user, string $pm_message, string $username, ?int $max_messages, string $zone, int $room_id, int $system_message) : array
 {
     switch ($tag) {
         case 'newroom':
@@ -1382,7 +1382,7 @@ function _deal_with_chatcode_tags($text, $tag, $pm_user, $pm_message, $username,
  *
  * @ignore
  */
-function _deal_with_chatcode_private($pm_user, $pm_message, $username, $text, $room_id, $system_message)
+function _deal_with_chatcode_private(string $pm_user, string $pm_message, string $username, string $text, int $room_id, int $system_message) : array
 {
     $pm_message_deleted = false;
 
@@ -1442,7 +1442,7 @@ function _deal_with_chatcode_private($pm_user, $pm_message, $username, $text, $r
  *
  * @ignore
  */
-function _deal_with_chatcode_invite($pm_user, $pm_message, $username, $text, $zone)
+function _deal_with_chatcode_invite(string $pm_user, string $pm_message, string $username, string $text, string $zone) : array
 {
     $pm_message_deleted = false;
 
@@ -1487,7 +1487,7 @@ function _deal_with_chatcode_invite($pm_user, $pm_message, $username, $text, $zo
  *
  * @ignore
  */
-function _deal_with_chatcode_newroom($pm_user, $pm_message, $username, $text, $max_messages)
+function _deal_with_chatcode_newroom(string $pm_user, string $pm_message, string $username, string $text, ?int $max_messages) : array
 {
     $pm_message_deleted = false;
     if (!has_privilege(get_member(), 'create_private_room')) {
@@ -1542,7 +1542,7 @@ function _deal_with_chatcode_newroom($pm_user, $pm_message, $username, $text, $m
  *
  * @ignore
  */
-function _remove_empty_messages($messages, $message_ids)
+function _remove_empty_messages(array $messages, array $message_ids) : array
 {
     $new = [];
     foreach ($messages as $i => $message) {
@@ -1559,7 +1559,7 @@ function _remove_empty_messages($messages, $message_ids)
  * @param  string $_allow A comma-separated list of usernames
  * @return string A comma-separated list of member IDs
  */
-function parse_allow_list_input($_allow)
+function parse_allow_list_input(string $_allow) : string
 {
     if ($_allow == '') {
         return '';
@@ -1591,7 +1591,7 @@ function parse_allow_list_input($_allow)
  * @param  boolean $must_be_explicit Whether to also ensure for $member_id having explicit access
  * @return boolean Whether the current member has access to the chatroom
  */
-function check_chatroom_access($room, $ret = false, $member_id = null, $must_be_explicit = false)
+function check_chatroom_access($room, bool $ret = false, ?int $member_id = null, bool $must_be_explicit = false) : bool
 {
     if (!is_array($room)) {
         $_room = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['id', 'is_im', 'allow_list_groups', 'disallow_list_groups', 'allow_list', 'disallow_list', 'room_owner'], ['id' => $room], '', 1);
@@ -1682,7 +1682,7 @@ function check_chatroom_access($room, $ret = false, $member_id = null, $must_be_
  *
  * @return Tempcode Template to set up chat sound effects
  */
-function get_chat_sound_tpl()
+function get_chat_sound_tpl() : object
 {
     require_code('chat_sounds');
     $sound_effects = get_effect_settings(true, null, true);

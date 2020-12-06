@@ -28,7 +28,7 @@ class Module_news
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -68,7 +68,7 @@ class Module_news
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('news', [
@@ -183,7 +183,7 @@ class Module_news
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('news')) {
             return null;
@@ -221,7 +221,7 @@ class Module_news
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('news', $error_msg)) {
@@ -418,7 +418,7 @@ class Module_news
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('feedback');
         require_css('news');
@@ -450,7 +450,7 @@ class Module_news
      * @param  ?integer $blogs What to show (null: news and blogs, 0: news, 1: blogs)
      * @return Tempcode The UI
      */
-    public function news_cat_select($blogs)
+    public function news_cat_select(?int $blogs) : object
     {
         $start = get_param_integer('news_categories_start', 0);
         $max = get_param_integer('news_categories_max', intval(get_option('news_categories_per_page')));
@@ -533,7 +533,7 @@ class Module_news
      *
      * @return Tempcode The UI
      */
-    public function news_archive()
+    public function news_archive() : object
     {
         $blog = $this->blog;
         $select = $this->select;
@@ -584,7 +584,7 @@ class Module_news
      *
      * @return Tempcode The UI
      */
-    public function view_news()
+    public function view_news() : object
     {
         $id = $this->id;
         $blog = $this->blog;

@@ -76,7 +76,7 @@ function init__resource_fs()
  * @param  string $level The minimum logging level
  * @set inform notice warn
  */
-function resource_fs_logging__start($level = 'notice')
+function resource_fs_logging__start(string $level = 'notice')
 {
     global $RESOURCE_FS_LOGGER, $RESOURCE_FS_LOGGER_LEVEL;
     if ($RESOURCE_FS_LOGGER !== null) {
@@ -94,7 +94,7 @@ function resource_fs_logging__start($level = 'notice')
  * @param  ID_TEXT $type The template to use
  * @set inform notice warn
  */
-function resource_fs_logging($message, $type = 'warn')
+function resource_fs_logging(string $message, string $type = 'warn')
 {
     global $RESOURCE_FS_LOGGER, $RESOURCE_FS_LOGGER_LEVEL;
     if ($RESOURCE_FS_LOGGER !== null) {
@@ -138,7 +138,7 @@ function resource_fs_logging__end()
  * @param  ID_TEXT $resource_id The resource ID
  * @return ?array A pair: the JSON data, the path (null: could not find)
  */
-function get_resource_fs_record($resource_type, $resource_id)
+function get_resource_fs_record(string $resource_type, string $resource_id) : ?array
 {
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
 
@@ -159,7 +159,7 @@ function get_resource_fs_record($resource_type, $resource_id)
  * @param  ID_TEXT $resource_type The resource type
  * @return ?object The object (null: could not get one)
  */
-function get_resource_commandr_fs_object($resource_type)
+function get_resource_commandr_fs_object(string $resource_type) : ?object
 {
     $fs_hook = convert_composr_type_codes('content_type', $resource_type, 'commandr_filesystem_hook');
     if (empty($fs_hook)) {
@@ -190,7 +190,7 @@ ACTUAL FILESYSTEM INTERACTION IS DONE VIA A RESOURCE-FS OBJECT (fetch that via t
  * @param  boolean $definitely_new If we know this is new, i.e. has no existing moniker
  * @return array A triple: The moniker (may be new, or the prior one if the moniker did not need to change), the GUID, the label
  */
-function generate_resource_fs_moniker($resource_type, $resource_id, $label = null, $new_guid = null, $definitely_new = false)
+function generate_resource_fs_moniker(string $resource_type, string $resource_id, ?string $label = null, ?string $new_guid = null, bool $definitely_new = false) : array
 {
     static $cache = [];
     if ($new_guid === null) {
@@ -281,7 +281,7 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
  * @param  ID_TEXT $resource_type The resource type
  * @param  ID_TEXT $resource_id The resource ID
  */
-function expunge_resource_fs_moniker($resource_type, $resource_id)
+function expunge_resource_fs_moniker(string $resource_type, string $resource_id)
 {
     $GLOBALS['SITE_DB']->query_delete('alternative_ids', ['resource_type' => $resource_type, 'resource_id' => $resource_id], '', 1);
 }
@@ -293,7 +293,7 @@ function expunge_resource_fs_moniker($resource_type, $resource_id)
  * @param  ID_TEXT $resource_id The resource ID
  * @return ?ID_TEXT The GUID (null: no match)
  */
-function find_guid_via_id($resource_type, $resource_id)
+function find_guid_via_id(string $resource_type, string $resource_id) : ?string
 {
     list(, $guid) = generate_resource_fs_moniker($resource_type, $resource_id);
     return $guid;
@@ -307,7 +307,7 @@ function find_guid_via_id($resource_type, $resource_id)
  * @param  boolean $include_subpath Whether to include the subpath
  * @return ?ID_TEXT The filename (null: no match)
  */
-function find_commandr_fs_filename_via_id($resource_type, $resource_id, $include_subpath = false)
+function find_commandr_fs_filename_via_id(string $resource_type, string $resource_id, bool $include_subpath = false) : ?string
 {
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
     if ($resource_fs_ob === null) {
@@ -335,7 +335,7 @@ function find_commandr_fs_filename_via_id($resource_type, $resource_id, $include
  * @param  ID_TEXT $resource_id The resource ID
  * @return ?ID_TEXT The moniker (null: no match)
  */
-function find_moniker_via_id($resource_type, $resource_id)
+function find_moniker_via_id(string $resource_type, string $resource_id) : ?string
 {
     list($moniker) = generate_resource_fs_moniker($resource_type, $resource_id);
     return $moniker;
@@ -348,7 +348,7 @@ function find_moniker_via_id($resource_type, $resource_id)
  * @param  ID_TEXT $resource_id The resource ID
  * @return ?SHORT_TEXT The label (null: no match)
  */
-function find_label_via_id($resource_type, $resource_id)
+function find_label_via_id(string $resource_type, string $resource_id) : ?string
 {
     list(, , $label) = generate_resource_fs_moniker($resource_type, $resource_id);
     return $label;
@@ -361,7 +361,7 @@ function find_label_via_id($resource_type, $resource_id)
  * @param  ID_TEXT $resource_moniker The moniker
  * @return ?ID_TEXT The ID (null: no match)
  */
-function find_id_via_moniker($resource_type, $resource_moniker)
+function find_id_via_moniker(string $resource_type, string $resource_moniker) : ?string
 {
     /*static $cache = []; Things may have been deleted
     if (isset($cache[$resource_type][$resource_moniker])) {
@@ -386,7 +386,7 @@ function find_id_via_moniker($resource_type, $resource_moniker)
  * @param  ?string $subpath The subpath (null: don't care). It may end in "/*" if you want to look for a match under a certain directory
  * @return ?ID_TEXT The ID (null: no match)
  */
-function find_id_via_label($resource_type, $_resource_label, $subpath = null)
+function find_id_via_label(string $resource_type, string $_resource_label, ?string $subpath = null) : ?string
 {
     $resource_label = cms_mb_substr($_resource_label, 0, 255);
 
@@ -436,7 +436,7 @@ function find_id_via_label($resource_type, $_resource_label, $subpath = null)
  *
  * @ignore
  */
-function _check_id_match($commandr_fs_ob, $resource_type, $resource_id, $subpath)
+function _check_id_match(object $commandr_fs_ob, string $resource_type, string $resource_id, ?string $subpath) : bool
 {
     if ($subpath === null) {
         return true;
@@ -461,7 +461,7 @@ function _check_id_match($commandr_fs_ob, $resource_type, $resource_id, $subpath
  * @param  ID_TEXT $resource_guid The GUID
  * @return ?ID_TEXT The ID (null: no match)
  */
-function find_id_via_guid($resource_guid)
+function find_id_via_guid(string $resource_guid) : ?string
 {
     /*static $cache = []; Things may have been deleted
     if (isset($cache[$resource_guid])) {
@@ -481,7 +481,7 @@ function find_id_via_guid($resource_guid)
  * @param  array $guids The GUIDs
  * @return array Mapping between GUIDs and IDs (anything where there's no match will result in no array entry being present for that GUID)
  */
-function find_ids_via_guids($guids)
+function find_ids_via_guids(array $guids) : array
 {
     $or_list = '';
     foreach ($guids as $guid) {
@@ -502,7 +502,7 @@ function find_ids_via_guids($guids)
  * @param  ID_TEXT $filename The filename
  * @return ?ID_TEXT The ID (null: no match)
  */
-function find_id_via_commandr_fs_filename($resource_type, $filename)
+function find_id_via_commandr_fs_filename(string $resource_type, string $filename) : ?string
 {
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
     $test = $resource_fs_ob->convert_filename_to_id($filename, $resource_type);
@@ -525,7 +525,7 @@ TABLE LEVEL
  * @param  array $where_map Extra WHERE constraints
  * @return string JSON data
  */
-function table_to_json($table, $fields_to_skip = [], $where_map = [])
+function table_to_json(string $table, array $fields_to_skip = [], array $where_map = []) : string
 {
     return json_encode(table_to_portable_rows($table, $fields_to_skip, $where_map), defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0);
 }
@@ -539,7 +539,7 @@ function table_to_json($table, $fields_to_skip = [], $where_map = [])
  * @param  ?object $db Database connector to look up from (null: work out from table name)
  * @return array Portable rows
  */
-function table_to_portable_rows($table, $fields_to_skip = [], $where_map = [], $db = null)
+function table_to_portable_rows(string $table, array $fields_to_skip = [], array $where_map = [], ?object $db = null) : array
 {
     if ($db === null) {
         $db = get_db_for($table);
@@ -596,7 +596,7 @@ function table_to_portable_rows($table, $fields_to_skip = [], $where_map = [], $
  * @param  integer $replace_mode Whether to fully replace the current table contents
  * @return boolean Success status
  */
-function table_from_json($table, $json, $extra_field_data, $replace_mode)
+function table_from_json(string $table, $json, array $extra_field_data, int $replace_mode) : bool
 {
     $rows = @json_decode($json, true);
 
@@ -613,7 +613,7 @@ function table_from_json($table, $json, $extra_field_data, $replace_mode)
  * @param  ?object $db Database connector to look up from (null: work out from table name)
  * @return boolean Success status
  */
-function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mode, $db = null)
+function table_from_portable_rows(string $table, array $rows, array $extra_field_data, int $replace_mode, ?object $db = null) : bool
 {
     if ($db === null) {
         $db = get_db_for($table);
@@ -721,7 +721,7 @@ ROW LEVEL
  * @param  ?object $db Database connector to look up from (null: main site DB)
  * @return array Portable row
  */
-function table_row_to_portable_row($row, $db_fields, $relation_map, $db = null)
+function table_row_to_portable_row(array $row, array $db_fields, array $relation_map, ?object $db = null) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -765,7 +765,7 @@ function table_row_to_portable_row($row, $db_fields, $relation_map, $db = null)
  * @param  ?object $db Database connector to look up from (null: main site DB)
  * @return array Table row
  */
-function table_row_from_portable_row($row, $db_fields, $relation_map, $db = null)
+function table_row_from_portable_row(array $row, array $db_fields, array $relation_map, ?object $db = null) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -832,7 +832,7 @@ FIELD LEVEL
  * @param  ?TIME $timestamp The timestamp (null: not set)
  * @return ?string Portable details (null: not set)
  */
-function remap_time_as_portable($timestamp)
+function remap_time_as_portable(?int $timestamp) : ?string
 {
     if ($timestamp === null) {
         return null;
@@ -847,7 +847,7 @@ function remap_time_as_portable($timestamp)
  * @param  ?string $portable_data Portable details (null: not set)
  * @return ?integer The timestamp (null: not set)
  */
-function remap_portable_as_time($portable_data)
+function remap_portable_as_time(?string $portable_data) : ?int
 {
     if ($portable_data === null) {
         return null;
@@ -862,7 +862,7 @@ function remap_portable_as_time($portable_data)
  * @param  ?URLPATH $urlpath The URL (null: not set)
  * @return ?mixed Portable details (null: not set)
  */
-function remap_urlpath_as_portable($urlpath)
+function remap_urlpath_as_portable(?string $urlpath)
 {
     if ($urlpath === null) {
         return null;
@@ -887,7 +887,7 @@ function remap_urlpath_as_portable($urlpath)
  * @param  boolean $ignore_conflicts Whether to ignore conflicts with existing files (=edit op, basically)
  * @return ?string The URL (null: not set)
  */
-function remap_portable_as_urlpath($portable_data, $ignore_conflicts = false)
+function remap_portable_as_urlpath(?string $portable_data, bool $ignore_conflicts = false) : ?string
 {
     if (!is_array($portable_data)) {
         return $portable_data;
@@ -918,7 +918,7 @@ function remap_portable_as_urlpath($portable_data, $ignore_conflicts = false)
  * @param  ?mixed $id The key (null: not set)
  * @return ?array Portable ID details (null: not set)
  */
-function remap_foreign_key_as_portable($_table_referenced, $id)
+function remap_foreign_key_as_portable(array $_table_referenced, $id) : ?array
 {
     if ($id === null) {
         return null;
@@ -948,7 +948,7 @@ function remap_foreign_key_as_portable($_table_referenced, $id)
  * @param  ?mixed $portable_data Portable ID details (null: not set)
  * @return ?mixed The key (null: not set)
  */
-function remap_portable_as_foreign_key($_table_referenced, $portable_data)
+function remap_portable_as_foreign_key(array $_table_referenced, $portable_data)
 {
     if (!is_array($portable_data)) {
         return $portable_data;
@@ -972,7 +972,7 @@ function remap_portable_as_foreign_key($_table_referenced, $portable_data)
  * @param  ?mixed $resource_id The resource ID (null: not set)
  * @return ?array Portable ID details (null: not set)
  */
-function remap_resource_id_as_portable($resource_type, $resource_id)
+function remap_resource_id_as_portable(string $resource_type, $resource_id) : ?array
 {
     if ($resource_id === null) {
         return null;
@@ -1009,7 +1009,7 @@ function remap_resource_id_as_portable($resource_type, $resource_id)
  * @param  ?mixed $portable_data Portable ID details (null: not set)
  * @return ?mixed The resource ID (null: not set)
  */
-function remap_portable_as_resource_id($resource_type, $portable_data)
+function remap_portable_as_resource_id(string $resource_type, $portable_data)
 {
     if (!is_array($portable_data)) {
         return $portable_data;
@@ -1046,7 +1046,7 @@ function remap_portable_as_resource_id($resource_type, $portable_data)
  * @param  object $db Database connector to look up from
  * @return array Portable data
  */
-function remap_trans_as_portable($db_row, $field, $db)
+function remap_trans_as_portable(array $db_row, string $field, object $db) : array
 {
     if (!multi_lang_content()) {
         if (isset($db_row[$field . '__source_user'])) {
@@ -1067,7 +1067,7 @@ function remap_trans_as_portable($db_row, $field, $db)
  * @param  object $db Database connector to look up from
  * @return array Extra database row data
  */
-function remap_portable_as_trans($portable_data, $field, $db)
+function remap_portable_as_trans(array $portable_data, string $field, object $db) : array
 {
     if (!multi_lang_content()) {
         if (is_array($portable_data)) {

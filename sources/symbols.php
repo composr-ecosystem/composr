@@ -44,7 +44,7 @@ function init__symbols()
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return mixed The result. Either Tempcode, or a string.
  */
-function ecv($lang, $escaped, $type, $name, $param)
+function ecv(string $lang, array $escaped, int $type, string $name, array $param)
 {
     $name = trim($name);
 
@@ -924,7 +924,7 @@ function ecv($lang, $escaped, $type, $name, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF(&$value, $lang, $escaped, $param)
+function ecv_IF(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         $_p = $param[0]->evaluate();
@@ -944,7 +944,7 @@ function ecv_IF(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF_EMPTY(&$value, $lang, $escaped, $param)
+function ecv_IF_EMPTY(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         if ($param[0]->is_empty()) {
@@ -963,7 +963,7 @@ function ecv_IF_EMPTY(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF_NON_EMPTY(&$value, $lang, $escaped, $param)
+function ecv_IF_NON_EMPTY(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         if (!$param[0]->is_empty()) {
@@ -982,7 +982,7 @@ function ecv_IF_NON_EMPTY(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF_PASSED(&$value, $lang, $escaped, $param)
+function ecv_IF_PASSED(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         $t = $param[0]->evaluate();
@@ -1002,7 +1002,7 @@ function ecv_IF_PASSED(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF_NON_PASSED(&$value, $lang, $escaped, $param)
+function ecv_IF_NON_PASSED(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         $t = $param[0]->evaluate();
@@ -1022,7 +1022,7 @@ function ecv_IF_NON_PASSED(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF_PASSED_AND_TRUE(&$value, $lang, $escaped, $param)
+function ecv_IF_PASSED_AND_TRUE(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         $t = $param[0]->evaluate();
@@ -1042,7 +1042,7 @@ function ecv_IF_PASSED_AND_TRUE(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_IF_NON_PASSED_OR_FALSE(&$value, $lang, $escaped, $param)
+function ecv_IF_NON_PASSED_OR_FALSE(string &$value, string $lang, array $escaped, array $param)
 {
     if (isset($param[1])) {
         $t = $param[0]->evaluate();
@@ -1062,7 +1062,7 @@ function ecv_IF_NON_PASSED_OR_FALSE(&$value, $lang, $escaped, $param)
  * @param  array $escaped Array of escaping operations
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  */
-function ecv_LOOP(&$value, $lang, $escaped, $param)
+function ecv_LOOP(string &$value, string $lang, array $escaped, array $param)
 {
     // This code is mostly defunct, as the closure_loop function is normally used for performance reasons
     // (no need to keep re-binding, as closure_loop runs at a lower level)
@@ -1151,7 +1151,7 @@ function ecv_LOOP(&$value, $lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PAGE_LINK($lang, $escaped, $param)
+function ecv_PAGE_LINK(string $lang, array $escaped, array $param) : string
 {
     if (isset($param[0])) {
         list($zone, $map, $hash) = page_link_decode(isset($param[0]->codename)/*faster than is_object*/ ? $param[0]->evaluate() : $param[0]);
@@ -1192,7 +1192,7 @@ function ecv_PAGE_LINK($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SET($lang, $escaped, $param)
+function ecv_SET(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1229,7 +1229,7 @@ function ecv_SET($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_GET($lang, $escaped, $param)
+function ecv_GET(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1278,7 +1278,7 @@ function ecv_GET($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TERNARY($lang, $escaped, $param)
+function ecv_TERNARY(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1305,7 +1305,7 @@ function ecv_TERNARY($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IMG($lang, $escaped, $param)
+function ecv_IMG(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1342,7 +1342,7 @@ function ecv_IMG($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IMG_INLINE($lang, $escaped, $param)
+function ecv_IMG_INLINE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1386,7 +1386,7 @@ function ecv_IMG_INLINE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IMG_MTIME($lang, $escaped, $param)
+function ecv_IMG_MTIME(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -1417,7 +1417,7 @@ function ecv_IMG_MTIME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IMG_WIDTH($lang, $escaped, $param)
+function ecv_IMG_WIDTH(string $lang, array $escaped, array $param) : string
 {
     require_code('images');
     list($value,) = _symbol_image_dims($param);
@@ -1438,7 +1438,7 @@ function ecv_IMG_WIDTH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IMG_HEIGHT($lang, $escaped, $param)
+function ecv_IMG_HEIGHT(string $lang, array $escaped, array $param) : string
 {
     require_code('images');
     list(, $value) = _symbol_image_dims($param);
@@ -1457,7 +1457,7 @@ function ecv_IMG_HEIGHT($lang, $escaped, $param)
  *
  * @ignore
  */
-function _symbol_image_dims($param)
+function _symbol_image_dims(array $param) : array
 {
     if (!function_exists('imagecreatefromstring')) {
         return ['', ''];
@@ -1510,7 +1510,7 @@ function _symbol_image_dims($param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_THEMEWIZARD_COLOR($lang, $escaped, $param)
+function ecv_THEMEWIZARD_COLOR(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1538,7 +1538,7 @@ function ecv_THEMEWIZARD_COLOR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CSS_MODE($lang, $escaped, $param)
+function ecv_CSS_MODE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1568,7 +1568,7 @@ function ecv_CSS_MODE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_FORUM($lang, $escaped, $param)
+function ecv_HAS_FORUM(string $lang, array $escaped, array $param) : string
 {
     if (!empty($param[0])) {
         $value = (get_forum_type() == 'none') ? '0' : '1';
@@ -1592,7 +1592,7 @@ function ecv_HAS_FORUM($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_($lang, $escaped, $param) // A Tempcode comment
+function ecv_(string $lang, array $escaped, array $param) // A Tempcode comment : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1611,7 +1611,7 @@ function ecv_($lang, $escaped, $param) // A Tempcode comment
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_REFRESH($lang, $escaped, $param)
+function ecv_REFRESH(string $lang, array $escaped, array $param) : string
 {
     // This symbol is only used by HTML_HEAD.tpl
 
@@ -1643,7 +1643,7 @@ function ecv_REFRESH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FEEDS($lang, $escaped, $param)
+function ecv_FEEDS(string $lang, array $escaped, array $param) : string
 {
     // Feeds
     if ((get_option('is_on_rss', true) === '1') && (addon_installed('syndication'))) {
@@ -1684,7 +1684,7 @@ function ecv_FEEDS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_METADATA($lang, $escaped, $param)
+function ecv_METADATA(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -1858,7 +1858,7 @@ function ecv_METADATA($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_KEEP($lang, $escaped, $param)
+function ecv_KEEP(string $lang, array $escaped, array $param) : string
 {
     // What needs preserving in the URL
     $value = keep_symbol($param);
@@ -1875,7 +1875,7 @@ function ecv_KEEP($lang, $escaped, $param)
  * @param  array $param Parameters passed to the symbol (0=whether this starts off the query string, 1=force session append even if it's also available a session cookie e.g. when put into download manager)
  * @return string The result
  */
-function keep_symbol($param)
+function keep_symbol(array $param) : string
 {
     $value = '';
 
@@ -1910,7 +1910,7 @@ function keep_symbol($param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BROWSER($lang, $escaped, $param)
+function ecv_BROWSER(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -1945,7 +1945,7 @@ function ecv_BROWSER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_REQUIRE_JAVASCRIPT($lang, $escaped, $param)
+function ecv_REQUIRE_JAVASCRIPT(string $lang, array $escaped, array $param) : string
 {
     if (!empty($param[0])) {
         global $JAVASCRIPTS;
@@ -1971,7 +1971,7 @@ function ecv_REQUIRE_JAVASCRIPT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FACILITATE_AJAX_BLOCK_CALL($lang, $escaped, $param)
+function ecv_FACILITATE_AJAX_BLOCK_CALL(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2042,7 +2042,7 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv__GET($lang, $escaped, $param)
+function ecv__GET(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2069,7 +2069,7 @@ function ecv__GET($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_STRIP_TAGS($lang, $escaped, $param)
+function ecv_STRIP_TAGS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -2111,7 +2111,7 @@ function ecv_STRIP_TAGS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TRUNCATE_LEFT($lang, $escaped, $param)
+function ecv_TRUNCATE_LEFT(string $lang, array $escaped, array $param) : string
 {
     $value = symbol_truncator($param, 'left');
 
@@ -2131,7 +2131,7 @@ function ecv_TRUNCATE_LEFT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TRUNCATE_SPREAD($lang, $escaped, $param)
+function ecv_TRUNCATE_SPREAD(string $lang, array $escaped, array $param) : string
 {
     $value = symbol_truncator($param, 'spread');
 
@@ -2150,7 +2150,7 @@ function ecv_TRUNCATE_SPREAD($lang, $escaped, $param)
  * @param  ?mixed $tooltip_if_truncated Tooltip to add on, but only if we end up creating our own tooltip (null: none)
  * @return string The result
  */
-function symbol_truncator($param, $type, $tooltip_if_truncated = null)
+function symbol_truncator(array $param, string $type, $tooltip_if_truncated = null) : string
 {
     $value = '';
 
@@ -2269,7 +2269,7 @@ function symbol_truncator($param, $type, $tooltip_if_truncated = null)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PARAGRAPH($lang, $escaped, $param)
+function ecv_PARAGRAPH(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2297,7 +2297,7 @@ function ecv_PARAGRAPH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_COMMA_LIST_GET($lang, $escaped, $param)
+function ecv_COMMA_LIST_GET(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2326,7 +2326,7 @@ function ecv_COMMA_LIST_GET($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_EMPTY($lang, $escaped, $param)
+function ecv_IS_EMPTY(string $lang, array $escaped, array $param) : string
 {
     $value = '1';
 
@@ -2350,7 +2350,7 @@ function ecv_IS_EMPTY($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_NON_EMPTY($lang, $escaped, $param)
+function ecv_IS_NON_EMPTY(string $lang, array $escaped, array $param) : string
 {
     $value = '0';
 
@@ -2374,7 +2374,7 @@ function ecv_IS_NON_EMPTY($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CDN_FILTER($lang, $escaped, $param)
+function ecv_CDN_FILTER(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2401,7 +2401,7 @@ function ecv_CDN_FILTER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LOAD_PANEL($lang, $escaped, $param)
+function ecv_LOAD_PANEL(string $lang, array $escaped, array $param) : string
 {
     $temp_array = [];
     handle_symbol_preprocessing([$escaped, TC_SYMBOL, 'LOAD_PANEL', $param], $temp_array); // Late preprocessing. Should not be needed in case of full screen output (as this was properly preprocessed), but is in other cases
@@ -2438,7 +2438,7 @@ function ecv_LOAD_PANEL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_JS_ON($lang, $escaped, $param)
+function ecv_JS_ON(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -2464,7 +2464,7 @@ function ecv_JS_ON($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ZONE($lang, $escaped, $param)
+function ecv_ZONE(string $lang, array $escaped, array $param) : string
 {
     $value = get_zone_name();
 
@@ -2484,7 +2484,7 @@ function ecv_ZONE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PAGE($lang, $escaped, $param)
+function ecv_PAGE(string $lang, array $escaped, array $param) : string
 {
     $value = get_page_name();
 
@@ -2504,7 +2504,7 @@ function ecv_PAGE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HEADER_TEXT($lang, $escaped, $param)
+function ecv_HEADER_TEXT(string $lang, array $escaped, array $param) : string
 {
     global $ZONE, $SHORT_TITLE, $DISPLAYED_TITLE;
     if ($ZONE === null) {
@@ -2554,7 +2554,7 @@ function ecv_HEADER_TEXT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CANONICAL_URL($lang, $escaped, $param)
+function ecv_CANONICAL_URL(string $lang, array $escaped, array $param) : string
 {
     $value = get_canonical_url();
 
@@ -2574,7 +2574,7 @@ function ecv_CANONICAL_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SHOW_HEADER($lang, $escaped, $param)
+function ecv_SHOW_HEADER(string $lang, array $escaped, array $param) : string
 {
     $value = (is_wide_high() == 1) ? '0' : '1';
 
@@ -2594,7 +2594,7 @@ function ecv_SHOW_HEADER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SHOW_FOOTER($lang, $escaped, $param)
+function ecv_SHOW_FOOTER(string $lang, array $escaped, array $param) : string
 {
     $value = (is_wide_high() == 1) ? '0' : '1';
 
@@ -2614,7 +2614,7 @@ function ecv_SHOW_FOOTER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_WIDE($lang, $escaped, $param)
+function ecv_WIDE(string $lang, array $escaped, array $param) : string
 {
     $value = (is_wide() == 1) ? '1' : '0';
 
@@ -2634,7 +2634,7 @@ function ecv_WIDE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_WIDE_HIGH($lang, $escaped, $param)
+function ecv_WIDE_HIGH(string $lang, array $escaped, array $param) : string
 {
     $value = (is_wide_high() == 1) ? '1' : '0';
 
@@ -2654,7 +2654,7 @@ function ecv_WIDE_HIGH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LOGO_URL($lang, $escaped, $param)
+function ecv_LOGO_URL(string $lang, array $escaped, array $param) : string
 {
     $value = get_logo_url();
 
@@ -2674,7 +2674,7 @@ function ecv_LOGO_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HELPER_PANEL_TUTORIAL($lang, $escaped, $param)
+function ecv_HELPER_PANEL_TUTORIAL(string $lang, array $escaped, array $param) : string
 {
     if ($GLOBALS['HELPER_PANEL_TUTORIAL'] === null) {
         set_helper_panel_tutorial('');
@@ -2700,7 +2700,7 @@ function ecv_HELPER_PANEL_TUTORIAL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HELPER_PANEL_TEXT($lang, $escaped, $param)
+function ecv_HELPER_PANEL_TEXT(string $lang, array $escaped, array $param) : string
 {
     if ($GLOBALS['HELPER_PANEL_TEXT'] === null) {
         $GLOBALS['HELPER_PANEL_TEXT'] = '';
@@ -2723,7 +2723,7 @@ function ecv_HELPER_PANEL_TEXT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MESSAGES_TOP($lang, $escaped, $param)
+function ecv_MESSAGES_TOP(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2750,7 +2750,7 @@ function ecv_MESSAGES_TOP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MESSAGES_BOTTOM($lang, $escaped, $param)
+function ecv_MESSAGES_BOTTOM(string $lang, array $escaped, array $param) : string
 {
     // Extra stuff we can tag on (like messages)
     $messages_bottom = new Tempcode();
@@ -2784,7 +2784,7 @@ function ecv_MESSAGES_BOTTOM($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LATE_MESSAGES($lang, $escaped, $param)
+function ecv_LATE_MESSAGES(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2811,7 +2811,7 @@ function ecv_LATE_MESSAGES($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BREADCRUMBS($lang, $escaped, $param)
+function ecv_BREADCRUMBS(string $lang, array $escaped, array $param) : string
 {
     $show_self = !empty($param[0]);
     if (!$show_self) {
@@ -2835,7 +2835,7 @@ function ecv_BREADCRUMBS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_SU($lang, $escaped, $param)
+function ecv_HAS_SU(string $lang, array $escaped, array $param) : string
 {
     $value = '0';
     if (!is_guest()) {
@@ -2858,7 +2858,7 @@ function ecv_HAS_SU($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_STAFF_ACTIONS($lang, $escaped, $param)
+function ecv_STAFF_ACTIONS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2889,7 +2889,7 @@ function ecv_STAFF_ACTIONS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TRIM($lang, $escaped, $param)
+function ecv_TRIM(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -2935,7 +2935,7 @@ function ecv_TRIM($lang, $escaped, $param)
  * @param  boolean $try_hard Whether to keep doing it, while it changes (if complex mixtures are on the end)
  * @return string The result text
  */
-function cms_trim($text, $try_hard = true)
+function cms_trim(string $text, bool $try_hard = true) : string
 {
     if ((preg_match('#[<&]#', $text) === 0) && (memory_get_usage() > 1024 * 1024 * 40)) {
         return trim($text); // Don't have enough memory
@@ -3009,7 +3009,7 @@ function cms_trim($text, $try_hard = true)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CPF_VALUE($lang, $escaped, $param)
+function ecv_CPF_VALUE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3071,7 +3071,7 @@ function ecv_CPF_VALUE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BANNER($lang, $escaped, $param)
+function ecv_BANNER(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3122,7 +3122,7 @@ function ecv_BANNER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_AVATAR($lang, $escaped, $param)
+function ecv_AVATAR(string $lang, array $escaped, array $param) : string
 {
     $value = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member());
 
@@ -3142,7 +3142,7 @@ function ecv_AVATAR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_GUEST($lang, $escaped, $param)
+function ecv_IS_GUEST(string $lang, array $escaped, array $param) : string
 {
     if ((isset($param[0])) && (is_numeric($param[0]))) {
         $value = (is_guest(intval($param[0]))) ? '1' : '0';
@@ -3166,7 +3166,7 @@ function ecv_IS_GUEST($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MEMBER($lang, $escaped, $param)
+function ecv_MEMBER(string $lang, array $escaped, array $param) : string
 {
     if (empty($param[0])) {
         $value = strval(get_member());
@@ -3191,7 +3191,7 @@ function ecv_MEMBER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_REQUIRE_CSS($lang, $escaped, $param)
+function ecv_REQUIRE_CSS(string $lang, array $escaped, array $param) : string
 {
     if (!empty($param[0])) {
         require_css($param[0]);
@@ -3214,7 +3214,7 @@ function ecv_REQUIRE_CSS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_HTTPAUTH_LOGIN($lang, $escaped, $param)
+function ecv_IS_HTTPAUTH_LOGIN(string $lang, array $escaped, array $param) : string
 {
     $value = is_httpauth_login() ? '1' : '0';
 
@@ -3234,7 +3234,7 @@ function ecv_IS_HTTPAUTH_LOGIN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MEMBER_PROFILE_URL($lang, $escaped, $param)
+function ecv_MEMBER_PROFILE_URL(string $lang, array $escaped, array $param) : string
 {
     $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();
     $value = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
@@ -3261,7 +3261,7 @@ function ecv_MEMBER_PROFILE_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_USERNAME($lang, $escaped, $param)
+function ecv_USERNAME(string $lang, array $escaped, array $param) : string
 {
     $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();
     $value = $GLOBALS['FORUM_DRIVER']->get_username($member_id, !empty($param[1]));
@@ -3282,7 +3282,7 @@ function ecv_USERNAME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DISPLAYED_USERNAME($lang, $escaped, $param)
+function ecv_DISPLAYED_USERNAME(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3309,7 +3309,7 @@ function ecv_DISPLAYED_USERNAME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CYCLE($lang, $escaped, $param)
+function ecv_CYCLE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3352,7 +3352,7 @@ function ecv_CYCLE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_THUMBNAIL($lang, $escaped, $param)
+function ecv_THUMBNAIL(string $lang, array $escaped, array $param) : string
 {
     if (empty($param[0])) {
         return '';
@@ -3433,7 +3433,7 @@ function ecv_THUMBNAIL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_IN_GROUP($lang, $escaped, $param)
+function ecv_IS_IN_GROUP(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3495,7 +3495,7 @@ function ecv_IS_IN_GROUP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_STAFF($lang, $escaped, $param)
+function ecv_IS_STAFF(string $lang, array $escaped, array $param) : string
 {
     if ((isset($GLOBALS['FORUM_DRIVER'])) && (function_exists('get_member'))) {
         $value = $GLOBALS['FORUM_DRIVER']->is_staff(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()) ? '1' : '0';
@@ -3519,7 +3519,7 @@ function ecv_IS_STAFF($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_ADMIN($lang, $escaped, $param)
+function ecv_IS_ADMIN(string $lang, array $escaped, array $param) : string
 {
     if ((isset($GLOBALS['FORUM_DRIVER'])) && (function_exists('get_member'))) {
         $value = $GLOBALS['FORUM_DRIVER']->is_super_admin(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()) ? '1' : '0';
@@ -3543,7 +3543,7 @@ function ecv_IS_ADMIN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PHOTO($lang, $escaped, $param)
+function ecv_PHOTO(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3568,7 +3568,7 @@ function ecv_PHOTO($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CNS_RANK_IMAGE($lang, $escaped, $param)
+function ecv_CNS_RANK_IMAGE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3608,7 +3608,7 @@ function ecv_CNS_RANK_IMAGE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_URL_FOR_GET_FORM($lang, $escaped, $param)
+function ecv_URL_FOR_GET_FORM(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3647,7 +3647,7 @@ function ecv_URL_FOR_GET_FORM($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HIDDENS_FOR_GET_FORM($lang, $escaped, $param)
+function ecv_HIDDENS_FOR_GET_FORM(string $lang, array $escaped, array $param) : string
 {
     $_value = new Tempcode();
     $url_bits = parse_url($param[0]);
@@ -3679,7 +3679,7 @@ function ecv_HIDDENS_FOR_GET_FORM($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NOTIFICATIONS_ENABLED($lang, $escaped, $param)
+function ecv_NOTIFICATIONS_ENABLED(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -3704,7 +3704,7 @@ function ecv_NOTIFICATIONS_ENABLED($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NOTIFICATIONS_AVAILABLE($lang, $escaped, $param)
+function ecv_NOTIFICATIONS_AVAILABLE(string $lang, array $escaped, array $param) : string
 {
     $value = '1';
     if (!empty($param[0])) {
@@ -3733,7 +3733,7 @@ function ecv_NOTIFICATIONS_AVAILABLE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MAKE_RELATIVE_DATE($lang, $escaped, $param)
+function ecv_MAKE_RELATIVE_DATE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -3767,7 +3767,7 @@ function ecv_MAKE_RELATIVE_DATE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LOAD_PAGE($lang, $escaped, $param)
+function ecv_LOAD_PAGE(string $lang, array $escaped, array $param) : string
 {
     $temp_array = [];
     handle_symbol_preprocessing([$escaped, TC_SYMBOL, 'LOAD_PAGE', $param], $temp_array); // Late preprocessing. Should not be needed in case of full screen output (as this was properly preprocessed), but is in other cases
@@ -3801,7 +3801,7 @@ function ecv_LOAD_PAGE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_RUNNING_SCRIPT($lang, $escaped, $param)
+function ecv_RUNNING_SCRIPT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -3825,7 +3825,7 @@ function ecv_RUNNING_SCRIPT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MATCH_KEY_MATCH($lang, $escaped, $param)
+function ecv_MATCH_KEY_MATCH(string $lang, array $escaped, array $param) : string
 {
     $value = '0';
     foreach ($param as $match_key) {
@@ -3853,7 +3853,7 @@ function ecv_MATCH_KEY_MATCH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BLOCK($lang, $escaped, $param)
+function ecv_BLOCK(string $lang, array $escaped, array $param) : string
 {
     if (!$GLOBALS['STATIC_TEMPLATE_TEST_MODE']) { // Normal operation
         $temp_array = [];
@@ -3911,7 +3911,7 @@ function ecv_BLOCK($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FORCE_PREVIEWS($lang, $escaped, $param)
+function ecv_FORCE_PREVIEWS(string $lang, array $escaped, array $param) : string
 {
     if (get_option('forced_preview_option') == '1') {
         if (get_forum_type() == 'cns') {
@@ -3943,7 +3943,7 @@ function ecv_FORCE_PREVIEWS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PREVIEW_URL($lang, $escaped, $param)
+function ecv_PREVIEW_URL(string $lang, array $escaped, array $param) : string
 {
     $value = find_script('preview');
     $value .= '?page=' . urlencode(get_page_name());
@@ -3971,7 +3971,7 @@ function ecv_PREVIEW_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HIDE_HELP_PANEL($lang, $escaped, $param)
+function ecv_HIDE_HELP_PANEL(string $lang, array $escaped, array $param) : string
 {
     $value = (!empty($_COOKIE['hide_helper_panel'])) ? '1' : '0';
 
@@ -3991,7 +3991,7 @@ function ecv_HIDE_HELP_PANEL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FIND_SCRIPT_NOHTTP($lang, $escaped, $param)
+function ecv_FIND_SCRIPT_NOHTTP(string $lang, array $escaped, array $param) : string
 {
     if ($GLOBALS['DEV_MODE']) { // Dev mode changes base domain so we need to actually use it in full (fine, we don't have HTTPS in dev mode).
         return ecv_FIND_SCRIPT($lang, $escaped, $param);
@@ -4014,7 +4014,7 @@ function ecv_FIND_SCRIPT_NOHTTP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FIND_SCRIPT($lang, $escaped, $param)
+function ecv_FIND_SCRIPT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4043,7 +4043,7 @@ function ecv_FIND_SCRIPT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CSS_TEMPCODE($lang, $escaped, $param)
+function ecv_CSS_TEMPCODE(string $lang, array $escaped, array $param) : string
 {
     $temp_array = [];
     handle_symbol_preprocessing([$escaped, TC_SYMBOL, 'CSS_TEMPCODE', $param], $temp_array); // Late preprocessing. Should not be needed in case of full screen output (as this was properly preprocessed), but is in other cases
@@ -4067,7 +4067,7 @@ function ecv_CSS_TEMPCODE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_JS_TEMPCODE($lang, $escaped, $param)
+function ecv_JS_TEMPCODE(string $lang, array $escaped, array $param) : string
 {
     $temp_array = [];
     handle_symbol_preprocessing([$escaped, TC_SYMBOL, 'JS_TEMPCODE', $param], $temp_array); // Late preprocessing. Should not be needed in case of full screen output (as this was properly preprocessed), but is in other cases
@@ -4091,7 +4091,7 @@ function ecv_JS_TEMPCODE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PAGE_TITLE($lang, $escaped, $param)
+function ecv_PAGE_TITLE(string $lang, array $escaped, array $param) : string
 {
     global $DISPLAYED_TITLE;
     $value = ($DISPLAYED_TITLE === null) ? '' : $DISPLAYED_TITLE->evaluate();
@@ -4112,7 +4112,7 @@ function ecv_PAGE_TITLE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_EXTRA_HEAD($lang, $escaped, $param)
+function ecv_EXTRA_HEAD(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4140,7 +4140,7 @@ function ecv_EXTRA_HEAD($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_EXTRA_FOOT($lang, $escaped, $param)
+function ecv_EXTRA_FOOT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4173,7 +4173,7 @@ function ecv_EXTRA_FOOT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SHOW_DOCS($lang, $escaped, $param)
+function ecv_SHOW_DOCS(string $lang, array $escaped, array $param) : string
 {
     $value = (get_option('show_docs') === '0') ? '0' : '1';
 
@@ -4193,7 +4193,7 @@ function ecv_SHOW_DOCS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NUMBER_FORMAT($lang, $escaped, $param)
+function ecv_NUMBER_FORMAT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4220,7 +4220,7 @@ function ecv_NUMBER_FORMAT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_RAND($lang, $escaped, $param)
+function ecv_RAND(string $lang, array $escaped, array $param) : string
 {
     if (!$GLOBALS['STATIC_TEMPLATE_TEST_MODE']) { // Normal operation
         if ((isset($param[1])) && (is_numeric($param[1]))) {
@@ -4275,7 +4275,7 @@ function ecv_RAND($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SET_RAND($lang, $escaped, $param)
+function ecv_SET_RAND(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4306,7 +4306,7 @@ function ecv_SET_RAND($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MEMBER_EMAIL($lang, $escaped, $param)
+function ecv_MEMBER_EMAIL(string $lang, array $escaped, array $param) : string
 {
     $value = $GLOBALS['FORUM_DRIVER']->get_member_email_address(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member());
 
@@ -4326,7 +4326,7 @@ function ecv_MEMBER_EMAIL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_PRIVILEGE($lang, $escaped, $param)
+function ecv_HAS_PRIVILEGE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4352,7 +4352,7 @@ function ecv_HAS_PRIVILEGE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_ACTUAL_PAGE_ACCESS($lang, $escaped, $param)
+function ecv_HAS_ACTUAL_PAGE_ACCESS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4376,7 +4376,7 @@ function ecv_HAS_ACTUAL_PAGE_ACCESS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_ZONE_ACCESS($lang, $escaped, $param)
+function ecv_HAS_ZONE_ACCESS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4402,7 +4402,7 @@ function ecv_HAS_ZONE_ACCESS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_EDIT_PERMISSION($lang, $escaped, $param)
+function ecv_HAS_EDIT_PERMISSION(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4434,7 +4434,7 @@ function ecv_HAS_EDIT_PERMISSION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_DELETE_PERMISSION($lang, $escaped, $param)
+function ecv_HAS_DELETE_PERMISSION(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4466,7 +4466,7 @@ function ecv_HAS_DELETE_PERMISSION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DATE_TIME($lang, $escaped, $param)
+function ecv_DATE_TIME(string $lang, array $escaped, array $param) : string
 {
     $time = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : time();
     $use_contextual_dates = (!isset($param[1]) || ($param[1] == '1'));
@@ -4490,7 +4490,7 @@ function ecv_DATE_TIME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DATE($lang, $escaped, $param)
+function ecv_DATE(string $lang, array $escaped, array $param) : string
 {
     $time = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : time();
     $use_contextual_dates = (!isset($param[1]) || ($param[1] == '1'));
@@ -4514,7 +4514,7 @@ function ecv_DATE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TIME($lang, $escaped, $param)
+function ecv_TIME(string $lang, array $escaped, array $param) : string
 {
     $time = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : time();
     $use_contextual_times = (!empty($param[1]));
@@ -4538,7 +4538,7 @@ function ecv_TIME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FROM_TIMESTAMP($lang, $escaped, $param)
+function ecv_FROM_TIMESTAMP(string $lang, array $escaped, array $param) : string
 {
     if (!empty($param[0])) {
         $timestamp = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : time();
@@ -4581,7 +4581,7 @@ function ecv_FROM_TIMESTAMP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DEV_MODE($lang, $escaped, $param)
+function ecv_DEV_MODE(string $lang, array $escaped, array $param) : string
 {
     $value = $GLOBALS['DEV_MODE'] ? '1' : '0';
 
@@ -4601,7 +4601,7 @@ function ecv_DEV_MODE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BROWSER_MATCHES($lang, $escaped, $param)
+function ecv_BROWSER_MATCHES(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4632,7 +4632,7 @@ function ecv_BROWSER_MATCHES($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_INIT($lang, $escaped, $param)
+function ecv_INIT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4659,7 +4659,7 @@ function ecv_INIT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_INC($lang, $escaped, $param)
+function ecv_INC(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4692,7 +4692,7 @@ function ecv_INC($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PREG_MATCH($lang, $escaped, $param)
+function ecv_PREG_MATCH(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4721,7 +4721,7 @@ function ecv_PREG_MATCH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PREG_REPLACE($lang, $escaped, $param)
+function ecv_PREG_REPLACE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4756,7 +4756,7 @@ function ecv_PREG_REPLACE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SSW($lang, $escaped, $param)
+function ecv_SSW(string $lang, array $escaped, array $param) : string
 {
     $value = (get_option('ssw') == '1') ? '1' : '0';
 
@@ -4776,7 +4776,7 @@ function ecv_SSW($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MAX($lang, $escaped, $param)
+function ecv_MAX(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4800,7 +4800,7 @@ function ecv_MAX($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MIN($lang, $escaped, $param)
+function ecv_MIN(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4824,7 +4824,7 @@ function ecv_MIN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DIV_FLOAT($lang, $escaped, $param)
+function ecv_DIV_FLOAT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4848,7 +4848,7 @@ function ecv_DIV_FLOAT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DIV($lang, $escaped, $param)
+function ecv_DIV(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4872,7 +4872,7 @@ function ecv_DIV($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_VALID_FILE_TYPES($lang, $escaped, $param)
+function ecv_VALID_FILE_TYPES(string $lang, array $escaped, array $param) : string
 {
     if (!function_exists('get_option')) {
         return '';
@@ -4907,7 +4907,7 @@ function ecv_VALID_FILE_TYPES($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_UCASE($lang, $escaped, $param)
+function ecv_UCASE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4942,7 +4942,7 @@ function ecv_UCASE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LCASE($lang, $escaped, $param)
+function ecv_LCASE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -4970,7 +4970,7 @@ function ecv_LCASE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv__POST($lang, $escaped, $param)
+function ecv__POST(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5001,7 +5001,7 @@ function ecv__POST($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_REPLACE($lang, $escaped, $param)
+function ecv_REPLACE(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5032,7 +5032,7 @@ function ecv_REPLACE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IN_STR($lang, $escaped, $param)
+function ecv_IN_STR(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5068,7 +5068,7 @@ function ecv_IN_STR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SUBSTR_COUNT($lang, $escaped, $param)
+function ecv_SUBSTR_COUNT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5096,7 +5096,7 @@ function ecv_SUBSTR_COUNT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SUBSTR($lang, $escaped, $param)
+function ecv_SUBSTR(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5123,7 +5123,7 @@ function ecv_SUBSTR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ALTERNATOR_TRUNCATED($lang, $escaped, $param) // Alternate values according to whether some given text WOULD have been truncated. 0: text to check against, 1: the truncate length, 2:IF would not be do this, 3: if it would be do this, 4: whether given text is encoded as HTML (0=no [default, plain-text], 1=yes)
+function ecv_ALTERNATOR_TRUNCATED(string $lang, array $escaped, array $param) // Alternate values according to whether some given text WOULD have been truncated. 0: text to check against, 1: the truncate length, 2:IF would not be do this, 3: if it would be do this, 4: whether given text is encoded as HTML (0=no [default, plain-text], 1=yes) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5156,7 +5156,7 @@ function ecv_ALTERNATOR_TRUNCATED($lang, $escaped, $param) // Alternate values a
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_EQ($lang, $escaped, $param)
+function ecv_EQ(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5192,7 +5192,7 @@ function ecv_EQ($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NEQ($lang, $escaped, $param)
+function ecv_NEQ(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5227,7 +5227,7 @@ function ecv_NEQ($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NOT($lang, $escaped, $param)
+function ecv_NOT(string $lang, array $escaped, array $param) : string
 {
     $value = '1';
 
@@ -5251,7 +5251,7 @@ function ecv_NOT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_OR($lang, $escaped, $param)
+function ecv_OR(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5279,7 +5279,7 @@ function ecv_OR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_AND($lang, $escaped, $param)
+function ecv_AND(string $lang, array $escaped, array $param) : string
 {
     $count = 0;
     $total = 0;
@@ -5307,7 +5307,7 @@ function ecv_AND($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NOR($lang, $escaped, $param)
+function ecv_NOR(string $lang, array $escaped, array $param) : string
 {
     $count = 0;
     foreach ($param as $test) {
@@ -5333,7 +5333,7 @@ function ecv_NOR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NAND($lang, $escaped, $param)
+function ecv_NAND(string $lang, array $escaped, array $param) : string
 {
     $count = 0;
     foreach ($param as $test) {
@@ -5359,7 +5359,7 @@ function ecv_NAND($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LT($lang, $escaped, $param)
+function ecv_LT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5383,7 +5383,7 @@ function ecv_LT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_GT($lang, $escaped, $param)
+function ecv_GT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5407,7 +5407,7 @@ function ecv_GT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LENGTH($lang, $escaped, $param)
+function ecv_LENGTH(string $lang, array $escaped, array $param) : string
 {
     $value = '0';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5434,7 +5434,7 @@ function ecv_LENGTH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_INSERT_SPAMMER_BLACKHOLE($lang, $escaped, $param)
+function ecv_INSERT_SPAMMER_BLACKHOLE(string $lang, array $escaped, array $param) : string
 {
     static $done_once = false;
 
@@ -5472,7 +5472,7 @@ function ecv_INSERT_SPAMMER_BLACKHOLE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HONEYPOT_LINK($lang, $escaped, $param)
+function ecv_HONEYPOT_LINK(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5537,7 +5537,7 @@ function ecv_HONEYPOT_LINK($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_COMMENT_COUNT($lang, $escaped, $param)
+function ecv_COMMENT_COUNT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5581,7 +5581,7 @@ function ecv_COMMENT_COUNT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SELF_URL($lang, $escaped, $param)
+function ecv_SELF_URL(string $lang, array $escaped, array $param) : string
 {
     $extra_params = [];
     $value = '';
@@ -5623,7 +5623,7 @@ function ecv_SELF_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_REVIEW_STATUS($lang, $escaped, $param)
+function ecv_REVIEW_STATUS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5653,7 +5653,7 @@ function ecv_REVIEW_STATUS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv__POSTED($lang, $escaped, $param)
+function ecv__POSTED(string $lang, array $escaped, array $param) : string
 {
     return ($_SERVER['REQUEST_METHOD'] == 'POST') ? '1' : '0';
 }
@@ -5668,7 +5668,7 @@ function ecv__POSTED($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_EXTEND_URL($lang, $escaped, $param)
+function ecv_EXTEND_URL(string $lang, array $escaped, array $param) : string
 {
     $value = isset($param[0]) ? $param[0] : '';
     $append = isset($param[1]) ? $param[1] : '';
@@ -5690,7 +5690,7 @@ function ecv_EXTEND_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_MOBILE($lang, $escaped, $param)
+function ecv_MOBILE(string $lang, array $escaped, array $param) : string
 {
     $value = is_mobile(null, !empty($param[0])) ? '1' : '0';
 
@@ -5710,7 +5710,7 @@ function ecv_MOBILE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DESKTOP($lang, $escaped, $param)
+function ecv_DESKTOP(string $lang, array $escaped, array $param) : string
 {
     $value = !is_mobile(null, !empty($param[0])) ? '1' : '0';
 
@@ -5730,7 +5730,7 @@ function ecv_DESKTOP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ENSURE_PROTOCOL_SUITABILITY($lang, $escaped, $param)
+function ecv_ENSURE_PROTOCOL_SUITABILITY(string $lang, array $escaped, array $param) : string
 {
     $value = ensure_protocol_suitability(isset($param[0]) ? $param[0] : '');
 
@@ -5751,7 +5751,7 @@ function ecv_ENSURE_PROTOCOL_SUITABILITY($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LANG($lang, $escaped, $param)
+function ecv_LANG(string $lang, array $escaped, array $param) : string
 {
     $value = user_lang();
 
@@ -5771,7 +5771,7 @@ function ecv_LANG($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_THEME($lang, $escaped, $param)
+function ecv_THEME(string $lang, array $escaped, array $param) : string
 {
     if (isset($GLOBALS['FORUM_DRIVER'])) {
         $value = $GLOBALS['FORUM_DRIVER']->get_theme();
@@ -5795,7 +5795,7 @@ function ecv_THEME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_AUTHOR_MEMBER($lang, $escaped, $param)
+function ecv_AUTHOR_MEMBER(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -5826,7 +5826,7 @@ function ecv_AUTHOR_MEMBER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BRAND_NAME($lang, $escaped, $param)
+function ecv_BRAND_NAME(string $lang, array $escaped, array $param) : string
 {
     $value = brand_name();
 
@@ -5846,7 +5846,7 @@ function ecv_BRAND_NAME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BRAND_BASE_URL($lang, $escaped, $param)
+function ecv_BRAND_BASE_URL(string $lang, array $escaped, array $param) : string
 {
     $value = get_brand_base_url();
 
@@ -5866,7 +5866,7 @@ function ecv_BRAND_BASE_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SITE_NAME($lang, $escaped, $param)
+function ecv_SITE_NAME(string $lang, array $escaped, array $param) : string
 {
     $value = get_site_name();
 
@@ -5886,7 +5886,7 @@ function ecv_SITE_NAME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TIMEZONE($lang, $escaped, $param)
+function ecv_TIMEZONE(string $lang, array $escaped, array $param) : string
 {
     require_code('temporal2');
     $value = make_nice_timezone_name(get_site_timezone());
@@ -5907,7 +5907,7 @@ function ecv_TIMEZONE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CHARSET($lang, $escaped, $param)
+function ecv_CHARSET(string $lang, array $escaped, array $param) : string
 {
     $value = get_charset();
 
@@ -5927,7 +5927,7 @@ function ecv_CHARSET($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LTR($lang, $escaped, $param)
+function ecv_LTR(string $lang, array $escaped, array $param) : string
 {
     $value = (do_lang('dir') == 'ltr') ? '1' : '0';
 
@@ -5947,7 +5947,7 @@ function ecv_LTR($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_RTL($lang, $escaped, $param)
+function ecv_RTL(string $lang, array $escaped, array $param) : string
 {
     $value = (do_lang('dir') == 'rtl') ? '1' : '0';
 
@@ -5967,7 +5967,7 @@ function ecv_RTL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_COPYRIGHT($lang, $escaped, $param)
+function ecv_COPYRIGHT(string $lang, array $escaped, array $param) : string
 {
     $value = get_option('copyright');
     if (strpos($value, '$') !== false) {
@@ -5992,7 +5992,7 @@ function ecv_COPYRIGHT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CUSTOM_BASE_URL($lang, $escaped, $param)
+function ecv_CUSTOM_BASE_URL(string $lang, array $escaped, array $param) : string
 {
     $value = get_custom_base_url();
 
@@ -6016,7 +6016,7 @@ function ecv_CUSTOM_BASE_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BASE_URL_NOHTTP($lang, $escaped, $param)
+function ecv_BASE_URL_NOHTTP(string $lang, array $escaped, array $param) : string
 {
     if ($GLOBALS['DEV_MODE']) { // Dev mode changes base domain so we need to actually use it in full (fine, we don't have HTTPS in dev mode).
         return ecv_BASE_URL($lang, $escaped, $param);
@@ -6043,7 +6043,7 @@ function ecv_BASE_URL_NOHTTP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CUSTOM_BASE_URL_NOHTTP($lang, $escaped, $param)
+function ecv_CUSTOM_BASE_URL_NOHTTP(string $lang, array $escaped, array $param) : string
 {
     if ($GLOBALS['DEV_MODE']) { // Dev mode changes base domain so we need to actually use it in full (fine, we don't have HTTPS in dev mode).
         return ecv_BASE_URL($lang, $escaped, $param);
@@ -6070,7 +6070,7 @@ function ecv_CUSTOM_BASE_URL_NOHTTP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BASE_URL($lang, $escaped, $param)
+function ecv_BASE_URL(string $lang, array $escaped, array $param) : string
 {
     $value = get_base_url();
 
@@ -6090,7 +6090,7 @@ function ecv_BASE_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_INLINE_STATS($lang, $escaped, $param)
+function ecv_INLINE_STATS(string $lang, array $escaped, array $param) : string
 {
     $value = (get_option('show_inline_stats') == '1') ? '1' : '0';
 
@@ -6110,7 +6110,7 @@ function ecv_INLINE_STATS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_A_COOKIE_LOGIN($lang, $escaped, $param)
+function ecv_IS_A_COOKIE_LOGIN(string $lang, array $escaped, array $param) : string
 {
     global $IS_A_COOKIE_LOGIN;
     $value = ($IS_A_COOKIE_LOGIN && (ini_get('suhosin.cookie.max_name_length') !== '64')) ? '1' : '0';
@@ -6131,7 +6131,7 @@ function ecv_IS_A_COOKIE_LOGIN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_COOKIE_PATH($lang, $escaped, $param)
+function ecv_COOKIE_PATH(string $lang, array $escaped, array $param) : string
 {
     $value = function_exists('get_cookie_path') ? get_cookie_path() : '/';
 
@@ -6151,7 +6151,7 @@ function ecv_COOKIE_PATH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_COOKIE_DOMAIN($lang, $escaped, $param)
+function ecv_COOKIE_DOMAIN(string $lang, array $escaped, array $param) : string
 {
     $s_value = function_exists('get_cookie_domain') ? get_cookie_domain() : '';
     $value = ($s_value === null) ? '' : $s_value;
@@ -6172,7 +6172,7 @@ function ecv_COOKIE_DOMAIN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SESSION_COOKIE_NAME($lang, $escaped, $param)
+function ecv_SESSION_COOKIE_NAME(string $lang, array $escaped, array $param) : string
 {
     $value = function_exists('get_session_cookie') ? get_session_cookie() : '';
 
@@ -6192,7 +6192,7 @@ function ecv_SESSION_COOKIE_NAME($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BROWSER_UA($lang, $escaped, $param)
+function ecv_BROWSER_UA(string $lang, array $escaped, array $param) : string
 {
     $browser = get_browser_string();
     $value = $browser;
@@ -6213,7 +6213,7 @@ function ecv_BROWSER_UA($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DOMAIN($lang, $escaped, $param)
+function ecv_DOMAIN(string $lang, array $escaped, array $param) : string
 {
     $value = get_domain();
 
@@ -6233,7 +6233,7 @@ function ecv_DOMAIN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FORUM_BASE_URL($lang, $escaped, $param)
+function ecv_FORUM_BASE_URL(string $lang, array $escaped, array $param) : string
 {
     $value = get_forum_base_url();
 
@@ -6253,7 +6253,7 @@ function ecv_FORUM_BASE_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_GROUP_ID($lang, $escaped, $param)
+function ecv_GROUP_ID(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -6278,7 +6278,7 @@ function ecv_GROUP_ID($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HTTP_STATUS_CODE($lang, $escaped, $param)
+function ecv_HTTP_STATUS_CODE(string $lang, array $escaped, array $param) : string
 {
     global $HTTP_STATUS_CODE;
     $value = strval($HTTP_STATUS_CODE);
@@ -6299,7 +6299,7 @@ function ecv_HTTP_STATUS_CODE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_OS($lang, $escaped, $param)
+function ecv_OS(string $lang, array $escaped, array $param) : string
 {
     $os = get_os_string();
     if ($os === null) {
@@ -6323,7 +6323,7 @@ function ecv_OS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_USER_AGENT($lang, $escaped, $param)
+function ecv_USER_AGENT(string $lang, array $escaped, array $param) : string
 {
     $value = $_SERVER['HTTP_USER_AGENT'];
 
@@ -6343,7 +6343,7 @@ function ecv_USER_AGENT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IP_ADDRESS($lang, $escaped, $param)
+function ecv_IP_ADDRESS(string $lang, array $escaped, array $param) : string
 {
     $value = get_ip_address();
 
@@ -6363,7 +6363,7 @@ function ecv_IP_ADDRESS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_VERSION($lang, $escaped, $param)
+function ecv_VERSION(string $lang, array $escaped, array $param) : string
 {
     $value = strval(cms_version());
 
@@ -6383,7 +6383,7 @@ function ecv_VERSION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_VERSION_NUMBER($lang, $escaped, $param)
+function ecv_VERSION_NUMBER(string $lang, array $escaped, array $param) : string
 {
     if (!empty($param[0])) {
         require_code('version2');
@@ -6408,7 +6408,7 @@ function ecv_VERSION_NUMBER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_JSON_ENCODE($lang, $escaped, $param)
+function ecv_JSON_ENCODE(string $lang, array $escaped, array $param) : string
 {
     $value = json_encode($param[0], JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 
@@ -6428,7 +6428,7 @@ function ecv_JSON_ENCODE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CONFIG_OPTION($lang, $escaped, $param)
+function ecv_CONFIG_OPTION(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -6462,7 +6462,7 @@ function ecv_CONFIG_OPTION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_VALUE_OPTION($lang, $escaped, $param)
+function ecv_VALUE_OPTION(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -6498,7 +6498,7 @@ function ecv_VALUE_OPTION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_THEME_OPTION($lang, $escaped, $param)
+function ecv_THEME_OPTION(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -6532,7 +6532,7 @@ function ecv_THEME_OPTION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ADDON_INSTALLED($lang, $escaped, $param)
+function ecv_ADDON_INSTALLED(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -6556,7 +6556,7 @@ function ecv_ADDON_INSTALLED($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CNS($lang, $escaped, $param)
+function ecv_CNS(string $lang, array $escaped, array $param) : string
 {
     $value = (get_forum_type() == 'cns') ? '1' : '0';
 
@@ -6576,7 +6576,7 @@ function ecv_CNS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_STRIP_HTML($lang, $escaped, $param)
+function ecv_STRIP_HTML(string $lang, array $escaped, array $param) : string
 {
     $value = strip_html($param[0]);
 
@@ -6600,7 +6600,7 @@ function ecv_STRIP_HTML($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_LOGIN_LABEL($lang, $escaped, $param)
+function ecv_LOGIN_LABEL(string $lang, array $escaped, array $param) : string
 {
     switch (get_option('one_per_email_address')) {
         case '1':
@@ -6633,7 +6633,7 @@ function ecv_LOGIN_LABEL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TUTORIAL_URL($lang, $escaped, $param)
+function ecv_TUTORIAL_URL(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -6660,7 +6660,7 @@ function ecv_TUTORIAL_URL($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CSP_NONCE($lang, $escaped, $param)
+function ecv_CSP_NONCE(string $lang, array $escaped, array $param) : string
 {
     global $CSP_NONCE;
     $value = isset($CSP_NONCE) ? $CSP_NONCE : '';
@@ -6680,7 +6680,7 @@ function ecv_CSP_NONCE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CSP_NONCE_HTML($lang, $escaped, $param)
+function ecv_CSP_NONCE_HTML(string $lang, array $escaped, array $param) : string
 {
     if (function_exists('csp_nonce_html')) {
         $value = csp_nonce_html();
@@ -6704,7 +6704,7 @@ function ecv_CSP_NONCE_HTML($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FONTS($lang, $escaped, $param)
+function ecv_FONTS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -6735,7 +6735,7 @@ function ecv_FONTS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PROTECT_URL_PARAMETER($lang, $escaped, $param)
+function ecv_PROTECT_URL_PARAMETER(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -6766,7 +6766,7 @@ function ecv_PROTECT_URL_PARAMETER($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_PUBLIC_CONFIG_OPTIONS_JSON($lang, $escaped, $param)
+function ecv_PUBLIC_CONFIG_OPTIONS_JSON(string $lang, array $escaped, array $param) : string
 {
     $_value = [];
     $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
@@ -6804,7 +6804,7 @@ function ecv_PUBLIC_CONFIG_OPTIONS_JSON($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SMART_LINK_STRIP($lang, $escaped, $param)
+function ecv_SMART_LINK_STRIP(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -6839,7 +6839,7 @@ function ecv_SMART_LINK_STRIP($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_STAFF_TOOLTIPS_URL_PATTERNS_JSON($lang, $escaped, $param)
+function ecv_STAFF_TOOLTIPS_URL_PATTERNS_JSON(string $lang, array $escaped, array $param) : string
 {
     $_url_patterns = '{}';
 
@@ -6886,7 +6886,7 @@ function ecv_STAFF_TOOLTIPS_URL_PATTERNS_JSON($lang, $escaped, $param)
  * @param  string $pattern Pattern
  * @return string
  */
-function _escape_url_pattern_for_js_regex($pattern)
+function _escape_url_pattern_for_js_regex(string $pattern) : string
 {
     $pattern = '^' . $pattern;
     $pattern = str_replace('/', '\\/', $pattern);
@@ -6907,7 +6907,7 @@ function _escape_url_pattern_for_js_regex($pattern)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_BACKSLASH($lang, $escaped, $param)
+function ecv_BACKSLASH(string $lang, array $escaped, array $param) : string
 {
     $value = '\\';
 
@@ -6927,7 +6927,7 @@ function ecv_BACKSLASH($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_DECIMAL_POINT($lang, $escaped, $param)
+function ecv_DECIMAL_POINT(string $lang, array $escaped, array $param) : string
 {
     $value = do_lang('locale_decimal_point');
 
@@ -6947,7 +6947,7 @@ function ecv_DECIMAL_POINT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_IS_ICON_IN_SVG_SPRITE($lang, $escaped, $param)
+function ecv_IS_ICON_IN_SVG_SPRITE(string $lang, array $escaped, array $param) : string
 {
     static $sprite = null;
 
@@ -6989,7 +6989,7 @@ function ecv_IS_ICON_IN_SVG_SPRITE($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them
  * @return string The result
  */
-function ecv_ATTR_DEFAULTED($lang, $escaped, $param)
+function ecv_ATTR_DEFAULTED(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -7013,7 +7013,7 @@ function ecv_ATTR_DEFAULTED($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_FAVICON($lang, $escaped, $param)
+function ecv_FAVICON(string $lang, array $escaped, array $param) : string
 {
     $default = find_theme_image('favicon');
     $value = $default;
@@ -7043,7 +7043,7 @@ function ecv_FAVICON($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them
  * @return string The result
  */
-function ecv_TRANSLATION_LINKS($lang, $escaped, $param)
+function ecv_TRANSLATION_LINKS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -7082,7 +7082,7 @@ function ecv_TRANSLATION_LINKS($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SESSION($lang, $escaped, $param)
+function ecv_SESSION(string $lang, array $escaped, array $param) : string
 {
     $value = get_session_id();
 
@@ -7102,7 +7102,7 @@ function ecv_SESSION($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_SESSION_HASHED($lang, $escaped, $param)
+function ecv_SESSION_HASHED(string $lang, array $escaped, array $param) : string
 {
     $value = md5(get_session_id());
 
@@ -7122,7 +7122,7 @@ function ecv_SESSION_HASHED($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string
  */
-function ecv_COLOR_RGBA($lang, $escaped, $param)
+function ecv_COLOR_RGBA(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -7156,7 +7156,7 @@ function ecv_COLOR_RGBA($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string
  */
-function ecv_COLOR_LIGHTEN($lang, $escaped, $param)
+function ecv_COLOR_LIGHTEN(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -7199,7 +7199,7 @@ function ecv_COLOR_LIGHTEN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string
  */
-function ecv_COLOR_DARKEN($lang, $escaped, $param)
+function ecv_COLOR_DARKEN(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -7242,7 +7242,7 @@ function ecv_COLOR_DARKEN($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ADD($lang, $escaped, $param)
+function ecv_ADD(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -7272,7 +7272,7 @@ function ecv_ADD($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_METADATA_IMAGE_EXTRACT($lang, $escaped, $param)
+function ecv_METADATA_IMAGE_EXTRACT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
@@ -7310,7 +7310,7 @@ function ecv_METADATA_IMAGE_EXTRACT($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_RATING($lang, $escaped, $param)
+function ecv_RATING(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -7363,7 +7363,7 @@ function ecv_RATING($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ROUND($lang, $escaped, $param)
+function ecv_ROUND(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -7395,7 +7395,7 @@ function ecv_ROUND($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_TAPATALK($lang, $escaped, $param)
+function ecv_TAPATALK(string $lang, array $escaped, array $param) : string
 {
     $value = (defined('IN_MOBIQUO') ? '1' : '0');
 

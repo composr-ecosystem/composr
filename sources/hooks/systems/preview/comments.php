@@ -28,7 +28,7 @@ class Hook_preview_comments
      *
      * @return array Triplet: Whether it applies, the attachment ID type (may be null), whether the forum DB is used [optional]
      */
-    public function applies()
+    public function applies() : array
     {
         $applies = ((addon_installed('cns_forum')) && (get_page_name() != 'topicview') && (post_param_integer('_comment_form_post', 0) == 1) && (post_param_string('hid_file_id_file0', null) === null) && (post_param_string('file0', null) === null));
         return [$applies, null, false];
@@ -39,7 +39,7 @@ class Hook_preview_comments
      *
      * @return array A pair: The preview, the updated post Comcode (may be null)
      */
-    public function run()
+    public function run() : array
     {
         // Find review, if there is one
         $individual_review_ratings = [];

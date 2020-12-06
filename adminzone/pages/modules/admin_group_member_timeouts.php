@@ -28,7 +28,7 @@ class Module_admin_group_member_timeouts
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -49,7 +49,7 @@ class Module_admin_group_member_timeouts
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -67,7 +67,7 @@ class Module_admin_group_member_timeouts
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         if (!cron_installed()) {
             attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
@@ -87,7 +87,7 @@ class Module_admin_group_member_timeouts
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -106,7 +106,7 @@ class Module_admin_group_member_timeouts
      *
      * @return Tempcode The UI
      */
-    public function manage()
+    public function manage() : object
     {
         require_code('form_templates');
         require_code('templates_pagination');
@@ -181,7 +181,7 @@ class Module_admin_group_member_timeouts
      *
      * @return Tempcode The UI
      */
-    public function save()
+    public function save() : object
     {
         require_code('group_member_timeouts');
 
@@ -231,7 +231,7 @@ class Module_admin_group_member_timeouts
      * @param  ID_TEXT $username The username
      * @param  TIME $time The expiry time
      */
-    public function _save_group_member_timeout($old_group_id, $group_id, $username, $time)
+    public function _save_group_member_timeout(?int $old_group_id, int $group_id, string $username, int $time)
     {
         $prefer_for_primary_group = false;//(post_param_integer('prefer_for_primary_group', 0) == 1); Don't promote this bad choice
 

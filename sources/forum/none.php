@@ -30,7 +30,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return string The admin username
      */
-    public function get_admin_username()
+    public function get_admin_username() : string
     {
         global $SITE_INFO;
         $ret = (!empty($SITE_INFO['admin_username'])) ? $SITE_INFO['admin_username'] : 'admin';
@@ -46,7 +46,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  integer $limit The limit to the number of top posters to fetch
      * @return array The rows for the given number of top posters in the forum
      */
-    public function get_top_posters($limit)
+    public function get_top_posters(int $limit) : array
     {
         return [[1]];
     }
@@ -56,7 +56,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return string The forum database table prefix
      */
-    public function get_drivered_table_prefix()
+    public function get_drivered_table_prefix() : string
     {
         return get_table_prefix();
     }
@@ -67,7 +67,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member who's language needs to be fetched
      * @return ?LANGUAGE_NAME The member's language (null: unknown)
      */
-    public function forum_get_lang($member)
+    public function forum_get_lang(int $member) : ?string
     {
         return null;
     }
@@ -77,7 +77,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return boolean Whether the login cookie is md5-hashed
      */
-    public function is_hashed()
+    public function is_hashed() : bool
     {
         return true;
     }
@@ -87,7 +87,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return boolean Whether the login cookie contains a login name or a member ID
      */
-    public function is_cookie_login_name()
+    public function is_cookie_login_name() : bool
     {
         return true;
     }
@@ -97,7 +97,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return MEMBER The member ID of the forum guest member
      */
-    public function get_guest_id()
+    public function get_guest_id() : int
     {
         return 0;
     }
@@ -109,7 +109,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  integer $length The length of the new custom field
      * @return boolean Whether the custom field was created successfully
      */
-    public function install_create_custom_field($name, $length)
+    public function install_create_custom_field(string $name, int $length) : bool
     {
         return false;
     }
@@ -124,7 +124,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return array The attributes for the forum
      */
-    public function install_specifics()
+    public function install_specifics() : array
     {
         $c = [];
         $c['name'] = 'admin_username';
@@ -140,7 +140,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  PATH $path The path in which to search
      * @return boolean Whether the forum auto-config could be found
      */
-    public function install_test_load_from($path)
+    public function install_test_load_from(string $path) : bool
     {
         global $PROBED_FORUM_CONFIG;
         $PROBED_FORUM_CONFIG = [];
@@ -155,7 +155,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return array The paths in which to search for the forum config
      */
-    public function install_get_path_search_list()
+    public function install_get_path_search_list() : array
     {
         return [];
     }
@@ -166,7 +166,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  string $field_name The ID of the form field the emoticon chooser adds to
      * @return Tempcode The emoticon chooser template
      */
-    public function get_emoticon_chooser($field_name = 'post')
+    public function get_emoticon_chooser(string $field_name = 'post') : object
     {
         require_code('comcode_compiler');
         push_db_scope_check(false);
@@ -187,7 +187,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return URLPATH The base URL
      */
-    public function get_emo_dir()
+    public function get_emo_dir() : string
     {
         return '';
     }
@@ -197,7 +197,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return array The map
      */
-    public function find_emoticons()
+    public function find_emoticons() : array
     {
         global $IN_MINIKERNEL_VERSION;
         if ($IN_MINIKERNEL_VERSION) {
@@ -228,7 +228,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  AUTO_LINK $id The topic ID
      * @param  boolean $pin True: pin it, False: unpin it
      */
-    public function pin_topic($id, $pin = true)
+    public function pin_topic(int $id, bool $pin = true)
     {
     }
 
@@ -239,7 +239,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  string $field The field name (e.g. "firstname" for the CPF with a title of "cms_firstname")
      * @param  string $value The value
      */
-    public function set_custom_field($member, $field, $value)
+    public function set_custom_field(int $member, string $field, string $value)
     {
     }
 
@@ -249,7 +249,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return ?array A map of the Custom Profile Fields, key_suffix=>value (null: no fields)
      */
-    public function get_custom_fields($member)
+    public function get_custom_fields(int $member) : ?array
     {
         return [];
     }
@@ -260,7 +260,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  SHORT_TEXT $name The member name
      * @return ?array The profile-row (null: no row)
      */
-    public function get_mrow($name)
+    public function get_mrow(string $name) : ?array
     {
         if ($name == $this->get_admin_username()) {
             return [1];
@@ -274,7 +274,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return ?array The member row (null: no such member)
      */
-    public function get_member_row($member)
+    public function get_member_row(int $member) : ?array
     {
         return [0];
     }
@@ -286,7 +286,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  string $field The field identifier
      * @return mixed The field
      */
-    public function get_member_row_field($member, $field)
+    public function get_member_row_field(int $member, string $field)
     {
         return null;
     }
@@ -297,7 +297,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  array $r The profile-row
      * @return GROUP The member's primary usergroup
      */
-    public function mrow_group($r)
+    public function mrow_group(array $r) : int
     {
         if ($r[0] == 1) {
             return 1;
@@ -311,7 +311,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  array $r The profile-row
      * @return MEMBER The member ID
      */
-    public function mrow_id($r)
+    public function mrow_id(array $r) : int
     {
         return $r[0];
     }
@@ -322,7 +322,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  array $r The profile-row
      * @return TIME The last visit date
      */
-    public function mrow_lastvisit($r)
+    public function mrow_lastvisit(array $r) : int
     {
         return time();
     }
@@ -333,7 +333,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  array $r The profile-row
      * @return string The member name
      */
-    public function mrow_username($r)
+    public function mrow_username(array $r) : string
     {
         return $this->get_username($r[0]);
     }
@@ -344,7 +344,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  array $r The profile-row
      * @return SHORT_TEXT The member e-mail address
      */
-    public function mrow_email($r)
+    public function mrow_email(array $r) : string
     {
         return $this->get_member_email_address($r[0]);
     }
@@ -355,7 +355,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return URLPATH The URL to the members home
      */
-    public function member_home_url($id)
+    public function member_home_url(int $id) : string
     {
         return get_base_url();
     }
@@ -367,7 +367,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  boolean $full Get full photo
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_photo_url($member, $full = false)
+    public function get_member_photo_url(int $member, bool $full = false) : string
     {
         return '';
     }
@@ -378,7 +378,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url($member)
+    public function get_member_avatar_url(int $member) : string
     {
         return '';
     }
@@ -389,7 +389,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return URLPATH The URL to the member profile
      */
-    protected function _member_profile_url($id)
+    protected function _member_profile_url(int $id) : string
     {
         if (!addon_installed('authors')) {
             return get_base_url();
@@ -408,7 +408,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return URLPATH The URL to the registration page
      */
-    protected function _join_url()
+    protected function _join_url() : string
     {
         return '';
     }
@@ -418,7 +418,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return URLPATH The URL to the members-online page
      */
-    protected function _users_online_url()
+    protected function _users_online_url() : string
     {
         return '';
     }
@@ -429,7 +429,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return URLPATH The URL to the private/personal message page
      */
-    protected function _member_pm_url($id)
+    protected function _member_pm_url(int $id) : string
     {
         return 'mailto:' . get_option('staff_address');
     }
@@ -440,7 +440,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  integer $id The forum ID
      * @return URLPATH The URL to the specified forum
      */
-    protected function _forum_url($id)
+    protected function _forum_url(int $id) : string
     {
         return '';
     }
@@ -451,7 +451,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  SHORT_TEXT $forum_name The forum name
      * @return ?integer The forum ID (null: not found)
      */
-    public function forum_id_from_name($forum_name)
+    public function forum_id_from_name(string $forum_name) : ?int
     {
         return null;
     }
@@ -463,7 +463,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  SHORT_TEXT $topic_identifier The topic identifier
      * @return ?integer The topic ID (null: not found)
      */
-    public function find_topic_id_for_topic_identifier($forum, $topic_identifier)
+    public function find_topic_id_for_topic_identifier(string $forum, string $topic_identifier) : ?int
     {
         return null;
     }
@@ -490,7 +490,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  boolean $staff_only Whether the reply is only visible to staff
      * @return array Topic ID (may be null), and whether a hidden post has been made
      */
-    public function make_post_forum_topic($forum_name, $topic_identifier, $member_id, $post_title, $_post, $content_title, $topic_identifier_encapsulation_prefix, $content_url = null, $time = null, $ip = null, $validated = null, $topic_validated = 1, $skip_post_checks = false, $poster_name_if_guest = '', $parent_id = null, $staff_only = false)
+    public function make_post_forum_topic(string $forum_name, string $topic_identifier, int $member_id, string $post_title, string $_post, string $content_title, string $topic_identifier_encapsulation_prefix, ?string $content_url = null, ?int $time = null, ?string $ip = null, ?int $validated = null, ?int $topic_validated = 1, bool $skip_post_checks = false, string $poster_name_if_guest = '', ?int $parent_id = null, bool $staff_only = false) : array
     {
         return [null, false];
     }
@@ -501,7 +501,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  integer $topic_id The topic ID
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts($topic_id)
+    public function get_forum_topic_posts(int $topic_id)
     {
         return (-1);
     }
@@ -513,7 +513,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  string $forum The forum ID
      * @return URLPATH The URL to the topic
      */
-    public function topic_url($id, $forum)
+    public function topic_url(int $id, string $forum) : string
     {
         $url = build_url(['page' => 'news', 'id' => $id], get_module_zone('news'), [], false, false, true);
         return $url->evaluate();
@@ -526,7 +526,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  string $forum The forum ID
      * @return URLPATH The URL to the post
      */
-    public function post_url($id, $forum)
+    public function post_url(int $id, string $forum) : string
     {
         $url = build_url(['page' => 'news', 'id' => $id], get_module_zone('news'), [], false, false, true);
         return $url->evaluate();
@@ -554,7 +554,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  SHORT_TEXT $filter_topic_description The topic description filter
      * @return ?array The array of topics (null: error)
      */
-    public function show_forum_topics($name, $limit, $start, &$max_rows, $filter_topic_title = '', $show_first_posts = false, $date_key = 'lasttime', $hot = false, $filter_topic_description = '')
+    public function show_forum_topics(string $name, int $limit, int $start, int &$max_rows, string $filter_topic_title = '', bool $show_first_posts = false, string $date_key = 'lasttime', bool $hot = false, string $filter_topic_description = '') : ?array
     {
         return null;
     }
@@ -567,7 +567,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  integer $start Return primary members after this offset and secondary members after this offset
      * @return ?array The array of members (null: no members)
      */
-    public function member_group_query($groups, $max = null, $start = 0)
+    public function member_group_query(array $groups, ?int $max = null, int $start = 0) : ?array
     {
         if (in_array(1, $groups)) {
             return [[1]];
@@ -582,7 +582,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID to decrement
      * @return ?MEMBER The previous member ID (null: no previous member)
      */
-    public function get_previous_member($member)
+    public function get_previous_member(int $member) : ?int
     {
         return null; // Guest doesn't count
     }
@@ -594,7 +594,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID to increment
      * @return ?MEMBER The next member ID (null: no next member)
      */
-    public function get_next_member($member)
+    public function get_next_member(int $member) : ?int
     {
         if ($member < 1) {
             return 1;
@@ -609,7 +609,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  IP $ip The IP address
      * @return array The distinct rows found
      */
-    public function probe_ip($ip)
+    public function probe_ip(string $ip) : array
     {
         return [];
     }
@@ -621,7 +621,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return ?SHORT_TEXT The member name (null: member deleted)
      */
-    protected function _get_username($member)
+    protected function _get_username(int $member) : ?string
     {
         if ($member == $this->get_guest_id()) {
             return do_lang('GUEST');
@@ -638,7 +638,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return SHORT_TEXT The e-mail address
      */
-    protected function _get_member_email_address($member)
+    protected function _get_member_email_address(int $member) : string
     {
         if ($member == 1) {
             return get_option('staff_address');
@@ -652,7 +652,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member may have e-mails sent to them
      */
-    public function get_member_email_allowed($member)
+    public function get_member_email_allowed(int $member) : bool
     {
         return true;
     }
@@ -663,7 +663,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return TIME The timestamp
      */
-    public function get_member_join_timestamp($member)
+    public function get_member_join_timestamp(int $member) : int
     {
         require_code('global4');
         return get_site_start_time();
@@ -676,7 +676,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  ?integer $limit Maximum number to return (limits to the most recent active) (null: no limit)
      * @return ?array The array of matched members (null: none found)
      */
-    public function get_matching_members($pattern, $limit = null)
+    public function get_matching_members(string $pattern, ?int $limit = null) : ?array
     {
         return [];
     }
@@ -687,7 +687,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return integer The post count
      */
-    public function get_post_count($member)
+    public function get_post_count(int $member) : int
     {
         return 0;
     }
@@ -698,7 +698,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return integer The topic count
      */
-    public function get_topic_count($member)
+    public function get_topic_count(int $member) : int
     {
         return 0;
     }
@@ -710,7 +710,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member, &$reasoned_ban = null)
+    public function is_banned(int $member, ?string &$reasoned_ban = null) : bool
     {
         return false;
     }
@@ -723,7 +723,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  ?MEMBER $member The member to find for (null: current member)
      * @return ID_TEXT The theme
      */
-    public function _get_theme($skip_member_specific = false, $member = null)
+    public function _get_theme(bool $skip_member_specific = false, ?int $member = null) : string
     {
         return 'default';
     }
@@ -734,7 +734,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member is staff
      */
-    protected function _is_staff($member)
+    protected function _is_staff(int $member) : bool
     {
         return ($member == 1);
     }
@@ -745,7 +745,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member is a super admin
      */
-    protected function _is_super_admin($member)
+    protected function _is_super_admin(int $member) : bool
     {
         return ($member == 1);
     }
@@ -755,7 +755,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return ?integer The number of members (null: NA)
      */
-    public function get_num_users_forums()
+    public function get_num_users_forums() : ?int
     {
         return null;
     }
@@ -765,7 +765,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return integer The number of members
      */
-    public function get_num_members()
+    public function get_num_members() : int
     {
         return 1;
     }
@@ -775,7 +775,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return integer The number of topics
      */
-    public function get_num_topics()
+    public function get_num_topics() : int
     {
         return 0;
     }
@@ -785,7 +785,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return integer The number of posts
      */
-    public function get_num_forum_posts()
+    public function get_num_forum_posts() : int
     {
         return 0;
     }
@@ -795,7 +795,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return integer The number of posts
      */
-    protected function _get_num_new_forum_posts()
+    protected function _get_num_new_forum_posts() : int
     {
         return 0;
     }
@@ -806,7 +806,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  SHORT_TEXT $name The member name
      * @return MEMBER The member ID
      */
-    public function get_member_from_username($name)
+    public function get_member_from_username(string $name) : int
     {
         if ($name == $this->get_admin_username()) {
             return 1;
@@ -823,7 +823,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  SHORT_TEXT $email_address The member e-mail address
      * @return ?MEMBER The member ID (null: not found)
      */
-    public function get_member_from_email_address($email_address)
+    public function get_member_from_email_address(string $email_address) : ?int
     {
         if ($email_address == get_option('staff_address')) {
             return 1;
@@ -836,7 +836,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return array The admin usergroup IDs
      */
-    protected function _get_super_admin_groups()
+    protected function _get_super_admin_groups() : array
     {
         return [1];
     }
@@ -847,7 +847,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return array The moderator usergroup IDs
      */
-    protected function _get_moderator_groups()
+    protected function _get_moderator_groups() : array
     {
         return [];
     }
@@ -857,7 +857,7 @@ class Forum_driver_none extends Forum_driver_base
      *
      * @return array The usergroup list
      */
-    protected function _get_usergroup_list()
+    protected function _get_usergroup_list() : array
     {
         return [0 => do_lang('GUESTS'), 1 => do_lang('ADMINISTRATORS')];
     }
@@ -868,7 +868,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return array The array of forum usergroups
      */
-    protected function _get_members_groups($member)
+    protected function _get_members_groups(int $member) : array
     {
         if ($member == 1) {
             return [db_get_first_id() + 1];
@@ -888,7 +888,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  boolean $cookie_login Whether this is a cookie login
      * @return array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set
      */
-    public function forum_authorise_login($username, $user_id, $password_hashed, $password_raw, $cookie_login = false)
+    public function forum_authorise_login(?string $username, int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : array
     {
         $out = [];
         $out['id'] = null;
@@ -914,7 +914,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $id The member ID
      * @return IP The IP address
      */
-    public function get_member_ip($id)
+    public function get_member_ip(int $id) : string
     {
         return '';
     }

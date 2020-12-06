@@ -61,7 +61,7 @@
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the event
  */
-function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year = null, $end_month = null, $end_day = null, $end_monthly_spec_type = 'day_of_month', $end_hour = null, $end_minute = null, $timezone = null, $do_timezone_conv = 1, $member_calendar = null, $validated = 1, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '', $submitter = null, $views = 0, $add_time = null, $edit_time = null, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
+function add_calendar_event(int $type, string $recurrence, ?int $recurrences, int $seg_recurrences, string $title, string $content, int $priority, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, int $start_hour, int $start_minute, ?int $end_year = null, ?int $end_month = null, ?int $end_day = null, string $end_monthly_spec_type = 'day_of_month', ?int $end_hour = null, ?int $end_minute = null, ?string $timezone = null, int $do_timezone_conv = 1, ?int $member_calendar = null, int $validated = 1, int $allow_rating = 1, int $allow_comments = 1, int $allow_trackbacks = 1, string $notes = '', ?int $submitter = null, int $views = 0, ?int $add_time = null, ?int $edit_time = null, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
 {
     if ($submitter === null) {
         $submitter = function_exists('get_member') ? get_member() : get_first_admin_user();
@@ -247,7 +247,7 @@ function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, 
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_calendar_event($id, $type, $recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar, $meta_keywords, $meta_description, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
+function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recurrences, int $seg_recurrences, string $title, string $content, int $priority, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, int $start_hour, int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, ?string $timezone, int $do_timezone_conv, ?int $member_calendar, string $meta_keywords, string $meta_description, ?int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -408,7 +408,7 @@ function edit_calendar_event($id, $type, $recurrence, $recurrences, $seg_recurre
  *
  * @param  AUTO_LINK $id The ID of the event
  */
-function delete_calendar_event($id)
+function delete_calendar_event(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], ['id' => $id], '', 1);
 
@@ -503,7 +503,7 @@ function delete_calendar_event($id)
  * @param  URLPATH $external_feed URL to external feed to associate with this event type
  * @return AUTO_LINK The ID of the event type
  */
-function add_event_type($title, $logo, $external_feed = '')
+function add_event_type(string $title, string $logo, string $external_feed = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_EVENT_TYPE', null, $title);
@@ -539,7 +539,7 @@ function add_event_type($title, $logo, $external_feed = '')
  * @param  ID_TEXT $logo The theme image code
  * @param  URLPATH $external_feed URL to external feed to associate with this event type
  */
-function edit_event_type($id, $title, $logo, $external_feed)
+function edit_event_type(int $id, string $title, string $logo, string $external_feed)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -577,7 +577,7 @@ function edit_event_type($id, $title, $logo, $external_feed)
  *
  * @param  AUTO_LINK $id The ID of the event type
  */
-function delete_event_type($id)
+function delete_event_type(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['t_title', 't_logo'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -629,7 +629,7 @@ function delete_event_type($id)
  * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
  * @return string Commandr command prefix before adding json parameters
  */
-function _get_schedule_code_prefix($hook, $id)
+function _get_schedule_code_prefix(string $hook, string $id) : string
 {
     return 'run_scheduled_action ' . $hook . ' "' . $id . '"';
 }
@@ -648,7 +648,7 @@ function _get_schedule_code_prefix($hook, $id)
  * @param  integer $start_minute Minut of the hour which to execute the task
  * @return AUTO_LINK The ID of the event that was created
  */
-function schedule_code($hook, $id, $parameters, $title, $start_year, $start_month, $start_day, $start_hour, $start_minute)
+function schedule_code(string $hook, string $id, array $parameters, string $title, int $start_year, int $start_month, int $start_day, int $start_hour, int $start_minute) : int
 {
     // Parameters should be JSON encoded because it can contain a variety of array key lengths and value types.
     $_parameters = json_encode($parameters);
@@ -671,7 +671,7 @@ function schedule_code($hook, $id, $parameters, $title, $start_year, $start_mont
  * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
  * @return ?AUTO_LINK calendar_events id (null: event was not scheduled)
  */
-function _get_schedule_code_event_id($hook, $id)
+function _get_schedule_code_event_id(string $hook, string $id) : ?int
 {
     $schedule_code = _get_schedule_code_prefix($hook, $id);
     $sql = 'SELECT e.id FROM ' . get_table_prefix() . 'calendar_events e WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like($schedule_code) . ' %\'';
@@ -684,7 +684,7 @@ function _get_schedule_code_event_id($hook, $id)
  * @param  ID_TEXT $hook Hook to run under systems/commandr_scheduled
  * @param  string $id Unspecified identifier for the resource behind this scheduled event
  */
-function unschedule_code($hook, $id)
+function unschedule_code(string $hook, string $id)
 {
     $past_event = _get_schedule_code_event_id($hook, $id);
     if ($past_event !== null) {
@@ -699,7 +699,7 @@ function unschedule_code($hook, $id)
  * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
  * @return ?array Array of minute, hour, month, day, and year if the event is scheduled (null: not scheduled)
  */
-function get_schedule_code_event_time($hook, $id)
+function get_schedule_code_event_time(string $hook, string $id) : ?array
 {
     $past_event_id = _get_schedule_code_event_id($hook, $id);
     $scheduled = null;

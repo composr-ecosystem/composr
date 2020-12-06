@@ -38,7 +38,7 @@ function init__lorem()
  *
  * @return string Place holder text
  */
-function lorem_word()
+function lorem_word() : string
 {
     return 'Lorem';
 }
@@ -48,7 +48,7 @@ function lorem_word()
  *
  * @return string Place holder text
  */
-function lorem_word_2()
+function lorem_word_2() : string
 {
     return 'Ipsum';
 }
@@ -58,7 +58,7 @@ function lorem_word_2()
  *
  * @return string Place holder text
  */
-function lorem_phrase()
+function lorem_phrase() : string
 {
     return 'Lorem ipsum dolor';
 }
@@ -68,7 +68,7 @@ function lorem_phrase()
  *
  * @return Tempcode Place holder text
  */
-function lorem_title()
+function lorem_title() : object
 {
     return get_screen_title('Lorem Ipsum Dolor', false);
 }
@@ -78,7 +78,7 @@ function lorem_title()
  *
  * @return string Place holder text
  */
-function placeholder_ip()
+function placeholder_ip() : string
 {
     return '123.45.6.4';
 }
@@ -88,7 +88,7 @@ function placeholder_ip()
  *
  * @return string Place holder text
  */
-function lorem_sentence()
+function lorem_sentence() : string
 {
     return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 }
@@ -98,7 +98,7 @@ function lorem_sentence()
  *
  * @return string Place holder text
  */
-function lorem_paragraph()
+function lorem_paragraph() : string
 {
     return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 }
@@ -108,7 +108,7 @@ function lorem_paragraph()
  *
  * @return string Place holder text
  */
-function lorem_chunk()
+function lorem_chunk() : string
 {
     return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies cursus egestas. Nunc orci lacus, viverra a ultrices nec, volutpat eu velit. Maecenas imperdiet tortor eget eros varius mattis. Nullam eget lacus in tellus mollis ornare in lobortis sapien. Duis lectus felis, consequat in ullamcorper at, elementum sed est. In viverra tellus turpis, in tincidunt leo. Donec sagittis rhoncus urna quis eleifend. Nam imperdiet, orci quis bibendum porta, odio neque ullamcorper erat, sed malesuada ante libero vel ligula. Ut porttitor est egestas erat placerat eget placerat lectus ultricies. Morbi eu dolor metus, nec vestibulum nisl. Praesent eget massa tortor, in consequat velit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque eget eros ut erat vestibulum facilisis. Duis eleifend odio in neque pellentesque semper pulvinar dolor feugiat. Proin sed lectus et lectus fringilla gravida. Aliquam a nisl metus. In risus risus, tempus interdum viverra ac, laoreet at sem. Sed sem nunc, rutrum quis convallis eu, hendrerit non libero.\n\nSed sollicitudin, dolor ac posuere bibendum, tellus eros hendrerit magna, non accumsan ligula sapien at enim. Curabitur hendrerit lacinia ligula, et dapibus diam porttitor sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nisi arcu, placerat vel ullamcorper non, hendrerit cursus nisl. Aliquam tincidunt, magna sed tempus auctor, enim dolor consequat massa, rhoncus euismod tortor orci fringilla arcu. Nulla et egestas augue. Fusce non enim vitae dolor imperdiet pulvinar vitae sed neque. Sed augue neque, volutpat non tincidunt ac, volutpat eu tellus. Suspendisse sollicitudin nulla eu leo placerat posuere id sit amet metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum sollicitudin porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed imperdiet scelerisque turpis, eleifend tristique justo euismod non. Pellentesque at elit tristique sem venenatis auctor eu vitae dui. Nam hendrerit sapien sit amet risus suscipit vitae interdum arcu blandit. Phasellus quis massa sed mi mollis hendrerit.\n\nNunc at elit eget elit convallis auctor sit amet non nisi. Curabitur consequat, nisl sed venenatis feugiat, felis purus vehicula purus, sed scelerisque nulla tellus ac neque. Morbi convallis semper pulvinar. Integer auctor mi ante. Cras aliquam egestas lobortis. Maecenas sodales mi at felis ullamcorper tristique. Fusce viverra laoreet sapien, et vestibulum purus interdum sit amet. Sed at ante quis ipsum pellentesque pretium. Praesent volutpat justo in orci ullamcorper cursus. In non nulla sit amet turpis ultrices dignissim eu cursus justo. Etiam lacinia lacinia odio sit amet fringilla. Vestibulum at auctor nisl.';
 }
@@ -118,7 +118,7 @@ function lorem_chunk()
  *
  * @return Tempcode Place holder text
  */
-function lorem_phrase_html()
+function lorem_phrase_html() : object
 {
     $text = '<strong>Lorem ipsum</strong> dolor'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -132,7 +132,7 @@ function lorem_phrase_html()
  *
  * @return Tempcode Place holder text
  */
-function lorem_sentence_html()
+function lorem_sentence_html() : object
 {
     $text = '<strong>Lorem ipsum</strong> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -146,7 +146,7 @@ function lorem_sentence_html()
  *
  * @return Tempcode Place holder text
  */
-function lorem_paragraph_html()
+function lorem_paragraph_html() : object
 {
     $text = '<strong>Lorem ipsum</strong> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -160,7 +160,7 @@ function lorem_paragraph_html()
  *
  * @return Tempcode Place holder text
  */
-function lorem_chunk_html()
+function lorem_chunk_html() : object
 {
     $text = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies cursus egestas. Nunc orci lacus, viverra a ultrices nec, volutpat eu velit. Maecenas imperdiet tortor eget eros varius mattis. Nullam eget lacus in tellus mollis ornare in lobortis sapien. Duis lectus felis, consequat in ullamcorper at, elementum sed est. In viverra tellus turpis, in tincidunt leo. Donec sagittis rhoncus urna quis eleifend. Nam imperdiet, orci quis bibendum porta, odio neque ullamcorper erat, sed malesuada ante libero vel ligula. Ut porttitor est egestas erat placerat eget placerat lectus ultricies. Morbi eu dolor metus, nec vestibulum nisl. Praesent eget massa tortor, in consequat velit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque eget eros ut erat vestibulum facilisis. Duis eleifend odio in neque pellentesque semper pulvinar dolor feugiat. Proin sed lectus et lectus fringilla gravida. Aliquam a nisl metus. In risus risus, tempus interdum viverra ac, laoreet at sem. Sed sem nunc, rutrum quis convallis eu, hendrerit non libero.</p><p>Sed sollicitudin, dolor ac posuere bibendum, tellus eros hendrerit magna, non accumsan ligula sapien at enim. Curabitur hendrerit lacinia ligula, et dapibus diam porttitor sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nisi arcu, placerat vel ullamcorper non, hendrerit cursus nisl. Aliquam tincidunt, magna sed tempus auctor, enim dolor consequat massa, rhoncus euismod tortor orci fringilla arcu. Nulla et egestas augue. Fusce non enim vitae dolor imperdiet pulvinar vitae sed neque. Sed augue neque, volutpat non tincidunt ac, volutpat eu tellus. Suspendisse sollicitudin nulla eu leo placerat posuere id sit amet metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum sollicitudin porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed imperdiet scelerisque turpis, eleifend tristique justo euismod non. Pellentesque at elit tristique sem venenatis auctor eu vitae dui. Nam hendrerit sapien sit amet risus suscipit vitae interdum arcu blandit. Phasellus quis massa sed mi mollis hendrerit.</p><p>Nunc at elit eget elit convallis auctor sit amet non nisi. Curabitur consequat, nisl sed venenatis feugiat, felis purus vehicula purus, sed scelerisque nulla tellus ac neque. Morbi convallis semper pulvinar. Integer auctor mi ante. Cras aliquam egestas lobortis. Maecenas sodales mi at felis ullamcorper tristique. Fusce viverra laoreet sapien, et vestibulum purus interdum sit amet. Sed at ante quis ipsum pellentesque pretium. Praesent volutpat justo in orci ullamcorper cursus. In non nulla sit amet turpis ultrices dignissim eu cursus justo. Etiam lacinia lacinia odio sit amet fringilla. Vestibulum at auctor nisl.</p>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -174,7 +174,7 @@ function lorem_chunk_html()
  *
  * @return Tempcode Place holder text
  */
-function placeholder_form()
+function placeholder_form() : object
 {
     require_css('forms');
 
@@ -190,7 +190,7 @@ function placeholder_form()
  *
  * @return Tempcode Place holder text
  */
-function placeholder_fields()
+function placeholder_fields() : object
 {
     require_css('forms');
 
@@ -206,7 +206,7 @@ function placeholder_fields()
  *
  * @return Tempcode Place holder text
  */
-function placeholder_fields_as_divs()
+function placeholder_fields_as_divs() : object
 {
     require_css('forms');
 
@@ -223,7 +223,7 @@ function placeholder_fields_as_divs()
  * @param  ID_TEXT $field_name The field name wanted
  * @return Tempcode Place holder text
  */
-function placeholder_form_with_field($field_name)
+function placeholder_form_with_field(string $field_name) : object
 {
     require_css('forms');
 
@@ -258,7 +258,7 @@ function placeholder_form_with_field($field_name)
  *
  * @return Tempcode Place holder text
  */
-function placeholder_table()
+function placeholder_table() : object
 {
     $text = '<table class="results-table" width="100%"><tbody><tr><th>(Cell 1)</th><td>(Cell 2)</td></tr><tr><td>(Cell 3)</td><td>(Cell 4)</td></tr></tbody></table>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -272,7 +272,7 @@ function placeholder_table()
  *
  * @return Tempcode Place holder URL
  */
-function placeholder_url()
+function placeholder_url() : object
 {
     $text = 'http://www.example.com/';
     if (function_exists('ocp_mark_as_escaped')) {
@@ -286,7 +286,7 @@ function placeholder_url()
  *
  * @return Tempcode Place holder link
  */
-function placeholder_link()
+function placeholder_link() : object
 {
     $text = '<a href="http://www.example.com/">test link</a>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -300,7 +300,7 @@ function placeholder_link()
  *
  * @return string Random number
  */
-function placeholder_random()
+function placeholder_random() : string
 {
     global $LOREM_RANDOM_VAR;
     $x = $LOREM_RANDOM_VAR;
@@ -313,7 +313,7 @@ function placeholder_random()
  *
  * @return string Random ID
  */
-function placeholder_random_id()
+function placeholder_random_id() : string
 {
     global $LOREM_RANDOM_VAR;
     $x = $LOREM_RANDOM_VAR;
@@ -326,7 +326,7 @@ function placeholder_random_id()
  *
  * @return Tempcode Button
  */
-function placeholder_button()
+function placeholder_button() : object
 {
     $text = '<p>( Buttons would go here.)</p>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
@@ -340,7 +340,7 @@ function placeholder_button()
  *
  * @return string Place holder text
  */
-function placeholder_options()
+function placeholder_options() : string
 {
     $text = '';
     for ($i = 1; $i <= 3; $i++) {
@@ -356,7 +356,7 @@ function placeholder_options()
  * @param  integer $num_elements Number of array elements
  * @return array Place holder array
  */
-function placeholder_array($num_elements = 3)
+function placeholder_array(int $num_elements = 3) : array
 {
     $array = [];
     for ($i = 1; $i <= $num_elements; $i++) {
@@ -371,7 +371,7 @@ function placeholder_array($num_elements = 3)
  *
  * @return string Place holder text
  */
-function placeholder_list_item()
+function placeholder_list_item() : string
 {
     return '<li>A list will display here</li>'; // XHTMLXHTML
 }
@@ -381,7 +381,7 @@ function placeholder_list_item()
  *
  * @return string Place holder text
  */
-function placeholder_types()
+function placeholder_types() : string
 {
     return 'Type 1, type 2, type3 etc';
 }
@@ -391,7 +391,7 @@ function placeholder_types()
  *
  * @return Tempcode Place holder text
  */
-function placeholder_image()
+function placeholder_image() : object
 {
     $text = '<img src="' . escape_html(placeholder_image_url()) . '" title="test" alt="test" />';
     if (function_exists('ocp_mark_as_escaped')) {
@@ -405,7 +405,7 @@ function placeholder_image()
  *
  * @return string Place holder text
  */
-function placeholder_date()
+function placeholder_date() : string
 {
     return get_timezoned_date_time(123456789);
 }
@@ -415,7 +415,7 @@ function placeholder_date()
  *
  * @return string Place holder text
  */
-function placeholder_date_raw()
+function placeholder_date_raw() : string
 {
     return strval(123456789);
 }
@@ -425,7 +425,7 @@ function placeholder_date_raw()
  *
  * @return string Place holder text
  */
-function placeholder_number()
+function placeholder_number() : string
 {
     return strval(123);
 }
@@ -435,7 +435,7 @@ function placeholder_number()
  *
  * @return string Place holder ID
  */
-function placeholder_id()
+function placeholder_id() : string
 {
     return 'x' . strval(123);
 }
@@ -445,7 +445,7 @@ function placeholder_id()
  *
  * @return string Numeric place holder ID
  */
-function placeholder_numeric_id()
+function placeholder_numeric_id() : string
 {
     return strval(123);
 }
@@ -455,7 +455,7 @@ function placeholder_numeric_id()
  *
  * @return string Place holder text
  */
-function placeholder_filesize()
+function placeholder_filesize() : string
 {
     require_code('files');
     return clean_file_size(123);
@@ -466,7 +466,7 @@ function placeholder_filesize()
  *
  * @return string Place holder text
  */
-function placeholder_javascript_code()
+function placeholder_javascript_code() : string
 {
     return "alert('test');";
 }
@@ -476,7 +476,7 @@ function placeholder_javascript_code()
  *
  * @return string Image URL
  */
-function placeholder_image_url()
+function placeholder_image_url() : string
 {
     return find_theme_image('no_image');
 }
@@ -486,7 +486,7 @@ function placeholder_image_url()
  *
  * @return string Place holder text
  */
-function placeholder_blank()
+function placeholder_blank() : string
 {
     return '';
 }
@@ -496,7 +496,7 @@ function placeholder_blank()
  *
  * @return Tempcode Place holder text
  */
-function placeholder_breadcrumbs()
+function placeholder_breadcrumbs() : object
 {
     $out = new Tempcode();
     $out->attach(do_lorem_template('BREADCRUMB_LINK_WRAP', ['URL' => placeholder_url(), 'TOOLTIP' => '', 'LABEL' => lorem_phrase()]));
@@ -518,7 +518,7 @@ function placeholder_breadcrumbs()
  * @set templates css javascript xml text
  * @return Tempcode The Tempcode for this template
  */
-function do_lorem_template($codename, $parameters = [], $lang = null, $light_error = false, $fallback = null, $suffix = '.tpl', $directory = 'templates')
+function do_lorem_template(string $codename, array $parameters = [], ?string $lang = null, bool $light_error = false, ?string $fallback = null, string $suffix = '.tpl', string $directory = 'templates') : object
 {
     global $KNOWN_TEMPLATE_PARAMETERS;
     $KNOWN_TEMPLATE_PARAMETERS[$codename] = array_keys($parameters);
@@ -538,7 +538,7 @@ function do_lorem_template($codename, $parameters = [], $lang = null, $light_err
  * @param  boolean $include_header_and_footer Whether to include the header/footer/panels
  * @return Tempcode Standalone page
  */
-function lorem_globalise($middle, $message = null, $type = '', $include_header_and_footer = false)
+function lorem_globalise(object $middle, $message = null, string $type = '', bool $include_header_and_footer = false) : object
 {
     restore_output_state(true); // Here we reset some Tempcode environmental stuff, because template compilation or preprocessing may have dirtied things
 
@@ -563,7 +563,7 @@ function lorem_globalise($middle, $message = null, $type = '', $include_header_a
  *
  * @return array Emoticons
  */
-function placeholder_emoticons()
+function placeholder_emoticons() : array
 {
     $emoticons = [];
     $emoticons[':constipated:'][] = 'EMOTICON_IMG_CODE_THEMED';
@@ -590,7 +590,7 @@ function placeholder_emoticons()
  *
  * @return URLPATH Image
  */
-function placeholder_avatar()
+function placeholder_avatar() : string
 {
     return find_theme_image('cns_default_avatars/system', true);
 }
@@ -600,7 +600,7 @@ function placeholder_avatar()
  *
  * @return Tempcode Emoticons
  */
-function placeholder_emoticon_chooser()
+function placeholder_emoticon_chooser() : object
 {
     $em = new Tempcode();
     foreach (placeholder_emoticons() as $emo) {
@@ -616,7 +616,7 @@ function placeholder_emoticon_chooser()
  * @param  string $type The theme image directory to find a code under
  * @return string The code
  */
-function placeholder_img_code($type = '')
+function placeholder_img_code(string $type = '') : string
 {
     $path = get_file_base() . '/themes/default/images/' . $type;
     if (!file_exists($path)) {
@@ -655,7 +655,7 @@ function placeholder_img_code($type = '')
  *
  * @return Tempcode Pagination
  */
-function placeholder_pagination()
+function placeholder_pagination() : object
 {
     $selectors = new Tempcode();
     foreach (placeholder_array() as $k => $v) {
@@ -746,7 +746,7 @@ function placeholder_pagination()
  *
  * @return array List of Comcode files
  */
-function find_comcodes()
+function find_comcodes() : array
 {
     $zones = find_all_zones();
     $files = [];
@@ -762,7 +762,7 @@ function find_comcodes()
  *
  * @return array List of HTML files
  */
-function find_html()
+function find_html() : array
 {
     $zones = find_all_zones();
     $files = [];
@@ -778,7 +778,7 @@ function find_html()
  *
  * @return array The map of previews (template to a tuple of preview details)
  */
-function find_all_previews__by_template()
+function find_all_previews__by_template() : array
 {
     $all_previews = [];
 
@@ -802,7 +802,7 @@ function find_all_previews__by_template()
  *
  * @return array The map of previews (screen to a list of templates)
  */
-function find_all_previews__by_screen()
+function find_all_previews__by_screen() : array
 {
     $all_previews = [];
 
@@ -830,7 +830,7 @@ function find_all_previews__by_screen()
  * @param  ID_TEXT $function The name of the screen preview
  * @return Tempcode The previewed screen
  */
-function render_screen_preview($template, $hook, $function)
+function render_screen_preview(string $template, ?string $hook, string $function) : object
 {
     if ($hook === null) {
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -897,7 +897,7 @@ function render_screen_preview($template, $hook, $function)
  *
  * @return array The list of templates
  */
-function get_text_templates()
+function get_text_templates() : array
 {
     $text_templates = [
         'templates/JS_BLOCK.tpl',
@@ -935,7 +935,7 @@ function get_text_templates()
  * @param  string $temp_name Name of the template
  * @return boolean Whether it is
  */
-function is_plain_text_template($temp_name)
+function is_plain_text_template(string $temp_name) : bool
 {
     return in_array($temp_name, get_text_templates());
 }
@@ -947,7 +947,7 @@ function is_plain_text_template($temp_name)
  * @param  ?Tempcode $tempcode The instantiated template (null: do not use as criteria, use other as criteria, which must itself be non-null)
  * @return boolean Whether it is
  */
-function is_full_screen_template($temp_name = null, $tempcode = null)
+function is_full_screen_template(?string $temp_name = null, ?object $tempcode = null) : bool
 {
     if ($temp_name === null) {
         $pos = strpos($tempcode->evaluate(), '<html');

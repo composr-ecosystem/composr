@@ -28,7 +28,7 @@ class Hook_config_bottom_show_commandr_button
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'COMMANDR_BUTTON',
@@ -51,7 +51,7 @@ class Hook_config_bottom_show_commandr_button
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('commandr')) {
             return null;

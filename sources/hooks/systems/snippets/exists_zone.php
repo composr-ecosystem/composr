@@ -28,7 +28,7 @@ class Hook_snippet_exists_zone
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         $zone = get_param_string('name');
 

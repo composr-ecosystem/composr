@@ -36,7 +36,7 @@ class Hook_ecommerce_catalogue_items
      *
      * @return ?array A map of product categorisation details (null: disabled)
      */
-    public function get_product_category()
+    public function get_product_category() : ?array
     {
         if (!addon_installed('shopping')) {
             return null;
@@ -60,7 +60,7 @@ class Hook_ecommerce_catalogue_items
      * @param  ?ID_TEXT $search Product being searched for (null: none)
      * @return array A map of product name to list of product details
      */
-    public function get_products($search = null)
+    public function get_products(?string $search = null) : array
     {
         if ($search === null) {
             $cnt = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries t1 LEFT JOIN ' . get_table_prefix() . 'catalogues t2 ON t1.c_name=t2.c_name', 'COUNT(*)', ['c_ecommerce' => 1]);
@@ -192,7 +192,7 @@ class Hook_ecommerce_catalogue_items
      * @param  boolean $must_be_listed Whether the product must be available for public listing
      * @return integer The availability code (a ECOMMERCE_PRODUCT_* constant)
      */
-    public function is_available($type_code, $member_id, $req_quantity = 1, $must_be_listed = false)
+    public function is_available(string $type_code, int $member_id, int $req_quantity = 1, bool $must_be_listed = false) : int
     {
         if (!addon_installed('shopping')) {
             return ECOMMERCE_PRODUCT_INTERNAL_ERROR;
@@ -254,7 +254,7 @@ class Hook_ecommerce_catalogue_items
      * @param  ?MEMBER $member_id The member we are checking against (null: current member)
      * @return ?integer Quantity (null: no limit)
      */
-    public function get_available_quantity($type_code, $consider_own_cart_contents = true, $member_id = null)
+    public function get_available_quantity(string $type_code, bool $consider_own_cart_contents = true, ?int $member_id = null) : ?int
     {
         if ($member_id === null) {
             $member_id = get_member();
@@ -334,7 +334,7 @@ class Hook_ecommerce_catalogue_items
      * @param  ID_TEXT $type_code The product in question
      * @return ?Tempcode The message (null: no message)
      */
-    public function get_message($type_code)
+    public function get_message(string $type_code) : ?object
     {
         require_code('catalogues');
         require_lang('catalogues');
@@ -368,7 +368,7 @@ class Hook_ecommerce_catalogue_items
      * @param  AUTO_LINK $id Product entry ID
      * @param  array $map Map where product details are placed
      */
-    public function get_catalogue_template_parameters($id, &$map)
+    public function get_catalogue_template_parameters(int $id, array &$map)
     {
         require_code('feedback');
         require_code('ecommerce');
@@ -404,7 +404,7 @@ class Hook_ecommerce_catalogue_items
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return ?array A triple: The fields (null: none), The text (null: none), The JavaScript (null: none)
      */
-    public function get_needed_fields($type_code, $from_admin = false)
+    public function get_needed_fields(string $type_code, bool $from_admin = false) : ?array
     {
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
@@ -420,7 +420,7 @@ class Hook_ecommerce_catalogue_items
      * @param  boolean $from_admin Whether this is being called from the Admin Zone. If so, optionally different fields may be used, including a purchase_id field for direct purchase ID input.
      * @return array A pair: The purchase ID, a confirmation box to show (null for no specific confirmation)
      */
-    public function handle_needed_fields($type_code, $from_admin = false)
+    public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
     {
         list($details) = find_product_details($type_code);
 
@@ -473,7 +473,7 @@ class Hook_ecommerce_catalogue_items
      * @param  array $details Details of the product, with added keys: TXN_ID, STATUS, ORDER_STATUS
      * @return boolean Whether the product was automatically dispatched (if not then hopefully this function sent a staff notification)
      */
-    public function actualiser($type_code, $purchase_id, $details)
+    public function actualiser(string $type_code, string $purchase_id, array $details) : bool
     {
         $entry_id = intval($type_code);
         $product_object = object_factory('Hook_ecommerce_catalogue_items');
@@ -520,7 +520,7 @@ class Hook_ecommerce_catalogue_items
      * @param  AUTO_LINK $entry_id Catalogue entry ID
      * @param  integer $quantity Quantity to deduct
      */
-    public function reduce_stock($entry_id, $quantity)
+    public function reduce_stock(int $entry_id, int $quantity)
     {
         require_code('catalogues');
 
@@ -601,7 +601,7 @@ class Hook_ecommerce_catalogue_items
      * @param  SHORT_TEXT $product_title Product title
      * @param  ID_TEXT $type_code Product codename
      */
-    protected function _send_stock_maintain_warn_mail($product_title, $type_code)
+    protected function _send_stock_maintain_warn_mail(string $product_title, string $type_code)
     {
         $product_details_url = get_product_details_url($type_code, false, get_member(), true);
 
@@ -620,7 +620,7 @@ class Hook_ecommerce_catalogue_items
      * @param  ID_TEXT $purchase_id The purchase ID
      * @return ?MEMBER The member ID (null: none)
      */
-    public function member_for($type_code, $purchase_id)
+    public function member_for(string $type_code, string $purchase_id) : ?int
     {
         $order_id = intval($purchase_id);
         return $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'member_id', ['id' => $order_id]);
@@ -631,7 +631,7 @@ class Hook_ecommerce_catalogue_items
      *
      * @return ID_TEXT Dispatch type (manual/automatic)
      */
-    public function get_product_dispatch_type()
+    public function get_product_dispatch_type() : string
     {
         return 'manual';
     }

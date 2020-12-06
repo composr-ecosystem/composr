@@ -32,7 +32,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_url_fields($live_base_urls, $maximum_api_results)
+    public function enumerate_url_fields(array $live_base_urls, int $maximum_api_results) : array
     {
         $urls = [];
 
@@ -96,7 +96,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_comcode_fields($live_base_urls, $maximum_api_results)
+    public function enumerate_comcode_fields(array $live_base_urls, int $maximum_api_results) : array
     {
         $urls = [];
 
@@ -194,7 +194,7 @@ class BrokenURLScanner
      * @param  array $key_fields Key fields
      * @return ?Tempcode Edit URL (null: none)
      */
-    protected function find_table_content_edit_url($table_name, $id, $key_fields)
+    protected function find_table_content_edit_url(string $table_name, string $id, array $key_fields) : ?object
     {
         $edit_url = null;
         if (count($key_fields) == 1) {
@@ -221,7 +221,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_catalogue_fields($live_base_urls, $maximum_api_results = 50)
+    public function enumerate_catalogue_fields(array $live_base_urls, int $maximum_api_results = 50) : array
     {
         $urls = [];
 
@@ -265,7 +265,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_comcode_pages($live_base_urls, $maximum_api_results = 50)
+    public function enumerate_comcode_pages(array $live_base_urls, int $maximum_api_results = 50) : array
     {
         $urls = [];
 
@@ -327,7 +327,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs (more than 50 is very slow unless you have a paid API key)
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_moz_backlinks($live_base_urls, $maximum_api_results = 50)
+    public function enumerate_moz_backlinks(array $live_base_urls, int $maximum_api_results = 50) : array
     {
         $domains = [];
         foreach ($live_base_urls as $live_base_url) {
@@ -416,7 +416,7 @@ class BrokenURLScanner
      * @param  string $message HTTP response code, returned by reference
      * @return boolean Whether the URL is there (i.e. false = broken)
      */
-    public function check_url($url, &$message)
+    public function check_url(string $url, string &$message) : bool
     {
         // Check if it's a local file URL
         if (((substr($url, 0, 8) == 'uploads/') || (substr($url, 0, 7) == 'themes/')) && (strpos($url, '?') === false)) {

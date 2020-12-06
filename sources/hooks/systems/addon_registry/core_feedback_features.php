@@ -29,7 +29,7 @@ class Hook_addon_registry_core_feedback_features
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Information Display';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Features for user interaction with content.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_feedback',
@@ -82,7 +82,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -96,7 +96,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/feedback/comment.svg';
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'themes/default/images/icons/feedback/comment.svg',
@@ -191,7 +191,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/COMMENTS_DEFAULT_TEXT.tpl' => 'comments_default_text',
@@ -227,7 +227,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comments_default_text()
+    public function tpl_preview__comments_default_text() : array
     {
         return [
             lorem_globalise(do_lorem_template('COMMENTS_DEFAULT_TEXT', []), null, '', true)
@@ -241,7 +241,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__trackback_delete_screen()
+    public function tpl_preview__administrative__trackback_delete_screen() : array
     {
         $trackbacks = new Tempcode();
         foreach (placeholder_array() as $k => $value) {
@@ -272,7 +272,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__trackback_xml_wrapper()
+    public function tpl_preview__trackback_xml_wrapper() : array
     {
         $xml = do_lorem_template('TRACKBACK_XML', [
             'TITLE' => lorem_phrase(),
@@ -295,7 +295,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comments()
+    public function tpl_preview__comments() : array
     {
         require_lang('comcode');
         require_javascript('plupload');
@@ -346,7 +346,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comments_wrapper()
+    public function tpl_preview__comments_wrapper() : array
     {
         $review_titles = [];
         $review_titles[] = [
@@ -457,7 +457,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__trackback_wrapper()
+    public function tpl_preview__trackback_wrapper() : array
     {
         $trackbacks = placeholder_array();
 
@@ -492,7 +492,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__trackback_xml_listing()
+    public function tpl_preview__trackback_xml_listing() : array
     {
         $content = do_lorem_template('TRACKBACK_XML_LISTING', [
             'ITEMS' => lorem_phrase(),
@@ -512,7 +512,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__rating()
+    public function tpl_preview__rating() : array
     {
         $all_rating_criteria = [];
         $all_rating_criteria[] = [
@@ -562,7 +562,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__rating_inline_static()
+    public function tpl_preview__rating_inline_static() : array
     {
         $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
@@ -613,7 +613,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__rating_inline_dynamic()
+    public function tpl_preview__rating_inline_dynamic() : array
     {
         $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
@@ -664,7 +664,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__rating_display_shared()
+    public function tpl_preview__rating_display_shared() : array
     {
         $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
@@ -717,7 +717,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__ratings_show()
+    public function tpl_preview__ratings_show() : array
     {
         $ratings = [];
         $ratings[] = [
@@ -747,7 +747,7 @@ class Hook_addon_registry_core_feedback_features
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_contact_simple()
+    public function tpl_preview__block_main_contact_simple() : array
     {
         require_lang('cns');
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [

@@ -46,7 +46,7 @@ function init__images()
  * @param  boolean $only_if_local Whether only to accept local URLs (usually for performance reasons)
  * @return ~array The width (null for vector image), height (null for vector image), file size, and file extension (false: error)
  */
-function cms_getimagesize_url($url, $only_if_local = false)
+function cms_getimagesize_url(string $url, bool $only_if_local = false)
 {
     if (url_is_local($url)) {
         $url = get_custom_base_url() . '/' . $url;
@@ -94,7 +94,7 @@ function cms_getimagesize_url($url, $only_if_local = false)
  * @param  ?string $ext File extension (null: get from path, even if not detected this function will mostly work)
  * @return ~array The width (null for vector image), height (null for vector image), file size, and file extension (false: error)
  */
-function cms_getimagesize($path, $ext = null)
+function cms_getimagesize(string $path, ?string $ext = null)
 {
     if ($ext === null) {
         $ext = get_file_extension($path);
@@ -149,7 +149,7 @@ function cms_getimagesize($path, $ext = null)
  * @param  ?string $ext File extension (null: unknown)
  * @return ~array The width (null for vector image) and height (null for vector image) (false: error)
  */
-function cms_getimagesizefromstring($data, $ext = null)
+function cms_getimagesizefromstring(string $data, ?string $ext = null)
 {
     if ($ext === null) {
         // Try and auto-detect some important cases that we cannot rely on being correctly-handled/detected by GD
@@ -199,7 +199,7 @@ function cms_getimagesizefromstring($data, $ext = null)
  * @param  boolean $consider_php_limits Whether to consider limitations in PHP's configuration
  * @return integer The maximum image size, in bytes
  */
-function get_max_image_size($consider_php_limits = true)
+function get_max_image_size(bool $consider_php_limits = true) : int
 {
     require_code('files');
     $a = php_return_bytes(ini_get('upload_max_filesize'));
@@ -237,7 +237,7 @@ function get_max_image_size($consider_php_limits = true)
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
  * @return Tempcode The thumbnail
  */
-function do_image_thumb($url, $caption = '', $js_tooltip = false, $is_thumbnail_already = true, $width = null, $height = null, $only_make_smaller = false)
+function do_image_thumb(string $url, $caption = '', bool $js_tooltip = false, bool $is_thumbnail_already = true, ?int $width = null, ?int $height = null, bool $only_make_smaller = false) : object
 {
     if (is_object($caption)) {
         $js_tooltip = true;
@@ -305,7 +305,7 @@ function do_image_thumb($url, $caption = '', $js_tooltip = false, $is_thumbnail_
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
  * @return URLPATH The URL to the thumbnail
  */
-function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name = 'thumb_url', $thumb_width = null, $only_make_smaller = false)
+function ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir, string $table, int $id, string $image_field_name = 'thumb_url', ?int $thumb_width = null, bool $only_make_smaller = false) : string
 {
     if ($full_url == $thumb_url) {
         // Special case
@@ -372,7 +372,7 @@ function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image
  * @param  ?array $thumb_options This optional parameter allows us to specify cropping or padding for the image. See comments in the function. (null: no details passed)
  * @return URLPATH The thumbnail URL (blank: URL is outside of base URL)
  */
-function convert_image($from, &$to, $width, $height, $box_size = null, $exit_on_error = true, $ext2 = null, $using_path = false, $only_make_smaller = true, $thumb_options = null)
+function convert_image(string $from, string &$to, ?int $width, ?int $height, ?int $box_size = null, bool $exit_on_error = true, ?string $ext2 = null, bool $using_path = false, bool $only_make_smaller = true, ?array $thumb_options = null) : string
 {
     require_code('images2');
     cms_profile_start_for('convert_image');
@@ -390,7 +390,7 @@ function convert_image($from, &$to, $width, $height, $box_size = null, $exit_on_
  * @param  boolean $mime_too Whether to check mime as well as file extension. A full URL must have been passed
  * @return boolean Whether the string pointed to a file appeared to be an image
  */
-function is_image($name, $criteria, $as_admin = false, $mime_too = false)
+function is_image(string $name, int $criteria, bool $as_admin = false, bool $mime_too = false) : bool
 {
     if (substr(basename($name), 0, 1) == '.') {
         return false; // Temporary file that some OS's make
@@ -531,7 +531,7 @@ What follows are other media types, not images. However, we define them here to 
  * @param  boolean $must_be_true_video Whether it really must be an actual video/audio, not some other kind of rich media which we may render in a video spot
  * @return boolean Whether the string pointed to a file appeared to be a video
  */
-function is_video($name, $as_admin, $must_be_true_video = false)
+function is_video(string $name, bool $as_admin, bool $must_be_true_video = false) : bool
 {
     $allow_audio = (get_option('allow_audio_videos') != '0');
 
@@ -560,7 +560,7 @@ function is_video($name, $as_admin, $must_be_true_video = false)
  * @param  boolean $definitive_over_video Whether to favour "no" if it could also be a format with video in it
  * @return boolean Whether the string pointed to a file appeared to be an audio file
  */
-function is_audio($name, $as_admin, $definitive_over_video = false)
+function is_audio(string $name, bool $as_admin, bool $definitive_over_video = false) : bool
 {
     require_code('files');
     require_code('mime_types');
@@ -582,7 +582,7 @@ function is_audio($name, $as_admin, $definitive_over_video = false)
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
  * @return boolean Whether the string pointed to a file appeared to be an audio file
  */
-function is_media($name, $as_admin)
+function is_media(string $name, bool $as_admin) : bool
 {
     require_code('media_renderer');
     $hooks = find_media_renderers($name, [], $as_admin, null);
@@ -595,7 +595,7 @@ function is_media($name, $as_admin)
  * @param  integer $criteria A filter to limit what kinds of images are allowed
  * @return string Allowed file types
  */
-function get_allowed_image_file_types($criteria = 0)
+function get_allowed_image_file_types(int $criteria = 0) : string
 {
     $supported = str_replace(' ', '', get_option('valid_images'));
     if ($criteria != 0) {
@@ -615,7 +615,7 @@ function get_allowed_image_file_types($criteria = 0)
  *
  * @return string Allowed file types
  */
-function get_allowed_video_file_types()
+function get_allowed_video_file_types() : string
 {
     $supported = str_replace(' ', '', get_option('valid_videos'));
     if (get_option('allow_audio_videos') != '0') {
@@ -630,7 +630,7 @@ function get_allowed_video_file_types()
  *
  * @return string Allowed file types
  */
-function get_allowed_audio_file_types()
+function get_allowed_audio_file_types() : string
 {
     $supported = str_replace(' ', '', get_option('valid_audios'));
     return $supported;
@@ -643,7 +643,7 @@ function get_allowed_audio_file_types()
  * @param  ?string $ext File extension (null: get from path, even if not detected this function will mostly work)
  * @return ~resource Image resource (false: error)
  */
-function cms_imagecreatefrom($path, $ext = null)
+function cms_imagecreatefrom(string $path, ?string $ext = null)
 {
     if ($ext === null) {
         $ext = get_file_extension($path);
@@ -680,7 +680,7 @@ function cms_imagecreatefrom($path, $ext = null)
  * @param  ?string $ext File extension (null: unknown)
  * @return ~resource Image resource (false: error)
  */
-function cms_imagecreatefromstring($data, $ext = null)
+function cms_imagecreatefromstring(string $data, ?string $ext = null)
 {
     if (!function_exists('imagecreatefromstring')) {
         return false;
@@ -714,7 +714,7 @@ function cms_imagecreatefromstring($data, $ext = null)
  * @param  resource $image Image resource
  * @return boolean Whether we need to do a fix
  */
-function _will_fix_corrupt_png_alpha($image)
+function _will_fix_corrupt_png_alpha($image) : bool
 {
     if ((function_exists('imageistruecolor')) && (function_exists('imagecreatetruecolor'))) {
         if ((php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
@@ -733,7 +733,7 @@ function _will_fix_corrupt_png_alpha($image)
  * @param  resource $image Image resource
  * @param  PATH $path Path to PNG file
  */
-function _fix_corrupt_png_alpha(&$image, $path)
+function _fix_corrupt_png_alpha(&$image, string $path)
 {
     if (_will_fix_corrupt_png_alpha($image)) {
         require_code('images2');
@@ -761,7 +761,7 @@ function _fix_corrupt_png_alpha(&$image, $path)
  * @param  ?boolean $unknown_format Returned by reference as true if the file format was unknown (null: not passed)
  * @return ~resource Image resource (false: error)
  */
-function cms_imagesave($image, $path, $ext = null, $lossy = false, &$unknown_format = null)
+function cms_imagesave($image, string $path, ?string $ext = null, bool $lossy = false, ?bool &$unknown_format = null)
 {
     if ($ext === null) {
         $ext = get_file_extension($path);
@@ -827,7 +827,7 @@ function cms_imagesave($image, $path, $ext = null, $lossy = false, &$unknown_for
  * @param  string $scope_limit Only operate under this file path (relative to the base directory)
  * @return ?URLPATH Path to the closed captions URL file (null: did not find a file)
  */
-function get_matching_closed_captions_file($url, $scope_limit = 'uploads/')
+function get_matching_closed_captions_file(string $url, string $scope_limit = 'uploads/') : ?string
 {
     $path = convert_url_to_path($url);
     $stem = get_custom_file_base() . '/' . $scope_limit . '/';

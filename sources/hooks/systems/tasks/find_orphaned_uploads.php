@@ -28,7 +28,7 @@ class Hook_task_find_orphaned_uploads
      *
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run()
+    public function run() : ?array
     {
         require_lang('cleanup');
 
@@ -81,7 +81,7 @@ class Hook_task_find_orphaned_uploads
      * @param  PATH $dir Path to search
      * @return array List of files
      */
-    protected function do_dir($dir)
+    protected function do_dir(string $dir) : array
     {
         task_log($this, 'Processing ' . $dir . ' directory for uploads');
 

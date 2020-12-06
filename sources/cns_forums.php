@@ -29,7 +29,7 @@
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The forum box
  */
-function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '')
+function render_forum_box(array $row, string $zone = '_SEARCH', bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -86,7 +86,7 @@ function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $includ
  * @param  ID_TEXT $field Field name
  * @return string SQL clause
  */
-function get_forum_access_sql($field)
+function get_forum_access_sql(string $field) : string
 {
     $groups = get_permission_where_clause_groups(get_member());
 
@@ -133,7 +133,7 @@ function get_forum_access_sql($field)
  * @param  AUTO_LINK $forum_id The forum row that we are taking as the root of our current recursion
  * @return array The child list of $forum_id
  */
-function cns_organise_into_tree(&$all_forums, $forum_id)
+function cns_organise_into_tree(array &$all_forums, int $forum_id) : array
 {
     $children = [];
     $all_forums_copy = $all_forums;
@@ -156,7 +156,7 @@ function cns_organise_into_tree(&$all_forums, $forum_id)
  * @param  boolean $ignore_permissions Whether to ignore permissions in this
  * @return mixed The list (is either a true list, or an OR list)
  */
-function cns_get_all_subordinate_forums($forum_id, $create_or_list = null, $tree = null, $ignore_permissions = false)
+function cns_get_all_subordinate_forums(int $forum_id, ?string $create_or_list = null, ?array $tree = null, bool $ignore_permissions = false)
 {
     if ($forum_id === null) {
         if ($create_or_list === null) {
@@ -240,7 +240,7 @@ function cns_is_up_to_date_on_forum($forum_id, $member_id = null)
  * @param  ?MEMBER $member_id The member ID (null: current member)
  * @return boolean The answer
  */
-function cns_may_moderate_forum($forum_id, $member_id = null)
+function cns_may_moderate_forum(int $forum_id, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -260,7 +260,7 @@ function cns_may_moderate_forum($forum_id, $member_id = null)
  * @param  ?AUTO_LINK $parent_id The ID of the parent forum (-1: get it from the DB) (null: there is no parent, as it is the root forum)
  * @return string The OR list
  */
-function cns_get_forum_parent_or_list($forum_id, $parent_id = -1)
+function cns_get_forum_parent_or_list(int $forum_id, ?int $parent_id = -1) : string
 {
     if ($forum_id === null) {
         return ''; // Should never happen
@@ -292,7 +292,7 @@ function cns_get_forum_parent_or_list($forum_id, $parent_id = -1)
  * @param  ?AUTO_LINK $root Virtual root (null: none)
  * @return array The breadcrumbs
  */
-function cns_forum_breadcrumbs($end_point_forum, $this_name = null, $parent_forum = null, $start = true, $root = null)
+function cns_forum_breadcrumbs($end_point_forum, $this_name = null, ?int $parent_forum = null, bool $start = true, ?int $root = null) : array
 {
     if ($end_point_forum === null) {
         return [];
@@ -359,7 +359,7 @@ function cns_forum_breadcrumbs($end_point_forum, $this_name = null, $parent_foru
  * @param  ?AUTO_LINK $forum_id The ID of the forum (null: private topics)
  * @return boolean Whether it does
  */
-function cns_forum_allows_anonymous_posts($forum_id)
+function cns_forum_allows_anonymous_posts(?int $forum_id) : bool
 {
     if ($forum_id === null) {
         return (get_option('is_on_anonymous_posts') == '1');

@@ -191,7 +191,7 @@ function init__webstandards_js_lex()
  * @param  string $text The code
  * @return array List of lexed tokens
  */
-function webstandards_js_lex($text)
+function webstandards_js_lex(string $text) : array
 {
     global $CONTINUATIONS, $TOKENS, $JS_TAG_RANGES, $JS_VALUE_RANGES, $JS_TEXT, $JS_LEX_TOKENS;
 
@@ -517,7 +517,7 @@ function webstandards_js_lex($text)
  * @param  integer $i Get character at this position
  * @return array Get triplet about the next character (whether end reached, new position, character)
  */
-function lex__get_next_char($i)
+function lex__get_next_char(int $i) : array
 {
     global $JS_TEXT;
     if (!isset($JS_TEXT[$i])) {
@@ -534,7 +534,7 @@ function lex__get_next_char($i)
  * @param  integer $num How many to get
  * @return array Get triplet about the next character (whether end reached, new position, characters)
  */
-function lex__get_next_chars($i, $num)
+function lex__get_next_chars(int $i, int $num) : array
 {
     global $JS_TEXT;
     $str = substr($JS_TEXT, $i, $num);
@@ -548,7 +548,7 @@ function lex__get_next_chars($i, $num)
  * @param  boolean $absolute Whether the position is a string offset (as opposed to a token position)
  * @return array The quartet of details (line offset, line number, the line, the absolute position)
  */
-function js_pos_to_line_details($i, $absolute = false)
+function js_pos_to_line_details(int $i, bool $absolute = false) : array
 {
     global $JS_TEXT, $JS_LEX_TOKENS;
 
@@ -585,7 +585,7 @@ function js_pos_to_line_details($i, $absolute = false)
  * @param  integer $i The global position
  * @return ?boolean Always null (null: exit)
  */
-function js_die_error($system, $pos, $line, $message, $i)
+function js_die_error(string $system, int $pos, string $line, string $message, int $i) : ?bool
 {
     $error = ['JS ERROR (' . $system . '): ' . $message, $pos, $line, $i];
     global $JS_ERRORS;
@@ -601,7 +601,7 @@ function js_die_error($system, $pos, $line, $message, $i)
  * @param  integer $i The global position
  * @param  boolean $absolute Whether the position is a string offset (as opposed to a token position)
  */
-function js_log_warning($system, $warning, $i = -1, $absolute = false)
+function js_log_warning(string $system, string $warning, int $i = -1, bool $absolute = false)
 {
     global $JS_TEXT;
 
@@ -626,7 +626,7 @@ function js_log_warning($system, $warning, $i = -1, $absolute = false)
  * @param  string $b The second string to compare
  * @return integer The comparison result
  */
-function jlex__strlen_sort($a, $b)
+function jlex__strlen_sort(string $a, string $b) : int
 {
     global $TOKENS;
     $a = $TOKENS[$a];

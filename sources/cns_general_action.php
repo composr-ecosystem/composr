@@ -27,7 +27,7 @@
  * @param  BINARY $use_default_forums Whether to use this as the default post in applicable forum
  * @return AUTO_LINK The added ID
  */
-function cns_make_post_template($title, $text, $forum_multi_code, $use_default_forums)
+function cns_make_post_template(string $title, string $text, string $forum_multi_code, int $use_default_forums) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_POST_TEMPLATE', null, $title);
@@ -59,7 +59,7 @@ function cns_make_post_template($title, $text, $forum_multi_code, $use_default_f
  * @param  BINARY $use_topics Whether this may be used as a topic emoticon
  * @param  BINARY $is_special Whether this may only be used by privileged members
  */
-function cns_make_emoticon($code, $theme_img_code, $relevance_level = 1, $use_topics = 1, $is_special = 0)
+function cns_make_emoticon(string $code, string $theme_img_code, int $relevance_level = 1, int $use_topics = 1, int $is_special = 0)
 {
     if (!running_script('install')) {
         $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', ['e_code' => $code]);
@@ -102,7 +102,7 @@ function cns_make_emoticon($code, $theme_img_code, $relevance_level = 1, $use_to
  * @set primary secondary ""
  * @return AUTO_LINK The ID
  */
-function cns_make_welcome_email($name, $subject, $text, $send_time, $newsletter = null, $usergroup = null, $usergroup_type = '')
+function cns_make_welcome_email(string $name, string $subject, string $text, int $send_time, ?int $newsletter = null, ?int $usergroup = null, string $usergroup_type = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_WELCOME_EMAIL', null, $subject);

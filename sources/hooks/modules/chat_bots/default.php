@@ -30,7 +30,7 @@ class Hook_chat_bot_default
      * @param  string $command The command used. This is just the chat message, so you can encode and recognise your own parameter scheme if you like.
      * @return ?string Bot reply (null: bot does not handle the command)
      */
-    public function handle_commands($room_id, $command)
+    public function handle_commands(int $room_id, string $command) : ?string
     {
         switch ($command) {
             case 'help':

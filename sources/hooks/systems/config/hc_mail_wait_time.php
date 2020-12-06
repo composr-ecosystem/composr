@@ -28,7 +28,7 @@ class Hook_config_hc_mail_wait_time
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'HC_MAIL_WAIT_TIME',
@@ -52,7 +52,7 @@ class Hook_config_hc_mail_wait_time
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('health_check')) {
             return null;

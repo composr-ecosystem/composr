@@ -28,7 +28,7 @@ class Hook_config_quiz_show_stats_count_total_open
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'QUIZZES',
@@ -51,7 +51,7 @@ class Hook_config_quiz_show_stats_count_total_open
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('quizzes')) {
             return null;

@@ -42,7 +42,7 @@ function init__upload_syndication()
  * @param  integer $file_handling_types The kind of files we are going to be handling
  * @return array A pair: JSON data describing what upload syndication we can do (may be null), a filetype filter
  */
-function get_upload_syndication_json($file_handling_types)
+function get_upload_syndication_json(int $file_handling_types) : array
 {
     $struct = [];
 
@@ -128,7 +128,7 @@ function upload_syndication_auth_script()
  * @param  ID_TEXT $name Upload field name
  * @return boolean Whether it will?
  */
-function upload_will_syndicate($name)
+function upload_will_syndicate(string $name) : bool
 {
     $hooks = find_all_hook_obs('systems', 'upload_syndication', 'Hook_upload_syndication_');
     foreach ($hooks as $hook => $ob) {
@@ -159,7 +159,7 @@ function upload_will_syndicate($name)
  * @param  boolean $remove_locally_if_no_quota Whether to delete the local copy, if the current user has no upload quota. If no syndication was set, an error will be given.
  * @return URLPATH New URL (if we deleted the local copy, it will be a remote URL)
  */
-function handle_upload_syndication($name, $title, $description, $url, $filename, $remove_locally_if_no_quota)
+function handle_upload_syndication(string $name, string $title, string $description, string $url, string $filename, bool $remove_locally_if_no_quota) : string
 {
     if (!url_is_local($url)) {
         return $url; // Not an upload

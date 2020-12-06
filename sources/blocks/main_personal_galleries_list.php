@@ -28,7 +28,7 @@ class Block_main_personal_galleries_list
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -51,7 +51,7 @@ class Block_main_personal_galleries_list
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('galleries', $error_msg)) {
@@ -154,7 +154,7 @@ class Block_main_personal_galleries_list
      * @param  MEMBER $member_id The ID of the member who is being viewed
      * @param  MEMBER $member_id_viewing The ID of the member who is doing the viewing
      */
-    protected function attach_gallery_subgalleries($gallery_name, &$galleries, $member_id, $member_id_viewing)
+    protected function attach_gallery_subgalleries(string $gallery_name, object &$galleries, int $member_id, int $member_id_viewing)
     {
         // Not done via main_multi_content block due to need to custom query
         $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['parent_id' => $gallery_name], 'ORDER BY add_date DESC');

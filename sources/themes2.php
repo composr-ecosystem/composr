@@ -35,7 +35,7 @@ function init__themes2()
  * @param  ID_TEXT $theme The theme name
  * @return ID_TEXT The seed colour
  */
-function find_theme_seed($theme)
+function find_theme_seed(string $theme) : string
 {
     global $THEME_SEED_CACHE;
     if (isset($THEME_SEED_CACHE[$theme])) {
@@ -76,7 +76,7 @@ function find_theme_seed($theme)
  *
  * @return string List of CDNs
  */
-function autoprobe_cdns()
+function autoprobe_cdns() : string
 {
     require_code('files');
 
@@ -133,7 +133,7 @@ function autoprobe_cdns()
  *
  * @return array A map of all themes (name=>title) OR if requested a map of theme name to full theme details
  */
-function find_all_themes()
+function find_all_themes() : array
 {
     if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
         return ['default' => do_lang('DEFAULT')];
@@ -192,7 +192,7 @@ function find_all_themes()
  * @param  ID_TEXT $default_message_string The language string to use for the default answer
  * @return Tempcode The list
  */
-function create_selection_list_themes($theme = null, $include_rely = true, $show_everything = false, $default_message_string = 'RELY_FORUMS')
+function create_selection_list_themes(?string $theme = null, bool $include_rely = true, bool $show_everything = false, string $default_message_string = 'RELY_FORUMS') : object
 {
     if ($include_rely) {
         $entries = form_input_list_entry('-1', false, do_lang_tempcode($default_message_string));
@@ -232,7 +232,7 @@ function create_selection_list_themes($theme = null, $include_rely = true, $show
  * @param  boolean $this_theme_only Just for this theme
  * @return array A map of the files (file=>path)
  */
-function get_template_files_list($theme, $directory, $suffix = null, $this_theme_only = false)
+function get_template_files_list(string $theme, string $directory, ?string $suffix = null, bool $this_theme_only = false) : array
 {
     if ($suffix === null) {
         switch ($directory) {
@@ -283,7 +283,7 @@ function get_template_files_list($theme, $directory, $suffix = null, $this_theme
  *
  * @ignore
  */
-function _get_template_files_list($base_dir, $subdir, $suffix)
+function _get_template_files_list(string $base_dir, string $subdir, string $suffix) : array
 {
     $_dir = @opendir($base_dir . '/themes/' . $subdir);
     if ($_dir !== false) {
@@ -308,7 +308,7 @@ function _get_template_files_list($base_dir, $subdir, $suffix)
  * @param  ID_TEXT $theme The theme
  * @return ?PATH The path (null: not found)
  */
-function find_template_path($file, $subdir, $theme)
+function find_template_path(string $file, string $subdir, string $theme) : ?string
 {
     static $cache = [];
     if (isset($cache[$file][$subdir][$theme])) {
@@ -341,7 +341,7 @@ function find_template_path($file, $subdir, $theme)
  * @param  ?ID_TEXT $active_guid GUID currently in use, to highlight; e.g. opening up the editor on a template instance within a screen meta-tree (null: none)
  * @return array List of GUID details (template-ready)
  */
-function find_template_guids($file, $active_guid = null)
+function find_template_guids(string $file, ?string $active_guid = null) : array
 {
     $suffix = '.' . get_file_extension($file);
     $clean_file = basename($file, $suffix);
@@ -367,7 +367,7 @@ function find_template_guids($file, $active_guid = null)
  * @param  ID_TEXT $file The template (including subdirectory and suffix)
  * @return array List of template parameters
  */
-function find_template_parameters($file)
+function find_template_parameters(string $file) : array
 {
     $parameters = [];
 
@@ -415,7 +415,7 @@ function find_template_parameters($file)
  * @param  ?PATH $upload_to Where to upload the theme images to (null: something sensible)
  * @return ID_TEXT The (possibly randomised) theme image code
  */
-function post_param_theme_img_code($type, $required = false, $field_file = 'file', $field_choose = 'theme_img_code', $db = null, $upload_to = null)
+function post_param_theme_img_code(string $type, bool $required = false, string $field_file = 'file', string $field_choose = 'theme_img_code', ?object $db = null, ?string $upload_to = null) : string
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -465,7 +465,7 @@ function post_param_theme_img_code($type, $required = false, $field_file = 'file
  * @param  array $langs A map (lang=>true) of the languages in the system, so the codes may be filtered out of the image codes in our result list
  * @return array A map, theme-image-code=>URL
  */
-function find_images_do_dir($theme, $subdir, $langs)
+function find_images_do_dir(string $theme, string $subdir, array $langs) : array
 {
     require_code('images');
 
@@ -509,7 +509,7 @@ function find_images_do_dir($theme, $subdir, $langs)
  * @param  boolean $include_missing Whether to include missing images in the list
  * @return array The list of image IDs
  */
-function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = null, $dirs_only = false, $db_only = false, $skip = [], $include_missing = false)
+function get_all_image_ids_type(string $type, bool $recurse = false, ?object $db = null, ?string $theme = null, bool $dirs_only = false, bool $db_only = false, array $skip = [], bool $include_missing = false) : array
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
@@ -624,7 +624,7 @@ function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = nu
  *
  * @ignore
  */
-function _get_all_image_ids_type(&$ids, $dir, $type, $recurse, $dirs_only, $skip)
+function _get_all_image_ids_type(array &$ids, string $dir, string $type, bool $recurse, bool $dirs_only, array $skip)
 {
     $has_skip = (!empty($skip));
 
@@ -678,7 +678,7 @@ function _get_all_image_ids_type(&$ids, $dir, $type, $recurse, $dirs_only, $skip
  * @param  PATH $base_path The base-path to where we are searching for images
  * @return Tempcode The generated Tempcode
  */
-function combo_get_image_paths($selected_path, $base_url, $base_path)
+function combo_get_image_paths(string $selected_path, string $base_url, string $base_path) : object
 {
     $out = new Tempcode();
 
@@ -700,7 +700,7 @@ function combo_get_image_paths($selected_path, $base_url, $base_path)
  * @param  PATH $base_path The base-path to where we are searching for images
  * @return array path->url map of found images
  */
-function get_image_paths($base_url, $base_path)
+function get_image_paths(string $base_url, string $base_path) : array
 {
     $out = [];
 
@@ -736,7 +736,7 @@ function get_image_paths($base_url, $base_path)
  * @param  boolean $recurse Whether to search recursively from the given directory
  * @return array A list of image codes
  */
-function get_all_image_codes($base_path, $search_under, $recurse = true)
+function get_all_image_codes(string $base_path, string $search_under, bool $recurse = true) : array
 {
     $out = [];
 
@@ -784,7 +784,7 @@ function get_all_image_codes($base_path, $search_under, $recurse = true)
  * @param  string $under Only include images under this path. Including a trailing slash unless you specifically want to filter allowing filename stubs as well as URLs (blank: no limitation)
  * @return Tempcode Tempcode for a list selection of theme images
  */
-function create_selection_list_theme_images($it = null, $filter = null, $do_id = false, $include_all = false, $under = '')
+function create_selection_list_theme_images(?string $it = null, ?string $filter = null, bool $do_id = false, bool $include_all = false, string $under = '') : object
 {
     $out = new Tempcode();
     if (!$include_all) {
@@ -825,7 +825,7 @@ function create_selection_list_theme_images($it = null, $filter = null, $do_id =
  * @param  ID_TEXT $field Field in table
  * @param  ?object $db Database connector to check against (null: site database)
  */
-function tidy_theme_img_code($new, $old, $table, $field, $db = null)
+function tidy_theme_img_code(?string $new, string $old, string $table, string $field, ?object $db = null)
 {
     if ($new === $old) {
         return; // Still being used

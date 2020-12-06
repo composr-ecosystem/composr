@@ -28,7 +28,7 @@ class Module_admin_themewizard
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Allen Ellis';
@@ -49,7 +49,7 @@ class Module_admin_themewizard
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('themewizard')) {
             return null;
@@ -73,7 +73,7 @@ class Module_admin_themewizard
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('themewizard', $error_msg)) {
@@ -142,7 +142,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('themes2');
         require_code('themewizard');
@@ -180,7 +180,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function step1()
+    public function step1() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true], false, true);
         $text = do_lang_tempcode('THEMEWIZARD_1_DESCRIBE');
@@ -241,7 +241,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function step2()
+    public function step2() : object
     {
         $source_theme = get_param_string('source_theme');
         if (get_theme_option('enable_themewizard', null, $source_theme) == '0') {
@@ -302,7 +302,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function step3()
+    public function step3() : object
     {
         $source_theme = get_param_string('source_theme');
         $algorithm = get_param_string('algorithm');
@@ -342,7 +342,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function step4()
+    public function step4() : object
     {
         // Add theme
         $source_theme = post_param_string('source_theme');
@@ -406,7 +406,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function make_logo()
+    public function make_logo() : object
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_make_logo'], '_SELF');
 
@@ -471,7 +471,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function _make_logo()
+    public function _make_logo() : object
     {
         $theme = post_param_string('theme');
 
@@ -497,7 +497,7 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function __make_logo()
+    public function __make_logo() : object
     {
         $theme = post_param_string('theme');
         $font = post_param_string('font');

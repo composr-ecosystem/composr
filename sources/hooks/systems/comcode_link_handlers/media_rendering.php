@@ -39,7 +39,7 @@ class Hook_comcode_link_handler_media_rendering
      * @param  array $highlight_bits A list of words to highlight
      * @return ?Tempcode Handled link (null: reject due to inappropriate link pattern)
      */
-    public function bind($url, $comcode_dangerous, $pass_id, $pos, $source_member, $as_admin, $db, $comcode, $structure_sweep, $semiparse_mode, $highlight_bits)
+    public function bind(string $url, bool $comcode_dangerous, string $pass_id, int $pos, int $source_member, bool $as_admin, object $db, string $comcode, bool $structure_sweep, bool $semiparse_mode, array $highlight_bits) : ?object
     {
         require_code('media_renderer');
         $ret = render_media_url($url, $url, ['context' => 'comcode_link', 'likely_not_framed' => '1'], $as_admin, $source_member);

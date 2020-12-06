@@ -139,7 +139,7 @@ function sitemap_script_loading()
  *
  * @ignore
  */
-function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed, $recurse_level = 0)
+function _sitemap_node_to_xml(array $admin_groups, array $groups, array $node, bool $permissions_needed, int $recurse_level = 0)
 {
     if ($recurse_level >= get_param_integer('max_recurse_depth', 1)) {
         return;
@@ -293,7 +293,7 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
  *
  * @ignore
  */
-function _get_view_access_for_node($admin_groups, $groups, $node)
+function _get_view_access_for_node(array $admin_groups, array $groups, array $node) : ?array
 {
     $id = $node['content_id'];
     if ($id === null) {
@@ -348,7 +348,7 @@ function _get_view_access_for_node($admin_groups, $groups, $node)
  *
  * @ignore
  */
-function _get_privileges_for_node($admin_groups, $groups, $node)
+function _get_privileges_for_node(array $admin_groups, array $groups, array $node) : ?array
 {
     $id = $node['content_id'];
     if ($id === null) {
@@ -403,7 +403,7 @@ function _get_privileges_for_node($admin_groups, $groups, $node)
  *
  * @ignore
  */
-function _organise_loaded_privileges($admin_groups, $groups, $_privilege_access)
+function _organise_loaded_privileges(array $admin_groups, array $groups, array $_privilege_access) : array
 {
     $privilege_access = [];
     foreach (array_keys($groups) as $group_id) {
@@ -423,7 +423,7 @@ function _organise_loaded_privileges($admin_groups, $groups, $_privilege_access)
  *
  * @ignore
  */
-function _get_overridable_privileges_for_privilege_page($privilege_page)
+function _get_overridable_privileges_for_privilege_page(?string $privilege_page) : array
 {
     if ($privilege_page === null) { // For root
         return [

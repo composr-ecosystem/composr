@@ -28,7 +28,7 @@ class Hook_snippet_management_menu
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (has_zone_access(get_member(), 'adminzone')) {
             require_code('menus');

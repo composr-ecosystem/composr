@@ -35,7 +35,7 @@ function init__files2()
  * @param  boolean $make_index_file Whether to make an empty index file, to prevent browsing
  * @return boolean Success status
  */
-function make_missing_directory($dir, $make_index_file = true)
+function make_missing_directory(string $dir, bool $make_index_file = true) : bool
 {
     if (@mkdir($dir, 0777, true) === false) {
         if ((error_reporting() & E_WARNING) === 0) { // Errors disabled via @ most likely
@@ -61,7 +61,7 @@ function make_missing_directory($dir, $make_index_file = true)
  * @param  PATH $path File path that could not be written (full path, not relative)
  * @ignore
  */
-function _intelligent_write_error($path)
+function _intelligent_write_error(string $path)
 {
     if (error_reporting() == 0) {
         return;
@@ -95,7 +95,7 @@ function _intelligent_write_error($path)
  *
  * @ignore
  */
-function _intelligent_write_error_inline($path)
+function _intelligent_write_error_inline(string $path)
 {
     static $looping = false;
     if ($looping || !function_exists('do_lang_tempcode')) { // In case do_lang_tempcode below spawns a recursive failure, due to the file being the language cache itself
@@ -121,7 +121,7 @@ function _intelligent_write_error_inline($path)
  *
  * @return array A tuple: preferred temporary path to save to, whether there's a problem saving in the system path, the system path to save to, the local path to save to
  */
-function cms_get_temp_dir()
+function cms_get_temp_dir() : array
 {
     $local_path = get_custom_file_base() . '/temp';
     if (!file_exists($local_path)) {
@@ -141,7 +141,7 @@ function cms_get_temp_dir()
  *
  * @ignore
  */
-function _cms_tempnam($prefix = '')
+function _cms_tempnam(string $prefix = '')
 {
     list($tmp_path, $problem_saving, $server_path, $local_path) = cms_get_temp_dir();
     if (php_function_allowed('tempnam')) {
@@ -167,7 +167,7 @@ function _cms_tempnam($prefix = '')
  * @param  PATH $path File path
  * @return boolean Whether it is
  */
-function is_temp_file($path)
+function is_temp_file(string $path) : bool
 {
     $path = realpath($path);
 
@@ -195,7 +195,7 @@ function is_temp_file($path)
  *
  * @param  ?array $attachments A list of attachments (each attachment being a map, absolute path=>filename) (null: none)
  */
-function clean_temporary_mail_attachments($attachments)
+function clean_temporary_mail_attachments(?array $attachments)
 {
     if ($attachments !== null) {
         foreach (array_keys($attachments) as $path) {
@@ -212,7 +212,7 @@ function clean_temporary_mail_attachments($attachments)
  * @param  PATH $filename File/directory name to sync on (full path)
  * @ignore
  */
-function _sync_file($filename)
+function _sync_file(string $filename)
 {
     global $FILE_BASE, $_MODIFIED_FILES, $_CREATED_FILES;
     if (substr($filename, 0, strlen($FILE_BASE) + 1) == $FILE_BASE . '/') {
@@ -251,7 +251,7 @@ function _sync_file($filename)
  * @param  PATH $new File/directory name to move to (may be full or relative path)
  * @ignore
  */
-function _sync_file_move($old, $new)
+function _sync_file_move(string $old, string $new)
 {
     global $FILE_BASE;
     if (is_file($FILE_BASE . '/data_custom/sync_script.php')) {
@@ -278,7 +278,7 @@ function _sync_file_move($old, $new)
  *
  * @ignore
  */
-function _deldir_contents($dir, $default_preserve = false, $delete_dir_also = false)
+function _deldir_contents(string $dir, bool $default_preserve = false, bool $delete_dir_also = false) : bool
 {
     $success = true;
 
@@ -334,7 +334,7 @@ function _deldir_contents($dir, $default_preserve = false, $delete_dir_also = fa
  * @param  boolean $cgi Whether we need a CGI interpreter
  * @return PATH Path to PHP (or just raw php command if cannot find a full path)
  */
-function find_php_path($cgi = false)
+function find_php_path(bool $cgi = false) : string
 {
     if (strpos(PHP_OS, 'WIN') !== false) {
         $search_dirs = [
@@ -405,7 +405,7 @@ function find_php_path($cgi = false)
  * @param  ?array $file_extensions File extensions to limit to (no dots), if $files_wanted set (null: no limit)
  * @return array The contents of the directory
  */
-function get_directory_contents($path, $rel_path = '', $bitmask = IGNORE_ACCESS_CONTROLLERS, $recurse = true, $files_wanted = true, $file_extensions = null)
+function get_directory_contents(string $path, string $rel_path = '', ?int $bitmask = IGNORE_ACCESS_CONTROLLERS, bool $recurse = true, bool $files_wanted = true, ?array $file_extensions = null) : array
 {
     if (($files_wanted) && ($file_extensions === [])) {
         return []; // Optimisation
@@ -457,7 +457,7 @@ function get_directory_contents($path, $rel_path = '', $bitmask = IGNORE_ACCESS_
  * @param  boolean $recurse Whether to recurse (if not, will return directories as files)
  * @return integer The extra space requested
  */
-function get_directory_size($path, $recurse = true)
+function get_directory_size(string $path, bool $recurse = true) : int
 {
     $size = 0;
 
@@ -489,7 +489,7 @@ function get_directory_size($path, $recurse = true)
  * @param  float $max Maximum size in MB
  * @return Tempcode The message
  */
-function get_maximum_upload_message($max)
+function get_maximum_upload_message(float $max) : object
 {
     $config_url = get_upload_limit_config_url();
     return paragraph(do_lang_tempcode(($config_url === null) ? 'MAXIMUM_UPLOAD' : 'MAXIMUM_UPLOAD_STAFF', escape_html(($max > 10.0) ? integer_format(intval($max)) : float_format($max)), ($config_url === null) ? '' : escape_html_tempcode($config_url)), '0oa9paovv3xj12dqlny21zwajoh1f90q');
@@ -500,7 +500,7 @@ function get_maximum_upload_message($max)
  *
  * @return ?Tempcode The URL to the config option group for editing limits (null: no access)
  */
-function get_upload_limit_config_url()
+function get_upload_limit_config_url() : ?object
 {
     $config_url = null;
     if (has_actual_page_access(get_member(), 'admin_config')) {
@@ -517,7 +517,7 @@ function get_upload_limit_config_url()
  * @param  boolean $consider_php_limits Whether to consider limitations in PHP's configuration
  * @return integer The maximum allowed upload filesize, in bytes
  */
-function get_max_file_size($source_member = null, $db = null, $consider_php_limits = true)
+function get_max_file_size(?int $source_member = null, ?object $db = null, bool $consider_php_limits = true) : int
 {
     $possibilities = [];
 
@@ -573,7 +573,7 @@ function get_max_file_size($source_member = null, $db = null, $consider_php_limi
  * @param  ?MEMBER $member_id Member to check as (null: current member)
  * @return boolean Success status
  */
-function check_extension($name, $skip_server_side_security_check = false, $file_to_delete = null, $accept_errors = false, $member_id = null)
+function check_extension(string $name, bool $skip_server_side_security_check = false, ?string $file_to_delete = null, bool $accept_errors = false, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -695,7 +695,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
  * @param  mixed $id The table ID
  * @param  ?string $new_url The new URL to use (null: deleting without replacing: no change check)
  */
-function delete_upload($upload_path, $table, $field, $id_field, $id, $new_url = null)
+function delete_upload(string $upload_path, string $table, string $field, $id_field, $id, ?string $new_url = null)
 {
     // Try and delete the file
     if ((has_actual_page_access(get_member(), 'admin_cleanup')) || (get_option('cleanup_files') == '1')) { // This isn't really a permission - more a failsafe in case there is a security hole. Staff can cleanup leftover files from the Cleanup module anyway. NB: Also repeated in cms_galleries.php.
@@ -727,7 +727,7 @@ function delete_upload($upload_path, $table, $field, $id_field, $id, $new_url = 
  *
  * @param  integer $extra The extra bandwidth requested
  */
-function check_shared_bandwidth_usage($extra)
+function check_shared_bandwidth_usage(int $extra)
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['throttle_bandwidth_registered'])) {
@@ -755,7 +755,7 @@ function check_shared_bandwidth_usage($extra)
  *
  * @param  integer $extra The extra space in bytes requested
  */
-function check_shared_space_usage($extra)
+function check_shared_space_usage(int $extra)
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['throttle_space_registered'])) {

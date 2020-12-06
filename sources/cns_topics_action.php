@@ -37,7 +37,7 @@
  * @param  SHORT_TEXT $description_link Link related to the topic (e.g. link to view a ticket).
  * @return AUTO_LINK The ID of the newly created topic
  */
-function cns_make_topic($forum_id, $description = '', $emoticon = '', $validated = null, $open = 1, $pinned = 0, $cascading = 0, $pt_from = null, $pt_to = null, $check_perms = true, $num_views = 0, $id = null, $description_link = '')
+function cns_make_topic(?int $forum_id, string $description = '', string $emoticon = '', ?int $validated = null, int $open = 1, int $pinned = 0, int $cascading = 0, ?int $pt_from = null, ?int $pt_to = null, bool $check_perms = true, int $num_views = 0, ?int $id = null, string $description_link = '') : int
 {
     if ($pinned === null) {
         $pinned = 0;

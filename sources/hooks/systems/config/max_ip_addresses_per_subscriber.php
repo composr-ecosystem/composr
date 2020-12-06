@@ -28,7 +28,7 @@ class Hook_config_max_ip_addresses_per_subscriber
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAX_IP_ADDRESSES_PER_SUBSCRIBER',
@@ -51,7 +51,7 @@ class Hook_config_max_ip_addresses_per_subscriber
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('ecommerce')) {
             return null;

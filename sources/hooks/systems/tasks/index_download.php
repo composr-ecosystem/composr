@@ -31,7 +31,7 @@ class Hook_task_index_download
      * @param  ID_TEXT $original_filename The download filename
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($id, $url, $original_filename)
+    public function run(int $id, string $url, string $original_filename) : ?array
     {
         if (!addon_installed('downloads')) {
             return null;

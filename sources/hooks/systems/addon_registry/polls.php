@@ -29,7 +29,7 @@ class Hook_addon_registry_polls
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -39,7 +39,7 @@ class Hook_addon_registry_polls
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -49,7 +49,7 @@ class Hook_addon_registry_polls
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Information Display';
     }
@@ -59,7 +59,7 @@ class Hook_addon_registry_polls
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'A poll (voting) system.';
     }
@@ -69,7 +69,7 @@ class Hook_addon_registry_polls
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_feedback',
@@ -81,7 +81,7 @@ class Hook_addon_registry_polls
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -95,7 +95,7 @@ class Hook_addon_registry_polls
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/menu/social/polls.svg';
     }
@@ -105,7 +105,7 @@ class Hook_addon_registry_polls
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources/hooks/systems/privacy/polls.php',
@@ -157,7 +157,7 @@ class Hook_addon_registry_polls
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/BLOCK_MAIN_POLL.tpl' => 'block_main_poll',
@@ -178,7 +178,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_poll()
+    public function tpl_preview__block_main_poll() : array
     {
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_POLL', [
@@ -196,7 +196,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_rss_summary()
+    public function tpl_preview__poll_rss_summary() : array
     {
         require_code('xml');
 
@@ -234,7 +234,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_answer()
+    public function tpl_preview__poll_answer() : array
     {
         return $this->poll('poll');
     }
@@ -246,7 +246,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_answer_result()
+    public function tpl_preview__poll_answer_result() : array
     {
         return $this->poll('result');
     }
@@ -259,7 +259,7 @@ class Hook_addon_registry_polls
      * @param  string $section View type
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function poll($section = '')
+    public function poll(string $section = '') : array
     {
         $tpl = new Tempcode();
         switch ($section) {
@@ -347,7 +347,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_list_line()
+    public function tpl_preview__poll_list_line() : array
     {
         return [
             lorem_globalise(do_lorem_template('POLL_LIST_LINE', [
@@ -364,7 +364,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_screen()
+    public function tpl_preview__poll_screen() : array
     {
         require_lang('trackbacks');
 
@@ -434,7 +434,7 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_archive_screen()
+    public function tpl_preview__poll_archive_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('POLL_ARCHIVE_SCREEN', [

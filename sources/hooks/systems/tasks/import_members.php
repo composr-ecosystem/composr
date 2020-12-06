@@ -33,7 +33,7 @@ class Hook_task_import_members
      * @param  MEMBER $initiator_id The ID of the member initiating the import
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($default_password, $use_temporary_passwords, $path, $filename, $initiator_id)
+    public function run(?string $default_password, bool $use_temporary_passwords, string $path, ?string $filename, int $initiator_id) : ?array
     {
         set_mass_import_mode();
 

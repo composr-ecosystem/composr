@@ -56,7 +56,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  boolean $simplified Whether to simplify this down for only a specific catalogue (only applied to cms_catalogues module)
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false, $simplified = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false, bool $simplified = false) : ?array
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -136,7 +136,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('catalogues');
         return ['view_private_content' => 0, 'mass_import' => 0, 'high_catalogue_entry_timeout' => 1, 'submit_cat_highrange_content' => [0, 'ADD_CATALOGUE'], 'edit_cat_highrange_content' => [0, 'EDIT_CATALOGUE'], 'delete_cat_highrange_content' => [0, 'DELETE_CATALOGUE'], 'submit_cat_midrange_content' => [0, 'ADD_CATALOGUE_CATEGORY'], 'edit_cat_midrange_content' => [0, 'EDIT_CATALOGUE_CATEGORY'], 'delete_cat_midrange_content' => [0, 'DELETE_CATALOGUE_CATEGORY'], 'submit_midrange_content' => [1, 'ADD_CATALOGUE_ENTRY'], 'bypass_validation_midrange_content' => [1, 'BYPASS_VALIDATION_CATALOGUE_ENTRY'], 'edit_own_midrange_content' => [1, 'EDIT_OWN_CATALOGUE_ENTRY'], 'edit_midrange_content' => [1, 'EDIT_CATALOGUE_ENTRY'], 'delete_own_midrange_content' => [1, 'DELETE_OWN_CATALOGUE_ENTRY'], 'delete_midrange_content' => [1, 'DELETE_CATALOGUE_ENTRY']];
@@ -151,7 +151,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('catalogues', $error_msg)) {
@@ -249,7 +249,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         if (get_value('disable_cat_cat_perms') === '1') {
             $this->permissions_cat_require_b = null;
@@ -294,7 +294,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         $catalogue_name = get_param_string('catalogue_name', '');
@@ -345,7 +345,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -440,7 +440,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return ?array A triple: The tree field (Tempcode), Search URL, Archive URL (null: nothing here)
      */
-    public function create_selection_list_ajax_tree()
+    public function create_selection_list_ajax_tree() : ?array
     {
         $catalogue_name = get_param_string('catalogue_name');
 
@@ -484,7 +484,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of the entry (null: not yet added)
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function get_form_fields($catalogue_name = null, $category_id = null, $validated = 1, $notes = '', $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $id = null)
+    public function get_form_fields(?string $catalogue_name = null, ?int $category_id = null, int $validated = 1, string $notes = '', ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, ?int $id = null)
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -675,7 +675,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['ce_submitter', 'ce_add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -690,7 +690,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         $cat = $this->get_cat_b($id);
         return $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => intval($cat)]);
@@ -702,7 +702,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat_b($id)
+    public function get_cat_b(string $id)
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => $id]);
         if ($temp === null) {
@@ -717,7 +717,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -743,7 +743,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?AUTO_LINK $editing_id ID of entry being edited (null: not being edited)
      * @return array The map
      */
-    public function get_set_field_map($catalogue_name, $submitter, $editing_id = null)
+    public function get_set_field_map(string $catalogue_name, int $submitter, ?int $editing_id = null) : array
     {
         // Get field values
         $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
@@ -781,7 +781,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('catalogues2');
 
@@ -857,7 +857,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         require_code('catalogues2');
 
@@ -963,7 +963,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         require_code('catalogues2');
 
@@ -995,7 +995,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         if (!is_ecommerce_catalogue_entry(intval($id))) {
             return true;
@@ -1014,7 +1014,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         $c_name = $this->donext_catalogue_name;
         $category_id = $this->donext_category_id;
@@ -1060,7 +1060,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function import_catalogue()
+    public function import_catalogue() : object
     {
         check_privilege('mass_import');
 
@@ -1131,7 +1131,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _import_catalogue()
+    public function _import_catalogue() : object
     {
         check_privilege('mass_import');
 
@@ -1179,7 +1179,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function export_catalogue()
+    public function export_catalogue() : object
     {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             access_denied('I_ERROR');
@@ -1202,7 +1202,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ID_TEXT $catalogue_name The name of the catalogue
      * @return Tempcode The UI
      */
-    public function _export_catalogue($catalogue_name)
+    public function _export_catalogue(string $catalogue_name) : object
     {
         log_it('EXPORT_CATALOGUE_ENTRIES', $catalogue_name);
 
@@ -1215,7 +1215,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function predefined_content()
+    public function predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_ui('catalogues', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
@@ -1226,7 +1226,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function _predefined_content()
+    public function _predefined_content() : object
     {
         require_code('content2');
         return predefined_content_changes_actualiser('catalogues', $this->title);
@@ -1263,7 +1263,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -1314,7 +1314,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      *
      * @return ?array A triple: The tree field (Tempcode), Search URL, Archive URL (null: nothing here)
      */
-    public function create_selection_list_ajax_tree()
+    public function create_selection_list_ajax_tree() : ?array
     {
         $catalogue_name = get_param_string('catalogue_name');
 
@@ -1355,7 +1355,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ?AUTO_LINK $move_target The expiry category (null: do not expire)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($catalogue_name = null, $title = '', $description = '', $notes = '', $parent_id = -1, $id = null, $rep_image = '', $move_days_lower = 30, $move_days_higher = 60, $move_target = null)
+    public function get_form_fields(?string $catalogue_name = null, string $title = '', string $description = '', string $notes = '', ?int $parent_id = -1, ?int $id = null, string $rep_image = '', int $move_days_lower = 30, int $move_days_higher = 60, ?int $move_target = null) : array
     {
         if ($catalogue_name === null) {
             $catalogue_name = get_param_string('catalogue_name', ($id === null) ? false : $GLOBALS['SITE_DB']->query_select_value('catalogues_categories', 'c_name', ['id' => $id]));
@@ -1423,7 +1423,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the category is sought
      * @return mixed The category
      */
-    public function get_cat($id)
+    public function get_cat(string $id)
     {
         $c_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => intval($id)]);
         if ($c_name === null) {
@@ -1438,7 +1438,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $category_id = intval($_id);
 
@@ -1459,7 +1459,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         $cat = $GLOBALS['SITE_DB']->query_select('catalogue_categories cc LEFT JOIN ' . get_table_prefix() . 'catalogues c ON c.c_name=cc.c_name', ['cc_parent_id', 'c_is_tree'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $cat)) {
@@ -1473,7 +1473,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('catalogues2');
 
@@ -1525,7 +1525,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         require_code('catalogues2');
 
@@ -1585,7 +1585,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         require_code('catalogues2');
 
@@ -1607,7 +1607,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         $catalogue_name = $this->donext_catalogue_name;
 
@@ -1673,7 +1673,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      *
      * @return Tempcode The selection list
      */
-    public function create_selection_list_entries()
+    public function create_selection_list_entries() : object
     {
         return create_selection_list_catalogues();
     }
@@ -1684,7 +1684,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ID_TEXT $id The entry being potentially deleted
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this($id)
+    public function may_delete_this(string $id) : bool
     {
         if (substr($id, 0, 1) == '_') {
             return false;
@@ -1698,7 +1698,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ?ID_TEXT $name The catalogue name (null: n/a)
      * @return ?ID_TEXT The content type (null: none)
      */
-    public function tied_to_content_type($name)
+    public function tied_to_content_type(?string $name) : ?string
     {
         if ($name === null) {
             return null;
@@ -1740,7 +1740,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ?integer $default_review_freq Default review frequency for catalogue entries (null: none)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields($name = '', $title = '', $description = '', $display_type = 0, $is_tree = 1, $notes = '', $submit_points = 0, $ecommerce = 0, $categories_sort_order = 'title ASC', $send_view_reports = 'never', $default_review_freq = null)
+    public function get_form_fields(string $name = '', string $title = '', string $description = '', int $display_type = 0, int $is_tree = 1, string $notes = '', int $submit_points = 0, int $ecommerce = 0, string $categories_sort_order = 'title ASC', string $send_view_reports = 'never', ?int $default_review_freq = null) : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -1874,7 +1874,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  SHORT_TEXT $options Field options
      * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
      */
-    public function get_field_fields($first_field, $num_fields_to_show, $prefix, $order, $name = '', $description = '', $type = 'short_text', $defines_order = 0, $visible = 1, $default = '', $required = 0, $is_sortable = 0, $include_in_main_search = 0, $allow_template_search = 0, $put_in_category = 1, $put_in_search = 1, $options = '')
+    public function get_field_fields(bool $first_field, int $num_fields_to_show, string $prefix, int $order, string $name = '', string $description = '', string $type = 'short_text', int $defines_order = 0, int $visible = 1, string $default = '', int $required = 0, int $is_sortable = 0, int $include_in_main_search = 0, int $allow_template_search = 0, int $put_in_category = 1, int $put_in_search = 1, string $options = '') : array
     {
         $fields = new Tempcode();
         $hidden = new Tempcode();
@@ -1934,7 +1934,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ID_TEXT $catalogue_name The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($catalogue_name)
+    public function fill_in_edit_form(string $catalogue_name)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], ['c_name' => $catalogue_name], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -1953,7 +1953,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         require_code('catalogues2');
         $name = post_param_string('catalogue_name');
@@ -2102,7 +2102,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ID_TEXT $old_name The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($old_name)
+    public function edit_actualisation(string $old_name) : ?object
     {
         require_code('catalogues2');
 
@@ -2309,7 +2309,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         require_code('catalogues2');
 
@@ -2330,7 +2330,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ?ID_TEXT $name The catalogue name we were working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $name = null)
+    public function do_next_manager(object $title, object $description, ?string $name = null) : object
     {
         if ($name !== null) {
             $cat_count = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $name]);

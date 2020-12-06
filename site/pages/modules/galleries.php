@@ -28,7 +28,7 @@ class Module_galleries
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -79,7 +79,7 @@ class Module_galleries
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_code('galleries');
         require_lang('galleries');
@@ -288,7 +288,7 @@ class Module_galleries
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('galleries')) {
             return null;
@@ -320,7 +320,7 @@ class Module_galleries
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('galleries', $error_msg)) {
@@ -521,7 +521,7 @@ class Module_galleries
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('feedback');
         require_css('galleries');
@@ -552,7 +552,7 @@ class Module_galleries
      *
      * @return Tempcode The UI
      */
-    public function do_gallery()
+    public function do_gallery() : object
     {
         $cat = $this->cat;
         $root = $this->root;
@@ -665,7 +665,7 @@ class Module_galleries
      * @param  array $gallery_row The gallery row
      * @return Tempcode The UI
      */
-    public function do_gallery_carousel_mode($rating_details, $comment_details, $cat, $root, $description, $may_download, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $title, $rep_image, $start, $max, $fullname, $sorting, $gallery_row)
+    public function do_gallery_carousel_mode(object $rating_details, object $comment_details, string $cat, string $root, object $description, bool $may_download, object $edit_url, object $add_gallery_url, object $submit_image_url, object $submit_video_url, object $title, string $rep_image, int $start, int $max, string $fullname, object $sorting, array $gallery_row) : object
     {
         $image_select = get_param_string('select', '*', INPUT_FILTER_GET_COMPLEX);
         $video_select = get_param_string('video_select', '*', INPUT_FILTER_GET_COMPLEX);
@@ -994,7 +994,7 @@ class Module_galleries
      * @param  array $gallery_row The gallery row
      * @return Tempcode The UI
      */
-    public function do_gallery_grid_mode($rating_details, $comment_details, $cat, $root, $description, $may_download, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $title, $fullname, $gallery_row)
+    public function do_gallery_grid_mode(object $rating_details, object $comment_details, string $cat, string $root, object $description, bool $may_download, object $edit_url, object $add_gallery_url, object $submit_image_url, object $submit_video_url, object $title, string $fullname, array $gallery_row) : object
     {
         list($url_sort, $dir) = $this->get_sort_order();
 
@@ -1064,7 +1064,7 @@ class Module_galleries
      * @param  array $gallery_row The gallery row
      * @return Tempcode The UI
      */
-    public function do_gallery_mosaic_mode($rating_details, $comment_details, $cat, $root, $description, $may_download, $edit_url, $add_gallery_url, $submit_image_url, $submit_video_url, $title, $fullname, $gallery_row)
+    public function do_gallery_mosaic_mode(object $rating_details, object $comment_details, string $cat, string $root, object $description, bool $may_download, object $edit_url, object $add_gallery_url, object $submit_image_url, object $submit_video_url, object $title, string $fullname, array $gallery_row) : object
     {
         list($url_sort, $dir) = $this->get_sort_order();
 
@@ -1121,7 +1121,7 @@ class Module_galleries
      *
      * @return Tempcode The UI
      */
-    public function start_slideshow()
+    public function start_slideshow() : object
     {
         $cat = $this->cat;
         $true_category_name = $this->category_name;
@@ -1278,7 +1278,7 @@ class Module_galleries
      * @param  ?Tempcode $breadcrumbs Breadcrumbs (null: derive in this function)
      * @return Tempcode The UI
      */
-    public function show_image($category_name = null, $breadcrumbs = null)
+    public function show_image(?string $category_name = null, ?object $breadcrumbs = null) : object
     {
         $id = $this->id;
         $myrow = $this->myrow;
@@ -1401,7 +1401,7 @@ class Module_galleries
      * @param  ?Tempcode $breadcrumbs Breadcrumbs (null: derive in this function)
      * @return Tempcode The UI
      */
-    public function show_video($category_name = null, $breadcrumbs = null)
+    public function show_video(?string $category_name = null, ?object $breadcrumbs = null) : object
     {
         $id = $this->id;
         $myrow = $this->myrow;
@@ -1546,7 +1546,7 @@ class Module_galleries
      * @param  ?integer $days Day limit for recency (null: no limit)
      * @return array A tuple of the navigation bits
      */
-    public function build_set_navigation($extra_where, $join, $category_name, $current_id, $root, $current_type, $wide_high, $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days)
+    public function build_set_navigation(string $extra_where, string $join, string $category_name, ?int $current_id, string $root, ?string $current_type, int $wide_high, int $start, int $max, string $cat, string $url_sort, string $dir, string $image_select, string $video_select, ?int $days) : array
     {
         $max = 500;
         list(, $max_rows) = content_rows_for_multi_type(['image', 'video'], $days, $extra_where, '', $url_sort . ' ' . $dir, 0, 0, ['image' => $image_select, 'video' => $video_select], '', '', true, [], $this->get_allowed_sorts());
@@ -1629,7 +1629,7 @@ class Module_galleries
      * @param  ?integer $days Day limit for recency (null: no limit)
      * @return Tempcode The navigation bits
      */
-    public function show_nav($category_name, $extra_where, $join, $current_id, $first_id, $back_id, $next_id, $root, $x, $n, $current_type, $first_type, $back_type, $next_type, $wide_high, $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days)
+    public function show_nav(string $category_name, string $extra_where, string $join, int $current_id, ?int $first_id, ?int $back_id, ?int $next_id, string $root, int $x, int $n, string $current_type, string $first_type, string $back_type, string $next_type, int $wide_high, int $start, int $max, ?string $cat, string $url_sort, string $dir, string $image_select, string $video_select, ?int $days) : object
     {
         if ($back_id !== null) {
             $slideshow_previous_url = build_url(['page' => '_SELF', 'type' => $back_type, 'wide_high' => 1, 'id' => $back_id, 'slideshow' => 1, 'days' => $days, 'sort' => ($url_sort . ' ' . $dir == get_option('gallery_media_default_sort_order')) ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select] + propagate_filtercode(), '_SELF', [], true); // Continues, but as slideshow
@@ -1732,7 +1732,7 @@ class Module_galleries
      *
      * @return array A pair: The URL-style sort order, The URL-style sort direction
      */
-    protected function get_sort_order()
+    protected function get_sort_order() : array
     {
         $sort = get_param_string('sort', get_option('gallery_media_default_sort_order'), INPUT_FILTER_GET_COMPLEX);
         return read_abstract_sorting_params($sort, $this->get_allowed_sorts());
@@ -1743,7 +1743,7 @@ class Module_galleries
      *
      * @return array A map between sort selector and language string
      */
-    protected function get_sort_selectors()
+    protected function get_sort_selectors() : array
     {
         $_selectors = [
             'recent ASC' => 'OLDEST_FIRST',
@@ -1766,7 +1766,7 @@ class Module_galleries
      *
      * @return array A list of allowed sorts
      */
-    protected function get_allowed_sorts()
+    protected function get_allowed_sorts() : array
     {
         $allowed_sorts = [];
         $_selectors = $this->get_sort_selectors();

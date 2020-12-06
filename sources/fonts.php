@@ -25,7 +25,7 @@
  *
  * @return boolean Whether TTF is supported
  */
-function has_ttf()
+function has_ttf() : bool
 {
     static $result = null;
     if ($result !== null) {
@@ -56,7 +56,7 @@ function has_ttf()
  *
  * @return ?Tempcode Error message (null: none)
  */
-function check_ttf()
+function check_ttf() : ?object
 {
     if (!has_ttf()) {
         return do_lang_tempcode('REQUIRES_TTF');
@@ -70,7 +70,7 @@ function check_ttf()
  * @param  boolean $mono Whether we want a monospaced font
  * @return string Default font file name (without .ttf)
  */
-function find_default_font($mono = false)
+function find_default_font(bool $mono = false) : string
 {
     // We have some knowledge of fonts that are fairly comprehensive, widely available, and normal looking, even though we don't bundle them all (for file-size and licensing reasons)
     if ($mono) {
@@ -144,7 +144,7 @@ function find_default_font($mono = false)
  * @param  boolean $test_character_support Test the font supports the characters in the site title (a rough way to check it is a reasonable font to use on this site)
  * @return array A map between font name and label to use for the font
  */
-function find_all_fonts($test_character_support = false)
+function find_all_fonts(bool $test_character_support = false) : array
 {
     if (($test_character_support) && (has_ttf())) {
         $test_text = get_site_name();
@@ -210,7 +210,7 @@ function find_all_fonts($test_character_support = false)
  * @param  string $font Font file name (without .ttf)
  * @return PATH The file path
  */
-function find_font_path($font)
+function find_font_path(string $font) : string
 {
     $file_base = get_custom_file_base() . '/data_custom/fonts/';
     if (!file_exists($file_base . '/' . $font . '.ttf')) {

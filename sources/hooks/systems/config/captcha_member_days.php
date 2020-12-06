@@ -28,7 +28,7 @@ class Hook_config_captcha_member_days
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'CAPTCHA_MEMBER_DAYS',
@@ -51,7 +51,7 @@ class Hook_config_captcha_member_days
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('captcha')) {
             return null;

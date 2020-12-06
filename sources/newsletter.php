@@ -62,7 +62,7 @@ function incoming_bounced_email_script()
  * @param  string $surname Subscribers surname
  * @return string Newsletter password
  */
-function basic_newsletter_join($email, $language = null, $get_confirm_mail = false, $newsletter_id = null, $forename = '', $surname = '')
+function basic_newsletter_join(string $email, ?string $language = null, bool $get_confirm_mail = false, ?int $newsletter_id = null, string $forename = '', string $surname = '') : string
 {
     require_lang('newsletter');
 
@@ -119,7 +119,7 @@ function basic_newsletter_join($email, $language = null, $get_confirm_mail = fal
  * @param  LANGUAGE_NAME $lang Language to send in
  * @return string Categories
  */
-function newsletter_get_category_choices($cutoff_time, $lang)
+function newsletter_get_category_choices(int $cutoff_time, string $lang) : string
 {
     require_code('global4');
 
@@ -175,7 +175,7 @@ function newsletter_get_category_choices($cutoff_time, $lang)
  * @param  TIME $cutoff_time When to cut off content from
  * @return ?string The Comcode (null: no content)
  */
-function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_time)
+function generate_whatsnew_comcode(string $chosen_categories, int $in_full, string $lang, int $cutoff_time) : ?string
 {
     require_code('global4');
 
@@ -299,7 +299,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
  * @param  string $default_subject The default subject for this newsletter
  * @return array A pair: The newsletter message, Whether it is written in HTML
  */
-function get_full_newsletter_code($_message, $lang, $default_subject)
+function get_full_newsletter_code(string $_message, string $lang, string $default_subject) : array
 {
     $_message = post_param_string('message', $_message);
 
@@ -340,7 +340,7 @@ function get_full_newsletter_code($_message, $lang, $default_subject)
  * @param  SHORT_TEXT $subject The newsletter subject
  * @return string The newsletter with wrapper, with Comcode pre-parsed
  */
-function newsletter_rewrap_with_early_comcode_parse_if_needed($_message, $message, $lang, $subject = '')
+function newsletter_rewrap_with_early_comcode_parse_if_needed(string $_message, string $message, string $lang, string $subject = '') : string
 {
     $original_message_is_html = (strpos(trim($_message), '<') === 0);
     $final_message_is_html = (strpos(trim($message), '<') === 0);
@@ -363,7 +363,7 @@ function newsletter_rewrap_with_early_comcode_parse_if_needed($_message, $messag
  * @param  SHORT_TEXT $subject The newsletter subject
  * @return string The newsletter with wrapper
  */
-function newsletter_wrap($_message, $lang, $subject = '')
+function newsletter_wrap(string $_message, string $lang, string $subject = '') : string
 {
     $message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '53c02947915806e519fe14c318813f42', 'CONTENT' => $_message, 'LANG' => $lang, 'SUBJECT' => $subject], null, false, null, '.txt', 'text');
     $message = $message_wrapped->evaluate($lang);
@@ -386,7 +386,7 @@ function newsletter_wrap($_message, $lang, $subject = '')
  * @param  ID_TEXT $mail_template The template used to show the e-mail
  * @return Tempcode UI
  */
-function send_newsletter($message, $subject, $language, $send_details, $html_only = 0, $from_email = '', $from_name = '', $priority = 3, $spreadsheet_data = [], $mail_template = 'MAIL')
+function send_newsletter(string $message, string $subject, string $language, array $send_details, int $html_only = 0, string $from_email = '', string $from_name = '', int $priority = 3, array $spreadsheet_data = [], string $mail_template = 'MAIL') : object
 {
     require_lang('newsletter');
 
@@ -426,7 +426,7 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
  * @param  boolean $filter_confirms Filter non-confirmed addresses out
  * @return array A pair: List of subscriber detail maps, and a map of newsletter identifier to record count (null if $start is not zero, for performance reasons]
  */
-function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, $max = 0, $spreadsheet_data = [], $filter_confirms = true)
+function newsletter_who_send_to(?array $send_details = null, ?string $lang = null, int $start = 0, int $max = 0, array $spreadsheet_data = [], bool $filter_confirms = true) : array
 {
     $subscribers = [];
     $totals = ($start == 0) ? [] : null;
@@ -640,7 +640,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
  * @param  array $header_row Header row of the spreadsheet
  * @return array A tuple of spreadsheet columns
  */
-function detect_newsletter_spreadsheet_columns($header_row)
+function detect_newsletter_spreadsheet_columns(array $header_row) : array
 {
     require_lang('cns');
 
@@ -709,7 +709,7 @@ function detect_newsletter_spreadsheet_columns($header_row)
  * @param  string $key The newsletter identifier (as expected in $send_details parameter of newsletter_who_send_to)
  * @return array A map between domains and counts
  */
-function newsletter_domain_subscriber_stats($key)
+function newsletter_domain_subscriber_stats(string $key) : array
 {
     $domains = [];
     $start = 0;
@@ -772,7 +772,7 @@ function newsletter_domain_subscriber_stats($key)
  * @param  array $extra_mappings Extra mappings to be substituted
  * @return string The new newsletter message
  */
-function newsletter_variable_substitution($message, &$subject, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings = [])
+function newsletter_variable_substitution(string $message, string &$subject, string $forename, string $surname, string $name, string $email_address, string $send_id, string $hash, array $extra_mappings = []) : string
 {
     $unsub_url = new Tempcode();
     if (($hash == '') || ($send_id == '')) {
@@ -832,7 +832,7 @@ function newsletter_variable_substitution($message, &$subject, $forename, $surna
  * @param  string $hash Subscriber hash
  * @return string Unsubscription hash
  */
-function get_unsubscribe_hash($hash)
+function get_unsubscribe_hash(string $hash) : string
 {
     require_code('crypt');
     return ratchet_hash($hash, 'xunsub');
@@ -853,7 +853,7 @@ function get_unsubscribe_hash($hash)
  * @param  ID_TEXT $template The mail template to preview with
  * @return array A triple: HTML version, Text version, Whether the e-mail has to be fully HTML
  */
-function newsletter_preview($message, $subject, $html_only, $forename = null, $surname = null, $name = null, $address = null, $send_id = null, $hash = null, $template = 'MAIL')
+function newsletter_preview(string $message, string $subject, bool $html_only, ?string $forename = null, ?string $surname = null, ?string $name = null, ?string $address = null, ?string $send_id = null, ?string $hash = null, string $template = 'MAIL') : array
 {
     if ($forename === null) {
         $forename = do_lang('SAMPLE_FORENAME');
@@ -930,7 +930,7 @@ function newsletter_preview($message, $subject, $html_only, $forename = null, $s
  *
  * @return array List of blocked e-mail addresses (actually a map)
  */
-function newsletter_block_list()
+function newsletter_block_list() : array
 {
     $blocked = [];
     $block_path = get_custom_file_base() . '/uploads/website_specific/newsletter_blocked.csv';
@@ -954,7 +954,7 @@ function newsletter_block_list()
  * @param  LONG_TEXT $description The description
  * @return AUTO_LINK The ID
  */
-function add_newsletter($title, $description)
+function add_newsletter(string $title, string $description) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_NEWSLETTER', null, $title);
@@ -983,7 +983,7 @@ function add_newsletter($title, $description)
  * @param  SHORT_TEXT $title The title
  * @param  LONG_TEXT $description The description
  */
-function edit_newsletter($id, $title, $description)
+function edit_newsletter(int $id, string $title, string $description)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
 
@@ -1014,7 +1014,7 @@ function edit_newsletter($id, $title, $description)
  *
  * @param  AUTO_LINK $id The ID
  */
-function delete_newsletter($id)
+function delete_newsletter(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
 
@@ -1061,7 +1061,7 @@ function delete_newsletter($id)
  * @param  ?TIME $last_sent When was last sent (null: now)
  * @return AUTO_LINK The ID
  */
-function add_periodic_newsletter($subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full = 0, $template = 'MAIL', $last_sent = null)
+function add_periodic_newsletter(string $subject, string $message, string $lang, string $send_details, int $html_only, string $from_email, string $from_name, int $priority, string $spreadsheet_data, string $frequency, int $day, int $in_full = 0, string $template = 'MAIL', ?int $last_sent = null) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_PERIODIC_NEWSLETTER', null, $subject);
@@ -1117,7 +1117,7 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
  * @param  ID_TEXT $template Mail template to use, e.g. MAIL
  * @param  ?TIME $last_sent When was last sent (null: don't change)
  */
-function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent = null)
+function edit_periodic_newsletter(int $id, string $subject, string $message, string $lang, string $send_details, int $html_only, string $from_email, string $from_name, int $priority, string $spreadsheet_data, string $frequency, int $day, int $in_full, string $template, ?int $last_sent = null)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
 
@@ -1158,7 +1158,7 @@ function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details,
  *
  * @param  AUTO_LINK $id The ID
  */
-function delete_periodic_newsletter($id)
+function delete_periodic_newsletter(int $id)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
 
@@ -1191,7 +1191,7 @@ function delete_periodic_newsletter($id)
  * @param  string $surname Subscribers surname
  * @return AUTO_LINK Subscriber ID
  */
-function add_newsletter_subscriber($email, $join_time, $code_confirm, $password, $salt, $language, $forename, $surname)
+function add_newsletter_subscriber(string $email, int $join_time, int $code_confirm, string $password, string $salt, string $language, string $forename, string $surname) : int
 {
     $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', [
         'email' => $email,
@@ -1228,7 +1228,7 @@ function add_newsletter_subscriber($email, $join_time, $code_confirm, $password,
  * @param  ?string $forename Subscribers forename (null: don't change)
  * @param  ?string $surname Subscribers surname (null: don't change)
  */
-function edit_newsletter_subscriber($id, $email = null, $join_time = null, $code_confirm = null, $password = null, $salt = null, $language = null, $forename = null, $surname = null)
+function edit_newsletter_subscriber(int $id, ?string $email = null, ?int $join_time = null, ?int $code_confirm = null, ?string $password = null, ?string $salt = null, ?string $language = null, ?string $forename = null, ?string $surname = null)
 {
     $map = [];
     if ($email !== null) {
@@ -1269,7 +1269,7 @@ function edit_newsletter_subscriber($id, $email = null, $join_time = null, $code
  *
  * @param  AUTO_LINK $id Subscriber ID
  */
-function delete_newsletter_subscriber($id)
+function delete_newsletter_subscriber(int $id)
 {
     $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', ['id' => $id], '', 1);
 
@@ -1284,7 +1284,7 @@ function delete_newsletter_subscriber($id)
  *
  * @param  array $bounces List of e-mail addresses
  */
-function remove_email_bounces($bounces)
+function remove_email_bounces(array $bounces)
 {
     if (empty($bounces)) {
         return;

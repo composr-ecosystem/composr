@@ -28,7 +28,7 @@ class Hook_cleanup_meta_tree_rebuild
      *
      * @return ?array Map of cleanup hook info (null: hook is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['title'] = do_lang_tempcode('META_TREE_REBUILD');
@@ -43,7 +43,7 @@ class Hook_cleanup_meta_tree_rebuild
      *
      * @return Tempcode Results
      */
-    public function run()
+    public function run() : object
     {
         require_code('tasks');
 
