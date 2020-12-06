@@ -887,7 +887,7 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
 
         if ($php_type !== null) {
             if ($expected_php_type === null) {
-                if ($php_type !== null) {
+                if (($php_type !== null) && ($php_type !== 'callable'/*No representation in our phpdoc*/)) {
                     attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint', 'warn');
                 }
             } else {
@@ -909,7 +909,11 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             // Code write-back
             $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
             if ($name == '(return)') {
-                $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type;
+                if (substr($funcdef_line_new, -1) == ';') {
+                    $funcdef_line_new = rtrim($funcdef_line_new, ';') . ' : ' . $_expected_php_type . ';';
+                } else {
+                    $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type;
+                }
             } else {
                 $funcdef_line_new = preg_replace('#(&?(\.\.\.)?\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
             }

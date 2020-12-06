@@ -1460,7 +1460,7 @@ function imagestringup($image, int $font, int $x, int $y, string $s, int $col)
  * @param  string $text The string to be measured
  * @return ~array Tuple: lower-left-X, lower-left-Y, lower-right-X, lower-right-Y, upper-right-X, upper-right-Y, upper-left-X, upper-left-Y (false: error)
  */
-function imagettfbbox(float $size, float $angle, string $fontfile, string $text) : array
+function imagettfbbox(float $size, float $angle, string $fontfile, string $text)
 {
     return [];
 }
@@ -1478,7 +1478,7 @@ function imagettfbbox(float $size, float $angle, string $fontfile, string $text)
  * @param  string $text Text to draw
  * @return ~array Tuple: lower-left-X, lower-left-Y, lower-right-X, lower-right-Y, upper-right-X, upper-right-Y, upper-left-X, upper-left-Y (false: error)
  */
-function imagettftext($handle, float $size, float $angle, int $x, int $y, int $colour, string $fontfile, string $text) : array
+function imagettftext($handle, float $size, float $angle, int $x, int $y, int $colour, string $fontfile, string $text)
 {
     return [];
 }
@@ -4485,7 +4485,7 @@ function strpbrk(string $haystack, string $char_list)
  * @param  boolean $case_insensitivity Whether to compare as case-insensitive
  * @return ~integer Returns < 0 if main_str from position offset is less than str, > 0 if it is greater than str, and 0 if they are equal (false: out of bounds)
  */
-function substr_compare(string $main_str, string $str, int $offset, ?int $length = null, bool $case_insensitivity = false) : int
+function substr_compare(string $main_str, string $str, int $offset, ?int $length = null, bool $case_insensitivity = false)
 {
     return 0;
 }

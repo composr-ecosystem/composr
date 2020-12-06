@@ -130,7 +130,7 @@ abstract class Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
+    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false)
     {
         return false;
     }
@@ -168,7 +168,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    abstract public function file_add(string $filename, string $path, array $properties, ?string $force_type = null) : string;
+    abstract public function file_add(string $filename, string $path, array $properties, ?string $force_type = null);
 
 
     /**
@@ -190,7 +190,7 @@ abstract class Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    abstract public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string;
+    abstract public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false);
 
 
     /**
@@ -1146,7 +1146,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $search_path Search path (null: the same as the path saving at)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function resource_save(string $resource_type, string $label, string $path, array $properties = [], ?string $search_label_as = null, ?string $search_path = null) : string
+    public function resource_save(string $resource_type, string $label, string $path, array $properties = [], ?string $search_label_as = null, ?string $search_path = null)
     {
         if ($this->is_folder_type($resource_type)) {
             $resource_id = $this->folder_save($label, $path, $properties, $search_label_as, $search_path);
@@ -1165,7 +1165,7 @@ abstract class Resource_fs_base
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function resource_add(string $resource_type, string $label, string $path, array $properties = []) : string
+    public function resource_add(string $resource_type, string $label, string $path, array $properties = [])
     {
         if ($this->is_folder_type($resource_type)) {
             $resource_id = $this->folder_add($label, $path, $properties, $resource_type);
@@ -1205,7 +1205,7 @@ abstract class Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function resource_edit(string $resource_type, string $filename, string $path, array $properties, bool $explicit_move = false) : string
+    public function resource_edit(string $resource_type, string $filename, string $path, array $properties, bool $explicit_move = false)
     {
         if ($this->is_folder_type($resource_type)) {
             $resource_id = $this->folder_edit($filename, $path, $properties, $explicit_move);
@@ -1887,7 +1887,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $search_path Search path (null: the same as the path saving at)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_save(string $filename, string $path, array $properties, ?string $search_label_as = null, ?string $search_path = null) : string
+    public function file_save(string $filename, string $path, array $properties, ?string $search_label_as = null, ?string $search_path = null)
     {
         if ($search_path === null) {
             $search_path = $path;
@@ -1947,7 +1947,7 @@ abstract class Resource_fs_base
      * @param  ?ID_TEXT $search_path Search path (null: the same as the path saving at)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_save(string $filename, string $path, array $properties, ?string $search_label_as = null, ?string $search_path = null) : string
+    public function folder_save(string $filename, string $path, array $properties, ?string $search_label_as = null, ?string $search_path = null)
     {
         if ($search_path === null) {
             $search_path = $path;

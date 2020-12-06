@@ -532,7 +532,7 @@ function video_get_default_metadata(string $url = '', string $thumb_url = '', ?s
  * @param  boolean $delay_errors Whether to skip over errored files instead of dying. We don't currently make use of this as our readers aren't sophisticated enough to properly spot erroneous situations.
  * @return ~array The triplet of width/height/length (possibly containing nulls for when we can't detect properties) (false: error)
  */
-function get_video_details_from_file(string $file_path, ?string $filename, bool $delay_errors = false) : array
+function get_video_details_from_file(string $file_path, ?string $filename, bool $delay_errors = false)
 {
     $info = null;
 

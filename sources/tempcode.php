@@ -488,7 +488,7 @@ function closure_loop(array $param, array $args, callable $main_function) : stri
  * @param  mixed $main_function The loop execution function
  * @return string Result
  */
-function closure_params_json(array $param, array $args, $main_function) : string
+function closure_params_json(array $param, array $args, callable $main_function) : string
 {
     global $TEMPCODE_SETGET;
 

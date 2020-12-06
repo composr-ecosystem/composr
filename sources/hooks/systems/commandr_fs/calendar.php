@@ -162,7 +162,7 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
+    public function folder_edit(string $filename, string $path, array $properties, bool $explicit_move = false)
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
         list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
@@ -364,7 +364,7 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
      * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false) : string
+    public function file_edit(string $filename, string $path, array $properties, bool $explicit_move = false)
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);

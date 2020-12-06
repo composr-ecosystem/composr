@@ -49,7 +49,7 @@ abstract class Hook_actionlog
      * @param  boolean $show_view_profile Show view profile links
      * @return ?~array Map of extended data in standard format (null: not available from this hook) (false: hook has responsibility but has failed)
      */
-    public function get_extended_actionlog_data(array $actionlog_row, bool $show_view_profile = true) : ?array
+    public function get_extended_actionlog_data(array $actionlog_row, bool $show_view_profile = true)
     {
         $handlers = $this->get_handlers();
 
