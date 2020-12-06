@@ -57,6 +57,8 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     $classes = [];
     $class_has_comments = [];
 
+    $writeback = false; // Change to true to set PHP type hints in code based on phpdoc hints
+
     $meta_keywords_available = ['final', 'public', 'private', 'protected', 'static', 'abstract'];
 
     $make_alterations = false;
@@ -210,6 +212,10 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             if (!array_key_exists($j, $lines)) {
                 continue; // No function: probably we commented it out
             }
+
+            $funcdef_line = $_line;
+            $funcdef_line_new = $_line;
+            $funcdef_line_index = $j;
 
             // Parse comment block bits
             $description = '';
@@ -375,7 +381,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                     }
                 }
 
-                check_function_parameter_typing($parameter['type'], $parameter['php_type'], $parameter['php_type_nullable'], $function_name, $parameter['name'], $default, array_key_exists('range', $parameter) ? $parameter['range'] : null, array_key_exists('set', $parameter) ? $parameter['set'] : null);
+                $funcdef_line_new = check_function_parameter_typing($parameter['type'], $parameter['php_type'], $parameter['php_type_nullable'], $function_name, $parameter['name'], $default, array_key_exists('range', $parameter) ? $parameter['range'] : null, array_key_exists('set', $parameter) ? $parameter['set'] : null, $funcdef_line_new);
 
                 // Check that null is fully specified
                 if (strpos($parameter['type'], '?') !== false) {
@@ -399,7 +405,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             }
             if ($return !== null) {
                 $fret = $return;
-                check_function_parameter_typing($return['type'], $php_return_type, $php_return_type_nullable, $function_name, '(return)', null, array_key_exists('range', $return) ? $return['range'] : null, array_key_exists('set', $return) ? $return['set'] : null);
+                $funcdef_line_new = check_function_parameter_typing($return['type'], $php_return_type, $php_return_type_nullable, $function_name, '(return)', null, array_key_exists('range', $return) ? $return['range'] : null, array_key_exists('set', $return) ? $return['set'] : null, $funcdef_line_new);
 
                 // Check that null is fully specified
                 if (strpos($return['type'], '?') !== false) {
@@ -424,9 +430,14 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 $fret = null;
             }
 
+            // Write-back
+            if ($writeback) {
+                $lines[$funcdef_line_index] = str_replace($funcdef_line, $funcdef_line_new, $lines[$funcdef_line_index]);
+            }
+
             // Now get source code
             $code = '';
-            for ($k = $j; array_key_exists($k, $lines); $k++) {
+            for ($k = $funcdef_line_index; array_key_exists($k, $lines); $k++) {
                 $line2 = $lines[$k];
                 $code .= $line2;
                 if (substr($line2, 0, $depth + 1) == str_repeat(' ', $depth) . '}') {
@@ -518,6 +529,12 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
 
     if (!empty($functions)) {
         $classes[$current_class/*will be global*/] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'implements' => $implements, 'traits' => $traits, 'extends' => $extends, 'type' => $type];
+    }
+
+    // Write-back
+    if ($writeback) {
+        $code_new = implode("\n", $lines);
+        file_put_contents($full_path, $code_new);
     }
 
     return $classes;
@@ -819,9 +836,12 @@ function _cleanup_array($in)
  * @param  ?mixed $value The parameters value (null: value actually is null)
  * @param  ?string $range The string of value range of the parameter (null: no range constraint)
  * @param  ?string $set The string of value set limitation for the parameter (null: no set constraint)
+ * @param  string $funcdef_line The line of code the function was defined on
  */
-function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_nullable, $function_name, $name, $value, $range, $set)
+function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_nullable, $function_name, $name, $value, $range, $set, $funcdef_line)
 {
+    $funcdef_line_new = $funcdef_line;
+
     $valid_types = [
         'integer' => 'int',
         'AUTO_LINK' => 'int',
@@ -857,35 +877,46 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
         'mixed' => null,
     ];
 
-    $_type = ltrim($phpdoc_type, '?~');
+    $_phpdoc_type = ltrim($phpdoc_type, '?~');
+    $null_allowed = (strpos($phpdoc_type, '?') !== false);
 
     // Check PHP type is consistent with phpdoc type
-    if (($php_type !== null) && (array_key_exists($phpdoc_type, $valid_types))) {
-        $expected_php_type = $valid_types[$phpdoc_type];
+    if (array_key_exists($_phpdoc_type, $valid_types)) {
+        $expected_php_type = $valid_types[$_phpdoc_type];
 
-        if ($expected_php_type === null) {
-            if ($php_type !== null) {
-                attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint', 'warn');
-            }
-        } else {
-            if ($expected_php_type == 'object') {
-                if (in_array($php_type, ['array', 'bool', 'callable', 'float', 'int', 'iterable', 'string', 'void'])) { // If not an object or class
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
+        if ($php_type !== null) {
+            if ($expected_php_type === null) {
+                if ($php_type !== null) {
+                    attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint', 'warn');
                 }
             } else {
-                if ($php_type != $expected_php_type) {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
+                if ($expected_php_type == 'object') {
+                    if (in_array($php_type, ['array', 'bool', 'callable', 'float', 'int', 'iterable', 'string', 'void'])) { // If not an object or class
+                        attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
+                    }
+                } else {
+                    if ($php_type != $expected_php_type) {
+                        attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
+                    }
                 }
             }
-        }
 
-        if ($php_type_nullable != (strpos($phpdoc_type, '?') !== false)) {
-            attach_message('The phpdoc type and the PHP type hint conflict around nullability', 'warn');
+            if ($php_type_nullable != $null_allowed) {
+                attach_message('The phpdoc type and the PHP type hint conflict around nullability', 'warn');
+            }
+        } else {
+            // Code write-back
+            $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
+            if ($name == '(return)') {
+                $funcdef_line_new .= ' : ' . $_expected_php_type;
+            } else {
+                $funcdef_line_new = preg_replace('#(\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
+            }
         }
     }
 
     // Check phpdoc type
-    if (!array_key_exists($_type, $valid_types)) {
+    if (!array_key_exists($_phpdoc_type, $valid_types)) {
         attach_message('The phpdoc type ' . $phpdoc_type . ' used in ' . $function_name . ' is not valid', 'warn');
     }
 
@@ -910,19 +941,19 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             'MINIID_TEXT',
             'string',
         ];
-        if ((!in_array($_type, $allowed)) && (!in_array($_type, $allowed_string)) && ($phpdoc_type != 'array')) {
-            attach_message('A range was specified for a parameter type ' . $_type . ' in function name ' . $function_name . '; this parameter type cannot have a range', 'warn');
+        if ((!in_array($_phpdoc_type, $allowed)) && (!in_array($_phpdoc_type, $allowed_string)) && ($phpdoc_type != 'array')) {
+            attach_message('A range was specified for a parameter type ' . $_phpdoc_type . ' in function name ' . $function_name . '; this parameter type cannot have a range', 'warn');
         }
 
         list($min, $max) = explode(' ', $range);
 
-        if (in_array($_type, $allowed)) {
+        if (in_array($_phpdoc_type, $allowed)) {
             if ($value != '') {
                 if ((($min != 'min') && ($value < intval($min))) || (($max != 'max') && ($value > intval($max)))) {
                     attach_message(do_lang_tempcode('OUT_OF_RANGE_VALUE', escape_html($name), escape_html($function_name), [escape_html($value)]), 'warn');
                 }
             }
-        } elseif (in_array($_type, $allowed_string)) {
+        } elseif (in_array($_phpdoc_type, $allowed_string)) {
             if ($value != '') {
                 if ((($min != 'min') && (strlen($value) < intval($min))) || (($max != 'max') && (strlen($value) > intval($max)))) {
                     attach_message(do_lang_tempcode('OUT_OF_RANGE_VALUE', escape_html($name), escape_html($function_name), [escape_html($value)]), 'warn');
@@ -970,6 +1001,8 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             }
         }
     }
+
+    return $funcdef_line_new;
 }
 
 /**
@@ -984,17 +1017,17 @@ function test_value_matches_type($phpdoc_type, $function_name, $name, $value)
 {
     $null_allowed = (strpos($phpdoc_type, '?') !== false);
     $false_allowed = (strpos($phpdoc_type, '~') !== false);
-    $_type = preg_replace('#[^\w]#', '', $phpdoc_type);
+    $_phpdoc_type = preg_replace('#[^\w]#', '', $phpdoc_type);
 
     if (($value === null) && (!$null_allowed)) {
         attach_message(do_lang_tempcode('UNALLOWED_NULL', escape_html($name), escape_html($function_name), ['null']), 'warn');
     }
 
-    if (($value === false) && (!$false_allowed) && (!in_array($_type, ['mixed', 'boolean']))) {
+    if (($value === false) && (!$false_allowed) && (!in_array($_phpdoc_type, ['mixed', 'boolean']))) {
         attach_message(do_lang_tempcode('UNALLOWED_NULL', escape_html($name), escape_html($function_name), ['false']), 'warn');
     }
 
-    if ($_type == 'mixed') {
+    if ($_phpdoc_type == 'mixed') {
         return;
     }
 
@@ -1002,7 +1035,7 @@ function test_value_matches_type($phpdoc_type, $function_name, $name, $value)
         return;
     }
 
-    switch ($_type) {
+    switch ($_phpdoc_type) {
         case 'integer':
             if ((!is_integer($value)) && ((!is_float($value)) || (strval(intval(round($value))) != strval($value)))) {
                 _fail_test_value_matches_type($phpdoc_type, $function_name, $name, $value);
