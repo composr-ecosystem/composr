@@ -533,7 +533,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
 
     // Write-back
     if ($writeback) {
-        $code_new = implode("\n", $lines);
+        $code_new = implode('', $lines);
         file_put_contents($full_path, $code_new);
     }
 
