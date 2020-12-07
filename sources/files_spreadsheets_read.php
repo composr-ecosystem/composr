@@ -181,9 +181,9 @@ abstract class CMS_Spreadsheet_Reader
  */
 class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
 {
-    const FORMAT_CSV = 1; // Comma
-    const FORMAT_TSV = 2; // Tab
-    const FORMAT_SCSV = 3; // Semicolon
+    protected const FORMAT_CSV = 1; // Comma
+    protected const FORMAT_TSV = 2; // Tab
+    protected const FORMAT_SCSV = 3; // Semicolon
 
     protected $tmp_path = null;
     protected $handle = null;

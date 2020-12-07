@@ -85,7 +85,6 @@ $PTOKENS['STRING'] = 'string';
 // More types, for strict typing
 $PTOKENS['CALLABLE'] = 'callable';
 $PTOKENS['ITERABLE'] = 'iterable';
-$PTOKENS['SELF'] = 'self';
 $PTOKENS['VOID'] = 'void';
 // Unary operators
 $PTOKENS['DEC'] = '--';
@@ -915,9 +914,9 @@ function lex($text = null)
  *
  * @param  string $a The first string to compare
  * @param  string $b The second string to compare
- * @return boolean The comparison result
+ * @return integer The comparison result
  */
-function plex__strlen_sort(string $a, string $b) : bool
+function plex__strlen_sort(string $a, string $b) : int
 {
     global $PTOKENS;
     $a = $PTOKENS[$a];

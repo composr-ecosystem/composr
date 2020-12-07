@@ -497,21 +497,21 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
 {
     // Constants...
 
-    const BITMASK_PERMISSIONS_STICKY = 01000;
-    const BITMASK_PERMISSIONS_SETGID = 02000;
-    const BITMASK_PERMISSIONS_SETUID = 04000;
+    protected const BITMASK_PERMISSIONS_STICKY = 01000;
+    protected const BITMASK_PERMISSIONS_SETGID = 02000;
+    protected const BITMASK_PERMISSIONS_SETUID = 04000;
 
-    const BITMASK_PERMISSIONS_OWNER_EXECUTE = 00100;
-    const BITMASK_PERMISSIONS_OWNER_WRITE = 00200;
-    const BITMASK_PERMISSIONS_OWNER_READ = 00400;
+    protected const BITMASK_PERMISSIONS_OWNER_EXECUTE = 00100;
+    protected const BITMASK_PERMISSIONS_OWNER_WRITE = 00200;
+    protected const BITMASK_PERMISSIONS_OWNER_READ = 00400;
 
-    const BITMASK_PERMISSIONS_GROUP_EXECUTE = 00010;
-    const BITMASK_PERMISSIONS_GROUP_WRITE = 00020;
-    const BITMASK_PERMISSIONS_GROUP_READ = 00040;
+    protected const BITMASK_PERMISSIONS_GROUP_EXECUTE = 00010;
+    protected const BITMASK_PERMISSIONS_GROUP_WRITE = 00020;
+    protected const BITMASK_PERMISSIONS_GROUP_READ = 00040;
 
-    const BITMASK_PERMISSIONS_OTHER_EXECUTE = 00001;
-    const BITMASK_PERMISSIONS_OTHER_WRITE = 00002;
-    const BITMASK_PERMISSIONS_OTHER_READ = 00004;
+    protected const BITMASK_PERMISSIONS_OTHER_EXECUTE = 00001;
+    protected const BITMASK_PERMISSIONS_OTHER_WRITE = 00002;
+    protected const BITMASK_PERMISSIONS_OTHER_READ = 00004;
 
     // Run-time data...
 
@@ -1112,13 +1112,13 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 {
     // Constants...
 
-    const BITMASK_PERMISSIONS_READ = 1;
-    const BITMASK_PERMISSIONS_WRITE = 2;
-    const BITMASK_PERMISSIONS_EXECUTE = 4;
+    protected const BITMASK_PERMISSIONS_READ = 1;
+    protected const BITMASK_PERMISSIONS_WRITE = 2;
+    protected const BITMASK_PERMISSIONS_EXECUTE = 4;
 
-    const SCAN_PARTIAL_ACCESS_CHECK = 1;
-    const SCAN_CHECK_GRANTS = 2;
-    const SCAN_CHECK_DENYS = 4;
+    protected const SCAN_PARTIAL_ACCESS_CHECK = 1;
+    protected const SCAN_CHECK_GRANTS = 2;
+    protected const SCAN_CHECK_DENYS = 4;
 
     // Run-time data...
 

@@ -705,59 +705,35 @@ function _read_php_function_line(string $_line) : array
                 if (($char == '/') && ($_line[$k + 1] == '*') && ($in_string === null) && (!$escaping)) {
                     $post_comment_state = $parse;
                     $parse = 'in_comment';
-                } elseif (($char == ',') && ($in_string === null) && (!$escaping)) {
-                    $default_raw = $arg_default;
-                    if ($arg_default === 'true') {
-                        $default = 'boolean-true'; // hack, to stop booleans coming out of arrays as integers
-                    } elseif ($arg_default === 'false') {
-                        $default = 'boolean-false';
-                    } else {
-                        if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
-                            $default = 0; // Cannot look it up, not currently defined
-                        } else {
-                            try {
-                                $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
-                            } catch (Throwable $e) {
-                                $default = null;
-                            }
-                        }
-                    }
+                } elseif (((($char == ')') && (preg_match('#^\s*(\[[^\]]*|array\([^)]*)$#', $arg_default) == 0)) || ($char == ',')) && ($in_string === null) && (!$escaping)) {
                     $new_parameter = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
-                    if ($default !== null) {
-                        $new_parameter += ['default' => $default, 'default_raw' => $default_raw];
-                    }
-                    $parameters[] = $new_parameter;
-                    $parse = 'in_args';
 
-                    $arg_default = '';
-                    $arg_type = null;
-                    $arg_type_nullable = false;
-                    $arg_name = '';
-                    $ref = false;
-                    $is_variadic = false;
-                } elseif (($char == ')') && ($in_string === null) && (!$escaping) && (preg_match('#^\s*(\[[^\]]*|array\([^)]*)$#', $arg_default) == 0)) {
                     $default_raw = $arg_default;
-                    if ($arg_default === 'true') {
-                        $default = 'boolean-true'; // hack, to stop booleans coming out of arrays as integers
-                    } elseif ($arg_default === 'false') {
-                        $default = 'boolean-false';
+                    if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
+                        $default = 0; // Cannot look it up, not currently defined
+                        $new_parameter += ['default' => $default, 'default_raw' => $default_raw];
                     } else {
-                        if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
-                            $default = 0; // Cannot look it up, not currently defined
-                        } else {
-                            try {
-                                $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
-                            } catch (Throwable $e) {
-                                $default = null;
-                            }
+                        try {
+                            $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                            $new_parameter += ['default' => $default, 'default_raw' => $default_raw];
+                        } catch (Throwable $e) {
                         }
                     }
-                    $new_parameter = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
-                    if ($default !== null) {
-                        $new_parameter += ['default' => $default, 'default_raw' => $default_raw];
-                    }
+
                     $parameters[] = $new_parameter;
-                    $parse = 'after_args';
+
+                    if ($char == ',') {
+                        $parse = 'in_args';
+
+                        $arg_default = '';
+                        $arg_type = null;
+                        $arg_type_nullable = false;
+                        $arg_name = '';
+                        $ref = false;
+                        $is_variadic = false;
+                    } else {
+                        $parse = 'after_args';
+                    }
                 } elseif ($in_string !== null) {
                     $arg_default .= $char;
                     if ($escaping) {

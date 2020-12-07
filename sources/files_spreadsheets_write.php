@@ -210,9 +210,9 @@ abstract class CMS_Spreadsheet_Writer
  */
 class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
 {
-    const FORMAT_CSV = 1; // Comma
-    const FORMAT_TSV = 2; // Tab
-    const FORMAT_SCSV = 3; // Semicolon
+    protected const FORMAT_CSV = 1; // Comma
+    protected const FORMAT_TSV = 2; // Tab
+    protected const FORMAT_SCSV = 3; // Semicolon
 
     protected $handle = null;
     protected $format = 1;

@@ -642,7 +642,6 @@ abstract class CMSStatsHookBase
      * @return ?array Map of metadata (null: hook is disabled)
      */
     abstract public function info(bool $for_kpi = false) : ?array;
-
 }
 
 /**
@@ -992,7 +991,6 @@ abstract class CMSStatsBlob extends CMSStatsHookBase
      * @return Tempcode Graph
      */
     abstract public function generate(string $graph_name, array $filters) : object;
-
 }
 
 /**
@@ -1009,7 +1007,6 @@ abstract class CMSStatsRedirect extends CMSStatsHookBase
      * @return URLPATH Redirect URL
      */
     abstract public function get_redirect_url(string $bucket_name) : string;
-
 }
 
 /**

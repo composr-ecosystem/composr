@@ -671,7 +671,6 @@ function _parse_function_def($function_modifiers = [], $is_closure = false)
             case 'INT':
             case 'ITERABLE':
             case 'OBJECT':
-            case 'SELF':
             case 'STRING':
             case 'VOID':
                 $hint = $next[0];
@@ -690,7 +689,7 @@ function _parse_function_def($function_modifiers = [], $is_closure = false)
         if (pparse__parser_peek() == 'USE') {
             pparse__parser_next();
             pparse__parser_expect('PARENTHESIS_OPEN');
-            $function['using'] = _parse_comma_variables();
+            $function['using'] = _parse_comma_variables('PARENTHESIS_CLOSE');
             pparse__parser_expect('PARENTHESIS_CLOSE');
         }
     }
@@ -2040,19 +2039,19 @@ function _parse_function_call()
     return $parameters;
 }
 
-function _parse_comma_variables()
+function _parse_comma_variables($closer = 'COMMAND_TERMINATE')
 {
     // Choice{"variable" "COMMA" comma_variables | "variable"}?
 
     $variables = [];
 
     $next = pparse__parser_peek();
-    while ($next != 'COMMAND_TERMINATE') {
+    while ($next != $closer) {
         $variable = _parse_variable(false);
         $variables[] = $variable;
 
         $next = pparse__parser_peek();
-        if ($next != 'COMMAND_TERMINATE') {
+        if ($next != $closer) {
             pparse__parser_expect('COMMA');
         }
     };
@@ -2069,6 +2068,9 @@ function _parse_comma_variables_target($closer)
         if ($next == 'COMMA') {
             pparse__parser_next();
             $variables[] = ['VARIABLE', '_', []];
+
+            $next = pparse__parser_peek();
+            continue;
         } elseif ($next == 'variable') {
             $variable = _parse_variable(false);
             $variables[] = $variable;
@@ -2156,7 +2158,6 @@ function _parse_parameter($for_function_definition = false)
             case 'INT':
             case 'ITERABLE':
             case 'OBJECT':
-            case 'SELF':
             case 'STRING':
                 $hint = $next[0];
                 break;

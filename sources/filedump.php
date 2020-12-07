@@ -119,7 +119,7 @@ function find_filedump_links(string $focus = '') : array
             if (strpos($field_type, 'LONG_TRANS__COMCODE') !== false) {
                 $query = 'SELECT r.* FROM ' . get_table_prefix() . $table . ' r WHERE 1=1';
                 $_field_name = $GLOBALS['SITE_DB']->translate_field_ref($field_name);
-                if ($GLOBALS['SITE_DB']->has_full_text($GLOBALS['SITE_DB']->connection_read, $table, $field_name)) { // For efficiency, pre-filter via full-text search
+                if ($GLOBALS['SITE_DB']->has_full_text($table, $field_name)) { // For efficiency, pre-filter via full-text search
                     $query .= ' AND ' . preg_replace('#\?#', $_field_name, $GLOBALS['SITE_DB']->full_text_assemble('filedump'));
                 }
                 if ($focus == '') {
