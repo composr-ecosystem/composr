@@ -269,10 +269,10 @@ class LangTokeniser_EN
      * Convert a phrase to a list of words.
      *
      * @param  string $phrase A phrase
-     * @param  integer $total_word_tokens Maintain a count of singular ngrams (word tokens in our case) in here
+     * @param  ?integer $total_word_tokens Maintain a count of singular ngrams (word tokens in our case) in here (null: do not count)
      * @return array List of words
      */
-    protected function phrase_to_word_list(string $phrase, int &$total_word_tokens) : array
+    protected function phrase_to_word_list(string $phrase, ?int &$total_word_tokens) : array
     {
         static $utf = null, $word_regexp = null;
         if ($utf === null) {

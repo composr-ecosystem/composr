@@ -18,7 +18,7 @@
  *
  * @param  array $node The Sitemap node
  */
-function _page_link_to_static($node)
+function _page_link_to_static(array $node)
 {
     $page_link = $node['page_link'];
     if ($page_link === null) {
@@ -130,7 +130,7 @@ function _page_link_to_static($node)
  * @param  string $relative_root Root to replace base URL with
  * @return string Cleaned up HTML
  */
-function static_remove_dynamic_references($data, $relative_root = '')
+function static_remove_dynamic_references(string $data, string $relative_root = '') : string
 {
     $data = str_replace(get_base_url() . '/', $relative_root, $data);
     $data = preg_replace('#<base\s[^>]*href="[^"]*"[^>]*>#', '', $data);
@@ -158,7 +158,7 @@ function static_remove_dynamic_references($data, $relative_root = '')
  * @param  array $matches The matches
  * @return string Replaced string
  */
-function _static_export_scriptrep_callback($matches)
+function _static_export_scriptrep_callback(array $matches) : string
 {
     global $STATIC_EXPORT_TAR;
 
@@ -236,7 +236,7 @@ function _static_export_scriptrep_callback($matches)
  * @param  array $filename The filename
  * @return string The ASCII version
  */
-function _static_export_make_ascii($filename)
+function _static_export_make_ascii(array $filename) : string
 {
     for ($i = 0; $i < strlen($filename); $i++) {
         if ((ord($filename[$i]) < 32) || (ord($filename[$i]) > 127)) {

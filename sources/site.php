@@ -541,6 +541,11 @@ function do_site_prep()
             ) {
                 require_code('permissions');
                 set_http_status_code(301);
+
+                if ($GLOBALS['DEV_MODE']) {
+                    header('Redirect-Reason: Correct URL scheme');
+                }
+
                 header('Location: ' . escape_header(get_self_url(true))); // assign_refresh not used, as it is a pre-page situation
                 exit();
             }
@@ -842,6 +847,11 @@ function process_url_monikers(bool $redirect_if_non_canonical = true, bool $env_
                             set_http_status_code(301);
                             $_new_url = build_url(['page' => '_SELF', 'id' => $correct_moniker], '_SELF', [], true);
                             $new_url = $_new_url->evaluate();
+
+                            if ($GLOBALS['DEV_MODE']) {
+                                header('Redirect-Reason: Corrected moniker');
+                            }
+
                             header('Location: ' . escape_header($new_url)); // assign_refresh not used, as it is a pre-page situation
                             exit();
                         }
@@ -910,6 +920,11 @@ function handle_moniker_deprecation_redirect(string $zone, array $moniker_row, b
                 $_new_url = build_url(['page' => '_SELF', 'id' => $correct_moniker], '_SELF', [], true);
             }
             $new_url = $_new_url->evaluate();
+
+            if ($GLOBALS['DEV_MODE']) {
+                header('Redirect-Reason: Deprecated moniker');
+            }
+
             header('Location: ' . escape_header($new_url)); // assign_refresh not used, as it is a pre-page situation
             exit();
         }

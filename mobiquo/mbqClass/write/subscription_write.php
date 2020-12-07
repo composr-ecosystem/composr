@@ -23,7 +23,7 @@ class CMSSubscriptionWrite
      *
      * @param  AUTO_LINK $forum_id Forum ID
      */
-    public function subscribe_forum($forum_id)
+    public function subscribe_forum(int $forum_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -44,7 +44,7 @@ class CMSSubscriptionWrite
      *
      * @param  ?AUTO_LINK $forum_id Forum ID (null: all)
      */
-    public function unsubscribe_forum($forum_id)
+    public function unsubscribe_forum(?int $forum_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -72,7 +72,7 @@ class CMSSubscriptionWrite
      *
      * @param  AUTO_LINK $topic_id Topic ID
      */
-    public function subscribe_topic($topic_id)
+    public function subscribe_topic(int $topic_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -93,7 +93,7 @@ class CMSSubscriptionWrite
      *
      * @param  ?AUTO_LINK $topic_id Topic ID (null: all)
      */
-    public function unsubscribe_topic($topic_id)
+    public function unsubscribe_topic(?int $topic_id)
     {
         cms_verify_parameters_phpdoc();
 

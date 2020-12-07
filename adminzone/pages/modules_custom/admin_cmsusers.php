@@ -23,7 +23,7 @@ class Module_admin_cmsusers
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -51,7 +51,7 @@ class Module_admin_cmsusers
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('may_feature', [
@@ -92,7 +92,7 @@ class Module_admin_cmsusers
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('composr_homesite')) {
             return null;
@@ -110,7 +110,7 @@ class Module_admin_cmsusers
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -133,7 +133,7 @@ class Module_admin_cmsusers
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('composr_homesite');
         require_code('form_templates');
@@ -150,7 +150,7 @@ class Module_admin_cmsusers
      *
      * @return Tempcode The result of execution
      */
-    public function users()
+    public function users() : object
     {
         $_sort = get_param_string('sort', 'num_hits_per_day DESC');
         list($sort, $dir) = explode(' ', $_sort);

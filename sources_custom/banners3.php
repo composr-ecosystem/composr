@@ -40,7 +40,7 @@
  * @param  integer $views_to The number of banner views to this banners site
  * @param  ?TIME $edit_date The banner edit date (null: never)
  */
-function add_banner_quiet($name, $imgurl, $title_text, $caption, $campaign_remaining, $site_url, $display_likelihood, $notes, $deployment_agreement, $expiry_date, $submitter, $validated = 0, $b_type = '', $time = null, $hits_from = 0, $hits_to = 0, $views_from = 0, $views_to = 0, $edit_date = null)
+function add_banner_quiet(string $name, string $imgurl, string $title_text, string $caption, ?int $campaign_remaining, string $site_url, int $display_likelihood, string $notes, int $deployment_agreement, ?int $expiry_date, ?int $submitter, int $validated = 0, string $b_type = '', ?int $time = null, int $hits_from = 0, int $hits_to = 0, int $views_from = 0, int $views_to = 0, ?int $edit_date = null)
 {
     if (!is_numeric($display_likelihood)) {
         $display_likelihood = 3;

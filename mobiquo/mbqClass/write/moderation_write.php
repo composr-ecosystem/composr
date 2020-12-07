@@ -24,7 +24,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $topic_id Topic ID
      * @return boolean Success status (failure always due to access denied)
      */
-    public function stick_topic($topic_id)
+    public function stick_topic(int $topic_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -43,7 +43,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $topic_id Topic ID
      * @return boolean Success status (failure always due to access denied)
      */
-    public function unstick_topic($topic_id)
+    public function unstick_topic(int $topic_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -62,7 +62,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $topic_id Topic ID
      * @return boolean Success status (failure always due to access denied)
      */
-    public function close_topic($topic_id)
+    public function close_topic(int $topic_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -81,7 +81,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $topic_id Topic ID
      * @return boolean Success status (failure always due to access denied)
      */
-    public function open_topic($topic_id)
+    public function open_topic(int $topic_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -101,7 +101,7 @@ class CMSModerationWrite
      * @param  string $reason Reason for action
      * @return boolean Success status (failure always due to access denied)
      */
-    public function delete_topic($topic_id, $reason = '')
+    public function delete_topic(int $topic_id, string $reason = '') : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -121,7 +121,7 @@ class CMSModerationWrite
      * @param  string $reason Reason for action
      * @return boolean Success status (failure always due to access denied)
      */
-    public function delete_post($post_id, $reason = '')
+    public function delete_post(int $post_id, string $reason = '') : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -145,7 +145,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $to_forum_id Forum ID
      * @return boolean Success status (failure always due to access denied)
      */
-    public function move_topic($topic_id, $to_forum_id)
+    public function move_topic(int $topic_id, int $to_forum_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -166,7 +166,7 @@ class CMSModerationWrite
      * @param  string $new_title New title
      * @return boolean Success status (failure always due to access denied)
      */
-    public function rename_topic($topic_id, $new_title)
+    public function rename_topic(int $topic_id, string $new_title) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -188,7 +188,7 @@ class CMSModerationWrite
      * @param  ?AUTO_LINK $forum_id Forum ID (null: moving to existing topic)
      * @return ~AUTO_LINK ID of topic the posts have gone to (false: failure due to access denied)
      */
-    public function move_posts($posts, $to_topic_id, $new_topic_title, $forum_id)
+    public function move_posts(array $posts, ?int $to_topic_id, ?string $new_topic_title, ?int $forum_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -228,7 +228,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $to_topic_id Second topic
      * @return boolean Success status (failure always due to access denied)
      */
-    public function merge_topics($from_topic_id, $to_topic_id)
+    public function merge_topics(int $from_topic_id, int $to_topic_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -256,7 +256,7 @@ class CMSModerationWrite
      * @param  AUTO_LINK $target_post_id Target post IDs
      * @return boolean Success status (failure always due to access denied)
      */
-    public function merge_posts($source_post_ids, $target_post_id)
+    public function merge_posts(array $source_post_ids, int $target_post_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -310,7 +310,7 @@ class CMSModerationWrite
      * @param  boolean $approve True=Approve, False=Unapprove
      * @return boolean Success status (failure always due to access denied)
      */
-    public function approve_topic($topic_id, $approve)
+    public function approve_topic(int $topic_id, bool $approve) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -337,7 +337,7 @@ class CMSModerationWrite
      * @param  boolean $approve True=Approve, False=Unapprove
      * @return boolean Success status (failure always due to access denied)
      */
-    public function approve_post($post_id, $approve)
+    public function approve_post(int $post_id, bool $approve) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -378,7 +378,7 @@ class CMSModerationWrite
      * @param  ?integer $expires When probation should expire in days from now (null: permanent ban, not probation)
      * @return boolean Success status (failure always due to access denied)
      */
-    public function ban_user($username, $delete_all_posts = false, $reason = '', $expires = null)
+    public function ban_user(string $username, bool $delete_all_posts = false, string $reason = '', ?int $expires = null) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -442,7 +442,7 @@ class CMSModerationWrite
      * @param  MEMBER $user_id Member to unban
      * @return boolean Success status (failure always due to access denied)
      */
-    public function unban_user($user_id)
+    public function unban_user(int $user_id) : bool
     {
         cms_verify_parameters_phpdoc();
 
@@ -482,7 +482,7 @@ class CMSModerationWrite
      * @param  MEMBER $user_id Member to mark as a spammer
      * @return boolean Success status (failure always due to access denied)
      */
-    public function mark_as_spam($user_id)
+    public function mark_as_spam(int $user_id) : bool
     {
         cms_verify_parameters_phpdoc();
 

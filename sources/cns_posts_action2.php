@@ -245,11 +245,11 @@ function cns_send_topic_notification(string $url, int $topic_id, int $post_id, i
  * @param  ?AUTO_LINK $last_post_id The ID of the last post in the topic (null: unknown)
  * @param  ?TIME $last_time The time of the last post in the topic (null: unknown)
  * @param  ?string $last_title The title of the last post in the topic (null: unknown)
- * @param  ?AUTO_LINK $last_post The ID of the last post's content language string for the topic (null: unknown)
+ * @param  ?mixed $last_post The ID of the last post's content language string for the topic (null: unknown)
  * @param  ?string $last_username The last username to post in the topic (null: unknown)
  * @param  ?MEMBER $last_member_id The ID of the last member to post in the topic (null: unknown)
  */
-function cns_force_update_topic_caching(int $topic_id, ?int $post_count_dif = null, bool $last = true, bool $first = false, ?int $last_post_id = null, ?int $last_time = null, ?string $last_title = null, ?int $last_post = null, ?string $last_username = null, ?int $last_member_id = null)
+function cns_force_update_topic_caching(int $topic_id, ?int $post_count_dif = null, bool $last = true, bool $first = false, ?int $last_post_id = null, ?int $last_time = null, ?string $last_title = null, $last_post = null, ?string $last_username = null, ?int $last_member_id = null)
 {
     $first_title = '';
     if ($last_post_id === null) {

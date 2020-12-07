@@ -28,10 +28,10 @@ class Hook_commandr_command_set_comment_forum
      *
      * @param  array $options The options with which the command was called
      * @param  array $parameters The parameters with which the command was called
-     * @param  array $commandr_fs A reference to the Commandr filesystem object
+     * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run(array $options, array $parameters, array &$commandr_fs) : array
+    public function run(array $options, array $parameters, object &$commandr_fs) : array
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('set_comment_forum', ['h'], [true, true, true]), '', ''];

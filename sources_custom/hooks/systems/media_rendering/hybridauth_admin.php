@@ -40,7 +40,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
      *
      * @return string The label
      */
-    public function get_type_label()
+    public function get_type_label() : string
     {
         return 'Hybridauth';
     }
@@ -50,7 +50,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
      *
      * @return integer The media type(s), as a bitmask
      */
-    public function get_media_type()
+    public function get_media_type() : int
     {
         return MEDIA_TYPE_OTHER;
     }
@@ -62,7 +62,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
      * @param  ?array $meta_details The media signature, so we can go on this on top of the mime-type (null: not known)
      * @return integer Recognition precedence
      */
-    public function recognises_mime_type($mime_type, $meta_details = null)
+    public function recognises_mime_type(string $mime_type, ?array $meta_details = null) : int
     {
         return MEDIA_RECOG_PRECEDENCE_NONE;
     }
@@ -73,7 +73,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
      * @param  URLPATH $url URL to pattern match
      * @return integer Recognition precedence
      */
-    public function recognises_url($url)
+    public function recognises_url(string $url) : int
     {
         if (!addon_installed('hybridauth')) {
             return MEDIA_RECOG_PRECEDENCE_NONE;
@@ -147,7 +147,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
      * @param  ?MEMBER $source_member Member to run as (null: current member)
      * @return Tempcode Rendered version
      */
-    public function render($url, $url_safe, $attributes, $as_admin = false, $source_member = null)
+    public function render($url, $url_safe, array $attributes, bool $as_admin = false, ?int $source_member = null) : object
     {
         $this->hybridauth_scan($url);
 

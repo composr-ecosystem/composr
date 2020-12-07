@@ -99,7 +99,7 @@ PHP;
 
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('calendar');
 
-        $filter_map = array_key_exists('filter', $map) ? explode(',', $map['filter']) : null;
+        $filter_map = array_key_exists('filter', $map) ? explode(',', $map['filter']) : array();
 
         $private = ((array_key_exists('private', $map)) && ($map['private'] != '')) ? intval($map['private']) : null;
 

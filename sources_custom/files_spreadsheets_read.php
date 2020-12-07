@@ -18,7 +18,7 @@
  *
  * @return string A comma-separated list of supported file types
  */
-function spreadsheet_read_file_types()
+function spreadsheet_read_file_types() : string
 {
     if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
         return non_overridden__spreadsheet_read_file_types();
@@ -37,7 +37,7 @@ function spreadsheet_read_file_types()
  * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
  * @return object A subclass of CMS_Spreadsheet_Reader
  */
-function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = true, $default_charset = '')
+function spreadsheet_open_read(string $path, ?string $filename = null, int $algorithm = 3, bool $trim = true, ?string $default_charset = '') : object
 {
     if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
         return non_overridden__spreadsheet_open_read($path, $filename, $algorithm, $trim, $default_charset);

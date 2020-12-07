@@ -41,7 +41,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('booking')) {
             return null;
@@ -113,7 +113,7 @@ class Module_cms_booking extends Standard_crud_module
      *
      * @return array A map of privileges that are overridable; privilege to 0 or 1. 0 means "not category overridable". 1 means "category overridable".
      */
-    public function get_privilege_overrides()
+    public function get_privilege_overrides() : array
     {
         require_lang('booking');
         return ['submit_cat_highrange_content' => [0, 'ADD_BOOKABLE'], 'edit_cat_highrange_content' => [0, 'EDIT_BOOKABLE'], 'delete_cat_highrange_content' => [0, 'DELETE_BOOKABLE']];
@@ -128,7 +128,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('booking', $error_msg)) {
@@ -181,7 +181,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -214,7 +214,7 @@ class Module_cms_booking extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         return booking_do_next();
     }
@@ -225,7 +225,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -297,7 +297,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  array $codes List of codes
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($details = null, $supplements = [], $blacks = [], $codes = [])
+    public function get_form_fields(?array $details = null, array $supplements = [], array $blacks = [], array $codes = []) : array
     {
         if ($details === null) {
             $max_sort_order = $GLOBALS['SITE_DB']->query_select_value('bookable', 'MAX(sort_order)');
@@ -390,7 +390,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -412,7 +412,7 @@ class Module_cms_booking extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list($bookable_details, $codes, $blacked, $supplements) = get_bookable_details_from_form();
 
@@ -427,7 +427,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -443,7 +443,7 @@ class Module_cms_booking extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -458,7 +458,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return booking_do_next();
     }
@@ -486,7 +486,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -546,7 +546,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  array $bookables List of bookables this is for
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($details = null, $bookables = [])
+    public function get_form_fields(?array $details = null, array $bookables = []) : array
     {
         if ($details === null) {
             $max_sort_order = $GLOBALS['SITE_DB']->query_select_value('bookable_supplement', 'MAX(sort_order)');
@@ -598,7 +598,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -618,7 +618,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list($details, $bookables) = get_bookable_supplement_details_from_form();
 
@@ -633,7 +633,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -649,7 +649,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -664,7 +664,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return booking_do_next();
     }
@@ -692,7 +692,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -752,7 +752,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  array $bookables List of bookables this is for
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($details = null, $bookables = [])
+    public function get_form_fields(?array $details = null, array $bookables = []) : array
     {
         if ($details === null) {
             $details = [
@@ -792,7 +792,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         $id = intval($_id);
 
@@ -812,7 +812,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         list($details, $bookables) = get_bookable_blacked_details_from_form();
 
@@ -827,7 +827,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -843,7 +843,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 
@@ -858,7 +858,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return booking_do_next();
     }
@@ -893,7 +893,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ?integer $max Maximum to show (null: standard)
      * @return array A pair: Rows for selection from, Total results
      */
-    public function get_entry_rows($recache = false, $orderer = null, $where = [], $force_site_db = false, $join = '', $max = null)
+    public function get_entry_rows(bool $recache = false, ?string $orderer = null, ?array $where = [], bool $force_site_db = false, string $join = '', ?int $max = null) : array
     {
         if ((!$recache) && ($orderer !== null) && (!empty($where))) {
             if (isset($this->cached_entry_rows)) {
@@ -961,7 +961,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         attach_message(do_lang_tempcode('EASIER_TO_EDIT_BOOKING_VIA_MEMBER'), 'inform', true);
 
@@ -1036,7 +1036,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ?MEMBER $member_id Who the booking is for (null: current member)
      * @return mixed Either Tempcode; or a tuple: the input fields, hidden fields
      */
-    public function get_form_fields($details = null, $member_id = null)
+    public function get_form_fields(?array $details = null, ?int $member_id = null)
     {
         $hidden = new Tempcode();
 
@@ -1149,7 +1149,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($_id)
+    public function fill_in_edit_form(string $_id)
     {
         if (get_option('member_booking_only') == '0') {
             $request = get_booking_request_from_db([intval($_id)]);
@@ -1166,7 +1166,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         if (get_option('member_booking_only') == '1') {
             $username = post_param_string('username');
@@ -1244,7 +1244,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         if (get_option('member_booking_only') == '0') {
             $old_request = get_booking_request_from_db([intval($_id)]);
@@ -1276,7 +1276,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         if (get_option('member_booking_only') == '0') {
             $request = get_booking_request_from_db([intval($_id)]);
@@ -1299,7 +1299,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function do_next_manager(object $title, object $description, ?string $id = null) : object
     {
         return booking_do_next();
     }

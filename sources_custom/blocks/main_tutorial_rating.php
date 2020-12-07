@@ -23,7 +23,7 @@ class Block_main_tutorial_rating
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -42,7 +42,7 @@ class Block_main_tutorial_rating
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 

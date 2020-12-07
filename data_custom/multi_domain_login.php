@@ -41,7 +41,7 @@ imagedestroy($img);
  *
  * @return string The session ID cookie's name
  */
-function get_session_cookie()
+function get_session_cookie() : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['session_cookie'])) {
@@ -55,7 +55,7 @@ function get_session_cookie()
  *
  * @return ?string The Composr cookie path (null: no special path, global)
  */
-function get_cookie_path()
+function get_cookie_path() : ?string
 {
     global $SITE_INFO;
     $ret = array_key_exists('cookie_path', $SITE_INFO) ? $SITE_INFO['cookie_path'] : '/';

@@ -35,7 +35,7 @@ function init__weather()
  * @param  ?string $api The API to use (null: first available)
  * @return ?array A pair: Weather API current conditions in standardised simple format, Weather API forecast in standardised simple format (null: not available)
  */
-function weather_lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, $api = null)
+function weather_lookup(?string $location_search = null, ?float $latitude = null, ?float $longitude = null, string $units = 'metric', ?int $max_days = null, ?string $api = null) : ?array
 {
     if ($location_search === '') {
         $location_search = null;

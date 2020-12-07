@@ -243,9 +243,9 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @param  ID_TEXT $table_name The name of the table to create the index on
      * @param  array $new_key A list of fields to put in the new key
-     * @param  array $db The DB connection to make on
+     * @param  mixed $db The DB connection to make on
      */
-    public function change_primary_key(string $table_name, array $new_key, array $db)
+    public function change_primary_key(string $table_name, array $new_key, $db)
     {
         $this->query('UPDATE db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name), $db);
         foreach ($new_key as $_new_key) {
@@ -516,7 +516,7 @@ class Database_Static_xml extends DatabaseDriver
      * This function is a very basic query executor. It shouldn't usually be used by you, as there are abstracted versions available.
      *
      * @param  string $query The complete SQL query
-     * @param  array $db The DB connection
+     * @param  mixed $db The DB connection
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
@@ -524,7 +524,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query(string $query, array $db, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false, bool $save_as_volatile = false)
+    public function query(string $query, $db, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false, bool $save_as_volatile = false)
     {
         global $DELIMITERS_FLIPPED, $DELIMITERS, $SYMBOL_DELIMITER;
 

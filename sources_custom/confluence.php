@@ -240,7 +240,7 @@ function create_selection_list_confluence($selected_page_id = null, $under = nul
  * @param  boolean $no_link_for_me_sir Whether to include category links at this level (the recursed levels will always contain links - the top level is optional, hence this parameter)
  * @return ?array The breadcrumb segments (null: lost)
  */
-function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
+function confluence_breadcrumbs(int $page_id, bool $no_link_for_me_sir = true) : ?array
 {
     $mappings = confluence_get_mappings();
 

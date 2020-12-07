@@ -26,7 +26,7 @@ class CMSUserRead
      * @param  MEMBER $user_id Member ID
      * @return array Details
      */
-    public function get_user_details($user_id)
+    public function get_user_details(int $user_id) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -95,7 +95,7 @@ class CMSUserRead
      * @set can_pm can_send_pm can_moderate can_search can_profile can_upload_avatar max_avatar_width max_avatar_height max_attachment allowed_extensions max_attachment_size max_png_size max_jpg_size post_countdown
      * @return mixed Setting value
      */
-    public function get_posting_setting($user_id, $type)
+    public function get_posting_setting(int $user_id, string $type)
     {
         switch ($type) {
             case 'can_pm':
@@ -139,7 +139,7 @@ class CMSUserRead
      * @param  MEMBER $user_id Member ID
      * @return array List of member IDs
      */
-    public function get_ignored_user_ids($user_id)
+    public function get_ignored_user_ids(int $user_id) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -165,7 +165,7 @@ class CMSUserRead
      *
      * @return array Basic stats
      */
-    public function get_inbox_stats()
+    public function get_inbox_stats() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -193,7 +193,7 @@ class CMSUserRead
      * @set forum topic
      * @return array List of online members
      */
-    public function get_online_users($start, $max, $id, $area)
+    public function get_online_users(int $start, int $max, ?string $id, ?string $area) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -263,7 +263,7 @@ class CMSUserRead
      * @param  MEMBER $user_id Member ID
      * @return array Details
      */
-    public function get_user_info($user_id)
+    public function get_user_info(int $user_id) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -408,7 +408,7 @@ class CMSUserRead
      * @param  boolean $i_follow Whether it is friends that member has (otherwise it is people who have friended that member)
      * @return integer Total
      */
-    private function get_member_follow_count($user_id, $i_follow = true)
+    private function get_member_follow_count(int $user_id, bool $i_follow = true) : int
     {
         if (!addon_installed('chat')) {
             return 0;
@@ -427,7 +427,7 @@ class CMSUserRead
      * @param  integer $max Maximum results
      * @return array Topics
      */
-    public function get_user_topics($user_id, $max)
+    public function get_user_topics(int $user_id, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -459,7 +459,7 @@ class CMSUserRead
      * @param  integer $max Maximum results
      * @return array Posts
      */
-    public function get_user_reply_posts($user_id, $max)
+    public function get_user_reply_posts(int $user_id, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -492,7 +492,7 @@ class CMSUserRead
      * @param  integer $max Maximum results
      * @return array A pair: total, members
      */
-    public function get_recommended_users($start, $max)
+    public function get_recommended_users(int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -517,7 +517,7 @@ class CMSUserRead
      * @param  integer $max Maximum results
      * @return array A pair: total members, members
      */
-    public function get_search_users($keywords, $start, $max)
+    public function get_search_users(string $keywords, int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -539,7 +539,7 @@ class CMSUserRead
      * @param  array $user_ids Member IDs
      * @return array List of contact details
      */
-    public function get_contact($user_ids)
+    public function get_contact(array $user_ids) : array
     {
         cms_verify_parameters_phpdoc();
 

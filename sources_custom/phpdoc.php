@@ -51,7 +51,7 @@ function init__phpdoc()
  * @param  boolean $writeback Whether to write in PHP type hinting from the phpdoc, if it is missing
  * @return array The complex structure of API information
  */
-function get_php_file_api($filename, $include_code = false, $pedantic_warnings = false, $writeback = false)
+function get_php_file_api(string $filename, bool $include_code = false, bool $pedantic_warnings = false, bool $writeback = false) : array
 {
     require_code('type_sanitisation');
 
@@ -545,7 +545,7 @@ function get_php_file_api($filename, $include_code = false, $pedantic_warnings =
  * @param  string $_line The line
  * @return array A pair: (function name, parameters), where parameters is a list of maps detailing each parameter
  */
-function _read_php_function_line($_line)
+function _read_php_function_line(string $_line) : array
 {
     $function_name = '';
     $parameters = [];
@@ -829,7 +829,7 @@ function _read_php_function_line($_line)
  * @param  array $in List of strings
  * @return array List of strings, with blank strings removed
  */
-function _cleanup_array($in)
+function _cleanup_array(array $in) : array
 {
     $out = [];
     foreach ($in as $bit) {
@@ -844,7 +844,7 @@ function _cleanup_array($in)
  * Type-check the specified parameter (giving an error if the type checking fails) [all checks].
  *
  * @param  ID_TEXT $phpdoc_type The parameter type according to phpdoc
- * @param  ID_TEXT $php_type The PHP type hint
+ * @param  ?ID_TEXT $php_type The PHP type hint (null: unknown)
  * @param  boolean $php_type_nullable Whether the PHP type is nullable
  * @param  string $function_name The functions name (used in error message)
  * @param  string $name The parameter name (used in error message)
@@ -853,7 +853,7 @@ function _cleanup_array($in)
  * @param  ?string $set The string of value set limitation for the parameter (null: no set constraint)
  * @param  ?string $funcdef_line The line of code the function was defined on (null: don't do write-back)
  */
-function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_nullable, $function_name, $name, $value, $range, $set, $funcdef_line)
+function check_function_parameter_typing(string $phpdoc_type, ?string $php_type, bool $php_type_nullable, string $function_name, string $name, $value, ?string $range, ?string $set, ?string $funcdef_line)
 {
     $funcdef_line_new = $funcdef_line;
 
@@ -1034,7 +1034,7 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
  * @param  string $name The parameter name (used in error message)
  * @param  mixed $value The parameters value (cannot be null)
  */
-function test_value_matches_type($phpdoc_type, $function_name, $name, $value)
+function test_value_matches_type(string $phpdoc_type, string $function_name, string $name, $value)
 {
     $null_allowed = (strpos($phpdoc_type, '?') !== false);
     $false_allowed = (strpos($phpdoc_type, '~') !== false);
@@ -1189,7 +1189,7 @@ function test_value_matches_type($phpdoc_type, $function_name, $name, $value)
  * @param  string $name The parameter name involved
  * @param  string $value The value involved
  */
-function _fail_test_value_matches_type($phpdoc_type, $function_name, $name, $value)
+function _fail_test_value_matches_type(string $phpdoc_type, string $function_name, string $name, string $value)
 {
     $str = 'A type value (' . (is_string($value) ? $value : strval($value)) . ') was used with the function ' . $function_name . ' (parameter ' . $name . '), causing a type mismatch error';
     attach_message($str, 'warn');

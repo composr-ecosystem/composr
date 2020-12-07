@@ -65,7 +65,7 @@ function booking_price_ajax_script()
  * @param  array $ignore_bookings Existing bookings to ignore (presumably the booking we're trying to make - if this is an edit)
  * @return ?Tempcode Error message (null: no issue)
  */
-function check_booking_dates_available(&$request, $ignore_bookings)
+function check_booking_dates_available(array &$request, array $ignore_bookings) : ?object
 {
     $success = null;
     foreach ($request as $i => $part) {
@@ -88,7 +88,7 @@ function check_booking_dates_available(&$request, $ignore_bookings)
  * @param  string $prefix The prefix for defining what to read in
  * @return string The notes
  */
-function read_booking_notes_from_form($prefix)
+function read_booking_notes_from_form(string $prefix) : string
 {
     // Read in notes. We have a special post parameter syntax for defining structured notes (custom fields on the form), so that we can allow webmasters to take some rich input
     $notes = post_param_string($prefix, '');
@@ -110,7 +110,7 @@ function read_booking_notes_from_form($prefix)
  *
  * @return array Booking details structure
  */
-function get_booking_request_from_form()
+function get_booking_request_from_form() : array
 {
     $request = [];
 
@@ -192,7 +192,7 @@ function get_booking_request_from_form()
  * @param  ?MEMBER $member_id The member ID we are saving as (null: current user)
  * @return ?array Booking details structure (null: error -- reshow form)
  */
-function save_booking_form_to_db($request, $ignore_bookings, $member_id = null)
+function save_booking_form_to_db(array $request, array $ignore_bookings, ?int $member_id = null) : ?array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -222,7 +222,7 @@ function save_booking_form_to_db($request, $ignore_bookings, $member_id = null)
  * @param  MEMBER $member_id Member ID being added against
  * @return array Booking details structure
  */
-function add_booking($request, $member_id)
+function add_booking(array $request, int $member_id) : array
 {
     foreach ($request as $rid => $req) {
         $days = days_in_range($req['start_day'], $req['start_month'], $req['start_year'], $req['end_day'], $req['end_month'], $req['end_year']);
@@ -288,7 +288,7 @@ function add_booking($request, $member_id)
  * @param  ID_TEXT $preferred_code Preferred code (often passed in as the last code provided, in order to provide continuity to guests)
  * @return ?ID_TEXT The code (null: could not find a code)
  */
-function find_free_bookable_code($bookable_id, $day, $month, $year, $preferred_code)
+function find_free_bookable_code(int $bookable_id, int $day, int $month, int $year, string $preferred_code) : ?string
 {
     $_available = $GLOBALS['SITE_DB']->query_select('bookable_codes a LEFT JOIN ' . get_table_prefix() . 'booking b ON a.code=b.code_allocation AND a.bookable_id=b.bookable_id AND b.b_day=' . strval($day) . ' AND b.b_month=' . strval($month) . ' AND b.b_year=' . strval($year), ['code'], ['b.id' => null, 'a.bookable_id' => $bookable_id]);
     $available = collapse_1d_complexity('code', $_available);
@@ -308,7 +308,7 @@ function find_free_bookable_code($bookable_id, $day, $month, $year, $preferred_c
  * @param  AUTO_LINK $id Booking row ID
  * @return ID_TEXT Re-constituted booking ID
  */
-function find_booking_under($member_id, $id)
+function find_booking_under(int $member_id, int $id) : string
 {
     if (get_option('member_booking_only') == '0') {
         return strval($id);
@@ -332,7 +332,7 @@ function find_booking_under($member_id, $id)
  * @param  array $request Booking details structure to check
  * @return REAL The price
  */
-function find_booking_price($request)
+function find_booking_price(array $request) : float
 {
     $price = 0.0;
 
@@ -365,7 +365,7 @@ function find_booking_price($request)
  * @param  AUTO_LINK $bookable_id Bookable ID
  * @return REAL Price
  */
-function find_bookable_price($bookable_id)
+function find_bookable_price(int $bookable_id) : float
 {
     return $GLOBALS['SITE_DB']->query_select_value('bookable', 'price', ['id' => $bookable_id]);
 }
@@ -381,7 +381,7 @@ function find_bookable_price($bookable_id)
  * @param  integer $end_year Year (end)
  * @return array List of days
  */
-function days_in_range($start_day, $start_month, $start_year, $end_day, $end_month, $end_year)
+function days_in_range(int $start_day, int $start_month, int $start_year, int $end_day, int $end_month, int $end_year) : array
 {
     $start_date = mktime(0, 0, 0, $start_month, $start_day, $start_year);
     $end_date = mktime(0, 0, 0, $end_month, $end_day, $end_year);
@@ -409,7 +409,7 @@ function days_in_range($start_day, $start_month, $start_year, $end_day, $end_mon
  * @param  array $ignore_bookings Existing bookings to ignore (presumably the booking we're trying to make - if this is an edit)
  * @return ?Tempcode Error message (null: no issue)
  */
-function booking_date_available($bookable_id, $day, $month, $year, $quantity, $ignore_bookings)
+function booking_date_available(int $bookable_id, int $day, int $month, int $year, int $quantity, array $ignore_bookings) : ?object
 {
     $asked = mktime(0, 0, 0, $month, $day, $year);
 
@@ -471,7 +471,7 @@ function booking_date_available($bookable_id, $day, $month, $year, $quantity, $i
  *
  * @param  array $request Booking details structure
  */
-function send_booking_emails($request)
+function send_booking_emails(array $request)
 {
     require_code('notifications');
 
@@ -527,7 +527,7 @@ function send_booking_emails($request)
  * @param  array $request Booking details structure
  * @return array Printable booking details structure
  */
-function make_booking_request_printable($request)
+function make_booking_request_printable(array $request) : array
 {
     $out = [];
 

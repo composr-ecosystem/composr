@@ -157,9 +157,10 @@ class Database_Static_oracle extends DatabaseDriver
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false)
+    public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false, bool $save_as_volatile = false)
     {
         $this->apply_sql_limit_clause($query, $max, $start);
 

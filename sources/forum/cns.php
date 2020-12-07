@@ -326,13 +326,17 @@ class Forum_driver_cns extends Forum_driver_base
     /**
      * Find whether a forum is threaded.
      *
-     * @param  integer $topic_id The topic ID
+     * @param  ?integer $topic_id The topic ID (null: default / from environment)
      * @return boolean Whether it is
      */
-    public function topic_is_threaded(int $topic_id) : bool
+    public function topic_is_threaded(?int $topic_id) : bool
     {
         if (get_param_integer('threaded', null) === 1) {
             return true;
+        }
+
+        if ($topic_id === null) {
+            return false;
         }
 
         global $TOPIC_IS_THREADED_CACHE;
@@ -1122,7 +1126,11 @@ class Forum_driver_cns extends Forum_driver_base
         if (get_option('member_email_receipt_configurability') == '0') {
             return true;
         }
-        return $this->get_member_row_field($member, 'm_allow_emails');
+        $ret = $this->get_member_row_field($member, 'm_allow_emails');
+        if ($ret === null) {
+            $ret = false;
+        }
+        return $ret == 1;
     }
 
     /**

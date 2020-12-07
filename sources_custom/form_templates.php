@@ -25,7 +25,7 @@
  * @param  ?string $custom_value Value for custom value (null: no custom value known)
  * @return Tempcode The input field
  */
-function form_input_various_ticks($options, $description, $_tabindex = null, $_pretty_name = '', $simple_style = false, $custom_name = null, $custom_value = null)
+function form_input_various_ticks(array $options, $description, ?int $_tabindex = null, $_pretty_name = '', bool $simple_style = false, ?string $custom_name = null, ?string $custom_value = null) : object
 {
     if (!addon_installed('workflows') || !addon_installed('unvalidated')) {
         return non_overridden__form_input_various_ticks($options, $description, $_tabindex, $_pretty_name, $simple_style, $custom_name, $custom_value);

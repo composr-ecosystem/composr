@@ -32,7 +32,7 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
      * @param  boolean $trim Whether to trim each cell
      * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
      */
-    public function __construct($path, $filename, $algorithm = 3, $trim = true, $default_charset = '')
+    public function __construct(string $path, string $filename, int $algorithm = 3, bool $trim = true, ?string $default_charset = '')
     {
         require_code('spout/Autoloader/autoload');
 

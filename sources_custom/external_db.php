@@ -43,9 +43,9 @@ set_value('external_login_url', '?', true); // Optional
 /**
  * Get a connection to the external user database.
  *
- * @return object Database driver
+ * @return ?object Database driver (null: none)
  */
-function external_db()
+function external_db() : ?object
 {
     $db_type = get_value('external_db_login__db_type', null, true);
     if ($db_type === null) {
@@ -68,7 +68,7 @@ function external_db()
  *
  * @return ?array User record for session (null: none)
  */
-function external_db_user_from_session()
+function external_db_user_from_session() : ?array
 {
     $coookie_session_name = get_value('external_db_login__session_name', null, true);
     if (@cms_empty_safe($_COOKIE[$coookie_session_name])) {
@@ -105,7 +105,7 @@ function external_db_user_from_session()
  * @param  MEMBER $member_id Authorised member
  * @param  array $record User record to sync
  */
-function external_db_user_sync($member_id, $record)
+function external_db_user_sync(int $member_id, array $record)
 {
     $username_field = get_value('external_db_login__username_field', null, true);
     $password_field = get_value('external_db_login__password_field', null, true);
@@ -147,7 +147,7 @@ function external_db_user_sync($member_id, $record)
  * @param  array $record User record to import
  * @return MEMBER Authorised member
  */
-function external_db_user_add($record)
+function external_db_user_add(array $record) : int
 {
     require_code('cns_members_action2');
 

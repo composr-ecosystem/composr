@@ -25,7 +25,7 @@ http://gggeek.github.io/phpxmlrpc/doc-2/
  *
  * @param  string $method Method name
  */
-function call_mobiquo_test($method)
+function call_mobiquo_test(string $method)
 {
     $mobiquo = basename(dirname(__DIR__));
 
@@ -52,7 +52,7 @@ function call_mobiquo_test($method)
  * @param  ?string $username Username to run with (null: guest)
  * @return mixed Result (as PHP types)
  */
-function mobiquo_xmlrpc_simple_call($method, $params, $username = null)
+function mobiquo_xmlrpc_simple_call(string $method, array $params, ?string $username = null)
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
@@ -96,7 +96,7 @@ function mobiquo_xmlrpc_simple_call($method, $params, $username = null)
  * @param  ?array $files Uploads (map of parameter name to file path on disk) (null: none)
  * @return mixed Result (as raw result string, or processed, depending on context)
  */
-function mobiquo_post_simple_call($method, $params, $username = null, $files = null)
+function mobiquo_post_simple_call(string $method, array $params, ?string $username = null, ?array $files = null)
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
@@ -135,7 +135,7 @@ function mobiquo_post_simple_call($method, $params, $username = null, $files = n
  * @param  ?string $username Username to run with (null: guest)
  * @return mixed Result (as raw result string)
  */
-function mobiquo_json_simple_call($method, $params, $username = null)
+function mobiquo_json_simple_call(string $method, array $params, ?string $username = null)
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 

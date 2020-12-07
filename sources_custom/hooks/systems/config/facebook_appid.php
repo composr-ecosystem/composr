@@ -23,7 +23,7 @@ class Hook_config_facebook_appid
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'FACEBOOK_APPID',
@@ -46,7 +46,7 @@ class Hook_config_facebook_appid
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('facebook_support')) {
             return null;

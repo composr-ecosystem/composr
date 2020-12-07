@@ -23,7 +23,7 @@ class Hook_config_support_priority_regular_minutes
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SUPPORT_PRIORITY_REGULAR_MINUTES',
@@ -46,7 +46,7 @@ class Hook_config_support_priority_regular_minutes
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('composr_homesite_support_credits')) {
             return null;

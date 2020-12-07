@@ -68,7 +68,7 @@ class standard_dir_files_test_set extends cms_test_case
             '8a55e7d3c6651736659f3bc5959c16dd' => true,
             '8a7c42d7083b00b153df228e1700c60a' => true,
             '8ce63a764e2f9e6ec2cca2aa511197dd' => true,
-            '97656c6f2c60873d55a421cd762fac00' => true,
+            '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true,
             'de9b5b7778090cf4376839b6aebb9f45' => true,
             'e829b8bdcef68c92b0926288106048b6' => true,
             '19a8c8adbb99cac491544ba444ab9541' => true,

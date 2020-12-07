@@ -23,7 +23,7 @@ class Module_admin_customers
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -91,7 +91,7 @@ class Module_admin_customers
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if (get_forum_type() != 'cns') {
             return; // Conversr only
@@ -606,7 +606,7 @@ class Module_admin_customers
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('composr_homesite_support_credits')) {
             return null;
@@ -628,7 +628,7 @@ class Module_admin_customers
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -670,7 +670,7 @@ class Module_admin_customers
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         $type = get_param_string('type', 'browse');
 
@@ -692,7 +692,7 @@ class Module_admin_customers
      *
      * @return Tempcode The UI
      */
-    public function charge()
+    public function charge() : object
     {
         if (get_forum_type() != 'cns') {
             warn_exit(do_lang_tempcode('NO_CNS'));
@@ -778,7 +778,7 @@ class Module_admin_customers
      *
      * @return Tempcode The UI
      */
-    public function _charge()
+    public function _charge() : object
     {
         $username = post_param_string('member_username');
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);

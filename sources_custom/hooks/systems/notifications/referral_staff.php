@@ -25,7 +25,7 @@ class Hook_notification_referral_staff extends Hook_notification__Staff
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
      * @return integer Initial setting
      */
-    public function get_initial_setting($notification_code, $category = null)
+    public function get_initial_setting(string $notification_code, ?string $category = null) : int
     {
         return A_NA;
     }
@@ -36,7 +36,7 @@ class Hook_notification_referral_staff extends Hook_notification__Staff
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         if (!addon_installed('referrals')) {
             return [];

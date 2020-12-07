@@ -33,7 +33,7 @@ class CMSSearchRead
      * @param  ?array $not_in Not in these forums (null: no filter)
      * @return array A pair: total topics, topics
      */
-    public function search_topics($keywords, $start, $max, $userid = null, $searchuser = null, $forumid = null, $titleonly = false, $searchtime = null, $only_in = null, $not_in = null)
+    public function search_topics(string $keywords, int $start, int $max, ?int $userid = null, ?string $searchuser = null, ?int $forumid = null, ?bool $titleonly = false, ?int $searchtime = null, ?array $only_in = null, ?array $not_in = null) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -166,7 +166,7 @@ class CMSSearchRead
      * @param  ?array $not_in Not in these forums (null: no filter)
      * @return array A pair: total topics, topics
      */
-    public function search_posts($keywords, $start, $max, $userid = null, $searchuser = null, $forumid = null, $topicid = null, $searchtime = null, $only_in = null, $not_in = null)
+    public function search_posts(string $keywords, int $start, int $max, ?int $userid = null, ?string $searchuser = null, ?int $forumid = null, ?int $topicid = null, ?int $searchtime = null, ?array $only_in = null, ?array $not_in = null) : array
     {
         cms_verify_parameters_phpdoc();
 

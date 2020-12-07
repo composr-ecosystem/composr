@@ -25,7 +25,7 @@ class CMSModerationRead
      * @param  integer $max Max
      * @return ~array A pair: total topics, topics (false: error)
      */
-    public function get_topics_needing_moderation($start, $max)
+    public function get_topics_needing_moderation(int $start, int $max)
     {
         cms_verify_parameters_phpdoc();
 
@@ -66,7 +66,7 @@ class CMSModerationRead
      * @param  integer $max Max
      * @return ~array A pair: total posts, posts (false: error)
      */
-    public function get_posts_needing_moderation($start, $max)
+    public function get_posts_needing_moderation(int $start, int $max)
     {
         cms_verify_parameters_phpdoc();
 

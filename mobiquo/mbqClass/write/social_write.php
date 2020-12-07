@@ -23,7 +23,7 @@ class CMSSocialWrite
      *
      * @param  AUTO_LINK $post_id Post ID
      */
-    public function thank_post($post_id)
+    public function thank_post(int $post_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -59,7 +59,7 @@ class CMSSocialWrite
      *
      * @param  MEMBER $user_id Member to set on
      */
-    public function follow($user_id)
+    public function follow(int $user_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -80,7 +80,7 @@ class CMSSocialWrite
      *
      * @param  MEMBER $user_id Member to remove on
      */
-    public function unfollow($user_id)
+    public function unfollow(int $user_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -101,7 +101,7 @@ class CMSSocialWrite
      *
      * @param  AUTO_LINK $post_id Post ID
      */
-    public function like_post($post_id)
+    public function like_post(int $post_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -113,7 +113,7 @@ class CMSSocialWrite
      *
      * @param  AUTO_LINK $post_id Post ID
      */
-    public function unlike_post($post_id)
+    public function unlike_post(int $post_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -126,7 +126,7 @@ class CMSSocialWrite
      * @param  AUTO_LINK $post_id Post ID
      * @param  ?INTEGER $rating The rating (null: unrate)
      */
-    protected function set_post_rating($post_id, $rating)
+    protected function set_post_rating(int $post_id, $rating)
     {
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);

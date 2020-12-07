@@ -85,7 +85,7 @@ function buildr_map_script()
  * @param  MEMBER $member_id The member to get the map of
  * @param  ?integer $realm The realm they are wanting to get (null: where they are at)
  */
-function download_map_wrap($member_id, $realm)
+function download_map_wrap(int $member_id, ?int $realm)
 {
     list($_realm, $x, $y) = get_loc_details($member_id);
     if ($realm === null) {
@@ -101,7 +101,7 @@ function download_map_wrap($member_id, $realm)
  * @param  integer $sx The Y of where the member is standing
  * @param  integer $sy The realm to get the map for
  */
-function download_map($realm, $sx, $sy)
+function download_map(int $realm, int $sx, int $sy)
 {
     // "Constants"
     $border_size = 35;

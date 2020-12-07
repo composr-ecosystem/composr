@@ -30,7 +30,7 @@ function init__workflows()
  * @param  ?MEMBER $member_id Member (null: current member)
  * @return boolean Whether the user has permission or not
  */
-function can_choose_workflow($member_id = null)
+function can_choose_workflow(?int $member_id = null) : bool
 {
     // Sort out the user
     if ($member_id === null) {
@@ -49,7 +49,7 @@ function can_choose_workflow($member_id = null)
  * @param  boolean $include_current Whether to include an option for leaving it alone
  * @return Tempcode The UI for choosing a workflow (if needed)
  */
-function workflow_choose_ui($include_inherit = false, $include_current = false)
+function workflow_choose_ui(bool $include_inherit = false, bool $include_current = false) : object
 {
     // Find out which workflows are available
     $all_workflows = get_all_workflows();
@@ -91,7 +91,7 @@ function workflow_choose_ui($include_inherit = false, $include_current = false)
  *
  * @return array The workflows which are defined. Empty if none are defined.
  */
-function get_all_workflows()
+function get_all_workflows() : array
 {
     $workflows = $GLOBALS['SITE_DB']->query_select('workflows', ['id', 'workflow_name']);
     $output = [];
@@ -108,7 +108,7 @@ function get_all_workflows()
  *
  * @return ?AUTO_LINK The ID of the default workflow. (null: if none set)
  */
-function get_default_workflow()
+function get_default_workflow() : ?int
 {
     // Grab every workflow ID
     $workflows = get_all_workflows();
@@ -139,7 +139,7 @@ function get_default_workflow()
  * @param  AUTO_LINK $workflow_id The workflow ID
  * @return string The workflow name
  */
-function get_workflow_name($workflow_id)
+function get_workflow_name(int $workflow_id) : string
 {
     return get_translated_text($GLOBALS['SITE_DB']->query_select_value('workflows', 'workflow_name', ['id' => $workflow_id]));
 }
@@ -150,7 +150,7 @@ function get_workflow_name($workflow_id)
  * @param  AUTO_LINK $content_id The workflow content ID
  * @return ?MEMBER The submitter (null: if unknown)
  */
-function get_submitter_of_workflow_content($content_id)
+function get_submitter_of_workflow_content(int $content_id) : ?int
 {
     // Exit on misuse
     if ($content_id === null) {
@@ -172,7 +172,7 @@ function get_submitter_of_workflow_content($content_id)
  * @param  AUTO_LINK $workflow_content_id The ID of this content in the workflow_content table
  * @return Tempcode The form for this content
  */
-function get_workflow_form($workflow_content_id)
+function get_workflow_form(int $workflow_content_id) : object
 {
     // Load our prerequisites
     require_code('form_templates');
@@ -467,7 +467,7 @@ function get_workflow_form($workflow_content_id)
  *
  * @return Tempcode Either an error page or a success message
  */
-function workflow_update_handler()
+function workflow_update_handler() : object
 {
     $success_message = do_lang('APPROVAL_UNCHANGED');
 
@@ -691,7 +691,7 @@ function workflow_update_handler()
  * @param  boolean $remove_existing Whether to remove any existing workflows from this content beforehand (current permissions must allow this)
  * @return ?AUTO_LINK The content's ID in the workflow_content table. (null: if not added (eg. told to use default when there isn't one))
  */
-function add_content_to_workflow($content_type = '', $content_id = '', $workflow_id = null, $remove_existing = false)
+function add_content_to_workflow(string $content_type = '', string $content_id = '', ?int $workflow_id = null, bool $remove_existing = false) : ?int
 {
     // Have we been given a valid workflow to use? If not, use system default
     if ($workflow_id === null) {
@@ -761,7 +761,7 @@ function add_content_to_workflow($content_type = '', $content_id = '', $workflow
  * @param  AUTO_LINK $workflow_id The workflow ID
  * @return array The approval points which are defined. Empty if none are defined.
  */
-function get_all_approval_points($workflow_id)
+function get_all_approval_points(int $workflow_id) : array
 {
     $workflow_approval_points = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['id', 'workflow_approval_name', 'the_position'], ['workflow_id' => $workflow_id], 'ORDER BY the_position');
     $approval_points = [];
@@ -777,7 +777,7 @@ function get_all_approval_points($workflow_id)
  * @param  AUTO_LINK $approval_id The ID of the approval point
  * @return array The IDs of the groups allowed to signoff on it
  */
-function get_usergroups_for_approval_point($approval_id)
+function get_usergroups_for_approval_point(int $approval_id) : array
 {
     if ($approval_id === null) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', 'null approval'));
@@ -796,7 +796,7 @@ function get_usergroups_for_approval_point($approval_id)
  * @param  AUTO_LINK $approval_point_id The ID of the approval point
  * @return ?integer The position of the approval point in this case (null: if not found)
  */
-function get_approval_point_position($approval_point_id)
+function get_approval_point_position(int $approval_point_id) : ?int
 {
     $found = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['the_position'], ['id' => $approval_point_id], 'ORDER BY the_position ASC');
     if (!empty($found)) {
@@ -812,7 +812,7 @@ function get_approval_point_position($approval_point_id)
  * @param  string $content_id The ID of the specific piece of content (if numeric, pass as a string anyway)
  * @return AUTO_LINK The workflow_content_id
  */
-function get_workflow_content_id($content_type, $content_id)
+function get_workflow_content_id(string $content_type, string $content_id) : int
 {
     // Grab the specified content's ID
     $content = $GLOBALS['SITE_DB']->query_select('workflow_content', ['id'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
@@ -830,7 +830,7 @@ function get_workflow_content_id($content_type, $content_id)
  * @param  string $id The ID of the content (as specified when it was entered into the workflow system)
  * @return ?AUTO_LINK The ID of the workflow that this content is in (null: not found)
  */
-function get_workflow_of_content($type, $id)
+function get_workflow_of_content(string $type, string $id) : ?int
 {
     return $GLOBALS['SITE_DB']->query_select_value_if_there('workflow_content', 'workflow_id', ['content_type' => $type, 'content_id' => $id]);
 }
@@ -841,7 +841,7 @@ function get_workflow_of_content($type, $id)
  * @param  AUTO_LINK $workflow_content_id The *workflow content* ID (NOT the gallery, category, etc. ID!)
  * @param  AUTO_LINK $approval_point_id The approval point ID
  */
-function approve_content_for_point($workflow_content_id, $approval_point_id)
+function approve_content_for_point(int $workflow_content_id, int $approval_point_id)
 {
     $GLOBALS['SITE_DB']->query_update('workflow_content_status', ['status_code' => 1], ['workflow_content_id' => $workflow_content_id, 'workflow_approval_point_id' => $approval_point_id], '', 1);
 }
@@ -854,7 +854,7 @@ function approve_content_for_point($workflow_content_id, $approval_point_id)
  * @param  string $type The type of the content, as defined in the workflow_content table
  * @param  string $id The ID of the content, as defined in the workflow content table
  */
-function remove_content_from_workflows($type, $id)
+function remove_content_from_workflows(string $type, string $id)
 {
     $content_id = get_workflow_content_id($type, $id);
     $GLOBALS['SITE_DB']->query_delete('workflow_content', ['id' => $content_id]);
@@ -871,7 +871,7 @@ function remove_content_from_workflows($type, $id)
  * @param  ?ID_TEXT $category_id The ID of the content's category, as defined in the workflow_content table (null: none)
  * @param  string $title The content title
  */
-function handle_position_in_workflow_auto($validated, $content_type, $id, $category_content_type, $category_id, $title)
+function handle_position_in_workflow_auto(int $validated, string $content_type, string $id, ?string $category_content_type, ?string $category_id, string $title)
 {
     if ($validated == 0) {
         // See if we have a specific workflow to use
@@ -911,7 +911,7 @@ function handle_position_in_workflow_auto($validated, $content_type, $id, $categ
  * @param  ?ID_TEXT $category_id The ID of the content's category, as defined in the workflow_content table (null: none)
  * @param  string $title The content title
  */
-function handle_position_in_workflow_edit($validated, $content_type, $id, $category_content_type, $category_id, $title)
+function handle_position_in_workflow_edit(int $validated, string $content_type, string $id, ?string $category_content_type, ?string $category_id, string $title)
 {
     if ($validated == 0) {
         require_code('workflows');

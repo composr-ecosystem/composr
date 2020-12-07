@@ -201,7 +201,7 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
 
     require_code('cns_general_action2');
     $log_id = cns_mod_log_it('DELETE_TOPIC', strval($topic_id), $name, $reason);
-    if (addon_installed('actionlog')) {
+    if ((addon_installed('actionlog')) && ($info[0]['t_cache_first_member_id'] !== null)) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();
         $revision_engine->add_revision(

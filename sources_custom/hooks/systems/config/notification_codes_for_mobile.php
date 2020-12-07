@@ -23,7 +23,7 @@ class Hook_config_notification_codes_for_mobile
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'NOTIFICATION_CODES_FOR_MOBILE',
@@ -45,7 +45,7 @@ class Hook_config_notification_codes_for_mobile
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return null;

@@ -34,7 +34,7 @@ function initialise_mobiquo()
  *
  * @return string The input protocol
  */
-function mobiquo_input_protocol()
+function mobiquo_input_protocol() : string
 {
     global $MOBIQUO_SERVER;
     switch (cms_strtolower_ascii(get_class($MOBIQUO_SERVER))) {
@@ -54,7 +54,7 @@ function mobiquo_input_protocol()
  * @param  mixed $raw_params Raw params
  * @return array Params as an array
  */
-function mobiquo_params_decode($raw_params)
+function mobiquo_params_decode($raw_params) : array
 {
     global $MOBIQUO_SERVER;
     return $MOBIQUO_SERVER->params_decode($raw_params);
@@ -68,7 +68,7 @@ function mobiquo_params_decode($raw_params)
  * @set string boolean base64 int dateTime.iso8601
  * @return mixed Mobiquo result
  */
-function mobiquo_val($data, $type = null)
+function mobiquo_val($data, ?string $type = null)
 {
     if (is_array($data)) {
         foreach ($data as $i => $val) {
@@ -114,7 +114,7 @@ function mobiquo_response_true()
  * @param  ?string $error_message Error message (null: Standard internal error message)
  * @return mixed Mobiquo result
  */
-function mobiquo_response_false($error_message = null)
+function mobiquo_response_false(?string $error_message = null)
 {
     if ($error_message === null) {
         $error_message = do_lang('INTERNAL_ERROR');
@@ -133,7 +133,7 @@ function mobiquo_response_false($error_message = null)
  * @param  string $request_method Mobiquo method name
  * @return string File
  */
-function request_helper_get_file($request_method)
+function request_helper_get_file(string $request_method) : string
 {
     if (substr($request_method, 0, 7) == 'upload_') {
         return 'attachment';

@@ -537,10 +537,10 @@ class Forum_driver_base
     /**
      * Find whether a forum is threaded.
      *
-     * @param  integer $topic_id The topic ID
+     * @param  ?integer $topic_id The topic ID (null: default / from environment)
      * @return boolean Whether it is
      */
-    public function topic_is_threaded(int $topic_id) : bool
+    public function topic_is_threaded(?int $topic_id) : bool
     {
         return false;
     }

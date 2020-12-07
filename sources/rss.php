@@ -213,10 +213,10 @@ class CMS_RSS
      * Standard PHP XML parser function.
      *
      * @param  mixed $parser The parser
-     * @param  string $prefix N/A
+     * @param  ~string $prefix N/A (false: ???)
      * @param  ?URLPATH $uri The URI of the name space we are entering (null: not given)
      */
-    public function startNameSpace($parser, string $prefix, ?string $uri = null)
+    public function startNameSpace($parser, $prefix, ?string $uri = null)
     {
         if ((($uri == 'http://purl.org/atom/ns#') || ($uri == 'http://www.w3.org/2005/Atom')) && ($this->type != 'RSS')) {
             array_push($this->namespace_stack, 'ATOM');

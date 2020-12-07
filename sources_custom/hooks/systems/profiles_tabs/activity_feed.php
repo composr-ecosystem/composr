@@ -25,7 +25,7 @@ class Hook_profiles_tabs_activity_feed
      * @param  MEMBER $member_id_viewing The ID of the member who is doing the viewing
      * @return boolean Whether this hook is active
      */
-    public function is_active($member_id_of, $member_id_viewing)
+    public function is_active(int $member_id_of, int $member_id_viewing) : bool
     {
         if (!addon_installed('activity_feed')) {
             return false;
@@ -42,7 +42,7 @@ class Hook_profiles_tabs_activity_feed
      * @param  boolean $leave_to_ajax_if_possible Whether to leave the tab contents null, if this hook supports it, so that AJAX can load it later
      * @return array A tuple: The tab title, the tab contents, the suggested tab order, the icon
      */
-    public function render_tab($member_id_of, $member_id_viewing, $leave_to_ajax_if_possible = false)
+    public function render_tab(int $member_id_of, int $member_id_viewing, bool $leave_to_ajax_if_possible = false) : array
     {
         // Need to declare these here as the Tempcode engine can't look as deep, into a loop (I think), as it would need to, to find the block declaring the dependency
         require_lang('activity_feed');

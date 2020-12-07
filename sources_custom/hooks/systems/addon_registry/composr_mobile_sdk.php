@@ -24,7 +24,7 @@ class Hook_addon_registry_composr_mobile_sdk
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_composr_mobile_sdk
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_composr_mobile_sdk
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Development';
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_composr_mobile_sdk
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Amit Nigam';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_composr_mobile_sdk
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [
             'ApnsPHP developers',
@@ -76,7 +76,7 @@ class Hook_addon_registry_composr_mobile_sdk
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr / New BSD License (ApnsPHP)';
     }
@@ -86,7 +86,7 @@ class Hook_addon_registry_composr_mobile_sdk
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Server support for Composr Mobile SDK, including Composr mobile APIs and push notification support for iOS and Android.
 
@@ -98,7 +98,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return ['tut_mobile_sdk'];
     }
@@ -108,7 +108,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -124,7 +124,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/tool.svg';
     }
@@ -141,7 +141,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      *
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      */
-    public function install($upgrade_from = null)
+    public function install(?int $upgrade_from = null)
     {
         if ($upgrade_from === null) {
             // Table for holding the IDs of devices signed up for notifications
@@ -160,7 +160,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/composr_mobile_sdk.php',

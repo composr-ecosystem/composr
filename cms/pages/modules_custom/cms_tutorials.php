@@ -39,7 +39,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -73,7 +73,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_TUTORIAL');
 
@@ -95,7 +95,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('composr_tutorials')) {
             return null;
@@ -111,7 +111,7 @@ class Module_cms_tutorials extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         require_code('fields');
@@ -142,7 +142,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen.
      * @return array A quartet: The choose table, Whether reordering is supported from this screen, Search URL, Archive URL.
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -221,7 +221,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  ?array $tags List of tags (null: default)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $url = '', $title = '', $summary = '', $icon = '', $media_type = null, $difficulty_level = 'regular', $pinned = 0, $author = '', $tags = null)
+    public function get_form_fields(?int $id = null, string $url = '', string $title = '', string $summary = '', string $icon = '', ?string $media_type = null, string $difficulty_level = 'regular', int $pinned = 0, string $author = '', ?array $tags = null) : array
     {
         if ($author == '') {
             $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -296,7 +296,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function get_submitter($id)
+    public function get_submitter(string $id) : array
     {
         $rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['t_submitter', 't_add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
@@ -311,7 +311,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
@@ -331,7 +331,7 @@ class Module_cms_tutorials extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $url = post_param_string('url', false, INPUT_FILTER_URL_GENERAL);
         $title = post_param_string('title');
@@ -388,7 +388,7 @@ class Module_cms_tutorials extends Standard_crud_module
      * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($_id)
+    public function edit_actualisation(string $_id) : ?object
     {
         $id = intval($_id);
 
@@ -437,7 +437,7 @@ class Module_cms_tutorials extends Standard_crud_module
      *
      * @param  ID_TEXT $_id The entry being deleted
      */
-    public function delete_actualisation($_id)
+    public function delete_actualisation(string $_id)
     {
         $id = intval($_id);
 

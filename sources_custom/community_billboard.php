@@ -22,7 +22,7 @@
  * @param  BINARY $validated Whether the message is for immediate use
  * @return AUTO_LINK The ID of the newly added message
  */
-function add_community_billboard_message($message, $days, $notes, $validated)
+function add_community_billboard_message(string $message, int $days, string $notes, int $validated) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_COMMUNITY_BILLBOARD', null, $message);
@@ -57,7 +57,7 @@ function add_community_billboard_message($message, $days, $notes, $validated)
  * @param  LONG_TEXT $notes Notes
  * @param  BINARY $validated Whether the message is the active message
  */
-function edit_community_billboard_message($id, $message, $notes, $validated)
+function edit_community_billboard_message(int $id, string $message, string $notes, int $validated)
 {
     $_message = $GLOBALS['SITE_DB']->query_select_value_if_there('community_billboard', 'the_message', ['id' => $id]);
     if ($_message === null) {
@@ -83,7 +83,7 @@ function edit_community_billboard_message($id, $message, $notes, $validated)
  *
  * @param  AUTO_LINK $id The ID of the community billboard message to delete
  */
-function delete_community_billboard_message($id)
+function delete_community_billboard_message(int $id)
 {
     $message = $GLOBALS['SITE_DB']->query_select_value_if_there('community_billboard', 'the_message', ['id' => $id]);
     if ($message === null) {
@@ -103,7 +103,7 @@ function delete_community_billboard_message($id)
  *
  * @param  AUTO_LINK $id The ID of the community billboard message to choose
  */
-function choose_community_billboard_message($id)
+function choose_community_billboard_message(int $id)
 {
     $message = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'the_message', ['id' => $id]);
     $message = get_translated_text($message);
@@ -119,7 +119,7 @@ function choose_community_billboard_message($id)
  *
  * @return Tempcode The list of community billboard messages
  */
-function create_selection_list_community_billboard_messages()
+function create_selection_list_community_billboard_messages() : object
 {
     $rows = $GLOBALS['SITE_DB']->query_select('community_billboard', ['*'], [], 'ORDER BY order_time ASC');
     $time = $GLOBALS['SITE_DB']->query_select_value_if_there('community_billboard', 'activation_time', ['active_now' => 1]);

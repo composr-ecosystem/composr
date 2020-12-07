@@ -3321,9 +3321,9 @@ function get_num_users_peak() : int
  * Get the specified string, but with all characters escaped.
  *
  * @param  mixed $string The input string
- * @return string The escaped string
+ * @return mixed The escaped string
  */
-function escape_html($string) : string
+function escape_html($string)
 {
     //if ($string === '') return $string; // Optimisation, but doesn't work well
     if (isset($string->codename)/*faster than is_object*/) {

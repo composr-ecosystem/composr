@@ -39,7 +39,7 @@ class Module_sites
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -68,7 +68,7 @@ class Module_sites
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         $GLOBALS['SITE_DB']->create_table('sites', [
             's_codename' => '*ID_TEXT',
@@ -119,7 +119,7 @@ class Module_sites
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('composr_homesite')) {
             return null;
@@ -145,7 +145,7 @@ class Module_sites
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -176,7 +176,7 @@ class Module_sites
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('composr_homesite');
         require_lang('installer');
@@ -213,7 +213,7 @@ class Module_sites
      *
      * @return Tempcode The UI
      */
-    public function hostingcopy_step1()
+    public function hostingcopy_step1() : object
     {
         if (!addon_installed('search')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -252,7 +252,7 @@ class Module_sites
      * @param  integer $depth The depth of the current scan level
      * @return Tempcode The list of directories
      */
-    public function _hostingcopy_do_dir($conn_id, $directory = '/', $depth = 0)
+    public function _hostingcopy_do_dir($conn_id, string $directory = '/', int $depth = 0) : object
     {
         if ($directory == '') {
             $directory = '/';
@@ -330,7 +330,7 @@ class Module_sites
      *
      * @return Tempcode The UI
      */
-    public function hostingcopy_step2()
+    public function hostingcopy_step2() : object
     {
         if (!addon_installed('search')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -377,7 +377,7 @@ class Module_sites
      *
      * @return Tempcode The result of execution
      */
-    public function hostingcopy_step3()
+    public function hostingcopy_step3() : object
     {
         if (!addon_installed('search')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -439,7 +439,7 @@ class Module_sites
      *
      * @return Tempcode The interface
      */
-    public function demonstratr()
+    public function demonstratr() : object
     {
         if (strpos(get_db_type(), 'mysql') === false) {
             warn_exit('This requires MySQL');
@@ -471,7 +471,7 @@ class Module_sites
      *
      * @return Tempcode The interface
      */
-    public function _demonstratr()
+    public function _demonstratr() : object
     {
         if (strpos(get_db_type(), 'mysql') === false) {
             warn_exit('This requires MySQL');

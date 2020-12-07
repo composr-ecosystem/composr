@@ -19,11 +19,11 @@
 class Hook_implicit_usergroups_usergroup_intersection
 {
     /**
-     * Run function for implicit usergroup hooks. Finds the group IDs it is bound to.
+     * Finds the group IDs it is bound to.
      *
      * @return array A list of usergroup IDs.
      */
-    public function get_bound_group_ids()
+    public function get_bound_group_ids() : array
     {
         return [11]; // Change this to the ID of the target usergroup
     }
@@ -47,14 +47,14 @@ class Hook_implicit_usergroups_usergroup_intersection
     }
 
     /**
-     * Run function for implicit usergroup hooks. Finds all members in the group.
+     * Finds all members in the group.
      *
      * @param  GROUP $group_id The group ID to check (if only one group supported by the hook, can be ignored)
      * @param  ?integer $max Return up to this many entries for members (null: no limit)
      * @param  integer $start Return members after this offset
      * @return ?array The list of members as a map between member ID and member row (null: unsupported by hook)
      */
-    public function get_member_list($group_id, $max = null, $start = 0)
+    public function get_member_list(int $group_id, ?int $max = null, int $start = 0) : ?array
     {
         if (!addon_installed('usergroup_intersection')) {
             return [];
@@ -64,12 +64,12 @@ class Hook_implicit_usergroups_usergroup_intersection
     }
 
     /**
-     * Run function for implicit usergroup hooks. Finds how many members in the group.
+     * Finds a count of the members in the group.
      *
      * @param  GROUP $group_id The group ID to check (if only one group supported by the hook, can be ignored)
-     * @return ?array The number of members (null: unsupported by hook)
+     * @return integer count
      */
-    public function get_member_list_count($group_id)
+    public function get_member_list_count(int $group_id) : int
     {
         if (!addon_installed('usergroup_intersection')) {
             return 0;
@@ -79,14 +79,14 @@ class Hook_implicit_usergroups_usergroup_intersection
     }
 
     /**
-     * Run function for implicit usergroup hooks. Finds whether the member is within the implicit usergroup.
+     * Finds whether the member is within the implicit usergroup.
      *
      * @param  MEMBER $member_id The member ID
      * @param  GROUP $group_id The group ID to check (if only one group supported by the hook, can be ignored)
      * @param  ?boolean $is_exclusive Return-by-reference if the member should *only* be in this usergroup (null: initially unset)
      * @return boolean Whether they are
      */
-    public function is_member_within($member_id, $group_id, &$is_exclusive = null)
+    public function is_member_within(int $member_id, int $group_id, ?bool &$is_exclusive = null) : bool
     {
         if (!addon_installed('usergroup_intersection')) {
             return false;

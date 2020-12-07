@@ -24,7 +24,7 @@ class Hook_symbol_POINTS_FROM_USERGROUPS
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (!addon_installed('group_points')) {
             return '';

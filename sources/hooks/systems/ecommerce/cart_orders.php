@@ -183,7 +183,7 @@ class Hook_ecommerce_cart_orders
 
                 // Reduce stock
                 if (method_exists($sub_product_object, 'reduce_stock')) {
-                    $sub_product_object->reduce_stock($ordered_item['p_type_code'], $ordered_item['p_quantity']);
+                    $sub_product_object->reduce_stock(intval($ordered_item['p_type_code']), $ordered_item['p_quantity']);
                 }
 
                 // Call actualiser

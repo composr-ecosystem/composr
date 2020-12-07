@@ -24,7 +24,7 @@ class Hook_addon_registry_ebay_store
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_ebay_store
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_ebay_store
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Third Party Integration'; // $MAINTAINED_STATUS: Change to 'Development' if the integration breaks and is not fixed
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_ebay_store
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Kamen Blaginov';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_ebay_store
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [];
     }
@@ -74,7 +74,7 @@ class Hook_addon_registry_ebay_store
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr';
     }
@@ -84,7 +84,7 @@ class Hook_addon_registry_ebay_store
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'A block advertising items for sale by an eBay seller or from an eBay store.
 
@@ -98,7 +98,7 @@ The normal Composr block construction assistant will help you set up the block o
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -108,7 +108,7 @@ The normal Composr block construction assistant will help you set up the block o
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -122,7 +122,7 @@ The normal Composr block construction assistant will help you set up the block o
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -132,7 +132,7 @@ The normal Composr block construction assistant will help you set up the block o
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/ebay_store.php',

@@ -24,7 +24,7 @@ class Hook_members_idolisr
      * @param  MEMBER $member_id The ID of the member we are getting links for
      * @return array List of pairs: title to value
      */
-    public function get_tracking_details($member_id)
+    public function get_tracking_details(int $member_id) : array
     {
         if (!addon_installed('idolisr')) {
             return [];

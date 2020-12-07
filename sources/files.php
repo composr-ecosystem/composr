@@ -61,13 +61,13 @@ function init__files()
  * Supports character set detection using BOM (which will then by bypassed from further reading).
  *
  * @param  PATH $path File path
- * @param  string $charset Detected character set will be written into here
+ * @param  ?string $charset Detected character set will be written into here (null: not set yet)
  * @param  boolean $locking File lock (if set, you must unlock with LOCK_UN before fclose)
  * @param  string $mode Mode (e.g. at).
  * @param  ?string $default_charset The default character set if none is specified (null: leave as null, ultimately meaning the default website character set will be used) (blank: smart detection)
  * @return ~resource The file handle (false: could not be opened)
  */
-function cms_fopen_text_read(string $path, string &$charset, bool $locking = false, string $mode = 'rb', ?string $default_charset = null)
+function cms_fopen_text_read(string $path, ?string &$charset, bool $locking = false, string $mode = 'rb', ?string $default_charset = null)
 {
     $charset = null;
 

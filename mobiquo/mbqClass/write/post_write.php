@@ -24,7 +24,7 @@ class CMSPostWrite
      * @param  AUTO_LINK $post_id Post ID
      * @param  string $reason Reason for action
      */
-    public function report_post($post_id, $reason = '')
+    public function report_post(int $post_id, string $reason = '')
     {
         cms_verify_parameters_phpdoc();
 
@@ -47,7 +47,7 @@ class CMSPostWrite
      * @param  boolean $return_html Whether to return HTML for posts rather than plain text
      * @return mixed Mobiquo structure of post
      */
-    public function reply_post($forum_id, $topic_id, $title, $post, $attachment_ids, $return_html)
+    public function reply_post(int $forum_id, int $topic_id, string $title, string $post, array $attachment_ids, bool $return_html)
     {
         cms_verify_parameters_phpdoc();
 
@@ -76,7 +76,7 @@ class CMSPostWrite
      * @param  string $reason Reason for action
      * @return mixed Mobiquo structure of post
      */
-    public function edit_post($post_id, $title, $post, $attachment_ids, $return_html, $reason = '')
+    public function edit_post(int $post_id, string $title, string $post, array $attachment_ids, bool $return_html, string $reason = '')
     {
         cms_verify_parameters_phpdoc();
 

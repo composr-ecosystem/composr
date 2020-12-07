@@ -23,7 +23,7 @@ class Hook_hybridauth_facebook
      *
      * @return array Map of integration info
      */
-    public function info()
+    public function info() : array
     {
         if (!addon_installed('facebook_support')) {
             return [];

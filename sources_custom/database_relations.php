@@ -19,7 +19,7 @@
  *
  * @return array List of tables and their status regarding being ignored for backups etc
  */
-function get_table_purpose_flags()
+function get_table_purpose_flags() : array
 {
     $ret = non_overridden__get_table_purpose_flags();
 
@@ -93,7 +93,7 @@ function get_table_purpose_flags()
  *
  * @return array Map of table descriptions
  */
-function get_table_descriptions()
+function get_table_descriptions() : array
 {
     $ret = non_overridden__get_table_descriptions();
 
@@ -111,7 +111,7 @@ function get_table_descriptions()
  *
  * @return array Map of foreign key relations
  */
-function get_relation_map()
+function get_relation_map() : array
 {
     $ret = non_overridden__get_relation_map();
 

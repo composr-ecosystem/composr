@@ -48,7 +48,7 @@ function realms()
  * @param  integer $dy The Y-offset of where they WISH to travel to
  * @return Tempcode Interface
  */
-function output_question_screen($member_id, $dx, $dy)
+function output_question_screen(int $member_id, int $dx, int $dy) : object
 {
     list($realm, $x, $y) = get_loc_details($member_id);
     $x += $dx;
@@ -66,7 +66,7 @@ function output_question_screen($member_id, $dx, $dy)
  * @param  MEMBER $member_id The member the inventory is of
  * @return Tempcode Interface
  */
-function output_inventory_screen($member_id)
+function output_inventory_screen(int $member_id) : object
 {
     if (($member_id === null) || ($member_id == -1)) {
         $member_id = get_member();
@@ -124,7 +124,7 @@ function output_inventory_screen($member_id)
  * @param  MEMBER $member_id The member who is in the room
  * @return Tempcode Interface
  */
-function output_room_screen($member_id)
+function output_room_screen(int $member_id) : object
 {
     $title = get_screen_title('BUILDR');
 

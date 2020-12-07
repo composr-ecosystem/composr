@@ -23,7 +23,7 @@ class Block_main_sortable_table
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -41,7 +41,7 @@ class Block_main_sortable_table
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled).
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -58,7 +58,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -402,7 +402,7 @@ PHP;
      * @param  string $str Input string
      * @return array List
      */
-    protected function parse_comma_separated($str)
+    protected function parse_comma_separated(string $str) : array
     {
         $out = [];
         $tmp = '';
@@ -433,7 +433,7 @@ PHP;
      * @param  array $columns_display Columns displayed.
      * @return array Property list with just position-aligned syntax.
      */
-    protected function set_property_list_alignment($list, $columns_display)
+    protected function set_property_list_alignment(array $list, array $columns_display) : array
     {
         $_list = empty($columns_display) ? [] : array_fill(0, count($columns_display), null);
         $i = 0;
@@ -462,7 +462,7 @@ PHP;
      * @param  string $val Value to convert
      * @return integer Converted value
      */
-    public function letters_to_numbers($val)
+    public function letters_to_numbers(string $val) : int
     {
         $letters = [
             'A',
@@ -532,7 +532,7 @@ PHP;
      * @return string Field type
      * @set integer float date currency alphanumeric
      */
-    protected function determine_field_type($_rows, $j)
+    protected function determine_field_type(array $_rows, int $j) : string
     {
         $sortable_type = null;
         foreach ($_rows as $row) {
@@ -614,7 +614,7 @@ PHP;
      * @set integer float date currency alphanumeric
      * @return string Formatted value
      */
-    protected function apply_formatting($value, $sortable_type)
+    protected function apply_formatting(string $value, string $sortable_type) : string
     {
         if (($sortable_type == 'integer') && (is_numeric($value))) {
             $value = integer_format(intval($value));

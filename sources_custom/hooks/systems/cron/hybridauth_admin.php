@@ -25,7 +25,7 @@ class Hook_cron_hybridauth_admin
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('hybridauth')) {
             return null;
@@ -43,7 +43,7 @@ class Hook_cron_hybridauth_admin
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         $before_type_strictness = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');

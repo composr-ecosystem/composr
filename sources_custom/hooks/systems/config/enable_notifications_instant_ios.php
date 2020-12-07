@@ -23,7 +23,7 @@ class Hook_config_enable_notifications_instant_ios
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'NOTIFICATIONS_INSTANT_IOS',
@@ -45,7 +45,7 @@ class Hook_config_enable_notifications_instant_ios
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return null;

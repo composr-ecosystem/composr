@@ -21,7 +21,7 @@ class Block_twitter_feed
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Jason Verhagen';
@@ -39,7 +39,7 @@ class Block_twitter_feed
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = ['block_twitter_feed__cache_on'];
@@ -53,7 +53,7 @@ class Block_twitter_feed
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -340,7 +340,7 @@ class Block_twitter_feed
      * @param  array $matches Array of matches
      * @return string Substituted text
      */
-    public function _convert_name_callback($matches)
+    public function _convert_name_callback(array $matches) : string
     {
         return '<a href="http://www.twitter.com/' . escape_html(urlencode($matches[1])) . '" target="_blank" rel="nofollow">@' . escape_html($matches[1]) . '</a>';
     }
@@ -351,7 +351,7 @@ class Block_twitter_feed
      * @param  array $matches Array of matches
      * @return string Substituted text
      */
-    public function _convert_hashtag_callback($matches)
+    public function _convert_hashtag_callback(array $matches) : string
     {
         return '<a href="https://twitter.com/#!/search?q=%23' . escape_html(urlencode($matches[1])) . '" target="_blank" rel="nofollow">#' . escape_html($matches[1]) . '</a>';
     }
@@ -362,7 +362,7 @@ class Block_twitter_feed
      * @param  array $matches Array of matches
      * @return string Substituted text
      */
-    public function _convert_url_callback($matches)
+    public function _convert_url_callback(array $matches) : string
     {
         return $matches[1] . '<a href="' . escape_html($matches[2]) . '" target="_blank" >' . escape_html($matches[2]) . '</a>';
     }
@@ -373,7 +373,7 @@ class Block_twitter_feed
      * @param  array $matches Array of matches
      * @return string Substituted text
      */
-    public function _convert_website_callback($matches)
+    public function _convert_website_callback(array $matches) : string
     {
         return $matches[1] . '<a href="http://' . escape_html($matches[2]) . '" target="_blank" >' . escape_html($matches[2]) . '</a>';
     }
@@ -385,7 +385,7 @@ class Block_twitter_feed
  * @param  array $map The block parameters
  * @return array The cache signature
  */
-function block_twitter_feed__cache_on($map)
+function block_twitter_feed__cache_on(array $map) : array
 {
     return [
         array_key_exists('twitter_logo_size', $map) ? intval($map['twitter_logo_size']) : 2,

@@ -32,7 +32,7 @@ function init__buildr()
  * @param  string $param_name The given parameter name
  * @return ?MEMBER Member ID (null: blank requested)
  */
-function grab_new_owner($param_name)
+function grab_new_owner(string $param_name) : ?int
 {
     $new_owner_raw = either_param_string($param_name);
     if ($new_owner_raw == '') {
@@ -51,7 +51,7 @@ function grab_new_owner($param_name)
  * @param  ID_TEXT $msg_type Code of message type to show
  * @set warn inform fatal
  */
-function buildr_refresh_with_message($message, $msg_type = 'inform')
+function buildr_refresh_with_message(object $message, string $msg_type = 'inform')
 {
     if (get_page_name() == 'buildr') {
         $url = build_url(['page' => 'buildr'], '_SELF');
@@ -65,7 +65,7 @@ function buildr_refresh_with_message($message, $msg_type = 'inform')
  *
  * @return array Map of items=>prices
  */
-function get_buildr_prices_default()
+function get_buildr_prices_default() : array
 {
     return [
         'mud_portal' => 2,
@@ -83,7 +83,7 @@ function get_buildr_prices_default()
  * @param  boolean $null_ok Whether it's excusable if the member does not exist (i.e. doesn't exit with error)
  * @return ?array Tuple: Realm, X ordinate, Y ordinate (null: no such member)
  */
-function get_loc_details($member_id, $null_ok = false)
+function get_loc_details(int $member_id, bool $null_ok = false) : ?array
 {
     $rows = $GLOBALS['SITE_DB']->query_select('w_members', ['location_realm', 'location_x', 'location_y'], ['id' => $member_id], '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -101,7 +101,7 @@ function get_loc_details($member_id, $null_ok = false)
  * @param  string $from The first item. The one being deleted.
  * @param  string $to The second item. The one the first is being merged into.
  */
-function merge_items($from, $to)
+function merge_items(string $from, string $to)
 {
     if ($from == $to) {
         warn_exit('Cannot merge item into itself.');
@@ -139,7 +139,7 @@ function merge_items($from, $to)
  *
  * @param  MEMBER $member_id The member who may be stuck
  */
-function destick($member_id)
+function destick(int $member_id)
 {
     // Make sure people can't get stuck
     require_code('buildr');
@@ -157,7 +157,7 @@ function destick($member_id)
  * @param  MEMBER $dest_member_id The member who's the message was addressed to
  * @param  string $message The message
  */
-function delete_message($member_id, $dest_member_id, $message)
+function delete_message(int $member_id, int $dest_member_id, string $message)
 {
     list($realm, $x, $y) = get_loc_details($member_id);
 
@@ -171,7 +171,7 @@ function delete_message($member_id, $dest_member_id, $message)
  * @param  MEMBER $member_id The member going through
  * @param  AUTO_LINK $dest_realm The chosen destination realm
  */
-function portal($member_id, $dest_realm)
+function portal(int $member_id, int $dest_realm)
 {
     // Find destination realm for the portal in the users current room
     list($realm, $x, $y) = get_loc_details($member_id);
@@ -201,7 +201,7 @@ function portal($member_id, $dest_realm)
  *
  * @param  MEMBER $member_id The member
  */
-function take_items($member_id)
+function take_items(int $member_id)
 {
     list($realm, ,) = get_loc_details($member_id);
     $realm_troll = -$realm - 1;
@@ -221,7 +221,7 @@ function take_items($member_id)
  * @param  string $message The message
  * @param  MEMBER $destination Who the message is being sent to
  */
-function message($member_id, $message, $destination)
+function message(int $member_id, string $message, int $destination)
 {
     if ($message == '') {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_MESSAGE_GIVEN'), 'warn');
@@ -248,7 +248,7 @@ function message($member_id, $message, $destination)
  * @param  AUTO_LINK $realm Realm
  * @return boolean Whether there is a room there
  */
-function room_exists($x, $y, $realm)
+function room_exists(int $x, int $y, int $realm) : bool
 {
     $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', ['location_realm' => $realm, 'location_x' => $x, 'location_y' => $y]);
     return $r !== null;
@@ -263,7 +263,7 @@ function room_exists($x, $y, $realm)
  * @param  string $given_password The access password they have given
  * @return ?Tempcode Error message (null: no error)
  */
-function try_to_enter_room($member_id, $dx, $dy, $given_password)
+function try_to_enter_room(int $member_id, int $dx, int $dy, string $given_password) : ?object
 {
     // Validate that we aren't cheating
     if (($dx > 1) || ($dx < -1) || ($dy > 1) || ($dy < -1)) {
@@ -403,7 +403,7 @@ function try_to_enter_room($member_id, $dx, $dy, $given_password)
  *
  * @param  MEMBER $member_id The member
  */
-function hurt($member_id)
+function hurt(int $member_id)
 {
     $health = $GLOBALS['SITE_DB']->query_select_value('w_members', 'health', ['id' => $member_id]) - 1;
     $GLOBALS['SITE_DB']->query_update('w_members', ['health' => $health], ['id' => $member_id], '', 1);
@@ -414,7 +414,7 @@ function hurt($member_id)
  *
  * @param  MEMBER $member_id The member
  */
-function dehurt($member_id)
+function dehurt(int $member_id)
 {
     $health = $GLOBALS['SITE_DB']->query_select_value('w_members', 'health', ['id' => $member_id]) + 1;
     $GLOBALS['SITE_DB']->query_update('w_members', ['health' => $health], ['id' => $member_id], '', 1);
@@ -427,7 +427,7 @@ function dehurt($member_id)
  * @param  MEMBER $dest_member_id Another member
  * @return boolean Whether they are in the same room
  */
-function check_coexist($member_id, $dest_member_id)
+function check_coexist(int $member_id, int $dest_member_id) : bool
 {
     list($realm_a, $x_a, $y_a) = get_loc_details($member_id);
     list($realm_b, $x_b, $y_b) = get_loc_details($dest_member_id);
@@ -443,7 +443,7 @@ function check_coexist($member_id, $dest_member_id)
  * @param  MEMBER $member_id The member who is doing the pickpocketing
  * @param  MEMBER $dest_member_id The victim
  */
-function pickpocket($member_id, $dest_member_id)
+function pickpocket(int $member_id, int $dest_member_id)
 {
     if ($member_id == $dest_member_id) {
         buildr_refresh_with_message(do_lang_tempcode('W_TOUCHY'), 'warn');
@@ -483,7 +483,7 @@ function pickpocket($member_id, $dest_member_id)
  *
  * @param  MEMBER $member_id Member to imprison
  */
-function imprison($member_id)
+function imprison(int $member_id)
 {
     list($realm, ,) = get_loc_details($member_id);
     basic_enter_room($member_id, $realm, 0, 2);
@@ -495,7 +495,7 @@ function imprison($member_id)
  *
  * @param  string $dest_member_name The username of the member
  */
-function findperson($dest_member_name)
+function findperson(string $dest_member_name)
 {
     if (is_numeric($dest_member_name)) {
         $dest_member_id = intval($dest_member_name);
@@ -540,7 +540,7 @@ function findperson($dest_member_name)
  * @param  MEMBER $target The victim
  * @return string The item stolen
  */
-function steal($member_id, $target)
+function steal(int $member_id, int $target) : string
 {
     // Check they have at least one item
     $count = $GLOBALS['SITE_DB']->query_select_value('w_inventory', 'COUNT(*)', ['item_owner' => $target]);
@@ -565,7 +565,7 @@ function steal($member_id, $target)
  *
  * @param  MEMBER $member_id Member to ban
  */
-function ban_member($member_id)
+function ban_member(int $member_id)
 {
     $GLOBALS['SITE_DB']->query_update('w_members', ['banned' => 1], ['id' => $member_id], '', 1);
     buildr_refresh_with_message(do_lang_tempcode('W_BANNED', strval($member_id)));
@@ -576,7 +576,7 @@ function ban_member($member_id)
  *
  * @param  MEMBER $member_id Member to unban
  */
-function unban_member($member_id)
+function unban_member(int $member_id)
 {
     $GLOBALS['SITE_DB']->query_update('w_members', ['banned' => 0], ['id' => $member_id], '', 1);
     buildr_refresh_with_message(do_lang_tempcode('W_UNBANNED', strval($member_id)));
@@ -588,7 +588,7 @@ function unban_member($member_id)
  * @param  MEMBER $member_id The member
  * @param  string $item_name The item
  */
-function useitem($member_id, $item_name)
+function useitem(int $member_id, string $item_name)
 {
     // Is the item held by the user
     if (!item_held($member_id, $item_name)) {
@@ -614,7 +614,7 @@ function useitem($member_id, $item_name)
  * @param  integer $x The X ordinate
  * @param  integer $y The Y ordinate
  */
-function basic_enter_room($member_id, $realm, $x, $y)
+function basic_enter_room(int $member_id, int $realm, int $x, int $y)
 {
     // Does the room exist?
     if (!room_exists($x, $y, $realm)) {
@@ -636,7 +636,7 @@ function basic_enter_room($member_id, $realm, $x, $y)
  * @param  string $item_name The item
  * @return boolean The answer
  */
-function item_held($member_id, $item_name)
+function item_held(int $member_id, string $item_name) : bool
 {
     // Is the item held by the user
     $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_inventory', 'item_count', ['item_owner' => $member_id, 'item_name' => $item_name]);
@@ -650,7 +650,7 @@ function item_held($member_id, $item_name)
  * @param  MEMBER $dest_member_id The member receiving the item
  * @param  string $item_name The name of the item
  */
-function give($member_id, $dest_member_id, $item_name)
+function give(int $member_id, int $dest_member_id, string $item_name)
 {
     // Is the item held by the user
     if (!item_held($member_id, $item_name)) {
@@ -678,7 +678,7 @@ function give($member_id, $dest_member_id, $item_name)
  * @param  MEMBER $member_id The member dropping the item
  * @param  string $item The name of the item
  */
-function drop_wrap($member_id, $item)
+function drop_wrap(int $member_id, string $item)
 {
     drop($member_id, $item);
     buildr_refresh_with_message(do_lang_tempcode('W_DROPPED', escape_html($item)));
@@ -690,7 +690,7 @@ function drop_wrap($member_id, $item)
  * @param  MEMBER $member_id The member dropping the item
  * @param  string $item_name The name of the item
  */
-function drop($member_id, $item_name)
+function drop(int $member_id, string $item_name)
 {
     // Is the item held by the user
     if (!item_held($member_id, $item_name)) {
@@ -711,7 +711,7 @@ function drop($member_id, $item_name)
  * @param  string $item_name The name of the item
  * @param  MEMBER $copy_owner The owner of the item copy
  */
-function buy($member_id, $item_name, $copy_owner)
+function buy(int $member_id, string $item_name, int $copy_owner)
 {
     // Check we have the points and that it exists
     list($realm, $x, $y) = get_loc_details($member_id);
@@ -751,7 +751,7 @@ function buy($member_id, $item_name, $copy_owner)
  * @param  string $item_name The name of the item
  * @param  MEMBER $copy_owner The owner of the item copy
  */
-function take($member_id, $item_name, $copy_owner)
+function take(int $member_id, string $item_name, int $copy_owner)
 {
     // Check its free and exists
     list($realm, $x, $y) = get_loc_details($member_id);
@@ -782,7 +782,7 @@ function take($member_id, $item_name, $copy_owner)
  * @param  string $item_name The name of the item
  * @param  MEMBER $copy_owner The owner of the item copy
  */
-function basic_pickup($member_id, $item_name, $copy_owner)
+function basic_pickup(int $member_id, string $item_name, int $copy_owner)
 {
     add_item_person($member_id, $item_name);
 
@@ -800,7 +800,7 @@ function basic_pickup($member_id, $item_name, $copy_owner)
  * @param  string $item_name The name of the item
  * @param  MEMBER $copy_owner The owner of the item copy
  */
-function take_an_item_from_room($realm, $x, $y, $item_name, $copy_owner)
+function take_an_item_from_room(int $realm, int $x, int $y, string $item_name, int $copy_owner)
 {
     // Does the item need to be removed? (is it infinite, Or maybe it has a count to be decremented?)
     // =================================
@@ -831,7 +831,7 @@ function take_an_item_from_room($realm, $x, $y, $item_name, $copy_owner)
  * @param  integer $price The price of the item
  * @param  MEMBER $copy_owner The owner of the item copy
  */
-function add_item_to_room($realm, $x, $y, $item_name, $not_infinite, $price, $copy_owner)
+function add_item_to_room(int $realm, int $x, int $y, string $item_name, int $not_infinite, int $price, int $copy_owner)
 {
     // Does the item need to be created or is it there? (and is it infinite, or maybe it has a count to be incremented?)
     // ================================================
@@ -867,7 +867,7 @@ function add_item_to_room($realm, $x, $y, $item_name, $not_infinite, $price, $co
  * @param  MEMBER $member_id The member who loses the item
  * @param  string $item_name The item to be taken from the members inventory
  */
-function remove_item_person($member_id, $item_name)
+function remove_item_person(int $member_id, string $item_name)
 {
     // Make sure we don't remove all items of the same name at once (decrement count if count>1)
     $count = $GLOBALS['SITE_DB']->query_select_value_if_there('w_inventory', 'item_count', ['item_name' => $item_name, 'item_owner' => $member_id]);
@@ -884,7 +884,7 @@ function remove_item_person($member_id, $item_name)
  * @param  MEMBER $member_id The member who gets the item
  * @param  string $item_name The item to be added to the members inventory
  */
-function add_item_person($member_id, $item_name)
+function add_item_person(int $member_id, string $item_name)
 {
     // Do they already have one
     $count = $GLOBALS['SITE_DB']->query_select_value_if_there('w_inventory', 'item_count', ['item_name' => $item_name, 'item_owner' => $member_id]);

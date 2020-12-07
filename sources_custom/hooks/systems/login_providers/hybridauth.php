@@ -24,7 +24,7 @@ class Hook_login_provider_hybridauth
      * @param  ?MEMBER $member_id Member ID already detected as logged in (null: none). May be a guest ID.
      * @return ?MEMBER Member ID now detected as logged in (null: none). May be a guest ID.
      */
-    public function try_login($member_id)
+    public function try_login(?int $member_id) : ?int
     {
         if (get_forum_type() != 'cns') {
             return $member_id;

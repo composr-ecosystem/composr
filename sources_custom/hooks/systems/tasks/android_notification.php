@@ -36,7 +36,7 @@ class Hook_task_android_notification
      *
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($to_member_id, $notification_code, $code_category, $subject, $message, $properties, $from_member_id, $priority, $no_cc, $attachments, $use_real_from)
+    public function run(int $to_member_id, string $notification_code, ?string $code_category, string $subject, string $message, array $properties, int $from_member_id, int $priority, bool $no_cc, array $attachments, bool $use_real_from) : ?array
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return null;

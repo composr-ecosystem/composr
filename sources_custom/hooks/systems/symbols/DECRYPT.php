@@ -24,7 +24,7 @@ class Hook_symbol_DECRYPT
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (!addon_installed('password_censor')) {
             return '';

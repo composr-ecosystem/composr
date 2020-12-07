@@ -23,7 +23,7 @@ class Hook_checklist_community_billboard
      *
      * @return array An array of tuples: The task row to show, the number of seconds until it is due (or null if not on a timer), the number of things to sort out (or null if not on a queue), The name of the config option that controls the schedule (or null if no option)
      */
-    public function run()
+    public function run() : array
     {
         if (!addon_installed('community_billboard')) {
             return [];
@@ -75,7 +75,7 @@ class Hook_checklist_community_billboard
      *
      * @return integer Number in queue
      */
-    public function get_num_community_billboard_queue()
+    public function get_num_community_billboard_queue() : int
     {
         $c = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'COUNT(*)', ['activation_time' => null]);
         if ($c === null) {

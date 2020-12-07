@@ -27,7 +27,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = [])
+    public function __construct(array $advanced_parameters = [])
     {
         require_code('swift_mailer/lib/swift_required');
 

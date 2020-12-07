@@ -23,7 +23,7 @@ class Hook_privacy_activity_feed extends Hook_privacy_base
      *
      * @return ?array A map of privacy details in a standardised format (null: disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('activity_feed')) {
             return null;

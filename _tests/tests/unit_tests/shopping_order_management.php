@@ -90,6 +90,7 @@ class shopping_order_management_test_set extends cms_test_case
         if (method_exists($this->admin_shopping, 'pre_run')) {
             $this->admin_shopping->pre_run();
         }
+        $this->admin_shopping->title = get_screen_title('ORDER_DETAILS');
         $this->admin_shopping->run();
     }
 
@@ -117,7 +118,7 @@ class shopping_order_management_test_set extends cms_test_case
     public function testAddNoteToOrderActualiser()
     {
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
-        $_POST['order_id'] = $order_id;
+        $_POST['order_id'] = strval($order_id);
         $_POST['note'] = 'Test note';
         $this->admin_shopping->_add_note();
         @header_remove();
@@ -127,7 +128,7 @@ class shopping_order_management_test_set extends cms_test_case
     {
         $order_id = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'MAX(id)', ['order_status' => 'ORDER_STATUS_payment_received']);
         if ($order_id !== null) {
-            $_GET['id'] = $order_id;
+            $_GET['id'] = strval($order_id);
             $this->admin_shopping->dispatch();
             @header_remove();
         }

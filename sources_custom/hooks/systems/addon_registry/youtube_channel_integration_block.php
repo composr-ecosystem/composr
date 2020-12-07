@@ -17,7 +17,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -27,7 +27,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -37,7 +37,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Third Party Integration'; // Change to 'Development' if the integration breaks and is not fixed
     }
@@ -47,7 +47,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Jason Verhagen';
     }
@@ -57,7 +57,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [];
     }
@@ -67,7 +67,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Creative Commons Attribution 3.0 Unported License (CC BY 3.0)';
     }
@@ -77,7 +77,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Integrate YouTube channels into your web site. Specify a YouTube channel or user name and some other parameters and you can integrate videos and video info in your web site. The block can automatically update with new content as it is added to the YouTube channel.
 
@@ -94,7 +94,7 @@ You must first configure Google/YouTube API access:
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -104,7 +104,7 @@ You must first configure Google/YouTube API access:
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [],
@@ -118,7 +118,7 @@ You must first configure Google/YouTube API access:
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images_custom/youtube_channel_integration/youtube_channel_integration_icon.png';
     }
@@ -128,7 +128,7 @@ You must first configure Google/YouTube API access:
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/youtube_channel_integration_block.php',
@@ -150,7 +150,7 @@ You must first configure Google/YouTube API access:
      *
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      */
-    public function install($upgrade_from = null)
+    public function install(?int $upgrade_from = null)
     {
         // If old config option exists from older version of addon, remove it
         if (get_option('channel_update_time', true) !== null) {

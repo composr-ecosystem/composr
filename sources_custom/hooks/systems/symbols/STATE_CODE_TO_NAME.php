@@ -24,7 +24,7 @@ class Hook_symbol_STATE_CODE_TO_NAME
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (!addon_installed('world_regions')) {
             return '';

@@ -23,7 +23,7 @@ class Hook_actionlog_health_check extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (!addon_installed('health_check')) {
             return [];

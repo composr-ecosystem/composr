@@ -23,7 +23,7 @@ class Hook_cns_cpf_filter_customers
      *
      * @return array A list of CPFs to enable
      */
-    public function to_enable()
+    public function to_enable() : array
     {
         if (!addon_installed('composr_homesite_support_credits')) {
             return [];

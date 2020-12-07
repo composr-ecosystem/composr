@@ -23,7 +23,7 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
      *
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function category_info()
+    public function category_info() : ?array
     {
         if (!addon_installed('google_analytics')) {
             return null;
@@ -51,7 +51,7 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
      * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info($for_kpi = false)
+    public function info(bool $for_kpi = false) : ?array
     {
         if (!addon_installed('google_analytics')) {
             return null;
@@ -88,7 +88,7 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
      * @param  array $filters Filter settings to take precedence
      * @return Tempcode Graph
      */
-    public function generate($graph_name, $filters)
+    public function generate(string $graph_name, array $filters) : object
     {
         static $done_once = false;
         if (!$done_once) {

@@ -24,7 +24,7 @@ class Hook_addon_registry_bankr
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_bankr
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_bankr
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Fun and Games';
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_bankr
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Kamen Blaginov';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_bankr
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [];
     }
@@ -74,7 +74,7 @@ class Hook_addon_registry_bankr
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr';
     }
@@ -84,7 +84,7 @@ class Hook_addon_registry_bankr
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Members can deposit some of their hard earned points (but not the gift points) into a "bank account" and extract them again only after a month. The administrator can set the interest rate, that users will get with their points back at the end of the account term. To set the Interest rate go to Admin Zone > Setup > Manage eCommerce inventory and click "edit your eCommerce configuration" and change the interest rate to the level you would like. To deposit points go to the purchasing module and click on the bank option and choose how much you would like to deposit for a month. The interest paid out will be at the level it was at when the points were deposited.';
     }
@@ -94,7 +94,7 @@ class Hook_addon_registry_bankr
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -104,7 +104,7 @@ class Hook_addon_registry_bankr
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -122,7 +122,7 @@ class Hook_addon_registry_bankr
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -132,7 +132,7 @@ class Hook_addon_registry_bankr
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/bankr.php',
@@ -157,7 +157,7 @@ class Hook_addon_registry_bankr
      *
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      */
-    public function install($upgrade_from = null)
+    public function install(?int $upgrade_from = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('bank', [

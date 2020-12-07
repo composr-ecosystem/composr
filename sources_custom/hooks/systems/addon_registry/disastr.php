@@ -24,7 +24,7 @@ class Hook_addon_registry_disastr
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         $ret = [
             'uploads/disastr_addon',
@@ -42,7 +42,7 @@ class Hook_addon_registry_disastr
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -52,7 +52,7 @@ class Hook_addon_registry_disastr
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Fun and Games';
     }
@@ -62,7 +62,7 @@ class Hook_addon_registry_disastr
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Kamen Blaginov';
     }
@@ -72,7 +72,7 @@ class Hook_addon_registry_disastr
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [];
     }
@@ -82,7 +82,7 @@ class Hook_addon_registry_disastr
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr';
     }
@@ -92,7 +92,7 @@ class Hook_addon_registry_disastr
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Encourage your website users to interact more and increase their activity. You can release a number of diseases all at once or one at a time. Disastr comes configured with a number of pre-created viruses and you can add more. There are also Cures and Immunizations for the diseases which can be purchased through the eCommerce. Each disease will cause a member\'s points total to become sick and start going down unless they buy the cure. The cure is usually twice the price of the immunisation. If the user cannot afford the cure they will have to interact more with the site to rebuild up their points total to be able to afford to buy it. All the pre-configured diseases come unreleased and you have the opportunity to choose when they are released and how virulent they are. Users which have been infected will be sent a notification with a link to the cure. Once cured, members can still be re-infected if they have not purchased an Immunization. The diseases are spread via the friend lists in Composr.
 
@@ -104,7 +104,7 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -114,7 +114,7 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -133,7 +133,7 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/spare/disaster.svg';
     }
@@ -143,7 +143,7 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/disastr.php',

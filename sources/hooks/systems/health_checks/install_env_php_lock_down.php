@@ -292,7 +292,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             imagecharup imagecolorclosest imagecolorclosestalpha imagecolorclosesthwb
             imagecolordeallocate imagecolorexact imagecolorexactalpha imagecolorresolve image_type_to_mime_type
             imagecolorresolvealpha imagecolorset imagecolorstotal imagecopymerge getimagesize image_type_to_extension imagefilter
-            gd_info
+            gd_info is_iterable
             imagecreatefromstring imagejpeg imagepng imagettfbbox
 END;
 

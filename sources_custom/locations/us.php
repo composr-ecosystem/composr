@@ -18,7 +18,7 @@
  *
  * @return array Map: region=>list of states
  */
-function get_region_structure_US()
+function get_region_structure_US() : array
 {
     return [
         'Northeast' => [

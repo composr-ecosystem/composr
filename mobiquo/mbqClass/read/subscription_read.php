@@ -23,7 +23,7 @@ class CMSSubscriptionRead
      *
      * @return array List of forums
      */
-    public function get_subscribed_forums()
+    public function get_subscribed_forums() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -64,7 +64,7 @@ class CMSSubscriptionRead
      * @param  integer $max Total results
      * @return array A pair: total topics, topics
      */
-    public function get_subscribed_topics($start, $max)
+    public function get_subscribed_topics(int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -127,7 +127,7 @@ class CMSSubscriptionRead
      * @param  ?MEMBER $member_id Member ID (null: current member)
      * @return array List of forums
      */
-    public function get_member_forum_monitoring($member_id = null)
+    public function get_member_forum_monitoring(?int $member_id = null) : array
     {
         if ($member_id === null) {
             $member_id = get_member();
@@ -149,7 +149,7 @@ class CMSSubscriptionRead
      * @param  ?MEMBER $member_id Member ID (null: current member)
      * @return array List of topics
      */
-    public function get_member_topic_monitoring($member_id = null)
+    public function get_member_topic_monitoring(?int $member_id = null) : array
     {
         if ($member_id === null) {
             $member_id = get_member();

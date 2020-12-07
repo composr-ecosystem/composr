@@ -24,7 +24,7 @@ class Hook_addon_registry_cns_tapatalk
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_cns_tapatalk
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_cns_tapatalk
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         // Best to just categorise properly as it's not bundled
         //return is_maintained('tapatalk') ? 'Community' : 'Development';
@@ -56,7 +56,7 @@ class Hook_addon_registry_cns_tapatalk
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'ocProducts';
     }
@@ -66,7 +66,7 @@ class Hook_addon_registry_cns_tapatalk
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [
             'Parts of the implementation are copyright to Quoord systems (the Tapatalk company). See mobiquo/license_agreement.txt',
@@ -78,7 +78,7 @@ class Hook_addon_registry_cns_tapatalk
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr';
     }
@@ -88,7 +88,7 @@ class Hook_addon_registry_cns_tapatalk
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return '[url="Tapatalk"]http://tapatalk.com[/url] is a popular third-party forum app for smartphones (available on all major mobile platforms). The Composr {$IS_MAINTAINED,tapatalk,Tapatalk addon} allows the Tapatalk app to connect seamlessly to Composr forums. The addon does this by providing an implementation of the Tapatalk API.
 
@@ -227,7 +227,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_mobile',
@@ -239,7 +239,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -256,7 +256,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -266,7 +266,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/cns_tapatalk.php',

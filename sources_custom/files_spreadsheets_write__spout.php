@@ -30,7 +30,7 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
      * @param  integer $algorithm An ALGORITHM_* constant
      * @param  ?string $charset The character set to write with (if supported) (null: website character set)
      */
-    public function __construct(&$path, $filename, $algorithm = 3, $charset = null)
+    public function __construct(?string &$path, string $filename, int $algorithm = 3, ?string $charset = null)
     {
         require_code('files');
         require_code('spout/Autoloader/autoload');
@@ -71,7 +71,7 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
      * @param  array $row Row
      * @param  ?array $metadata Map representing metadata of a row; supports 'url'; will only be used by file formats that support it (null: none)
      */
-    protected function _write_row($row, $metadata = null)
+    protected function _write_row(array $row, ?array $metadata = null)
     {
         if ($this->writer === null) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -119,7 +119,7 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
      *
      * @return string Mime-type
      */
-    public function get_mime_type()
+    public function get_mime_type() : string
     {
         $ext = get_file_extension(basename($this->path));
         require_code('mime_types');

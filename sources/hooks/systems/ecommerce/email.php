@@ -289,7 +289,7 @@ class Hook_ecommerce_email
                     'discount_points__num_points' => null,
                     'discount_points__price_reduction' => null,
 
-                    'tax_code' => tax_multiplier(get_option('quota_tax_code'), $amount),
+                    'tax_code' => tax_multiplier(get_option('quota_tax_code'), (float)$amount),
                     'shipping_cost' => 0.00,
                     'product_weight' => null,
                     'product_length' => null,

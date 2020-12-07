@@ -35,7 +35,7 @@ class Hook_task_sugarcrm_sync_message
      * @param  ?array $post Copy of POST parameters (null: don't set)
      * @return mixed A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message) (false: re-try later, no specific error message)
      */
-    public function run($subject, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts, $body_prefix, $body_suffix, $get = null, $post = null)
+    public function run(string $subject, string $body, string $to_email, string $to_name, string $from_email, string $from_name, array $attachments, array $body_parts, string $body_prefix, string $body_suffix, ?array $get = null, ?array $post = null)
     {
         if (!addon_installed('sugarcrm')) {
             return null;

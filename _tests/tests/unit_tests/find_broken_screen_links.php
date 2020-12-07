@@ -48,6 +48,10 @@ class find_broken_screen_links_test_set extends cms_test_case
 
             if ($page != '_SELF') {
                 $zone = get_module_zone($page);
+                if ($zone === null) {
+                    continue;
+                }
+
                 $path = _get_module_path($zone, $page);
                 $module_path = zone_black_magic_filterer((($zone == '') ? '' : (filter_naughty($zone) . '/')) . 'pages/modules/' . filter_naughty_harsh($page) . '.php', true);
                 if (!is_file($module_path)) {

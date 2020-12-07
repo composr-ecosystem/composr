@@ -43,7 +43,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
      * @param  mixed $raw_params Raw params
      * @return array Params as an array
      */
-    public function params_decode($raw_params)
+    public function params_decode($raw_params) : array
     {
         return php_xmlrpc_decode($raw_params);
     }
@@ -53,7 +53,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
      *
      * @return string Method name
      */
-    public function get_method_name()
+    public function get_method_name() : string
     {
         if (isset($_POST['method_name'])) {
             return $_POST['method_name'];
@@ -118,7 +118,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
      * @set string boolean base64 int dateTime.iso8601 array struct
      * @return mixed Mobiquo result
      */
-    public function val($data, $type)
+    public function val($data, ?string $type)
     {
         cms_ini_set('ocproducts.type_strictness', '0'); // Much Tapatalk client code will not be compatible with this
 
@@ -145,7 +145,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
      * @param  integer $timezone Timezone hour offset
      * @return string iso8601 date
      */
-    private function iso8601_encode($timet, $timezone = 0)
+    private function iso8601_encode(int $timet, int $timezone = 0) : string
     {
         return gmdate('Ymd\TH:i:s', $timet + $timezone * 3600) . '+00:00';
     }

@@ -23,7 +23,7 @@ class Hook_actionlog_classified_ads extends Hook_actionlog
      *
      * @return array Map of handler data in standard format
      */
-    public function get_handlers()
+    public function get_handlers() : array
     {
         if (!addon_installed('classified_ads')) {
             return [];

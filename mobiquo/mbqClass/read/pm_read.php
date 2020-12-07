@@ -29,7 +29,7 @@ class CMSPmRead
      *
      * @return array Tuple of details
      */
-    public function get_box_info()
+    public function get_box_info() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -71,7 +71,7 @@ class CMSPmRead
      * @param  integer $max Maximum results
      * @return array Tuple of details
      */
-    public function get_box($box_id, $start, $max)
+    public function get_box(int $box_id, int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -193,7 +193,7 @@ class CMSPmRead
      * @param  ?TIME $topic_read_time When the topic was last read by the current member (null: not)
      * @return integer Read status (special Tapatalk code)
      */
-    private function get_message_state($post_details, $topic_details, $member_id, $pos, $posts, $topic_read_time)
+    private function get_message_state(array $post_details, array $topic_details, int $member_id, int $pos, array $posts, ?int $topic_read_time) : int
     {
         cms_verify_parameters_phpdoc();
 
@@ -226,7 +226,7 @@ class CMSPmRead
      * @param  boolean $return_html Return HTML
      * @return array Map of post details
      */
-    public function get_message($message_id, $return_html)
+    public function get_message(int $message_id, bool $return_html) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -288,7 +288,7 @@ class CMSPmRead
      * @param  AUTO_LINK $post_id Post ID
      * @return array A pair: quote title, quote content
      */
-    public function get_quote_pm($post_id)
+    public function get_quote_pm(int $post_id) : array
     {
         cms_verify_parameters_phpdoc();
 

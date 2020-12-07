@@ -19,7 +19,7 @@
  * @param  ?MEMBER $member_id Member involved (null: current member)
  * @return array List of forum IDs
  */
-function get_allowed_forum_ids($member_id = null)
+function get_allowed_forum_ids(?int $member_id = null) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -47,7 +47,7 @@ function get_allowed_forum_ids($member_id = null)
  * @param  ?MEMBER $member_id Member involved (null: current member)
  * @return string SQL, for use within an IN clause
  */
-function get_allowed_forum_sql($member_id = null)
+function get_allowed_forum_sql(?int $member_id = null) : string
 {
     return implode(',', array_map('strval', get_allowed_forum_ids($member_id)));
 }
@@ -59,7 +59,7 @@ function get_allowed_forum_sql($member_id = null)
  * @param  ?MEMBER $member_id Member involved (null: current member)
  * @return array Details of capabilities
  */
-function action_assessment_forum($forum_details, $member_id = null)
+function action_assessment_forum(array $forum_details, ?int $member_id = null) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -83,7 +83,7 @@ function action_assessment_forum($forum_details, $member_id = null)
  * @param  integer $behaviour_modifiers A bitmask of RENDER_TOPIC_* settings
  * @return array Details of capabilities
  */
-function moderation_assessment_topic($topic_details, $member_id = null, $behaviour_modifiers = 0)
+function moderation_assessment_topic(array $topic_details, ?int $member_id = null, int $behaviour_modifiers = 0) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -121,7 +121,7 @@ function moderation_assessment_topic($topic_details, $member_id = null, $behavio
  * @param  integer $behaviour_modifiers A bitmask of RENDER_POST_* settings
  * @return array Details of capabilities
  */
-function moderation_assessment_post($post_details, $member_id = null, $behaviour_modifiers = 0)
+function moderation_assessment_post(array $post_details, ?int $member_id = null, int $behaviour_modifiers = 0) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -147,7 +147,7 @@ function moderation_assessment_post($post_details, $member_id = null, $behaviour
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether they can
  */
-function can_reply_to_topic($topic_id, $member_id = null, $topic_details = null)
+function can_reply_to_topic(int $topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -174,7 +174,7 @@ function can_reply_to_topic($topic_id, $member_id = null, $topic_details = null)
  * @param  ?array $details Resource row (null: lookup)
  * @return boolean Whether they can
  */
-function can_edit($type, $id, $member_id = null, $details = null)
+function can_edit(string $type, int $id, ?int $member_id = null, ?array $details = null) : bool
 {
     switch ($type) {
         case 'topic':
@@ -215,7 +215,7 @@ function can_edit($type, $id, $member_id = null, $details = null)
  * @param  ?array $details Resource row (null: lookup)
  * @return boolean Whether they can
  */
-function can_delete($type, $id, $member_id = null, $details = null)
+function can_delete(string $type, int $id, ?int $member_id = null, ?array $details = null) : bool
 {
     switch ($type) {
         case 'topic':
@@ -256,7 +256,7 @@ function can_delete($type, $id, $member_id = null, $details = null)
  * @param  ?array $details Resource row (null: lookup)
  * @return boolean Whether they can
  */
-function can_move($type, $id, $member_id = null, $details = null)
+function can_move(string $type, int $id, ?int $member_id = null, ?array $details = null) : bool
 {
     switch ($type) {
         case 'topic':
@@ -279,7 +279,7 @@ function can_move($type, $id, $member_id = null, $details = null)
  * @param  ?array $details Resource row (null: lookup)
  * @return boolean Whether they can
  */
-function can_approve($type, $id, $member_id = null, $details = null)
+function can_approve(string $type, int $id, ?int $member_id = null, ?array $details = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -323,7 +323,7 @@ function can_approve($type, $id, $member_id = null, $details = null)
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether they can
  */
-function can_stick_topic($topic_id, $member_id = null, $topic_details = null)
+function can_stick_topic(int $topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     return can_moderate_topic($topic_id, $member_id, $topic_details);
 }
@@ -336,7 +336,7 @@ function can_stick_topic($topic_id, $member_id = null, $topic_details = null)
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether they can
  */
-function can_close_topic($topic_id, $member_id = null, $topic_details = null)
+function can_close_topic(int $topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     return can_moderate_topic($topic_id, $member_id, $topic_details);
 }
@@ -349,7 +349,7 @@ function can_close_topic($topic_id, $member_id = null, $topic_details = null)
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether they can
  */
-function can_moderate_topic($topic_id, $member_id = null, $topic_details = null)
+function can_moderate_topic(int $topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     if ($topic_details === null) {
         $_topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t', ['*', 't.id AS topic_id'], ['t.id' => $topic_id], '', 1);
@@ -369,7 +369,7 @@ function can_moderate_topic($topic_id, $member_id = null, $topic_details = null)
  * @param  ?array $post_details Post row (null: lookup)
  * @return boolean Whether they can
  */
-function can_moderate_post($post_id, $member_id = null, $post_details = null)
+function can_moderate_post(int $post_id, ?int $member_id = null, ?array $post_details = null) : bool
 {
     if ($post_details === null) {
         $_post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p', ['*', 'p.id AS post_id'], ['p.id' => $post_id], '', 1);
@@ -389,7 +389,7 @@ function can_moderate_post($post_id, $member_id = null, $post_details = null)
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether they can
  */
-function can_rename_topic($topic_id, $member_id = null, $topic_details = null)
+function can_rename_topic(int $topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     if ($topic_details === null) {
         $_topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t', ['*', 't.id AS topic_id'], ['t.id' => $topic_id], '', 1);
@@ -408,7 +408,7 @@ function can_rename_topic($topic_id, $member_id = null, $topic_details = null)
  * @param  ?MEMBER $member_id Member involved (null: current member)
  * @return boolean Whether they can
  */
-function can_merge_posts($topic_id, $member_id = null)
+function can_merge_posts(int $topic_id, ?int $member_id = null) : bool
 {
     $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
     $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 'p.id AS post_id'], ['p_topic_id' => $topic_id, 'p_poster' => $member_id], '', 2);
@@ -424,7 +424,7 @@ function can_merge_posts($topic_id, $member_id = null)
  * @param  ?array $topic_details Topic row for from topic (null: lookup)
  * @return boolean Whether they can
  */
-function can_merge_topics($from_topic_id, $to_topic_id, $member_id = null, $topic_details = null)
+function can_merge_topics(int $from_topic_id, ?int $to_topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     return can_moderate_topic($from_topic_id, $member_id, $topic_details) && (($to_topic_id === null) || can_moderate_topic($to_topic_id, $member_id));
 }
@@ -435,7 +435,7 @@ function can_merge_topics($from_topic_id, $to_topic_id, $member_id = null, $topi
  * @param  ?MEMBER $member_id Member involved (null: current member)
  * @return boolean Whether they can
  */
-function can_ban_member($member_id = null)
+function can_ban_member(?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

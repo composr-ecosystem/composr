@@ -24,7 +24,7 @@ class Hook_addon_registry_idolisr
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_idolisr
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_idolisr
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Graphical';
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_idolisr
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Chris Graham';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_idolisr
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [];
     }
@@ -74,7 +74,7 @@ class Hook_addon_registry_idolisr
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr';
     }
@@ -84,7 +84,7 @@ class Hook_addon_registry_idolisr
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Show the top performing members in a community. The addon adds a [tt]main_stars[/tt] block that ranks members on how many points they have been given in a certain category (also it changes the points module to allow selection of such categories when giving points). It also adds a block to show recent points transfers. Finally, it adds a line to member\'s profile screens that says how many topics they have created, and how many they have replied to, to give a reflection of whether they help more than they ask or vice-versa.
 
@@ -99,7 +99,7 @@ and
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -109,7 +109,7 @@ and
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -125,7 +125,7 @@ and
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -135,7 +135,7 @@ and
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/idolisr.php',

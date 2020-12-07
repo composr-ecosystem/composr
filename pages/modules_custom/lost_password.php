@@ -25,7 +25,7 @@ class Mx_lost_password extends Module_lost_password
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -37,7 +37,7 @@ class Mx_lost_password extends Module_lost_password
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         if (addon_installed('external_db_login') && get_forum_type() == 'cns') {
             $redirect_url = get_value('external_lost_password_url', null, true);

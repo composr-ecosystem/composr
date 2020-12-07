@@ -25,7 +25,7 @@ class Hook_upon_login_external_db
      * @param  string $username Username
      * @param  ?MEMBER $member_id Member ID of already-confirmed login
      */
-    public function run($new_attempt, $username, $member_id)
+    public function run(bool $new_attempt, string $username, ?int $member_id)
     {
         if (!addon_installed('external_db_login')) {
             return;

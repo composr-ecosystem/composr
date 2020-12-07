@@ -23,7 +23,7 @@ function unused_other_func()
  *
  * @return boolean Whether the current member is logged in via httpauth
  */
-function is_httpauth_login()
+function is_httpauth_login() : bool
 {
     if (!addon_installed('hybridauth')) {
         return non_overridden__is_httpauth_login();

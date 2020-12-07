@@ -28,7 +28,7 @@ class CMSPmWrite
      * @param  AUTO_LINK $msg_id Message ID
      * @param  string $reason Reason for action
      */
-    public function report_pm($msg_id, $reason = '')
+    public function report_pm(int $msg_id, string $reason = '')
     {
         cms_verify_parameters_phpdoc();
 
@@ -54,7 +54,7 @@ class CMSPmWrite
      * @param  ?AUTO_LINK $post_id Post ID to reply to or forward (null: new message so N/A)
      * @return AUTO_LINK New post ID
      */
-    public function create_message($user_name_list, $subject, $message, $action, $post_id)
+    public function create_message(array $user_name_list, string $subject, string $message, int $action, ?int $post_id) : int
     {
         cms_verify_parameters_phpdoc();
 
@@ -173,7 +173,7 @@ class CMSPmWrite
      *
      * @param  AUTO_LINK $post_id Post ID
      */
-    public function delete_message($post_id)
+    public function delete_message(int $post_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -196,7 +196,7 @@ class CMSPmWrite
      *
      * @param  ?array $message_ids List of message IDs (null: all)
      */
-    public function mark_pm_unread($message_ids = null)
+    public function mark_pm_unread(?array $message_ids = null)
     {
         cms_verify_parameters_phpdoc();
 
@@ -227,7 +227,7 @@ class CMSPmWrite
      *
      * @param  ?array $message_ids List of message IDs (null: all)
      */
-    public function mark_pm_read($message_ids = null)
+    public function mark_pm_read(?array $message_ids = null)
     {
         cms_verify_parameters_phpdoc();
 

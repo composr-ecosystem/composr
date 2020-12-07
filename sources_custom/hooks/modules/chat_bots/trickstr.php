@@ -57,7 +57,7 @@ class Hook_chat_bot_trickstr
      * @param  string $string The message used
      * @return ?string Bot reply (null: bot does not handle the command)
      */
-    public function reply_to_any_communication($room_id, $string)
+    public function reply_to_any_communication(int $room_id, string $string) : ?string
     {
         if (!addon_installed('trickstr')) {
             return null;
@@ -96,7 +96,7 @@ class Hook_chat_bot_trickstr
      * @param  string $string The command used. This is just the chat message, so you can encode and recognise your own parameter scheme if you like.
      * @return ?string Bot reply (null: bot does not handle the command)
      */
-    protected function handle_commands($room_id, $string)
+    protected function handle_commands(int $room_id, string $string) : ?string
     {
         if (!addon_installed('trickstr')) {
             return null;

@@ -23,7 +23,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
      *
      * @return boolean Whether the hook is active.
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return (addon_installed('confluence')) && (get_option('confluence_subdomain') != '') && (get_option('confluence_space') != '');
     }
@@ -35,7 +35,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
      * @return integer A SITEMAP_NODE_* constant
      */
-    public function handles_page_link($page_link, $options)
+    public function handles_page_link(string $page_link, int $options) : int
     {
         $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
@@ -71,7 +71,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array List of node structures (null: working via callback).
      */
-    public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
+    public function get_virtual_nodes(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, bool $return_anyway = false) : ?array
     {
         $nodes = ($callback === null || $return_anyway) ? [] : null;
 
@@ -118,7 +118,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
      * @param  boolean $return_anyway Whether to return the structure even if there was a callback. Do not pass this setting through via recursion due to memory concerns, it is used only to gather information to detect and prevent parent/child duplication of default entry points.
      * @return ?array Node structure (null: working via callback / error).
      */
-    public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
+    public function get_node(string $page_link, ?string $callback = null, ?array $valid_node_types = null, ?int $child_cutoff = null, ?int $max_recurse_depth = null, int $recurse_level = 0, int $options = 0, string $zone = '_SEARCH', int $meta_gather = 0, ?array $row = null, bool $return_anyway = false) : ?array
     {
         $page = 'docs';
         $zone = get_page_zone($page);

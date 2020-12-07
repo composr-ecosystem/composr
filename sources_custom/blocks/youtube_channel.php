@@ -18,7 +18,7 @@ class Block_youtube_channel
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Jason Verhagen';
@@ -36,7 +36,7 @@ class Block_youtube_channel
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = ['block_youtube_channel__cache_on'];
@@ -50,7 +50,7 @@ class Block_youtube_channel
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -587,7 +587,7 @@ class Block_youtube_channel
  * @param  array $map The block parameters
  * @return array The cache signature
  */
-function block_youtube_channel__cache_on($map)
+function block_youtube_channel__cache_on(array $map) : array
 {
     return [
         array_key_exists('max_videos', $map) ? intval($map['max_videos']) : 25,

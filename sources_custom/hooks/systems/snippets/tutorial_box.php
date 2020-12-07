@@ -23,7 +23,7 @@ class Hook_snippet_tutorial_box
      *
      * @return Tempcode The snippet
      */
-    public function run()
+    public function run() : object
     {
         if (!addon_installed('composr_tutorials')) {
             return new Tempcode();

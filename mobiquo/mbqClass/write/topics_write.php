@@ -27,7 +27,7 @@ class CMSTopicWrite
      * @param  array $attachment_ids List of attachment IDs to include with the post
      * @return array A pair: new topic ID, validated status (binary)
      */
-    public function new_topic($forum_id, $title, $post, $attachment_ids)
+    public function new_topic(int $forum_id, string $title, string $post, array $attachment_ids) : array
     {
         cms_verify_parameters_phpdoc();
 

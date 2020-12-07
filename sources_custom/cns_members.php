@@ -19,7 +19,7 @@
  * @param  MEMBER $member_id The member
  * @return boolean The answer
  */
-function cns_is_httpauth_member($member_id)
+function cns_is_httpauth_member(int $member_id) : bool
 {
     $special_type = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
 

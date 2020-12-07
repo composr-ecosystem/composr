@@ -22,7 +22,7 @@
  * @param  array $member_ids A list of member IDs
  * @return array A pair: SQL WHERE clause to use on the activities table, a boolean indicating whether it is worth querying
  */
-function get_activity_querying_sql($viewer_member, $mode, $member_ids)
+function get_activity_querying_sql(int $viewer_member, string $mode, array $member_ids) : array
 {
     $proceed_selection = true; // There are some cases in which even glancing at the database is a waste of precious time.
 
@@ -192,7 +192,7 @@ function get_activity_querying_sql($viewer_member, $mode, $member_ids)
  * @param  boolean $use_inside_cms Whether the rendered activity will be shown in a live Composr (as opposed to being e-mailed, for example)
  * @return array Rendered activity
  */
-function render_activity($row, $use_inside_cms = true)
+function render_activity(array $row, bool $use_inside_cms = true) : array
 {
     $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
 

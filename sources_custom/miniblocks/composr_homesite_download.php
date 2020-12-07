@@ -24,7 +24,7 @@ if (!function_exists('do_release')) {
      * @param  ?string $version_must_be_newer_than The version this must be newer than (null: no check)
      * @return ?array Map of template variables (null: could not find)
      */
-    function do_release($version_pretty, $type_wanted, $prefix, $version_must_be_newer_than = null)
+    function do_release(?string $version_pretty, string $type_wanted, string $prefix, ?string $version_must_be_newer_than = null) : ?array
     {
         $latest_version_pretty = get_latest_version_pretty();
         if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {

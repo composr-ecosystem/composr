@@ -29,7 +29,7 @@ class CMSForumRead
      * @param  integer $recursion_depth Recursion depth
      * @return object Forum details/status; recursive Mobiquo structure
      */
-    public function forum_recursive_load($forum_id, $full_tree, $return_description, $order_sub_alpha = null, $all_groupings = null, $recursion_depth = 0)
+    public function forum_recursive_load(int $forum_id, bool $full_tree, bool $return_description, ?bool $order_sub_alpha = null, ?array $all_groupings = null, int $recursion_depth = 0) : object
     {
         cms_verify_parameters_phpdoc();
 
@@ -174,7 +174,7 @@ class CMSForumRead
      * @param  boolean $order_sub_alpha Whether to order alphabetically
      * @return array List of forum rows
      */
-    private function get_forum($forum_id, $order_sub_alpha)
+    private function get_forum(int $forum_id, bool $order_sub_alpha) : array
     {
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
@@ -203,7 +203,7 @@ class CMSForumRead
      *
      * @return array A pair: Number of forums participated in, Details of forums
      */
-    public function get_participated_forums()
+    public function get_participated_forums() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -242,7 +242,7 @@ class CMSForumRead
      * @param  array $forum_ids List of forum IDs
      * @return array Details of forums
      */
-    public function get_forum_status($forum_ids)
+    public function get_forum_status(array $forum_ids) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -271,7 +271,7 @@ class CMSForumRead
      *
      * @return array List of emoticon categories and emoticon details within
      */
-    public function get_smilies()
+    public function get_smilies() : array
     {
         cms_verify_parameters_phpdoc();
 

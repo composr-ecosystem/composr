@@ -23,7 +23,7 @@ class CMSForumWrite
      *
      * @param  AUTO_LINK $forum_id Forum ID
      */
-    public function mark_forum_as_read($forum_id)
+    public function mark_forum_as_read(int $forum_id)
     {
         cms_verify_parameters_phpdoc();
 

@@ -24,7 +24,7 @@ class Hook_addon_registry_community_billboard
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Fun and Games';
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Chris Graham';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [];
     }
@@ -74,7 +74,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr';
     }
@@ -84,7 +84,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'Community billboard messages, designed to work with eCommerce to allow people buy community billboard advertising on the website.';
     }
@@ -94,7 +94,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [
             'tut_points',
@@ -106,7 +106,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -122,7 +122,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images_custom/icons/menu/adminzone/audit/community_billboard.svg';
     }
@@ -132,7 +132,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/privacy/community_billboard.php',
@@ -172,7 +172,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array The mapping
      */
-    public function tpl_previews()
+    public function tpl_previews() : array
     {
         return [
             'templates/COMMUNITY_BILLBOARD_DETAILS.tpl' => 'administrative__community_billboard_manage_screen',
@@ -188,7 +188,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__community_billboard_screen()
+    public function tpl_preview__community_billboard_screen() : array
     {
         return [
             lorem_globalise(do_lorem_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', [
@@ -205,7 +205,7 @@ class Hook_addon_registry_community_billboard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__community_billboard_manage_screen()
+    public function tpl_preview__administrative__community_billboard_manage_screen() : array
     {
         require_css('forms');
 

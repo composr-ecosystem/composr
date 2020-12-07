@@ -23,7 +23,7 @@ class Hook_logs_sugarcrm
      *
      * @return array List of logs
      */
-    public function enumerate_logs()
+    public function enumerate_logs() : array
     {
         if (!addon_installed('sugarcrm')) {
             return [

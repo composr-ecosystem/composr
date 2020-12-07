@@ -163,7 +163,7 @@ class Hook_syndication_hybridauth_admin
      * @param  integer $type Enclosure type
      * @return object Enclosure
      */
-    protected function create_enclosure($url, $type)
+    protected function create_enclosure(string $url, int $type) : object
     {
         $enclosure = new \Hybridauth\Atom\Enclosure();
         $enclosure->type = $type;
@@ -193,7 +193,7 @@ class Hook_syndication_hybridauth_admin
      * @param  string $content_type Content type
      * @param  string $content_id Content ID
      */
-    public function unsyndicate_content($content_type, $content_id)
+    public function unsyndicate_content(string $content_type, string $content_id)
     {
         if (!addon_installed('hybridauth')) {
             return null;
@@ -247,7 +247,7 @@ class Hook_syndication_hybridauth_admin
      * @param  boolean $is_edit If these options are for an edit
      * @return Tempcode Syndication fields (or empty)
      */
-    public function get_syndication_option_fields($content_type, $is_edit)
+    public function get_syndication_option_fields(string $content_type, bool $is_edit) : object
     {
         if (!addon_installed('hybridauth')) {
             return new Tempcode();
@@ -296,7 +296,7 @@ class Hook_syndication_hybridauth_admin
      * @param  ?string $content_type The content type this is for (null: none)
      * @return array Syndication field context
      */
-    public function read_get_syndication_option_fields($content_type)
+    public function read_get_syndication_option_fields(?string $content_type) : array
     {
         if (!addon_installed('hybridauth')) {
             return [];

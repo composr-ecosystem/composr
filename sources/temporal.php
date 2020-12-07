@@ -108,7 +108,7 @@ function get_site_timezone() : string
  * Get a user's timezone.
  *
  * @param  ?MEMBER $member_id Member for which the date is being rendered (null: current user)
- * @return string Users timezone in "boring" format
+ * @return string User;s timezone in "boring" format
  */
 function get_users_timezone(?int $member_id = null) : string
 {
@@ -132,6 +132,7 @@ function get_users_timezone(?int $member_id = null) : string
     }
 
     // Get user timezone
+    $timezone_member = null;
     if ((get_forum_type() == 'cns') && (!is_guest($member_id)) && (get_option('enable_timezones') !== '0')) {
         $timezone_member = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_timezone_offset');
     } elseif ((function_exists('cms_admirecookie')) && (get_option('is_on_timezone_detection') === '1') && (get_option('enable_timezones') !== '0')) {
@@ -147,10 +148,10 @@ function get_users_timezone(?int $member_id = null) : string
                 $timezone_numeric = 0.0;
             }
             $timezone_member = convert_timezone_offset_to_formal_timezone($timezone_numeric);
-        } else {
-            $timezone_member = get_site_timezone();
         }
-    } else { // Ah, simple: site's default
+    }
+
+    if ($timezone_member === null) { // Ah, simple: site's default
         $timezone_member = get_site_timezone();
     }
 

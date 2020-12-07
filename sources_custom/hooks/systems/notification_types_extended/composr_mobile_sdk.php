@@ -44,7 +44,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
      * @return array Map of notification types (integer code to language string codename)
      * @ignore
      */
-    public function _get_available_notification_types($member_id_of)
+    public function _get_available_notification_types(?int $member_id_of) : array
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return [];
@@ -71,9 +71,9 @@ class Hook_notification_types_extended_composr_mobile_sdk
      * @param  MEMBER $to_member_id Member to send to
      * @param  ID_TEXT $notification_code The notification code to use
      * @param  boolean $aggressive_pre_search Doing a pre-search without actually having statistical search first (usually we return on this, but we may choose to force a setting here)
-     * @return integer Normal setting
+     * @return ?integer Normal setting (null: unknown/unavailable)
      */
-    public function _find_member_statistical_notification_type($to_member_id, $notification_code, $aggressive_pre_search)
+    public function _find_member_statistical_notification_type(int $to_member_id, string $notification_code, bool $aggressive_pre_search) : ?int
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return null;
@@ -105,7 +105,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
      * @param  boolean $for_member Is set for member (return by reference)
      * @return boolean Whether it is available
      */
-    public function _notification_setting_available($setting, $member_id, &$system_wide, &$for_member)
+    public function _notification_setting_available(int $setting, ?int $member_id, bool &$system_wide, bool &$for_member) : bool
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return false;
@@ -153,7 +153,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
      * @param  boolean $use_real_from Whether we will make a "reply to" direct -- we only do this if we're allowed to disclose e-mail addresses for this particular notification type (i.e. if it's a direct contact)
      * @return boolean New $no_cc setting
      */
-    public function dispatch_notification_to_member($to_member_id, $setting, $notification_code, $code_category, $subject, $message, $from_member_id, $priority, $no_cc, $attachments, $use_real_from)
+    public function dispatch_notification_to_member(int $to_member_id, int $setting, string $notification_code, ?string $code_category, string $subject, string $message, int $from_member_id, int $priority, bool $no_cc, array $attachments, bool $use_real_from) : bool
     {
         if (get_option('enable_notifications_instant_ios') === '1') {
             if (_notification_setting_available(A_INSTANT_IOS, $to_member_id)) {
@@ -188,7 +188,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
      * @param  LONG_TEXT $message Message body (in Comcode) (returned by reference)
      * @return array Custom properties to add to outbound message
      */
-    protected function improve_message_for_mobile(&$message)
+    protected function improve_message_for_mobile(string &$message) : array
     {
         $properties = [];
 

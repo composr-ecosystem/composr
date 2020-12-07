@@ -546,7 +546,7 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
  *
  * @return string Server path
  */
-function special_demonstratr_dir()
+function special_demonstratr_dir() : string
 {
     return get_file_base() . '/uploads/website_specific/compo.sr/demonstratr';
 }
@@ -556,7 +556,7 @@ function special_demonstratr_dir()
  *
  * @return Tempcode The result of execution
  */
-function get_site_categories()
+function get_site_categories() : object
 {
     $cats = ['Entertainment', 'Computers', 'Sport', 'Art', 'Music', 'Television/Movies', 'Businesses', 'Other', 'Informative/Factual', 'Political', 'Humour', 'Geographical/Regional', 'Games', 'Personal/Family', 'Hobbies', 'Culture/Community', 'Religious', 'Health'];
     cms_mb_sort($cats, SORT_NATURAL | SORT_FLAG_CASE);
@@ -569,7 +569,7 @@ function get_site_categories()
  * @param  string $cat The default selected item
  * @return Tempcode List
  */
-function create_selection_list_site_categories($cat)
+function create_selection_list_site_categories(string $cat) : object
 {
     $cat_list = new Tempcode();
     $categories = get_site_categories();
@@ -585,7 +585,7 @@ function create_selection_list_site_categories($cat)
  * @param  string $server The default selected item
  * @return Tempcode List
  */
-function create_selection_list_servers($server)
+function create_selection_list_servers(string $server) : object
 {
     $server_list = new Tempcode();
     $servers = find_all_servers();
@@ -600,7 +600,7 @@ function create_selection_list_servers($server)
  *
  * @return array A list of servers
  */
-function find_all_servers()
+function find_all_servers() : array
 {
     if (!file_exists(special_demonstratr_dir() . '/servers')) {
         return [''];
@@ -622,7 +622,7 @@ function find_all_servers()
  *
  * @param  ID_TEXT $server The server
  */
-function reset_base_config_file($server)
+function reset_base_config_file(string $server)
 {
     global $SITE_INFO;
 
@@ -637,7 +637,7 @@ if (!function_exists('git_repos')) {
      *
      * @return ?ID_TEXT Branch name (null: not in Git)
      */
-    function git_repos()
+    function git_repos() : ?string
     {
         \$path = __DIR__ . '/.git/HEAD';
         if (!is_file(\$path)) return '';
@@ -772,7 +772,7 @@ function reset_aliases()
  * @param  ID_TEXT $server The server to check load for
  * @return ?float The load (null: out of action)
  */
-function find_server_load($server)
+function find_server_load(string $server) : ?float
 {
     return 1; // Not currently supported, needs customising per-server
 
@@ -795,7 +795,7 @@ function find_server_load($server)
  *
  * @return ID_TEXT The best server
  */
-function choose_available_server()
+function choose_available_server() : string
 {
     $servers = find_all_servers();
     $lowest_load = null;
@@ -865,7 +865,7 @@ function do_backup_script()
  *
  * @return array List of expired sites
  */
-function find_expired_sites()
+function find_expired_sites() : array
 {
     return $GLOBALS['SITE_DB']->query('SELECT s_codename,s_server FROM ' . get_table_prefix() . 'sites WHERE s_add_time<' . strval(time() - 60 * 60 * 24 * DEMONSTRATR_DEMO_LAST_DAYS) . ' AND ' . db_string_not_equal_to('s_codename', 'shareddemo'));
 }
@@ -906,7 +906,7 @@ function demonstratr_delete_old_sites()
  * @param  ID_TEXT $codename The site
  * @param  boolean $bulk Whether this is a bulk delete (in which case we don't want to do a config file reset each time)
  */
-function demonstratr_delete_site($server, $codename, $bulk = false)
+function demonstratr_delete_site(string $server, string $codename, bool $bulk = false)
 {
     global $SITE_INFO;
 

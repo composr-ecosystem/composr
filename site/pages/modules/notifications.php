@@ -147,7 +147,7 @@ class Module_notifications
         list($notifications, $max_rows) = get_web_notifications($max, $start);
 
         require_code('templates_pagination');
-        $pagination = pagination(do_lang('NOTIFICATIONS'), $start, 'n_start', $max, 'n_max', $max_rows);
+        $pagination = pagination(do_lang_tempcode('NOTIFICATIONS'), $start, 'n_start', $max, 'n_max', $max_rows);
 
         return do_template('NOTIFICATION_BROWSE_SCREEN', [
             '_GUID' => '2b503097bcf97b3296c826e87131cf8e',

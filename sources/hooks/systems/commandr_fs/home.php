@@ -70,10 +70,10 @@ class Hook_commandr_fs_home
      * @param  array $meta_dir The current meta-directory path
      * @param  string $meta_root_node The root node of the current meta-directory
      * @param  string $new_dir_name The new directory name
-     * @param  array $commandr_fs A reference to the Commandr filesystem object
+     * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return boolean Success?
      */
-    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, array &$commandr_fs) : bool
+    public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         $new_dir_name = filter_naughty($new_dir_name);
         $path = get_custom_file_base() . '/uploads/filedump';

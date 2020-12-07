@@ -23,7 +23,7 @@ class CMSBoardStats
      *
      * @return array Map of details
      */
-    public function get_board_stat()
+    public function get_board_stat() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -42,7 +42,7 @@ class CMSBoardStats
      *
      * @return integer Total
      */
-    private function get_topics_count()
+    private function get_topics_count() : int
     {
         return $GLOBALS['FORUM_DRIVER']->get_num_topics();
     }
@@ -52,7 +52,7 @@ class CMSBoardStats
      *
      * @return integer Total
      */
-    private function get_posts_count()
+    private function get_posts_count() : int
     {
         return $GLOBALS['FORUM_DRIVER']->get_num_forum_posts();
     }
@@ -62,7 +62,7 @@ class CMSBoardStats
      *
      * @return integer Total
      */
-    private function get_members_count()
+    private function get_members_count() : int
     {
         return $GLOBALS['FORUM_DRIVER']->get_num_members();
     }
@@ -72,7 +72,7 @@ class CMSBoardStats
      *
      * @return integer Total
      */
-    private function get_active_members_count()
+    private function get_active_members_count() : int
     {
         $where = ['m_validated_email_confirm_code' => ''];
         if (addon_installed('unvalidated')) {
@@ -86,7 +86,7 @@ class CMSBoardStats
      *
      * @return integer Number of online users
      */
-    private function get_online_users_count()
+    private function get_online_users_count() : int
     {
         $users_online_time_seconds = intval(get_option('users_online_time')) * 60;
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval(time() - $users_online_time_seconds);
@@ -98,7 +98,7 @@ class CMSBoardStats
      *
      * @return integer Number of online guests
      */
-    private function get_online_guests_count()
+    private function get_online_guests_count() : int
     {
         $users_online_time_seconds = intval(get_option('users_online_time')) * 60;
         $guest_user_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();

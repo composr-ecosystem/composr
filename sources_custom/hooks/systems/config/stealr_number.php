@@ -23,7 +23,7 @@ class Hook_config_stealr_number
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'STEALR_NUMBER',
@@ -45,7 +45,7 @@ class Hook_config_stealr_number
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('stealr')) {
             return null;

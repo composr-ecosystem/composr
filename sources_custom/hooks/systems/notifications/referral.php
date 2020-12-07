@@ -24,7 +24,7 @@ class Hook_notification_referral extends Hook_Notification
      *
      * @return array List of codes (mapping between code names, and a pair: section and labelling for those codes)
      */
-    public function list_handled_codes()
+    public function list_handled_codes() : array
     {
         if (!addon_installed('referrals')) {
             return [];

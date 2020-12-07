@@ -24,7 +24,7 @@ class MobiquoServerJSON extends MobiquoServer
      * @param  mixed $raw_params Raw params
      * @return array Params as an array
      */
-    public function params_decode($raw_params)
+    public function params_decode($raw_params) : array
     {
         return $raw_params; // We decoded in dispatch_request(), as data is merged from $_GET and JSON
     }
@@ -34,7 +34,7 @@ class MobiquoServerJSON extends MobiquoServer
      *
      * @return string Method name
      */
-    public function get_method_name()
+    public function get_method_name() : string
     {
         if (isset($_GET['method_name'])) {
             return $_GET['method_name'];
@@ -126,7 +126,7 @@ class MobiquoServerJSON extends MobiquoServer
      * @set string boolean base64 int dateTime.iso8601 array struct
      * @return mixed Mobiquo result
      */
-    public function val($data, $type)
+    public function val($data, ?string $type)
     {
         if ($type === 'dateTime.iso8601') {
             $data = $this->date_encode($data);
@@ -147,7 +147,7 @@ class MobiquoServerJSON extends MobiquoServer
      * @param  integer $timezone Timezone hour offset
      * @return string iso8601 date
      */
-    private function date_encode($timet, $timezone = 0)
+    private function date_encode(int $timet, int $timezone = 0) : string
     {
         return gmdate('Y-m-d\TH:i:s', $timet + $timezone * 3600) . '+00:00';
     }

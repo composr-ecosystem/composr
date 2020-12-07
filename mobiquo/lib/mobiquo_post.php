@@ -26,7 +26,7 @@ class MobiquoServerPOST extends MobiquoServer
      * @param  mixed $raw_params Raw params
      * @return array Params as an array
      */
-    public function params_decode($raw_params)
+    public function params_decode($raw_params) : array
     {
         return $raw_params; // No decoding needed
     }
@@ -36,7 +36,7 @@ class MobiquoServerPOST extends MobiquoServer
      *
      * @return string Method name
      */
-    public function get_method_name()
+    public function get_method_name() : string
     {
         if (isset($_POST['method_name'])) {
             return $_POST['method_name'];
@@ -108,7 +108,7 @@ class MobiquoServerPOST extends MobiquoServer
      *
      * @return ?object The output Moquiquo server (null: none)
      */
-    private function get_output_server()
+    private function get_output_server() : ?object
     {
         if (isset($_POST['format'])) {
             $format = trim($_POST['format']);
@@ -139,7 +139,7 @@ class MobiquoServerPOST extends MobiquoServer
      * @set string boolean base64 int dateTime.iso8601 array struct
      * @return mixed Mobiquo result
      */
-    public function val($data, $type)
+    public function val($data, ?string $type)
     {
         if ($this->output_server === null) {
             if (is_string($data)) {
@@ -164,7 +164,7 @@ class MobiquoServerPOST extends MobiquoServer
      * @param  integer $timezone Timezone hour offset
      * @return string iso8601 date
      */
-    private function date_encode($timet, $timezone = 0)
+    private function date_encode(int $timet, int $timezone = 0) : string
     {
         return gmdate('Y-m-d\TH:i:s', $timet + $timezone * 3600) . '+00:00';
     }

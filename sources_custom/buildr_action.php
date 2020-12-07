@@ -27,7 +27,7 @@
  * @param  BINARY $replicateable Whether the item may be replicated via a new item copy source
  * @param  string $description Description for the item
  */
-function add_item_wrap($member_id, $name, $price, $not_infinite, $bribable, $healthy, $picture_url, $max_per_player, $replicateable, $description)
+function add_item_wrap(int $member_id, string $name, int $price, int $not_infinite, int $bribable, int $healthy, string $picture_url, int $max_per_player, int $replicateable, string $description)
 {
     if ($healthy != 1) {
         $healthy = 0;
@@ -98,7 +98,7 @@ function add_item_wrap($member_id, $name, $price, $not_infinite, $bribable, $hea
  * @param  BINARY $replicateable Whether the item may be replicated via a new item copy source
  * @param  string $description Description for the item
  */
-function add_item($name, $bribable, $healthy, $picture_url, $owner, $max_per_player, $replicateable, $description)
+function add_item(string $name, int $bribable, int $healthy, string $picture_url, int $owner, int $max_per_player, int $replicateable, string $description)
 {
     $GLOBALS['SITE_DB']->query_insert('w_itemdef', [
         'name' => $name,
@@ -120,7 +120,7 @@ function add_item($name, $bribable, $healthy, $picture_url, $owner, $max_per_pla
  * @param  integer $price The price of the item copy
  * @param  BINARY $not_infinite Whether the item is finite
  */
-function add_item_wrap_copy($member_id, $name, $price, $not_infinite)
+function add_item_wrap_copy(int $member_id, string $name, int $price, int $not_infinite)
 {
     if ($not_infinite != 1) {
         $not_infinite = 0;
@@ -180,7 +180,7 @@ function add_item_wrap_copy($member_id, $name, $price, $not_infinite)
  * @param  URLPATH $picture_url The room's picture
  * @param  BINARY $allow_portal Whether portals may be placed in the room
  */
-function add_room_wrap($member_id, $relative, $name, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $allow_portal)
+function add_room_wrap(int $member_id, int $relative, string $name, string $text, string $password_question, string $password_answer, string $password_fail_message, string $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal)
 {
     if ($locked_up != 1) {
         $locked_up = 0;
@@ -290,7 +290,7 @@ function add_room_wrap($member_id, $relative, $name, $text, $password_question, 
  * @param  MEMBER $owner Owner of the room
  * @param  BINARY $allow_portal Whether portals may be placed in the room
  */
-function add_room($name, $realm, $x, $y, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $owner, $allow_portal)
+function add_room(string $name, int $realm, int $x, int $y, string $text, string $password_question, string $password_answer, string $password_fail_message, string $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $owner, int $allow_portal)
 {
     $GLOBALS['SITE_DB']->query_insert('w_rooms', [
         'name' => $name,
@@ -331,7 +331,7 @@ function add_room($name, $realm, $x, $y, $text, $password_question, $password_an
  * @param  BINARY $private Whether the realm is private
  * @param  boolean $redirect Whether to redirect after
  */
-function add_realm_wrap($member_id, $name, $troll_name, $jail_name, $jail_text, $jail_pic_url, $jail_house_name, $jail_house_text, $jail_house_pic_url, $lobby_name, $lobby_text, $lobby_pic_url, $qa, $private, $redirect = true)
+function add_realm_wrap(?int $member_id, string $name, string $troll_name, string $jail_name, string $jail_text, string $jail_pic_url, string $jail_house_name, string $jail_house_text, string $jail_house_pic_url, string $lobby_name, string $lobby_text, string $lobby_pic_url, array $qa, int $private, bool $redirect = true)
 {
     if ($private != 1) {
         $private = 0;
@@ -413,7 +413,7 @@ function add_realm_wrap($member_id, $name, $troll_name, $jail_name, $jail_text, 
  * @param  MEMBER $owner The owner of the realm
  * @param  BINARY $private Whether the realm is private
  */
-function add_realm($id, $name, $troll_name, $qa, $owner, $private)
+function add_realm(int $id, string $name, string $troll_name, array $qa, int $owner, int $private)
 {
     $i = 1;
     $_qa = [
@@ -458,7 +458,7 @@ function add_realm($id, $name, $troll_name, $qa, $owner, $private)
  * @param  integer $end_location_x The X ordinate the portal goes to
  * @param  integer $end_location_y The Y ordinate the portal goes to
  */
-function add_portal_wrap($member_id, $name, $text, $end_location_realm, $end_location_x, $end_location_y)
+function add_portal_wrap(int $member_id, string $name, string $text, int $end_location_realm, int $end_location_x, int $end_location_y)
 {
     if ($end_location_realm == -1) {
         $end_location_realm = null;
@@ -532,7 +532,7 @@ function add_portal_wrap($member_id, $name, $text, $end_location_realm, $end_loc
  * @param  integer $end_location_x The X ordinate the portal comes from
  * @param  integer $end_location_y The Y ordinate the portal comes from
  */
-function add_portal($name, $text, $realm, $x, $y, $end_location_realm, $owner, $end_location_x, $end_location_y)
+function add_portal(string $name, string $text, int $realm, int $x, int $y, int $end_location_realm, int $owner, int $end_location_x, int $end_location_y)
 {
     $GLOBALS['SITE_DB']->query_insert('w_portals', [
         'name' => $name,
@@ -552,7 +552,7 @@ function add_portal($name, $text, $realm, $x, $y, $end_location_realm, $owner, $
  *
  * @param  string $name The name of the item
  */
-function delete_item_wrap($name)
+function delete_item_wrap(string $name)
 {
     $attempt_member = get_member();
     if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $name]) != $attempt_member)) {
@@ -588,7 +588,7 @@ function delete_item_wrap($name)
  *
  * @param  MEMBER $member_id The member, who is at the room being deleted
  */
-function delete_room_wrap($member_id)
+function delete_room_wrap(int $member_id)
 {
     list($realm, $x, $y) = get_loc_details($member_id);
 
@@ -618,7 +618,7 @@ function delete_room_wrap($member_id)
  * @param  integer $y The room's source Y ordinate
  * @param  AUTO_LINK $realm The room's source realm
  */
-function delete_room($x, $y, $realm)
+function delete_room(int $x, int $y, int $realm)
 {
     // Remove all items from room
     $GLOBALS['SITE_DB']->query_delete('w_items', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
@@ -638,7 +638,7 @@ function delete_room($x, $y, $realm)
  * @param  MEMBER $member_id The member, who is at the room the portal is in
  * @param  AUTO_LINK $dest_realm The portal's destination realm (identifies the portal from those in the room)
  */
-function delete_portal_wrap($member_id, $dest_realm)
+function delete_portal_wrap(int $member_id, int $dest_realm)
 {
     list($realm, $x, $y) = get_loc_details($member_id);
 
@@ -665,7 +665,7 @@ function delete_portal_wrap($member_id, $dest_realm)
  * @param  AUTO_LINK $realm The portal's source realm
  * @param  AUTO_LINK $dest_realm The portal's destination realm
  */
-function delete_portal($x, $y, $realm, $dest_realm)
+function delete_portal(int $x, int $y, int $realm, int $dest_realm)
 {
     // Delete from db
     $GLOBALS['SITE_DB']->query_delete('w_portals', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm], '', 1);
@@ -678,7 +678,7 @@ function delete_portal($x, $y, $realm, $dest_realm)
  *
  * @param  MEMBER $member_id The member who is in the room
  */
-function delete_realm_wrap($member_id)
+function delete_realm_wrap(int $member_id)
 {
     $attempt_member = $member_id;
 
@@ -708,7 +708,7 @@ function delete_realm_wrap($member_id)
  *
  * @param  AUTO_LINK $realm Realm to delete
  */
-function delete_realm($realm)
+function delete_realm(int $realm)
 {
     // Remove all items from realm
     $GLOBALS['SITE_DB']->query_delete('w_items', ['location_realm' => $realm]);
@@ -749,7 +749,7 @@ function delete_realm($realm)
  * @param  integer $new_y The room's X ordinate
  * @param  integer $new_realm The room's Y ordinate
  */
-function edit_room_wrap($member_id, $name, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $allow_portal, $new_owner, $new_x, $new_y, $new_realm)
+function edit_room_wrap(int $member_id, string $name, string $text, string $password_question, string $password_answer, string $password_fail_message, int $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal, int $new_owner, int $new_x, int $new_y, int $new_realm)
 {
     if ($locked_up != 1) {
         $locked_up = 0;
@@ -817,7 +817,7 @@ function edit_room_wrap($member_id, $name, $text, $password_question, $password_
  * @param  integer $new_y The room's X ordinate
  * @param  integer $new_realm The room's Y ordinate
  */
-function edit_room($name, $realm, $x, $y, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $allow_portal, $new_owner, $new_x, $new_y, $new_realm)
+function edit_room(string $name, int $realm, int $x, int $y, string $text, string $password_question, string $password_answer, string $password_fail_message, int $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal, int $new_owner, int $new_x, int $new_y, int $new_realm)
 {
     $GLOBALS['SITE_DB']->query_update('w_rooms', ['r_text' => $text, 'password_question' => $password_question, 'password_answer' => $password_answer, 'password_fail_message' => $password_fail_message, 'required_item' => $required_item, 'picture_url' => $picture_url, 'locked_up' => $locked_up, 'locked_down' => $locked_down, 'locked_right' => $locked_right, 'locked_left' => $locked_left, 'name' => $name, 'allow_portal' => $allow_portal, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm, 'owner' => $new_owner], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
     $GLOBALS['SITE_DB']->query_update('w_members', ['location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
@@ -834,7 +834,7 @@ function edit_room($name, $realm, $x, $y, $text, $password_question, $password_a
  * @param  BINARY $private Whether the realm is private
  * @param  ?MEMBER $new_owner The owner of the realm (null: same as $member_id)
  */
-function edit_realm_wrap($member_id, $name, $troll_name, $qa, $private, $new_owner)
+function edit_realm_wrap(int $member_id, string $name, string $troll_name, array $qa, int $private, ?int $new_owner)
 {
     if ($private != 1) {
         $private = 0;
@@ -869,7 +869,7 @@ function edit_realm_wrap($member_id, $name, $troll_name, $qa, $private, $new_own
  * @param  BINARY $private Whether the realm is private
  * @param  MEMBER $new_owner The owner of the realm
  */
-function edit_realm($realm, $name, $troll_name, $qa, $private, $new_owner)
+function edit_realm(int $realm, string $name, string $troll_name, array $qa, int $private, int $new_owner)
 {
     $_qa = [];
     for ($i = 1; $i <= 30; $i++) {
@@ -900,7 +900,7 @@ function edit_realm($realm, $name, $troll_name, $qa, $private, $new_owner)
  * @param  integer $new_y The X ordinate the portal comes from
  * @param  integer $new_realm The Y ordinate the portal comes from
  */
-function edit_portal_wrap($member_id, $dest_realm, $name, $text, $end_location_realm, $end_location_x, $end_location_y, $new_owner, $new_x, $new_y, $new_realm)
+function edit_portal_wrap(int $member_id, int $dest_realm, string $name, string $text, int $end_location_realm, int $end_location_x, int $end_location_y, int $new_owner, int $new_x, int $new_y, int $new_realm)
 {
     if ($name == '') {
         buildr_refresh_with_message(do_lang_tempcode('W_MISSING_NAME'), 'warn');
@@ -972,7 +972,7 @@ function edit_portal_wrap($member_id, $dest_realm, $name, $text, $end_location_r
  * @param  BINARY $replicateable Whether the item may be replicated via a new item copy source
  * @param  string $description Description for the item
  */
-function edit_item_wrap($member_id, $original_name, $name, $bribable, $healthy, $picture_url, $new_owner, $max_per_player, $replicateable, $description)
+function edit_item_wrap(int $member_id, string $original_name, string $name, int $bribable, int $healthy, string $picture_url, int $new_owner, int $max_per_player, int $replicateable, string $description)
 {
     if ($name == '') {
         buildr_refresh_with_message(do_lang_tempcode('W_MISSING_NAME'), 'warn');
@@ -1011,7 +1011,7 @@ function edit_item_wrap($member_id, $original_name, $name, $bribable, $healthy, 
  * @param  BINARY $replicateable Whether the item may be replicated via a new item copy source
  * @param  string $description Description for the item
  */
-function edit_item($name, $original_name, $bribable, $healthy, $picture_url, $new_owner, $max_per_player, $replicateable, $description)
+function edit_item(string $name, string $original_name, int $bribable, int $healthy, string $picture_url, int $new_owner, int $max_per_player, int $replicateable, string $description)
 {
     // Support reuploading
     if (strlen($picture_url) > 0) {
@@ -1045,7 +1045,7 @@ function edit_item($name, $original_name, $bribable, $healthy, $picture_url, $ne
  * @param  AUTO_LINK $new_realm The realm of the item copy
  * @param  MEMBER $member The owner of the item copy source
  */
-function edit_item_wrap_copy($member_id, $name, $price, $not_infinite, $new_x, $new_y, $new_realm, $member)
+function edit_item_wrap_copy(int $member_id, string $name, int $price, int $not_infinite, int $new_x, int $new_y, int $new_realm, int $member)
 {
     if (!($price > 0)) {
         $price = 0;
@@ -1099,7 +1099,7 @@ function edit_item_wrap_copy($member_id, $name, $price, $not_infinite, $new_x, $
  * @param  integer $y The new Y ordinate of the item copy
  * @param  AUTO_LINK $realm The new realm of the item copy
  */
-function edit_item_copy($member_id, $name, $not_infinite, $price, $new_x, $new_y, $new_realm, $x, $y, $realm)
+function edit_item_copy(int $member_id, string $name, int $not_infinite, int $price, int $new_x, int $new_y, int $new_realm, int $x, int $y, int $realm)
 {
     $GLOBALS['SITE_DB']->query_update('w_items', ['not_infinite' => $not_infinite, 'price' => $price, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'copy_owner' => $member_id, 'name' => $name]);
 }

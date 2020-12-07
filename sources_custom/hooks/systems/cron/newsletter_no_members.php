@@ -27,7 +27,7 @@ class Hook_cron_newsletter_no_members
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('newsletter_no_members')) {
             return null;
@@ -79,7 +79,7 @@ class Hook_cron_newsletter_no_members
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         if (!empty($this->new_members)) {
             $or_list = '';

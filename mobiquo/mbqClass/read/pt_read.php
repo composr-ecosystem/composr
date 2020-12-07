@@ -27,7 +27,7 @@ class CMSPtRead
      * @param  integer $max Maximum topics to show
      * @return array Tuple of details
      */
-    public function get_private_topics($start, $max)
+    public function get_private_topics(int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -97,7 +97,7 @@ class CMSPtRead
      * @param  boolean $return_html Return HTML
      * @return array Tuple of details
      */
-    public function get_private_topic($topic_id, $start, $max, $return_html)
+    public function get_private_topic(int $topic_id, int $start, int $max, bool $return_html) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -188,7 +188,7 @@ class CMSPtRead
      * @param  AUTO_LINK $post_id Post ID
      * @return string Body for new quoted post
      */
-    public function get_quote_for_private_topic($post_id)
+    public function get_quote_for_private_topic(int $post_id) : string
     {
         cms_verify_parameters_phpdoc();
 

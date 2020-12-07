@@ -25,7 +25,7 @@ class Hook_resource_meta_aware_tutorials_internal
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @return ?array Map of content-type info (null: disabled)
      */
-    public function info($zone = null, $get_extended_data = false)
+    public function info(?string $zone = null, bool $get_extended_data = false) : ?array
     {
         if (!addon_installed('composr_tutorials')) {
             return null;
@@ -122,7 +122,7 @@ class Hook_resource_meta_aware_tutorials_internal
  * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
  * @return ?mixed Content title (string or Tempcode, depending on $render_type) (null: could not generate)
  */
-function generate_tutorials_entry_title($row, $render_type = 1, $resource_fs_style = false)
+function generate_tutorials_entry_title(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);
@@ -147,7 +147,7 @@ function generate_tutorials_entry_title($row, $render_type = 1, $resource_fs_sty
  * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
  * @return ?mixed Content description (string or Tempcode, depending on $render_type) (null: could not generate)
  */
-function generate_tutorials_entry_description($row, $render_type = 1, $resource_fs_style = false)
+function generate_tutorials_entry_description(array $row, int $render_type = 1, bool $resource_fs_style = false)
 {
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);
@@ -170,7 +170,7 @@ function generate_tutorials_entry_description($row, $render_type = 1, $resource_
  * @param  array $row Database row of entry
  * @return string The image URL (blank: none)
  */
-function generate_tutorials_entry_image_url($row)
+function generate_tutorials_entry_image_url(array $row) : string
 {
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);

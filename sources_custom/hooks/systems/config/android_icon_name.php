@@ -23,7 +23,7 @@ class Hook_config_android_icon_name
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'ANDROID_ICON_NAME',
@@ -45,7 +45,7 @@ class Hook_config_android_icon_name
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('composr_mobile_sdk')) {
             return null;

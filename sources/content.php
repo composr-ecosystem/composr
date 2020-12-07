@@ -290,7 +290,7 @@ function content_get_details(string $content_type, string $content_id, bool $res
         return [null, null, $cma_info, null, null, null, $cma_ob];
     }
 
-    $falled_back_to_id = null;
+    $falled_back_to_id = false;
     $content_title = $cma_ob->get_title($content_row, FIELD_RENDER_PLAIN, $falled_back_to_id, $resource_fs_style);
 
     $submitter_id = $cma_ob->get_submitter($content_row);

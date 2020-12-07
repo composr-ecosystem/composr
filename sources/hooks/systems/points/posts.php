@@ -27,11 +27,11 @@ class Hook_points_posts
      * Get points earned for making posts; some of these will probably have been spent already. This only works for the cns forum type.
      *
      * @param  MEMBER $member_id The ID of the member we are getting points for
-     * @param  TIME $timestamp Time to get for
+     * @param  ?TIME $timestamp Time to get for (null: now)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return integer the number of points the member has
      */
-    public function total_points(int $member_id, int $timestamp, array $point_info) : int
+    public function total_points(int $member_id, ?int $timestamp, array $point_info) : int
     {
         if (get_forum_type() != 'cns') {
             return 0;

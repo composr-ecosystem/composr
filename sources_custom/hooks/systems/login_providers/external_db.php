@@ -24,7 +24,7 @@ class Hook_login_provider_external_db
      * @param  ?MEMBER $member_id Member ID already detected as logged in (null: none). May be a guest ID.
      * @return ?MEMBER Member ID now detected as logged in (null: none). May be a guest ID.
      */
-    public function try_login($member_id)
+    public function try_login(?int $member_id) : ?int
     {
         if (!addon_installed('external_db_login')) {
             return $member_id;

@@ -25,7 +25,7 @@ class Hook_cron_downloads_followup_email
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('downloads_followup_email')) {
             return null;
@@ -56,7 +56,7 @@ class Hook_cron_downloads_followup_email
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         /*
         If we just installed, reinstalled after uninstalling more than 2 days ago, or if the system scheduler

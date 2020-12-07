@@ -24,7 +24,7 @@ class CMSUserWrite
      * @param  string $signature New signature
      * @return string New signature, after any filtering
      */
-    public function update_signature($signature)
+    public function update_signature(string $signature) : string
     {
         cms_verify_parameters_phpdoc();
 
@@ -45,7 +45,7 @@ class CMSUserWrite
      * @param  MEMBER $user_id Member to ignore
      * @param  boolean $adding If the block is being added
      */
-    public function ignore_user($user_id, $adding)
+    public function ignore_user(int $user_id, bool $adding)
     {
         cms_verify_parameters_phpdoc();
 

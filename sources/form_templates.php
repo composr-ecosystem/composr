@@ -763,7 +763,7 @@ function form_input_username($pretty_name, $description, string $name, ?string $
         'DEFAULT' => $default,
         'AUTOCOMPLETE' => $autocomplete,
     ]);
-    return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex, $autocomplete);
+    return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
 
 /**
@@ -857,7 +857,7 @@ function form_input_email($pretty_name, $description, string $name, ?string $def
         'DEFAULT' => $default,
         'AUTOCOMPLETE' => $autocomplete,
     ]);
-    return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex, $autocomplete);
+    return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
 
 /**
@@ -1659,10 +1659,10 @@ function form_input_upload_multi_source($set_title, $set_description, object &$h
 /**
  * Make a preview URL absolute and return if it is an image.
  *
- * @param  URLPATH $url URL
+ * @param  ?URLPATH $url URL (null: none) (blank: none)
  * @return array A pair: Modified URL, whether it is an image
  */
-function make_previewable_url_absolute(string $url) : array
+function make_previewable_url_absolute(?string $url) : array
 {
     $_url = $url;
     $is_image = false;

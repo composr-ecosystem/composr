@@ -345,11 +345,11 @@ function directive_tempcode(string $directive, $content, array $parameters = [])
  * Perform a simple while loop, that can be inlined in an expression.
  *
  * @param  array $args The template bound parameters
- * @param  array $control_function The loop control function
- * @param  array $main_function The loop execution function
+ * @param  mixed $control_function The loop control function
+ * @param  mixed $main_function The loop execution function
  * @return string Result
  */
-function closure_while_loop(array $args, array $control_function, array $main_function) : string
+function closure_while_loop(array $args, callable $control_function, callable $main_function) : string
 {
     $out = '';
     while (call_user_func_array($control_function, $args)) {

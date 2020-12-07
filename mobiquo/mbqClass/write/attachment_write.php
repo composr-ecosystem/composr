@@ -25,7 +25,7 @@ class CMSAttachmentWrite
      *
      * @return array Details of the upload, with the 'result' key marking success status
      */
-    public function handle_upload_attach()
+    public function handle_upload_attach() : array
     {
         $member_id = get_member();
 
@@ -83,7 +83,7 @@ class CMSAttachmentWrite
      *
      * @return array Details of the upload, with the 'result' key marking success status
      */
-    public function handle_upload_avatar()
+    public function handle_upload_avatar() : array
     {
         $member_id = get_member();
 
@@ -135,7 +135,7 @@ class CMSAttachmentWrite
      * @param  ?AUTO_LINK $forum_id Forum ID (null: private topic)
      * @param  ?AUTO_LINK $post_id Post ID (null: no specific post)
      */
-    public function remove_attachment($attachment_id, $forum_id, $post_id)
+    public function remove_attachment(int $attachment_id, ?int $forum_id, ?int $post_id)
     {
         cms_verify_parameters_phpdoc();
 

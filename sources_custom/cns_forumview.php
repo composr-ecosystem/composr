@@ -22,7 +22,7 @@
  * @param  ?string $show_forum The forum name (null: do not show the forum name)
  * @return Tempcode The topic row
  */
-function cns_render_topic($topic, $has_topic_marking, $pt = false, $show_forum = null)
+function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = false, ?string $show_forum = null) : object
 {
     $ret = non_overridden__cns_render_topic($topic, $has_topic_marking, $pt, $show_forum);
 

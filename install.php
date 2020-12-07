@@ -296,7 +296,7 @@ if (@is_resource($DATADOTCMS_FILE)) {
  * @param  URLPATH $url The URL
  * @return URLPATH Corrected URL
  */
-function prepare_installer_url($url)
+function prepare_installer_url(string $url) : string
 {
     if (in_safe_mode()) {
         $url .= '&keep_safe_mode=1';
@@ -320,7 +320,7 @@ function prepare_installer_url($url)
  *
  * @return Tempcode Progress report / UI
  */
-function step_1()
+function step_1() : object
 {
     // To stop previous installs interfering
     require_code('caches3');
@@ -527,7 +527,7 @@ function step_1()
  *
  * @return Tempcode Progress report / UI
  */
-function step_2()
+function step_2() : object
 {
     if (!array_key_exists('default_lang', $_POST)) {
         $_POST['default_lang'] = 'EN';
@@ -562,7 +562,7 @@ function step_2()
  *
  * @return Tempcode Progress report / UI
  */
-function step_3()
+function step_3() : object
 {
     if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
@@ -736,7 +736,7 @@ function step_3()
  *
  * @return Tempcode Progress report / UI
  */
-function step_4()
+function step_4() : object
 {
     global $INSTALL_LANG;
 
@@ -1135,7 +1135,7 @@ function step_4()
  *
  * @return Tempcode Progress report / UI
  */
-function step_5()
+function step_5() : object
 {
     if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
@@ -1360,7 +1360,7 @@ function include_cns()
  *
  * @return array A pair: progress report/ui, and number of files uploaded so far (or -1 meaning all uploaded)
  */
-function step_5_ftp()
+function step_5_ftp() : array
 {
     global $FILE_ARRAY, $DIR_ARRAY;
 
@@ -1654,7 +1654,7 @@ function step_5_ftp()
  *
  * @return Tempcode Progress report / UI
  */
-function step_5_checks_a()
+function step_5_checks_a() : object
 {
     $log = new Tempcode();
 
@@ -1685,7 +1685,7 @@ function step_5_checks_a()
  *
  * @return Tempcode Progress report / UI
  */
-function step_5_checks_b()
+function step_5_checks_b() : object
 {
     $log = new Tempcode();
 
@@ -1705,7 +1705,7 @@ function step_5_checks_b()
  * @param  ?array $sections_to_run Which check sections to run (null: all)
  * @return array Warnings
  */
-function installer_health_checks($sections_to_run = null)
+function installer_health_checks(?array $sections_to_run = null) : array
 {
     $_warnings = [];
     if (addon_installed('health_check')) {
@@ -1734,7 +1734,7 @@ function installer_health_checks($sections_to_run = null)
  *
  * @return Tempcode Progress report / UI
  */
-function step_5_write_config()
+function step_5_write_config() : object
 {
     $log = new Tempcode();
 
@@ -1756,7 +1756,7 @@ if (!function_exists(\'git_repos\')) {
      *
      * @return ?ID_TEXT Branch name (null: not in Git)
      */
-    function git_repos()
+    function git_repos() : ?string
     {
         $path = __DIR__ . \'/.git/HEAD\';
         if (!is_file($path)) {
@@ -1951,7 +1951,7 @@ if (appengine_is_live()) {
  *
  * @return Tempcode Progress report / UI
  */
-function step_5_uninstall()
+function step_5_uninstall() : object
 {
     $log = new Tempcode();
 
@@ -1980,7 +1980,7 @@ function step_5_uninstall()
  *
  * @return Tempcode Progress report / UI
  */
-function step_5_core()
+function step_5_core() : object
 {
     $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta');
     $GLOBALS['SITE_DB']->create_table('db_meta', [
@@ -2106,7 +2106,7 @@ function step_5_core()
  *
  * @return Tempcode Progress report / UI
  */
-function step_5_core_2()
+function step_5_core_2() : object
 {
     global $INSTALL_LANG;
 
@@ -2223,7 +2223,7 @@ function step_5_core_2()
  *
  * @return Tempcode Progress report / UI
  */
-function step_6()
+function step_6() : object
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -2301,7 +2301,7 @@ function big_installation_common()
  *
  * @return Tempcode Progress report / UI
  */
-function step_7()
+function step_7() : object
 {
     big_installation_common();
 
@@ -2361,7 +2361,7 @@ function step_7()
  *
  * @return Tempcode Progress report / UI
  */
-function step_8()
+function step_8() : object
 {
     big_installation_common();
 
@@ -2393,7 +2393,7 @@ function step_8()
  *
  * @return Tempcode Progress report / UI
  */
-function step_9()
+function step_9() : object
 {
     big_installation_common();
 
@@ -2441,7 +2441,7 @@ function step_9()
  *
  * @return Tempcode Progress report / UI
  */
-function step_10()
+function step_10() : object
 {
     big_installation_common();
 
@@ -2497,7 +2497,7 @@ function step_10()
  *
  * @return Tempcode Progress report / UI
  */
-function step_10_populate_database()
+function step_10_populate_database() : object
 {
     $log = new Tempcode();
 
@@ -2531,7 +2531,7 @@ function step_10_populate_database()
  *
  * @return Tempcode Progress report / UI
  */
-function step_10_forum_stuff()
+function step_10_forum_stuff() : object
 {
     $log = new Tempcode();
 
@@ -2556,7 +2556,7 @@ function step_10_forum_stuff()
  *
  * @return Tempcode Redirect screen
  */
-function step_11()
+function step_11() : object
 {
     big_installation_common();
     reload_lang_fields();
@@ -2603,7 +2603,7 @@ function step_11()
  *
  * @param  string $codename The codename for the source module to load
  */
-function require_code($codename)
+function require_code(string $codename)
 {
     if ($codename == 'mail' || $codename == 'failure') {
         return;
@@ -2665,7 +2665,7 @@ function require_code($codename)
  * @param  array $parameters Array of parameters
  * @return ?object The object (null: could not create)
  */
-function object_factory($class, $failure_ok = false, $parameters = [])
+function object_factory(string $class, bool $failure_ok = false, array $parameters = []) : ?object
 {
     return new $class(...$parameters);
 }
@@ -2677,7 +2677,7 @@ function object_factory($class, $failure_ok = false, $parameters = [])
  * @param  string $value New value of option
  * @return ~string Old value of option (false: error)
  */
-function cms_ini_set($var, $value)
+function cms_ini_set(string $var, string $value)
 {
     $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
     if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
@@ -2886,7 +2886,7 @@ function handle_self_referencing_embedment()
  * @param  boolean $required Whether the option is required
  * @return Tempcode The option
  */
-function make_option($nice_name, $description, $name, $value, $hidden = false, $required = false)
+function make_option(object $nice_name, object $description, string $name, string $value, bool $hidden = false, bool $required = false) : object
 {
     if ($value === null) {
         $value = '';
@@ -2924,7 +2924,7 @@ function make_option($nice_name, $description, $name, $value, $hidden = false, $
  * @param  BINARY $value The default/current value of the option
  * @return Tempcode The list of usergroups
  */
-function make_tick($nice_name, $description, $name, $value)
+function make_tick(object $nice_name, object $description, string $name, int $value) : object
 {
     $input = do_template('INSTALLER_INPUT_TICK', ['CHECKED' => $value == 1, 'NAME' => $name]);
     return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '0723f86908f66da7f67ebc4cd07bff2e', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
@@ -2937,7 +2937,7 @@ function make_tick($nice_name, $description, $name, $value)
  * @param  string $description The codename of the example description language string (blank: none)
  * @return Tempcode The text
  */
-function example($example, $description = '')
+function example(string $example, string $description = '') : object
 {
     if ($example == '') {
         return do_lang_tempcode($description);
@@ -2959,7 +2959,7 @@ function example($example, $description = '')
  * @param  string $given What the user manually gave as the forum path (may be blank)
  * @return ?URLPATH The answer (null: could not find the forum)
  */
-function find_forum_path($given)
+function find_forum_path(string $given) : ?string
 {
     $filebase = getcwd();
     $paths = $GLOBALS['FORUM_DRIVER']->install_get_path_search_list();
@@ -2981,7 +2981,7 @@ function find_forum_path($given)
  * @param  boolean $php Whether just to get .php files
  * @return array A map of the contents (file=>dir)
  */
-function get_dir_contents($dir, $php = false)
+function get_dir_contents(string $dir, bool $php = false) : array
 {
     $out = [];
 
@@ -3064,7 +3064,7 @@ function get_dir_contents($dir, $php = false)
  *
  * @return string Default Composr table prefix
  */
-function get_default_table_prefix()
+function get_default_table_prefix() : string
 {
     // If we're running out of the main Git repository (approximation: test framework exists), then sandbox with a version-specific table prefix
     return file_exists(get_file_base() . '/_tests') ? ('cms' . strval(intval(cms_version_number())) . '_') : 'cms_';
@@ -3076,7 +3076,7 @@ function get_default_table_prefix()
  * @param  string $input The file in raw compressed form
  * @return string The decompressed file
  */
-function compress_filter($input)
+function compress_filter(string $input) : string
 {
     //return bzdecompress($input);
     return $input;

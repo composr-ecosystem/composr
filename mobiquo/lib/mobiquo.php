@@ -24,7 +24,7 @@ abstract class MobiquoServer
      * @param  mixed $raw_params Raw params
      * @return array Params as an array
      */
-    abstract public function params_decode($raw_params);
+    abstract public function params_decode($raw_params) : array;
 
     /**
      * Dispatch a server request.
@@ -39,7 +39,7 @@ abstract class MobiquoServer
      * @set string boolean base64 int dateTime.iso8601 array struct
      * @return mixed Mobiquo result
      */
-    abstract public function val($data, $type);
+    abstract public function val($data, string $type);
 
     /**
      * Wrap a result for the particular MobiquoServer server implementation.

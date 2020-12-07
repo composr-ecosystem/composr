@@ -31,7 +31,7 @@ class Hook_weather_openweathermap
      * @param  ?integer $max_days Maximum number of days to return if supported (null: no limit)
      * @return ?array A pair: Weather API current conditions in standardised simple format, Weather API forecast in standardised simple format (null: not available)
      */
-    public function lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null)
+    public function lookup(?string $location_search = null, ?float $latitude = null, ?float $longitude = null, string $units = 'metric', ?int $max_days = null) : ?array
     {
         if (!addon_installed('weather')) {
             return null;

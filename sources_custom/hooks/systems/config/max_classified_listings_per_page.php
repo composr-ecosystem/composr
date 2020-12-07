@@ -23,7 +23,7 @@ class Hook_config_max_classified_listings_per_page
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'MAX_CLASSIFIED_LISTINGS_PER_PAGE',
@@ -45,7 +45,7 @@ class Hook_config_max_classified_listings_per_page
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('classified_ads')) {
             return null;

@@ -25,7 +25,7 @@ class CMSSocialRead
      *
      * @return array Details of members
      */
-    public function get_following()
+    public function get_following() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -71,7 +71,7 @@ class CMSSocialRead
      *
      * @return array Details of members
      */
-    public function get_followers()
+    public function get_followers() : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -119,7 +119,7 @@ class CMSSocialRead
      * @param  integer $max Maximum results
      * @return array A pair: total notifications, notifications
      */
-    public function get_alerts($start, $max)
+    public function get_alerts(int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -178,7 +178,7 @@ class CMSSocialRead
      * @param  integer $max Maximum results
      * @return array A pair: total activity, activities
      */
-    public function get_activity($start, $max)
+    public function get_activity(int $start, int $max) : array
     {
         cms_verify_parameters_phpdoc();
 

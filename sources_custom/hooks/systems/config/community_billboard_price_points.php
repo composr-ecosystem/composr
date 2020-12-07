@@ -23,7 +23,7 @@ class Hook_config_community_billboard_price_points
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'PRICE_community_billboard_price_points',
@@ -46,7 +46,7 @@ class Hook_config_community_billboard_price_points
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('community_billboard')) {
             return null;

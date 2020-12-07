@@ -22,7 +22,7 @@ This file deals specifically with maintaining the bookables, not specific bookin
  *
  * @return Tempcode Booking do-next manager
  */
-function booking_do_next()
+function booking_do_next() : object
 {
     require_lang('calendar');
     require_code('templates_donext');
@@ -51,7 +51,7 @@ function booking_do_next()
  * @param  MEMBER $member_id Member to find for
  * @return array Reconstituted booking details structure to check
  */
-function get_member_booking_request($member_id)
+function get_member_booking_request(int $member_id) : array
 {
     $booking_ids = $GLOBALS['SITE_DB']->query_select('booking', ['id', 'booked_at'], ['member_id' => $member_id], 'ORDER BY booked_at DESC');
     return get_booking_request_from_db(collapse_1d_complexity('id', $booking_ids));
@@ -63,7 +63,7 @@ function get_member_booking_request($member_id)
  * @param  array $booking_ids List of booking IDs
  * @return array Reconstituted booking details structure to check
  */
-function get_booking_request_from_db($booking_ids)
+function get_booking_request_from_db(array $booking_ids) : array
 {
     $request = [];
 
@@ -105,7 +105,7 @@ function get_booking_request_from_db($booking_ids)
  * @param  array $request Booking details structure to check
  * @return boolean Whether any changes happened
  */
-function reconstitute_booking_requests(&$request)
+function reconstitute_booking_requests(array &$request) : bool
 {
     $changes = false;
 
@@ -184,7 +184,7 @@ function reconstitute_booking_requests(&$request)
  * @param  ?MEMBER $member_id Member ID (null: current user)
  * @return array Booking IDs
  */
-function get_future_member_booking_ids($member_id = null)
+function get_future_member_booking_ids(?int $member_id = null) : array
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -203,7 +203,7 @@ function get_future_member_booking_ids($member_id = null)
  *
  * @param  AUTO_LINK $id Booking ID
  */
-function delete_booking($id)
+function delete_booking(int $id)
 {
     $GLOBALS['SITE_DB']->query_delete('booking', ['id' => $id], '', 1);
     $GLOBALS['SITE_DB']->query_delete('booking_supplement', ['booking_id' => $id]);
@@ -214,7 +214,7 @@ function delete_booking($id)
  *
  * @return array Tuple: bookable_details, blacked, codes, supplements
  */
-function get_bookable_details_from_form()
+function get_bookable_details_from_form() : array
 {
     $active_from = post_param_date('active_from');
     $active_to = post_param_date('active_to');
@@ -288,7 +288,7 @@ function get_bookable_details_from_form()
  * @param  integer $num How many codes to generate
  * @return array The generated codes
  */
-function generate_random_booking_codes($num)
+function generate_random_booking_codes(int $num) : array
 {
     $codes = [];
     while (count($codes) < $num) {
@@ -302,7 +302,7 @@ function generate_random_booking_codes($num)
  *
  * @return array Tuple: Supplement details, list of bookables
  */
-function get_bookable_supplement_details_from_form()
+function get_bookable_supplement_details_from_form() : array
 {
     if (!isset($_POST['bookables'])) {
         $_POST['bookables'] = [];
@@ -325,7 +325,7 @@ function get_bookable_supplement_details_from_form()
  *
  * @return array Tuple: Blacked details, list of bookables
  */
-function get_bookable_blacked_details_from_form()
+function get_bookable_blacked_details_from_form() : array
 {
     if (!isset($_POST['bookables'])) {
         $_POST['bookables'] = [];
@@ -361,7 +361,7 @@ function get_bookable_blacked_details_from_form()
  * @param  ?MEMBER $submitter Submitting user (null: current user)
  * @return AUTO_LINK Bookable ID
  */
-function add_bookable($bookable_details, $codes, $blacked = [], $supplements = [], $add_date = null, $submitter = null)
+function add_bookable(array $bookable_details, array $codes, array $blacked = [], array $supplements = [], ?int $add_date = null, ?int $submitter = null) : int
 {
     if ($add_date === null) {
         $add_date = time();
@@ -432,7 +432,7 @@ function add_bookable($bookable_details, $codes, $blacked = [], $supplements = [
  * @param  ?array $blacked List of black-outs (null: no change)
  * @param  ?array $supplements List of supplements (null: no change)
  */
-function edit_bookable($bookable_id, $bookable_details, $codes, $blacked = null, $supplements = null)
+function edit_bookable(int $bookable_id, array $bookable_details, array $codes, ?array $blacked = null, ?array $supplements = null)
 {
     $_old_bookable = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $bookable_id], '', 1);
     if (!array_key_exists(0, $_old_bookable)) {
@@ -498,7 +498,7 @@ function edit_bookable($bookable_id, $bookable_details, $codes, $blacked = null,
  *
  * @param  AUTO_LINK $bookable_id Bookable ID
  */
-function delete_bookable($bookable_id)
+function delete_bookable(int $bookable_id)
 {
     if ($GLOBALS['SITE_DB']->query_select_value_if_there('booking', 'id', ['bookable_id' => $bookable_id]) !== null) {
         warn_exit(do_lang_tempcode('CANNOT_DELETE_BOOKINGS_EXIST'));
@@ -539,7 +539,7 @@ function delete_bookable($bookable_id)
  * @param  array $bookables List of bookables to associate to
  * @return AUTO_LINK Supplement ID
  */
-function add_bookable_supplement($details, $bookables = [])
+function add_bookable_supplement(array $details, array $bookables = []) : int
 {
     /*require_code('global4');   $title is not actually unique enough to do this
     prevent_double_submit('ADD_BOOKABLE_SUPPLEMENT', null, $title);*/
@@ -569,7 +569,7 @@ function add_bookable_supplement($details, $bookables = [])
  * @param  array $details Supplement details
  * @param  array $bookables List of bookables to associate to
  */
-function edit_bookable_supplement($supplement_id, $details, $bookables = [])
+function edit_bookable_supplement(int $supplement_id, array $details, array $bookables = [])
 {
     $title = $details['title'];
 
@@ -601,7 +601,7 @@ function edit_bookable_supplement($supplement_id, $details, $bookables = [])
  *
  * @param  AUTO_LINK $supplement_id Supplement ID
  */
-function delete_bookable_supplement($supplement_id)
+function delete_bookable_supplement(int $supplement_id)
 {
     $_old_supplement = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['*'], ['id' => $supplement_id], '', 1);
     if (!array_key_exists(0, $_old_supplement)) {
@@ -626,7 +626,7 @@ function delete_bookable_supplement($supplement_id)
  * @param  array $bookables List of bookables to associate to
  * @return AUTO_LINK Blacked ID
  */
-function add_bookable_blacked($details, $bookables = [])
+function add_bookable_blacked(array $details, array $bookables = []) : int
 {
     $blacked_explanation = $details['blacked_explanation'];
 
@@ -653,7 +653,7 @@ function add_bookable_blacked($details, $bookables = [])
  * @param  array $details Blacked details
  * @param  ?array $bookables List of bookables to associate to (null: no change)
  */
-function edit_bookable_blacked($blacked_id, $details, $bookables = null)
+function edit_bookable_blacked(int $blacked_id, array $details, ?array $bookables = null)
 {
     $blacked_explanation = $details['blacked_explanation'];
 
@@ -685,7 +685,7 @@ function edit_bookable_blacked($blacked_id, $details, $bookables = null)
  *
  * @param  AUTO_LINK $blacked_id Blacked ID
  */
-function delete_bookable_blacked($blacked_id)
+function delete_bookable_blacked(int $blacked_id)
 {
     $_old_blacked = $GLOBALS['SITE_DB']->query_select('bookable_blacked', ['*'], ['id' => $blacked_id], '', 1);
     if (!array_key_exists(0, $_old_blacked)) {

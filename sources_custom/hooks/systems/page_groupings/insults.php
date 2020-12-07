@@ -25,7 +25,7 @@ class Hook_page_groupings_insults
      * @param  boolean $extensive_docs Whether to use extensive documentation tooltips, rather than short summaries
      * @return array List of tuple of links (page grouping, icon, do-next-style linking data), label, help (optional) and/or nulls
      */
-    public function run($member_id = null, $extensive_docs = false)
+    public function run(?int $member_id = null, bool $extensive_docs = false) : array
     {
         if (!addon_installed('bantr')) {
             return [];

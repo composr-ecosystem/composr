@@ -30,7 +30,7 @@ class Hook_login_providers_direct_auth_external_db
      * @param  boolean $cookie_login Whether this is a cookie login, determines how the hashed password is treated for the value passed in
      * @return ?array A map of 'id' and 'error'. If 'id' is null, an error occurred and 'error' is set (null: no action by this hook)
      */
-    public function try_login($username, $user_id, $password_hashed, $password_raw, $cookie_login = false)
+    public function try_login(?string $username, ?int $user_id, string $password_hashed, string $password_raw, bool $cookie_login = false) : ?array
     {
         if (!addon_installed('external_db_login')) {
             return null;

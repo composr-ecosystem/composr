@@ -25,7 +25,7 @@ class Hook_cron_site_cleanup
      * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info($last_run, $calculate_num_queued)
+    public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('composr_homesite')) {
             return null;
@@ -56,7 +56,7 @@ class Hook_cron_site_cleanup
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
-    public function run($last_run)
+    public function run(?int $last_run)
     {
         require_lang('sites');
         demonstratr_delete_old_sites();

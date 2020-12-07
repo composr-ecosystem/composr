@@ -23,7 +23,7 @@ class Hook_config_tapatalk_enable_sync_user
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TAPATALK_ENABLE_SYNC_USER',
@@ -45,7 +45,7 @@ class Hook_config_tapatalk_enable_sync_user
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('cns_tapatalk')) {
             return null;

@@ -27,7 +27,7 @@ class CMSAccountRead
      * @param  integer $max Maximum results
      * @return array List of members
      */
-    public function sync_members($start, $max)
+    public function sync_members(int $start, int $max) : array
     {
         $api_key = get_option('tapatalk_api_key');
 
@@ -64,7 +64,7 @@ class CMSAccountRead
      * @param  EMAIL $email E-mail address
      * @return ?array Map of details (null: not found)
      */
-    public function prefetch_account($email)
+    public function prefetch_account(string $email) : ?array
     {
         $user_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
         if ($user_id === null) {
@@ -86,7 +86,7 @@ class CMSAccountRead
      *
      * @return array List of custom fields
      */
-    public function get_custom_register_fields()
+    public function get_custom_register_fields() : array
     {
         $custom_register_fields = [];
         $_custom_register_fields = $GLOBALS['FORUM_DB']->query_select(

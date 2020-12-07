@@ -202,6 +202,11 @@ function assign_refresh($url, float $multiplier = 0.0)
         $REFRESH_URL[1] = 2.5 * $multiplier;
     } else {
         // HTTP redirect
+
+        if ($GLOBALS['DEV_MODE']) {
+            header('Explicit redirect');
+        }
+
         header('Location: ' . escape_header($url));
         if (strpos($url, '#') === false) {
             $GLOBALS['QUICK_REDIRECT'] = true;

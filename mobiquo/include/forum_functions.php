@@ -37,7 +37,7 @@ define('RENDER_POST_SEARCH', 32);
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether there are
  */
-function is_topic_unread($topic_id, $member_id = null, $topic_details = null)
+function is_topic_unread(int $topic_id, ?int $member_id = null, ?array $topic_details = null) : bool
 {
     return !cns_has_read_topic($topic_id, ($topic_details === null) ? null : $topic_details['t_cache_last_time'], $member_id);
 }
@@ -51,7 +51,7 @@ function is_topic_unread($topic_id, $member_id = null, $topic_details = null)
  * @param  boolean $only_read_one Whether to give up counting after hitting one
  * @return integer The count
  */
-function get_num_unread_topics($forum_id, $subscribed_only = false, $member_id = null, $only_read_one = false)
+function get_num_unread_topics(?int $forum_id, bool $subscribed_only = false, ?int $member_id = null, bool $only_read_one = false) : int
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -93,7 +93,7 @@ function get_num_unread_topics($forum_id, $subscribed_only = false, $member_id =
  * @param  ?MEMBER $member_id Member to check for (null: current member)
  * @return boolean Whether there are
  */
-function is_forum_unread($forum_id, $member_id = null)
+function is_forum_unread(int $forum_id, ?int $member_id = null) : bool
 {
     return (get_num_unread_topics($forum_id, false, $member_id, true) > 0);
 }
@@ -107,7 +107,7 @@ function is_forum_unread($forum_id, $member_id = null)
  * @param  ?array $details Resource row (null: lookup)
  * @return boolean Whether it is
  */
-function is_approved($type, $id, $details = null)
+function is_approved(string $type, int $id, ?array $details = null) : bool
 {
     if (!addon_installed('unvalidated')) {
         return true;
@@ -135,7 +135,7 @@ function is_approved($type, $id, $details = null)
  * @param  ?array $topic_details Topic row (null: lookup)
  * @return boolean Whether it is
  */
-function is_sticky_topic($id, $topic_details = null)
+function is_sticky_topic(int $id, ?array $topic_details = null) : bool
 {
     if ($topic_details !== null) {
         $pinned = $topic_details['t_pinned'];
@@ -152,7 +152,7 @@ function is_sticky_topic($id, $topic_details = null)
  * @param  ?MEMBER $member_id Member to check for (null: current member)
  * @return boolean Whether they are are
  */
-function get_forum_subscription_status($forum_id, $member_id = null)
+function get_forum_subscription_status(int $forum_id, ?int $member_id = null) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -169,7 +169,7 @@ function get_forum_subscription_status($forum_id, $member_id = null)
  * @param  ?MEMBER $member_id Member to check for (null: current member)
  * @return boolean Whether they are are
  */
-function get_topic_subscription_status($topic_id, $member_id = null)
+function get_topic_subscription_status(int $topic_id, ?int $member_id = null) : bool
 {
     if (is_guest($member_id)) {
         return false;
@@ -191,7 +191,7 @@ function get_topic_subscription_status($topic_id, $member_id = null)
  * @param  ?AUTO_LINK $position Post position to scroll to (only used if $start is not null) (null: N/A)
  * @return object Mobiquo array
  */
-function render_topic_to_tapatalk($topic_id, $return_html, $start, $max, $details = null, $behaviour_modifiers = 0, $position = null)
+function render_topic_to_tapatalk(int $topic_id, bool $return_html, ?int $start, ?int $max, ?array $details = null, int $behaviour_modifiers = 0, ?int $position = null) : object
 {
     $member_id = get_member();
 
@@ -355,7 +355,7 @@ function render_topic_to_tapatalk($topic_id, $return_html, $start, $max, $detail
  * @param  AUTO_LINK $forum_id Forum ID
  * @return array Breadcrumb chain of Mobiquo structures
  */
-function build_forum_breadcrumbs($forum_id)
+function build_forum_breadcrumbs(int $forum_id) : array
 {
     $forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_name', 'f_parent_forum'], ['id' => $forum_id], '', 1);
 
@@ -379,7 +379,7 @@ function build_forum_breadcrumbs($forum_id)
  * @param  ?MEMBER $member_id The member ID (null: current member).
  * @return string The WHERE clause.
  */
-function tapatalk_get_topic_where($topic_id, $member_id = null)
+function tapatalk_get_topic_where(int $topic_id, ?int $member_id = null) : string
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -403,7 +403,7 @@ function tapatalk_get_topic_where($topic_id, $member_id = null)
  * @param  ?array $topic_details Details of the topic (null: assume not a PT, so only look at post participants)
  * @return array List of member IDs
  */
-function get_topic_participant_uids($topic_id, $max, $topic_details = null)
+function get_topic_participant_uids(int $topic_id, int $max, ?array $topic_details = null) : array
 {
     $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
@@ -429,7 +429,7 @@ function get_topic_participant_uids($topic_id, $max, $topic_details = null)
  * @param  ?array $topic_details Details of the topic (null: assume not a PT, so only look at post participants)
  * @return array List of maps of member details
  */
-function get_topic_participants($topic_id, $max = null, $topic_details = null)
+function get_topic_participants(int $topic_id, ?int $max = null, ?array $topic_details = null) : array
 {
     require_code('users2');
 
@@ -457,7 +457,7 @@ function get_topic_participants($topic_id, $max = null, $topic_details = null)
  * @param  integer $behaviour_modifiers A bitmask of RENDER_POST_* settings
  * @return object Mobiquo array
  */
-function render_post_to_tapatalk($post_id, $return_html, $post_row = null, $behaviour_modifiers = 0)
+function render_post_to_tapatalk(int $post_id, bool $return_html, ?array $post_row = null, int $behaviour_modifiers = 0) : object
 {
     if ($post_row === null) {
         // Load post row back
@@ -628,7 +628,7 @@ function render_post_to_tapatalk($post_id, $return_html, $post_row = null, $beha
  * @param  boolean $return_html Return HTML
  * @return string Rendered post
  */
-function prepare_post_for_tapatalk($post, $return_html = false)
+function prepare_post_for_tapatalk(array $post, bool $return_html = false) : string
 {
     $content = '';
 
@@ -739,7 +739,7 @@ function prepare_post_for_tapatalk($post, $return_html = false)
  * @param  ?string $content Write content changes here (null: Don't)
  * @return array List of attachment details
  */
-function get_post_attachments($post_id, $attachment_id = null, $non_image_only = false, &$content = null)
+function get_post_attachments(?int $post_id, ?int $attachment_id = null, bool $non_image_only = false, ?string &$content = null) : array
 {
     require_code('files');
     require_code('images');
@@ -787,7 +787,7 @@ function get_post_attachments($post_id, $attachment_id = null, $non_image_only =
  * @param  array $attachment_row Attachment row
  * @return array Attachment details
  */
-function _get_attachment($attachment_row)
+function _get_attachment(array $attachment_row) : array
 {
     $url = $attachment_row['a_url'];
     if (url_is_local($url)) {
@@ -830,7 +830,7 @@ function _get_attachment($attachment_row)
  * @param  array $_attachments List of array attachments
  * @return array List of Mobiquo structures containing attachments
  */
-function render_tapatalk_attachments($_attachments)
+function render_tapatalk_attachments(array $_attachments) : array
 {
     $attachments = [];
     foreach ($_attachments as $att) {
@@ -853,7 +853,7 @@ function render_tapatalk_attachments($_attachments)
  * @param  boolean $topic_description Put a preference on topic description
  * @return string Post text
  */
-function generate_shortened_post($post_row, $topic_description = false)
+function generate_shortened_post(array $post_row, bool $topic_description = false) : string
 {
     // Generate short content, according to Tapatalk's rules
 
@@ -887,7 +887,7 @@ function generate_shortened_post($post_row, $topic_description = false)
  * @param  ID_TEXT $id Resource ID
  * @return ?array Tuple of moderation details (from f_moderator_logs table) (null: could not get)
  */
-function get_last_moderation_details($type, $id)
+function get_last_moderation_details(string $type, string $id) : ?array
 {
     if (!has_actual_page_access(get_member(), 'admin_actionlog')) {
         return null;
@@ -906,7 +906,7 @@ function get_last_moderation_details($type, $id)
  * @param  URLPATH $url URL
  * @return ?array IDs in a map structure (null: not found)
  */
-function get_id_by_url($url)
+function get_id_by_url(string $url) : ?array
 {
     $page_link = url_to_page_link($url);
     if ($page_link == '') {

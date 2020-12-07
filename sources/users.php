@@ -306,7 +306,7 @@ function get_member(bool $quick_only = false) : int
         // Run hooks, if any exist
         $hooks = find_all_hook_obs('systems', 'upon_login', 'Hook_upon_login_');
         foreach ($hooks as $ob) {
-            $ob->run(false, null, $member_id); // false means "not a new login attempt"
+            $ob->run(false, $GLOBALS['FORUM_DRIVER']->get_username($member_id), $member_id); // false means "not a new login attempt"
         }
     }
 

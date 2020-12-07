@@ -635,9 +635,10 @@ abstract class DatabaseDriver
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension
      * @return ?mixed The results (null: no results), or the insert ID
      */
-    abstract public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false);
+    abstract public function query(string $query, $connection, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false, bool $save_as_volatile = false);
 
     /**
      * Insert a update a row (depending on whether a row with the key exists already).
@@ -1543,9 +1544,9 @@ class DatabaseConnector
      * @param  integer $start The starting row to select
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
-     * @return array The results (empty array: empty result set)
+     * @return ?array The results (empty array: empty result set) (null: error)
      */
-    public function query_select(string $table, array $select = ['*'], array $where_map = [], string $end = '', ?int $max = null, int $start = 0, bool $fail_ok = false, ?array $lang_fields = null) : array
+    public function query_select(string $table, array $select = ['*'], array $where_map = [], string $end = '', ?int $max = null, int $start = 0, bool $fail_ok = false, ?array $lang_fields = null) : ?array
     {
         $full_table = $this->table_prefix . $table;
 

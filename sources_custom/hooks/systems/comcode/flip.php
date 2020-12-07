@@ -23,7 +23,7 @@ class Hook_comcode_flip
      *
      * @return ?array Fake Custom Comcode row (null: disabled)
      */
-    public function get_tag()
+    public function get_tag() : ?array
     {
         if (!addon_installed('comcode_flip_tag')) {
             return null;

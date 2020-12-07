@@ -80,7 +80,7 @@ class Hook_admin_setupwizard_installprofiles_mycustomprofile
      *
      * @return ?array Map of installprofile details (null: profile is unavailable)
      */
-    public function info()
+    public function info() : ?array
     {
         if (!addon_installed('setupwizard')) {
             return null;
@@ -96,7 +96,7 @@ class Hook_admin_setupwizard_installprofiles_mycustomprofile
      *
      * @return array Triple: List of addons in the profile, Separated list of ones to show under advanced, Ones we really are shunning
      */
-    public function get_addon_list()
+    public function get_addon_list() : array
     {
         return [
             [
@@ -129,7 +129,7 @@ $profile .= <<<END
      *
      * @return array Map of default settings
      */
-    public function field_defaults()
+    public function field_defaults() : array
     {
         return [
 
@@ -161,7 +161,7 @@ $profile .= <<<END
      *
      * @return array Details of what blocks are wanted
      */
-    public function default_blocks()
+    public function default_blocks() : array
     {
         return [
             BLOCK_POSITION_MAIN => [
@@ -196,7 +196,7 @@ $profile .= <<<END
      *
      * @return array Details of what block options are wanted
      */
-    public function block_options()
+    public function block_options() : array
     {
         return [
 

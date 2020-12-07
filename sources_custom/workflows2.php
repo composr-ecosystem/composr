@@ -27,7 +27,7 @@
  * @param  ?integer $position The position in the workflow that this approval point will have. null adds it to the end (null: default)
  * @return AUTO_LINK Requirement ID
  */
-function add_approval_point_to_workflow($bits, $workflow_id, $position = null)
+function add_approval_point_to_workflow(array $bits, int $workflow_id, ?int $position = null) : int
 {
     // Now see what position we're adding to. We either need to determine the next position (if we've been given null), or else just dump
     // the position in the record (we don't assume that positions are unique in any case, points with the same position will appear
@@ -54,7 +54,7 @@ function add_approval_point_to_workflow($bits, $workflow_id, $position = null)
  *
  * @param  AUTO_LINK $id The ID of the workflow to delete
  */
-function delete_workflow($id)
+function delete_workflow(int $id)
 {
     // Grab all of the content in this workflow
     $content = $GLOBALS['SITE_DB']->query_select('workflow_content', ['id', 'content_type', 'content_id'], ['workflow_id' => $id]);
@@ -86,7 +86,7 @@ function delete_workflow($id)
  *
  * @param  AUTO_LINK $name The workflow approval point ID
  */
-function delete_approval_point($name)
+function delete_approval_point(int $name)
 {
     // Grab all content awaiting this approval
     $content = $GLOBALS['SITE_DB']->query_select('workflow_content_status', ['status_code', 'workflow_content_id'], ['workflow_approval_point_id' => $name]);

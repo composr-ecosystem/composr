@@ -23,7 +23,7 @@ class Hook_config_jestr_string_changes
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'JESTER_STRING_CHANGES',
@@ -45,7 +45,7 @@ class Hook_config_jestr_string_changes
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('jestr')) {
             return null;

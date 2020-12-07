@@ -23,7 +23,7 @@ class Module_booking
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -57,7 +57,7 @@ class Module_booking
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('bookable', [
@@ -177,7 +177,7 @@ class Module_booking
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('booking')) {
             return null;
@@ -195,7 +195,7 @@ class Module_booking
      *
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run() : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -239,7 +239,7 @@ class Module_booking
      *
      * @return Tempcode The result of execution
      */
-    public function run()
+    public function run() : object
     {
         require_code('booking');
         require_code('cns_join');
@@ -275,7 +275,7 @@ class Module_booking
      *
      * @return Tempcode The result of execution
      */
-    public function choose_bookables_and_dates()
+    public function choose_bookables_and_dates() : object
     {
         $query = 'SELECT * FROM ' . get_table_prefix() . 'bookable WHERE enabled=1';
         $filter = get_param_string('filter', '*', INPUT_FILTER_GET_COMPLEX);
@@ -460,7 +460,7 @@ class Module_booking
      * @param  array $bookable Details of the particular bookable
      * @return array Tuple of details: number wanted, date from, date to)
      */
-    public function _read_chosen_bookable_settings($bookable)
+    public function _read_chosen_bookable_settings(array $bookable) : array
     {
         $quantity = post_param_integer('bookable_' . strval($bookable['id']) . '_quantity', 0);
         $date_from = post_param_date('bookable_' . strval($bookable['id']) . '_date_from');
@@ -486,7 +486,7 @@ class Module_booking
      *
      * @return Tempcode The result of execution
      */
-    public function flesh_out()
+    public function flesh_out() : object
     {
         // Check booking: redirect to last step as re-entrant if not valid
         $request = get_booking_request_from_form();
@@ -553,7 +553,7 @@ class Module_booking
      *
      * @return Tempcode The result of execution
      */
-    public function join_or_login()
+    public function join_or_login() : object
     {
         // Check login: skip to thanks if logged in
         if (get_option('member_booking_only') == '1') {
@@ -598,7 +598,7 @@ class Module_booking
      *
      * @return Tempcode The result of execution
      */
-    public function thanks()
+    public function thanks() : object
     {
         // Finish join operation, if applicable
         if ((is_guest()) && (get_option('member_booking_only') == '1')) {

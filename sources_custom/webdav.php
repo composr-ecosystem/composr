@@ -110,7 +110,7 @@ function webdav_script()
  *
  * @param  string $str String to log
  */
-function webdav_log($str)
+function webdav_log(string $str)
 {
     global $WEBDAV_LOG_FILE;
     if ($WEBDAV_LOG_FILE !== null) {

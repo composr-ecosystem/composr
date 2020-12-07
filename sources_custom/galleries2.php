@@ -30,7 +30,7 @@ function init__galleries2($code)
         "log_it('ADD_IMAGE', strval(\$id), \$title);",
         "
         require_code('workflows');
-        handle_position_in_workflow_auto(\$validated, 'image', \$id, 'gallery', \$cat, \$title);
+        handle_position_in_workflow_auto(\$validated, 'image', strval(\$id), 'gallery', \$cat, \$title);
 
         <ditto>
         ",
@@ -42,7 +42,7 @@ function init__galleries2($code)
         "log_it('ADD_VIDEO', strval(\$id), \$title);",
         "
         require_code('workflows');
-        handle_position_in_workflow_auto(\$validated, 'video', \$id, 'gallery', \$cat, \$title);
+        handle_position_in_workflow_auto(\$validated, 'video', strval(\$id), 'gallery', \$cat, \$title);
 
         <ditto>
         ",

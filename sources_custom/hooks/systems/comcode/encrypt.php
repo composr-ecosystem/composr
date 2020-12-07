@@ -23,7 +23,7 @@ class Hook_comcode_encrypt
      *
      * @return ?array Fake Custom Comcode row (null: disabled)
      */
-    public function get_tag()
+    public function get_tag() : ?array
     {
         if (!addon_installed('password_censor')) {
             return null;

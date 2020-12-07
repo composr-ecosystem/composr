@@ -27,11 +27,11 @@ class Hook_points_visiting
      * Get points earned for visiting the website; some of these will probably have been spent already.
      *
      * @param  MEMBER $member_id The ID of the member we are getting points for
-     * @param  TIME $timestamp Time to get for
+     * @param  ?TIME $timestamp Time to get for (null: now)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return integer the number of points the member has
      */
-    public function total_points(int $member_id, int $timestamp, array $point_info) : int
+    public function total_points(int $member_id, ?int $timestamp, array $point_info) : int
     {
         $points_gained_visiting = isset($point_info['points_gained_visiting']) ? $point_info['points_gained_visiting'] : 0;
         $points_visiting = intval(get_option('points_per_daily_visit'));

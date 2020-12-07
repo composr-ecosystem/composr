@@ -40,9 +40,9 @@ function init__currency()
  * Convert a country code to a currency code.
  *
  * @param  ID_TEXT $country The country code
- * @return ID_TEXT The currency code
+ * @return ?ID_TEXT The currency code (null: unknown)
  */
-function country_to_currency(string $country) : string
+function country_to_currency(string $country) : ?string
 {
     $map = get_currency_map();
     $currency = null;

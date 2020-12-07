@@ -23,7 +23,7 @@ class Hook_cdn_transfer_cloudinary
      *
      * @return boolean Whether it is
      */
-    public function is_enabled()
+    public function is_enabled() : bool
     {
         if (!addon_installed('cloudinary')) {
             return false;
@@ -64,7 +64,7 @@ class Hook_cdn_transfer_cloudinary
      * @param  string $id ID (returned by reference)
      * @return ?URLPATH URL on syndicated server (null: did not syndicate)
      */
-    public function transfer_upload($path, $upload_folder, $filename, $obfuscate = 0, $accept_errors = false, &$id = null)
+    public function transfer_upload(string $path, string $upload_folder, string $filename, int $obfuscate = 0, bool $accept_errors = false, string &$id = null) : ?string
     {
         $dirs = explode("\n", get_option('cloudinary_transfer_directories'));
         if (!in_array($upload_folder, $dirs)) {
@@ -149,7 +149,7 @@ class Hook_cdn_transfer_cloudinary
      *
      * @param  string $id ID number
      */
-    public function delete_image_upload($id)
+    public function delete_image_upload(string $id)
     {
         try {
             $result = \Cloudinary\Uploader::destroy(

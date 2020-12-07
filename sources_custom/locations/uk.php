@@ -18,7 +18,7 @@
  *
  * @return array Map: region=>list of counties
  */
-function get_region_structure_GB()
+function get_region_structure_GB() : array
 {
     return [
         'Scotland' => ['Inverclyde' => true, 'Renfrewshire' => true, 'West Dunbartonshire' => true, 'East Dunbartonshire' => true, 'Glasgow City' => true, 'East Renfrewshire' => true, 'North Lanarkshire' => true, 'Falkirk' => true, 'West Lothian' => true, 'City of Edinburgh' => true, 'Midlothian' => true, 'East Lothian' => true, 'Clackmannanshire' => true, 'Fife' => true, 'Dundee City' => true, 'Angus' => true, 'Aberdeenshire' => true, 'Aberdeen City' => true, 'Moray' => true, 'Highland and Isle of Skye' => true, 'Western Isles' => true, 'Argyll and Bute' => true, 'Perth and Kinross' => true, 'Stirling' => true, 'North Ayrshire' => true, 'East Ayrshire' => true, 'South Ayrshire' => true, 'Dumfries and Galloway' => true, 'South Lanarkshire' => true, 'Scottish Borders' => true, 'Orkney Islands' => true, 'Shetland Islands' => true,], // http://en.wikipedia.org/wiki/Council_Areas_of_Scotland=http://en.wikipedia.org/wiki/Subdivisions_of_Scotland [NOT http://en.wikipedia.org/wiki/Lieutenancy_areas_of_Scotland OR http://en.wikipedia.org/wiki/Registration_county OR http://en.wikipedia.org/wiki/Large_burghs OR http://en.wikipedia.org/wiki/Regions_and_districts_of_Scotland OR http://en.wikipedia.org/wiki/Counties_of_Scotland]

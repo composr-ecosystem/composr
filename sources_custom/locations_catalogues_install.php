@@ -119,7 +119,7 @@ function install_location_data()
  * @param  string $string Text that might have accent characters
  * @return string Filtered string with replaced "nice" characters
  */
-function remove_accents($string)
+function remove_accents(string $string) : string
 {
     if (!preg_match('/[\x80-\xff]/', $string)) {
         return $string;

@@ -22,7 +22,7 @@
  * @param  ?URLPATH $url URL (null: base URL)
  * @return ?array Data (null: error)
  */
-function get_google_search_console_data($_start_month = null, $_end_month = null, $keyword = null, $url = null)
+function get_google_search_console_data(?int $_start_month = null, ?int $_end_month = null, ?string $keyword = null, ?string $url = null) : ?array
 {
     $sz = serialize([$_start_month, $_end_month, $keyword]);
 

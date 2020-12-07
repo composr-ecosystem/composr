@@ -31,7 +31,7 @@ class blocks_test_set extends cms_test_case
     public function testBlockCacheSignatureParsing()
     {
         $blocks = find_all_blocks();
-        $map = [];
+        $map = ['param' => ''];
         foreach (array_keys($blocks) as $codename) {
             if (($this->only !== null) && ($this->only != $codename)) {
                 continue;

@@ -24,7 +24,7 @@ class Hook_symbol_COMPOSR_HOMESITE_ID_LATEST_TRANSLATIONS
      * @param  array $param Symbol parameters
      * @return string Result
      */
-    public function run($param)
+    public function run(array $param) : string
     {
         if (!addon_installed('composr_homesite')) {
             return '';

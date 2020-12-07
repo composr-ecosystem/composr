@@ -25,7 +25,7 @@ class Hook_endpoint_account_setup_push_notifications
      * @param  ?string $id Standard ID parameter (null: not-set)
      * @return array Data structure that will be converted to correct response type
      */
-    public function run($type, $id)
+    public function run(?string $type, ?string $id) : array
     {
         if (!addon_installed('composr_mobile_sdk')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

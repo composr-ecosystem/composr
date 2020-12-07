@@ -180,7 +180,7 @@ function erase_comcode_cache()
                     }
 
                     $db = get_db_for($table);
-                    $db->query('UPDATE ' . $db->get_table_prefix() . $table . ' SET ' . $field . '__text_parsed=\'\' WHERE ' . db_string_not_equal_to($field . '__text_parsed', '')/*this WHERE is so indexing helps*/, null, null, true/*in case meta DB has an issue*/);
+                    $db->query('UPDATE ' . $db->get_table_prefix() . $table . ' SET ' . $field . '__text_parsed=\'\' WHERE ' . db_string_not_equal_to($field . '__text_parsed', '')/*this WHERE is so indexing helps*/, null, 0, true/*in case meta DB has an issue*/);
                 }
             }
         }
@@ -545,7 +545,7 @@ function erase_theme_images_cache()
     require_code('themes2');
     $all_themes = find_all_themes();
 
-    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'path', 'lang']);
+    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'url', 'lang']);
     $paths = [];
     foreach ($_paths as $path) {
         $paths[serialize($path)] = $path;
@@ -555,11 +555,11 @@ function erase_theme_images_cache()
         if (!file_exists(get_file_base() . '/themes/' . $path['theme'])) {
             // Delete: a non-existent theme
             $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
-        } elseif ($path['path'] == '') {
+        } elseif ($path['url'] == '') {
             // Delete: A blank path, should not be there
             $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
-        } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path['path']) != 0) {
-            if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path['path']))) && (!file_exists(get_file_base() . '/' . rawurldecode($path['path'])))) {
+        } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path['url']) != 0) {
+            if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path['url']))) && (!file_exists(get_file_base() . '/' . rawurldecode($path['url'])))) {
                 // Delete: Custom disk file does not actually exist
                 $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
             } else {
@@ -567,7 +567,7 @@ function erase_theme_images_cache()
                     // Add: Custom images in default theme should be in all themes
                     foreach (array_keys($all_themes) as $theme) {
                         if ($theme != 'default') {
-                            $insert_map = ['theme' => $theme, 'id' => $path['id'], 'path' => $path['path'], 'lang' => $path['lang']];
+                            $insert_map = ['theme' => $theme, 'id' => $path['id'], 'url' => $path['url'], 'lang' => $path['lang']];
                             if (!isset($paths[serialize($insert_map)])) {
                                 $GLOBALS['SITE_DB']->query_insert('theme_images', $insert_map);
                             }

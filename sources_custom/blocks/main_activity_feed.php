@@ -23,7 +23,7 @@ class Block_main_activity_feed
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Warburton';
@@ -53,7 +53,7 @@ class Block_main_activity_feed
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('activities', [
@@ -121,7 +121,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 

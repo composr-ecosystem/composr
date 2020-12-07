@@ -28,7 +28,7 @@ class CMSMemberACL
      * @param  boolean $invisible Log in as invisible
      * @return ?MEMBER Member ID (null: login failed)
      */
-    public function authenticate_credentials_and_set_auth($username, $password, $invisible = false)
+    public function authenticate_credentials_and_set_auth(string $username, string $password, bool $invisible = false) : ?int
     {
         $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, md5($password), $password);
 
@@ -47,7 +47,7 @@ class CMSMemberACL
      * @param  MEMBER $id Member ID
      * @param  boolean $invisible Log in as invisible
      */
-    public function set_auth($id, $invisible = false)
+    public function set_auth(int $id, bool $invisible = false)
     {
         require_code('users_active_actions');
 

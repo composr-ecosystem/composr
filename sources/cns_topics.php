@@ -242,10 +242,10 @@ function cns_has_replied_topic(int $topic_id, ?int $member_id = null) : bool
  *
  * @param  ?AUTO_LINK $forum_id The forum the topic would be in (null: private topics)
  * @param  MEMBER $member_id The member checking access for
- * @param  MEMBER $resource_owner The member that owns this resource
+ * @param  ?MEMBER $resource_owner The member that owns this resource (null: none)
  * @return boolean The answer
  */
-function cns_may_edit_topics_by(?int $forum_id, int $member_id, int $resource_owner) : bool
+function cns_may_edit_topics_by(?int $forum_id, int $member_id, ?int $resource_owner) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -263,10 +263,10 @@ function cns_may_edit_topics_by(?int $forum_id, int $member_id, int $resource_ow
  *
  * @param  ?AUTO_LINK $forum_id The forum the topic would be in (null: private topics)
  * @param  MEMBER $member_id The member checking access for
- * @param  MEMBER $resource_owner The member that owns this resource
+ * @param  ?MEMBER $resource_owner The member that owns this resource (null: none)
  * @return boolean The answer
  */
-function cns_may_delete_topics_by(?int $forum_id, int $member_id, int $resource_owner) : bool
+function cns_may_delete_topics_by(?int $forum_id, int $member_id, ?int $resource_owner) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

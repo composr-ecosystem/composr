@@ -2510,6 +2510,11 @@ abstract class Resource_fs_base
             list($cat_resource_type, $cat_id) = $this->folder_convert_filename_to_id(implode('/', $meta_dir));
         }
 
+        $parent_folder = end($meta_dir);
+        if ($parent_folder === false) {
+            $parent_folder = '';
+        }
+
         // Find folders
         foreach ($folder_types as $resource_type) {
             $relationship = $this->_has_parent_child_relationship($cat_resource_type, $resource_type);
@@ -2557,7 +2562,7 @@ abstract class Resource_fs_base
                 $str_id = extract_content_str_id_from_data($folder, $folder_info);
                 $filename = $this->folder_convert_id_to_filename($resource_type, $str_id);
 
-                $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
+                $filetime = $this->_get_folder_edit_date($folder, $parent_folder);
                 if ($filetime === null) {
                     if ($folder_info['edit_time_field'] !== null) {
                         $filetime = $folder[$folder_info['edit_time_field']];
@@ -2601,7 +2606,7 @@ abstract class Resource_fs_base
 
                 $filetime = null;
                 if (method_exists($this, '_get_file_edit_date')) {
-                    $filetime = $this->_get_file_edit_date($file, end($meta_dir));
+                    $filetime = $this->_get_file_edit_date($file, $parent_folder);
                 }
                 if ($filetime === null) {
                     if ($file_info['edit_time_field'] !== null) {

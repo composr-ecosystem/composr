@@ -489,7 +489,7 @@ class Module_shopping
         $delete_item_link = do_template('ECOM_SHOPPING_ITEM_REMOVE_FIELD', ['_GUID' => '82d08bf4cd3bf668f4109907e19d4fea', 'TYPE_CODE' => $item['type_code']]);
 
         require_code('images');
-        $product_image = do_image_thumb($details['item_image_url'], $details['item_name'], $details['item_name'], false, 50, 50);
+        $product_image = do_image_thumb($details['item_image_url'], $details['item_name'], false, false, 50, 50);
 
         $price_singular = $details['price'];
         $price_multiple = $details['price'] * $item['quantity'];

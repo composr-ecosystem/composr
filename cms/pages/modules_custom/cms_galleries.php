@@ -19,7 +19,7 @@
  * @param  string $code Original code
  * @return string Altered code
  */
-function init__cms__pages__modules_custom__cms_galleries($code)
+function init__cms__pages__modules_custom__cms_galleries(string $code) : string
 {
     i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 

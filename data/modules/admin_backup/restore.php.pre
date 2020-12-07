@@ -214,7 +214,7 @@ finish_restorer_output($msg);
  *
  * @param  string $msg The message to show. Must be in HTML format.
  */
-function finish_restorer_output($msg)
+function finish_restorer_output(string $msg)
 {
     require_code('tempcode_compiler');
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
@@ -230,7 +230,7 @@ function finish_restorer_output($msg)
  *
  * @param  string $codename The codename for the source module to load
  */
-function require_code($codename)
+function require_code(string $codename)
 {
     global $FILE_ARRAY, $REQUIRED_BEFORE;
     if (array_key_exists($codename, $REQUIRED_BEFORE)) {
@@ -263,7 +263,7 @@ function require_code($codename)
  * @param  array $parameters Array of parameters
  * @return ?object The object (null: could not create)
  */
-function object_factory($class, $failure_ok = false, $parameters = [])
+function object_factory(string $class, bool $failure_ok = false, array $parameters = []) : ?object
 {
     return new $class(...$parameters);
 }
@@ -275,7 +275,7 @@ function object_factory($class, $failure_ok = false, $parameters = [])
  * @param  string $value New value of option.
  * @return ~string                      Old value of option (false: error).
  */
-function cms_ini_set($var, $value)
+function cms_ini_set(string $var, string $value)
 {
     $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
     if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {

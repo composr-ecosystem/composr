@@ -23,7 +23,7 @@ class Hook_config_days_to_keep__sugarcrm_log
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'DAYS_TO_KEEP__SUGARCRM_LOG',
@@ -46,7 +46,7 @@ class Hook_config_days_to_keep__sugarcrm_log
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('sugarcrm')) {
             return null;

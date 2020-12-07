@@ -25,7 +25,7 @@ class Hook_search_tutorials_external extends FieldsSearchHook
      * @param  ?MEMBER $member_id The member ID to check with (null: current member)
      * @return ~?array Map of search hook details (null: hook is disabled) (false: access denied)
      */
-    public function info($check_permissions = true, $member_id = null)
+    public function info(bool $check_permissions = true, ?int $member_id = null)
     {
         if (!addon_installed('composr_tutorials')) {
             return null;
@@ -75,7 +75,7 @@ class Hook_search_tutorials_external extends FieldsSearchHook
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
      * @return array List of maps (template, orderer)
      */
-    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
+    public function run(string $search_query, string $content_where, string $where_clause, string $search_under, bool $only_search_meta, bool $only_titles, int $max, int $start, string $sort, string $direction, string $author, ?int $author_id, $cutoff) : array
     {
         require_code('tutorials');
 
@@ -125,7 +125,7 @@ class Hook_search_tutorials_external extends FieldsSearchHook
      * @param  array $row The data row stored when we retrieved the result
      * @return Tempcode The output
      */
-    public function render($row)
+    public function render(array $row) : object
     {
         $tags = collapse_1d_complexity('t_tag', $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', ['t_tag'], ['t_id' => $row['id']]));
         $metadata = get_tutorial_metadata(strval($row['id']), $row, $tags);

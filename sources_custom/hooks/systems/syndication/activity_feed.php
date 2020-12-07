@@ -36,7 +36,7 @@ class Hook_syndication_activity_feed
      * @param  array $syndication_context A serialisable representation of data set via get_syndication_option_fields
      * @return ?AUTO_LINK ID of the row in the activities table (null: N/A)
      */
-    public function syndicate_described_activity($language_string_code, $label_1, $label_2, $label_3, $page_link_1, $page_link_2, $page_link_3, $addon, $is_public, $member_id, $sitewide_too, $also_involving, $syndication_context)
+    public function syndicate_described_activity(string $language_string_code, string $label_1, string $label_2, string $label_3, string $page_link_1, string $page_link_2, string $page_link_3, string $addon, int $is_public, ?int $member_id, bool $sitewide_too, ?int $also_involving, array $syndication_context) : ?int
     {
         if (!addon_installed('activity_feed')) {
             return null;
@@ -61,7 +61,7 @@ class Hook_syndication_activity_feed
      * @param  boolean $is_edit If these options are for an edit
      * @return boolean Whether we do
      */
-    protected function has_external_site_wide_syndication($content_type, $is_edit)
+    protected function has_external_site_wide_syndication(?string $content_type, bool $is_edit) : bool
     {
         if (!addon_installed('activity_feed')) {
             return false;
@@ -99,7 +99,7 @@ class Hook_syndication_activity_feed
      * @param  boolean $is_edit If these options are for an edit
      * @return Tempcode Syndication fields (or empty)
      */
-    public function get_syndication_option_fields($content_type, $is_edit)
+    public function get_syndication_option_fields(?string $content_type, bool $is_edit) : object
     {
         if (!addon_installed('activity_feed')) {
             return new Tempcode();
@@ -131,7 +131,7 @@ class Hook_syndication_activity_feed
      * @param  ?string $content_type The content type this is for (null: none)
      * @return array Syndication field context
      */
-    public function read_get_syndication_option_fields($content_type)
+    public function read_get_syndication_option_fields(?string $content_type) : array
     {
         if (!addon_installed('hybridauth')) {
             return [];

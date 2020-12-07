@@ -23,7 +23,7 @@ if (!function_exists('apache_request_headers')) {
      *
      * @return array List of headers
      */
-    function apache_request_headers()
+    function apache_request_headers() : array
     {
         $headers = [];
         foreach ($_SERVER as $h => $v) {
@@ -87,7 +87,7 @@ function initialise_composr()
  * @param  integer $default_max Default maximum parameter
  * @return array A pair: start position, max results
  */
-function get_pagination_positions($params, $start_param_num, $end_param_num, $default_max)
+function get_pagination_positions(array $params, int $start_param_num, int $end_param_num, int $default_max) : array
 {
     $start = isset($params[$start_param_num]) ? intval($params[$start_param_num]) : 0;
     if (isset($params[$end_param_num])) {
@@ -112,7 +112,7 @@ function get_pagination_positions($params, $start_param_num, $end_param_num, $de
  * @param  integer $default_max Default maximum parameter
  * @return array A pair: start position, max results
  */
-function get_pagination_positions__by_page($params, $page_param_num, $max_param_num, $default_max)
+function get_pagination_positions__by_page(array $params, int $page_param_num, int $max_param_num, int $default_max) : array
 {
     if (count($params) > 1) {
         $page = $params[$page_param_num];
@@ -137,7 +137,7 @@ function get_pagination_positions__by_page($params, $page_param_num, $max_param_
  * @set missing_from_composr perfect_matches all
  * @return array Emoticons mapping
  */
-function get_tapatalk_to_composr_emoticon_map($set)
+function get_tapatalk_to_composr_emoticon_map(string $set) : array
 {
     $GLOBALS['FORUM_DRIVER']->find_emoticons(); // Fill cache
 
@@ -183,7 +183,7 @@ function get_tapatalk_to_composr_emoticon_map($set)
  * @param  array $attachment_ids Attachment IDs
  * @return string Comcode
  */
-function add_attachments_from_comcode($comcode, $attachment_ids)
+function add_attachments_from_comcode(string $comcode, array $attachment_ids) : string
 {
     // Map emoticons
     $emoticon_map = get_tapatalk_to_composr_emoticon_map('missing_from_composr');
@@ -214,7 +214,7 @@ function add_attachments_from_comcode($comcode, $attachment_ids)
  * @param  boolean $inline_image_substitutions Whether to substitute for inline images, if possible
  * @return string Comcode
  */
-function strip_attachments_from_comcode($comcode, $inline_image_substitutions = false)
+function strip_attachments_from_comcode(string $comcode, bool $inline_image_substitutions = false) : string
 {
     if (strpos($comcode, '[attachment') === false) {
         return $comcode;
@@ -241,7 +241,7 @@ function strip_attachments_from_comcode($comcode, $inline_image_substitutions = 
  * @param  array $matches Matches
  * @return string Replacement
  */
-function _tag_case_fix($matches)
+function _tag_case_fix(array $matches) : string
 {
     $tag = cms_strtolower_ascii($matches[1]);
     $attributes = $matches[2];
@@ -255,7 +255,7 @@ function _tag_case_fix($matches)
  * @param  string $data Comcode
  * @return string Rawer text
  */
-function tapatalk_strip_comcode($data)
+function tapatalk_strip_comcode(string $data) : string
 {
     // We need to simplify messy HTML as much as possible
     require_code('comcode_from_html');

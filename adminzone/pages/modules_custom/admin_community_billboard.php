@@ -33,7 +33,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      *
      * @return ?array Map of module info (null: module is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Chris Graham';
@@ -60,7 +60,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('community_billboard', [
@@ -95,7 +95,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run($top_level = true, $type = null)
+    public function pre_run(bool $top_level = true, ?string $type = null) : ?object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -123,7 +123,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  ID_TEXT $type The type of module execution
      * @return Tempcode The output of the run
      */
-    public function run_start($type)
+    public function run_start(string $type) : object
     {
         require_code('community_billboard');
 
@@ -143,7 +143,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      *
      * @return Tempcode The UI
      */
-    public function browse()
+    public function browse() : object
     {
         require_code('templates_donext');
         return do_next_manager(
@@ -166,7 +166,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  boolean $be_deferential Whether to avoid any entry-point (or even return null to disable the page in the Sitemap) if we know another module, or page_group, is going to link to that entry-point. Note that "!" and "browse" entry points are automatically merged with container page nodes (likely called by page-groupings) as appropriate.
      * @return ?array A map of entry points (screen-name=>language-code/string or screen-name=>[language-code/string, icon-theme-image]) (null: disabled)
      */
-    public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
+    public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
         if (!addon_installed('community_billboard')) {
             return null;
@@ -183,7 +183,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  array $url_map Details to go to build_url for link to the next screen
      * @return array A pair: The choose table, Whether re-ordering is supported from this screen
      */
-    public function create_selection_list_choose_table($url_map)
+    public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
 
@@ -247,7 +247,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  BINARY $validated Whether the message is for immediate use
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($message = '', $days = 1, $notes = '', $validated = 1)
+    public function get_form_fields(string $message = '', int $days = 1, string $notes = '', int $validated = 1) : array
     {
         $fields = new Tempcode();
         $fields->attach(form_input_line_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_MESSAGE'), 'message', $message, true));
@@ -266,7 +266,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * @param  ID_TEXT $id The entry being edited
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function fill_in_edit_form($id)
+    public function fill_in_edit_form(string $id)
     {
         $rows = $GLOBALS['SITE_DB']->query_select('community_billboard', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
@@ -295,7 +295,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      *
      * @return array A pair: The entry added, description about usage
      */
-    public function add_actualisation()
+    public function add_actualisation() : array
     {
         $message = post_param_string('message');
         $notes = post_param_string('notes', '');
@@ -327,7 +327,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      *
      * @param  ID_TEXT $id The entry being deleted
      */
-    public function delete_actualisation($id)
+    public function delete_actualisation(string $id)
     {
         delete_community_billboard_message(intval($id));
     }

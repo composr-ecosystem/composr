@@ -786,9 +786,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * Get the database row for some content.
      *
      * @param  ID_TEXT $content_id The content ID
-     * @return array The content row
+     * @return ?array The content row (null: not found)
      */
-    protected function _get_row(string $content_id) : array
+    protected function _get_row(string $content_id) : ?array
     {
         $cma_info = $this->_get_cma_info();
         return content_get_row($content_id, $cma_info);

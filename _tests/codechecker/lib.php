@@ -332,7 +332,7 @@ if (!function_exists('is_alphanumeric')) {
      * @param  boolean $strict Whether to check stricter identifier-validity
      * @return boolean Whether the string is alphanumeric or not
      */
-    function is_alphanumeric($string, $strict = false)
+    function is_alphanumeric(string $string, bool $strict = false) : bool
     {
         if ($strict) {
             return preg_match('#^[\w\-]*$#D', $string) != 0;

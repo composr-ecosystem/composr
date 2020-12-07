@@ -546,11 +546,13 @@ function _build_url(array $parameters, string $zone_name = '', array $skip = [],
     // For bots we explicitly unset skippable injected 'keep_' params because it bloats the crawl-space
     if (($BOT_TYPE_CACHE !== null) && (get_bot_type() !== null)) {
         foreach ($parameters as $key => $val) {
-            if ($key === 'redirect') {
-                unset($parameters[$key]);
-            }
-            if ((substr($key, 0, 5) === 'keep_') && (skippable_keep($key, $val))) {
-                unset($parameters[$key]);
+            if ($val !== null) {
+                if ($key === 'redirect') {
+                    unset($parameters[$key]);
+                }
+                if ((substr($key, 0, 5) === 'keep_') && (skippable_keep($key, $val))) {
+                    unset($parameters[$key]);
+                }
             }
         }
     }

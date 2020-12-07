@@ -23,7 +23,7 @@ class Hook_config_sugarcrm_lead_metadata_field
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'SUGARCRM_LEAD_METADATA_FIELD',
@@ -46,7 +46,7 @@ class Hook_config_sugarcrm_lead_metadata_field
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('sugarcrm')) {
             return null;

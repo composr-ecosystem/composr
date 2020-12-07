@@ -19,7 +19,7 @@
  * @param  string $filename Filename
  * @return boolean Whether it is
  */
-function is_spreadsheet_writable($filename)
+function is_spreadsheet_writable(string $filename) : bool
 {
     if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
         return non_overridden__is_spreadsheet_writable($filename);
@@ -34,7 +34,7 @@ function is_spreadsheet_writable($filename)
  *
  * @return string Default format
  */
-function spreadsheet_write_default()
+function spreadsheet_write_default() : string
 {
     if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
         return non_overridden__spreadsheet_write_default();
@@ -57,7 +57,7 @@ function spreadsheet_write_default()
  * @param  ?string $charset The character set to write with
  * @return object A subclass of CMS_Spreadsheet_Writer
  */
-function spreadsheet_open_write(&$path, $filename = null, $algorithm = 3, $charset = '')
+function spreadsheet_open_write(?string &$path, ?string $filename = null, int $algorithm = 3, ?string $charset = '') : object
 {
     if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
         return non_overridden__spreadsheet_open_write($path, $filename, $algorithm, $charset);

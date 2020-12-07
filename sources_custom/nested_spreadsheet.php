@@ -28,7 +28,7 @@ function init__nested_spreadsheet()
  *
  * @return array Structured data about spreadsheet files/CPFs
  */
-function get_nested_spreadsheet_structure()
+function get_nested_spreadsheet_structure() : array
 {
     if (get_forum_type() == 'cns') {
         require_code('cns_members');
@@ -179,7 +179,7 @@ function get_nested_spreadsheet_structure()
  * @param  ?ID_TEXT $desired_field Name of field we want (null: all fields in an array)
  * @return array List of possibilities
  */
-function get_spreadsheet_data_values($spreadsheet_file, $known_field_key = null, $known_field_value = null, $desired_field = null)
+function get_spreadsheet_data_values(string $spreadsheet_file, ?string $known_field_key = null, ?string $known_field_value = null, ?string $desired_field = null) : array
 {
     $map = [];
     if (($known_field_key !== null) && ($known_field_value !== null)) {
@@ -196,7 +196,7 @@ function get_spreadsheet_data_values($spreadsheet_file, $known_field_key = null,
  * @param  ?ID_TEXT $desired_field Name of field we want (null: all fields in an array)
  * @return array List of possibilities
  */
-function get_spreadsheet_data_values__and($spreadsheet_file, $map, $desired_field = null)
+function get_spreadsheet_data_values__and(string $spreadsheet_file, array $map, ?string $desired_field = null) : array
 {
     $results = [];
     $spreadsheet_structure = get_nested_spreadsheet_structure();
@@ -221,7 +221,7 @@ function get_spreadsheet_data_values__and($spreadsheet_file, $map, $desired_fiel
  * @param  MEMBER $member_id Member ID
  * @return array Map of settings
  */
-function get_members_spreadsheet_data_values($member_id)
+function get_members_spreadsheet_data_values(int $member_id) : array
 {
     require_code('cns_members');
     $member_row = cns_get_custom_field_mappings($member_id);

@@ -44,7 +44,7 @@ class CMSAccountWrite
      * @param  array $custom_fields Map of custom fields
      * @return array Details of login status, containing status/tapatalk_status/member_id/register[/result_text]
      */
-    public function sign_in($token, $code, $email, $username, $password, $custom_fields)
+    public function sign_in(string $token, string $code, string $email, string $username, string $password, array $custom_fields) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -152,7 +152,7 @@ class CMSAccountWrite
      * @param  array $custom_fields Map of custom fields
      * @return array Details of join status, containing result[/result_text]
      */
-    public function register($username, $password, $email, $token, $code, $custom_fields)
+    public function register(string $username, string $password, string $email, string $token, string $code, array $custom_fields) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -177,7 +177,7 @@ class CMSAccountWrite
      * @param  boolean $confirm_if_enabled Whether we need to do an e-mail confirm
      * @return array Details of join status, containing status/member_id/data
      */
-    private function join($username, $email, $password, $custom_fields, $confirm_if_enabled)
+    private function join(string $username, string $email, string $password, array $custom_fields, bool $confirm_if_enabled) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -248,7 +248,7 @@ class CMSAccountWrite
      * @param  string $code Session code
      * @return array Details of result status, containing result/verified[/result_text]
      */
-    public function forget_password($username, $token, $code)
+    public function forget_password(string $username, string $token, string $code) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -307,7 +307,7 @@ class CMSAccountWrite
      * @param  MEMBER $member_id Member
      * @return array Details of result status, containing status/data
      */
-    private function lost_password($member_id)
+    private function lost_password(int $member_id) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -376,7 +376,7 @@ class CMSAccountWrite
      * @param  string $old_password Old password
      * @param  string $new_password New password
      */
-    public function update_password__old_to_new($old_password, $new_password)
+    public function update_password__old_to_new(string $old_password, string $new_password)
     {
         cms_verify_parameters_phpdoc();
 
@@ -404,7 +404,7 @@ class CMSAccountWrite
      * @param  string $token Session token
      * @param  string $code Session code
      */
-    public function update_password__for_session($new_password, $token, $code)
+    public function update_password__for_session(string $new_password, string $token, string $code)
     {
         cms_verify_parameters_phpdoc();
 
@@ -431,7 +431,7 @@ class CMSAccountWrite
      * @param  MEMBER $member_id Member ID
      * @param  string $password Password
      */
-    private function update_member_password($member_id, $password)
+    private function update_member_password(int $member_id, string $password)
     {
         $ip_address = get_ip_address();
         $salt = '';
@@ -464,7 +464,7 @@ class CMSAccountWrite
      * @param  string $password Password
      * @param  EMAIL $new_email E-mail address
      */
-    public function update_email($password, $new_email)
+    public function update_email(string $password, string $new_email)
     {
         cms_verify_parameters_phpdoc();
 

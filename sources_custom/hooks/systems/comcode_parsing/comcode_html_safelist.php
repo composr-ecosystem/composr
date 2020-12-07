@@ -23,7 +23,7 @@ class Hook_comcode_parsing_comcode_html_safelist
      *
      * @return array List of allowed HTML sequences
      */
-    public function get_allowed_html_seqs()
+    public function get_allowed_html_seqs() : array
     {
         if (!addon_installed('comcode_html_safelist')) {
             return [];
@@ -54,7 +54,7 @@ class Hook_comcode_parsing_comcode_html_safelist
      *
      * @ignore
      */
-    public function comcode_safelisted($comcode_portion)
+    public function comcode_safelisted(string $comcode_portion) : bool
     {
         if (!addon_installed('comcode_html_safelist')) {
             return false;

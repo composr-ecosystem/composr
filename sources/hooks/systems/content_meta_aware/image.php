@@ -130,7 +130,7 @@ class Hook_content_meta_aware_image extends Hook_CMA
      */
     public function get_title(array $row, int $render_type = 1, bool &$falled_back_to_id = false, bool $resource_fs_style = false)
     {
-        $falled_back_to_id = null;
+        $falled_back_to_id = false;
         $ret = parent::get_title($row, $render_type, $falled_back_to_id, $resource_fs_style);
         if ($falled_back_to_id) {
             require_lang('galleries');

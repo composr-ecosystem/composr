@@ -23,7 +23,7 @@ define('TAPATALK_MESSAGE_BOX_SENT', 2);
  * @param  ?integer $box_type Message box type, a TAPATALK_MESSAGE_BOX_* constant (null: don't care)
  * @return integer Number of topics
  */
-function get_num_unread_private_topics($box_type = null)
+function get_num_unread_private_topics(?int $box_type = null) : int
 {
     $member_id = get_member();
 

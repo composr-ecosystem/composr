@@ -28,7 +28,7 @@ class CMSTopicRead
      * @param  array $topic_ids List of topic IDs
      * @return array Details
      */
-    public function get_topic_statuses($topic_ids)
+    public function get_topic_statuses(array $topic_ids) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -79,7 +79,7 @@ class CMSTopicRead
      * @param  integer $max Maximum results
      * @return array A tuple of details: total topics, topics, forum name, unread sticky count, unread announce count, action assessment
      */
-    public function get_topics($mode, $forum_id, $start, $max)
+    public function get_topics(string $mode, int $forum_id, int $start, int $max) : array
     {
         if (!has_category_access(get_member(), 'forums', strval(($forum_id == 0) ? db_get_first_id() : $forum_id))) {
             access_denied('I_ERROR');
@@ -167,7 +167,7 @@ class CMSTopicRead
      * @param  ?mixed $method_data Data for search method (null: N/A)
      * @return array A pair: total topics, topics
      */
-    public function get_topics_advanced($start, $max, $filters, $method = 0, $method_data = null)
+    public function get_topics_advanced(int $start, int $max, array $filters, int $method = 0, $method_data = null) : array
     {
         cms_verify_parameters_phpdoc();
 

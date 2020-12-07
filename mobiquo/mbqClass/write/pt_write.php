@@ -27,7 +27,7 @@ class CMSPtWrite
      * @param  array $attachment_ids List of attachment IDs
      * @return AUTO_LINK Topic ID of new topic
      */
-    public function new_private_topic($user_name_list, $subject, $body, $attachment_ids)
+    public function new_private_topic(array $user_name_list, string $subject, string $body, array $attachment_ids) : int
     {
         cms_verify_parameters_phpdoc();
 
@@ -89,7 +89,7 @@ class CMSPtWrite
      * @param  array $attachment_ids List of attachment IDs
      * @return AUTO_LINK Post ID of new reply
      */
-    public function reply_private_topic($topic_id, $subject, $body, $attachment_ids)
+    public function reply_private_topic(int $topic_id, string $subject, string $body, array $attachment_ids) : int
     {
         cms_verify_parameters_phpdoc();
 
@@ -116,7 +116,7 @@ class CMSPtWrite
      * @param  AUTO_LINK $topic_id Topic ID
      * @param  string $reason Reason (may be blank)
      */
-    public function invite_participants($user_name_list, $topic_id, $reason)
+    public function invite_participants(array $user_name_list, int $topic_id, string $reason)
     {
         cms_verify_parameters_phpdoc();
 
@@ -151,7 +151,7 @@ class CMSPtWrite
      *
      * @param  AUTO_LINK $topic_id Topic ID
      */
-    public function delete_private_topic($topic_id)
+    public function delete_private_topic(int $topic_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -190,7 +190,7 @@ class CMSPtWrite
      *
      * @param  AUTO_LINK $topic_id Topic ID
      */
-    public function mark_private_topic_unread($topic_id)
+    public function mark_private_topic_unread(int $topic_id)
     {
         cms_verify_parameters_phpdoc();
 
@@ -206,7 +206,7 @@ class CMSPtWrite
      *
      * @param  ?AUTO_LINK $topic_id Topic ID (null: all private topics)
      */
-    public function mark_private_topic_read($topic_id = null)
+    public function mark_private_topic_read(?int $topic_id = null)
     {
         cms_verify_parameters_phpdoc();
 

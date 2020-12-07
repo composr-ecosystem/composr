@@ -156,7 +156,7 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
     $real_feedback_type = _real_feedback_type($content_type);
 
     // Sign up original poster for notifications
-    if (get_forum_type() == 'cns') {
+    if ((get_forum_type() == 'cns') && ($submitter !== null)) {
         $auto_monitor_contrib_content = $GLOBALS['CNS_DRIVER']->get_member_row_field($submitter, 'm_auto_monitor_contrib_content');
         if ($auto_monitor_contrib_content == 1) {
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notifications_enabled', 'l_setting', [

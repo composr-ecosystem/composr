@@ -833,12 +833,12 @@ class Module_purchase
      * @param  ID_TEXT $type_code The product codename
      * @param  array $details The product details
      * @param  string $filter Filter prefix
-     * @param  integer $type_filter Filter by eCommerce type
+     * @param  ?integer $type_filter Filter by eCommerce type (null: no filter)
      * @param  boolean $must_support_money Filter out products that don't support money
      * @param  boolean $must_support_points Filter out products that don't support points
      * @return boolean Is filtered
      */
-    protected function _is_filtered_out(object $product_object, string $type_code, array $details, string $filter, int $type_filter, bool $must_support_money, bool $must_support_points) : bool
+    protected function _is_filtered_out(object $product_object, string $type_code, array $details, string $filter, ?int $type_filter, bool $must_support_money, bool $must_support_points) : bool
     {
         // Explicit filtering...
 

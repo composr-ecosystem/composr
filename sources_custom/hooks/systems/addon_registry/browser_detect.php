@@ -24,7 +24,7 @@ class Hook_addon_registry_browser_detect
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_browser_detect
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_browser_detect
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Architecture';
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_browser_detect
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Chris Graham';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_browser_detect
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [
             'Chris Schuld',
@@ -76,7 +76,7 @@ class Hook_addon_registry_browser_detect
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'GPL';
     }
@@ -86,7 +86,7 @@ class Hook_addon_registry_browser_detect
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'A [tt]browser_upgrade_suggest[/tt] block to advise the visitor on doing an upgrade from old versions of IE or other browsers.
 
@@ -100,7 +100,7 @@ If you would like to show the message as a Composr warning (at the top of the sc
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -110,7 +110,7 @@ If you would like to show the message as a Composr warning (at the top of the sc
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -126,7 +126,7 @@ If you would like to show the message as a Composr warning (at the top of the sc
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -136,7 +136,7 @@ If you would like to show the message as a Composr warning (at the top of the sc
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/addon_registry/browser_detect.php',

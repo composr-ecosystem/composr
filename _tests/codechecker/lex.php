@@ -917,7 +917,7 @@ function lex($text = null)
  * @param  string $b The second string to compare
  * @return boolean The comparison result
  */
-function plex__strlen_sort($a, $b)
+function plex__strlen_sort(string $a, string $b) : bool
 {
     global $PTOKENS;
     $a = $PTOKENS[$a];

@@ -22,7 +22,7 @@
  * @param  boolean $include_in_log Whether to include a log line
  * @return ?AUTO_LINK ID of the gifts record if include_in_log was true (null: log was not created)
  */
-function system_gift_transfer($reason, $amount, $member_id, $include_in_log = true)
+function system_gift_transfer(string $reason, int $amount, int $member_id, bool $include_in_log = true) : ?int
 {
     $id = non_overridden__system_gift_transfer($reason, $amount, $member_id, $include_in_log);
 

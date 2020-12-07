@@ -23,7 +23,7 @@ class Hook_hybridauth__misc_overrides
      *
      * @return array Map of integration info
      */
-    public function info()
+    public function info() : array
     {
         if (!addon_installed('hybridauth')) {
             return [];

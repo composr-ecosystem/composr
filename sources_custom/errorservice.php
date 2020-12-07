@@ -39,7 +39,7 @@ function get_problem_match_script()
  * @param  string $error_message The error that occurred
  * @return ?string The full Comcode (null: not found)
  */
-function get_problem_match_nearest($error_message)
+function get_problem_match_nearest(string $error_message) : ?string
 {
     require_code('files_spreadsheets_read');
 

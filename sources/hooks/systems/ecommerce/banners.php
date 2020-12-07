@@ -115,7 +115,7 @@ class Hook_ecommerce_banners
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
 
-                'tax_code' => tax_multiplier(get_option('banner_hit_tax_code'), $hits),
+                'tax_code' => tax_multiplier(get_option('banner_hit_tax_code'), (float)$hits),
                 'shipping_cost' => 0.00,
                 'product_weight' => null,
                 'product_length' => null,
@@ -143,7 +143,7 @@ class Hook_ecommerce_banners
                 'discount_points__num_points' => null,
                 'discount_points__price_reduction' => null,
 
-                'tax_code' => tax_multiplier(get_option('banner_imp_tax_code'), $importance),
+                'tax_code' => tax_multiplier(get_option('banner_imp_tax_code'), (float)$importance),
                 'shipping_cost' => 0.00,
                 'product_weight' => null,
                 'product_length' => null,

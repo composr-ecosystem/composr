@@ -16,7 +16,7 @@ class Hook_config_twitterfeed_update_time
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'TWITTER_FEED_UPDATE_TIME',
@@ -38,7 +38,7 @@ class Hook_config_twitterfeed_update_time
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('twitter_support')) {
             return null;

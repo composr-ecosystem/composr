@@ -24,7 +24,7 @@ class CMSPostRead
      * @param  array $post_ids Post IDs
      * @return array Tuple of result details
      */
-    public function get_quote_post($post_ids)
+    public function get_quote_post(array $post_ids) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -64,7 +64,7 @@ class CMSPostRead
      * @param  AUTO_LINK $post_id Post ID
      * @return array Post
      */
-    public function get_raw_post($post_id)
+    public function get_raw_post(int $post_id) : array
     {
         cms_verify_parameters_phpdoc();
 
@@ -111,7 +111,7 @@ class CMSPostRead
      *
      * @return object Mobiquo array
      */
-    public function get_topic($topic_id, $start, $max, $return_html, $position = null)
+    public function get_topic(int $topic_id, ?int $start, ?int $max, bool $return_html, ?int $position = null) : object
     {
         cms_verify_parameters_phpdoc();
 

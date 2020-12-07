@@ -23,7 +23,7 @@
  * @param  ID_TEXT $special_type The special type of the user (built-in types are: <blank>, ldap, httpauth, <name of import source>)
  * @return boolean Whether the field is editable
  */
-function cns_field_editable($field_name, $special_type)
+function cns_field_editable(string $field_name, string $special_type) : bool
 {
     if ((addon_installed('hybridauth')) && ($special_type != '')) {
         require_code('hybridauth');

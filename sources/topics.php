@@ -93,14 +93,14 @@ class CMS_Topic
      * @param  ?string $post_warning The default post to use (null: standard courtesy warning)
      * @param  ?mixed $preloaded_comments The raw comment array (null: lookup). This is useful if we want to pass it through a filter
      * @param  boolean $explicit_allow Whether to skip permission checks
-     * @param  boolean $reverse Whether to reverse the posts
+     * @param  ?boolean $reverse Whether to show in reverse date order (affects default search order only) (null: read config)
      * @param  ?MEMBER $highlight_by_member Member to highlight the posts of (null: none)
      * @param  boolean $allow_reviews Whether to allow ratings along with the comment (like reviews)
      * @param  ?integer $num_to_show_limit Maximum to load (null: default)
      * @param  ?Tempcode $hidden Hidden form fields for commenting form (null: none)
      * @return Tempcode The Tempcode for the comment topic
      */
-    public function render_as_comment_topic(string $content_type, string $content_id, bool $allow_comments, bool $invisible_if_no_comments, ?string $forum_name, ?string $post_warning, $preloaded_comments, bool $explicit_allow, bool $reverse, ?int $highlight_by_member, bool $allow_reviews, ?int $num_to_show_limit, ?object $hidden = null) : object
+    public function render_as_comment_topic(string $content_type, string $content_id, bool $allow_comments, bool $invisible_if_no_comments, ?string $forum_name, ?string $post_warning, $preloaded_comments, bool $explicit_allow, ?bool $reverse, ?int $highlight_by_member, bool $allow_reviews, ?int $num_to_show_limit, ?object $hidden = null) : object
     {
         if ((get_forum_type() == 'cns') && (!addon_installed('cns_forum'))) {
             return new Tempcode();
@@ -375,18 +375,22 @@ class CMS_Topic
         }
 
         require_code('users');
-        $posts = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts(
-            $topic_id,
-            $this->total_posts,
-            $this->is_threaded ? 5000 : $num_to_show_limit,
-            $this->is_threaded ? 0 : $start,
-            get_forum_type() == 'cns' && $GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_auto_mark_read') == 1, // $mark_read,
-            $reverse,
-            true,
-            $posts,
-            $load_spacer_posts_too,
-            $_sort
-        );
+        if ($topic_id === null) {
+            $posts = [];
+        } else {
+            $posts = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts(
+                $topic_id,
+                $this->total_posts,
+                $this->is_threaded ? 5000 : $num_to_show_limit,
+                $this->is_threaded ? 0 : $start,
+                get_forum_type() == 'cns' && $GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_auto_mark_read') == 1, // $mark_read,
+                $reverse,
+                true,
+                $posts,
+                $load_spacer_posts_too,
+                $_sort
+            );
+        }
 
         if ($posts !== -1) {
             if ($posts === -2) {

@@ -88,6 +88,11 @@ function init__global2()
             if ((@strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') === false)) {
                 http_response_code(503);
             }
+
+            if ($GLOBALS['DEV_MODE']) {
+                header('Redirect-Reason: Closed site message');
+            }
+
             header('Location: ' . (is_file($RELATIVE_PATH . 'closed.html') ? 'closed.html' : '../closed.html')); // assign_refresh not used, as it is a pre-page situation
 
             $aaf = ini_get('auto_append_file');
@@ -833,6 +838,10 @@ function handle_bad_access_context()
         return;
     }
 
+    if (!running_script('index')) {
+        return; // get_self_url only works for index.php
+    }
+
     $request_hostname = get_request_hostname();
 
     // Detect bad access domain
@@ -848,6 +857,9 @@ function handle_bad_access_context()
                 }
 
                 set_http_status_code(301);
+                if ($GLOBALS['DEV_MODE']) {
+                    header('Redirect-Reason: Bad access domain');
+                }
                 header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
                 exit();
             }
@@ -855,10 +867,13 @@ function handle_bad_access_context()
     }
 
     // Detect bad access protocol
-    if (((whole_site_https()) && (!tacit_https()) || ((!whole_site_https()) && (tacit_https()) && (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/ssl.php'))))) {
+    if (((whole_site_https()) && (!tacit_https()) || ((!whole_site_https()) && (tacit_https())))) {
         // Note we don't output Strict-Transport-Security as that is a domain-level signal and we cannot assume we control the whole domain - it may be set in .htaccess if desired
 
         set_http_status_code(301);
+        if ($GLOBALS['DEV_MODE']) {
+            header('Redirect-Reason: Bad access protocol');
+        }
         header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
         exit();
     }

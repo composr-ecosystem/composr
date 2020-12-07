@@ -24,7 +24,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array($runtime = false)
+    public function get_chmod_array(bool $runtime = false) : array
     {
         return [];
     }
@@ -34,7 +34,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return float Version number
      */
-    public function get_version()
+    public function get_version() : float
     {
         return cms_version_number();
     }
@@ -44,7 +44,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return string The category
      */
-    public function get_category()
+    public function get_category() : string
     {
         return 'Development';
     }
@@ -54,7 +54,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return string The author
      */
-    public function get_author()
+    public function get_author() : string
     {
         return 'Chris Graham';
     }
@@ -64,7 +64,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return array A list of co-authors that should be attributed
      */
-    public function get_copyright_attribution()
+    public function get_copyright_attribution() : array
     {
         return [
             'Incorporates MantisBT',
@@ -76,7 +76,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return string The licence
      */
-    public function get_licence()
+    public function get_licence() : string
     {
         return 'Licensed on the same terms as Composr / MantisBT under GPL';
     }
@@ -86,7 +86,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return string Description of the addon
      */
-    public function get_description()
+    public function get_description() : string
     {
         return 'The compo.sr support credits system, and issue tracker.';
     }
@@ -96,7 +96,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return array List of tutorials
      */
-    public function get_applicable_tutorials()
+    public function get_applicable_tutorials() : array
     {
         return [];
     }
@@ -106,7 +106,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return array File permissions to set
      */
-    public function get_dependencies()
+    public function get_dependencies() : array
     {
         return [
             'requires' => [
@@ -132,7 +132,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return URLPATH Icon
      */
-    public function get_default_icon()
+    public function get_default_icon() : string
     {
         return 'themes/default/images/icons/admin/component.svg';
     }
@@ -142,7 +142,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      *
      * @return array List of files
      */
-    public function get_file_list()
+    public function get_file_list() : array
     {
         return [
             'sources_custom/hooks/systems/privacy/composr_homesite_support_credits.php',
@@ -1314,33 +1314,6 @@ class Hook_addon_registry_composr_homesite_support_credits
             'tracker/vendor/dapphp/securimage/database/index.html',
             'tracker/vendor/dapphp/securimage/database/securimage.sq3',
             'tracker/vendor/dapphp/securimage/.gitattributes',
-            'tracker/vendor/dapphp/securimage/.git/config',
-            'tracker/vendor/dapphp/securimage/.git/description',
-            'tracker/vendor/dapphp/securimage/.git/HEAD',
-            'tracker/vendor/dapphp/securimage/.git/hooks/applypatch-msg.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/commit-msg.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/fsmonitor-watchman.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/post-update.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/pre-applypatch.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/pre-commit.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/prepare-commit-msg.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/pre-push.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/pre-rebase.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/pre-receive.sample',
-            'tracker/vendor/dapphp/securimage/.git/hooks/update.sample',
-            'tracker/vendor/dapphp/securimage/.git/index',
-            'tracker/vendor/dapphp/securimage/.git/info/exclude',
-            'tracker/vendor/dapphp/securimage/.git/info/refs',
-            'tracker/vendor/dapphp/securimage/.git/logs/HEAD',
-            'tracker/vendor/dapphp/securimage/.git/logs/refs/heads/mantis',
-            'tracker/vendor/dapphp/securimage/.git/logs/refs/remotes/origin/HEAD',
-            'tracker/vendor/dapphp/securimage/.git/objects/info/packs',
-            'tracker/vendor/dapphp/securimage/.git/objects/pack/pack-f6cb7bdc062855f6088ef4a78b714b541562a2f9.idx',
-            'tracker/vendor/dapphp/securimage/.git/objects/pack/pack-f6cb7bdc062855f6088ef4a78b714b541562a2f9.pack',
-            'tracker/vendor/dapphp/securimage/.git/ORIG_HEAD',
-            'tracker/vendor/dapphp/securimage/.git/packed-refs',
-            'tracker/vendor/dapphp/securimage/.git/refs/heads/mantis',
-            'tracker/vendor/dapphp/securimage/.git/refs/remotes/origin/HEAD',
             'tracker/vendor/dapphp/securimage/.htaccess',
             'tracker/vendor/dapphp/securimage/images/audio_icon.png',
             'tracker/vendor/dapphp/securimage/images/loading.png',

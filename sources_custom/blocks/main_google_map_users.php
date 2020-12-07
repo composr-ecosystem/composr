@@ -23,7 +23,7 @@ class Block_main_google_map_users
      *
      * @return ?array Map of block info (null: block is disabled)
      */
-    public function info()
+    public function info() : ?array
     {
         $info = [];
         $info['author'] = 'Kamen / Chris Graham / temp1024';
@@ -41,7 +41,7 @@ class Block_main_google_map_users
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    public function caching_environment()
+    public function caching_environment() : ?array
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
@@ -58,7 +58,7 @@ PHP;
      * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
      * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
      */
-    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         require_code('cpf_install');
         install_gps_fields();
@@ -70,7 +70,7 @@ PHP;
      * @param  array $map A map of parameters
      * @return Tempcode The result of execution
      */
-    public function run($map)
+    public function run(array $map) : object
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 

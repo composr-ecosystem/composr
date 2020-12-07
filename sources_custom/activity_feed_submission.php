@@ -30,7 +30,7 @@
  * @param  ?MEMBER $also_involving Member also 'intimately' involved, such as a content submitter who is a friend (null: none)
  * @return ?AUTO_LINK The activity ID
  */
-function activity_feed_syndicate_described_activity($language_string_code = '', $label_1 = '', $label_2 = '', $label_3 = '', $page_link_1 = '', $page_link_2 = '', $page_link_3 = '', $addon = '', $is_public = 1, $member_id = null, $sitewide_too = false, $also_involving = null)
+function activity_feed_syndicate_described_activity(string $language_string_code = '', string $label_1 = '', string $label_2 = '', string $label_3 = '', string $page_link_1 = '', string $page_link_2 = '', string $page_link_3 = '', string $addon = '', int $is_public = 1, ?int $member_id = null, bool $sitewide_too = false, ?int $also_involving = null) : ?int
 {
     require_code('activity_feed');
     require_lang('activity_feed');
@@ -347,7 +347,7 @@ function activity_feed_removal_script()
  * @param  integer $timeout Our timeout in milliseconds (how long we should keep trying). Default: 1000
  * @param  boolean $force Whether to force this ID to be the newest, even if it's less than the current value
  */
-function log_newest_activity($id, $timeout = 1000, $force = false)
+function log_newest_activity(int $id, int $timeout = 1000, bool $force = false)
 {
     $file_path = get_custom_file_base() . '/data_custom/latest_activity.bin';
 

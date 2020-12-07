@@ -23,7 +23,7 @@ class Hook_config_bank_dividend
      *
      * @return ?array The details (null: disabled)
      */
-    public function get_details()
+    public function get_details() : ?array
     {
         return [
             'human_name' => 'BANK_DIVIDEND',
@@ -45,7 +45,7 @@ class Hook_config_bank_dividend
      *
      * @return ?string The default value (null: option is disabled)
      */
-    public function get_default()
+    public function get_default() : ?string
     {
         if (!addon_installed('bankr')) {
             return null;
