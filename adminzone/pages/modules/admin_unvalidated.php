@@ -110,7 +110,7 @@ class Module_admin_unvalidated
             $db = $info['db'];
 
             $select = [];
-            append_content_select_for_fields($select, $info, ['id', 'title']);
+            append_content_select_for_fields($select, $info, ['id', 'title', 'category']);
 
             $rows = $db->query_select($info['table'], $select, [$info['validated_field'] => 0], '', intval(get_option('general_safety_listing_limit')));
             if (count($rows) == intval(get_option('general_safety_listing_limit'))) {

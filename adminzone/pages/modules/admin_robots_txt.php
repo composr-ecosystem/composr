@@ -146,7 +146,7 @@ class Module_admin_robots_txt
         $path = find_robots_txt_path();
         $robots_txt = post_param_string('robots_txt', '');
 
-        $robots_txt_msg = null;
+        $robots_txt_msg = '';
         $success = create_robots_txt($robots_txt, $robots_txt_msg, true);
         if (!$success) {
             warn_exit(protect_from_escaping($robots_txt_msg));

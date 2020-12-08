@@ -287,10 +287,10 @@ function add_room_wrap(int $member_id, int $relative, string $name, string $text
  * @param  BINARY $locked_right Whether the room is locked to the right
  * @param  BINARY $locked_left Whether the room is locked to the left
  * @param  URLPATH $picture_url The room's picture
- * @param  MEMBER $owner Owner of the room
+ * @param  ?MEMBER $owner Owner of the room (null: none)
  * @param  BINARY $allow_portal Whether portals may be placed in the room
  */
-function add_room(string $name, int $realm, int $x, int $y, string $text, string $password_question, string $password_answer, string $password_fail_message, string $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $owner, int $allow_portal)
+function add_room(string $name, int $realm, int $x, int $y, string $text, string $password_question, string $password_answer, string $password_fail_message, string $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, ?int $owner, int $allow_portal)
 {
     $GLOBALS['SITE_DB']->query_insert('w_rooms', [
         'name' => $name,
@@ -410,10 +410,10 @@ function add_realm_wrap(?int $member_id, string $name, string $troll_name, strin
  * @param  string $name Name for the realm
  * @param  string $troll_name Name of the realm's troll
  * @param  array $qa List of maps (holding 'q' and 'a') for the trolls questions and answers. Must consist of indices 1 to 30. Blank entries mean 'not set'.
- * @param  MEMBER $owner The owner of the realm
+ * @param  ?MEMBER $owner The owner of the realm (null: none)
  * @param  BINARY $private Whether the realm is private
  */
-function add_realm(int $id, string $name, string $troll_name, array $qa, int $owner, int $private)
+function add_realm(int $id, string $name, string $troll_name, array $qa, ?int $owner, int $private)
 {
     $i = 1;
     $_qa = [
@@ -744,12 +744,12 @@ function delete_realm(int $realm)
  * @param  BINARY $locked_left Whether the room is locked to the left
  * @param  URLPATH $picture_url The room's picture
  * @param  BINARY $allow_portal Whether portals may be placed in the room
- * @param  MEMBER $new_owner Owner of the room
+ * @param  ?MEMBER $new_owner Owner of the room (null: none)
  * @param  AUTO_LINK $new_x The room's realm
  * @param  integer $new_y The room's X ordinate
  * @param  integer $new_realm The room's Y ordinate
  */
-function edit_room_wrap(int $member_id, string $name, string $text, string $password_question, string $password_answer, string $password_fail_message, int $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal, int $new_owner, int $new_x, int $new_y, int $new_realm)
+function edit_room_wrap(int $member_id, string $name, string $text, string $password_question, string $password_answer, string $password_fail_message, int $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal, ?int $new_owner, int $new_x, int $new_y, int $new_realm)
 {
     if ($locked_up != 1) {
         $locked_up = 0;
@@ -812,12 +812,12 @@ function edit_room_wrap(int $member_id, string $name, string $text, string $pass
  * @param  BINARY $locked_left Whether the room is locked to the left
  * @param  URLPATH $picture_url The room's picture
  * @param  BINARY $allow_portal Whether portals may be placed in the room
- * @param  MEMBER $new_owner Owner of the room
+ * @param  ?MEMBER $new_owner Owner of the room (null: none)
  * @param  AUTO_LINK $new_x The room's realm
  * @param  integer $new_y The room's X ordinate
  * @param  integer $new_realm The room's Y ordinate
  */
-function edit_room(string $name, int $realm, int $x, int $y, string $text, string $password_question, string $password_answer, string $password_fail_message, int $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal, int $new_owner, int $new_x, int $new_y, int $new_realm)
+function edit_room(string $name, int $realm, int $x, int $y, string $text, string $password_question, string $password_answer, string $password_fail_message, int $required_item, int $locked_up, int $locked_down, int $locked_right, int $locked_left, string $picture_url, int $allow_portal, ?int $new_owner, int $new_x, int $new_y, int $new_realm)
 {
     $GLOBALS['SITE_DB']->query_update('w_rooms', ['r_text' => $text, 'password_question' => $password_question, 'password_answer' => $password_answer, 'password_fail_message' => $password_fail_message, 'required_item' => $required_item, 'picture_url' => $picture_url, 'locked_up' => $locked_up, 'locked_down' => $locked_down, 'locked_right' => $locked_right, 'locked_left' => $locked_left, 'name' => $name, 'allow_portal' => $allow_portal, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm, 'owner' => $new_owner], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
     $GLOBALS['SITE_DB']->query_update('w_members', ['location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
@@ -867,9 +867,9 @@ function edit_realm_wrap(int $member_id, string $name, string $troll_name, array
  * @param  string $troll_name Name of the realms troll
  * @param  array $qa List of maps (holding 'q' and 'a') for the trolls questions and answers. Must consist of indices 1 to 30. Blank entries mean 'not set'.
  * @param  BINARY $private Whether the realm is private
- * @param  MEMBER $new_owner The owner of the realm
+ * @param  ?MEMBER $new_owner The owner of the realm (null: none)
  */
-function edit_realm(int $realm, string $name, string $troll_name, array $qa, int $private, int $new_owner)
+function edit_realm(int $realm, string $name, string $troll_name, array $qa, int $private, ?int $new_owner)
 {
     $_qa = [];
     for ($i = 1; $i <= 30; $i++) {

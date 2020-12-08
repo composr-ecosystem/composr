@@ -394,10 +394,10 @@ function get_file_size(string $url) : string
 /**
  * Format the specified filesize.
  *
- * @param  integer $bytes The number of bytes the file has
+ * @param  mixed $bytes The number of bytes the file has (integer or float)
  * @return string The formatted-string file size
  */
-function clean_file_size(int $bytes) : string
+function clean_file_size($bytes) : string
 {
     if ($bytes < 0) {
         return '-' . clean_file_size(-$bytes);

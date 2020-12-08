@@ -66,7 +66,7 @@ $FORCE_INVISIBLE_GUEST = true;
 global $EXTERNAL_CALL;
 $EXTERNAL_CALL = false;
 if (array_key_exists('cns', $_GET)) {
-    $_GET['use_cns'] = 1;
+    $_GET['use_cns'] = '1';
 }
 
 global $SITE_INFO;

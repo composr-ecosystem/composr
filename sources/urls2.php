@@ -50,7 +50,11 @@ function set_execution_context(array $new_get, string $new_zone = '_SEARCH', str
     }
 
     foreach ($new_get as $key => $val) {
-        $_GET[$key] = is_integer($val) ? strval($val) : $val;
+        if ($val !== null) {
+            $_GET[$key] = is_integer($val) ? strval($val) : $val;
+        } else {
+            unset($_GET[$key]);
+        }
     }
 
     global $RELATIVE_PATH, $ZONE, $SELF_URL_CACHED;

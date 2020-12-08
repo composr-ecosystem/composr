@@ -407,7 +407,14 @@ class LangFilter_EN extends LangFilter
 
                     require_code('content');
                     $object = get_content_object($content_type);
-                    if ($object === null) {
+                    $specific = null;
+                    if ($object !== null) {
+                        $info = $object->info();
+                        if (($info !== null) && ($info['content_type_label'] !== null)) {
+                            $specific = cms_strtolower_ascii(do_lang($info['content_type_label']));
+                        }
+                    }
+                    if ($specific === null) {
                         if (preg_match('#^\w+$#', $content_type) != 0) {
                             $specific = do_lang($content_type, null, null, null, null, false);
                         } else {
@@ -418,9 +425,6 @@ class LangFilter_EN extends LangFilter
                         } else {
                             $specific = cms_strtolower_ascii($specific);
                         }
-                    } else {
-                        $info = $object->info();
-                        $specific = cms_strtolower_ascii(do_lang($info['content_type_label']));
                     }
 
                     $is_vowel = $specific !== '' && isset($this->vowels[$specific[0]]);

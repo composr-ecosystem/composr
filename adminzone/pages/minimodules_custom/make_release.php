@@ -124,7 +124,7 @@ function phase_0()
 
     $on_disk_version_parts = explode('.', $on_disk_version);
     $last = count($on_disk_version_parts) - 1;
-    $on_disk_version_parts[$last] = strval(intval($on_disk_version_parts[$last]) - 1);
+    $on_disk_version_parts[$last] = is_string($on_disk_version_parts[$last]) ? '-1' : strval(intval($on_disk_version_parts[$last]) - 1);
     $on_disk_version_previous = implode('.', $on_disk_version_parts);
 
     $tracker_url = 'https://compo.sr/tracker/search.php?project_id=1';

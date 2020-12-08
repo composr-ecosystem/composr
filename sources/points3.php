@@ -55,9 +55,9 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
         if ($_array !== null) {
             if (array_key_exists('POINTS_EACH', $_array)) {
-                array_push($points_records, $_array);
+                $points_records[] = $_array;
             } else {
-                array_push($additional_fields, $_array);
+                $additional_fields += $_array;
             }
         }
     }

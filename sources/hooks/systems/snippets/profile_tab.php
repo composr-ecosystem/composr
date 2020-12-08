@@ -42,7 +42,10 @@ class Hook_snippet_profile_tab
             if (in_array($key, ['snippet', 'tab', 'url', 'title', 'member_id', 'utheme'])) {
                 continue;
             }
-            $keep_get[$key] = get_param_string($key, null, INPUT_FILTER_GET_COMPLEX);
+            $val = get_param_string($key, null, INPUT_FILTER_GET_COMPLEX);
+            if ($val !== null) {
+                $keep_get[$key] = $val;
+            }
         }
         $former_context = set_execution_context(['page' => 'members', 'type' => 'view', 'id' => ($member_id_of == get_member()) ? null : $member_id_of] + $keep_get, get_module_zone('members'));
 

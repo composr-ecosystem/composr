@@ -257,7 +257,7 @@ function set_session_id(string $id, bool $guest_session = false)  // NB: Guests 
 
     // If we really have to, store in URL
     if (((!has_cookies()) || (!$test)) && (!$guest_session/*restorable with no special auth*/) && (get_bot_type() === null)) {
-        $_GET['keep_session'] = $id;
+        $_GET['keep_session'] = strval($id);
     }
 
     if ((function_exists('get_session_id')) && ($id != get_session_id()) && (running_script('index'))) {

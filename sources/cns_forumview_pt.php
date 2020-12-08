@@ -129,14 +129,16 @@ function cns_get_private_topics(int $start = 0, int $true_start = 0, ?int $max =
             $topic['modifiers'][] = 'poll';
         }
         $num_posts = $topic_row['t_cache_num_posts'];
-        $start_time = $topic_row['t_cache_first_time'];
-        $end_time = $topic_row['t_cache_last_time'];
-        $days = floatval($end_time - $start_time) / 60.0 / 60.0 / 24.0;
-        if ($days == 0.0) {
-            $days = 1.0;
-        }
-        if (intval(round($num_posts / $days)) >= $hot_topic_definition) {
-            $topic['modifiers'][] = 'hot';
+        if ($topic_row['t_cache_first_time'] !== null) {
+            $start_time = $topic_row['t_cache_first_time'];
+            $end_time = $topic_row['t_cache_last_time'];
+            $days = floatval($end_time - $start_time) / 60.0 / 60.0 / 24.0;
+            if ($days == 0.0) {
+                $days = 1.0;
+            }
+            if (intval(round($num_posts / $days)) >= $hot_topic_definition) {
+                $topic['modifiers'][] = 'hot';
+            }
         }
 
         $topics[] = $topic;

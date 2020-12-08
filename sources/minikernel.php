@@ -552,7 +552,7 @@ function fatal_exit($text)
     $version = strval(cms_version());
     $version .= (is_numeric(cms_version_minor()) ? '.' : ' ') . cms_version_minor();
     if (!array_key_exists('step', $_GET)) {
-        $_GET['step'] = 1;
+        $_GET['step'] = '1';
     }
     require_code('tempcode_compiler');
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
@@ -787,7 +787,7 @@ function warn_exit($text)
     $version = strval(cms_version());
     $version .= (is_numeric(cms_version_minor()) ? '.' : ' ') . cms_version_minor();
     if (!array_key_exists('step', $_GET)) {
-        $_GET['step'] = 1;
+        $_GET['step'] = '1';
     }
     require_code('tempcode_compiler');
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');

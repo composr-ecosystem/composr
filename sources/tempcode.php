@@ -2478,7 +2478,7 @@ function recall_named_function(string $id, string $parameters, string $code)
 {
     $k = 'TEMPCODE_FUNCTION__' . $id;
     if (!isset($GLOBALS[$k])) {
-        $code = 'return function (' . $parameters . ') { ' . $code . ' };';
+        $code = 'return function (' . $parameters . ') { $cl = user_lang(); ' . $code . ' };';
         try {
             $GLOBALS[$k] = eval($code);
         } catch (Error $e) {

@@ -2451,7 +2451,7 @@ function step_10() : object
 
     if (addon_installed('robots_txt')) {
         require_code('robots_txt');
-        $robots_txt_msg = null;
+        $robots_txt_msg = '';
         create_robots_txt(null, $robots_txt_msg);
         if ($robots_txt_msg !== null) {
             $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'eddbb0cbc46520fe767e6292465751a1', 'SOMETHING' => protect_from_escaping($robots_txt_msg)]));

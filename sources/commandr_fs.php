@@ -79,10 +79,12 @@ class Commandr_fs
         foreach (array_keys($cma_hooks) as $hook) { // Find 'var' hooks, for content
             $cma_ob = get_content_object($hook);
             $cma_info = $cma_ob->info();
-            $commandr_fs_hook = $cma_info['commandr_filesystem_hook'];
-            if ($commandr_fs_hook !== null) {
-                unset($commandr_fs_hooks[$commandr_fs_hook]); // It's under 'var', don't put elsewhere
-                $var[$commandr_fs_hook] = $commandr_fs_hook;
+            if ($cma_info !== null) {
+                $commandr_fs_hook = $cma_info['commandr_filesystem_hook'];
+                if ($commandr_fs_hook !== null) {
+                    unset($commandr_fs_hooks[$commandr_fs_hook]); // It's under 'var', don't put elsewhere
+                    $var[$commandr_fs_hook] = $commandr_fs_hook;
+                }
             }
         }
         foreach (array_keys($commandr_fs_hooks) as $hook) { // Other filesystems go directly under the root (not 'root', which is different)

@@ -18,7 +18,7 @@ global $IN_MINIKERNEL_VERSION;
 $IN_MINIKERNEL_VERSION = true;
 
 // Find Composr base directory, and chdir into it
-global $FILE_BASE;
+global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 if (substr($FILE_BASE, -4) == '.php') {
     $a = strrpos($FILE_BASE, '/');
@@ -26,6 +26,7 @@ if (substr($FILE_BASE, -4) == '.php') {
     $FILE_BASE = dirname($FILE_BASE);
 }
 @chdir($FILE_BASE);
+$RELATIVE_PATH = '';
 
 error_reporting(E_ALL);
 
