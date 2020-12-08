@@ -89,6 +89,8 @@ class Hook_cron_block_caching
 
         // Execute all in current context...
 
+        global $LANGS_REQUESTED, $LANGS_REQUESTED, $TIMEZONE_MEMBER_CACHE, $JAVASCRIPTS, $CSSS, $REQUIRED_ALL_LANG, $DO_NOT_CACHE_THIS;
+
         $GLOBALS['NO_QUERY_LIMIT'] = true;
 
         $requests = $GLOBALS['SITE_DB']->query_select('cron_caching_requests', array('*'), $where);
@@ -103,15 +105,15 @@ class Hook_cron_block_caching
             }
 
             if (is_object($object)) {
-                global $LANGS_REQUESTED, $LANGS_REQUESTED, $DO_NOT_CACHE_THIS, $TIMEZONE_MEMBER_CACHE, $JAVASCRIPTS, $CSSS, $REQUIRED_ALL_LANG;
-
                 $backup_langs_requested = $LANGS_REQUESTED;
                 $backup_required_all_lang = $REQUIRED_ALL_LANG;
                 get_users_timezone();
                 $backup_timezone = $TIMEZONE_MEMBER_CACHE[get_member()];
+                $TIMEZONE_MEMBER_CACHE[get_member()] = $request['c_timezone'];
                 $LANGS_REQUESTED = array();
                 $REQUIRED_ALL_LANG = array();
                 push_output_state(false, true);
+                $DO_NOT_CACHE_THIS = false;
                 $cache = $object->run($map);
                 $TIMEZONE_MEMBER_CACHE[get_member()] = $backup_timezone;
                 $cache->handle_symbol_preprocessing();
