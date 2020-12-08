@@ -222,6 +222,8 @@ class Module_polls
             // Breadcrumbs
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POLL_ARCHIVE')]]);
 
+            $this->title = get_screen_title('POLL');
+
             // Load data
             $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $id], '', 1);
             if (!array_key_exists(0, $rows)) {
@@ -235,7 +237,6 @@ class Module_polls
                 'identifier' => '_SEARCH:polls:view:' . strval($id),
             ], $myrow, 'poll', strval($id));
 
-            $this->title = get_screen_title('POLL');
 
             $this->id = $id;
             $this->myrow = $myrow;
@@ -306,7 +307,7 @@ class Module_polls
         $edit_date_raw = ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']);
         $date = get_timezoned_date_time($myrow['date_and_time']);
         $add_date = get_timezoned_date_time($myrow['add_time']);
-        $edit_date = get_timezoned_date_time($myrow['edit_date']);
+        $edit_date = ($myrow['edit_date'] === null) ? null : get_timezoned_date_time($myrow['edit_date']);
 
         // Views
         cms_register_shutdown_function_safe(function () use ($myrow, $id) {

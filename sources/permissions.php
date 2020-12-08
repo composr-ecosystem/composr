@@ -262,8 +262,10 @@ function has_actual_page_access(?int $member_id = null, ?string $page = null, ?s
         }
         $privilege_acceptable = false;
         foreach ($privilege as $perm) {
-            if (has_privilege($member_id, $perm, $page, $cats)) {
-                $privilege_acceptable = true;
+            if ($perm !== null) {
+                if (has_privilege($member_id, $perm, $page, $cats)) {
+                    $privilege_acceptable = true;
+                }
             }
         }
         if (!$privilege_acceptable) {

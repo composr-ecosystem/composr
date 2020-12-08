@@ -205,14 +205,14 @@ function get_category_permissions_hidden_on() : object
  * Gather the permissions for the specified category as a form field input matrix.
  *
  * @param  ID_TEXT $module The ID code for the module being checked for category access
- * @param  ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string)
+ * @param  ?ID_TEXT $category The ID code for the category being checked for access (often, a number cast to a string) (null: new category)
  * @param  ?ID_TEXT $page The page this is for (null: current page)
  * @param  ?Tempcode $help Extra help to show in interface (null: none)
  * @param  boolean $new_category Whether this is a new category (don't load permissions, default to on)
  * @param  ?Tempcode $pinterface_view Label for view permissions (null: default)
  * @return Tempcode The form field matrix
  */
-function get_category_permissions_for_environment(string $module, string $category, ?string $page = null, ?object $help = null, bool $new_category = false, ?object $pinterface_view = null) : object
+function get_category_permissions_for_environment(string $module, ?string $category, ?string $page = null, ?object $help = null, bool $new_category = false, ?object $pinterface_view = null) : object
 {
     if ($page === null) {
         $page = get_page_name();

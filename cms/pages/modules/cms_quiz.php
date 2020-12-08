@@ -243,9 +243,9 @@ class Module_cms_quiz extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         return $id;
     }

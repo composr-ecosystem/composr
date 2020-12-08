@@ -904,9 +904,9 @@ class Module_cms_galleries extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($id)]);
         if ($temp === null) {
@@ -1499,9 +1499,9 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($id)]);
         if ($temp === null) {

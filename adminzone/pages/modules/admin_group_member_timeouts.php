@@ -154,7 +154,7 @@ class Module_admin_group_member_timeouts
 
         $url = build_url(['page' => '_SELF', 'type' => 'save'], '_SELF');
 
-        $pagination = pagination(do_lang('GROUP_MEMBER_TIMEOUTS'), $start, 'start', $max, 'max', $max_rows);
+        $pagination = pagination(do_lang_tempcode('GROUP_MEMBER_TIMEOUTS'), $start, 'start', $max, 'max', $max_rows);
 
         require_code('form_templates');
         list($warning_details, $ping_url) = handle_conflict_resolution();

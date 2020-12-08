@@ -261,8 +261,8 @@ class Module_admin_tickets
         $fields = new Tempcode();
 
         $fields->attach(form_input_line(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_TICKET_TYPE'), 'ticket_type_name', $ticket_type_name, false));
-        $fields->attach(form_input_tick(do_lang_tempcode('TICKET_GUEST_EMAILS_MANDATORY'), do_lang_tempcode('DESCRIPTION_TICKET_GUEST_EMAILS_MANDATORY'), 'guest_emails_mandatory', $details['guest_emails_mandatory']));
-        $fields->attach(form_input_tick(do_lang_tempcode('TICKET_SEARCH_FAQ'), do_lang_tempcode('DESCRIPTION_TICKET_SEARCH_FAQ'), 'search_faq', $details['search_faq']));
+        $fields->attach(form_input_tick(do_lang_tempcode('TICKET_GUEST_EMAILS_MANDATORY'), do_lang_tempcode('DESCRIPTION_TICKET_GUEST_EMAILS_MANDATORY'), 'guest_emails_mandatory', $details['guest_emails_mandatory'] == 1));
+        $fields->attach(form_input_tick(do_lang_tempcode('TICKET_SEARCH_FAQ'), do_lang_tempcode('DESCRIPTION_TICKET_SEARCH_FAQ'), 'search_faq', $details['search_faq'] == 1));
 
         // Permissions
         $fields->attach(get_category_permissions_for_environment('tickets', strval($ticket_type_id)));

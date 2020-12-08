@@ -1770,8 +1770,8 @@ function get_calendar_event_first_date_wrap(array $row) : int
  * @param  integer $start_day The day the event starts at
  * @param  ID_TEXT $start_monthly_spec_type In-month specification type for start date
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @param  integer $start_hour The hour the event starts at
- * @param  integer $start_minute The minute the event starts at
+ * @param  ?integer $start_hour The hour the event starts at (null: all day event)
+ * @param  ?integer $start_minute The minute the event starts at (null: all day event)
  * @param  ?integer $end_year The year the event ends at (null: not a multi day event)
  * @param  ?integer $end_month The month the event ends at (null: not a multi day event)
  * @param  ?integer $end_day The day the event ends at (null: not a multi day event)
@@ -1784,7 +1784,7 @@ function get_calendar_event_first_date_wrap(array $row) : int
  * @param  boolean $force_first Whether to forcibly get the first recurrence, not a future one
  * @return array A tuple: Written date [range], from timestamp, to timestamp
  */
-function get_calendar_event_first_date(?string $timezone, int $do_timezone_conv, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, int $start_hour, int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, string $recurrence, ?int $recurrences, bool $force_first = false) : array
+function get_calendar_event_first_date(?string $timezone, int $do_timezone_conv, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, ?int $start_hour, ?int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, string $recurrence, ?int $recurrences, bool $force_first = false) : array
 {
     if ($timezone === null) {
         $timezone = get_users_timezone();

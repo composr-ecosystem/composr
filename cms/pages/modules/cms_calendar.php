@@ -471,10 +471,14 @@ class Module_cms_calendar extends Standard_crud_module
             get_param_string('date', '') == '' // $handle_timezone
         );
         $fields->attach($_start_date_field);
-        $_end_hour = ($end_hour === null) ? find_timezone_end_hour_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_hour;
-        $_end_minute = ($end_minute === null) ? find_timezone_end_minute_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_minute;
-        $end_day_of_month = find_concrete_day_of_month($end_year, $end_month, $end_day, $end_monthly_spec_type, $_end_hour, $_end_minute, $timezone, $do_timezone_conv == 1);
-        $_end_time = normalise_time_array([$_end_minute, $_end_hour, $end_month, $end_day_of_month, $end_year], $timezone);
+        if ($end_day !== null) {
+            $_end_hour = ($end_hour === null) ? find_timezone_end_hour_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_hour;
+            $_end_minute = ($end_minute === null) ? find_timezone_end_minute_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_minute;
+            $end_day_of_month = find_concrete_day_of_month($end_year, $end_month, $end_day, $end_monthly_spec_type, $_end_hour, $_end_minute, $timezone, $do_timezone_conv == 1);
+            $_end_time = normalise_time_array([$_end_minute, $_end_hour, $end_month, $end_day_of_month, $end_year], $timezone);
+        } else {
+            $_end_time = null;
+        }
         $_end_date_field = form_input_date(
             do_lang_tempcode('END_DATE_TIME'), // $pretty_name
             do_lang_tempcode('DESCRIPTION_END_DATE_TIME'), // $description
@@ -808,15 +812,15 @@ class Module_cms_calendar extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'e_type', ['id' => intval($id)]);
         if ($temp === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'event'));
         }
-        return $temp;
+        return strval($temp);
     }
 
     /**

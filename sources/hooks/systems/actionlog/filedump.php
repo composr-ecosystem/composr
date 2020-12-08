@@ -96,9 +96,9 @@ class Hook_actionlog_filedump extends Hook_actionlog
      * @param  array $actionlog_row Action log row
      * @param  array $handler_data Handler data
      * @param  ?string $identifier Identifier (null: none)
-     * @return string Written context
+     * @return ?string Written context (null: none)
      */
-    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : string
+    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : ?string
     {
         switch ($actionlog_row['the_type']) {
             case 'FILEDUMP_CREATE_FOLDER':

@@ -409,10 +409,10 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      *
      * @param  ID_TEXT $zone The zone for the page
      * @param  ID_TEXT $page The page name
-     * @param  string $limit_to What search hooks the search is being limited to (blank: not limited)
+     * @param  integer $max Maximum results to return
      * @return Tempcode The Tempcode showing the Comcode page
      */
-    public function decide_template(string $zone, string $page, string $limit_to) : object
+    public function decide_template(string $zone, string $page, int $max) : object
     {
         global $SEARCH_QUERY_TERMS;
 

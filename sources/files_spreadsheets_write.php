@@ -104,8 +104,8 @@ function spreadsheet_open_write(?string &$path, ?string $filename = null, int $a
  */
 abstract class CMS_Spreadsheet_Writer
 {
-    protected const ALGORITHM_RAW = 1;
-    protected const ALGORITHM_NAMED_FIELDS = 3;
+    public const ALGORITHM_RAW = 1;
+    public const ALGORITHM_NAMED_FIELDS = 3;
 
     protected $algorithm = 3;
     protected $charset = null;

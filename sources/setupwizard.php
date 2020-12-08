@@ -88,14 +88,14 @@ function uninstall_test_content()
  * Get Comcode for the pages in the zone.
  *
  * @param  array $installprofileblocks List of blocks in the install profile
- * @param  array $block_options Block options in the install profile
+ * @param  ?array $block_options Block options in the install profile (null: none)
  * @param  boolean $collapse_zones Whether we have zone collapsing on
  * @param  ID_TEXT $installprofile ID of the install profile
  * @return array Structure of pages
  *
  * @ignore
  */
-function _get_zone_pages(array $installprofileblocks, array $block_options, bool $collapse_zones, string $installprofile) : array
+function _get_zone_pages(array $installprofileblocks, ?array $block_options, bool $collapse_zones, string $installprofile) : array
 {
     $page_structure = [];
 

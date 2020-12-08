@@ -496,14 +496,14 @@ function _selectcode_eq(string $field_name, string $var, bool $numeric) : string
  * @param  string $field_name The database's field name for the category-set's category-ID
  * @param  boolean $numeric_ids Whether the category-set IDs are numeric
  * @param  object $db Database connector to use
- * @param  array $cached_mappings A place to store cached data we've already loaded once in this function. Pass in an null variable (not a null literal)
+ * @param  ?array $cached_mappings A place to store cached data we've already loaded once in this function. Pass in an null variable (not a null literal) (null: none yet)
  * @param  boolean $first Whether this is the base call to this recursive function (just leave it as the default, true)
  * @param  boolean $recurse Whether to run recursively
  * @return array Subtree: list of IDs in category-set
  *
  * @ignore
  */
-function _selectcode_subtree_fetch(string $look_under, ?string $table_name, ?string $parent_name, string $field_name, bool $numeric_ids, object $db, array &$cached_mappings, bool $first = true, bool $recurse = true) : array
+function _selectcode_subtree_fetch(string $look_under, ?string $table_name, ?string $parent_name, string $field_name, bool $numeric_ids, object $db, ?array &$cached_mappings, bool $first = true, bool $recurse = true) : array
 {
     $under = [];
 

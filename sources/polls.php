@@ -177,7 +177,7 @@ function vote_in_poll(int $poll_id, ?int $cast, ?array $myrow = null, ?int $memb
                 require_code('points');
                 $_before = point_info($member_id);
                 $before = array_key_exists('points_gained_voting', $_before) ? $_before['points_gained_voting'] : 0;
-                $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_voting', $before + 1);
+                $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_voting', strval($before + 1));
 
                 global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
                 unset($POINT_INFO_CACHE[$member_id]);

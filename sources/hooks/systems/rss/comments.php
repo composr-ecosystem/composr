@@ -104,49 +104,54 @@ class Hook_rss_comments
         $count = 0;
         $start = 0;
         do {
-            $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, $full_title, do_lang('COMMENT')), $count, min($max, 1000), $start);
-            if (is_array($_comments)) {
-                $_comments = array_reverse($_comments);
-
-                foreach ($_comments as $i => $comment) {
-                    if ($comment === null) {
-                        continue;
-                    }
-                    if ($start + $i > $max) {
-                        break 2;
-                    }
-
-                    $timestamp = $comment['date'];
-                    if ($timestamp < $cutoff) {
-                        break 2;
-                    }
-
-                    $if_comments = new Tempcode();
-
-                    $id = strval($comment['id']);
-                    $author = $GLOBALS['FORUM_DRIVER']->get_username($comment['member'], false, USERNAME_DEFAULT_BLANK);
-
-                    $news_date = date($date_string, $timestamp);
-                    $edit_date = escape_html('');
-
-                    $news_title = xmlentities($comment['title']);
-                    if (($news_title != '') && ($title === null)) {
-                        $title = $comment['title'];
-                    }
-                    $_summary = $comment['message'];
-                    if (is_object($_summary)) {
-                        $_summary = $_summary->evaluate();
-                    }
-                    $summary = xmlentities($_summary);
-                    $news = escape_html('');
-
-                    $category = '';
-                    $category_raw = '';
-
-                    $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => new Tempcode(), 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
-                }
-            } else {
+            $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, $full_title, do_lang('COMMENT'));
+            if ($topic_id === null) {
                 break;
+            }
+
+            $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, min($max, 1000), $start);
+            if (!is_array($_comments)) {
+                break;
+            }
+
+            $_comments = array_reverse($_comments);
+
+            foreach ($_comments as $i => $comment) {
+                if ($comment === null) {
+                    continue;
+                }
+                if ($start + $i > $max) {
+                    break 2;
+                }
+
+                $timestamp = $comment['date'];
+                if ($timestamp < $cutoff) {
+                    break 2;
+                }
+
+                $if_comments = new Tempcode();
+
+                $id = strval($comment['id']);
+                $author = $GLOBALS['FORUM_DRIVER']->get_username($comment['member'], false, USERNAME_DEFAULT_BLANK);
+
+                $news_date = date($date_string, $timestamp);
+                $edit_date = escape_html('');
+
+                $news_title = xmlentities($comment['title']);
+                if (($news_title != '') && ($title === null)) {
+                    $title = $comment['title'];
+                }
+                $_summary = $comment['message'];
+                if (is_object($_summary)) {
+                    $_summary = $_summary->evaluate();
+                }
+                $summary = xmlentities($_summary);
+                $news = escape_html('');
+
+                $category = '';
+                $category_raw = '';
+
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => new Tempcode(), 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
 
             $start += 1000;

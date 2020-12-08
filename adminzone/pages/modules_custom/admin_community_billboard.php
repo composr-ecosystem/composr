@@ -309,9 +309,10 @@ class Module_admin_community_billboard extends Standard_crud_module
     /**
      * Standard crud_module edit actualiser.
      *
+     * @param  ID_TEXT $id The entry being edited
      * @return ?Tempcode Description about usage (null: none)
      */
-    public function edit_actualisation($id)
+    public function edit_actualisation(string $id) : ?object
     {
         $message = post_param_string('message');
         $notes = post_param_string('notes', '');

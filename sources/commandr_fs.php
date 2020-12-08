@@ -571,7 +571,7 @@ class Commandr_fs
             // We're underneath a meta root node (a directory which is generated dynamically)
             require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
-            $listing = $object->listing($meta_dir, $meta_root_node, $directory, $this);
+            $listing = $object->listing($meta_dir, $meta_root_node, $this);
 
             // Remove contents
             foreach ($listing as $value) {

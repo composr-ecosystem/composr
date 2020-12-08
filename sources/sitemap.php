@@ -950,9 +950,12 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
         if ((($meta_gather & SITEMAP_GATHER_NUM_COMMENTS) != 0) && ($cma_info['feedback_type_code'] !== null)) {
             $num_comments = 0;
-            $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cma_info['feedback_type_code'] . '_' . $content_id, do_lang('COMMENT')), $num_comments, 0, 0, false);
+            $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cma_info['feedback_type_code'] . '_' . $content_id, do_lang('COMMENT'));
+            if ($topic_id !== null) {
+                $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $num_comments, 0, 0, false);
 
-            $struct['extra_meta']['num_comments'] = $num_comments;
+                $struct['extra_meta']['num_comments'] = $num_comments;
+            }
         }
 
         if ((($meta_gather & SITEMAP_GATHER_META) != 0) && ($cma_info['seo_type_code'] !== null)) {

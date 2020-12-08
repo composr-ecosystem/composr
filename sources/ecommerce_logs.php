@@ -149,7 +149,7 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
     $sales_table = do_template('COLUMNED_TABLE', ['_GUID' => 'd87800ff26e9e5b8f7593fae971faa73', 'HEADER_ROW' => $_header_row, 'ROWS' => $_sales_rows]);
 
     require_code('templates_pagination');
-    $pagination = pagination(do_lang('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_logs', $max, 'max_ecommerce_logs', $max_rows, false, 5, null, 'tab--ecommerce-logs');
+    $pagination = pagination(do_lang_tempcode('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_logs', $max, 'max_ecommerce_logs', $max_rows, false, 5, null, 'tab--ecommerce-logs');
 
     return [$sales_table, $pagination];
 }

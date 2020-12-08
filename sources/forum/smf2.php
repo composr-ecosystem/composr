@@ -570,10 +570,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      * Get a URL to the specified post ID.
      *
      * @param  integer $id The post ID
-     * @param  string $forum The forum ID
+     * @param  ?mixed $forum The forum ID (null: private topic)
      * @return URLPATH The URL to the post
      */
-    public function post_url(int $id, string $forum) : string
+    public function post_url(int $id, $forum) : string
     {
         $topic_id = $this->db->query_select_value_if_there('messages', 'id_topic', ['id_msg' => $id]);
         if ($topic_id === null) {

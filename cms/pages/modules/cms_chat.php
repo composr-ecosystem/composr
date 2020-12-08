@@ -271,11 +271,15 @@ class Module_cms_chat
             if ((!handle_chatroom_pruning($row)) && ($has_mod_access)) {
                 $url = build_url(['page' => '_SELF', 'type' => 'room', 'id' => $row['id']], '_SELF');
                 $messages = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)', ['room_id' => $row['id']]);
-                $_username = $GLOBALS['FORUM_DRIVER']->get_username($row['room_owner'], false, USERNAME_DEFAULT_NULL);
-                if ($_username === null) {
+                if ($row['room_owner'] === null) {
                     $username = do_lang_tempcode('NA_EM');
                 } else {
-                    $username = make_string_tempcode($_username);
+                    $_username = $GLOBALS['FORUM_DRIVER']->get_username($row['room_owner'], false, USERNAME_DEFAULT_NULL);
+                    if ($_username === null) {
+                        $username = do_lang_tempcode('NA_EM');
+                    } else {
+                        $username = make_string_tempcode($_username);
+                    }
                 }
                 $result_entries->attach(results_entry([hyperlink($url, $row['room_name'], false, true), $username, $row['room_language'], integer_format($messages)], true));
             }

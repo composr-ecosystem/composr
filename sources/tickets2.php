@@ -553,6 +553,9 @@ function get_ticket_posts(string $ticket_id, ?int &$forum = null, ?int &$topic_i
     }
 
     $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(strval($forum), $ticket_id, do_lang('SUPPORT_TICKET'));
+    if ($topic_id === null) {
+        return null;
+    }
     $ticket_posts = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $total_ticket_posts, $max, $start);
 
     if ((!is_array($ticket_posts)) || (empty($ticket_posts))) {

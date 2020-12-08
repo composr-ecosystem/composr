@@ -305,6 +305,8 @@ class Module_admin_stats extends Standard_crud_module
         $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
+            $this->title = get_screen_title('MODULE_TRANS_NAME_admin_stats');
+
             set_helper_panel_tutorial('tut_statistics');
         }
 
@@ -620,6 +622,10 @@ class Module_admin_stats extends Standard_crud_module
                 'NOTES' => $kpi_row['k_notes'],
             ];
             $kpis[] = $kpi;
+        }
+
+        if (empty($kpis)) {
+            inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
         return do_template('KPI_SCREEN', [

@@ -146,10 +146,10 @@ function get_keyset_pagination_settings(string $max_name, int $max_default, stri
  * @param  integer $max_page_links The maximum number of quick-jump page-links to show
  * @param  ?array $_selectors List of per-page selectors to show (null: show hard-coded ones)
  * @param  ID_TEXT $hash Hash component to URL
- * @param  ?string $keyset_value Keyset-pagination reference value for the 'next' page of results (null: no keyset pagination)
+ * @param  ?mixed $keyset_value Keyset-pagination reference value for the 'next' page of results (null: no keyset pagination)
  * @return Tempcode The pagination
  */
-function pagination(object $title, int $start, string $start_name, int $max, string $max_name, int $max_rows, bool $keep_post = false, int $max_page_links = 5, ?array $_selectors = null, string $hash = '', ?string $keyset_value = null) : object
+function pagination(object $title, int $start, string $start_name, int $max, string $max_name, int $max_rows, bool $keep_post = false, int $max_page_links = 5, ?array $_selectors = null, string $hash = '', $keyset_value = null) : object
 {
     inform_non_canonical_parameter($max_name);
     inform_non_canonical_parameter($start_name);

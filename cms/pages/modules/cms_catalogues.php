@@ -688,9 +688,9 @@ class Module_cms_catalogues extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         $cat = $this->get_cat_b($id);
         return $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => intval($cat)]);
@@ -700,9 +700,9 @@ class Module_cms_catalogues extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat_b(string $id)
+    public function get_cat_b(string $id) : string
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => $id]);
         if ($temp === null) {
@@ -1421,9 +1421,9 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         $c_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => intval($id)]);
         if ($c_name === null) {

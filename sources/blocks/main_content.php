@@ -187,7 +187,7 @@ PHP;
                 $lang_fields['r.' . $lang_field] = $lang_field_type;
             }
             $wherea = get_content_where_for_str_id($content_id, $info, 'r');
-            $rows = $info['db']->query_select($info['table'] . ' r', ['r.*'], $wherea, '', 1, null, false, $lang_fields);
+            $rows = $info['db']->query_select($info['table'] . ' r', ['r.*'], $wherea, '', 1, 0, false, $lang_fields);
         }
 
         // Nothing to show?

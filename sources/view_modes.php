@@ -61,9 +61,9 @@ function initialise_special_page_types(string $special_page_type)
  * @param  ID_TEXT $special_page_type The special page type
  * @set query templates tree lang
  * @param  Tempcode $out The normal script Tempcode output
- * @param  string $out_evaluated The normal script evaluated output
+ * @param  ?string $out_evaluated The normal script evaluated output (null: not evaluated yet)
  */
-function special_page_types(string $special_page_type, object &$out, string $out_evaluated)
+function special_page_types(string $special_page_type, object &$out, ?string $out_evaluated)
 {
     global $RECORDED_TEMPLATES_USED;
 

@@ -180,7 +180,7 @@ function generate_quiz_content_type_label(array $row) : object
     if (!array_key_exists('q_type', $row)) {
         return do_lang_tempcode('quiz:QUIZ');
     }
-    return do_lang_tempcode($row['q_type']);
+    return do_lang_tempcode('quiz:' . $row['q_type']);
 }
 
 /**

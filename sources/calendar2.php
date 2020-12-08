@@ -34,8 +34,8 @@
  * @param  integer $start_day The day the event starts at
  * @param  ID_TEXT $start_monthly_spec_type In-month specification type for start date
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @param  integer $start_hour The hour the event starts at
- * @param  integer $start_minute The minute the event starts at
+ * @param  ?integer $start_hour The hour the event starts at (null: all day)
+ * @param  ?integer $start_minute The minute the event starts at (null: all day)
  * @param  ?integer $end_year The year the event ends at (null: not a multi day event)
  * @param  ?integer $end_month The month the event ends at (null: not a multi day event)
  * @param  ?integer $end_day The day the event ends at (null: not a multi day event)
@@ -61,7 +61,7 @@
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the event
  */
-function add_calendar_event(int $type, string $recurrence, ?int $recurrences, int $seg_recurrences, string $title, string $content, int $priority, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, int $start_hour, int $start_minute, ?int $end_year = null, ?int $end_month = null, ?int $end_day = null, string $end_monthly_spec_type = 'day_of_month', ?int $end_hour = null, ?int $end_minute = null, ?string $timezone = null, int $do_timezone_conv = 1, ?int $member_calendar = null, int $validated = 1, int $allow_rating = 1, int $allow_comments = 1, int $allow_trackbacks = 1, string $notes = '', ?int $submitter = null, int $views = 0, ?int $add_time = null, ?int $edit_time = null, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
+function add_calendar_event(int $type, string $recurrence, ?int $recurrences, int $seg_recurrences, string $title, string $content, int $priority, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, ?int $start_hour, ?int $start_minute, ?int $end_year = null, ?int $end_month = null, ?int $end_day = null, string $end_monthly_spec_type = 'day_of_month', ?int $end_hour = null, ?int $end_minute = null, ?string $timezone = null, int $do_timezone_conv = 1, ?int $member_calendar = null, int $validated = 1, int $allow_rating = 1, int $allow_comments = 1, int $allow_trackbacks = 1, string $notes = '', ?int $submitter = null, int $views = 0, ?int $add_time = null, ?int $edit_time = null, ?int $id = null, ?string $meta_keywords = '', ?string $meta_description = '', array $regions = []) : int
 {
     if ($submitter === null) {
         $submitter = function_exists('get_member') ? get_member() : get_first_admin_user();
@@ -221,8 +221,8 @@ function add_calendar_event(int $type, string $recurrence, ?int $recurrences, in
  * @param  integer $start_day The day the event starts at
  * @param  ID_TEXT $start_monthly_spec_type In-month specification type for start date
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @param  integer $start_hour The hour the event starts at
- * @param  integer $start_minute The minute the event starts at
+ * @param  ?integer $start_hour The hour the event starts at (null: all day)
+ * @param  ?integer $start_minute The minute the event starts at (null: all day)
  * @param  ?integer $end_year The year the event ends at (null: not a multi day event)
  * @param  ?integer $end_month The month the event ends at (null: not a multi day event)
  * @param  ?integer $end_day The day the event ends at (null: not a multi day event)
@@ -247,7 +247,7 @@ function add_calendar_event(int $type, string $recurrence, ?int $recurrences, in
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recurrences, int $seg_recurrences, string $title, string $content, int $priority, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, int $start_hour, int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, ?string $timezone, int $do_timezone_conv, ?int $member_calendar, string $meta_keywords, string $meta_description, ?int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
+function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recurrences, int $seg_recurrences, string $title, string $content, int $priority, int $start_year, int $start_month, int $start_day, string $start_monthly_spec_type, ?int $start_hour, ?int $start_minute, ?int $end_year, ?int $end_month, ?int $end_day, string $end_monthly_spec_type, ?int $end_hour, ?int $end_minute, ?string $timezone, int $do_timezone_conv, ?int $member_calendar, string $meta_keywords, string $meta_description, ?int $validated, int $allow_rating, int $allow_comments, int $allow_trackbacks, string $notes, ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, array $regions = [], bool $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();

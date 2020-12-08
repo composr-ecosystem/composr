@@ -883,11 +883,11 @@ function remap_urlpath_as_portable(?string $urlpath)
 /**
  * Convert a portable URL to a real URL.
  *
- * @param  ?string $portable_data Portable details (null: not set)
+ * @param  ?mixed $portable_data Portable details (null: not set)
  * @param  boolean $ignore_conflicts Whether to ignore conflicts with existing files (=edit op, basically)
  * @return ?string The URL (null: not set)
  */
-function remap_portable_as_urlpath(?string $portable_data, bool $ignore_conflicts = false) : ?string
+function remap_portable_as_urlpath($portable_data, bool $ignore_conflicts = false) : ?string
 {
     if (!is_array($portable_data)) {
         return $portable_data;
@@ -916,9 +916,9 @@ function remap_portable_as_urlpath(?string $portable_data, bool $ignore_conflict
  *
  * @param  array $_table_referenced The table the key is to
  * @param  ?mixed $id The key (null: not set)
- * @return ?array Portable ID details (null: not set)
+ * @return ?mixed Portable ID details (null: not set)
  */
-function remap_foreign_key_as_portable(array $_table_referenced, $id) : ?array
+function remap_foreign_key_as_portable(array $_table_referenced, $id)
 {
     if ($id === null) {
         return null;
@@ -970,9 +970,9 @@ function remap_portable_as_foreign_key(array $_table_referenced, $portable_data)
  *
  * @param  ID_TEXT $resource_type The resource type
  * @param  ?mixed $resource_id The resource ID (null: not set)
- * @return ?array Portable ID details (null: not set)
+ * @return ?mixed Portable ID details (null: not set)
  */
-function remap_resource_id_as_portable(string $resource_type, $resource_id) : ?array
+function remap_resource_id_as_portable(string $resource_type, $resource_id)
 {
     if ($resource_id === null) {
         return null;
@@ -1044,9 +1044,9 @@ function remap_portable_as_resource_id(string $resource_type, $portable_data)
  * @param  array $db_row Database row
  * @param  string $field Database field
  * @param  object $db Database connector to look up from
- * @return array Portable data
+ * @return mixed Portable data
  */
-function remap_trans_as_portable(array $db_row, string $field, object $db) : array
+function remap_trans_as_portable(array $db_row, string $field, object $db)
 {
     if (!multi_lang_content()) {
         if (isset($db_row[$field . '__source_user'])) {

@@ -1138,10 +1138,10 @@ function _webstandards_js_parse_variable_actual() : ?array
 /**
  * Return parse info for parse type.
  *
- * @return ?array Parse info (null: error)
+ * @return ?string Parse info (null: error)
  * @ignore
  */
-function _webstandards_js_parse_assignment_operator() : ?array
+function _webstandards_js_parse_assignment_operator() : ?string
 {
     // Choice{"EQUAL" | "CONCAT_EQUAL" | "DIV_EQUAL" | "MUL_EQUAL" | "SUBTRACT_EQUAL" | "PLUS_EQUAL" | "SL_EQUAL" | "SR_EQUAL" | "ZSR_EQUAL" | "BW_AND_EQUAL" | "BW_OR_EQUAL"}
 

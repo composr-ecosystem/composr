@@ -41,10 +41,10 @@ function get_option_with_overrides(string $option_name, ?array $overrides) : str
  * @set email_address dob required_cpfs
  * @param  ?string $current_value The value the field has now (null: lookup from member record; cannot do this for a CPF)
  * @param  ?MEMBER $editing_member The member doing the adding/editing operation (null: current member)
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return boolean Whether the field must be filled in
  */
-function member_field_is_required(?int $member_id, string $field_class, ?string $current_value = null, ?int $editing_member = null, ?array $adjusted_config_options = null) : bool
+function member_field_is_required(?int $member_id, string $field_class, ?string $current_value = null, ?int $editing_member = null, array $adjusted_config_options = []) : bool
 {
     if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) == '0') || ((get_option_with_overrides('dobs', $adjusted_config_options) == '1') && ($member_id === null)))) {
         return false;

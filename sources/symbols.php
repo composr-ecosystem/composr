@@ -5549,14 +5549,17 @@ function ecv_COMMENT_COUNT(string $lang, array $escaped, array $param) : string
         } else {
             if (get_option('is_on_comments') == '1') {
                 $count = 0;
-                $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cache_key, do_lang('COMMENT')), $count, 0, 0, false);
-                if (($count != 0) || (empty($param[2]))) {
-                    if (is_array($_comments)) {
-                        $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count)));
-                    } else {
-                        $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
+                $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cache_key, do_lang('COMMENT'));
+                if ($topic_id !== null) {
+                    $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 0, 0, false);
+                    if (($count != 0) || (empty($param[2]))) {
+                        if (is_array($_comments)) {
+                            $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count)));
+                        } else {
+                            $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
+                        }
+                        $value = $_value->evaluate();
                     }
-                    $value = $_value->evaluate();
                 }
             } else {
                 $value = do_lang('VIEW');

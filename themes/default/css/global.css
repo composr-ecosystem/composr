@@ -127,7 +127,7 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#f8fbfe,area_5_background,3% seed + 97% WB}
 {$THEMEWIZARD_COLOR,#6da4de,area_light_background,65% (seed val_to 80) + 35% WB}
 {$THEMEWIZARD_COLOR,#ecf5fd,area_faded_background,80% area_background + 20% WB}
-{$THEMEWIZARD_COLOR,#f2f2f2,area_zebra_background,100% area_6_background}
+{$THEMEWIZARD_COLOR,#f2f2f2,area_zebra_background,100% area_5_background}
 {$THEMEWIZARD_COLOR,#ffffff,area_hover_background,100% WB}
 {$THEMEWIZARD_COLOR,#d3e7fc,area_hover_2_background,20% seed + 80% WB}
 {$THEMEWIZARD_COLOR,#ffffff,area_current_background,100% WB}

@@ -759,13 +759,13 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
  * Convert some Filtercode filters into some SQL fragments.
  *
  * @param  object $db Database object to use
- * @param  array $filters Parsed Filtercode structure
+ * @param  ?array $filters Parsed Filtercode structure (null: no filter)
  * @param  ?ID_TEXT $content_type The content type (null: no function needed, direct in-table mapping always works)
  * @param  ?string $context First parameter to send to the conversion function, may mean whatever that function wants it to. If we have no conversion function, this is the name of a table to read field metadata from (null: none)
  * @param  string $table_join_code What the database will join the table with
  * @return array Tuple: array of extra join (implode with ''), string of extra where
  */
-function filtercode_to_sql(object $db, array $filters, ?string $content_type = null, ?string $context = null, string $table_join_code = 'r') : array
+function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = null, ?string $context = null, string $table_join_code = 'r') : array
 {
     // Nothing to do?
     if (empty($filters)) {

@@ -1764,7 +1764,7 @@ function catalogue_category_breadcrumbs(int $category_id, ?int $root = null, boo
         }
     }
 
-    if ($category_id == $root) {
+    if (($category_id == $root) || ($pt_pair_cache[$category_id]['cc_parent_id'] === null)) {
         $below = [];
     } else {
         $below = catalogue_category_breadcrumbs($pt_pair_cache[$category_id]['cc_parent_id'], $root, false, !$attach_to_url_filter);

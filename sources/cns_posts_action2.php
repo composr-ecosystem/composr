@@ -163,7 +163,7 @@ function cns_member_handle_promotion(?int $member_id = null)
  * @param  URLPATH $url The URL to view the new post
  * @param  AUTO_LINK $topic_id The ID of the topic that got posted in
  * @param  AUTO_LINK $post_id The ID of the post
- * @param  AUTO_LINK $forum_id The forum that the topic is in
+ * @param  ?AUTO_LINK $forum_id The forum that the topic is in (null: private topic)
  * @param  MEMBER $sender_member_id The member that made the post triggering this tracking notification
  * @param  boolean $is_starter Whether the post started a new topic
  * @param  LONG_TEXT $post The post, in Comcode format
@@ -174,7 +174,7 @@ function cns_member_handle_promotion(?int $member_id = null)
  * @param  ?SHORT_TEXT $no_notify_for__code_category DO NOT send notifications to: The category within the notification code (null: none / no restriction)
  * @param  ?SHORT_TEXT $poster_name The name of the poster (null: default for $sender_member_id)
  */
-function cns_send_topic_notification(string $url, int $topic_id, int $post_id, int $forum_id, int $sender_member_id, bool $is_starter, string $post, string $topic_title, ?int $_limit_to = null, bool $is_pt = false, ?string $no_notify_for__notification_code = null, ?string $no_notify_for__code_category = null, ?string $poster_name = null)
+function cns_send_topic_notification(string $url, int $topic_id, int $post_id, ?int $forum_id, int $sender_member_id, bool $is_starter, string $post, string $topic_title, ?int $_limit_to = null, bool $is_pt = false, ?string $no_notify_for__notification_code = null, ?string $no_notify_for__code_category = null, ?string $poster_name = null)
 {
     if (($is_pt) && ($is_starter)) {
         return;

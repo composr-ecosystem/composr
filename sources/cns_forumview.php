@@ -604,7 +604,7 @@ function cns_get_topic_array(array $topic_row, int $member_id, int $hot_topic_de
  * @param  array $topic The details (array containing: last_post_id, id, modifiers, emoticon, first_member_id, first_username, first_post, num_posts, num_views)
  * @param  boolean $has_topic_marking Whether the viewing member has the facility to mark off topics (send as false if there are no actions for them to perform)
  * @param  boolean $pt Whether the topic is a Private Topic
- * @param  ?object $show_forum The forum name (null: do not show the forum name)
+ * @param  ?Tempcode $show_forum The forum name (null: do not show the forum name)
  * @return Tempcode The topic row
  */
 function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = false, ?object $show_forum = null) : object

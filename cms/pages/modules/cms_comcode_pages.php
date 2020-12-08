@@ -1564,8 +1564,8 @@ class Module_cms_comcode_pages
                 $page_contents = is_string($page['string_index']) ? $page['string_index'] : get_translated_text($page['string_index']);
             } else {
                 $located = _request_page($page['the_page'], $page['the_zone']);
-                $_zone = $located[count($located) - 1];
                 if (($located !== false) && ($located[0] != 'REDIRECT') && (isset($located[4]))) {
+                    $_zone = $located[count($located) - 1];
                     $page_path = get_custom_file_base() . (($_zone == '') ? '' : '/') . $_zone;
                     if (!is_file($page_path)) {
                         $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;

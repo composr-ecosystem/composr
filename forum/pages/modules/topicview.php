@@ -194,7 +194,11 @@ class Module_topicview
             } else {
                 $of_member = get_member();
             }
-            $of_username = $GLOBALS['FORUM_DRIVER']->get_username($of_member, true);
+            if ($of_member !== null) {
+                $of_username = $GLOBALS['FORUM_DRIVER']->get_username($of_member, true);
+            } else {
+                $of_username = do_lang('INTERNAL_ERROR');
+            }
             $private_topic_page_link = build_page_link(['page' => 'members', 'type' => 'view', 'id' => $of_member], get_module_zone('members'), [], 'tab--pts');
             $breadcrumbs[] = [$private_topic_page_link, do_lang_tempcode('MEMBER_ACCOUNT', escape_html($of_username))];
         }
@@ -798,7 +802,11 @@ class Module_topicview
             if (strpos($first_post->evaluate(), '<script') !== false) {
                 $first_post = new Tempcode(); // Rendering twice could cause issues
             }
-            $first_post_url = $GLOBALS['FORUM_DRIVER']->post_url($topic_info['first_post_id'], ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']), true);
+            if ($topic_info['first_post_id'] !== null) {
+                $first_post_url = $GLOBALS['FORUM_DRIVER']->post_url($topic_info['first_post_id'], ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']), true);
+            } else {
+                $first_post_url = new Tempcode();
+            }
             $display = 'block';
             $expand_type = 'contract';
             if ($topic_info['max_rows'] > $start + $max) {
@@ -997,8 +1005,10 @@ class Module_topicview
             $warning_details = new Tempcode();
         }
 
-        require_code('cns_general');
-        cns_set_context_forum($topic_info['forum_id']);
+        if ($topic_info['forum_id'] !== null) {
+            require_code('cns_general');
+            cns_set_context_forum($topic_info['forum_id']);
+        }
 
         if (addon_installed('tickets')) {
             require_code('tickets');
@@ -1033,7 +1043,7 @@ class Module_topicview
             'POSTS' => $posts,
             'THREADED' => $threaded,
             'FORUM_ID' => ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']),
-            'IS_ALREADY_READ' => cns_has_read_topic($id),
+            'IS_ALREADY_READ' => ($id === null) ? true : cns_has_read_topic($id),
             'TICKET_FORUM' => $is_ticket_forum,
         ]);
 

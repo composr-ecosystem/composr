@@ -406,7 +406,7 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($group_count > 300) ? ['g_is_private_club' => 0] : null);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($group_count > 300) ? ['g_is_private_club' => 0] : []);
         $changed = false;
         foreach ($rows as $row) {
             $new_order = post_param_integer('order_' . strval($row['id']), null);
@@ -416,7 +416,7 @@ class Module_admin_cns_groups extends Standard_crud_module
             }
         }
         if ($changed) {
-            list($rows, $max_rows) = $this->get_entry_rows(true, $current_ordering, ($group_count > 300) ? ['g_is_private_club' => 0] : null);
+            list($rows, $max_rows) = $this->get_entry_rows(true, $current_ordering, ($group_count > 300) ? ['g_is_private_club' => 0] : []);
         }
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');

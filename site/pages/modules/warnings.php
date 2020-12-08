@@ -492,16 +492,14 @@ class Module_warnings extends Standard_crud_module
             // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
             if (addon_installed('commandr') && has_privilege(get_member(), 'delete_highrange_content')) {
                 $content = find_member_content($member_id);
-                if (!empty($content)) {
-                    foreach ($content as $content_details) {
-                        list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
-                        if (is_object($content_url)) {
-                            $content_url = $content_url->evaluate();
-                        }
-                        $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
-
-                        $fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
+                foreach ($content as $content_details) {
+                    list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
+                    if (is_object($content_url)) {
+                        $content_url = $content_url->evaluate();
                     }
+                    $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
+
+                    $fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
                 }
             }
         }

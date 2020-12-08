@@ -548,15 +548,15 @@ class Module_cms_downloads extends Standard_crud_module
      * Standard crud_module category getter.
      *
      * @param  ID_TEXT $id The entry for which the category is sought
-     * @return mixed The category
+     * @return string The category
      */
-    public function get_cat(string $id)
+    public function get_cat(string $id) : string
     {
         $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => intval($id)]);
         if ($temp === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download'));
         }
-        return $temp;
+        return strval($temp);
     }
 
     /**

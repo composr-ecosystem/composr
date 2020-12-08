@@ -45,7 +45,7 @@ function cache_and_carry($func, array $args, ?int $timeout = null, bool $cache_e
     $ret = mixed();
 
     $args_cache_signature = $args;
-    if (!$cache_errors) {
+    if ((!$cache_errors) && (is_string($func)) && (in_array($func, ['cms_http_request', 'http_get_contents']))) {
         // Things likely to change that would break our cache signature
         unset($args_cache_signature[1]['extra_headers']['Authorization']);
     }

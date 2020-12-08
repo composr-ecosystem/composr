@@ -512,7 +512,7 @@ class Module_admin_lang
 
         $_GET['lang'] = $lang;
         require_code('templates_pagination');
-        $pagination = pagination(do_lang('TRANSLATE_CONTENT'), $start, 'start', $max, 'max', $total, true);
+        $pagination = pagination(do_lang_tempcode('TRANSLATE_CONTENT'), $start, 'start', $max, 'max', $total, true);
 
         return do_template('TRANSLATE_SCREEN_CONTENT_SCREEN', [
             '_GUID' => 'af732c5e595816db1c6f025c4b8fa6a2',

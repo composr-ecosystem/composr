@@ -50,7 +50,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue($result->data === null);
 
@@ -64,7 +64,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(is_string($result->data));
 
@@ -84,7 +84,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(strpos($result->data, 'early_cinema.mp4') !== false);
 
@@ -103,7 +103,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(strpos($result->data, '191805') !== false || strpos($result->data, '259941') !== false); // May have higher file-size than actual file due to JSON encoding
 
@@ -115,7 +115,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $_result = json_decode($result->data, true);
         $__result = is_array($_result) ? base64_decode($_result['data']) : $result->data;
@@ -130,7 +130,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(is_string($result->data));
 
@@ -149,7 +149,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(strpos($result->data, '12343') !== false || strpos($result->data, '16605') !== false); // May have higher file-size than actual file due to JSON encoding
 
@@ -161,7 +161,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(is_string($result->data));
 
@@ -180,9 +180,11 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(strpos($result->data, 'early_cinema.mp4') === false);
+
+        deldir_contents(get_custom_file_base() . '/uploads/filedump/xxx123', false, true);
 
         // Test create folder
         $result = cms_http_request($webdav_filedump_base_url . '/xxx123/', [
@@ -192,7 +194,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(is_string($result->data));
 
@@ -211,7 +213,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(strpos($result->data, 'xxx123') !== false);
 
@@ -223,7 +225,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(is_string($result->data));
 
@@ -242,7 +244,7 @@ class webdav_test_set extends cms_test_case
         ]);
         if ($this->debug) {
             var_dump($result->message);
-            var_dump(gettype($result->data));
+            var_dump($result->data);
         }
         $this->assertTrue(strpos($result->data, 'xxx123') === false);
     }

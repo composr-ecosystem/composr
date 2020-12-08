@@ -236,11 +236,11 @@ function cns_is_up_to_date_on_forum($forum_id, $member_id = null)
 /**
  * Find whether a member may moderate a certain forum.
  *
- * @param  AUTO_LINK $forum_id The ID of the forum
+ * @param  ?AUTO_LINK $forum_id The ID of the forum (null: private topics)
  * @param  ?MEMBER $member_id The member ID (null: current member)
  * @return boolean The answer
  */
-function cns_may_moderate_forum(int $forum_id, ?int $member_id = null) : bool
+function cns_may_moderate_forum(?int $forum_id, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();

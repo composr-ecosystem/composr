@@ -21,9 +21,9 @@
 /**
  * Give error if Conversr-joining is not possible on this site.
  *
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  */
-function check_joining_allowed(?array $adjusted_config_options = null)
+function check_joining_allowed(array $adjusted_config_options = [])
 {
     if (get_forum_type() != 'cns') {
         warn_exit(do_lang_tempcode('NO_CNS'));
@@ -51,10 +51,10 @@ function check_joining_allowed(?array $adjusted_config_options = null)
  * @param  boolean $captcha_if_enabled Whether to handle CAPTCHA (if enabled at all)
  * @param  boolean $intro_message_if_enabled Whether to ask for intro messages (if enabled at all)
  * @param  boolean $invites_if_enabled Whether to check for invites (if enabled at all)
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return Tempcode The form
  */
-function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, ?array $adjusted_config_options = null) : object
+function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, array $adjusted_config_options = []) : object
 {
     cns_require_all_forum_stuff();
 
@@ -149,10 +149,10 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
  * @param  ?EMAIL $email_address E-mail address (null: read from environment)
  * @param  ?string $password Password (null: read from environment)
  * @param  ?array $actual_custom_fields Custom fields to save (null: read from environment)
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A tuple: Messages to show, member ID of new member, whether the account is ready
  */
-function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, bool $instant_login = true, ?string $username = null, ?string $email_address = null, ?string $password = null, ?array $actual_custom_fields = null, ?array $adjusted_config_options = null) : array
+function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if_enabled = true, bool $invites_if_enabled = true, bool $instant_login = true, ?string $username = null, ?string $email_address = null, ?string $password = null, ?array $actual_custom_fields = null, array $adjusted_config_options = []) : array
 {
     cns_require_all_forum_stuff();
 

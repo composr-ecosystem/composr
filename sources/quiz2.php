@@ -321,7 +321,7 @@ function _save_available_quiz_answers(int $id, string $text, string $type)
  * @param  ?TIME $open_time The time the quiz is opened (null: now)
  * @param  ?TIME $close_time The time the quiz is closed (null: never)
  * @param  integer $num_winners The number of winners for this if it is a competition
- * @param  integer $redo_time The minimum number of hours between attempts
+ * @param  ?integer $redo_time The minimum number of hours between attempts (null: N/A)
  * @param  ID_TEXT $type The type
  * @set SURVEY COMPETITION TEST
  * @param  BINARY $validated Whether this is validated
@@ -337,7 +337,7 @@ function _save_available_quiz_answers(int $id, string $text, string $type)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit) (blank: implicit)
  * @return AUTO_LINK The ID
  */
-function add_quiz(string $name, ?int $timeout, string $start_text, string $end_text, string $end_text_fail, string $notes, int $percentage, ?int $open_time, ?int $close_time, int $num_winners, int $redo_time, string $type, int $validated, string $text, ?int $submitter = null, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0, ?int $add_time = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
+function add_quiz(string $name, ?int $timeout, string $start_text, string $end_text, string $end_text_fail, string $notes, int $percentage, ?int $open_time, ?int $close_time, int $num_winners, ?int $redo_time, string $type, int $validated, string $text, ?int $submitter = null, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0, ?int $add_time = null, ?string $meta_keywords = '', ?string $meta_description = '') : int
 {
     require_code('global4');
     prevent_double_submit('ADD_QUIZ', null, $name);
@@ -417,7 +417,7 @@ function add_quiz(string $name, ?int $timeout, string $start_text, string $end_t
  * @param  ?TIME $open_time The time the quiz is opened (null: now)
  * @param  ?TIME $close_time The time the quiz is closed (null: never)
  * @param  integer $num_winners The number of winners for this if it is a competition
- * @param  integer $redo_time The minimum number of hours between attempts
+ * @param  ?integer $redo_time The minimum number of hours between attempts (null: N/A)
  * @param  ID_TEXT $type The type
  * @set SURVEY COMPETITION TEST
  * @param  BINARY $validated Whether this is validated
@@ -433,7 +433,7 @@ function add_quiz(string $name, ?int $timeout, string $start_text, string $end_t
  * @param  ?MEMBER $submitter Submitter (null: do not change)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_quiz(int $id, string $name, ?int $timeout, string $start_text, string $end_text, string $end_text_fail, string $notes, int $percentage, ?int $open_time, ?int $close_time, int $num_winners, int $redo_time, string $type, int $validated, string $text, string $meta_keywords, string $meta_description, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0, ?int $add_time = null, ?int $submitter = null, bool $null_is_literal = false)
+function edit_quiz(int $id, string $name, ?int $timeout, string $start_text, string $end_text, string $end_text_fail, string $notes, int $percentage, ?int $open_time, ?int $close_time, int $num_winners, ?int $redo_time, string $type, int $validated, string $text, string $meta_keywords, string $meta_description, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0, ?int $add_time = null, ?int $submitter = null, bool $null_is_literal = false)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {

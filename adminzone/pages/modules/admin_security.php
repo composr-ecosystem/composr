@@ -217,7 +217,7 @@ class Module_admin_security
         $header_row = results_header_row([do_lang_tempcode('USERNAME'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('IP_ADDRESS')], $sortables, 'failed_sort', $_sortable . ' ' . $sort_order);
 
         $member_id = post_param_integer('member_id', null);
-        $map = ($member_id !== null) ? ['failed_account' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL)] : null;
+        $map = ($member_id !== null) ? ['failed_account' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL)] : [];
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('failedlogins', 'COUNT(*)', $map);
 
@@ -235,7 +235,7 @@ class Module_admin_security
         // Hack-attacks...
 
         $member_id = post_param_integer('member_id', null);
-        $map = ($member_id !== null) ? ['member_id' => $member_id] : null;
+        $map = ($member_id !== null) ? ['member_id' => $member_id] : [];
         list($alerts, $num_alerts) = find_security_alerts($map);
 
         // Render UI...

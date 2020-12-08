@@ -196,14 +196,14 @@ class Hook_task_import_members
             $matches = [];
             if (array_key_exists($email_address_key, $line)) {
                 $email_address = $line[$email_address_key];
+                if (cms_preg_match_safe('#^([^\s]*)\s+\(.*\)$#', $email_address, $matches) != 0) {
+                    $email_address = $matches[1];
+                }
+                if (cms_preg_match_safe('#^.*\s+<(.*)>$#', $email_address, $matches) != 0) {
+                    $email_address = $matches[1];
+                }
             } else {
                 $email_address = null;
-            }
-            if (cms_preg_match_safe('#^([^\s]*)\s+\(.*\)$#', $email_address, $matches) != 0) {
-                $email_address = $matches[1];
-            }
-            if (cms_preg_match_safe('#^.*\s+<(.*)>$#', $email_address, $matches) != 0) {
-                $email_address = $matches[1];
             }
             if ((array_key_exists($dob_key, $line)) && ($line[$dob_key] != '')) {
                 $parts = explode('/', $line[$dob_key]);

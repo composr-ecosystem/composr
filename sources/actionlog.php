@@ -138,9 +138,9 @@ abstract class Hook_actionlog
      *
      * @param  array $actionlog_row Action log row
      * @param  array $handler_data Handler data
-     * @return string Identifier
+     * @return ?string Identifier (null: none)
      */
-    protected function get_identifier(array $actionlog_row, array $handler_data) : string
+    protected function get_identifier(array $actionlog_row, array $handler_data) : ?string
     {
         $identifier = null;
         if ($handler_data['identifier_index'] === 0) {
@@ -157,9 +157,9 @@ abstract class Hook_actionlog
      * @param  array $actionlog_row Action log row
      * @param  array $handler_data Handler data
      * @param  ?string $identifier Identifier (null: none)
-     * @return string Written context
+     * @return ?string Written context (null: none)
      */
-    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : string
+    protected function get_written_context(array $actionlog_row, array $handler_data, ?string $identifier) : ?string
     {
         $written_context = null;
         if ($handler_data['written_context_index'] === 0) {

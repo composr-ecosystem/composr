@@ -249,13 +249,13 @@ class RevisionEngineDatabase
     /**
      * Find number of revisions of something.
      *
-     * @param  array $resource_types Allowed resource types
+     * @param  ?array $resource_types Allowed resource types (null: no filter)
      * @param  ?string $resource_id Resource ID (null: no filter)
      * @param  ?string $category_id Category ID (null: no filter)
      * @param  ?MEMBER $member_id Member ID (null: no filter)
      * @return integer Total revisions
      */
-    public function total_revisions(array $resource_types, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null) : int
+    public function total_revisions(?array $resource_types, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null) : int
     {
         return count($this->find_revisions($resource_types, $resource_id, $category_id, $member_id, null, null, 0, true));
     }

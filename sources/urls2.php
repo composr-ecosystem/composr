@@ -108,32 +108,30 @@ function _build_keep_form_fields(string $page = '', bool $keep_all = false, arra
     }
     $out = new Tempcode();
 
-    if (!empty($_GET)) {
-        foreach ($_GET as $key => $val) {
-            $process_for_key = ((substr($key, 0, 5) == 'keep_') || ($keep_all)) && (!in_array($key, $exclude)) && ($key != 'page') && (!skippable_keep($key, $val));
+    foreach ($_GET as $key => $val) {
+        $process_for_key = ((substr($key, 0, 5) == 'keep_') || ($keep_all)) && (!in_array($key, $exclude)) && ($key != 'page') && (!skippable_keep($key, $val));
 
-            if (is_array($val)) {
-                foreach ($val as $_key => $_val) { // We'll only support one level deep. Also no keep parameter array support.
-                    if (is_array($_val)) {
-                        continue; // Nested $_POST arrays should not happen in Composr, but may happen by hack-bots
-                    }
-
-                    if ($process_for_key) {
-                        $out->attach(form_input_hidden($key . '[' . $_key . ']', $_val));
-                    }
-                }
-            } else {
-                if (!is_string($val)) {
-                    continue;
-                }
-
-                if (is_integer($key)) {
-                    $key = strval($key);
+        if (is_array($val)) {
+            foreach ($val as $_key => $_val) { // We'll only support one level deep. Also no keep parameter array support.
+                if (is_array($_val)) {
+                    continue; // Nested $_POST arrays should not happen in Composr, but may happen by hack-bots
                 }
 
                 if ($process_for_key) {
-                    $out->attach(form_input_hidden($key, $val));
+                    $out->attach(form_input_hidden($key . '[' . $_key . ']', $_val));
                 }
+            }
+        } else {
+            if (!is_string($val)) {
+                continue;
+            }
+
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
+
+            if ($process_for_key) {
+                $out->attach(form_input_hidden($key, $val));
             }
         }
     }

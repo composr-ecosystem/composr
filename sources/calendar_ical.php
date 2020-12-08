@@ -167,21 +167,26 @@ function output_ical(bool $headers_and_exit = true)
             $start = 0;
             do {
                 $count = 0;
-                $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, 'events_' . strval($event['id']), do_lang('COMMENT')), $count, 1000, $start);
-                if (is_array($_comments)) {
-                    foreach ($_comments as $comment) {
-                        if ($comment['title'] != '') {
-                            $comment['message'] = $comment['title'] . ': ' . $comment['message'];
-                        }
-                        $username = $GLOBALS['FORUM_DRIVER']->get_username($comment['member'], true, USERNAME_DEFAULT_NULL);
-                        if ($username === null) {
-                            $username = do_lang('UNKNOWN');
-                        }
-                        echo "COMMENT:" . ical_escape(strip_comcode(is_object($comment['message']) ? $comment['message']->evaluate() : $comment['message']) . ' - ' . $username . ' (' . get_timezoned_date_time($comment['date']) . ')') . "\r\n";
-                    }
-                } else {
+                $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, 'events_' . strval($event['id']), do_lang('COMMENT'));
+                if ($topic_id === null) {
                     break;
                 }
+                $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 1000, $start);
+                if (!is_array($_comments)) {
+                    break;
+                }
+
+                foreach ($_comments as $comment) {
+                    if ($comment['title'] != '') {
+                        $comment['message'] = $comment['title'] . ': ' . $comment['message'];
+                    }
+                    $username = $GLOBALS['FORUM_DRIVER']->get_username($comment['member'], true, USERNAME_DEFAULT_NULL);
+                    if ($username === null) {
+                        $username = do_lang('UNKNOWN');
+                    }
+                    echo "COMMENT:" . ical_escape(strip_comcode(is_object($comment['message']) ? $comment['message']->evaluate() : $comment['message']) . ' - ' . $username . ' (' . get_timezoned_date_time($comment['date']) . ')') . "\r\n";
+                }
+
                 $start += 1000;
             } while (!empty($_comments));
 

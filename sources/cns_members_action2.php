@@ -403,10 +403,10 @@ function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null)
  * @param  BINARY $validated Whether the account has been validated
  * @param  ?TIME $on_probation_until When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', ?array $adjusted_config_options = null) : array
+function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
 {
     $fields = new Tempcode();
     $hidden = new Tempcode();
@@ -463,10 +463,10 @@ function cns_get_member_fields(bool $mini_mode = true, string $special_type = ''
  * @param  BINARY $validated Whether the account has been validated
  * @param  ?TIME $on_probation_until When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A pair: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', ?array $adjusted_config_options = null) : array
+function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $on_probation_until = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
 {
     require_code('form_templates');
     require_code('cns_members_action');
@@ -674,7 +674,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
             }
             $fields->attach(form_input_tick(do_lang_tempcode('SOUND_ENABLED'), do_lang_tempcode('DESCRIPTION_SOUND_ENABLED'), 'sound_enabled', $sound_enabled == 1));
             $usergroup_list = new Tempcode();
-            $lgroups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(true, true, false, null, null, true);
+            $lgroups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(true, true, false, [], null, true);
             foreach ($lgroups as $key => $val) {
                 if ($key != db_get_first_id()) {
                     $usergroup_list->attach(form_input_list_entry(strval($key), ($pt_allow == '*') || (!empty(array_intersect([strval($key)], explode(',', $pt_allow)))), $val));
@@ -797,10 +797,10 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
  * @param  ?MEMBER $member_id The ID of the member we are handling (null: new member)
  * @param  ?array $groups A list of usergroups (null: default/current usergroups)
  * @param  ?array $custom_fields A map of custom fields values (field-id=>value) (null: not known)
- * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id = null, ?array $groups = null, ?array $custom_fields = null, ?array $adjusted_config_options = null) : array
+function cns_get_member_fields_profile(bool $mini_mode = true, ?int $member_id = null, ?array $groups = null, ?array $custom_fields = null, array $adjusted_config_options = []) : array
 {
     require_code('cns_members_action');
 

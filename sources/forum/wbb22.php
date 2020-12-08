@@ -527,10 +527,10 @@ class Forum_driver_wbb22 extends Forum_driver_base
      * Get a URL to the specified post ID.
      *
      * @param  integer $id The post ID
-     * @param  string $forum The forum ID
+     * @param  ?mixed $forum The forum ID (null: private topic)
      * @return URLPATH The URL to the post
      */
-    public function post_url(int $id, string $forum) : string
+    public function post_url(int $id, $forum) : string
     {
         return get_forum_base_url() . '/thread.php?postid=' . strval($id) . '#post' . strval($id);
     }

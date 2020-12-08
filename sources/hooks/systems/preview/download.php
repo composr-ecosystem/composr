@@ -47,7 +47,7 @@ class Hook_preview_download
         $validated = post_param_integer('validated', 0);
 
         $category_id = post_param_integer('category_id');
-        $name = post_param_string('name');
+        $name = post_param_string('download_name');
         $out_mode_id = post_param_integer('out_mode_id', null);
         $licence = post_param_integer('licence', null);
         $description = post_param_string('description', '');

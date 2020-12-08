@@ -341,7 +341,7 @@ class Module_cms_polls extends Standard_crud_module
         }
         $myrow = $rows[0];
 
-        return $this->get_form_fields(intval($id), get_translated_text($myrow['question']), get_translated_text($myrow['option1']), get_translated_text($myrow['option2']), get_translated_text($myrow['option3']), get_translated_text($myrow['option4']), get_translated_text($myrow['option5']), get_translated_text($myrow['option6']), get_translated_text($myrow['option7']), get_translated_text($myrow['option8']), get_translated_text($myrow['option9']), get_translated_text($myrow['option10']), $myrow['is_current'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes']);
+        return $this->get_form_fields(intval($id), get_translated_text($myrow['question']), get_translated_text($myrow['option1']), get_translated_text($myrow['option2']), get_translated_text($myrow['option3']), get_translated_text($myrow['option4']), get_translated_text($myrow['option5']), get_translated_text($myrow['option6']), get_translated_text($myrow['option7']), get_translated_text($myrow['option8']), get_translated_text($myrow['option9']), get_translated_text($myrow['option10']), $myrow['is_current'] == 1, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes']);
     }
 
     /**

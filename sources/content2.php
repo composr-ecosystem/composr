@@ -208,9 +208,13 @@ function metadata_get_fields(string $content_type, ?string $content_id, bool $re
         $submitter_field = in_array('submitter', $fields_to_skip) ? null : $info['submitter_field'];
         if ($submitter_field !== null) {
             $submitter = ($content_row === null) ? get_member() : $content_row[$submitter_field];
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($submitter, false, USERNAME_DEFAULT_NULL);
-            if ($username === null) {
-                $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+            if ($submitter !== null) {
+                $username = $GLOBALS['FORUM_DRIVER']->get_username($submitter, false, USERNAME_DEFAULT_NULL);
+                if ($username === null) {
+                    $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+                }
+            } else {
+                $username = '';
             }
             $fields->attach(form_input_username(do_lang_tempcode('OWNER'), do_lang_tempcode('DESCRIPTION_OWNER'), 'meta_submitter', $username, $require_owner));
         }

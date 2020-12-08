@@ -523,10 +523,10 @@ class Forum_driver_none extends Forum_driver_base
      * Get a URL to the specified post ID.
      *
      * @param  integer $id The post ID
-     * @param  string $forum The forum ID
+     * @param  ?mixed $forum The forum ID (null: private topic)
      * @return URLPATH The URL to the post
      */
-    public function post_url(int $id, string $forum) : string
+    public function post_url(int $id, $forum) : string
     {
         $url = build_url(['page' => 'news', 'id' => $id], get_module_zone('news'), [], false, false, true);
         return $url->evaluate();

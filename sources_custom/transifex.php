@@ -666,7 +666,7 @@ class Hook_addon_registry_language_{$lang}
      * @param  boolean \$runtime Whether to include wildcards represented runtime-created chmoddable files
      * @return array File permissions to set
      */
-    public function get_chmod_array(\bool $runtime = false) : array
+    public function get_chmod_array(bool \$runtime = false) : array
     {
         return [];
     }

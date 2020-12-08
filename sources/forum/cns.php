@@ -840,11 +840,11 @@ class Forum_driver_cns extends Forum_driver_base
      * Get a URL to the specified post ID.
      *
      * @param  integer $id The post ID
-     * @param  string $forum The forum ID
+     * @param  ?mixed $forum The forum ID (null: private topic)
      * @param  boolean $tempcode_okay Whether it is okay to return the result using Tempcode (more efficient)
      * @return mixed The URL to the post
      */
-    public function post_url(int $id, string $forum, bool $tempcode_okay = false)
+    public function post_url(int $id, $forum, bool $tempcode_okay = false)
     {
         if ($id === null) {
             return ''; // Should not happen, but if it does, this is how we should handle it.
