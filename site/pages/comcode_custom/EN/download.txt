@@ -24,7 +24,7 @@
 
 			<div class="sept"></div>
 
-			<p>Composr will work on most kinds of PHP cloud hosting such as [url="AppFog"]https://www.ctl.io/appfog/[/url], [url="Rackspace Cloud Sites"]http://www.rackspace.com/cloud/cloud_hosting_products/sites/[/url] and [url="Amazon EC2"]http://aws.amazon.com/ec2/[/url]. [url="Bitnami"]http://bitnami.org/cloud/[/url] provide quality cloud hosting, and Composr EC2 images.</p>
+			<p>Composr will work on most kinds of PHP cloud hosting such as [url="Cloud Foundry"]https://www.cloudfoundry.org/[/url], [url="Rackspace Hosting"]https://www.rackspace.com/solutions/website-hosting[/url] and [url="Amazon EC2"]http://aws.amazon.com/ec2/[/url]. [url="Bitnami"]http://bitnami.org/[/url] provide quality cloud hosting, and Composr EC2 images.</p>
 			<!-- Others: Heroku, Azure, Engine Yard, Jelastic, Google Cloud, Google AppEngine (if it's stable now), OpenShift (PaaS, Redhat)/OpenStack (IaaS, Rackspace)/Cloud Foundry (to roll your own?) -->
 
 			<p>We have inbuilt support for the kind of advanced features needed for scaling Composr installations.</p>
@@ -40,9 +40,8 @@
 					<ul>
 						<li><a href="https://webgallery.microsoft.com/apps/ocPortal" target="_blank"><img alt="Microsoft Web Platform" src="{$IMG*,composr_homesite/download/logo-microsoft}" /></a></li>
 						<li><a href="http://www.softaculous.com/softwares/cms/composr" target="_blank"><img alt="Softaculous" src="{$IMG*,composr_homesite/download/logo-softaculous}" /></a></li>
-						<li><a href="http://installatron.com/" target="_blank"><img alt="Installatron" src="{$IMG*,composr_homesite/download/logo-installatron}" /></a></li>
+						<!--<li><a href="http://installatron.com/" target="_blank"><img alt="Installatron" src="{$IMG*,composr_homesite/download/logo-installatron}" /></a></li>-->
 						<li><a href="http://bitnami.org/" target="_blank"><img alt="Bitnami" src="{$IMG*,composr_homesite/download/logo-bitnami}" /></a></li>
-						<li><a href="https://www.mojomarketplace.com/install/composr" target="_blank"><img alt="Mojo marketplace" src="{$IMG*,composr_homesite/download/logo-mojo}" /></a></li>
 						<!--<li><a href="http://apsstandard.org" target="_blank"><img alt="APS standard" src="{$IMG*,composr_homesite/download/logo-aps}" /></a></li>-->
 						<li><a href="http://www.ampps.com/" target="_blank"><img src="{$IMG*,composr_homesite/download/logo-ampps}" alt="AMPPS"></a></li>
 					</ul>
