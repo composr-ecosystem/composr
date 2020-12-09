@@ -61,7 +61,7 @@ class Hook_checklist_polls
             $task_label = do_lang_tempcode('PRIVILEGE_choose_poll');
         }
 
-        $url = build_url(['page' => 'cms_polls', 'type' => 'edit'], get_module_zone('cms_polls'));
+        $url = build_url(['page' => 'cms_polls'], get_module_zone('cms_polls'));
         $num_queue = $this->get_num_poll_queue();
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
         $info->attach(do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($num_queue))));

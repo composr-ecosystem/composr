@@ -78,8 +78,8 @@ class Hook_checklist_awards
 
                 $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-                if ($details['add_url'] !== null) {
-                    $url = page_link_to_tempcode_url($details['add_url']);
+                if ($details['cms_page'] !== null) {
+                    $url = build_url(['page' => $details['cms_page']], '_SEARCH');
                 } else {
                     $url = new Tempcode();
                 }
