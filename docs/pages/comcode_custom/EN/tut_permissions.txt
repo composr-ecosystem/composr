@@ -159,7 +159,13 @@ You can use [tt]Guest[/tt] as a username to act as if you are not logged in.
 
 Please note that when using 'SU':
  - the member will not show as being 'online' in most contexts
- - (by design) you will still be able to access a closed site, and view permission diagnostics using FirePHP (FirePHP is explained below)
+ - (by design) you will still be able to:
+  - access a closed site
+  - view stack traces
+  - view permission diagnostics using FirePHP (FirePHP is explained below)
+  - access testing mode in the eCommerce system
+  - use page rendering tools (by typing in the URL only)
+  - show search engine queries
 [/surround]
 
 [title="2"]Debugging permission problems[/title]
