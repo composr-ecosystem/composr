@@ -67,6 +67,10 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
                 break;
             }
 
+            if (!$info['enabled']) {
+                continue;
+            }
+
             $url = find_script('hybridauth') . '?provider=' . urlencode($provider) . '&composr_return_url=' . $return_url_part . $keep->evaluate();
 
             $button = do_template('HYBRIDAUTH_BUTTON', [

@@ -29,6 +29,10 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS_CSS
 
         $css = '';
         foreach ($providers as $provider => $info) {
+            if (!$info['enabled']) {
+                continue;
+            }
+
             $_css = do_template('_hybridauth_button', [
                 'CODENAME' => $provider,
                 'BACKGROUND_COLOUR' => $info['background_colour'],
