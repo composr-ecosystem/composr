@@ -135,9 +135,11 @@ function find_filedump_links($focus = '')
                 } else {
                     $db = $GLOBALS['SITE_DB'];
                 }
-                $results = $db->query($query, null, null, false, false, array($field_name => $field_type));
-                foreach ($results as $r) {
-                    extract_filedump_links(get_translated_text($r[$field_name]), array($r, $field_name), $focus, $paths_used);
+                $results = $db->query($query, null, null, true, false, array($field_name => $field_type));
+                if (is_array($results)) {
+                    foreach ($results as $r) {
+                        extract_filedump_links(get_translated_text($r[$field_name]), array($r, $field_name), $focus, $paths_used);
+                    }
                 }
             }
         }
