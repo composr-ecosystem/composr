@@ -343,6 +343,39 @@ function version_specific() : bool
                 '#solidborder#' => 'results_table',
             ];
             perform_search_replace($reps);
+
+            // Old-style comment topics
+            $comment_topic_forums = [
+                'comments_forum_name',
+                'messaging_forum_name',
+                'ticket_forum_name',
+            ];
+            foreach ($comment_topic_forums as $_forum) {
+                $forum = get_option($_forum, true);
+                if ($forum !== null) {
+                    $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum);
+                } else {
+                    $forum_id = null;
+                }
+                if ($forum_id !== null) {
+                    $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
+                    $sql = 'SELECT id,t_cache_first_title FROM ' . $table_prefix . 'f_topics WHERE t_forum_id=' . strval($forum_id) . ' AND t_cache_first_title LIKE \'% (#%)\'';
+                    $rows = $GLOBALS['SITE_DB']->query($sql);
+                    foreach ($rows as $row) {
+                        $matches = [];
+                        preg_match('#^(.*) \(\#(.*)\)$#', $row['t_cache_first_title'], $matches);
+                        if ($matches[1] == '') {
+                            $t_description = $matches[2];
+                            $new_title = $matches[2];
+                        } else {
+                            $t_description = $matches[1] . ': #' . $matches[2];
+                            $new_title = $matches[1];
+                        }
+                        $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_cache_first_title' => $new_title, 't_description' => $t_description], ['id' => $row['id']], '', 1);
+                    }
+                }
+            }
+            $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_description' => 'Comment: #block_main_comments_guestbook_main'], ['t_description' => 'guestbook: #block_main_comments_guestbook_main'], '', 1);
         }
 
         if ($version_database < 11.0) {
