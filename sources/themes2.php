@@ -698,9 +698,10 @@ function combo_get_image_paths(string $selected_path, string $base_url, string $
  *
  * @param  URLPATH $base_url The base URL to where we are searching for images
  * @param  PATH $base_path The base-path to where we are searching for images
+ * @param  boolean $include_lang_dir_structure Whether to also include stuff under language-specific directories
  * @return array path->url map of found images
  */
-function get_image_paths(string $base_url, string $base_path) : array
+function get_image_paths(string $base_url, string $base_path, bool $include_lang_dir_structure = false) : array
 {
     $out = [];
 
@@ -717,7 +718,7 @@ function get_image_paths(string $base_url, string $base_path) : array
                         $this_url = cms_rawurlrecode($base_url . rawurlencode($file));
                         $out[$this_path] = $this_url;
                     }
-                } elseif ((strlen($file) != 2) || (cms_strtoupper_ascii($file) != $file)) {
+                } elseif (($include_lang_dir_structure) || (strlen($file) != 2) || (cms_strtoupper_ascii($file) != $file)) {
                     $out = array_merge($out, get_image_paths($base_url . $file . '/', $base_path . $file . '/'));
                 }
             }

@@ -54,3 +54,20 @@
 .content-access-table-setting {
 	width: 5em !important;
 }
+
+@keyframes active_repeating_fading {
+	from {
+		opacity: 1.0;
+	}
+
+	to {
+		opacity: 0.6;
+	}
+}
+
+.active-repeating {
+	animation-duration: 1s;
+	animation-name: active_repeating_fading;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}

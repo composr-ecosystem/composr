@@ -182,6 +182,19 @@ It's flexible (advanced):
 1) Panel pages need to be Comcode pages if you want to use the Composr menu features, but otherwise there is nothing stopping you constructing panel pages as HTML or modules if you wish to.
 2) You will very rarely want to put new menus onto anything other than a panel page, although there is nothing stopping you putting them anywhere Comcode or Tempcode is supported.
 
+[title="2"]Permissions[/title]
+
+The "Only display if has permission" option can only check zone and page permissions, not category permissions.
+
+There is a little trick if you want to apply arbitrary "permission" checks to individual branches. Under the "Advanced" options, you can put Tempcode into the "Restrict link visibility" option.
+
+Here are a couple of examples:
+ - [tt]{$?,{$IS_GUEST},_never_}[/tt] -- Do not show the branch to guests
+ - [tt]{$?,{$NOT,{$IS_ADMIN}},_never_}[/tt] -- Only show the branch to super-administrators
+ - [tt]{$?,{$NOT,{$IS_IN_GROUP,2-3,7}},_never_}[/tt] -- Only show the branch to members within usergroups #2-#3 or usergroup #7
+
+The trick works by only showing the branch on a zone named "_never_" (i.e. this is never going to happen).
+
 [title="2"]Menu auto-generation / chaining (advanced)[/title]
 
 There is a way to include the Sitemap directly into menus.

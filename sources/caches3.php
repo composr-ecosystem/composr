@@ -547,28 +547,32 @@ function erase_theme_images_cache()
 
     $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'url', 'lang']);
     $paths = [];
-    foreach ($_paths as $path) {
-        $paths[serialize($path)] = $path;
+    foreach ($_paths as $image_details) {
+        $image_details_key = $image_details;
+        unset($image_details_key['url']);
+        $paths[serialize($image_details_key)] = $image_details['url'];
     }
 
-    foreach ($paths as $path) {
-        if (!file_exists(get_file_base() . '/themes/' . $path['theme'])) {
+    foreach ($paths as $_image_details_key => $path) {
+        $image_details_key = unserialize($_image_details_key);
+        if (!file_exists(get_file_base() . '/themes/' . $image_details_key['theme'])) {
             // Delete: a non-existent theme
-            $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
-        } elseif ($path['url'] == '') {
+            $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
+        } elseif ($path == '') {
             // Delete: A blank path, should not be there
-            $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
-        } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path['url']) != 0) {
-            if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path['url']))) && (!file_exists(get_file_base() . '/' . rawurldecode($path['url'])))) {
+            $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
+        } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path) != 0) {
+            if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path))) && (!file_exists(get_file_base() . '/' . rawurldecode($path)))) {
                 // Delete: Custom disk file does not actually exist
-                $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
+                $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
             } else {
-                if ($path['theme'] == 'default') {
+                if ($image_details_key['theme'] == 'default') {
                     // Add: Custom images in default theme should be in all themes
                     foreach (array_keys($all_themes) as $theme) {
                         if ($theme != 'default') {
-                            $insert_map = ['theme' => $theme, 'id' => $path['id'], 'url' => $path['url'], 'lang' => $path['lang']];
-                            if (!isset($paths[serialize($insert_map)])) {
+                            $insert_key_map = ['theme' => $theme, 'id' => $image_details_key['id'], 'lang' => $image_details_key['lang']];
+                            $insert_map = $insert_key_map + ['url' => $path];
+                            if (!isset($paths[serialize($insert_key_map)])) {
                                 $GLOBALS['SITE_DB']->query_insert('theme_images', $insert_map);
                             }
                         }

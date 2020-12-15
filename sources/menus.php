@@ -400,10 +400,6 @@ function _build_stored_menu_branch(array $item, array $items) : array
                 switch ($item['i_include_sitemap']) {
                     case INCLUDE_SITEMAP_OVER:
                         $branches = $extra_branch['children'];
-                        if (array_key_exists(0, $branches)) {
-                            $branch['children'] = $branches[0]['children'];
-                            $branches[0] = $branch;
-                        }
                         break;
 
                     case INCLUDE_SITEMAP_UNDER:

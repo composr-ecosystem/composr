@@ -146,7 +146,7 @@ function cns_get_details_to_show_post(array $_postdetails, array $topic_info, bo
     ];
 
     $post['has_revisions'] = false;
-    if (addon_installed('actionlog')) {
+    if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_revisions'))) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase(true);
         if ($revision_engine->has_revisions(['post'], strval($_postdetails['id']))) {

@@ -74,7 +74,7 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
         $parent = (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) ? 'root' : '';
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['parent_id' => $parent]);
+            $count = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['parent_id' => $parent], 'AND name NOT LIKE \'download\_%\'');
             if ($count > $child_cutoff) {
                 return $nodes;
             }

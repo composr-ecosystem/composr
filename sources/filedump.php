@@ -128,9 +128,11 @@ function find_filedump_links(string $focus = '') : array
                     $query .= ' AND ' . $_field_name . ' LIKE \'' . db_encode_like('%uploads/filedump' . $_focus . '%') . '\'';
                 }
                 $db = get_db_for($table);
-                $results = $db->query($query, null, 0, false, false, [$field_name => $field_type]);
+                $results = $db->query($query, null, 0, true, false, [$field_name => $field_type]);
                 foreach ($results as $r) {
-                    extract_filedump_links(get_translated_text($r[$field_name]), [$r, $field_name], $focus, $paths_used);
+                    if (is_array($results)) {
+                        extract_filedump_links(get_translated_text($r[$field_name]), [$r, $field_name], $focus, $paths_used);
+                    }
                 }
             }
         }

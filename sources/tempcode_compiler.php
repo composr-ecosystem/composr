@@ -954,7 +954,7 @@ function compile_template(string $data, string $template_name, string $theme, st
     $just_done_string = false;
     foreach ($current_level_data as $c) {
         // Try and replace some unnecessary string appending which may have happened when experiencing possible (but not) control characters
-        $c = preg_replace('#([^\\\\])' . preg_quote('"."', '#') . '#', '$1', $c);
+        $c = preg_replace('#([^\\\\(])' . preg_quote('"."', '#') . '([^)])#', '$1$2', $c);
 
         // Try and merge some strings that don't need to be in separate seq_parts
         $c_stripped_down = str_replace(['\\\\', '\\"'], ['', ''], $c); // Remove literal slashes and literal quotes so we can do an accurate scan to ensure it is all one string

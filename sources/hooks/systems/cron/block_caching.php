@@ -46,37 +46,73 @@ class Hook_cron_block_caching
      */
     public function run(?int $last_run)
     {
-        if ((get_param_string('keep_lang', null) === null) || (get_param_string('keep_theme', null) === null)) {
-            // We need to run this for each language and for each theme
+        if (get_value('cron_block_caching_careful_contexts') === '1') {
+            $request_contexts = $GLOBALS['SITE_DB']->query('SELECT DISTINCT c_theme,c_lang FROM ' . get_table_prefix() . 'cron_caching_requests');
+            if (empty($request_contexts)) {
+                return;
+            }
+
             $langs = find_all_langs();
             require_code('themes2');
             $themes = find_all_themes();
-            foreach (array_keys($langs) as $lang) {
-                foreach (array_keys($themes) as $theme) {
-                    if (($theme == 'default') || (has_category_access(get_member(), 'theme', $theme))) {
-                        $where = ['c_theme' => $theme, 'c_lang' => $lang];
-                        $count = $GLOBALS['SITE_DB']->query_select_value('cron_caching_requests', 'COUNT(*)', $where);
-                        if ($count > 0) {
-                            $url = get_base_url() . '/data/cron_bridge.php?limit_hook=block_caching&keep_lang=' . urlencode($lang) . '&keep_theme=' . urlencode($theme);
-                            http_get_contents($url, ['trigger_error' => false]);
-                        }
-                    }
+
+            // Remove anything tied to a context that no longer exists
+            foreach ($request_contexts as $i => $request_context) {
+                $lang = $request_context['c_lang'];
+                $theme = $request_context['c_theme'];
+
+                if ((!isset($langs[$lang])) || (!isset($themes[$theme]))) {
+                    unset($request_contexts[$i]);
+                    $GLOBALS['SITE_DB']->query_delete('cron_caching_requests', ['c_theme' => $theme, 'c_lang' => $lang]);
                 }
             }
 
-            // Force re-loading of values that we use to mark progress (as above calls probably resulted in changes happening)
-            global $VALUE_OPTIONS_CACHE;
-            $VALUE_OPTIONS_CACHE = $GLOBALS['SITE_DB']->query_select('values', ['*']);
-            $VALUE_OPTIONS_CACHE = list_to_map('the_name', $VALUE_OPTIONS_CACHE);
+            if ((get_param_string('keep_lang', null) === null) || (get_param_string('keep_theme', null) === null)) {
+                // We need to recurse into a new call for each context (language and theme combination)
+                $done_something = false;
+                $more_to_do = false;
+                foreach ($request_contexts as $request_context) {
+                    $lang = $request_context['c_lang'];
+                    $theme = $request_context['c_theme'];
 
-            return;
+                    if (($theme != $GLOBALS['FORUM_DRIVER']->get_theme()) || ($lang != user_lang())) {
+                        $where = ['c_theme' => $theme, 'c_lang' => $lang];
+                        $count = $GLOBALS['SITE_DB']->query_select_value('cron_caching_requests', 'COUNT(*)', $where);
+                        if ($count > 0) {
+                            $url = get_base_url() . '/data/cron_bridge.php?limit_hook=block_caching&keep_lang=' . urlencode($lang) . '&keep_theme=' . urlencode($theme) . '&force=1';
+                            http_get_contents($url, ['trigger_error' => false, 'timeout' => 180.0]);
+                            $done_something = true;
+                        }
+                    } else {
+                        $more_to_do = true;
+                    }
+                }
+
+                // Force re-loading of values that we use to mark progress (as above calls probably resulted in changes happening)
+                if ($done_something) {
+                    global $VALUE_OPTIONS_CACHE;
+                    $VALUE_OPTIONS_CACHE = $GLOBALS['SITE_DB']->query_select('values', ['*']);
+                    $VALUE_OPTIONS_CACHE = list_to_map('the_name', $VALUE_OPTIONS_CACHE);
+                }
+
+                if (!$more_to_do) {
+                    return;
+                }
+            }
+
+            $where = ['c_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'c_lang' => user_lang()];
+        } else {
+            $where = [];
         }
 
-        $where = ['c_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'c_lang' => user_lang()];
+        // Execute all in current context...
+
+        global $LANGS_REQUESTED, $LANGS_REQUESTED, $TIMEZONE_MEMBER_CACHE, $JAVASCRIPTS, $CSSS, $REQUIRED_ALL_LANG, $DO_NOT_CACHE_THIS;
+
+        push_query_limiting(false);
+
         $requests = $GLOBALS['SITE_DB']->query_select('cron_caching_requests', ['*'], $where);
         foreach ($requests as $request) {
-            push_query_limiting(false);
-
             $codename = $request['c_codename'];
             $map = unserialize($request['c_map']);
 
@@ -87,15 +123,15 @@ class Hook_cron_block_caching
             }
 
             if (is_object($object)) {
-                global $LANGS_REQUESTED, $LANGS_REQUESTED, $DO_NOT_CACHE_THIS, $TIMEZONE_MEMBER_CACHE, $JAVASCRIPTS, $CSSS, $REQUIRED_ALL_LANG;
-
                 $backup_langs_requested = $LANGS_REQUESTED;
                 $backup_required_all_lang = $REQUIRED_ALL_LANG;
                 get_users_timezone();
                 $backup_timezone = $TIMEZONE_MEMBER_CACHE[get_member()];
+                $TIMEZONE_MEMBER_CACHE[get_member()] = $request['c_timezone'];
                 $LANGS_REQUESTED = [];
                 $REQUIRED_ALL_LANG = [];
                 push_output_state(false, true);
+                $DO_NOT_CACHE_THIS = false;
                 $cache = $object->run($map);
                 $TIMEZONE_MEMBER_CACHE[get_member()] = $backup_timezone;
                 $cache->handle_symbol_preprocessing();
@@ -112,28 +148,29 @@ PHP;
                     }
                     $ttl = $info['ttl'];
 
-                    $_cache_identifier = [];
-                    $cache_on = $info['cache_on'];
-                    if (is_array($cache_on)) {
-                        $_cache_identifier = call_user_func($cache_on[0], $map);
-                    } else {
-                        if ($cache_on != '') {
-                            $_cache_on = cms_eval('return ' . $cache_on . ';', 'Block: ' . $codename); // NB: This uses $map, as $map is referenced inside $cache_on
-                            if ($_cache_on === null) {
-                                return;
-                            }
-                            foreach ($_cache_on as $on) {
-                                $_cache_identifier[] = $on;
-                            }
-                        }
-                    }
-                    $cache_identifier = serialize($_cache_identifier);
+                    $cache_identifier = do_block_get_cache_identifier($codename, $info['cache_on'], $map);
 
                     require_code('caches2');
                     if ($request['c_store_as_tempcode'] == 1) {
                         $cache = make_string_tempcode($cache->evaluate());
                     }
-                    set_cache_entry($codename, $ttl, $cache_identifier, $cache, $info['special_cache_flags'], array_keys($LANGS_REQUESTED), array_keys($JAVASCRIPTS), array_keys($CSSS), true, $request['c_staff_status'], $request['c_member'], $request['c_groups'], $request['c_is_bot'], $request['c_timezone'], $request['c_lang']);
+                    set_cache_entry(
+                        $codename,
+                        $ttl,
+                        $cache_identifier,
+                        $cache,
+                        $info['special_cache_flags'],
+                        array_keys($LANGS_REQUESTED),
+                        array_keys($JAVASCRIPTS),
+                        array_keys($CSSS),
+                        true,
+                        $request['c_staff_status'],
+                        $request['c_member'],
+                        $request['c_groups'],
+                        $request['c_is_bot'],
+                        $request['c_timezone'],
+                        $request['c_lang']
+                    );
                 }
                 $LANGS_REQUESTED += $backup_langs_requested;
                 $REQUIRED_ALL_LANG += $backup_required_all_lang;

@@ -712,7 +712,7 @@ function _helper_add_table_field_sql(object $this_ref, string $table_name, strin
     }
     $final_type = str_replace(['*', '?'], ['', ''], $_final_type);
     $extra = '';
-    if ((($final_type != 'LONG_TEXT') || ($this_ref->static_ob->has_default_for_text_fields())) && (($_final_type[0] != '?') || ($default !== null))) {
+    if ((($final_type != 'LONG_TEXT') || ($this_ref->static_ob->has_default_for_text_fields())) && ($default !== null)) {
         $extra = ($default === null) ? 'DEFAULT NULL' : ('DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default)));
     }
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;

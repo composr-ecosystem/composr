@@ -1789,29 +1789,24 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $attributes['target'] = '_blank'; // Fix common mistake
             }
             if (array_key_exists('rel', $attributes)) {
-                $rel = trim($attributes['rel']);
+                $rel = array_flip(preg_split('#\s+#', trim(cms_strtolower_ascii($attributes['rel']))));
             } else {
-                $rel = '';
+                $rel = [];
             }
             if ((!$as_admin) && (!has_privilege($source_member, 'search_engine_links')) && (@parse_url($url_full, PHP_URL_HOST) != parse_url(get_base_url(), PHP_URL_HOST))) {
-                if ($rel != '') {
-                    $rel .= ' ';
-                }
-                $rel .= 'nofollow';
+                $rel['nofollow'] = true;
             }
-            if (!$as_admin) {
-                $rel = preg_replace('#(^|\s)opener($|[^\w])#', '\2', $rel);
-                if ($rel != '') {
-                    $rel .= ' ';
-                }
-                $rel .= 'noopener';
+            if (!$comcode_dangerous) {
+                unset($rel['opener']);
+                $rel['noopener'] = true;
             }
             if ($attributes['target'] == '_blank') {
+                $rel['external'] = true;
                 $title = trim(strip_tags(is_object($caption) ? static_evaluate_tempcode($caption) : $caption) . ' ' . do_lang('LINK_NEW_WINDOW'));
             } else {
                 $title = '';
             }
-            $temp_tpl->attach(do_template('COMCODE_URL', ['_GUID' => 'd1657530e6d3d57e6a4791fb3bfa0dd7', 'TITLE' => $title, 'REL' => $rel, 'TARGET' => $attributes['target'], 'URL' => $url_full, 'CAPTION' => $caption]));
+            $temp_tpl->attach(do_template('COMCODE_URL', ['_GUID' => 'd1657530e6d3d57e6a4791fb3bfa0dd7', 'TITLE' => $title, 'REL' => implode(' ', array_keys($rel)), 'TARGET' => $attributes['target'], 'URL' => $url_full, 'CAPTION' => $caption]));
             break;
 
         case 'email':

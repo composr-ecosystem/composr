@@ -869,13 +869,14 @@ function enable_notifications(string $notification_code, ?string $notification_c
 }
 
 /**
- * Disable notifications for a member on a notification type+category. Chances are you don't want to call this, you want to call enable_notifications with $setting = A_NA. That'll stop the default coming back.
+ * Disable notifications for a member on a notification type+category.
+ * Chances are you don't want to call this, you want to call enable_notifications with $setting = A_NA. That'll stop the default coming back.
  *
  * @param  ID_TEXT $notification_code The notification code to use
- * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)
+ * @param  SHORT_TEXT $notification_category The category within the notification code
  * @param  ?MEMBER $member_id The member being de-signed up (null: current member)
  */
-function disable_notifications(string $notification_code, ?string $notification_category, ?int $member_id = null)
+function disable_notifications(string $notification_code, string $notification_category, ?int $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -889,7 +890,7 @@ function disable_notifications(string $notification_code, ?string $notification_
     $map = [
         'l_member_id' => $member_id,
         'l_notification_code' => substr($notification_code, 0, 80),
-        'l_code_category' => ($notification_category === null) ? '' : $notification_category,
+        'l_code_category' => $notification_category,
     ];
     $db->query_delete('notifications_enabled', $map);
 

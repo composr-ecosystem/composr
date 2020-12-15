@@ -1227,7 +1227,7 @@
                 if (!synchronous) {
                     xhr.timeout = timeout;
                 }
-                if (boolVal('{$VALUE_OPTION;,http2_post_fix}')) {
+                if ((boolVal('{$VALUE_OPTION;,http2_post_fix}')) && (!synchronous)) {
                     var imgTmp = new Image();
                     imgTmp.onload = function() {
                         xhr.send(post);

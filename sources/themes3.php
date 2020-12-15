@@ -401,7 +401,7 @@ function actual_edit_theme_image(string $old_id, string $theme, string $lang, st
                 }
                 $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
 
-                cleanup_theme_images($old_url);
+                cleanup_after_theme_image_file_removal($old_url);
             }
         }
     }
@@ -459,7 +459,7 @@ function actual_delete_theme_image(string $id, ?string $theme = null, ?string $l
     }
 
     if ($old_url != '') {
-        cleanup_theme_images($old_url);
+        cleanup_after_theme_image_file_removal($old_url);
     }
 
     log_it('DELETE_THEME_IMAGE', $id, $theme);
@@ -550,24 +550,42 @@ function regen_theme_images(string $theme, ?array $langs = null, ?string $target
 
 /**
  * Delete uploaded theme image if not tied into anything.
+ * We have to work hard as it's conceivable the URL could be in the database in weird encoding schemes across multiple theme images.
  *
  * @param  URLPATH $old_url The URL to the theme image being deleted
  */
-function cleanup_theme_images(string $old_url)
+function cleanup_after_theme_image_file_removal(string $old_url)
 {
-    $files_referenced = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('theme_images', ['DISTINCT url']));
+    if (strpos($old_url, '/images_custom/') === false) {
+        return;
+    }
 
-    $themes = find_all_themes();
-    foreach (array_keys($themes) as $theme) {
-        $files_existing = get_image_paths(get_custom_base_url() . '/themes/' . rawurlencode($theme) . '/images_custom/', get_custom_file_base() . '/themes/' . $theme . '/images_custom/');
+    $possible_paths = [];
+    $possible_paths[] = rawurldecode($old_url);
+    $possible_paths[] = urldecode($old_url);
 
-        foreach (array_keys($files_existing) as $path) {
-            $path = str_replace(get_custom_file_base() . '/', '', filter_naughty($path));
-            $encoded_url = cms_rawurlrecode(substr($path, 0, strrpos($path, '/') + 1) . rawurlencode(substr($path, strrpos($path, '/') + 1)));
-            if ((!in_array($path, $files_referenced)) && (!in_array($encoded_url, $files_referenced)) && (($old_url == $path) || ($old_url == $encoded_url))) {
-                @unlink(get_custom_file_base() . '/' . $path);
-                sync_file(get_custom_file_base() . '/' . $path);
-            }
+    $possible_variations_in_db = $possible_paths;
+    $possible_variations_in_db[] = $old_url;
+    $possible_variations_in_db[] = cms_rawurlrecode($old_url);
+    $possible_variations_in_db[] = cms_rawurlencode(rawurldecode($old_url));
+    $possible_variations_in_db[] = rawurlencode(rawurldecode($old_url));
+    $possible_variations_in_db[] = urlencode(rawurldecode($old_url));
+    $possible_variations_in_db[] = cms_rawurlencode(urldecode($old_url));
+    $possible_variations_in_db[] = rawurlencode(urldecode($old_url));
+    $possible_variations_in_db[] = urlencode(urldecode($old_url));
+    $possible_variations_in_db = array_unique($possible_variations_in_db);
+
+    foreach ($possible_variations_in_db as $possibility) {
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['url' => $possibility]);
+        if ($test !== null) {
+            return;
+        }
+    }
+
+    foreach ($possible_paths as $path) {
+        if (is_file(get_custom_file_base() . '/' . $path)) {
+            @unlink(get_custom_file_base() . '/' . $path);
+            sync_file(get_custom_file_base() . '/' . $path);
         }
     }
 }

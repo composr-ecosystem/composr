@@ -332,7 +332,7 @@ PHP;
         }
 
         $sql = 'SELECT DISTINCT r.* FROM ';
-        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=r.id';
+        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
         $main_sql .= $extra_join_sql;
         $main_sql .= ' WHERE ' . $where;
         $sql .= $main_sql;

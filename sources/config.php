@@ -414,7 +414,9 @@ function get_option(string $name, bool $missing_ok = false) : ?string
             return null;
         }
 
-        set_option($name, $value, 0);
+        if (!running_script('upgrade')) {
+            set_option($name, $value, 0);
+        }
 
         $GET_OPTION_LOOP = false;
     }

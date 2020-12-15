@@ -1228,7 +1228,7 @@ class Module_admin_themes
                         }
                         $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
 
-                        cleanup_theme_images($old_url);
+                        cleanup_after_theme_image_file_removal($old_url);
                     }
                 }
             }

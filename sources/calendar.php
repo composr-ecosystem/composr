@@ -237,6 +237,7 @@ function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $s
     $_start_hour = ($start_hour === null) ? find_timezone_start_hour_in_utc($timezone, $start_year, $start_month, $start_day, $start_monthly_spec_type) : $start_hour;
     $_start_minute = ($start_minute === null) ? find_timezone_start_minute_in_utc($timezone, $start_year, $start_month, $start_day, $start_monthly_spec_type) : $start_minute;
     $day_of_month = find_concrete_day_of_month($start_year, $start_month, $start_day, $start_monthly_spec_type, $_start_hour, $_start_minute, $timezone, $do_timezone_conv == 1);
+    $dif_days = 0;
     if ($end_day !== null) {
         $_end_hour = ($end_hour === null) ? find_timezone_end_hour_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_hour;
         $_end_minute = ($end_minute === null) ? find_timezone_end_minute_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_minute;

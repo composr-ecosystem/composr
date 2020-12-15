@@ -527,15 +527,12 @@ class DatabaseRepair
                 sort($expected_key_fields);
                 sort($existent_key_fields);
                 if ($expected_key_fields != $existent_key_fields) {
-                    list($drop_key_query, $create_key_query) = $this->fix_table_inconsistent_in_db__bad_primary_key($table_name, $expected_key_fields, isset($meta_tables[$table_name][$field_name]), true);
+                    list($drop_key_query) = $this->fix_table_inconsistent_in_db__bad_primary_key($table_name, $expected_key_fields, isset($meta_tables[$table_name][$field_name]), true);
                     $this->sql_fixup = array_merge(
                         array_slice($this->sql_fixup, 0, count($this->sql_fixup) - $fields_added),
                         [$drop_key_query . ';'],
                         array_slice($this->sql_fixup, count($this->sql_fixup) - $fields_added)
                     );
-                    if ((!empty($expected_key_fields)) || ($existent_tables[$table_name][$expected_key_fields[0]] != '*AUTO')) {
-                        $this->sql_fixup[] = $create_key_query . ';';
-                    }
                     $needs_changes = true;
                 }
 
@@ -881,7 +878,10 @@ class DatabaseRepair
         }
 
         $_key_fields = implode(', ', $key_fields);
-        $create_key_query = 'ALTER TABLE ' . get_table_prefix() . $table_name . ' DROP PRIMARY KEY, ADD PRIMARY KEY (' . $_key_fields . ')';
+        $create_key_query = 'ALTER TABLE ' . get_table_prefix() . $table_name . ' DROP PRIMARY KEY';
+        if ($_key_fields != '') {
+            $create_key_query .= ', ADD PRIMARY KEY (' . $_key_fields . ')';
+        }
         if (!$return_queries) {
             $this->add_fixup_query($create_key_query);
         }

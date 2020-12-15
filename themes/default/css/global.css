@@ -3814,7 +3814,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	padding: 3px;
 }
 
-.alphabetical-jumper.pagination a, .alphabetical-jumper.pagination a:hover {
+.alphabetical-jumper.pagination a, .alphabetical-jumper.pagination a:hover, .alphabetical-jumper.pagination span {
 	padding: 0.5em 1em !important;
 }
 

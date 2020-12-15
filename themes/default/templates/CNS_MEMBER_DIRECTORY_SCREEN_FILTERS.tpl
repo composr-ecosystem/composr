@@ -10,7 +10,7 @@
 	{+START,IF_NON_EMPTY,{FILTERS_ROW_A}{FILTERS_ROW_B}}
 		<div class="box advanced-member-search"><div class="box-inner">
 			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}" target="_self" method="get">
-				{$HIDDENS_FOR_GET_FORM,{$SELF_URL},{BLOCK_ID}_start,{BLOCK_ID}_max,{BLOCK_ID}_sort,{BLOCK_ID}_filter_*}
+				{$HIDDENS_FOR_GET_FORM,{$SELF_URL},{BLOCK_ID}_start,{BLOCK_ID}_max,{BLOCK_ID}_sort,filter_{BLOCK_ID}_*}
 
 				<div class="search-fields clearfix">
 					<div class="search-button">

@@ -227,135 +227,139 @@ class Hook_sitemap_page extends Hook_sitemap_base
         $require_permission_support = (($options & SITEMAP_GEN_REQUIRE_PERMISSION_SUPPORT) != 0);
         $check_perms = (($options & SITEMAP_GEN_CHECK_PERMS) != 0);
 
+        if (($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') && (!$require_permission_support) && (!has_low_memory())) {
+            $use_page_groupings = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0);
+            $use_page_groupings_be_deferential = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) && (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS) == 0);
+
+            $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
+                $check_perms, // $check_perms
+                $this->get_member($options), // $member_id
+                $use_page_groupings, // $support_crosslinks
+                $use_page_groupings_be_deferential // $be_deferential
+            ]);
+
+            if ($functions[0] === null) {
+                return null;
+            }
+
+            $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $path);
+
+            if ($entry_points === null) {
+                return null;
+            }
+        }
+
         if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth) || (!isset($row[1]))) {
             // Look for entry points to put under this
             if (($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') && (!$require_permission_support) && (!has_low_memory())) {
-                $use_page_groupings = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0);
-                $use_page_groupings_be_deferential = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) && (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS) == 0);
-
-                $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
-                    $check_perms, // $check_perms
-                    $this->get_member($options), // $member_id
-                    $use_page_groupings, // $support_crosslinks
-                    $use_page_groupings_be_deferential // $be_deferential
-                ]);
-
                 $has_entry_points = false;
 
-                if ($functions[0] !== null) {
-                    $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $path);
+                if (!empty($entry_points)) {
+                    $struct['has_possible_children'] = true;
 
-                    if ($entry_points === null) {
-                        return null;
-                    }
+                    $entry_point_sitemap_ob = $this->_get_sitemap_object('entry_point');
+                    $comcode_page_sitemap_ob = $this->_get_sitemap_object('comcode_page');
 
-                    if (!empty($entry_points)) {
-                        $struct['has_possible_children'] = true;
+                    $has_entry_points = true;
 
-                        $entry_point_sitemap_ob = $this->_get_sitemap_object('entry_point');
-                        $comcode_page_sitemap_ob = $this->_get_sitemap_object('comcode_page');
-
-                        $has_entry_points = true;
-
-                        if (isset($entry_points['!'])) {
-                            // "!" indicates no entry-points but that the page is accessible without them
-                            if (!isset($row[1])) {
-                                if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) == 0) {
-                                    $_title = $entry_points['!'][0];
-                                    if (is_object($_title)) {
-                                        $struct['title'] = $_title;
-                                    } else {
-                                        $struct['title'] = (preg_match('#^[A-Z_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
-                                    }
-                                }
-                                if ($entry_points['!'][1] !== null) {
-                                    if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                        $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points['!'][1]);
-                                    }
+                    if (isset($entry_points['!'])) {
+                        // "!" indicates no entry-points but that the page is accessible without them
+                        if (!isset($row[1])) {
+                            if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) == 0) {
+                                $_title = $entry_points['!'][0];
+                                if (is_object($_title)) {
+                                    $struct['title'] = $_title;
+                                } else {
+                                    $struct['title'] = (preg_match('#^[A-Z_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
                                 }
                             }
-                            unset($entry_points['!']);
-                        } elseif (((isset($entry_points['browse'])) || (count($entry_points) == 1)) && (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0)) {
-                            // Browse/only moves some details down and is then skipped so it doesn't show separately beneath (alternatively we could haved blanked out our container node to make it a non-link)
-                            $move_down_entry_point = (count($entry_points) == 1) ? key($entry_points) : 'browse';
-                            if (!isset($row[1])) {
-                                if (substr($struct['page_link'], -strlen(':' . $move_down_entry_point)) != ':' . $move_down_entry_point) {
-                                    if ($move_down_entry_point != 'browse') {
-                                        $struct['page_link'] .= ':' . $move_down_entry_point;
-                                    }
-                                }
-                                if (!isset($entry_points['browse'])) {
-                                    $_title = $entry_points[$move_down_entry_point][0];
-                                    if (is_object($_title)) {
-                                        $struct['title'] = $_title;
-                                    } else {
-                                        $struct['title'] = (preg_match('#^[A-Z_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
-                                    }
-                                }
-                                if ($entry_points[$move_down_entry_point][1] !== null) {
-                                    if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                        $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points[$move_down_entry_point][1]);
-                                    }
-                                }
-                            }
-                            unset($entry_points[$move_down_entry_point]);
-                        } else {
-                            if (($options & SITEMAP_GEN_NO_EMPTY_PAGE_LINKS) == 0) {
-                                $struct['page_link'] = ''; // Container node is non-clickable
-                            }
-
-                            // Is the icon for the container explicitly defined within get_wrapper_icon()?
-                            if ($functions[1] !== null) {
+                            if ($entry_points['!'][1] !== null) {
                                 if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                    $icon = is_array($functions[1]) ? call_user_func_array($functions[1][0], $functions[1][1]) : cms_eval($functions[1], $path);
-                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $icon);
+                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points['!'][1]);
                                 }
                             }
                         }
-
-                        if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
-                            foreach ($entry_points as $entry_point => $entry_point_details) {
-                                $page_type = 'module';
-
-                                if (strpos($entry_point, ':') === false) {
-                                    $child_page_link = $zone . ':' . $page . ':' . $entry_point;
+                        unset($entry_points['!']);
+                    } elseif (((isset($entry_points['browse'])) || (count($entry_points) == 1)) && (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0)) {
+                        // Browse/only moves some details down and is then skipped so it doesn't show separately beneath (alternatively we could haved blanked out our container node to make it a non-link)
+                        $move_down_entry_point = (count($entry_points) == 1) ? key($entry_points) : 'browse';
+                        if (!isset($row[1])) {
+                            if (substr($struct['page_link'], -strlen(':' . $move_down_entry_point)) != ':' . $move_down_entry_point) {
+                                if ($move_down_entry_point != 'browse') {
+                                    $struct['page_link'] .= ':' . $move_down_entry_point;
+                                }
+                            }
+                            if (!isset($entry_points['browse'])) {
+                                $_title = $entry_points[$move_down_entry_point][0];
+                                if (is_object($_title)) {
+                                    $struct['title'] = $_title;
                                 } else {
-                                    $child_page_link = $entry_point;
+                                    $struct['title'] = (preg_match('#^[A-Z_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
+                                }
+                            }
+                            if ($entry_points[$move_down_entry_point][1] !== null) {
+                                if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
+                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points[$move_down_entry_point][1]);
+                                }
+                            }
+                        }
+                        unset($entry_points[$move_down_entry_point]);
+                    } else {
+                        if (($options & SITEMAP_GEN_NO_EMPTY_PAGE_LINKS) == 0) {
+                            $struct['page_link'] = ''; // Container node is non-clickable
+                        }
 
-                                    require_code('site');
-                                    list($entry_point_zone, $entry_point_codename) = explode(':', $entry_point);
-                                    $_page_type = __request_page($entry_point_codename, $entry_point_zone);
-                                    if ($_page_type !== false) {
-                                        $page_type = cms_strtolower_ascii($_page_type[0]);
-                                    }
+                        // Is the icon for the container explicitly defined within get_wrapper_icon()?
+                        if ($functions[1] !== null) {
+                            if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
+                                $icon = is_array($functions[1]) ? call_user_func_array($functions[1][0], $functions[1][1]) : cms_eval($functions[1], $path);
+                                $struct['extra_meta']['image'] = find_theme_image('icons/' . $icon);
+                            }
+                        }
+                    }
+
+                    if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
+                        foreach ($entry_points as $entry_point => $entry_point_details) {
+                            $page_type = 'module';
+
+                            if (strpos($entry_point, ':') === false) {
+                                $child_page_link = $zone . ':' . $page . ':' . $entry_point;
+                            } else {
+                                $child_page_link = $entry_point;
+
+                                require_code('site');
+                                list($entry_point_zone, $entry_point_codename) = explode(':', $entry_point);
+                                $_page_type = __request_page($entry_point_codename, $entry_point_zone);
+                                if ($_page_type !== false) {
+                                    $page_type = cms_strtolower_ascii($_page_type[0]);
+                                }
+                            }
+
+                            if (strpos($page_type, 'comcode') !== false) {
+                                if (($valid_node_types !== null) && (!in_array('comcode_page', $valid_node_types))) {
+                                    continue;
+                                }
+                                $child_node = $comcode_page_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather);
+                            } else {
+                                if (($valid_node_types !== null) && (!in_array('page', $valid_node_types))) {
+                                    continue;
                                 }
 
-                                if (strpos($page_type, 'comcode') !== false) {
-                                    if (($valid_node_types !== null) && (!in_array('comcode_page', $valid_node_types))) {
-                                        continue;
+                                if ((preg_match('#^([^:]*):([^:]*):([^:]*)(:.*|$)#', $child_page_link) != 0) || ($entry_point == '_SEARCH:topicview'/*special case*/)) {
+                                    if (strpos($extra, ':catalogue_name=') !== false) {
+                                        $child_page_link .= preg_replace('#^:\w+#', '', $extra);
                                     }
-                                    $child_node = $comcode_page_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather);
+                                    $child_node = $entry_point_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather, $entry_point_details);
                                 } else {
-                                    if (($valid_node_types !== null) && (!in_array('page', $valid_node_types))) {
-                                        continue;
-                                    }
-
-                                    if ((preg_match('#^([^:]*):([^:]*):([^:]*)(:.*|$)#', $child_page_link) != 0) || ($entry_point == '_SEARCH:topicview'/*special case*/)) {
-                                        if (strpos($extra, ':catalogue_name=') !== false) {
-                                            $child_page_link .= preg_replace('#^:\w+#', '', $extra);
-                                        }
-                                        $child_node = $entry_point_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather, $entry_point_details);
-                                    } else {
-                                        $child_node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather);
-                                    }
+                                    $child_node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather);
                                 }
-                                if ($child_node !== null) {
-                                    if ($child_node['extra_meta']['image'] === null) {
-                                        $child_node['extra_meta']['image'] = find_theme_image('icons/' . $entry_point_details[1]);
-                                    }
-
-                                    $children[$child_node['page_link']] = $child_node;
+                            }
+                            if ($child_node !== null) {
+                                if ($child_node['extra_meta']['image'] === null) {
+                                    $child_node['extra_meta']['image'] = find_theme_image('icons/' . $entry_point_details[1]);
                                 }
+
+                                $children[$child_node['page_link']] = $child_node;
                             }
                         }
                     }

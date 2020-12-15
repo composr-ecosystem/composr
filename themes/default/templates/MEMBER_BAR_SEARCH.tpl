@@ -2,7 +2,7 @@
 {+START,IF,{$EQ,{$PAGE},forumview}}
 	{+START,IF,{$EQ,{$_GET,type},pt}}
 		<div class="cns-search-box">
-			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK*,_SEARCH:search:results:cns_own_pt,1}}" method="get">
+			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_own_pt,1}}" method="get">
 				{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_own_pt,1}}
 
 				<div class="vertical-alignment">
@@ -16,7 +16,7 @@
 	{+END}
 	{+START,IF,{$NEQ,{$_GET,type},pt}}
 		<div class="cns-search-box">
-			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK*,_SEARCH:search:results:cns_posts:search_under={$_GET,id},1}}" method="get">
+			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under={$_GET,id},1}}" method="get">
 				{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under_children={$_GET,id},1}}
 
 				<div class="vertical-alignment">
