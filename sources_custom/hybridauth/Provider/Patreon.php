@@ -129,7 +129,11 @@ class Patreon extends OAuth2
         $contacts = [];
 
         foreach ($campaigns as $campaignId) {
-            $params = ['include' => 'currently_entitled_tiers', 'fields[member]' => 'full_name,patron_status,email', 'fields[tier]' => 'title'];
+            $params = [
+                'include' => 'currently_entitled_tiers',
+                'fields[member]' => 'full_name,patron_status,email',
+                'fields[tier]' => 'title',
+            ];
             $membersUrl = 'oauth2/v2/campaigns/' . $campaignId . '/members?' . http_build_query($params);
 
             do {
@@ -155,7 +159,8 @@ class Patreon extends OAuth2
 
                     if ($member->filter('attributes')->get('patron_status') == 'active_patron') {
                         $tiers = [];
-                        foreach ($member->filter('relationships')->filter('currently_entitled_tiers')->get('data') as $item) {
+                        $tierObs = $member->filter('relationships')->filter('currently_entitled_tiers')->get('data');
+                        foreach ($tierObs as $item) {
                             $tier = new Collection($item);
                             $tierId = $tier->get('id');
                             $tiers[] = $tierTitles[$tierId];
