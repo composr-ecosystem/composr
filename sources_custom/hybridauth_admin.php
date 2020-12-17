@@ -103,16 +103,20 @@ function init__hybridauth_admin()
     require_code('hybridauth');
 }
 
-function initiate_hybridauth_admin($mask = 0)
+function initiate_hybridauth_admin($mask = 0, $alternate_config = 'admin', $only_provider = null)
 {
-    $providers = find_all_hybridauth_admin_providers_matching($mask);
+    $providers = find_all_hybridauth_admin_providers_matching($mask, $alternate_config);
 
     global $CSP_NONCE;
 
     $_providers = [];
     foreach ($providers as $provider => $info) {
+        if (($only_provider !== null) && ($provider !== $only_provider)) {
+            continue;
+        }
+
         $_providers[$provider] = [
-            'enabled' => true,
+            'enabled' => $info['enabled'],
             'nonce' => $CSP_NONCE,
             'keys' => $info['keys'],
         ] + $info['other_parameters'];
@@ -124,16 +128,16 @@ function initiate_hybridauth_admin($mask = 0)
     ];
 
     require_code('hybridauth_admin_storage');
-    $admin_storage = new ComposrHybridauthValuesStorage();
+    $admin_storage = new ComposrHybridauthValuesStorage($alternate_config . '_');
 
     $hybridauth = new Hybridauth\Hybridauth($config, null, $admin_storage);
 
     return [$hybridauth, $admin_storage, $providers];
 }
 
-function find_all_hybridauth_admin_providers_matching($mask)
+function find_all_hybridauth_admin_providers_matching($mask, $alternate_config = 'admin')
 {
-    $providers = enumerate_hybridauth_providers(true);
+    $providers = enumerate_hybridauth_providers($alternate_config);
 
     global $HYBRIDAUTH_PROVIDER_METADATA;
 

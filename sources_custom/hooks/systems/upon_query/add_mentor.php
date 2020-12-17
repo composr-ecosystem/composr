@@ -66,16 +66,11 @@ class Hook_upon_query_add_mentor
             require_code('cns_posts_action2');
             require_code('cns_members');
             require_code('cns_members2');
+            require_code('cns_groups');
 
             require_lang('mentorr');
 
-            $mentor_usergroup_id = null;
-            $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
-            foreach ($groups as $group_id => $group) {
-                if ($group == $mentor_usergroup) {
-                    $mentor_usergroup_id = $group_id;
-                }
-            }
+            $mentor_usergroup_id = find_usergroup_id($mentor_usergroup);
             if ($mentor_usergroup_id === null) {
                 return;
             }

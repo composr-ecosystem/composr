@@ -1236,7 +1236,6 @@ class Module_admin_version
             $patreon_patrons[] = [
                 'NAME' => $patron['name'],
                 'USERNAME' => $patron['username'],
-                'MONTHLY' => strval($patron['monthly']),
             ];
         }
 

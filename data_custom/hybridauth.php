@@ -43,6 +43,8 @@ if (!addon_installed('hybridauth')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('hybridauth')));
 }
 
+header('X-Robots-Tag: noindex');
+
 require_code('hybridauth');
 require_lang('hybridauth');
 
@@ -87,9 +89,9 @@ try {
     $success = $adapter->isConnected();
 
     if ($success) {
-        $userProfile = $adapter->getUserProfile();
+        $user_profile = $adapter->getUserProfile();
 
-        $member_id = hybridauth_handle_authenticated_account($provider, $userProfile);
+        $member_id = hybridauth_handle_authenticated_account($provider, $user_profile);
 
         // Set log in
         hybridauth_log_in_authenticated_account($member_id);

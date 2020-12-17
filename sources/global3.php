@@ -2130,18 +2130,18 @@ function array_peek(array $array, int $depth_down = 1)
  * Let's imagine you get the result of SELECT id,title FROM sometable.
  * list_to_map turns the array of rows into a map between the id key and each row.
  *
- * @param  string $map_value The key key of our maps that reside in our map
+ * @param  ?string $map_value The key key of our maps that reside in our map (null: serialize the whole map)
  * @param  array $list The list of maps
  * @return array The collapsed map
  */
-function list_to_map(string $map_value, array $list) : array
+function list_to_map(?string $map_value, array $list) : array
 {
     $i = 0;
 
     $new_map = [];
 
     foreach ($list as $map) {
-        $key = $map[$map_value];
+        $key = ($map_value === null) ? serialize($map) : $map[$map_value];
         $new_map[$key] = $map;
 
         $i++;

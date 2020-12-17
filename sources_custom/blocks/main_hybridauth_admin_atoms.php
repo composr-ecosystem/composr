@@ -113,6 +113,10 @@ PHP;
         $shuffle = array_key_exists('shuffle', $map) ? ($map['shuffle'] == '1') : false;
 
         if (!isset($providers[$provider])) {
+            return paragraph($provider . ' is not a provider.', 'red_alert');
+        }
+
+        if (!$providers[$provider]['enabled']) {
             return paragraph($provider . ' is not configured.', 'red_alert');
         }
 

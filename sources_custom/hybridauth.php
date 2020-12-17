@@ -51,8 +51,6 @@ function initiate_hybridauth()
         ] + $info['other_parameters'];
     }
 
-    $keep = symbol_tempcode('KEEP');
-
     $config = [
         'providers' => $_providers,
         'callback' => find_script('hybridauth'),
@@ -66,11 +64,13 @@ function is_hybridauth_special_type($special_type)
     return array_key_exists($special_type, enumerate_hybridauth_providers());
 }
 
-function enumerate_hybridauth_providers($for_admin = false)
+// If $alternate_config is null then this is for login buttons
+// Otherwise likely $alternate_config = 'admin' for most kinds of site-level integration
+function enumerate_hybridauth_providers($alternate_config = null)
 {
     static $providers_cache = [];
-    if (isset($providers_cache[$for_admin])) {
-        return $providers_cache[$for_admin];
+    if (isset($providers_cache[$alternate_config])) {
+        return $providers_cache[$alternate_config];
     }
 
     // Load up XML
@@ -92,11 +92,7 @@ function enumerate_hybridauth_providers($for_admin = false)
                 'composr-config' => [],
                 'keys-config' => [],
                 'hybridauth-config' => [],
-                'admin' => [
-                    'composr-config' => [],
-                    'keys-config' => [],
-                    'hybridauth-config' => [],
-                ],
+                'alternate_configs' => [],
             ];
         }
 
@@ -110,15 +106,25 @@ function enumerate_hybridauth_providers($for_admin = false)
                         $config_structure[$provider][$subtag] = $subattributes;
                         break;
 
-                    case 'admin':
-                        foreach ($subchildren as $subchildren_child) {
-                            list($subsubtag, $subsubattributes, , ) = $subchildren_child;
-                            switch ($subsubtag) {
-                                case 'composr-config':
-                                case 'keys-config':
-                                case 'hybridauth-config':
-                                    $config_structure[$provider]['admin'][$subsubtag] = $subsubattributes;
-                                    break;
+                    // Alternate config, e.g. 'admin'
+                    default:
+                        if (is_array($subchildren)) {
+                            foreach ($subchildren as $subchildren_child) {
+                                list($subsubtag, $subsubattributes, , ) = $subchildren_child;
+                                switch ($subsubtag) {
+                                    case 'composr-config':
+                                    case 'keys-config':
+                                    case 'hybridauth-config':
+                                        if (!isset($config_structure[$provider]['alternate_configs'][$subtag])) {
+                                            $config_structure[$provider]['alternate_configs'][$subtag] = [
+                                                'composr-config' => [],
+                                                'keys-config' => [],
+                                                'hybridauth-config' => [],
+                                            ];
+                                        }
+                                        $config_structure[$provider]['alternate_configs'][$subtag][$subsubtag] = $subsubattributes;
+                                        break;
+                                }
                             }
                         }
                         break;
@@ -164,6 +170,9 @@ function enumerate_hybridauth_providers($for_admin = false)
 
             'other_parameters' => [
             ],
+
+            'alternate_configs' => [
+            ],
         ];
         if (isset($provider_expanded_info[$provider])) {
             $providers[$provider] = $provider_expanded_info[$provider] + $providers[$provider];
@@ -174,8 +183,8 @@ function enumerate_hybridauth_providers($for_admin = false)
     foreach ($providers as $provider => &$info) {
         $config = ['composr-config' => [], 'keys-config' => [], 'hybridauth-config' => []];
         if (isset($config_structure[$provider])) {
-            if (($for_admin) && (isset($config_structure[$provider]['admin']))) {
-                $config = $config_structure[$provider]['admin'];
+            if (($alternate_config !== null) && (isset($config_structure[$provider]['alternate_configs'][$alternate_config]))) {
+                $config = $config_structure[$provider]['alternate_configs'][$alternate_config];
             }
             foreach (['composr-config', 'keys-config', 'hybridauth-config'] as $config_section) {
                 $config[$config_section] = $config_structure[$provider][$config_section] + $config[$config_section];
@@ -185,7 +194,11 @@ function enumerate_hybridauth_providers($for_admin = false)
         $info['keys'] = $config['keys-config'] + $info['keys'];
         $info['other_parameters'] = $config['hybridauth-config'] + $info['other_parameters'];
 
-        if ($for_admin) {
+        if (isset($config_structure[$provider])) {
+            $info['alternate_configs'] = array_keys($config_structure[$provider]['alternate_configs']);
+        }
+
+        if ($alternate_config !== null) {
             $enabled = !empty($info['keys']);
         } else {
             $enabled = $info['enabled'];
@@ -239,7 +252,7 @@ function enumerate_hybridauth_providers($for_admin = false)
 
     sort_maps_by($providers, 'button_precedence');
 
-    $providers_cache[$for_admin] = $providers;
+    $providers_cache[$alternate_config] = $providers;
 
     return $providers;
 }

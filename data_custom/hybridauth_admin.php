@@ -43,6 +43,8 @@ if (!addon_installed('hybridauth')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('hybridauth')));
 }
 
+header('X-Robots-Tag: noindex');
+
 require_code('hybridauth_admin');
 require_lang('hybridauth');
 
@@ -55,10 +57,11 @@ if ((empty($get)) && (empty($_POST))) {
     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
 }
 
-list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
-
 $provider = get_param_string('provider', null);
 if ($provider !== null) {
+    $alternate_config = get_param_string('alternate_config', null);
+    list($hybridauth, $admin_storage) = initiate_hybridauth_admin(0, $alternate_config);
+
     if (!has_page_access(get_member(), 'admin_oauth', 'adminzone')) {
         access_denied('PAGE_ACCESS');
     }
@@ -69,7 +72,13 @@ if ($provider !== null) {
 
     // This is the first stage in the flow
     $admin_storage->set('provider', $provider);
+    $admin_storage->set('alternate_config', $alternate_config);
 } else {
+    require_code('hybridauth_admin_storage');
+    $admin_storage = new ComposrHybridauthValuesStorage();
+    $alternate_config = $admin_storage->get('alternate_config');
+    list($hybridauth, $admin_storage) = initiate_hybridauth_admin(0, $alternate_config);
+
     // This is the final stage in the flow
     if ($admin_storage->get('provider') === null) {
         warn_exit(do_lang_tempcode('HYBRIDAUTH_SESSION_TIMEOUT'));

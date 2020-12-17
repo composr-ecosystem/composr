@@ -43,6 +43,8 @@ if (!addon_installed('hybridauth')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('hybridauth')));
 }
 
+header('X-Robots-Tag: noindex');
+
 require_code('hybridauth_admin');
 require_lang('hybridauth');
 
@@ -60,6 +62,10 @@ list($hybridauth, $admin_storage, $providers) = initiate_hybridauth_admin();
 $provider = get_param_string('provider');
 
 if (!isset($providers[$provider])) {
+    warn_exit($provider . ' is not a provider.');
+}
+
+if (!$providers[$provider]['enabled']) {
     warn_exit($provider . ' is not configured.');
 }
 

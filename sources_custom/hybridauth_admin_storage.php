@@ -22,9 +22,12 @@ class ComposrHybridauthValuesStorage implements Hybridauth\Storage\StorageInterf
 {
     protected $data;
     protected $made_change = false;
+    protected $prefix = '';
 
-    public function __construct()
+    public function __construct($prefix = '')
     {
+        $this->prefix = $prefix;
+
         $data = get_value('hybridauth_admin_storage', null, true);
         if ($data === null) {
             $this->data = [];
@@ -38,11 +41,19 @@ class ComposrHybridauthValuesStorage implements Hybridauth\Storage\StorageInterf
 
     public function get($key)
     {
+        if (!in_array($key, ['provider', 'alternate_config'])) {
+            $key = $this->prefix . $key;
+        }
+
         return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     public function set($key, $value)
     {
+        if (!in_array($key, ['provider', 'alternate_config'])) {
+            $key = $this->prefix . $key;
+        }
+
         $this->data[$key] = $value;
         $this->prepare_for_save();
     }
@@ -68,12 +79,20 @@ class ComposrHybridauthValuesStorage implements Hybridauth\Storage\StorageInterf
 
     public function delete($key)
     {
+        if (!in_array($key, ['provider', 'alternate_config'])) {
+            $key = $this->prefix . $key;
+        }
+
         unset($this->data[$key]);
         $this->prepare_for_save();
     }
 
     public function deleteMatch($key)
     {
+        if (!in_array($key, ['provider', 'alternate_config'])) {
+            $key = $this->prefix . $key;
+        }
+
         $made_change = false;
         foreach ($this->data as $k => $val) {
             if (strstr($k, $key)) {

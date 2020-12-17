@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    composr_homesite
+ * @package    patreon
  */
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
@@ -27,7 +27,7 @@ foreach ($patreon_patrons as $patron) {
     $_patreon_patrons[] = [
         'NAME' => $patron['name'],
         'USERNAME' => $patron['username'],
-        'MONTHLY' => strval($patron['monthly']),
+        'TIER' => $patron['tier'],
     ];
 }
 

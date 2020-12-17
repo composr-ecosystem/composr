@@ -237,14 +237,14 @@ class Hook_cron_stealr
         } elseif ($stealr_type == 'Members that are in a certain usergroup') {
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
 
-            $group_id = 0;
-            foreach ($groups as $id => $group) {
-                if ($stealr_group == $group) {
-                    $group_id = $id;
-                }
+            require_code('cns_groups');
+            require_code('cns_groups2');
+
+            $group_id = find_usergroup_id($stealr_group);
+            if ($group_id === null) {
+                return;
             }
 
-            require_code('cns_groups2');
             $members = cns_get_group_members_raw($group_id);
 
             $stealr_number = (count($members) > $stealr_number) ? $stealr_number : count($members);
