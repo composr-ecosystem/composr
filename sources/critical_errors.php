@@ -294,7 +294,7 @@ END;
         }
 
         if (php_function_allowed('error_log')) {
-            @error_log('Composr critical error: ' . $error, 0);
+            @error_log('Composr critical error: ' . str_replace("\n", '', $error), 0);
         }
 
         if ($exit) {
