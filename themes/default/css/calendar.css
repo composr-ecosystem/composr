@@ -24,24 +24,19 @@ abbr.dtstart, abbr.dtend {
 }
 
 /*{+START,IF,{$MOBILE}}*/
-	.calendar_year_wrap {
-		display: block;
-	}
-
-	.calendar_year_wrap>tbody>tr {
+	.calendar_year_wrap, .calendar_year_wrap>tbody, .calendar_year_wrap>tbody>tr, .calendar_year_wrap>tbody>tr>td {
 		display: block;
 	}
 
 	.calendar_year_wrap>tbody>tr>td {
-		display: block;
 		padding: 3em;
 		overflow: hidden;
 	}
 /*{+END}*/
 
 .calendar_year_month {
-	height: 150px;
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
+		height: 150px;
 		width: 33%;
 	/*{+END}*/
 	vertical-align: top;
@@ -52,7 +47,7 @@ abbr.dtstart, abbr.dtend {
 .calendar_year_month table {
 	border-collapse: collapse;
 	width: 100%;
-	table-layout: fixed;
+	table-layout: fixed !important;
 }
 
 .calendar_year_month th {
@@ -85,7 +80,7 @@ abbr.dtstart, abbr.dtend {
 .calendar_month {
 	width: 100%;
 	border-collapse: collapse;
-	table-layout: fixed;
+	table-layout: fixed !important;
 }
 
 .calendar_month th {
@@ -238,6 +233,11 @@ abbr.dtstart, abbr.dtend {
 		width: 50%;
 		padding: 0.5em;
 		{$BETA_CSS_PROPERTY,box-sizing: border-box;}
+	}
+/*{+END}*/
+/*{+START,IF,{$MOBILE}}*/
+	.event_interest_box {
+		float: none;
 	}
 /*{+END}*/
 
