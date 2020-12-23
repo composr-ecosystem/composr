@@ -1,5 +1,5 @@
 [semihtml]
-[title]Sites from our community[/title]
+[title]Community Site Showcase[/title]
 
 <p>This page presents some websites that have been made using Composr CMS.<br />Feel free to <a href="{$PAGE_LINK*,cms:cms_catalogues:add:catalogue_name=community_sites}">submit your own site</a> too (so long as it doesn't contain content that should be age-restricted or is blatantly illegal).</p>
 
