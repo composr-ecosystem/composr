@@ -127,6 +127,7 @@ $decision_tree = array(
             array('free_service_type',  'Report a bug',                         get_base_url() . '/tracker/bug_report_page.php?severity=50'),
             array('free_service_type',  'Report a usability/UX issue',          get_base_url() . '/tracker/bug_report_page.php?severity=50'),
             array('free_service_type',  'Report a security hole',               get_base_url() . '/tracker/bug_report_page.php?view_state=50&severity=80'),
+            array('free_service_type',  'Report inappropriate listed site',     'report_community_site'),
             array('free_service_type',  'Request a feature',                    get_base_url() . '/tracker/bug_report_page.php?severity=10'),
             array('free_service_type',  'Send some documentation feedback',     get_base_url() . '/tracker/set_project.php?project_id=7'),
             array('free_service_type',  'Send some general feedback',           build_url(array('page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Feedback'), '_SEARCH')),
@@ -134,6 +135,36 @@ $decision_tree = array(
             array('free_service_type',  'Make a partnership enquiry',           build_url(array('page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Partnership'), '_SEARCH')),
             array('free_service_type',  'Apply for a job with ocProducts Ltd',  'job'),
         ),
+    ),
+
+    'report_community_site' => array(
+        'title' => 'Report inappropriate listed site',
+        'text' => 'Report a [page="site:community_sites"]listed community website[/page] as inappropriate.',
+        'previous' => 'free',
+        'form_method' => 'POST',
+        'hidden' => array(
+            'title' => 'Reporting a listed community website',
+        ),
+        'questions' => array(
+            'site_name' => array(
+                'label' => 'Website name',
+                'description' => 'The given name of the listed website.',
+                'type' => 'short_text',
+                'default' => '',
+                'options' => '',
+                'required' => true,
+            ),
+            'problem' => array(
+                'label' => 'Problem',
+                'description' => 'Why you are reporting the site.',
+                'type' => 'long_text',
+                'default' => '',
+                'options' => '',
+                'required' => true,
+            ),
+        ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
+        'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Report community site'), '_SEARCH'),
     ),
 
     'contribute_code' => array(
