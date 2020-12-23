@@ -1,0 +1,17 @@
+[semihtml]
+[title]Sites from our community[/title]
+
+<p>This page presents some websites that have been made using Composr CMS.<br />Feel free to <a href="{$PAGE_LINK*,cms:cms_catalogues:add:catalogue_name=community_sites}">submit your own site</a> too (so long as it doesn't contain content that should be age-restricted or is blatantly illegal).</p>
+
+<p>Please consider these disclaimers about sites listed here:</p>
+<ul class="cntLi">
+	<li><strong>Unofficial</strong>. Nobody is responsible for actively reviewing or re-reviewing what is posted here, there is potential for offensive content.</li>
+	<li><strong>Regular folk</strong>. Composr is a product designed to make it easier for [i]anyone[/i] to have a sophisticated website. Don't look at these listings and expect professional graphic design, instead see what cool stuff people can do with the resources available to them and according to their priorities. Also,&nbsp;people will up/down-vote based on [i]their[/i] priorities. It's actually a beautiful thing so please don't be elitist.</li>
+	<li><strong>Things change</strong>. Not everyone maintains their site forever, so sites may no longer be functional or well-maintained. Maybe even someone decided they just need a Wordpress blog. That's just life, don't automatically blame Composr if someone's goals changed. When domain names are not renewed they may even be bought up by spammers, hackers, or adult websites. Report stuff that's no longer appropriate.</li>
+	<li><strong>Arbitrary moderation</strong>. While we are not actively reviewing what is listed here, the Composr staff may choose to remove listings that they think will be highly offensive to people or otherwise inappropriate for listing. For example, your site suggesting to breed goats in order to drink their blood in satanic rituals &ndash; perfectly legal in most countries, but maybe it's gonna get removed from this list.</li>
+</ul>
+
+<p>We depend on people like you to list your sites, to vote up sites you like, to vote down sites you don't like, and to report ones you think really should not be here. This page is what [i]you[/i] make of it.</p>
+
+{$BLOCK,block=main_cc_embed,param={$COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY},select=*,pagination=1,sorting=1,sort=average_rating DESC}
+[/semihtml]

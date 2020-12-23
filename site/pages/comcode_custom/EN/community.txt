@@ -11,6 +11,8 @@
 
 			<p>Ask as many questions as you want, and answer all you can in return. Share your tips, your successes, and benefit from the experience of others. Or converse in real-time in [page=site:chat]our chatroom[/page].</p>
 
+			<p>See sample websites from the community on our <a href="{$PAGE_LINK*,site:community_sites}">community sites</a> page.</p>
+
 			<p>The top contributing users are shown on our <a href="{$PAGE_LINK*,site:stars}">community stars</a> page.</p>
 		</div>
 
