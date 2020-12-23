@@ -552,15 +552,12 @@ class Module_galleries
         if (get_option('gallery_name_order') == '1') {
             $order = 'name ASC';
         }
-        $rows_children = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $cat), 'ORDER BY ' . $order, intval(get_option('subgallery_link_limit'))/*reasonable limit*/);
+        $rows_children = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $cat), 'AND name NOT LIKE \'download%\' ORDER BY ' . $order, intval(get_option('subgallery_link_limit'))/*reasonable limit*/);
         $children = new Tempcode();
         if (count($rows_children) == intval(get_option('subgallery_link_limit'))) {
             $rows_children = array(); // Lots of personal galleries. Will need to be reached via member profiles
         }
         foreach ($rows_children as $child) {
-            if (substr($child['name'], 0, 9) == 'download_') {
-                continue;
-            }
             if (!has_category_access(get_member(), 'galleries', $child['name'])) {
                 continue;
             }

@@ -188,7 +188,7 @@ sudo chmod -R 777 .
 | If you are having to fudge a server running an old version of MySQL, use [tt]utf8[/tt] instead and be ready to tell the website owner they cannot use emojis or install any new addons (as that will try and use [tt]utf8mb4[/tt] for new tables).
 |-
 ! &dagger; {$INC,step_num}{$GET,step_num}
-| (Following directly from the above) Change [tt]utf8mb4[/tt] to [tt]utf8[/tt] for just the following tables: [tt]cms_addons[/tt], [tt]cms_f_saved_warnings[/tt], [tt]cms_gsp[/tt], [tt]cms_wordfilter[/tt], [tt]cms_import_parts_done[/tt], [tt]cms_msp[/tt], [tt]cms_newsletter_subscribe[/tt], [tt]cms_theme_images[/tt], and [tt]cms_tickets[/tt]
+| (Following directly from the above) Change [tt]utf8mb4[/tt] to [tt]utf8[/tt] for just the following tables: [tt]cms_addons[/tt], [tt]cms_chat_rooms[/tt], [tt]cms_f_saved_warnings[/tt], [tt]cms_f_emoticons[/tt], [tt]cms_gsp[/tt], [tt]cms_import_parts_done[/tt], [tt]cms_msp[/tt], [tt]cms_newsletter_subscribe[/tt], [tt]cms_sessions[/tt], [tt]cms_theme_images[/tt], [tt]cms_tickets[/tt], [tt]cms_url_title_cache[/tt], and [tt]cms_wordfilter[/tt]
 | If you are having to fudge a server running an old version of MySQL, use [tt]utf8[/tt] instead and be ready to tell the website owner they cannot use emojis.
 |-
 ! {$INC,step_num}{$GET,step_num}

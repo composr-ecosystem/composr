@@ -133,7 +133,7 @@ function actual_edit_theme_image($old_id, $theme, $lang, $id, $path, $quick = fa
                 $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
 
                 require_code('themes3');
-                cleanup_theme_images($old_url);
+                cleanup_after_theme_image_file_removal($old_url);
             }
         }
     }
@@ -720,9 +720,10 @@ function combo_get_image_paths($selected_path, $base_url, $base_path)
  *
  * @param  URLPATH $base_url The base-URL to where we are searching for images
  * @param  PATH $base_path The base-path to where we are searching for images
+ * @param  boolean $include_lang_dir_structure Whether to also include stuff under language-specific directories
  * @return array path->url map of found images
  */
-function get_image_paths($base_url, $base_path)
+function get_image_paths($base_url, $base_path, $include_lang_dir_structure = false)
 {
     $out = array();
 
@@ -739,7 +740,7 @@ function get_image_paths($base_url, $base_path)
                         $this_url = cms_rawurlrecode($base_url . rawurlencode($file));
                         $out[$this_path] = $this_url;
                     }
-                } elseif ((strlen($file) != 2) || (strtoupper($file) != $file)) {
+                } elseif (($include_lang_dir_structure) || (strlen($file) != 2) || (strtoupper($file) != $file)) {
                     $out = array_merge($out, get_image_paths($base_url . $file . '/', $base_path . $file . '/'));
                 }
             }

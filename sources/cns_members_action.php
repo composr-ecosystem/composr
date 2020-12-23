@@ -317,8 +317,8 @@ function cns_make_member($username, $password, $email_address, $secondary_groups
                 }
                 if (addon_installed('chat')) {
                     require_code('chat2');
-                    friend_add($inviter, $member_id);
-                    friend_add($member_id, $inviter);
+                    friend_add($inviter, $member_id, null, false);
+                    friend_add($member_id, $inviter, null, false);
                 }
             }
         }

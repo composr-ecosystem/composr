@@ -776,7 +776,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
     $just_done_string = false;
     foreach ($current_level_data as $c) {
         // Try and replace some unnecessary string appending which may have happened when experiencing possible (but not) control characters
-        $c = preg_replace('#([^\\\\])' . preg_quote('"."', '#') . '#', '$1', $c);
+        $c = preg_replace('#([^\\\\(])' . preg_quote('"."', '#') . '([^)])#', '$1$2', $c);
 
         // Try and merge some strings that don't need to be in separate seq_parts
         $c_stripped_down = str_replace(array('\\\\', '\\"'), array('', ''), $c); // Remove literal slashes and literal quotes so we can do an accurate scan to ensure it is all one string

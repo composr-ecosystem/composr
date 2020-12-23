@@ -1642,6 +1642,9 @@ function _boolean_search_prepare($search_filter)
                 $word .= '"';
             }
             $word = substr($word, 1, strlen($word) - 2);
+            if ($word == '') {
+                continue;
+            }
         }
 
         if ($word[0] == '+') {

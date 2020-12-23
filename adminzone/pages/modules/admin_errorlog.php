@@ -114,7 +114,9 @@ class Module_admin_errorlog
                 if (($_line != '') && (strpos($_line, '<?php') === false)) {
                     $matches = array();
                     if (preg_match('#^\[(.+?) (.+?)\] (.{1,20}):  ?(.*)#', $_line, $matches) != 0) {
-                        $stuff[] = $matches;
+                        $stuff[] = array($matches[1], $matches[2], $matches[3], $matches[4]);
+                    } elseif (preg_match('#^\[(.+?) (.+?)\] (.*)#', $_line, $matches) != 0) {
+                        $stuff[] = array($matches[1], $matches[2], 'N/A', $matches[3]);
                     }
                 }
             }
@@ -150,7 +152,7 @@ class Module_admin_errorlog
 
                     $time = intval($app_log->getTimeUsec() / 1000000.0);
 
-                    $stuff[] = array('', date('D-M-Y', $time), date('H:i:s', $time), $_level, $message);
+                    $stuff[] = array(date('D-M-Y', $time), date('H:i:s', $time), $_level, $message);
                 }
             }
         }
@@ -178,11 +180,11 @@ class Module_admin_errorlog
                 break;
             }
 
-            $message = str_replace(get_file_base(), '', $stuff[$i][4]);
+            $message = str_replace(get_file_base(), '', $stuff[$i][3]);
 
             $fields->attach(results_entry(array(
-                $stuff[$i][1] . ' ' . $stuff[$i][2],
-                $stuff[$i][3],
+                $stuff[$i][0] . ' ' . $stuff[$i][1],
+                $stuff[$i][2],
                 $message
             ), true));
         }

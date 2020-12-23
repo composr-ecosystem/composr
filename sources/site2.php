@@ -463,7 +463,10 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
                 if (!is_null($trans_cc_page_title_key)) {
                     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'id', array('id' => $trans_cc_page_title_key, 'language' => $lang));
                     if (is_null($test)) {
-                        $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $trans_cc_page_title_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $title_to_use, 'text_parsed' => '', 'language' => $lang), false, true, true);
+                        $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $trans_cc_page_title_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $title_to_use, 'text_parsed' => '', 'language' => $lang), false, true);
+                    } else {
+                        // We need to do an update as get_translated_text may have been called with the page only cached in another language, creating a record from another language and broken=1
+                        $GLOBALS['SITE_DB']->query_update('translate', array('source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $title_to_use, 'text_parsed' => ''), array('id' => $trans_cc_page_title_key, 'language' => $lang), '', 1);
                     }
                 } // else race condition, decached while being recached
             }
