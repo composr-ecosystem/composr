@@ -8,10 +8,10 @@
 
 	<div class="float_surrounder">
 		{+START,IF_NON_EMPTY,{FIELD_4_PLAIN}}
-			<a title="{FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" href="{FIELD_1_PLAIN*}"><img class="right" src="{$THUMBNAIL*,{FIELD_4_PLAIN},160,,,,width}" alt="Logo for {FIELD_0_PLAIN*}" style="padding-left: 10px" /></a>
+			<a title="View full screenshot of {FIELD_0_PLAIN*}" rel="lightbox" target="_blank" href="{FIELD_4_PLAIN*}"><img class="site_logo" src="{$THUMBNAIL*,{FIELD_4_PLAIN},300,,,,width}" alt="Logo for {FIELD_0_PLAIN*}" /></a>
 		{+END}
 
-		<div style="margin-right: 170px">
+		<div class="site_details">
 			{$PARAGRAPH,{FIELD_2}}{$,Description}
 
 			{$PARAGRAPH,{FIELD_3}}{$,Features}
@@ -19,32 +19,32 @@
 	</div>
 
 	{+START,IF_NON_PASSED_OR_FALSE,ENTRY_SCREEN}
-		<div class="float_surrounder" style="margin-top: 1em">
-			<div class="right">
+		<div class="site_icons">
+			<div class="site_icon">
 				<a title="{FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" class="buttons__more button_screen_item" href="{FIELD_1_PLAIN*}"><span>Visit website</span></a>
 			</div>
 			{+START,IF_NON_EMPTY,{FIELD_5_PLAIN}}
-				<div class="right">
+				<div class="site_icon">
 					<a title="Webmaster of {FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" class="author_button button_screen_item" href="{$PAGE_LINK*,site:authors:browse:{FIELD_5_PLAIN}}"><span>By {FIELD_5_PLAIN*}</span></a>
 				</div>
 			{+END}
 			{+START,IF_EMPTY,{VIEW_URL}}{+START,IF_NON_EMPTY,{EDIT_URL}}
-				<div class="right">
+				<div class="site_icon">
 					<a class="buttons__edit button_screen_item" href="{EDIT_URL*}" title="Edit {FIELD_0_PLAIN*}"><span>Edit</span></a>
 				</div>
 			{+END}{+END}
-			<div class="right">
+			<div class="site_icon">
 				<a class="buttons__report button_screen_item" href="{$PAGE_LINK*,site:contact:report_community_site:site_name={FIELD_0_PLAIN}}" title="Report {FIELD_0_PLAIN*}"><span>Report</span></a>
 			</div>
 
 			{+START,IF,{$HAS_PRIVILEGE,rate}}{+START,IF,{$OR,{$IS_GUEST},{$NEQ,{SUBMITTER},{$MEMBER}}}}
-				<div class="left">
-					<form action="{$SELF_URL*}#entry_{ID*}" method="post" style="margin-right: 5px" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',10,this.parentNode);" class="inline">
+				<div class="site_vote_buttons">
+					<form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',10,this.parentNode);" class="site_upvote_button">
 						{$INSERT_SPAMMER_BLACKHOLE}
 						<input type="hidden" name="rating__catalogues__community_sites____{ID*}" value="5" />
 						<input type="image" src="{$IMG*,composr_homesite/vote-up}" title="Vote up" />
 					</form>
-					<form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',1,this.parentNode);" class="inline">
+					<form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',1,this.parentNode);" class="site_downvote_button">
 						{$INSERT_SPAMMER_BLACKHOLE}
 						<input type="hidden" name="rating__catalogues__community_sites____{ID*}" value="1" />
 						<input type="image" src="{$IMG*,composr_homesite/vote-down}" title="Vote down" />

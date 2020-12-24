@@ -1,5 +1,35 @@
+.site_logo {
+	float: right;
+	padding-left: 10px;
+}
+
+.site_details {
+	max-height: 230px;
+	overflow-y: scroll;
+}
+
+.site_icons {
+	overflow: hidden;
+	margin-top: 1em;
+}
+
+.site_icon {
+	float: right;
+}
+
 .author_button {
 	background-image: url('{$IMG,icons/24x24/menu/rich_content/authors}') !important;
+}
+
+.site_vote_buttons {
+	float: left;
+}
+
+.site_upvote_button {
+	margin-right: 5px;
+}
+
+.site_downvote_button {
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
