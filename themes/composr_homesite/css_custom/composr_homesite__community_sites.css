@@ -4,7 +4,7 @@
 }
 
 .site_details {
-	max-height: 230px;
+	max-height: 260px;
 	overflow-y: scroll;
 }
 
@@ -23,6 +23,10 @@
 
 .site_vote_buttons {
 	float: left;
+}
+
+.site_vote_buttons form {
+	display: inline;
 }
 
 .site_upvote_button {

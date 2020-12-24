@@ -4,7 +4,7 @@
 <a id="entry_{ID*}"></a>
 
 <div class="box"><div class="box_inner">
-	<h2><a title="{FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" href="{FIELD_3_PLAIN*}">{FIELD_0}</a></h2>
+	<h2><a title="{FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" href="{FIELD_1_PLAIN*}">{FIELD_0}</a></h2>
 
 	<div class="float_surrounder">
 		{+START,IF_NON_EMPTY,{FIELD_4_PLAIN}}
