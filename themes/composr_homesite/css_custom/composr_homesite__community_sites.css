@@ -25,6 +25,17 @@
 	float: left;
 }
 
+.site_vote_buttons span {
+	vertical-align: top;
+	margin-right: 5px;
+	margin-top: 5px;
+	display: inline-block;
+	color: #999;
+}
+.site_vote_buttons:hover span {
+	color: #000;
+}
+
 .site_vote_buttons form {
 	display: inline;
 }

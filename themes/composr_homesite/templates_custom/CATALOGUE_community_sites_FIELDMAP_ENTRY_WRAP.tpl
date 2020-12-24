@@ -59,6 +59,7 @@
 						<input type="hidden" name="rating__catalogues__community_sites____{ID*}" value="1" />
 						<input type="image" src="{$IMG*,composr_homesite/vote-down}" title="Vote down" />
 					</form>
+					<span>&larr; Cast vote</span>
 				</div>
 			{+END}{+END}
 		</div>
