@@ -23,6 +23,16 @@
 			<div class="site_icon">
 				<a title="{FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" class="buttons__more button_screen_item" href="{FIELD_1_PLAIN*}"><span>Visit website</span></a>
 			</div>
+			{+START,IF_NON_EMPTY,{FIELD_7_PLAIN}}
+				<div class="site_icon">
+					<a target="_blank" class="buttons__more button_screen_item" href="{FIELD_7_PLAIN*}"><span>{FIELD_5_PLAIN*}'s intro-topic</span></a>
+				</div>
+			{+END}
+			{+START,IF_NON_EMPTY,{FIELD_6_PLAIN}}
+				<div class="site_icon">
+					<a title="Further details for {FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" class="buttons__more button_screen_item" href="{FIELD_6_PLAIN*}"><span>Further details</span></a>
+				</div>
+			{+END}
 			{+START,IF_NON_EMPTY,{FIELD_5_PLAIN}}
 				<div class="site_icon">
 					<a title="Webmaster of {FIELD_0_PLAIN*} {!LINK_NEW_WINDOW}" target="_blank" class="author_button button_screen_item" href="{$PAGE_LINK*,site:authors:browse:{FIELD_5_PLAIN}}"><span>By {FIELD_5_PLAIN*}</span></a>
