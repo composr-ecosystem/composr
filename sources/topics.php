@@ -897,7 +897,7 @@ class CMS_Topic
                     } else {
                         $custom_fields = new Tempcode();
                         if ((array_key_exists('ip_address', $post)) && (addon_installed('cns_forum'))) {
-                            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => 'f7e62822e879682cf1588d9f49484bfa', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($post['ip_address']))));
+                            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => 'f7e62822e879682cf1588d9f49484bfa', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => $post['ip_address'], 'MEMBER_ID' => strval($post['member']))));
                             $poster_details = do_template('CNS_GUEST_DETAILS', array('_GUID' => 'df42e7d5003834a60fdb3bf476b393c5', 'CUSTOM_FIELDS' => $custom_fields));
                         } else {
                             $poster_details = new Tempcode();
