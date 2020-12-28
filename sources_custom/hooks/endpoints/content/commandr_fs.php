@@ -28,7 +28,7 @@ class Hook_endpoint_content_commandr_fs
     public function run($type, $id)
     {
         if (!addon_installed('commandr')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON'));
+            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('commandr')));
         }
 
         require_lang('composr_mobile_sdk');

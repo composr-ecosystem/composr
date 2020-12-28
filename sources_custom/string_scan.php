@@ -3142,7 +3142,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COST_quota
         COST_topic_pin
         COULD_NOT_SAVE_FILE
-        COULD_NOT_SAVE_FILE_TMP
         CPF_ENABLE_CITY
         CPF_ENABLE_COUNTRY
         CPF_ENABLE_COUNTY

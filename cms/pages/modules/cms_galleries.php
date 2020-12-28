@@ -547,7 +547,7 @@ class Module_cms_galleries extends Standard_crud_module
                                 $more = zip_entry_read($entry);
                                 if ($more !== false) {
                                     if (fwrite($myfile2, $more) < strlen($more)) {
-                                        warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE_TMP'));
+                                        warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($tmp_name_2)));
                                     }
                                 }
                             } while (($more !== false) && ($more != ''));

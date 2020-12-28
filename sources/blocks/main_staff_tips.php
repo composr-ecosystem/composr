@@ -118,7 +118,7 @@ class Block_main_staff_tips
 
         // Choose a tip from the level we're on
         if (!array_key_exists($level, $tips)) {
-            $tip = do_lang_tempcode('ALL_TIPS_READ', $esc_free_support, $esc_brand_name, $remaining_tip_params);
+            $tip = do_lang_tempcode('ALL_TIPS_READ', $esc_free_support, $esc_brand_name, array($remaining_tip_params, get_tutorial_url('tut_do')));
             $level = 5;
             $tip_code = '';
             $count = 0;

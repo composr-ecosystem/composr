@@ -586,6 +586,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/_performance.php',
             '_tests/tests/regression_tests/input_filter_post_block.php',
             '_tests/tests/unit_tests/privilege_existence.php',
+            '_tests/tests/unit_tests/lang_missing_parameters.php',
         );
     }
 
