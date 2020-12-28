@@ -23,7 +23,7 @@ public class Main {
     public static boolean relay__pedantic = false;
     public static boolean relay__spelling = false;
     public static String projectPath = ".." + File.separator + ".." + File.separator;
-    public static String textEditorPath = "/usr/local/bin/mate";
+    public static String textEditorPath = "/usr/local/bin/geany";
     public static String phpPath = "php";
 
     // Memory
@@ -70,9 +70,9 @@ public class Main {
                     "/usr/local/bin/jedit",
                     "/usr/bin/jedit",
                     "C:\\Program Files\\Notepad++\\notepad++.exe",
-                    "/usr/bin/kate",
                     "/usr/local/bin/geany",
                     "/usr/bin/geany",
+                    "/usr/bin/kate",
                     "/usr/local/bin/bbedit",
                     "C:\\Program Files (x86)\\Codelobster Software\\CodelobsterPHPEdition\\ClPhpEd.exe",
                     "C:\\Program Files (x86)\\Codelobster Software\\CodeLobster IDE\\CodeLobsterIDE.exe",
