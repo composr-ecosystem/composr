@@ -8,7 +8,7 @@
 
 	<div class="float_surrounder">
 		{+START,IF_NON_EMPTY,{FIELD_4_PLAIN}}
-			<a title="View full screenshot of {FIELD_0_PLAIN*}" rel="lightbox" target="_blank" href="{FIELD_4_PLAIN*}"><img class="site_logo" src="{$THUMBNAIL*,{FIELD_4_PLAIN},300,,,,width}" alt="Logo for {FIELD_0_PLAIN*}" /></a>
+			<a title="View full screenshot of {FIELD_0_PLAIN*}" rel="lightbox" target="_blank" href="{$BASE_URL*}/{FIELD_4_PLAIN*}"><img class="site_logo" src="{$THUMBNAIL*,{FIELD_4_PLAIN},300,,,,width}" alt="Logo for {FIELD_0_PLAIN*}" /></a>
 		{+END}
 
 		<div class="site_details">
