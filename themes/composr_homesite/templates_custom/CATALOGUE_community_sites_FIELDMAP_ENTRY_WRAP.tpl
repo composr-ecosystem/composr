@@ -49,12 +49,11 @@
 
 			{+START,IF,{$HAS_PRIVILEGE,rate}}{+START,IF,{$OR,{$IS_GUEST},{$NEQ,{SUBMITTER},{$MEMBER}}}}
 				<div class="site_vote_buttons">
-					<form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',10,this.parentNode);" class="site_upvote_button">
+					<form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',10,this,this.nextSibling);" class="site_upvote_button{+START,IF,{$ALREADY_RATED,catalogues__community_sites,{ID%}}} {$?,{$EQ,{$ALREADY_RATED,catalogues__community_sites,{ID%},1},10},current_rating,not_current_rating}{+END}">
 						{$INSERT_SPAMMER_BLACKHOLE}
 						<input type="hidden" name="rating__catalogues__community_sites____{ID*}" value="5" />
 						<input type="image" src="{$IMG*,composr_homesite/vote-up}" title="Vote up" />
-					</form>
-					<form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',1,this.parentNode);" class="site_downvote_button">
+					</form><form action="{$SELF_URL*}#entry_{ID*}" method="post" onsubmit="return rate_community_site({ID%},'{$SELF_URL;*}','{FIELD_0_PLAIN;*}',1,this,this.previousSibling);" class="site_downvote_button{+START,IF,{$ALREADY_RATED,catalogues__community_sites,{ID%}}} {$?,{$EQ,{$ALREADY_RATED,catalogues__community_sites,{ID%},1},1},current_rating,not_current_rating}{+END}">
 						{$INSERT_SPAMMER_BLACKHOLE}
 						<input type="hidden" name="rating__catalogues__community_sites____{ID*}" value="1" />
 						<input type="image" src="{$IMG*,composr_homesite/vote-down}" title="Vote down" />

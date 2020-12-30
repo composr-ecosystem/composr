@@ -1,8 +1,9 @@
-function rate_community_site(id,url,title,rating,node)
+function rate_community_site(id,url,title,rating,node_current_rating,node_not_current_rating)
 {
 	var snippet_request='rating&type=&id='+window.encodeURIComponent(id)+'&content_type=catalogues__community_sites&template=&content_url='+window.encodeURIComponent(url)+'&content_title='+window.encodeURIComponent(title);
 	load_snippet(snippet_request,'rating='+window.encodeURIComponent(rating),function(ajax_result) {
-		node.style.opacity=0.6;
+		node_current_rating.className=node_current_rating.className.replace(/ .*$/,'')+' current_rating';
+		node_not_current_rating.className=node_not_current_rating.className.replace(/ .*$/,'')+' not_current_rating';
 
 		var myToast=Toastify({
 			text: "Thanks for your vote",

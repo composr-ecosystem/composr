@@ -47,6 +47,14 @@
 .site_downvote_button {
 }
 
+/* Used only if current user has already voted */
+.current_rating {
+	opacity: 1.0;
+}
+.not_current_rating {
+	opacity: 0.2;
+}
+
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
 	.author_button {
 		background-image: url('{$IMG,icons/48x48/menu/rich_content/authors}') !important;
