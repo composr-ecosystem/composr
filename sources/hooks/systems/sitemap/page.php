@@ -271,7 +271,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                                 if (is_object($_title)) {
                                     $struct['title'] = $_title;
                                 } else {
-                                    $struct['title'] = (preg_match('#^[A-Z\_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
+                                    $struct['title'] = $this->_lang_string_or_literal($_title);
                                 }
                             }
                             if (!is_null($entry_points['!'][1])) {
@@ -296,7 +296,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                                 if (is_object($_title)) {
                                     $struct['title'] = $_title;
                                 } else {
-                                    $struct['title'] = (preg_match('#^[A-Z\_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
+                                    $struct['title'] = $this->_lang_string_or_literal($_title);
                                 }
                             }
                             if (!is_null($entry_points[$move_down_entry_point][1])) {

@@ -618,6 +618,22 @@ abstract class Hook_sitemap_base
     }
 
     /**
+     * Take some text and process it as a language string if applicable, otherwise just convert to Tempcode.
+     *
+     * @param  string $_title Input string
+     * @return Tempcode Output string
+     */
+    protected function _lang_string_or_literal($_title)
+    {
+        if ((preg_match('#^[A-Z\_]+$#', $_title) == 0) || (do_lang($_title, null, null, null, null, false) === null)) {
+            $title = make_string_tempcode($_title);
+        } else {
+            $title = protect_from_escaping(do_lang($_title))/*Need to bake it in using do_lang not do_lang_tempcode as lang file may not be present when restored from cache*/;
+        }
+        return $title;
+    }
+
+    /**
      * Extend the node structure with added details from our row data (if we have it).
      *
      * @param  integer $options A bitmask of SITEMAP_GEN_* options.
@@ -635,7 +651,7 @@ abstract class Hook_sitemap_base
             if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) == 0) {
                 if ($title !== null) {
                     if (is_string($title)) {
-                        $title = (preg_match('#^[A-Z\_]+$#', $title) == 0) ? make_string_tempcode($title) : do_lang_tempcode($title);
+                        $title = $this->_lang_string_or_literal($title);
                     }
 
                     if (!$title->is_empty()) {
@@ -648,7 +664,7 @@ abstract class Hook_sitemap_base
                 if (($meta_gather & SITEMAP_GATHER_DESCRIPTION) != 0) {
                     if (!isset($struct['extra_meta']['description'])) {
                         if (is_string($description)) {
-                            $description = (preg_match('#^[A-Z\_]+$#', $description) == 0) ? make_string_tempcode($description) : comcode_lang_string($description);
+                            $description = $this->_lang_string_or_literal($description);
                         }
 
                         $struct['extra_meta']['description'] = ($description === null) ? null : $description;

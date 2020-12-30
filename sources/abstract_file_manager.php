@@ -542,7 +542,7 @@ function afm_delete_directory($basic_path, $recursive = false)
 
                 sync_file(get_custom_file_base() . '/' . $basic_path);
             } else {
-                @rmdir($path) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path)));
+                @rmdir($path) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path), escape_html(dirname($path))));
 
                 sync_file($path);
             }

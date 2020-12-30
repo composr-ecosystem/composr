@@ -76,7 +76,7 @@ class Hook_commandr_fs_root
         $path = $this->_customise_directory($meta_dir);
 
         if ((is_dir($path)) && (!file_exists($path . $new_dir_name)) && (is_writable_wrap($path))) {
-            $ret = @mkdir($path . $new_dir_name, 0777) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', $path . $new_dir_name));
+            $ret = @mkdir($path . $new_dir_name, 0777) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path . $new_dir_name), escape_html($path)));
             fix_permissions($path . $new_dir_name);
             sync_file($path . $new_dir_name);
             return $ret;
@@ -206,7 +206,7 @@ class Hook_commandr_fs_root
         }
 
         if (!file_exists($path)) {
-            $ret = @mkdir($path, 0777, true) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path)));
+            $ret = @mkdir($path, 0777, true) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path), escape_html(dirname($path))));
             fix_permissions($path);
             sync_file($path);
         }
