@@ -13,5 +13,5 @@
 
 <p>We depend on people like you to list your sites, to vote up sites you like, to vote down sites you don't like, and to report ones you think really should not be here. This page is what [i]you[/i] make of it.</p>
 
-{$BLOCK,block=main_cc_embed,param={$COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY},select=*,pagination=1,sorting=1,sort=average_rating DESC}
+{$BLOCK,block=main_cc_embed,param={$COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY},select={$?,{$IS_GUEST},{$COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY}*,{$COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY}*\,{$COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY,1}*},pagination=1,sorting=1,sort=average_rating DESC}
 [/semihtml]
