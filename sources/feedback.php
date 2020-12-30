@@ -442,22 +442,25 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
  *
  * @param  array $rating_for_types List of types (download, etc) that this rating is for. All need to be rated for it to return true.
  * @param  ID_TEXT $content_id The ID of the type that this rating is for
+ * @param  ?array $previous_ratings A map (type to rating) of previous ratings by the user (null: not set yet); returned by reference
  * @return boolean Whether the resource has already been rated
  */
-function already_rated($rating_for_types, $content_id)
+function already_rated($rating_for_types, $content_id, &$previous_ratings = null)
 {
-    static $not = null;
-    if ($not === null) {
-        $not = ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_param_integer('keep_rating_test', 0) == 1);
+    static $force_not = null;
+    if ($force_not === null) {
+        $force_not = ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_param_integer('keep_rating_test', 0) == 1);
     }
-    if ($not) {
+    if ($force_not) {
+        $previous_ratings = array();
         return false;
     }
 
     static $cache = array();
     $cache_key = serialize(array($rating_for_types, $content_id));
     if (isset($cache[$cache_key])) {
-        return $cache[$cache_key];
+        list($has_fully_rated, $previous_ratings) = $cache[$cache_key];
+        return $has_fully_rated;
     }
 
     // Main query
@@ -470,7 +473,7 @@ function already_rated($rating_for_types, $content_id)
         }
         $for_types .= db_string_equal_to('rating_for_type', $real_feedback_type);
     }
-    $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'rating WHERE (' . $for_types . ') AND ' . db_string_equal_to('rating_for_id', $content_id);
+    $query = 'SELECT rating_for_type,rating FROM ' . get_table_prefix() . 'rating WHERE (' . $for_types . ') AND ' . db_string_equal_to('rating_for_id', $content_id);
 
     // IP/member vote-once restrictions
     $query .= ' AND (';
@@ -489,11 +492,11 @@ function already_rated($rating_for_types, $content_id)
     }
     $query .= ')';
 
-    $times_rated = $GLOBALS['SITE_DB']->query_value_if_there($query, false, true);
+    $previous_ratings = collapse_2d_complexity('rating_for_type', 'rating', $GLOBALS['SITE_DB']->query($query));
 
-    $ret = ($times_rated >= count($rating_for_types));
-    $cache[$cache_key] = $ret;
-    return $ret;
+    $has_fully_rated = (count($previous_ratings) >= count($rating_for_types));
+    $cache[$cache_key] = [$has_fully_rated, $previous_ratings];
+    return $has_fully_rated;
 }
 
 /**
