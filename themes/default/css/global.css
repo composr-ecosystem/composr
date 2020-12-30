@@ -2154,6 +2154,9 @@ div.zebra_0+div.zebra_1, div.zebra_1+div.zebra_0 {
 	min-width: 6em;
 	{$BETA_CSS_PROPERTY,pointer-events: none;}
 }
+.tooltip a, .tooltip abbr {
+	{$BETA_CSS_PROPERTY,pointer-events: auto;}
+}
 .tooltip_ownlayout {
 	padding: 0.5em;
 	border: 1px solid {$GET,point_of_interest_border};
