@@ -386,6 +386,7 @@ function init__webstandards2()
         'user-select' => '(none|auto|text|all|contain)',
         'text-overflow' => '(clip|ellipsis|\'[^\']\')',
         'touch-action' => '(auto|none|pan-x|pan-y|manipulation|pan-left|pan-right|pan-up|pan-down|pinch-zoom)',
+        'pointer-events' => '(auto|none)',
 
         /* Purposely left out these CSS2 features due to very poor browser support (not just IE not having it) */
         /*

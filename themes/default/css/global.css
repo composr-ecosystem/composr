@@ -2152,6 +2152,7 @@ div.zebra_0+div.zebra_1, div.zebra_1+div.zebra_0 {
 	{$BETA_CSS_PROPERTY,opacity: 0.9;}
 	{$BETA_CSS_PROPERTY,word-wrap: break-word;}
 	min-width: 6em;
+	{$BETA_CSS_PROPERTY,pointer-events: none;}
 }
 .tooltip_ownlayout {
 	padding: 0.5em;
