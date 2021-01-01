@@ -5,8 +5,8 @@ if (typeof window.menu_hold_time=='undefined')
 	window.menu_hold_time=500;
 
 	window.clean_menus_timeout=null;
-	window.active_menu=null;
-	window.last_active_menu=null;
+	window.active_menu=null; // ID of currently hovered branch
+	window.last_active_menu=null; // Actual menu name
 }
 
 function clean_menus()
@@ -25,13 +25,14 @@ function clean_menus()
 		hideable=true;
 		if (e)
 		{
+			// Make sure tags[i] is not at or above the current expansion position 
 			t=e;
 			do
 			{
 				if (tags[i].id==t.id) hideable=false;
 				t=t.parentNode.parentNode;
 			}
-			while (t.id!='r_'+window.last_active_menu);
+			while (t.id!='r_'+window.last_active_menu); // Until you get to root node of menu
 		}
 		if (hideable)
 		{
@@ -71,18 +72,18 @@ function pop_up_menu(id,place,menu,event,outside_fixed_width)
 	var e=document.getElementById(id);
 	if (!e) return false;
 
-	if (window.clean_menus_timeout)
-	{
-		window.clearTimeout(window.clean_menus_timeout);
-	}
-
 	if (e.style.display=='block')
 	{
+		// Already expanded, possibly because it's a parent branch of to what we are now looking at - so we must not do anything
 		return false;
 	}
 
-	window.active_menu=id;
-	window.last_active_menu=menu;
+	set_active_menu(id,menu);
+	if (window.clean_menus_timeout)
+	{
+		window.clearTimeout(window.clean_menus_timeout);
+		window.clean_menus_timeout=null;
+	}
 	clean_menus();
 
 	var l=0;
