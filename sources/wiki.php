@@ -861,7 +861,7 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
 
     $sub_breadcrumbs = ($breadcrumbs == '') ? ($title . ' > ') : ($breadcrumbs . $title . ' > ');
 
-    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('*'), array('parent_id' => $id), 'ORDER BY title', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('*'), array('parent_id' => $id), 'ORDER BY the_order', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     $compound_list = strval($id) . ',';
     $_below = new Tempcode();
     foreach ($rows as $i => $myrow) {
@@ -953,7 +953,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
     }
 
     // Children of this category
-    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('*'), array('parent_id' => $page_id), 'ORDER BY title', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('*'), array('parent_id' => $page_id), 'ORDER BY the_order', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     $children[0]['child_count'] = count($rows);
     $child_breadcrumbs = ($breadcrumbs == '') ? '' : ($breadcrumbs . ' > ');
     if (($levels !== 0) || ($use_compound_list)) {
