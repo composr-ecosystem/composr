@@ -27,7 +27,7 @@ function open_link_as_overlay(ob,width,height,target)
 		if ((typeof width=='undefined') || (!width)) var width='800';
 		if ((typeof height=='undefined') || (!height)) var height='auto';
 		var url=(typeof ob.href=='undefined')?ob.action:ob.href;
-		if (/:\/\/(.[^\/]+)/.exec(url)[1]!=window.location.hostname) return true; // Cannot overlay, different domain
+		if (/:\/\/(.[^:\/]+)/.exec(url)[1]!=window.location.hostname) return true; // Cannot overlay, different domain
 		if ((typeof target=='undefined') || (!target)) var target='_top';
 		var url_stripped=url.replace(/#.*/,'');
 		var new_url=url_stripped+((url_stripped.indexOf('?')==-1)?'?':'&')+'wide_high=1'+url.replace(/^[^\#]+/,'');
