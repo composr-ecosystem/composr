@@ -463,7 +463,7 @@ function create_selection_list_download_category_tree(?int $it = null, bool $use
  * @param  boolean $use_compound_list Whether to make a compound list (a pair of a comma-separated list of children, and the child array)
  * @param  ?integer $levels The number of recursive levels to search (null: all)
  * @param  boolean $addable_filter Whether to only show for what may be added to by the current member
- * @return array A list of maps for all subcategories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title). There is also an additional 'downloadcount' entry if stats were requested
+ * @return array A list of maps for all subcategories, contains more details if stats were requested
  */
 function get_download_category_tree(?int $category_id = null, ?string $breadcrumbs = null, ?array $category_info = null, bool $do_stats = false, bool $use_compound_list = false, ?int $levels = null, bool $addable_filter = false) : array
 {

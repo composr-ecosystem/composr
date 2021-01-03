@@ -1462,7 +1462,7 @@ function create_selection_list_catalogue_category_tree(string $catalogue_name, ?
     }
     foreach ($temp_rows as $row) {
         $category_id = $row['id'];
-        $subtree = get_catalogue_category_tree($catalogue_name, $category_id, '', $row, null, $addable_filter, $use_compound_list);
+        $subtree = get_catalogue_category_tree($catalogue_name, $category_id, '', $row, null, $addable_filter, $use_compound_list, true);
         if (($use_compound_list) && (array_key_exists(0, $subtree))) {
             $subtree = $subtree[0];
         }
@@ -1494,7 +1494,7 @@ function create_selection_list_catalogue_category_tree(string $catalogue_name, ?
  * @param  boolean $addable_filter Whether to only show for what may be added to by the current member
  * @param  boolean $use_compound_list Whether to make the list elements store comma-separated child lists instead of IDs
  * @param  boolean $do_stats Whether to collect entry counts with our tree information
- * @return array A list of maps for all subcategories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title), and 'entries_count' (the number of entries in the category).
+ * @return array A list of maps for all subcategories, contains more details if stats were requested
  */
 function get_catalogue_category_tree(string $catalogue_name, ?int $category_id, string $breadcrumbs = '', ?array $category_details = null, ?int $levels = null, bool $addable_filter = false, bool $use_compound_list = false, bool $do_stats = false) : array
 {
@@ -1533,7 +1533,9 @@ function get_catalogue_category_tree(string $catalogue_name, ?int $category_id, 
         $children[0]['title'] = $title;
         $children[0]['breadcrumbs'] = $breadcrumbs;
         $children[0]['compound_list'] = strval($category_id) . ',';
-        $children[0]['entries_count'] = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['cc_id' => $category_id]);
+        if ($do_stats) {
+            $children[0]['entries_count'] = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['cc_id' => $category_id]);
+        }
         if ($addable_filter) {
             $children[0]['addable'] = has_submit_permission('mid', get_member(), get_ip_address(), 'cms_catalogues', ['catalogues_catalogue', $catalogue_name] + ((get_value('disable_cat_cat_perms') !== '1') ? ['catalogues_category', $category_id] : []));
         }

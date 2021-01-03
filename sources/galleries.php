@@ -621,7 +621,7 @@ function create_selection_list_gallery_tree(?string $it = null, ?string $filter 
 }
 
 /**
- * Gets a gallery selection tree list, extending deeper from the given gallery, showing all sub(sub...)galleries.
+ * Get a list of maps containing all the subcategories, and path information, of the specified gallery - and those beneath it, recursively.
  *
  * @param  ?ID_TEXT $gallery The gallery we are getting the tree starting from (null: root)
  * @param  string $breadcrumbs The parent breadcrumbs at this point of the recursion
@@ -636,7 +636,7 @@ function create_selection_list_gallery_tree(?string $it = null, ?string $filter 
  * @param  ?MEMBER $member_id Member we are filtering for (null: not needed)
  * @param  boolean $addable_filter Whether to only show for what may be added to by the current member
  * @param  boolean $editable_filter Whether to only show for what may be edited by the current member
- * @return array The tree structure, or if $use_compound_list, the tree structure built with pairs containing the compound list in addition to the child branches
+ * @return array A list of maps for all subcategories, contains more details if stats were requested
  */
 function get_gallery_tree(?string $gallery = 'root', string $breadcrumbs = '', ?array $gallery_info = null, bool $do_stats = false, ?string $filter = null, bool $must_accept_images = false, bool $must_accept_videos = false, bool $purity = false, bool $use_compound_list = false, ?int $levels = null, ?int $member_id = null, bool $addable_filter = false, bool $editable_filter = false) : array
 {

@@ -247,7 +247,7 @@ function create_selection_list_forum_tree(?int $member_id = null, ?int $base_for
 }
 
 /**
- * Generate a map of details for choosing a forum. Also capable of getting comma-separated ancestor forum lists.
+ * Get a list of maps containing all the subforums, and path information, of the specified forum - and those beneath it, recursively.
  *
  * @param  ?MEMBER $member_id The member that the view privileges are done for (null: current member)
  * @param  ?AUTO_LINK $base_forum The forum we are starting from (null: capture the whole tree)
@@ -258,7 +258,7 @@ function create_selection_list_forum_tree(?int $member_id = null, ?int $base_for
  * @param  ?integer $levels The number of recursive levels to search (null: all)
  * @param  boolean $do_stats Whether to generate tree statistics
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
- * @return array A list of maps, OR (if $use_compound_list) a pair of the Tempcode and the compound list
+ * @return array A list of maps, OR (if $use_compound_list) a pair of the Tempcode and the compound list, contains more details if stats were requested
  */
 function cns_get_forum_tree(?int $member_id = null, ?int $base_forum = null, string $breadcrumbs = '', ?int $skip = null, ?array $forum_details = null, bool $use_compound_list = false, ?int $levels = null, bool $do_stats = false, ?int $updated_since = null) : array
 {

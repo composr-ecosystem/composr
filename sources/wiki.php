@@ -897,7 +897,7 @@ function _create_selection_list_wiki_page_tree(array &$wiki_seen, ?int $select, 
 }
 
 /**
- * Get a list of maps containing all the sub-pages, and path information, of the specified page - and those beneath it, recursively.
+ * Get a list of maps containing all the subcategories, and path information, of the specified Wiki+ page - and those beneath it, recursively.
  *
  * @param  array $wiki_seen A list of pages we've already seen (we don't repeat them in multiple list positions)
  * @param  ?AUTO_LINK $page_id The page being at the root of our recursion (null: true root page)
@@ -906,7 +906,7 @@ function _create_selection_list_wiki_page_tree(array &$wiki_seen, ?int $select, 
  * @param  boolean $do_stats Whether to collect post counts with our breadcrumbs information
  * @param  boolean $use_compound_list Whether to make a compound list (a pair of a comma-separated list of children, and the child array)
  * @param  ?integer $levels The number of recursive levels to search (null: all)
- * @return array A list of maps for all subcategories. Each map entry containing the fields 'id' (category ID) and 'breadcrumbs' (path to the category, including the categories own title). There is also an additional 'downloadcount' entry if stats were requested
+ * @return array A list of maps for all subcategories, contains more details if stats were requested
  */
 function get_wiki_page_tree(array &$wiki_seen, ?int $page_id = null, ?string $breadcrumbs = null, ?array $page_details = null, bool $do_stats = false, bool $use_compound_list = false, ?int $levels = null) : array
 {
