@@ -44,7 +44,7 @@ function render_wiki_post_box($row, $zone = '_SEARCH', $give_context = true, $in
 
     $map = array('page' => 'wiki', 'type' => 'browse', 'id' => $row['page_id']);
     if (!is_null($root)) {
-        $map['keep_forum_root'] = $root;
+        $map['keep_wiki_root'] = $root;
     }
     $url = build_url($map, $zone);
     $url->attach('#post_' . strval($row['id']));
@@ -99,7 +99,7 @@ function render_wiki_page_box($row, $zone = '_SEARCH', $give_context = true, $in
 
     $map = array('page' => 'wiki', 'type' => 'browse', 'id' => $row['id']);
     if (!is_null($root)) {
-        $map['keep_forum_root'] = $root;
+        $map['keep_wiki_root'] = $root;
     }
     $url = build_url($map, $zone);
 
