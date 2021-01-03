@@ -936,6 +936,9 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
     }
 
     $title = is_string($page_details['title']) ? $page_details['title'] : get_translated_text($page_details['title']);
+    if ($breadcrumbs != '') {
+        $breadcrumbs .= ' > ';
+    }
     $breadcrumbs .= $title;
 
     // We'll be putting all children in this entire tree into a single list
