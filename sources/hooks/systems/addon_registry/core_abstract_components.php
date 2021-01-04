@@ -439,6 +439,7 @@ class Hook_addon_registry_core_abstract_components
                 'Y_AXIS_LABEL' => lorem_phrase(),
                 'DATASETS' => $datasets,
                 'BEGIN_AT_ZERO' => true,
+                'BUBBLE' => false,
             ]))
         ];
     }
@@ -662,7 +663,7 @@ class Hook_addon_registry_core_abstract_components
         ];
 
         return [
-            lorem_globalise(do_lorem_template('GRAPH_BAR_CHART', [
+            lorem_globalise(do_lorem_template('GRAPH_STACKED_BAR_CHART', [
                 'ID' => lorem_word(),
                 'WIDTH' => '500px',
                 'HEIGHT' => '500px',
