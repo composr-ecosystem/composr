@@ -135,6 +135,7 @@ class Hook_addon_registry_core_abstract_components
             'themes/default/templates/GRAPH_LINE_CHART.tpl',
             'themes/default/templates/GRAPH_PIE_CHART.tpl',
             'themes/default/templates/GRAPH_SCATTER_DIAGRAM.tpl',
+            'themes/default/templates/GRAPH_STACKED_BAR_CHART.tpl',
             'themes/default/javascript/charts.js',
         ];
     }
@@ -161,6 +162,7 @@ class Hook_addon_registry_core_abstract_components
             'templates/GRAPH_LINE_CHART.tpl' => 'graph_line_chart',
             'templates/GRAPH_PIE_CHART.tpl' => 'graph_pie_chart',
             'templates/GRAPH_BAR_CHART.tpl' => 'graph_bar_chart',
+            'templates/GRAPH_STACKED_BAR_CHART.tpl' => 'graph_stacked_bar_chart',
         ];
     }
 
@@ -416,9 +418,17 @@ class Hook_addon_registry_core_abstract_components
             $_datapoints[] = [
                 'X' => strval($p['x']),
                 'Y' => strval($p['y']),
+                'R' => '1',
                 'TOOLTIP' => $p['tooltip'],
             ];
         }
+
+        $datasets = [];
+        $datasets[] = [
+            'DATAPOINTS' => $_datapoints,
+            'CATEGORY' => '',
+            'COLOR' => '#FF0000',
+        ];
 
         return [
             lorem_globalise(do_lorem_template('GRAPH_SCATTER_DIAGRAM', [
@@ -427,8 +437,7 @@ class Hook_addon_registry_core_abstract_components
                 'HEIGHT' => '500px',
                 'X_AXIS_LABEL' => lorem_phrase(),
                 'Y_AXIS_LABEL' => lorem_phrase(),
-                'DATAPOINTS' => $_datapoints,
-                'COLOR' => '#FF0000',
+                'DATASETS' => $datasets,
                 'BEGIN_AT_ZERO' => true,
             ]))
         ];
@@ -486,6 +495,7 @@ class Hook_addon_registry_core_abstract_components
                 'DATASETS' => $_datasets,
                 'BEGIN_AT_ZERO' => true,
                 'SHOW_DATA_LABELS' => true,
+                'FILL' => false,
             ]))
         ];
     }
@@ -529,6 +539,7 @@ class Hook_addon_registry_core_abstract_components
                 'HEIGHT' => '500px',
                 'DATAPOINTS' => $_datapoints,
                 'SHOW_DATA_LABELS' => true,
+                'DOUGHNUT' => false,
             ]))
         ];
     }
@@ -575,6 +586,94 @@ class Hook_addon_registry_core_abstract_components
                 'DATAPOINTS' => $_datapoints,
                 'BEGIN_AT_ZERO' => true,
                 'SHOW_DATA_LABELS' => true,
+                'HORIZONTAL' => false,
+            ]))
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__graph_stacked_bar_chart() : array
+    {
+        $datapoints_a = [
+            [
+                'label' => lorem_phrase(),
+                'value' => 1,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'label' => lorem_phrase(),
+                'value' => 3,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+        $datapoints_b = [
+            [
+                'label' => lorem_phrase(),
+                'value' => 2,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'label' => lorem_phrase(),
+                'value' => 2,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+
+        $_datapoints_a = [];
+        foreach ($datapoints_a as $x => $p) {
+            $_datapoints_a[] = [
+                'LABEL' => $p['label'],
+                'VALUE' => strval($p['value']),
+                'TOOLTIP' => $p['tooltip'],
+                'COLOR' => '#FF0000',
+            ];
+        }
+        $_datapoints_b = [];
+        foreach ($datapoints_b as $x => $p) {
+            $_datapoints_b[] = [
+                'LABEL' => $p['label'],
+                'VALUE' => strval($p['value']),
+                'TOOLTIP' => $p['tooltip'],
+                'COLOR' => '#00FF00',
+            ];
+        }
+
+        $_datasets = [];
+        $_datasets[] = [
+            'LABEL' => 'A',
+            'COLOR' => '#FF0000',
+            'DATAPOINTS' => $_datapoints_a,
+        ];
+        $_datasets[] = [
+            'LABEL' => 'B',
+            'COLOR' => '#00FF00',
+            'DATAPOINTS' => $_datapoints_b,
+        ];
+
+        $_labels = [
+            ['LABEL' => 'A'],
+            ['LABEL' => 'B'],
+        ];
+
+        return [
+            lorem_globalise(do_lorem_template('GRAPH_BAR_CHART', [
+                'ID' => lorem_word(),
+                'WIDTH' => '500px',
+                'HEIGHT' => '500px',
+                'X_AXIS_LABEL' => lorem_phrase(),
+                'Y_AXIS_LABEL' => lorem_phrase(),
+                'DATASETS' => $_datasets,
+                'LABELS' => $_labels,
+                'BEGIN_AT_ZERO' => true,
+                'SHOW_DATA_LABELS' => true,
+                'HORIZONTAL' => false,
+                'STACKED' => true,
             ]))
         ];
     }

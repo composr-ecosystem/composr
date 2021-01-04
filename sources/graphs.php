@@ -59,9 +59,17 @@ function _normalise_graph_dims(?string &$width, ?string &$height)
  */
 function _generate_graph_color_pool(array &$color_pool)
 {
-    $color_pool[] = '#c24a4a';
-    $color_pool[] = '#4a4ac2';
-    $color_pool[] = '#c2c24a';
+    // Useful tool: http://phrogz.net/css/distinct-colors.html
+
+    $color_pool[] = '#d15858';
+    $color_pool[] = '#d18658';
+    $color_pool[] = '#d1b558';
+    $color_pool[] = '#58d17c';
+    $color_pool[] = '#58c9d1';
+    $color_pool[] = '#589bd1';
+    $color_pool[] = '#586cd1';
+    $color_pool[] = '#a158d1';
+    $color_pool[] = '#d158a5';
 }
 
 /**
@@ -83,32 +91,60 @@ function _search_graph_color_pool(int $i, array $color_pool) : string
  * @param  array $datapoints Data-points to render
  * @param  string $x_axis_label X-axis label
  * @param  string $y_axis_label Y-axis label
- * @param  boolean $begin_at_zero Whether the graph begins from zero
+ * @param  array $options Map of additional fiddly options
  * @param  ?string $color Colour for plotting (null: get from default colour pool)
  * @param  ?string $width Width (null: responsive)
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The diagram
  */
-function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', string $y_axis_label = '', bool $begin_at_zero = false, ?string $color = null, ?string $width = null, ?string $height = null) : object
+function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', string $y_axis_label = '', array $options = [], ?string $color = null, ?string $width = null, ?string $height = null) : object
 {
     if ($color === null) {
         $color_pool = [];
         _generate_graph_color_pool($color_pool);
-        $color = $color_pool[0];
     }
 
     $id = _generate_graph_id();
 
     _normalise_graph_dims($width, $height);
 
+    $bubble = false;
+
     $_datapoints = [];
     foreach ($datapoints as $p) {
-        $_datapoints[] = [
+        $r = isset($p['r']) ? number_raw_string($p['r']) : null;
+
+        $category = isset($p['category']) ? $p['category'] : '';
+
+        if (!isset($_datapoints[$category])) {
+            $_datapoints[$category] = [];
+        }
+        $_datapoints[$category][] = [
             'X' => number_raw_string($p['x']),
             'Y' => number_raw_string($p['y']),
+            'R' => $r,
             'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
         ];
+
+        if ($r !== null) {
+            $bubble = true;
+        }
     }
+
+    ksort($_datapoints);
+
+    $datasets = [];
+    $i = 0;
+    foreach ($_datapoints as $category => $__datapoints) {
+        $datasets[] = [
+            'DATAPOINTS' => $__datapoints,
+            'CATEGORY' => $category,
+            'COLOR' => ($color === null) ? $color_pool[$i % count($color_pool)] : $color,
+        ];
+        $i++;
+    }
+
+    $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
 
     return do_template('GRAPH_SCATTER_DIAGRAM', [
         '_GUID' => 'a3fc255270253893b7550f18f9f94fca',
@@ -117,9 +153,9 @@ function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', str
         'HEIGHT' => $height,
         'X_AXIS_LABEL' => $x_axis_label,
         'Y_AXIS_LABEL' => $y_axis_label,
-        'DATAPOINTS' => $_datapoints,
-        'COLOR' => $color,
+        'DATASETS' => $datasets,
         'BEGIN_AT_ZERO' => $begin_at_zero,
+        'BUBBLE' => $bubble,
     ]);
 }
 
@@ -131,14 +167,13 @@ function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', str
  * @param  ?array $x_labels Labels for X-axis (null: numeric sequence for each data point, based on first set of data points)
  * @param  mixed $x_axis_label X-axis label (string or Tempcode)
  * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
- * @param  boolean $begin_at_zero Whether the graph begins from zero
- * @param  boolean $show_data_labels Whether to show labels for data points
+ * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)
  * @param  ?string $width Width (null: responsive)
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_label = '', $y_axis_label = '', bool $begin_at_zero = true, bool $show_data_labels = true, ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
+function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_label = '', $y_axis_label = '', array $options = [], ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 
@@ -186,6 +221,10 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         ];
     }
 
+    $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $fill = isset($options['fill']) ? $options['fill'] : false;
+
     return do_template('GRAPH_LINE_CHART', [
         '_GUID' => '4a45757f02c5356c6b87a1c8d6366d49',
         'ID' => $id,
@@ -197,6 +236,7 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         'DATASETS' => $_datasets,
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'SHOW_DATA_LABELS' => $show_data_labels,
+        'FILL' => $fill,
     ]);
 }
 
@@ -205,13 +245,13 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
  * 1 measure across one small even dimension (different segments) and one uneven dimension (angle) [unlabelled dimensions].
  *
  * @param  array $datapoints Data-points to render
- * @param  boolean $show_data_labels Whether to show labels for data points
+ * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)
  * @param  ?string $width Width (null: responsive)
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_pie_chart(array $datapoints, bool $show_data_labels = true, ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
+function graph_pie_chart(array $datapoints, array $options = [], ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 
@@ -244,6 +284,9 @@ function graph_pie_chart(array $datapoints, bool $show_data_labels = true, ?arra
         $i++;
     }
 
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $doughnut = isset($options['doughnut']) ? $options['doughnut'] : false;
+
     return do_template('GRAPH_PIE_CHART', [
         '_GUID' => '24a351a8cc04f0777b2016ab2ede35cc',
         'ID' => $id,
@@ -251,6 +294,7 @@ function graph_pie_chart(array $datapoints, bool $show_data_labels = true, ?arra
         'HEIGHT' => $height,
         'DATAPOINTS' => $_datapoints,
         'SHOW_DATA_LABELS' => $show_data_labels,
+        'DOUGHNUT' => $doughnut,
     ]);
 }
 
@@ -261,14 +305,13 @@ function graph_pie_chart(array $datapoints, bool $show_data_labels = true, ?arra
  * @param  array $datapoints Data-points to render
  * @param  mixed $x_axis_label X-axis label (string or Tempcode)
  * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
- * @param  boolean $begin_at_zero Whether the graph begins from zero
- * @param  boolean $show_data_labels Whether to show labels for data points
+ * @param  array $options Map of additional fiddly options
  * @param  ?array $color_pool Colour pool to use (null: default colour pool)
  * @param  ?string $width Width (null: responsive)
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = '', bool $begin_at_zero = true, bool $show_data_labels = true, ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
+function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = '', array $options = [], ?array $color_pool = [], ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 
@@ -300,6 +343,10 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
         }
         $i++;
     }
+
+    $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $horizontal = isset($options['horizontal']) ? $options['horizontal'] : false;
 
     return do_template('GRAPH_BAR_CHART', [
         '_GUID' => '173df546b9bcb31ca064910e1952e484',
@@ -311,6 +358,88 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
         'DATAPOINTS' => $_datapoints,
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'SHOW_DATA_LABELS' => $show_data_labels,
+        'HORIZONTAL' => $horizontal,
+    ]);
+}
+
+/**
+ * Generate a stacked bar chart.
+ * Multiple measures across one large even dimension (x) and one uneven dimension (y).
+ *
+ * @param  array $datasets Data-sets to render
+ * @param  array $labels List of labels for datasets
+ * @param  mixed $x_axis_label X-axis label (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
+ * @param  array $options Map of additional fiddly options
+ * @param  ?array $color_pool Colour pool to use (null: default colour pool)
+ * @param  ?string $width Width (null: responsive)
+ * @param  ?string $height Height (null: responsive)
+ * @return Tempcode The chart
+ */
+function graph_stacked_bar_chart($datasets, $labels, $x_axis_label = '', $y_axis_label = '', $options = [], $color_pool = null, $width = null, $height = null)
+{
+    _generate_graph_color_pool($color_pool);
+
+    if (is_mobile()) {
+        $show_data_labels = false;
+    }
+
+    $id = _generate_graph_id();
+
+    _normalise_graph_dims($width, $height);
+
+    $_datasets = [];
+    foreach ($datasets as $i => $dataset) {
+        $datapoints = [];
+        foreach ($dataset['datapoints'] as $x => $p) {
+            if (is_array($p)) {
+                $datapoints[] = [
+                    'LABEL' => $p['label'],
+                    'VALUE' => number_raw_string($p['value']),
+                    'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
+                    'COLOR' => _search_graph_color_pool($i, $color_pool),
+                ];
+            } else {
+                $datapoints[] = [
+                    'LABEL' => @strval($x),
+                    'VALUE' => number_raw_string($p),
+                    'TOOLTIP' => '',
+                    'COLOR' => _search_graph_color_pool($i, $color_pool),
+                ];
+            }
+        }
+
+        $_datasets[] = [
+            'LABEL' => $dataset['label'],
+            'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool),
+            'DATAPOINTS' => $datapoints,
+        ];
+    }
+
+    $_labels = [];
+    foreach ($labels as $label) {
+        $_labels[] = [
+            'LABEL' => $label,
+        ];
+    }
+
+    $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : true;
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+    $horizontal = isset($options['horizontal']) ? $options['horizontal'] : false;
+    $stacked = isset($options['stacked']) ? $options['stacked'] : true;
+
+    return do_template('GRAPH_STACKED_BAR_CHART', [
+        'ID' => $id,
+        'WIDTH' => $width,
+        'HEIGHT' => $height,
+        'X_AXIS_LABEL' => $x_axis_label,
+        'Y_AXIS_LABEL' => $y_axis_label,
+        'DATASETS' => $_datasets,
+        'LABELS' => $_labels,
+        'BEGIN_AT_ZERO' => $begin_at_zero,
+        'SHOW_DATA_LABELS' => $show_data_labels,
+        'HORIZONTAL' => $horizontal,
+        'STACKED' => $stacked,
     ]);
 }
 

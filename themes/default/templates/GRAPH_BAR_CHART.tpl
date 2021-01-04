@@ -105,7 +105,7 @@
 		};
 
 		new Chart(ctx, {
-			type: 'bar',
+			type: '{$?,{HORIZONTAL},horizontalBar,bar}',
 			data: data,
 			options: options,
 		});

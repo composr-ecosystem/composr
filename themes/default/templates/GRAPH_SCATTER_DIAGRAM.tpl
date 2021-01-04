@@ -9,37 +9,50 @@
 		var ctx = document.getElementById('chart_{ID%}').getContext('2d');
 
 		var data = {
-			datasets: [{
-				data: [
-					{+START,LOOP,DATAPOINTS}
-						{
-							x: {X%},
-							y: {Y%},
-						},
-					{+END}
-				],
-				pointBackgroundColor: [
-					{+START,LOOP,DATAPOINTS}
-						'{$?;/,{$IS_NON_EMPTY,{COLOR}},{COLOR},green}',
-					{+END}
-				],
-			}],
+			datasets: [
+				{+START,LOOP,DATASETS}
+					{
+						data: [
+							{+START,LOOP,DATAPOINTS}
+								{
+									x: {X},
+									y: {Y},
+									{+START,IF_PASSED,R}
+										r: {R},
+									{+END}
+								},
+							{+END}
+						],
+						{+START,IF_NON_EMPTY,{CATEGORY}}
+							label: '{CATEGORY;/}',
+						{+END}
+						backgroundColor: '{COLOR;/}',
 
-			tooltips: [
-				{+START,LOOP,DATAPOINTS}
-					'{TOOLTIP;/}',
+						tooltips: [
+							{+START,LOOP,DATAPOINTS}
+								'{TOOLTIP;/}',
+							{+END}
+						],
+					},
 				{+END}
 			],
 		};
 
 		var options = {
 			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
-				responsive: true,
-				maintainAspectRatio: false,
+				responsive: false,
 			{+END}
-			legend: {
-				display: false,
-			},
+			{+START,IF,{$EQ,{DATASETS},1}}
+				legend: {
+					display: false,
+				},
+			{+END}
+			{+START,IF,{$NEQ,{DATASETS},1}}
+				legend: {
+					display: true,
+					position: 'right',
+				},
+			{+END}
 			scales: {
 				xAxes: [{
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
@@ -66,14 +79,15 @@
 			tooltips: {
 				callbacks: {
 					label: function(tooltipItem, data) {
-						var tooltip = data.tooltips[tooltipItem.index];
+						var tooltip = data.datasets[tooltipItem.datasetIndex].tooltips[tooltipItem.index];
 						var ret = '';
-						if (tooltip != '') {
+						if (tooltip) {
 							ret += tooltip + ': ';
 						}
 						ret += '(' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
 						return ret;
 					},
+					mode: 'dataset',
 				},
 			},
 
@@ -83,7 +97,7 @@
 		};
 
 		new Chart(ctx, {
-			type: 'scatter',
+			type: '{$?,{BUBBLE},bubble,scatter}',
 			data: data,
 			options: options,
 		});

@@ -23,7 +23,8 @@ require_code('graphs');
 $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
-$show_data_labels = !empty($map['show_data_labels']);
+$show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
+$doughnut = !isset($map['horizontal']) ? false : ($map['doughnut'] == '1');
 
 $color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
@@ -45,5 +46,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
 }
 $sheet_reader->close();
 
-$tpl = graph_pie_chart($datapoints, $show_data_labels, $color_pool, $width, $height);
+$options = ['show_data_labels' => $show_data_labels, 'doughnut' => $doughnut];
+
+$tpl = graph_pie_chart($datapoints, $options, $color_pool, $width, $height);
 $tpl->evaluate_echo();

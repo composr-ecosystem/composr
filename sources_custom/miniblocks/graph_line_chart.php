@@ -26,8 +26,9 @@ $height = empty($map['height']) ? null : $map['height'];
 $x_axis_label = @cms_empty_safe($map['x_axis_label']) ? '' : $map['x_axis_label'];
 $y_axis_label = @cms_empty_safe($map['y_axis_label']) ? '' : $map['y_axis_label'];
 
-$begin_at_zero = !empty($map['begin_at_zero']);
-$show_data_labels = !empty($map['show_data_labels']);
+$begin_at_zero = !isset($map['begin_at_zero']) ? true : ($map['begin_at_zero'] == '1');
+$show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
+$fill = !isset($map['fill']) ? false : ($map['fill'] == '1');
 
 $color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
@@ -66,5 +67,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
 }
 $sheet_reader->close();
 
-$tpl = graph_line_chart($datasets, $x_labels, $x_axis_label, $y_axis_label, $begin_at_zero, $show_data_labels, $color_pool, $width, $height);
+$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'fill' => $fill];
+
+$tpl = graph_line_chart($datasets, $x_labels, $x_axis_label, $y_axis_label, $options, $color_pool, $width, $height);
 $tpl->evaluate_echo();

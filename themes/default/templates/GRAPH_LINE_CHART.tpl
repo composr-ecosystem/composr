@@ -13,7 +13,7 @@
 				{+START,LOOP,DATASETS}
 					{
 						label: '{LABEL;/}',
-						fill: false,
+						fill: {$?,{FILL},'origin',false},
 						backgroundColor: '{COLOR;/}',
 						borderColor: '{COLOR;/}',
 						data: [
@@ -45,6 +45,12 @@
 			{+START,IF,{$EQ,{DATASETS},1}}
 				legend: {
 					display: false,
+				},
+			{+END}
+			{+START,IF,{$NEQ,{DATASETS},1}}
+				legend: {
+					display: true,
+					position: 'right',
 				},
 			{+END}
 			scales: {

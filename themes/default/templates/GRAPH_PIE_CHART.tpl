@@ -85,7 +85,7 @@
 		};
 
 		new Chart(ctx, {
-			type: 'doughnut',
+			type: '{$?,{DOUGHNUT},doughnut,pie}',
 			data: data,
 			options: options,
 		});

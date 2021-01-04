@@ -1,12 +1,12 @@
-453,32
-345,325
-235,224
-433,54
-32,344
-44,24,Sample tooltip
-1,34
-453,33
-53,43
-52,72
-56,23
-62,63
+453,32,1,Category A,
+345,325,2,Category A,
+235,224,3,Category A,
+433,54,4,Category B,
+32,344,4,Category B,
+44,24,3,Category D,Sample tooltip
+1,34,2,Category B,
+453,33,1,Category C,
+53,43,1,Category C,
+52,72,2,Category C,
+56,23,3,Category C,
+62,63,4,Category C,
