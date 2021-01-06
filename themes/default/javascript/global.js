@@ -2196,7 +2196,7 @@ function convert_tooltip(element)
 				element,
 				'mouseout',
 				function(event) {
-					win.deactivate_tooltip(element);
+					if (event.target!=element) win.deactivate_tooltip(element);
 				}
 			);
 		}
@@ -2206,14 +2206,18 @@ function convert_tooltip(element)
 function clear_out_tooltips(tooltip_being_opened)
 {
 	// Delete other tooltips, which due to browser bugs can get stuck
+	var ret=false;
 	var existing_tooltips=get_elements_by_class_name(document.body,'tooltip');
 	for (var i=0;i<existing_tooltips.length;i++)
 	{
-		if (existing_tooltips[i].id!==tooltip_being_opened)
+		if (existing_tooltips[i].id===tooltip_being_opened)
 		{
+			ret=(existing_tooltips[i].style.display!='none');
+		} else {
 			deactivate_tooltip(existing_tooltips[i].ac,existing_tooltips[i]);
 		}
 	}
+	return ret;
 }
 
 function preactivate_rich_semantic_tooltip(ob,event,have_links)
@@ -2271,7 +2275,7 @@ function activate_tooltip(ac,event,tooltip,width,pic,height,bottom,no_delay,ligh
 
 	register_mouse_listener(event);
 
-	clear_out_tooltips(ac.tooltip_id);
+	if (clear_out_tooltips(ac.tooltip_id)) return; // Already open
 
 	// Add in move/leave events if needed
 	if (!have_links)
