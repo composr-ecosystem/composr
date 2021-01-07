@@ -2196,7 +2196,7 @@ function convert_tooltip(element)
 				element,
 				'mouseout',
 				function(event) {
-					if (event.target!=element) win.deactivate_tooltip(element);
+					win.deactivate_tooltip(element);
 				}
 			);
 		}
