@@ -172,7 +172,10 @@ function init__site()
         if ($_comcode_pages_needed !== null) {
             $comcode_pages_needed = array();
             foreach ($_comcode_pages_needed as $_comcode_page_needed => $_) {
-                $comcode_pages_needed[] = unserialize($_comcode_page_needed);
+                $__comcode_page_needed = @unserialize($_comcode_page_needed);
+                if ($__comcode_page_needed !== false) {
+                    $comcode_pages_needed[] = $__comcode_page_needed;
+                }
             }
 
             if (count($comcode_pages_needed) < 20) {

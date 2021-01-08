@@ -59,7 +59,11 @@ class Persistent_caching_eacceleratorcache
         if ((!is_null($min_cache_date)) && ($data[0] < $min_cache_date)) {
             return null;
         }
-        return unserialize($data[1]);
+        $ret = @unserialize($data[1]);
+        if ($ret === false) {
+            return null;
+        }
+        return $ret;
     }
 
     /**
