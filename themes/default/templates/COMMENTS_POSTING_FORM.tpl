@@ -286,7 +286,7 @@
 
 						{+START,IF_PASSED,ATTACHMENTS}
 							{+START,IF,{$BROWSER_MATCHES,simplified_attachments_ui}}
-								<input tabindex="7" id="attachment_upload_button" class="for_field_post buttons__thumbnail {$?,{$IS_EMPTY,{COMMENT_URL}},button_screen,button_screen_item}" type="button" value="{!comcode:ADD_IMAGES}" />
+								<input tabindex="7" id="attachment_upload_button__post" class="for_field_post buttons__thumbnail {$?,{$IS_EMPTY,{COMMENT_URL}},button_screen,button_screen_item}" type="button" value="{!comcode:ADD_IMAGES}" />
 							{+END}
 						{+END}
 
