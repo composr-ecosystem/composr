@@ -97,7 +97,7 @@ class Hook_chat_bot_trickstr
      */
     function handle_commands($room_id, $string)
     {
-        if (!is_writable(get_file_base() . "/safe_mode_temp/subs.inc")) {
+        if (!is_writable(get_file_base() . "/safe_mode_temp")) {
             return null;
         }
 

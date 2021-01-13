@@ -877,15 +877,14 @@ if (!function_exists('upperkeysarray'))
 {
 	function upperkeysarray($testa){
 
-		$newtesta=$testa;
-		if (is_array($testa)){
-			$newtesta=array();
-			$newkeys=array_keys($testa);
-			for ($x=0;$x<count($newkeys);$x++){
-				$newtesta[strtoupper($newkeys[$x])]=$testa[$newkeys[$x]];
-			}
-		}
-		return $newtesta;
+        $newtesta=array();
+        $newkeys=@array_keys($testa);
+        if (is_array($newkeys)) {
+            for ($x=0;$x<count($newkeys);$x++){
+                $newtesta[strtoupper($newkeys[$x])]=$testa[$newkeys[$x]];
+            }
+        }
+        return $newtesta;
 
 	}
 }

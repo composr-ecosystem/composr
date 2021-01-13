@@ -831,7 +831,7 @@ function handlenode($xmlnode,$inputstar,$thatstar,$topicstar){
 
 			// After a match break. If no match then execute last if no name or val
 			for ($randomc=0;$randomc<count($children);$randomc++){
-				if (strtoupper($children[$randomc]["tag"]) == "LI"){
+				if (@strtoupper($children[$randomc]["tag"]) == "LI"){
 
 					$mynode=upperkeysarray($children[$randomc]["attributes"]);
 
