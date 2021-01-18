@@ -34,6 +34,10 @@ class Hook_checklist_blog
             return [];
         }
 
+        if (get_value('blogs_enabled') === '0') {
+            return [];
+        }
+
         if (get_option('blog_update_time') == '' || get_option('blog_update_time') == '0') {
             return [];
         }

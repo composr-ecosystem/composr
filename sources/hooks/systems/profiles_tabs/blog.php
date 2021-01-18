@@ -36,7 +36,7 @@ class Hook_profiles_tabs_blog
             return false;
         }
 
-        return has_privilege($member_id_of, 'have_personal_category', 'cms_news');
+        return has_privilege($member_id_of, 'have_personal_category', 'cms_news') && (get_value('blogs_enabled') !== '0') && (get_value('blogs_tab_enabled') !== '0');
     }
 
     /**

@@ -57,6 +57,10 @@ class Hook_config_blog_update_time
             return null;
         }
 
+        if (get_value('blogs_enabled') === '0') {
+            return null;
+        }
+
         return '0';
     }
 }
