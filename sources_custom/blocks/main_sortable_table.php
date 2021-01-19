@@ -32,7 +32,7 @@ class Block_main_sortable_table
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'guid', 'class', 'transform', 'stylings_header', 'stylings', 'classes'];
+        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'types', 'has_header_row', 'guid', 'class', 'transform', 'stylings_header', 'stylings', 'max_rows', 'ignore_value', 'classes'];
         return $info;
     }
 
@@ -82,6 +82,9 @@ PHP;
         $labels_tooltip = empty($map['labels_tooltip']) ? [] : $this->parse_comma_separated($map['labels_tooltip']);
         $labels_tooltip = $this->set_property_list_alignment($labels_tooltip, $columns_display);
 
+        $types = empty($map['types']) ? [] : $this->parse_comma_separated($map['types']);
+        $types = $this->set_property_list_alignment($types, $columns_display);
+
         $stylings_header = empty($map['stylings_header']) ? [] : $this->parse_comma_separated($map['stylings_header']);
         $stylings_header = $this->set_property_list_alignment($stylings_header, $columns_display);
 
@@ -100,6 +103,8 @@ PHP;
 
         $guid = empty($map['guid']) ? '' : $map['guid'];
         $class = empty($map['class']) ? '' : $map['class'];
+        $ignore_value = empty($map['ignore_value']) ? '' : $map['ignore_value'];
+        $max_rows = empty($map['max_rows']) ? null : intval($map['max_rows']);
 
         // What will we be reading?
         $file = empty($map['param']) ? 'example.csv' : $map['param'];
@@ -126,13 +131,42 @@ PHP;
                 return paragraph('File not found (' . escape_html($file) . ').', 'encs8t6p4oax17o84fq6uwhjcty6mo13', 'nothing-here');
             }
 
+            $has_header_row = empty($map['has_header_row']) ? true : ($map['has_header_row'] == '1');
+
             // Load data
             $i = 0;
             $sheet_reader = spreadsheet_open_read($path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
             $full_header_row = null;
             while (($row = $sheet_reader->read_row()) !== false) {
-                if ($i != 0) {
-                    // Make sure row has the right column count
+                // Process out the ignore value
+                foreach ($row as $j => &$value) {
+                    if ($value == $ignore_value) {
+                        $value = '';
+                    }
+                }
+
+                if (implode('', $row) == '') {
+                    continue;
+                }
+
+                if ($has_header_row) {
+                    $is_header_row = ($i == 0);
+
+                    if ($is_header_row) {
+                        $full_header_row = $row;
+                    }
+                } else {
+                    $is_header_row = false;
+                    if ($i == 0) {
+                        $full_header_row = [];
+                        for ($j = 0; $j < count($row); $j++) {
+                            $full_header_row[] = chr($j + 65);
+                        }
+                    }
+                }
+
+                if (!$is_header_row) {
+                    // Make sure row has the correct column count
                     for ($j = count($row); $j < count($full_header_row); $j++) { // Too few? Pad.
                         $row[$j] = '';
                     }
@@ -148,62 +182,42 @@ PHP;
                         }
                     }
                     $_rows_tooltip[] = $row_tooltip;
-                }
 
-                if ($i == 0) {
-                    $full_header_row = $row;
-                }
-
-                if ($i != 0) {
                     $_rows_raw[] = array_combine($full_header_row, $row);
                 }
 
-                // Filter to displayed table columns
-                if (!empty($columns_display) || !empty($columns_tooltip)) {
-                    if (empty($columns_display)) {
-                        foreach ($row as $key => $val) {
-                            if (in_array($key + 1, $columns_tooltip)) {
-                                unset($row[$key]);
-                            }
-                        }
-                        $row = array_values($row);
-                    } else {
-                        $row_new = [];
-                        foreach ($columns_display as $pos) {
-                            if (isset($row[$pos - 1])) {
-                                $row_new[] = $row[$pos - 1];
-                            }
-                        }
-                        $row = $row_new;
-                    }
-                }
-
-                if (implode('', $row) == '') {
-                    continue;
-                }
+                $row = $this->adjust_row_to_displayed_columns($row, $columns_display, $columns_tooltip);
 
                 $_rows[] = $row;
 
                 $i++;
+
+                if (($max_rows !== null) && ($i == $max_rows + 1)) {
+                    break;
+                }
             }
             $sheet_reader->close();
 
-            // Work out header
-            if (isset($_rows[0])) {
-                $header_row = array_shift($_rows);
-
-                if (count($header_row) < 2) {
-                    return do_template('RED_ALERT', ['_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers in the spreadsheet.']);
-                }
-            } else {
+            if (!isset($_rows[0])) {
                 return do_template('RED_ALERT', ['_GUID' => '006kvk6di5j0d4x1h83eb90k8vbbx03m', 'TEXT' => 'Empty spreadsheet file.']);
+            }
+
+            // Work out header
+            if ($has_header_row) {
+                $header_row = array_shift($_rows);
+            } else {
+                $header_row = $this->adjust_row_to_displayed_columns($full_header_row, $columns_display, $columns_tooltip);
+            }
+
+            if (count($header_row) < 2) {
+                return do_template('RED_ALERT', ['_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers in the spreadsheet.']);
             }
 
             // Prepare initial header templating
             foreach ($header_row as $j => $_header) {
                 $headers[] = [
                     'LABEL' => isset($labels[$j]) ? $labels[$j] : $_header,
-                    'SORTABLE_TYPE' => null,
+                    'SORTABLE_TYPE' => isset($types[$j]) ? $types[$j] : null,
                     'FILTERABLE' => null,
                     'SEARCHABLE' => null,
                 ];
@@ -220,11 +234,10 @@ PHP;
                 return do_template('RED_ALERT', ['_GUID' => '71d6xnfv3fnomqo2jo4xqlm8n98xngwk', 'TEXT' => 'Security filter disallows display of the ' . escape_html($file) . ' table.']);
             }
 
-            $records = $GLOBALS['SITE_DB']->query_select($file, ['*']);
+            $records = $GLOBALS['SITE_DB']->query_select($file, ['*'], [], '', $max_rows);
             if (empty($records)) {
                 return paragraph(do_lang('NO_ENTRIES'), 'et1gqf521gjjz8yaz1ecu1x7of4nt16m', 'nothing-here');
             }
-            $header_row = [];
             foreach ($records as $i => $record) {
                 // Get tooltip columns
                 $row_tooltip = [];
@@ -277,7 +290,7 @@ PHP;
                     foreach (array_keys($record) as $j => $key) {
                         $headers[] = [
                             'LABEL' => isset($labels[$j]) ? $labels[$j] : titleify(preg_replace('#^' . preg_quote($prefix, '#') . '#', '', $key)),
-                            'SORTABLE_TYPE' => null,
+                            'SORTABLE_TYPE' => isset($types[$j]) ? $types[$j] : null,
                             'FILTERABLE' => null,
                             'SEARCHABLE' => null,
                         ];
@@ -292,11 +305,9 @@ PHP;
 
         // Work out data types and set automatic classnames
         foreach ($headers as $j => &$header) {
-            if ($header['SORTABLE_TYPE'] !== null) {
-                continue; // Already known
+            if ($header['SORTABLE_TYPE'] === null) {
+                $header['SORTABLE_TYPE'] = $this->determine_field_type($_rows, $j);
             }
-
-            $header['SORTABLE_TYPE'] = $this->determine_field_type($_rows, $j);
 
             if (!empty($classes[$j])) {
                 $classes[$j] .= ' ';
@@ -307,23 +318,56 @@ PHP;
         }
 
         // Work out filterability
+        $numeric_types = array_flip(['raw_number', 'integer', 'float', 'integer_comma', 'float_comma', 'float_1dp']);
         foreach ($headers as $j => &$header) {
             if ($header['FILTERABLE'] !== null) {
                 continue; // Already known
             }
 
-            $values = [];
+            $values_with_dupes = [];
             foreach ($_rows as &$row) {
-                $values[] = $row[$j];
+                $values_with_dupes[] = $row[$j];
             }
-            $values = array_unique($values);
+            $values = array_unique($values_with_dupes);
             cms_mb_sort($values, SORT_NATURAL | SORT_FLAG_CASE);
             foreach ($values as $i => $value) {
                 $values[$i] = $this->apply_formatting($values[$i], $headers[$j]['SORTABLE_TYPE']);
             }
             $too_much_to_filter = (count($values) > 20);
-            $header['FILTERABLE'] = ($too_much_to_filter) ? [] : $values;
-            $header['SEARCHABLE'] = ($too_much_to_filter) && ($header['SORTABLE_TYPE'] == 'alphanumeric');
+            $header['FILTERABLE'] = (($too_much_to_filter) || (count($values) == count($values_with_dupes)) || (isset($numeric_types[$header['SORTABLE_TYPE']]))) ? [] : $values;
+            $header['SEARCHABLE'] = ($header['SORTABLE_TYPE'] == 'alphanumeric');
+        }
+
+        // Work out minimums and maximums for numeric fields
+        $minimums = [];
+        $maximums = [];
+        foreach ($headers as $j => &$header) {
+            $numeric = isset($numeric_types[$headers[$j]['SORTABLE_TYPE']]);
+            $minimums[$j] = $numeric ? null : false;
+            $maximums[$j] = $numeric ? null : false;
+        }
+        foreach ($_rows as $i => &$row) {
+            foreach ($row as $j => &$value) {
+                if (($minimums[$j] !== false) && (is_numeric($value))) {
+                    $_value = floatval($value);
+                    if ($_value >= 0.0) {
+                        if (($minimums[$j] === null) || ($_value < $minimums[$j])) {
+                            $minimums[$j] = $_value;
+                        }
+                        if (($maximums[$j] === null) || ($_value > $maximums[$j])) {
+                            $maximums[$j] = $_value;
+                        }
+                    } else {
+                        $minimums[$j] = false;
+                        $maximums[$j] = false;
+                    }
+                }
+            }
+        }
+        foreach ($minimums as $j => $minimum) {
+            if (($minimum !== null) && ($minimum !== false)) {
+                $classes[$j] .= ' numeric';
+            }
         }
 
         // Create template-ready data
@@ -334,12 +378,32 @@ PHP;
             $tooltip_headers_sortable[] = $field_type;
         }
         foreach ($_rows as $i => &$row) {
+            $percentage_fills = [];
+
             foreach ($row as $j => &$value) {
+                $percentage_fills[$j] = null;
+                if (($minimums[$j] !== false) && ($minimums[$j] !== null) && ($maximums[$j] !== null) && (is_numeric($value))) {
+                    $_value = floatval($value);
+                    if ($_value >= 0.0) {
+                        $range = $maximums[$j] - $minimums[$j];
+                        $offset = $_value - $minimums[$j];
+                        $percentage_fills[$j] = ($offset / $range) * 100.0;
+                    }
+                }
+
                 $value = $this->apply_formatting($value, $headers[$j]['SORTABLE_TYPE']);
 
                 switch (is_array($transform) ? (isset($transform[$j]) ? $transform[$j] : '') : $transform) {
+                    case 'country_names':
+                        require_code('locations');
+                        $_value = find_country_name_from_iso($value);
+                        if ($_value !== null) {
+                            $value = $_value;
+                        }
+                        break;
+
                     case 'ucwords':
-                        $value = cms_mb_ucwords($value);
+                        $value = cms_mb_ucwords(cms_mb_strtolower($value));
                         break;
 
                     case 'non-numeric-italics':
@@ -359,6 +423,9 @@ PHP;
                 '_GUID' => $guid,
                 'HEADERS' => $headers,
                 'VALUES' => $row,
+                'MINIMUMS' => $minimums,
+                'MAXIMUMS' => $maximums,
+                'PERCENTAGE_FILLS' => $percentage_fills,
                 'STYLINGS' => $stylings,
                 'CLASSES' => $classes,
                 'TOOLTIP_VALUES' => $tooltip_values,
@@ -380,7 +447,7 @@ PHP;
         if ($default_sort_column === false) {
             $default_sort_column = 0;
         }
-        $max = empty($map['max']) ? 20 : intval($map['max']);
+        $max = empty($map['max']) ? 25 : intval($map['max']);
 
         return do_template('SORTABLE_TABLE', [
             '_GUID' => $guid,
@@ -394,6 +461,37 @@ PHP;
             'ROWS' => $rows,
             'NUM_ROWS' => strval(count($_rows)),
         ]);
+    }
+
+    /**
+     * Adjust a row to displayed table columns.
+     *
+     * @param  array $row Original row
+     * @param  array $columns_display List of columns to display
+     * @param  array $columns_tooltip List of tooltips
+     * @return array Adjusted row
+     */
+    function adjust_row_to_displayed_columns(array $row, array $columns_display, array $columns_tooltip)
+    {
+        if (!empty($columns_display) || !empty($columns_tooltip)) {
+            if (empty($columns_display)) {
+                foreach ($row as $key => $val) {
+                    if (in_array($key + 1, $columns_tooltip)) {
+                        unset($row[$key]);
+                    }
+                }
+                $row = array_values($row);
+            } else {
+                $row_new = [];
+                foreach ($columns_display as $pos) {
+                    if (isset($row[$pos - 1])) {
+                        $row_new[] = $row[$pos - 1];
+                    }
+                }
+                $row = $row_new;
+            }
+        }
+        return $row;
     }
 
     /**
@@ -625,6 +723,11 @@ PHP;
             if (strpos($value, '.') !== false) {
                 $num_digits = strlen($value) - strpos($value, '.') - 1;
             }
+            $value = float_format(floatval($value), $num_digits);
+        }
+
+        if (($sortable_type == 'float_1dp') && (is_numeric($value))) {
+            $num_digits = 1;
             $value = float_format(floatval($value), $num_digits);
         }
 

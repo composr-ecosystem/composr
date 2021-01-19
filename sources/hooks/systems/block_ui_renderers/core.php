@@ -61,10 +61,10 @@ class Hook_block_ui_renderers_core
      * @param  ID_TEXT $parameter The parameter of the block
      * @param  boolean $has_default Whether there is a default value for the field, due to this being an edit
      * @param  string $default Default value for field
-     * @param  Tempcode $description Field description
+     * @param  string $description Field description
      * @return ?Tempcode Rendered field (null: not handled)
      */
-    public function render_block_ui_parameter(string $block, string $parameter, bool $has_default, string $default, object $description) : ?object
+    public function render_block_ui_parameter(string $block, string $parameter, bool $has_default, string $default, string $description) : ?object
     {
         if ($block . ':' . $parameter == 'main_content:id') { // Content block: Content choice
             $content_type = get_param_string('default_param', '');

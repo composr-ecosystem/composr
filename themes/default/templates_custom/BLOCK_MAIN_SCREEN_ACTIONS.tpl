@@ -10,7 +10,7 @@
 	{+START,IF_EMPTY,{$CONFIG_OPTION,facebook_appid}}
 		<div class="facebook"><a class="link-exempt js-click-add-to-facebook" target="_blank" title="{!ADD_TO_FACEBOOK} {!LINK_NEW_WINDOW}" href="https://www.facebook.com/sharer.php?u={URL_ENCODED_CANONICAL_URL.*}">{+START,INCLUDE,ICON}NAME=links/facebook{+END} <span>{!ADD_TO_FACEBOOK}</span></a></div>
 	{+END}
-	<div class="twitter"><a class="link-exempt js-click-add-to-twitter" target="_blank" title="{!ADD_TO_TWITTER} {!LINK_NEW_WINDOW}" href="https://twitter.com/home?status=RT%20{URL_ENCODED_CANONICAL_URL*}">{+START,INCLUDE,ICON}NAME=links/twitter{+END} <span>{!ADD_TO_TWITTER}</span></a></div>
+	<div class="twitter"><a class="link-exempt js-click-add-to-twitter" target="_blank" title="{!ADD_TO_TWITTER} {!LINK_NEW_WINDOW}" href="https://twitter.com/intent/tweet?text=RT%20{URL_ENCODED_CANONICAL_URL*}">{+START,INCLUDE,ICON}NAME=links/twitter{+END} <span>{!ADD_TO_TWITTER}</span></a></div>
 	<div class="linkedin"><a class="link-exempt js-click-add-to-linkedin" target="_blank" title="{!ADD_TO_LINKEDIN} {!LINK_NEW_WINDOW}" href="https://www.linkedin.com/shareArticle?url={URL_ENCODED_CANONICAL_URL.*}&amp;title={$METADATA.*,title}&amp;mini=true">{+START,INCLUDE,ICON}NAME=links/linkedin{+END} <span>{!ADD_TO_LINKEDIN}</span></a></div>
 	{+START,IF_NON_EMPTY,{$METADATA,image}}
 		<div class="pinterest"><a class="link-exempt js-click-add-to-pinterest" target="_blank" title="{!ADD_TO_PINTEREST} {!LINK_NEW_WINDOW}" href="https://pinterest.com/pin/create/button/?url={URL_ENCODED_CANONICAL_URL.*}&amp;media={$METADATA.*,image}&amp;description={$METADATA.*,title}">{+START,INCLUDE,ICON}NAME=links/pinterest{+END} <span>{!ADD_TO_PINTEREST}</span></a></div>

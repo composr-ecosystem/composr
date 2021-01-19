@@ -77,7 +77,9 @@
 				{+END}
 				{+START,IF,{SHOW_DATA_LABELS}}
 					datalabels: {
-						color: 'white',
+						anchor: 'end',
+						align: 'top',
+						color: 'black',
 						display: function(context) {
 							return true;//context.dataset.data[context.dataIndex] > 15;
 						},

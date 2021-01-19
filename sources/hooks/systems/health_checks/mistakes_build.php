@@ -185,6 +185,10 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             if (preg_match('#^https://vk\.com/share\.php#', $url) != 0) {
                 continue;
             }
+            if (preg_match('#^https://twitter.com/intent/tweet#', $url) != 0) {
+                // Twitter is blocking unknown user agents
+                continue;
+            }
 
             if (substr($url, 0, 2) == '//') {
                 $url = 'http:' . $url;

@@ -91,7 +91,9 @@
 				{+END}
 				{+START,IF,{SHOW_DATA_LABELS}}
 					datalabels: {
-						color: 'white',
+						anchor: 'end',
+						align: 'top',
+						color: 'black',
 						display: function(context) {
 							return context.dataset.data[context.dataIndex] > 0;
 						},

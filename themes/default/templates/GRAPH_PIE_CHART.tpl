@@ -35,6 +35,7 @@
 		};
 
 		var options = {
+			legend: false,
 			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
 				responsive: true,
 				maintainAspectRatio: false,
@@ -78,7 +79,9 @@
 						font: {
 							weight: 'bold'
 						},
-						formatter: Math.round,
+						formatter: function(value, context) {
+							return context.chart.data.labels[context.dataIndex];
+						}
 					},
 				{+END}
 			},

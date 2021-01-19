@@ -850,6 +850,9 @@ var SortableTable = (function(){
       // then go back to the last page and show it.
       if (pagestart>=unfilteredrowcount) {
         pagestart = unfilteredrowcount-(unfilteredrowcount%pagesize);
+        if (pagestart>=unfilteredrowcount) { // Edge case
+          pagestart-=pagesize;
+        }
         tdata.page = page = pagestart/pagesize;
         for (var i=pagestart,L=unfilteredrows.length; i<L; i++) {
           unfilteredrows[i].style.display="";

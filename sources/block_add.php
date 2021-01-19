@@ -198,9 +198,6 @@ function block_helper_script()
             ]));
         }
         ksort($block_types);
-        $move_after = $block_types['adminzone_dashboard'];
-        unset($block_types['adminzone_dashboard']);
-        $block_types['adminzone_dashboard'] = $move_after;
         foreach ($block_types as $block_type => $_links) {
             if (($block_type == 'bottom') && ($type_wanted == 'side')) {
                 continue;
