@@ -1657,7 +1657,7 @@ class Forum_driver_cns extends Forum_driver_base
 
         // Do some flood control
         $submitting = ((has_interesting_post_fields()) && (get_param_string('type', null) !== 'edit') && (get_param_string('type', null) !== 'edit_category') && (!running_script('preview')));
-        if (get_value('no_flood_control') !== '1') {
+        if ((get_value('no_flood_control') !== '1') && (running_script('index'))) {
             $restrict = $submitting ? 'flood_control_submit_secs' : 'flood_control_access_secs';
             $restrict_setting = $submitting ? 'm_last_submit_time' : 'm_last_visit_time';
             require_code('cns_groups');
