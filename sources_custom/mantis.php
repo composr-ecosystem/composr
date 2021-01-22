@@ -13,9 +13,9 @@
  * @package    composr_homesite_support_credits
  */
 
-function get_tracker_issue_titles($ids, $version = null)
+function get_tracker_issue_titles($ids, $version = null, $previous_version = null)
 {
-    if ((count($ids) == 0) && ($version === null)) {
+    if ((count($ids) == 0) && ($version === null) && ($previous_version === null)) {
         return array();
     }
 
@@ -31,6 +31,11 @@ function get_tracker_issue_titles($ids, $version = null)
 
     if ($version !== null) {
         $where_version = 'status=80 AND fixed_in_version=\'' . db_escape_string($version) . '\'';
+        $sql .= ' OR ' . $where_version;
+    }
+
+    if ($previous_version !== null) {
+        $where_version = 'status=80 AND version=\'' . db_escape_string($previous_version) . '\' AND fixed_in_version=\'\' AND severity<>10';
         $sql .= ' OR ' . $where_version;
     }
 
