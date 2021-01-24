@@ -1,7 +1,7 @@
 {+START,SET,CAPTCHA}
 	<div class="captcha">
 		{+START,IF,{$CONFIG_OPTION,audio_captcha}}
-			<a rel="nofollow" onclick="return play_self_audio_link(this,captcha_sound);" title="{!captcha:PLAY_AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/auto_thumbs/{$SESSION*}.wav?cache_break={$RAND&*}">{!captcha:PLAY_AUDIO_VERSION}</a>
+			<a rel="nofollow" id="captcha_audio" onclick="return play_self_audio_link(this,captcha_sound);" title="{!captcha:PLAY_AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/auto_thumbs/{$SESSION*}.wav?cache_break={$RAND&*}">{!captcha:PLAY_AUDIO_VERSION}</a>
 		{+END}
 		{+START,IF,{$CONFIG_OPTION,css_captcha}}
 			<iframe{$?,{$BROWSER_MATCHES,ie}, frameBorder="0" scrolling="no"} id="captcha_readable" class="captcha_frame" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}">{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}</iframe>
@@ -19,7 +19,9 @@
 		var showevent=(typeof window.onpageshow!='undefined')?'pageshow':'load';
 
 		var func=function() {
-			document.getElementById('captcha_readable').src+='&'; // Force it to reload latest captcha
+			// Force it to reload latest captcha
+			document.getElementById('captcha_readable').src='{$FIND_SCRIPT;/,captcha}?mode=text{$KEEP;/,0,1}&cache_break=' + Math.random();
+			document.getElementById('captcha_audio').href='{$FIND_SCRIPT;/,captcha}?mode=audio{$KEEP;/,0,1}&cache_break=' + Math.random(); // Directly .wav link (needed for Safari) won't be good anymore
 		};
 
 		if (typeof window.addEventListener!='undefined')
