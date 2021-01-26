@@ -2011,7 +2011,16 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $no_link_for_me_s
     // Find title
     global $PT_PAIR_CACHE_CP;
     if (!array_key_exists($the_page, $PT_PAIR_CACHE_CP)) {
-        $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $the_page, 'a.the_zone' => $the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
+        $test = _request_page__redirects($the_page, $the_zone);
+        if ($test !== false) {
+            $_the_page = $test[1]['r_to_page'];
+            $_the_zone = $test[1]['r_to_zone'];
+        } else {
+            $_the_page = $the_page;
+            $_the_zone = $the_zone;
+        }
+
+        $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $_the_page, 'a.the_zone' => $_the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
         if (!array_key_exists(0, $page_rows)) {
             global $DISPLAYED_TITLE;
 
@@ -2021,7 +2030,7 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $no_link_for_me_s
             $temp_title = $DISPLAYED_TITLE;
             restore_output_state();
 
-            $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $the_page, 'a.the_zone' => $the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
+            $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $_the_page, 'a.the_zone' => $_the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
             if (!array_key_exists(0, $page_rows)) { // Oh well, fallback (maybe page doesn't exist yet, ?)...
                 $PT_PAIR_CACHE_CP[$the_page] = array();
                 $PT_PAIR_CACHE_CP[$the_page]['cc_page_title'] = $temp_title->evaluate();
