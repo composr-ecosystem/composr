@@ -137,13 +137,19 @@ function _build_stored_menu($menu)
     // Load items
     $root = persistent_cache_get(array('MENU', $menu));
     if ($root === null) {
+        if (strpos($menu, ':') !== false) {
+            list($menu, $_parent_id) = explode(':', $menu, 2);
+            $parent_id = intval($_parent_id);
+        } else {
+            $parent_id = null;
+        }
         $items = $GLOBALS['SITE_DB']->query_select('menu_items', array('*'), array('i_menu' => $menu), 'ORDER BY i_order');
 
         // Search for top-level items, to build root branch
         $root = _get_menu_root_wrapper();
         $root['content_id'] = $menu;
         foreach ($items as $item) {
-            if ($item['i_parent'] === null) {
+            if ($item['i_parent'] === $parent_id) {
                 $root['children'] = array_merge($root['children'], _build_stored_menu_branch($item, $items));
             }
         }
