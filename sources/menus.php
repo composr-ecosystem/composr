@@ -43,7 +43,7 @@ function init__menus()
  */
 function build_menu($type, $menu, $silent_failure = false, $apply_highlighting = true)
 {
-    $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+$#', $menu) == 0);
+    $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+((:\d+)|(;.*))?$#', $menu) == 0);
 
     if ($is_sitemap_menu) {
         $root = _build_sitemap_menu($menu);
@@ -137,11 +137,16 @@ function _build_stored_menu($menu)
     // Load items
     $root = persistent_cache_get(array('MENU', $menu));
     if ($root === null) {
-        if (strpos($menu, ':') !== false) {
+        if (strpos($menu, ';') !== false) {
+            list($menu, $parent_url) = explode(';', $menu, 2);
+            $parent_id = null;
+        } elseif (strpos($menu, ':') !== false) {
             list($menu, $_parent_id) = explode(':', $menu, 2);
             $parent_id = intval($_parent_id);
+            $parent_url = null;
         } else {
             $parent_id = null;
+            $parent_url = null;
         }
         $items = $GLOBALS['SITE_DB']->query_select('menu_items', array('*'), array('i_menu' => $menu), 'ORDER BY i_order');
 
@@ -149,8 +154,15 @@ function _build_stored_menu($menu)
         $root = _get_menu_root_wrapper();
         $root['content_id'] = $menu;
         foreach ($items as $item) {
-            if ($item['i_parent'] === $parent_id) {
-                $root['children'] = array_merge($root['children'], _build_stored_menu_branch($item, $items));
+            if ($parent_url === null) {
+                if ($item['i_parent'] === $parent_id) {
+                    $root['children'] = array_merge($root['children'], _build_stored_menu_branch($item, $items));
+                }
+            } else {
+                if ($item['i_url'] === $parent_url) {
+                    $sub = _build_stored_menu_branch($item, $items);
+                    $root['children'] = array_merge($root['children'], $sub[0]['children']);
+                }
             }
         }
 
