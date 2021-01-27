@@ -42,6 +42,25 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
 {
     $page_contents = trim(file_get_contents($path, false, null, 0, 300));
 
+    if (preg_match('#\[title([^\]]*)?[^\]]*\].*\[/title\]#', $page_contents, $matches) == 0) {
+        // Maybe we need to load more
+        $page_contents = trim(file_get_contents($path));
+    }
+
+    if ((strpos($page_contents, '\"') !== false) || (preg_match('#\ssub="[^"]*\[#', $page_contents) != 0)) {
+        // Complex case, we need to do full parsing
+        comcode_to_tempcode($page_contents);
+        global $COMCODE_PARSE_TITLE;
+        if ($COMCODE_PARSE_TITLE !== null) {
+            $tempcode_title = $COMCODE_PARSE_TITLE;
+            if ($in_tempcode) {
+                return make_string_tempcode($tempcode_title);
+            } else {
+                return trim(strip_html($tempcode_title));
+            }
+        }
+    }
+
     $matches = array();
     if (preg_match('#\[title([^\]]*)?[^\]]*\]#', $page_contents, $matches) == 0) {
         $fallback_title = titleify(basename($path, '.txt'));
