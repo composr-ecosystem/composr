@@ -855,7 +855,8 @@ function enable_notifications(string $notification_code, ?string $notification_c
         }
     }
 
-    $db->query_insert_or_replace('notifications_enabled', ['l_setting' => $setting], $map);
+    $db->query_delete('notifications_enabled', $map);
+    $db->query_insert('notifications_enabled', ['l_setting' => $setting] + $map);
 
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns') && ($notification_category !== null)) { // Sync comment_posted ones to also monitor the forum ones; no need for opposite way as comment ones already trigger forum ones
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $notification_category, do_lang('COMMENT'));

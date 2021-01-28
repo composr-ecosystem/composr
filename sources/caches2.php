@@ -168,7 +168,18 @@ function set_cache_entry(string $codename, int $ttl, string $cache_identifier, $
         $pcache = ['dependencies' => $dependencies, 'date_and_time' => time(), 'the_value' => $cache];
         persistent_cache_set(['CACHE', $codename, md5($cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone], $pcache, false, $ttl * 60);
     } else {
-        $GLOBALS['SITE_DB']->query_insert_or_replace(
+        $GLOBALS['SITE_DB']->query_delete(
+            'cache',
+            [
+                'lang' => $lang,
+                'the_theme' => $theme,
+                'cached_for' => $codename,
+                'identifier' => md5($cache_identifier),
+            ],
+            false,
+            true
+        );
+        $GLOBALS['SITE_DB']->query_insert(
             'cache',
             [
                 'dependencies' => $dependencies,
@@ -179,8 +190,6 @@ function set_cache_entry(string $codename, int $ttl, string $cache_identifier, $
                 'timezone' => $timezone,
                 'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
                 'date_and_time' => time(),
-            ],
-            [
                 'lang' => $lang,
                 'the_theme' => $theme,
                 'cached_for' => $codename,

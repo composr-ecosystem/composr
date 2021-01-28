@@ -48,7 +48,8 @@ function backend_cloud_script()
     }
     $port = post_param_integer('port', 80);
     // $watching_channel = $_POST['channels'];
-    $GLOBALS['SITE_DB']->query_insert_or_replace('news_rss_cloud', ['register_time' => time()], ['watching_channel' => get_param_string('type', ''), 'rem_procedure' => $procedure, 'rem_port' => $port, 'rem_path' => $path, 'rem_protocol' => $protocol, 'rem_ip' => get_ip_address()]);
+    $GLOBALS['SITE_DB']->query_delete('news_rss_cloud', ['watching_channel' => get_param_string('type', ''), 'rem_procedure' => $procedure, 'rem_port' => $port, 'rem_path' => $path, 'rem_protocol' => $protocol, 'rem_ip' => get_ip_address()]);
+    $GLOBALS['SITE_DB']->query_insert('news_rss_cloud', ['register_time' => time(), 'watching_channel' => get_param_string('type', ''), 'rem_procedure' => $procedure, 'rem_port' => $port, 'rem_path' => $path, 'rem_protocol' => $protocol, 'rem_ip' => get_ip_address()]);
     exit('true');
 }
 

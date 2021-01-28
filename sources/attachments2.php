@@ -132,11 +132,12 @@ function do_comcode_attachments(string $comcode, string $type = 'null', string $
                 $comcode = preg_replace('#(\[(attachment|attachment_safe)[^\]]*\])new_' . strval($marker_id) . '(\[/)#', '${1}' . strval($attachment['id']) . '${3}', $comcode);
 
                 if ($type !== null) {
-                    $db->query_insert_or_replace('attachment_refs', [], ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment['id']]);
+                    $db->query_delete('attachment_refs', ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment['id']]);
+                    $db->query_insert('attachment_refs', ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment['id']]);
                 }
             } else {
                 // (Re-)Reference it
-                $db->query_insert_or_replace('attachment_refs', [], ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment['id']]);
+                $db->query_insert('attachment_refs', ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment['id']], false, true);
             }
         }
 

@@ -461,7 +461,8 @@ class Module_quiz
                     'v_member_id' => get_member(),
                     'v_quiz_id' => $quiz_id,
                 ]);
-                $GLOBALS['SITE_DB']->query_insert_or_replace('quiz_member_last_visit', ['v_time' => time()], ['v_quiz_id' => $quiz_id, 'v_member_id' => get_member()]);
+                $GLOBALS['SITE_DB']->query_delete('quiz_member_last_visit', ['v_quiz_id' => $quiz_id, 'v_member_id' => get_member()]);
+                $GLOBALS['SITE_DB']->query_insert('quiz_member_last_visit', ['v_time' => time(), 'v_quiz_id' => $quiz_id, 'v_member_id' => get_member()]);
                 $timer_offset = 0;
             }
         } else {

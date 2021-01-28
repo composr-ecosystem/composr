@@ -645,7 +645,7 @@ abstract class DatabaseDriver
      *
      * @param  string $table The table name
      * @param  array $map The INSERT/UPDATE map, minus anything in the key
-     * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
+     * @param  array $key_map The WHERE map representing the key [will all be ANDed together] - must be the true key, otherwise rows will be duplicated
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?string SQL query (null: not supported)
@@ -2225,7 +2225,7 @@ class DatabaseConnector
      *
      * @param  string $table The table name
      * @param  array $map The INSERT/UPDATE map, minus anything in the key
-     * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
+     * @param  array $key_map The WHERE map representing the key [will all be ANDed together] - must be the true key, otherwise rows will be duplicated
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return boolean Whether a smart operation was performed by the DB backend (rather than just delete-then-add)

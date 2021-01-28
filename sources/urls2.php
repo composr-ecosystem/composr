@@ -1106,15 +1106,19 @@ function check_url_exists(string $url, ?int $test_freq_secs = null, bool $retry_
  */
 function mark_if_url_exists(string $url, bool $exists = true, string $message = '', string $destination_url = '')
 {
-    $GLOBALS['SITE_DB']->query_insert_or_replace(
+    $GLOBALS['SITE_DB']->query_delete(
+        'urls_checked',
+        [
+            'url' => $url,
+        ]
+    );
+    $GLOBALS['SITE_DB']->query_insert(
         'urls_checked',
         [
             'url_exists' => $exists ? 1 : 0,
             'url_message' => $message,
             'url_destination_url' => $destination_url,
             'url_check_time' => time(),
-        ],
-        [
             'url' => $url,
         ]
     );

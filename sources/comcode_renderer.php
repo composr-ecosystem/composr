@@ -2332,7 +2332,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
             // Lock it if we are doing a 'safe' attachment
             if ($tag == 'attachment_safe') {
-                $db->query_insert_or_replace('attachment_refs', [], ['r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']]);
+                $db->query_insert('attachment_refs', ['r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']], false, true);
             }
 
             // Now, render it

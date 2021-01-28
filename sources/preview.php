@@ -357,7 +357,7 @@ function build_preview(bool $multi_return = false)
     if ($posting_ref_id !== null) {
         if (array_key_exists(strval(-$posting_ref_id), $COMCODE_ATTACHMENTS)) {
             foreach ($COMCODE_ATTACHMENTS[strval(-$posting_ref_id)] as $attachment) {
-                $db->query_insert_or_replace('attachment_refs', [], ['r_referer_type' => 'null', 'r_referer_id' => strval(-$posting_ref_id), 'a_id' => $attachment['id']]);
+                $db->query_insert('attachment_refs', ['r_referer_type' => 'null', 'r_referer_id' => strval(-$posting_ref_id), 'a_id' => $attachment['id']], false, true);
             }
         }
     }
