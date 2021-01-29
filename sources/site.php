@@ -725,9 +725,13 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
         // Monikers relative to the zone
         $page_place = _request_page($page, $zone);
         if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
-            $page = $page_place[1]['r_to_page'];
-            $zone = $page_place[1]['r_to_zone'];
+            $page_place_r = $page_place;
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
+            if ((substr($page_place[0], 0, 7) != 'COMCODE') || ($type === null)) {
+                // We're viewing the Comcode page behind this redirect, or it's not a Comcode page so nothing is underneath it
+                $page = $page_place_r[1]['r_to_page'];
+                $zone = $page_place_r[1]['r_to_zone'];
+            }
         }
         if (($page_place === false) || ((substr($page_place[0], 0, 7) == 'COMCODE') && ($type !== null/*looking deeper than a normal Comcode page*/))) {
             // This code branch is finding absolute monikers (easy case), or monikers pointing to a Comcode page (special case)...
