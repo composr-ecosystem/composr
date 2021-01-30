@@ -1271,6 +1271,7 @@ body input.button_hyperlink, body input.button_hyperlink:hover {
 	float: left;
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
 		margin-left: 2em;
+		margin-right: 1em;
 	/*{+END}*/
 	/*{+START,IF,{$MOBILE}}*/
 		width: 110px;
