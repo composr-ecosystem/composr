@@ -62,15 +62,11 @@ class Module_cms_blogs extends Standard_crud_module
             $member_id = get_member();
         }
 
-        if (get_value('blogs_enabled') === '0') {
+        if (get_option('separate_blogs') == '0') {
             return null;
         }
 
         if (!has_privilege($member_id, 'have_personal_category', 'cms_news')) {
-            return null;
-        }
-
-        if (get_option('separate_blogs') == '0') {
             return null;
         }
 

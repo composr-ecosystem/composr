@@ -57,7 +57,7 @@ class Hook_config_blog_update_time
             return null;
         }
 
-        if (get_value('blogs_enabled') === '0') {
+        if (get_option('separate_blogs') == '0') {
             return null;
         }
 
