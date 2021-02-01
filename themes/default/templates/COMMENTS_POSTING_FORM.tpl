@@ -4,16 +4,16 @@
 			<div class="comments_captcha">
 				<div class="box box___comments_posting_form__captcha"><div class="box_inner">
 					{+START,IF,{$CONFIG_OPTION,audio_captcha,1}}
-						<p>{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}<label for="captcha">{+END}{!DESCRIPTION_CAPTCHA_2,<a rel="nofollow" onclick="return play_self_audio_link(this\,captcha_sound);" title="{!captcha:AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/auto_thumbs/{$SESSION*}.wav?cache_break={$RAND&*}">{!captcha:AUDIO_VERSION}</a>}{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}</label>{+END}</p>
+						<p>{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}<label for="captcha">{+END}{!DESCRIPTION_CAPTCHA_2,<a rel="nofollow" id="captcha_audio" onclick="return play_self_audio_link(this\,captcha_sound);" title="{!captcha:AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/auto_thumbs/{$SESSION*}.wav?cache_break={$RAND&*}">{!captcha:AUDIO_VERSION}</a>}{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}</label>{+END}</p>
 					{+END}
 					{+START,IF,{$NOT,{$CONFIG_OPTION,audio_captcha,1}}}
 						<p>{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}<label for="captcha">{+END}{!DESCRIPTION_CAPTCHA_3}{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}</label>{+END}</p>
 					{+END}
 					{+START,IF,{$CONFIG_OPTION,css_captcha,1}}
-						<iframe{$?,{$BROWSER_MATCHES,ie}, frameBorder="0" scrolling="no"} id="captcha_frame" class="captcha_frame" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}">{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}</iframe>
+						<iframe{$?,{$BROWSER_MATCHES,ie}, frameBorder="0" scrolling="no"} id="captcha_readable" class="captcha_frame" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}">{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}</iframe>
 					{+END}
 					{+START,IF,{$NOT,{$CONFIG_OPTION,css_captcha,1}}}
-						<img id="captcha_image" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" alt="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}" />
+						<img id="captcha_readable" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" alt="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}" />
 					{+END}
 					<input maxlength="6" size="8" class="input_text_required" value="" type="text" id="captcha" name="captcha" />
 				</div></div>

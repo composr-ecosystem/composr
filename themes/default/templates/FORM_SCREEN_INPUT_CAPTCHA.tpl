@@ -19,9 +19,7 @@
 		var showevent=(typeof window.onpageshow!='undefined')?'pageshow':'load';
 
 		var func=function() {
-			// Force it to reload latest captcha
-			document.getElementById('captcha_readable').src='{$FIND_SCRIPT;/,captcha}?mode=text{$KEEP;/,0,1}&cache_break=' + Math.random();
-			document.getElementById('captcha_audio').href='{$FIND_SCRIPT;/,captcha}?mode=audio{$KEEP;/,0,1}&cache_break=' + Math.random(); // Directly .wav link (needed for Safari) won't be good anymore
+			refresh_captcha(document.getElementById('captcha_readable'),document.getElementById('captcha_audio'),captcha_sound);
 		};
 
 		if (typeof window.addEventListener!='undefined')

@@ -411,7 +411,7 @@ function captcha_ajax_check()
             var url='" . addslashes($script) . "?snippet=captcha_wrong&name='+window.encodeURIComponent(form.elements['captcha'].value);
             if (!do_ajax_field_test(url))
             {
-                document.getElementById('captcha').src+='&'; // Force it to reload latest captcha
+                refresh_captcha(document.getElementById('captcha_readable'),document.getElementById('captcha_audio'),captcha_sound);
                 document.getElementById('submit_button').disabled=false;
                 return false;
             }
