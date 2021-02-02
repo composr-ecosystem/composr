@@ -119,6 +119,6 @@ class Hook_profiles_tabs_edit_photo
 
         $javascript = '';
 
-        return array($title, $fields, $text, $javascript, $order, $hidden, 'tabs/member_account/edit/photo', function_exists('imagetypes'));
+        return array($title, $fields, $text, $javascript, $order, $hidden, 'tabs/member_account/edit/photo', true);
     }
 }
