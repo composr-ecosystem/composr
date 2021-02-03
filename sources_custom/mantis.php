@@ -164,7 +164,7 @@ function update_tracker_issue($tracker_id, $version = null, $tracker_severity = 
     ";
     if ($tracker_project !== null) {
         $query .= "
-            `project_id_id`='" . db_escape_string($tracker_project) . "',
+            `project_id`='" . db_escape_string($tracker_project) . "',
         ";
     }
     if (true) {
