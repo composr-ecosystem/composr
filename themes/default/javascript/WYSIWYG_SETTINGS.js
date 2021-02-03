@@ -16,7 +16,7 @@ toolbar.push([precision_editing?'composr_image':null,'Table']);
 if (precision_editing)
 	toolbar.push('/');
 toolbar.push(['Format','Font','FontSize']);
-toolbar.push(['TextColor']);
+toolbar.push(['TextColor','BGColor']);
 if (precision_editing)
 	toolbar.push(['Maximize', 'ShowBlocks']);
 if (precision_editing)
@@ -30,7 +30,9 @@ var editor_settings={
 	enterMode : window.CKEDITOR.ENTER_BR,
 	uiColor : wysiwyg_color,
 	ocpTheme : '{$THEME;^}',
-	fontSize_sizes : '0.6em;0.85em;1em;1.1em;1.2em;1.3em;1.4em;1.5em;1.6em;1.7em;1.8em;2em',
+	{+START,IF,{$NOT,{$VALUE_OPTION,wysiwyg_normal_font_sizes}}}
+		fontSize_sizes : '0.6em;0.85em;1em;1.1em;1.2em;1.3em;1.4em;1.5em;1.6em;1.7em;1.8em;2em',
+	{+END}
 	removePlugins: '{+START,IF,{$NOT,{$CONFIG_OPTION,autogrow}}}autogrow{+END}',
 	extraPlugins: 'showcomcodeblocks,imagepaste,spellchecktoggle'+(use_composr_toolbar?',composr':''),
 	{+START,IF,{$NEQ,{$CKEDITOR_PATH},data_custom/ckeditor}}
@@ -58,6 +60,9 @@ var editor_settings={
 	comcodeXMLInlineTags: '{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}',
 	{+START,IF,{$CONFIG_OPTION,autogrow}}
 		autoGrow_onStartup: true,
+	{+END}
+	{+START,IF,{$VALUE_OPTION,wysiwyg_spellchecker_default}}
+		wysiwygSpellcheckerDefault: true,
 	{+END}
 	magicline_everywhere: true
 };

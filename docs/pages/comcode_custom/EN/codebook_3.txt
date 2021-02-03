@@ -586,6 +586,10 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]textmate[/tt] -- set this to '1' if you are developing on a local machine and use the Apple Mac TextMate editor. It will cause TextMate editing links to come up in stack traces
   - [tt]allow_php_in_templates[/tt] -- set this to '1' to enable the undocumented Tempcode 'PHP' directive, and its short-hand syntax (written like normal PHP long-tags). This allows you to write PHP code inside templates, but please aware there are strong risks associated with this. It means that themes you install may contain PHP code, or people submitting Comcode content may put in PHP code which you could accidentally unwittingly activate when validating content (as it would be validated against your own security credentials). Note this option is not designed to work from Comcode, because Comcode will add HTML formatting around your PHP code, corrupting it (from a security point of view you need to be aware though, as that could be avoided with some care by a hacker) 
   - [tt]git_autopull[/tt] -- set this to '1' if git changes should automatically be pulled every minute (less frequently if the CRON interval is longer). Assumes a suEXEC-like server and a git deployment and working [tt]shell_exec[/tt]
+ - WYSIWYG editor
+  - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
+  - [tt]wysiwyg_normal_font_sizes[/tt] -- set this to '1' if you want to have normal font sizes rather than relative font sizes (relative sizes allow context-adaptive markup)
+  - [tt]wysiwyg_spellchecker_default[/tt] -- set this to '1' if you want to allow the browser's spellcheck to be available by default (otherwise a button must be pressed)
  - Low-level tuning
   - [tt]no_forum_moderate[/tt] -- set this to '1' to hide the staff checklist mention of moderating the forum
   - [tt]show_menu_items_as_url[/tt] -- set this to '1' if you want the menu editor to show URLs instead of page-links (they will then be converted back)
@@ -604,7 +608,6 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]pagination_when_not_needed[/tt] -- set this to '1' if you want the pagination wrapper template to load even if there is no pagination (useful for collecting result metadata via Tempcode)
   - [tt]catalogue_seo_source_map__<catalogue-name>[/tt] -- a comma-separated list of field IDs to use for SEO keyword generation (if not set, uses all fields). If all keywords in the field should be used, put an exclamation mark after the field ID
   - [tt]disable_password_change_notifications_for_staff[/tt] -- set this to '1' if you want staff password edits to not result in notifications to users
-  - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
   - [tt]filtercode_protected_fields[/tt] -- a comma-separated list of fields Filtercode cannot work on (above the ones hard-coded as forbidden)
   - [tt]memory_limit[/tt] -- set this to a memory limit to override Composr's built-in one (e.g. "128M"). This will make memory bugs on your server more dangerous, so use at your own risk (a memory usage problem can take down a whole server) -- although memory bugs are unlikely given that Composr users report if they ever see this error
   - [tt]canonical_keep_params[/tt] -- set this to a comma-separated list of keep_ parameters that should be allowed to propagate within search engines
