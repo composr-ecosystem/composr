@@ -7534,6 +7534,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CLOSE_TOPIC
         CLOSE_VIA_END_CHAT_BUTTON
         CLOSING_HELP_PANEL_CONFIRM
+        VIEW_CLUB
         CLUB
         CLUBS
         CLUB_WITH_MEMBERS_APPROVAL
