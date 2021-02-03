@@ -733,11 +733,24 @@ function create_hotfix_tar($tracker_id, $files)
         }
     }
 
-    $files = array_unique($files);
+    $files_filtered = array();
+    foreach ($files as $file) {
+        // Exceptions
+        if (preg_match('#^docs/#', $file) != 0) {
+            continue;
+        }
+        if (in_array($file, array(
+            'sources_custom/string_scan.php',
+        ))) {
+            continue;
+        }
+
+        $files_filtered[$file] = true;
+    }
 
     $tar_path = $hotfix_path . '/hotfix-' . strval($tracker_id) . ', ' . date('Y-m-d ga') . '.tar';
     $tar_file = tar_open($tar_path, 'wb');
-    foreach ($files as $file) {
+    foreach (array_keys($files_filtered) as $file) {
         $file_fullpath = get_file_base() . '/' . $file;
         if (is_file($file_fullpath)) { // If it's a deletion, obviously we cannot put it into a hotfix
             tar_add_file($tar_file, $file, $file_fullpath, 0644, filemtime($file_fullpath), true);
