@@ -14,13 +14,13 @@ if (precision_editing)
 	toolbar.push(['JustifyLeft','JustifyCenter','JustifyRight',precision_editing?'JustifyBlock':null]);
 toolbar.push([precision_editing?'composr_image':null,'Table']);
 if (precision_editing)
+	toolbar.push(['HorizontalRule','SpecialChar']);
+if (precision_editing)
 	toolbar.push('/');
 toolbar.push(['Format','Font','FontSize']);
 toolbar.push(['TextColor','BGColor']);
 if (precision_editing)
 	toolbar.push(['Maximize', 'ShowBlocks']);
-if (precision_editing)
-	toolbar.push(['HorizontalRule','SpecialChar']);
 var use_composr_toolbar=true;
 if (use_composr_toolbar)
 	toolbar.push(['composr_block','composr_comcode',precision_editing?'composr_page':null,'composr_quote',precision_editing?'composr_box':null,'composr_code']);
@@ -34,7 +34,7 @@ var editor_settings={
 		fontSize_sizes : '0.6em;0.85em;1em;1.1em;1.2em;1.3em;1.4em;1.5em;1.6em;1.7em;1.8em;2em',
 	{+END}
 	removePlugins: '{+START,IF,{$NOT,{$CONFIG_OPTION,autogrow}}}autogrow{+END}',
-	extraPlugins: 'showcomcodeblocks,imagepaste,spellchecktoggle'+(use_composr_toolbar?',composr':''),
+	extraPlugins: 'showcomcodeblocks,spellchecktoggle'+(use_composr_toolbar?',composr':''),
 	{+START,IF,{$NEQ,{$CKEDITOR_PATH},data_custom/ckeditor}}
 		customConfig: '',
 	{+END}
