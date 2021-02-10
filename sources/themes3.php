@@ -159,7 +159,7 @@ function cleanup_after_theme_image_file_removal($old_url)
         return;
     }
 
-    $possible_paths = [];
+    $possible_paths = array();
     $possible_paths[] = rawurldecode($old_url);
     $possible_paths[] = urldecode($old_url);
 
