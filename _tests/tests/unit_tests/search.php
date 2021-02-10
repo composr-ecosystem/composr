@@ -81,7 +81,7 @@ class search_test_set extends cms_test_case
         }
 
         foreach (array(0, 1) as $safe_mode) {
-            foreach (array('admin', 'test') as $username) {
+            foreach (array($this->get_canonical_username('admin'), $this->get_canonical_username('test')) as $username) {
                 $url = build_url($url_parts + array('keep_su' => $username, 'keep_safe_mode' => $safe_mode), get_module_zone('search'));
                 $data = http_download_file($url->evaluate(), null, true, false, 'Composr', null, array(get_session_cookie() => get_session_id()));
                 $this->assertTrue(strpos($data, do_lang('NO_RESULTS_SEARCH')) !== false); // We expect no results, but also no crash!
