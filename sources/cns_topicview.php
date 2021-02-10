@@ -147,7 +147,7 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
     );
 
     $post['has_revisions'] = false;
-    if (addon_installed('actionlog')) {
+    if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_revisions'))) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase(true);
         if ($revision_engine->has_revisions(array('post'), strval($_postdetails['id']))) {
@@ -310,8 +310,10 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
             }
 
             decache(array(
-                array('side_cns_private_topics', array(get_member())),
-                array('_new_pp', array(get_member())),
+                array('side_cns_private_topics', null),
+                array('_new_pp', null),
+                array('_get_pts', null),
+                get_member()
             ));
         }
         // Check validated

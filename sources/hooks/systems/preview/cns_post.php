@@ -131,7 +131,7 @@ class Hook_preview_cns_post
             $poster = do_template('CNS_POSTER_MEMBER', array('_GUID' => '976a6ceb631bbdcdd950b723cb5d2487', 'ONLINE' => true, 'ID' => strval($post_owner), 'POSTER_DETAILS' => $poster_details, 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post_owner, false, true), 'POSTER_USERNAME' => $poster_username));
         } else {
             $poster_details = new Tempcode();
-            $custom_fields = do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => '9cbbc5913d8164970f19c38a210fda95', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => (get_ip_address())));
+            $custom_fields = do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => '9cbbc5913d8164970f19c38a210fda95', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => get_ip_address(), 'MEMBER_ID' => strval($post_owner)));
             $poster_details = do_template('CNS_GUEST_DETAILS', array('_GUID' => '2db48e17db9f060c04386843f2d0f105', 'CUSTOM_FIELDS' => $custom_fields));
             $poster_username = cns_get_safe_specified_poster_name();
             $lookup_ip_url = ((has_actual_page_access(get_member(), 'admin_lookup')) && (addon_installed('securitylogging'))) ? build_url(array('page' => 'admin_lookup', 'param' => get_ip_address()), get_module_zone('admin_lookup')) : new Tempcode();

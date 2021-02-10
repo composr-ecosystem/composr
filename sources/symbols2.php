@@ -461,7 +461,15 @@ function ecv2_ALREADY_RATED($lang, $escaped, $param)
 
     if (isset($param[1])) {
         require_code('feedback');
-        $value = (already_rated(array($param[0]), $param[1]) ? '1' : '0');
+        $previous_ratings = null;
+
+        $already_rated = already_rated(array($param[0]), $param[1], $previous_ratings);
+
+        if (empty($param[2])) {
+            $value = ($already_rated ? '1' : '0');
+        } else {
+            $value = strval(array_shift($previous_ratings));
+        }
     }
 
     if ($GLOBALS['XSS_DETECT']) {

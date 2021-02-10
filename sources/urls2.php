@@ -824,7 +824,7 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
         $test = $GLOBALS['SITE_DB']->query_value_if_there($dupe_sql, false, true);
         if (!is_null($test)) { // Oh dear, will pass to next iteration, but trying a new moniker
             if ($next_num == 1) {
-                // Individual checks get very slow with time, so do a jump ahead based on how much is already under a suffixed version of the  $moniker (as we can assume sequentiality)
+                // Individual checks get very slow with time, so do a jump ahead based on how much is already under a suffixed version of the $moniker (as we can assume sequentiality)
                 $accelerate_sql = 'SELECT COUNT(*)' . $basic_sql . ' AND m_moniker LIKE \'' . db_encode_like($moniker . '%') . '\'';
                 $next_num += $GLOBALS['SITE_DB']->query_value_if_there($accelerate_sql);
                 if ($next_num == 1) {

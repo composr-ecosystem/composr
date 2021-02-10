@@ -623,19 +623,25 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
     // Special case for ratings
     $matches = ($filter_key == 'compound_rating') ? array('', $info['feedback_type_code']) : array();
     if (($filter_key == 'compound_rating') || (preg_match('#^compound_rating\_\_(.+)#', $filter_key, $matches) != 0)) {
-        if ($filter_key == 'compound_rating') {
-            $matches[1] .= '__' . $catalogue_name;
-        }
         $clause = '(SELECT SUM(rating-1) FROM ' . $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ')';
         $extra_select[$filter_key] = ', ' . $clause . ' AS compound_rating_' . fix_id($matches[1]);
         return array($clause, '', $filter_val);
     }
     $matches = ($filter_key == 'average_rating') ? array('', $info['feedback_type_code']) : array();
     if (($filter_key == 'average_rating') || (preg_match('#^average_rating\_\_(.+)#', $filter_key, $matches) != 0)) {
-        if ($filter_key == 'average_rating') {
-            $matches[1] .= '__' . $catalogue_name;
+        $table_and_where = $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR');
+        $clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ')/2 FROM ' . $table_and_where . ')';
+        if ($catalogue_name !== null) {
+            $time_sensitivity = get_value('time_sensitive_rankings__' . $catalogue_name, '');
+            if ($time_sensitivity != '') {
+                $clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ') OVER (ORDER BY rating_time DESC ROWS BETWEEN 0 PRECEDING AND ' . strval(intval($time_sensitivity)) . ' FOLLOWING)/2 FROM ' . $table_and_where . ' LIMIT 1)'; // TODO: Make not MySQL-only in v11 (LIMIT)
+
+                // The below may work in databases that do not support window functions - but won't work in MariaDB or MySQL < 8.0.14
+                //$table_and_where = '(SELECT * FROM ' . $table_and_where . ' LIMIT ' . strval(intval($time_sensitivity)) . ') ' . uniqid('');
+                //$clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ')/2 FROM ' . $table_and_where . ')';
+            }
         }
-        $clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ')/2 FROM ' . $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ')';
+        $clause = db_function('COALESCE', array($clause, '2.5'));
         $extra_select[$filter_key] = ', ' . $clause . ' AS average_rating_' . fix_id($matches[1]);
         return array($clause, '', $filter_val);
     }
@@ -643,9 +649,6 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
     // Random
     $matches = ($filter_key == 'fixed_random') ? array('', $info['feedback_type_code']) : array();
     if (($filter_key == 'fixed_random') || (preg_match('#^fixed_random\_\_(.+)#', $filter_key, $matches) != 0)) {
-        if ($filter_key == 'fixed_random') {
-            $matches[1] .= '__' . $catalogue_name;
-        }
         $clause = db_cast('r.' . $first_id_field, 'INT');
         $clause = '(' . db_function('MOD', array($clause, date('d'))) . ')';
         $extra_select[$filter_key] = ', ' . $clause . ' AS fixed_random_' . fix_id($matches[1]);

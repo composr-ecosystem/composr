@@ -386,6 +386,15 @@ function init__webstandards2()
         'user-select' => '(none|auto|text|all|contain)',
         'text-overflow' => '(clip|ellipsis|\'[^\']\')',
         'touch-action' => '(auto|none|pan-x|pan-y|manipulation|pan-left|pan-right|pan-up|pan-down|pinch-zoom)',
+        'pointer-events' => '(auto|none)',
+        'animation-duration' => '\d+s',
+        'animation-delay' => '\d+s',
+        'animation-name' => '.+',
+        'animation-iteration-count' => '(\d+|infinite)',
+        'animation-direction' => '(normal|reverse|alternate|alternate-reverse)',
+        'animation-play-state' => '(paused|running)',
+        'animation-fill-mode' => '(none|forwards|backwards|both)',
+        'animation-timing-func' => '(linear|ease|ease-in|ease-out|ease-in-out|step-start|step-end|steps\(\d+,(start|end)\)|cubic-bezier\(\d+,\d+,\d+,\d+\))',
 
         /* Purposely left out these CSS2 features due to very poor browser support (not just IE not having it) */
         /*

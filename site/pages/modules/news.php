@@ -323,7 +323,7 @@ class Module_news
                 }
             }
             breadcrumb_set_parents(array($first_bc, array('_SELF:_SELF:browse' . (($blog === 1) ? ':blog=1' : (($blog === 0) ? ':blog=0' : '')) . (($select == '*') ? '' : (is_numeric($select) ? (':id=' . $select) : (':select=' . $select))) . (($select_and == '*') ? '' : (':select_and=' . $select_and)) . propagate_filtercode_page_link(), $parent_title)));
-            breadcrumb_set_self(get_translated_tempcode('news', $myrow, 'title'));
+            breadcrumb_set_self(protect_from_escaping(get_translated_tempcode('news', $myrow, 'title')));
 
             // Permissions
             if (!has_category_access(get_member(), 'news', strval($myrow['news_category']))) {

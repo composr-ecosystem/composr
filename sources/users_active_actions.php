@@ -32,10 +32,6 @@ function restricted_manually_enabled_backdoor()
 
     $ks = get_param_string('keep_su', null);
     if (!is_null($ks)) {
-        if (get_param_integer('keep_su_strict', 0) == 0) {
-            $GLOBALS['IS_ACTUALLY_ADMIN'] = true;
-            $GLOBALS['SESSION_CONFIRMED'] = 1;
-        }
         $su = $GLOBALS['FORUM_DRIVER']->get_member_from_username($ks);
 
         // We don't want session ID cookie to keep changing if we have keep_su in a separate tab, so make this false to stop it oscillating
@@ -44,14 +40,21 @@ function restricted_manually_enabled_backdoor()
         // For a non-backdoor SU we generate the session for the logged in admin account anyway, SU runs on top of that.
         $create_cookie = false;
 
-        if (!is_null($su)) {
-            $ret = $su;
-            create_session($ret, 1, false, $create_cookie);
-            return $ret;
-        } elseif (is_numeric($ks)) {
-            $ret = intval($ks);
-            create_session($ret, 1, false, $create_cookie);
-            return $ret;
+        if (($su !== null) || (is_numeric($ks))) {
+            if (get_param_integer('keep_su_strict', 0) == 0) {
+                $GLOBALS['IS_ACTUALLY_ADMIN'] = true;
+                $GLOBALS['SESSION_CONFIRMED'] = 1;
+            }
+
+            if ($su !== null) {
+                $ret = $su;
+                create_session($ret, 1, false, $create_cookie);
+                return $ret;
+            } else {
+                $ret = intval($ks);
+                create_session($ret, 1, false, $create_cookie);
+                return $ret;
+            }
         }
     }
 

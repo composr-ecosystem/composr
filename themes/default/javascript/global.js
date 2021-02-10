@@ -2206,14 +2206,18 @@ function convert_tooltip(element)
 function clear_out_tooltips(tooltip_being_opened)
 {
 	// Delete other tooltips, which due to browser bugs can get stuck
+	var ret=false;
 	var existing_tooltips=get_elements_by_class_name(document.body,'tooltip');
 	for (var i=0;i<existing_tooltips.length;i++)
 	{
-		if (existing_tooltips[i].id!==tooltip_being_opened)
+		if (existing_tooltips[i].id===tooltip_being_opened)
 		{
+			ret=(existing_tooltips[i].style.display!='none');
+		} else {
 			deactivate_tooltip(existing_tooltips[i].ac,existing_tooltips[i]);
 		}
 	}
+	return ret;
 }
 
 function preactivate_rich_semantic_tooltip(ob,event,have_links)
@@ -2271,7 +2275,7 @@ function activate_tooltip(ac,event,tooltip,width,pic,height,bottom,no_delay,ligh
 
 	register_mouse_listener(event);
 
-	clear_out_tooltips(ac.tooltip_id);
+	if (clear_out_tooltips(ac.tooltip_id)) return; // Already open
 
 	// Add in move/leave events if needed
 	if (!have_links)
@@ -3724,31 +3728,41 @@ function setup_word_counter(post,count_element)
 	}, 1000);
 }
 
-/* Set up a form to have its CAPTCHA checked upon submission using AJAX */
+function refresh_captcha(captcha_readable,audio_captcha_element,captcha_sound)
+{
+	// Force it to reload latest captcha
+	captcha_readable.src='{$FIND_SCRIPT;/,captcha}?mode=text&cache_break='+Math.random()+keep_stub();
+	audio_captcha_element.href='{$FIND_SCRIPT;/,captcha}?mode=audio&cache_break='+Math.random()+keep_stub(); // Directly .wav link (needed for Safari) won't be good anymore
+	captcha_sound.src = audio_captcha_element.href;
+}
+
+/* Set up a form to have its CAPTCHA checked upon submission using AJAX (used by COMMENTS_POSTING_FORM.tpl not FORM_SCREEN_INPUT_CAPTCHA.tpl) */
 function add_captcha_checking(form)
 {
 	form.old_submit=form.onsubmit;
-	form.onsubmit=function()
-		{
-			form.elements['submit_button'].disabled=true;
-			var url='{$FIND_SCRIPT;,snippet}?snippet=captcha_wrong&name='+window.encodeURIComponent(form.elements['captcha'].value);
-			if (!do_ajax_field_test(url))
-			{
-				var image=document.getElementById('captcha_image');
-				if (!image) image=document.getElementById('captcha_frame');
-				image.src+='&'; // Force it to reload latest captcha
-				document.getElementById('submit_button').disabled=false;
-				return false;
-			}
-			form.elements['submit_button'].disabled=false;
-			if (typeof form.old_submit!='undefined' && form.old_submit) return form.old_submit();
-			return true;
-		};
+	form.onsubmit=function() {
+		form.elements['submit_button'].disabled=true;
+		var url='{$FIND_SCRIPT;,snippet}?snippet=captcha_wrong&name='+window.encodeURIComponent(form.elements['captcha'].value);
+		if (!do_ajax_field_test(url))
+		{captcha_readable
+			var captcha_readable=document.getElementById('captcha_readable');
+			if (!captcha_readable) captcha_readable=document.getElementById('captcha_image'); // LEGACY
+			if (!captcha_readable) captcha_readable=document.getElementById('captcha_frame'); // LEGACY
+			refresh_captcha(captcha_readable,document.getElementById('captcha_audio'),captcha_sound);
+			document.getElementById('submit_button').disabled=false;
+			return false;
+		}
+		form.elements['submit_button'].disabled=false;
+		if (typeof form.old_submit!='undefined' && form.old_submit) return form.old_submit();
+		return true;
+	};
+
 	var showevent=(typeof window.onpageshow!='undefined')?'pageshow':'load';
 	add_event_listener_abstract(window,showevent,function() {
-		var image=document.getElementById('captcha_image');
-		if (!image) image=document.getElementById('captcha_frame');
-		image.src+='&'; // Force it to reload latest captcha
+		var captcha_readable=document.getElementById('captcha_readable');
+		if (!captcha_readable) captcha_readable=document.getElementById('captcha_image'); // LEGACY
+		if (!captcha_readable) captcha_readable=document.getElementById('captcha_frame'); // LEGACY
+		refresh_captcha(captcha_readable,document.getElementById('captcha_audio'),captcha_sound);
 	});
 }
 

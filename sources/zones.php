@@ -134,7 +134,10 @@ function preload_block_internal_caching()
             $bulk = array();
 
             foreach ($blocks_needed as $param => $_) {
-                $bulk[] = unserialize($param);
+                $block_details = @unserialize($param);
+                if ($block_details !== false) {
+                    $bulk[] = $block_details;
+                }
             }
 
             if ($GLOBALS['PERSISTENT_CACHE'] === null) {
@@ -1610,7 +1613,8 @@ function do_block_get_cache_identifier($cache_on, $map)
         }
     }
 
-    $_cache_identifier[] = tacit_https();
+    global $SITE_INFO;
+    $_cache_identifier[] = (tacit_https()) || (!empty($SITE_INFO['base_url'])) && (substr($SITE_INFO['base_url'], 0, 8) == 'https://');
 
     if (!empty($map['raw'])) {
         $_cache_identifier[] = $map['raw'];

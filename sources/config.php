@@ -214,7 +214,9 @@ function get_option($name, $missing_ok = false)
             return null;
         }
 
-        set_option($name, $value, 0);
+        if (!running_script('upgrade')) {
+            set_option($name, $value, 0);
+        }
 
         $GET_OPTION_LOOP = false;
     }

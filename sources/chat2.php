@@ -67,8 +67,9 @@ function blocking_remove($blocker, $blocked)
  * @param  MEMBER $likes The member befriending
  * @param  MEMBER $liked The member being befriended
  * @param  ?TIME $time The logged time of the friendship (null: now)
+ * @param  boolean $send_notification Whether to send a notification suggesting to do an opposite-way friendship
  */
-function friend_add($likes, $liked, $time = null)
+function friend_add($likes, $liked, $time = null, $send_notification = true)
 {
     if (is_null($time)) {
         $time = time();
@@ -97,7 +98,9 @@ function friend_add($likes, $liked, $time = null)
         $subject_line = do_lang('YOURE_MY_FRIEND_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
         $befriend_url = build_url(array('page' => 'chat', 'type' => 'friend_add', 'member_id' => $likes), get_module_zone('chat'), null, false, false, true);
         $message_raw = do_notification_lang('YOURE_MY_FRIEND_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), array($befriend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)), get_lang($liked));
-        dispatch_notification('new_friend', null, $subject_line, $message_raw, array($liked), $likes);
+        if ($send_notification) {
+            dispatch_notification('new_friend', null, $subject_line, $message_raw, array($liked), $likes);
+        }
 
         // Log the action
         log_it('MAKE_FRIEND', strval($likes), strval($liked));

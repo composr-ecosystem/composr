@@ -196,7 +196,8 @@ function permission_repeating(button,name)
 
 	if (window.permission_copying) // Undo current copying
 	{
-		document.getElementById('copy_button_'+window.permission_copying).style.textDecoration='none';
+		var prior_button=document.getElementById('copy_button_'+window.permission_copying);
+		prior_button.className=prior_button.className.replace(/ active_repeating/g, '');
 		window.permission_copying=null;
 		for (var i=0;i<trs.length;i++)
 		{
@@ -206,7 +207,7 @@ function permission_repeating(button,name)
 
 	if (old_permission_copying!=name) // Starting a new copying session
 	{
-		button.style.textDecoration='blink';
+		button.className+=' active_repeating';
 		window.permission_copying=name;
 		window.fauxmodal_alert('{!permissions:REPEAT_PERMISSION_NOTICE;^}');
 		for (var i=0;i<trs.length;i++)

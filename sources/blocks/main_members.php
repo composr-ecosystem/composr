@@ -307,7 +307,7 @@ class Block_main_members
         }
 
         $sql = 'SELECT r.*' . $extra_select_sql . ' FROM ';
-        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=r.id';
+        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
         $main_sql .= $extra_join_sql;
         if ((!$has_exists) && ($usergroup != '')) {
             $main_sql .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON (r.id=g.gm_member_id AND gm_validated=1)';

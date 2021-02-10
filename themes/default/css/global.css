@@ -1271,6 +1271,7 @@ body input.button_hyperlink, body input.button_hyperlink:hover {
 	float: left;
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
 		margin-left: 2em;
+		margin-right: 1em;
 	/*{+END}*/
 	/*{+START,IF,{$MOBILE}}*/
 		width: 110px;
@@ -2152,6 +2153,10 @@ div.zebra_0+div.zebra_1, div.zebra_1+div.zebra_0 {
 	{$BETA_CSS_PROPERTY,opacity: 0.9;}
 	{$BETA_CSS_PROPERTY,word-wrap: break-word;}
 	min-width: 6em;
+	{$BETA_CSS_PROPERTY,pointer-events: none;}
+}
+.tooltip a, .tooltip abbr {
+	{$BETA_CSS_PROPERTY,pointer-events: auto;}
 }
 .tooltip_ownlayout {
 	padding: 0.5em;
@@ -2297,8 +2302,8 @@ div.zebra_0+div.zebra_1, div.zebra_1+div.zebra_0 {
 	padding: 3px;
 }
 
-.alphabetical_jumper.pagination a, .alphabetical_jumper.pagination a:hover {
-	padding: 0.5em 1em !important;
+.alphabetical_jumper.pagination a, .alphabetical_jumper.pagination a:hover, .alphabetical_jumper.pagination span {
+	padding: 0.5em 0.65em !important;
 }
 
 .results_continue, .results_page_num {

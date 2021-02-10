@@ -110,7 +110,7 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
         'c_codename' => $codename,
         'c_map' => serialize($map),
         'c_staff_status' => (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) != 0) ? $GLOBALS['FORUM_DRIVER']->is_staff(get_member()) : null,
-        'c_member' => (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) != 0) ? get_member() : null,
+        'c_member' => (($special_cache_flags & CACHE_AGAINST_MEMBER) != 0) ? get_member() : null,
         'c_groups' => (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) != 0) ? permissive_groups_cache_signature() : '',
         'c_is_bot' => (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) != 0) ? (is_null(get_bot_type()) ? 0 : 1) : null,
         'c_timezone' => (($special_cache_flags & CACHE_AGAINST_TIMEZONE) != 0) ? get_users_timezone(get_member()) : '',

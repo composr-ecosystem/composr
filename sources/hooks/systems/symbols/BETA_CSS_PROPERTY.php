@@ -63,7 +63,9 @@ class Hook_symbol_BETA_CSS_PROPERTY
                     if (substr(trim($param[0]), -1) != ';') {
                         $value .= '; ';
                     }
-                    if (preg_match('#^background-image:\s*(\w+-gradient)(.*)$#s', $param[0], $matches) != 0) { // CSS gradients aren't a new property as such, they're a prefixed extension to an existing one
+                    if (preg_match('#^display:\s*flex;$#s', $param[0], $matches) != 0) {
+                        $value .= 'display: ' . $prefix . 'flex;';
+                    } elseif (preg_match('#^background-image:\s*(\w+-gradient)(.*)$#s', $param[0], $matches) != 0) { // CSS gradients aren't a new property as such, they're a prefixed extension to an existing one
                         $new_style = $matches[2];
                         $old_style = str_replace(array('to right', 'to bottom', 'to bottom right', 'to top right'), array('left', 'top', 'top left', 'bottom left'), $new_style); // This is because the spec changed; at time of writing only MS support the new spec, so for others we'll need to put out both methods (as they'll likely break their self-compatibility)
                         if (($prefix != '-ms-') && ($prefix != '')) {

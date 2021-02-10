@@ -662,7 +662,7 @@ class Module_calendar
 
         $interests_url = build_url(array('page' => '_SELF', 'type' => 'interests', 'view' => $view, 'id' => $id), '_SELF');
         $event_types_1 = new Tempcode();
-        $types = $GLOBALS['SITE_DB']->query_select('calendar_types', array('id', 't_title'));
+        $types = $GLOBALS['SITE_DB']->query_select('calendar_types', array('id', 't_title'), array(), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('t_title'));
         $member_interests = collapse_1d_complexity('t_type', $GLOBALS['SITE_DB']->query_select('calendar_interests', array('t_type'), array('i_member_id' => get_member())));
         foreach ($types as $type) {
             if ($type['id'] == db_get_first_id()) {
