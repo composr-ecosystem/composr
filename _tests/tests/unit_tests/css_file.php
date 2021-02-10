@@ -274,6 +274,7 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = array(
+            'active_repeating',
             'img_thumb_opaque',
             'non_docked',
             'active_item',
