@@ -22,7 +22,7 @@ class firephp_test_set extends cms_test_case
     {
         $this->establish_admin_session();
 
-        $url = build_url(array('page' => '', 'keep_firephp' => 1, 'keep_su' => 'test'), 'adminzone');
+        $url = build_url(array('page' => '', 'keep_firephp' => 1, 'keep_su' => $this->get_canonical_username('test')), 'adminzone');
 
         $default_opts = array(
             'http' => array(
@@ -31,6 +31,10 @@ class firephp_test_set extends cms_test_case
         );
         stream_context_set_default($default_opts);
         $headers = @get_headers($url->evaluate());
+
+        if (!empty($_GET['debug'])) { // TODO: Change in v11
+            @var_dump($headers);
+        }
 
         $this->assertTrue($headers !== false, 'HTTP request failed');
 
