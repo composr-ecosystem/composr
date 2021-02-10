@@ -495,7 +495,7 @@ function already_rated($rating_for_types, $content_id, &$previous_ratings = null
     $previous_ratings = collapse_2d_complexity('rating_for_type', 'rating', $GLOBALS['SITE_DB']->query($query));
 
     $has_fully_rated = (count($previous_ratings) >= count($rating_for_types));
-    $cache[$cache_key] = [$has_fully_rated, $previous_ratings];
+    $cache[$cache_key] = array($has_fully_rated, $previous_ratings);
     return $has_fully_rated;
 }
 
