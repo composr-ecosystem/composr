@@ -42,7 +42,7 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
 {
     $page_contents = trim(file_get_contents($path, false, null, 0, 300));
 
-    if (preg_match('#\[title([^\]]*)?[^\]]*\].*\[/title\]#', $page_contents, $matches) == 0) {
+    if (preg_match('#\[title([^\]]*)?[^\]]*\].*\[/title\]#', $page_contents) == 0) {
         // Maybe we need to load more
         $page_contents = trim(file_get_contents($path));
     }
