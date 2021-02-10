@@ -61,24 +61,22 @@ class standard_dir_files_test_set extends cms_test_case
         }*/
 
         $valid_hashes = array(
-            '040f254836ecefb94bebc44d91e391eb',
-            '0e665ce3d0ae5f44e1a6affe3c7f5303',
-            '296a0f42479e015438791d0b21e22a07',
-            '3c3283f2b3f7d57a8bdf38ca126ff678',
-            '44c2cb384e8efd1ab789978e00d6ea19',
-            '45c31898af89e12147cf987481cae64b',
-            '4afd84b898945e884f88b7f2cda376c0',
-            '61b32927345080611fa4772255f4a70b',
-            '97656c6f2c60873d55a421cd762fac00',
-            'b4af30b08914c4a8240106cf7c614034',
-            'c1bfa4b9b62eff28d2c697aff749bd76',
-            'd565e2958abd06bfac42906ea7b4ea9d',
-            'd90c4471fc2a552580896dd6dae99df7',
-            'e584f07661e5fee9170ba1df153359ad',
-            'ede82ed9879b9d6d011638ca5736bddd',
+            '040f254836ecefb94bebc44d91e391eb', // uploads/incoming/.htaccess
+            '0e665ce3d0ae5f44e1a6affe3c7f5303', // uploads/*/.htaccess
+            '8fbbec6b8fd8a4999a5b07f5ddcf5ea8', // */pages/modules*/.htaccess
+            '3c3283f2b3f7d57a8bdf38ca126ff678', // data*/images/.htaccess, uploads/.htaccess
+            '44c2cb384e8efd1ab789978e00d6ea19', // */pages/html*/EN/.htaccess
+            '45c31898af89e12147cf987481cae64b', // sources/.htaccess
+            '61b32927345080611fa4772255f4a70b', // adminzone/.htaccess
+            'b4af30b08914c4a8240106cf7c614034', // themes/*/templates_cached/.htaccess
+            'c1bfa4b9b62eff28d2c697aff749bd76', // Many
+            'd565e2958abd06bfac42906ea7b4ea9d', // exports/static/.htaccess
+            'd90c4471fc2a552580896dd6dae99df7', // themes/*/images*/.htaccess
+            'e584f07661e5fee9170ba1df153359ad', // uploads/website_specific/compo.sr/.htaccess
+            'ede82ed9879b9d6d011638ca5736bddd', // data_custom/.htaccess
         );
         foreach ($types as $hash => $file_paths) {
-            $this->assertTrue(in_array($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths));
+            $this->assertTrue(in_array($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ', hash ' . $hash);
         }
     }
 
