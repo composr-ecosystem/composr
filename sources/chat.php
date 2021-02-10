@@ -104,7 +104,7 @@ function messages_script()
     } elseif ($action == 'post') {
         // Posting a message
         $message = post_param_string('message');
-        _chat_post_message_ajax(either_param_integer('room_id'), $message, post_param_string('font', ''), preg_replace('#^\##', '', post_param_string('colour', '')), post_param_integer('first_message', 0));
+        _chat_post_message_ajax(either_param_integer('room_id'), $message, post_param_string('font', ''), post_param_string('colour', ''), post_param_integer('first_message', 0));
     } elseif ($action == 'start_im') {
         require_lang('chat');
 
@@ -880,11 +880,6 @@ function chat_post_message($room_id, $message, $font_name, $text_colour, $wrap_p
         }
         if ($font_name == '') {
             $font_name = get_option('chat_default_post_font');
-        }
-
-        // Decode colour code
-        if (substr($text_colour, 0, 2) == '0x') {
-            $text_colour = '#' . substr($text_colour, 2, strlen($text_colour) - 2);
         }
 
         // Store as assembled Tempcode

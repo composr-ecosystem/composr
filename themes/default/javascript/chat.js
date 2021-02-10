@@ -103,30 +103,6 @@ function check_chat_options(ob)
 	return check_form(ob);
 }
 
-function dec_to_hex(number)
-{
-	var hexbase='0123456789ABCDEF';
-	return hexbase.charAt((number>>4)&0xf)+hexbase.charAt(number&0xf);
-}
-
-function hex_to_dec(number)
-{
-	return parseInt(number,16);
-}
-
-function update_picker_colour()
-{
-}
-
-function chat_on_rgb_change(o)
-{
-	var value='#'+dec_to_hex(o.newValue[0])+dec_to_hex(o.newValue[1])+dec_to_hex(o.newValue[2]);
-	window.text_colour.value=value;
-	window.text_colour.style.color=value;
-	document.getElementById('colour').value=value;
-	//document.getElementById('post').style.color=value;
-}
-
 function on_font_change(o)
 {
 	var value=o.options[o.selectedIndex].value;

@@ -502,15 +502,15 @@ class Module_cms_chat
 
         $post_url = build_url(array('page' => '_SELF', 'type' => '_edit', 'id' => $myrow['id'], 'room_id' => $room_id), '_SELF');
 
-        $message = get_translated_tempcode('chat_messages', $myrow, 'the_message');
+        $message = get_translated_text($myrow['the_message']);
 
         require_code('form_templates');
 
         $text_colour = ($myrow['text_colour'] == '') ? get_option('chat_default_post_colour') : $myrow['text_colour'];
         $font_name = ($myrow['font_name'] == '') ? get_option('chat_default_post_font') : $myrow['font_name'];
 
-        $fields = form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_MESSAGE'), 'message', $message->evaluate(), true);
-        $fields->attach(form_input_line(do_lang_tempcode('CHAT_OPTIONS_COLOUR_NAME'), do_lang_tempcode('CHAT_OPTIONS_COLOUR_DESCRIPTION'), 'text_colour', $text_colour, false));
+        $fields = form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_MESSAGE'), 'message', $message, true);
+        $fields->attach(form_input_colour(do_lang_tempcode('CHAT_OPTIONS_COLOUR_NAME'), do_lang_tempcode('CHAT_OPTIONS_COLOUR_DESCRIPTION'), 'text_colour', $text_colour, false));
         $fields->attach(form_input_line(do_lang_tempcode('CHAT_OPTIONS_TEXT_NAME'), do_lang_tempcode('CHAT_OPTIONS_TEXT_DESCRIPTION'), 'fontname', $font_name, false));
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '43ca9d141f23445a018634bdc70f1c7c', 'TITLE' => do_lang_tempcode('ACTIONS'))));
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_MESSAGE'), 'delete', false));
@@ -547,7 +547,7 @@ class Module_cms_chat
                 access_denied('PRIVILEGE', 'edit_lowrange_content');
             }
 
-            $map = array('text_colour' => preg_replace('#^\##', '', post_param_string('text_colour')), 'font_name' => post_param_string('fontname'));
+            $map = array('text_colour' => post_param_string('text_colour'), 'font_name' => post_param_string('fontname'));
             $map += insert_lang_comcode('the_message', wordfilter_text(post_param_string('message')), 4);
             $GLOBALS['SITE_DB']->query_update('chat_messages', $map, array('id' => $message_id), '', 1);
 
