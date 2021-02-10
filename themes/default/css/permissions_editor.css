@@ -42,17 +42,17 @@
 
 @keyframes active_repeating_fading {
 	from {
-		opacity: 1.0;
+		{$BETA_CSS_PROPERTY,opacity: 1.0;}
 	}
 
 	to {
-		opacity: 0.6;
+		{$BETA_CSS_PROPERTY,opacity: 0.6;}
 	}
 }
 
 .active_repeating {
-	animation-duration: 1s;
-	animation-name: active_repeating_fading;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
+	{$BETA_CSS_PROPERTY,animation-duration: 1s;}
+	{$BETA_CSS_PROPERTY,animation-name: active_repeating_fading;}
+	{$BETA_CSS_PROPERTY,animation-iteration-count: infinite;}
+	{$BETA_CSS_PROPERTY,animation-direction: alternate;}
 }
