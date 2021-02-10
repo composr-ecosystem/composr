@@ -96,7 +96,10 @@ class Hook_cron_block_caching
         $requests = $GLOBALS['SITE_DB']->query_select('cron_caching_requests', array('*'), $where);
         foreach ($requests as $request) {
             $codename = $request['c_codename'];
-            $map = unserialize($request['c_map']);
+            $map = @unserialize($request['c_map']);
+            if (!is_array($map)) {
+                $map = array();
+            }
 
             list($object, $new_security_scope) = do_block_hunt_file($codename, $map);
 

@@ -58,7 +58,7 @@
 
 {+START,IF,{$CONFIG_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
-{+START,IF_NON_EMPTY,{SUBCATEGORIES}}{+START,IF,{$EQ,{ID},1}}
+{+START,IF_NON_EMPTY,{SUBCATEGORIES}}{+START,IF,{$EQ,{ID},1}}{+START,IF,{$NOT,{$CONFIG_OPTION,downloads_subcat_narrowin}}}
 	<hr class="spaced_rule" />
 
 	<div class="boxless_space">
@@ -68,4 +68,4 @@
 			{+START,BOX}{$BLOCK-,block=main_multi_content,param=download,filter={ID}*,no_links=1,efficient=0,give_context=0,include_breadcrumbs=1,render_if_empty=1,max=10,mode=top,title={!TOP,10,{!SECTION_DOWNLOADS}}}{+END}
 		{+END}
 	</div>
-{+END}{+END}
+{+END}{+END}{+END}

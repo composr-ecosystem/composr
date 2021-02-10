@@ -159,7 +159,7 @@ function cleanup_after_theme_image_file_removal($old_url)
         return;
     }
 
-    $possible_paths = [];
+    $possible_paths = array();
     $possible_paths[] = rawurldecode($old_url);
     $possible_paths[] = urldecode($old_url);
 
@@ -175,7 +175,7 @@ function cleanup_after_theme_image_file_removal($old_url)
     $possible_variations_in_db = array_unique($possible_variations_in_db);
 
     foreach ($possible_variations_in_db as $possibility) {
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['path' => $possibility]);
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', array('path' => $possibility));
         if ($test !== null) {
             return;
         }

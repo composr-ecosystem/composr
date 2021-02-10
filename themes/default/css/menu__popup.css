@@ -37,7 +37,6 @@
 
 .menu_type__popup li.current {
 	background-color: {$GET,area_highlight_left_complement_background} !important;
-	font-weight: bold;
 }
 
 .menu_type__popup li:hover {
@@ -55,6 +54,10 @@
 }
 .menu_type__popup li a:hover {
 	color: {$GET,a.hover} !important;
+}
+
+.menu_type__popup li.current>a {
+	font-weight: bold;
 }
 
 .menu_type__popup .has_img>img {

@@ -767,6 +767,12 @@ span.validated_checkbox+input[name="validated"].input_tick {
 	margin-bottom: 0;
 }
 
+/* Stop large images creating scrolling */
+.cke_image_resizer {
+	right: 0 !important;
+	bottom: 0 !important;
+}
+
 .cke_widget_inline {
 	line-height: 1em !important;
 }

@@ -94,6 +94,9 @@ class Persistent_caching_filecache
         }
 
         $ret = @unserialize($contents);
+        if ($ret === false) {
+            $ret = null;
+        }
 
         flock($myfile, LOCK_UN);
         fclose($myfile);

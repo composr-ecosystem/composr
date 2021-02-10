@@ -172,7 +172,10 @@ function init__site()
         if ($_comcode_pages_needed !== null) {
             $comcode_pages_needed = array();
             foreach ($_comcode_pages_needed as $_comcode_page_needed => $_) {
-                $comcode_pages_needed[] = unserialize($_comcode_page_needed);
+                $__comcode_page_needed = @unserialize($_comcode_page_needed);
+                if ($__comcode_page_needed !== false) {
+                    $comcode_pages_needed[] = $__comcode_page_needed;
+                }
             }
 
             if (count($comcode_pages_needed) < 20) {
@@ -512,9 +515,9 @@ function breadcrumbs($show_self = true)
     // Substitutions
     if ((addon_installed('breadcrumbs')) && (function_exists('xml_parser_create'))) {
         require_code('breadcrumbs');
-        $needs_pop = ($GLOBALS['BREADCRUMB_SET_SELF'] !== null);
+        $needs_pop = ($GLOBALS['BREADCRUMB_SET_SELF'] !== null) || ($GLOBALS['DISPLAYED_TITLE'] !== null);
         if ($needs_pop) {
-            $BREADCRUMB_SET_PARENTS[] = array(null, $GLOBALS['BREADCRUMB_SET_SELF']);
+            $BREADCRUMB_SET_PARENTS[] = array(null, ($GLOBALS['BREADCRUMB_SET_SELF'] !== null) ? $GLOBALS['BREADCRUMB_SET_SELF'] : $GLOBALS['DISPLAYED_TITLE']);
         }
         $BREADCRUMB_SET_PARENTS = load_breadcrumb_substitutions($BREADCRUMB_SET_PARENTS);
         if ($needs_pop) {
@@ -722,9 +725,13 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
         // Monikers relative to the zone
         $page_place = _request_page($page, $zone);
         if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
-            $page = $page_place[1]['r_to_page'];
-            $zone = $page_place[1]['r_to_zone'];
+            $page_place_r = $page_place;
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
+            if ((substr($page_place[0], 0, 7) != 'COMCODE') || ($type === null)) {
+                // We're viewing the Comcode page behind this redirect, or it's not a Comcode page so nothing is underneath it
+                $page = $page_place_r[1]['r_to_page'];
+                $zone = $page_place_r[1]['r_to_zone'];
+            }
         }
         if (($page_place === false) || ((substr($page_place[0], 0, 7) == 'COMCODE') && ($type !== null/*looking deeper than a normal Comcode page*/))) {
             // This code branch is finding absolute monikers (easy case), or monikers pointing to a Comcode page (special case)...
@@ -2008,7 +2015,16 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $no_link_for_me_s
     // Find title
     global $PT_PAIR_CACHE_CP;
     if (!array_key_exists($the_page, $PT_PAIR_CACHE_CP)) {
-        $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $the_page, 'a.the_zone' => $the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
+        $test = _request_page__redirects($the_page, $the_zone);
+        if ($test !== false) {
+            $_the_page = $test[1]['r_to_page'];
+            $_the_zone = $test[1]['r_to_zone'];
+        } else {
+            $_the_page = $the_page;
+            $_the_zone = $the_zone;
+        }
+
+        $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $_the_page, 'a.the_zone' => $_the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
         if (!array_key_exists(0, $page_rows)) {
             global $DISPLAYED_TITLE;
 
@@ -2018,7 +2034,7 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $no_link_for_me_s
             $temp_title = $DISPLAYED_TITLE;
             restore_output_state();
 
-            $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $the_page, 'a.the_zone' => $the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
+            $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', array('cc_page_title', 'p_parent_page'), array('a.the_page' => $_the_page, 'a.the_zone' => $_the_zone), '', 1, null, false, array('cc_page_title' => '?SHORT_TRANS'));
             if (!array_key_exists(0, $page_rows)) { // Oh well, fallback (maybe page doesn't exist yet, ?)...
                 $PT_PAIR_CACHE_CP[$the_page] = array();
                 $PT_PAIR_CACHE_CP[$the_page]['cc_page_title'] = $temp_title->evaluate();
