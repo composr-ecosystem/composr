@@ -34,7 +34,7 @@ class auth_test_set extends cms_test_case
 
     public function testBadPasswordDoesFail()
     {
-        $username = 'admin';
+        $username = $this->get_canonical_username('admin');
         $password = 'wrongpassword';
         $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant($password, $username), $password);
         $member = $login_array['id'];
@@ -110,7 +110,7 @@ class auth_test_set extends cms_test_case
                 'ip' => $ip,
                 'session_confirmed' => 1,
                 'session_invisible' => 1,
-                'cache_username' => 'admin',
+                'cache_username' => $this->get_canonical_username('admin'),
                 'the_title' => '',
                 'the_zone' => '',
                 'the_page' => '',
@@ -126,9 +126,9 @@ class auth_test_set extends cms_test_case
 
             global $HTTP_MESSAGE;
             if ($pass_expected) {
-                $this->assertTrue($HTTP_MESSAGE != '401');
+                $this->assertTrue($HTTP_MESSAGE != '401', 'Expected access but got error, for IP ' . $ip);
             } else {
-                $this->assertTrue($HTTP_MESSAGE == '401');
+                $this->assertTrue($HTTP_MESSAGE == '401', 'Expected error but got access, for IP ' . $ip);
             }
         }
     }
