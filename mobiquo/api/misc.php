@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts/Tapatalk, 2004-2020
+ Copyright (c) ocProducts/Tapatalk, 2004-2021
 
  See docs/LICENSE.md for full licensing information.
 

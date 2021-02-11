@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2020
+ Copyright (c) ocProducts, 2004-2021
 
  See docs/LICENSE.md for full licensing information.
 
@@ -12,6 +12,12 @@
  * @copyright  ocProducts Ltd
  * @package    testing_platform
  */
+
+/*
+To change date across files (update years as required)...
+
+find . -type f \( -iname \*.php -o -iname \*.css -o -iname \*.bundle -o -iname \*.pre -o -iname \*.txt -o -iname \*.example -o -iname \*.java \) -not -path "./exports/*" -not -path "./build/*" -exec sed -i "s/, 2004-2020/, 2004-2021/g" '{}' \;
+*/
 
 /**
  * Composr test case class (unit testing).
