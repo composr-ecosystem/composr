@@ -53,13 +53,13 @@ function init__database_helper()
  * @param  ID_TEXT $id_name The name of what we are checking (only used to generate clear error messages)
  * @param  boolean $skip_size_check Whether to skip the size check for the table (only do this for addon modules that don't need to support anything other than MySQL)
  * @param  boolean $skip_null_check Whether to skip the check for NULL string fields
- * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
+ * @param  ?boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue (null: autodetect)
  * @param  boolean $return_on_error Whether to return on errors
  * @return boolean Whether the size limit is not exceeded
  *
  * @ignore
  */
-function _check_sizes(string $table_name, bool $primary_key, array $fields, string $id_name, bool $skip_size_check = false, bool $skip_null_check = false, bool $save_bytes = false, bool $return_on_error = false) : bool
+function _check_sizes(string $table_name, bool $primary_key, array $fields, string $id_name, bool $skip_size_check = false, bool $skip_null_check = false, ?bool $save_bytes = false, bool $return_on_error = false) : bool
 {
     // Check constraints
     $take_unicode_into_account = $save_bytes ? 3 : 4;

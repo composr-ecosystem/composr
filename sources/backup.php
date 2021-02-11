@@ -59,7 +59,7 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, &
             }
             $array .= "        '" . $name . "' => '" . $type . "'";
         }
-        fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->create_table('$table', [\n$array], true, false);\n"));
+        fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->create_table('$table', [\n$array], true, false, null);\n"));
 
         require_code('database_relations');
         if (table_has_purpose_flag($table, TABLE_PURPOSE__NO_BACKUPS)) {
