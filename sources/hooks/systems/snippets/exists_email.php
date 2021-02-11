@@ -39,6 +39,7 @@ class Hook_snippet_exists_email
 
         require_lang('cns');
 
-        return make_string_tempcode(strip_html(do_lang('EMAIL_ADDRESS_IN_USE', escape_html(get_site_name()))));
+        $reset_url = build_url(['page' => 'lost_password', 'email_address' => $val], get_module_zone('lost_password'));
+        return make_string_tempcode(strip_html(do_lang('EMAIL_ADDRESS_IN_USE', escape_html(get_site_name()), escape_html($reset_url->evaluate()))));
     }
 }

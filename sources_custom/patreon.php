@@ -104,8 +104,8 @@ function patreon_sync($adapters)
 
                         if ($member->filter('attributes')->get('patron_status') == 'active_patron') {
                             $tiers = [];
-                            foreach ($member->filter('relationships')->filter('currently_entitled_tiers')->get('data') as $item) {
-                                $tier = new \Hybridauth\Data\Collection($item);
+                            foreach ($member->filter('relationships')->filter('currently_entitled_tiers')->get('data') as $_item) {
+                                $tier = new \Hybridauth\Data\Collection($_item);
                                 $tierId = $tier->get('id');
                                 $tiers[] = $tierDetails[$tierId];
                             }
@@ -139,10 +139,10 @@ function patreon_sync($adapters)
         }
 
         $member_ids = [];
-        foreach ($all_members as $member) {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($member['email']);
+        foreach ($all_members as $member_map) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($member_map['email']);
             if ($member_id !== null) {
-                foreach ($member['tiers'] as $tier_map) {
+                foreach ($member_map['tiers'] as $tier_map) {
                     $map = [
                         'p_member_id' => $member_id,
                         'p_tier' => $tier_map['title'],
@@ -152,9 +152,9 @@ function patreon_sync($adapters)
                         unset($remaining[$sz]);
                     } elseif (!isset($existing[$sz])) {
                         $extra = [
-                            'p_id' => $member['id'],
+                            'p_id' => $member_map['id'],
                             'p_monthly' => $tier_map['monthly'],
-                            'p_name' => $member['name'],
+                            'p_name' => $member_map['name'],
                         ];
                         $GLOBALS['SITE_DB']->query_insert('patreon_patrons', $map + $extra);
                         $existing[$sz] = $map;

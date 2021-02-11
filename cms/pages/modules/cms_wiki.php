@@ -387,7 +387,7 @@ class Module_cms_wiki
 
         $search_url = build_url(['page' => 'search', 'id' => 'wiki_pages'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'wiki'], get_module_zone('wiki'));
-        $text = paragraph(do_lang_tempcode('CHOOSE_EDIT_LIST_EXTRA', escape_html($search_url->evaluate()), escape_html($archive_url->evaluate())));
+        $text = paragraph(do_lang_tempcode('_CHOOSE_EDIT_LIST_EXTRA', escape_html($search_url->evaluate()), escape_html($archive_url->evaluate())));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => 'e64757db1c77d752d813638f8a80581d',

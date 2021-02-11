@@ -72,7 +72,7 @@ function force_have_afm_details(array $writable_paths = [])
                     }
 
                     if (!cms_is_writable($_full_path)) {
-                        warn_exit(do_lang_tempcode('WRITE_ERROR'));
+                        warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html(dirname($_full_path))));
                     }
                 }
             }
@@ -571,7 +571,7 @@ function afm_delete_directory(string $basic_path, bool $recursive = false)
 
                 sync_file(get_custom_file_base() . '/' . $basic_path);
             } else {
-                @rmdir($path) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path)), false, true);
+                @rmdir($path) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path), escape_html(dirname($path))), false, true);
 
                 sync_file($path);
             }

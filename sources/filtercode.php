@@ -614,27 +614,34 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
     // Special case for ratings
     $matches = ($filter_key == 'compound_rating') ? ['', $info['feedback_type_code']] : [];
     if (($filter_key == 'compound_rating') || (preg_match('#^compound_rating__(.+)#', $filter_key, $matches) != 0)) {
-        if ($filter_key == 'compound_rating') {
-            $matches[1] .= '__' . $catalogue_name;
-        }
         $clause = '(SELECT SUM(rating-1) FROM ' . $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ')';
         return [$clause, '', $filter_val];
     }
     $matches = ($filter_key == 'average_rating') ? ['', $info['feedback_type_code']] : [];
     if (($filter_key == 'average_rating') || (preg_match('#^average_rating__(.+)#', $filter_key, $matches) != 0)) {
-        if ($filter_key == 'average_rating') {
-            $matches[1] .= '__' . $catalogue_name;
+        $table_and_where = $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR');
+        $clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ')/2 FROM ' . $table_and_where . ')';
+        if ($catalogue_name !== null) {
+            $time_sensitivity = get_value('time_sensitive_rankings__' . $catalogue_name, '');
+            if ($time_sensitivity != '') {
+                if (strpos(get_db_type(), 'mysql') !== false) {
+                    $clause = 'SELECT AVG(' . db_cast('rating' , 'FLOAT') . ') OVER (ORDER BY rating_time DESC ROWS BETWEEN 0 PRECEDING AND ' . strval(intval($time_sensitivity)) . ' FOLLOWING)/2 FROM ' . $table_and_where;
+                    $clause = '(' . $db->apply_sql_limit_clause($clause, 1) . ')';
+                } else {
+                    // The below may work in databases that do not support window functions - but won't work in MariaDB or MySQL < 8.0.14
+                    $table_and_where = '(' . $db->apply_sql_limit_clause('SELECT * FROM ' . $table_and_where, $time_sensitivity) . ') ' . uniqid('', false);
+                    $clause = '(SELECT AVG(' . db_cast('rating' , 'FLOAT') . ')/2 FROM ' . $table_and_where . ')';
+                }
+            }
         }
-        $clause = '(SELECT AVG(' . db_cast('rating', 'FLOAT') . ')/2 FROM ' . $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ')';
+
+        $clause = db_function('COALESCE', [$clause, '2.5']);
         return [$clause, '', $filter_val];
     }
 
     // Random
     $matches = ($filter_key == 'fixed_random') ? ['', $info['feedback_type_code']] : [];
     if (($filter_key == 'fixed_random') || (preg_match('#^fixed_random__(.+)#', $filter_key, $matches) != 0)) {
-        if ($filter_key == 'fixed_random') {
-            $matches[1] .= '__' . $catalogue_name;
-        }
         $clause = db_cast('r.' . $first_id_field, 'INT');
         $clause = '(' . db_function('MOD', [$clause, date('d')]) . ')';
         return [$clause, '', $filter_val];

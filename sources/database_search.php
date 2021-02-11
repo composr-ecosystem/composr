@@ -1958,7 +1958,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
     // Apply category permission restriction
     if (($permissions_module !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $g_or = get_permission_where_clause_groups(get_member());
-        $where_clause .= get_category_permission_where_clause($permissions_module, $permissions_field, get_member(), $g_or, '');
+        $where_clause .= get_category_permission_where_clause($permissions_module, $permissions_field, get_member(), $g_or, 'r');
     }
 
     // No possible results, because no title field?
@@ -2599,6 +2599,9 @@ function _boolean_search_prepare(string $search_query) : array
                 $word .= '"';
             }
             $word = substr($word, 1, strlen($word) - 2);
+            if ($word == '') {
+                continue;
+            }
         }
 
         if ($word[0] == '+') {

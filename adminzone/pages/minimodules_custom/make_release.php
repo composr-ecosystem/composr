@@ -81,29 +81,37 @@ function phase_0()
     if ($previous_version !== null) {
         $changes = "The following changes have been made since version " . $previous_version . "...\n";
         $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
-        $discovered_tracker_issues = [];
+        $discovered_tracker_issues = []; // List of issues referenced on Git to pull from Mantis
         $__changes = [];
+        $dig_deep = false;
         foreach (explode("\n", $_changes) as $change) {
             $parts = explode(' ', $change, 2);
             if (count($parts) == 2) {
                 $change_label = $parts[1];
-                $id = $parts[0];
+                $git_id = $parts[0];
 
                 if (preg_match('#MANTIS-(\d+)#', $change_label, $matches) != 0) {
-                    $id = $matches[1];
-                    if (isset($discovered_tracker_issues[$id])) {
-                        continue;
+                    $tracker_id = $matches[1];
+                    if ($tracker_id != '0') {
+                        $discovered_tracker_issues[$tracker_id] = true;
+                    } else {
+                        $dig_deep = true; // Somehow an ID was zero, so we need to search tracker for what this may have been
                     }
-                    $discovered_tracker_issues[$id] = true;
-                }
+                } else {
+                    // In Git only
+                    $__changes[$git_id] = $change_label;
 
-                $__changes[$id] = $change_label;
+                    $regexp = '/^(Fixed MANTIS-\d+|Implementing MANTIS-\d+|Implemented MANTIS-\d+|Security fix for MANTIS-\d+|New build|Merge branch .*)/';
+                    if (preg_match($regexp, $change_label) == 0) {
+                        $dig_deep = true; // We want to search tracker for what this may have been
+                    }
+                }
             }
         }
 
         $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
         $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
-        $_result = http_get_contents($api_url, ['post_params' => ['parameters' => [$_discovered_tracker_issues, $on_disk_version]]]);
+        $_result = http_get_contents($api_url, ['post_params' => ['parameters' => [$_discovered_tracker_issues, $on_disk_version, $dig_deep ? $previous_version : null]]]);
         $tracker_issue_titles = json_decode($_result, true);
         foreach ($tracker_issue_titles as $key => $summary) {
             if (strpos($summary, '[General]') === false) { // Only ones in the main Composr project
@@ -112,11 +120,10 @@ function phase_0()
             }
         }
 
-        foreach ($__changes as $id => $change_label) {
-            if (!is_numeric($id)) {
-                $url = COMPOSR_REPOS_URL . '/commit/' . $id;
-                $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
-            }
+        // Show Git-only commits
+        foreach ($__changes as $git_id => $change_label) {
+            $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
+            $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
         }
     } else {
         $changes = 'All reported bugs since the last release have been fixed.';

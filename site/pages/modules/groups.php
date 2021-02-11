@@ -113,7 +113,7 @@ class Module_groups
                 'identifier' => '_SEARCH:groups:view:' . strval($id),
             ], $group, 'group', strval($id));
 
-            $this->title = get_screen_title($club ? 'CLUB' : 'VIEW_USERGROUP', true, [make_fractionable_editable('group', $id, $group_name)]);
+            $this->title = get_screen_title($club ? 'VIEW_CLUB' : 'VIEW_USERGROUP', true, [make_fractionable_editable('group', $id, $group_name)]);
 
             $this->id = $id;
             $this->group = $group;

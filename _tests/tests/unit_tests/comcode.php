@@ -221,20 +221,22 @@ class comcode_test_set extends cms_test_case
 
         global $MEMBER_MENTIONS_IN_COMCODE;
 
-        $tests = [
-            // Positives
-            '@test' => true,
-            ' @test' => true,
-            '@test ' => true,
-            ' @test ' => true,
-            '@test,' => true,
+        $test_username = $this->get_canonical_username('test');
 
-            // Negatives
-            ',@test' => false, // Must be preceded by white-space or nothing
-            ',@test,' => false, // "
-            'x@test ' => false, // "
-            '@testxppp' => false, // Must not have junk on tail-end
-        ];
+        $tests = [];
+
+        // Positives
+        $tests['@' . $test_username] = true;
+        $tests[' @' . $test_username] = true;
+        $tests['@' . $test_username . ' '] = true;
+        $tests[' @' . $test_username . ' '] = true;
+        $tests['@' . $test_username . ','] = true;
+
+        // Negatives
+        $tests[',@' . $test_username] = false; // Must be preceded by white-space or nothing
+        $tests[',@' . $test_username . ','] = false; // "
+        $tests['x@' . $test_username . ' '] = false; // "
+        $tests['@' . $test_username . 'xppp'] = false; // Must not have junk on tail-end
 
         foreach ($tests as $test => $expected) {
             $MEMBER_MENTIONS_IN_COMCODE = [];

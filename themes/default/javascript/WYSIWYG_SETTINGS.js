@@ -21,15 +21,15 @@ if (precisionEditing) {
 }
 toolbar.push([precisionEditing ? 'composr_image' : null, 'Table']);
 if (precisionEditing) {
+    toolbar.push(['HorizontalRule', 'SpecialChar']);
+}
+if (precisionEditing) {
     toolbar.push('/');
 }
 toolbar.push(['Format', 'Font', 'FontSize']);
-toolbar.push(['TextColor']);
+toolbar.push(['TextColor', 'BGColor']);
 if (precisionEditing) {
     toolbar.push(['Maximize', 'ShowBlocks', 'autoFormat']);
-}
-if (precisionEditing) {
-    toolbar.push(['HorizontalRule', 'SpecialChar']);
 }
 var useComposrToolbar = true;
 if (useComposrToolbar) {
@@ -66,6 +66,9 @@ var editorSettings = {
     comcodeXMLInlineTags: '{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}',
     magicline_everywhere: true,
     autoGrow_onStartup: true,
+    /*{+START,IF,{$VALUE_OPTION,wysiwyg_spellchecker_default}}*/
+        wysiwygSpellcheckerDefault: true,
+    /*{+END}*/
     sourceAreaTabSize: 4,
     font_names: '{$REPLACE;,\,,;,{$FONTS}}'
 };

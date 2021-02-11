@@ -148,24 +148,23 @@ if (post_param_integer('submitting', 0) == 1) {
     // A Git commit and push happens on the changed files, with the ID number of the tracker issue in it
     $git_commit_command_data = '';
     if ($git_commit_id == '') {
-        if ($tracker_severity == 95) {
-            $git_commit_message = 'Security fix for MANTIS-' . strval($tracker_id) . ' (' . $title . ')';
-        } else {
-            $git_commit_message = 'Fixed MANTIS-' . strval($tracker_id) . ' (' . $title . ')';
-        }
-        if ($submit_to == 'live') {
-            $git_commit_id = do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
-            if ($git_commit_id !== null) {
-                echo '<!-- ' . $git_commit_command_data . ' -->';
-                $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
-                $done['Committed to Git'] = $git_url;
+        if ($tracker_id !== null) {
+            if ($tracker_severity == 95) {
+                $git_commit_message = 'Security fix for MANTIS-' . strval($tracker_id) . ' (' . $title . ')';
             } else {
-                $git_url = null;
-                $done['Failed to commit to Git, ' . $git_commit_command_data] = null;
+                $git_commit_message = 'Fixed MANTIS-' . strval($tracker_id) . ' (' . $title . ')';
             }
-        } else {
-            $git_url = null;
-            $git_commit_id = 'justtesting';
+            if ($submit_to == 'live') {
+                $git_commit_id = do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
+                if ($git_commit_id !== null) {
+                    echo '<!-- ' . $git_commit_command_data . ' -->';
+                    $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
+                    $done['Committed to Git'] = $git_url;
+                } else {
+                    $git_url = null;
+                    $done['Failed to commit to Git, ' . $git_commit_command_data] = null;
+                }
+            }
         }
     } else {
         $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
@@ -183,14 +182,16 @@ if (post_param_integer('submitting', 0) == 1) {
     if ($create_hotfix) {
         $tracker_comment_message .= 'A hotfix (a TAR of files to upload) has been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. If there are files in a hot-fix that you don\'t have then they probably relate to addons that you don\'t have installed and should be skipped. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
     }
-    $update_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
-    if ($update_post_id !== null) {
-        $done['Created update post on tracker'] = null;
-    } else {
-        $done['Failed to create update post on tracker'] = null;
+    if ($tracker_id !== null) {
+        $update_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
+        if ($update_post_id !== null) {
+            $done['Created update post on tracker'] = null;
+        } else {
+            $done['Failed to create update post on tracker'] = null;
+        }
     }
     // A TAR of fixed files is uploaded to the tracker issue (correct relative file paths intact)
-    if ($create_hotfix) {
+    if (($create_hotfix) && ($tracker_id !== null)) {
         $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
         if ($file_id !== null) {
             $done['Uploaded hotfix'] = null;
@@ -200,7 +201,7 @@ if (post_param_integer('submitting', 0) == 1) {
     }
     // The tracker issue gets closed
     $close_issue = (post_param_integer('close_issue', 0) == 1);
-    if ($close_issue) {
+    if (($close_issue) && ($tracker_id !== null)) {
         $close_success = close_tracker_issue($tracker_id);
         if ($close_success) {
             $done['Closed tracker issue'] = null;
@@ -211,7 +212,7 @@ if (post_param_integer('submitting', 0) == 1) {
 
     // If a forum post ID was given, an automatic reply is given pointing to the tracker issue
     $post_id = post_param_integer('post_id', null);
-    if ($post_id !== null) {
+    if (($post_id !== null) && ($tracker_id !== null)) {
         $post_reply_title = 'Automated fix message';
         $post_reply_message = 'This issue has now been filed on the tracker ' . ($is_new_on_tracker ? 'as' : 'in') . ' issue [url="#' . strval($tracker_id) . '"]' . $tracker_url . '[/url], with a fix.';
         $post_important = 1;
@@ -245,7 +246,7 @@ if (post_param_integer('submitting', 0) == 1) {
 require_code('version2');
 $on_disk_version = get_version_dotted();
 
-$git_found = git_find_uncommitted_files();
+$git_found = git_find_uncommitted_files(get_param_integer('include_push_bugfix', 0) == 1);
 $do_full_scan = (get_param_integer('full_scan', 0) == 1);
 if (($do_full_scan) || (empty($git_found))) {
     $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
@@ -589,7 +590,7 @@ END;
 // API
 // ===
 
-function git_find_uncommitted_files()
+function git_find_uncommitted_files($include_push_bugfix)
 {
     global $GIT_PATH;
 
@@ -601,7 +602,7 @@ function git_find_uncommitted_files()
     foreach ($lines as $line) {
         $matches = [];
         if (preg_match('#\t(both modified|modified|new file|deleted):\s+(.*)$#', $line, $matches) != 0) {
-            if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'push_bugfix.php') || (get_param_integer('include_push_bugfix', 0) == 1))) {
+            if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'push_bugfix.php') || ($include_push_bugfix))) {
                 $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', ['filepath' => $matches[2]]);
                 if ($file_addon !== null) {
                     if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
@@ -611,6 +612,9 @@ function git_find_uncommitted_files()
                 $git_found[$matches[2]] = $file_addon;
             }
         }
+    }
+    if ((empty($git_found)) && (!$include_push_bugfix)) {
+        return git_find_uncommitted_files(true);
     }
     return $git_found;
 }
@@ -738,11 +742,24 @@ function create_hotfix_tar($tracker_id, $files)
         }
     }
 
-    $files = array_unique($files);
+    $files_filtered = [];
+    foreach ($files as $file) {
+        // Exceptions
+        if (preg_match('#^docs/#', $file) != 0) {
+            continue;
+        }
+        if (in_array($file, [
+            'sources_custom/string_scan.php',
+        ])) {
+            continue;
+        }
+
+        $files_filtered[$file] = true;
+    }
 
     $tar_path = $hotfix_path . '/hotfix-' . strval($tracker_id) . ', ' . date('Y-m-d ga') . '.tar';
     $tar_file = tar_open($tar_path, 'wb');
-    foreach ($files as $path) {
+    foreach (array_keys($files_filtered) as $path) {
         $file_fullpath = get_file_base() . '/' . $path;
         if (is_file($file_fullpath)) { // If it's a deletion, obviously we cannot put it into a hotfix
             tar_add_file($tar_file, $path, $file_fullpath, 0644, filemtime($file_fullpath), true);

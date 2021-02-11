@@ -92,6 +92,9 @@ class Persistent_caching_filesystem
         }
 
         $ret = @unserialize($contents);
+        if ($ret === false) {
+            $ret = null;
+        }
 
         $PC_FC_CACHE[$key] = $ret;
 

@@ -113,6 +113,7 @@ function captcha_script()
         ';
         imagedestroy($img);
         cms_safe_exit_flow();
+        return;
     }
 
     // Output as a PNG

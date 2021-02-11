@@ -87,6 +87,8 @@ class comcode_pages_test_set extends cms_test_case
 
             '[html][title]Foo &amp; Bar[/title][/html]' => 'Foo & Bar',
             '[semihtml][title]Foo &amp; Bar[/title][/semihtml]' => 'Foo & Bar',
+            '[semihtml][title sub="\"\""]Foo &amp; Bar[/title][/semihtml]' => 'Foo & Bar',
+            '[semihtml][title sub="[b]foo[/b]"]Foo &amp; Bar[/title][/semihtml]' => 'Foo & Bar',
         ];
 
         $path = cms_tempnam();

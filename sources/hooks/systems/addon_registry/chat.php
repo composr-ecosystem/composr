@@ -366,7 +366,7 @@ class Hook_addon_registry_chat
                 'MESSAGE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
                 '_TIME' => placeholder_date_raw(),
-                'FONT_COLOUR' => '0000FF',
+                'FONT_COLOUR' => '#0000FF',
                 'FONT_FACE' => 'Arial',
             ]), null, '', true)
         ];

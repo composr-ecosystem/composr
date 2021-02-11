@@ -249,7 +249,7 @@ class Module_classifieds
             ];
         }
 
-        $pagination = pagination(do_lang_tempcode('_CLASSIFIED_ADVERTS'), $start, 'classifieds_start', $max, 'classifieds_max', $max_rows);
+        $pagination = pagination(do_lang_tempcode('CLASSIFIEDS'), $start, 'classifieds_start', $max, 'classifieds_max', $max_rows);
 
         $tpl = do_template('CLASSIFIED_ADVERTS_SCREEN', ['_GUID' => 'b25659c245a738b4f161dc87869d9edc', 'TITLE' => $this->title, 'PAGINATION' => $pagination, 'ADS' => $ads]);
 

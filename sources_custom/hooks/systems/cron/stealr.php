@@ -28,9 +28,8 @@ class Hook_cron_stealr
     public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('stealr')) {
-            return null;
+            return;
         }
-
         if (!addon_installed('points')) {
             return null;
         }
@@ -61,235 +60,167 @@ class Hook_cron_stealr
      */
     public function run(?int $last_run)
     {
-        require_code('cns_topics_action2');
         require_code('points');
         require_lang('stealr');
 
-        $stealr_type = get_option('stealr_type');
-        if ($stealr_type == '') {
-            $stealr_type = 'Members that are inactive, but has lots points';
-        }
+        $type = get_option('stealr_type', true);
+        $type = (empty($type)) ? 'Members that are inactive, but has lots points' : $type;
 
-        $stealr_number = intval(get_option('stealr_number'));
-        $stealr_points = intval(get_option('stealr_points'));
-        $stealr_group = get_option('stealr_group');
+        $_victim_count = get_option('stealr_number', true);
+        $victim_count = empty($_victim_count) ? 1 : intval($_victim_count);
+
+        $_points_to_steal = get_option('stealr_points', true);
+        $points_to_steal = empty($_points_to_steal) ? 10 : intval($_points_to_steal);
 
         // Start determining the various cases
-        if ($stealr_type == 'Members that are inactive, but has lots points') {
-            $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(1000);
-            $points = [];
-            foreach ($all_members as $member) {
-                $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
-                $signin_time = $member['m_last_visit_time'];
-                $points[$signin_time] = ['points' => available_points($id), 'id' => $id];
-            }
+        switch ($type) {
+            case 'Members that are inactive, but has lots points':
+                $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(1000); // Top 1000 is how we define "lots points"
+                $members_points = [];
+                foreach ($all_members as $member) {
+                    $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+                    $signin_time = $member['m_last_visit_time'];
+                    $members_points[$signin_time] = ['points' => available_points($id), 'id' => $id];
+                }
+                ksort($members_points);
 
-            ksort($points);
+                $victim_count = (count($members_points) > $victim_count) ? $victim_count : count($members_points);
 
-            $stealr_number = (count($points) > $stealr_number) ? $stealr_number : count($points);
-            $theft_count = 0;
+                $theft_count = 0;
+                foreach ($members_points as $member) {
+                    $theft_count++;
+                    if ($theft_count > $victim_count) {
+                        break;
+                    }
 
-            foreach ($points as $member) {
-                $theft_count++;
+                    $victim_member_id = $member['id'];
+                    $victor_member_id = $this->pick_victor($victim_member_id);
 
-                if ($theft_count > $stealr_number) {
+                    $total_points = $member['points'];
+
+                    $this->do_point_transfer(min($total_points, $points_to_steal), $victim_member_id, $victor_member_id);
+                }
+
+                break;
+
+            case 'Members that are rich':
+                $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(100);
+                $members_points = [];
+                foreach ($all_members as $member) {
+                    $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+                    $members_points[$id] = available_points($id);
+                }
+                arsort($members_points);
+
+                $victim_count = (count($members_points) > $victim_count) ? $victim_count : count($members_points);
+
+                $theft_count = 0;
+                foreach ($members_points as $victim_member_id => $av_points) {
+                    $theft_count++;
+                    if ($theft_count > $victim_count) {
+                        break;
+                    }
+
+                    $victor_member_id = $this->pick_victor($victim_member_id);
+
+                    $total_points = $av_points;
+
+                    $this->do_point_transfer(min($total_points, $points_to_steal), $victim_member_id, $victor_member_id);
+                }
+
+                break;
+
+            case 'Members that are random':
+                $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+                if (addon_installed('unvalidated')) {
+                    $sql .= ' AND m_validated=1';
+                }
+                $sql .= ' ORDER BY ' . db_function('RAND');
+                $random_members = $GLOBALS['FORUM_DB']->query($sql, $victim_count);
+
+                $victim_count = (count($random_members) > $victim_count) ? $victim_count : count($random_members);
+
+                foreach ($random_members as $member) {
+                    $victim_member_id = $member['id'];
+                    $victor_member_id = $this->pick_victor($victim_member_id);
+
+                    $total_points = available_points($victim_member_id);
+
+                    $this->do_point_transfer(min($total_points, $points_to_steal), $victim_member_id, $victor_member_id);
+                }
+
+                break;
+
+            case 'Members that are in a certain usergroup':
+                $stealr_group = get_option('stealr_group', true);
+                $stealr_group = empty($stealr_group) ? 'Member' : $stealr_group;
+                $group_id = find_usergroup_id($stealr_group);
+                if ($group_id === null) {
                     break;
                 }
 
-                // Start stealing
-                require_code('points2');
-                require_lang('stealr');
+                require_code('cns_groups2');
+                $members = cns_get_group_members_raw($group_id);
 
-                $total_points = $member['points'];
-                $stealr_points = ($stealr_points < $total_points) ? $stealr_points : $total_points;
+                $victim_count = (count($members) > $victim_count) ? $victim_count : count($members);
 
-                $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND id<>' . strval($member['id']) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-                if (addon_installed('unvalidated')) {
-                    $sql .= ' AND m_validated=1';
-                }
-                $sql .= ' ORDER BY ' . db_function('RAND');
-                $give_to_member = $GLOBALS['FORUM_DB']->query($sql, 1);
-
-                $give_to_member = (isset($give_to_member[0]['id']) && $give_to_member[0]['id'] > 0) ? $give_to_member[0]['id'] : 0;
-
-                // Get THIEF points
-                charge_member($member['id'], $stealr_points, do_lang('STEALR_GET') . ' ' . strval($stealr_points) . ' point(-s) from you.');
-
-                if ($give_to_member > 0) {
-                    system_gift_transfer(do_lang('STEALR_GAVE_YOU') . ' ' . strval($stealr_points) . ' point(-s)', $stealr_points, $give_to_member);
-
-                    $thief_displayname = $GLOBALS['FORUM_DRIVER']->get_username($member['id'], true);
-                    $target_displayname = $GLOBALS['FORUM_DRIVER']->get_username($give_to_member, true);
-                    $thief_username = $GLOBALS['FORUM_DRIVER']->get_username($member['id']);
-                    $target_username = $GLOBALS['FORUM_DRIVER']->get_username($give_to_member);
-                    $subject = do_lang('STEALR_PT_TOPIC', strval($stealr_points), $thief_displayname, [$target_displayname, $thief_username, $target_username]);
-                    $body = do_lang('STEALR_PT_TOPIC_POST', strval($stealr_points), $thief_displayname, [$target_displayname, $thief_username, $target_username]);
-
-                    require_code('cns_topics_action');
-                    require_code('cns_posts_action');
-
-                    $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $member['id'], $give_to_member, false, 0, null, '');
-
-                    $post_id = cns_make_post($topic_id, $subject, $body, 0, true, 1, 0, null, null, null, $give_to_member, null, null, null, false, true, null, true, $subject, null, true, true, true);
-
-                    send_pt_notification($post_id, $subject, $topic_id, $give_to_member, $GLOBALS['FORUM_DRIVER']->mrow_id($member));
-                    send_pt_notification($post_id, $subject, $topic_id, $GLOBALS['FORUM_DRIVER']->mrow_id($member), $give_to_member);
-                }
-            }
-        } elseif ($stealr_type == 'Members that are rich') {
-            $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(100);
-            $points = [];
-            foreach ($all_members as $member) {
-                $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
-                $points[$id] = available_points($id);
-            }
-            arsort($points);
-
-            $stealr_number = (count($points) > $stealr_number) ? $stealr_number : count($points);
-            $theft_count = 0;
-
-            foreach ($points as $member_id => $av_points) {
-                $theft_count++;
-
-                if ($theft_count > $stealr_number) {
-                    break;
+                $members_to_steal_ids = array_rand($members, $victim_count);
+                if ($victim_count == 1) {
+                    $members_to_steal_ids = [$members_to_steal_ids];
                 }
 
-                // Start stealing
-                require_code('points2');
-                require_lang('stealr');
+                foreach ($members_to_steal_ids as $member_rand_key) {
+                    $victim_member_id = $members[$member_rand_key];
+                    $victor_member_id = $this->pick_victor($victim_member_id);
 
-                $total_points = $av_points;
-                $stealr_points = ($stealr_points < $total_points) ? $stealr_points : $total_points;
+                    $total_points = available_points($victim_member_id);
 
-                $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND id<>' . strval($member_id) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-                if (addon_installed('unvalidated')) {
-                    $sql .= ' AND m_validated=1';
+                    $this->do_point_transfer(min($total_points, $points_to_steal), $victim_member_id, $victor_member_id);
                 }
-                $sql .= ' ORDER BY ' . db_function('RAND');
-                $give_to_member = $GLOBALS['FORUM_DB']->query($sql, 1);
 
-                $give_to_member = (isset($give_to_member[0]['id']) && $give_to_member[0]['id'] > 0) ? $give_to_member[0]['id'] : 0;
+                break;
+        }
+    }
 
-                // Get THIEF points
-                charge_member($member_id, $stealr_points, do_lang('STEALR_GET') . ' ' . strval($stealr_points) . ' point(-s) from you.');
+    protected function pick_victor($victim_member_id)
+    {
+        $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND id<>' . strval($victim_member_id) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        if (addon_installed('unvalidated')) {
+            $sql .= ' AND m_validated=1';
+        }
+        $sql .= ' ORDER BY ' . db_function('RAND');
+        $victor_rows = $GLOBALS['FORUM_DB']->query($sql, 1);
+        $victor_member_id = isset($victor_rows[0]['id']) ? $victor_rows[0]['id'] : null;
+        return $victor_member_id;
+    }
 
-                if ($give_to_member > 0) {
-                    system_gift_transfer(do_lang('STEALR_GAVE_YOU') . ' ' . strval($stealr_points) . ' point(-s)', $stealr_points, $give_to_member);
+    protected function do_point_transfer($points_to_steal, $victim_member_id, $victor_member_id)
+    {
+        require_code('points2');
 
-                    require_code('cns_topics_action');
-                    require_code('cns_posts_action');
+        // Get STOLEN points
+        charge_member($victim_member_id, $points_to_steal, do_lang('STEALR_GET', integer_format($points_to_steal)));
 
-                    $subject = do_lang('STEALR_PT_TOPIC', strval($stealr_points));
-                    $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $member_id, $give_to_member, false, 0, null, '');
+        if ($victor_member_id !== null) {
+            // Give STOLEN points
+            system_gift_transfer(do_lang('STEALR_GAVE_YOU', integer_format($points_to_steal)), $points_to_steal, $victor_member_id);
 
-                    $post_id = cns_make_post($topic_id, $subject, do_lang('STEALR_PT_TOPIC_POST'), 0, true, 1, 0, null, null, null, $give_to_member, null, null, null, false, true, null, true, $subject, null, true, true, true);
+            // Create private topic to message about it...
 
-                    send_pt_notification($post_id, $subject, $topic_id, $give_to_member, $member_id);
-                    send_pt_notification($post_id, $subject, $topic_id, $member_id, $give_to_member);
-                }
-            }
-        } elseif ($stealr_type == 'Members that are random') {
-            $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-            if (addon_installed('unvalidated')) {
-                $sql .= ' AND m_validated=1';
-            }
-            $sql .= ' ORDER BY ' . db_function('RAND');
-            $random_members = $GLOBALS['FORUM_DB']->query($sql, $stealr_number);
+            require_code('cns_topics_action');
+            $victim_displayname = $GLOBALS['FORUM_DRIVER']->get_username($victim_member_id, true);
+            $victor_displayname = $GLOBALS['FORUM_DRIVER']->get_username($victor_member_id, true);
+            $victim_username = $GLOBALS['FORUM_DRIVER']->get_username($victim_member_id);
+            $victor_username = $GLOBALS['FORUM_DRIVER']->get_username($victor_member_id);
+            $subject = do_lang('STEALR_PT_TOPIC', integer_format($points_to_steal), $victim_displayname, [$victor_displayname, $victim_username, $victor_username]);
+            $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $victim_member_id, $victor_member_id, false, 0, null, '');
 
-            $stealr_number = (count($random_members) > $stealr_number) ? $stealr_number : count($random_members);
+            require_code('cns_posts_action');
+            $post_id = cns_make_post($topic_id, $subject, do_lang('STEALR_PT_TOPIC_POST'), 0, true, 1, 0, null, null, null, $victor_member_id, null, null, null, false, true, null, true, $subject, null, true, true, true);
 
-            foreach ($random_members as $member) {
-                // Start stealing
-                require_code('points2');
-                require_lang('stealr');
-
-                $total_points = available_points($member['id']);
-                $stealr_points = ($stealr_points < $total_points) ? $stealr_points : $total_points;
-
-                $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND id<>' . strval($member['id']) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-                if (addon_installed('unvalidated')) {
-                    $sql .= ' AND m_validated=1';
-                }
-                $sql .= ' ORDER BY ' . db_function('RAND');
-                $give_to_member = $GLOBALS['FORUM_DB']->query($sql, 1);
-
-                $give_to_member = (isset($give_to_member[0]['id']) && $give_to_member[0]['id'] > 0) ? $give_to_member[0]['id'] : 0;
-
-                // Get THIEF points
-                charge_member($member['id'], $stealr_points, do_lang('STEALR_GET') . ' ' . strval($stealr_points) . ' point(-s) from you.');
-
-                if ($give_to_member != 0) {
-                    system_gift_transfer(do_lang('STEALR_GAVE_YOU') . ' ' . strval($stealr_points) . ' point(-s)', $stealr_points, $give_to_member);
-
-                    require_code('cns_topics_action');
-                    require_code('cns_posts_action');
-
-                    $subject = do_lang('STEALR_PT_TOPIC', strval($stealr_points));
-                    $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $member['id'], $give_to_member, false, 0, null, '');
-
-                    $post_id = cns_make_post($topic_id, $subject, do_lang('STEALR_PT_TOPIC_POST'), 0, true, 1, 0, null, null, null, $give_to_member, null, null, null, false, true, null, true, $subject, null, true, true, true);
-
-                    send_pt_notification($post_id, $subject, $topic_id, $give_to_member, $member['id']);
-                    send_pt_notification($post_id, $subject, $topic_id, $member['id'], $give_to_member);
-                }
-            }
-        } elseif ($stealr_type == 'Members that are in a certain usergroup') {
-            $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
-
-            require_code('cns_groups');
-            require_code('cns_groups2');
-
-            $group_id = find_usergroup_id($stealr_group);
-            if ($group_id === null) {
-                return;
-            }
-
-            $members = cns_get_group_members_raw($group_id);
-
-            $stealr_number = (count($members) > $stealr_number) ? $stealr_number : count($members);
-
-            $members_to_steal_ids = array_rand($members, $stealr_number);
-
-            if ($stealr_number == 1) {
-                $members_to_steal_ids = ['0' => $members_to_steal_ids];
-            }
-
-            foreach ($members_to_steal_ids as $member_rand_key) {
-                // Start stealing
-                require_code('points2');
-                require_lang('stealr');
-
-                $total_points = available_points($members[$member_rand_key]);
-                $stealr_points = ($stealr_points < $total_points) ? $stealr_points : $total_points;
-
-                $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND id<>' . strval($members[$member_rand_key]) . ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-                if (addon_installed('unvalidated')) {
-                    $sql .= ' AND m_validated=1';
-                }
-                $sql .= ' ORDER BY ' . db_function('RAND');
-                $give_to_member = $GLOBALS['FORUM_DB']->query($sql, 1);
-
-                $give_to_member = (isset($give_to_member[0]['id']) && $give_to_member[0]['id'] > 0) ? $give_to_member[0]['id'] : 0;
-
-                // Get THIEF points
-                charge_member($members[$member_rand_key], $stealr_points, do_lang('STEALR_GET') . ' ' . strval($stealr_points) . ' point(-s) from you.');
-
-                if ($give_to_member != 0) {
-                    system_gift_transfer(do_lang('STEALR_GAVE_YOU') . ' ' . strval($stealr_points) . ' point(-s)', $stealr_points, $give_to_member);
-
-                    require_code('cns_topics_action');
-                    $subject = do_lang('STEALR_PT_TOPIC', strval($stealr_points));
-                    $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $members[$member_rand_key], $give_to_member, false, 0, null, '');
-
-                    require_code('cns_posts_action');
-                    $post_id = cns_make_post($topic_id, $subject, do_lang('STEALR_PT_TOPIC_POST'), 0, true, 1, 0, null, null, null, $give_to_member, null, null, null, false, true, null, true, $subject, null, true, true, true);
-
-                    require_code('cns_topics_action2');
-                    send_pt_notification($post_id, $subject, $topic_id, $give_to_member, $stealr_number);
-                    send_pt_notification($post_id, $subject, $topic_id, $stealr_number, $give_to_member);
-                }
-            }
+            require_code('cns_topics_action2');
+            send_pt_notification($post_id, $subject, $topic_id, $victor_member_id, $victim_member_id);
+            send_pt_notification($post_id, $subject, $topic_id, $victim_member_id, $victor_member_id);
         }
     }
 }

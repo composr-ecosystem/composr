@@ -82,7 +82,7 @@ class Hook_commandr_fs_home
         }
 
         if ((is_dir($path)) && (!file_exists($path . '/' . $new_dir_name))) {
-            $ret = @mkdir($path . '/' . $new_dir_name, 0777) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path . '/' . $new_dir_name)), false, true);
+            $ret = @mkdir($path . '/' . $new_dir_name, 0777) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path . '/' . $new_dir_name), escape_html($path)), false, true);
             fix_permissions($path . '/' . $new_dir_name);
             sync_file($path . '/' . $new_dir_name);
             return $ret;

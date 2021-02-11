@@ -2424,9 +2424,9 @@
     }
 
     var menuHoldTime = 500,
-        activeMenu,
         cleanMenusTimeout,
-        lastActiveMenu;
+        activeMenu, // ID of currently hovered branch
+        lastActiveMenu; // Actual menu name
 
     function setActiveMenu(id, menu) {
         activeMenu = id;

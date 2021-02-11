@@ -1301,7 +1301,7 @@ Some cool effects:
 
 [title="2"]Structured Data testing[/title]
 
- - https://www.bing.com/toolbox/markup-validator
+ - https://www.bing.com/webmasters/help/url-inspection-55a30305
  - https://search.google.com/structured-data/testing-tool/
  - https://webmaster.yandex.com/tools/microtest/
 

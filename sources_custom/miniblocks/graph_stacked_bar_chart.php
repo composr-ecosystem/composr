@@ -52,6 +52,8 @@ $labels = [];
 
 $datasets = [];
 for ($i = 0; $i < $num_datasets; $i++) {
+    $datapoints = [];
+
     foreach ($sheet_data as $line) {
         $datapoints[$line[0]] = $line[$i + 1];
 

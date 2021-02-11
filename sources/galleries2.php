@@ -696,6 +696,9 @@ function _get_mp4_details_do_atom_list($file, ?int $atom_size = null) : array
             fseek($file, 12, SEEK_CUR);
             $time_scale = read_network_endian_int(fread($file, 4));
             $duration = read_network_endian_int(fread($file, 4));
+            if ($time_scale == 0) {
+                return [$count, $width, $height, $length]; // problem
+            }
             $length = intval(round(floatval($duration) / floatval($time_scale)));
             fseek($file, 80, SEEK_CUR);
             $count += 20 + 80;

@@ -235,6 +235,7 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
     $moniker = _generate_moniker($label);
 
     // Check it does not already exist
+    $basic_sql = ' FROM ' . get_table_prefix() . 'alternative_ids WHERE ' . db_string_equal_to('resource_resource_fs_hook', $resource_fs_hook);
     $moniker_origin = $moniker;
     $next_num = 1;
     if (is_numeric($moniker)) {
@@ -248,11 +249,18 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
             }
         }
 
-        $where = ['resource_resource_fs_hook' => $resource_fs_hook, 'resource_moniker' => $moniker];
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', $where);
-        $ok = ($test === null) && ($moniker != '_folder'/*reserved*/);
+        $dupe_sql = 'SELECT resource_id' . $basic_sql . ' AND ' . db_string_equal_to('resource_moniker', $moniker);
+        $test = $GLOBALS['SITE_DB']->query_value_if_there($dupe_sql);
+        $ok = (is_null($test)) && ($moniker != '_folder'/*reserved*/);
         if (!$ok) { // Oh dear, will pass to next iteration, but trying a new moniker
-            $next_num++;
+            if ($next_num == 1) {
+                // Individual checks get very slow with time, so do a jump ahead based on how much is already under a suffixed version of the $moniker (as we can assume sequentiality)
+                $accelerate_sql = 'SELECT COUNT(*)' . $basic_sql . ' AND resource_moniker LIKE \'' . db_encode_like($moniker . '%') . '\'';
+                $next_num += $GLOBALS['SITE_DB']->query_value_if_there($accelerate_sql);
+            } else {
+                $next_num++;
+            }
+
             $moniker = $moniker_origin . '_' . strval($next_num);
         }
     } while (!$ok);

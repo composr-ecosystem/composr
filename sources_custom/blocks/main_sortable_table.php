@@ -139,6 +139,7 @@ PHP;
             $full_header_row = null;
             while (($row = $sheet_reader->read_row()) !== false) {
                 // Process out the ignore value
+                $value = mixed();
                 foreach ($row as $j => &$value) {
                     if ($value == $ignore_value) {
                         $value = '';
@@ -349,13 +350,13 @@ PHP;
         foreach ($_rows as $i => &$row) {
             foreach ($row as $j => &$value) {
                 if (($minimums[$j] !== false) && (is_numeric($value))) {
-                    $_value = floatval($value);
-                    if ($_value >= 0.0) {
-                        if (($minimums[$j] === null) || ($_value < $minimums[$j])) {
-                            $minimums[$j] = $_value;
+                    $float_value = floatval($value);
+                    if ($float_value >= 0.0) {
+                        if (($minimums[$j] === null) || ($float_value < $minimums[$j])) {
+                            $minimums[$j] = $float_value;
                         }
-                        if (($maximums[$j] === null) || ($_value > $maximums[$j])) {
-                            $maximums[$j] = $_value;
+                        if (($maximums[$j] === null) || ($float_value > $maximums[$j])) {
+                            $maximums[$j] = $float_value;
                         }
                     } else {
                         $minimums[$j] = false;
@@ -383,10 +384,10 @@ PHP;
             foreach ($row as $j => &$value) {
                 $percentage_fills[$j] = null;
                 if (($minimums[$j] !== false) && ($minimums[$j] !== null) && ($maximums[$j] !== null) && (is_numeric($value))) {
-                    $_value = floatval($value);
-                    if ($_value >= 0.0) {
+                    $float_value = floatval($value);
+                    if ($float_value >= 0.0) {
                         $range = $maximums[$j] - $minimums[$j];
-                        $offset = $_value - $minimums[$j];
+                        $offset = $float_value - $minimums[$j];
                         $percentage_fills[$j] = ($offset / $range) * 100.0;
                     }
                 }
@@ -407,7 +408,7 @@ PHP;
                         break;
 
                     case 'non-numeric-italics':
-                        if ((!is_numeric($val)) && ($val != '')) {
+                        if ((!is_numeric($value)) && ($value != '')) {
                             $value = protect_from_escaping('<em>' . escape_html($value) . '</em>');
                         }
                         break;
@@ -471,7 +472,7 @@ PHP;
      * @param  array $columns_tooltip List of tooltips
      * @return array Adjusted row
      */
-    function adjust_row_to_displayed_columns(array $row, array $columns_display, array $columns_tooltip)
+    protected function adjust_row_to_displayed_columns(array $row, array $columns_display, array $columns_tooltip)
     {
         if (!empty($columns_display) || !empty($columns_tooltip)) {
             if (empty($columns_display)) {

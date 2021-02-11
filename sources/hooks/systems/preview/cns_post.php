@@ -149,7 +149,7 @@ class Hook_preview_cns_post
                 'NAME' => do_lang_tempcode('IP_ADDRESS'),
                 'RAW' => get_ip_address(),
                 'VALUE' => get_ip_address(),
-                'MEMBER_ID' => null,
+                'MEMBER_ID' => strval($post_owner),
             ]);
             $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => '2db48e17db9f060c04386843f2d0f105', 'CUSTOM_FIELDS' => $custom_fields]);
             $poster_username = cns_get_safe_specified_poster_name();

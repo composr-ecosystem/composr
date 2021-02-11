@@ -117,7 +117,7 @@ class Block_main_bottom_bar
                 $num_members++;
             }
             if ($num_guests != 0) {
-                if (!$users_online->is_empty() && do_lang('NUM_GUESTS') != '') {
+                if (!$users_online->is_empty() && do_lang('NUM_GUESTS', 'xxx') != '') {
                     $users_online->attach(do_lang_tempcode('LIST_SEP'));
                     $users_online->attach(do_lang_tempcode('NUM_GUESTS', escape_html(integer_format($num_guests))));
                 }

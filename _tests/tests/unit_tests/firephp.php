@@ -22,9 +22,7 @@ class firephp_test_set extends cms_test_case
     {
         $session_id = $this->establish_admin_callback_session();
 
-        $guest_username = $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id());
-
-        $url = build_url(['page' => '', 'keep_firephp' => 1, 'keep_su' => $guest_username], 'adminzone');
+        $url = build_url(['page' => '', 'keep_firephp' => 1, 'keep_su' => $this->get_canonical_username('test')], 'adminzone');
 
         $extra_headers = [
             'X-FirePHP-Version' => '0.0.6',

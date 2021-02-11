@@ -416,12 +416,15 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
     $css_need_inline = new Tempcode();
     if ($only_global) {
         if (isset($CSSS['email'])) {
-            $css_to_do = ['global' => true, 'no_cache' => true];
-        } else {
             $css_to_do = ['global' => true, 'no_cache' => true, 'email' => true];
+        } else {
+            $css_to_do = ['global' => true, 'no_cache' => true];
         }
     } else {
         $css_to_do = $CSSS;
+        if (!isset($css_to_do['global'])) {
+            $css_to_do = ['global' => true, 'no_cache' => true] + $css_to_do;
+        }
     }
     foreach ($css_to_do as $c => $do_enforce) {
         if (is_integer($c)) {

@@ -25,6 +25,7 @@ class Hook_implicit_usergroups_patreon
             return $map;
         }
 
+        $map = mixed();
         $map = [];
 
         require_code('cns_groups');
@@ -57,7 +58,7 @@ class Hook_implicit_usergroups_patreon
             }
         }
 
-        if ((empty($map)) && ($group_id!== null)) {
+        if ((empty($map)) && ($group_id !== null)) {
             $map = $group_id;
         }
 

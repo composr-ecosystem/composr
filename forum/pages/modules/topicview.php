@@ -421,7 +421,7 @@ class Module_topicview
                                     'NAME' => do_lang_tempcode('IP_ADDRESS'),
                                     'RAW' => $_postdetails['ip_address'],
                                     'VALUE' => $_postdetails['ip_address'],
-                                    'MEMBER_ID' => null,
+                                    'MEMBER_ID' => strval($_postdetails['poster']),
                                 ]));
                                 $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => 'e43534acaf598008602e8da8f9725f38', 'CUSTOM_FIELDS' => $custom_fields]);
                             } else {

@@ -135,7 +135,10 @@ function preload_block_internal_caching()
             $bulk = [];
 
             foreach ($blocks_needed as $param => $_) {
-                $bulk[] = unserialize($param);
+                $block_details = @unserialize($param);
+                if ($block_details !== false) {
+                    $bulk[] = $block_details;
+                }
             }
 
             if ($GLOBALS['PERSISTENT_CACHE'] === null) {

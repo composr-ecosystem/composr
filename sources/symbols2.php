@@ -122,7 +122,15 @@ function ecv2_ALREADY_RATED(string $lang, array $escaped, array $param) : string
 
     if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('feedback');
-        $value = (already_rated([$param[0]], $param[1]) ? '1' : '0');
+        $previous_ratings = null;
+
+        $already_rated = already_rated([$param[0]], $param[1], $previous_ratings);
+
+        if (empty($param[2])) {
+            $value = ($already_rated ? '1' : '0');
+        } else {
+            $value = strval(array_shift($previous_ratings));
+        }
     }
 
     if ($GLOBALS['XSS_DETECT']) {

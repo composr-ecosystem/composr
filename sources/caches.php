@@ -890,7 +890,13 @@ function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : arr
 
                 $cache_row['the_value'] = $ob;
             } else {
-                $cache_row['the_value'] = unserialize($cache_row['the_value']);
+                $cache_row['the_value'] = @unserialize($cache_row['the_value']);
+
+                if ($cache_row['the_value'] === false) { // Corrupt data
+                    $cache[$sz] = null;
+                    $rets[] = null;
+                    continue;
+                }
             }
         }
 

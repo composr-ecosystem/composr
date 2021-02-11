@@ -335,8 +335,8 @@ function cns_make_member(string $username, string $password, string $email_addre
                 }
                 if (addon_installed('chat')) {
                     require_code('chat2');
-                    friend_add($referrer, $member_id);
-                    friend_add($member_id, $referrer);
+                    friend_add($referrer, $member_id, null, false);
+                    friend_add($member_id, $referrer, null, false);
                 }
 
                 break; // We only pick the first

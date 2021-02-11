@@ -885,7 +885,7 @@ class CMS_Topic
                                 'NAME' => do_lang_tempcode('IP_ADDRESS'),
                                 'RAW' => $post['ip_address'],
                                 'VALUE' => $post['ip_address'],
-                                'MEMBER_ID' => null,
+                                'MEMBER_ID' => strval($post['member']),
                             ]));
                             $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => 'df42e7d5003834a60fdb3bf476b393c5', 'CUSTOM_FIELDS' => $custom_fields]);
                         } else {

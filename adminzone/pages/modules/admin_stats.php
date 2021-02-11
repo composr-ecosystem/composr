@@ -299,7 +299,7 @@ class Module_admin_stats extends Standard_crud_module
         require_lang('stats');
 
         if (!cron_installed()) {
-            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK'), 'warn');
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration'))), 'warn');
         }
 
         $type = get_param_string('type', 'browse');

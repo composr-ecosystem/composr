@@ -59,21 +59,21 @@ class standard_dir_files_test_set extends cms_test_case
         }*/
 
         $valid_hashes = [
-            '296a0f42479e015438791d0b21e22a07' => true,
-            '3184b8b93e2d9b02dea0c4ec3133ee9c' => true,
-            '35524c96fbfc2361a6dff117f3a19bc8' => true,
-            '362eb392e7da973c77733262cf1d0e90' => true,
-            '4215242c301a30d66cd824e1ef0dd562' => true,
-            '54173c31cdac14469a93eaa292ebbb08' => true,
-            '8a55e7d3c6651736659f3bc5959c16dd' => true,
-            '8a7c42d7083b00b153df228e1700c60a' => true,
-            '8ce63a764e2f9e6ec2cca2aa511197dd' => true,
-            '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true,
-            'de9b5b7778090cf4376839b6aebb9f45' => true,
-            'e829b8bdcef68c92b0926288106048b6' => true,
-            '19a8c8adbb99cac491544ba444ab9541' => true,
+            '296a0f42479e015438791d0b21e22a07' => true, // Many
+            '8fbbec6b8fd8a4999a5b07f5ddcf5ea8' => true, // */pages/modules*/.htaccess
+            '3184b8b93e2d9b02dea0c4ec3133ee9c' => true, // */pages/html/EN/.htaccess
+            '8a7c42d7083b00b153df228e1700c60a' => true, // */pages/html_custom/EN/.htaccess
             '61e312cb9d1db877826e8aa77c282b2a' => true, // _tests/simpletest/test/site/.htaccess
             'f30780cfeab05516183f1b42e174b700' => true, // _tests/simpletest/test/site/protected/.htaccess
+            'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess
+            'e829b8bdcef68c92b0926288106048b6' => true, // data*/images/.htaccess, uploads/.htaccess
+            '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess
+            '362eb392e7da973c77733262cf1d0e90' => true, // sources/.htaccess
+            '8ce63a764e2f9e6ec2cca2aa511197dd' => true, // themes/*/images*/.htaccess
+            '19a8c8adbb99cac491544ba444ab9541' => true, // themes/*/templates_cached/.htaccess
+            '4215242c301a30d66cd824e1ef0dd562' => true, // uploads/*/.htaccess
+            '54173c31cdac14469a93eaa292ebbb08' => true, // uploads/incoming/.htaccess
+            '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess
         ];
         foreach ($types as $hash => $file_paths) {
             $this->assertTrue(array_key_exists($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ' with hash of ' . $hash);

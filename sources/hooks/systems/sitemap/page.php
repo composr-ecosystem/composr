@@ -244,7 +244,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
 
             $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $path);
 
-            if ($entry_points === null) {
+            if (empty($entry_points)) {
                 return null;
             }
         }
@@ -270,7 +270,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                                 if (is_object($_title)) {
                                     $struct['title'] = $_title;
                                 } else {
-                                    $struct['title'] = (preg_match('#^[A-Z_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
+                                    $struct['title'] = $this->_lang_string_or_literal($_title);
                                 }
                             }
                             if ($entry_points['!'][1] !== null) {
@@ -294,7 +294,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                                 if (is_object($_title)) {
                                     $struct['title'] = $_title;
                                 } else {
-                                    $struct['title'] = (preg_match('#^[A-Z_]+$#', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
+                                    $struct['title'] = $this->_lang_string_or_literal($_title);
                                 }
                             }
                             if ($entry_points[$move_down_entry_point][1] !== null) {

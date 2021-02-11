@@ -152,7 +152,7 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
         }
 
         // Categories done after node callback, to ensure sensible ordering
-        $children = $this->_get_children_nodes($content_id, $longer_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
+        $children = $this->_get_children_nodes($content_id, $longer_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row, '', null, 'the_order');
         if ($recurse_level > 10) {
             $children = []; // We really need to cutoff loops at some point
         }

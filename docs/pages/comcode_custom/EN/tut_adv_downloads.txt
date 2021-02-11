@@ -64,6 +64,8 @@ A common example of a community that would benefit from this, is a community bas
 Members may add downloads, and charge for those downloads, using the 'submitter gets points' option. Thus with this, the creators are awarded for their work by the users, using a simple form of currency; this works two ways, much like real world economies do: members are encouraged to become the 'rich members' (as entrepreneurs) as well as to generally earn points (contribute to society).
 
 Another example is a community based upon subscription: points could be purchased via a service such as PayPal (Composr at the time of writing provides no specific support for this, but staff could manually allocate points based on PayPal transactions) and the website could require spending of these points to download files.
+
+Note that members are only charged once for a download. They may re-download (or resume), without any extra charges.
 [/surround]
 
 [title="2"]Moving download galleries[/title]

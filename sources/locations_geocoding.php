@@ -66,7 +66,7 @@ function geocode(string $location, ?object &$errormsg = null, ?string $service =
 {
     $ob = choose_geocoding_service($service);
     if ($ob === null) {
-        $error_msg = do_lang('API_NOT_CONFIGURED');
+        $error_msg = do_lang('API_NOT_CONFIGURED', '(any geocoding)');
         return null;
     }
     $ret = $ob->geocode($location, $errormsg);

@@ -389,7 +389,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             $nontrans_fields = ['r.p_title'/*,'s.t_description' Performance problem due to how full text works*/];
             $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
 
-            $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,t_forum_id,t_cache_first_title', $trans_fields, $nontrans_fields, $permissions_module, 't_forum_id');
+            $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,t_forum_id,t_cache_first_title', $trans_fields, $nontrans_fields, $permissions_module, 's.t_forum_id');
         }
 
         $out = [];

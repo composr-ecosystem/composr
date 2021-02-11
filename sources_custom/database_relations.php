@@ -81,6 +81,7 @@ function get_table_purpose_flags() : array
         'w_travelhistory' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'translation_cache' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'hybridauth_content_map' => TABLE_PURPOSE__NORMAL,
+        'patreon_patrons' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
     ];
     foreach ($more as $table => $flags) {
         $ret[$table] = $flags | TABLE_PURPOSE__NON_BUNDLED;

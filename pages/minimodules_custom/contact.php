@@ -132,6 +132,7 @@ $decision_tree = [
             ['free_service_type',  'Report a bug',                         get_base_url() . '/tracker/bug_report_page.php?severity=50'],
             ['free_service_type',  'Report a usability/UX issue',          get_base_url() . '/tracker/bug_report_page.php?severity=50'],
             ['free_service_type',  'Report a security hole',               get_base_url() . '/tracker/bug_report_page.php?view_state=50&severity=80'],
+            ['free_service_type',  'Report inappropriate listed site',     'report_community_site'],
             ['free_service_type',  'Request a feature',                    get_base_url() . '/tracker/bug_report_page.php?severity=10'],
             ['free_service_type',  'Send some documentation feedback',     get_base_url() . '/tracker/set_project.php?project_id=7'],
             ['free_service_type',  'Send some general feedback',           build_url(['page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Feedback'], get_module_zone('tickets'))],
@@ -141,13 +142,43 @@ $decision_tree = [
         ],
     ],
 
+    'report_community_site' => [
+        'title' => 'Report inappropriate listed site',
+        'text' => 'Report a [page="site:community_sites"]listed community website[/page] as inappropriate.',
+        'previous' => 'free',
+        'form_method' => 'POST',
+        'hidden' => [
+            'title' => 'Reporting a listed community website',
+        ],
+        'questions' => [
+            'site_name' => [
+                'label' => 'Website name',
+                'description' => 'The given name of the listed website.',
+                'type' => 'short_text',
+                'default' => '',
+                'options' => '',
+                'required' => true,
+            ],
+            'problem' => [
+                'label' => 'Problem',
+                'description' => 'Why you are reporting the site.',
+                'type' => 'long_text',
+                'default' => '',
+                'options' => '',
+                'required' => true,
+            ],
+        ] + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
+        'next' => build_url(['page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Report community site'], '_SEARCH'),
+    ],
+
     'contribute_code' => [
         'title' => 'Contribute code',
         'text' => "Thanks, that's fantastic!
 
 There are 3 ways to contribute code to Composr:
 [list=\"1\"]
-[*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . COMPOSR_REPOS_URL . "[/url]. It is also a good idea to [url=\"create an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url] to reference your changes and merge request.
+[*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . COMPOSR_REPOS_URL . "[/url]. It is also a good idea to [url=\"create an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url] to reference your changes and merge request.
 [*] Post a patch [url=\"in an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url].
 [*] [page=\"site:tickets:ticket:ticket_type=Partnership\"]Request direct Git write-access[/page].\nWe can only provide write-access to Git when someone shows a serious commitment to the project in the form of high-quality code, because we need to be careful with security and quality.
 [/list]

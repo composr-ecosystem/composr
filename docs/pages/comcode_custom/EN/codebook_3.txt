@@ -604,6 +604,9 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_news_repimages[/tt] -- set this to '1' to disable rep-images for news categories
   - [tt]disable_virtual_roots[/tt] -- set this to '1' to disable virtual roots
   - [tt]blogs_tab_enabled[/tt] -- set this to '0' for the Conversr member profile blogs tab to be disabled (if you want blogs, but just not on member profiles)
+ - WYSIWYG editor
+  - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
+  - [tt]wysiwyg_spellchecker_default[/tt] -- set this to '1' if you want to allow the browser's spellcheck to be available by default (otherwise a button must be pressed)
  - Low-level tuning:
   - [tt]disable_kid_gloves_html[/tt] -- set this to '1' if you want to completely disable the kid-gloves HTML escaping mode, i.e. avoid the need to make declarations in your overrides. You may want to use this if you override various files but aren't really writing custom code and don't really understand how to make the declarations
   - [tt]show_menu_items_as_url[/tt] -- set this to '1' if you want the menu editor to show URLs instead of page-links (they will then be converted back)
@@ -618,7 +621,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]pagination_when_not_needed[/tt] -- set this to '1' if you want the pagination wrapper template to load even if there is no pagination (useful for collecting result metadata via Tempcode)
   - [tt]catalogue_seo_source_map__<catalogue-name>[/tt] -- a comma-separated list of field IDs to use for SEO keyword generation (if not set, uses all fields). If all keywords in the field should be used, put an exclamation mark after the field ID
   - [tt]disable_password_change_notifications_for_staff[/tt] -- set this to '1' if you want staff password edits to not result in notifications to users
-  - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
   - [tt]filtercode_protected_fields[/tt] -- a comma-separated list of fields Filtercode cannot work on (above the ones hard-coded as forbidden)
   - [tt]memory_limit[/tt] -- set this to a memory limit to override Composr's built-in one (e.g. "128M"). This will make memory bugs on your server more dangerous, so use at your own risk (a memory usage problem can take down a whole server) -- although memory bugs are unlikely given that Composr users report if they ever see this error
   - [tt]canonical_keep_params[/tt] -- set this to a comma-separated list of keep_ parameters that should be allowed to propagate within search engines
@@ -637,7 +639,8 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
   - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
-  - [tt]sitemap_orphans_to_pages[/tt] -- set this to '0' if you don't want orphaned pages to be put under the default Pages page grouping of the Sitemap 
+  - [tt]sitemap_orphans_to_pages[/tt] -- set this to '0' if you don't want orphaned pages to be put under the default Pages page grouping of the Sitemap
+  - [tt]time_sensitive_rankings__<catalogue_name>[/tt] -- set this to a number for catalogue rating sorting to only consider this number of records. This is useful for a upvote/downvote system that is responsive to change in voting pattern. Requires the database to support window functions (MySQL 8+ does, Maria DB 10.2+ does).
  - Low-level Action log tuning:
   - [tt]log_actions__create_topic[/tt] -- set this to '1' to enable Action logs for new topics
   - [tt]log_actions__reply[/tt] -- set this to '1' to enable Action logs for topic replies

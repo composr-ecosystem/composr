@@ -364,7 +364,7 @@ function upgrader_output_login(?string $message = null)
 function upgrader_output_header()
 {
     $upgrader_title = do_lang('UPGRADER_UPGRADER_TITLE');
-    $upgrader_intro = do_lang('UPGRADER_UPGRADER_INTRO', escape_html(static_evaluate_tempcode(build_url(['page' => ''], 'adminzone'))));
+    $upgrader_intro = do_lang('UPGRADER_UPGRADER_INTRO');
     $charset = get_charset();
     $lang = user_lang();
     $dir = do_lang('dir');

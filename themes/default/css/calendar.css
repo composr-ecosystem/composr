@@ -61,7 +61,7 @@ abbr.dtstart, abbr.dtend {
 .calendar-year-month table {
 	border-collapse: collapse;
 	width: 100%;
-	table-layout: fixed;
+	table-layout: fixed !important;
 }
 
 .calendar-year-month th {
@@ -105,7 +105,7 @@ abbr.dtstart, abbr.dtend {
 .calendar-month {
 	width: 100%;
 	border-collapse: collapse;
-	table-layout: fixed;
+	table-layout: fixed !important;
 }
 
 .calendar-month th {

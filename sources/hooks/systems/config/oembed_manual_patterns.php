@@ -58,7 +58,7 @@ class Hook_config_oembed_manual_patterns
 
         // Update oembed automated test if updating this too
 
-        $default .= "(https?://(www\.)?youtube\.com/watch\?v=.*|https?://youtu\.be/\..*) = http://www.youtube.com/oembed\n";
+        $default .= "(https?://(www\.)?youtube\.com/watch\?v=.*|https?://youtu\.be/\..*) = https://www.youtube.com/oembed\n";
         $default .= "(https?://vimeo\.com/\d+) = http://vimeo.com/api/oembed.{format}\n";
         $default .= "(https?://(www\.)?dailymotion\.com/video/.*|https?://dai\.ly/.*) = http://www.dailymotion.com/services/oembed\n";
         $default .= "(https?://www\.slideshare\.net/.*/.*) = http://www.slideshare.net/api/oembed/2\n";

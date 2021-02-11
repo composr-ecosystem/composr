@@ -65,7 +65,7 @@ function username_check_script()
     require_code('cns_members_action2');
     require_lang('cns');
 
-    $username = post_param_string('username', null);
+    $username = get_param_string('username', null, INPUT_FILTER_NONE);
     if ($username !== null) {
         $username = trim($username);
     }

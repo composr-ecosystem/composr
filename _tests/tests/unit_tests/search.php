@@ -73,10 +73,10 @@ class search_test_set extends cms_test_case
         }
 
         foreach ([0, 1] as $safe_mode) {
-            foreach (['admin', 'test'] as $username) {
+            foreach ([$this->get_canonical_username('admin'), $this->get_canonical_username('test')] as $username) {
                 $url = build_url($url_parts + ['keep_su' => $username, 'keep_safe_mode' => $safe_mode], get_module_zone('search'));
                 $data = http_get_contents($url->evaluate(), ['cookies' => [get_session_cookie() => get_session_id()]]);
-                $this->assertTrue(strpos($data, do_lang('NO_RESULTS_SEARCH')) !== false); // We expect no results, but also no crash!
+                $this->assertTrue(strpos($data, do_lang('NO_RESULTS_SEARCH')) !== false, 'Got unexpected results for ' . $username . ($safe_mode ? ' in safe mode' : '')); // We expect no results, but also no crash!
             }
         }
     }

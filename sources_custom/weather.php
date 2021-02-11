@@ -58,6 +58,6 @@ function weather_lookup(?string $location_search = null, ?float $latitude = null
         }
     }
 
-    $errormsg = do_lang('API_NOT_CONFIGURED');
+    $errormsg = do_lang('API_NOT_CONFIGURED', '(any weather)');
     throw new Exception($errormsg);
 }

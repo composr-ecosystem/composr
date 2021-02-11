@@ -178,6 +178,7 @@ This addon does not contain the compo.sr install code and the overall site and t
             'sources_custom/hooks/systems/symbols/COMPOSR_HOMESITE_ID_LATEST_ADDONS.php',
             'sources_custom/hooks/systems/symbols/COMPOSR_HOMESITE_ID_LATEST_THEMES.php',
             'sources_custom/hooks/systems/symbols/COMPOSR_HOMESITE_ID_LATEST_TRANSLATIONS.php',
+            'sources_custom/hooks/systems/symbols/COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY.php',
             'sources_custom/miniblocks/composr_homesite_download.php',
             'sources_custom/miniblocks/composr_homesite_featuretray.php',
             'sources_custom/miniblocks/composr_homesite_make_upgrader.php',

@@ -41,8 +41,26 @@ function init__zones2()
 function get_comcode_page_title_from_disk(string $path, bool $include_subtitle = false, bool $in_tempcode = false)
 {
     $page_contents = trim(cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM, null, 300));
+    if (preg_match('#\[title([^\]]*)?[^\]]*\].*\[/title\]#', $page_contents) == 0) {
+        // Maybe we need to load more
+        $page_contents = trim(file_get_contents($path));
+    }
 
     $fallback_title = titleify(basename($path, '.txt'));
+
+    if ((strpos($page_contents, '\"') !== false) || (preg_match('#\ssub="[^"]*\[#', $page_contents) != 0)) {
+        // Complex case, we need to do full parsing
+        comcode_to_tempcode($page_contents);
+        global $COMCODE_PARSE_TITLE;
+        if ($COMCODE_PARSE_TITLE !== null) {
+            $tempcode_title = $COMCODE_PARSE_TITLE;
+            if ($in_tempcode) {
+                return make_string_tempcode($tempcode_title);
+            } else {
+                return trim(strip_html($tempcode_title));
+            }
+        }
+    }
 
     $matches = [];
     if (preg_match('#\[title([^\]]*)?[^\]]*\]#', $page_contents, $matches) == 0) {

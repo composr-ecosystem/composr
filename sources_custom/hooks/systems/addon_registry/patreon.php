@@ -102,11 +102,11 @@ Basic setup instructions:
 *2 The Hybridauth XML configuration will look like this:
 [code]
 <hybridauth>
-	<Patreon>
-		<hybridauth-config scope="identity campaigns w:campaigns.webhook campaigns.members campaigns.members[email]" />
-		<composr-config allow_signups="false" />
-		<keys-config id="FILLME" secret="FILLME" />
-	</Patreon>
+    <Patreon>
+        <hybridauth-config scope="identity campaigns w:campaigns.webhook campaigns.members campaigns.members[email]" />
+        <composr-config allow_signups="false" />
+        <keys-config id="FILLME" secret="FILLME" />
+    </Patreon>
 </hybridauth>
 [/code]
 ';
@@ -169,6 +169,7 @@ Basic setup instructions:
             'sources_custom/patreon.php',
             'sources_custom/miniblocks/main_patreon_patrons.php',
             'data_custom/patreon_patrons.php',
+            'sources_custom/hooks/systems/privacy/patreon.php',
         ];
     }
 

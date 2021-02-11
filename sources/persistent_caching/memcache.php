@@ -67,7 +67,10 @@ class Persistent_caching_memcache
         if ($_data === false) {
             return null;
         }
-        $data = unserialize($_data);
+        $data = @unserialize($_data);
+        if ($data === false) {
+            return null;
+        }
         if (($min_cache_date !== null) && ($data[0] < $min_cache_date)) {
             return null;
         }

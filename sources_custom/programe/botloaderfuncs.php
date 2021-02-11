@@ -135,8 +135,10 @@ function upperkeysarray($testa)
 {
     $newtesta=array();
     $newkeys=@array_keys($testa);
-    for ($x=0;$x<count($newkeys);$x++){
-        $newtesta[strtoupper($newkeys[$x])]=$testa[$newkeys[$x]];
+    if (is_array($newkeys)) {
+        for ($x=0;$x<count($newkeys);$x++){
+            $newtesta[strtoupper($newkeys[$x])]=$testa[$newkeys[$x]];
+        }
     }
     return $newtesta;
 }

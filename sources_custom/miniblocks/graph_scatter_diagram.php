@@ -50,7 +50,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
 }
 $sheet_reader->close();
 
-$options = ['begin_at_zero' => $begin_at_zone];
+$options = ['begin_at_zero' => $begin_at_zero];
 
 $tpl = graph_scatter_diagram($datapoints, $x_axis_label, $y_axis_label, $options, $color, $width, $height);
 $tpl->evaluate_echo();

@@ -43,7 +43,7 @@ function init__menus()
  */
 function build_menu(string $type, string $menu_id, bool $silent_failure = false, bool $apply_highlighting = true) : array
 {
-    $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+$#', $menu_id) == 0);
+    $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+((:\d+)|(;.*))?$#', $menu_id) == 0);
 
     if ($is_sitemap_menu) {
         $root = _build_sitemap_menu($menu_id);
@@ -137,14 +137,32 @@ function _build_stored_menu(string $menu_id) : array
     // Load items
     $root = persistent_cache_get(['MENU', $menu_id]);
     if ($root === null) {
+        if (strpos($menu_id, ';') !== false) {
+            list($menu_id, $parent_url) = explode(';', $menu_id, 2);
+            $parent_id = null;
+        } elseif (strpos($menu_id, ':') !== false) {
+            list($menu_id, $_parent_id) = explode(':', $menu_id, 2);
+            $parent_id = intval($_parent_id);
+            $parent_url = null;
+        } else {
+            $parent_id = null;
+            $parent_url = null;
+        }
         $items = $GLOBALS['SITE_DB']->query_select('menu_items', ['*'], ['i_menu' => $menu_id], 'ORDER BY i_order');
 
         // Search for top-level items, to build root branch
         $root = _get_menu_root_wrapper();
         $root['content_id'] = $menu_id;
         foreach ($items as $item) {
-            if ($item['i_parent'] === null) {
-                $root['children'] = array_merge($root['children'], _build_stored_menu_branch($item, $items));
+            if ($parent_url === null) {
+                if ($item['i_parent'] === $parent_id) {
+                    $root['children'] = array_merge($root['children'], _build_stored_menu_branch($item, $items));
+                }
+            } else {
+                if ($item['i_url'] === $parent_url) {
+                    $sub = _build_stored_menu_branch($item, $items);
+                    $root['children'] = array_merge($root['children'], $sub[0]['children']);
+                }
             }
         }
 

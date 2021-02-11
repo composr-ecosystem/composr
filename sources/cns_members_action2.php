@@ -1241,11 +1241,6 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $GLOBALS['FORUM_DB']->query_update('f_invites', ['i_email_address' => $old_email_address], ['i_email_address' => $email_address]);
     }
 
-    $old_email_address = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
-    if ($old_email_address != $email_address) {
-        $GLOBALS['FORUM_DB']->query_update('f_invites', ['i_email_address' => $old_email_address], ['i_email_address' => $email_address]);
-    }
-
     delete_value('cns_newest_member_id');
     delete_value('cns_newest_member_username');
 

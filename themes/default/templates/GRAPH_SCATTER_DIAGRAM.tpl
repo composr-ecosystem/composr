@@ -15,10 +15,10 @@
 						data: [
 							{+START,LOOP,DATAPOINTS}
 								{
-									x: {X},
-									y: {Y},
+									x: {X/},
+									y: {Y/},
 									{+START,IF_PASSED,R}
-										r: {R},
+										r: {R/},
 									{+END}
 								},
 							{+END}

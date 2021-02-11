@@ -569,7 +569,7 @@ class Hook_ecommerce_email
                 $initial_quota = intval(get_option('initial_quota'));
                 $login = $prefix . '@' . $suffix;
                 $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
-                $encoded_reason = do_lang('NEWPOP3_TITLE');
+                $encoded_reason = do_lang('NEWPOP3_TITLE', $suffix);
                 require_code('notifications');
                 $subject = do_lang('MAIL_REQUEST_POP3', null, null, null, get_site_default_lang());
                 $body = do_notification_template('ECOM_PRODUCT_POP3_MAIL', [
@@ -632,7 +632,7 @@ class Hook_ecommerce_email
                 // Notification to staff
                 $forw_url = get_option('forw_url');
                 require_code('notifications');
-                $encoded_reason = do_lang('NEWFORWARDING_TITLE');
+                $encoded_reason = do_lang('NEWFORWARDING_TITLE', $suffix);
                 $subject = do_lang('MAIL_REQUEST_FORWARDING', null, null, null, get_site_default_lang());
                 $body = do_notification_template('ECOM_PRODUCT_FORWARDER_MAIL', [
                     '_GUID' => 'a09dba8b440baa5cd48d462ebfafd15f',

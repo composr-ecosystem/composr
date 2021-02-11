@@ -161,7 +161,7 @@ class Hook_search_cns_within_topic extends FieldsSearchHook
         $this->_get_search_parameterisation_advanced_for_content_type('_topic', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
-        $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,t_forum_id', $trans_fields, $nontrans_fields, 'forums', 't_forum_id');
+        $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,t_forum_id', $trans_fields, $nontrans_fields, 'forums', 's.t_forum_id');
 
         $out = [];
         foreach ($rows as $i => $row) {

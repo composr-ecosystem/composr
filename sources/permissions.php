@@ -594,7 +594,7 @@ function get_permission_where_clause_groups(int $member_id, bool $consider_clubs
  */
 function get_category_permission_where_clause(string $module, string $category_field, ?int $member_id, string $groups, string $row_alias = 'r') : string
 {
-    $_category_field = (empty($row_alias) ? '' : ($row_alias . '.')) . $category_field;
+    $_category_field = ((empty($row_alias) || (strpos($category_field, '.') !== false)) ? '' : ($row_alias . '.')) . $category_field;
 
     $query = ' AND (';
     $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', $module) . ' AND ' . $_category_field . '=a.category_name AND (' . $groups . '))';

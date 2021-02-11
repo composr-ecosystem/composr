@@ -3623,8 +3623,12 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	opacity: 0.9;
 	overflow-wrap: break-word;
 	/*min-width: 6em;*/
+	pointer-events: none;
 }
 
+.tooltip a, .tooltip abbr {
+	pointer-events: auto;
+}
 .tooltip-ownlayout {
 	padding: 0.5em;
 	border-radius: {$GET,border_radius};

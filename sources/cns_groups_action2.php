@@ -88,6 +88,11 @@ function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is
     $_name = $_group_info[0]['g_name'];
     $_title = $_group_info[0]['g_title'];
 
+    if (get_translated_text($_name) == get_option('probation_usergroup')) {
+        require_code('config2');
+        set_option('probation_usergroup', $name);
+    }
+
     $map = [];
     if ($name !== null) {
         $map += lang_remap('g_name', $_name, $name, $GLOBALS['FORUM_DB']);

@@ -102,7 +102,7 @@ class Hook_chat_bot_trickstr
             return null;
         }
 
-        if (!is_writable(get_file_base() . '/temp/subs.inc')) {
+        if (!is_writable(get_file_base() . '/temp')) {
             return null;
         }
 

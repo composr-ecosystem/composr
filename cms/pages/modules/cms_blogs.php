@@ -362,6 +362,15 @@ class Module_cms_blogs extends Standard_crud_module
         require_code('syndication');
         $fields2->attach(get_syndication_option_fields('news', $id !== null));
 
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            if ($id === null) {
+                $fields2->attach(get_privacy_form_fields('news'));
+            } else {
+                $fields2->attach(get_privacy_form_fields('news', strval($id)));
+            }
+        }
+
         return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate())/*XHTMLXHTML*/];
     }
 
@@ -496,6 +505,12 @@ class Module_cms_blogs extends Standard_crud_module
         $main_news_category = $GLOBALS['SITE_DB']->query_select_value('news', 'news_category', ['id' => $id]);
         $this->donext_type = $main_news_category;
 
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            list($privacy_level, $additional_access) = read_privacy_fields();
+            save_privacy_form_fields('news', strval($id), $privacy_level, $additional_access);
+        }
+
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
             require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'news')) { // NB: no category permission check, as syndication choice was explicit, and news categorisation is a bit more complex
@@ -587,6 +602,12 @@ class Module_cms_blogs extends Standard_crud_module
 
         $title = post_param_string('title', STRING_MAGIC_NULL);
 
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            list($privacy_level, $additional_access) = read_privacy_fields();
+            save_privacy_form_fields('news', strval($id), $privacy_level, $additional_access);
+        }
+
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
             require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'news')) {
@@ -630,6 +651,11 @@ class Module_cms_blogs extends Standard_crud_module
         $id = intval($_id);
 
         delete_news($id);
+
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            delete_privacy_form_fields('news', strval($id));
+        }
 
         require_code('syndication');
         unsyndicate_content('news', strval($id));

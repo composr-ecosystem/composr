@@ -5541,30 +5541,37 @@ function ecv_COMMENT_COUNT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
-    if ((!empty($param[0])) && (isset($param[1]))) {
-        static $cache_comment_count = [];
-        $cache_key = $param[0] . '_' . $param[1];
-        if (isset($cache_comment_count[$cache_key])) {
-            $value = $cache_comment_count[$cache_key];
-        } else {
-            if (get_option('is_on_comments') == '1') {
-                $count = 0;
-                $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cache_key, do_lang('COMMENT'));
-                if ($topic_id !== null) {
-                    $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 0, 0, false);
-                    if (($count != 0) || (empty($param[2]))) {
-                        if (is_array($_comments)) {
-                            $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count)));
-                        } else {
-                            $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
+    if ($GLOBALS['STATIC_TEMPLATE_TEST_MODE']) {
+        $value = '1';
+    } else {
+        if ((!empty($param[0])) && (isset($param[1]))) {
+            static $cache_comment_count = [];
+            $cache_key = $param[0] . '_' . $param[1];
+            if (isset($cache_comment_count[$cache_key])) {
+                $value = $cache_comment_count[$cache_key];
+            } else {
+                if (get_option('is_on_comments') == '1') {
+                    $count = 0;
+                    $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cache_key, do_lang('COMMENT'));
+                    if ($topic_id !== null) {
+                        $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 0, 0, false);
+                        if (($count != 0) || (empty($param[2]))) {
+                            if (is_array($_comments)) {
+                                $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count)));
+                            } else {
+                                $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
+                            }
+                            $value = $_value->evaluate();
                         }
+                    } else {
+                        $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
                         $value = $_value->evaluate();
                     }
+                } else {
+                    $value = do_lang('VIEW');
                 }
-            } else {
-                $value = do_lang('VIEW');
+                $cache_comment_count[$cache_key] = $value;
             }
-            $cache_comment_count[$cache_key] = $value;
         }
     }
 
@@ -7404,6 +7411,25 @@ function ecv_TAPATALK(string $lang, array $escaped, array $param) : string
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv_DB_FIRST_ID(string $lang, array $escaped, array $param) : string
+{
+    $value = strval(db_get_first_id());
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
     }
     return $value;
 }

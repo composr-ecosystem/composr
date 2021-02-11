@@ -225,7 +225,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
         } elseif (is_object($_title)) {
             $title = $_title;
         } else {
-            $title = (preg_match('#^[A-Z_]+$#i', $_title) == 0) ? make_string_tempcode($_title) : do_lang_tempcode($_title);
+            $title = $this->_lang_string_or_literal($_title);
         }
 
         if ($icon === null) {
