@@ -224,6 +224,26 @@ It consists of:
 
 When you add a new branch to a menu, you can choose to include the Sitemap at the given page-link "over" or "under" that branch. This allows you to chain parts of the Sitemap into your menu (i.e. include a subtree of the Sitemap), giving you the best of both worlds (configurability but also auto-maintenance of displayed categories).
 
+[title="2"]Menu subsets (advanced)[/title]
+
+You can pull up a partial menu, underneath a particular menu branch:
+[code="Text"]
+<menu>;<page-link>
+[/code]
+
+E.g. to pull out everything on the [tt]main_website[/tt] menu under the branch with [tt]site:example[/tt] as the page-link:
+[code="Comcode"]
+[block="main_website;site:example"]menu[/block]
+[/code]
+
+This is useful for creating subnavigation menus in a panel to complement the main drop-down menu.
+
+You can also do:
+[code="Text"]
+<menu>;<id>
+[/code]
+...if you prefer to use numeric menu IDs instead of page-links (unlikely).
+
 [title="2"]Comcode menus (advanced)[/title]
 
 There are two ways to define menus:
