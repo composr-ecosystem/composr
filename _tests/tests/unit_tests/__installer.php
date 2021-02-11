@@ -95,10 +95,7 @@ class __installer_test_set extends cms_test_case
             return;
         }
 
-        $result = $this->do_headless_install(true);
-        if (!$result) {
-            return;
-        }
+        $this->do_headless_install(true);
     }
 
     public function testFullInstallNormalMode()
@@ -112,10 +109,7 @@ class __installer_test_set extends cms_test_case
             return;
         }
 
-        $result = $this->do_headless_install(false);
-        if (!$result) {
-            return;
-        }
+        $this->do_headless_install(false);
     }
 
     protected function do_headless_install($safe_mode)
