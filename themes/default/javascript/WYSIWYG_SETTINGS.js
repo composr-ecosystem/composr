@@ -41,7 +41,7 @@ var editorSettings = {
     uiColor: wysiwygColor,
     ocpTheme: $cms.getTheme(),
     removePlugins: '',
-    extraPlugins: 'emojione,dialogadvtab,codemirror,showcomcodeblocks,imagepaste,spellchecktoggle' + (useComposrToolbar ? ',composr' : ''),
+    extraPlugins: 'showcomcodeblocks,spellchecktoggle' + (useComposrToolbar ? ',composr' : ''),
     /*{+START,IF,{$NEQ,{$CKEDITOR_PATH},data_custom/ckeditor}}*/
     customConfig: '',
     /*{+END}*/
@@ -70,7 +70,8 @@ var editorSettings = {
         wysiwygSpellcheckerDefault: true,
     /*{+END}*/
     sourceAreaTabSize: 4,
-    font_names: '{$REPLACE;,\,,;,{$FONTS}}'
+    font_names: '{$REPLACE;,\,,;,{$FONTS}}',
+    linkDefaultProtocol: 'https://',
 };
 
 if ($cms.configOption('wysiwyg_font_units') === 'em') {

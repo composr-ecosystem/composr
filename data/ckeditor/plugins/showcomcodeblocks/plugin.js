@@ -1,4 +1,4 @@
-﻿( function() {
+( function() {
 	'use strict';
 
 	CKEDITOR.plugins.add( 'showcomcodeblocks', {

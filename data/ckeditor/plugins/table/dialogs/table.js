@@ -1,5 +1,5 @@
-﻿/*
- Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+/*
+ Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 (function(){function w(a){for(var f=0,p=0,n=0,q,d=a.$.rows.length;n<d;n++){q=a.$.rows[n];for(var e=f=0,b,c=q.cells.length;e<c;e++)b=q.cells[e],f+=b.colSpan;f>p&&(p=f)}return p}function t(a){return function(){var f=this.getValue(),f=!!(CKEDITOR.dialog.validate.integer().call(this,f)&&0<f);f||(alert(a),this.select());return f}}function r(a,f){var p=function(d){return new CKEDITOR.dom.element(d,a.document)},r=a.editable(),q=a.plugins.dialogadvtab;return{title:a.lang.table.title,minWidth:310,minHeight:CKEDITOR.env.ie?
@@ -30,6 +30,7 @@ if (c.$.className.match(/^(|results-table columned-table|results-table)$/)) {
                        break;
        }
 }
+
 
 if(this._.selectedElement)try{d.selectBookmarks(e)}catch(n){}else a.insertElement(b),setTimeout(function(){var d=new CKEDITOR.dom.element(b.$.rows[0].cells[0]),c=a.createRange();c.moveToPosition(d,CKEDITOR.POSITION_AFTER_START);c.select()},0)},contents:[{id:"info",label:a.lang.table.title,elements:[{type:"hbox",widths:[null,null],
 styles:["vertical-align:top"],children:[{type:"vbox",padding:0,children:[{type:"text",id:"txtRows","default":3,label:a.lang.table.rows,required:!0,controlStyle:"width:5em",validate:t(a.lang.table.invalidRows),setup:function(d){this.setValue(d.$.rows.length)},commit:n},{type:"text",id:"txtCols","default":2,label:a.lang.table.columns,required:!0,controlStyle:"width:5em",validate:t(a.lang.table.invalidCols),setup:function(d){this.setValue(w(d))},commit:n},{type:"html",html:"\x26nbsp;"},{type:"select",

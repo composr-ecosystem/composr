@@ -1,4 +1,4 @@
-﻿/*
+/*
 Spellcheck toggle button. Works on Chrome/Firefox/Safari/IE10
 */
 
