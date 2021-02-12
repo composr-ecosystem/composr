@@ -298,6 +298,8 @@ class Hook_addon_registry_iotds
             require_lang('captcha');
         }
 
+        require_javascript('editing');
+
         $trackbacks = new Tempcode();
         foreach (placeholder_array(1) as $k => $v) {
             $trackbacks->attach(do_lorem_template('TRACKBACK', array(
