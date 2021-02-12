@@ -150,6 +150,12 @@ If the upgrader times out trying to download the upgrade package then try:
 
 In the "Transfer across new/updated files" step there's a "generate a personalised manual upgrader" link. This will create an upgrade TAR file that is safe to manually extract onto your server.
 
+[title="2"]Rescuing broken sites[/title]
+
+You should keep Composr updated before PHP is upgraded, to maintain compatibility with newer versions of PHP.
+If you fail to do this and find you can't even run the upgrader, or otherwise have a severely broken website without a working upgrader, this simple project may help you:
+https://gitlab.com/composr-foundation/make-composr-upgrader
+
 [concepts
  1_key="upgrader.php"        1_value="The script that manages the upgrading process"
  2_key="Integrity checker"   2_value="Tool to find unexpected files in the Composr installation"
