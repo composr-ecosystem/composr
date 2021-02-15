@@ -45,29 +45,29 @@ function init__wordfilter()
 }
 
 /**
- * Check the specified text ($a) for banned words.
+ * Check the specified text for banned words.
  * If any are found, and the member cannot bypass the word filter, an error message is displayed.
  *
- * @param  string $a The sentence to check
+ * @param  string $input The sentence to check
  * @param  ?ID_TEXT $name The name of the parameter this is coming from. Certain parameters are not checked, for reasons of efficiency (avoiding loading whole word check list if not needed) (null: don't know param, do not check to avoid)
  * @param  boolean $exit Whether to die on fully blocked words (useful if importing, for instance)
  * @param  boolean $try_patterns Whether to try pattern matching (this takes more resources)
  * @param  boolean $perm_check Whether to allow permission-based skipping, and length-based skipping
  * @return string "Fixed" version
  */
-function check_wordfilter(string $a, ?string $name = null, bool $exit = true, bool $try_patterns = false, bool $perm_check = true) : string
+function check_wordfilter(string $input, ?string $name = null, bool $exit = true, bool $try_patterns = false, bool $perm_check = true) : string
 {
     global $WORDFILTERING_ALREADY;
     if ($WORDFILTERING_ALREADY) {
-        return $a;
+        return $input;
     }
 
     if ($perm_check) {
-        if (strlen($a) < 3) {
-            return $a;
+        if (strlen($input) < 3) {
+            return $input;
         }
         if ((function_exists('has_privilege')) && (!$GLOBALS['MICRO_AJAX_BOOTUP']) && (has_privilege(get_member(), 'bypass_wordfilter'))) {
-            return $a;
+            return $input;
         }
     }
 
@@ -80,7 +80,7 @@ function check_wordfilter(string $a, ?string $name = null, bool $exit = true, bo
             if ($rows !== null) {
                 foreach ($rows as $i => $r) {
                     if (($i == 0) && (!array_key_exists('w_replacement', $r))) {
-                        return $a; // Safe upgrading
+                        return $input; // Safe upgrading
                     }
                     $WORDS_TO_FILTER_CACHE[cms_mb_strtolower($r['word'])] = $r;
                 }
@@ -90,35 +90,39 @@ function check_wordfilter(string $a, ?string $name = null, bool $exit = true, bo
 
     // Find words
     require_code('global4');
-    $words = cms_mb_str_word_count($a, 2);
+    $words = cms_mb_str_word_count($input, 2);
 
     // Apply filter for complete blocked words
     $changes = [];
     foreach ($words as $pos => $word) {
-        $w = isset($WORDS_TO_FILTER_CACHE[cms_mb_strtolower($word)]) ? $WORDS_TO_FILTER_CACHE[cms_mb_strtolower($word)] : null;
+        $word_lower = cms_mb_strtolower($word);
 
+        $w = isset($WORDS_TO_FILTER_CACHE[$word_lower]) ? $WORDS_TO_FILTER_CACHE[$word_lower] : null;
+
+        // Apply filter for disallowed complete word matches
         if (is_array($w) && ($w['w_match_type'] === WORDFILTER_MATCH_TYPE_FULL)) {
             if (($w['w_replacement'] == '') && ($exit)) {
                 warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you
             } else {
-                $changes[] = [$pos, $word, $w['w_replacement']];
+                $changes[] = [$pos, $word_lower, $w['w_replacement']];
             }
         }
 
+        // Apply filter for disallowed prefixes, and wildcards
         foreach ($WORDS_TO_FILTER_CACHE as $word2 => $w2) {
             if ($w2['w_match_type'] === WORDFILTER_MATCH_TYPE_PREFIX) {
                 if (stripos($word, $word2) === 0) { // if $word starts with $word2
                     if (($w2['w_replacement'] == '') && ($exit)) {
                         warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you
                     } else {
-                        $changes[] = [$pos, $word, $w2['w_replacement']];
+                        $changes[] = [$pos, $word_lower, $w2['w_replacement']];
                     }
                 }
             } elseif ($try_patterns && ($w2['w_match_type'] === WORDFILTER_MATCH_TYPE_FULL) && (simulated_wildcard_match($word, $word2, true))) {
                 if (($w2['w_replacement'] == '') && ($exit)) {
                     warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you
                 } else {
-                    $changes[] = [$pos, $word, $w2['w_replacement']];
+                    $changes[] = [$pos, $word_lower, $w2['w_replacement']];
                 }
             }
         }
@@ -127,30 +131,30 @@ function check_wordfilter(string $a, ?string $name = null, bool $exit = true, bo
     // Make changes
     $changes = array_reverse($changes);
     foreach ($changes as $change) {
-        $before = substr($a, 0, $change[0]);
-        $after = substr($a, $change[0] + strlen($change[1]));
+        $before = substr($input, 0, $change[0]);
+        $after = substr($input, $change[0] + strlen($change[1]));
         if ($change[2] === WORDFILTER_REPLACEMENT_GRAWLIXES) {
-            $change[2] = generate_grawlixes(strlen($change[1]));
+            $change[2] = generate_grawlixes($change[1]);
         }
-        $a = $before . $change[2] . $after;
+        $input = $before . $change[2] . $after;
     }
 
     // Apply filter for disallowed substrings
     foreach ($WORDS_TO_FILTER_CACHE as $word => $w) {
-        if (($w['w_match_type'] === WORDFILTER_MATCH_TYPE_SUBSTRING) && (stripos($a, $word) !== false)) {
+        if (($w['w_match_type'] === WORDFILTER_MATCH_TYPE_SUBSTRING) && (stripos($input, $word) !== false)) {
             $replacement = $w['w_replacement'];
             if (($replacement == '') && ($exit)) {
                 warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word)));
             } else {
                 if ($replacement === WORDFILTER_REPLACEMENT_GRAWLIXES) {
-                    $replacement = generate_grawlixes(strlen($word));
+                    $replacement = generate_grawlixes($word);
                 }
-                $a = preg_replace('#' . preg_quote($word) . '#i', $replacement, $a);
+                $input = preg_replace('#' . preg_quote($word) . '#i', $replacement, $input);
             }
         }
     }
 
-    return $a;
+    return $input;
 }
 
 /**
@@ -205,24 +209,38 @@ function warn_exit_wordfilter(?string $name, object $message)
 }
 
 /**
- * The term grawlix refers to the series of typographical symbols (such as @#$%&!) used to represent swear words.
+ * Generate grawlixes for a word.
+ * The term grawlix refers to the series of typographical symbols (such as @#$%!) used to represent swear words.
  *
- * @param  integer $length Desired length of string
+ * @param  string $word Word
  * @return string Generated grawlixes
  */
-function generate_grawlixes(int $length) : string
+function generate_grawlixes(string $word) : string
 {
-    $symbols = ['!', '@', '#', '$', '%', '&', '*'];
+    static $cache = [];
+    if (isset($cache[$word])) {
+        return $cache[$word];
+    }
+
+    $length = cms_mb_strlen($word);
+
+    $symbols = ['!', '@', '#', '$', '%', /*'&'Could cause issues with HTML and possibly even exploits, */'*'];
+
+    $r_max = count($symbols) - 1;
 
     $str = '';
+    $last_symbol = null;
+    for ($i = 0; $i < $length; $i++) {
+        do { // Make sure a symbol doesn't appear twice consecutively
+            $symbol = $symbols[mt_rand(0, $r_max)];
+        } while ($symbol === $last_symbol);
 
-    while (strlen($str) < $length) {
-        $symbol = $symbols[mt_rand(0, (count($symbols) - 1))];
+        $str .= $symbol;
 
-        if ($symbol !== substr($str, -1)) { // Make sure a symbol doesn't appear twice consecutively
-            $str .= $symbol;
-        }
+        $last_symbol = $symbol;
     }
+
+    $cache[$word] = $str;
 
     return $str;
 }

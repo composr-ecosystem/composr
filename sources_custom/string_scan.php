@@ -203,7 +203,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INCLUDE_IN_MAIN_SEARCH
         INCLUDE_ON_SITEMAP
         NEW_TASK_RUNNING_LOGGING
-        REPLACED_WITH_GRAWLIXES
+        WORD_WILL_REPLACED_WITH_GRAWLIXES
+        WORD_WILL_BE_BLOCKED
+        DUPLICATE_WORD
         REPLACE_WITH_GRAWLIXES
         SLIDE_TRANSITION_EFFECT
         SQL_DUMP_SAVED_TO

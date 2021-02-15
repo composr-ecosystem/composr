@@ -32,6 +32,7 @@ class Module_admin_wordfilter extends Standard_crud_module
     protected $table = 'wordfilter';
     protected $donext_entry_content_type = 'word';
     protected $donext_category_content_type = null;
+    protected $do_preview = false;
 
     /**
      * Find details of the module.
@@ -256,9 +257,9 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('WORD'), do_lang_tempcode('DESCRIPTION_WORD'), 'word', $word, true));
 
-        $fields->attach(form_input_line(do_lang_tempcode('REPLACEMENT'), do_lang_tempcode('DESCRIPTION_REPLACEMENT'), 'replacement', $replacement, false));
-
         $fields->attach(form_input_tick(do_lang_tempcode('REPLACE_WITH_GRAWLIXES'), do_lang_tempcode('DESCRIPTION_REPLACE_WITH_GRAWLIXES'), 'replace_with_grawlixes', $replacement === WORDFILTER_REPLACEMENT_GRAWLIXES));
+
+        $fields->attach(form_input_line(do_lang_tempcode('REPLACEMENT'), do_lang_tempcode('DESCRIPTION_REPLACEMENT'), 'replacement', $replacement, false));
 
         $radios = new Tempcode();
         $radios->attach(form_input_radio_entry('match_type', WORDFILTER_MATCH_TYPE_FULL, $match_type === WORDFILTER_MATCH_TYPE_FULL, do_lang_tempcode('WORDFILTER_MATCH_TYPE_full')));
@@ -304,6 +305,10 @@ class Module_admin_wordfilter extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'id', ['word' => $word]) !== null) {
+            warn_exit(do_lang_tempcode('DUPLICATE_WORD', escape_html($word)));
+        }
+
         $id = $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type], true);
 
         log_it('ADD_WORDFILTER', $word);
@@ -326,6 +331,11 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         if (!in_array($match_type, WORDFILTER_MATCH_TYPES)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        $conflict_id = $GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'id', ['word' => $word]);
+        if (($conflict_id !== null) && ($conflict_id != $id)) {
+            warn_exit(do_lang_tempcode('DUPLICATE_WORD', escape_html($word)));
         }
 
         $GLOBALS['SITE_DB']->query_update('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type], ['id' => $id]);
@@ -387,7 +397,17 @@ class Module_admin_wordfilter extends Standard_crud_module
 
             $values = [];
             $values[] = $row['word'];
-            $values[] = ($row['w_replacement'] === WORDFILTER_REPLACEMENT_GRAWLIXES) ? protect_from_escaping('<i>' . do_lang('REPLACED_WITH_GRAWLIXES') . '</i>') : $row['w_replacement'];
+            switch ($row['w_replacement']) {
+                case WORDFILTER_REPLACEMENT_GRAWLIXES:
+                    $values[] = protect_from_escaping('<i>' . do_lang('WORD_WILL_REPLACED_WITH_GRAWLIXES') . '</i>');
+                    break;
+                case '':
+                    $values[] = protect_from_escaping('<i>' . do_lang('WORD_WILL_BE_BLOCKED') . '</i>');
+                    break;
+                default:
+                    $values[] = $row['w_replacement'];
+                    break;
+            }
             $values[] = do_lang_tempcode('WORDFILTER_MATCH_TYPE_' . $row['w_match_type']);
             $values[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])));
 
