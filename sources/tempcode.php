@@ -1138,6 +1138,10 @@ function dependencies_are_good(string $directory, string $stem, string $codename
                 $SITE_INFO[$key] = 'JSON5,UTIL,DOM,CMS,CMS_FORM,CMS_UI,CMS_TEMPLATES,CMS_VIEWS,CMS_BEHAVIORS';
                 break;
 
+            case 'dependency__javascript__editing':
+                $SITE_INFO[$key] = 'WYSIWYG_SETTINGS';
+                break;
+
             default:
                 return true;
         }

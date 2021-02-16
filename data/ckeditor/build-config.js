@@ -102,7 +102,6 @@ var CKBUILDER_CONFIG = {
 		'scayt' : 1,
 		'showblocks' : 1,
 		'showborders' : 1,
-		'sourcearea' : 1,
 		'specialchar' : 1,
 		'stylescombo' : 1,
 		'tab' : 1,

@@ -40,7 +40,7 @@ var editorSettings = {
     enterMode: window.CKEDITOR.ENTER_BR,
     uiColor: wysiwygColor,
     ocpTheme: $cms.getTheme(),
-    removePlugins: '',
+    removePlugins: 'sourcearea',
     extraPlugins: 'showcomcodeblocks,spellchecktoggle' + (useComposrToolbar ? ',composr' : ''),
     /*{+START,IF,{$NEQ,{$CKEDITOR_PATH},data_custom/ckeditor}}*/
     customConfig: '',
