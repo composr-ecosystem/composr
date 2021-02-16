@@ -20,7 +20,7 @@
 
 	<h2>{!OPTION_GROUPS}</h2>
 
-	<form title="{!PRIMARY_PAGE_FORM}" class="js-form-primary-page" action="{URL*}" method="post" data-submit-pd="1">
+	<form title="{!PRIMARY_PAGE_FORM}" class="js-form-primary-page" action="{URL*}" method="post">
 		{$INSERT_SPAMMER_BLACKHOLE}
 
 		<div>
