@@ -110,7 +110,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
         gae_optimistic_cache(false);
     }
 
-    if (($support_smart_decaching) || (!$is_cached)) {
+    if ((!$is_cached) || ($support_smart_decaching)) {
         $found = find_template_place($j, '', $theme, '.js', 'javascript');
         if ($found === null) {
             return '';
@@ -123,11 +123,12 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
     }
 
     if (
+        (!$is_cached) ||
         ($support_smart_decaching &&
             (!is_file($js_cache_path)) ||
             ((filemtime($js_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            ((!empty($SITE_INFO['dependency__' . $full_path])) && (!dependencies_are_good(explode(',', $SITE_INFO['dependency__' . $full_path]), filemtime($js_cache_path))))
-        ) || (!$is_cached)
+            (!dependencies_are_good('javascript', $js_cache_stem, $j, $js_cache_stub, filemtime($js_cache_path)))
+        )
     ) {
         if (@filesize($full_path) == 0) {
             return '';
@@ -312,17 +313,20 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
     }
     $active_theme = $theme;
     $dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
-    $css_cache_path = $dir . '/' . filter_naughty($c);
+    $css_cache_stem = $dir;
+    $css_cache_stem .= '/';
+    $css_cache_stub = '';
     if (!$minify) {
-        $css_cache_path .= '_non_minified';
+        $css_cache_stub .= '_non_minified';
     }
     if ($https) {
-        $css_cache_path .= '_ssl';
+        $css_cache_stub .= '_ssl';
     }
     if ($mobile) {
-        $css_cache_path .= '_mobile';
+        $css_cache_stub .= '_mobile';
     }
-    $css_cache_path .= '.css';
+    $css_cache_stub .= '.css';
+    $css_cache_path = $css_cache_stem . filter_naughty($c) . $css_cache_stub;
 
     global $CACHE_TEMPLATES;
     $support_smart_decaching = support_smart_decaching();
@@ -339,7 +343,7 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
         gae_optimistic_cache(false);
     }
 
-    if (($support_smart_decaching) || (!$is_cached)) {
+    if ((!$is_cached) || ($support_smart_decaching)) {
         $found = find_template_place($c, '', $theme, '.css', 'css');
         if ($found === null) {
             return '';
@@ -352,11 +356,12 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
     }
 
     if (
+        (!$is_cached) ||
         ($support_smart_decaching &&
             (!is_file($css_cache_path)) ||
             ((filemtime($css_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            ((!empty($SITE_INFO['dependency__' . $full_path])) && (!dependencies_are_good(explode(',', $SITE_INFO['dependency__' . $full_path]), filemtime($css_cache_path))))
-        ) || (!$is_cached)
+            (!dependencies_are_good('css', $css_cache_stem, $c, $css_cache_stub, filemtime($css_cache_path)))
+        )
     ) {
         if (@filesize($full_path) == 0) {
             return '';
