@@ -10963,6 +10963,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _ADD_POST_TOP_LEVEL
         _ADD_POST_UNDER
         _ADD_PRIVATE_TOPIC
+        PRIVATE_TOPIC_WITH
         _ADD_PRIVATE_TOPIC_UNKNOWN
         _ADD_TOPIC
         _ALL

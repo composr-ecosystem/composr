@@ -170,7 +170,12 @@ class Module_topicview
             $title = get_screen_title('INLINE_PERSONAL_POSTS');
         } else {
             if ($topic_info['forum_id'] === null) {
-                $title = get_screen_title(do_lang_tempcode('NAMED_PRIVATE_TOPIC', escape_html($topic_info['title'])), false, [], do_lang_tempcode('READING_PRIVATE_TOPIC'));
+                if (($topic_info['pt_from'] !== null) && ($topic_info['pt_to'] !== null)) {
+                    $subtitle = do_lang_tempcode('PRIVATE_TOPIC_WITH', escape_html($GLOBALS['FORUM_DRIVER']->get_username($topic_info['pt_from'])), escape_html($GLOBALS['FORUM_DRIVER']->get_username($topic_info['pt_to'])));
+                } else {
+                    $subtitle = null;
+                }
+                $title = get_screen_title(do_lang_tempcode('NAMED_PRIVATE_TOPIC', escape_html($topic_info['title'])), false, [], do_lang_tempcode('READING_PRIVATE_TOPIC'), [], true, $subtitle);
             } else {
                 if ((get_value('disable_awards_in_titles') !== '1') && (addon_installed('awards'))) {
                     require_code('awards');
