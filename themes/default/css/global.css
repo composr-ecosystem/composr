@@ -208,7 +208,7 @@ In mobile mode:
 {$SET,stickied_header_modern_height,70px}
 {$SET,border_radius,4px}
 {$SET,border_radius_lg,6px}
-{$SET,font_weight_light,300} /**/
+{$SET,font_weight_light,300}
 {$SET,font_weight_medium,500} /* Varies by font: 500 for Roboto, 600 for Open Sans */
 
 {$SET,box_shadow_sm,0 2px 4px {$COLOR_RGBA,{$GET,BW},0.075}}
