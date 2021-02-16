@@ -868,33 +868,35 @@
             $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'),
             promises = [];
 
-        promises.push(new Promise(function (resolve) {
-            category = strVal(category) || '{!URL;^}';
-            var gaAction = strVal(action) || (el ? el.href : '{!UNKNOWN;^}');
+        if (useGA) {
+            promises.push(new Promise(function (resolve) {
+                category = strVal(category) || '{!URL;^}';
+                var gaAction = strVal(action) || (el ? el.href : '{!UNKNOWN;^}');
 
-            var okay = true;
-            try {
-                $util.log('Beacon', 'send', 'event', category, gaAction);
+                var okay = true;
+                try {
+                    $util.log('Beacon', 'send', 'event', category, gaAction);
 
-                window.ga('send', 'event', category, gaAction, { transport: 'beacon', hitCallback: resolve });
-            } catch (err) {
-                okay = false;
-            }
-
-            if (okay) {
-                if (el) { // pass as null if you don't want this
-                    setTimeout(function () {
-                        $util.navigate(el);
-                    }, 100);
+                    window.ga('send', 'event', category, gaAction, { transport: 'beacon', hitCallback: resolve });
+                } catch (err) {
+                    okay = false;
                 }
 
-                e && e.preventDefault(); // Cancel event because we'll be submitting by ourselves, either via $util.navigate() or on promise resolve
-            } else {
-                setTimeout(function () {
-                    resolve();
-                }, 100);
-            }
-        }));
+                if (okay) {
+                    if (el) { // pass as null if you don't want this
+                        setTimeout(function () {
+                            $util.navigate(el);
+                        }, 100);
+                    }
+
+                    e && e.preventDefault(); // Cancel event because we'll be submitting by ourselves, either via $util.navigate() or on promise resolve
+                } else {
+                    setTimeout(function () {
+                        resolve();
+                    }, 100);
+                }
+            }));
+        }
 
         if ((nativeTracking) && ($ADDON_INSTALLED_stats)) {
             var snippet = 'stats_event&event=' + encodeURIComponent(category);

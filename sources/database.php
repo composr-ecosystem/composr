@@ -1516,7 +1516,7 @@ class DatabaseConnector
                 require_code('database_security_filter');
 
                 if (is_simple_query($query)) {
-                    fatal_exit('It is highly recommended to use query_select/query_update/query_delete helper methods instead of the \'query\' method for this query -- in order to avoid having to write any SQL');
+                    fatal_exit('It is highly recommended to use query_select/query_update/query_delete helper methods instead of the \'query\' method for this query -- in order to avoid having to write any SQL, ' . $query);
                 }
 
                 if (!has_escaped_dynamic_sql($query)) {
@@ -1776,7 +1776,7 @@ class DatabaseConnector
                     require_code('database_security_filter');
 
                     if (is_simple_query($query)) {
-                        fatal_exit('It is highly recommended to use query_select/query_update/query_delete method instead of the \'query\' method for this query');
+                        fatal_exit('It is highly recommended to use query_select/query_update/query_delete method instead of the \'query\' method for this query, ' . $query);
                     }
 
                     if (!has_escaped_dynamic_sql($query)) {
