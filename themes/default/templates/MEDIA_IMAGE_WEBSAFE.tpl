@@ -74,9 +74,10 @@
 
 		{+START,IF_PASSED_AND_TRUE,WYSIWYG_EDITABLE}
 			alt="{DESCRIPTION*}"
+			{+START,IF_PASSED,FLOAT}style="float: {FLOAT*}"{+END}
 		{+END}
 
-		class="attachment-img"
+		class="attachment-img{+START,IF_PASSED,FLOAT} {FLOAT*} float-separation{+END}"
 		src="{$ENSURE_PROTOCOL_SUITABILITY*,{THUMB_URL}}"
 	/>{+START,IF,{THUMB}}</a>{+END}{+START,IF_PASSED,CLICK_URL}{+START,IF,{$NOT,{THUMB}}}</a>{+END}{+END}
 {+END}

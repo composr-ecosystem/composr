@@ -71,6 +71,9 @@ function cms_getimagesize_url(string $url, bool $only_if_local = false)
             $ext = null;
         }
 
+        if ($http_result->data === null) {
+            return false;
+        }
         $_details = cms_getimagesizefromstring($http_result->data, $ext);
         if ($_details === false) {
             return false;

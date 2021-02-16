@@ -52,6 +52,7 @@ var editorSettings = {
     imageShowLinkTab: !$cms.configOption('eager_wysiwyg'),
     imageShowSizing: !$cms.configOption('eager_wysiwyg'),
     autoUpdateElement: true,
+    contentsCss : pageStylesheets,
     cssStatic: css,
     startupOutlineBlocks: true,
     language: $cms.userLang() ? $cms.userLang().toLowerCase() : 'en',

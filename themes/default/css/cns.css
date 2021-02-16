@@ -420,13 +420,6 @@ div.cns-table-footer>div>div {
 	}
 /*{+END}*/
 
-/*{+START,CSS_MODE,mobile}*/
-	.cns-topic .cns-topic-post-member-details img:not([width]):not([height]) {
-		max-width: 100%;
-		height: auto;
-	}
-/*{+END}*/
-
 .cns-topic-poster-name {
 	text-align: center;
 	display: inline-block;
@@ -442,6 +435,7 @@ div.cns-table-footer>div>div {
 .cns-topic-post-avatar {
 	margin: 0 auto;
 }
+
 .cns-topic-post-avatar:not([width]):not([height]) {
 	max-width: 100%;
 	height: auto;
@@ -472,10 +466,6 @@ div.cns-table-footer>div>div {
 .cns-topic-post-area {
 	padding: 0.5em;
 	line-height: 1.6em;
-}
-.cns-topic-post-area img:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
 }
 .cns-topic-post-area #map-canvas img { /*some exceptions may need defining for the above*/
 	max-width: none;

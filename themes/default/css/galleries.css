@@ -910,11 +910,6 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	display: none;
 }
 
-.global-side-panel .img-thumb-wrap .img-thumb:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
-}
-
 /* Miscellaneous media handling */
 
 .gallery-pdf {

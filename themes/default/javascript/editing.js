@@ -428,6 +428,15 @@
                 wysiwygColor += (parseInt(matches[5]) + 4) + matches[6];
             }
 
+            // Composr CSS needs passing to CKEditor
+            var pageStylesheets = [];
+            var linkedSheets = document.getElementsByTagName('link');
+            for (var counter = 0; counter < linkedSheets.length; counter++) {
+                if (linkedSheets[counter].rel == 'stylesheet') {
+                    pageStylesheets.push(linkedSheets[counter].href);
+                }
+            }
+
             var editorSettings = {};
             /*{+START,INCLUDE,WYSIWYG_SETTINGS,.js,javascript}{+END}*/
 

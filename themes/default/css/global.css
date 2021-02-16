@@ -1682,18 +1682,9 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 .zone-running-docs .comcode-page {
 	line-height: 1.35em;
 }
-.zone-running-docs .comcode-page img:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
-}
 
 .global-middle-outer {
 	margin-top: 1em;
-}
-
-.global-middle img {
-	max-width: 100%;
-	height: auto;
 }
 
 .global-side-panel h2 {
@@ -1868,6 +1859,11 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 		margin: 0 2px;
 	}
 /*{+END}*/
+
+.global-middle-outer img:not([width]):not([height]) {
+	max-width: 100%;
+	height: auto;
+}
 
 .global-middle-faux .global-messages {
 	margin: 0; /* Probably inside a frame, hence already indented outside said frame */
@@ -2240,19 +2236,6 @@ div.edited {
 	border: 1px solid {$GET,standard_border};
 	box-shadow: 3px 3px 10px {$GET,standard_border};
 }
-.media-box>a>img:not([width]):not([height]),
-.media-box>img:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
-}
-
-.scale-down { /* Membership of this class is used as a tag to turn on image scale-to-fit */
-	max-width: 100%;
-}
-.scale-down:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
-}
 
 /* Used in a few places to make member links stand out */
 a.fancy-user-link em {
@@ -2549,10 +2532,6 @@ th.metadata-title {
 .img-thumb { /* Membership of this class is used as a tag to turn on the thumbnail blend effect */
 	opacity: 0.7;
 	transition: opacity 0.2s linear;
-}
-.img-thumb:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
 }
 .img-thumb:hover,
 .is-touch-enabled .img-thumb,
@@ -5106,10 +5085,6 @@ ul.associated-links-block-group {
 .box---confirm-screen {
 	margin-bottom: 2em;
 }
-.box---confirm-screen img:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
-}
 
 /*
 =========================
@@ -6827,10 +6802,6 @@ a[rel="lightbox"] {
 
 .attachment img, .attachment-img {
 	vertical-align: middle;
-}
-.attachment img:not([width]):not([height]), .attachment-img:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
 }
 
 .attachment figcaption {

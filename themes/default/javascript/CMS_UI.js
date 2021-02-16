@@ -1185,7 +1185,7 @@
 
                 var url = $util.rel($cms.maintainThemeInLink('{$FIND_SCRIPT_NOHTTP;,question_ui}?message=' + encodeURIComponent(message) + '&image_set=' + encodeURIComponent(imageSet.join(',')) + '&button_set=' + encodeURIComponent(buttonSet.join(',')) + '&window_title=' + encodeURIComponent(windowTitle) + $cms.keep()));
                 if (dialogWidth == null) {
-                    dialogWidth = 440;
+                    dialogWidth = 600;
                 }
                 if (dialogHeight == null) {
                     dialogHeight = 180;

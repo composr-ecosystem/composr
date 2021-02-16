@@ -31,8 +31,3 @@
 .column.last {
 	padding-right: 0;
 }
-
-.column img:not([width]):not([height]) {
-	max-width: 100%;
-	height: auto;
-}

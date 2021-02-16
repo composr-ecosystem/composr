@@ -9,12 +9,12 @@
  ext (the file extension, with no dot)
  */
 
-// Add any defaults into URL
-defaults.thumb = (isImage && !multi) ? '0' : '1';
-defaults.type = ''; // =autodetect rendering type
-
 // Shall we show the options overlay?
 showOverlay = !(multi || (isImage && $cms.configOption('simplified_attachments_ui')) || isArchive);
+
+// Add any defaults into URL
+defaults.thumb = (isImage && !multi && showOverlay) ? '0' : '1';
+defaults.type = ''; // =autodetect rendering type
 
 if (isImage) {
     tag = 'attachment_safe'; // [attachment_safe]

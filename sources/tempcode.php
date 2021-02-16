@@ -1142,6 +1142,10 @@ function dependencies_are_good(string $directory, string $stem, string $codename
                 $SITE_INFO[$key] = 'WYSIWYG_SETTINGS';
                 break;
 
+            case 'dependency__javascript__posting':
+                $SITE_INFO[$key] = 'ATTACHMENT_UI_DEFAULTS';
+                break;
+
             default:
                 return true;
         }

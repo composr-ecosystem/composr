@@ -14,7 +14,7 @@
 			cssBlock += 'tempcode' + trailing;
 			cssLtr += '.cke_contents_ltr tempcode' + trailing;
 			cssRtl += '.cke_contents_rtl tempcode' + trailing;
-			url = '{$FIND_SCRIPT_NOHTTP;,gd_text}?text=Tempcode%20tag&direction=horizontal&size=9&fg_color=seed-' + editor.config.ocpTheme + '&font=FreeMonoBold';
+			url = $cms.getBaseUrl() + '/data/gd_text.php?text=Tempcode%20tag&direction=horizontal&size=9&fg_color=seed-' + editor.config.ocpTheme + '&font=FreeMonoBold';
 			cssImg += 'tempcode{' +
 				'background-image:url(\'' + url + '\')' +
 			'}';
@@ -29,7 +29,7 @@
 				cssBlock += 'comcode-' + tag + trailing;
 				cssLtr += '.cke_contents_ltr comcode-' + tag + trailing;
 				cssRtl += '.cke_contents_rtl comcode-' + tag + trailing;
-				url = '{$FIND_SCRIPT_NOHTTP,gd_text}?text=Comcode%20' + tag.toUpperCase() + '%20tag&direction=horizontal&size=9&fg_color=seed-' + editor.config.ocpTheme + '&font=FreeMonoBold';
+				url = $cms.getBaseUrl() + '/data/gd_text.php?text=Comcode%20' + tag.toUpperCase() + '%20tag&direction=horizontal&size=9&fg_color=seed-' + editor.config.ocpTheme + '&font=FreeMonoBold';
 				cssImg += 'comcode-' + tag + '{' +
 					'background-image:url(\'' + url + '\')' +
 				'}';
@@ -45,7 +45,7 @@
 				cssInline += 'comcode-' + tag + trailing;
 				cssLtr += '.cke_contents_ltr comcode-' + tag + trailing;
 				cssRtl += '.cke_contents_rtl comcode-' + tag + trailing;
-				url = '{$FIND_SCRIPT_NOHTTP,gd_text}?text=Comcode%20' + tag.toUpperCase() + '%20tag&direction=horizontal&size=7&fg_color=seed-' + editor.config.ocpTheme + '&font=FreeMonoBold';
+				url = $cms.getBaseUrl() + '/data/gd_text.php?text=Comcode%20' + tag.toUpperCase() + '%20tag&direction=horizontal&size=7&fg_color=seed-' + editor.config.ocpTheme + '&font=FreeMonoBold';
 				cssImg += 'comcode-' + tag + '{' +
 					'background-image:url(\'' + url + '\');' +
 					'font-size:0.8em;' +

@@ -68,7 +68,7 @@
 
 	<div class="media-box">
 		{+START,IF_NON_PASSED,VIDEO}
-			<img class="scale-down" {+START,IF_EMPTY,{E_TITLE}}alt="{!IMAGE}"{+END} {+START,IF_NON_EMPTY,{E_TITLE}}alt="{E_TITLE*}"{+END} src="{$ENSURE_PROTOCOL_SUITABILITY*,{URL}}" itemprop="contentURL" />
+			<img{+START,IF_EMPTY,{E_TITLE}} alt="{!IMAGE}"{+END} {+START,IF_NON_EMPTY,{E_TITLE}}alt="{E_TITLE*}"{+END} src="{$ENSURE_PROTOCOL_SUITABILITY*,{URL}}" itemprop="contentURL" />
 		{+END}
 		{+START,IF_PASSED,VIDEO}
 			{VIDEO}
