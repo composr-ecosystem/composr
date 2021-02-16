@@ -142,7 +142,7 @@ class Hook_addon_registry_news_shared
             lorem_globalise(do_lorem_template('NEWS_BOX', [
                 'BLOG' => lorem_phrase(),
                 'AUTHOR_URL' => placeholder_url(),
-                'TAGS' => '',
+                'TAGS' => placeholder_tags(),
                 'CATEGORY' => lorem_phrase(),
                 '_CATEGORY' => placeholder_id(),
                 'CATEGORY_URL' => placeholder_url(),

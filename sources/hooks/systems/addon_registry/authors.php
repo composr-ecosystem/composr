@@ -220,7 +220,7 @@ class Hook_addon_registry_authors
 
         return [
             lorem_globalise(do_lorem_template('AUTHOR_SCREEN', [
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'TITLE' => lorem_title(),
                 'EDIT_URL' => placeholder_url(),
                 'AUTHOR' => lorem_phrase(),

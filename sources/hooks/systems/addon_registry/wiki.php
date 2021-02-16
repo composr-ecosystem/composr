@@ -288,7 +288,7 @@ class Hook_addon_registry_wiki
 
         return [
             lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'SHOW_POSTS' => placeholder_id(),
                 'ID' => placeholder_id(),
                 'CHAIN' => placeholder_id(),

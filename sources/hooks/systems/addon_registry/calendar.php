@@ -768,7 +768,10 @@ class Hook_addon_registry_calendar
      */
     public function tpl_preview__calendar_event_screen() : array
     {
+        require_javascript('editing');
+
         $subscriptions = [];
+
         foreach (placeholder_array() as $v) {
             $subscriptions[] = [
                 'UNSUBSCRIBE_URL' => placeholder_url(),
@@ -814,7 +817,7 @@ class Hook_addon_registry_calendar
                 'TITLE' => get_screen_title('CALENDAR_EVENT_VCAL', true, [lorem_phrase()]),
 
                 'ID' => placeholder_id(),
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'WARNING_DETAILS' => '',
                 'SUBMITTER' => placeholder_id(),
                 'ADD_DATE' => placeholder_date(),

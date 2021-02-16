@@ -259,6 +259,9 @@ class Hook_addon_registry_tickets
     {
         require_lang('cns');
 
+        require_javascript('ajax');
+        require_javascript('editing');
+
         $comments = new Tempcode();
 
         $comment_form = do_lorem_template('COMMENTS_POSTING_FORM', [

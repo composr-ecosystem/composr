@@ -662,6 +662,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_carousel_mode_video() : array
     {
+        require_javascript('editing');
+
         $video = do_lorem_template('GALLERY_CAROUSEL_MODE_VIDEO', [
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
@@ -743,7 +745,7 @@ class Hook_addon_registry_galleries
                 'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
                 'ENTRY_EDIT_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
-                'TAGS' => '',
+                'TAGS' => placeholder_tags(),
                 'RATING_DETAILS' => lorem_sentence_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'REP_IMAGE_URL' => placeholder_image_url(),
@@ -779,6 +781,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_carousel_mode_image() : array
     {
+        require_javascript('editing');
+
         $image = do_lorem_template('GALLERY_CAROUSEL_MODE_IMAGE', [
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
@@ -855,7 +859,7 @@ class Hook_addon_registry_galleries
                 'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
                 'ENTRY_EDIT_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
-                'TAGS' => '',
+                'TAGS' => placeholder_tags(),
                 'RATING_DETAILS' => lorem_sentence_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'REP_IMAGE_URL' => placeholder_image_url(),
@@ -989,6 +993,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_grid_mode_screen() : array
     {
+        require_javascript('editing');
+
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
@@ -1016,7 +1022,7 @@ class Hook_addon_registry_galleries
         return [
             lorem_globalise(do_lorem_template('GALLERY_GRID_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
-                'TAGS' => '',
+                'TAGS' => placeholder_tags(),
                 'CAT' => lorem_word(),
                 'MEMBER_DETAILS' => lorem_sentence_html(),
                 'RATING_DETAILS' => lorem_sentence_html(),
@@ -1051,6 +1057,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_entry_screen() : array
     {
+        require_javascript('editing');
+
         $nav = do_lorem_template('GALLERY_NAV', [
             'BACK_URL' => placeholder_url(),
             'NEXT_URL' => placeholder_url(),
@@ -1105,7 +1113,7 @@ class Hook_addon_registry_galleries
                 'E_TITLE' => lorem_phrase(),
                 'GALLERY_TITLE' => lorem_phrase(),
                 'MEMBER_ID' => placeholder_id(),
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'TITLE' => lorem_title(),
                 'SUBMITTER' => placeholder_id(),
                 'URL' => placeholder_url(),
@@ -1269,7 +1277,7 @@ class Hook_addon_registry_galleries
             lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
                 'MEMBER_ID' => '',
-                'TAGS' => '',
+                'TAGS' => placeholder_tags(),
                 'CAT' => '',
                 'MEMBER_DETAILS' => '',
                 'RATING_DETAILS' => '',

@@ -568,7 +568,7 @@ function sitemap_script_saving()
                 $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
 
                 if ($node === null) {
-                    fatal_exit('Could not lookup node for ' . $page_link);
+                    warn_exit('Could not lookup node for ' . $page_link);
                 }
                 $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
                 $overridable_privileges = ($node['content_type'] == 'comcode_page') ? [] : _get_overridable_privileges_for_privilege_page($privilege_page);

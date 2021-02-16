@@ -334,7 +334,7 @@ class Hook_addon_registry_quizzes
 
         return [
             lorem_globalise(do_lorem_template('QUIZ_SCREEN', [
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'ID' => placeholder_id(),
                 'WARNING_DETAILS' => $warning_details,
                 'URL' => placeholder_url(),

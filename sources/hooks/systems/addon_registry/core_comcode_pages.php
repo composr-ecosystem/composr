@@ -269,7 +269,7 @@ class Hook_addon_registry_core_comcode_pages
                 'BEING_INCLUDED' => false,
                 'IS_PANEL' => false,
                 'SUBMITTER' => placeholder_id(),
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'WARNING_DETAILS' => '',
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'SHOW_AS_EDIT' => lorem_phrase(),

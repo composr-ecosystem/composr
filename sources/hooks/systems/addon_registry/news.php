@@ -385,7 +385,7 @@ class Hook_addon_registry_news
             'LASTMEMBERID' => placeholder_id(),
             'DATE_RAW' => placeholder_date_raw(),
             'GIVE_CONTEXT' => false,
-            'TAGS' => '',
+            'TAGS' => placeholder_tags(),
             'FORUM_ID' => null,
             'BRIEF_CONTENT' => lorem_sentence_html(),
         ];
@@ -673,6 +673,8 @@ class Hook_addon_registry_news
      */
     public function tpl_preview__news_full_screen() : array
     {
+        require_javascript('editing');
+
         require_lang('news');
 
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
@@ -697,19 +699,6 @@ class Hook_addon_registry_news
             'COMMENT_URL' => placeholder_url(),
             'REVIEWS' => false,
             'ANALYTIC_EVENT_CATEGORY' => null,
-        ]);
-
-        $_tags = [];
-        foreach (placeholder_array() as $k => $v) {
-            $_tags[] = [
-                'TAG' => lorem_word(),
-                'LINK_LIMITEDSCOPE' => placeholder_url(),
-                'LINK_FULLSCOPE' => placeholder_url(),
-            ];
-        }
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => $_tags,
-            'TYPE' => '',
         ]);
 
         return [
@@ -739,7 +728,7 @@ class Hook_addon_registry_news
                 'ARCHIVE_URL' => placeholder_url(),
                 'SUBMIT_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
             ]), null, '', true)
         ];
     }

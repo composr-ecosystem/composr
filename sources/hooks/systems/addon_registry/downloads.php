@@ -315,7 +315,7 @@ class Hook_addon_registry_downloads
     {
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', [
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'TITLE' => lorem_title(),
                 'WARNING_DETAILS' => '',
                 'SUBMIT_URL' => placeholder_url(),
@@ -419,7 +419,7 @@ class Hook_addon_registry_downloads
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_SCREEN', [
                 'ORIGINAL_FILENAME' => lorem_phrase(),
-                'TAGS' => lorem_sentence_html(),
+                'TAGS' => placeholder_tags(),
                 'LICENCE' => lorem_phrase(),
                 'LICENCE_TITLE' => lorem_phrase(),
                 'LICENCE_HYPERLINK' => placeholder_link(),

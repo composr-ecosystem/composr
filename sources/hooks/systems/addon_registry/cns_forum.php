@@ -1503,6 +1503,8 @@ class Hook_addon_registry_cns_forum
             require_lang('polls');
         }
 
+        require_javascript('editing');
+
         $warning_details = do_lorem_template('WARNING_BOX', [
             'WARNING' => lorem_phrase(),
         ]);
