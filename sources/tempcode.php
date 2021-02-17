@@ -930,7 +930,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
 
                 $may_use_cache = false;
                 if ((!$support_smart_decaching) || (($tcp_time !== false) && ($found_disk_file))/*if in install can be found yet no file at path due to running from data.cms*/ && ($found !== null)) {
-                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($directory, $tcp_path_prefix, $codename, $tcp_path_suffix, $tcp_time)))) {
+                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($codename, $directory, $suffix, $theme, $tcp_time)))) {
                         $may_use_cache = true;
                     }
                 }
@@ -1119,20 +1119,24 @@ function strip_invisible_output_encoding(string $string) : string
 /**
  * Do a smart decache dependency check for the case of multiple files.
  *
- * @param  string $directory Subdirectory type to look in
- * @set templates javascript xml text css
- * @param  string $stem Stem to generate templates cache path
  * @param  string $codename Dependency codename
- * @param  string $stub Stub to generate templates cache path
+ * @param  string $suffix File type suffix of template file (e.g. .tpl)
+ * @set .tpl .js .xml .txt .css
+ * @param  string $directory Subdirectory type to look in
+ * @param  ?ID_TEXT $theme Theme to use (null: current theme)
  * @param  TIME $tcp_time Time of cache file
  * @return boolean Whether decache is NOT needed
  */
-function dependencies_are_good(string $directory, string $stem, string $codename, string $stub, int $tcp_time) : bool
+function dependencies_are_good(string $codename, string $suffix, string $directory, string $theme, int $tcp_time) : bool
 {
     $key = 'dependency__' . $directory . '__' . $codename;
 
     global $SITE_INFO;
     if (empty($SITE_INFO[$key])) {
+        if (!$GLOBALS['DEV_MODE']) {
+            return true;
+        }
+
         switch ($key) {
             case 'dependency__javascript__global':
                 $SITE_INFO[$key] = 'JSON5,UTIL,DOM,CMS,CMS_FORM,CMS_UI,CMS_TEMPLATES,CMS_VIEWS,CMS_BEHAVIORS';
@@ -1154,12 +1158,14 @@ function dependencies_are_good(string $directory, string $stem, string $codename
     $dep = explode(',', $SITE_INFO[$key]);
 
     foreach ($dep as $d) {
-        $path = $stem . $d . $stub;
-        $mtime = @filemtime($path);
-        if ($mtime === false) {
-            return false;
+        $found = find_template_place($d, '', $theme, $suffix, $directory);
+        $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
+        if (!is_file($full_path)) {
+            $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
         }
-        if ($mtime > $tcp_time) {
+
+        $mtime = @filemtime($full_path);
+        if (($mtime !== false) && ($mtime > $tcp_time)) {
             return false;
         }
     }

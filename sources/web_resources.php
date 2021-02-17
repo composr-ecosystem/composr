@@ -128,7 +128,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
         ($support_smart_decaching &&
             (!is_file($js_cache_path)) ||
             ((filemtime($js_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            (!dependencies_are_good('javascript', $js_cache_stem, $j, $js_cache_stub, filemtime($js_cache_path)))
+            (!dependencies_are_good($j, '.js', 'javascript', $active_theme, filemtime($js_cache_path)))
         )
     ) {
         if (@filesize($full_path) == 0) {
@@ -361,7 +361,7 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
         ($support_smart_decaching &&
             (!is_file($css_cache_path)) ||
             ((filemtime($css_cache_path) < filemtime($full_path)) && (@filemtime($full_path) <= time())) ||
-            (!dependencies_are_good('css', $css_cache_stem, $c, $css_cache_stub, filemtime($css_cache_path)))
+            (!dependencies_are_good($c, '.css', 'css', $active_theme, filemtime($css_cache_path)))
         )
     ) {
         if (@filesize($full_path) == 0) {
