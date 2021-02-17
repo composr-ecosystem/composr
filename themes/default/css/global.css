@@ -1170,11 +1170,13 @@ header.is-see-through.with-white-navbar {
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
 }
 
-header:not(.is-see-through).with-white-navbar {
-	color: {$GET,a.link};
-	background-color: {$GET,WB};
-	border-bottom: 1px solid {$GET,standard_border};
-}
+/*{+START,IF,{$NEQ,{$CONFIG_OPTION,theme_header_type},side}}*/
+	header:not(.is-see-through).with-white-navbar {
+		color: {$GET,a.link};
+		background-color: {$GET,WB};
+		border-bottom: 1px solid {$GET,standard_border};
+	}
+/*{+END}*/
 
 .header-modern {
 	{$BETA_CSS_PROPERTY,display: flex;}
@@ -1461,9 +1463,11 @@ header.with-seed-navbar .top-button:hover {
 /*{+END}*/
 
 /*{+START,CSS_MODE,desktop}*/
-	html.has-header-side #main-website-inner {
-		padding-left: 64px; /* Must be equal to side-header's width */
-	}
+	/*{+START,IF,{$NOT,{$THEME_OPTION,fixed_width}}}*/
+		html.has-header-side #main-website-inner {
+			padding-left: 64px; /* Must be equal to side-header's width */
+		}
+	/*{+END}*/
 
 	.header-side .global-navigation-items {
 		position: relative;
