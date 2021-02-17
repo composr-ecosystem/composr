@@ -865,6 +865,15 @@ function compile_template(string $data, string $template_name, string $theme, st
                                         $_force_original = '0';
                                     }
 
+                                    // This is needed for dependencies_are_good to work
+                                    if ($eval != $template_name) {
+                                        if ($_ex == '.js') {
+                                            javascript_enforce($eval, $_theme);
+                                        } elseif ($_ex == '.css') {
+                                            css_enforce($eval, $_theme);
+                                        }
+                                    }
+
                                     $found = find_template_place($eval, '', $_theme, $_ex, $_td, ($template_name === $eval) || ($_force_original == '1'));
 
                                     if (($found !== null) && ($found[1] !== null)) {

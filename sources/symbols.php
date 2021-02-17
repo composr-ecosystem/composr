@@ -6959,9 +6959,9 @@ function ecv_DECIMAL_POINT(string $lang, array $escaped, array $param) : string
  */
 function ecv_IS_ICON_IN_SVG_SPRITE(string $lang, array $escaped, array $param) : string
 {
-    static $sprite = null;
+    static $sprite_ids = null;
 
-    if ($sprite === null) {
+    if ($sprite_ids === null) {
         require_code('themes');
         $theme = isset($GLOBALS['FORUM_DRIVER']) ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
         $is_monochrome = function_exists('get_theme_option') && (get_theme_option('use_monochrome_icons') === '1');
@@ -6975,12 +6975,19 @@ function ecv_IS_ICON_IN_SVG_SPRITE(string $lang, array $escaped, array $param) :
         if (file_exists($path)) {
             $sprite = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         }
+
+        $sprite_ids = [];
+        $matches = [];
+        $num_matches = preg_match_all('#\sid="icon_([^"]*)"#', $sprite, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $sprite_ids[$matches[1][$i]] = true;
+        }
     }
 
     $icon_name = $param[0];
     $icon_id = str_replace('/', '__', $icon_name);
 
-    $value = (strpos($sprite, 'id="icon_' . $icon_id . '"') !== false) ? '1' : '0';
+    $value = isset($sprite_ids[$icon_id]) ? '1' : '0';
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

@@ -241,6 +241,9 @@ class Module_admin_stats extends Standard_crud_module
             $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_times_seen', ['l_times_seen']);
 
             $GLOBALS['SITE_DB']->create_index('stats', 'session_id', ['session_id']);
+
+            $GLOBALS['SITE_DB']->create_index('ip_country', 'begin_num', ['begin_num']);
+            $GLOBALS['SITE_DB']->create_index('ip_country', 'end_num', ['end_num']);
         }
     }
 

@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 
 {$REQUIRE_CSS,adminzone}
-{$REQUIRE_CSS,menu__dropdown}
-{$REQUIRE_CSS,menu__mobile}
-{$REQUIRE_JAVASCRIPT,core_menus}
 {$REQUIRE_CSS,helper_panel}
 
 {$SET,page_link_privacy,{$PAGE_LINK,:privacy}}

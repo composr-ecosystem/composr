@@ -1,5 +1,3 @@
-{$REQUIRE_JAVASCRIPT,core_menus}
-
 <div class="menu-editor-branch" id="branch-wrap-{I*}" data-tpl="menuEditorBranchWrap" data-tpl-params="{+START,PARAMS_JSON,CLICKABLE_SECTIONS,BRANCH_TYPE,I}{_*}{+END}">
 	<div class="menu-editor-branch-inner" id="branch-{I*}">
 		<label id="label-caption-{I*}" for="caption_{I*}">{!CAPTION}: </label>

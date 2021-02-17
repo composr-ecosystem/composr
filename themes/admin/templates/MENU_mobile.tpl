@@ -1,5 +1,5 @@
 {$REQUIRE_CSS,menu__mobile}
-{$REQUIRE_JAVASCRIPT,core_menus}
+
 {$SET,menu_id,r-{MENU|}-mobile-d}
 
 <a data-tpl="menuMobile" data-tpl-params="{+START,PARAMS_JSON,menu_id}{_*}{+END}" href="{$PAGE_LINK*,:sitemap}" class="mobile-menu-button js-click-toggle-{$GET,menu_id}-content">{+START,INCLUDE,ICON}NAME=menus/mobile_menu{+END}	<span>{!MENU}</span></a>

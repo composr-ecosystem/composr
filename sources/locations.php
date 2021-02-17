@@ -631,7 +631,7 @@ function geolocate_ip(?string $ip = null) : ?string
     }
 
     $query = 'SELECT * FROM ' . get_table_prefix() . 'ip_country WHERE begin_num<=' . sprintf('%u', $long_ip) . ' AND end_num>=' . sprintf('%u', $long_ip);
-    $results = $GLOBALS['SITE_DB']->query($query);
+    $results = $GLOBALS['SITE_DB']->query($query, 1);
 
     if (!array_key_exists(0, $results)) {
         $result[$ip] = null;

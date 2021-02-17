@@ -930,7 +930,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
 
                 $may_use_cache = false;
                 if ((!$support_smart_decaching) || (($tcp_time !== false) && ($found_disk_file))/*if in install can be found yet no file at path due to running from data.cms*/ && ($found !== null)) {
-                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good('templates', $tcp_path_prefix, $codename, $tcp_path_suffix, $tcp_time)))) {
+                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($directory, $tcp_path_prefix, $codename, $tcp_path_suffix, $tcp_time)))) {
                         $may_use_cache = true;
                     }
                 }
@@ -1154,8 +1154,12 @@ function dependencies_are_good(string $directory, string $stem, string $codename
     $dep = explode(',', $SITE_INFO[$key]);
 
     foreach ($dep as $d) {
-        $mtime = @filemtime($stem . $d . $stub);
-        if (($mtime === false) || ($mtime > $tcp_time)) {
+        $path = $stem . $d . $stub;
+        $mtime = @filemtime($path);
+        if ($mtime === false) {
+            return false;
+        }
+        if ($mtime > $tcp_time) {
             return false;
         }
     }

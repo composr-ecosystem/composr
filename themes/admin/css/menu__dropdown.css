@@ -186,7 +186,7 @@ For example:
 		 content: '\025BA'; /* Rightward triangle */
 		 float: right;
 		 font-size: 0.7em;
-		 margin: 0.5em 0 0 1em;
+		 margin: 0.2em 0 0 1em;
 		 transform: scale(0.6, 1);
 	}
 

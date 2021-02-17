@@ -493,7 +493,8 @@ function sheet_script()
 
     $sheet = get_param_string('sheet');
     if ($sheet != '') {
-        $path = css_enforce(filter_naughty($sheet), get_param_string('theme', null));
+        $theme = get_param_string('theme', null);
+        $path = css_enforce(filter_naughty($sheet), $theme);
         if ($path != '') {
             echo @str_replace('../../../', '', cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM));
         }
@@ -516,7 +517,8 @@ function script_script()
 
     $script = get_param_string('script');
     if ($script != '') {
-        $path = javascript_enforce(filter_naughty($script), get_param_string('theme', null));
+        $theme = get_param_string('theme', null);
+        $path = javascript_enforce(filter_naughty($script), $theme);
         if ($path != '') {
             echo @str_replace('../../../', '', cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM));
         }

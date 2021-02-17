@@ -53,6 +53,6 @@ class Hook_config_background_template_compilation
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '0';
     }
 }

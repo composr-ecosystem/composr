@@ -1,5 +1,4 @@
 {$REQUIRE_CSS,menu__popup}
-{$REQUIRE_JAVASCRIPT,core_menus}
 
 {+START,IF_NON_EMPTY,{CONTENT}}
 	{$SET,menu_id,r-{MENU|}-p}

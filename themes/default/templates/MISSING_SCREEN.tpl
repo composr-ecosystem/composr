@@ -35,7 +35,6 @@
 	<h2>{!SITEMAP}</h2>
 
 	{$REQUIRE_CSS,menu__sitemap}
-	{$REQUIRE_JAVASCRIPT,core_menus}
 	{$BLOCK-,block=menu,param=\,use_page_groupings=1,type=sitemap,quick_cache=1}
 
 	{+START,IF,{$ADDON_INSTALLED,search}}

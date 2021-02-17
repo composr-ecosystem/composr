@@ -1,6 +1,7 @@
 {$REQUIRE_CSS,menu__select}
-{$REQUIRE_JAVASCRIPT,core_menus}
+
 {$SET,menu_id,r-{MENU|}}
+
 <div class="menu-type--select" data-view="SelectMenu" data-view-params="{+START,PARAMS_JSON,MENU,JAVASCRIPT_HIGHLIGHTING,menu_id}{_*}{+END}">
 	<form title="{!MENU} ({!FORM_AUTO_SUBMITS})" method="get" action="#!">
 		<div>

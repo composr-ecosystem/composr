@@ -1,5 +1,3 @@
-{$REQUIRE_JAVASCRIPT,core_menus}
-
 <div class="menu-editor-branch-wrap" data-tpl="menuEditorBranch" data-tpl-params="{+START,PARAMS_JSON,CLICKABLE_SECTIONS, I}{_*}{+END}">
 	{CHILD_BRANCHES}
 

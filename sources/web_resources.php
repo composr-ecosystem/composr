@@ -79,6 +79,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
     if ($theme === null) {
         $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
     }
+    $active_theme = $theme;
     $dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
     $js_cache_stem = $dir;
     $js_cache_stem .= '/';
@@ -146,7 +147,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
         }
 
         require_code('web_resources2');
-        js_compile($j, $js_cache_path, $minify, $theme);
+        js_compile($j, $js_cache_path, $minify, $active_theme);
     }
 
     if (@intval(filesize($js_cache_path)) == 0/*@ for race condition*/) {
@@ -227,7 +228,7 @@ function _javascript_tempcode(string $j, object &$js, ?bool $_minify = null, ?bo
 
             $_theme = $GLOBALS['FORUM_DRIVER']->get_theme();
             $keep = symbol_tempcode('KEEP');
-            $url = find_script('script') . '?script=' . urlencode($j) . $keep->evaluate() . '&theme=' . urlencode($_theme);
+            $url = find_script('script') . '?script=' . urlencode($j) . '&theme=' . urlencode($_theme) . $keep->evaluate();
             if (get_param_string('keep_theme', null) !== $_theme) {
                 $url .= '&keep_theme=' . urlencode($_theme);
             }
@@ -494,7 +495,7 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
 
             $_theme = ($theme === null) ? $GLOBALS['FORUM_DRIVER']->get_theme() : $theme;
             $keep = symbol_tempcode('KEEP');
-            $url = find_script('sheet') . '?sheet=' . urlencode($c) . $keep->evaluate() . '&theme=' . urlencode($_theme);
+            $url = find_script('sheet') . '?sheet=' . urlencode($c) . '&theme=' . urlencode($_theme) . $keep->evaluate();
             if (get_param_string('keep_theme', null) !== $_theme) {
                 $url .= '&keep_theme=' . urlencode($_theme);
             }
