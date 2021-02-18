@@ -38,7 +38,6 @@ class Hook_config_use_site_name_text_as_logo
             'explanation' => 'CONFIG_OPTION_use_site_name_text_as_logo',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 5,
             'theme_override' => true,
             'required' => true,
             'public' => false,

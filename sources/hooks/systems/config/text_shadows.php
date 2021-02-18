@@ -34,11 +34,11 @@ class Hook_config_text_shadows
             'human_name' => 'TEXT_SHADOWS',
             'type' => 'tick',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'FLOURISHES',
             'explanation' => 'CONFIG_OPTION_text_shadows',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 14,
+            'order_in_category_group' => 2,
             'required' => true,
 
             'public' => false,

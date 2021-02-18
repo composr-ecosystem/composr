@@ -175,6 +175,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_search_days_default
         SEARCH_DID_YOU_MEAN
         CONFIG_OPTION_search_did_you_mean
+        FONT_SIZE
+        CONFIG_OPTION_font_size
         CAROUSEL_MODE
         MOSAIC_MODE
         CYCLE_DURATION
@@ -182,6 +184,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GRAPH_NOT_FOUND
         GRID_MODE
         HOMEPAGE_HERO_SLIDER
+        STUCK_NAV
+        CONFIG_OPTION_stuck_nav
         DESCRIPTION_SORTABLE
         LAYOUT_MODE
         ALLOW_TEMPLATE_SEARCH
@@ -217,12 +221,19 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WORDFILTER_MATCH_TYPE_substring
         CURVED_BORDERS
         CONFIG_OPTION_curved_borders
+        INNER_BACKGROUND
+        CONFIG_OPTION_inner_background
         TEXT_SHADOWS
         CONFIG_OPTION_text_shadows
         BOX_SHADOWS
         CONFIG_OPTION_box_shadows
         GRADIENTS
         CONFIG_OPTION_gradients
+        CONFIG_OPTION_fixed_width_VALUE_0
+        CONFIG_OPTION_fixed_width_VALUE_1
+        CONFIG_OPTION_fixed_width_VALUE_2
+        CONFIG_OPTION_fixed_width_VALUE_3
+        CONFIG_OPTION_fixed_width_VALUE_4
         BORDERS
         CONFIG_OPTION_borders
         AUTOFILL_HINT
@@ -2658,16 +2669,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CC_ADDRESS
         CDN
         CHANGE
-        CHANGE_BLOCK_BACKGROUND
         EDIT_TIME
         MODULE_TRANS_NAME_admin_robots_txt
         MODULE_TRANS_NAME_admin_privacy
-        CHANGE_FIXED_WIDTH
-        CHANGE_FONT
-        CHANGE_HEADER_IMAGE
-        CHANGE_INNER_BACKGROUND
         CHANGE_MICRO
-        CHANGE_OUTER_BACKGROUND
         CHANGE_REGULARITY
         CHANGE_USERGROUP_TO
         CHARGED_POINTS
@@ -6987,7 +6992,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         QUERY_FAILED
         QUERY_FAILED_TOO_BIG
         QUERY_NULL
-        QUICK_CSS_CHANGE_LINKS
         QUIZ_ANSWER_RESULT
         QUIZ_END_TEXT
         QUIZ_END_TEXT_FAIL

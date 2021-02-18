@@ -248,7 +248,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                 break;
             case 'themewizard_images':
                 $_default = [
-                    'background_image',
                     'big_tabs/controller_button',
                     'big_tabs/controller_button_active',
                     'big_tabs/controller_button_top',
@@ -287,7 +286,10 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                     'icons/trays/expand',
                     'icons/trays/expcon',
                     'icons/tree_field/category',
-                    'inner_background',
+                    'backgrounds/inner_background',
+                    'backgrounds/outer_background',
+                    'backgrounds/block_background',
+                    'backgrounds/background_image',
                     'logo/-logo',
                     'logo/default_backgrounds/banner1',
                     'logo/default_backgrounds/banner3C',
@@ -298,7 +300,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                     'logo/default_logos/logo5',
                     'logo/default_logos/logo7',
                     'logo/standalone_logo',
-                    'outer_background',
                     'perm_levels/*',
                     'poll/*',
                     'quote_gradient',

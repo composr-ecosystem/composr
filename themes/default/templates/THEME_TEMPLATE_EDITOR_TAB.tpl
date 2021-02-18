@@ -429,34 +429,6 @@
 						<p>{!CSS_EDITOR_SELECTOR_TIPS}</p>
 					</div></section>
 				</div>
-
-				{+START,IF,{$EQ,{FILE},css/global.css}}
-					<section class="box"><div class="box-inner">
-						<h3>{!QUICK_CSS_CHANGE_LINKS}:</h3>
-						<ul>
-							<li>
-								<a href="#!" class="js-a-editarea-search" data-ea-search="font-family">{!CHANGE_FONT}</a>
-							</li>
-							<li>
-								<a href="#!" class="js-a-editarea-search" data-ea-search="inner_background">{!CHANGE_INNER_BACKGROUND}</a>
-							</li>
-							<li>
-								<a href="#!" class="js-a-editarea-search" data-ea-search="&#10;\.box {">{!CHANGE_BLOCK_BACKGROUND}</a>
-							</li>
-							{+START,IF,{$THEME_OPTION,fixed_width}}
-								<li>
-									<a href="#!" class="js-a-editarea-search" data-ea-search="outer_background">{!CHANGE_OUTER_BACKGROUND}</a>
-								</li>
-								<li>
-									<a href="#!" class="js-a-editarea-search" data-ea-search="&#10;.logo-outer {">{!CHANGE_HEADER_IMAGE}</a>
-								</li>
-								<li>
-									<a href="#!" class="js-a-editarea-search" data-ea-search="#main-website #main-website-inner {">{!CHANGE_FIXED_WIDTH}</a>
-								</li>
-							{+END}
-						</ul>
-					</div></section>
-				{+END}
 			</div>
 		</div>
 	</div>

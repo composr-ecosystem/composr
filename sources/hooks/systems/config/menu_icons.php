@@ -34,11 +34,11 @@ class Hook_config_menu_icons
             'human_name' => 'MENU_ICONS',
             'type' => 'tick',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'ICONS',
             'explanation' => 'CONFIG_OPTION_menu_icons',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 6,
+            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
 

@@ -114,7 +114,7 @@ This file defines styles for Conversr (abbreviated as CNS).
 }
 
 /*{+START,CSS_MODE,desktop}*/
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		.cns-forum-box-left,
 		.ocf-forum-box-left {
 			border-top-left-radius: 10px;

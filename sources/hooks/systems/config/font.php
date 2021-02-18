@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_curved_borders
+class Hook_config_font
 {
     /**
      * Gets the details relating to the config option.
@@ -31,17 +31,17 @@ class Hook_config_curved_borders
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'CURVED_BORDERS',
-            'type' => 'tick',
+            'human_name' => 'FONT',
+            'type' => 'line',
             'category' => 'THEME',
-            'group' => 'FLOURISHES',
-            'explanation' => 'CONFIG_OPTION_curved_borders',
+            'group' => 'FONTS',
+            'explanation' => 'CONFIG_OPTION_font',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
-            'theme_override' => true,
+            'order_in_category_group' => 1,
             'required' => true,
-            'public' => true,
+
+            'public' => false,
 
             'addon' => 'core_configuration',
         ];
@@ -54,6 +54,6 @@ class Hook_config_curved_borders
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '"Roboto", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
     }
 }

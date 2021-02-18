@@ -7,7 +7,7 @@
 	background-color: {$GET,area_background};
 	border: 1px solid {$GET,pale_border};
 	margin-top: 1em;
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }

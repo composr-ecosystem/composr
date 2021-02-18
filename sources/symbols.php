@@ -6718,7 +6718,7 @@ function ecv_FONTS(string $lang, array $escaped, array $param) : string
 {
     $value = '';
 
-    $fonts = array_map('trim', explode(',', get_option('fonts')));
+    $fonts = array_map('trim', explode(',', get_option('editor_fonts')));
     $google_fonts = array_map('trim', explode(',', get_option('google_fonts')));
     $all_fonts = array_unique(array_merge($fonts, $google_fonts));
     cms_mb_sort($all_fonts, SORT_NATURAL | SORT_FLAG_CASE);

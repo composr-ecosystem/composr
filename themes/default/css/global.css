@@ -247,8 +247,8 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
 	margin: 0;
-	font-family: "Roboto", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	font-size: 14px;
+	font-family: {$THEME_OPTION,font};
+	font-size: {$THEME_OPTION,font_size}px;
 	font-weight: 400;
 	line-height: 1.5;
 	color: {$GET,body_color};
@@ -549,7 +549,7 @@ h1, h2, h3, h4, h5, h6,
 	font-weight: {$GET,font_weight_medium};
 	line-height: 1.2;
 	color: inherit;
-	/*{+START,IF,{$CONFIG_OPTION,text_shadows}}*/
+	/*{+START,IF,{$THEME_OPTION,text_shadows}}*/
 		text-shadow: 2px 2px 3px {$COLOR_RGBA,{$GET,seed_secondary},0.6};
 	/*{+END}*/
 }
@@ -642,7 +642,7 @@ textarea, input, code {
 .contrast-box {
 	padding: 15px 30px;
 	background-color: rgba(0, 0, 0, 0.5);
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 	color: {$GET,WB};
@@ -999,28 +999,40 @@ input.input-username::-webkit-calendar-picker-indicator {
 /*{+END}*/
 
 /* Styles for fixed width mode */
-/*{+START,IF,{$AND,{$THEME_OPTION,fixed_width},{$NEQ,{$THEME},admin}}}*/
+/*{+START,IF,{$AND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
 	/*{+START,CSS_MODE,desktop}*/
 		html > body#main-website { /* #main-website targets only the main site screen, avoiding frames etc */
 			/* Want to change the tiled background?
 				Try this web search to get image ideas https://duckduckgo.com/?q=tile+background&iax=images&ia=images
 				Find how to edit the referenced "outer_background" theme image by doing an Admin Zone search for "outer_background"
 			*/
-			background-image: url('{$IMG_INLINE;,outer_background}');
-			background-size: 220px 220px;
+			background-color: {$GET,fixed_width_background};
+			/*{+START,IF,{$NEQ,{$THEME_OPTION,fixed_width},4}}*/
+				background-image: url('{$IMG_INLINE;,backgrounds/outer_background}');
+				/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},1}}*/
+					background-size: 220px 220px;
+				/*{+END}*/
+				/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},2,3}}*/
+					background-repeat: no-repeat;
+					background-size: cover;
+					/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},2}}*/
+						background-attachment: fixed;
+					/*{+END}*/
+				/*{+END}*/
+			/*{+END}*/
 		}
 		#main-website #main-website-inner {
 			width: 980px;
 			position: relative;
 			margin: 15px auto 15px auto;
-			/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+			/*{+START,IF,{$THEME_OPTION,borders}}*/
 				border: 1px solid {$GET,fixed_width_border};
 			/*{+END}*/
-			/*{+START,IF,{$CONFIG_OPTION,box_shadows}}*/
+			/*{+START,IF,{$THEME_OPTION,box_shadows}}*/
 				box-shadow: 0 0 20px {$GET,standard_border};
 			/*{+END}*/
 		}
-		/*{+START,IF,{$NAND,{$THEME_OPTION,fixed_width},{$NEQ,{$THEME},admin}}}*/
+		/*{+START,IF,{$NAND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
 			#main-website #main-website-inner {
 				margin: 15px;
 			}
@@ -1183,7 +1195,7 @@ header.is-see-through.with-white-navbar {
 	header:not(.is-see-through).with-white-navbar {
 		color: {$GET,a.link};
 		background-color: {$GET,WB};
-		/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		/*{+START,IF,{$THEME_OPTION,borders}}*/
 			border-bottom: 1px solid {$GET,standard_border};
 		/*{+END}*/
 	}
@@ -1276,8 +1288,6 @@ html.is-scrolled .header-modern.is-sticky.with-white-navbar {
 	background: {$GET,seed};
 }
 
-
-header.with-seed-navbar .logo-link,
 header.with-seed-navbar .menu-dropdown-toggle-btn,
 header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link,
 header.with-seed-navbar.is-hover-interface .top-button {
@@ -1344,7 +1354,7 @@ header.with-seed-navbar .top-button:hover {
 }
 
 .top-button-bubble {
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 	margin-top: -50%;
@@ -1476,7 +1486,7 @@ header.with-seed-navbar .top-button:hover {
 /*{+END}*/
 
 /*{+START,CSS_MODE,desktop}*/
-	/*{+START,IF,{$NOT,{$THEME_OPTION,fixed_width}}}*/
+	/*{+START,IF,{$EQ,{$THEME_OPTION,fixed_width},0}}*/
 		html.has-header-side #main-website-inner {
 			padding-left: 64px; /* Must be equal to side-header's width */
 		}
@@ -1596,10 +1606,10 @@ header.with-seed-navbar .top-button:hover {
 }
 /*{+START,CSS_MODE,desktop}*/
 	.global-breadcrumbs {
-		/*{+START,IF,{$AND,{$THEME_OPTION,fixed_width},{$NEQ,{$THEME},admin}}}*/
+		/*{+START,IF,{$AND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
 			text-align: right; /* Goes on own line in fixed width mode, due to lack of space */
 		/*{+END}*/
-		/*{+START,IF,{$NAND,{$THEME_OPTION,fixed_width},{$NEQ,{$THEME},admin}}}*/
+		/*{+START,IF,{$NAND,{$NEQ,{$THEME_OPTION,fixed_width},0},{$NEQ,{$THEME},admin}}}*/
 			float: right; /* Sits beside title on non-fixed width */
 		/*{+END}*/
 		margin-left: 0.5em;
@@ -1669,15 +1679,14 @@ h1 + .title-tagline {
 body#main-website #main-website-inner, html > body div.global-middle-faux {
 	background-color: {$GET,main_background};
 
-	/* Want to set a tiled background?
-		Uncomment the code below
+	/*
 		Try this web search to get image ideas https://duckduckgo.com/?q=tile+background&iax=images&ia=images
 		Find how to edit the referenced "inner_background" theme image by doing an Admin Zone search for "inner_background"
 	*/
-	/*
-	background: url('{$IMG_INLINE;,inner_background}');
-	background-size: 300px 300px;
-	*/
+	/*{+START,IF,{$THEME_OPTION,inner_background}}*/
+		background: url('{$IMG_INLINE;,backgrounds/inner_background}');
+		background-size: 300px 300px;
+	/*{+END}*/
 }
 
 .main-website-faux {
@@ -1732,7 +1741,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	color: {$GET,panel_bottom_text};
 	background-color: {$GET,panel_bottom_background};
 	overflow: hidden;
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 5px solid {$GET,seed};
 	/*{+END}*/
 }
@@ -2362,7 +2371,7 @@ body button.button-hyperlink:hover {
 /* Used e.g. for "paginating" through the calendar (i.e. infinite pagination left/right) */
 .trinav-wrap {
 	background-color: {$GET,main_background};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: 20px;
 	/*{+END}*/
 	color: {$GET,heading_text};
@@ -2451,7 +2460,7 @@ em.red-alert {
 div.red-alert,
 p.red-alert,
 .inline-wip-message {
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 	padding: 1em;
@@ -2459,7 +2468,7 @@ p.red-alert,
 
 div.red-alert,
 p.red-alert {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,light_error_border};
 	/*{+END}*/
 	background-color: {$GET,light_error_background};
@@ -2474,7 +2483,7 @@ p.red-alert {
 }
 
 .inline-wip-message {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,dark_border};
 	/*{+END}*/
 	color: {$GET,slightly_seeded_text};
@@ -2627,17 +2636,24 @@ th.metadata-title {
 /* Boxes, which most blocks use to wrap their output */
 
 .box {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,standard_border};
 	/*{+END}*/
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
-	/*{+START,IF,{$CONFIG_OPTION,box_shadows}}*/
+	/*{+START,IF,{$THEME_OPTION,box_shadows}}*/
 		box-shadow: 3px 3px 14px 3px {$COLOR_RGBA,{$GET,area_2_background},0.7};
 	/*{+END}*/
 	margin: 1em 0;
 	background-color: {$GET,WB};
+	/*{+START,IF,{$THEME_OPTION,block_background}}*/
+		background: url('{$IMG_INLINE;,backgrounds/block_background}');
+		background-size: 300px 300px;
+	/*{+END}*/
+}
+.box .box {
+	background-image: none;
 }
 td > .box:first-child, .fake-table-cell > .box:first-child, .fake-table-cell > div:first-child > .box:first-child, .fake-table-cell > div:first-child > div:first-child > .box:first-child, .left .box:first-child:last-child, .right .box:first-child:last-child,
 td > .comcode-code:first-child, .fake-table-cell > .comcode-code:first-child, .fake-table-cell > div:first-child > .comcode-code:first-child, .fake-table-cell > div:first-child > div:first-child > .comcode-code:first-child, .left .comcode-code, .right .comcode-code,
@@ -2661,7 +2677,7 @@ td > .comcode-quote:first-child, .fake-table-cell > .comcode-quote:first-child, 
 	background-color: {$GET,area_5_background};
 }
 .box.nested {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,pale_border};
 	/*{+END}*/
 }
@@ -2699,12 +2715,12 @@ td > .comcode-quote:first-child, .fake-table-cell > .comcode-quote:first-child, 
 .toggleable-tray-title,
 #standalone-html-wrap .box .box .box-inner > h2,
 #standalone-html-wrap .box .box .box-inner > h3 {
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-top-left-radius: {$GET,border_radius};
 		border-top-right-radius: {$GET,border_radius};
 	/*{+END}*/
 	background-color: {$GET,box_title_background};
-	/*{+START,IF,{$CONFIG_OPTION,gradients}}*/
+	/*{+START,IF,{$THEME_OPTION,gradients}}*/
 		background-image: linear-gradient(to bottom, {$GET,area_background}, {$GET,area_4_background});
 	/*{+END}*/
 	color: {$GET,box_title_text};
@@ -2717,7 +2733,7 @@ td > .comcode-quote:first-child, .fake-table-cell > .comcode-quote:first-child, 
 	/* .box-inner set us in the wrong position, so fiddle around a bit to move us back to be flush */
 	margin: -10px -15px 10px -15px;
 	padding: 0.5em 0.8em 0.5em 0.3em;
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-bottom: 1px solid {$GET,standard_border};
 	/*{+END}*/
 }
@@ -2791,7 +2807,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 
 /* If we want a box to stand out less, give it 'pale-box' */
 .pale-box.box, .pale-box .box {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,pale_border};
 	/*{+END}*/
 }
@@ -2803,7 +2819,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	background-color: {$GET,point_of_interest_background} !important;
 	background-image: none;
 	color: {$GET,area_key_text};
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-bottom: 1px solid {$GET,pale_border};
 	/*{+END}*/
 }
@@ -2861,7 +2877,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .boxless-space .box + .fp-col-blocks-wrap,
 .boxless-space .fp-col-blocks-wrap + .box-wrapper,
 .boxless-space .fp-col-blocks-wrap + .box {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 2px solid {$GET,standard_border} !important;
 	/*{+END}*/
 	margin-top: 1.5em;
@@ -2882,7 +2898,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	width: 60%;
 	display: block;
 	margin: 0 auto;
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 1px solid {$GET,pale_border} !important;
 	/*{+END}*/
 	padding-top: 0.4em;
@@ -2893,7 +2909,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	width: 60%;
 	display: block;
 	margin: 0 auto 2em auto;
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 1px solid {$GET,pale_border} !important;
 	/*{+END}*/
 }
@@ -2941,14 +2957,14 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .box---message,
 .box---login-screen,
 .box---inform-screen {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,pale_border};
 	/*{+END}*/
 	background-color: {$GET,area_background};
 }
 
 .box---message-warn {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,light_error_border};
 	/*{+END}*/
 	background-color: {$GET,light_error_background};
@@ -3061,7 +3077,7 @@ h3 .toggleable-tray-button .icon {
 .meta-details {
 	font-size: 0.9em;
 	color: {$GET,area_text};
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-bottom: 1px dotted {$GET,pale_border};
 	/*{+END}*/
 	max-width: 100%;
@@ -3411,7 +3427,7 @@ table.scrollable-inside {
 	margin-top: 1em;
 }
 
-/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 	.results-table > thead:first-child > tr:first-child *:first-child,
 	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:first-child,
 	.results-table > tbody > tr:first-child > *:first-child {
@@ -3934,7 +3950,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	margin: 1em 5px;
 }
 .compacted-subbox-stream .box {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 1px dotted {$GET,standard_border} !important;
 	/*{+END}*/
 	border-left: 0;
@@ -3955,7 +3971,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	max-width: 150px;
 }
 .compacted-subbox-stream .box+.compacted-subbox-stream .box {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 1px solid {$GET,standard_border};
 	/*{+END}*/
 }
@@ -4035,7 +4051,7 @@ div.wysiwyg-toolbar-color-finder {
 	margin-top: -2em;
 	margin-left: -6em;
 	background-color: rgba(255,255,255,0.5);
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
@@ -4367,15 +4383,15 @@ div .buttons-group-faded > * {
 	background-color: {$GET,point_of_interest_background} !important;
 	padding: 1em !important;
 	margin-top: 1em;
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,pale_border} !important;
 	/*{+END}*/
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
 .comments-wrapper .boxless-space .comment-wrapper .highlighted-post.box {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border-top: 1px solid {$GET,pale_border} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
 	/*{+END}*/
 }
@@ -4706,7 +4722,7 @@ dl.meta-details-list > dt, dl.meta-details-list > dd {
 	font-size: 0.8em;
 	text-align: center;
 	border: 1px solid {$GET,pale_border};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 	background-color: {$GET,area_background};
@@ -5191,7 +5207,7 @@ ul.associated-links-block-group {
 	background-color: {$GET,WB};
 	background-clip: padding-box;
 	border: 1px solid {$GET,standard_border};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -6164,7 +6180,7 @@ input[type="button"].btn-block {
 	white-space: nowrap;
 	background-color: {$GET,input_disabled_background};
 	border: 1px solid {$GET,standard_border};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
@@ -6610,7 +6626,7 @@ td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-cod
 	padding: 4px;
 	margin: 0;
 	background-color: {$GET,code_title_background};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-top-left-radius: {$GET,border_radius};
 		border-top-right-radius: {$GET,border_radius};
 	/*{+END}*/
@@ -6620,10 +6636,10 @@ td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-cod
 
 .comcode-quote-inner,
 .comcode-code-inner {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,code_border};
 	/*{+END}*/
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-bottom-left-radius: {$GET,border_radius};
 		border-bottom-right-radius: {$GET,border_radius};
 	/*{+END}*/
@@ -6844,7 +6860,7 @@ body div.comcode-table-of-contents > div.box-inner > ol > li {
 }
 /*{+START,CSS_MODE,desktop}*/
 	.attachment {
-		/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		/*{+START,IF,{$THEME_OPTION,borders}}*/
 			border: 1px solid {$GET,standard_border};
 		/*{+END}*/
 		padding: 0.5em !important;
@@ -6893,7 +6909,7 @@ a[rel="lightbox"] {
 }
 
 .attachment figcaption {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,standard_border};
 	/*{+END}*/
 	padding: 0.15em 0.3em;
@@ -6929,11 +6945,11 @@ a[rel="lightbox"] {
 	margin: 1em 0;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,standard_border};
 	/*{+END}*/
 	background-color: {$GET,area_background};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }

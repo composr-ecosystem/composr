@@ -32,13 +32,12 @@ class Hook_config_fixed_width
     {
         return [
             'human_name' => 'FIXED_WIDTH',
-            'type' => 'tick',
+            'type' => 'list',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'LAYOUT',
             'explanation' => 'CONFIG_OPTION_fixed_width',
             'shared_hosting_restricted' => '0',
-            'list_options' => '',
-            'order_in_category_group' => 1,
+            'list_options' => '0|1|2|3|4',
             'theme_override' => true,
             'required' => true,
             'public' => true,

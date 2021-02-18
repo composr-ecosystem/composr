@@ -38,6 +38,7 @@ class Hook_config_google_fonts
             'explanation' => 'CONFIG_OPTION_google_fonts',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 3,
             'required' => true,
 
             'public' => false,

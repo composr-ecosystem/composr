@@ -34,11 +34,11 @@ class Hook_config_box_shadows
             'human_name' => 'BOX_SHADOWS',
             'type' => 'tick',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'FLOURISHES',
             'explanation' => 'CONFIG_OPTION_box_shadows',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 13,
+            'order_in_category_group' => 4,
             'required' => true,
 
             'public' => false,

@@ -34,11 +34,11 @@ class Hook_config_gradients
             'human_name' => 'GRADIENTS',
             'type' => 'tick',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'FLOURISHES',
             'explanation' => 'CONFIG_OPTION_gradients',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 12,
+            'order_in_category_group' => 1,
             'required' => true,
 
             'public' => false,

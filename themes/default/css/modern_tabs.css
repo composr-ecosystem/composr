@@ -12,7 +12,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 .modern-tabs {
 	border: 1px solid {$GET,standard_border};
 	background-color: {$GET,WB};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
@@ -20,7 +20,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 .modern-tab-headers {
 	overflow: hidden;
 	background-color: {$GET,area_5_background};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 	{$BETA_CSS_PROPERTY,display: flex;}

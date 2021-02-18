@@ -37,7 +37,7 @@ class Hook_config_chat_default_post_font
             'group' => 'SECTION_CHAT',
             'explanation' => 'CONFIG_OPTION_chat_default_post_font',
             'shared_hosting_restricted' => '0',
-            'list_options' => empty($GLOBALS['IN_MINIKERNEL_VERSION']) ? str_replace(',', '|', get_option('fonts')) : '',
+            'list_options' => empty($GLOBALS['IN_MINIKERNEL_VERSION']) ? str_replace(',', '|', get_option('editor_fonts')) : '',
             'required' => true,
 
             'public' => false,

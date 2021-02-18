@@ -103,7 +103,7 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 	padding-top: 0;
 }
 
-/*{+START,IF,{$THEME_OPTION,fixed_width}}*/
+/*{+START,IF,{$NEQ,{$THEME_OPTION,fixed_width},1}}*/
 	.global-breadcrumbs {
 		padding: 4px 0 7px 0;
 	}

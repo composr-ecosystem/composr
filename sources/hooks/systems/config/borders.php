@@ -34,11 +34,11 @@ class Hook_config_borders
             'human_name' => 'BORDERS',
             'type' => 'tick',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'FLOURISHES',
             'explanation' => 'CONFIG_OPTION_borders',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 10,
+            'order_in_category_group' => 5,
             'required' => true,
 
             'public' => false,

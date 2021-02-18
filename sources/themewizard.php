@@ -792,9 +792,9 @@ function calculate_theme(string $seed, string $source_theme, string $algorithm, 
 
                 if ($show == 'gradient') {
                     $img = generate_gradient($colours['lgrad'], $colours['dgrad']);
-                } elseif (($show == 'background_image')) {
+                } elseif (($show == 'backgrounds/background_image')) {
                     $img = generate_recoloured_image($path, '#FFFFFF', $colours['WB'], '#DDE5F7', $colours['washed_out']);
-                } elseif (($show == 'header') || ($show == 'outer_background') || ($show == 'inner_background') || ($show == 'big_tabs/controller_button_active') || ($show == 'big_tabs/controller_button_top_active') || ($show == 'big_tabs/controller_button_top') || ($show == 'big_tabs/controller_button')) {
+                } elseif (($show == 'header') || ($show == 'backgrounds/outer_background') || ($show == 'backgrounds/inner_background') || ($show == 'backgrounds/block_background') || ($show == 'big_tabs/controller_button_active') || ($show == 'big_tabs/controller_button_top_active') || ($show == 'big_tabs/controller_button_top') || ($show == 'big_tabs/controller_button')) {
                     $img = re_hue_image($path, $seed, $source_theme, false, $light_dark == 'dark');
                 } elseif ($show == 'quote_gradient') {
                     $img = generate_recoloured_image($path, '#072A66', $colours['dark_border'], '#C7D5EC', $colours['comcode_quote_left'], '#8CA7D2', $colours['comcode_quote_right'], 'horizontal');

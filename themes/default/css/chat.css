@@ -52,7 +52,7 @@
 .chat-posting-area {
 	border: 1px solid {$GET,pale_border};
 	padding: 0.5em;
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: 5px;
 	/*{+END}*/
 }
@@ -188,7 +188,7 @@
 	padding: 1em;
 	margin: 1em 0;
 	overflow: hidden;
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
@@ -484,7 +484,7 @@ html.is-touch-enabled .chat-message > div {
 	color: {$GET,native_ui_foreground};
 	border: 1px solid {$GET,pale_border};
 	box-shadow: 0px 0px 20px {$GET,dark_shadow};
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: 5px;
 	/*{+END}*/
 	padding: 1em;

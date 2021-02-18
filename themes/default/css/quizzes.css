@@ -13,7 +13,7 @@
 	background-color: rgba(209,201,13,0.3);
 	{$BETA_CSS_PROPERTY,user-select: none;}
 	padding: 0.3em;
-	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 		border-radius: 5px;
 	/*{+END}*/
 }

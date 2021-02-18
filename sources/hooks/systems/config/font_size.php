@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_fonts
+class Hook_config_font_size
 {
     /**
      * Gets the details relating to the config option.
@@ -31,16 +31,16 @@ class Hook_config_fonts
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'FONTS',
-            'type' => 'line',
+            'human_name' => 'FONT_SIZE',
+            'type' => 'integer',
             'category' => 'THEME',
             'group' => 'FONTS',
-            'explanation' => 'CONFIG_OPTION_fonts',
+            'explanation' => 'CONFIG_OPTION_font_size',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 5,
             'required' => true,
-
-            'public' => false,
+            'public' => true,
 
             'addon' => 'core_configuration',
         ];
@@ -53,6 +53,6 @@ class Hook_config_fonts
      */
     public function get_default() : ?string
     {
-        return 'Arial,Courier,Georgia,Impact,Times,Trebuchet,Verdana,Tahoma,Geneva,Helvetica';
+        return '14';
     }
 }

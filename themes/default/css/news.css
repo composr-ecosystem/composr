@@ -77,7 +77,7 @@
 
 .newscat-img-member,
 .newscat-img-author .news-by {
-	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+	/*{+START,IF,{$THEME_OPTION,borders}}*/
 		border: 1px solid {$GET,point_of_interest_border};
 	/*{+END}*/
 	background-color: {$GET,point_of_interest_background};

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_curved_borders
+class Hook_config_stuck_nav
 {
     /**
      * Gets the details relating to the config option.
@@ -31,18 +31,17 @@ class Hook_config_curved_borders
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'CURVED_BORDERS',
+            'human_name' => 'STUCK_NAV',
             'type' => 'tick',
             'category' => 'THEME',
-            'group' => 'FLOURISHES',
-            'explanation' => 'CONFIG_OPTION_curved_borders',
+            'group' => 'LAYOUT',
+            'explanation' => 'CONFIG_OPTION_stuck_nav',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
             'theme_override' => true,
-            'required' => true,
-            'public' => true,
 
+            'required' => true,
+            'public' => false,
             'addon' => 'core_configuration',
         ];
     }

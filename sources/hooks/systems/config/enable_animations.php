@@ -38,7 +38,6 @@ class Hook_config_enable_animations
             'explanation' => 'CONFIG_OPTION_enable_animations',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 7,
             'theme_override' => true,
             'required' => true,
             'public' => true,
