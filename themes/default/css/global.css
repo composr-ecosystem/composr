@@ -639,7 +639,9 @@ textarea, input, code {
 .contrast-box {
 	padding: 15px 30px;
 	background-color: rgba(0, 0, 0, 0.5);
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	color: {$GET,WB};
 }
 
@@ -1333,7 +1335,9 @@ header.with-seed-navbar .top-button:hover {
 }
 
 .top-button-bubble {
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	margin-top: -50%;
 	margin-left: -25%;
 	background: rgba(0, 0, 0, 0.7);
@@ -2347,7 +2351,9 @@ body button.button-hyperlink:hover {
 /* Used e.g. for "paginating" through the calendar (i.e. infinite pagination left/right) */
 .trinav-wrap {
 	background-color: {$GET,main_background};
-	border-radius: 20px;
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: 20px;
+	/*{+END}*/
 	color: {$GET,heading_text};
 	overflow: hidden;
 }
@@ -2434,7 +2440,9 @@ em.red-alert {
 div.red-alert,
 p.red-alert,
 .inline-wip-message {
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	padding: 1em;
 }
 
@@ -2605,7 +2613,9 @@ th.metadata-title {
 
 .box {
 	border: 1px solid {$GET,standard_border};
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	margin: 1em 0;
 	background-color: {$GET,WB};
 }
@@ -3974,7 +3984,9 @@ div.wysiwyg-toolbar-color-finder {
 	margin-top: -2em;
 	margin-left: -6em;
 	background-color: rgba(255,255,255,0.5);
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 }
 
 div.ajax-loading, p.ajax-loading {
@@ -4305,7 +4317,9 @@ div .buttons-group-faded > * {
 	padding: 1em !important;
 	margin-top: 1em;
 	border: 1px solid {$GET,pale_border} !important;
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 }
 .comments-wrapper .boxless-space .comment-wrapper .highlighted-post.box {
 	border-top: 1px solid {$GET,pale_border} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
@@ -4637,7 +4651,9 @@ dl.meta-details-list > dt, dl.meta-details-list>dd {
 	font-size: 0.8em;
 	text-align: center;
 	border: 1px solid {$GET,pale_border};
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	padding: 0.5em;
 	opacity: 0.4;
 	transition: opacity 0.6s linear;
@@ -5119,7 +5135,9 @@ ul.associated-links-block-group {
 	background-color: {$GET,WB};
 	background-clip: padding-box;
 	border: 1px solid {$GET,standard_border};
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
@@ -6090,7 +6108,9 @@ input[type="button"].btn-block {
 	white-space: nowrap;
 	background-color: {$GET,input_disabled_background};
 	border: 1px solid {$GET,standard_border};
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 }
 
 .input-group-text input[type="radio"],
@@ -6845,7 +6865,9 @@ a[rel="lightbox"] {
 	flex-wrap: wrap;
 	border: 1px solid {$GET,standard_border};
 	background-color: {$GET,area_background};
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 }
 
 .media-set * {

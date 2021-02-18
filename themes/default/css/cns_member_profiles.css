@@ -7,7 +7,9 @@
 	background-color: {$GET,area_background};
 	border: 1px solid {$GET,pale_border};
 	margin-top: 1em;
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 }
 
 .cns-profile-main h2 {

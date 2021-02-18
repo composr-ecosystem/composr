@@ -215,6 +215,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WORDFILTER_MATCH_TYPE_full
         WORDFILTER_MATCH_TYPE_prefix
         WORDFILTER_MATCH_TYPE_substring
+        CURVED_BORDERS
+        CONFIG_OPTION_curved_borders
         AUTOFILL_HINT
         AUTOFILL_TYPE
         AUTOFILL_TYPE_DESCRIPTION_additional_name

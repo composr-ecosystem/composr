@@ -54,7 +54,9 @@
 	font-weight: bold;
 	font-size: 0.85em;
 	margin: 1.5em 0 1em 0;
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	{$BETA_CSS_PROPERTY,user-select: none;} {$,To stop accidental touching on mobile form filling in}
 }
 /*{+START,CSS_MODE,desktop}*/
@@ -83,7 +85,9 @@ div.comcode-supported {
 }
 
 .input-erroneous.container-for-wysiwyg {
-	border-radius: 6px; /* WYSISWYG is curved so this stops it creating an ugly clash */
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: 6px; /* WYSISWYG is curved so this stops it creating an ugly clash */
+	/*{+END}*/
 }
 
 .input-error-here {
@@ -92,7 +96,9 @@ div.comcode-supported {
 	padding: 1em;
 	border: 1px solid {$GET,light_error_border};
 	background-color: {$GET,light_error_background};
-	border-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: {$GET,border_radius};
+	/*{+END}*/
 	margin-top: 0.5em;
 }
 
@@ -897,7 +903,9 @@ span.validated-checkbox + input[name="validated"].input-tick {
 .fields-set-item {
 	background-color: {$GET,main_background};
 	padding: 0.75em 0.5em;
-	border-radius: 5px;
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-radius: 5px;
+	/*{+END}*/
 	border: 1px solid {$GET,pale_border};
 }
 
