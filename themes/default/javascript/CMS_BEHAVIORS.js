@@ -1829,7 +1829,7 @@
     function convertTooltip(el) {
         var title = el.title ? el.title : ((el.localName === 'img') ? el.alt : (((el.localName === 'svg') && el.querySelector('title')) ? $dom.html(el.querySelector('title')) : ''));
 
-        if (!title || $cms.browserMatches('touch_enabled') || el.classList.contains('leave-native-tooltip') || el.dataset['mouseoverActivateTooltip']) {
+        if (!title || $cms.browserMatches('touch_enabled') || el.classList.contains('leave-native-tooltip') || el.parentNode && el.parentNode.classList.contains('tooltip') || el.dataset['mouseoverActivateTooltip']) {
             return;
         }
 

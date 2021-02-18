@@ -281,7 +281,9 @@
             return; // Too erratic
         }
 
-        $cms.ui.clearOutTooltips(el.tooltipId);
+        if ($cms.ui.clearOutTooltips(el.tooltipId)) {
+            return; // Already open
+        }
 
         // Add in move/leave events if needed
         if (!haveLinks) {
@@ -546,14 +548,19 @@
     /**
      * @memberof $cms.ui
      * @param tooltipBeingOpened - ID for a tooltip element to avoid deactivating
+     * @return If tooltipBeingOpened was already open
      */
     $cms.ui.clearOutTooltips = function clearOutTooltips(tooltipBeingOpened) {
         // Delete other tooltips, which due to browser bugs can get stuck
+        var ret = false;
         $dom.$$('.tooltip').forEach(function (el) {
-            if (!tooltipBeingOpened || (el.id !== tooltipBeingOpened)) {
+            if (el.id === tooltipBeingOpened) {
+                ret = (el.style.display != 'none');
+            } else {
                 $cms.ui.deactivateTooltip(el.ac, el);
             }
         });
+        return ret;
     };
 
     $dom.ready.then(function () {
