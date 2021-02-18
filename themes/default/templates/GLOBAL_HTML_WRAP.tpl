@@ -2,9 +2,9 @@
 
 {$SET,page_link_privacy,{$PAGE_LINK,:privacy}}
 
-{+START,SET,hero_slider}{+START,IF,{$ADDON_INSTALLED,galleries}}{+START,IF,{$THEME_OPTION,homepage_slider_enabled}}{+START,IF,{$OR,{$MATCH_KEY_MATCH,:home},{$MATCH_KEY_MATCH,site:home}}}
+{+START,SET,hero_slider}{+START,IF,{$AND,{$ADDON_INSTALLED,galleries},{$THEME_OPTION,homepage_slider_enabled},{$MATCH_KEY_MATCH,:home,site:home}}}
 	{$BLOCK,block=main_hero_slider,block_id=homepage-hero,gallery_name={$THEME_OPTION,homepage_slider_gallery},blank_if_empty=1,effect={$THEME_OPTION,homepage_slider_effect},interval={$THEME_OPTION,homepage_slider_cycle_duration},fullscreen={$THEME_OPTION,homepage_slider_fullscreen},show_scroll_down=1,check=0}
-{+END}{+END}{+END}{+END}
+{+END}{+END}
 
 {$SET,has_left_panel,{$IS_NON_EMPTY,{$TRIM,{$LOAD_PANEL,left}}}}
 {$SET,has_right_panel,{$IS_NON_EMPTY,{$TRIM,{$LOAD_PANEL,right}}}}

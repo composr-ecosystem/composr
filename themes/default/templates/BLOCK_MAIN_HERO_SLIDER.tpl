@@ -1,5 +1,5 @@
 {$SET,id,slider-{$REPLACE,_,-,{$REPLACE|,-,_,{BLOCK_ID}}}}
-<div id="{$GET*,id}" class="block-main-hero-slider cms-slider {+START,IF,{$EQ,{EFFECT},slide}}cms-slider-slide{+END} {+START,IF,{$EQ,{EFFECT},fade}}cms-slider-fade{+END} {+START,IF,{FULLSCREEN}}cms-slider-fullscreen{+END} {$?,{HAS_MULTIPLE_ITEMS},has-multiple-items,has-single-item}" data-cms-slider="{ interval: {INTERVAL%} }">
+<div id="{$GET*,id}" class="block-main-hero-slider cms-slider {+START,IF,{$EQ,{EFFECT},slide}}cms-slider-slide{+END} {+START,IF,{$EQ,{EFFECT},fade}}cms-slider-fade{+END} {+START,IF,{FULLSCREEN}}cms-slider-fullscreen{+END} {$?,{HAS_MULTIPLE_ITEMS},has-multiple-items,has-single-item}" data-cms-slider="{ {+START,IF_PASSED,INTERVAL}interval: {INTERVAL%}{+END} }">
 	{+START,IF_PASSED_AND_TRUE,SHOW_INDICATORS}
 		<ol class="cms-slider-indicators">
 			{+START,LOOP,ITEMS}
