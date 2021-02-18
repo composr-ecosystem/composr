@@ -549,6 +549,9 @@ h1, h2, h3, h4, h5, h6,
 	font-weight: {$GET,font_weight_medium};
 	line-height: 1.2;
 	color: inherit;
+	/*{+START,IF,{$CONFIG_OPTION,text_shadows}}*/
+		text-shadow: 2px 2px 3px {$COLOR_RGBA,{$GET,seed_secondary},0.6};
+	/*{+END}*/
 }
 
 h1, .h1 {
@@ -1010,8 +1013,12 @@ input.input-username::-webkit-calendar-picker-indicator {
 			width: 980px;
 			position: relative;
 			margin: 15px auto 15px auto;
-			border: 1px solid {$GET,fixed_width_border};
-			box-shadow: 0 0 20px {$GET,standard_border};
+			/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+				border: 1px solid {$GET,fixed_width_border};
+			/*{+END}*/
+			/*{+START,IF,{$CONFIG_OPTION,box_shadows}}*/
+				box-shadow: 0 0 20px {$GET,standard_border};
+			/*{+END}*/
 		}
 		/*{+START,IF,{$NAND,{$THEME_OPTION,fixed_width},{$NEQ,{$THEME},admin}}}*/
 			#main-website #main-website-inner {
@@ -1176,7 +1183,9 @@ header.is-see-through.with-white-navbar {
 	header:not(.is-see-through).with-white-navbar {
 		color: {$GET,a.link};
 		background-color: {$GET,WB};
-		border-bottom: 1px solid {$GET,standard_border};
+		/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+			border-bottom: 1px solid {$GET,standard_border};
+		/*{+END}*/
 	}
 /*{+END}*/
 
@@ -1723,7 +1732,9 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 	color: {$GET,panel_bottom_text};
 	background-color: {$GET,panel_bottom_background};
 	overflow: hidden;
-	border-top: 5px solid {$GET,seed};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 5px solid {$GET,seed};
+	/*{+END}*/
 }
 
 #panel-bottom .box {
@@ -2448,7 +2459,9 @@ p.red-alert,
 
 div.red-alert,
 p.red-alert {
-	border: 1px solid {$GET,light_error_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,light_error_border};
+	/*{+END}*/
 	background-color: {$GET,light_error_background};
 	overflow: hidden;
 	{$BETA_CSS_PROPERTY,display: flex;}
@@ -2461,7 +2474,9 @@ p.red-alert {
 }
 
 .inline-wip-message {
-	border: 1px solid {$GET,dark_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,dark_border};
+	/*{+END}*/
 	color: {$GET,slightly_seeded_text};
 	padding-left: 38px;
 }
@@ -2612,9 +2627,14 @@ th.metadata-title {
 /* Boxes, which most blocks use to wrap their output */
 
 .box {
-	border: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,standard_border};
+	/*{+END}*/
 	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
+	/*{+END}*/
+	/*{+START,IF,{$CONFIG_OPTION,box_shadows}}*/
+		box-shadow: 3px 3px 14px 3px {$COLOR_RGBA,{$GET,area_2_background},0.7};
 	/*{+END}*/
 	margin: 1em 0;
 	background-color: {$GET,WB};
@@ -2641,7 +2661,9 @@ td>.comcode-quote:first-child, .fake-table-cell>.comcode-quote:first-child, .fak
 	background-color: {$GET,area_5_background};
 }
 .box.nested {
-	border: 1px solid {$GET,pale_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,pale_border};
+	/*{+END}*/
 }
 .global-side-panel .box-inner > h1,
 .global-side-panel .box-inner > h2,
@@ -2677,9 +2699,14 @@ td>.comcode-quote:first-child, .fake-table-cell>.comcode-quote:first-child, .fak
 .toggleable-tray-title,
 #standalone-html-wrap .box .box .box-inner > h2,
 #standalone-html-wrap .box .box .box-inner > h3 {
-	border-top-left-radius: {$GET,border_radius};
-	border-top-right-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-top-left-radius: {$GET,border_radius};
+		border-top-right-radius: {$GET,border_radius};
+	/*{+END}*/
 	background-color: {$GET,box_title_background};
+	/*{+START,IF,{$CONFIG_OPTION,gradients}}*/
+		background-image: linear-gradient(to bottom, {$GET,area_background}, {$GET,area_4_background});
+	/*{+END}*/
 	color: {$GET,box_title_text};
 	text-align: center;
 	text-decoration: none;
@@ -2690,7 +2717,9 @@ td>.comcode-quote:first-child, .fake-table-cell>.comcode-quote:first-child, .fak
 	/* .box-inner set us in the wrong position, so fiddle around a bit to move us back to be flush */
 	margin: -10px -15px 10px -15px;
 	padding: 0.5em 0.8em 0.5em 0.3em;
-	border-bottom: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-bottom: 1px solid {$GET,standard_border};
+	/*{+END}*/
 }
 
 .box-inner > h1 + *,
@@ -2762,7 +2791,9 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 
 /* If we want a box to stand out less, give it 'pale-box' */
 .pale-box.box, .pale-box .box {
-	border: 1px solid {$GET,pale_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,pale_border};
+	/*{+END}*/
 }
 
 .box.pale-box h2,
@@ -2772,7 +2803,9 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	background-color: {$GET,point_of_interest_background} !important;
 	background-image: none;
 	color: {$GET,area_key_text};
-	border-bottom: 1px solid {$GET,pale_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-bottom: 1px solid {$GET,pale_border};
+	/*{+END}*/
 }
 
 /* If you want to mark a region as box-less, wrap a div with class 'boxless-space' around it -- it'll invoke a very different kind of modern styling */
@@ -2828,7 +2861,9 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .boxless-space .box + .fp-col-blocks-wrap,
 .boxless-space .fp-col-blocks-wrap + .box-wrapper,
 .boxless-space .fp-col-blocks-wrap + .box {
-	border-top: 2px solid {$GET,standard_border} !important;
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 2px solid {$GET,standard_border} !important;
+	/*{+END}*/
 	margin-top: 1.5em;
 	padding-top: 0.5em;
 }
@@ -2847,7 +2882,9 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	width: 60%;
 	display: block;
 	margin: 0 auto;
-	border-top: 1px solid {$GET,pale_border} !important;
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 1px solid {$GET,pale_border} !important;
+	/*{+END}*/
 	padding-top: 0.4em;
 }
 
@@ -2856,7 +2893,9 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	width: 60%;
 	display: block;
 	margin: 0 auto 2em auto;
-	border-top: 1px solid {$GET,pale_border} !important;
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 1px solid {$GET,pale_border} !important;
+	/*{+END}*/
 }
 
 .comments-wrapper .boxless-space .box + .box.highlighted-post::before {
@@ -2902,12 +2941,16 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .box---message,
 .box---login-screen,
 .box---inform-screen {
-	border: 1px solid {$GET,pale_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,pale_border};
+	/*{+END}*/
 	background-color: {$GET,area_background};
 }
 
 .box---message-warn {
-	border: 1px solid {$GET,light_error_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,light_error_border};
+	/*{+END}*/
 	background-color: {$GET,light_error_background};
 }
 
@@ -3018,7 +3061,9 @@ h3 .toggleable-tray-button .icon {
 .meta-details {
 	font-size: 0.9em;
 	color: {$GET,area_text};
-	border-bottom: 1px dotted {$GET,pale_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-bottom: 1px dotted {$GET,pale_border};
+	/*{+END}*/
 	max-width: 100%;
 	padding-left: 0.5em;
 	padding-bottom: 0.5em;
@@ -3366,30 +3411,32 @@ table.scrollable-inside {
 	margin-top: 1em;
 }
 
-.results-table>thead:first-child>tr:first-child *:first-child,
-.results-table>thead:nth-child(2)/*after colspan*/>tr:first-child *:first-child,
-.results-table>tbody>tr:first-child>*:first-child {
-	border-top-left-radius: 5px;
-}
-.results-table>thead:first-child>tr:first-child *:last-child,
-.results-table>thead:nth-child(2)/*after colspan*/>tr:first-child *:last-child,
-.results-table>tbody>tr:first-child>*:last-child {
-	border-top-right-radius: 5px;
-}
-.results-table.columned-table>tbody>tr:first-child>*:first-child {
-	border-top-left-radius: 0px;
-}
-.results-table.columned-table>tbody>tr:first-child>*:last-child {
-	border-top-right-radius: 0px;
-}
-.results-table>tbody:last-child>tr:last-child>*:first-child,
-.results-table>tbody>tr.last>*:first-child {
-	border-bottom-left-radius: 5px;
-}
-.results-table>tbody:last-child>tr:last-child>*:last-child,
-.results-table>tbody>tr.last>*:last-child {
-	border-bottom-right-radius: 5px;
-}
+/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+	.results-table>thead:first-child>tr:first-child *:first-child,
+	.results-table>thead:nth-child(2)/*after colspan*/>tr:first-child *:first-child,
+	.results-table>tbody>tr:first-child>*:first-child {
+		border-top-left-radius: 5px;
+	}
+	.results-table>thead:first-child>tr:first-child *:last-child,
+	.results-table>thead:nth-child(2)/*after colspan*/>tr:first-child *:last-child,
+	.results-table>tbody>tr:first-child>*:last-child {
+		border-top-right-radius: 5px;
+	}
+	.results-table.columned-table>tbody>tr:first-child>*:first-child {
+		border-top-left-radius: 0px;
+	}
+	.results-table.columned-table>tbody>tr:first-child>*:last-child {
+		border-top-right-radius: 0px;
+	}
+	.results-table>tbody:last-child>tr:last-child>*:first-child,
+	.results-table>tbody>tr.last>*:first-child {
+		border-bottom-left-radius: 5px;
+	}
+	.results-table>tbody:last-child>tr:last-child>*:last-child,
+	.results-table>tbody>tr.last>*:last-child {
+		border-bottom-right-radius: 5px;
+	}
+/*{+END}*/
 
 .results-table>*>tr>th {
 	text-align: right;
@@ -3887,7 +3934,9 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	margin: 1em 5px;
 }
 .compacted-subbox-stream .box {
-	border-top: 1px dotted {$GET,standard_border} !important;
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 1px dotted {$GET,standard_border} !important;
+	/*{+END}*/
 	border-left: 0;
 	border-right: 0;
 	border-bottom: 0;
@@ -3906,7 +3955,9 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	max-width: 150px;
 }
 .compacted-subbox-stream .box+.compacted-subbox-stream .box {
-	border-top: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 1px solid {$GET,standard_border};
+	/*{+END}*/
 }
 .compacted-subbox-stream .box a {
 	font-size: 1.1em;
@@ -4316,13 +4367,17 @@ div .buttons-group-faded > * {
 	background-color: {$GET,point_of_interest_background} !important;
 	padding: 1em !important;
 	margin-top: 1em;
-	border: 1px solid {$GET,pale_border} !important;
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,pale_border} !important;
+	/*{+END}*/
 	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
 }
 .comments-wrapper .boxless-space .comment-wrapper .highlighted-post.box {
-	border-top: 1px solid {$GET,pale_border} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border-top: 1px solid {$GET,pale_border} !important; /* Needs to be more explicit as boxless-space rules will remove borders */
+	/*{+END}*/
 }
 
 .reviews-average {
@@ -4654,6 +4709,7 @@ dl.meta-details-list > dt, dl.meta-details-list>dd {
 	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};
 	/*{+END}*/
+	background-color: {$GET,area_background};
 	padding: 0.5em;
 	opacity: 0.4;
 	transition: opacity 0.6s linear;
@@ -6554,17 +6610,23 @@ td>.comcode-code-wrap>.comcode-quote, td>.comcode-code-wrap>.comcode-code {
 	padding: 4px;
 	margin: 0;
 	background-color: {$GET,code_title_background};
-	border-top-left-radius: {$GET,border_radius};
-	border-top-right-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-top-left-radius: {$GET,border_radius};
+		border-top-right-radius: {$GET,border_radius};
+	/*{+END}*/
 	color: {$GET,WB};
 	font-size: 16px;
 }
 
 .comcode-quote-inner,
 .comcode-code-inner {
-	border: 1px solid {$GET,code_border};
-	border-bottom-left-radius: {$GET,border_radius};
-	border-bottom-right-radius: {$GET,border_radius};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,code_border};
+	/*{+END}*/
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		border-bottom-left-radius: {$GET,border_radius};
+		border-bottom-right-radius: {$GET,border_radius};
+	/*{+END}*/
 	display: block;
 	padding: 5px;
 	margin-left: 8px;
@@ -6782,7 +6844,9 @@ body div.comcode-table-of-contents>div.box-inner>ol>li {
 }
 /*{+START,CSS_MODE,desktop}*/
 	.attachment {
-		border: 1px solid {$GET,standard_border};
+		/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+			border: 1px solid {$GET,standard_border};
+		/*{+END}*/
 		padding: 0.5em !important;
 	}
 /*{+END}*/
@@ -6829,7 +6893,9 @@ a[rel="lightbox"] {
 }
 
 .attachment figcaption {
-	border: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,standard_border};
+	/*{+END}*/
 	padding: 0.15em 0.3em;
 	font-style: italic;
 	margin-bottom: 0.5em;
@@ -6863,7 +6929,9 @@ a[rel="lightbox"] {
 	margin: 1em 0;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
-	border: 1px solid {$GET,standard_border};
+	/*{+START,IF,{$CONFIG_OPTION,borders}}*/
+		border: 1px solid {$GET,standard_border};
+	/*{+END}*/
 	background-color: {$GET,area_background};
 	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
 		border-radius: {$GET,border_radius};

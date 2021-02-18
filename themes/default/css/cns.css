@@ -114,19 +114,21 @@ This file defines styles for Conversr (abbreviated as CNS).
 }
 
 /*{+START,CSS_MODE,desktop}*/
-	.cns-forum-box-left,
-	.ocf-forum-box-left {
-		border-top-left-radius: 10px;
-	}
-	.cns-forum-box-right {
-		border-top-right-radius: 10px;
-	}
-	.cns-left-post-buttons, .cns-forum-box-bleft {
-		border-bottom-left-radius: 10px;
-	}
-	.post-buttons, .cns-forum-box-bright {
-		border-bottom-right-radius: 10px;
-	}
+	/*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
+		.cns-forum-box-left,
+		.ocf-forum-box-left {
+			border-top-left-radius: 10px;
+		}
+		.cns-forum-box-right {
+			border-top-right-radius: 10px;
+		}
+		.cns-left-post-buttons, .cns-forum-box-bleft {
+			border-bottom-left-radius: 10px;
+		}
+		.post-buttons, .cns-forum-box-bright {
+			border-bottom-right-radius: 10px;
+		}
+	/*{+END}*/
 /*{+END}*/
 
 .cns-topic-list, .cns-forum-grouping, .cns-topic {

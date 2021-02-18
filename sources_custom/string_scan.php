@@ -217,6 +217,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WORDFILTER_MATCH_TYPE_substring
         CURVED_BORDERS
         CONFIG_OPTION_curved_borders
+        TEXT_SHADOWS
+        CONFIG_OPTION_text_shadows
+        BOX_SHADOWS
+        CONFIG_OPTION_box_shadows
+        GRADIENTS
+        CONFIG_OPTION_gradients
+        BORDERS
+        CONFIG_OPTION_borders
         AUTOFILL_HINT
         AUTOFILL_TYPE
         AUTOFILL_TYPE_DESCRIPTION_additional_name

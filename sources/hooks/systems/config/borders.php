@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_curved_borders
+class Hook_config_borders
 {
     /**
      * Gets the details relating to the config option.
@@ -31,17 +31,17 @@ class Hook_config_curved_borders
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'CURVED_BORDERS',
+            'human_name' => 'BORDERS',
             'type' => 'tick',
             'category' => 'THEME',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_curved_borders',
+            'explanation' => 'CONFIG_OPTION_borders',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 11,
-            'theme_override' => true,
+            'order_in_category_group' => 10,
             'required' => true,
-            'public' => true,
+
+            'public' => false,
 
             'addon' => 'core_configuration',
         ];

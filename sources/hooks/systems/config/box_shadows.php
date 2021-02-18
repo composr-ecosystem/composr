@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_curved_borders
+class Hook_config_box_shadows
 {
     /**
      * Gets the details relating to the config option.
@@ -31,17 +31,17 @@ class Hook_config_curved_borders
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'CURVED_BORDERS',
+            'human_name' => 'BOX_SHADOWS',
             'type' => 'tick',
             'category' => 'THEME',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_curved_borders',
+            'explanation' => 'CONFIG_OPTION_box_shadows',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 11,
-            'theme_override' => true,
+            'order_in_category_group' => 13,
             'required' => true,
-            'public' => true,
+
+            'public' => false,
 
             'addon' => 'core_configuration',
         ];
@@ -54,6 +54,6 @@ class Hook_config_curved_borders
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '0';
     }
 }

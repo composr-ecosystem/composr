@@ -254,11 +254,13 @@
 							</ul>
 						</nav>
 
-						<div class="global-copyright">
-							{$,Uncomment to show user's time {$DATE} {$TIME}}
+						{+START,IF_NON_EMPTY,{$COPYRIGHT}}
+							<div class="global-copyright">
+								{$,Uncomment to show user's time {$DATE} {$TIME}}
 
-							{$COPYRIGHT`}
-						</div>
+								{$COPYRIGHT`}
+							</div>
+						{+END}
 					</div>
 				</div>
 			</footer>
