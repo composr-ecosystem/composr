@@ -361,7 +361,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     float: right;
 }
 
-/* Replacer (the little preview div that shows up instead of the <input>) */
+/* Replacer (the little preview div that shows up instead of the <input > ) */
 .sp-replacer {
     margin:0;
     overflow:hidden;

@@ -4,16 +4,16 @@
 */
 
 /* Embossed menus should be flush to their box */
-.box---block-menu-embossed>.box-inner>h3 {
+.box---block-menu-embossed > .box-inner > h3 {
 	margin: 0;
 	padding-left: 0;
 	padding-right: 0;
 }
-.box---block-menu-embossed>.box-inner {
+.box---block-menu-embossed > .box-inner {
 	margin: 0;
 	position: relative;
 }
-.box---block-menu-embossed>.box-inner .inline-wip-message {
+.box---block-menu-embossed > .box-inner .inline-wip-message {
 	margin: 0.5em;
 }
 .box---block-menu-embossed .edit-menu-link-inline {

@@ -36,11 +36,11 @@
 	background: transparent url('{$IMG;,icons/menus/menu_bullet_current}') no-repeat 5px 5px;
 }
 
-.menu-type--tree .has-no-img>.drawer {
+.menu-type--tree .has-no-img > .drawer {
 	background: url('{$IMG;,icons/menus/menu_bullet_expand}') no-repeat 10px 5px !important;
 }
 
-.menu-type--tree .has-no-img>.drawer:hover {
+.menu-type--tree .has-no-img > .drawer:hover {
 	background: url('{$IMG;,icons/menus/menu_bullet_expand_hover}') no-repeat 10px 5px !important;
 }
 

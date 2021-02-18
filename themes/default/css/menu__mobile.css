@@ -43,7 +43,7 @@
 	box-shadow: 0px 20px 25px 0px {$GET,dark_border};
 }
 
-.menu-type--mobile>ul {
+.menu-type--mobile > ul {
 	border-bottom: 1px solid {$GET,standard_border};
 }
 

@@ -9,7 +9,7 @@
 	}
 /*{+END}*/
 
-.cns-information-bar-outer>.toggleable-tray {
+.cns-information-bar-outer > .toggleable-tray {
 	margin: 0; /* Undoes what .box-inner sets, so that our dividers are flush with the box border */
 	width: auto !important;
 }
@@ -22,10 +22,10 @@ html.is-touch-enabled .cns-information-bar-outer html.is-touch-enabled .toggleab
 	opacity: 1.0;
 }
 
-.cns-member-column>*:first-child, .cns-guest-column>*:first-child {
+.cns-member-column > *:first-child, .cns-guest-column > *:first-child {
 	margin-top: 0;
 }
-.cns-member-column>*:last-child, .cns-guest-column>*:last-child {
+.cns-member-column > *:last-child, .cns-guest-column > *:last-child {
 	margin-bottom: 0;
 }
 

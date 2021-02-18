@@ -74,15 +74,15 @@
 td.active-item {
 	background-color: {$GET,area_2_background} !important;
 }
-.active-item td.do-theme-items>div, td.active-item.do-theme-items>div {
+.active-item td.do-theme-items > div, td.active-item.do-theme-items > div {
 	background-color: {$GET,area_4_background} !important;
 }
 
-.active-item td.do-theme-items>div:hover, td.active-item.do-theme-items>div:hover {
+.active-item td.do-theme-items > div:hover, td.active-item.do-theme-items > div:hover {
 	background-color: {$GET,area_hover_background} !important;
 	cursor: pointer;
 }
-.do-theme-items>div:hover {
+.do-theme-items > div:hover {
 	outline: 1px dotted {$GET,standard_border};
 }
 

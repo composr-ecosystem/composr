@@ -55,7 +55,7 @@
 	width: 10em;
 }
 
-.notifications-form .form-table-field-spacer>th {
+.notifications-form .form-table-field-spacer > th {
 	border-top: 1px solid {$GET,standard_border};
 }
 

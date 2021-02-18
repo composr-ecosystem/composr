@@ -231,12 +231,12 @@
 	margin-right: 60px;
 }
 
-.chat-lobby-convos-area-messages .chat-message>div {
+.chat-lobby-convos-area-messages .chat-message > div {
 	margin-right: 40px;
 }
 
 .chat-message > div:hover,
-html.is-touch-enabled .chat-message>div {
+html.is-touch-enabled .chat-message > div {
 	opacity: 1;
 }
 

@@ -76,7 +76,7 @@
 	white-space: nowrap !important;
 }
 
-.carousel .box, .carousel-temp>* {
+.carousel .box, .carousel-temp > * {
 	display: inline-block;
 	max-width: 25em;
 	white-space: normal;

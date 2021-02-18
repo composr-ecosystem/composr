@@ -38,7 +38,7 @@
 	}
 /*{+END}*/
 
-.installer-main-inner>.box {
+.installer-main-inner > .box {
 }
 
 /*{+START,CSS_MODE,desktop}*/
@@ -184,7 +184,7 @@ textarea.mono-textbox {
 	padding: 0;
 }
 
-.installer-forums th>div {
+.installer-forums th > div {
 	text-align: left;
 	font-weight: bold;
 	padding: 0.5em;
@@ -194,7 +194,7 @@ textarea.mono-textbox {
 		background-color: {$GET,area_faded_background};
 	}
 
-	.installer-forums th>div {
+	.installer-forums th > div {
 		width: 75%;
 		height: 100%;
 		margin: 0 auto;
@@ -202,12 +202,12 @@ textarea.mono-textbox {
 		background-color: {$GET,area_faded_background};
 	}
 
-	.installer-forums th>div.left {
+	.installer-forums th > div.left {
 		border-left: 1px dotted {$GET,standard_border};
 		float: right;
 	}
 
-	.installer-forums th>div.right {
+	.installer-forums th > div.right {
 		border-right: 1px dotted {$GET,standard_border};
 		float: left;
 		text-align: right;
@@ -260,7 +260,7 @@ textarea.mono-textbox {
 	margin: 1em;
 }
 
-.install-log-table>p:first-child {
+.install-log-table > p:first-child {
 	margin-top: 0;
 }
 

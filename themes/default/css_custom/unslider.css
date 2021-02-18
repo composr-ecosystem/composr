@@ -24,14 +24,14 @@
 .unslider, .unslider a {
 	color: {$GET,text_light} !important;
 }
-.unslider>ul {
+.unslider > ul {
 	list-style: none;
 	width: 300%;
 	height: 100%;
 	margin: 0;
 	padding: 0;
 }
-.unslider>ul>li {
+.unslider > ul > li {
 	display: block;
 	float: left;
 	width: 33%;
@@ -43,19 +43,19 @@
 	direction: {!dir};
 }
 
-.unslider>ul>li div.feature-background-image {
+.unslider > ul > li div.feature-background-image {
 	padding: 150px 0 110px;
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 }
 
-.unslider>ul>li>div.comcode-page, .unslider>ul>li div.feature-background-image, .unslider>ul>li div.feature-image, .unslider>ul>li div.feature-video {
+.unslider > ul > li > div.comcode-page, .unslider > ul > li div.feature-background-image, .unslider > ul > li div.feature-image, .unslider > ul > li div.feature-video {
 	height: 100%;
 }
 
-.unslider>ul>li div.feature-image img,
-.unslider>ul>li div.feature-video iframe, .unslider>ul>li div.feature-video object, .unslider>ul>li div.feature-video embed, .unslider>ul>li div.feature-video video,
-.unslider>ul>li div.feature-image div, .unslider>ul>li div.feature-video div {
+.unslider > ul > li div.feature-image img,
+.unslider > ul > li div.feature-video iframe, .unslider > ul > li div.feature-video object, .unslider > ul > li div.feature-video embed, .unslider > ul > li div.feature-video video,
+.unslider > ul > li div.feature-image div, .unslider > ul > li div.feature-video div {
 	/* Takes precedence over anything in the HTML, i.e. like object.width */
 	width: 100% !important;
 	height: 100% !important;
@@ -117,7 +117,7 @@
 		line-height: 30px;
 	}
 
-	.unslider.responsive ul>li div.feature-background-image {
+	.unslider.responsive ul > li div.feature-background-image {
 		padding-top: 90px;
 		height: 240px;
 	}

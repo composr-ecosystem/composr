@@ -16,7 +16,7 @@
 	text-align: left;
 }
 
-.column>:first-child {
+.column > :first-child {
 	margin-top: 0;
 }
 

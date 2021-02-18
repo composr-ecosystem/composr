@@ -79,7 +79,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 /*{+START,CSS_MODE,desktop}*/
 	/*
 	Enable instead of the below selector if you would rather icon goes above label for short widths. In this case you also need to get equal header widths via  style="width: { $DIV_FLOAT*,100,{ TABS}}%" on the header div.
-	.modern-tab-headers>div>a>span {
+	.modern-tab-headers > div > a > span {
 		min-width: 5em; / * To force uniform wrapping if not enough space * /
 		padding: 0.3em 0; / * Will only take effect if wrapped * /
 	}*/
@@ -117,7 +117,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 	background-color: {$GET,box_title_background_2};
 }
 
-.modern-tabs .modern-tabs .modern-tab-headers>div>a {
+.modern-tabs .modern-tabs .modern-tab-headers > div > a {
 	padding: 0.5em;
 }
 
@@ -179,12 +179,12 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 	}
 /*{+END}*/
 
-.modern-subtab-headers>div>a, .modern-subtab-headers>div>a:visited, .modern-subtab-headers>div>a:active, .modern-subtab-headers>div>a:hover {
+.modern-subtab-headers > div > a, .modern-subtab-headers > div > a:visited, .modern-subtab-headers > div > a:active, .modern-subtab-headers > div > a:hover {
 	text-decoration: none;
 	color: inherit;
 }
 
-.modern-subtab-headers>div>a img {
+.modern-subtab-headers > div > a img {
 	display: none; /* No images shown for sub-tabs */
 }
 
@@ -192,7 +192,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 	padding: 0;
 }
 
-.modern-subtab-bodies>div {
+.modern-subtab-bodies > div {
 }
 
 /*{+START,CSS_MODE,mobile}*/ /* Horizontally scrolling sub-tabs on mobile */

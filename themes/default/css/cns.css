@@ -135,7 +135,7 @@ This file defines styles for Conversr (abbreviated as CNS).
 	border: 0 !important;
 	border-collapse: collapse;
 }
-.cns-topic-list td, .cns-forum-grouping td, .cns-topic>div>div>div {
+.cns-topic-list td, .cns-forum-grouping td, .cns-topic > div > div > div {
 	border: 1px solid {$GET,main_background};
 }
 /*{+START,CSS_MODE,mobile}*/
@@ -157,14 +157,14 @@ div.cns-table-footer {
 		display: none;
 	}
 /*{+END}*/
-div.cns-table-footer>div {
+div.cns-table-footer > div {
 	display: table-row-group;
 }
-div.cns-table-footer>div>div {
+div.cns-table-footer > div > div {
 	display: table-row;
 }
 
-.cns-table-footer>div {
+.cns-table-footer > div {
 	height: 0.3em;
 }
 
@@ -227,19 +227,19 @@ div.cns-table-footer>div>div {
 .cns-topic {
 	display: table;
 }
-.cns-topic>* {
+.cns-topic > * {
 	/*display: none; needed in case of unclosed <b> tags inside causing <b></b> throughout rest of document, due to HTML5 parse rules*/
 }
 .cns-topic .cns-topic-post {
 	display: table-row-group;
 }
-.cns-topic>div>* {
+.cns-topic > div > * {
 	/*display: none; ^ ditto*/
 }
 .cns-topic .cns-topic-section {
 	display: table-row;
 }
-.cns-topic>div>div>* {
+.cns-topic > div > div > * {
 	/*display: none; ^ ditto*/
 }
 .cns-topic .cns-topic-section > div {

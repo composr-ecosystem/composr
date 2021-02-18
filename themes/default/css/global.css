@@ -459,7 +459,7 @@ button::-moz-focus-inner,
 	padding: 0;
 	border-style: none;
 }
-.content-wrap-auto-center .img-box>figure {
+.content-wrap-auto-center .img-box > figure {
 	display: inline-block;
 }
 
@@ -729,8 +729,8 @@ thead > tr > th,
 }
 
 .light-table th, .light-table .fake-th,
-.light-table thead>tr>th, .light-table .boxless-space .box>table>thead>tr>th,
-.light-table .pte-set-box .box>table>thead>tr>th {
+.light-table thead > tr > th, .light-table .boxless-space .box > table > thead > tr > th,
+.light-table .pte-set-box .box > table > thead > tr > th {
 	background-color: {$GET,area_light_background};
 }
 
@@ -1666,7 +1666,7 @@ h1 + .title-tagline {
 	margin-top: -1.2em;
 }
 
-body#main-website #main-website-inner, html>body div.global-middle-faux {
+body#main-website #main-website-inner, html > body div.global-middle-faux {
 	background-color: {$GET,main_background};
 
 	/* Want to set a tiled background?
@@ -1981,10 +1981,10 @@ footer .global-footer-left .horizontal-buttons .icon {
 	}
 /*{+END}*/
 
-footer .global-footer-left .horizontal-buttons>li:first-child {
+footer .global-footer-left .horizontal-buttons > li:first-child {
 	padding-left: 0 !important;
 }
-footer .global-footer-left .horizontal-buttons>li {
+footer .global-footer-left .horizontal-buttons > li {
 	padding-left: 8px !important;
 }
 
@@ -2213,7 +2213,7 @@ div.edited {
 }
 
 /* Usage guide: Use on the immediate surrounding element, and make sure that there is no loose text inside (put that in a span) */
-.vertical-alignment, .vertical-alignment>* {
+.vertical-alignment, .vertical-alignment > * {
 	vertical-align: middle !important;
 }
 
@@ -2250,8 +2250,8 @@ div.edited {
 .media-box a {
 	outline: 0;
 }
-.media-box>a>img,
-.media-box>img {
+.media-box > a > img,
+.media-box > img {
 	border: 1px solid {$GET,standard_border};
 	box-shadow: 3px 3px 10px {$GET,standard_border};
 }
@@ -2509,7 +2509,7 @@ p.red-alert {
 	font-size: 0.9em;
 	position: relative;
 }
-.associated-links-block-group>li .comment-count {
+.associated-links-block-group > li .comment-count {
 	top: 2px;
 }
 .comment-count:hover {
@@ -2639,9 +2639,9 @@ th.metadata-title {
 	margin: 1em 0;
 	background-color: {$GET,WB};
 }
-td>.box:first-child, .fake-table-cell>.box:first-child, .fake-table-cell>div:first-child>.box:first-child, .fake-table-cell>div:first-child>div:first-child>.box:first-child, .left .box:first-child:last-child, .right .box:first-child:last-child,
-td>.comcode-code:first-child, .fake-table-cell>.comcode-code:first-child, .fake-table-cell>div:first-child>.comcode-code:first-child, .fake-table-cell>div:first-child>div:first-child>.comcode-code:first-child, .left .comcode-code, .right .comcode-code,
-td>.comcode-quote:first-child, .fake-table-cell>.comcode-quote:first-child, .fake-table-cell>div:first-child>.comcode-quote:first-child, .fake-table-cell>div:first-child>div:first-child>.comcode-quote:first-child, .left .comcode-quote, .right .comcode-quote {
+td > .box:first-child, .fake-table-cell > .box:first-child, .fake-table-cell > div:first-child > .box:first-child, .fake-table-cell > div:first-child > div:first-child > .box:first-child, .left .box:first-child:last-child, .right .box:first-child:last-child,
+td > .comcode-code:first-child, .fake-table-cell > .comcode-code:first-child, .fake-table-cell > div:first-child > .comcode-code:first-child, .fake-table-cell > div:first-child > div:first-child > .comcode-code:first-child, .left .comcode-code, .right .comcode-code,
+td > .comcode-quote:first-child, .fake-table-cell > .comcode-quote:first-child, .fake-table-cell > div:first-child > .comcode-quote:first-child, .fake-table-cell > div:first-child > div:first-child > .comcode-quote:first-child, .left .comcode-quote, .right .comcode-quote {
 	margin: 0;
 }
 /* Accordion boxes don't have margins */
@@ -2649,10 +2649,10 @@ td>.comcode-quote:first-child, .fake-table-cell>.comcode-quote:first-child, .fak
 	margin: 0 !important;
 }
 /* Don't do margins for boxes at the end of frames */
-/*#standalone-html-wrap>div>.box:first-child {	Actually we want this, due to how .fp-col-block has been written
+/*#standalone-html-wrap > div > .box:first-child {	Actually we want this, due to how .fp-col-block has been written
 	margin-top: 0;
 }*/
-#standalone-html-wrap>div>.box:last-child {
+#standalone-html-wrap > div > .box:last-child {
 	margin-bottom: 0;
 }
 
@@ -2740,7 +2740,7 @@ td>.comcode-quote:first-child, .fake-table-cell>.comcode-quote:first-child, .fak
 	margin: 0;
 }
 
-.box.box-prominent > .box-inner>h2 {
+.box.box-prominent > .box-inner > h2 {
 	padding: 0.8em;
 	margin: 0;
 	text-align: left;
@@ -2825,7 +2825,7 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 .boxless-space .fp-col-blocks-wrap .box {
 	margin: 0.5em 0; /* Half-sized margins for the fake-columns on front pages, as the overflow blocks margin collapsing */
 }
-.boxless-space .box>.box-inner {
+.boxless-space .box > .box-inner {
 	margin: 0;
 }
 .boxless-space .box > .box-inner > h1,
@@ -3083,7 +3083,7 @@ h3 .toggleable-tray-button .icon {
 	border-bottom: 0;
 	margin-bottom: 0.5em;
 }
-.box-inner>h3+.meta-details {
+.box-inner > h3+.meta-details {
 	margin-top: 0;
 }
 
@@ -3404,64 +3404,64 @@ table.scrollable-inside {
 .lined-up-boxes .results-table {
 	margin-top: 0;
 }
-.wide-table-wrap>.results-table {
+.wide-table-wrap > .results-table {
 	margin: 0; /* As overflow would cause margin doubling */
 }
-.wide-table-wrap + .wide-table-wrap>.results-table {
+.wide-table-wrap + .wide-table-wrap > .results-table {
 	margin-top: 1em;
 }
 
 /*{+START,IF,{$CONFIG_OPTION,curved_borders}}*/
-	.results-table>thead:first-child>tr:first-child *:first-child,
-	.results-table>thead:nth-child(2)/*after colspan*/>tr:first-child *:first-child,
-	.results-table>tbody>tr:first-child>*:first-child {
+	.results-table > thead:first-child > tr:first-child *:first-child,
+	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:first-child,
+	.results-table > tbody > tr:first-child > *:first-child {
 		border-top-left-radius: 5px;
 	}
-	.results-table>thead:first-child>tr:first-child *:last-child,
-	.results-table>thead:nth-child(2)/*after colspan*/>tr:first-child *:last-child,
-	.results-table>tbody>tr:first-child>*:last-child {
+	.results-table > thead:first-child > tr:first-child *:last-child,
+	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:last-child,
+	.results-table > tbody > tr:first-child > *:last-child {
 		border-top-right-radius: 5px;
 	}
-	.results-table.columned-table>tbody>tr:first-child>*:first-child {
+	.results-table.columned-table > tbody > tr:first-child > *:first-child {
 		border-top-left-radius: 0px;
 	}
-	.results-table.columned-table>tbody>tr:first-child>*:last-child {
+	.results-table.columned-table > tbody > tr:first-child > *:last-child {
 		border-top-right-radius: 0px;
 	}
-	.results-table>tbody:last-child>tr:last-child>*:first-child,
-	.results-table>tbody>tr.last>*:first-child {
+	.results-table > tbody:last-child > tr:last-child > *:first-child,
+	.results-table > tbody > tr.last > *:first-child {
 		border-bottom-left-radius: 5px;
 	}
-	.results-table>tbody:last-child>tr:last-child>*:last-child,
-	.results-table>tbody>tr.last>*:last-child {
+	.results-table > tbody:last-child > tr:last-child > *:last-child,
+	.results-table > tbody > tr.last > *:last-child {
 		border-bottom-right-radius: 5px;
 	}
 /*{+END}*/
 
-.results-table>*>tr>th {
+.results-table > * > tr > th {
 	text-align: right;
 }
 
-.results-table>thead>tr>th {
+.results-table > thead > tr > th {
 	text-align: left;
 }
 
-.results-table>*>tr>td, .results-table>*>tr>th {
+.results-table > * > tr > td, .results-table > * > tr > th {
 	border-top: 1px solid {$GET,standard_border};
 	border-right: 1px solid {$GET,standard_border};
 	padding: 0.5em;
 }
-.results-table>*>tr>td:first-child,
-.results-table>*>tr>th:first-child {
+.results-table > * > tr > td:first-child,
+.results-table > * > tr > th:first-child {
 	border-left: 1px solid {$GET,standard_border};
 }
-.results-table>tbody>tr:last-child>td,
-.results-table>tbody>tr.last>td,
-.results-table>tbody>tr:last-child>th {
+.results-table > tbody > tr:last-child > td,
+.results-table > tbody > tr.last > td,
+.results-table > tbody > tr:last-child > th {
 	border-bottom: 1px solid {$GET,standard_border};
 }
-.results-table>tfoot>tr>td,
-.results-table>tfoot>tr>th {
+.results-table > tfoot > tr > td,
+.results-table > tfoot > tr > th {
 	border-bottom: 1px solid {$GET,standard_border};
 }
 
@@ -3807,7 +3807,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	/*	max-width: 540px; Looks bad on forumview */
 }
 
-.pagination nav>* {
+.pagination nav > * {
 	vertical-align: middle;
 }
 .pagination .inline, .pagination nav {
@@ -3874,10 +3874,10 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	display: inline;
 }
 
-.pagination nav>a,
-.pagination nav>a:visited,
-.pagination nav>a:hover,
-.pagination nav>span,
+.pagination nav > a,
+.pagination nav > a:visited,
+.pagination nav > a:hover,
+.pagination nav > span,
 .results-launcher a,
 .results-launcher a:visited,
 .results-launcher a:hover,
@@ -3886,15 +3886,15 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	text-decoration: none;
 	margin-top: 0;
 }
-.pagination nav>a:hover,
+.pagination nav > a:hover,
 .results-launcher a:hover {
 	background-color: {$GET,area_hover_2_background};
 }
 /*{+START,CSS_MODE,desktop}*/
-	.pagination nav>a,
-	.pagination nav>a:visited,
-	.pagination nav>a:hover,
-	.pagination nav>span,
+	.pagination nav > a,
+	.pagination nav > a:visited,
+	.pagination nav > a:hover,
+	.pagination nav > span,
 	.results-launcher a,
 	.results-launcher a:visited,
 	.results-launcher a:hover,
@@ -3903,10 +3903,10 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
-	.pagination nav>a,
-	.pagination nav>a:visited,
-	.pagination nav>a:hover,
-	.pagination nav>span,
+	.pagination nav > a,
+	.pagination nav > a:visited,
+	.pagination nav > a:hover,
+	.pagination nav > span,
 	.results-launcher a,
 	.results-launcher a:visited,
 	.results-launcher a:hover,
@@ -3930,7 +3930,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 .compacted-subbox-stream.box-inner {
 }
 
-.compacted-subbox-stream>.raw-ajax-grow-spot>h3 {
+.compacted-subbox-stream > .raw-ajax-grow-spot > h3 {
 	margin: 1em 5px;
 }
 .compacted-subbox-stream .box {
@@ -3969,7 +3969,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	padding-top: 1.5em !important;
 	margin: 2em 0;
 }
-.compacted-subbox-stream.less-compact .box-inner>h3 {
+.compacted-subbox-stream.less-compact .box-inner > h3 {
 	font-size: 1.3em;
 }
 
@@ -4563,13 +4563,13 @@ ol.compact-list {
 	text-align: left; /* In case cascading from somewhere */
 }
 
-ul.compact-list>li,
-.global-side-panel ul>li,
-ol.compact-list>li {
+ul.compact-list > li,
+.global-side-panel ul > li,
+ol.compact-list > li {
 	margin: 0 0 0 17px;
 	padding: 0;
 }
-.compact-list>li>p {
+.compact-list > li > p {
 	margin-top: 0;
 }
 
@@ -4577,20 +4577,20 @@ dl.compact-list {
 	margin: 0.4em 0;
 	overflow: hidden;
 }
-dl.compact-list>dt {
+dl.compact-list > dt {
 	display: list-item;
 	list-style-type: circle;
 	float: left;
 	margin: 0 0.5em 0 8px;
 	clear: both;
 }
-.global-side-panel .box dl.compact-list>dt {
+.global-side-panel .box dl.compact-list > dt {
 	margin-left: 0;
 }
-dl.compact-list>dt::after {
+dl.compact-list > dt::after {
 	content: ":";
 }
-dl.compact-list>dd {
+dl.compact-list > dd {
 	margin: 0;
 }
 
@@ -4673,17 +4673,17 @@ ul.meta-details-list {
 	margin: 0;
 }
 
-ul.meta-details-list>li {
+ul.meta-details-list > li {
 	padding: 0;
 	margin: 0.2em 0;
 }
 
-dl.meta-details-list>dt {
+dl.meta-details-list > dt {
 	float: left;
 	clear: left;
 	padding-right: 0.4em !important;
 }
-dl.meta-details-list > dt, dl.meta-details-list>dd {
+dl.meta-details-list > dt, dl.meta-details-list > dd {
 	margin: 0;
 	padding: 0.2em 0;
 }
@@ -4847,7 +4847,7 @@ div.associated-link::after {
 	font-size: 0.8em;
 }
 /*{+START,CSS_MODE,desktop}*/
-	ul.associated-links-block-group.horizontal-links>li:last-child::after,
+	ul.associated-links-block-group.horizontal-links > li:last-child::after,
 	p.associated-link::after,
 	div.associated-link::after {
 		content: " )" !important;
@@ -4856,7 +4856,7 @@ div.associated-link::after {
 span.associated-link, a.associated-link, form.associated-link {
 	white-space: nowrap;
 }
-ul.associated-links-block-group>li::before,
+ul.associated-links-block-group > li::before,
 span.associated-link::before,
 a.associated-link::before,
 form.associated-link::before {
@@ -4880,7 +4880,7 @@ form.associated-link:first-child::before {
 ul.associated-links-block-group.horizontal-links > li::after { /* Undoes the above rules for if 'horizontal-links' is set (the rule further up will run instead and the middot one below) */
 	content: "" !important;
 }
-ul.associated-links-block-group>li::after,
+ul.associated-links-block-group > li::after,
 span.associated-link::after,
 a.associated-link::after,
 form.associated-link::after {
@@ -6242,7 +6242,7 @@ div.proceed-button-left-2 {
 	min-width: 0; /* Works around webkit bug, where it breaks max-width:100% inside because the size calculation has been inverted by the default "min-width: -webkit-min-content;" rule  */
 }
 
-.box-inner>.innocuous-fieldset {
+.box-inner > .innocuous-fieldset {
 	margin: 0;
 }
 
@@ -6354,7 +6354,7 @@ NB: Form buttons are wrapped in either:
 	background-color: {$GET,main_background};
 }
 
-.tab-surround>div>.box:first-child {
+.tab-surround > div > .box:first-child {
 	margin-top: 0;
 }
 
@@ -6409,10 +6409,10 @@ a.tab, a.tab:visited, a.tab:hover {
 	margin-right: 1px;
 }
 
-a.tab>img+span {
+a.tab > img+span {
 	padding-top: 0;
 }
-a.tab>span {
+a.tab > span {
 	padding-top: 3px;
 }
 
@@ -6474,10 +6474,10 @@ a.tab>span {
 		padding-right: 2px;
 	}
 /*{+END}*/
-div[role="tabpanel"]>div:first-child, div[role="tabpanel"]>style:first-child+div {
+div[role="tabpanel"] > div:first-child, div[role="tabpanel"] > style:first-child+div {
 	margin-top: 1em;
 }
-div[role="tabpanel"]>div:last-child {
+div[role="tabpanel"] > div:last-child {
 	margin-bottom: 1em;
 }
 
@@ -6516,7 +6516,7 @@ ul.nl, .nl ul {
 	padding-left: 0;
 }
 
-.nl ul>li, ul.nl>li {
+.nl ul > li, ul.nl > li {
 	display: block;
 	margin-left: 0;
 	padding-left: 0;
@@ -6524,7 +6524,7 @@ ul.nl, .nl ul {
 	list-style-image: none;
 }
 
-.has-img>a {
+.has-img > a {
 	/*
 	background: none !important;
 	padding-left: 0 !important;*/
@@ -6542,7 +6542,7 @@ ul.nl, .nl ul {
 	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
 }
 
-div:hover>.edit-menu-link-inline, div:hover>.edit-page-link-inline {
+div:hover > .edit-menu-link-inline, div:hover > .edit-page-link-inline {
 	opacity: 1.0 !important;
 }
 
@@ -6600,7 +6600,7 @@ div:hover>.edit-menu-link-inline, div:hover>.edit-page-link-inline {
 	outline: 0;
 	overflow: auto;
 }
-td>.comcode-code-wrap>.comcode-quote, td>.comcode-code-wrap>.comcode-code {
+td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-code {
 	margin: 0;
 }
 
@@ -6646,7 +6646,7 @@ td>.comcode-code-wrap>.comcode-quote, td>.comcode-code-wrap>.comcode-code {
 	white-space: nowrap;
 	overflow: auto;
 }
-.comcode-code-inner>div { /* Indicates syntax-highlighted, white-space already prepared nicely */
+.comcode-code-inner > div { /* Indicates syntax-highlighted, white-space already prepared nicely */
 	white-space: normal;
 }
 
@@ -6741,12 +6741,12 @@ pre .comcode-code-inner {
 	display: none;
 }
 
-body div.comcode-table-of-contents>div.box-inner>ol {
+body div.comcode-table-of-contents > div.box-inner > ol {
 	padding: 0 !important;
 	margin: 0 !important;
 	margin-left: 20px !important;
 }
-body div.comcode-table-of-contents>div.box-inner>ol>li {
+body div.comcode-table-of-contents > div.box-inner > ol > li {
 	margin: 0.2em 0 !important;
 	padding: 0 !important;
 }
@@ -6834,7 +6834,7 @@ body div.comcode-table-of-contents>div.box-inner>ol>li {
 
 .attachment {
 	margin: 1em 0;
-	margin-bottom: 1px !important; /* Overrides 0 on .left>figure, .right>figure */
+	margin-bottom: 1px !important; /* Overrides 0 on .left > figure, .right > figure */
 	font-size: 0.9em;
 	/*display: inline-block; Actually table works better, shows margins even when not floated*/
 	display: table;
@@ -6853,7 +6853,7 @@ body div.comcode-table-of-contents>div.box-inner>ol>li {
 figure {
 	margin: 1em 0;
 }
-.left>figure, .right>figure {
+.left > figure, .right > figure {
 	margin: 0;
 }
 /* Wordpress compatibility */

@@ -47,7 +47,7 @@
 	vertical-align: middle;
 }
 
-.quiz-form th>span.field-name {
+.quiz-form th > span.field-name {
 	position: relative;
 	display: inline-block;
 	padding-left: 60px;

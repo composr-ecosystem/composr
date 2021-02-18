@@ -9,19 +9,19 @@
 	margin: -0.5em 0 0 -0.5em;
 }
 
-.block-main-members>div {
+.block-main-members > div {
 	vertical-align: top;
 	margin: 0.5em 0 0 0.5em;
 }
 /*{+START,CSS_MODE,desktop}*/
-	.block-main-members>div {
+	.block-main-members > div {
 		width: calc(50% - 0.5em);
 	}
 /*{+END}*/
-.block-main-members--avatars>div {
+.block-main-members--avatars > div {
 	min-width: 0 !important;
 }
-.block-main-members>div>.box {
+.block-main-members > div > .box {
 	margin: 0;
 }
 
@@ -29,7 +29,7 @@
 	margin: 0;
 }
 
-.block-main-members--avatars>div, .block-main-members--photos>div, .block-main-members--media>div {
+.block-main-members--avatars > div, .block-main-members--photos > div, .block-main-members--media > div {
 	text-align: center;
 }
 

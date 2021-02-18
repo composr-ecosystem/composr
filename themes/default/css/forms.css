@@ -6,7 +6,7 @@
 /* General form-related styles */
 
 /*{+START,CSS_MODE,mobile}*/
-	.form-table, .form-table>tbody, .form-table>thead, .form-table>tbody>tr, .form-table>thead>tr, .form-table>tr, .form-table>tbody>tr>th, .form-table>thead>tr>th, .form-table>tr>th, .form-table>tbody>tr>td, .form-table>thead>tr>td, .form-table>tr>td {
+	.form-table, .form-table > tbody, .form-table > thead, .form-table > tbody > tr, .form-table > thead > tr, .form-table > tr, .form-table > tbody > tr > th, .form-table > thead > tr > th, .form-table > tr > th, .form-table > tbody > tr > td, .form-table > thead > tr > td, .form-table > tr > td {
 		display: block;
 		width: auto;
 		overflow: hidden;
@@ -16,14 +16,14 @@
 		border-bottom: 0 !important;
 	}
 
-	.form-table>tbody>tr>th, .form-table>thead>tr>th, .form-table>tr>th, .form-table>tbody>tr>td, .form-table>thead>tr>td, .form-table>tr>td {
+	.form-table > tbody > tr > th, .form-table > thead > tr > th, .form-table > tr > th, .form-table > tbody > tr > td, .form-table > thead > tr > td, .form-table > tr > td {
 		border-top: 0;
 		border-left: 0;
 		border-right: 0;
 	}
 
-	.form-table>tbody>tr>th label::after, .form-table>thead>tr>th label::after, .form-table>tr>th label::after,
-	.form-table>tbody>tr>th .faux-label::after, .form-table>thead>tr>th .faux-label::after, .form-table>tr>th .faux-label::after {
+	.form-table > tbody > tr > th label::after, .form-table > thead > tr > th label::after, .form-table > tr > th label::after,
+	.form-table > tbody > tr > th .faux-label::after, .form-table > thead > tr > th .faux-label::after, .form-table > tr > th .faux-label::after {
 		content: ":";
 	}
 /*{+END}*/
@@ -130,22 +130,22 @@ table.form-table { /* Some people think tables for forms are bad semantics. You 
 	margin: 1em 0;
 }
 
-.toggleable-tray>.wide-table-wrap:first-child>.form-table {
+.toggleable-tray > .wide-table-wrap:first-child > .form-table {
 	margin-top: 0;
 }
 
 /*
 Curved borders would be cool, but it does not work well with the carefully defined internal cell borders which we have
-.form-table>tbody>tr:first-child>:first-child {
+.form-table > tbody > tr:first-child > :first-child {
 	border-top-left-radius: 15px;
 }
-.form-table>tbody>tr:first-child>:last-child {
+.form-table > tbody > tr:first-child > :last-child {
 	border-top-right-radius: 15px;
 }
-.form-table>tbody>tr:last-child>:first-child {
+.form-table > tbody > tr:last-child > :first-child {
 	border-bottom-left-radius: 15px;
 }
-.form-table>tbody>tr:last-child>:last-child {
+.form-table > tbody > tr:last-child > :last-child {
 	border-bottom-right-radius: 15px;
 }
 */
@@ -197,8 +197,8 @@ td.form-table-field-input .form-screen-input-multi-list {
 .form-table-field-input,
 .form-table-huge-field,
 th.form-table-field-name, /* Extra specificity to take precedence over th.de-th */
-.form-table-field-spacer>th,
-.form-table-field-spacer>td,
+.form-table-field-spacer > th,
+.form-table-field-spacer > td,
 .form-table-description-above-cell,
 .form-table-description-under-cell {
 	border: 1px solid {$GET,standard_border};
@@ -206,7 +206,7 @@ th.form-table-field-name, /* Extra specificity to take precedence over th.de-th 
 	padding: 0.5em 0.75em;
 	background: {$GET,area_5_background};
 }
-.form-table-field-input>div:first-child>p:first-child {
+.form-table-field-input > div:first-child > p:first-child {
 	margin-top: 0;
 }
 .form-table-field-input input {
@@ -252,7 +252,7 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 	color: inherit !important;
 }
 
-.form-table-field-spacer>th, .form-table-field-spacer>td, .form-table-description-above-cell {
+.form-table-field-spacer > th, .form-table-field-spacer > td, .form-table-description-above-cell {
 	border-bottom: 0;
 }
 
@@ -625,7 +625,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	display: inline;
 }
 
-.css-colour-chooser-colour>div {
+.css-colour-chooser-colour > div {
 	overflow: hidden;
 }
 
@@ -993,10 +993,10 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	padding-left: 0;
 	padding-right: 0;
 }
-.cke_reset_all div[role="tabpanel"]>:first-child {
+.cke_reset_all div[role="tabpanel"] > :first-child {
 	margin-top: 0;
 }
-.cke_reset_all div[role="tabpanel"]>:last-child {
+.cke_reset_all div[role="tabpanel"] > :last-child {
 	margin-bottom: 0;
 }
 

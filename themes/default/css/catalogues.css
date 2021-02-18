@@ -88,11 +88,11 @@
 
 /* Particular fields types */
 
-.field-multilist>p:first-child {
+.field-multilist > p:first-child {
 	margin-top: 0;
 }
 
-.field-multilist>p:last-child {
+.field-multilist > p:last-child {
 	margin-bottom: 0;
 }
 

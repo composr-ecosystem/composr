@@ -27,7 +27,7 @@
 }
 
 /*{+START,CSS_MODE,mobile__overlay}*/
-	.login-page-form, .login-page-form>tbody, .login-page-form>thead, .login-page-form>tbody>tr, .login-page-form>thead>tr, .login-page-form>tr, .login-page-form>tbody>tr>th, .login-page-form>thead>tr>th, .login-page-form>tr>th, .login-page-form>tbody>tr>td, .login-page-form>thead>tr>td, .login-page-form>tr>td {
+	.login-page-form, .login-page-form > tbody, .login-page-form > thead, .login-page-form > tbody > tr, .login-page-form > thead > tr, .login-page-form > tr, .login-page-form > tbody > tr > th, .login-page-form > thead > tr > th, .login-page-form > tr > th, .login-page-form > tbody > tr > td, .login-page-form > thead > tr > td, .login-page-form > tr > td {
 		display: block;
 		width: auto;
 		overflow: hidden;

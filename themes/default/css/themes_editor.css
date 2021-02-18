@@ -73,7 +73,7 @@
 	width: 300px;
 }
 
-.do-theme-items>div {
+.do-theme-items > div {
 	width: 95px; /* We may have long labels here, so we don't want to let that make the table spacing weird */
 }
 
@@ -127,13 +127,13 @@
 	margin-bottom: 1em;
 }
 
-.css-editor-selectors>div ul {
+.css-editor-selectors > div ul {
 	display: block;
 	margin: 0;
 	padding: 0;
 }
 
-.css-editor-selectors>div li {
+.css-editor-selectors > div li {
 	display: inline-block;
 	margin: 0.2em;
 	padding: 0.2em;

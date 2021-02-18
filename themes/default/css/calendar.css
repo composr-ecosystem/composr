@@ -32,15 +32,15 @@ abbr.dtstart, abbr.dtend {
 }
 
 /*{+START,CSS_MODE,mobile}*/
-	.calendar-year-wrap, .calendar-year-wrap>tbody, .calendar-year-wrap>tbody>tr, .calendar-year-wrap>tbody>tr>td {
+	.calendar-year-wrap, .calendar-year-wrap > tbody, .calendar-year-wrap > tbody > tr, .calendar-year-wrap > tbody > tr > td {
 		display: block;
 	}
 
-	.calendar-year-wrap>tbody>tr>.fake-th {
+	.calendar-year-wrap > tbody > tr > .fake-th {
 		display: none;
 	}
 
-	.calendar-year-wrap>tbody>tr>td {
+	.calendar-year-wrap > tbody > tr > td {
 		overflow: hidden;
 		border: 0;
 	}
@@ -248,7 +248,7 @@ abbr.dtstart, abbr.dtend {
 	border-bottom-right-radius: 5px;
 }
 
-.calendar-date-span-link-inner>span {
+.calendar-date-span-link-inner > span {
 	font-weight: bold;
 }
 
@@ -403,7 +403,7 @@ td.day-spacer:hover {
 		margin-right: 16em;
 	}
 
-	.event-subscriptions>li {
+	.event-subscriptions > li {
 		font-size: 0.9em;
 		vertical-align: middle;
 	}
@@ -429,7 +429,7 @@ td.day-spacer:hover {
 		margin: 1em 0;
 	}
 
-	.event-subscriptions>li {
+	.event-subscriptions > li {
 		font-size: 0.95em;
 		vertical-align: middle;
 		margin-right: 6px;

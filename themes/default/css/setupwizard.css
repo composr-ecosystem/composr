@@ -3,7 +3,7 @@
  Copyright (c) ocProducts, 2004-2021
 */
 
-.box---setupwizard>.box-inner>h2 {
+.box---setupwizard > .box-inner > h2 {
 	text-align: left;
 	padding-left: 0.75em;
 	padding-top: 0.75em;

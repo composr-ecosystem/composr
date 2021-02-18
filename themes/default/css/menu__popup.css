@@ -56,11 +56,11 @@
 	color: {$GET,a.hover} !important;
 }
 
-.menu-type--popup li.current>a {
+.menu-type--popup li.current > a {
 	font-weight: bold;
 }
 
-.menu-type--popup .has-img>img {
+.menu-type--popup .has-img > img {
 	width: 20px;
 }
 
@@ -71,7 +71,7 @@
 .menu-type--popup .current a {
 	background: transparent url('{$IMG;,icons/menus/menu_bullet_current}') no-repeat 5px 5px !important;
 }
-.menu-type--popup .has-img.current>a {
+.menu-type--popup .has-img.current > a {
 	background: none !important;
 }
 

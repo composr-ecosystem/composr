@@ -14,7 +14,7 @@
 	text-align: center;
 }
 
-.buildr-navigation tbody>tr:first-child>td {
+.buildr-navigation tbody > tr:first-child > td {
 	border-radius: 0 !important;
 }
 
@@ -133,9 +133,9 @@
 	font-weight: bold;
 }
 
-.results-table[summary*="{!buildr:W_MOVEMENT_TABLE}"]>tbody>tr:first-child>*:first-child {
+.results-table[summary*="{!buildr:W_MOVEMENT_TABLE}"] > tbody > tr:first-child > *:first-child {
 	border-top-left-radius: 0px;
 }
-.results-table[summary*="{!buildr:W_MOVEMENT_TABLE}"]>tbody>tr:first-child>*:last-child {
+.results-table[summary*="{!buildr:W_MOVEMENT_TABLE}"] > tbody > tr:first-child > *:last-child {
 	border-top-right-radius: 0px;
 }
