@@ -3,7 +3,7 @@
 {$SET,HAS_CHILDREN,{$IS_NON_EMPTY,{CHILDREN}}}
 
 {$SET,RAND,{$RAND}}
-{$SET,img,{$?,{$AND,{$IS_EMPTY,{IMG}},{$LT,{THE_LEVEL},3}},{$IMG,icons/content_types/page},{IMG}}}
+{$SET,img,{$?,{$AND,{$IS_EMPTY,{IMG}},{$LT,{THE_LEVEL},3},{$THEME_OPTION,menu_icons}},{$IMG,icons/content_types/page},{IMG}}}
 {$SET,img_html,<img class="icon" alt="" src="{$GET*,img}" />}
 
 {+START,IF,{$PREG_MATCH,^{$BASE_URL}/themes/[^/]+/images(_custom)?/icons/,{$GET,img}}}

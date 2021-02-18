@@ -34,11 +34,10 @@ class Hook_config_wysiwyg_font_units
             'human_name' => 'WYSIWYG_FONT_UNITS',
             'type' => 'list',
             'category' => 'THEME',
-            'group' => 'GENERAL',
+            'group' => 'FONTS',
             'explanation' => 'CONFIG_OPTION_wysiwyg_font_units',
             'shared_hosting_restricted' => '0',
             'list_options' => 'px|em',
-            'order_in_category_group' => 8,
             'required' => true,
             'public' => true,
 

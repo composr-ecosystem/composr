@@ -395,6 +395,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/likes.php',
             'sources/hooks/systems/config/tree_lists.php',
             'sources/hooks/systems/config/lax_comcode.php',
+            'sources/hooks/systems/config/menu_icons.php',
             'sources/hooks/systems/config/mail_server_type.php',
             'sources/hooks/systems/config/mail_server_host.php',
             'sources/hooks/systems/config/mail_server_port.php',

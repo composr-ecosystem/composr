@@ -2137,7 +2137,7 @@
             var menuItem = $dom.parent(target, '.menu-dropdown-item'),
                 popupEl = menuItem.querySelector('.menu-dropdown-items');
 
-            popupMenu(popupEl, menuItem.classList.contains('toplevel') ? 'below' : 'right', this.menuId, true);
+            popupMenu(popupEl, menuItem.classList.contains('toplevel') ? 'below' : 'right', this.menuId);
         },
 
         toggleFocusClassOnMenuItems: function () {
@@ -2459,11 +2459,10 @@
      * @param menu
      * @param outsideFixedWidth
      */
-    function popupMenu(popupEl, place, menu, outsideFixedWidth) {
+    function popupMenu(popupEl, place, menu) {
         popupEl = $dom.elArg(popupEl);
         place = strVal(place) || 'right';
         menu = strVal(menu);
-        outsideFixedWidth = Boolean(outsideFixedWidth);
 
         if (cleanMenusTimeout) {
             clearTimeout(cleanMenusTimeout);
@@ -2477,7 +2476,8 @@
         cleanMenus();
 
         var left = 0,
-            top = 0;
+            top = 0,
+            outsideFixedWidth = !$dom.contains($dom.$('.global-middle'), popupEl);
 
         // Our own position computation as we are positioning relatively, as things expand out
         if ($dom.isCss(popupEl.parentElement.parentElement, 'position', 'absolute')) {

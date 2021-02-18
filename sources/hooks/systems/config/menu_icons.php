@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_root_zone_login_theme
+class Hook_config_menu_icons
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_root_zone_login_theme
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'ROOT_ZONE_LOGIN_THEME',
+            'human_name' => 'MENU_ICONS',
             'type' => 'tick',
             'category' => 'THEME',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_root_zone_login_theme',
+            'explanation' => 'CONFIG_OPTION_menu_icons',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 8,
+            'order_in_category_group' => 6,
             'required' => true,
             'public' => false,
 
@@ -53,6 +53,6 @@ class Hook_config_root_zone_login_theme
      */
     public function get_default() : ?string
     {
-        return '0';
+        return '1';
     }
 }

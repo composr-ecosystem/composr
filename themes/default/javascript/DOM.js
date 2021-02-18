@@ -1124,6 +1124,8 @@
     };
 
     /**
+     * Find if the first argument contains the second argument (identity does not count).
+     *
      * @memberof $dom
      * @param parentNode
      * @param childNode

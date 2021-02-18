@@ -768,7 +768,7 @@ function _render_menu_branch(array $branch, string $codename, int $source_member
     $rendered_branch = [
         // Basic properties
         'CAPTION' => $caption,
-        'IMG' => $img,
+        'IMG' => (get_theme_option('menu_icons') == '1') ? $img : '',
 
         // Link properties
         'URL' => $url,
