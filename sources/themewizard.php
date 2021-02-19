@@ -793,7 +793,7 @@ function calculate_theme(string $seed, string $source_theme, string $algorithm, 
             $img = re_hue_image($path, $seed, $source_theme, true);
         } else {
             if ($source_theme == 'default') {
-                $needed = ['washed_out', 'area_background', 'lgrad', 'dgrad', 'dark_border', 'comcode_quote_left', 'comcode_quote_right', 'a.link', 'a.hover', 'a.link__dark', 'a.hover__dark', 'special_borderer', 'cns_redirect_indicator', 'cns_post_indicator', 'slightly_seeded_text', 'special_middle',];
+                $needed = [];
                 foreach ($needed as $colour_needed) {
                     if (!array_key_exists($colour_needed, $colours)) {
                         warn_exit(do_lang_tempcode('UNRESOLVABLE_COLOURS', escape_html($colour_needed)), false, true);
@@ -803,59 +803,11 @@ function calculate_theme(string $seed, string $source_theme, string $algorithm, 
                 if (substr($path, -4) == '.svg') {
                     $img = re_hue_image($path, $seed, $source_theme);
                 } else {
+                    // This is for raster images to be specially rendered.
+                    //  We used to have a lot of logic here, before we moved to .svg
+
                     switch ($show) {
-                        case 'backgrounds/background_image':
-                            $img = generate_recoloured_image($path, '#FFFFFF', $colours['WB'], '#DDE5F7', $colours['washed_out']);
-                            break;
-
-                        case 'backgrounds/outer_background':
-                        case 'backgrounds/inner_background':
-                        case 'backgrounds/block_background':
-                        case 'big_tabs/controller_button_active':
-                        case 'big_tabs/controller_button_top_active':
-                        case 'big_tabs/controller_button_top':
-                        case 'big_tabs/controller_button':
-                            $img = re_hue_image($path, $seed, $source_theme, false, $light_dark == 'dark');
-                            break;
-
-                        case 'icons/menus/menu_bullet':
-                            $img = generate_recoloured_image($path, '#190406', $colours['a.link'], '#190406', $colours['a.link']);
-                            break;
-
-                        case 'icons/menus/menu_bullet_current':
-                            $img = generate_recoloured_image($path, '#00A55A', $colours['a.hover'], '#00A55A', $colours['a.hover']);
-                            break;
-
-                        case 'icons/menus/menu_bullet_hover':
-                            $img = generate_recoloured_image($path, '#9C202F', $colours['a.hover'], '#BA1621', $colours['a.hover']);
-                            break;
-
-                        case 'icons/checklist/checklist_done':
-                        case 'icons/checklist/checklist_na':
-                        case 'icons/checklist/checklist_todo':
-                            $img = generate_recoloured_image($path, '#335082', $colours['special_borderer'], '#091C3D', $colours['special_middle']);
-                            break;
-
-                        case 'icons/arrow_box/arrow_box':
-                            $img = generate_recoloured_image($path, '#12467A', $colours['a.link'], '#0A223D', $colours['a.link__dark']);
-                            break;
-
-                        case 'icons/arrow_box/arrow_box_hover':
-                            $img = generate_recoloured_image($path, '#12467A', $colours['a.hover'], '#0A223D', $colours['a.hover__dark']);
-                            break;
-
-                        case 'icons/cns_general/no_new_posts_redirect':
-                        case 'icons/cns_general/new_posts_redirect':
-                            $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#549B8C', $colours['cns_redirect_indicator']);
-                            break;
-
-                        case 'icons/cns_general/redirect':
-                        case 'icons/cns_general/no_new_posts':
-                        case 'icons/cns_general/new_posts':
-                            $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#5A84C4', $colours['cns_post_indicator']);
-                            break;
-
-                        default: // These are less special... we just change the hue
+                        default: // Just change the hue
                             $img = re_hue_image($path, $seed, $source_theme);
                             break;
                     }

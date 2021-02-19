@@ -1344,6 +1344,10 @@ function ecv_IMG(string $lang, array $escaped, array $param) : string
  */
 function ecv_IMG_INLINE(string $lang, array $escaped, array $param) : string
 {
+    if (running_script('themewizard')) {
+        return ecv_IMG($lang, $escaped, $param);
+    }
+
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
