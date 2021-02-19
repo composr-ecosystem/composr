@@ -25,9 +25,10 @@
  * @param  array $details Option details
  * @param  ?string $current_value Current value (null: get from live config)
  * @param  boolean $is_override Whether this is an override (which may change inputting style)
+ * @param  boolean $include_group Whether to include the config group title as part of the inputter
  * @return Tempcode Inputter
  */
-function build_config_inputter(string $name, array $details, ?string $current_value = null, bool $is_override = false) : object
+function build_config_inputter(string $name, array $details, ?string $current_value = null, bool $is_override = false, $include_group = false) : object
 {
     if ($current_value === null) {
         $current_value = get_option($name);
@@ -36,7 +37,15 @@ function build_config_inputter(string $name, array $details, ?string $current_va
     $default = get_default_option($name);
 
     // Language strings
-    $human_name = do_lang_tempcode($details['human_name']);
+    if ($include_group) {
+        $title = new Tempcode();
+        $title->attach(do_lang_tempcode($details['group']));
+        $title->attach(':<br />');
+        $title->attach(do_lang_tempcode($details['human_name']));
+        $title = protect_from_escaping($title);
+    } else {
+        $title = do_lang_tempcode($details['human_name']);
+    }
     $_explanation = do_lang($details['explanation'], isset($details['explanation_param_a']) ? $details['explanation_param_a'] : null, isset($details['explanation_param_b']) ? $details['explanation_param_b'] : null, isset($details['explanation_param_c']) ? $details['explanation_param_c'] : null, null, false);
     if ($_explanation === null) {
         $_explanation = do_lang('CONFIG_GROUP_DEFAULT_DESCRIP_' . $details['group'], null, null, null, null, false);
@@ -73,35 +82,35 @@ function build_config_inputter(string $name, array $details, ?string $current_va
     switch ($details['type']) {
         case 'special':
             $ob = $details['ob'];
-            return $ob->field_inputter($name, $details, $human_name, $explanation_with_default);
+            return $ob->field_inputter($name, $details, $title, $explanation_with_default);
 
         case 'integer':
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(integer_format(intval($default)))));
-            return form_input_integer($human_name, $explanation_with_default, $name, ($current_value == '') ? null : intval($current_value), $required);
+            return form_input_integer($title, $explanation_with_default, $name, ($current_value == '') ? null : intval($current_value), $required);
 
         case 'float':
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(float_format(floatval($default)))));
-            return form_input_float($human_name, $explanation_with_default, $name, ($current_value == '') ? null : floatval($current_value), $required);
+            return form_input_float($title, $explanation_with_default, $name, ($current_value == '') ? null : floatval($current_value), $required);
 
         case 'tax_code':
             if (addon_installed('ecommerce')) {
                 require_code('ecommerce');
-                return form_input_tax_code($human_name, $explanation_with_default, $name, $current_value, $required);
+                return form_input_tax_code($title, $explanation_with_default, $name, $current_value, $required);
             }
             // no break
         case 'line':
         case 'transline':
-            return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required, null, 100000);
+            return form_input_line($title, $explanation_with_default, $name, $current_value, $required, null, 100000);
 
         case 'text':
         case 'transtext':
-            return form_input_text($human_name, $explanation_with_default, $name, $current_value, $required, null, true);
+            return form_input_text($title, $explanation_with_default, $name, $current_value, $required, null, true);
 
         case 'comcodeline':
-            return form_input_line_comcode($human_name, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line_comcode($title, $explanation_with_default, $name, $current_value, $required);
 
         case 'comcodetext':
-            return form_input_text_comcode($human_name, $explanation_with_default, $name, $current_value, $required, null, true);
+            return form_input_text_comcode($title, $explanation_with_default, $name, $current_value, $required, null, true);
 
         case 'list':
             $_default = make_string_tempcode(escape_html($default));
@@ -125,7 +134,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $list .= static_evaluate_tempcode(form_input_list_entry($value, $_value == $value, $details_text));
             }
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : $_default);
-            return form_input_list($human_name, $explanation_with_default, $name, make_string_tempcode($list), null, false, $required);
+            return form_input_list($title, $explanation_with_default, $name, make_string_tempcode($list), null, false, $required);
 
         case 'tick':
             if ($is_override) {
@@ -133,23 +142,23 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $list .= static_evaluate_tempcode(form_input_list_entry('', $current_value == '', do_lang_tempcode('NA_EM')));
                 $list .= static_evaluate_tempcode(form_input_list_entry('0', $current_value == '0', do_lang_tempcode('NO')));
                 $list .= static_evaluate_tempcode(form_input_list_entry('1', $current_value == '1', do_lang_tempcode('YES')));
-                return form_input_list($human_name, $explanation, $name, make_string_tempcode($list), null, false, false);
+                return form_input_list($title, $explanation, $name, make_string_tempcode($list), null, false, false);
             }
 
             $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '1') ? do_lang('YES') : do_lang('NO')));
-            return form_input_tick($human_name, $explanation_with_default, $name, $current_value == '1');
+            return form_input_tick($title, $explanation_with_default, $name, $current_value == '1');
 
         case 'username':
-            return form_input_username($human_name, $explanation_with_default, $name, $current_value, $required, false);
+            return form_input_username($title, $explanation_with_default, $name, $current_value, $required, false);
 
         case 'colour':
-            return form_input_colour($human_name, $explanation_with_default, $name, $current_value, $required);
+            return form_input_colour($title, $explanation_with_default, $name, $current_value, $required);
 
         case 'date':
-            return form_input_date($human_name, $explanation_with_default, $name, $required, false, false, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
+            return form_input_date($title, $explanation_with_default, $name, $required, false, false, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
 
         case 'datetime':
-            return form_input_date($human_name, $explanation_with_default, $name, $required, false, true, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
+            return form_input_date($title, $explanation_with_default, $name, $required, false, true, ($current_value == '') ? null : intval($current_value), 40, intval(date('Y')) - 20, null);
 
         case 'forum':
             if ((get_forum_type() == 'cns') && (addon_installed('cns_forum'))) {
@@ -159,7 +168,7 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                     if ($_current_setting === null) {
                         if ($required) {
                             $current_setting = strval(db_get_first_id());
-                            attach_message(do_lang_tempcode('FORUM_CURRENTLY_UNSET', $human_name), 'notice');
+                            attach_message(do_lang_tempcode('FORUM_CURRENTLY_UNSET', $title), 'notice');
                         } else {
                             $current_setting = null;
                         }
@@ -167,21 +176,21 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                         $current_setting = strval($_current_setting);
                     }
                 }
-                return form_input_tree_list($human_name, $explanation_with_default, $name, null, 'choose_forum', [], $required, $current_setting);
+                return form_input_tree_list($title, $explanation_with_default, $name, null, 'choose_forum', [], $required, $current_setting);
             }
-            return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line($title, $explanation_with_default, $name, $current_value, $required);
 
         case 'country':
             require_code('locations');
             $_list = new Tempcode();
             $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
             $_list->attach(create_country_selection_list([$current_value]));
-            return form_input_list($human_name, $explanation_with_default, $name, $_list, null, false, $required);
+            return form_input_list($title, $explanation_with_default, $name, $_list, null, false, $required);
 
         case 'country_multi':
             require_code('locations');
             $list = static_evaluate_tempcode(create_country_selection_list(explode(',', $current_value)));
-            return form_input_multi_list($human_name, $explanation_with_default, $name, make_string_tempcode($list));
+            return form_input_multi_list($title, $explanation_with_default, $name, make_string_tempcode($list));
 
         case 'forum_grouping':
             if (get_forum_type() == 'cns') {
@@ -191,9 +200,9 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $_list = new Tempcode();
                 $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
                 $_list->attach(cns_create_selection_list_forum_groupings(null, $tmp_value));
-                return form_input_list($human_name, $explanation_with_default, $name, $_list, null, false, $required);
+                return form_input_list($title, $explanation_with_default, $name, $_list, null, false, $required);
             }
-            return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line($title, $explanation_with_default, $name, $current_value, $required);
 
         case 'usergroup':
         case 'usergroup_not_guest':
@@ -204,14 +213,14 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 $_list = new Tempcode();
                 $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
                 $_list->attach(cns_create_selection_list_usergroups($tmp_value, $details['type'] == 'usergroup'));
-                return form_input_list($human_name, $explanation_with_default, $name, $_list, null, false, $required);
+                return form_input_list($title, $explanation_with_default, $name, $_list, null, false, $required);
             }
-            return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required);
+            return form_input_line($title, $explanation_with_default, $name, $current_value, $required);
 
         case 'theme_image':
             require_code('themes2');
             $ids = get_all_image_ids_type($details['list_options']);
-            return form_input_theme_image($human_name, $explanation_with_default, $name, $ids, null, $current_value, null, true);
+            return form_input_theme_image($title, $explanation_with_default, $name, $ids, null, $current_value, null, true);
     }
 
     fatal_exit('Invalid config option type: ' . $details['type'] . ' (for ' . $name . ')');

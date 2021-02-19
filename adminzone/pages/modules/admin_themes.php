@@ -523,13 +523,27 @@ class Module_admin_themes
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2b82c955e92a4bddad2f57bfe23fc7b0', 'SECTION_HIDDEN' => !$show_theme_option_overrides, 'TITLE' => do_lang_tempcode('THEME__OPTION_OVERRIDES'), 'HELP' => do_lang_tempcode('DESCRIPTION__THEME__OPTION_OVERRIDES')]));
         require_all_lang();
         require_code('config2');
+        $config_groups = [];
         foreach (array_keys($hooks) as $hook) {
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
             $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
             $details = $ob->get_details();
             if (!empty($details['theme_override'])) {
+                $group_title = do_lang($details['group']);
+                if (!isset($config_groups[$group_title])) {
+                    $config_groups[$group_title] = [];
+                }
+                $order_in_category_group = isset($details['order_in_category_group']) ? $details['order_in_category_group'] : -count($config_groups[$group_title]);
+                $config_groups[$group_title][$order_in_category_group] = [$hook, $details];
+            }
+        }
+        cms_mb_ksort($config_groups, SORT_NATURAL | SORT_FLAG_CASE);
+        foreach ($config_groups as $config_group) {
+            ksort($config_group);
+            foreach ($config_group as $config_option) {
+                list($hook, $details) = $config_option;
                 $current_value = get_theme_option($hook, '', $name);
-                $fields->attach(build_config_inputter($hook, $details, $current_value, true));
+                $fields->attach(build_config_inputter($hook, $details, $current_value, true, true));
             }
         }
 
