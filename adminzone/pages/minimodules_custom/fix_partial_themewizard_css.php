@@ -169,9 +169,15 @@ if (function_exists('imagecolorallocatealpha')) {
                     if (($pos !== false) || (strpos($orig_url, '/EN/') !== false)) {
                         afm_make_directory($composite . substr($image_code, 0, $pos), true, true);
                     }
-                    require_code('images');
-                    cms_imagesave($image, $saveat) or intelligent_write_error($saveat);
-                    imagedestroy($image);
+
+                    if (is_string($image)) {
+                        cms_file_put_contents_safe($saveat, $image);
+                    } else {
+                        require_code('images');
+                        cms_imagesave($image, $saveat) or intelligent_write_error($saveat);
+                        imagedestroy($image);
+                    }
+
                     actual_edit_theme_image($image_code, $theme, 'EN', $image_code, $saveat_url, true);
 
                     echo '<li>' . escape_html($image_code) . '</li>';

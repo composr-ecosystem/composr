@@ -194,6 +194,7 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
     }
 
     // Hard-coded $default?
+    //  Only if it is a theme-only option
     if ($default === null) {
         switch ($name) {
             // Metadata
@@ -257,7 +258,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                     'cns_emoticons/none',
                     'comcode_editor/*',
                     'edited',
-                    'gradient',
                     'icons/arrow_box/arrow_box',
                     'icons/arrow_box/arrow_box_hover',
                     'icons/breadcrumbs',
@@ -302,8 +302,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                     'logo/standalone_logo',
                     'perm_levels/*',
                     'poll/*',
-                    'quote_gradient',
-                    'tab',
                 ];
                 $default = implode(',', $_default);
                 break;

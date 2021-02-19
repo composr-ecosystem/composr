@@ -32,11 +32,15 @@ function init__themes2()
 /**
  * Find the seed of a theme.
  *
- * @param  ID_TEXT $theme The theme name
+ * @param  ?ID_TEXT $theme The theme name
  * @return ID_TEXT The seed colour
  */
-function find_theme_seed(string $theme) : string
+function find_theme_seed(?string $theme = null) : string
 {
+    if ($theme === null) {
+        $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
+    }
+
     global $THEME_SEED_CACHE;
     if (isset($THEME_SEED_CACHE[$theme])) {
         return $THEME_SEED_CACHE[$theme];

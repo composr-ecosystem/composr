@@ -155,7 +155,8 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
 
     load_themewizard_params_from_theme($source_theme, $algorithm == 'hsv');
 
-    $seed = get_param_string('keep_theme_seed');
+    require_code('themes2');
+    $seed = get_param_string('keep_theme_seed', find_theme_seed());
     if ($seed == 'random') {
         $_GET['keep_theme_seed'] = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT) . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT) . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
         require_lang('themes');
@@ -518,8 +519,12 @@ function make_theme(string $theme_name, string $source_theme, string $algorithm,
                                         afm_make_file($build_up . '/index.html', '', false);
                                     }
                                 }
-                                cms_imagesave($image, $saveat) or intelligent_write_error($saveat);
-                                imagedestroy($image);
+                                if (is_string($image)) {
+                                    cms_file_put_contents_safe($saveat, $image);
+                                } else {
+                                    cms_imagesave($image, $saveat) or intelligent_write_error($saveat);
+                                    imagedestroy($image);
+                                }
                                 actual_edit_theme_image($image_code, $theme_name, $lang, $image_code, $saveat_url, true);
                             }
                         } else { // Still need to do the edit, as currently it'll have been mapped to the default theme when this theme was added
@@ -592,6 +597,8 @@ function themewizard_script()
 
     header('X-Robots-Tag: noindex');
 
+    require_code('themes2');
+
     $type = get_param_string('type');
     $source_theme = get_param_string('keep_theme_source', 'default');
     $algorithm = get_param_string('keep_theme_algorithm', 'equations');
@@ -599,7 +606,7 @@ function themewizard_script()
         $algorithm = 'hsv';
     }
     $show = get_param_string('show');
-    $seed = get_param_string('keep_theme_seed');
+    $seed = get_param_string('keep_theme_seed', find_theme_seed());
     if ($seed == 'kiddie') {
         $seed = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT) . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT) . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
     }
@@ -636,13 +643,20 @@ function themewizard_script()
         }
 
         $saveat = cms_tempnam();
-        cms_imagesave($image, $saveat, 'png') or intelligent_write_error($saveat);
+        if (is_string($image)) {
+            cms_file_put_contents_safe($saveat, $image);
 
-        imagedestroy($image);
+            cms_ob_end_clean();
 
-        cms_ob_end_clean();
+            header('Content-Type: image/svg+xml');
+        } else {
+            cms_imagesave($image, $saveat, 'png') or intelligent_write_error($saveat);
+            imagedestroy($image);
 
-        header('Content-Type: image/png');
+            cms_ob_end_clean();
+
+            header('Content-Type: image/png');
+        }
 
         readfile($saveat);
 
@@ -662,7 +676,7 @@ function themewizard_script()
  * @param  ?array $colours The colour map to use (null: compute)
  * @param  ?array $landscape The computed colour landscape to use (null: compute)
  * @param  ?LANGUAGE_NAME $lang The language to work in (null: default)
- * @return mixed Image resource OR A pair: extended map of colours, colour expression landscape
+ * @return mixed Image resource OR Image string OR A pair: extended map of colours, colour expression landscape
  */
 function calculate_theme(string $seed, string $source_theme, string $algorithm, string $show = 'colours', ?bool $dark = null, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
 {
@@ -772,10 +786,6 @@ function calculate_theme(string $seed, string $source_theme, string $algorithm, 
         $path = get_file_base() . '/' . $ti;
     }
 
-    if (get_file_extension($path) === 'svg') {
-        return null; // SVG not supported yet
-    }
-
     $img = null;
 
     if (function_exists('imagecolorallocatealpha')) {
@@ -790,34 +800,65 @@ function calculate_theme(string $seed, string $source_theme, string $algorithm, 
                     }
                 }
 
-                if ($show == 'gradient') {
-                    $img = generate_gradient($colours['lgrad'], $colours['dgrad']);
-                } elseif (($show == 'backgrounds/background_image')) {
-                    $img = generate_recoloured_image($path, '#FFFFFF', $colours['WB'], '#DDE5F7', $colours['washed_out']);
-                } elseif (($show == 'header') || ($show == 'backgrounds/outer_background') || ($show == 'backgrounds/inner_background') || ($show == 'backgrounds/block_background') || ($show == 'big_tabs/controller_button_active') || ($show == 'big_tabs/controller_button_top_active') || ($show == 'big_tabs/controller_button_top') || ($show == 'big_tabs/controller_button')) {
-                    $img = re_hue_image($path, $seed, $source_theme, false, $light_dark == 'dark');
-                } elseif ($show == 'quote_gradient') {
-                    $img = generate_recoloured_image($path, '#072A66', $colours['dark_border'], '#C7D5EC', $colours['comcode_quote_left'], '#8CA7D2', $colours['comcode_quote_right'], 'horizontal');
-                } elseif ($show == 'menu_bullet') {
-                    $img = generate_recoloured_image($path, '#190406', $colours['a.link'], '#190406', $colours['a.link']);
-                } elseif ($show == 'menu_bullet_current') {
-                    $img = generate_recoloured_image($path, '#00A55A', $colours['a.hover'], '#00A55A', $colours['a.hover']);
-                } elseif ($show == 'menu_bullet_hover') {
-                    $img = generate_recoloured_image($path, '#9C202F', $colours['a.hover'], '#BA1621', $colours['a.hover']);
-                } elseif ($show == 'tab') {
-                    $img = generate_recoloured_image($path, '#B5B5B5', $colours['tab_border'], '#F4F4F4', $colours['area_5_background']);
-                } elseif (substr($show, 0, 15) == 'icons/checklist/') {
-                    $img = generate_recoloured_image($path, '#335082', $colours['special_borderer'], '#091C3D', $colours['special_middle']);
-                } elseif ($show == 'icons/arrow_box/arrow_box') {
-                    $img = generate_recoloured_image($path, '#12467A', $colours['a.link'], '#0A223D', $colours['a.link__dark']);
-                } elseif ($show == 'icons/arrow_box/arrow_box_hover') {
-                    $img = generate_recoloured_image($path, '#12467A', $colours['a.hover'], '#0A223D', $colours['a.hover__dark']);
-                } elseif (in_array($show, ['icons/cns_general/no_new_posts_redirect', 'icons/cns_general/new_posts_redirect'])) {
-                    $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#549B8C', $colours['cns_redirect_indicator']);
-                } elseif (in_array($show, ['icons/cns_general/redirect', 'icons/cns_general/redirect', 'icons/cns_general/no_new_posts', 'icons/cns_general/new_posts'])) {
-                    $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#5A84C4', $colours['cns_post_indicator']);
-                } else { // These are less special... we just change the hue
+                if (substr($path, -4) == '.svg') {
                     $img = re_hue_image($path, $seed, $source_theme);
+                } else {
+                    switch ($show) {
+                        case 'backgrounds/background_image':
+                            $img = generate_recoloured_image($path, '#FFFFFF', $colours['WB'], '#DDE5F7', $colours['washed_out']);
+                            break;
+
+                        case 'backgrounds/outer_background':
+                        case 'backgrounds/inner_background':
+                        case 'backgrounds/block_background':
+                        case 'big_tabs/controller_button_active':
+                        case 'big_tabs/controller_button_top_active':
+                        case 'big_tabs/controller_button_top':
+                        case 'big_tabs/controller_button':
+                            $img = re_hue_image($path, $seed, $source_theme, false, $light_dark == 'dark');
+                            break;
+
+                        case 'icons/menus/menu_bullet':
+                            $img = generate_recoloured_image($path, '#190406', $colours['a.link'], '#190406', $colours['a.link']);
+                            break;
+
+                        case 'icons/menus/menu_bullet_current':
+                            $img = generate_recoloured_image($path, '#00A55A', $colours['a.hover'], '#00A55A', $colours['a.hover']);
+                            break;
+
+                        case 'icons/menus/menu_bullet_hover':
+                            $img = generate_recoloured_image($path, '#9C202F', $colours['a.hover'], '#BA1621', $colours['a.hover']);
+                            break;
+
+                        case 'icons/checklist/checklist_done':
+                        case 'icons/checklist/checklist_na':
+                        case 'icons/checklist/checklist_todo':
+                            $img = generate_recoloured_image($path, '#335082', $colours['special_borderer'], '#091C3D', $colours['special_middle']);
+                            break;
+
+                        case 'icons/arrow_box/arrow_box':
+                            $img = generate_recoloured_image($path, '#12467A', $colours['a.link'], '#0A223D', $colours['a.link__dark']);
+                            break;
+
+                        case 'icons/arrow_box/arrow_box_hover':
+                            $img = generate_recoloured_image($path, '#12467A', $colours['a.hover'], '#0A223D', $colours['a.hover__dark']);
+                            break;
+
+                        case 'icons/cns_general/no_new_posts_redirect':
+                        case 'icons/cns_general/new_posts_redirect':
+                            $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#549B8C', $colours['cns_redirect_indicator']);
+                            break;
+
+                        case 'icons/cns_general/redirect':
+                        case 'icons/cns_general/no_new_posts':
+                        case 'icons/cns_general/new_posts':
+                            $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#5A84C4', $colours['cns_post_indicator']);
+                            break;
+
+                        default: // These are less special... we just change the hue
+                            $img = re_hue_image($path, $seed, $source_theme);
+                            break;
+                    }
                 }
             } else {
                 $img = re_hue_image($path, $seed, $source_theme);
@@ -1379,29 +1420,91 @@ function themewizard_colours_to_css(string $contents, array $landscape, string $
 /**
  * Generate a theme image by converting an existing one to a new colour scheme via re-hueing.
  *
- * @param  mixed $path The image path OR a preloaded GD image resource
+ * @param  PATH $path The image path
  * @param  string $seed The colour code of our hue
  * @param  ID_TEXT $source_theme The theme this is being generated from
  * @param  boolean $also_s_and_v Whether to also adjust the S and V components
  * @param  boolean $invert Whether to invert the colours
- * @return resource The image
+ * @return mixed The image (resource of text)
  */
-function re_hue_image($path, string $seed, string $source_theme, bool $also_s_and_v = false, bool $invert = false)
+function re_hue_image(string $path, string $seed, string $source_theme, bool $also_s_and_v = false, bool $invert = false)
 {
+    require_code('themes2');
     list($composr_h, $composr_s, $composr_v) = rgb_to_hsv(find_theme_seed($source_theme));
     list($seed_h, $seed_s, $seed_v) = rgb_to_hsv($seed);
     $hue_dif = $seed_h - $composr_h;
     $sat_dif = $seed_s - $composr_s;
     $val_dif = $seed_v - $composr_v;
 
-    if (is_string($path)) {
-        $image = cms_imagecreatefrom($path);
-        if ($image === false) {
-            warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($path)), false, true);
-        }
-    } else {
-        $image = $path;
+    if (substr($path, -4) == '.svg') {
+       return  _re_hue_image__svg($path, $seed_h, $seed_s, $seed_v, $hue_dif, $sat_dif, $val_dif, $also_s_and_v, $invert);
     }
+
+    return _re_hue_image__raster($path, $seed_h, $seed_s, $seed_v, $hue_dif, $sat_dif, $val_dif, $also_s_and_v, $invert);
+}
+
+/**
+ * Helper for re_hue_image, SVG images only.
+ *
+ * @param  PATH $path The image path
+ * @param  integer $seed_h Seed hue
+ * @param  integer $seed_s Seed saturation
+ * @param  integer $seed_v Seed value
+ * @param  integer $hue_dif Hue difference
+ * @param  integer $sat_dif Saturation difference
+ * @param  integer $val_dif Value difference
+ * @param  boolean $also_s_and_v Whether to also adjust the S and V components
+ * @param  boolean $invert Whether to invert the colours
+ * @return string The image
+ */
+function _re_hue_image__svg(string $path, int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, bool $also_s_and_v = false, bool $invert = false)
+{
+    $c = cms_file_get_contents_safe($path);
+
+    $matches = [];
+    $num_matches = preg_match_all('/"#([\dA-F]{6})"/i', $c, $matches);
+    $colours = [];
+    for ($i = 0; $i < $num_matches; $i++) {
+        $colour = $matches[1][$i];
+        $colours[$colour] = true;
+    }
+
+    foreach (array_keys($colours) as $colour) {
+        $r = hexdec(substr($colour, 0, 2));
+        $g = hexdec(substr($colour, 2, 2));
+        $b = hexdec(substr($colour, 4, 2));
+
+        list($new_colour_r, $new_colour_g, $new_colour_b) = _re_hue_image_colour($seed_h, $seed_s, $seed_v, $hue_dif, $sat_dif, $val_dif, $r, $g, $b);
+
+        $new_colour = str_pad(dechex($new_colour_r), 2, '0', STR_PAD_LEFT) . str_pad(dechex($new_colour_g), 2, '0', STR_PAD_LEFT) . str_pad(dechex($new_colour_b), 2, '0', STR_PAD_LEFT);
+
+        $c = str_replace('"#' . $colour . '"', '"#' . $new_colour . '"', $c);
+    }
+
+    return $c;
+}
+
+/**
+ * Helper for re_hue_image, raster images only.
+ *
+ * @param  PATH $path The image path
+ * @param  integer $seed_h Seed hue
+ * @param  integer $seed_s Seed saturation
+ * @param  integer $seed_v Seed value
+ * @param  integer $hue_dif Hue difference
+ * @param  integer $sat_dif Saturation difference
+ * @param  integer $val_dif Value difference
+ * @param  boolean $also_s_and_v Whether to also adjust the S and V components
+ * @param  boolean $invert Whether to invert the colours
+ * @return resource The image
+ */
+function _re_hue_image__raster(string $path, int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, bool $also_s_and_v = false, bool $invert = false)
+{
+    $image = cms_imagecreatefrom($path);
+    if ($image === false) {
+        warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($path)), false, true);
+    }
+
     imagepalettetotruecolor($image);
 
     $width = imagesx($image);
@@ -1419,24 +1522,7 @@ function re_hue_image($path, string $seed, string $source_theme, bool $also_s_an
             $b = $existing_colour['blue'];
             $a = $existing_colour['alpha'];
 
-            list($h, $s, $v) = rgb_to_hsv(str_pad(dechex($r), 2, '0', STR_PAD_LEFT) . str_pad(dechex($g), 2, '0', STR_PAD_LEFT) . str_pad(dechex($b), 2, '0', STR_PAD_LEFT));
-            if ($invert) {
-                $v = 255 - $v;
-                $v = min($v * 3, 255); // Because it's harder to see deviations of black
-            }
-            if ($seed_s < 10) {
-                $s = $seed_s; // To stop red colours for gray-scale images
-            }
-            if ($also_s_and_v) {
-                $sat_dif = 0; // Actually causes weirdness
-                $result = hsv_to_rgb(floatval(fix_colour($h + $hue_dif, true)), floatval(fix_colour($s + $sat_dif)), floatval(fix_colour($v + $val_dif)));
-            } else {
-                $result = hsv_to_rgb(floatval(fix_colour($h + $hue_dif, true)), floatval($s), floatval($v));
-            }
-
-            $new_colour_r = hexdec(substr($result, 0, 2));
-            $new_colour_g = hexdec(substr($result, 2, 2));
-            $new_colour_b = hexdec(substr($result, 4, 2));
+            list($new_colour_r, $new_colour_g, $new_colour_b) = _re_hue_image_colour($seed_h, $seed_s, $seed_v, $hue_dif, $sat_dif, $val_dif, $r, $g, $b);
 
             if (function_exists('imagecolorallocatealpha')) {
                 $target_colour = imagecolorallocatealpha($image, $new_colour_r, $new_colour_g, $new_colour_b, $a);
@@ -1451,35 +1537,43 @@ function re_hue_image($path, string $seed, string $source_theme, bool $also_s_an
 }
 
 /**
- * Generate a gradient for a theme.
+ * Update a colour towards a new seed colour, using the given $*_dif components.
  *
- * @param  string $top Colour for the top
- * @param  string $bottom Colour for the bottom
- * @return resource The image
+ * @param  integer $seed_h Seed hue
+ * @param  integer $seed_s Seed saturation
+ * @param  integer $seed_v Seed value
+ * @param  integer $hue_dif Hue difference
+ * @param  integer $sat_dif Saturation difference
+ * @param  integer $val_dif Value difference
+ * @param  integer $r Colour red value
+ * @param  integer $g Colour green value
+ * @param  integer $b Colour blue value
+ * @param  boolean $also_s_and_v Whether to also adjust the S and V components
+ * @param  boolean $invert Whether to invert the colours
+ * @return array New RGB colour components
  */
-function generate_gradient(string $top, string $bottom)
+function _re_hue_image_colour(int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, int $r, int $g, int $b, bool $also_s_and_v = false, bool $invert = false)
 {
-    $gradient = imagecreate(1, 27);
-    $width = 27;
-
-    $topred = intval(base_convert(substr($top, 0, 2), 16, 10));
-    $topgrn = intval(base_convert(substr($top, 2, 2), 16, 10));
-    $topblu = intval(base_convert(substr($top, 4, 2), 16, 10));
-
-    $botred = intval(base_convert(substr($bottom, 0, 2), 16, 10));
-    $botgrn = intval(base_convert(substr($bottom, 2, 2), 16, 10));
-    $botblu = intval(base_convert(substr($bottom, 4, 2), 16, 10));
-
-    $dr = ($botred - $topred) / $width;
-    $dg = ($botgrn - $topgrn) / $width;
-    $db = ($botblu - $topblu) / $width;
-
-    for ($i = 0; $i < $width; $i++) {
-        $color = imagecolorallocate($gradient, $topred + intval(round($dr * floatval($i))), $topgrn + intval(round($dg * floatval($i))), $topblu + intval(round($db * floatval($i))));
-        imagesetpixel($gradient, 0, $i, $color);
+    list($h, $s, $v) = rgb_to_hsv(str_pad(dechex($r), 2, '0', STR_PAD_LEFT) . str_pad(dechex($g), 2, '0', STR_PAD_LEFT) . str_pad(dechex($b), 2, '0', STR_PAD_LEFT));
+    if ($invert) {
+        $v = 255 - $v;
+        $v = min($v * 3, 255); // Because it's harder to see deviations of black
+    }
+    if ($seed_s < 10) {
+        $s = $seed_s; // To stop red colours for gray-scale images
+    }
+    if ($also_s_and_v) {
+        $sat_dif = 0; // Actually causes weirdness
+        $result = hsv_to_rgb(floatval(fix_colour($h + $hue_dif, true)), floatval(fix_colour($s + $sat_dif)), floatval(fix_colour($v + $val_dif)));
+    } else {
+        $result = hsv_to_rgb(floatval(fix_colour($h + $hue_dif, true)), floatval($s), floatval($v));
     }
 
-    return $gradient;
+    $new_colour_r = hexdec(substr($result, 0, 2));
+    $new_colour_g = hexdec(substr($result, 2, 2));
+    $new_colour_b = hexdec(substr($result, 4, 2));
+
+    return [$new_colour_r, $new_colour_g, $new_colour_b];
 }
 
 /**

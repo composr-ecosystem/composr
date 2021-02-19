@@ -369,8 +369,12 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
                             $image = calculate_theme($seed, 'default', 'equations', $new, $dark, $colours, $landscape, $lang);
                             if ($image !== null) {
                                 if (!$test_run) {
-                                    cms_imagesave($image, get_custom_file_base() . '/' . $new_path) or intelligent_write_error(get_custom_file_base() . '/' . $new_path);
-                                    imagedestroy($image);
+                                    if (is_string($image)) {
+                                        cms_file_put_contents_safe(get_custom_file_base() . '/' . $new_path, $image);
+                                    } else {
+                                        cms_imagesave($image, get_custom_file_base() . '/' . $new_path) or intelligent_write_error(get_custom_file_base() . '/' . $new_path);
+                                        imagedestroy($image);
+                                    }
 
                                     $successes[] = do_lang_tempcode('THEME_IMAGE_NEW', escape_html($new));
                                 }

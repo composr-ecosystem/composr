@@ -27,7 +27,7 @@ class themeini_images_test_set extends cms_test_case
                 continue;
             }
 
-            $themewizard_images = get_theme_option('themewizard_images', '');
+            $themewizard_images = get_theme_option('themewizard_images');
 
             foreach (($themewizard_images == '') ? [] : explode(',', $themewizard_images) as $theme_image) {
                 if (strpos($theme_image, '*') === false) {
