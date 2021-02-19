@@ -10,12 +10,13 @@
     var namesToNumbers = { length: 0 },
         lastCcI = {};
 
-    $themeColours.makeColourChooser = function makeColourChooser(name, color, context, tabindex, label, className) {
+    $themeColours.makeColourChooser = function makeColourChooser(name, color, context, tabindex, label, className, required) {
         name = strVal(name);
         color = strVal(color);
         context = strVal(context);
         label = strVal(label) || '&lt;color-' + name + '&gt;';
         className = strVal(className);
+        required = boolVal(required);
 
         if (className !== '') {
             className = 'class="' + className + '" ';
@@ -37,13 +38,20 @@
             }
         }
 
-        var _color = (color === '' || color === '#') ? '#000000' : ('#' + color.substr(1));
+        var _color;
+        if (color === '' || color === '#') {
+            _color = required ? '#000000' : '';
+        } else {
+            _color = '#' + color.substr(1);
+        }
+
+        var type = required ? 'color' : 'text';
 
         var t = '';
         t += '<div class="css-colour-chooser">';
         t += '    <div class="css-colour-chooser-name">';
         t += '        <label class="field-name" for="' + name + '"> ' + label + '</label><br />';
-        t += '        <input ' + className + 'alt="{!COLOUR;^}" type="color" value="' + _color + '" id="' + name + '" name="' + name + '" size="6" class="js-change-update-chooser" />';
+        t += '        <input ' + className + 'alt="{!COLOUR;^}" type="' + type + '" value="' + _color + '" id="' + name + '" name="' + name + '" size="6" class="js-change-update-chooser" />';
         t += '    </div>';
         t += '    <div class="css-colour-chooser-fixed">';
         t += '    <div class="css-colour-chooser-from" style="background-color: ' + ((color === '') ? '#000' : color) + '" id="cc-source-' + name + '">';

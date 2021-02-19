@@ -40,7 +40,7 @@ class Hook_config_header_classic_text_colour
             'list_options' => '',
             'order_in_category_group' => 4,
             'theme_override' => true,
-            'required' => true,
+            'required' => false,
             'public' => false,
 
             'addon' => 'core_configuration',

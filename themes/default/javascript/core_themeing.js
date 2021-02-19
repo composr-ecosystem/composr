@@ -924,7 +924,7 @@
 
         var ext = (tabTitle.indexOf('.') !== -1) ? tabTitle.substring(tabTitle.indexOf('.') + 1, tabTitle.length) : '';
         if (ext !== '') {
-            tabTitle = tabTitle.substr(0, tabTitle.length - 4);
+            tabTitle = tabTitle.substr(0, tabTitle.length - ext.length - 1);
         }
         var iconImg = document.createElement('img');
         if (ext === 'tpl') {
