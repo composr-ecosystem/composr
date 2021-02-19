@@ -40,9 +40,7 @@ class Hook_config_new_member_default_temporary_password
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

@@ -40,7 +40,6 @@ class Hook_config_js_overlays
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

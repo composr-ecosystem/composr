@@ -39,9 +39,7 @@ class Hook_config_use_banner_permissions
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'banners',
         ];
     }

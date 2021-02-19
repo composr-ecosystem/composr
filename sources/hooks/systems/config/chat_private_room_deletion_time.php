@@ -39,9 +39,7 @@ class Hook_config_chat_private_room_deletion_time
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'chat',
         ];
     }

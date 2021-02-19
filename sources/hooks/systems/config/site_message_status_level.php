@@ -40,9 +40,7 @@ class Hook_config_site_message_status_level
             'list_options' => 'inform|notice|warn',
             'order_in_category_group' => 4,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

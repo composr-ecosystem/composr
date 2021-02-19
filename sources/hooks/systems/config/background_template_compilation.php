@@ -40,7 +40,6 @@ class Hook_config_background_template_compilation
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
 
         ];

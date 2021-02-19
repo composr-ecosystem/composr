@@ -39,9 +39,7 @@ class Hook_config_galleries_sort_order
             'shared_hosting_restricted' => '0',
             'list_options' => 'title ASC|average_rating DESC|compound_rating DESC|recent ASC|recent DESC',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'galleries',
         ];
     }

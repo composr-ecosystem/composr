@@ -40,9 +40,7 @@ class Hook_config_ticket_mail_folder
             'list_options' => '',
             'order_in_category_group' => 6,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'tickets',
         ];
     }

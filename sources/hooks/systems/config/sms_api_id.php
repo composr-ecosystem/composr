@@ -40,9 +40,7 @@ class Hook_config_sms_api_id
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'sms',
 
             'maintenance_code' => 'sms',

@@ -35,7 +35,6 @@ class Hook_config_mark_as_edited
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

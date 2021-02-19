@@ -39,9 +39,7 @@ class Hook_config_enable_views_sigs_option
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_signatures',
         ];
     }

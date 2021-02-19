@@ -39,9 +39,7 @@ class Hook_config_output_compression
             'shared_hosting_restricted' => '1',
             'list_options' => '0|1|2',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

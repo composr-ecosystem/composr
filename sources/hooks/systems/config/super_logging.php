@@ -40,9 +40,7 @@ class Hook_config_super_logging
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'stats',
         ];
     }

@@ -40,9 +40,7 @@ class Hook_config_banner_imp_price_points
             'list_options' => '',
             'order_in_category_group' => 8,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

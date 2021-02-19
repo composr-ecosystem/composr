@@ -40,9 +40,7 @@ class Hook_config_valid_email_domains
             'list_options' => '',
             'order_in_category_group' => 6,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

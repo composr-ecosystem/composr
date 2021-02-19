@@ -39,9 +39,7 @@ class Hook_config_chat_message_check_interval
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => true,
-
             'addon' => 'chat',
         ];
     }

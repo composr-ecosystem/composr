@@ -42,7 +42,6 @@ class Hook_config_use_monochrome_icons
             'theme_override' => true,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

@@ -40,9 +40,7 @@ class Hook_config_hc_io_mbs
             'list_options' => '',
             'order_in_category_group' => 8,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

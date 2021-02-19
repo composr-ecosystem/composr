@@ -40,9 +40,7 @@ class Hook_config_privacy_fax
             'list_options' => '',
             'order_in_category_group' => 4,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

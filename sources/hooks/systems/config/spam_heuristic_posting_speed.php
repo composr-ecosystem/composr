@@ -40,9 +40,7 @@ class Hook_config_spam_heuristic_posting_speed
             'list_options' => '',
             'order_in_category_group' => 20,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

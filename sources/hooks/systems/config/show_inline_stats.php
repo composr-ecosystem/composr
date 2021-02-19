@@ -41,7 +41,6 @@ class Hook_config_show_inline_stats
             'order_in_category_group' => 3,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

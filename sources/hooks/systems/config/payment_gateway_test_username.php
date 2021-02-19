@@ -40,9 +40,7 @@ class Hook_config_payment_gateway_test_username
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

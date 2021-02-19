@@ -40,9 +40,7 @@ class Hook_config_topic_pin_price
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

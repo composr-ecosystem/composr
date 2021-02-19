@@ -40,7 +40,6 @@ class Hook_config_complex_uploader
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

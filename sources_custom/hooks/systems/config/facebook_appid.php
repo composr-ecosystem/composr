@@ -36,7 +36,6 @@ class Hook_config_facebook_appid
             'order_in_category_group' => 1,
             'required' => false,
             'public' => true,
-
             'addon' => 'facebook_support',
         ];
     }

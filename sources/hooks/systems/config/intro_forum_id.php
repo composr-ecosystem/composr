@@ -40,9 +40,7 @@ class Hook_config_intro_forum_id
             'list_options' => '',
             'order_in_category_group' => 9,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'cns_forum',
         ];
     }

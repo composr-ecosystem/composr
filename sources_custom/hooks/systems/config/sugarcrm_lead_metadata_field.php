@@ -36,7 +36,6 @@ class Hook_config_sugarcrm_lead_metadata_field
             'order_in_category_group' => 4,
             'required' => false,
             'public' => false,
-
             'addon' => 'sugarcrm',
         ];
     }

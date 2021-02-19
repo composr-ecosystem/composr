@@ -40,7 +40,6 @@ class Hook_config_filetype_icons
             'list_options' => '',
             'order_in_category_group' => 4,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

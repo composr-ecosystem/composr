@@ -42,7 +42,6 @@ class Hook_config_header_classic_text_colour
             'theme_override' => true,
             'required' => false,
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

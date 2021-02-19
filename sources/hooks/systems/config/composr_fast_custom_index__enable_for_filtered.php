@@ -40,9 +40,7 @@ class Hook_config_composr_fast_custom_index__enable_for_filtered
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

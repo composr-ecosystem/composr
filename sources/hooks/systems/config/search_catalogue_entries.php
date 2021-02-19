@@ -39,9 +39,7 @@ class Hook_config_search_catalogue_entries
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'catalogues',
         ];
     }

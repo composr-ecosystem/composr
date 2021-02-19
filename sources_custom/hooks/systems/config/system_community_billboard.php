@@ -35,7 +35,6 @@ class Hook_config_system_community_billboard
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'community_billboard',
         ];
     }

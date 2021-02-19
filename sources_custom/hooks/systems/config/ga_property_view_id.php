@@ -36,7 +36,6 @@ class Hook_config_ga_property_view_id
             'order_in_category_group' => 7,
             'required' => false,
             'public' => false,
-
             'addon' => 'google_analytics',
         ];
     }

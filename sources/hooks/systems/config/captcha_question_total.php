@@ -39,7 +39,6 @@ class Hook_config_captcha_question_total
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 3,
-
             'required' => false,
             'public' => false,
             'addon' => 'captcha',

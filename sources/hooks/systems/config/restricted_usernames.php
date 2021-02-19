@@ -40,9 +40,7 @@ class Hook_config_restricted_usernames
             'list_options' => '',
             'order_in_category_group' => 12,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

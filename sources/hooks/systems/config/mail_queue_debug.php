@@ -39,7 +39,6 @@ class Hook_config_mail_queue_debug
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 2,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

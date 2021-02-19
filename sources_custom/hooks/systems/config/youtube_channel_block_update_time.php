@@ -28,7 +28,6 @@ class Hook_config_youtube_channel_block_update_time
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'youtube_channel_integration_block',
         ];
     }

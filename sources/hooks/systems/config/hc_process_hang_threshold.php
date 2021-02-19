@@ -40,9 +40,7 @@ class Hook_config_hc_process_hang_threshold
             'list_options' => '',
             'order_in_category_group' => 11,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

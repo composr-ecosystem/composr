@@ -36,7 +36,6 @@ class Hook_config_support_priority_backburner_minutes
             'order_in_category_group' => 3,
             'required' => true,
             'public' => false,
-
             'addon' => 'composr_homesite_support_credits',
         ];
     }

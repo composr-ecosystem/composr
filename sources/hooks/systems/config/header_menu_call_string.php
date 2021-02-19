@@ -39,9 +39,7 @@ class Hook_config_header_menu_call_string
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

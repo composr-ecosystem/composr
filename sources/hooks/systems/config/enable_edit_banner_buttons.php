@@ -39,7 +39,6 @@ class Hook_config_enable_edit_banner_buttons
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'banners',

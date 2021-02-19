@@ -36,7 +36,6 @@ class Hook_config_patreon_group
             'order_in_category_group' => 1,
             'required' => false,
             'public' => false,
-
             'addon' => 'patreon',
         ];
     }

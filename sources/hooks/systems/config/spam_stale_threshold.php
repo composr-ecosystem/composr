@@ -40,9 +40,7 @@ class Hook_config_spam_stale_threshold
             'list_options' => '',
             'order_in_category_group' => 13,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

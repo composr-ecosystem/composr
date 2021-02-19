@@ -40,9 +40,7 @@ class Hook_config_password_reset_minutes
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

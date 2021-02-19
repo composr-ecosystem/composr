@@ -40,9 +40,7 @@ class Hook_config_stats_store_time
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'stats',
         ];
     }

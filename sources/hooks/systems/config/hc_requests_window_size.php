@@ -40,9 +40,7 @@ class Hook_config_hc_requests_window_size
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

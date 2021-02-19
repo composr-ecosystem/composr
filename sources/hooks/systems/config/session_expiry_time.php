@@ -40,9 +40,7 @@ class Hook_config_session_expiry_time
             'list_options' => '',
             'order_in_category_group' => 4,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

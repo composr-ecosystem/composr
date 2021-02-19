@@ -40,9 +40,7 @@ class Hook_config_enable_language_selection
             'list_options' => '0|1|2',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

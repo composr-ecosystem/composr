@@ -40,9 +40,7 @@ class Hook_config_shipping_shippo_api_test
             'list_options' => '',
             'order_in_category_group' => 4,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ecommerce',
 
             'maintenance_code' => 'shippo',

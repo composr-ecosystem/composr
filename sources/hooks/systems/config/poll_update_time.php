@@ -39,9 +39,7 @@ class Hook_config_poll_update_time
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'polls',
         ];
     }

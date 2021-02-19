@@ -40,9 +40,7 @@ class Hook_config_hc_cpu_normative_threshold
             'list_options' => '',
             'order_in_category_group' => 5,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

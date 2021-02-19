@@ -35,7 +35,6 @@ class Hook_config_member_booking_only
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'booking',
         ];
     }

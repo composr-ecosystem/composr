@@ -40,9 +40,7 @@ class Hook_config_tornevall_api_password
             'list_options' => '',
             'order_in_category_group' => 16,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

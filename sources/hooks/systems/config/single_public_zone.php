@@ -40,7 +40,6 @@ class Hook_config_single_public_zone
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

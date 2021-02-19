@@ -35,7 +35,6 @@ class Hook_config_classifieds_tax_code
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'classified_ads',
         ];
     }

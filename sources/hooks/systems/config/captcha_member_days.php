@@ -39,7 +39,6 @@ class Hook_config_captcha_member_days
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 8,
-
             'required' => true,
             'public' => false,
             'addon' => 'captcha',

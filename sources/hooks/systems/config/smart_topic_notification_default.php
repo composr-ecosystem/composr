@@ -39,9 +39,7 @@ class Hook_config_smart_topic_notification_default
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_forum',
         ];
     }

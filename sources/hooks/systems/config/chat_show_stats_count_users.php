@@ -39,9 +39,7 @@ class Hook_config_chat_show_stats_count_users
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'chat',
         ];
     }

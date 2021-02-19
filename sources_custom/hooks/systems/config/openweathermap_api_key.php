@@ -35,7 +35,6 @@ class Hook_config_openweathermap_api_key
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'weather',
         ];
     }

@@ -39,9 +39,7 @@ class Hook_config_forum_posts_per_page
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_forum',
         ];
     }

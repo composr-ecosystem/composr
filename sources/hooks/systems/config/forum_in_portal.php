@@ -39,9 +39,7 @@ class Hook_config_forum_in_portal
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'forum_in_portal',

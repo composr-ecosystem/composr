@@ -40,7 +40,6 @@ class Hook_config_chat_message_direction
             'list_options' => 'upwards|downwards',
             'required' => true,
             'public' => true,
-
             'addon' => 'chat',
         ];
     }

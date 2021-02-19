@@ -39,9 +39,7 @@ class Hook_config_days_to_keep__cron_log
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_privacy',
         ];
     }

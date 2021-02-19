@@ -36,7 +36,6 @@ class Hook_config_mentor_usergroup
             'order_in_category_group' => 100,
             'required' => false,
             'public' => false,
-
             'addon' => 'mentorr',
         ];
     }

@@ -36,7 +36,6 @@ class Hook_config_facebook_secret_code
             'order_in_category_group' => 2,
             'required' => false,
             'public' => false,
-
             'addon' => 'facebook_support',
         ];
     }

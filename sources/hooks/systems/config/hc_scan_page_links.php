@@ -39,9 +39,7 @@ class Hook_config_hc_scan_page_links
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

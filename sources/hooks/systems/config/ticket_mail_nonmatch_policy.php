@@ -40,9 +40,7 @@ class Hook_config_ticket_mail_nonmatch_policy
             'list_options' => 'post_as_guest|create_account|block',
             'order_in_category_group' => 11,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'tickets',
         ];
     }

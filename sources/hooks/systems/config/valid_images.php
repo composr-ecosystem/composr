@@ -39,9 +39,7 @@ class Hook_config_valid_images
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

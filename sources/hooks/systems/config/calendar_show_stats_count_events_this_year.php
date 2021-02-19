@@ -39,9 +39,7 @@ class Hook_config_calendar_show_stats_count_events_this_year
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'calendar',
         ];
     }

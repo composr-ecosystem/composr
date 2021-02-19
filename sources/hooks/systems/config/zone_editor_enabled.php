@@ -39,7 +39,6 @@ class Hook_config_zone_editor_enabled
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

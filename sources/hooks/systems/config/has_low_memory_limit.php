@@ -39,9 +39,7 @@ class Hook_config_has_low_memory_limit
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

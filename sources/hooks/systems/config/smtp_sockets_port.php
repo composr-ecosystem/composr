@@ -40,9 +40,7 @@ class Hook_config_smtp_sockets_port
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

@@ -40,7 +40,6 @@ class Hook_config_mobile_support
             'list_options' => '',
             'order_in_category_group' => 1,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

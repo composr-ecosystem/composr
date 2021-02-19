@@ -39,9 +39,7 @@ class Hook_config_reorganise_uploads
             'shared_hosting_restricted' => '0',
             'list_options' => '0|1|2',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

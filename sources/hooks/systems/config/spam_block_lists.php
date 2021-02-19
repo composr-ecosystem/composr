@@ -40,9 +40,7 @@ class Hook_config_spam_block_lists
             'list_options' => '',
             'order_in_category_group' => 5,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

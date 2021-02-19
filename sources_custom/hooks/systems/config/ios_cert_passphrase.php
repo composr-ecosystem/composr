@@ -35,7 +35,6 @@ class Hook_config_ios_cert_passphrase
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'composr_mobile_sdk',
         ];
     }

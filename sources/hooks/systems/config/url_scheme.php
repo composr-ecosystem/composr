@@ -40,9 +40,7 @@ class Hook_config_url_scheme
             'list_options' => 'RAW|PG|HTM|SIMPLE',
             'order_in_category_group' => 3,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

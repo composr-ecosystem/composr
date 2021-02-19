@@ -35,7 +35,6 @@ class Hook_config_points_for_thanking
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

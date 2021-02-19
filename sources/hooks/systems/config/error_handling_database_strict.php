@@ -39,7 +39,6 @@ class Hook_config_error_handling_database_strict
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 2,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

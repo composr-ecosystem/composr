@@ -35,7 +35,6 @@ class Hook_config_tapatalk_enable_sync_user
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

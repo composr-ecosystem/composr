@@ -41,7 +41,6 @@ class Hook_config_infinite_scrolling
             'theme_override' => true,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

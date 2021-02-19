@@ -39,9 +39,7 @@ class Hook_config_composr_fast_custom_index__count_estimate
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

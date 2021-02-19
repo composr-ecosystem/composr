@@ -40,9 +40,7 @@ class Hook_config_search_days_default
             'list_options' => '|2|5|15|30|45|60|120|240|365',
             'order_in_category_group' => 5,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

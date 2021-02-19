@@ -39,9 +39,7 @@ class Hook_config_enable_mark_topic_unread
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_forum',
         ];
     }

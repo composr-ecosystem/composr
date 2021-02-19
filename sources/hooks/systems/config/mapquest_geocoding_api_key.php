@@ -39,9 +39,7 @@ class Hook_config_mapquest_geocoding_api_key
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

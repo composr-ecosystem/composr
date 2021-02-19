@@ -35,7 +35,6 @@ class Hook_config_insult_points
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'bantr',
         ];
     }

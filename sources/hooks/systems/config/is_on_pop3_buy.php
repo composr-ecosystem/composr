@@ -39,7 +39,6 @@ class Hook_config_is_on_pop3_buy
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'order_in_category_group' => 1,
-
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',

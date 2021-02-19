@@ -64,6 +64,7 @@ class config_test_set extends cms_test_case
 
             switch ($details['type']) {
                 case 'list':
+                case 'theme_image':
                     $this->assertTrue(!cms_empty_safe($details['list_options']), 'List options expected, for ' . $hook);
                     break;
 

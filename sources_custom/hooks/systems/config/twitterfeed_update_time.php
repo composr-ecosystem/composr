@@ -28,7 +28,6 @@ class Hook_config_twitterfeed_update_time
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'twitter_support',
         ];
     }

@@ -41,7 +41,6 @@ class Hook_config_js_captcha
             'order_in_category_group' => 5,
             'required' => true,
             'public' => true,
-
             'addon' => 'captcha',
         ];
     }

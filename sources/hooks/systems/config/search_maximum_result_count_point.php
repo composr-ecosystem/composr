@@ -40,9 +40,7 @@ class Hook_config_search_maximum_result_count_point
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

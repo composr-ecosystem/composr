@@ -35,7 +35,6 @@ class Hook_config_after_edit_mark_unread
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

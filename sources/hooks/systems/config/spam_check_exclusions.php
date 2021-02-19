@@ -40,9 +40,7 @@ class Hook_config_spam_check_exclusions
             'list_options' => '',
             'order_in_category_group' => 11,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

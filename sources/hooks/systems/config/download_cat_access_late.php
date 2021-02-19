@@ -39,9 +39,7 @@ class Hook_config_download_cat_access_late
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'downloads',
         ];
     }

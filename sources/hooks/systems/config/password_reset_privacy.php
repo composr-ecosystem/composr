@@ -40,9 +40,7 @@ class Hook_config_password_reset_privacy
             'list_options' => 'disclose|silent|email',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

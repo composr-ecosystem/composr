@@ -41,7 +41,6 @@ class Hook_config_enable_animations
             'theme_override' => true,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

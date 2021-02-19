@@ -40,9 +40,7 @@ class Hook_config_shipping_tax_code
             'list_options' => '',
             'order_in_category_group' => 8,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

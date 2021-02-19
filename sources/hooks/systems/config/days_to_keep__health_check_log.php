@@ -39,9 +39,7 @@ class Hook_config_days_to_keep__health_check_log
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

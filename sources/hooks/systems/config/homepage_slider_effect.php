@@ -40,7 +40,6 @@ class Hook_config_homepage_slider_effect
             'list_options' => 'slide|fade',
             'order_in_category_group' => 3,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'galleries',

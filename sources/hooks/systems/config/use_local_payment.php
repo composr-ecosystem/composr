@@ -39,7 +39,6 @@ class Hook_config_use_local_payment
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 5,
-
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',

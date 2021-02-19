@@ -40,9 +40,7 @@ class Hook_config_csp_enabled
             'list_options' => '0|2|1',
             'order_in_category_group' => 1,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

@@ -39,9 +39,7 @@ class Hook_config_google_geocoding_api_enabled
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'geocoding_google',

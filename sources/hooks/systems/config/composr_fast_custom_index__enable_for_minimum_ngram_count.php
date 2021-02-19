@@ -40,9 +40,7 @@ class Hook_config_composr_fast_custom_index__enable_for_minimum_ngram_count
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

@@ -39,9 +39,7 @@ class Hook_config_gallery_entries_grid_per_page
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'galleries',
         ];
     }

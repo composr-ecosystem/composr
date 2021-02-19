@@ -39,9 +39,7 @@ class Hook_config_unzip_cmd
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

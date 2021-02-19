@@ -39,9 +39,7 @@ class Hook_config_wiki_enable_content_posts
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'wiki',
         ];
     }

@@ -1206,7 +1206,7 @@ header.is-see-through.with-white-navbar {
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
 }
 
-/*{+START,IF,{$NEQ,{$CONFIG_OPTION,header_type},side}}*/
+/*{+START,IF,{$NEQ,{$THEME_OPTION,header_type},side}}*/
 	header:not(.is-see-through).with-white-navbar {
 		color: {$GET,a.link};
 		background-color: {$GET,WB};

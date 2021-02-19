@@ -39,7 +39,6 @@ class Hook_config_newsletter_auto_pause
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 14,
-
             'required' => true,
             'public' => false,
             'addon' => 'newsletter',

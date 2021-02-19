@@ -40,9 +40,7 @@ class Hook_config_ticket_text
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'tickets',
         ];
     }

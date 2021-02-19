@@ -40,9 +40,7 @@ class Hook_config_stopforumspam_api_key
             'list_options' => '',
             'order_in_category_group' => 14,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'stop_forum_spam',

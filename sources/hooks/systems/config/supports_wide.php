@@ -41,7 +41,6 @@ class Hook_config_supports_wide
             'theme_override' => true,
             'required' => true,
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

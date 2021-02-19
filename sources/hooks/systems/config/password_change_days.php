@@ -40,9 +40,7 @@ class Hook_config_password_change_days
             'list_options' => '',
             'order_in_category_group' => 6,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

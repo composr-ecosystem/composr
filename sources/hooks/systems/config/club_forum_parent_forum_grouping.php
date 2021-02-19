@@ -39,9 +39,7 @@ class Hook_config_club_forum_parent_forum_grouping
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_clubs',
         ];
     }

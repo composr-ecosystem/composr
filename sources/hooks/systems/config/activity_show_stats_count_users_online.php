@@ -39,9 +39,7 @@ class Hook_config_activity_show_stats_count_users_online
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'stats_block',
         ];
     }

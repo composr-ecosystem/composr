@@ -39,9 +39,7 @@ class Hook_config_forum_show_stats_count_members_active_this_month
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'stats_block',
         ];
     }

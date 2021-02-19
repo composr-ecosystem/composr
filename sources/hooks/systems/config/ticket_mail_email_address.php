@@ -40,9 +40,7 @@ class Hook_config_ticket_mail_email_address
             'list_options' => '',
             'order_in_category_group' => 4,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'tickets',
         ];
     }

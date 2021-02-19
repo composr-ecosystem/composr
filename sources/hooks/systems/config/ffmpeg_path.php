@@ -40,9 +40,7 @@ class Hook_config_ffmpeg_path
             'list_options' => '',
             'order_in_category_group' => 6,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'galleries',
         ];
     }

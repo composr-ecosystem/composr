@@ -40,9 +40,7 @@ class Hook_config_password_expiry_days
             'list_options' => '',
             'order_in_category_group' => 7,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

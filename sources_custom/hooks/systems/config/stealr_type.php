@@ -35,7 +35,6 @@ class Hook_config_stealr_type
             'list_options' => 'Members that are inactive, but has lots points|Members that are rich|Members that are random|Members that are in a certain usergroup',
             'required' => true,
             'public' => false,
-
             'addon' => 'stealr',
         ];
     }

@@ -39,9 +39,7 @@ class Hook_config_cpf_enable_state
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

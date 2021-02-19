@@ -36,7 +36,6 @@ class Hook_config_support_credit_tax_code
             'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
-
             'addon' => 'composr_homesite_support_credits',
         ];
     }

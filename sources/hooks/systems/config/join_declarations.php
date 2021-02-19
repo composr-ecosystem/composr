@@ -39,7 +39,6 @@ class Hook_config_join_declarations
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 202,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',

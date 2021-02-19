@@ -35,7 +35,6 @@ class Hook_config_jestr_name_changes_shown_for
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'jestr',
         ];
     }

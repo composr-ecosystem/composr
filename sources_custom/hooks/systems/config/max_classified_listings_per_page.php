@@ -35,7 +35,6 @@ class Hook_config_max_classified_listings_per_page
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'classified_ads',
         ];
     }

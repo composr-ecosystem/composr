@@ -40,9 +40,7 @@ class Hook_config_trusted_sites_1
             'list_options' => '',
             'order_in_category_group' => 0,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

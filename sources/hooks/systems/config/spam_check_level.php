@@ -40,9 +40,7 @@ class Hook_config_spam_check_level
             'list_options' => 'EVERYTHING|ACTIONS|GUESTACTIONS|JOINING|NEVER',
             'order_in_category_group' => 4,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

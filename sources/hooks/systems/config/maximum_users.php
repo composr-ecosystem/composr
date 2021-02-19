@@ -40,9 +40,7 @@ class Hook_config_maximum_users
             'list_options' => '',
             'order_in_category_group' => 5,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

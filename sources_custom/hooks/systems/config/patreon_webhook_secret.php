@@ -36,7 +36,6 @@ class Hook_config_patreon_webhook_secret
             'order_in_category_group' => 3,
             'required' => false,
             'public' => false,
-
             'addon' => 'patreon',
         ];
     }

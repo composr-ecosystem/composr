@@ -35,7 +35,6 @@ class Hook_config_tapatalk_joining
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

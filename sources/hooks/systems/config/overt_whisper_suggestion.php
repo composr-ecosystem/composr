@@ -39,9 +39,7 @@ class Hook_config_overt_whisper_suggestion
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_forum',
         ];
     }

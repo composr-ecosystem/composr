@@ -35,7 +35,6 @@ class Hook_config_bookings_max_ahead_months
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'booking',
         ];
     }

@@ -40,7 +40,6 @@ class Hook_config_sitewide_im
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'chat',
         ];
     }

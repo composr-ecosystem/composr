@@ -39,9 +39,7 @@ class Hook_config_max_ip_addresses_per_subscriber
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

@@ -40,9 +40,7 @@ class Hook_config_ldap_bind_password
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ldap',
         ];
     }

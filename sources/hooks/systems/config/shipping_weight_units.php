@@ -40,9 +40,7 @@ class Hook_config_shipping_weight_units
             'list_options' => 'Kg|Lb',
             'order_in_category_group' => 6,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

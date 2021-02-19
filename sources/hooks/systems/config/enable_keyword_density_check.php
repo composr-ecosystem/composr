@@ -39,7 +39,6 @@ class Hook_config_enable_keyword_density_check
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 6,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

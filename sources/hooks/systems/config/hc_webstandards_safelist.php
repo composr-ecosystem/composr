@@ -39,9 +39,7 @@ class Hook_config_hc_webstandards_safelist
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

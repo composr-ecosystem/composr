@@ -39,7 +39,6 @@ class Hook_config_newsletter_enveloper_override
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 12,
-
             'required' => true,
             'public' => false,
             'addon' => 'newsletter',

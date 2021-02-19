@@ -39,7 +39,6 @@ class Hook_config_coppa_age
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 2,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',

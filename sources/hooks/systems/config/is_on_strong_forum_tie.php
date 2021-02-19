@@ -39,7 +39,6 @@ class Hook_config_is_on_strong_forum_tie
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'order_in_category_group' => 6,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

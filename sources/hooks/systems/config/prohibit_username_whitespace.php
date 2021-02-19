@@ -39,7 +39,6 @@ class Hook_config_prohibit_username_whitespace
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 11,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',

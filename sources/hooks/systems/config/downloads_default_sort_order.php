@@ -39,9 +39,7 @@ class Hook_config_downloads_default_sort_order
             'shared_hosting_restricted' => '0',
             'list_options' => 'title ASC|file_size ASC|file_size DESC|num_downloads DESC|average_rating DESC|compound_rating DESC|add_date ASC|add_date DESC|fixed_random ASC',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'downloads',
         ];
     }

@@ -41,7 +41,6 @@ class Hook_config_use_site_name_text_as_logo
             'theme_override' => true,
             'required' => true,
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

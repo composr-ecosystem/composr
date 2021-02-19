@@ -40,9 +40,7 @@ class Hook_config_enable_seo_fields
             'list_options' => 'yes|no|only_on_edit',
             'order_in_category_group' => 7,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

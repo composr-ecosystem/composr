@@ -39,9 +39,7 @@ class Hook_config_enable_add_topic_btn_in_topic
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'cns_forum',
         ];
     }

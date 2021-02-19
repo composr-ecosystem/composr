@@ -41,9 +41,7 @@ class Hook_config_mobile_pages
             'order_in_category_group' => 2,
             'theme_override' => true,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

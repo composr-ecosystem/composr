@@ -39,7 +39,6 @@ class Hook_config_maintenance_script_htaccess
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 9,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

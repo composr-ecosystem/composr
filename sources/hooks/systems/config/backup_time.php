@@ -39,9 +39,7 @@ class Hook_config_backup_time
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => false,
-
             'public' => false,
-
             'addon' => 'backup',
         ];
     }

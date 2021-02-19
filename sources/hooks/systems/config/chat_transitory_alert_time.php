@@ -39,9 +39,7 @@ class Hook_config_chat_transitory_alert_time
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => true,
-
             'addon' => 'chat',
         ];
     }

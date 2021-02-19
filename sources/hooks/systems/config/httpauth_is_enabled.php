@@ -39,9 +39,7 @@ class Hook_config_httpauth_is_enabled
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
 
             'maintenance_code' => 'httpauth',

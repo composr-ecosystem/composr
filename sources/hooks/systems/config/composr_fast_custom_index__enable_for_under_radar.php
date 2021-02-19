@@ -40,9 +40,7 @@ class Hook_config_composr_fast_custom_index__enable_for_under_radar
             'list_options' => '',
             'order_in_category_group' => 6,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

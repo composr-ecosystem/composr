@@ -40,9 +40,7 @@ class Hook_config_moz_access_id
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'moz',

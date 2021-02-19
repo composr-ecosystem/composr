@@ -39,7 +39,6 @@ class Hook_config_ssw
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 8,
-
             'required' => true,
             'public' => true,
             'addon' => 'core_configuration',

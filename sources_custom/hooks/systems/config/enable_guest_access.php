@@ -35,7 +35,6 @@ class Hook_config_enable_guest_access
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

@@ -35,7 +35,6 @@ class Hook_config_enable_notifications_instant_ios
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'composr_mobile_sdk',
         ];
     }

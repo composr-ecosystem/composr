@@ -569,7 +569,7 @@ function placeholder_tags()
         return new Tempcode();
     }
 
-    $_tags = array();
+    $_tags = [];
     foreach (placeholder_array() as $k => $v) {
         $_tags[] = [
             'TAG' => lorem_word(),

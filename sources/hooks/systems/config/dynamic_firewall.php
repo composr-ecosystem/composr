@@ -39,7 +39,6 @@ class Hook_config_dynamic_firewall
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 7,
-
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

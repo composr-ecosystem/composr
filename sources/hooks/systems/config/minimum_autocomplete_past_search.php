@@ -40,9 +40,7 @@ class Hook_config_minimum_autocomplete_past_search
             'list_options' => '',
             'order_in_category_group' => 8,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

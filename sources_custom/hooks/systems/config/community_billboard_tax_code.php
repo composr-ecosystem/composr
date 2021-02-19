@@ -36,7 +36,6 @@ class Hook_config_community_billboard_tax_code
             'order_in_category_group' => 4,
             'required' => true,
             'public' => false,
-
             'addon' => 'community_billboard',
         ];
     }

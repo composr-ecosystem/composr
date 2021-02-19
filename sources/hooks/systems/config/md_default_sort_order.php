@@ -39,9 +39,7 @@ class Hook_config_md_default_sort_order
             'shared_hosting_restricted' => '0',
             'list_options' => 'm_username ASC|m_cache_num_posts DESC|m_join_time ASC|m_join_time DESC|m_last_visit_time DESC',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

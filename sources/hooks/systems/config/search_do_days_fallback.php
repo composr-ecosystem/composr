@@ -40,9 +40,7 @@ class Hook_config_search_do_days_fallback
             'list_options' => '',
             'order_in_category_group' => 6,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'search',
         ];
     }

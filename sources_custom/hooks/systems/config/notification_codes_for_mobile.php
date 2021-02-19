@@ -35,7 +35,6 @@ class Hook_config_notification_codes_for_mobile
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'composr_mobile_sdk',
         ];
     }

@@ -40,9 +40,7 @@ class Hook_config_tax_state_regexp
             'list_options' => '',
             'order_in_category_group' => 5,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'ecommerce',
         ];
     }

@@ -40,9 +40,7 @@ class Hook_config_brute_force_login_minutes
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

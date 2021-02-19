@@ -35,7 +35,6 @@ class Hook_config_cloudinary_test_mode
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cloudinary',
         ];
     }

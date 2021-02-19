@@ -1123,7 +1123,7 @@ function strip_invisible_output_encoding(string $string) : string
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @set .tpl .js .xml .txt .css
  * @param  string $directory Subdirectory type to look in
- * @param  ?ID_TEXT $theme Theme to use (null: current theme)
+ * @param  ID_TEXT $theme Theme to use
  * @param  TIME $tcp_time Time of cache file
  * @return boolean Whether decache is NOT needed
  */

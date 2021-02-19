@@ -39,9 +39,7 @@ class Hook_config_notification_enable_private_topics
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_notifications',
         ];
     }

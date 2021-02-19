@@ -40,9 +40,7 @@ class Hook_config_mail_delete_after
             'list_options' => '',
             'order_in_category_group' => 7,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

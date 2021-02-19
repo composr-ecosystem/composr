@@ -4258,7 +4258,21 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_TEMPLATE_USAGE
         TEMP
         DESCRIPTION_TEMP
-        CONFIG_OPTION_fonts
+        BLOCK_BACKGROUND
+        CONFIG_OPTION_block_background
+        CONFIG_OPTION_editor_fonts
+        CONFIG_OPTION_font
+        CONFIG_OPTION_header_classic_image
+        CONFIG_OPTION_header_classic_text_colour
+        CONFIG_OPTION_menu_icons
+        EDITOR_FONTS
+        FLOURISHES
+        HEADER
+        HEADER_CLASSIC_IMAGE
+        HEADER_CLASSIC_TEXT_COLOUR
+        ICONS
+        LAYOUT
+        MENU_ICONS
         CONFIG_OPTION_google_fonts
         CONFIG_OPTION_hc_database_threshold
         DESCRIPTION_EMAIL_BOUNCES

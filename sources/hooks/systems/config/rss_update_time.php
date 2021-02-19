@@ -40,9 +40,7 @@ class Hook_config_rss_update_time
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'syndication_blocks',
         ];
     }

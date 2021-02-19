@@ -39,9 +39,7 @@ class Hook_config_hc_version_check
             'shared_hosting_restricted' => '0',
             'list_options' => 'deprecated|uptodate',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

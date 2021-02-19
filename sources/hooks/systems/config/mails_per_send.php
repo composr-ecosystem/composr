@@ -40,9 +40,7 @@ class Hook_config_mails_per_send
             'list_options' => '',
             'order_in_category_group' => 5,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'newsletter',
         ];
     }

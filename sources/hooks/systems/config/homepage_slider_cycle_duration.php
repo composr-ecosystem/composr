@@ -40,7 +40,6 @@ class Hook_config_homepage_slider_cycle_duration
             'list_options' => '',
             'order_in_category_group' => 4,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'galleries',

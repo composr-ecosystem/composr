@@ -41,7 +41,6 @@ class Hook_config_google_analytics
             'order_in_category_group' => 5,
             'required' => false,
             'public' => true,
-
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'google_analytics',

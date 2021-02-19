@@ -35,7 +35,6 @@ class Hook_config_stealr_group
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'stealr',
         ];
     }

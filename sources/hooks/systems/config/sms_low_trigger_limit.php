@@ -40,9 +40,7 @@ class Hook_config_sms_low_trigger_limit
             'list_options' => '',
             'order_in_category_group' => 5,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'sms',
 
             'maintenance_code' => 'sms',

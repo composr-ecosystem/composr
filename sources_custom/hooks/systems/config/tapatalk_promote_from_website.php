@@ -35,7 +35,6 @@ class Hook_config_tapatalk_promote_from_website
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'cns_tapatalk',
         ];
     }

@@ -39,10 +39,9 @@ class Hook_config_text_shadows
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 2,
+            'theme_override' => true,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

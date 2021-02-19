@@ -39,9 +39,7 @@ class Hook_config_comcode_page_default_review_freq
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_comcode_pages',
         ];
     }

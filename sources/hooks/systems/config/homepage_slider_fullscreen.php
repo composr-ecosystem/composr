@@ -40,7 +40,6 @@ class Hook_config_homepage_slider_fullscreen
             'list_options' => '',
             'order_in_category_group' => 5,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
             'addon' => 'galleries',

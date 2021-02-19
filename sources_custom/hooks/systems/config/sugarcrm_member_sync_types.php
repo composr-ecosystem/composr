@@ -36,7 +36,6 @@ class Hook_config_sugarcrm_member_sync_types
             'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
-
             'addon' => 'sugarcrm',
         ];
     }

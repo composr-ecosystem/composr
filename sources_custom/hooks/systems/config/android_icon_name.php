@@ -35,7 +35,6 @@ class Hook_config_android_icon_name
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'composr_mobile_sdk',
         ];
     }

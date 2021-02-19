@@ -39,9 +39,7 @@ class Hook_config_send_error_emails_ocproducts
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_privacy',
         ];
     }

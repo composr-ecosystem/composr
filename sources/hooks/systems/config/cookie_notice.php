@@ -40,7 +40,6 @@ class Hook_config_cookie_notice
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_privacy',
         ];
     }

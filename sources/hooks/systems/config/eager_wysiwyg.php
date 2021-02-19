@@ -41,7 +41,6 @@ class Hook_config_eager_wysiwyg
             'order_in_category_group' => 5,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }

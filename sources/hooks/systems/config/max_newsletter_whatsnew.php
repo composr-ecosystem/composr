@@ -40,9 +40,7 @@ class Hook_config_max_newsletter_whatsnew
             'list_options' => '',
             'order_in_category_group' => 7,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'newsletter',
         ];
     }

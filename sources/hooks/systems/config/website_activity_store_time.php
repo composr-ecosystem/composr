@@ -39,9 +39,7 @@ class Hook_config_website_activity_store_time
             'shared_hosting_restricted' => '1',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_privacy',
         ];
     }

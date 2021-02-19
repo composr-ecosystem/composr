@@ -40,9 +40,7 @@ class Hook_config_backup_server_port
             'list_options' => '',
             'order_in_category_group' => 4,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'backup',
         ];
     }

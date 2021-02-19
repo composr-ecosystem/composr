@@ -40,9 +40,7 @@ class Hook_config_hc_processes_to_monitor
             'list_options' => '',
             'order_in_category_group' => 10,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'health_check',
         ];
     }

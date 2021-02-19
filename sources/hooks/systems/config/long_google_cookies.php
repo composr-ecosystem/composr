@@ -41,7 +41,6 @@ class Hook_config_long_google_cookies
             'order_in_category_group' => 6,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'google_analytics',

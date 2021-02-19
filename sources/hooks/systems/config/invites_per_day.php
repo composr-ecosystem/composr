@@ -40,9 +40,7 @@ class Hook_config_invites_per_day
             'list_options' => '',
             'order_in_category_group' => 201,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

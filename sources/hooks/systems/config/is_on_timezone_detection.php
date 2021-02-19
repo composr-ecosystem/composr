@@ -41,7 +41,6 @@ class Hook_config_is_on_timezone_detection
             'order_in_category_group' => 7,
             'required' => true,
             'public' => true,
-
             'addon' => 'core_cns',
         ];
     }

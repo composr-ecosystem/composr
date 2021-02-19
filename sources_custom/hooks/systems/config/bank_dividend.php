@@ -35,7 +35,6 @@ class Hook_config_bank_dividend
             'list_options' => '',
             'required' => true,
             'public' => false,
-
             'addon' => 'bankr',
         ];
     }

@@ -40,9 +40,7 @@ class Hook_config_error_handling_notices
             'list_options' => 'SKIP|LOG|ATTACH|FATAL',
             'order_in_category_group' => 4,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

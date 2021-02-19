@@ -40,9 +40,7 @@ class Hook_config_honeypot_phrase
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

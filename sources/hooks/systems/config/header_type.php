@@ -42,7 +42,6 @@ class Hook_config_header_type
             'theme_override' => true,
             'required' => true,
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

@@ -40,7 +40,6 @@ class Hook_config_notification_desktop_alerts
             'list_options' => '',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_notifications',
         ];
     }

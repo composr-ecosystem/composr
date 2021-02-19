@@ -40,9 +40,7 @@ class Hook_config_bing_translator_enabled
             'list_options' => '',
             'order_in_category_group' => 12,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'core_language_editing',
 
             'maintenance_code' => 'bing_translator',

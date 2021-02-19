@@ -35,7 +35,6 @@ class Hook_config_cloudinary_cloud_name
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'cloudinary',
         ];
     }

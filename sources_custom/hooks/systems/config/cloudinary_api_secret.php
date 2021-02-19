@@ -35,7 +35,6 @@ class Hook_config_cloudinary_api_secret
             'list_options' => '',
             'required' => false,
             'public' => false,
-
             'addon' => 'cloudinary',
         ];
     }

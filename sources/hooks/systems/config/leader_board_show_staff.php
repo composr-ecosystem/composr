@@ -39,9 +39,7 @@ class Hook_config_leader_board_show_staff
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'points',
         ];
     }

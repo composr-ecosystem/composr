@@ -39,9 +39,7 @@ class Hook_config_force_local_temp_dir
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_configuration',
         ];
     }

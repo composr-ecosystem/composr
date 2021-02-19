@@ -34,7 +34,6 @@ class Hook_config_google_allow_signups
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 4,
-
             'required' => true,
             'public' => true,
             'addon' => 'hybridauth',

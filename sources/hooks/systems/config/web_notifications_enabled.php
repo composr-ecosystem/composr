@@ -39,9 +39,7 @@ class Hook_config_web_notifications_enabled
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_notifications',
         ];
     }

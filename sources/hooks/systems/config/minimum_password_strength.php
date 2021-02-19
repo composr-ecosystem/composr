@@ -40,9 +40,7 @@ class Hook_config_minimum_password_strength
             'list_options' => '1|2|3|4|5|6|7|8|9|10',
             'order_in_category_group' => 3,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_cns',
         ];
     }

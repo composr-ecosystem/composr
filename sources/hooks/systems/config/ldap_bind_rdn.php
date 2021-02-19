@@ -40,9 +40,7 @@ class Hook_config_ldap_bind_rdn
             'list_options' => '',
             'order_in_category_group' => 2,
             'required' => true,
-
             'public' => false,
-
             'addon' => 'ldap',
         ];
     }

@@ -35,9 +35,7 @@ class Hook_config_confluence_password
             'list_options' => '',
             'order_in_category_group' => 4,
             'required' => false,
-
             'public' => false,
-
             'addon' => 'confluence',
         ];
     }

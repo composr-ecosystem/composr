@@ -39,9 +39,7 @@ class Hook_config_bottom_show_privacy_link
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
-
             'public' => false,
-
             'addon' => 'core_privacy',
         ];
     }

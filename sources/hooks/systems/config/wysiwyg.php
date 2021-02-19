@@ -40,7 +40,6 @@ class Hook_config_wysiwyg
             'list_options' => '0|-1|1',
             'required' => true,
             'public' => true,
-
             'addon' => 'core_configuration',
         ];
     }
