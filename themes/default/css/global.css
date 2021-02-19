@@ -1140,6 +1140,21 @@ header h1 {
 	width: 100%;
 }
 
+.header-classic .logo-link {
+	/*{+START,IF_NON_EMPTY,{$THEME_OPTION,header_classic_text_colour}}*/
+		color: {$THEME_OPTION,header_classic_text_colour} !important;
+	/*{+END}*/
+	/*{+START,IF_EMPTY,{$THEME_OPTION,header_classic_text_colour}}*/
+		color: {$GET,seed} !important;
+	/*{+END}*/
+	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+		background: url('{$IMG_INLINE,{$THEME_OPTION,header_classic_image}}') no-repeat;
+		height: {$IMG_HEIGHT,{$IMG,{$THEME_OPTION,header_classic_image}}}px;
+		background-size: 100%;
+	/*{+END}*/
+	padding-left: 2em;
+}
+
 @media (max-width: 539.98px) {
 	.header-classic .logo-image-large {
 		display: none !important;
@@ -1191,7 +1206,7 @@ header.is-see-through.with-white-navbar {
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
 }
 
-/*{+START,IF,{$NEQ,{$CONFIG_OPTION,theme_header_type},side}}*/
+/*{+START,IF,{$NEQ,{$CONFIG_OPTION,header_type},side}}*/
 	header:not(.is-see-through).with-white-navbar {
 		color: {$GET,a.link};
 		background-color: {$GET,WB};
@@ -1288,6 +1303,7 @@ html.is-scrolled .header-modern.is-sticky.with-white-navbar {
 	background: {$GET,seed};
 }
 
+header.with-seed-navbar .logo-link,
 header.with-seed-navbar .menu-dropdown-toggle-btn,
 header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link,
 header.with-seed-navbar.is-hover-interface .top-button {

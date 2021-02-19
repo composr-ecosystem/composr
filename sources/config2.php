@@ -207,6 +207,11 @@ function build_config_inputter(string $name, array $details, ?string $current_va
                 return form_input_list($human_name, $explanation_with_default, $name, $_list, null, false, $required);
             }
             return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required);
+
+        case 'theme_image':
+            require_code('themes2');
+            $ids = get_all_image_ids_type($details['list_options']);
+            return form_input_theme_image($human_name, $explanation_with_default, $name, $ids, null, $current_value, null, true);
     }
 
     fatal_exit('Invalid config option type: ' . $details['type'] . ' (for ' . $name . ')');

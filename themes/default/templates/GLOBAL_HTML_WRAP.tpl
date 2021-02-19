@@ -10,7 +10,7 @@
 {$SET,has_right_panel,{$IS_NON_EMPTY,{$TRIM,{$LOAD_PANEL,right}}}}
 
 {$,We deploy as HTML5 but code and conform strictly to XHTML5}
-<html lang="{$LCASE*,{$METADATA,lang}}"{$ATTR_DEFAULTED,dir,{!dir},ltr} data-view="Global" data-view-params="{+START,PARAMS_JSON,page_link_privacy}{_*}{+END}" class="{+START,IF,{$SHOW_HEADER}}has-header-{$THEME_OPTION*,theme_header_type}{+END} {+START,IF,{$IS_NON_EMPTY,{$TRIM,{$GET,hero_slider}}}}has-homepage-slider {$?,{$THEME_OPTION,homepage_slider_fullscreen},has-homepage-slider-fullscreen}{+END} {$?,{$GET,has_left_panel},has-left-panel} {$?,{$GET,has_right_panel},has-right-panel}">
+<html lang="{$LCASE*,{$METADATA,lang}}"{$ATTR_DEFAULTED,dir,{!dir},ltr} data-view="Global" data-view-params="{+START,PARAMS_JSON,page_link_privacy}{_*}{+END}" class="{+START,IF,{$SHOW_HEADER}}has-header-{$THEME_OPTION*,header_type}{+END} {+START,IF,{$IS_NON_EMPTY,{$TRIM,{$GET,hero_slider}}}}has-homepage-slider {$?,{$THEME_OPTION,homepage_slider_fullscreen},has-homepage-slider-fullscreen}{+END} {$?,{$GET,has_left_panel},has-left-panel} {$?,{$GET,has_right_panel},has-right-panel}">
 <head>
 	{+START,INCLUDE,HTML_HEAD}{+END}
 </head>
@@ -19,13 +19,13 @@
 <body class="website-body zone-running-{$REPLACE*,_,-,{$ZONE}} page-running-{$REPLACE*,_,-,{$PAGE}}" id="main-website" itemscope="itemscope" itemtype="http://schema.org/WebPage" data-tpl="globalHtmlWrap">
 	<div id="main-website-inner">
 		{+START,IF,{$SHOW_HEADER}}
-			{+START,IF,{$EQ,{$THEME_OPTION,theme_header_type},modern}}
+			{+START,IF,{$EQ,{$THEME_OPTION,header_type},modern}}
 				{+START,INCLUDE,HEADER_MODERN}{+END}
 			{+END}
-			{+START,IF,{$EQ,{$THEME_OPTION,theme_header_type},side}}
+			{+START,IF,{$EQ,{$THEME_OPTION,header_type},side}}
 				{+START,INCLUDE,HEADER_SIDE}{+END}
 			{+END}
-			{+START,IF,{$EQ,{$THEME_OPTION,theme_header_type},classic}}
+			{+START,IF,{$EQ,{$THEME_OPTION,header_type},classic}}
 				{+START,INCLUDE,HEADER_CLASSIC}{+END}
 			{+END}
 		{+END}

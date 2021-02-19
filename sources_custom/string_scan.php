@@ -215,7 +215,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SQL_DUMP_SAVED_TO
         STICKY_HEADER
         STRETCH_SMALL_MEDIA
-        THEME_HEADER_TYPE
+        HEADER_TYPE
         WORDFILTER_MATCH_TYPE_full
         WORDFILTER_MATCH_TYPE_prefix
         WORDFILTER_MATCH_TYPE_substring
@@ -369,10 +369,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_homepage_slider_fullscreen
         CONFIG_OPTION_homepage_slider_gallery
         CONFIG_OPTION_sticky_header
-        CONFIG_OPTION_theme_header_type
-        CONFIG_OPTION_theme_header_type_VALUE_classic
-        CONFIG_OPTION_theme_header_type_VALUE_modern
-        CONFIG_OPTION_theme_header_type_VALUE_side
+        CONFIG_OPTION_header_type
+        CONFIG_OPTION_header_type_VALUE_classic
+        CONFIG_OPTION_header_type_VALUE_modern
+        CONFIG_OPTION_header_type_VALUE_side
         RSS_CLOUD_UPDATE
         DESCRIPTION_OVERWRITE_ERROR
         ACTION_OVERWRITE

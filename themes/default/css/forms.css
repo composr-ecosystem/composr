@@ -521,8 +521,15 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	display: block;
 }
 
+.radio-list-picture.selected img {
+	outline: 1px dotted;
+}
 .radio-list-picture img {
 	max-width: 100px;
+	height: auto;
+}
+.theme-image--header-classic-image .radio-list-picture img {
+	max-width: 300px;
 }
 
 .radio-list-picture label.js-widget {

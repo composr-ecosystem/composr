@@ -1655,7 +1655,6 @@
         $dom.changeChecked(jEl, true);
 
         imgOb.parentNode.classList.add('selected');
-        imgOb.style.outline = '1px dotted';
     }
 
     /**

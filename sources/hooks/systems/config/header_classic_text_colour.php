@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_theme_header_type
+class Hook_config_header_classic_text_colour
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_theme_header_type
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'THEME_HEADER_TYPE',
-            'type' => 'list',
+            'human_name' => 'HEADER_CLASSIC_TEXT_COLOUR',
+            'type' => 'colour',
             'category' => 'THEME',
             'group' => 'HEADER',
-            'explanation' => 'CONFIG_OPTION_theme_header_type',
+            'explanation' => 'CONFIG_OPTION_header_classic_text_colour',
             'shared_hosting_restricted' => '0',
-            'list_options' => 'modern|side|classic',
-            'order_in_category_group' => 1,
+            'list_options' => '',
+            'order_in_category_group' => 4,
             'theme_override' => true,
             'required' => true,
             'public' => false,
@@ -54,6 +54,6 @@ class Hook_config_theme_header_type
      */
     public function get_default() : ?string
     {
-        return 'modern';
+        return '#000000';
     }
 }
