@@ -59,7 +59,7 @@
 
 {+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
-{+START,IF_NON_EMPTY,{SUBCATEGORIES}}{+START,IF,{$EQ,{ID},{$DB_FIRST_ID}}}{+START,IF,{$NOT,{$CONFIG_OPTION,downloads_subcat_narrowin}}}
+{+START,IF_NON_EMPTY,{$GET,subcategories}}{+START,IF,{$EQ,{ID},{$DB_FIRST_ID}}}{+START,IF,{$NOT,{$CONFIG_OPTION,downloads_subcat_narrowin}}}
 	<hr class="spaced-rule" />
 
 	<div class="boxless-space">

@@ -1,5 +1,7 @@
 <aside class="screen-actions-outer box" data-tpl="blockMainScreenActions" data-tpl-params="{+START,PARAMS_JSON,URL_ENCODED_CANONICAL_URL}{_*}{+END}"><nav class="screen-actions box-inner">
-	<div class="print"><a class="link-exempt js-click-print-screen" rel="print nofollow" target="_blank" title="{!PRINT_THIS_SCREEN} {!LINK_NEW_WINDOW}" href="{PRINT_URL*}">{+START,INCLUDE,ICON}NAME=links/print{+END} <span>{!PRINT_THIS_SCREEN}</span></a></div>
+	{+START,IF,{$THEME_OPTION,capability_printing}}
+		<div class="print"><a class="link-exempt js-click-print-screen" rel="print nofollow" target="_blank" title="{!PRINT_THIS_SCREEN} {!LINK_NEW_WINDOW}" href="{PRINT_URL*}">{+START,INCLUDE,ICON}NAME=links/print{+END} <span>{!PRINT_THIS_SCREEN}</span></a></div>
+	{+END}
 	<div class="recommend"><a data-open-as-overlay="{}" class="link-exempt" rel="nofollow" target="_blank" title="{!RECOMMEND_LINK} {!LINK_NEW_WINDOW}" href="{RECOMMEND_URL*}">{+START,INCLUDE,ICON}NAME=menu/site_meta/recommend{+END} <span>{!RECOMMEND_LINK}</span></a></div>
 	<div class="facebook"><a class="link-exempt js-click-add-to-facebook" target="_blank" title="{!ADD_TO_FACEBOOK} {!LINK_NEW_WINDOW}" href="https://www.facebook.com/sharer.php?u={URL_ENCODED_CANONICAL_URL*}">{+START,INCLUDE,ICON}NAME=links/facebook{+END} <span>{!ADD_TO_FACEBOOK}</span></a></div>
 	<div class="twitter"><a class="link-exempt js-click-add-to-twitter" target="_blank" title="{!ADD_TO_TWITTER} {!LINK_NEW_WINDOW}" href="https://twitter.com/intent/tweet?text={TITLE*}%20{URL_ENCODED_CANONICAL_URL*}">{+START,INCLUDE,ICON}NAME=links/twitter{+END} <span>{!ADD_TO_TWITTER}</span></a></div>

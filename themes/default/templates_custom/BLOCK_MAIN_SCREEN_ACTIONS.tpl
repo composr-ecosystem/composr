@@ -5,7 +5,9 @@
 	{+START,IF_NON_EMPTY,{$CONFIG_OPTION,facebook_appid}}
 		<div class="facebook-like"><div class="fb-like" data-send="false" data-layout="button_count" data-width="55" data-show-faces="false"></div></div>
 	{+END}
-	<div class="print"><a class="link-exempt js-click-print-screen" rel="print nofollow" target="_blank" title="{!PRINT_THIS_SCREEN} {!LINK_NEW_WINDOW}" href="{PRINT_URL*}">{+START,INCLUDE,ICON}NAME=links/print{+END} <span>{!PRINT_THIS_SCREEN}</span></a></div>
+	{+START,IF,{$THEME_OPTION,capability_printing}}
+		<div class="print"><a class="link-exempt js-click-print-screen" rel="print nofollow" target="_blank" title="{!PRINT_THIS_SCREEN} {!LINK_NEW_WINDOW}" href="{PRINT_URL*}">{+START,INCLUDE,ICON}NAME=links/print{+END} <span>{!PRINT_THIS_SCREEN}</span></a></div>
+	{+END}
 	<div class="recommend"><a data-open-as-overlay="{}" class="link-exempt" rel="nofollow" target="_blank" title="{!RECOMMEND_LINK} {!LINK_NEW_WINDOW}" href="{RECOMMEND_URL*}">{+START,INCLUDE,ICON}NAME=menu/site_meta/recommend{+END} <span>{!RECOMMEND_LINK}</span></a></div>
 	{+START,IF_EMPTY,{$CONFIG_OPTION,facebook_appid}}
 		<div class="facebook"><a class="link-exempt js-click-add-to-facebook" target="_blank" title="{!ADD_TO_FACEBOOK} {!LINK_NEW_WINDOW}" href="https://www.facebook.com/sharer.php?u={URL_ENCODED_CANONICAL_URL.*}">{+START,INCLUDE,ICON}NAME=links/facebook{+END} <span>{!ADD_TO_FACEBOOK}</span></a></div>

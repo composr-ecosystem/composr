@@ -1221,18 +1221,25 @@ abstract class Mail_dispatcher_base
             $lang = get_lang($member_id);
         }
 
+        if ($member_id === null) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id(); // As there's no browser-settings involved (as for user_lang()) we just want to set for what a guest would see
+        }
+
         // Theme
-        $_theme = get_value('mail_theme');
-        if ($_theme !== null) {
-            $theme = $_theme;
-        } else {
-            if ($member_id === null) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id(); // As there's no browser-settings involved (as for user_lang()) we just want to set for what a guest would see
+        $theme = get_value('mail_theme');
+        if ($theme === null) {
+            if (method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme')) {
+                $theme = $GLOBALS['FORUM_DRIVER']->get_theme(null, $member_id);
             }
-            $theme = method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme(null, $member_id) : 'default';
-            if ($theme == 'default' || $theme == 'admin') { // Sucks, probably due to sending from Admin Zone...
-                $theme = $GLOBALS['FORUM_DRIVER']->get_theme('', $member_id); // ... So get theme of welcome zone
-            }
+        }
+        if ($theme === null) {
+            $theme = 'default';
+        }
+        if ((get_theme_option('capability_emails', null, $theme) == '0') || (in_array($theme, ['default', 'admin']))) { // Sucks, probably due to sending from Admin Zone...
+            $theme = $GLOBALS['FORUM_DRIVER']->get_theme('', $member_id); // ... So get theme of welcome zone
+        }
+        if (get_theme_option('capability_emails', null, $theme) == '0') {
+            $theme = 'default';
         }
     }
 

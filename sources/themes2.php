@@ -137,7 +137,7 @@ function autoprobe_cdns() : string
  *
  * @return array A map of all themes (name=>title) OR if requested a map of theme name to full theme details
  */
-function find_all_themes() : array
+function find_all_themes($needs_themewizard_support = false) : array
 {
     if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
         return ['default' => do_lang('DEFAULT')];
@@ -150,7 +150,7 @@ function find_all_themes() : array
     if ($_dir !== false) {
         while (false !== ($file = readdir($_dir))) {
             if ((strpos($file, '.') === false) && (is_dir(get_file_base() . '/themes/' . $file))) {
-                $themes[$file] = get_theme_option('title', null, $file);
+                $themes[$file] = null;
             }
         }
         closedir($_dir);
@@ -160,10 +160,18 @@ function find_all_themes() : array
         if ($_dir !== false) {
             while (false !== ($file = readdir($_dir))) {
                 if ((strpos($file, '.') === false) && (is_dir(get_file_base() . '/themes/' . $file))) {
-                    $themes[$file] = get_theme_option('title', null, $file);
+                    $themes[$file] = null;
                 }
             }
             closedir($_dir);
+        }
+    }
+
+    foreach (array_keys($themes) as $file) {
+        if (get_theme_option('capability_themewizard', null, $file) == '1') {
+            $themes[$file] = get_theme_option('title', null, $file);
+        } else {
+            unset($themes[$file]);
         }
     }
 
@@ -194,9 +202,11 @@ function find_all_themes() : array
  * @param  boolean $include_rely Whether to include the 'rely on forums' entry
  * @param  boolean $show_everything Whether to forget about permissions for this list, and also show additional detail
  * @param  ID_TEXT $default_message_string The language string to use for the default answer
+ * @param  boolean $administrative_only Whether to only show administrative themes
+ * @param  boolean $themewizard_only Whether to only show Theme Wizard supporting themes
  * @return Tempcode The list
  */
-function create_selection_list_themes(?string $theme = null, bool $include_rely = true, bool $show_everything = false, string $default_message_string = 'RELY_FORUMS') : object
+function create_selection_list_themes(?string $theme = null, bool $include_rely = true, bool $show_everything = false, string $default_message_string = 'RELY_FORUMS', bool $administrative_only = false, bool $themewizard_only = false) : object
 {
     if ($include_rely) {
         $entries = form_input_list_entry('-1', false, do_lang_tempcode($default_message_string));
@@ -205,6 +215,13 @@ function create_selection_list_themes(?string $theme = null, bool $include_rely 
     }
     $themes = find_all_themes();
     foreach ($themes as $_theme => $title) {
+        if (($administrative_only) && (get_theme_option('capability_administrative', null, $_theme) == '0')) {
+            continue;
+        }
+        if (($themewizard_only) && (get_theme_option('capability_themewizard', null, $_theme) == '0')) {
+            continue;
+        }
+
         if (($show_everything) || (has_category_access(get_member(), 'theme', $_theme))) {
             $selected = ($theme == $_theme);
             $_title = $title;

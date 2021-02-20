@@ -207,6 +207,15 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
             case 'author':
                 $default = do_lang('UNKNOWN');
                 break;
+            case 'capability_block_layouts':
+            case 'capability_themewizard':
+            case 'capability_emails':
+            case 'capability_printing':
+                $default = '1';
+                break;
+            case 'capability_administrative':
+                $default = '0';
+                break;
 
             // Setup Wizard
             case 'setupwizard__install_profile':

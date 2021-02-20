@@ -31,20 +31,22 @@
 		<div>
 			{HIDDEN}
 
-			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
-				{+START,IF_NON_PASSED,NO_SIZING}
-					{+START,IF,{$DESKTOP}}
-						<colgroup>
-							<col class="field-name-column" />
-							<col class="field-input-column" />
-						</colgroup>
+			{+START,IF_NON_EMPTY,{FIELDS}}
+				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+					{+START,IF_NON_PASSED,NO_SIZING}
+						{+START,IF,{$DESKTOP}}
+							<colgroup>
+								<col class="field-name-column" />
+								<col class="field-input-column" />
+							</colgroup>
+						{+END}
 					{+END}
-				{+END}
 
-				<tbody>
-					{FIELDS}
-				</tbody>
-			</table></div>
+					<tbody>
+						{FIELDS}
+					</tbody>
+				</table></div>
+			{+END}
 
 			{+START,IF_NON_EMPTY,{SUBMIT_NAME}}
 				{+START,INCLUDE,FORM_STANDARD_END}FORM_NAME={$GET,form_name}{+END}

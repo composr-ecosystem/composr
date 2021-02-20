@@ -181,11 +181,17 @@ class Module_admin_themewizard
 
         $source_theme = get_param_string('source_theme', 'default');
 
+        $num_available_themes = count(find_all_themes(true));
+
+        if ($num_available_themes == 0) {
+            warn_exit(do_lang_tempcode('NO_ENTRIES'));
+        }
+
         $hidden = new Tempcode();
-        if (count(find_all_themes()) == 1) {
+        if ($num_available_themes == 1) {
             $hidden->attach(form_input_hidden('source_theme', $source_theme));
         } else {
-            $themes = create_selection_list_themes($source_theme, false);
+            $themes = create_selection_list_themes($source_theme, false, false, 'RELY_FORUMS', false, true);
         }
 
         $fields = new Tempcode();
@@ -197,7 +203,7 @@ class Module_admin_themewizard
         require_code('themes2');
         $fields->attach(form_input_colour(do_lang_tempcode('SEED_COLOUR'), do_lang_tempcode('DESCRIPTION_SEED_COLOUR'), 'seed', '#' . preg_replace('/^\#/', '', get_param_string('seed', find_theme_seed('default'))), true));
 
-        if (count(find_all_themes()) != 1) {
+        if ($num_available_themes != 1) {
             $fields->attach(form_input_list(do_lang_tempcode('SOURCE_THEME'), do_lang_tempcode('DESCRIPTION_SOURCE_THEME'), 'source_theme', $themes, null, true));
         }
 
