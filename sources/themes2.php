@@ -135,6 +135,7 @@ function autoprobe_cdns() : string
 /**
  * Get an array listing all the themes present.
  *
+ * @param  boolean $needs_themewizard_support Whether to only return Theme Wizard supporting themes
  * @return array A map of all themes (name=>title) OR if requested a map of theme name to full theme details
  */
 function find_all_themes($needs_themewizard_support = false) : array

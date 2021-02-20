@@ -131,6 +131,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BILLING
         FULLSCREEN
         MATCH_TYPE
+        CAPABILITIES
+        DESCRIPTION_THEME_LANGUAGE
+        NO_BLOCK_LAYOUTS_IN_THEME
+        THEME_CAPABILITY_administrative
+        THEME_CAPABILITY_block_layouts
+        THEME_CAPABILITY_emails
+        THEME_CAPABILITY_printing
+        THEME_COMPOSR_VERSION
+        THEME_DESCRIPTION_COMPOSR_VERSION
+        ZE_NO_BLOCK_LAYOUTS_IN_THEME
         DESCRIPTION_REBUILD_ALL_CPF_INDICES
         REBUILD_ALL_CPF_INDICES
         PASSWORD_RESET_MINUTES
