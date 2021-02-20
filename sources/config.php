@@ -202,13 +202,17 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                 $default = $theme;
                 break;
             case 'description':
+            case 'language':
                 $default = '';
+                break;
+            case 'composr_version':
+                require_code('version2');
+                $default = get_version_dotted();
                 break;
             case 'author':
                 $default = do_lang('UNKNOWN');
                 break;
             case 'capability_block_layouts':
-            case 'capability_themewizard':
             case 'capability_emails':
             case 'capability_printing':
                 $default = '1';
@@ -220,9 +224,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
             // Setup Wizard
             case 'setupwizard__install_profile':
                 $default = '';
-                break;
-            case 'setupwizard__provide_block_choice':
-                $default = '1';
                 break;
             case 'setupwizard__lock_fixed_width_choice':
                 $default = '';

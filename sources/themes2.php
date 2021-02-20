@@ -168,7 +168,7 @@ function find_all_themes($needs_themewizard_support = false) : array
     }
 
     foreach (array_keys($themes) as $file) {
-        if (get_theme_option('capability_themewizard', null, $file) == '1') {
+        if (get_theme_option('enable_themewizard', null, $file) == '1') {
             $themes[$file] = get_theme_option('title', null, $file);
         } else {
             unset($themes[$file]);
@@ -218,7 +218,7 @@ function create_selection_list_themes(?string $theme = null, bool $include_rely 
         if (($administrative_only) && (get_theme_option('capability_administrative', null, $_theme) == '0')) {
             continue;
         }
-        if (($themewizard_only) && (get_theme_option('capability_themewizard', null, $_theme) == '0')) {
+        if (($themewizard_only) && (get_theme_option('enable_themewizard', null, $_theme) == '0')) {
             continue;
         }
 

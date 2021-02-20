@@ -1137,26 +1137,71 @@ class Module_admin_addons
         $hidden = build_keep_post_fields();
 
         $is_lang = (get_param_string('exp', 'custom') == 'lang');
-        $lang = post_param_string('lang', null);
+        $lang = either_param_string('lang', null);
 
         $is_theme = (get_param_string('exp', 'custom') == 'theme');
-        $theme = post_param_string('theme', null);
+        $theme = either_param_string('theme', null);
 
         require_code('files');
 
         // Default metadata
-        $addon_name = get_theme_option('title', '', $theme);
-        $author = get_theme_option('author', 'ocProducts', $theme);
-        if ($author == 'admin') {
-            $author = 'ocProducts';
+        if ($theme === null) {
+            $addon_name = '';
+            $author = '';
+            $organisation = '';
+            $version = '';
+            $copyright_attribution = '';
+            $licence = '';
+            $description = '';
+            $dependencies = '';
+            $incompatibilities = '';
+        } else {
+            $addon_name = get_theme_option('title', '', $theme);
+            $author = get_theme_option('author', 'ocProducts', $theme);
+            if ($author == 'admin') {
+                $author = 'ocProducts';
+            }
+            $organisation = get_theme_option('organisation', '', $theme);
+            $version = get_theme_option('version', '1.0', $theme);
+            $copyright_attribution = get_theme_option('copyright_attribution', '', $theme);
+            $licence = get_theme_option('licence', '(Unstated)', $theme);
+            $description = get_theme_option('description', '', $theme);
+            $dependencies = get_theme_option('dependencies', '', $theme);
+            $incompatibilities = get_theme_option('incompatibilities', '', $theme);
+
+            // Extend description with special theme metadata
+            require_lang('themes');
+            $description_parts = [];
+            $language = get_theme_option('language', '', $theme);
+            if ($language != '') {
+                $description_parts[] = do_lang('LANGUAGE') . ': ' . $language;
+            }
+            $composr_version = get_theme_option('composr_version', '', $theme);
+            if ($composr_version != '') {
+                $description_parts[] = do_lang('THEME_COMPOSR_VERSION') . ': ' . $composr_version;
+            }
+            $capability_block_layouts = get_theme_option('capability_block_layouts', '', $theme);
+            if ($capability_block_layouts == '0') {
+                $description_parts[] = do_lang('THEME_CAPABILITY_block_layouts') . ': ' . do_lang('NO');
+            }
+            $enable_themewizard = get_theme_option('enable_themewizard', '', $theme);
+            if ($enable_themewizard == '0') {
+                $description_parts[] = do_lang('THEMEWIZARD') . ': ' . do_lang('NO');
+            }
+            $enable_logowizard = get_theme_option('enable_logowizard', '', $theme);
+            if ($enable_logowizard == '0') {
+                $description_parts[] = do_lang('LOGOWIZARD') . ': ' . do_lang('NO');
+            }
+            $capability_emails = get_theme_option('capability_emails', '', $theme);
+            if ($capability_emails == '0') {
+                $description_parts[] = do_lang('THEME_CAPABILITY_emails') . ': ' . do_lang('NO');
+            }
+            $capability_printing = get_theme_option('capability_printing', '', $theme);
+            if ($capability_printing == '0') {
+                $description_parts[] = do_lang('THEME_CAPABILITY_printing') . ': ' . do_lang('NO');
+            }
+            $description = trim($description . "\n\n" . do_lang('CAPABILITIES') . ':' . "\n" . implode("\n", $description_parts));
         }
-        $organisation = get_theme_option('organisation', 'ocProducts Ltd', $theme);
-        $version = get_theme_option('version', '1.0', $theme);
-        $copyright_attribution = get_theme_option('copyright_attribution', '', $theme);
-        $licence = get_theme_option('licence', '(Unstated)', $theme);
-        $description = get_theme_option('description', '', $theme);
-        $dependencies = get_theme_option('dependencies', '', $theme);
-        $incompatibilities = get_theme_option('incompatibilities', '', $theme);
 
         if ($is_lang) {
             $lang = post_param_string('lang');

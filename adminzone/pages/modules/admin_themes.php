@@ -508,10 +508,14 @@ class Module_admin_themes
         $author = get_theme_option('author', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true), $name);
         $fields->attach(form_input_line(do_lang_tempcode('AUTHOR'), do_lang_tempcode('DESCRIPTION_AUTHOR_THEME', do_lang_tempcode('THEME')), 'author', $author, true));
         $capabilities = new Tempcode();
-        foreach (['administrative', 'block_layouts', 'themewizard', 'emails', 'printing'] as $capability) {
+        foreach (['administrative', 'block_layouts', 'emails', 'printing'] as $capability) {
             $capabilities->attach(form_input_list_entry($capability, get_theme_option('capability_' . $capability, null, $name) == '1', do_lang_tempcode('THEME_CAPABILITY_' . $capability)));
         }
         $fields->attach(form_input_multi_list(do_lang_tempcode('CAPABILITIES'), '', 'capabilities', $capabilities));
+        $language = get_theme_option('language', null, $name);
+        $fields->attach(form_input_line(do_lang_tempcode('LANGUAGE'), do_lang_tempcode('DESCRIPTION_THEME_LANGUAGE'), 'language', $language, false));
+        $composr_version = get_theme_option('composr_version', null, $name);
+        $fields->attach(form_input_line(do_lang_tempcode('THEME_COMPOSR_VERSION'), do_lang_tempcode('THEME_DESCRIPTION_COMPOSR_VERSION'), 'composr_version', $composr_version, !in_array($name, ['default', 'admin'])));
 
         // Option overrides
         $show_theme_option_overrides = false;
@@ -556,7 +560,6 @@ class Module_admin_themes
         if (addon_installed('setupwizard')) {
             $settings = [
                 'setupwizard__install_profile',
-                'setupwizard__provide_block_choice',
                 'setupwizard__lock_fixed_width_choice',
                 'setupwizard__lock_addons_on',
                 'setupwizard__provide_cms_advert_choice',
