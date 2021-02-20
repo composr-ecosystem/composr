@@ -796,6 +796,11 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
     $is_static = false;
 
     $next = pparse__parser_peek(true);
+
+    if ($next === null) {
+        parser_error('Unexpected end of input');
+    }
+
     $suppress_error = ($next[0] == 'SUPPRESS_ERROR');
     if ($suppress_error) {
         pparse__parser_next();
