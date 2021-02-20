@@ -39,6 +39,7 @@ class Hook_config_csp_enabled
             'shared_hosting_restricted' => '0',
             'list_options' => '0|2|1',
             'order_in_category_group' => 1,
+            'theme_override' => true,
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

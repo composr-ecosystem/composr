@@ -39,6 +39,7 @@ class Hook_config_csp_allow_eval_js
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 6,
+            'theme_override' => true,
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

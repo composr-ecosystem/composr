@@ -141,14 +141,14 @@ function load_csp(?array $options = null, ?int $enable_more_open_html_for = null
 
     if ($options === null) { // Full clean state from configuration
         $options = [
-            'csp_enabled' => get_option('csp_enabled'),
+            'csp_enabled' => get_theme_option('csp_enabled'),
             'csp_exceptions' => get_option('csp_exceptions'),
             'csp_safelisted_plugins' => get_option('csp_safelisted_plugins'),
             'csp_allowed_iframe_ancestors' => get_option('csp_allowed_iframe_ancestors'),
             'csp_allowed_iframe_descendants' => get_option('csp_allowed_iframe_descendants'),
 
-            'csp_allow_eval_js' => get_option('csp_allow_eval_js'),
-            'csp_allow_dyn_js' => get_option('csp_allow_dyn_js'),
+            'csp_allow_eval_js' => get_theme_option('csp_allow_eval_js'),
+            'csp_allow_dyn_js' => get_theme_option('csp_allow_dyn_js'),
             'csp_allow_insecure_resources' => get_option('csp_allow_insecure_resources'),
 
             'csp_allow_inline_js' => '0', // Not used

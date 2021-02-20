@@ -581,7 +581,7 @@ function check_xhtml_webstandards(string $out, bool $display_regardless = false,
             get_option('webstandards_compat') == '1',
             get_option('webstandards_ext_files') == '1',
             $display_regardless || ($preview_mode == 2),
-            get_option('csp_enabled') != '0'
+            get_theme_option('csp_enabled') != '0'
         );
         $show = (!empty($error['errors'])) || ($display_regardless);
         if ((!$show) && (get_option('webstandards_ext_files') == '1')) {
