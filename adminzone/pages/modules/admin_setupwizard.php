@@ -1096,6 +1096,8 @@ class Module_admin_setupwizard
         $logo_theme_image = post_param_string('logo_theme_image', array_shift($default_logos));
         $background_theme_image = post_param_string('background_theme_image', array_shift($default_backgrounds));
 
+        set_option('header_classic_image', $background_theme_image);
+
         if ($installprofile != '') {
             // Run any specific code for the profile
             $object = null;

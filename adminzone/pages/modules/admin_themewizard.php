@@ -429,14 +429,23 @@ class Module_admin_themewizard
         $fields->attach(form_input_theme_image(do_lang_tempcode('LOGO_THEME_IMAGE'), '', 'logo_theme_image', $default_logos, null));
         $fields->attach(form_input_theme_image(do_lang_tempcode('BACKGROUND_THEME_IMAGE'), '', 'background_theme_image', $default_backgrounds));
         require_code('fonts');
-        $fonts = find_all_fonts();
+        $fonts = find_all_fonts(false, true);
         $default_font = find_default_font();
         $font_choices = new Tempcode();
         require_css('fonts');
-        foreach ($fonts as $font => $font_label) {
+        $font_code = '';
+        foreach ($fonts as $_font => $font_label) {
+            $font = basename($_font);
             $font_choices->attach(form_input_radio_entry('font', $font, $font == $default_font, '<span style="font-family: ' . escape_html($font) . '">' . escape_html($font_label) . '</span>'));
+            $font_code .= '
+                @font-face {
+                    font-family: ' . $font . ';
+                    src: url(\'' . addslashes(get_custom_base_url() . '/' . $_font . '.ttf') . '\');
+                }
+            ';
         }
         $fields->attach(form_input_radio(do_lang_tempcode('comcode:FONT'), '', 'font', $font_choices, true));
+        attach_to_screen_header(do_template('CSS_NEED_INLINE', ['CODE' => $font_code]));
 
         // Find the most appropriate theme to edit for
         $theme = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => 'site']);
@@ -570,6 +579,11 @@ class Module_admin_themewizard
             }
             imagedestroy($img);
         }
+
+        // Header config
+        require_code('config2');
+        set_option('header_classic_image', $background_theme_image);
+
         Self_learning_cache::erase_smart_cache();
 
         $message = do_lang_tempcode('LOGOWIZARD_3_DESCRIBE', escape_html($theme));

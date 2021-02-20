@@ -142,9 +142,10 @@ function find_default_font(bool $mono = false) : string
  * Find all available fonts.
  *
  * @param  boolean $test_character_support Test the font supports the characters in the site title (a rough way to check it is a reasonable font to use on this site)
+ * @param  boolean $include_paths Whether to include local paths to the font files
  * @return array A map between font name and label to use for the font
  */
-function find_all_fonts(bool $test_character_support = false) : array
+function find_all_fonts(bool $test_character_support = false, $include_paths = false) : array
 {
     if (($test_character_support) && (has_ttf())) {
         $test_text = get_site_name();
@@ -152,8 +153,8 @@ function find_all_fonts(bool $test_character_support = false) : array
     }
 
     $fonts = [];
-    foreach ([get_file_base() . '/data_custom/fonts', get_file_base() . '/data/fonts'] as $path) {
-        $dh = @opendir($path);
+    foreach (['data_custom/fonts', 'data/fonts'] as $path) {
+        $dh = @opendir(get_file_base() . '/' . $path);
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
                 if (substr($f, -4) == '.ttf') {
@@ -192,7 +193,11 @@ function find_all_fonts(bool $test_character_support = false) : array
                     $font_label = str_replace('Italic', ' Italic', $font_label);
                     $font_label = trim(preg_replace('#\s+#', ' ', $font_label));
 
-                    $fonts[$font] = $font_label;
+                    if ($include_paths) {
+                        $fonts[$path . '/' . $font] = $font_label;
+                    } else {
+                        $fonts[$font] = $font_label;
+                    }
                 }
             }
             closedir($dh);
