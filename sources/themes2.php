@@ -32,7 +32,7 @@ function init__themes2()
 /**
  * Find the seed of a theme.
  *
- * @param  ?ID_TEXT $theme The theme name
+ * @param  ?ID_TEXT $theme The theme name (null: current theme)
  * @return ID_TEXT The seed colour
  */
 function find_theme_seed(?string $theme = null) : string

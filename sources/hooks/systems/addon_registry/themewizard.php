@@ -127,6 +127,7 @@ class Hook_addon_registry_themewizard
             'themes/default/templates/THEMEWIZARD_2_PREVIEW.tpl',
             'adminzone/themewizard.php',
             'sources/hooks/systems/page_groupings/themewizard.php',
+            'sources/hooks/systems/preview/logo.php',
             'themes/default/templates/LOGOWIZARD_2.tpl',
             'adminzone/logowizard.php',
             'themes/default/images/logo/index.html',
@@ -251,10 +252,13 @@ class Hook_addon_registry_themewizard
 
         $preview = do_lorem_template('LOGOWIZARD_2', [
             'NAME' => lorem_phrase(),
+            'FONT' => find_default_font(),
+            'COLOUR' => '#FFFFFF',
+            'LOGO_TYPE' => 'small',
+            'LOGO_OUTPUT_THEME_IMAGE' => lorem_word(),
             'LOGO_THEME_IMAGE' => 'logo/default_logos/1',
             'BACKGROUND_THEME_IMAGE' => 'logo/default_backgrounds/1',
             'THEME' => lorem_phrase(),
-            'FONT' => find_default_font(),
         ]);
 
         return [

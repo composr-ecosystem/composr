@@ -319,9 +319,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
             case 'logo_y_offset':
                 $default = '0';
                 break;
-            case 'site_name_colour':
-                $default = 'FFFFFF';
-                break;
             case 'site_name_split':
                 $default = '425';
                 break;

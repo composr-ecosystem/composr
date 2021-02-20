@@ -84,7 +84,7 @@ class Module_admin_themewizard
 
         require_lang('themes');
 
-        if ($type == 'make_logo' || $type == '_make_logo' || $type == '__make_logo') {
+        if ($type == 'make_logo' || $type == '_make_logo') {
             //set_helper_panel_text(comcode_lang_string('DOC_LOGOWIZARD'));
         } else {
             set_helper_panel_tutorial('tut_themes');
@@ -123,12 +123,6 @@ class Module_admin_themewizard
         }
 
         if ($type == '_make_logo') {
-            breadcrumb_set_parents([['_SELF:_SELF:make_logo', do_lang_tempcode('LOGOWIZARD')]]);
-
-            $this->title = get_screen_title('_LOGOWIZARD', true, [escape_html(integer_format(2)), escape_html(integer_format(3))]);
-        }
-
-        if ($type == '__make_logo') {
             breadcrumb_set_parents([['_SELF:_SELF:make_logo', do_lang_tempcode('START')]]);
 
             $this->title = get_screen_title('_LOGOWIZARD', true, [escape_html(integer_format(3)), escape_html(integer_format(3))]);
@@ -167,9 +161,6 @@ class Module_admin_themewizard
         }
         if ($type == '_make_logo') {
             return $this->_make_logo();
-        }
-        if ($type == '__make_logo') {
-            return $this->__make_logo();
         }
 
         return new Tempcode();
@@ -424,10 +415,13 @@ class Module_admin_themewizard
 
         require_code('form_templates');
 
+        require_lang('config');
+
         $fields = new Tempcode();
-        $fields->attach(form_input_line(do_lang_tempcode('config:SITE_NAME'), do_lang_tempcode('DESCRIPTION_LOGO_NAME'), 'logo_name', get_option('site_name'), /*intentionally false so that custom font work can be done in a paint tool*/false));
-        $fields->attach(form_input_theme_image(do_lang_tempcode('LOGO_THEME_IMAGE'), '', 'logo_theme_image', $default_logos, null));
-        $fields->attach(form_input_theme_image(do_lang_tempcode('BACKGROUND_THEME_IMAGE'), '', 'background_theme_image', $default_backgrounds));
+        $fields->attach(form_input_line(do_lang_tempcode('SITE_NAME'), do_lang_tempcode('DESCRIPTION_LOGO_NAME'), 'logo_name', get_option('site_name'), /*intentionally false so that custom font work can be done in a paint tool*/false));
+        $fields->attach(form_input_colour(do_lang_tempcode('COLOUR'), '', 'colour', get_theme_option('header_classic_text_colour'), true));
+        $fields->attach(form_input_theme_image(do_lang_tempcode('LOGO_THEME_IMAGE'), '', 'logo_theme_image', $default_logos, null, $default_logos[0]));
+        $fields->attach(form_input_theme_image(do_lang_tempcode('BACKGROUND_THEME_IMAGE'), '', 'background_theme_image', $default_backgrounds, null, get_theme_option('header_classic_image')));
         require_code('fonts');
         $fonts = find_all_fonts(false, true);
         $default_font = find_default_font();
@@ -472,33 +466,8 @@ class Module_admin_themewizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => '',
+            'PREVIEW' => true,
         ]);
-    }
-
-    /**
-     * UI for a logo wizard step (show preview).
-     *
-     * @return Tempcode The UI
-     */
-    public function _make_logo() : object
-    {
-        $theme = post_param_string('theme');
-
-        if (get_theme_option('enable_logowizard', null, $theme) == '0') {
-            warn_exit(do_lang_tempcode('THEME_NOT_SUPPORTING_LOGOWIZARD', escape_html(get_theme_option('title', null, $theme)), escape_html($theme)));
-        }
-
-        $preview = do_template('LOGOWIZARD_2', [
-            '_GUID' => '6e5a442860e5b7644b50c2345c3c8dee',
-            'NAME' => post_param_string('logo_name'),
-            'FONT' => post_param_string('font'),
-            'LOGO_THEME_IMAGE' => post_param_string('logo_theme_image'),
-            'BACKGROUND_THEME_IMAGE' => post_param_string('background_theme_image'),
-            'THEME' => $theme,
-        ]);
-
-        require_code('templates_confirm_screen');
-        return confirm_screen($this->title, $preview, '__make_logo', 'make_logo');
     }
 
     /**
@@ -506,83 +475,44 @@ class Module_admin_themewizard
      *
      * @return Tempcode The UI
      */
-    public function __make_logo() : object
+    public function _make_logo() : object
     {
         $theme = post_param_string('theme');
         $font = post_param_string('font');
         $logo_theme_image = post_param_string('logo_theme_image');
         $background_theme_image = post_param_string('background_theme_image');
+        $colour = post_param_string('colour');
 
         // Do it
         require_code('themes2');
         require_code('themes3');
         require_code('images');
         foreach ([$theme, 'default'] as $logo_save_theme) {
-            // Save -logo
-            $img = generate_logo(post_param_string('logo_name'), $font, $logo_theme_image, $background_theme_image, false, $logo_save_theme);
-            foreach (array_keys(find_all_langs()) as $lang) {
-                if (is_suexec_like()) {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/' . $lang . '/logo/-logo.png';
-                } else {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/-logo.png';
-                }
+            foreach (['large' => '-logo', 'standalone' => 'standalone_logo', 'small' => 'small_logo', 'small_white' => 'small_white_logo'] as $logo_type => $logo_output_theme_image) {
+                $img = generate_logo(post_param_string('logo_name'), $font, $colour, $logo_theme_image, $background_theme_image, false, $logo_save_theme, $logo_type);
+                foreach (array_keys(find_all_langs()) as $lang) {
+                    if (is_suexec_like()) {
+                        $path = 'themes/' . $logo_save_theme . '/images_custom/' . $lang . '/logo/' . $logo_output_theme_image . '.png';
+                    } else {
+                        $path = 'themes/' . $logo_save_theme . '/images_custom/' . $logo_output_theme_image . '.png';
+                    }
 
-                if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
-                    require_code('files2');
-                    make_missing_directory(get_custom_file_base() . '/' . dirname($path));
-                }
+                    if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
+                        require_code('files2');
+                        make_missing_directory(get_custom_file_base() . '/' . dirname($path));
+                    }
 
-                cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                actual_edit_theme_image('logo/-logo', $logo_save_theme, $lang, 'logo/-logo', $path);
+                    cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
+                    actual_edit_theme_image('logo/' . $logo_output_theme_image, $logo_save_theme, $lang, 'logo/' . $logo_output_theme_image, $path);
+                }
+                imagedestroy($img);
             }
-            imagedestroy($img);
-
-            // Save standalone_logo
-            $img = generate_logo(post_param_string('logo_name'), $font, $logo_theme_image, $background_theme_image, false, null, 'standalone');
-            foreach (array_keys(find_all_langs()) as $lang) {
-                if (is_suexec_like()) {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/' . $lang . '/logo/standalone_logo.png';
-                } else {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/standalone_logo.png';
-                }
-
-                cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                actual_edit_theme_image('logo/standalone_logo', $logo_save_theme, $lang, 'logo/standalone_logo', $path);
-            }
-            imagedestroy($img);
-
-            // Save small_logo
-            $img = generate_logo(post_param_string('logo_name'), $font, $logo_theme_image, $background_theme_image, false, null, 'small');
-            foreach (array_keys(find_all_langs()) as $lang) {
-                if (is_suexec_like()) {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/' . $lang . '/logo/small_logo.png';
-                } else {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/small_logo.png';
-                }
-
-                cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                actual_edit_theme_image('logo/small_logo', $logo_save_theme, $lang, 'logo/small_logo', $path);
-            }
-            imagedestroy($img);
-
-            // Save small_white_logo
-            $img = generate_logo(post_param_string('logo_name'), $font, $logo_theme_image, $background_theme_image, false, null, 'small_white');
-            foreach (array_keys(find_all_langs()) as $lang) {
-                if (is_suexec_like()) {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/' . $lang . '/logo/small_white_logo.png';
-                } else {
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/small_white_logo.png';
-                }
-
-                cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                actual_edit_theme_image('logo/small_white_logo', $logo_save_theme, $lang, 'logo/small_white_logo', $path);
-            }
-            imagedestroy($img);
         }
 
         // Header config
         require_code('config2');
         set_option('header_classic_image', $background_theme_image);
+        set_option('header_classic_text_colour', $colour);
 
         Self_learning_cache::erase_smart_cache();
 

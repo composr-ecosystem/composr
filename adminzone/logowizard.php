@@ -52,4 +52,13 @@ if (!addon_installed('themewizard')) {
 }
 
 require_code('themewizard');
-generate_logo(get_param_string('name'), get_param_string('font'), get_param_string('logo_theme_image'), get_param_string('background_theme_image'), true, get_param_string('theme'), get_param_string('logo_type', 'large'));
+
+$name = get_param_string('name');
+$font = get_param_string('font');
+$colour = get_param_string('colour');
+$logo_theme_image = get_param_string('logo_theme_image');
+$background_theme_image = get_param_string('background_theme_image');
+$theme = get_param_string('theme');
+$logo_type = get_param_string('logo_type', 'large');
+
+generate_logo($name, $font, $colour, $logo_theme_image, $background_theme_image, true, $theme, $logo_type);

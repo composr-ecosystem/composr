@@ -1095,6 +1095,7 @@ class Module_admin_setupwizard
         shuffle($default_backgrounds);
         $logo_theme_image = post_param_string('logo_theme_image', array_shift($default_logos));
         $background_theme_image = post_param_string('background_theme_image', array_shift($default_backgrounds));
+        $colour = get_theme_option('header_classic_text_colour');
 
         set_option('header_classic_image', $background_theme_image);
 
@@ -1137,33 +1138,17 @@ class Module_admin_setupwizard
             }
             if ($doing_logowizard) {
                 foreach ([$live_theme, 'default'] as $logo_save_theme) {
-                    $logo = generate_logo($name, $font, $logo_theme_image, $background_theme_image, false, $logo_save_theme);
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/-logo.png';
-                    if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
-                        require_code('files2');
-                        make_missing_directory(get_custom_file_base() . '/' . dirname($path));
+                    foreach (['large' => '-logo', 'standalone' => 'standalone_logo', 'small' => 'small_logo', 'small_white' => 'small_white_logo'] as $logo_type => $logo_output_theme_image) {
+                        $logo = generate_logo($name, $font, $colour, $logo_theme_image, $background_theme_image, false, $logo_save_theme, $logo_type);
+                        $path = 'themes/' . $logo_save_theme . '/images_custom/' . $logo_output_theme_image . '.png';
+                        if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
+                            require_code('files2');
+                            make_missing_directory(get_custom_file_base() . '/' . dirname($path));
+                        }
+                        cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
+                        actual_edit_theme_image('logo/' . $logo_output_theme_image, $logo_save_theme, get_site_default_lang(), 'logo/' . $logo_output_theme_image, $path, true);
+                        imagedestroy($logo);
                     }
-                    cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                    actual_edit_theme_image('logo/-logo', $logo_save_theme, get_site_default_lang(), 'logo/-logo', $path, true);
-                    imagedestroy($logo);
-
-                    $logo = generate_logo($name, $font, $logo_theme_image, $background_theme_image, false, $logo_save_theme, 'standalone');
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/standalone_logo.png';
-                    cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                    actual_edit_theme_image('logo/standalone_logo', $logo_save_theme, get_site_default_lang(), 'logo/standalone_logo', $path, true);
-                    imagedestroy($logo);
-
-                    $logo = generate_logo($name, $font, $logo_theme_image, $background_theme_image, false, $logo_save_theme, 'small');
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/small_logo.png';
-                    cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                    actual_edit_theme_image('logo/small_logo', $logo_save_theme, get_site_default_lang(), 'logo/small_logo', $path, true);
-                    imagedestroy($logo);
-
-                    $logo = generate_logo($name, $font, $logo_theme_image, $background_theme_image, false, $logo_save_theme, 'small_white');
-                    $path = 'themes/' . $logo_save_theme . '/images_custom/small_white_logo.png';
-                    cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
-                    actual_edit_theme_image('logo/small_white_logo', $logo_save_theme, get_site_default_lang(), 'logo/small_white_logo', $path, true);
-                    imagedestroy($logo);
                 }
             }
             if ($doing_themewizard) {

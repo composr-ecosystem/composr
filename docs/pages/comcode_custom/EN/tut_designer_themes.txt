@@ -351,7 +351,6 @@ The logo wizard will use these as source files when creating the compound logo. 
 [code="INI"]
 logo_x_offset=0
 logo_y_offset=0
-site_name_colour=FFFFFF
 site_name_split=425
 site_name_split_gap=6
 site_name_font_size_small=18

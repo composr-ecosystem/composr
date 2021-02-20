@@ -230,6 +230,10 @@
 	height: 2em;
 }
 
+.logowizard-preview {
+	background-color: {$GET,BW};
+}
+
 /* Template edit links */
 
 .template-edit-link-wrap {
@@ -256,9 +260,3 @@
 .template-edit-link span kbd {
 	color: black;
 }
-
-/*
-=========================
-=========Buttons=========
-=========================
-*/

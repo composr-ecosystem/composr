@@ -189,6 +189,7 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
  *
  * @param  string $name The site name
  * @param  ?string $font_choice The font name (in data/fonts) (null: default)
+ * @param  ?string $colour The text colour; may be overridden for certain logos (null: default)
  * @param  string $logo_theme_image The logo theme image
  * @param  string $background_theme_image The background theme image. Not used for 'small' and 'small_white' $logo_type.
  * @param  boolean $raw Whether to output the logo to the browser, destroy then image, and exit the script (i.e. never returns)
@@ -196,7 +197,7 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
  * @param  string $logo_type Logo type/size to generate. 'large' is for the bigger logo with background image, 'standalone' crops the background a bit, for use in e-mails etc., 'small' is the transparent logo without background, used for the small header type, and 'small_white' is used when the small header has a dark background
  * @return resource The image resource
  */
-function generate_logo(string $name, ?string $font_choice = null, string $logo_theme_image = 'logo/default_logos/logo1', string $background_theme_image = 'logo/default_backgrounds/banner1', bool $raw = false, ?string $theme = null, string $logo_type = 'large')
+function generate_logo(string $name, ?string $font_choice = null, ?string $colour = null, string $logo_theme_image = 'logo/default_logos/logo1', string $background_theme_image = 'logo/default_backgrounds/banner1', bool $raw = false, ?string $theme = null, string $logo_type = 'large')
 {
     if (!headers_sent()) {
         header('X-Robots-Tag: noindex');
@@ -218,10 +219,17 @@ function generate_logo(string $name, ?string $font_choice = null, string $logo_t
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
+    if ($colour === null) {
+        $colour = get_theme_option('header_classic_text_colour', null, $theme);
+    }
+
+    if (substr($colour, 0, 1) == '#') {
+        $colour = substr($colour, 1);
+    }
+
     $logowizard_details = [
         'logo_x_offset' => get_theme_option('logo_x_offset'),
         'logo_y_offset' => get_theme_option('logo_y_offset'),
-        'site_name_colour' => get_theme_option('site_name_colour'),
         'site_name_split' => get_theme_option('site_name_split'),
         'site_name_split_gap' => get_theme_option('site_name_split_gap'),
         'site_name_font_size_small' => get_theme_option('site_name_font_size_small'),
@@ -252,15 +260,20 @@ function generate_logo(string $name, ?string $font_choice = null, string $logo_t
         $logo_theme_image = str_replace('logo/default_logos/', 'logo/default_logos_monochrome/', $logo_theme_image);
     }
 
-    // Load GD image resources
     $im_logo = _generate_logo_get_image($logo_theme_image, $theme);
-    $im_background = _generate_logo_get_image($background_theme_image, $theme);
 
     if ($logo_type === 'large') {
-        $im_canvas = $im_background;
+        $im_default_logo = _generate_logo_get_image('logo/-logo', $theme);
+        $im_canvas = imagecreatetruecolor(imagesx($im_default_logo), imagesy($im_default_logo));
+
+        // Make the canvas transparent
+        imagefill($im_canvas, 0, 0, imagecolorallocatealpha($im_canvas, 0, 0, 0, 127));
+
+        imagedestroy($im_default_logo);
     } elseif ($logo_type === 'standalone') {
-        $im_standalone = _generate_logo_get_image('logo/standalone_logo', $theme);
+        $im_background = _generate_logo_get_image($background_theme_image, $theme);
         // Based on 'background' image, but must be the size of 'standalone' image...
+        $im_standalone = _generate_logo_get_image('logo/standalone_logo', $theme);
         $im_canvas = imagecreatetruecolor(imagesx($im_standalone), imagesy($im_standalone));
         imagecopy($im_canvas, $im_background, 0, 0, 0, 0, imagesx($im_standalone), imagesy($im_standalone));
         imagedestroy($im_background);
@@ -295,7 +308,7 @@ function generate_logo(string $name, ?string $font_choice = null, string $logo_t
                 }
             }
 
-            $logowizard_details['site_name_colour'] = 'FFFFFF';
+            $colour = 'FFFFFF';
         }
     }
 
@@ -306,7 +319,7 @@ function generate_logo(string $name, ?string $font_choice = null, string $logo_t
     imagedestroy($im_logo);
 
     // Set user configured color
-    $text_colour = imagecolorallocate($im_canvas, hexdec(substr($logowizard_details['site_name_colour'], 0, 2)), hexdec(substr($logowizard_details['site_name_colour'], 2, 2)), hexdec(substr($logowizard_details['site_name_colour'], 4, 2)));
+    $text_colour = imagecolorallocate($im_canvas, hexdec(substr($colour, 0, 2)), hexdec(substr($colour, 2, 2)), hexdec(substr($colour, 4, 2)));
 
     if ($logo_type !== 'small_white') {
         // Override user configured color with $THEMEWIZARD_COLOR "box_title_background" if available

@@ -588,7 +588,6 @@ class Module_admin_themes
                 'enable_logowizard',
                 'logo_x_offset',
                 'logo_y_offset',
-                'site_name_colour',
                 'site_name_split',
                 'site_name_split_gap',
                 'site_name_font_size_small',
