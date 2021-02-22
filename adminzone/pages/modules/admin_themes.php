@@ -228,10 +228,19 @@ class Module_admin_themes
             $theme = post_param_string('theme');
             $this->theme = $theme;
             $id = post_param_string('id');
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_THEMES')], ['_SELF:_SELF:manage_images:theme=' . $theme, do_lang_tempcode('CHOOSE_THEME_IMAGE')], ['_SELF:_SELF:edit_theme_image:' . $id, do_lang_tempcode('EDIT_THEME_IMAGE')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_THEMES')], ['_SELF:_SELF:manage_images:theme=' . $theme, do_lang_tempcode('CHOOSE_THEME_IMAGE')], ['_SELF:_SELF:edit_image:' . $id, do_lang_tempcode('EDIT_THEME_IMAGE')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('EDIT_THEME_IMAGE');
+        }
+        if ($type == '_themewizard_image') {
+            $theme = post_param_string('theme');
+            $this->theme = $theme;
+            $id = post_param_string('id');
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_THEMES')], ['_SELF:_SELF:manage_images:theme=' . $theme, do_lang_tempcode('CHOOSE_THEME_IMAGE')], ['_SELF:_SELF:edit_image:' . $id, do_lang_tempcode('EDIT_THEME_IMAGE')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+
+            $this->title = get_screen_title('THEMEWIZARD');
         }
 
         if ($type == 'edit_theme') {
@@ -327,6 +336,9 @@ class Module_admin_themes
         }
         if ($type == '_edit_image') {
             return $this->_edit_image();
+        }
+        if ($type == '_themewizard_image') {
+            return $this->_themewizard_image();
         }
         if ($type == 'screen_previews') {
             return $this->screen_previews();
@@ -1193,35 +1205,63 @@ class Module_admin_themes
             $height = make_string_tempcode(strval($image_size[1]));
         }
 
-        $full_url = ($unmodified ? get_base_url() : get_custom_base_url()) . '/' . $url;
-        $text = do_template('THEME_IMAGE_PREVIEW', ['_GUID' => 'c71817851526064e738d5076dcd1bce1', 'WIDTH' => $width, 'HEIGHT' => $height, 'URL' => $full_url, 'UNMODIFIED' => $unmodified]);
+        $image_url = ($unmodified ? get_base_url() : get_custom_base_url()) . '/' . $url;
 
-        list($fields, $hidden) = $this->get_image_form_fields($theme, $lang, $id, $url);
-        $hidden->attach(form_input_hidden('old_id', $id));
+        list($fields_edit_file, $hidden_edit_file) = $this->get_image_form_fields($theme, $lang, $id, $url);
+        $hidden_edit_file->attach(form_input_hidden('old_id', $id));
         if (strpos($url, 'images_custom') !== false) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9468297854009243da7b47c9bb3992bb', 'TITLE' => do_lang_tempcode('ACTIONS')]));
-            $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_THEME_IMAGE'), 'delete', false));
+            $fields_edit_file->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9468297854009243da7b47c9bb3992bb', 'TITLE' => do_lang_tempcode('ACTIONS')]));
+            $fields_edit_file->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_THEME_IMAGE'), 'delete', false));
         }
 
-        $post_url = build_url(['page' => '_SELF', 'type' => '_edit_image', 'uploading' => 1], '_SELF', [], false, true);
-        $submit_name = do_lang_tempcode('SAVE');
+        $url_edit_file = build_url(['page' => '_SELF', 'type' => '_edit_image', 'uploading' => 1], '_SELF', [], false, true);
 
         require_code('images');
+        $text_edit_file = new Tempcode();
         $max = floatval(get_max_image_size()) / floatval(1024 * 1024);
         if ($max < 3.0) {
             require_code('files2');
-            $text->attach(get_maximum_upload_message($max));
+            $text_edit_file->attach(get_maximum_upload_message($max));
         }
 
-        return do_template('FORM_SCREEN', [
+        if (addon_installed('themewizard')) {
+            require_code('themewizard');
+            require_code('themes2');
+
+            $url_theme_wizard = build_url(['page' => '_SELF', 'type' => '_themewizard_image'], '_SELF', [], false, true);
+
+            $hidden_themewizard = new Tempcode();
+            $hidden_themewizard->attach(form_input_hidden('theme', $theme));
+            $hidden_themewizard->attach(form_input_hidden('lang', $lang));
+            $hidden_themewizard->attach(form_input_hidden('id', $id));
+
+            $field_themewizard = new Tempcode();
+            $field_themewizard->attach(form_input_colour(do_lang_tempcode('SEED_COLOUR'), '', 'seed', '#' . preg_replace('/^\#/', '', find_theme_seed($theme)), true));
+            $field_themewizard->attach(form_input_tick(do_lang_tempcode('DARK_THEME'), do_lang_tempcode('DESCRIPTION_DARK_THEME'), 'dark', find_theme_dark($theme)));
+        } else {
+            $url_theme_wizard = null;
+            $hidden_themewizard = null;
+            $field_themewizard = null;
+        }
+
+        return do_template('THEME_IMAGE_EDIT_SCREEN', [
             '_GUID' => 'b0e178ad1f840a07c4967f3c266c750b',
-            'HIDDEN' => $hidden,
+
             'TITLE' => $this->title,
-            'URL' => $post_url,
-            'FIELDS' => $fields,
-            'TEXT' => $text,
-            'SUBMIT_ICON' => 'admin/edit_this',
-            'SUBMIT_NAME' => $submit_name,
+
+            'WIDTH' => $width,
+            'HEIGHT' => $height,
+            'IMAGE_URL' => $image_url,
+            'UNMODIFIED' => $unmodified,
+
+            'URL_EDIT_FILE' => $url_edit_file,
+            'HIDDEN_EDIT_FILE' => $hidden_edit_file,
+            'FIELDS_EDIT_FILE' => $fields_edit_file,
+            'TEXT_EDIT_FILE' => $text_edit_file,
+
+            'URL_THEMEWIZARD' => $url_theme_wizard,
+            'HIDDEN_THEMEWIZARD' => $hidden_themewizard,
+            'FIELDS_THEMEWIZARD' => $field_themewizard,
         ]);
     }
 
@@ -1281,6 +1321,71 @@ class Module_admin_themes
         persistent_cache_delete('IMAGE_DIMS');
 
         return $this->do_next_manager($this->title, do_lang_tempcode('SUCCESS'), $theme, $lang, 'image', $id);
+    }
+
+    /**
+     * The actualiser to Theme Wizardify a theme image.
+     *
+     * @return Tempcode The UI
+     */
+    public function _themewizard_image() : object
+    {
+        if (!addon_installed('themewizard')) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        require_code('themewizard');
+        require_code('themes3');
+        require_code('urls2');
+
+        $theme = post_param_string('theme');
+        $lang = post_param_string('lang');
+        $id = post_param_string('id');
+
+        $seed = post_param_string('seed');
+        $dark = (post_param_integer('dark', 0) == 1);
+
+        $default_url = find_theme_image($id, true, true, 'default', ($lang == '') ? null : $lang);
+
+        // Remove old file first so we can re-use the filepath
+        $old_url = find_theme_image($id, true, true, $theme, ($lang == '') ? null : $lang);
+        if ($old_url != '') {
+            $where_map = ['theme' => $theme, 'id' => $id];
+            if (($lang != '') && ($lang !== null)) {
+                $where_map['lang'] = $lang;
+            }
+            $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
+
+            cleanup_after_theme_image_file_removal($old_url);
+        }
+
+        // Find save path
+        $target_dir = 'themes/' . $theme . '/images_custom';
+        if (strpos($id, '/') !== false) {
+            $target_dir .= '/' . dirname($id);
+        }
+        list($place, $url, $filename) = find_unique_path($target_dir, rawurldecode(basename($default_url)));
+        if (!file_exists(dirname($place))) {
+            make_missing_directory(dirname($place));
+        }
+
+        // Generate image
+        $img = calculate_theme($seed, 'default', 'hsv', $id, $dark, null, null, $lang);
+
+        if ($img === null) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        // Save image
+        if (is_string($img)) {
+            file_put_contents($place, $img);
+        } else {
+            cms_imagesave($img, $place, 'png') or intelligent_write_error($place);
+            imagedestroy($img);
+        }
+        actual_edit_theme_image($id, $theme, $lang, $id, $url, true);
+
+        return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }
 
     /**

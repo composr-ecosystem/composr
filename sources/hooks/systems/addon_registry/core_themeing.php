@@ -134,7 +134,7 @@ class Hook_addon_registry_core_themeing
             'themes/default/javascript/theme_colours.js',
             'themes/default/templates/THEME_MANAGE_SCREEN.tpl',
             'themes/default/templates/THEME_IMAGE_MANAGE_SCREEN.tpl',
-            'themes/default/templates/THEME_IMAGE_PREVIEW.tpl',
+            'themes/default/templates/THEME_IMAGE_EDIT_SCREEN.tpl',
             'themes/default/templates/THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL.tpl',
             'themes/default/templates/THEME_TEMPLATE_EDITOR_SCREEN.tpl',
             'themes/default/templates/THEME_TEMPLATE_EDITOR_TAB.tpl',
@@ -175,7 +175,7 @@ class Hook_addon_registry_core_themeing
         return [
             'templates/THEME_MANAGE_SCREEN.tpl' => 'administrative__theme_manage_screen',
             'templates/THEME_IMAGE_MANAGE_SCREEN.tpl' => 'administrative__theme_image_manage_screen',
-            'templates/THEME_IMAGE_PREVIEW.tpl' => 'administrative__theme_image_preview',
+            'templates/THEME_IMAGE_EDIT_SCREEN.tpl' => 'administrative__theme_image_edit_screen',
             'templates/THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL.tpl' => 'administrative__theme_template_editor_template_detail',
             'templates/THEME_TEMPLATE_EDITOR_SCREEN.tpl' => 'administrative__theme_template_editor_screen',
             'templates/THEME_TEMPLATE_EDITOR_TAB.tpl' => 'administrative__theme_template_editor_tab',
@@ -272,14 +272,22 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__theme_image_preview() : array
+    public function tpl_preview__administrative__theme_image_edit_screen() : array
     {
         return [
-            lorem_globalise(do_lorem_template('THEME_IMAGE_PREVIEW', [
+            lorem_globalise(do_lorem_template('THEME_IMAGE_EDIT_SCREEN', [
+                'TITLE' => lorem_title(),
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
-                'URL' => placeholder_image_url(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'UNMODIFIED' => lorem_phrase(),
+                'TEXT_EDIT_FILE' => lorem_sentence_html(),
+                'URL_EDIT_FILE' => placeholder_url(),
+                'HIDDEN_EDIT_FILE' => '',
+                'FIELDS_EDIT_FILE' => placeholder_fields(),
+                'URL_THEMEWIZARD' => placeholder_url(),
+                'HIDDEN_THEMEWIZARD' => '',
+                'FIELDS_THEMEWIZARD' => placeholder_fields(),
             ]), null, '', true)
         ];
     }

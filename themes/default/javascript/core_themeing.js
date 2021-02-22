@@ -774,6 +774,16 @@
         window.mainFormVerySimple = true;
     };
 
+    $cms.templates.themeImageEditScreen = function themeImageEditScreen(params, container) {
+        $dom.on(container, 'click', '.js-click-select-tab-g', function (e, clicked) {
+            var tab = clicked.dataset.tpTab;
+
+            if (tab) {
+                $cms.ui.selectTab('g', tab);
+            }
+        });
+    };
+
     $cms.templates.themeTemplateEditorRestoreRevision = function (params, container) {
         var file = strVal(params.file),
             revisionId = strVal(params.revisionId);

@@ -130,6 +130,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EFFECT
         BILLING
         FULLSCREEN
+        DOC_SVG_SPRITES
+        THEME_IMAGE_RECOLOUR_DESCRIPTION
         MATCH_TYPE
         CAPABILITIES
         DESCRIPTION_THEME_LANGUAGE
@@ -7610,6 +7612,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEME_IMAGE
         THEME_IMAGES
         THEME_IMAGE_CURRENTLY_LIKE
+        THEME_IMAGE_CURRENTLY_LIKE_DIMENSIONS
+        THEME_IMAGE_CURRENTLY_LIKE_VECTOR
         THEME_IMAGE_CURRENTLY_UNMODIFIED
         THEME_IMAGE_EDITING
         THEME_IMAGE_NEW
@@ -8205,7 +8209,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PREVIEW_SPRITE
         GENERATE_SPRITE
         MONOCHROME_ICONS
-        PLEASE_GENERATE_SPRITE
         GENERATING_SPRITE
         PREVIEWING_SPRITE
     ')));

@@ -689,7 +689,7 @@ function themewizard_script()
  * @param  ?array $colours The colour map to use (null: compute)
  * @param  ?array $landscape The computed colour landscape to use (null: compute)
  * @param  ?LANGUAGE_NAME $lang The language to work in (null: default)
- * @return mixed Image resource OR Image string OR A pair: extended map of colours, colour expression landscape
+ * @return ?mixed Image resource OR Image string OR A pair: extended map of colours, colour expression landscape (null: did not happen)
  */
 function calculate_theme(string $seed, string $source_theme, string $algorithm, string $show = 'colours', ?bool $dark = null, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
 {

@@ -226,13 +226,16 @@ class Module_admin_svg_sprites
 
         $theme_image = 'icons' . (($monochrome === 1) ? '_monochrome' : '') . '_sprite';
         $sprite_url = find_theme_image($theme_image, false, true);
+        if ($sprite_url == '') {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+        if (!url_is_local($sprite_url)) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
         $_sprite_path = rawurldecode($sprite_url);
         $sprite_path = get_custom_file_base() . '/' . $_sprite_path;
         if (!is_file($sprite_path)) {
             $sprite_path = get_file_base() . '/' . $_sprite_path;
-        }
-        if (!is_file($sprite_path)) {
-            warn_exit(do_lang('PLEASE_GENERATE_SPRITE', $theme));
         }
 
         $svg_xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($sprite_path, FILE_READ_LOCK | FILE_READ_BOM));

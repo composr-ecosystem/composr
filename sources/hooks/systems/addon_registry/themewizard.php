@@ -173,6 +173,7 @@ class Hook_addon_registry_themewizard
             'themes/default/images/logo/default_backgrounds/banner9.png',
             'themes/default/images/logo/default_backgrounds/banner10.png',
             'themes/default/javascript/themewizard.js',
+            'sources/hooks/systems/preview/themewizard_image.php',
         ];
     }
 
