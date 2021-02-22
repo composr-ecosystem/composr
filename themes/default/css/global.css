@@ -5,6 +5,7 @@
 
 /*
 This is Composr's main CSS file. It defines core styles for core functionality and common re-used styles.
+See _base.css for colours and responsive design breakpoints.
 
 The CSS is written to CSS3/HTML5 standards.
 * Parts that are still considered experimental on some browsers are surrounded using the Tempcode 'BETA_CSS_PROPERTY' symbol, which automatically injects CSS prefixes for all major browsers.
