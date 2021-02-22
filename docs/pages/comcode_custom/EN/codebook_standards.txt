@@ -2219,6 +2219,13 @@ Compress images and strip gamma from PNG files
 | Composr development +
 | Manually
 | Wherever appropriate use [tt].svg[/tt] images. If raster images must be used then supply both normal and hi-dpi ("retina") images. Do this using the HTML [tt]srcset[/tt] attribute.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Good contrast for icons[/color]
+| Design quality
+| Composr development +
+| Manually
+| Icons need to look good when laid over common pale and dark backgrounds, within reason.
 |}
 
 [title="3"]Miscellany[/title]

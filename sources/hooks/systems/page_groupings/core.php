@@ -72,7 +72,7 @@ class Hook_page_groupings_core
             (!addon_installed('content_reviews')) ? null : ['audit', 'menu/adminzone/audit/content_reviews', ['admin_content_reviews', ['type' => 'browse'], get_module_zone('admin_content_reviews')], do_lang_tempcode('content_reviews:CONTENT_REVIEWS'), 'content_reviews:DOC_CONTENT_REVIEWS'],
 
             ['style', 'menu/adminzone/style/themes/themes', ['admin_themes', ['type' => 'browse'], get_module_zone('admin_themes')], do_lang_tempcode('themes:THEMES'), 'themes:DOC_THEMES'],
-            ['style', 'admin/tool', ['admin_svg_sprites', [], get_page_zone('admin_svg_sprites')], do_lang_tempcode('themes:SVG_SPRITES'), 'themes:SVG_SPRITES'],
+            ['style', 'admin/tool', ['admin_svg_sprites', [], get_page_zone('admin_svg_sprites')], do_lang_tempcode('themes:SVG_SPRITES'), 'themes:DOC_SVG_SPRITES'],
             (get_forum_type() != 'cns') ? null : ['style', 'menu/adminzone/style/emoticons', ['admin_cns_emoticons', ['type' => 'browse'], get_module_zone('admin_cns_emoticons')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('EMOTICONS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['FORUM_DB']->query_select_value('f_emoticons', 'COUNT(*)')))))), 'cns:DOC_EMOTICONS'],
 
             ['setup', 'menu/adminzone/setup/config/config', ['admin_config', ['type' => 'browse'], get_module_zone('admin_config')], do_lang_tempcode('config:CONFIGURATION'), 'config:DOC_CONFIGURATION'],

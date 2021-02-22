@@ -78,6 +78,10 @@ function make_installers($skip_file_grab = false)
         $out .= populate_build_files_list();
         $out .= '</ul>';
 
+        requires_code('themes3');
+        generate_svg_sprite('default', false, false);
+        generate_svg_sprite('default', true, false);
+
         download_latest_data_files();
         make_files_manifest();
         make_database_manifest();

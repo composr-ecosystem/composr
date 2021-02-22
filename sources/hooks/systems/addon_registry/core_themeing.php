@@ -190,7 +190,7 @@ class Hook_addon_registry_core_themeing
             'templates/TEMPLATE_TREE_ITEM_WRAP.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_NODE.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_SCREEN.tpl' => 'administrative__template_tree_screen',
-            'templates/PREVIEW_SVG_SPRITE_ICON.tpl' => 'administrative__preview_svg_sprite_icon',
+            'templates/PREVIEW_SVG_SPRITE_ICON.tpl' => 'administrative__preview_svg_sprite_screen',
             'templates/PREVIEW_SVG_SPRITE_SCREEN.tpl' => 'administrative__preview_svg_sprite_screen',
             'templates/GENERATE_SVG_SPRITE_SCREEN.tpl' => 'administrative__generate_svg_sprite_screen',
         ];
@@ -534,26 +534,6 @@ class Hook_addon_registry_core_themeing
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__preview_svg_sprite_icon() : array
-    {
-        require_lang('themes');
-
-        $symbol_id = 'admin__add';
-        return [
-            lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_ICON', [
-                'SPRITE_URL' => find_theme_image('icons_sprite'),
-                'SYMBOL_ID' => $symbol_id,
-            ]), null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
     public function tpl_preview__administrative__preview_svg_sprite_screen() : array
     {
         require_lang('themes');
@@ -567,8 +547,8 @@ class Hook_addon_registry_core_themeing
 
         return [
             lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_SCREEN', [
-                'TITLE' => do_lang('themes:PREVIEW_SVG_SPRITE'),
-                'SPRITE_PATH' => get_file_base() . '/themes/default/images/icons_sprite.svg',
+                'TITLE' => lorem_title(),
+                'SPRITE_PATH' => 'themes/default/images/icons_sprite.svg',
                 'ICONS' => $icons,
             ]), null, '', true)
         ];
@@ -587,8 +567,8 @@ class Hook_addon_registry_core_themeing
 
         return [
             lorem_globalise(do_lorem_template('GENERATE_SVG_SPRITE_SCREEN', [
-                'TITLE' => do_lang('themes:GENERATE_SVG_SPRITE'),
-                'SPRITE_PATH' => get_file_base() . '/themes/default/images/icons_sprite.svg',
+                'TITLE' => lorem_title(),
+                'SPRITE_PATH' => 'themes/default/images/icons_sprite.svg',
                 'ICONS_ADDED' => ['admin/add'],
             ]), null, '', true)
         ];

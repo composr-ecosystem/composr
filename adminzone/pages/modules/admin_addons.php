@@ -785,6 +785,8 @@ class Module_admin_addons
             uninstall_addon($addon_name, $i == count($addons_to_remove) - 1);
         }
 
+        $this->_regenerate_svg_sprites();
+
         // Clear some caching
         require_code('caches3');
         erase_comcode_page_cache();
@@ -865,6 +867,8 @@ class Module_admin_addons
         }
 
         install_addon($file, $files);
+
+        $this->_regenerate_svg_sprites();
 
         // Show it worked / Refresh
         if (($theme !== null) && ($theme != 'default')) {
@@ -997,6 +1001,8 @@ class Module_admin_addons
         );
 
         uninstall_addon($addon_name);
+
+        $this->_regenerate_svg_sprites();
 
         // Clear some caching
         require_code('caches3');
@@ -1708,5 +1714,20 @@ class Module_admin_addons
         // Show it worked / Refresh
         $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $zone], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * Regenerate SVG sprites for all themes.
+     */
+    protected function _regenerate_svg_sprites()
+    {
+        require_code('themes2');
+        require_code('themes3');
+
+        $themes = find_all_themes();
+        foreach (array_keys($themes) as $theme) {
+            generate_svg_sprite($theme, false, false);
+            generate_svg_sprite($theme, true, false);
+        }
     }
 }

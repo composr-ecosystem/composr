@@ -589,3 +589,111 @@ function cleanup_after_theme_image_file_removal(string $old_url)
         }
     }
 }
+
+/**
+ * The actualiser to generate an SVG sprite.
+ *
+ * @param  ID_TEXT $theme Theme
+ * @param  boolean $monochrome Whether to generate the monochrome sprite
+ * @param  boolean $userland Whether to include icons from the custom directory, and save the sprite in the custom directory
+ * @return array A pair: Sprite path, list of icons added to sprite
+ */
+function generate_svg_sprite($theme, $monochrome, $userland) : array
+{
+    require_code('files2');
+    require_code('xml');
+
+    $icons_dir = 'icons' . ($monochrome ? '_monochrome' : '');
+
+    $icon_paths = [];
+
+    foreach (array_unique([$theme, 'default']) as $_theme) {
+        foreach (array_unique([get_file_base(), get_custom_file_base()]) as $file_base) {
+            $theme_icons_dir = $file_base . '/themes/' . $_theme . '/images/' . $icons_dir;
+            if (file_exists($theme_icons_dir)) {
+                $overriding_icon_paths = get_directory_contents($theme_icons_dir, $theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
+                $icon_paths = _override_icon_paths($icon_paths, $overriding_icon_paths);
+            }
+
+            if ($userland) {
+                $theme_custom_icons_dir = $file_base . '/themes/' . $_theme . '/images_custom/' . $icons_dir;
+                if (file_exists($theme_custom_icons_dir)) {
+                    $overriding_icon_paths = get_directory_contents($theme_custom_icons_dir, $theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
+                    $icon_paths = _override_icon_paths($icon_paths, $overriding_icon_paths);
+                }
+            }
+        }
+    }
+
+    $base_path_regex = '^(' . preg_quote(get_custom_file_base(), '#') . '|' . preg_quote(get_file_base(), '#') . ')/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
+
+    $old_icon_paths = $icon_paths;
+    $icon_paths = [];
+    foreach ($old_icon_paths as $icon_path) {
+        $icon_name = substr(preg_replace('#' . $base_path_regex . '#', '', $icon_path), 0, -4);
+        $icon_paths[$icon_name] = $icon_path;
+    }
+
+    ksort($icon_paths);
+
+    $output = '<' . '?xml version="1.0" encoding="utf-8"?' . '>' . "\n";
+    $output .= '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' . "\n";
+
+    foreach ($icon_paths as $icon_name => $icon_path) {
+        $xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($icon_path, FILE_READ_LOCK | FILE_READ_BOM));
+        $output .= '<symbol viewBox="' . $xml->gleamed[1]['viewBox'] . '" id="icon_' . str_replace('/', '__', $icon_name) . '">' . "\n";
+        foreach ($xml->gleamed[3] as $child) {
+            if (!is_array($child)) {
+                // whitespace?
+                continue;
+            }
+            $child_xml = $xml->pull_together([$child], ['' => 'http://www.w3.org/2000/svg', 'xlink:' => 'http://www.w3.org/1999/xlink']) . "\n";
+
+            if (preg_replace('/\s/', '', $child_xml) === '<defs></defs>') {
+                continue; // Skip empty <defs> elements
+            }
+
+            $output .= $child_xml;
+        }
+        $output .= "</symbol>\n";
+    }
+
+    $output .= "</svg>\n";
+
+    $theme_image = $icons_dir . '_sprite';
+    if ($userland) {
+        $_sprite_path = 'themes/default/images_custom/' . $theme_image . '.svg';
+        $sprite_path = get_custom_file_base() . '/' . $_sprite_path;
+    } else {
+        $_sprite_path = 'themes/default/images/' . $theme_image . '.svg';
+        $sprite_path = get_file_base() . '/' . $_sprite_path;
+    }
+
+    cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+
+    $icons_added = array_keys($icon_paths);
+
+    return [$_sprite_path, $icons_added];
+}
+
+/**
+ * Override icon paths.
+ *
+ * @param  array $icon_paths Icon paths
+ * @param  array $overriding_icon_paths Overriding icon paths
+ * @return array
+ */
+function _override_icon_paths(array $icon_paths, array $overriding_icon_paths) : array
+{
+    $base_path_regex = '^(' . preg_quote(get_custom_file_base(), '#') . '|' . preg_quote(get_file_base(), '#') . ')/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
+
+    foreach ($overriding_icon_paths as $overriding_icon_path) {
+        $overriding_icon_name = preg_replace('#' . $base_path_regex . '#', '', $overriding_icon_path);
+        $icon_paths = array_filter($icon_paths, function ($icon_path) use ($base_path_regex, $overriding_icon_name) {
+            // Remove paths for icons that exist in $overriding_icon_paths
+            return preg_match('#' . $base_path_regex . preg_quote($overriding_icon_name, '#') . '#', $icon_path) === 0;
+        });
+    }
+
+    return array_merge($icon_paths, $overriding_icon_paths);
+}
