@@ -6521,7 +6521,17 @@ function ecv_THEME_OPTION(string $lang, array $escaped, array $param) : string
 
     if (!empty($param[0])) {
         if ($GLOBALS['IN_MINIKERNEL_VERSION']) { // Installer, likely executing global.js. We need a saner default for JavaScript
-            $value = '0';
+            switch ($param[0]) {
+                case 'font':
+                    $value = 'Arial';
+                    break;
+                case 'font_size':
+                    $value = '15';
+                    break;
+                default:
+                    $value = '0';
+                    break;
+            }
         } else {
             $value = get_theme_option($param[0], isset($param[2]) ? $param[2] : null, null, !empty($param[1]));
             if ($value === null) {
