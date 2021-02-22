@@ -1726,8 +1726,8 @@ class Module_admin_addons
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
-            generate_svg_sprite($theme, false, false);
-            generate_svg_sprite($theme, true, false);
+            generate_svg_sprite($theme, false, true);
+            generate_svg_sprite($theme, true, true);
         }
     }
 }
