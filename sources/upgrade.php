@@ -381,7 +381,9 @@ function upgrader_output_header()
 
         <style>/*<![CDATA[*/
 END;
-    @print(cms_file_get_contents_safe(css_enforce('global', 'default'), FILE_READ_LOCK | FILE_READ_BOM));
+    foreach (['_base', 'global'] as $css) {
+        @print(cms_file_get_contents_safe(css_enforce($css, 'default'), FILE_READ_LOCK | FILE_READ_BOM));
+    }
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('themes/default/images/icons/menu/adminzone/tools/upgrade.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
             a[target="_blank"], a[onclick$="window.open"] { padding-right: 0; }

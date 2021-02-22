@@ -495,7 +495,6 @@ class Module_admin_permissions
      */
     public function _access_header(array $admin_groups, array $groups) : object
     {
-        $css_path = get_custom_file_base() . '/themes/' . $GLOBALS['FORUM_DRIVER']->get_theme() . '/templates_cached/' . user_lang() . '/global.css';
         require_code('themes2');
         $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 

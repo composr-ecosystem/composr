@@ -1381,6 +1381,7 @@ class Hook_addon_registry_core
             'lang_custom/EN/index.html',
             'lang_custom/index.html',
             'themes/default/css/sitemap_editor.css',
+            'themes/default/css/_base.css',
             'themes/default/css/global.css',
             'themes/default/css/email.css',
             'themes/default/css/index.html',

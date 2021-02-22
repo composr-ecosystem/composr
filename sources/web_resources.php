@@ -421,10 +421,9 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
     $css = new Tempcode();
     $css_need_inline = new Tempcode();
     if ($only_global) {
+        $css_to_do = ['global' => true, 'no_cache' => true];
         if (isset($CSSS['email'])) {
-            $css_to_do = ['global' => true, 'no_cache' => true, 'email' => true];
-        } else {
-            $css_to_do = ['global' => true, 'no_cache' => true];
+            $css_to_do['email'] = true;
         }
     } else {
         $css_to_do = $CSSS;
@@ -598,7 +597,7 @@ function inject_web_resources_context_to_comcode(string &$message_raw)
 
     $_css_comcode = '';
     foreach (array_keys($CSSS) as $i => $css) {
-        if ($css == 'global' || $css == 'no_cache') {
+        if (in_array($css, ['global', 'no_cache'])) {
             continue;
         }
 
@@ -615,7 +614,7 @@ function inject_web_resources_context_to_comcode(string &$message_raw)
 
     $_javascript_comcode = '';
     foreach (array_keys($JAVASCRIPTS) as $i => $javascript) {
-        if ($javascript == 'global' || $javascript == 'custom_globals') {
+        if (in_array($javascript, ['global', 'custom_globals'])) {
             continue;
         }
 

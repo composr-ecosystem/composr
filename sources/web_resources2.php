@@ -168,9 +168,9 @@ function css_compile(string $active_theme, string $theme, string $c, string $ful
 {
     cms_profile_start_for('css_compile');
 
-    if ($c != 'global') { // We need to make sure the global.css file is parsed, as it contains some shared THEMEWIZARD_COLOR variables that Tempcode will pick up on
+    if ($c != '_base') { // We need to make sure the _base.css file is parsed, as it contains some shared THEMEWIZARD_COLOR variables that Tempcode will pick up on
         require_code('themes2');
-        $global_full_path = find_template_path('global.css', 'css', $active_theme);
+        $global_full_path = find_template_path('_base.css', 'css', $active_theme);
 
         if (strpos(cms_file_get_contents_safe($global_full_path, FILE_READ_LOCK | FILE_READ_BOM), '{$THEMEWIZARD_COLOR,') !== false) {
             require_code('tempcode_compiler');

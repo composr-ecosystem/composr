@@ -52,14 +52,8 @@ class Hook_commandr_command_themewizard_compute_equation
 
             require_code('themewizard');
 
-            $css_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/global.css';
-            if (!file_exists($css_path)) {
-                $css_path = get_file_base() . '/themes/default/css/global.css';
-            }
-            $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-
             $seed = find_theme_seed($theme);
-            $dark = (strpos($css_file_contents, ',#000000,WB,') !== false);
+            $dark = find_theme_dark($theme);
 
             $colours = calculate_theme($seed, $theme, 'equations', 'colours', $dark);
             $parsed_equation = parse_css_colour_expression($equation);

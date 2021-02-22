@@ -49,9 +49,9 @@ function find_theme_seed(?string $theme = null) : string
     $seed = get_theme_option('seed', ($theme == 'default') ? null : '');
 
     if ($seed == '') {
-        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css';
+        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css';
         if (!is_file($css_path)) {
-            $css_path = get_file_base() . '/themes/default/css/global.css';
+            $css_path = get_file_base() . '/themes/default/css/_base.css';
         }
         $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         $matches = [];

@@ -322,17 +322,13 @@ function handle_self_referencing_embedment()
 
             $output = '';
 
-            $path = get_file_base() . '/themes/default/css/install.css';
-            $file = cms_file_get_contents_safe($path);
-            require_code('tempcode_compiler');
-            $css = template_to_tempcode($file, 0, false, '');
-            $output .= $css->evaluate();
-
-            $path = get_file_base() . '/themes/default/css/global.css';
-            $file = cms_file_get_contents_safe($path);
-            require_code('tempcode_compiler');
-            $css = template_to_tempcode($file, 0, false, '');
-            $output .= $css->evaluate();
+            foreach (['_base', 'global', 'install'] as $css_file) {
+                $path = get_file_base() . '/themes/default/css/' . $css_file . '.css';
+                $file = cms_file_get_contents_safe($path);
+                require_code('tempcode_compiler');
+                $css = template_to_tempcode($file, 0, false, '');
+                $output .= $css->evaluate();
+            }
 
             echo $output;
 

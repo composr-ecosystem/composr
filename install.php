@@ -2822,7 +2822,7 @@ function handle_self_referencing_embedment()
 
                 $output = '';
 
-                $css_files = ['global', 'forms'];
+                $css_files = ['_base', 'global', 'forms'];
                 foreach ($css_files as $css_file) {
                     if (!file_exists(get_file_base() . '/themes/default/css/' . $css_file . '.css')) {
                         $file = unixify_line_format(handle_string_bom(file_array_get('themes/default/css/' . $css_file . '.css')));

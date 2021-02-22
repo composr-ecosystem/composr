@@ -177,7 +177,9 @@ function testset_do_header($title)
 
         <style>
 END;
-    @print(cms_file_get_contents_safe(css_enforce('global', 'default'), FILE_READ_LOCK));
+    foreach (['_base', 'global'] as $css) {
+        @print(cms_file_get_contents_safe(css_enforce($css, 'default'), FILE_READ_LOCK | FILE_READ_BOM));
+    }
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('../themes/default/images/icons/admin/tool.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
             a[target="_blank"], a[onclick$="window.open"] { padding-right: 0; }
