@@ -427,9 +427,8 @@ function _generate_logo_get_image(string $image_codename, string $theme)
  * @param  string $seed Seed colour to use
  * @param  boolean $use Whether to use the theme immediately
  * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
- * @param  boolean $inherit_css Whether to inherit the CSS, for easier theme upgrading
  */
-function make_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $use, ?bool $dark = false, bool $inherit_css = false)
+function make_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $use, ?bool $dark = false)
 {
     $old_limit = cms_disable_time_limit();
     disable_php_memory_limit();
@@ -554,11 +553,7 @@ function make_theme(string $theme_name, string $source_theme, string $algorithm,
             if (substr($sheet, -4) == '.css') {
                 $saveat = get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $sheet;
                 if ((!file_exists($saveat)) || ($source_theme != 'default') || ($algorithm == 'hsv')) {
-                    if ($inherit_css) {
-                        $output = '{+START,CSS_INHERIT,' . basename($sheet, '.css') . ',' . filter_naughty($source_theme) . ',' . $seed . ',' . ($dark ? '1' : '0') . ',' . $algorithm . '}{+END}';
-                    } else {
-                        $output = themewizard_colours_to_sheet($sheet, $landscape, $source_theme, $algorithm, $seed);
-                    }
+                    $output = themewizard_colours_to_sheet($sheet, $landscape, $source_theme, $algorithm, $seed);
                     $default_version_path = get_file_base() . '/themes/default/css/' . $sheet;
                     if (is_file($default_version_path)) {
                         $default_version = cms_file_get_contents_safe($default_version_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK | FILE_READ_BOM);
@@ -569,14 +564,9 @@ function make_theme(string $theme_name, string $source_theme, string $algorithm,
                     if ($changed_from_default_theme) {
                         require_code('files');
                         cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $sheet, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                        if (!$inherit_css) {
-                            $c_success = @copy(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/css/' . $sheet, $saveat . '.editfrom');
-                            if ($c_success !== false) {
-                                fix_permissions($saveat . '.editfrom');
-                                sync_file($saveat . '.editfrom');
-                            }
-                        } else {
-                            @unlink($saveat . '.editfrom');
+                        $c_success = @copy(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/css/' . $sheet, $saveat . '.editfrom');
+                        if ($c_success !== false) {
+                            fix_permissions($saveat . '.editfrom');
                             sync_file($saveat . '.editfrom');
                         }
                     }
@@ -1435,6 +1425,10 @@ function _re_hue_image__svg(string $path, int $seed_h, int $seed_s, int $seed_v,
     }
 
     foreach (array_keys($colours) as $colour) {
+        if (is_integer($colour)) {
+            $colour = strval($colour);
+        }
+
         $r = hexdec(substr($colour, 0, 2));
         $g = hexdec(substr($colour, 2, 2));
         $b = hexdec(substr($colour, 4, 2));

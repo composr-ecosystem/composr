@@ -600,6 +600,7 @@ class Hook_addon_registry_core
             'adminzone/.htaccess',
             'themes/default/images/no_image.png',
             'themes/default/css/install.css',
+            'themes/default/css/_install_colours.css',
             'lang/EN/installer.ini',
             'lang/EN/encryption.ini',
             'sources/hooks/systems/block_ui_renderers/core.php',

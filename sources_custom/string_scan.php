@@ -4601,7 +4601,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_IMPORT_WORDPRESS_USER
         DESCRIPTION_INCLUDE_CMS_ADVERT
         DESCRIPTION_INCOMPATIBILITIES
-        DESCRIPTION_INHERIT_CSS
         DESCRIPTION_INSTALLPROFILE
         DESCRIPTION_INTRO_ANSWER
         DESCRIPTION_INTRO_POST
@@ -5803,7 +5802,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INDEX
         INFINITE_SCROLLING
         INFOSITE
-        INHERIT_CSS
         INLINE_PP_ADVERTISE
         INPUT_NECESSARY_PARAMETER
         INPUT_OPTIONAL_PARAMETER

@@ -3,12 +3,7 @@
  Copyright (c) ocProducts, 2004-2021
 */
 
-{$THEMEWIZARD_COLOR,#222222,commandr_background,100% 222222}
-{$THEMEWIZARD_COLOR,#dddddd,commandr_faded_text,100% DDDDDD}
-{$THEMEWIZARD_COLOR,#ffffff,commandr_text,100% FFFFFF}
-{$THEMEWIZARD_COLOR,#ffffff,commandr_border_color,100% FFFFFF}
-{$THEMEWIZARD_COLOR,#628DC6,commandr_directory_listing,100% 628DC6}
-{$THEMEWIZARD_COLOR,#39ff9f,commandr_file_listing,100% 39FF9F}
+{+START,INCLUDE,_commandr_colours,.css,css,default}{+END}
 
 #command-line { /* This wraps the Commandr module/window as a whole */
 	/* Styled to look like generic command prompt */

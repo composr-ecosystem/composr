@@ -214,9 +214,6 @@ class Module_admin_themewizard
 
         $fields->attach(form_input_tick(do_lang_tempcode('DARK_THEME'), do_lang_tempcode('DESCRIPTION_DARK_THEME'), 'dark', get_param_integer('dark', 0) == 1));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'e809c785aff72bbfeec3829a0b2f464d', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
-        $fields->attach(form_input_tick(do_lang_tempcode('INHERIT_CSS'), do_lang_tempcode('DESCRIPTION_INHERIT_CSS'), 'inherit_css', get_param_integer('inherit_css', 0) == 1));
-
         require_javascript('themewizard');
         return do_template('FORM_SCREEN', [
             '_GUID' => '98963f4d7ff60744382f937e6cc5acbf',
@@ -253,7 +250,6 @@ class Module_admin_themewizard
 
         $seed = preg_replace('/^\#/', '', get_param_string('seed'));
         $dark = get_param_integer('dark', 0);
-        $inherit_css = get_param_integer('inherit_css', 0);
         $themename = get_param_string('themename');
 
         if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
@@ -288,8 +284,8 @@ class Module_admin_themewizard
         $theme['DARK'] = $_theme['dark'];
         $theme['SEED'] = $_theme['seed'];
         $theme['TITLE'] = $this->title;
-        $theme['CHANGE_URL'] = build_url(['page' => '_SELF', 'type' => 'browse', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'dark' => $dark, 'inherit_css' => $inherit_css, 'themename' => $themename], '_SELF');
-        $theme['STAGE3_URL'] = build_url(['page' => '_SELF', 'type' => 'step3', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'dark' => $dark, 'inherit_css' => $inherit_css, 'themename' => $themename], '_SELF');
+        $theme['CHANGE_URL'] = build_url(['page' => '_SELF', 'type' => 'browse', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'dark' => $dark, 'themename' => $themename], '_SELF');
+        $theme['STAGE3_URL'] = build_url(['page' => '_SELF', 'type' => 'step3', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'dark' => $dark, 'themename' => $themename], '_SELF');
 
         return do_template('THEMEWIZARD_2_SCREEN', $theme);
     }
@@ -305,7 +301,6 @@ class Module_admin_themewizard
         $algorithm = get_param_string('algorithm');
         $seed = get_param_string('seed');
         $dark = get_param_integer('dark');
-        $inherit_css = get_param_integer('inherit_css');
         $themename = get_param_string('themename');
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
@@ -319,7 +314,6 @@ class Module_admin_themewizard
         $hidden->attach(form_input_hidden('seed', $seed));
         $hidden->attach(form_input_hidden('themename', $themename));
         $hidden->attach(form_input_hidden('dark', strval($dark)));
-        $hidden->attach(form_input_hidden('inherit_css', strval($inherit_css)));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '349383d77ecfce8c65f3303cfec86ea0',
@@ -348,13 +342,12 @@ class Module_admin_themewizard
         $themename = post_param_string('themename');
         $use = (post_param_integer('use_on_all', 0) == 1);
         $dark = post_param_integer('dark');
-        $inherit_css = post_param_integer('inherit_css');
 
         require_code('type_sanitisation');
         if ((!is_alphanumeric($themename)) || (strlen($themename) > 40)) {
             warn_exit(do_lang_tempcode('BAD_CODENAME'));
         }
-        make_theme($themename, $source_theme, $algorithm, $seed, $use, $dark == 1, $inherit_css == 1);
+        make_theme($themename, $source_theme, $algorithm, $seed, $use, $dark == 1);
         require_code('files');
         $contents = '';
         $contents .= 'title=' . $themename . "\n";

@@ -107,7 +107,6 @@ function init__global2()
     $SUPPRESS_ERROR_DEATH = [false];
     $JAVASCRIPTS_DEFAULT = [
         'global' => true,
-        'custom_globals' => true,
     ];
     $RUNNING_SCRIPT_CACHE = [];
     $WHAT_IS_RUNNING_CACHE = current_script();

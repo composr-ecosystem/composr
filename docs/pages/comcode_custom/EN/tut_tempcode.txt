@@ -1988,12 +1988,22 @@ Note that you cannot use directives for symbol parameters because directives con
 			</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>CSS_INHERIT</td>
-			<td>Include another theme's CSS into your CSS file, so you only need to specify differences. The parameters are: CSS file name, theme name, seed colour [optional]. The contents of the directive should be left blank.</td>
-		</tr>
-		<tr style="background: #DDFFDD">
 			<td>INCLUDE</td>
-			<td>Include a template in another and pass parameters (this makes a template very much like a function in a conventional programming language). Important notes:<ol><li>the automated smart-decaching (for developers manually editing template files) will not work on manually edited included templates because Composr's optimiser means that the actual template is "compiled into" the template that calls it and thus not regularly individually checked.</li><li>The parameters are written inside the directive, in a very simple text syntax, <kbd>KEY=VALUE</kbd> (e.g. <kbd>FOO={BAR}</kbd>), where the actual parameter values are evaluated into text prior to the <kbd>INCLUDE</kbd> directive being evaluated. This has the result of anything after a linebreak being lost, unless you make use of the directives support for escaped line-breaks (e.g. <kbd>FOO={BAR^}</kbd>).</li></ol>If you try to include a template into itself, and don't give any new parameters, Composr will include the default version of that template in (if you do give parameters you'll probably get a fatal error instead)</td>
+			<td>
+				Include a template in another and pass parameters (this makes a template very much like a function in a conventional programming language).<br /><br />
+				The automated smart-decaching (for developers manually editing template files) will not work on manually edited included templates because Composr's optimiser means that the actual template is "compiled into" the template that calls it and thus not regularly individually checked. That is, unless the <kbd>$SITE_INFO['dependency__&lt;directory&gt;__&lt;codename&gt;'] = '[&lt;codename&gt;,]*';</kbd> dependency specification technique is used (documented in the Code Book).<br /><br />
+				The parameters are written inside the directive, one per line in a very simple text syntax, <kbd>KEY=VALUE</kbd> (e.g. <kbd>FOO={BAR}</kbd>), where the actual parameter values are evaluated into text prior to the <kbd>INCLUDE</kbd> directive being evaluated. This has the result of anything after a linebreak being lost, unless you make use of the directives support for escaped line-breaks (e.g. <kbd>FOO={BAR^}</kbd>).<br /><br />
+				There are a range of special substitutions that can also be used, again one per line in a text syntax.<ul>
+					<li><kbd>STR_STRIP:&lt;text&gt</kbd> &ndash; Strip some text</li>
+					<li><kbd>STR_REPLACE:&lt;from&gt;--&gt;&lt;to&gt;</kbd> &ndash; Do a string substitution</li>
+					<li><kbd>PREG_STRIP:&lt;regexp&gt</kbd> &ndash; Strip a regexp (regexp must have delimiters around it, e.g. #)</li>
+					<li><kbd>PREG_REPLACE:&lt;from&gt;--&gt;&lt;to&gt;</kbd> &ndash; Do a regexp substitution (")</li>
+					<li><kbd>REMOVE_SELECTOR:&lt;selector&gt;</kbd> &ndash; Remove a CSS selector</li>
+					<li><kbd>REMOVE_SELECTOR_PROPERTY:&lt;selector&gt;--&gt;&lt;property&gt;</kbd> &ndash; Remove a property from a CSS selector</li>
+				</ul>
+				Note that the CSS substitutions work by regular expressions that should work in practice, but they are not perfect to the CSS spec.<br /><br />
+				If you try to include a template into itself, Composr will include the default version of that template in.
+			</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>WHILE</td>

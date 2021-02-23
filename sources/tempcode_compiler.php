@@ -835,7 +835,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 if (!is_string($eval)) {
                                     $eval = '';
                                 }
-                                if (((!$no_preprocess) && ($template_name === $eval)) || ($past_level_data === ['""']) && (!isset($FILE_ARRAY))) { // Simple case where no separate binding context of variables needed
+                                if ((!$no_preprocess) && ($past_level_data === ['""']) && (!isset($FILE_ARRAY))) { // Simple case where no separate binding context of variables needed
                                     $_ex = isset($directive_opener_params[1 + 1 + 2]) ? tempcode_compiler_eval('return ' . implode('.', $directive_opener_params[1 + 2]) . ';', $tpl_funcs, [], $cl) : '';
                                     if (!is_string($_ex)) {
                                         $_ex = '';

@@ -160,6 +160,7 @@ class Hook_addon_registry_commandr
             'themes/default/javascript/button_commandr.js',
             'adminzone/pages/modules/admin_commandr.php',
             'themes/default/css/commandr.css',
+            'themes/default/css/_commandr_colours.css',
             'data/modules/admin_commandr/admin_commandrsample_script',
             'data/modules/admin_commandr/index.html',
             'data/modules/admin_commandr/sample_script',

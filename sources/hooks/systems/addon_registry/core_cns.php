@@ -418,6 +418,7 @@ class Hook_addon_registry_core_cns
             'themes/default/templates/CNS_TOPIC_POST_AVATAR.tpl',
             'themes/default/templates/CNS_GROUP_DIRECTORY_SCREEN.tpl',
             'themes/default/css/cns.css',
+            'themes/default/css/_cns_colours.css',
             'themes/default/css/cns_editor.css',
             'lang/EN/cns_member_directory.ini',
             'data/username_check.php',

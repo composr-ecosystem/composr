@@ -614,7 +614,7 @@ function inject_web_resources_context_to_comcode(string &$message_raw)
 
     $_javascript_comcode = '';
     foreach (array_keys($JAVASCRIPTS) as $i => $javascript) {
-        if (in_array($javascript, ['global', 'custom_globals'])) {
+        if (in_array($javascript, ['global'])) {
             continue;
         }
 

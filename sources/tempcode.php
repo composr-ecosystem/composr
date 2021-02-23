@@ -1394,9 +1394,6 @@ function handle_symbol_preprocessing(array $seq_part, array &$children)
         case 'FACILITATE_AJAX_BLOCK_CALL':
             return;
 
-        case 'CSS_INHERIT':
-            // no break
-
         case 'REQUIRE_CSS':
             if (isset($param[0])) {
                 $param = $seq_part[3];

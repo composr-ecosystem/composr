@@ -69,7 +69,6 @@ This is what will happen with the elements of your static design (roughly):
  - The XHTML will be spread between your theme's [tt]GLOBAL_HTML_WRAP.tpl[/tt] template, Comcode panels, the Comcode front page, and many block templates within your theme.
  - The CSS will mostly be incorporated into your theme's [tt]global.css[/tt] CSS file, and possibly also some other CSS files in your theme.
  - Your images will be added into your theme as theme images.
- - Your JavaScript will be added to the [tt]custom_globals.js[/tt] template.
 
 [title="3"]A starting point (the Theme Wizard)[/title]
 

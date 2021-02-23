@@ -195,6 +195,7 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#2b7173,gcol_14,100% #2B7173}
 {$THEMEWIZARD_COLOR,#2d7b45,gcol_15,100% #2D7B45}
 
+/* Miscellaneous settings */
 {$SET,max_container_width,1349px} /* 1366px minus 17px scrollbar */
 {$SET,header_modern_height,90px}
 {$SET,stickied_header_modern_height,70px}
@@ -203,6 +204,7 @@ In mobile mode:
 {$SET,font_weight_light,300}
 {$SET,font_weight_medium,500} /* Varies by font: 500 for Roboto, 600 for Open Sans */
 
+/* Box shadow settings */
 {$SET,box_shadow_sm,0 2px 4px {$COLOR_RGBA,{$GET,BW},0.075}}
 {$SET,box_shadow,0 7px 14px {$COLOR_RGBA,{$GET,BW},0.15}}
 {$SET,box_shadow_lg,0 14px 42px {$COLOR_RGBA,{$GET,BW},0.175}}

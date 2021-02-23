@@ -126,6 +126,7 @@ The template editor is very powerful. Features include:
 
 [media width="150" description="Editing a CSS file in the template editor" float="right"]data_custom/images/docs/tut_themes/themes_edit_css.png[/media]
 The main CSS templates that come with Composr are:
+ - [tt]_base.css[/tt]: This file contains the colours and responsive design break points
  - [tt]global.css[/tt]: This file contains most of the classes used throughout Composr. This is the file you'll be editing most of the time
  - [tt]no_cache.css[/tt]: These are classes that make use of Tempcode (for example, checking what browser is being used) to vary the style of the class
  - [tt]cns.css[/tt]: These are a set of classes that are used within [concept]Conversr[/concept]
@@ -139,7 +140,36 @@ body {
 [/code]
 ... would make all text italic (obviously a silly, but simple, example).
 
-If you get confused by Composr's use of Tempcode within the CSS you are free to strip and replace it with pure CSS as you go. The Tempcode is used for the Theme Wizard, and to make maintenance a bit easier, but you don't really have any particular personal incentive to maintain that.
+[title="4"]Overriding CSS files into your theme[/title]
+
+The ideal way to edit CSS in Composr is not to completely override CSS files with a modified version of the file, but rather to create an override that includes the original file and then makes changes after it.
+This requires a bit more technical skill but it makes upgrading [b]much[/b] easier.
+
+For example, you could override [tt]calendar.css[/tt]:
+[code]
+{+START,INCLUDE,calendar,.css,css,default,1}
+	REMOVE_SELECTOR: .calendar-month-day
+	REMOVE_SELECTOR_PROPERTY: .event-listing-col-2 --> width
+	STR_REPLACE: border: 1px --> border: 2px
+{+END}
+
+.calendar-month th {
+	font-size: 1.0em;
+	color: green;
+}
+[/code]
+
+This would:
+1) Include the original [tt]calendar.css[/tt]
+2) ... with the whole [tt].calendar-month-day[/tt] CSS selector removed (the Tempcode [tt]INCLUDE[/tt] symbol has some special syntax for making changes to included files)
+3) ... with the [tt].event-listing-col-2[/tt] [tt]width[/tt] property removed (")
+4) ... with 1px borders replaced with 2px borders (")
+5) Change the [i]font-size[/i] property from [tt]0.9em[/tt] in the original file to [tt]1.0em[/tt]. This works on the basis of CSS coming later in the CSS file having higher precedence.
+6) Add a [i]color[/i] property which is not on the original CSS.
+
+[title="4"]Tempcode in CSS files[/title]
+
+If you get confused by Composr's use of Tempcode within the CSS you are free to strip and replace it with pure CSS as you go. The Tempcode is used for the Theme Wizard, to make maintenance a bit easier, and to tie into the theme configuration options -- but you don't really have any particular personal incentive to maintain that.
 
 [title="4"]Debugging[/title]
 
@@ -150,7 +180,7 @@ Fortunately there is a solution. If you go to [tt]http://yourbaseurl/index.php?k
 
 [title="4"]Equations[/title]
 
-Some CSS files have [tt]{$THEMEWIZARD_COLOR,#RRGGBB,name,equation}[/tt] lines near the top.
+Some CSS files have [tt]{$THEMEWIZARD_COLOR,#RRGGBB,name,equation}[/tt] lines near the top, mainly [tt]_base.css[/tt].
 
 When the Theme Wizard runs the first parameter (the colour) of the [tt]THEMEWIZARD_COLOR[/tt] line is regenerated from the third parameter (the equation) by running through the calculation logic of the Theme Wizard.
 
@@ -188,7 +218,7 @@ Of course doing this risks relying on browser CSS behaviour that may be buggy or
 
 [title="4"]Other notes about CSS conventions[/title]
 
-Some additional comments are made available at the top of [tt]global.css[/tt]. Mainly, our support for rtl languages and our use of em units.
+Some additional comments are made available at the top of [tt]global.css[/tt].
 
 [title="3"]Screen previews[/title]
 
