@@ -464,7 +464,7 @@ If you have the WYSIWYG editor enabled:
 [tt]em[/tt] are relatively sized units. So '1em' does nothing, while '2em' would double the font size.
 This is done for purposes of accessibility: all sizing in Composr is relative, so the text size can be scaled up properly without any fudges.
 Also, as content is defined as layout agnostic, the content can be correctly proportioned while shown in different sizing contexts.
-The [tt]WYSIWYG_SETTINGS.tpl[/tt] template lists the font sizes in the WYSIWYG font size picker, so can be customised with pt units if this is desired.
+The [tt]_wysiwyg_settings.tpl[/tt] template lists the font sizes in the WYSIWYG font size picker, so can be customised with pt units if this is desired.
 
 [title="3"]How can I add a block / How can I change how a block looks / How can I add a box?[/title]
 

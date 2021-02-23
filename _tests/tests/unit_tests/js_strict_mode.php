@@ -26,7 +26,7 @@ class js_strict_mode_test_set extends cms_test_case
         while (($file = readdir($dh)) !== false) {
             if (cms_strtolower_ascii(substr($file, -3)) == '.js') {
                 if (in_array($file, [
-                    'ATTACHMENT_UI_DEFAULTS.js',
+                    '_attachment_ui_defaults.js',
                     'button_realtime_rain.js',
                     'skitter.js',
                     'jquery.js',
@@ -34,9 +34,9 @@ class js_strict_mode_test_set extends cms_test_case
                     'jquery_ui.js',
                     'modernizr.js',
                     'widget_date.js',
-                    'WYSIWYG_SETTINGS.js',
+                    '_wysiwyg_settings.js',
                     'xsl_mopup.js',
-                    'POLYFILL_WEB_ANIMATIONS.js',
+                    '_polyfill_web_animations.js',
                 ])) {
                     continue;
                 }

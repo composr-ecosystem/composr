@@ -1139,15 +1139,15 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
 
         switch ($key) {
             case 'dependency__javascript__global':
-                $SITE_INFO[$key] = 'JSON5,UTIL,DOM,CMS,CMS_FORM,CMS_UI,CMS_TEMPLATES,CMS_VIEWS,CMS_BEHAVIORS';
+                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors';
                 break;
 
             case 'dependency__javascript__editing':
-                $SITE_INFO[$key] = 'WYSIWYG_SETTINGS';
+                $SITE_INFO[$key] = '_wysiwyg_settings';
                 break;
 
             case 'dependency__javascript__posting':
-                $SITE_INFO[$key] = 'ATTACHMENT_UI_DEFAULTS';
+                $SITE_INFO[$key] = '_attachment_ui_defaults';
                 break;
 
             default:

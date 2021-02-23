@@ -1130,11 +1130,18 @@ Here are some guidelines for designing/naming templates...
 ! Notes
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Templates should be named in upper case
+[color="red"]Templates should be in correct case[/color]
 | Portability
 | Composr development +
 | Composr development mode
-| Case sensitive file systems mean we want a strong convention. There may be a few exceptions, particularly CSS and JavaScript templates are all lower case except for includes (which are upper case).
+| All template file names should be upper case, except for CSS and JavaScript files which should always be in lower case. Case sensitive file systems mean we want a strong convention. There may be a few exceptions, particularly CSS and JavaScript templates are all lower case.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Included CSS and JavaScript templates should start with an underscore
+| Consistency
+| Composr development +
+| Manually
+| This makes it clear which templates are includes. Note we don't have this convention for other kinds of template, as sometimes they may serve both as standalone and be included into other templates.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Use [tt]_SCREEN[/tt] templates

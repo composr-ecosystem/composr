@@ -1,30 +1,30 @@
-/*{+START,INCLUDE,POLYFILL_FETCH,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_polyfill_fetch,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,POLYFILL_GENERAL,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_polyfill_general,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,POLYFILL_KEYBOARDEVENT_KEY,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_polyfill_keyboardevent_key,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,POLYFILL_URL,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_polyfill_url,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,POLYFILL_WEB_ANIMATIONS,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_polyfill_web_animations,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,JSON5,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_json5,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,UTIL,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_util,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,DOM,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_dom,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,CMS,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_cms,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,CMS_FORM,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_cms_form,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,CMS_UI,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_cms_ui,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,CMS_TEMPLATES,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_cms_templates,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,CMS_VIEWS,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_cms_views,.js,javascript}{+END}*/
 
-/*{+START,INCLUDE,CMS_BEHAVIORS,.js,javascript}{+END}*/
+/*{+START,INCLUDE,_cms_behaviors,.js,javascript}{+END}*/
 
 (function ($cms, $util, $dom) {
     'use strict';

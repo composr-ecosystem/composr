@@ -1,14 +1,14 @@
 {
   "source": {
     "include": [
-      "../../themes/default/javascript/UTIL.js",
-      "../../themes/default/javascript/DOM.js",
-      "../../themes/default/javascript/CMS.js",
-      "../../themes/default/javascript/CMS_FORM.js",
-      "../../themes/default/javascript/CMS_UI.js",
-      "../../themes/default/javascript/CMS_VIEWS.js",
-      "../../themes/default/javascript/CMS_BEHAVIORS.js",
-      "../../themes/default/javascript/CMS_TEMPLATES.js"
+      "../../themes/default/javascript/_util.js",
+      "../../themes/default/javascript/_dom.js",
+      "../../themes/default/javascript/_cms.js",
+      "../../themes/default/javascript/_cms_form.js",
+      "../../themes/default/javascript/_cms_ui.js",
+      "../../themes/default/javascript/_cms_views.js",
+      "../../themes/default/javascript/_cms_behaviors.js",
+      "../../themes/default/javascript/_cms_templates.js"
     ],
     "exclude": [],
     "includePattern": ".+\\.js(doc)?$",

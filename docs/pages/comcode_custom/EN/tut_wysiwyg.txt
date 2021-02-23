@@ -15,7 +15,7 @@ A WYSIWYG (What You See Is What You Get) editor is a document editor where the e
 
 The Composr WYSIWYG editor is CKEditor. It is enabled by default via the "Enable WYSIWYG editing" configuration option.
 
-[i]For programmers[/i]: Composr can, in principle, support almost any WYSIWYG editor component. Composr binds itself to the editor via JavaScript code stored in Composr's [tt]WYSIWYG_LOAD.tpl[/tt], [tt]WYSIWYG_SETTINGS.tpl[/tt], and [tt]posting.js[/tt] templates. The editor itself is stored in [tt]data/ckeditor[/tt].
+[i]For programmers[/i]: Composr can, in principle, support almost any WYSIWYG editor component. Composr binds itself to the editor via JavaScript code stored in Composr's [tt]WYSIWYG_LOAD.tpl[/tt], [tt]_wysiwyg_settings.js[/tt], and [tt]posting.js[/tt] templates. The editor itself is stored in [tt]data/ckeditor[/tt].
 
 [title="2"]Link parsing[/title]
 
@@ -39,7 +39,7 @@ Do not worry if this yellow background spreads around (this can happen if you ty
 
 By default, certain WYSIWYG features will only be given to staff users. This is because we generally want to show a simpler editor to regular users.
 
-If you want to change it you can customise the [tt]WYSIWYG_SETTINGS.tpl[/tt] template. For example, changing the second line of that template to var [tt]precision_editing=true;[/tt] would force the full editor to be available for everybody.
+If you want to change it you can customise the [tt]_wysiwyg_settings.js[/tt] template. For example, changing the second line of that template to var [tt]precision_editing=true;[/tt] would force the full editor to be available for everybody.
 
 [title="2"]The clipboard (copy & paste)[/title]
 
@@ -102,7 +102,7 @@ Composr has its own system for making attachments. If the WYSIWYG editor is for 
 [*] attachment upload via the WYSIWYG's image button; if the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode) is on, which is the default
 [/list]
 
-Once files are chosen you may get the attachment options. Attachment options let you do things like 'float' the attachment. Whether you get the options or not depends on the code written in the [tt]ATTACHMENT_UI_DEFAULTS.js[/tt] template. By default image attachments bypass the options to simplify things (you can use the editor to change how attached images look anyway).
+Once files are chosen you may get the attachment options. Attachment options let you do things like 'float' the attachment. Whether you get the options or not depends on the code written in the [tt]_attachment_ui_defaults.js[/tt] template. By default image attachments bypass the options to simplify things (you can use the editor to change how attached images look anyway).
 
 After the options are set either a marker will be placed into the editor (non-image attachments) or the image will appear after a few seconds.
 
@@ -211,7 +211,7 @@ We bundle 3 skins that we like:
 2) moono (the default)
 3) moonocolor
 
-To change skins you need to edit the [tt]WYSIWYG_SETTINGS.js[/tt] template. Change the skin name in the obvious place.
+To change skins you need to edit the [tt]_wysiwyg_settings.js[/tt] template. Change the skin name in the obvious place.
 
 If you want to download other CKEditor skins and place them in [tt]data/ckeditor/skins/[/tt] there's nothing stopping you. That said, we test/optimise for the above skins only (including having different icons for our custom plugins for the different skins, defined in [tt]forms.css[/tt]).
 

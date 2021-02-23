@@ -88,12 +88,12 @@ class _web_resources_test_set extends cms_test_case
             'mediaelement-and-player.js',
             'sound.js',
             'global.js', // Due to including polyfills (included files will be checked separately though)
-            'JSON5.js',
-            'POLYFILL_FETCH.js',
-            'POLYFILL_WEB_ANIMATIONS.js',
+            '_json5.js',
+            '_polyfill_fetch.js',
+            '_polyfill_web_animations.js',
 
             // Partial code that will give errors
-            'ATTACHMENT_UI_DEFAULTS.js',
+            '_attachment_ui_defaults.js',
         ];
 
         if (($this->only !== null) && (in_array($this->only, $exceptions))) {

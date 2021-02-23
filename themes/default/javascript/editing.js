@@ -397,7 +397,7 @@
             document.body.appendChild(testDiv);
             testDiv.className = 'wysiwyg-toolbar-color-finder';
             var matches,
-                wysiwygColor = window.getComputedStyle(testDiv).getPropertyValue('color'); // NB: Used by WYSIWYG_SETTINGS.js
+                wysiwygColor = window.getComputedStyle(testDiv).getPropertyValue('color'); // NB: Used by _wysiwyg_settings.js
             testDiv.parentNode.removeChild(testDiv);
             matches = wysiwygColor.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/, matches);
             if (matches) {
@@ -438,7 +438,7 @@
             }
 
             var editorSettings = {};
-            /*{+START,INCLUDE,WYSIWYG_SETTINGS,.js,javascript}{+END}*/
+            /*{+START,INCLUDE,_wysiwyg_settings,.js,javascript}{+END}*/
 
             if (window.CKEDITOR.instances[element.id]) {
                 // Workaround "The instance "xxx" already exists" error in Google Chrome

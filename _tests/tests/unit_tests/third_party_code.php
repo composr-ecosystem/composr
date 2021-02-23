@@ -302,8 +302,8 @@ class third_party_code_test_set extends cms_test_case
 
         if (($this->only === null) || ($this->only == 'eslintignore')) {
             // Exceptions that .eslintignore includes for non-third-party-code reasons
-            unset($eslintignore['/themes/default/javascript/ATTACHMENT_UI_DEFAULTS.js']);
-            unset($eslintignore['/themes/default/javascript/WYSIWYG_SETTINGS.js']);
+            unset($eslintignore['/themes/default/javascript/_attachment_ui_defaults.js']);
+            unset($eslintignore['/themes/default/javascript/_wysiwyg_settings.js']);
             unset($eslintignore['/themes/*/templates_cached/*']);
 
             foreach (array_keys($eslintignore) as $path) {

@@ -124,8 +124,8 @@ class Hook_addon_registry_core_form_interfaces
             'themes/default/templates/WYSIWYG_LOAD.tpl',
             'themes/default/javascript/posting.js',
             'themes/default/javascript/editing.js',
-            'themes/default/javascript/WYSIWYG_SETTINGS.js',
-            'themes/default/javascript/ATTACHMENT_UI_DEFAULTS.js',
+            'themes/default/javascript/_wysiwyg_settings.js',
+            'themes/default/javascript/_attachment_ui_defaults.js',
             'themes/default/javascript/checking.js',
             'themes/default/templates/FORM_FIELD_SET_GROUPER.tpl',
             'themes/default/templates/FORM.tpl',
@@ -781,8 +781,8 @@ class Hook_addon_registry_core_form_interfaces
             'templates/BLOCK_HELPER_BLOCK_GROUP.tpl' => 'administrative__block_helper_block_group',
             'templates/BLOCK_HELPER_START.tpl' => 'administrative__block_helper_start',
             'templates/BLOCK_HELPER_DONE.tpl' => 'administrative__block_helper_done',
-            'javascript/WYSIWYG_SETTINGS.js' => 'wysiwyg_settings',
-            'javascript/ATTACHMENT_UI_DEFAULTS.js' => 'attachment_ui_defaults',
+            'javascript/_wysiwyg_settings.js' => 'wysiwyg_settings',
+            'javascript/_attachment_ui_defaults.js' => 'attachment_ui_defaults',
         ];
     }
 
@@ -796,7 +796,7 @@ class Hook_addon_registry_core_form_interfaces
     public function tpl_preview__wysiwyg_settings() : array
     {
         return [
-            do_lorem_template('WYSIWYG_SETTINGS', [], null, false, null, '.js', 'javascript')
+            do_lorem_template('_wysiwyg_settings', [], null, false, null, '.js', 'javascript')
         ];
     }
 
@@ -810,7 +810,7 @@ class Hook_addon_registry_core_form_interfaces
     public function tpl_preview__attachment_ui_defaults() : array
     {
         return [
-            do_lorem_template('ATTACHMENT_UI_DEFAULTS', [], null, false, null, '.js', 'javascript')
+            do_lorem_template('_attachment_ui_defaults', [], null, false, null, '.js', 'javascript')
         ];
     }
 
