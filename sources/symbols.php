@@ -384,6 +384,12 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                     // Do substitutions
                     foreach ($substitutions as $substitution) {
                         switch ($substitution[0]) {
+                            case 'INSERT_AFTER':
+                                $value = str_replace($substitution[1], $substitution[1] . $substitution[2], $value);
+                                break;
+                            case 'INSERT_BEFORE':
+                                $value = str_replace($substitution[1], $substitution[2] . $substitution[1], $value);
+                                break;
                             case 'STR_STRIP':
                                 $value = str_replace($substitution[1], '', $value);
                                 break;

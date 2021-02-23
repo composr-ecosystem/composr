@@ -337,6 +337,15 @@ if (!class_exists('Error')) {
  */
 function call_included_code(string $path, string $codename, bool $light_exit, ?string $code = null)
 {
+    if ((function_exists('find_all_hook_obs')) && (strpos($codename, 'sources_custom/hooks/systems/contentious_overrides') !== 0)) {
+        $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
+        foreach ($override_hooks as $hook_ob) {
+            if (method_exists($hook_ob, 'compile_template')) {
+                $hook_ob->call_included_code($path, $codename, /*Passed by reference*/$code);
+            }
+        }
+    }
+
     $do_sed = function_exists('push_suppress_error_death');
     if ($do_sed) {
         push_suppress_error_death(true);

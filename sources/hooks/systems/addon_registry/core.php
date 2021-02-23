@@ -1071,6 +1071,8 @@ class Hook_addon_registry_core
             'data/ace/worker-xml.js',
             'data/ace/worker-xquery.js',
             'uploads/website_specific/index.html',
+            'sources/hooks/systems/contentious_overrides/index.html',
+            'sources/hooks/systems/contentious_overrides/.htaccess',
             'sources/hooks/systems/upon_page_load/index.html',
             'sources_custom/hooks/systems/upon_page_load/index.html',
             'sources/hooks/systems/upon_access_denied/index.html',

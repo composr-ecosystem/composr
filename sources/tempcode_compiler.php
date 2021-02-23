@@ -243,6 +243,13 @@ function compile_template(string $data, string $template_name, string $theme, st
         return [['"' . php_addslashes(preg_replace('#\{\$,.*\}#U', '', str_replace('/*{$,parser hint: pure}*/', '/*no minify*/', $data))) . '"'], []];
     }
 
+    $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
+    foreach ($override_hooks as $hook_ob) {
+        if (method_exists($hook_ob, 'compile_template')) {
+            $hook_ob->compile_template(/*passed by reference*/$data, $template_name, $theme, $lang);
+        }
+    }
+
     if ($parameters !== null) {
         $parameter = null;
         foreach ($parameters as $key => $parameter) {

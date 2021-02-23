@@ -552,6 +552,47 @@ To add a new symbol you'll need to write a [tt]systems/symbols[/tt] hook. This i
 
 To run a system scheduler script you'll need to do it via writing a [tt]systems/cron[/tt] hook. For it to work, the system scheduler must be set up on the server and tied into Composr (described in the Composr documentation). Look at existing hooks as examples. Alternatively, if you do not want to bother setting up the system scheduler, or want to see the script output (e.g. errors) when debugging, just call up [tt]http://yourbaseurl/data/cron_bridge.php[/tt] manually in the browser.
 
+[title="3"]Contentious override hooks[/title]
+
+Composr addons may override almost any file. They may even modify the original files without overriding all the text, to make upgrading easier. However, this does not work well if an addon wants to override a common file that others addons may also want to override.
+
+We have "contentious override hooks" for this purpose. You can hook into Composr's file loading/compilation code at a very low level.
+
+Here is an example hook ([tt]sources/hooks/systems/contentious_overrides/foo.php[/tt]) that makes some silly changes...
+
+[code="PHP"]
+class Hook_contentious_overrides_foo
+{
+    public function compile_template(&$data, $template_name, $theme, $lang)
+    {
+        // Append "hello" to the end of the page
+        if ($template_name == 'GLOBAL_HTML_WRAP') {
+            $data .= 'hello';
+        }
+    }
+
+    public function require_lang_compile(&$load_target, $codename, $lang)
+    {
+        // Do something to make "xxxxx" appear in output
+        if ($codename == 'notifications') {
+            $load_target['NO_NOTIFICATIONS'] = 'xxxxx';
+        }
+    }
+
+    // Note that this method only works after some of the bootstrapping has finished
+    public function call_included_code($path, $codename, &$code)
+    {
+        // Make breadcrumbs say "Foobar"
+        if ($codename == 'site') {
+            if ($code === null) {
+                $code = clean_php_file_for_eval(file_get_contents($path));
+            }
+            $code = str_replace('static $out = null;', 'return make_string_tempcode(\'<a href="https://example.com">Foobar</a>\');', $code);
+        }
+    }
+}
+[/code]
+
 [title="3"]Running temporary code[/title]
 
 If there's some code you want to run once (e.g. if you are running a test, or running a quick bit of code to fix some data) you may find our [tt]data_custom/execute_temp.php[/tt] useful.

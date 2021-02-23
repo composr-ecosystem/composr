@@ -1994,6 +1994,8 @@ Note that you cannot use directives for symbol parameters because directives con
 				The automated smart-decaching (for developers manually editing template files) will not work on manually edited included templates because Composr's optimiser means that the actual template is "compiled into" the template that calls it and thus not regularly individually checked. That is, unless the <kbd>$SITE_INFO['dependency__&lt;directory&gt;__&lt;codename&gt;'] = '[&lt;codename&gt;,]*';</kbd> dependency specification technique is used (documented in the Code Book).<br /><br />
 				The parameters are written inside the directive, one per line in a very simple text syntax, <kbd>KEY=VALUE</kbd> (e.g. <kbd>FOO={BAR}</kbd>), where the actual parameter values are evaluated into text prior to the <kbd>INCLUDE</kbd> directive being evaluated. This has the result of anything after a linebreak being lost, unless you make use of the directives support for escaped line-breaks (e.g. <kbd>FOO={BAR^}</kbd>).<br /><br />
 				There are a range of special substitutions that can also be used, again one per line in a text syntax.<ul>
+					<li><kbd>INSERT_AFTER:&lt;anchor_point&gt;--&gt;&lt;new_text&gt;</kbd> &ndash; Insert some new text after the anchor</li>
+					<li><kbd>INSERT_BEFORE:&lt;anchor_point&gt;--&gt;&lt;new_text&gt;</kbd> &ndash; Insert some new text before the anchor</li>
 					<li><kbd>STR_STRIP:&lt;text&gt</kbd> &ndash; Strip some text</li>
 					<li><kbd>STR_REPLACE:&lt;from&gt;--&gt;&lt;to&gt;</kbd> &ndash; Do a string substitution</li>
 					<li><kbd>PREG_STRIP:&lt;regexp&gt</kbd> &ndash; Strip a regexp (regexp must have delimiters around it, e.g. #)</li>
