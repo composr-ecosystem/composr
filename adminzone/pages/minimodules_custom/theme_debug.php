@@ -13,8 +13,6 @@
  * @package    theme_debug
  */
 
-// IDEA: #3360 #2971 Find if conflicting theme images, e.g. foo.png and foo.jpg in the same directory. We have an automated test for this right now, so share the code.
-
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
@@ -168,8 +166,67 @@ foreach (array_keys($themes) as $theme) {
             }
         }
 
+        $used_selectors = find_used_selectors();
+        $existing_selectors = find_existing_selectors();
+        sort($used_selectors);
+        sort($existing_selectors);
+
+        echo '<p>The following used CSS classes are not present in CSS...</p>';
+        echo '<ul>';
+        foreach (array_diff($used_selectors, $existing_selectors) as $x) {
+            if (strpos($x, 'box___') === false) {
+                echo '<li>' . escape_html($x) . '</li>';
+            }
+        }
+        echo '</ul>';
+
+        echo '<p>The following non-used CSS classes are present in CSS (as far as can be told - may well be used by symbolic substitution)...</p>';
+        echo '<ul>';
+        foreach (array_diff($existing_selectors, $used_selectors) as $x) {
+            echo '<li>' . escape_html($x) . '</li>';
+        }
+        echo '</ul>';
+
         echo '</li>';
     }
 }
 
 echo '</ul>';
+
+function find_existing_selectors()
+{
+    $out = [];
+    $d = opendir(get_file_base() . '/themes/default/css');
+    while (($e = readdir($d)) !== false) {
+        if (substr($e, -4) == '.css') {
+            $contents = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+            $matches = [];
+            $found = preg_match_all('#\.([a-z][a-z_\d]*)[ ,:]#', $contents, $matches);
+            for ($i = 0; $i < $found; $i++) {
+                if ($matches[1][$i] != 'txt') {
+                    $out[] = $matches[1][$i];
+                }
+            }
+        }
+    }
+    closedir($d);
+    return array_unique($out);
+}
+
+function find_used_selectors()
+{
+    $out = [];
+    $d = opendir(get_file_base() . '/themes/default/templates');
+    while (($e = readdir($d)) !== false) {
+        if (substr($e, -4) == '.tpl') {
+            $contents = cms_file_get_contents_safe(get_file_base() . '/themes/default/templates/' . $e, FILE_READ_LOCK);
+            $matches = [];
+            $found = preg_match_all('#class="([\w ]+)"#', $contents, $matches);
+            for ($i = 0; $i < $found; $i++) {
+                $out = array_merge($out, explode(' ', $matches[1][$i]));
+            }
+        }
+    }
+    closedir($d);
+    return array_unique($out);
+}

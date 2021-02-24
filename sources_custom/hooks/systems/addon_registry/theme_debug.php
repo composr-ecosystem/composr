@@ -132,10 +132,9 @@ class Hook_addon_registry_theme_debug
     {
         return [
             'sources_custom/hooks/systems/addon_registry/theme_debug.php',
-            'pages/minimodules_custom/theme_debug.php',
+            'adminzone/pages/minimodules_custom/theme_debug.php',
             'adminzone/pages/minimodules_custom/fix_partial_themewizard_css.php',
             'sources_custom/hooks/systems/page_groupings/theme_debug.php',
-            'adminzone/pages/minimodules_custom/css_check.php',
         ];
     }
 }

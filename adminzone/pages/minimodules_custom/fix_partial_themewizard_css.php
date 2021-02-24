@@ -18,8 +18,6 @@ This script will spot when a theme has bits of default theme CSS that is not adj
 It could fix CSS upgraded via diff, or just poor copy-and-pasting of code back from the default theme CSS files.
 
 Take BACKUPs before running this.
-
-TODO: Merge into ":theme_debug" #3361
 */
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);

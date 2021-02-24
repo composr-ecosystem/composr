@@ -32,9 +32,8 @@ class Hook_page_groupings_theme_debug
         }
 
         return [
-            ['site_meta', 'admin/tool', ['theme_debug', [], get_page_zone('theme_debug', false, 'adminzone', 'minimodules')], make_string_tempcode('Theme testing / fixup tools')],
+            ['site_meta', 'admin/tool', ['theme_debug', [], get_page_zone('theme_debug', false, 'adminzone', 'minimodules')], make_string_tempcode('Theme testing')],
             ['style', 'admin/tool', ['fix_partial_themewizard_css', [], get_page_zone('fix_partial_themewizard_css', false, 'adminzone', 'minimodules')], make_string_tempcode('Fixup themewizard themes')],
-            ['style', 'admin/tool', ['css_check', [], get_page_zone('css_check', false, 'adminzone', 'minimodules')], make_string_tempcode('Look for unused CSS')],
         ];
     }
 }
