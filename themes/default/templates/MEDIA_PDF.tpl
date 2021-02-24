@@ -1,5 +1,5 @@
 {+START,SET,media}
-	<iframe width="{WIDTH*}" height="{HEIGHT*}" title="{!DOCUMENT}" class="gallery-pdf" src="{$ENSURE_PROTOCOL_SUITABILITY*,{URL}}">{!DOCUMENT}</iframe>
+	<iframe rel="noreferrer" width="{WIDTH*}" height="{HEIGHT*}" title="{!DOCUMENT}" class="gallery-pdf" src="{$ENSURE_PROTOCOL_SUITABILITY*,{URL}}">{!DOCUMENT}</iframe>
 
 	{+START,IF_NON_EMPTY,{DESCRIPTION}}
 		<figcaption class="associated-details">

@@ -123,7 +123,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/supports_wide.php',
             'sources/hooks/systems/config/csp_enabled.php',
             'sources/hooks/systems/config/csp_exceptions.php',
-            'sources/hooks/systems/config/csp_safelisted_plugins.php',
+            'sources/hooks/systems/config/csp_allow_plugins.php',
             'sources/hooks/systems/config/csp_allowed_iframe_ancestors.php',
             'sources/hooks/systems/config/csp_allowed_iframe_descendants.php',
             'sources/hooks/systems/config/csp_allow_eval_js.php',
