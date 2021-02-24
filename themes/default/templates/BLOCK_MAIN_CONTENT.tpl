@@ -11,7 +11,7 @@
 		{$SET,skip_content_box_title,0}
 	{+END}
 
-	{$PREG_REPLACE,^\s*<section class="box [^"]+"><div class="box-inner">,,{$PREG_REPLACE,</div></section>\s*$,,{$GET,eval_content}}}
+	{$PREG_REPLACE,^\s*<section class="box [^"]+"><div class="box-inner">(.*)</div></section>\s*$,$1,{$GET,eval_content}}
 
 	{+START,IF_NON_EMPTY,{SUBMIT_URL}{ARCHIVE_URL}}
 		<ul class="horizontal-links associated-links-block-group force-margin">
