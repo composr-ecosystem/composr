@@ -1,11 +1,11 @@
 {+START,SET,user}
-	{+START,IF,{$NOT,{FIRST}}}, {+END}
-
 	{+START,IF,{$NEQ,{_GUID},b2d355ff45f4b4170b937ef0753e6a78}}
-		{+START,IF_PASSED_AND_TRUE,HIGHLIGHT_NAME}<em>{+END}{+START,IF_PASSED,AT}<a {+START,IF_PASSED,COLOUR} class="{COLOUR*}"{+END} title="{USERNAME*}: {!LAST_VIEWED}&hellip; {$STRIP_TAGS,{AT*}}" href="{PROFILE_URL*}">{USERNAME*}</a>{+END}{+START,IF_NON_PASSED,AT}<a {+START,IF_PASSED,COLOUR} class="{COLOUR*}"{+END} title="{USERNAME*}: {+START,IF_PASSED,USERGROUP}{USERGROUP*}{+END}{+START,IF_NON_PASSED,USERGROUP}{!MEMBER}{+END}" href="{PROFILE_URL*}">{USERNAME*}</a>{+END}{+START,IF_PASSED_AND_TRUE,HIGHLIGHT_NAME}</em>{+END}{+START,IF_PASSED,AGE} ({AGE*}){+END}
+		{+START,INCLUDE,CNS_GUEST_BAR}{+END}
 	{+END}
 
 	{+START,IF,{$EQ,{_GUID},b2d355ff45f4b4170b937ef0753e6a78}}
-		{+START,IF_PASSED_AND_TRUE,HIGHLIGHT_NAME}<em>{+END}{+START,IF_PASSED,AT}<a {+START,IF_PASSED,COLOUR} class="{COLOUR*}"{+END} title="{USERNAME*}: {!LAST_VIEWED}&hellip; {$STRIP_TAGS,{AT*}}" href="{PROFILE_URL*}">{USERNAME*}</a>{+END}{+START,IF_NON_PASSED,AT}<a {+START,IF_PASSED,COLOUR} class="{COLOUR*}"{+END} title="{USERNAME*}: {+START,IF_PASSED,USERGROUP}{USERGROUP*}{+END}{+START,IF_NON_PASSED,USERGROUP}{!MEMBER}{+END}" href="{PROFILE_URL*}">{USERNAME*}</a>{+END}{+START,IF_PASSED_AND_TRUE,HIGHLIGHT_NAME}</em>{+END}&nbsp;<a href="{$PAGE_LINK*,_SEARCH:purchase:browse:category=giftr:username={USERNAME}}" title="{!giftr:GIFT_GIFT}"><img alt="{!giftr:GIFT_GIFT}" width="14" height="14" src="{$IMG*,icons/birthday}" /></a>{+START,IF_PASSED,AGE} ({AGE*}){+END}
+		{+START,INCLUDE,CNS_GUEST_BAR}
+			SUP=&nbsp;<a href="{$PAGE_LINK*,_SEARCH:purchase:browse:category=giftr:username={USERNAME}}" title="{!giftr:GIFT_GIFT}"><img alt="{!giftr:GIFT_GIFT}" width="14" height="14" src="{$IMG*,icons/birthday}" /></a>
+		{+END}
 	{+END}
 {+END}{$TRIM,{$GET,user}}

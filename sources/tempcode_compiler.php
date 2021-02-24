@@ -229,15 +229,19 @@ function substitute_comment_encapsulated_tempcode(string $data) : string
  * Compile a template into a list of appendable outputs, for the closure-style Tempcode implementation.
  *
  * @param  string $data The template file contents
- * @param  ID_TEXT $template_name The name of the template
+ * @param  ID_TEXT $template_name The name of the template (blank: not from a file)
  * @param  ID_TEXT $theme The name of the theme
  * @param  ID_TEXT $lang The language it is for
  * @param  boolean $tolerate_errors Whether to tolerate errors
  * @param  ?array $parameters Parameters to hard-code in during compilation (null: no hard-coding)
  * @param  ?array $parameters_used Parameters used in final Tempcode will be written into here (null: don't)
+ * @param  ?string $suffix File type suffix of template file (e.g. .tpl) (null: not from a file)
+ * @set .tpl .js .xml .txt .css
+ * @param  ?string $directory Subdirectory type to look in (null: not from a file)
+ * @set templates javascript xml text css
  * @return array A pair: array Compiled result structure, array preprocessable bits (special stuff needing attention that is referenced within the template)
  */
-function compile_template(string $data, string $template_name, string $theme, string $lang, bool $tolerate_errors = false, ?array &$parameters = null, ?array &$parameters_used = null) : array
+function compile_template(string $data, string $template_name, string $theme, string $lang, bool $tolerate_errors = false, ?array &$parameters = null, ?array &$parameters_used = null, ?string $suffix = null, ?string $directory = null) : array
 {
     if (strpos($data, '/*{$,parser hint: pure}*/') !== false) {
         return [['"' . php_addslashes(preg_replace('#\{\$,.*\}#U', '', str_replace('/*{$,parser hint: pure}*/', '/*no minify*/', $data))) . '"'], []];
@@ -246,7 +250,7 @@ function compile_template(string $data, string $template_name, string $theme, st
     $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
     foreach ($override_hooks as $hook_ob) {
         if (method_exists($hook_ob, 'compile_template')) {
-            $hook_ob->compile_template(/*passed by reference*/$data, $template_name, $theme, $lang);
+            $hook_ob->compile_template(/*passed by reference*/$data, $template_name, $theme, $lang, $suffix, $directory);
         }
     }
 
@@ -712,14 +716,14 @@ function compile_template(string $data, string $template_name, string $theme, st
 
                         // Generate standard PHP code for directive
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $regular_code = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal . ',\'vars\'=>$parameters])';
+                            $regular_code = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal . ',\'vars\'=>$parameters],"' . php_addslashes($template_name) . '")';
                         } else {
-                            $regular_code = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal . '])';
+                            $regular_code = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal . '],"' . php_addslashes($template_name) . '")';
                         }
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $regular_code_with_faux = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal_with_faux . ',\'vars\'=>$parameters])';
+                            $regular_code_with_faux = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal_with_faux . ',\'vars\'=>$parameters],"' . php_addslashes($template_name) . '")';
                         } else {
-                            $regular_code_with_faux = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal_with_faux . '])';
+                            $regular_code_with_faux = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal_with_faux . '],"' . php_addslashes($template_name) . '")';
                         }
 
                         // See if we can completely optimise out a directive
@@ -838,11 +842,16 @@ function compile_template(string $data, string $template_name, string $theme, st
                             case 'INCLUDE':
                                 global $FILE_ARRAY;
                                 $tpl_funcs = [];
-                                $eval = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
-                                if (!is_string($eval)) {
-                                    $eval = '';
+                                $included_template_name = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
+                                if (!is_string($included_template_name)) {
+                                    $included_template_name = '';
                                 }
-                                if ((!$no_preprocess) && ($past_level_data === ['""']) && (!isset($FILE_ARRAY))) { // Simple case where no separate binding context of variables needed
+
+                                $tpl_params = [];
+                                $var_data = tempcode_compiler_eval('return ' . implode('.', $past_level_data) . ';', $tpl_funcs, [], $cl);
+                                $substitutions = parse_tempcode_include($var_data, $tpl_params);
+
+                                if ((!$no_preprocess) && (empty($tpl_params)) && (empty($substitutions)) && (!isset($FILE_ARRAY))) { // Simple case where no separate binding context of variables needed
                                     $_ex = isset($directive_opener_params[1 + 1 + 2]) ? tempcode_compiler_eval('return ' . implode('.', $directive_opener_params[1 + 2]) . ';', $tpl_funcs, [], $cl) : '';
                                     if (!is_string($_ex)) {
                                         $_ex = '';
@@ -872,14 +881,14 @@ function compile_template(string $data, string $template_name, string $theme, st
                                         $_force_original = '0';
                                     }
 
-                                    $found = find_template_place($eval, '', $_theme, $_ex, $_td, ($template_name === $eval) || ($_force_original == '1'));
+                                    $found = find_template_place($included_template_name, '', $_theme, $_ex, $_td, ($template_name === $included_template_name) || ($_force_original == '1'));
 
                                     if (($found !== null) && ($found[1] !== null)) {
                                         $_theme = $found[0];
 
-                                        $full_path = get_custom_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];
+                                        $full_path = get_custom_file_base() . '/themes/' . $_theme . $found[1] . $included_template_name . $found[2];
                                         if (!is_file($full_path)) {
-                                            $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];
+                                            $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $included_template_name . $found[2];
                                         }
                                         if (is_file($full_path)) {
                                             $file_contents = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
@@ -887,7 +896,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                                             $file_contents = '';
                                         }
 
-                                        list($_current_level_data, $_preprocessable_bits) = compile_template($file_contents, $eval, $theme, $lang, $tolerate_errors, $parameters, $parameters_used);
+                                        list($_current_level_data, $_preprocessable_bits) = compile_template($file_contents, $included_template_name, $theme, $lang, $tolerate_errors, $parameters, $parameters_used, $found[2], $found[1]);
                                         $current_level_data = array_merge($current_level_data, $_current_level_data);
                                         if ($added_preprocessable_bits) {
                                             array_pop($preprocessable_bits);
@@ -912,9 +921,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                         }
                         $directive_name = $eval;
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . ',\'vars\'=>$parameters])';
+                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . ',\'vars\'=>$parameters],"' . php_addslashes($template_name) . '")';
                         } else {
-                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . '])';
+                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . '],"' . php_addslashes($template_name) . '")';
                         }
                     }
                 }
@@ -1080,8 +1089,8 @@ function may_optimise_out_symbol(string $symbol) : bool
  *
  * @param  ID_TEXT $theme The theme the template is in the context of
  * @param  string $directory Subdirectory type to look in. Surrounded by '/', unlike with $directory parameters to most other functions (performance reasons)
- * @param  ID_TEXT $codename The codename of the template (e.g. foo)
- * @param  ID_TEXT $_codename The actual codename to use for the template (e.g. foo_mobile)
+ * @param  ID_TEXT $codename The codename of the template
+ * @param  ID_TEXT $_codename The actual codename to use for the template in the cache (e.g. foo_mobile)
  * @param  LANGUAGE_NAME $lang The language the template is in the context of
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @param  ?ID_TEXT $theme_orig The theme to cache in (null: main theme)
@@ -1139,7 +1148,7 @@ function _do_template(string $theme, string $directory, string $codename, string
 
     // Do compilation
     cms_profile_start_for('_do_template');
-    $result = template_to_tempcode($template_contents, 0, false, $codename, $theme_orig, $lang, false, $parameters);
+    $result = template_to_tempcode($template_contents, 0, false, $codename, $theme_orig, $lang, false, $parameters, $suffix, $directory);
     cms_profile_end_for('_do_template', $codename . $suffix);
 
     // Save into cache
@@ -1161,14 +1170,18 @@ function _do_template(string $theme, string $directory, string $codename, string
  * @param  string $text The template text
  * @param  integer $symbol_pos The position we are looking at in the text
  * @param  boolean $inside_directive Whether this text is in fact a directive, about to be put in the context of a wider template
- * @param  ID_TEXT $codename The codename of the template (e.g. foo)
+ * @param  ID_TEXT $codename The codename of the template (blank: not from a file)
  * @param  ?ID_TEXT $theme The theme it is for (null: current theme)
  * @param  ?ID_TEXT $lang The language it is for (null: current language)
  * @param  boolean $tolerate_errors Whether to tolerate errors
  * @param  ?array $parameters Parameters to hard-code in during compilation (null: no hard-coding)
+ * @param  ?string $suffix File type suffix of template file (e.g. .tpl) (null: not from a file)
+ * @set .tpl .js .xml .txt .css
+ * @param  ?string $directory Subdirectory type to look in (null: not from a file)
+ * @set templates javascript xml text css
  * @return mixed The converted/compiled template as Tempcode, OR if a directive, encoded directive information
  */
-function template_to_tempcode(string $text, int $symbol_pos = 0, bool $inside_directive = false, string $codename = '', ?string $theme = null, ?string $lang = null, bool $tolerate_errors = false, ?array &$parameters = null)
+function template_to_tempcode(string $text, int $symbol_pos = 0, bool $inside_directive = false, string $codename = '', ?string $theme = null, ?string $lang = null, bool $tolerate_errors = false, ?array &$parameters = null, ?string $suffix = null, ?string $directory = null)
 {
     if ($theme === null) {
         $theme = isset($GLOBALS['FORUM_DRIVER']) ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
@@ -1181,7 +1194,7 @@ function template_to_tempcode(string $text, int $symbol_pos = 0, bool $inside_di
     if ($parameters !== null) {
         $parameters_used = [];
     }
-    list($parts, $preprocessable_bits) = compile_template(substr($text, $symbol_pos), $codename, $theme, $lang, $tolerate_errors, $parameters, $parameters_used);
+    list($parts, $preprocessable_bits) = compile_template(substr($text, $symbol_pos), $codename, $theme, $lang, $tolerate_errors, $parameters, $parameters_used, $suffix, $directory);
 
     if (($parameters !== null) && ($parameters_used !== null)) {
         foreach ($parameters as $key => $parameter) {

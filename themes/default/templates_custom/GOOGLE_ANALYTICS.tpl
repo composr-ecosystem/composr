@@ -2,7 +2,7 @@
 <div id="ga-{ID*}" data-tpl="googleAnalytics" data-tpl-params="{+START,PARAMS_JSON,ID,PROPERTY_ID,ACCESS_TOKEN,DIMENSION,METRICS,DAYS,CHART_TYPE,UNDER_TAB,EXTRA,client_id}{_*}{+END}">
 	<div id="auth-button-{ID*}"></div>
 
-	{+START,INCLUDE,_GOOGLE_TIME_PERIODS}{+END}
+	{+START,INCLUDE,GOOGLE_TIME_PERIODS}{+END}
 
 	<div id="timeline-{ID*}"></div>
 

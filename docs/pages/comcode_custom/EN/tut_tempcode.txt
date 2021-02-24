@@ -1990,19 +1990,28 @@ Note that you cannot use directives for symbol parameters because directives con
 		<tr style="background: #DDFFDD">
 			<td>INCLUDE</td>
 			<td>
-				Include a template in another and pass parameters (this makes a template very much like a function in a conventional programming language).<br /><br />
+				Include a template in another and pass parameters (this makes a template very much like a function in a conventional programming language).<br />
+				<br />The parameters to the directive are (all may be blank or left out):
+				<ol>
+					<li>the codename of the template to include (e.g. <kbd>EXAMPLE</kbd>)</li>
+					<li>the file extension of the template to include, including the dot (defaults to <kbd>.tpl</kbd>)</li>
+					<li>the subdirectory type of the template to include (defaults to <kbd>templates</kbd>)</li>
+					<li>the theme to include from (defaults to current theme)</li>
+					<li>whether to force the non-overridden file (defaults to <kbd>0</kbd> unless the template being included has the same name as the template the INCLUDE is in)</li>
+				</ol>
 				The automated smart-decaching (for developers manually editing template files) will not work on manually edited included templates because Composr's optimiser means that the actual template is "compiled into" the template that calls it and thus not regularly individually checked. That is, unless the <kbd>$SITE_INFO['dependency__&lt;directory&gt;__&lt;codename&gt;'] = '[&lt;codename&gt;,]*';</kbd> dependency specification technique is used (documented in the Code Book).<br /><br />
 				The parameters are written inside the directive, one per line in a very simple text syntax, <kbd>KEY=VALUE</kbd> (e.g. <kbd>FOO={BAR}</kbd>), where the actual parameter values are evaluated into text prior to the <kbd>INCLUDE</kbd> directive being evaluated. This has the result of anything after a linebreak being lost, unless you make use of the directives support for escaped line-breaks (e.g. <kbd>FOO={BAR^}</kbd>).<br /><br />
 				There are a range of special substitutions that can also be used, again one per line in a text syntax.<ul>
-					<li><kbd>INSERT_AFTER:&lt;anchor_point&gt;--&gt;&lt;new_text&gt;</kbd> &ndash; Insert some new text after the anchor</li>
-					<li><kbd>INSERT_BEFORE:&lt;anchor_point&gt;--&gt;&lt;new_text&gt;</kbd> &ndash; Insert some new text before the anchor</li>
-					<li><kbd>STR_STRIP:&lt;text&gt</kbd> &ndash; Strip some text</li>
-					<li><kbd>STR_REPLACE:&lt;from&gt;--&gt;&lt;to&gt;</kbd> &ndash; Do a string substitution</li>
-					<li><kbd>PREG_STRIP:&lt;regexp&gt</kbd> &ndash; Strip a regexp (regexp must have delimiters around it, e.g. #)</li>
-					<li><kbd>PREG_REPLACE:&lt;from&gt;--&gt;&lt;to&gt;</kbd> &ndash; Do a regexp substitution (")</li>
-					<li><kbd>REMOVE_SELECTOR:&lt;selector&gt;</kbd> &ndash; Remove a CSS selector</li>
-					<li><kbd>REMOVE_SELECTOR_PROPERTY:&lt;selector&gt;--&gt;&lt;property&gt;</kbd> &ndash; Remove a property from a CSS selector</li>
+					<li><kbd>INSERT_AFTER: &lt;anchor_point&gt; ~~&gt; &lt;new_text&gt;</kbd> &ndash; Insert some new text after the anchor</li>
+					<li><kbd>INSERT_BEFORE: &lt;anchor_point&gt; ~~&gt; &lt;new_text&gt;</kbd> &ndash; Insert some new text before the anchor</li>
+					<li><kbd>STR_STRIP: &lt;text&gt</kbd> &ndash; Strip some text</li>
+					<li><kbd>STR_REPLACE: &lt;from&gt; ~~&gt; &lt;to&gt;</kbd> &ndash; Do a string substitution</li>
+					<li><kbd>PREG_STRIP: &lt;regexp&gt</kbd> &ndash; Strip a regexp (regexp must have delimiters around it, e.g. #)</li>
+					<li><kbd>PREG_REPLACE: &lt;from&gt; ~~&gt; &lt;to&gt;</kbd> &ndash; Do a regexp substitution (")</li>
+					<li><kbd>REMOVE_SELECTOR: &lt;selector&gt;</kbd> &ndash; Remove a CSS selector</li>
+					<li><kbd>REMOVE_SELECTOR_PROPERTY: &lt;selector&gt; ~~&gt; &lt;property&gt;</kbd> &ndash; Remove a property from a CSS selector</li>
 				</ul>
+				Note that substitutions happen after Tempcode has been evaluated in the included template.<br /><br />
 				Note that the CSS substitutions work by regular expressions that should work in practice, but they are not perfect to the CSS spec.<br /><br />
 				If you try to include a template into itself, Composr will include the default version of that template in.
 			</td>

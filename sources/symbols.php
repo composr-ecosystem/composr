@@ -42,9 +42,10 @@ function init__symbols()
  * @set 0 2
  * @param  ID_TEXT $name The name of the symbol
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @param  ID_TEXT $template_name The name of the template this came from (blank: not from a file / unknown); only passed for directives to avoid infinite loops with INCLUDE
  * @return mixed The result. Either Tempcode, or a string.
  */
-function ecv(string $lang, array $escaped, int $type, string $name, array $param)
+function ecv(string $lang, array $escaped, int $type, string $name, array $param, string $template_name = '')
 {
     $name = trim($name);
 
@@ -342,26 +343,9 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
             case 'INCLUDE':
                 if (isset($param[1])) {
                     $tpl_params = $param['vars'];
-                    $substitutions = [];
                     $var_data = $param[count($param) - 2]->evaluate();
-                    $explode = explode("\n", $var_data);
-                    foreach ($explode as $val) {
-                        $sub_matches = [];
-                        if (preg_match('#^\s*(\w+):\s*(.*?)\s*(-->\s*(.*)\s*)?$#', $val, $sub_matches) != 0) {
-                            $substitutions[] = [$sub_matches[1], $sub_matches[2], isset($sub_matches[4]) ? $sub_matches[4] : ''];
-                        } else {
-                            $bits = explode('=', $val, 2);
-                            if (count($bits) == 2) {
-                                $save_as = ltrim($bits[0]);
-                                $tpl_params[$save_as] = str_replace('\n', "\n", $bits[1]);
-
-                                if ($GLOBALS['XSS_DETECT'] && ocp_is_escaped($var_data)) {
-                                    ocp_mark_as_escaped($tpl_params[$save_as]);
-                                }
-                            }
-                        }
-                    }
-                    $template_file = $param[0]->evaluate();
+                    $substitutions = parse_tempcode_include($var_data, $tpl_params);
+                    $_template_name = $param[0]->evaluate();
                     $ex = isset($param[2]) ? $param[1]->evaluate() : '';
                     if ($ex == '') {
                         $ex = '.tpl';
@@ -378,38 +362,11 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                     if ($force_original != '1') {
                         $force_original = '0';
                     }
-                    $_value = do_template($template_file, $tpl_params, null, true, null, $ex, $td, $theme, $force_original == '1');
+
+                    $_value = do_template($_template_name, $tpl_params, null, true, null, $ex, $td, $theme, true||($template_name == $_template_name) || ($force_original == '1'));
                     $value = $_value->evaluate();
 
-                    // Do substitutions
-                    foreach ($substitutions as $substitution) {
-                        switch ($substitution[0]) {
-                            case 'INSERT_AFTER':
-                                $value = str_replace($substitution[1], $substitution[1] . $substitution[2], $value);
-                                break;
-                            case 'INSERT_BEFORE':
-                                $value = str_replace($substitution[1], $substitution[2] . $substitution[1], $value);
-                                break;
-                            case 'STR_STRIP':
-                                $value = str_replace($substitution[1], '', $value);
-                                break;
-                            case 'STR_REPLACE':
-                                $value = str_replace($substitution[1], $substitution[2], $value);
-                                break;
-                            case 'PREG_STRIP':
-                                $value = @preg_replace($substitution[1], '', $value);
-                                break;
-                            case 'PREG_REPLACE':
-                                $value = @preg_replace($substitution[1], $substitution[2], $value);
-                                break;
-                            case 'REMOVE_SELECTOR':
-                                $value = preg_replace('#(^|\}|/)\s*' . preg_quote($substitution[1], '#') . '\s*\{.*\}#Us', '$1', $value);
-                                break;
-                            case 'REMOVE_SELECTOR_PROPERTY':
-                                $value = preg_replace('#((^|\}|/)\s*' . preg_quote($substitution[1], '#') . '\s*\{.*\s)' . preg_quote($substitution[2], '#') . ':[^;]*;(.*\})#Us', '$1$3', $value);
-                                break;
-                        }
-                    }
+                    apply_tempcode_substitutions($value, $substitutions);
                 }
                 break;
 

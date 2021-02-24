@@ -158,7 +158,7 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
             'sources_custom/miniblocks/main_staff_google_analytics.php',
             'themes/default/templates_custom/GOOGLE_ANALYTICS.tpl',
             'themes/default/templates_custom/GOOGLE_ANALYTICS_TABS.tpl',
-            'themes/default/templates_custom/_GOOGLE_TIME_PERIODS.tpl',
+            'themes/default/templates_custom/GOOGLE_TIME_PERIODS.tpl',
             'themes/default/javascript_custom/google_analytics.js',
             'sources_custom/hooks/systems/config/ga_property_view_id.php',
         ];

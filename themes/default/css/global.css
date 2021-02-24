@@ -19,7 +19,7 @@ Composr minifies outputted CSS, so there is no performance penalty for doing thi
 You can also build your CSS by using a Tempcode INCLUDE to the original file but only implementing your changes in your file. This makes upgrading a LOT easier.
 CSS is expressive enough to let you undo things pretty well, if you need to undo core styles.
 This (if you remove the slashes) is how you'd do a Tempcode include from your overridden global.css file:
-\{+START,INCLUDE,global,.css,css,default,1\}\{+END\}
+\{+START,INCLUDE,global,.css,css\}\{+END\}
 */
 
 /*

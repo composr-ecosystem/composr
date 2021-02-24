@@ -1039,7 +1039,7 @@ function find_template_place(string $codename, ?string $lang, string $theme, str
     global $FILE_ARRAY, $CURRENT_SHARE_USER;
 
     static $tp_cache = [];
-    $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only]);
+    $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only, $fallback_other_themes]);
     if (isset($tp_cache[$sz])) {
         return $tp_cache[$sz];
     }

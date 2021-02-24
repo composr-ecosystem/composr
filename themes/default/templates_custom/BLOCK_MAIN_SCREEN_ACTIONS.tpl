@@ -1,26 +1,9 @@
 {$REQUIRE_JAVASCRIPT,facebook_support}
 
-<aside class="screen-actions-outer box" data-tpl="blockMainScreenActions" data-tpl-params="{+START,PARAMS_JSON,URL_ENCODED_CANONICAL_URL}{_*}{+END}">
-<nav class="screen-actions box-inner">
+{+START,INCLUDE,BLOCK_MAIN_SCREEN_ACTIONS}
 	{+START,IF_NON_EMPTY,{$CONFIG_OPTION,facebook_appid}}
-		<div class="facebook-like"><div class="fb-like" data-send="false" data-layout="button_count" data-width="55" data-show-faces="false"></div></div>
+		INSERT_AFTER: <nav class="screen-actions box-inner"> ~~> <div class="facebook-like"><div class="fb-like" data-send="false" data-layout="button_count" data-width="55" data-show-faces="false"></div></div>
+		INSERT_BEFORE: <div class="facebook"> ~~> <!--
+		INSERT_AFTER: <span>{!ADD_TO_FACEBOOK}</span></a></div> ~~> -->
 	{+END}
-	{+START,IF,{$THEME_OPTION,capability_printing}}
-		<div class="print"><a class="link-exempt js-click-print-screen" rel="print nofollow" target="_blank" title="{!PRINT_THIS_SCREEN} {!LINK_NEW_WINDOW}" href="{PRINT_URL*}">{+START,INCLUDE,ICON}NAME=links/print{+END} <span>{!PRINT_THIS_SCREEN}</span></a></div>
-	{+END}
-	<div class="recommend"><a data-open-as-overlay="{}" class="link-exempt" rel="nofollow" target="_blank" title="{!RECOMMEND_LINK} {!LINK_NEW_WINDOW}" href="{RECOMMEND_URL*}">{+START,INCLUDE,ICON}NAME=menu/site_meta/recommend{+END} <span>{!RECOMMEND_LINK}</span></a></div>
-	{+START,IF_EMPTY,{$CONFIG_OPTION,facebook_appid}}
-		<div class="facebook"><a class="link-exempt js-click-add-to-facebook" target="_blank" title="{!ADD_TO_FACEBOOK} {!LINK_NEW_WINDOW}" href="https://www.facebook.com/sharer.php?u={URL_ENCODED_CANONICAL_URL.*}">{+START,INCLUDE,ICON}NAME=links/facebook{+END} <span>{!ADD_TO_FACEBOOK}</span></a></div>
-	{+END}
-	<div class="twitter"><a class="link-exempt js-click-add-to-twitter" target="_blank" title="{!ADD_TO_TWITTER} {!LINK_NEW_WINDOW}" href="https://twitter.com/intent/tweet?text=RT%20{URL_ENCODED_CANONICAL_URL*}">{+START,INCLUDE,ICON}NAME=links/twitter{+END} <span>{!ADD_TO_TWITTER}</span></a></div>
-	<div class="linkedin"><a class="link-exempt js-click-add-to-linkedin" target="_blank" title="{!ADD_TO_LINKEDIN} {!LINK_NEW_WINDOW}" href="https://www.linkedin.com/shareArticle?url={URL_ENCODED_CANONICAL_URL.*}&amp;title={$METADATA.*,title}&amp;mini=true">{+START,INCLUDE,ICON}NAME=links/linkedin{+END} <span>{!ADD_TO_LINKEDIN}</span></a></div>
-	{+START,IF_NON_EMPTY,{$METADATA,image}}
-		<div class="pinterest"><a class="link-exempt js-click-add-to-pinterest" target="_blank" title="{!ADD_TO_PINTEREST} {!LINK_NEW_WINDOW}" href="https://pinterest.com/pin/create/button/?url={URL_ENCODED_CANONICAL_URL.*}&amp;media={$METADATA.*,image}&amp;description={$METADATA.*,title}">{+START,INCLUDE,ICON}NAME=links/pinterest{+END} <span>{!ADD_TO_PINTEREST}</span></a></div>
-	{+END}
-	<div class="tumblr"><a class="link-exempt js-click-add-to-tumblr" target="_blank" title="{!ADD_TO_TUMBLR} {!LINK_NEW_WINDOW}" href="https://tumblr.com/widgets/share/tool?canonicalUrl={URL_ENCODED_CANONICAL_URL*}&amp;title={$METADATA.*,title}">{+START,INCLUDE,ICON}NAME=links/tumblr{+END} <span>{!ADD_TO_TUMBLR}</span></a></div>
-	<div class="vkontakte"><a class="link-exempt js-click-add-to-vkontakte" target="_blank" title="{!ADD_TO_VKONTAKTE} {!LINK_NEW_WINDOW}" href="https://vk.com/share.php?url={URL_ENCODED_CANONICAL_URL.*}">{+START,INCLUDE,ICON}NAME=links/vkontakte{+END} <span>{!ADD_TO_VKONTAKTE}</span></a></div>
-	<div class="sina-weibo"><a class="link-exempt js-click-add-to-sina-weibo" target="_blank" title="{!ADD_TO_SINA_WEIBO} {!LINK_NEW_WINDOW}" href="http://service.weibo.com/share/share.php?url={URL_ENCODED_CANONICAL_URL.*}&amp;title={$METADATA.*,title}">{+START,INCLUDE,ICON}NAME=links/sina_weibo{+END} <span>{!ADD_TO_SINA_WEIBO}</span></a></div>
-	<div class="tencent-weibo"><a class="link-exempt js-click-add-to-tencent-weibo" target="_blank" title="{!ADD_TO_TENCENT_WEIBO} {!LINK_NEW_WINDOW}" href="http://v.t.qq.com/share/share.php?url={URL_ENCODED_CANONICAL_URL.*}&amp;title={$METADATA.*,title}">{+START,INCLUDE,ICON}NAME=links/tencent_weibo{+END} <span>{!ADD_TO_TENCENT_WEIBO}</span></a></div>
-	<div class="qzone"><a class="link-exempt js-click-add-to-qzone" target="_blank" title="{!ADD_TO_QZONE} {!LINK_NEW_WINDOW}" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={URL_ENCODED_CANONICAL_URL.*}&amp;title={$METADATA.*,title}">{+START,INCLUDE,ICON}NAME=links/qzone{+END} <span>{!ADD_TO_QZONE}</span></a></div>
-</nav>
-</aside>
+{+END}

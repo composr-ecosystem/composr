@@ -340,7 +340,7 @@ function call_included_code(string $path, string $codename, bool $light_exit, ?s
     if ((function_exists('find_all_hook_obs')) && (strpos($codename, 'sources_custom/hooks/systems/contentious_overrides') !== 0)) {
         $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
         foreach ($override_hooks as $hook_ob) {
-            if (method_exists($hook_ob, 'compile_template')) {
+            if (method_exists($hook_ob, 'call_included_code')) {
                 $hook_ob->call_included_code($path, $codename, /*Passed by reference*/$code);
             }
         }

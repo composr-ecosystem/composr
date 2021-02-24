@@ -868,9 +868,9 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
     $loaded_this_once = isset($TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only]);
 
     // Load from run-time cache?
-    if (isset($LOADED_TPL_CACHE[$codename][$lang][$theme][$suffix][$directory])) {
+    if (isset($LOADED_TPL_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only])) {
         // We have run-time caching
-        $_data = $LOADED_TPL_CACHE[$codename][$lang][$theme][$suffix][$directory];
+        $_data = $LOADED_TPL_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only];
     }
 
     // Find where template is on disk
@@ -894,7 +894,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
         if ($found !== null) {
             $tcp_path_prefix = $prefix . $theme . '/templates_cached/' . $lang . '/';
             $tcp_path_suffix = $found[2] . '.tcp';
-            $tcp_path = $tcp_path_prefix . $codename . $tcp_path_suffix;
+            $tcp_path = $tcp_path_prefix . $codename . ($non_custom_only ? '_non_custom_only' : '') . $tcp_path_suffix;
             if ($loaded_this_once) {
                 $may_use_cache = true;
             } else {
@@ -930,7 +930,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
 
                 $may_use_cache = false;
                 if ((!$support_smart_decaching) || (($tcp_time !== false) && ($found_disk_file))/*if in install can be found yet no file at path due to running from data.cms*/ && ($found !== null)) {
-                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($codename, $directory, $suffix, $theme, $tcp_time)))) {
+                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($codename, $directory, $suffix, $found[0], $tcp_time)))) {
                         $may_use_cache = true;
                     }
                 }
@@ -970,7 +970,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
 
     if ((($loaded_this_once) || (($suffix == '.tpl') && (substr($codename, -7) !== '_SCREEN'))) && (!isset($LOADED_TPL_CACHE[$codename][$theme])) && (!$inlining_mode)) { // On 3rd load (and onwards) it will be fully cached
         // Set run-time cache
-        $LOADED_TPL_CACHE[$codename][$lang][$theme][$suffix][$directory] = $_data;
+        $LOADED_TPL_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only] = $_data;
     }
 
     // Optimisation
@@ -2688,4 +2688,81 @@ function reasonable_html_reduce(object $text, int $max_length = 1000) : object
         $text = make_string_tempcode(symbol_truncator([$text_flat, strval($max_length), '0', '1'], 'left'));
     }
     return $text;
+}
+
+/**
+ * Parse Tempcode include code, for variables and substitutions.
+ *
+ * @param  string $var_data Text
+ * @param  array $tpl_params Template parameters (added to by reference)
+ * @return array Substitutions
+ */
+function parse_tempcode_include(string $var_data, array &$tpl_params) : array
+{
+    $substitutions = [];
+
+    $explode = explode("\n", $var_data);
+    foreach ($explode as $val) {
+        $sub_matches = [];
+        if (preg_match('#^\s*(\w+):\s*(.*?)\s*(~~>\s*(.*)\s*)?$#', $val, $sub_matches) != 0) {
+            $substitutions[] = [$sub_matches[1], $sub_matches[2], isset($sub_matches[4]) ? $sub_matches[4] : ''];
+        } else {
+            $bits = explode('=', $val, 2);
+            if (count($bits) == 2) {
+                $save_as = ltrim($bits[0]);
+                $tpl_params[$save_as] = str_replace('\n', "\n", $bits[1]);
+
+                if ($GLOBALS['XSS_DETECT'] && ocp_is_escaped($var_data)) {
+                    ocp_mark_as_escaped($tpl_params[$save_as]);
+                }
+            }
+        }
+    }
+
+    return $substitutions;
+}
+
+/**
+ * Execute Tempcode include substitution code.
+ *
+ * @param  string $value The evaluated Tempcode
+ * @param  array $substitutions Substitutions to make (from parse_tempcode_include)
+ */
+function apply_tempcode_substitutions(string &$value, array $substitutions)
+{
+    $escaped_before = ocp_is_escaped($value);
+
+    // Do substitutions
+    foreach ($substitutions as $substitution) {
+        switch ($substitution[0]) {
+            case 'INSERT_AFTER':
+                $value = str_replace($substitution[1], $substitution[1] . $substitution[2], $value);
+                break;
+            case 'INSERT_BEFORE':
+                $value = str_replace($substitution[1], $substitution[2] . $substitution[1], $value);
+                break;
+            case 'STR_STRIP':
+                $value = str_replace($substitution[1], '', $value);
+                break;
+            case 'STR_REPLACE':
+                $value = str_replace($substitution[1], $substitution[2], $value);
+                break;
+            case 'PREG_STRIP':
+                $value = @preg_replace($substitution[1], '', $value);
+                break;
+            case 'PREG_REPLACE':
+                $value = @preg_replace($substitution[1], $substitution[2], $value);
+                break;
+            case 'REMOVE_SELECTOR':
+                $value = preg_replace('#(^|\}|/)\s*' . preg_quote($substitution[1], '#') . '\s*\{.*\}#Us', '$1', $value);
+                break;
+            case 'REMOVE_SELECTOR_PROPERTY':
+                $value = preg_replace('#((^|\}|/)\s*' . preg_quote($substitution[1], '#') . '\s*\{.*\s)' . preg_quote($substitution[2], '#') . ':[^;]*;(.*\})#Us', '$1$3', $value);
+                break;
+        }
+    }
+
+    if ($escaped_before) {
+        ocp_mark_as_escaped($value);
+    }
 }

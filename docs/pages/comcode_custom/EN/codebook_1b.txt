@@ -561,12 +561,14 @@ We have "contentious override hooks" for this purpose. You can hook into Composr
 Here is an example hook ([tt]sources/hooks/systems/contentious_overrides/foo.php[/tt]) that makes some silly changes...
 
 [code="PHP"]
+<?php
+
 class Hook_contentious_overrides_foo
 {
-    public function compile_template(&$data, $template_name, $theme, $lang)
+    public function compile_template(&$data, $template_name, $theme, $lang, $suffix, $directory)
     {
         // Append "hello" to the end of the page
-        if ($template_name == 'GLOBAL_HTML_WRAP') {
+        if (($template_name == 'GLOBAL_HTML_WRAP') && ($directory == 'templates')) {
             $data .= 'hello';
         }
     }

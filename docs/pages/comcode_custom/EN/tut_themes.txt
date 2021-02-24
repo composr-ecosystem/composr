@@ -149,8 +149,8 @@ For example, you could override [tt]calendar.css[/tt]:
 [code]
 {+START,INCLUDE,calendar,.css,css,default,1}
 	REMOVE_SELECTOR: .calendar-month-day
-	REMOVE_SELECTOR_PROPERTY: .event-listing-col-2 --> width
-	STR_REPLACE: border: 1px --> border: 2px
+	REMOVE_SELECTOR_PROPERTY: .event-listing-col-2 ~~> width
+	STR_REPLACE: border: 1px ~~> border: 2px
 {+END}
 
 .calendar-month th {

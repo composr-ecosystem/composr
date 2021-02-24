@@ -213,7 +213,7 @@ You may also host the JavaScript library as local URLs. By convention we put the
 There's a special process for this:
 1) Go to override the [tt]global.js[/tt] template in your theme
 2) Blank out your overridden version
-3) Put [tt]/*{+START,INCLUDE,global,.js,javascript,,1}{+END}*/[/tt] at the top
+3) Put [tt]/*{+START,INCLUDE,global,.js,javascript}{+END}*/[/tt] at the top
 4) Paste all the JavaScript next
 
 This works by including the default code in, then your code follows.
