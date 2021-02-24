@@ -235,5 +235,5 @@ PHP;
 
         }(window.$cms || (window.$cms = {}), window.$dom));
 PHP;
-        }
     }
+}
