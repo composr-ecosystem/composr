@@ -56,12 +56,12 @@
 
 				<div class="points-give-choices">
 					<p class="points-give-choice-line first">
-						<label for="trans-type-gift"><strong>{!GIVE_POINTS}</strong> <input checked="checked" type="radio" id="trans-type-gift" name="trans_type" value="gift" /></label> <span class="arr">&rarr;</span>
+						<label for="trans-type-gift"><strong>{!GIVE_POINTS}</strong> <input checked="checked" type="radio" id="trans-type-gift" name="trans_type" value="gift" /></label> <span class="arr">&rarr;</span>&nbsp;
 						<label class="sub-option points-anon" for="give-anonymous">{!TICK_ANON}: <input type="checkbox" id="give-anonymous" name="anonymous" value="1" /></label>
 					</p>
 
 					<p class="points-give-choice-line">
-						<strong>{!MODIFY_POINTS}</strong> <span class="arr">&rarr;</span>
+						<strong>{!MODIFY_POINTS}</strong> <span class="arr">&rarr;</span>&nbsp;
 						<label class="sub-option" for="trans-type-charge">{!CHARGE} <input type="radio" id="trans-type-charge" name="trans_type" value="charge" /></label>
 						<label class="sub-option" for="trans-type-refund">{!REFUND} <input type="radio" id="trans-type-refund" name="trans_type" value="refund" /></label>
 					</p>

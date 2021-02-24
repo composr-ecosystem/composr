@@ -1095,11 +1095,12 @@ function may_optimise_out_symbol(string $symbol) : bool
  * @param  string $suffix File type suffix of template file (e.g. .tpl)
  * @param  ?ID_TEXT $theme_orig The theme to cache in (null: main theme)
  * @param  ?array $parameters Parameters to hard-code in during compilation (null: no hard-coding)
+ * @param  boolean $non_custom_only Whether we only searched in the default templates
  * @return Tempcode The compiled Tempcode
  *
  * @ignore
  */
-function _do_template(string $theme, string $directory, string $codename, string $_codename, string $lang, string $suffix, ?string $theme_orig = null, ?array &$parameters = null) : object
+function _do_template(string $theme, string $directory, string $codename, string $_codename, string $lang, string $suffix, ?string $theme_orig = null, ?array &$parameters = null, bool $non_custom_only = false) : object
 {
     if ($theme_orig === null) {
         $theme_orig = $theme;
@@ -1154,7 +1155,7 @@ function _do_template(string $theme, string $directory, string $codename, string
     // Save into cache
     if (($CACHE_TEMPLATES) && (has_caching_for('template', $codename)) && ($parameters === null) && (!$IS_TEMPLATE_PREVIEW_OP_CACHE)) {
         $path2 = get_custom_file_base() . '/themes/' . $theme_orig . '/templates_cached/' . filter_naughty($lang);
-        $_path2 = $path2 . '/' . filter_naughty($_codename) . $suffix . '.tcp';
+        $_path2 = $path2 . '/' . filter_naughty($_codename) . ($non_custom_only ? '_non_custom_only' : '') . $suffix . '.tcp';
 
         require_code('files');
         $data_to_write = '<' . '?php' . "\n" . $result->to_assembly($lang) . "\n";

@@ -895,6 +895,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
             $tcp_path_prefix = $prefix . $theme . '/templates_cached/' . $lang . '/';
             $tcp_path_suffix = $found[2] . '.tcp';
             $tcp_path = $tcp_path_prefix . $codename . ($non_custom_only ? '_non_custom_only' : '') . $tcp_path_suffix;
+
             if ($loaded_this_once) {
                 $may_use_cache = true;
             } else {
@@ -961,9 +962,10 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
         } else {
             require_code('tempcode_compiler');
             if ($inlining_mode) {
-                $_data = _do_template($found[0], $found[1], $codename, $codename, $lang, $found[2], $theme, $parameters);
+                $_data = _do_template($found[0], $found[1], $codename, $codename, $lang, $found[2], $theme, $parameters, $non_custom_only);
             } else {
-                $_data = _do_template($found[0], $found[1], $codename, $codename, $lang, $found[2], $theme);
+                $_parameters = null;
+                $_data = _do_template($found[0], $found[1], $codename, $codename, $lang, $found[2], $theme, $_parameters, $non_custom_only);
             }
         }
     }

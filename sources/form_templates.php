@@ -1490,10 +1490,11 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
         $out = [];
         foreach ($_option[0] as $option) {
             list($pretty_name, $name, $value, $_description) = $option;
+            $disabled = !empty($option[4]);
 
             $value = (filter_form_field_default($name, $value ? '1' : '0') == '1');
 
-            $out[] = ['DISABLED' => false, 'CHECKED' => $value, 'TABINDEX' => strval($tabindex), 'NAME' => $name, 'PRETTY_NAME' => $pretty_name, 'DESCRIPTION' => $_description];
+            $out[] = ['DISABLED' => $disabled, 'CHECKED' => $value, 'TABINDEX' => strval($tabindex), 'NAME' => $name, 'PRETTY_NAME' => $pretty_name, 'DESCRIPTION' => $_description];
         }
 
         if ($custom_value === []) {
