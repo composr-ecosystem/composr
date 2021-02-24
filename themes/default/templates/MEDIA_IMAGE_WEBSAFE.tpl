@@ -33,6 +33,7 @@
 					{+START,IF_NON_EMPTY,{DESCRIPTION}}alt="{DESCRIPTION*}"{+END}
 					{+START,IF_EMPTY,{DESCRIPTION}}alt=""{+END}
 					src="{$ENSURE_PROTOCOL_SUITABILITY*,{THUMB_URL}}"
+					loading="lazy"
 				/>{+START,IF,{THUMB}}</a>{+END}
 
 				{$,Uncomment for a download link \{+START,INCLUDE,MEDIA__DOWNLOAD_LINK\}\{+END\}}
@@ -82,5 +83,6 @@
 		{+END}
 
 		src="{$ENSURE_PROTOCOL_SUITABILITY*,{THUMB_URL}}"
+		loading="lazy"
 	/>{+START,IF,{THUMB}}</a>{+END}{+START,IF_PASSED,CLICK_URL}{+START,IF,{$NOT,{THUMB}}}</a>{+END}{+END}
 {+END}

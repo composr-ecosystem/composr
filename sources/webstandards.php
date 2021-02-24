@@ -1087,6 +1087,7 @@ function init__webstandards()
         'iframe.seamless' => '(seamless)',
         'iframe.src' => $enforce_link,
         'iframe.srcdoc' => '.+',
+        'img.loading' => 'eager|lazy',
         'img.alt' => '.*', // Have to allow this really, for non-semantic images
         'img.height' => $enforce_inumber,
         'img.ismap' => 'ismap',
