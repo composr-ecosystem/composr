@@ -142,10 +142,12 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
         }
     }
 
-    $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
-    foreach ($override_hooks as $hook_ob) {
-        if (method_exists($hook_ob, 'require_lang_compile')) {
-            $hook_ob->require_lang_compile(/*passed by reference*/$load_target, $codename, $lang);
+    if (function_exists('find_all_hook_obs')) {
+        $override_hooks = find_all_hook_obs('systems', 'contentious_overrides', 'Hook_contentious_overrides_');
+        foreach ($override_hooks as $hook_ob) {
+            if (method_exists($hook_ob, 'require_lang_compile')) {
+                $hook_ob->require_lang_compile(/*passed by reference*/$load_target, $codename, $lang);
+            }
         }
     }
 

@@ -498,7 +498,7 @@ class Module_admin_themewizard
 
                     if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
                         require_code('files2');
-                        make_missing_directory(get_custom_file_base() . '/' . dirname($path));
+                        make_missing_directory(get_custom_file_base() . '/' . dirname($path), true);
                     }
 
                     cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);

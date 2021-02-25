@@ -363,7 +363,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                         $force_original = '0';
                     }
 
-                    $_value = do_template($_template_name, $tpl_params, null, true, null, $ex, $td, $theme, true||($template_name == $_template_name) || ($force_original == '1'));
+                    $_value = do_template($_template_name, $tpl_params, null, true, null, $ex, $td, $theme, ($template_name == $_template_name) || ($force_original == '1'));
                     $value = $_value->evaluate();
 
                     apply_tempcode_substitutions($value, $substitutions);

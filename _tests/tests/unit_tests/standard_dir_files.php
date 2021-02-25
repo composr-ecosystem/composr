@@ -120,6 +120,7 @@ class standard_dir_files_test_set extends cms_test_case
 
         if ($contents_count > 0) {
             if (
+                (preg_match('#^data/ckeditor(/|$)#', $dir_stub) == 0) && // We do not bother for CKEditor, it is none interesting and they do not ship these files themselves - and we want upgrading to be easy
                 (preg_match('#^uploads/website_specific/test(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 test XML DB
                 (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir
                 (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) && // Not in codechecker (we need to call CQC)

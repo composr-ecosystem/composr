@@ -1128,7 +1128,10 @@ class Module_admin_themes
         $use_all_themes = post_param_integer('use_all_themes', 0);
         $use_all_langs = post_param_integer('use_all_langs', 0);
 
-        $target_dir = 'themes/' . (($use_all_themes == 1) ? 'default' : $theme) . '/images_custom/' . dirname($id);
+        $target_dir = 'themes/' . (($use_all_themes == 1) ? 'default' : $theme) . '/images_custom';
+        if (strpos($id, '/') !== false) {
+            $target_dir .= '/' . dirname($id);
+        }
         $urls = get_url('url', 'file', $target_dir);
         if ($urls[0] == '') {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
@@ -1140,8 +1143,8 @@ class Module_admin_themes
         if (($use_all_themes == 1) && ($use_all_langs == 1)) {
             $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $id]);
             foreach ($theme_list as $theme) {
-                foreach (array_keys($lang_list) as $lang) {
-                    actual_add_theme_image($theme, $lang, $id, $urls[0], true);
+                foreach (array_keys($lang_list) as $_lang) {
+                    actual_add_theme_image($theme, $_lang, $id, $urls[0], true);
                 }
             }
         } elseif ($use_all_themes == 1) {
@@ -1151,8 +1154,8 @@ class Module_admin_themes
             }
         } elseif ($use_all_langs == 1) {
             $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $id, 'theme' => $theme]);
-            foreach (array_keys($lang_list) as $lang) {
-                actual_add_theme_image($theme, $lang, $id, $urls[0], true);
+            foreach (array_keys($lang_list) as $_lang) {
+                actual_add_theme_image($theme, $_lang, $id, $urls[0], true);
             }
         } else {
             actual_add_theme_image($theme, $lang, $id, $urls[0]);

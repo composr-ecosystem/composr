@@ -292,7 +292,7 @@ class Module_admin_svg_sprites
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_generate_svg_sprite'], '_SELF');
         $submit_name = do_lang_tempcode('GENERATE_SPRITE');
- 
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '2887f783aea9475bb0955a9ee985e36e',
             'HIDDEN' => $hidden,

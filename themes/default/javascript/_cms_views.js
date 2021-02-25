@@ -1038,7 +1038,7 @@
         }
 
         // Cookie Consent plugin by Osano - https://www.osano.com/cookieconsent
-        if ($cms.configOption('cookie_notice') && ($cms.runningScript() === 'index')) {
+        if ($cms.configOption('cookie_notice') && ($cms.runningScript() === 'index') && ($dom.$('meta[http-equiv="Refresh"]') === null)) {
             $cms.requireJavascript('cookie_consent').then(function () {
                 var cookieConsentOptions = {
                     cookie: {

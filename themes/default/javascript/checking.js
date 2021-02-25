@@ -646,7 +646,7 @@
 
                 // Shim for HTML5 regexp patterns
                 var matches;
-                if ((myValue !== '') && fieldElement.getAttribute('pattern') && (!(matches = myValue.match(new RegExp(fieldElement.getAttribute('pattern')))) || (myValue !== matches[0]))) {
+                if ((myValue !== '') && fieldElement.getAttribute('pattern') && (!(matches = myValue.match(new RegExp('^' + fieldElement.getAttribute('pattern') + '$'))) || (myValue !== matches[0]))) {
                     errorMsg = $util.format('{!javascript:PATTERN_NOT_MATCHED;^}', [myValue]);
                 } else if ((fieldElement.classList.contains('input-username') || fieldElement.classList.contains('input-username-required')) && (myValue !== '') && (myValue !== '****')) {
                     validatePromise = $cms.form.doAjaxFieldTest('{$FIND_SCRIPT_NOHTTP;,username_exists}?username=' + encodeURIComponent(myValue)).then(function (exists) {

@@ -3,7 +3,7 @@
  Copyright (c) ocProducts, 2004-2021
 */
 
-{+START,INCLUDE,_commandr_colours,.css,css,default}{+END}
+/*{+START,INCLUDE,_commandr_colours,.css,css,default}{+END}*/
 
 #command-line { /* This wraps the Commandr module/window as a whole */
 	/* Styled to look like generic command prompt */

@@ -24,7 +24,7 @@
 					editor.addCommand('composr_' + buttonName, func);
 					if (editor.ui.addButton) {
 						editor.ui.addButton('composr_' + buttonName, {
-                            label: element.title || element.cmsTooltipTitle,
+							label: element.title || element.cmsTooltipTitle,
 							command: 'composr_' + buttonName
 						});
 					}
@@ -95,6 +95,21 @@
 					command: 'composr_image'
 				});
 			}
+
+			// Cannot add images to figcaption
+			editor.on('selectionChange', function(evt)
+			{
+				if (editor.readOnly) return;
+
+				var command = editor.getCommand('composr_image'),
+					element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant('figcaption', true);
+
+				if (element && element.getName() == 'figcaption') {
+					command.setState(CKEDITOR.TRISTATE_DISABLED);
+				} else {
+					command.setState(CKEDITOR.TRISTATE_OFF);
+				}
+			});
 		}
 	});
 })();

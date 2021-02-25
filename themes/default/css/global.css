@@ -266,9 +266,6 @@ button::-moz-focus-inner,
 	padding: 0;
 	border-style: none;
 }
-.content-wrap-auto-center .img-box > figure {
-	display: inline-block;
-}
 
 input[type="radio"],
 input[type="checkbox"] {

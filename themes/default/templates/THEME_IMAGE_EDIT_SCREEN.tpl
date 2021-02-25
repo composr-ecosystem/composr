@@ -82,7 +82,7 @@
 
 			<p>{!THEME_IMAGE_RECOLOUR_DESCRIPTION}</p>
 
-			<form id="themewizard-form" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top">
+			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top">
 				{$INSERT_SPAMMER_BLACKHOLE}
 
 				<div>
@@ -106,6 +106,7 @@
 						SUBMIT_ICON=menu/adminzone/style/themes/themewizard
 						SUBMIT_NAME={!SAVE}
 						PREVIEW=1
+						SECONDARY_FORM=1
 					{+END}
 				</div>
 			</form>

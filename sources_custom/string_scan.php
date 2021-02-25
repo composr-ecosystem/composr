@@ -84,7 +84,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'import.ini',
     ];
 
-    $admin_string_suffixes = [
+    $admin_string_prefixes = [
         'MODULE_TRANS_NAME_admin_',
         'MODULE_TRANS_NAME_cms_',
         'ABSTRACTION_SYMBOL__',
@@ -110,6 +110,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'CMD_',
         'BLOCK_',
         'FIELD_TYPE_',
+        'THEME_CAPABILITY_',
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
@@ -135,7 +136,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MATCH_TYPE
         CAPABILITIES
         DESCRIPTION_THEME_LANGUAGE
-        NO_BLOCK_LAYOUTS_IN_THEME
         THEME_CAPABILITY_administrative
         THEME_CAPABILITY_block_layouts
         THEME_CAPABILITY_emails
@@ -8214,7 +8214,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     $non_admin_files = [
     ];
 
-    $non_admin_string_suffixes = [
+    $non_admin_string_prefixes = [
         'ACCESS_DENIED__',
         'ACTIVITY_',
         'NOTIFICATION_TYPE_',
@@ -11479,8 +11479,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
                 }
 
                 if ($do_guessing) {
-                    $is_admin_string = (in_array($f, $admin_files)) || (preg_match('#^(' . implode('|', $admin_string_suffixes) . ')#', $str) != 0) || (in_array($str, $lang_strings_admin_likely));
-                    $is_non_admin_string = (in_array($f, $non_admin_files)) || (preg_match('#^(' . implode('|', $non_admin_string_suffixes) . ')#', $str) != 0) || (in_array($str, $lang_strings_non_admin_likely));
+                    $is_admin_string = (in_array($f, $admin_files)) || (preg_match('#^(' . implode('|', $admin_string_prefixes) . ')#', $str) != 0) || (in_array($str, $lang_strings_admin_likely));
+                    $is_non_admin_string = (in_array($f, $non_admin_files)) || (preg_match('#^(' . implode('|', $non_admin_string_prefixes) . ')#', $str) != 0) || (in_array($str, $lang_strings_non_admin_likely));
                 } else {
                     $is_admin_string = false;
                     $is_non_admin_string = false;

@@ -545,11 +545,10 @@ function erase_theme_images_cache()
     require_code('themes2');
     $all_themes = find_all_themes();
 
-    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'url', 'lang']);
+    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', ['theme', 'id', 'lang', 'url']);
     $paths = [];
     foreach ($_paths as $image_details) {
-        $image_details_key = $image_details;
-        unset($image_details_key['url']);
+        $image_details_key = ['theme' => $image_details['theme'], 'id' => $image_details['id'], 'lang' => $image_details['lang']];
         $paths[serialize($image_details_key)] = $image_details['url'];
     }
 
@@ -559,7 +558,7 @@ function erase_theme_images_cache()
             // Delete: a non-existent theme
             $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
         } elseif ($path == '') {
-            // Delete: A blank path, should not be there
+            // Delete: A blank path, should not be there (actually it is a cache signal for "theme image does not exist")
             $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
         } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path) != 0) {
             if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path))) && (!file_exists(get_file_base() . '/' . rawurldecode($path)))) {
@@ -571,9 +570,9 @@ function erase_theme_images_cache()
                     foreach (array_keys($all_themes) as $theme) {
                         if ($theme != 'default') {
                             $insert_key_map = ['theme' => $theme, 'id' => $image_details_key['id'], 'lang' => $image_details_key['lang']];
-                            $insert_map = $insert_key_map + ['url' => $path];
                             if (!isset($paths[serialize($insert_key_map)])) {
-                                $GLOBALS['SITE_DB']->query_insert('theme_images', $insert_map);
+                                $insert_map = $insert_key_map + ['url' => $path];
+                                $GLOBALS['SITE_DB']->query_insert('theme_images', $insert_map, false, true/*In case of race conditions or case sensitivity problems*/);
                             }
                         }
                     }

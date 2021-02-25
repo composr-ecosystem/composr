@@ -165,19 +165,6 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#ffffff,panel_bottom_text,100% WB}
 {$THEMEWIZARD_COLOR,#ffffff,footer_text,100% WB}
 
-/* Used for image generation */
-{$THEMEWIZARD_COLOR,#eaf4fe,washed_out,10% (seed sat_to 85) + 90% WB}
-{$THEMEWIZARD_COLOR,#5a85c5,lgrad,67% (seed sat_to 95) + 33% FFFFFF} /* We always want the light source coming from the top */
-{$THEMEWIZARD_COLOR,#345495,dgrad,95% (seed sat_to 65) + 5% 000000} /* We always want the light source coming from the top */
-{$THEMEWIZARD_COLOR,#c0ddfb,comcode_quote_left,48% comcode_quote_right + 52% WB}
-{$THEMEWIZARD_COLOR,#7bb8f5,comcode_quote_right,100% code_title_background}
-{$THEMEWIZARD_COLOR,#175697,a.link__dark,63% (seed sat_to 85) + 37% BW}
-{$THEMEWIZARD_COLOR,#071b30,a.hover__dark,20% a.link + 80% BW}
-{$THEMEWIZARD_COLOR,#1b67b6,special_borderer,76% seed + 24% BW}
-{$THEMEWIZARD_COLOR,#103d6c,special_middle,45% (seed sat_to 85) + 65% BW}
-{$THEMEWIZARD_COLOR,#59a6f4,cns_post_indicator,65% (seed sat_to 100) + 35% WB}
-{$THEMEWIZARD_COLOR,#59a6ff,cns_redirect_indicator,65% (seed sat_to 100) + 35% WB + 000038 - 061600}
-
 /* Range of bright varying colours, used for group colours */
 {$THEMEWIZARD_COLOR,#9c029a,gcol_1,100% #9C029A}
 {$THEMEWIZARD_COLOR,#d10a00,gcol_2,100% #D10A00}

@@ -146,7 +146,7 @@ The ideal way to edit CSS in Composr is not to completely override CSS files wit
 This requires a bit more technical skill but it makes upgrading [b]much[/b] easier.
 
 For example, you could override [tt]calendar.css[/tt]:
-[code]
+[code="Tempcode"]
 {+START,INCLUDE,calendar,.css,css,default,1}
 	REMOVE_SELECTOR: .calendar-month-day
 	REMOVE_SELECTOR_PROPERTY: .event-listing-col-2 ~~> width

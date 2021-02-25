@@ -143,6 +143,8 @@ class lang_spelling_test_set extends cms_test_case
                     'CONFIG_OPTION_keywords',
                     'DESCRIPTION_META_KEYWORDS',
                     'DEFAULT_SLIDE3_TEXT',
+                    'THEME_COMPOSR_VERSION',
+                    'THEME_DESCRIPTION_COMPOSR_VERSION',
                 ])) &&
                 (!in_array($file, [
                     'lang.ini',

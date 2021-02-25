@@ -511,10 +511,13 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         if (($member_id === null) || (has_actual_page_access(get_member(), 'admin_cns_members')) || (has_privilege($member_id, 'rename_self'))) {
             $prohibit_username_whitespace = get_option_with_overrides('prohibit_username_whitespace', $adjusted_config_options);
             if ($prohibit_username_whitespace == '1') {
-                $fields->attach(form_input_codename(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_USERNAME'), ($member_id === null) ? 'username' : 'edit_username', $username, true));
+                $pattern = '[^\s]*';
+                $pattern_error = do_lang('USERNAME_PASSWORD_WHITESPACE');
             } else {
-                $fields->attach(form_input_line(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_USERNAME'), ($member_id === null) ? 'username' : 'edit_username', $username, true));
+                $pattern = null;
+                $pattern_error = null;
             }
+            $fields->attach(form_input_line(do_lang_tempcode('USERNAME'), do_lang_tempcode('DESCRIPTION_USERNAME'), ($member_id === null) ? 'username' : 'edit_username', $username, true, null, null, 'text', null, $pattern, $pattern_error));
         }
     }
 
@@ -1700,33 +1703,18 @@ function cns_set_custom_field(int $member_id, int $field_id, $value, ?string $ty
  */
 function cns_check_name_valid(?string &$username, ?int $member_id = null, ?string $password = null, ?string $email_address = null, ?int $dob = null, bool $return_errors = false) : ?object
 {
-    /* This would be an internationalisation mistake
-    $striped_username = $username;
-    $allowed_characters = [
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ',
-        '#', '@', ':', ';', '/', "\\", '.', ',', '|', '!', '%', '$', '^', '(', '*', ')', '-', '_', '+', '=', '[', ']', '{', '}', '~',
-    ];
-    foreach ($allowed_characters as $allowed_character) {
-        $striped_username = str_replace($allowed_character, '', $striped_username);
-    }
-    if ($striped_username != '') {
-        warn_exit(do_lang_tempcode('USERNAME_BAD_SYMBOLS'));
-    }
-    */
-
     // Check it doesn't already exist
     if ($username !== null) {
         $test = ($member_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $username, 'id' => $member_id]); // Precedence on an ID match in case there are duplicate usernames and user is trying to fix that
         if ($test === null) {
             $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $username]);
         }
+        $error = do_lang_tempcode('USERNAME_ALREADY_EXISTS');
         if (($test !== null) && ($test !== $member_id)) {
             if ($return_errors) {
-                return do_lang_tempcode('USERNAME_ALREADY_EXISTS');
+                return $error;
             }
-            warn_exit(do_lang_tempcode('USERNAME_ALREADY_EXISTS'));
+            warn_exit($error);
         }
         $username_known_available = ($test === null);
     } else {
@@ -1735,20 +1723,22 @@ function cns_check_name_valid(?string &$username, ?int $member_id = null, ?strin
 
     if ($username !== null) {
         // Check for disallowed symbols in username
-        $disallowed_characters = [/*'<','>','&','"',"'",'$',','*/];
+        $disallowed_characters = [/*'<','>','&','"',"'",'$',','*/]; // Actually we can tolerate this stuff
         foreach ($disallowed_characters as $disallowed_character) {
             if ((strpos($username, $disallowed_character) !== false) && ($username_known_available)) {
+                $error = do_lang_tempcode('USERNAME_BAD_SYMBOLS', escape_html($disallowed_character));
                 if ($return_errors) {
-                    return do_lang_tempcode('USERNAME_BAD_SYMBOLS');
+                    return $error;
                 }
-                warn_exit(do_lang_tempcode('USERNAME_BAD_SYMBOLS'));
+                warn_exit($error);
             }
         }
         if ((strpos($username, '@') !== false) && (strpos($username, '.') !== false) && ($username_known_available)) {
+            $error = do_lang_tempcode('USERNAME_BAD_SYMBOLS', escape_html('@ / .'));
             if ($return_errors) {
-                return do_lang_tempcode('USERNAME_BAD_SYMBOLS');
+                return $error;
             }
-            warn_exit(do_lang_tempcode('USERNAME_BAD_SYMBOLS'));
+            warn_exit($error);
         }
     }
 
@@ -1758,18 +1748,20 @@ function cns_check_name_valid(?string &$username, ?int $member_id = null, ?strin
             $_maximum_username_length = get_option('maximum_username_length');
             $maximum_username_length = intval($_maximum_username_length);
             if ((cms_mb_strlen($username) > $maximum_username_length) && ($username_known_available)) {
+                $error = do_lang_tempcode('USERNAME_TOO_LONG', escape_html(integer_format($maximum_username_length)));
                 if ($return_errors) {
-                    return do_lang_tempcode('USERNAME_TOO_LONG', escape_html(integer_format($maximum_username_length)));
+                    return $error;
                 }
-                warn_exit(do_lang_tempcode('USERNAME_TOO_LONG', escape_html(integer_format($maximum_username_length))));
+                warn_exit($error);
             }
             $_minimum_username_length = get_option('minimum_username_length');
             $minimum_username_length = intval($_minimum_username_length);
             if ((cms_mb_strlen($username) < $minimum_username_length) && ($username_known_available)) {
+                $error = do_lang_tempcode('USERNAME_TOO_SHORT', escape_html(integer_format($minimum_username_length)));
                 if ($return_errors) {
-                    return do_lang_tempcode('USERNAME_TOO_SHORT', escape_html(integer_format($minimum_username_length)));
+                    return $error;
                 }
-                warn_exit(do_lang_tempcode('USERNAME_TOO_SHORT', escape_html(integer_format($minimum_username_length))));
+                warn_exit($error);
             }
         }
         if ($password !== null) {
@@ -1785,19 +1777,21 @@ function cns_check_name_valid(?string &$username, ?int $member_id = null, ?strin
     if ($username !== null) {
         $prohibit_username_whitespace = get_option('prohibit_username_whitespace');
         if (($prohibit_username_whitespace === '1') && (cms_preg_match_safe('#\s#', $username) != 0) && ($username_known_available)) {
+            $error = do_lang_tempcode('USERNAME_PASSWORD_WHITESPACE');
             if ($return_errors) {
-                return do_lang_tempcode('USERNAME_PASSWORD_WHITESPACE');
+                return $error;
             }
-            warn_exit(do_lang_tempcode('USERNAME_PASSWORD_WHITESPACE'));
+            warn_exit($error);
         }
     }
     if ($password !== null) {
         $prohibit_password_whitespace = get_option('prohibit_password_whitespace');
         if (($prohibit_password_whitespace === '1') && (cms_preg_match_safe('#\s#', $password) != 0) && ($username_known_available)) {
+            $error = do_lang_tempcode('USERNAME_PASSWORD_WHITESPACE');
             if ($return_errors) {
-                return do_lang_tempcode('USERNAME_PASSWORD_WHITESPACE');
+                return $error;
             }
-            warn_exit(do_lang_tempcode('USERNAME_PASSWORD_WHITESPACE'));
+            warn_exit($error);
         }
     }
 
@@ -1814,20 +1808,22 @@ function cns_check_name_valid(?string &$username, ?int $member_id = null, ?strin
                 continue;
             }
             if (strpos($username, $restricted_username) !== false) {
+                $error = do_lang_tempcode('USERNAME_BAD_SUBSTRING', escape_html($restricted_username));
                 if ($return_errors) {
-                    return do_lang_tempcode('USERNAME_BAD_SUBSTRING');
+                    return $error;
                 }
-                warn_exit(do_lang_tempcode('USERNAME_BAD_SUBSTRING'));
+                warn_exit($error);
             }
         }
     }
 
     // Check it is not numeric
     if (is_numeric($username)) {
+        $error = do_lang_tempcode('USERNAME_NUMERIC');
         if ($return_errors) {
-            return do_lang_tempcode('USERNAME_NUMERIC');
+            return $error;
         }
-        warn_exit(do_lang_tempcode('USERNAME_NUMERIC'));
+        warn_exit($error);
     }
 
     return null;

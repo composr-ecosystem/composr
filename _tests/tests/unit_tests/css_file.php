@@ -310,6 +310,8 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'has-no-img',
+            'theme-image--header-classic-image',
             'active-repeating',
             'md',
             'responsive-video',

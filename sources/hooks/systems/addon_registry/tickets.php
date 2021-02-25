@@ -259,7 +259,6 @@ class Hook_addon_registry_tickets
     {
         require_lang('cns');
 
-        require_javascript('ajax');
         require_javascript('editing');
 
         $comments = new Tempcode();

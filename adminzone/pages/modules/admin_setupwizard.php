@@ -1149,7 +1149,7 @@ class Module_admin_setupwizard
                         $path = 'themes/' . $logo_save_theme . '/images_custom/' . $logo_output_theme_image . '.png';
                         if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
                             require_code('files2');
-                            make_missing_directory(get_custom_file_base() . '/' . dirname($path));
+                            make_missing_directory(get_custom_file_base() . '/' . dirname($path), true);
                         }
                         cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
                         actual_edit_theme_image('logo/' . $logo_output_theme_image, $logo_save_theme, get_site_default_lang(), 'logo/' . $logo_output_theme_image, $path, true);
