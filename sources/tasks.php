@@ -338,7 +338,7 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
 
     $message = do_lang_tempcode('NEW_TASK_RUNNING');
     if (has_actual_page_access(get_member(), 'admin_errorlog')) {
-        $message = do_lang_tempcode('NEW_TASK_RUNNING_LOGGING', $message, build_url(['page' => 'admin_errorlog'], get_module_zone('admin_errorlog'), [], false, false, false, 'cron_tasks'));
+        $message = do_lang_tempcode('NEW_TASK_RUNNING_LOGGING', $message, protect_from_escaping(escape_html(static_evaluate_tempcode(build_url(['page' => 'admin_errorlog'], get_module_zone('admin_errorlog'), [], false, false, false, 'cron_tasks')))));
     }
 
     if ($title === null) {

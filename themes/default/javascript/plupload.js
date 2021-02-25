@@ -16692,7 +16692,7 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
     function clearAttachmentComcode(index, postField) {
         var newContents = window.$editing.getTextbox(postField);
         newContents = newContents.replace(new RegExp('\\[(attachment|attachment_safe)[^\\]]*\\]new_' + index + '\\[/(attachment|attachment_safe)\\]', 'g'), '');
-        newContents = newContents.replace(new RegExp('<button [^>]*class="cms-keep-ui-controlled" [^>]*title="([^"]*)" [^>]*type="button"[^>]*>.*?</button>'), ''); // Shell of the above
+        newContents = newContents.replace(new RegExp('<input [^>]*class="cms-keep-ui-controlled" [^>]*title="([^"]*)" [^>]*type="button"[^>]* value=".*?" />'), ''); // Shell of the above
         window.$editing.setTextbox(postField, newContents, newContents);
         document.getElementById('file' + index).value = '';
     }

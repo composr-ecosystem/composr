@@ -93,7 +93,7 @@ class comcode_test_set extends cms_test_case
         set_option('eager_wysiwyg', '0');
 
         $comcode = '
-<button class="cms-keep-ui-controlled" size="45" title="[contents][/contents]" type="button">contents Comcode tag (dbl-click to edit/delete)</button>
+<input class="cms-keep-ui-controlled" size="45" title="[contents][/contents]" type="button" value="contents Comcode tag (dbl-click to edit/delete)" />
 
 <h2 id="xxx1">Foo</h2>
 

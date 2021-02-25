@@ -9,7 +9,7 @@
 
 /*{+START,CSS_MODE,desktop__overlay}*/
 	.login-page {
-		background: url('{$IMG;,background_image}') no-repeat 20px 44px;
+		background: url('{$IMG;,backgrounds/background_image}') no-repeat 20px 44px;
 		background-size: 216px 255px;
 		text-align: center;
 		padding: 0.5em;

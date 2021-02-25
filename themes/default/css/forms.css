@@ -1133,8 +1133,8 @@ comcode-{$REPLACE,\,,\,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,
 	padding: 2px;
 }
 
-#wysiwyg-editor button.cms-keep-ui-controlled,
-#wysiwyg-editor button.cms-keep-ui-controlled:focus {
+#wysiwyg-editor .cms-keep-ui-controlled,
+#wysiwyg-editor .cms-keep-ui-controlled:focus {
 	border: 1px dashed gray;
 	text-align: center;
 	color: {$GET,native_ui_foreground};
@@ -1143,11 +1143,11 @@ comcode-{$REPLACE,\,,\,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,
 	padding: 1px 25px 1px 2px;
 }
 /* Separately specified, as the weird selector breaks whole compound selector on some browsers */
-#wysiwyg-editor button.cms-keep-ui-controlled::selection {
+#wysiwyg-editor .cms-keep-ui-controlled::selection {
 	color: {$GET,native_ui_foreground};
 	background-color: {$GET,native_ui_active_background};
 }
-#wysiwyg-editor button.cms-keep-ui-controlled::-moz-selection {
+#wysiwyg-editor .cms-keep-ui-controlled::-moz-selection {
 	color: {$GET,native_ui_foreground};
 	background-color: {$GET,native_ui_active_background};
 }

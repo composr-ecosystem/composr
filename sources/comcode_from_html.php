@@ -350,11 +350,11 @@ function remove_wysiwyg_comcode_markup(string &$semihtml)
         $semihtml = str_replace("\u{200B}", '', $semihtml);
     }
 
-    if (stripos($semihtml, '<button') !== false) {
+    if (stripos($semihtml, '<input') !== false) {
         // Our button editing for embedded tags
         do {
             $semihtml_before = $semihtml;
-            $semihtml = preg_replace_callback('#<button [^>]*class="cms-keep-ui-controlled" [^>]*title="([^"]*)" [^>]*type="button"[^>]*>.*?</button>#si', '_debuttonise', $semihtml);
+            $semihtml = preg_replace_callback('#<input [^>]*class="cms-keep-ui-controlled" [^>]*title="([^"]*)" [^>]*type="button" [^>]*value="[^"]*"[^>]*/?' . '>#siU', '_debuttonise', $semihtml);
         } while ($semihtml != $semihtml_before);
     }
 

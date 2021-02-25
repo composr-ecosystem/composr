@@ -154,7 +154,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         // semihtml...
 
         $in = "a<br />\nb";
-        $out = '<button class="cms-keep-ui-controlled" size="45" title="[block]a&lt;br /&gt;' . "\n" . 'b[/block]" type="button">a' . "\n" . do_lang('comcode:COMCODE_EDITABLE_BLOCK', 'b') . '</button>';
+        $out = '<input class="cms-keep-ui-controlled" size="45" title="[block]a&lt;br /&gt;' . "\n" . 'b[/block]" type="button" value="a' . "\n" . do_lang('comcode:COMCODE_EDITABLE_BLOCK', 'b') . '" />';
 
         $got = add_wysiwyg_comcode_markup('block', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
