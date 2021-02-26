@@ -101,7 +101,7 @@ We did previously have native inbuilt transcoding support, but due to the buggin
 
 [title="3"]Audio (and more)[/title]
 
-Audio is supported as specialisation of video support if the "Allow audio as videos" configuration option (Admin Zone > Setup > Configuration > Feature options > Media) is on.
+Audio is supported as specialisation of video support if the "Allow audio as videos" configuration option (Admin Zone > Setup > Configuration > Content editing options > Media) is on.
 
 Naturally a gallery must also have video files enabled for it, for audio files to be supported.
 

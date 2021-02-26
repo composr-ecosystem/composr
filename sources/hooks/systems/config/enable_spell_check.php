@@ -33,7 +33,7 @@ class Hook_config_enable_spell_check
         return [
             'human_name' => 'ENABLE_SPELL_CHECK',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'PREVIEW',
             'explanation' => 'CONFIG_OPTION_enable_spell_check',
             'shared_hosting_restricted' => '0',

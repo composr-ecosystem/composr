@@ -33,7 +33,7 @@ class Hook_config_forw_url
         return [
             'human_name' => 'FORW_MAINTAIN_URL',
             'type' => 'line',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'FORWARDING',
             'explanation' => 'CONFIG_OPTION_forw_url',
             'shared_hosting_restricted' => '1',

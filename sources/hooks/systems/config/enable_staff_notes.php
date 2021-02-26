@@ -33,7 +33,7 @@ class Hook_config_enable_staff_notes
         return [
             'human_name' => 'ENABLE_STAFF_NOTES',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'GENERAL',
             'explanation' => 'CONFIG_OPTION_enable_staff_notes',
             'shared_hosting_restricted' => '0',

@@ -33,7 +33,7 @@ class Hook_config_highlight_name_price
         return [
             'human_name' => 'PRICE_highlight_name_price',
             'type' => 'float',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'NAME_HIGHLIGHTING',
             'explanation' => 'CONFIG_OPTION_highlight_name_price',
             'shared_hosting_restricted' => '0',

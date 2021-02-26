@@ -33,7 +33,7 @@ class Hook_config_simplify_wysiwyg_by_permissions
         return [
             'human_name' => 'SIMPLIFY_WYSIWYG_BY_PERMISSIONS',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'WYSIWYG_EDITOR',
             'explanation' => 'CONFIG_OPTION_simplify_wysiwyg_by_permissions',
             'shared_hosting_restricted' => '0',

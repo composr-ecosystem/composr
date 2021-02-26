@@ -28,7 +28,7 @@ class Hook_config_bank_dividend
         return [
             'human_name' => 'BANK_DIVIDEND',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'BANKING',
             'explanation' => 'CONFIG_OPTION_bank_dividend',
             'shared_hosting_restricted' => '0',

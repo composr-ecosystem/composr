@@ -33,7 +33,7 @@ class Hook_config_general_safety_listing_limit
         return [
             'human_name' => 'GENERAL_SAFETY_LISTING_LIMIT',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'ADVANCED',
             'explanation' => 'CONFIG_OPTION_general_safety_listing_limit',
             'shared_hosting_restricted' => '0',

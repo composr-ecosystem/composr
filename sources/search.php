@@ -27,7 +27,7 @@ function init__search()
 {
     if (!defined('MINIMUM_AUTOCOMPLETE_LENGTH')) {
         define('MINIMUM_AUTOCOMPLETE_LENGTH', intval(get_option('minimum_autocomplete_length')));
-        define('MINIMUM_AUTOCOMPLETE_PAST_SEARCH', 0);
+        define('MINIMUM_AUTOCOMPLETE_PAST_SEARCH', intval(get_option('minimum_autocomplete_past_search')));
         define('MAXIMUM_AUTOCOMPLETE_SUGGESTIONS', intval(get_option('maximum_autocomplete_suggestions')));
     }
 }

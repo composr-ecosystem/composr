@@ -33,7 +33,7 @@ class Hook_config_user_postsize_errors
         return [
             'human_name' => 'USER_POSTSIZE_ERRORS',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_user_postsize_errors',
             'shared_hosting_restricted' => '0',

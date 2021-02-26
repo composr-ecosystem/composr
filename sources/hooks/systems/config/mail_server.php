@@ -33,7 +33,7 @@ class Hook_config_mail_server
         return [
             'human_name' => 'MAIL_SERVER',
             'type' => 'line',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_mail_server',
             'shared_hosting_restricted' => '1',

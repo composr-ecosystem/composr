@@ -33,7 +33,7 @@ class Hook_config_max_download_size
         return [
             'human_name' => 'MAX_SIZE',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_max_download_size',
             'shared_hosting_restricted' => '0',

@@ -28,8 +28,8 @@ class Hook_config_support_credit_tax_code
         return [
             'human_name' => 'SUPPORT_CREDIT_TAX_CODE',
             'type' => 'tax_code',
-            'category' => 'FEATURE',
-            'group' => 'CUSTOMERS',
+            'category' => 'ECOMMERCE_PRODUCTS',
+            'group' => 'CREDITS',
             'explanation' => 'CONFIG_OPTION_support_credit_tax_code',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

@@ -33,7 +33,7 @@ class Hook_config_wysiwyg
         return [
             'human_name' => 'comcode:ENABLE_WYSIWYG',
             'type' => 'list',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'WYSIWYG_EDITOR',
             'explanation' => 'CONFIG_OPTION_wysiwyg',
             'shared_hosting_restricted' => '0',

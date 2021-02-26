@@ -33,7 +33,7 @@ class Hook_config_initial_quota
         return [
             'human_name' => 'QUOTA',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_initial_quota',
             'shared_hosting_restricted' => '1',

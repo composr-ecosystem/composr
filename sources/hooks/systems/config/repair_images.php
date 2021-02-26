@@ -33,7 +33,7 @@ class Hook_config_repair_images
         return [
             'human_name' => 'REPAIR_IMAGES',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_repair_images',
             'shared_hosting_restricted' => '0',

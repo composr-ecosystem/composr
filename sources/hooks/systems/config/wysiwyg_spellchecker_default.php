@@ -33,7 +33,7 @@ class Hook_config_wysiwyg_spellchecker_default
         return [
             'human_name' => 'WYSIWYG_SPELLCHECKER_DEFAULT',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'WYSIWYG_EDITOR',
             'explanation' => 'CONFIG_OPTION_wysiwyg_spellchecker_default',
             'shared_hosting_restricted' => '0',

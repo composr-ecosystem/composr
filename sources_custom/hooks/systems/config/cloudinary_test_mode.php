@@ -28,7 +28,7 @@ class Hook_config_cloudinary_test_mode
         return [
             'human_name' => 'CLOUDINARY_TEST_MODE',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_cloudinary_test_mode',
             'shared_hosting_restricted' => '0',

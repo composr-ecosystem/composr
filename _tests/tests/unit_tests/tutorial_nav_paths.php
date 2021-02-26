@@ -38,7 +38,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
         $config_options = [];
         foreach ($config_hooks as $file => $ob) {
             $details = $ob->get_details();
-            $config_options[do_lang($details['human_name'])] = 'Admin Zone > Setup > Configuration > ' . do_lang('CONFIG_CATEGORY_' . $details['category']) . ' > ' . do_lang($details['group']);
+            $config_options[do_lang($details['human_name'])] = 'Admin Zone > Setup > Configuration > ' . strip_tags(do_lang('CONFIG_CATEGORY_' . $details['category'])) . ' > ' . strip_tags(do_lang($details['group']));
         }
         $config_options['Timezone'] = 'Admin Zone > Setup > Configuration > Site options > Internationalisation';
 

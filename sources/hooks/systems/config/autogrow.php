@@ -33,7 +33,7 @@ class Hook_config_autogrow
         return [
             'human_name' => 'AUTOGROW',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'WYSIWYG_EDITOR',
             'explanation' => 'CONFIG_OPTION_autogrow',
             'shared_hosting_restricted' => '0',

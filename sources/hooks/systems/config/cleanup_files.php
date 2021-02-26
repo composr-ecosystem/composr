@@ -33,8 +33,8 @@ class Hook_config_cleanup_files
         return [
             'human_name' => 'CLEANUP_FILES',
             'type' => 'tick',
-            'category' => 'SITE',
-            'group' => 'ADVANCED',
+            'category' => 'CONTENT_EDITING',
+            'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_cleanup_files',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

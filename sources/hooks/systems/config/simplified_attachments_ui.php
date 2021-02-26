@@ -33,7 +33,7 @@ class Hook_config_simplified_attachments_ui
         return [
             'human_name' => 'SIMPLIFIED_ATTACHMENTS_UI',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => '_COMCODE',
             'explanation' => 'CONFIG_OPTION_simplified_attachments_ui',
             'shared_hosting_restricted' => '0',

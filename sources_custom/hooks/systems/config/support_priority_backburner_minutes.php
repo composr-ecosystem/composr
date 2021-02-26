@@ -28,8 +28,8 @@ class Hook_config_support_priority_backburner_minutes
         return [
             'human_name' => 'SUPPORT_PRIORITY_BACKBURNER_MINUTES',
             'type' => 'float',
-            'category' => 'FEATURE',
-            'group' => 'CUSTOMERS',
+            'category' => 'ECOMMERCE_PRODUCTS',
+            'group' => 'CREDITS',
             'explanation' => 'CONFIG_OPTION_support_priority_backburner_minutes',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

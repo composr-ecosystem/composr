@@ -33,7 +33,7 @@ class Hook_config_quota_price
         return [
             'human_name' => 'PRICE_quota_price',
             'type' => 'float',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_quota_price',
             'shared_hosting_restricted' => '0',

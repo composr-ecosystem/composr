@@ -33,7 +33,7 @@ class Hook_config_oembed_max_size
         return [
             'human_name' => 'OEMBED_MAX_SIZE',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_oembed_max_size',
             'shared_hosting_restricted' => '0',

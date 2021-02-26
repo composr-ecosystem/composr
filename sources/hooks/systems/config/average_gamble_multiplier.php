@@ -33,7 +33,7 @@ class Hook_config_average_gamble_multiplier
         return [
             'human_name' => 'AVERAGE_GAMBLE_MULTIPLIER',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'GAMBLING',
             'explanation' => 'CONFIG_OPTION_average_gamble_multiplier',
             'shared_hosting_restricted' => '0',

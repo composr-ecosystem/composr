@@ -33,7 +33,7 @@ class Hook_config_banner_setup_tax_code
         return [
             'human_name' => 'PRICE_banner_setup_tax_code',
             'type' => 'tax_code',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'BANNERS',
             'explanation' => 'CONFIG_OPTION_banner_setup_tax_code',
             'shared_hosting_restricted' => '0',

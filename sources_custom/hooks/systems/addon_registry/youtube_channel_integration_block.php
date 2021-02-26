@@ -153,8 +153,8 @@ You must first configure Google/YouTube API access:
     public function install(?int $upgrade_from = null)
     {
         // If old config option exists from older version of addon, remove it
-        if (get_option('channel_update_time', true) !== null) {
-            delete_config_option('channel_update_time');
+        if (get_option('youtube_channel_block_update_time', true) !== null) {
+            delete_config_option('youtube_channel_block_update_time');
         }
     }
 }

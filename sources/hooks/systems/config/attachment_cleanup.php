@@ -33,7 +33,7 @@ class Hook_config_attachment_cleanup
         return [
             'human_name' => 'ATTACHMENT_CLEANUP',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => '_COMCODE',
             'explanation' => 'CONFIG_OPTION_attachment_cleanup',
             'shared_hosting_restricted' => '0',

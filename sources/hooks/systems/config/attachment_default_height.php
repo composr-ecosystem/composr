@@ -33,7 +33,7 @@ class Hook_config_attachment_default_height
         return [
             'human_name' => 'DEFAULT_VIDEO_HEIGHT',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => '_COMCODE',
             'explanation' => 'CONFIG_OPTION_attachment_default_height',
             'shared_hosting_restricted' => '0',

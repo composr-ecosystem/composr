@@ -28,7 +28,7 @@ class Hook_config_is_on_community_billboard_buy
         return [
             'human_name' => 'ENABLE_PURCHASE',
             'type' => 'tick',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'COMMUNITY_BILLBOARD_MESSAGE',
             'explanation' => 'CONFIG_OPTION_is_on_community_billboard_buy',
             'shared_hosting_restricted' => '0',

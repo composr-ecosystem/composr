@@ -33,7 +33,7 @@ class Hook_config_topic_pin_price_points
         return [
             'human_name' => 'PRICE_topic_pin_price_points',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'TOPIC_PINNING',
             'explanation' => 'CONFIG_OPTION_topic_pin_price_points',
             'shared_hosting_restricted' => '0',

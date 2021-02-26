@@ -33,7 +33,7 @@ class Hook_config_pop_url
         return [
             'human_name' => 'POP3_MAINTAIN_URL',
             'type' => 'line',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_pop_url',
             'shared_hosting_restricted' => '1',

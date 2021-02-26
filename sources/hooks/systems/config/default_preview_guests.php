@@ -33,7 +33,7 @@ class Hook_config_default_preview_guests
         return [
             'human_name' => 'DEFAULT_PREVIEW_GUESTS',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'PREVIEW',
             'explanation' => 'CONFIG_OPTION_default_preview_guests',
             'shared_hosting_restricted' => '0',

@@ -33,7 +33,7 @@ class Hook_config_is_on_highlight_name_buy
         return [
             'human_name' => 'ENABLE_PURCHASE',
             'type' => 'tick',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'NAME_HIGHLIGHTING',
             'explanation' => 'CONFIG_OPTION_is_on_highlight_name_buy',
             'shared_hosting_restricted' => '0',

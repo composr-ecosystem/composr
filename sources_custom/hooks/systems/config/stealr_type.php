@@ -28,7 +28,7 @@ class Hook_config_stealr_type
         return [
             'human_name' => 'STEALR_TYPE',
             'type' => 'list',
-            'category' => 'ECOMMERCE',
+            'category' => 'FEATURE',
             'group' => 'STEALR_TITLE',
             'explanation' => 'CONFIG_OPTION_stealr_type',
             'shared_hosting_restricted' => '0',

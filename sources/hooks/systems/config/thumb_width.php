@@ -33,7 +33,7 @@ class Hook_config_thumb_width
         return [
             'human_name' => 'THUMB_WIDTH',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_thumb_width',
             'shared_hosting_restricted' => '0',

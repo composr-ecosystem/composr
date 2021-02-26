@@ -28,7 +28,7 @@ class Hook_config_community_billboard_price_points
         return [
             'human_name' => 'PRICE_community_billboard_price_points',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'COMMUNITY_BILLBOARD_MESSAGE',
             'explanation' => 'CONFIG_OPTION_community_billboard_price_points',
             'shared_hosting_restricted' => '0',

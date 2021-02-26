@@ -33,7 +33,7 @@ class Hook_config_is_on_pop3_buy
         return [
             'human_name' => 'ENABLE_PURCHASE',
             'type' => 'tick',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_is_on_pop3_buy',
             'shared_hosting_restricted' => '1',

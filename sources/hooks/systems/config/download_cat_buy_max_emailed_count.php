@@ -33,7 +33,7 @@ class Hook_config_download_cat_buy_max_emailed_count
         return [
             'human_name' => 'DOWNLOAD_CAT_BUY_MAX_EMAILED_COUNT',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'PERMISSION_PRODUCT_DOWNLOAD_CATEGORY',
             'explanation' => 'CONFIG_OPTION_download_cat_buy_max_emailed_count',
             'shared_hosting_restricted' => '0',

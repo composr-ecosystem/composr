@@ -33,7 +33,7 @@ class Hook_config_max_quota
         return [
             'human_name' => 'MAX_QUOTA',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_max_quota',
             'shared_hosting_restricted' => '1',

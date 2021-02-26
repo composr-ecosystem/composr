@@ -33,7 +33,7 @@ class Hook_config_attachment_default_width
         return [
             'human_name' => 'DEFAULT_VIDEO_WIDTH',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => '_COMCODE',
             'explanation' => 'CONFIG_OPTION_attachment_default_width',
             'shared_hosting_restricted' => '0',

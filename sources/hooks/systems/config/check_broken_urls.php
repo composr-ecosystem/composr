@@ -33,7 +33,7 @@ class Hook_config_check_broken_urls
         return [
             'human_name' => 'CHECK_BROKEN_URLS',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => '_COMCODE',
             'explanation' => 'CONFIG_OPTION_check_broken_urls',
             'shared_hosting_restricted' => '0',

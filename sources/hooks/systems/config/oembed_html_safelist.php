@@ -33,7 +33,7 @@ class Hook_config_oembed_html_safelist
         return [
             'human_name' => 'OEMBED_HTML_SAFELIST',
             'type' => 'text',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_oembed_html_safelist',
             'shared_hosting_restricted' => '0',

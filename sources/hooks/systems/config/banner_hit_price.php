@@ -33,7 +33,7 @@ class Hook_config_banner_hit_price
         return [
             'human_name' => 'PRICE_banner_hit_price',
             'type' => 'float',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'BANNERS',
             'explanation' => 'CONFIG_OPTION_banner_hit_price',
             'shared_hosting_restricted' => '0',

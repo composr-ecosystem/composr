@@ -33,7 +33,7 @@ class Hook_config_maximum_gamble_amount
         return [
             'human_name' => 'MAXIMUM_GAMBLE_AMOUNT',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'GAMBLING',
             'explanation' => 'CONFIG_OPTION_maximum_gamble_amount',
             'shared_hosting_restricted' => '0',

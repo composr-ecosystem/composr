@@ -33,7 +33,7 @@ class Hook_config_urls_simplifier
         return [
             'human_name' => 'URL_SIMPLIFIER',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'ADVANCED',
             'explanation' => 'CONFIG_OPTION_url_simplifier',
             'shared_hosting_restricted' => '0',

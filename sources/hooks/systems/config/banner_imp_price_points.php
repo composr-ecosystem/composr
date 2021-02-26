@@ -33,7 +33,7 @@ class Hook_config_banner_imp_price_points
         return [
             'human_name' => 'PRICE_banner_imp_price_points',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'BANNERS',
             'explanation' => 'CONFIG_OPTION_banner_imp_price_points',
             'shared_hosting_restricted' => '0',

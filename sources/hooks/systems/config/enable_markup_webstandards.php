@@ -33,7 +33,7 @@ class Hook_config_enable_markup_webstandards
         return [
             'human_name' => 'ENABLE_MARKUP_WEBSTANDARDS',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'PREVIEW',
             'explanation' => 'CONFIG_OPTION_enable_markup_webstandards',
             'shared_hosting_restricted' => '0',

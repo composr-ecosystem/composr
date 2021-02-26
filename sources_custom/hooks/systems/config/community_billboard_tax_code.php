@@ -28,7 +28,7 @@ class Hook_config_community_billboard_tax_code
         return [
             'human_name' => 'PRICE_community_billboard_tax_code',
             'type' => 'tax_code',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'COMMUNITY_BILLBOARD_MESSAGE',
             'explanation' => 'CONFIG_OPTION_community_billboard_tax_code',
             'shared_hosting_restricted' => '0',

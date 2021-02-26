@@ -376,7 +376,7 @@ Composr has a powerful attachment system that is integrated into Comcode, with a
 
 Attachments might be embedded images, for example, but actually just about any other kind of file.
 
-If the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode) is on you just click the image button above the main typing area. Otherwise there is a special attachment interface shown underneath (see screenshots).
+If the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Content editing options > Comcode) is on you just click the image button above the main typing area. Otherwise there is a special attachment interface shown underneath (see screenshots).
 
 Using attachments couldn't be easier: you just choose a file (or many files) from your computer, and Composr will automatically add an [tt]attachment[/tt] tag into the Comcode you are writing. You may then move that tag to any location you want, for placement of the actual attachment when the content is viewed.
 
@@ -388,9 +388,9 @@ Images can have thumbnails automatically generated and cached.
 
 [box="Be careful with copy & pasting"]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/dont.png[/media]
-You may copy and paste the attachment tag into any other area of Comcode, so as to re-use the attachment. Anyone with permission to access any of the attachment supporting content locations that the attachment is placed in will be able to view/download it. The attachment will remain in the system if the "Attachment cleanup" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode) is off, or until all content that using it is edited to stop using it.
+You may copy and paste the attachment tag into any other area of Comcode, so as to re-use the attachment. Anyone with permission to access any of the attachment supporting content locations that the attachment is placed in will be able to view/download it. The attachment will remain in the system if the "Attachment cleanup" configuration option (Admin Zone > Setup > Configuration > Content editing options > Comcode) is off, or until all content that using it is edited to stop using it.
 
-If the "Attachment cleanup" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode) is on (by default it is off):
+If the "Attachment cleanup" configuration option (Admin Zone > Setup > Configuration > Content editing options > Comcode) is on (by default it is off):
 Be careful when placing attachment tags in a Comcode spot that does not support attachments natively. This is supported, but the attachment will be deleted if its original content is deleted, as non-native Comcode spots have no way of recording that they have used it. In addition, if a viewer does not have access to the attachment's original content, they won't have access to your copy & pasted usage to a non-native Comcode spot.
 [/box]
 [/surround]

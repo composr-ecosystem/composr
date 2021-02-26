@@ -33,7 +33,7 @@ class Hook_config_minimum_gamble_amount
         return [
             'human_name' => 'MINIMUM_GAMBLE_AMOUNT',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'GAMBLING',
             'explanation' => 'CONFIG_OPTION_minimum_gamble_amount',
             'shared_hosting_restricted' => '0',

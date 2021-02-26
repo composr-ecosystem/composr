@@ -33,7 +33,7 @@ class Hook_config_fractional_editing
         return [
             'human_name' => 'FRACTIONAL_EDITING',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'ADVANCED',
             'explanation' => 'CONFIG_OPTION_fractional_editing',
             'shared_hosting_restricted' => '0',

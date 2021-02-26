@@ -33,7 +33,7 @@ class Hook_config_allow_theme_image_selector
         return [
             'human_name' => 'ALLOW_THEME_IMAGE_SELECTOR',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_allow_theme_image_selector',
             'shared_hosting_restricted' => '0',

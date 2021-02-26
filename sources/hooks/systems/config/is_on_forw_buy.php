@@ -33,7 +33,7 @@ class Hook_config_is_on_forw_buy
         return [
             'human_name' => 'ENABLE_PURCHASE',
             'type' => 'tick',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'FORWARDING',
             'explanation' => 'CONFIG_OPTION_is_on_forw_buy',
             'shared_hosting_restricted' => '1',

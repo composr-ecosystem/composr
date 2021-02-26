@@ -28,7 +28,7 @@ class Hook_config_cloudinary_api_key
         return [
             'human_name' => 'CLOUDINARY_API_KEY',
             'type' => 'line',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_cloudinary_api_key',
             'shared_hosting_restricted' => '0',

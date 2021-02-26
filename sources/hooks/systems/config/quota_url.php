@@ -33,7 +33,7 @@ class Hook_config_quota_url
         return [
             'human_name' => 'QUOTA_MAINTAIN_URL',
             'type' => 'line',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_quota_url',
             'shared_hosting_restricted' => '1',

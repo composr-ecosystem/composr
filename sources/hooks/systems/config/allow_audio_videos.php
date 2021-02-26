@@ -33,7 +33,7 @@ class Hook_config_allow_audio_videos
         return [
             'human_name' => 'ALLOW_AUDIO_VIDEOS',
             'type' => 'list',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_allow_audio_videos',
             'shared_hosting_restricted' => '0',

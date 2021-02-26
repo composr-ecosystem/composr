@@ -33,7 +33,7 @@ class Hook_config_topic_pin_tax_code
         return [
             'human_name' => 'PRICE_topic_pin_tax_code',
             'type' => 'tax_code',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'TOPIC_PINNING',
             'explanation' => 'CONFIG_OPTION_topic_pin_tax_code',
             'shared_hosting_restricted' => '0',

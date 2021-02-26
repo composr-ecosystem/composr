@@ -33,7 +33,7 @@ class Hook_config_initial_banner_hits
         return [
             'human_name' => 'HITS_ALLOCATED',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'BANNERS',
             'explanation' => 'CONFIG_OPTION_initial_banner_hits',
             'shared_hosting_restricted' => '0',

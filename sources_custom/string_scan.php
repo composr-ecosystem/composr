@@ -3550,7 +3550,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_output_compression_VALUE_1
         CONFIG_OPTION_output_compression_VALUE_2
         CONFIG_OPTION_hack_ban_threshold
-        CONFIG_OPTION_has_low_memory_limit
         CONFIG_OPTION_header_menu_call_string
         CONFIG_OPTION_highlight_name_price
         CONFIG_OPTION_highlight_name_tax_code
@@ -5687,7 +5686,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HACK_VERSION
         HANDLE_QUEUED_MESSAGE
         HAS_ALREADY_X_WARNINGS
-        HAS_LOW_MEMORY_LIMIT
         HAS_THESE_SUBS
         HAVE_DEFAULT_BANNERS_ADVERTISING
         HAVE_DEFAULT_BANNERS_DONATION

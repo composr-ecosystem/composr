@@ -28,8 +28,8 @@ class Hook_config_support_credit_price
         return [
             'human_name' => 'SUPPORT_CREDIT_PRICE',
             'type' => 'float',
-            'category' => 'FEATURE',
-            'group' => 'CUSTOMERS',
+            'category' => 'ECOMMERCE_PRODUCTS',
+            'group' => 'CREDITS',
             'explanation' => 'CONFIG_OPTION_support_credit_price',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

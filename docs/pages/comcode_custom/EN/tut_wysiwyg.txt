@@ -99,7 +99,7 @@ There are currently 6 ways to get images (and other files) into the WYSIWYG edit
 Composr has its own system for making attachments. If the WYSIWYG editor is for a 'Post area' then there will be either:
 [list="a"]
 [*] an attachment facility beneath it
-[*] attachment upload via the WYSIWYG's image button; if the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode) is on, which is the default
+[*] attachment upload via the WYSIWYG's image button; if the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Content editing options > Comcode) is on, which is the default
 [/list]
 
 Once files are chosen you may get the attachment options. Attachment options let you do things like 'float' the attachment. Whether you get the options or not depends on the code written in the [tt]_attachment_ui_defaults.js[/tt] template. By default image attachments bypass the options to simplify things (you can use the editor to change how attached images look anyway).
@@ -110,7 +110,7 @@ You may move this marker/image around by cutting and pasting it -- placing it an
 
 [title="3"]URLs: Referencing uploaded images[/title]
 
-[i]This is not available via direct-WYSIWYG if the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode) is on.[/i]
+[i]This is not available via direct-WYSIWYG if the "Simplified attachments UI" configuration option (Admin Zone > Setup > Configuration > Content editing options > Comcode) is on.[/i]
 
 Another way to embed images is to use the image icon that exists within the WYSIWYG editor (or manually via the Comcode [tt]img[/tt] tag if you prefer).
 With this, you may reference any image that already exists on the web, via URL.
@@ -183,7 +183,7 @@ Where HTML cannot be fully eliminated, Composr will encapsulate it with Comcode 
 Sometimes the Comcode conversion is imperfect. For example, line breaks can be introduced, or some custom formatting can be lost.
 
 If you do not want Comcode conversion, you can either:[list="1"]
-[*] Disable the Composr "Convert XHTML to Comcode" configuration option (Admin Zone > Setup > Configuration > Feature options > Comcode)
+[*] Disable the Composr "Convert XHTML to Comcode" configuration option (Admin Zone > Setup > Configuration > Content editing options > WYSIWYG editor)
 [*] Un-tick (un-check) "Aggressive HTML conversion" under the Comcode posting field (if it's a posting field)
 [*] Include this hint in your content:
 [code="Comcode"]

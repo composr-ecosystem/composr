@@ -33,7 +33,7 @@ class Hook_config_quota_tax_code
         return [
             'human_name' => 'PRICE_quota_tax_code',
             'type' => 'tax_code',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_quota_tax_code',
             'shared_hosting_restricted' => '0',

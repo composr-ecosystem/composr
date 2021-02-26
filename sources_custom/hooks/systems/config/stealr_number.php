@@ -28,7 +28,7 @@ class Hook_config_stealr_number
         return [
             'human_name' => 'STEALR_NUMBER',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'FEATURE',
             'group' => 'STEALR_TITLE',
             'explanation' => 'CONFIG_OPTION_stealr_number',
             'shared_hosting_restricted' => '0',

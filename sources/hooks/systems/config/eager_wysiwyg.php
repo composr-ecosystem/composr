@@ -33,7 +33,7 @@ class Hook_config_eager_wysiwyg
         return [
             'human_name' => 'EAGER_WYSIWYG',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'WYSIWYG_EDITOR',
             'explanation' => 'CONFIG_OPTION_eager_wysiwyg',
             'shared_hosting_restricted' => '0',

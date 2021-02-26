@@ -84,61 +84,148 @@ class config_test_set extends cms_test_case
         require_code('files2');
 
         $matches = [];
-        $done = [];
+        $found = [];
 
         $hooks = find_all_hooks('systems', 'config');
+        ksort($hooks);
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'txt', 'css', 'js', 'xml']);
         $files[] = 'install.php';
+
         foreach ($files as $path) {
             if ((in_safe_mode()) && (should_ignore_file($path, IGNORE_NONBUNDLED))) {
                 continue;
             }
 
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
+
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-
-                $num_matches = preg_match_all('#get_option\(\'([^\']+)\'\)#', $c, $matches);
+                $num_matches = preg_match_all('#get_(theme_option|option|option_with_overrides)\(\'([^\']+)\'[\),]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
-                    $hook = $matches[1][$i];
+                    $hook = $matches[2][$i];
 
-                    if (isset($done[$hook])) {
-                        continue;
+                    if (empty($found[$hook])) {
+                        $found[$hook] = ($matches[1][$i] == 'theme_option');
                     }
-
-                    $this->assertTrue(isset($hooks[$hook]), 'Missing referenced config option (.php): ' . $hook);
-
-                    $done[$hook] = true;
                 }
             }
 
-            if ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+            if ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js' || $file_type == 'xml') {
+                $num_matches = preg_match_all('#\{\$(CONFIG|THEME)_OPTION[^\w,\{\}]*,(\w+)[\},]#', $c, $matches);
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $hook = $matches[2][$i];
 
-                $num_matches = preg_match_all('#\{\$CONFIG_OPTION[^\w,\{\}]*,(\w+)\}#', $c, $matches);
+                    if (empty($found[$hook])) {
+                        $found[$hook] = ($matches[1][$i] == 'THEME');
+                    }
+                }
+            }
+
+            if ($file_type == 'js') {
+                $num_matches = preg_match_all('#\$cms\.configOption\(\'(\w+)\'\)#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook = $matches[1][$i];
 
-                    // Exceptions
-                    if ($hook == 'optionname') { // Example in Code Book
-                        continue;
+                    if (empty($found[$hook])) {
+                        $found[$hook] = false;
                     }
-
-                    if (isset($done[$hook])) {
-                        continue;
-                    }
-
-                    if ((in_safe_mode()) && (in_array($hook, ['facebook_uid', 'facebook_appid']))) {
-                        continue;
-                    }
-
-                    $this->assertTrue(isset($hooks[$hook]), 'Missing referenced config option (' . $file_type . '): ' . $hook);
-
-                    $done[$hook] = true;
                 }
             }
+        }
+
+        ksort($found);
+
+        // Find missing
+        foreach ($found as $hook => $as_theme_image) {
+            // Exceptions
+            if (in_array($hook, [
+                'optionname', // Example in Code Book
+            ])) {
+                continue;
+            }
+            if (($as_theme_image) && (in_array($hook, [
+                'author',
+                'capability_administrative',
+                'capability_block_layouts',
+                'capability_emails',
+                'capability_printing',
+                'composr_version',
+                'copyright_attribution',
+                'dependencies',
+                'enable_logowizard',
+                'enable_themewizard',
+                'incompatibilities',
+                'language',
+                'licence',
+                'logo_x_offset',
+                'logo_y_offset',
+                'organisation',
+                'seed',
+                'setupwizard__install_profile',
+                'setupwizard__lock_addons_on',
+                'setupwizard__lock_show_content_tagging',
+                'setupwizard__lock_show_content_tagging_inline',
+                'setupwizard__lock_show_screen_actions',
+                'setupwizard__lock_single_public_zone',
+                'setupwizard__provide_cms_advert_choice',
+                'site_name_font_size',
+                'site_name_font_size_nonttf',
+                'site_name_font_size_small',
+                'site_name_font_size_small_non_ttf',
+                'site_name_split',
+                'site_name_split_gap',
+                'site_name_x_offset',
+                'site_name_y_offset',
+                'site_name_y_offset_small',
+                'supports_themewizard_equations',
+                'themewizard_images',
+                'themewizard_images_no_wild',
+                'title',
+                'version',
+            ]))) {
+                continue;
+            }
+            if ((in_safe_mode()) && (in_array($hook, [
+                'facebook_uid',
+                'facebook_appid',
+            ]))) {
+                continue;
+            }
+
+            $this->assertTrue(isset($hooks[$hook]), 'Missing referenced config option (.php): ' . $hook);
+        }
+
+        // Find unused
+        foreach (array_keys($hooks) as $hook) {
+            if (in_array($hook, [
+                // Works via prefixing/suffixing/etc
+                'error_handling_database_strict',
+                'error_handling_deprecated',
+                'error_handling_notices',
+                'error_handling_warnings',
+                'points_ADD_BANNER',
+                'points_ADD_DOWNLOAD',
+                'points_ADD_IMAGE',
+                'points_ADD_NEWS',
+                'points_ADD_POLL',
+                'points_ADD_QUIZ',
+                'points_ADD_VIDEO',
+                'points_COMCODE_PAGE_ADD',
+                'sms_high_limit',
+                'sms_high_trigger_limit',
+                'sms_low_limit',
+                'sms_low_trigger_limit',
+                'is_on_template_cache',
+
+                // Not used by default, but made for addons
+                'points_per_currency_unit',
+            ])) {
+                continue;
+            }
+
+            $this->assertTrue(isset($found[$hook]), 'Config option unused: ' . $hook);
         }
     }
 
@@ -296,7 +383,7 @@ class config_test_set extends cms_test_case
             }
 
             $this->assertTrue($count > 3, $category . ' only has ' . integer_format($count));
-            $this->assertTrue($count < 105, $category . ' has as much as ' . integer_format($count)); // max_input_vars would not like a high number
+            $this->assertTrue($count < 100, $category . ' has as much as ' . integer_format($count)); // max_input_vars would not like a high number
         }
     }
 
@@ -369,6 +456,6 @@ class config_test_set extends cms_test_case
         $categories = find_all_hooks('systems', 'config_categories');
         ksort($categories);
 
-        $this->assertTrue(array_keys($categories_found) === array_keys($categories));
+        $this->assertTrue(array_keys($categories_found) === array_keys($categories), 'Missing: ' . implode(', ', array_diff(array_keys($categories_found), array_keys($categories))));
     }
 }

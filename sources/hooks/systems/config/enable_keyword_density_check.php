@@ -33,7 +33,7 @@ class Hook_config_enable_keyword_density_check
         return [
             'human_name' => 'ENABLE_KEYWORD_DENSITY_CHECK',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'PREVIEW',
             'explanation' => 'CONFIG_OPTION_enable_keyword_density_check',
             'shared_hosting_restricted' => '0',

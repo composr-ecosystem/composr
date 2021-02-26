@@ -33,7 +33,7 @@ class Hook_config_enable_previews
         return [
             'human_name' => 'ENABLE_PREVIEWS',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'PREVIEW',
             'explanation' => 'CONFIG_OPTION_enable_previews',
             'shared_hosting_restricted' => '0',

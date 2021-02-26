@@ -28,7 +28,7 @@ class Hook_config_cloudinary_cloud_name
         return [
             'human_name' => 'CLOUDINARY_CLOUD_NAME',
             'type' => 'line',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'UPLOADED_FILES',
             'explanation' => 'CONFIG_OPTION_cloudinary_cloud_name',
             'shared_hosting_restricted' => '0',

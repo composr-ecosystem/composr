@@ -423,7 +423,7 @@ function get_tax_using_tax_codes(array &$item_details, string $field_name_prefix
 
     if (empty($taxcloud_item_details)) {
         if ($shipping_cost != 0.00) {
-            list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, $tax_code, $amount, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
+            list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, get_option('shipping_tax_code'), $amount, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
         }
     }
 
@@ -817,9 +817,8 @@ function _prepare_tics_list(array $all_tics, string $default, string $parent, st
 
     $tics_list = new Tempcode();
     foreach ($child_tics as $tic) {
-        $text = $pre . html_entity_decode($tic['label'], ENT_QUOTES);
-        $title = html_entity_decode($tic['title'], ENT_QUOTES);
-        $tics_list->attach(form_input_list_entry($tic['id'], $tic['id'] == $default, $text, false, false, $title));
+        $text = $pre . $tic['id'] . ': ' . $tic['title'];
+        $tics_list->attach(form_input_list_entry($tic['id'], $tic['id'] == $default, $text));
 
         $under = _prepare_tics_list($all_tics, $default, $tic['id'], $text . ' > ', $depth + 1);
         $tics_list->attach($under);

@@ -28,7 +28,7 @@ class Hook_config_max_classified_listings_per_page
         return [
             'human_name' => 'MAX_CLASSIFIED_LISTINGS_PER_PAGE',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'CLASSIFIEDS',
             'explanation' => 'CONFIG_OPTION_max_classified_listings_per_page',
             'shared_hosting_restricted' => '0',

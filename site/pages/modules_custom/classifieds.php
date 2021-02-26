@@ -179,7 +179,7 @@ class Module_classifieds
         enforce_personal_access($member_id);
 
         $start = get_param_integer('classifieds_start', 0);
-        $max = get_param_integer('classifieds_max', 30);
+        $max = get_param_integer('classifieds_max', intval(get_option('max_classified_listings_per_page')));
 
         require_code('templates_pagination');
 

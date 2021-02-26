@@ -33,7 +33,7 @@ class Hook_config_jpeg_quality
         return [
             'human_name' => 'JPEG_QUALITY',
             'type' => 'integer',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_jpeg_quality',
             'shared_hosting_restricted' => '0',

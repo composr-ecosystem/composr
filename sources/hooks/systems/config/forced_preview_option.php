@@ -33,7 +33,7 @@ class Hook_config_forced_preview_option
         return [
             'human_name' => 'FORCED_PREVIEW_OPTION',
             'type' => 'tick',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'PREVIEW',
             'explanation' => 'CONFIG_OPTION_forced_preview_option',
             'shared_hosting_restricted' => '0',

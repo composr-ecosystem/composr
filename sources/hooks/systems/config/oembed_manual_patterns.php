@@ -33,7 +33,7 @@ class Hook_config_oembed_manual_patterns
         return [
             'human_name' => 'OEMBED_MANUAL_PATTERNS',
             'type' => 'text',
-            'category' => 'FEATURE',
+            'category' => 'CONTENT_EDITING',
             'group' => 'MEDIA',
             'explanation' => 'CONFIG_OPTION_oembed_manual_patterns',
             'shared_hosting_restricted' => '0',

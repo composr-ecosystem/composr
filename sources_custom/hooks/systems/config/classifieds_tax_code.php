@@ -28,7 +28,7 @@ class Hook_config_classifieds_tax_code
         return [
             'human_name' => 'CLASSIFIEDS_TAX_CODE',
             'type' => 'tax_code',
-            'category' => 'FEATURE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'CLASSIFIEDS',
             'explanation' => 'CONFIG_OPTION_classifieds_tax_code',
             'shared_hosting_restricted' => '0',

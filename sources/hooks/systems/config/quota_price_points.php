@@ -33,7 +33,7 @@ class Hook_config_quota_price_points
         return [
             'human_name' => 'PRICE_quota_price_points',
             'type' => 'integer',
-            'category' => 'ECOMMERCE',
+            'category' => 'ECOMMERCE_PRODUCTS',
             'group' => 'POP3',
             'explanation' => 'CONFIG_OPTION_quota_price_points',
             'shared_hosting_restricted' => '0',
