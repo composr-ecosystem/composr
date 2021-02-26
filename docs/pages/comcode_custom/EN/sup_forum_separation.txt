@@ -53,11 +53,12 @@ However, if we were to link to them directly, it'd go to the forum root. We want
 This is where virtual roots come in.
 
 You can generate a URL that "pretends" that it is the root of the forum tree, and then use this URL on that menu:
-1) Browse to your new forum.
-2) In the breadcrumbs, click the final node in it, which corresponds to the forum you are at.
-3) After clicking it you will see magically the breadcrumbs change so it appears this is the root forum.
-4) Copy the current address bar URL to the clipboard.
-5) Go edit your foo zone's menu, and putting the URL from your clipboard in as your new menu link.
+1) Make sure "Virtual root links" is enabled under Admin Zone > Setup > Configuration > Feature options > Advanced
+2) Browse to your new forum.
+3) In the breadcrumbs, click the final node in it, which corresponds to the forum you are at.
+4) After clicking it you will see magically the breadcrumbs change so it appears this is the root forum.
+5) Copy the current address bar URL to the clipboard.
+6) Go edit your foo zone's menu, and putting the URL from your clipboard in as your new menu link.
 
 [title="3"]Remove main forum links[/title]
 

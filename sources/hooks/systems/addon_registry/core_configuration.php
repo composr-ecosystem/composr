@@ -165,6 +165,8 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/honeypot_phrase.php',
             'sources/hooks/systems/config/honeypot_url.php',
             'sources/hooks/systems/config/implied_spammer_confidence.php',
+            'sources/hooks/systems/config/wysiwyg_spellchecker_default.php',
+            'sources/hooks/systems/config/virtual_root_links.php',
             'sources/hooks/systems/config/moz_access_id.php',
             'sources/hooks/systems/config/max_queued_mails_per_cron_cycle.php',
             'sources/hooks/systems/config/moz_secret_key.php',

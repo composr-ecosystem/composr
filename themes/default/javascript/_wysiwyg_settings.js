@@ -66,14 +66,20 @@ var editorSettings = {
     comcodeXMLBlockTags: '{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}',
     comcodeXMLInlineTags: '{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}',
     magicline_everywhere: true,
-    autoGrow_onStartup: true,
-    /*{+START,IF,{$VALUE_OPTION,wysiwyg_spellchecker_default}}*/
-        wysiwygSpellcheckerDefault: true,
-    /*{+END}*/
     sourceAreaTabSize: 4,
     font_names: '{$REPLACE;,\,,;,{$FONTS}}',
     linkDefaultProtocol: 'https://',
 };
+
+if ($cms.configOption('autogrow') === 1) {
+    editorSettings.autoGrow_onStartup = true;
+} else {
+    editorSettings.removePlugins += ',autogrow';
+}
+
+if ($cms.configOption('wysiwyg_spellchecker_default') === 1) {
+    editorSettings.wysiwygSpellcheckerDefault = true;
+}
 
 if ($cms.configOption('wysiwyg_font_units') === 'em') {
     editorSettings.fontSize_sizes = '0.6em;0.85em;1em;1.1em;1.2em;1.3em;1.4em;1.5em;1.6em;1.7em;1.8em;2em';

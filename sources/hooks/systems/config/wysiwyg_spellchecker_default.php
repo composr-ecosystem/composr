@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core_feedback_features
+ * @package    core_configuration
  */
 
 /**
  * Hook class.
  */
-class Hook_config_simplify_wysiwyg_by_permissions
+class Hook_config_wysiwyg_spellchecker_default
 {
     /**
      * Gets the details relating to the config option.
@@ -31,17 +31,17 @@ class Hook_config_simplify_wysiwyg_by_permissions
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'SIMPLIFY_WYSIWYG_BY_PERMISSIONS',
+            'human_name' => 'WYSIWYG_SPELLCHECKER_DEFAULT',
             'type' => 'tick',
             'category' => 'FEATURE',
             'group' => 'WYSIWYG_EDITOR',
-            'explanation' => 'CONFIG_OPTION_simplify_wysiwyg_by_permissions',
+            'explanation' => 'CONFIG_OPTION_wysiwyg_spellchecker_default',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
+            'order_in_category_group' => 6,
             'required' => true,
-            'public' => false,
-            'addon' => 'core_feedback_features',
+            'public' => true,
+            'addon' => 'core_configuration',
         ];
     }
 
@@ -52,6 +52,6 @@ class Hook_config_simplify_wysiwyg_by_permissions
      */
     public function get_default() : ?string
     {
-        return '0';
+        return '1';
     }
 }

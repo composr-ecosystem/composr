@@ -564,6 +564,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_sitemap[/tt] -- set this to '1' if you need to disable Sitemap menus for any reason (perhaps it is too slow to generate or there is some kind of infinite loop bug that is not yet fixed). Set this to '2' to greatly reduce the depth of the Sitemap (this is probably what you want, as you don't want your admin menus disappearing).
   - [tt]avoid_register_shutdown_function[/tt] -- set this to '1' if [tt]register_shutdown_function[/tt] is not reliable on this system (may appear to be unreliable on some Windows servers, for example)
   - [tt]http2_post_fix[/tt] -- set to 1 to delay an AJAX POST request while a warmup request runs; used to fix issue with HTTP/2 connections where write-back is broken
+  - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
  - Used internally by Composr:
   - [tt]cdn[/tt] -- this is used for storage of autodetected CDNs, prior to the config option for them being properly filled in
   - [tt]brand_base_url[/tt] -- the base URL to the brand site (by default this is {$BRAND_BASE_URL} but may be changed)
@@ -602,12 +603,9 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]hide_rss[/tt] -- set this to '1' to hide the RSS links from the Admin Zone
   - [tt]disable_bulkhelper[/tt] -- set this to '1' to disable the feature that asks you if you are bulk-adding records
   - [tt]disable_news_repimages[/tt] -- set this to '1' to disable rep-images for news categories
-  - [tt]disable_virtual_roots[/tt] -- set this to '1' to disable virtual roots
   - [tt]blogs_tab_enabled[/tt] -- set this to '0' for the Conversr member profile blogs tab to be disabled (if you want blogs, but just not on member profiles)
- - WYSIWYG editor
-  - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
-  - [tt]wysiwyg_spellchecker_default[/tt] -- set this to '1' if you want to allow the browser's spellcheck to be available by default (otherwise a button must be pressed)
  - Low-level tuning:
+  - [tt]commercial_spellchecker[/tt] -- set this to '1' if you want to enable the WYSIWYG editor's spellcheck.net spellchecker
   - [tt]disable_kid_gloves_html[/tt] -- set this to '1' if you want to completely disable the kid-gloves HTML escaping mode, i.e. avoid the need to make declarations in your overrides. You may want to use this if you override various files but aren't really writing custom code and don't really understand how to make the declarations
   - [tt]show_menu_items_as_url[/tt] -- set this to '1' if you want the menu editor to show URLs instead of page-links (they will then be converted back)
   - [tt]safelisted_blocks[/tt] -- set this to a comma-separated list of block names to safelist any user to use those blocks independently. This is useful for AJAX-loaded blocks on sites where users may leave pages open, letting their sessions or block authorisations expire. It also is a performance boost because it means that the run-time permissions don't need maintaining.
@@ -637,8 +635,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]default_comcode_text[/tt] -- set this if you want to have multi-line Comcode editing fields to have a default value; this is useful for setting default font styles but don't want to retroactively affect old content; if you want it to be able to auto-wrap quick-reply content then you can put [tt]{content}[/tt] where you'd like the content to be inserted
   - [tt]addon_disabled_<addon>[/tt] -- set this to '1' to disable a particular addon (may not be supported by all addons)
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
-  - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
-  - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
   - [tt]sitemap_orphans_to_pages[/tt] -- set this to '0' if you don't want orphaned pages to be put under the default Pages page grouping of the Sitemap
   - [tt]time_sensitive_rankings__<catalogue_name>[/tt] -- set this to a number for catalogue rating sorting to only consider this number of records. This is useful for a upvote/downvote system that is responsive to change in voting pattern. Requires the database to support window functions (MySQL 8+ does, Maria DB 10.2+ does).
  - Low-level Action log tuning:
@@ -654,7 +650,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]composr_fast_custom_index__enable_for__<language>[/tt] -- Enable the Composr fast custom index for a particular language (if you need more fidelity than the regular config allows)
   - [tt]composr_fast_custom_index__startup_hack[/tt] -- Forces the forum post indexer to resume where it left off. Useful when debugging indexing problems.
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]:
-  - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
+  - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
   - [tt]disable_cat_cat_perms[/tt] -- set this to '1' if you want to disable catalogue category permissions
   - [tt]catalogue_limit_cat_field_load__<cataloguename>[/tt] -- set this to '1' if you want that catalogue to not have all fields loaded on category views, an optimisation that reduces templating flexibility
@@ -691,6 +687,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]memory_limit_simulate_hard[/tt] -- set this to '1' if you do not want the memory limit to be disableable; useful for testing compatibility with hosts that have low limits
   - [tt]disable_web_resources_static_compression[/tt] -- set this to '1' to not create [tt].gz[/tt]/[tt].br[/tt] versions of JavaScript and CSS files (such compression may slow a fast-changing development environment more than the gain in download speed helps)
   - [tt]cron_block_caching_careful_contexts[/tt] -- set this to '1' if you want Cron generated block-caching to use the requested theme and language to fill the cache; this requires loopback HTTP requests
+  - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
  - Easter eggs:
   - [tt]stupidity_mode[/tt] -- set to [tt]leet[/tt] or [tt]bork[/tt], for a fun April Fools-style Comcode joke (clear the Comcode cache after you're done though)
  - Experimental functionality

@@ -315,9 +315,9 @@ function get_logo_url(?string $zone_name = null) : string
  */
 function breadcrumbs(bool $show_self = true) : object
 {
-    static $out = null;
-    if ($out !== null) {
-        return $out;
+    static $cache = [];
+    if (isset($cache[$show_self])) {
+        return $cache[$show_self];
     }
 
     global $BREADCRUMB_SET_PARENTS, $BREADCRUMBS;
@@ -348,6 +348,8 @@ function breadcrumbs(bool $show_self = true) : object
     }
     $out = new Tempcode();
     $out->attach($BREADCRUMBS);
+
+    $cache[$show_self] = $out;
 
     return $out;
 }
@@ -2120,7 +2122,7 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         global $PT_PAIR_CACHE_CP;
         $PT_PAIR_CACHE_CP[$codename]['cc_page_title'] = ($title_to_use === null) ? do_lang_tempcode('NA_EM') : protect_from_escaping(escape_html($title_to_use));
         $PT_PAIR_CACHE_CP[$codename]['p_parent_page'] = $comcode_page_row['p_parent_page'];
-        $comcode_breadcrumbs = comcode_breadcrumbs($codename, $zone, get_param_string('keep_page_root', ''), ($comcode_page_row['p_parent_page'] != '') && (has_privilege(get_member(), 'open_virtual_roots')) && (get_value('disable_virtual_roots') !== '1'));
+        $comcode_breadcrumbs = comcode_breadcrumbs($codename, $zone, get_param_string('keep_page_root', ''), ($comcode_page_row['p_parent_page'] != '') && (has_privilege(get_member(), 'open_virtual_roots')) && (get_option('virtual_root_links') == '1'));
         breadcrumb_set_parents($comcode_breadcrumbs);
 
         set_extra_request_metadata([

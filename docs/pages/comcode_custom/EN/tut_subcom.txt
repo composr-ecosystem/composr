@@ -149,11 +149,12 @@ A number of Composr modules contain categories organised into a tree structure, 
 If subcommunity categories are stored under a common sub-tree of the full category tree, then the root of the 'sub-tree' may be made into the apparent root of the full-tree, by picking it as a virtual-root. This is easy to do, and doesn't involve any kind of configuration other than finding the URL to enter the module with. To find this URL you just look for the link of the current category in the breadcrumbs on a category screen (it'll have something similar to [tt]keep_root[/tt] in it): this is a mouthful to explain, but really very simple. Once you have the URL, you may wish to add it to to the menu of your subcommunities zone.
 
 Here are some step-by-step instructions:
-1) Browse into the forum you'd like to be the virtual root. You need to be logged in as a staff member when you do this
-2) Look at the breadcrumbs. You should see the final (rightmost) link in the chain is also a link. This might appear strange, because you're already on the page so why would a link be shown? The reason is that it is an anchor to let you create a virtual root link
-3) Click the link
-4) You should see now you have set a virtual root
-5) Take the URL you're at and put it on your menus as required
+1) Make sure "Virtual root links" is enabled under Admin Zone > Setup > Configuration > Feature options > Advanced
+2) Browse into the forum you'd like to be the virtual root. You need to be logged in as a staff member when you do this
+3) Look at the breadcrumbs. You should see the final (rightmost) link in the chain is also a link. This might appear strange, because you're already on the page so why would a link be shown? The reason is that it is an anchor to let you create a virtual root link
+4) Click the link
+5) You should see now you have set a virtual root
+6) Take the URL you're at and put it on your menus as required
 [/surround]
 
 [title="2"]Redirects[/title]

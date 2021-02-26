@@ -385,7 +385,7 @@ class Module_galleries
 
             // Breadcrumbs
             $breadcrumbs = gallery_breadcrumbs($cat, $root, false, get_module_zone('galleries'), true);
-            if ((has_privilege(get_member(), 'open_virtual_roots')) && (get_value('disable_virtual_roots') !== '1') && ($cat != $root)) {
+            if ((has_privilege(get_member(), 'open_virtual_roots')) && (get_option('virtual_root_links') == '1') && ($cat != $root)) {
                 $page_link = build_page_link(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'keep_gallery_root' => $cat], '_SELF');
                 $breadcrumbs[] = [$page_link, $fullname, do_lang_tempcode('VIRTUAL_ROOT')];
             } else {

@@ -34,13 +34,13 @@ class Hook_config_autogrow
             'human_name' => 'AUTOGROW',
             'type' => 'tick',
             'category' => 'FEATURE',
-            'group' => '_COMCODE',
+            'group' => 'WYSIWYG_EDITOR',
             'explanation' => 'CONFIG_OPTION_autogrow',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 9,
+            'order_in_category_group' => 5,
             'required' => true,
-            'public' => false,
+            'public' => true,
             'addon' => 'core_configuration',
         ];
     }

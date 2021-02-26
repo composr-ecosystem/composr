@@ -320,7 +320,7 @@ function cns_forum_breadcrumbs($end_point_forum, $this_name = null, ?int $parent
 
     $segments = [];
 
-    if (((!$start) || ((has_privilege(get_member(), 'open_virtual_roots'))) && (get_value('disable_virtual_roots') !== '1') && (is_integer($end_point_forum)))) {
+    if (((!$start) || ((has_privilege(get_member(), 'open_virtual_roots'))) && (get_option('virtual_root_links') == '1') && (is_integer($end_point_forum)))) {
         $map = ['page' => 'forumview'];
         if ($end_point_forum != db_get_first_id()) {
             $map['id'] = $end_point_forum;

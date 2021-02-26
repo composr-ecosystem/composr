@@ -114,6 +114,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        VIRTUAL_ROOT_LINKS
+        CONFIG_OPTION_virtual_root_links
+        WYSIWYG_EDITOR
+        WYSIWYG_SPELLCHECKER_DEFAULT
+        CONFIG_OPTION_wysiwyg_spellchecker_default
         CREATE_INDEX
         COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE
         JAVASCRIPT_ERROR_ALERTS

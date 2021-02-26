@@ -830,7 +830,7 @@ class Module_catalogues
             }
             if ($catalogue['c_is_tree'] == 1) {
                 $breadcrumbs = array_merge($breadcrumbs, catalogue_category_breadcrumbs($id, $root, false, true));
-                if ((has_privilege(get_member(), 'open_virtual_roots')) && (get_value('disable_virtual_roots') !== '1') && ($id != $root)) {
+                if ((has_privilege(get_member(), 'open_virtual_roots')) && (get_option('virtual_roots') == '1') && ($id != $root)) {
                     $page_link = build_page_link(['page' => '_SELF', 'type' => 'category', 'id' => $id, 'keep_catalogue_' . $catalogue_name . '_root' => $id], '_SELF');
                     $breadcrumbs[] = [$page_link, $_title, do_lang_tempcode('VIRTUAL_ROOT')];
                 } else {

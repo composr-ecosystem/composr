@@ -2805,7 +2805,7 @@ function ecv_LATE_MESSAGES(string $lang, array $escaped, array $param) : string
  */
 function ecv_BREADCRUMBS(string $lang, array $escaped, array $param) : string
 {
-    $show_self = !empty($param[0]);
+    $show_self = empty($param[0]) || $param[0] == '1';
     if (!$show_self) {
         $GLOBALS['BREADCRUMBS'] = null;
     }

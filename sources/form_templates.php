@@ -468,7 +468,7 @@ function get_comcode_editor(string $field_name = 'post', bool $cut_down = false,
     // Wrappers
     $_buttons[] = 'quote';
     if ((get_option('simplify_wysiwyg_by_permissions') == '0') || (has_privilege(get_member(), 'allow_html'))) {
-        $_buttons[] = 'box';
+        $_buttons[] = 'box'; // This leads to precisionEditing being set in _wysiwyg_settings.js
     }
     $_buttons[] = 'code';
     if (has_privilege(get_member(), 'allow_html')) {

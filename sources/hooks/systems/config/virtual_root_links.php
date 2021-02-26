@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core_feedback_features
+ * @package    core_configuration
  */
 
 /**
  * Hook class.
  */
-class Hook_config_simplify_wysiwyg_by_permissions
+class Hook_config_virtual_root_links
 {
     /**
      * Gets the details relating to the config option.
@@ -31,17 +31,16 @@ class Hook_config_simplify_wysiwyg_by_permissions
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'SIMPLIFY_WYSIWYG_BY_PERMISSIONS',
+            'human_name' => 'VIRTUAL_ROOT_LINKS',
             'type' => 'tick',
             'category' => 'FEATURE',
-            'group' => 'WYSIWYG_EDITOR',
-            'explanation' => 'CONFIG_OPTION_simplify_wysiwyg_by_permissions',
+            'group' => 'ADVANCED',
+            'explanation' => 'CONFIG_OPTION_virtual_root_links',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
             'required' => true,
             'public' => false,
-            'addon' => 'core_feedback_features',
+            'addon' => 'core_configuration',
         ];
     }
 
