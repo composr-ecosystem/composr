@@ -1770,7 +1770,7 @@ Note that you cannot use directives for symbol parameters because directives con
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>OF</td>
-			<td>This is a non-wrapping directive that extracts a string from an array at a certain array position.</td>
+			<td>This is a non-wrapping directive that extracts a string from an array (1st directive parameter) at the specified array index (2nd directive parameter).</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>IMPLODE</td>
