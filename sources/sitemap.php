@@ -1287,6 +1287,13 @@ function get_root_comcode_pages($zone, $include_zone = false)
 
     disable_php_memory_limit();
 
+    $pages = find_all_pages_wrap($zone, false, /*$consider_redirects = */true, /*$show_method = */0, /*$page_type = */'comcode');
+    foreach ($pages as $page => $page_type) {
+        if (isset($non_root[$page])) {
+            unset($pages[$page]);
+        }
+    }
+
     static $rows = array();
     if (!isset($rows[$zone])) {
         $rows[$zone] = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_page', 'p_validated', 'p_parent_page'), array('the_zone' => $zone));
@@ -1294,17 +1301,10 @@ function get_root_comcode_pages($zone, $include_zone = false)
     $non_root = array();
     $root = array();
     foreach ($rows[$zone] as $row) {
-        if ($row['p_parent_page'] == '') {
+        if (($row['p_parent_page'] == '') && (isset($pages[$row['p_parent_page']]))) {
             $root[$row['the_page']] = $row['p_validated'];
         } else {
             $non_root[$row['the_page']] = $row['p_validated'];
-        }
-    }
-
-    $pages = find_all_pages_wrap($zone, false, /*$consider_redirects = */true, /*$show_method = */0, /*$page_type = */'comcode');
-    foreach ($pages as $page => $page_type) {
-        if (isset($non_root[$page])) {
-            unset($pages[$page]);
         }
     }
 
