@@ -37,7 +37,6 @@ if (useComposrToolbar) {
 }
 var editorSettings = {
     skin: 'kama',
-    enterMode: window.CKEDITOR.ENTER_BR,
     uiColor: wysiwygColor,
     ocpTheme: $cms.getTheme(),
     removePlugins: 'sourcearea',
@@ -70,6 +69,10 @@ var editorSettings = {
     font_names: '{$REPLACE;,\,,;,{$FONTS}}',
     linkDefaultProtocol: 'https://',
 };
+
+if ($cms.configOption('eager_wysiwyg') === 1) {
+    editorSettings.enterMode = window.CKEDITOR.ENTER_BR;
+}
 
 if ($cms.configOption('autogrow') === 1) {
     editorSettings.autoGrow_onStartup = true;
