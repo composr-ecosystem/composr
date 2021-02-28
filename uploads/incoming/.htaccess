@@ -3,7 +3,7 @@
 SetHandler default-handler
 AddType text/plain php
 
-<IfModule mod_php5.c>
+<IfModule mod_php8.c>
 php_value engine off
 </IfModule>
 

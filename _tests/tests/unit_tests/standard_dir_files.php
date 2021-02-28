@@ -27,18 +27,40 @@ class standard_dir_files_test_set extends cms_test_case
         disable_php_memory_limit();
     }
 
+    public function testPHPBlocking()
+    {
+        $min_version = 7;
+        $max_version = 8;
+
+        require_code('files2');
+        $files = get_directory_contents(get_file_base(), '', 0, true, true, ['htaccess']);
+        sort($files);
+        $types = [];
+        foreach ($files as $path) {
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
+            if (strpos($c, '<IfModule mod_php') !== false) {
+                for ($i = 1; $i < $min_version; $i++) {
+                    $this->assertTrue(strpos($c, '<IfModule mod_php' . strval($i)) === false, 'No need to reference mod_php for a version of PHP not supported in ' . $path);
+                }
+                for ($i = $min_version; $i <= $max_version; $i++) {
+                    $this->assertTrue(strpos($c, '<IfModule mod_php' . strval($i)) !== false, 'We need to reference mod_php for a version of PHP we support in ' . $path);
+                }
+            }
+        }
+    }
+
     public function testHtaccessConsistency()
     {
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_LANGS);
+        $files = get_directory_contents(get_file_base(), '', 0, true, true, ['htaccess']);
         sort($files);
         $types = [];
         foreach ($files as $path) {
             // Exceptions
-            if ($path == '.htaccess') {
+            if ($path == '.htaccess') { // Root file
                 continue;
             }
-            if (preg_match('#^(tracker|exports/backups|exports/builds)/#', $path) != 0) {
+            if (preg_match('#^(tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/compo.sr/demonstratr/servers)/#', $path) != 0) {
                 continue;
             }
 
@@ -69,10 +91,10 @@ class standard_dir_files_test_set extends cms_test_case
             'e829b8bdcef68c92b0926288106048b6' => true, // data*/images/.htaccess, uploads/.htaccess
             '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess
             '362eb392e7da973c77733262cf1d0e90' => true, // sources/.htaccess
-            '8ce63a764e2f9e6ec2cca2aa511197dd' => true, // themes/*/images*/.htaccess
-            '19a8c8adbb99cac491544ba444ab9541' => true, // themes/*/templates_cached/.htaccess
-            '4215242c301a30d66cd824e1ef0dd562' => true, // uploads/*/.htaccess
-            '54173c31cdac14469a93eaa292ebbb08' => true, // uploads/incoming/.htaccess
+            '4751dc3cdd5d93c11fbc7b5bc86d8a71' => true, // themes/*/images*/.htaccess
+            '9bc9716b414d96e6800c5b2fe70b15a1' => true, // themes/*/templates_cached/.htaccess
+            'de500d1e1a3c5fa182fcc6d9a7656d79' => true, // uploads/*/.htaccess
+            'e8c3e39b09dac4a56f032a37762351fe' => true, // uploads/incoming/.htaccess
             '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess
         ];
         foreach ($types as $hash => $file_paths) {
