@@ -53,6 +53,7 @@ class Module_cms_comcode_pages
     {
         $ret = [
             'browse' => ['COMCODE_PAGE_MANAGEMENT', 'menu/cms/comcode_page_edit'],
+            '_edit' => ['BLANK_COMCODE_PAGE', 'admin/add'],
             'generate_page_sitemap' => ['GENERATE_PAGE_SITEMAP', 'tool_buttons/sitemap'],
         ];
 
@@ -116,7 +117,7 @@ class Module_cms_comcode_pages
             // Work out what we're editing, and where it's coming from (support for two page_link specifying parameters for destination)
             $page_link = filter_naughty(get_param_string('page_link', ''));
             if ($page_link == '') {
-                $page_link = get_param_string('page_link_2');
+                $page_link = get_param_string('page_link_2', '');
             }
             if (strpos($page_link, ':') === false) {
                 $zone = get_param_string('zone', '');

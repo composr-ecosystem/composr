@@ -84,7 +84,7 @@ function _comcode_page_include_on_sitemap_default(string $zone, string $codename
 
     if (
         (substr($codename, 0, 6) == 'panel_') ||
-        ($codename[0] == '_') ||
+        (substr($codename, 0, 1) == '_') ||
         ($zone . ':' . $codename == ':404') ||
         (in_array($zone . ':' . $codename, $noindex_comcode_pages))
     ) {
