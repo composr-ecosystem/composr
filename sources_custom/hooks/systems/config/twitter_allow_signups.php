@@ -35,6 +35,7 @@ class Hook_config_twitter_allow_signups
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => true,
+            'public' => false,
             'addon' => 'twitter_support',
         ];
     }
