@@ -1764,7 +1764,13 @@ function get_base_url(?string $zone_for = null) : string
                 $script_name_path = dirname($script_name_path);
             }
         }
-        $SITE_INFO['base_url'] = (tacit_https() ? 'https://' : 'http://') . $domain . str_replace('%2F', '/', rawurlencode($script_name_path));
+        $base_url = (tacit_https() ? 'https://' : 'http://') . $domain;
+        $port = $_SERVER['SERVER_PORT'];
+        if ($port != (tacit_https() ? '443' : '80')) {
+            $base_url .= ':' . $port;
+        }
+        $base_url .= str_replace('%2F', '/', rawurlencode($script_name_path));
+        $SITE_INFO['base_url'] = $base_url;
     }
 
     // Lookup

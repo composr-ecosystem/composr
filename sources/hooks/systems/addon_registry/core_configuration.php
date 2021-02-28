@@ -132,6 +132,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/csp_report_issues.php',
             'sources/hooks/systems/config/trusted_sites_1.php',
             'sources/hooks/systems/config/trusted_sites_2.php',
+            'sources/hooks/systems/config/sprite_icons.php',
             'sources/hooks/systems/config/page_after_login.php',
             'sources_custom/hooks/systems/config_categories/.htaccess',
             'sources_custom/hooks/systems/config_categories/index.html',

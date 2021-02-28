@@ -3,12 +3,6 @@
  Copyright (c) ocProducts, 2004-2021
 */
 
-.box---newsletter-confirm-wrap, textarea#chosen_categories { /*'#chosen_categories' is hard-coded in PHP and thus can't be hyphenised*/
+.box---newsletter-confirm-wrap, textarea#chosen_categories {
 	font-family: courier, monospace;
 }
-
-/*
-=========================
-=========Buttons=========
-=========================
-*/

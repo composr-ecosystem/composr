@@ -75,7 +75,6 @@ PHP;
         }
 
         require_lang('newsletter');
-        require_css('newsletter');
 
         $block_id = get_block_id($map);
 

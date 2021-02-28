@@ -139,6 +139,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_SVG_SPRITES
         THEME_IMAGE_RECOLOUR_DESCRIPTION
         MATCH_TYPE
+        CONFIG_OPTION_sprite_icons
         CAPABILITIES
         DESCRIPTION_THEME_LANGUAGE
         THEME_CAPABILITY_administrative

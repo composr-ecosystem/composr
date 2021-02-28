@@ -1,6 +1,6 @@
 <p class="h1 contrast-box">{HEADLINE}</p>
 
-<h3 class="contrast-box">{SUBLINE}</h3>
+<p class="h3 contrast-box">{SUBLINE}</p>
 
 <div class="h5 contrast-box">
 	<div>

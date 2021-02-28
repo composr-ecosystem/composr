@@ -276,9 +276,9 @@ class Hook_addon_registry_galleries
             'sources/blocks/main_hero_slider.php',
             'themes/default/templates/BLOCK_MAIN_HERO_SLIDER.tpl',
             'data/images/homepage_hero_slider/index.html',
-           'data/images/homepage_hero_slider/bastei_bridge.jpg',
-            'data/images/homepage_hero_slider/rustic.jpg',
-            'data/images/homepage_hero_slider/waterfall.jpg',
+            'data/images/homepage_hero_slider/bastei_bridge.webp',
+            'data/images/homepage_hero_slider/rustic.webp',
+            'data/images/homepage_hero_slider/waterfall.webp',
             'themes/default/templates/GALLERY_HOMEPAGE_HERO_SLIDE.tpl',
         ];
     }
@@ -1413,9 +1413,9 @@ class Hook_addon_registry_galleries
         $default_homepage_hero_slider_category = 'homepage_hero_slider';
 
         $default_homepage_hero_slides_urls = [
-            'data/images/homepage_hero_slider/bastei_bridge.jpg',
-            'data/images/homepage_hero_slider/rustic.jpg',
-            'data/images/homepage_hero_slider/waterfall.jpg',
+            'data/images/homepage_hero_slider/bastei_bridge.webp',
+            'data/images/homepage_hero_slider/rustic.webp',
+            'data/images/homepage_hero_slider/waterfall.webp',
         ];
 
         $where = [];
@@ -1508,9 +1508,9 @@ class Hook_addon_registry_galleries
 
             // Delete default slide images
             $default_homepage_hero_slides_urls = [
-                'data/images/homepage_hero_slider/bastei_bridge.jpg',
-                'data/images/homepage_hero_slider/rustic.jpg',
-                'data/images/homepage_hero_slider/waterfall.jpg',
+                'data/images/homepage_hero_slider/bastei_bridge.webp',
+                'data/images/homepage_hero_slider/rustic.webp',
+                'data/images/homepage_hero_slider/waterfall.webp',
             ];
             $where = [];
             foreach ($default_homepage_hero_slides_urls as $url) {

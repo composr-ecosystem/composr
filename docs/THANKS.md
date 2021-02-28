@@ -37,6 +37,9 @@ This product includes:
  - Sound effects (Copyright 2008 bns <banasio@o2.pl>, Creative Commons Attribution License)
  - Country IP address database (Creative Commons Attribution 4.0, by DB-IP.com)
  - Hero-slider background images (CC0 "No Rights Reserved" license from pixabay.com)
+   - https://pixabay.com/photos/bastei-bridge-saxon-switzerland-3014467/
+   - https://pixabay.com/photos/salt-creek-falls-waterfall-landmark-2315471/
+   - https://pixabay.com/photos/rustic-cabin-mountains-landscape-945421/
 - Backend code used under licence:
  - Text_Diff (LGPL licence, ocProducts modifications also therefore are also licensed under the LGPL)
  - FirePHP (BSD-like licence)

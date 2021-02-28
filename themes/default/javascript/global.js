@@ -44,9 +44,11 @@
 
         // Google Fonts
         if (($cms.configOption('google_fonts_delayed_load')) && ($cms.configOption('google_fonts') != '')) {
+            var families = $cms.configOption('google_fonts').split(',').map(function(e) { return e.trim() + ':300,300i,400,400i,500,500i'; });
+            families[families.length - 1] += '&display=swap'; // Hack to make Google Lighthouse happy
             WebFont.load({
                 google: {
-                    families: $cms.configOption('google_fonts').split(',').map(function(e) { return e.trim() + ':300,300i,400,400i,500,500i'; })
+                    families: families
                 }
             });
         }
