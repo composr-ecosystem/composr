@@ -81,6 +81,7 @@ class _web_resources_test_set extends cms_test_case
             'cookie_consent.js',
             'columns.js',
             'jquery.js',
+            'webfontloader.js',
             'sortable_tables.js',
             'unslider.js',
             'charts.js',

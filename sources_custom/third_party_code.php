@@ -125,6 +125,7 @@ function list_untouchable_third_party_files()
         'themes/default/javascript/glide.js',
         'themes/default/javascript/jquery.js',
         'themes/default/javascript/jquery_ui.js',
+        'themes/default/javascript/webfontloader.js',
         'themes/default/javascript/_json5.js',
         'themes/default/javascript/masonry.js',
         'themes/default/javascript/mediaelement-and-player.js',

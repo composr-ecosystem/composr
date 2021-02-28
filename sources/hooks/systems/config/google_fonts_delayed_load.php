@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_google_fonts
+class Hook_config_google_fonts_delayed_load
 {
     /**
      * Gets the details relating to the config option.
@@ -31,11 +31,11 @@ class Hook_config_google_fonts
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'GOOGLE_FONTS',
-            'type' => 'line',
+            'human_name' => 'GOOGLE_FONTS_DELAYED_LOAD',
+            'type' => 'tick',
             'category' => 'THEME',
             'group' => 'FONTS',
-            'explanation' => 'CONFIG_OPTION_google_fonts',
+            'explanation' => 'CONFIG_OPTION_google_fonts_delayed_load',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 3,
@@ -52,6 +52,6 @@ class Hook_config_google_fonts
      */
     public function get_default() : ?string
     {
-        return 'Roboto';
+        return '1';
     }
 }

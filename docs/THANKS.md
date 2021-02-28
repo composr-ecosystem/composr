@@ -84,6 +84,7 @@ This product includes:
  - MediaElement.js (MIT licence)
  - JSON5 (MIT licence)
  - Bootstrap slider (MIT licence)
+ - Web Font Loader (Apache licence)
 - Smaller front-end polyfills:
  - Web Animations (Google, Apache licence)
  - URL Search parameters (WebReflection, BSD-like licence)

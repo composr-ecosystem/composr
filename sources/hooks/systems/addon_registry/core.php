@@ -126,6 +126,7 @@ class Hook_addon_registry_core
             'themes/default/images/icons_monochrome_sprite.svg',
             'adminzone/pages/comcode/EN/_modsecurity.txt',
             'sources/hooks/systems/cron/decache_events.php',
+            'themes/default/javascript/webfontloader.js',
             'themes/default/images/icons/admin/merge.svg',
             'themes/default/images/icons/menu/rich_content.svg',
             'themes/default/images/icons/admin/add_one_category.svg',

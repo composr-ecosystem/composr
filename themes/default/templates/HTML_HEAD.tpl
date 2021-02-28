@@ -146,9 +146,9 @@
 {$EXTRA_HEAD}
 
 {$,Google fonts}
-{+START,IF_NON_EMPTY,{$CONFIG_OPTION,google_fonts}}
+{+START,IF_NON_EMPTY,{$CONFIG_OPTION,google_fonts}}{+START,IF,{$NOT,{$CONFIG_OPTION,google_fonts_delayed_load}}}
 	<link href="//fonts.googleapis.com/css?family={+START,LOOP,={$CONFIG_OPTION,google_fonts}}{+START,IF_NON_EMPTY,{_loop_key}}|{+END}{_loop_var&*}{+END}:300,300i,400,400i,500,500i&amp;display=swap" rel="stylesheet" {$CSP_NONCE_HTML} />
-{+END}
+{+END}{+END}
 
 {$,If the page is doing a refresh include the markup for that}
 {$REFRESH}

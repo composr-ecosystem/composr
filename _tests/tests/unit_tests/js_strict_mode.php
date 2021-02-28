@@ -30,6 +30,7 @@ class js_strict_mode_test_set extends cms_test_case
                     'button_realtime_rain.js',
                     'skitter.js',
                     'jquery.js',
+                    'webfontloader.js',
                     'jquery_autocomplete.js',
                     'jquery_ui.js',
                     'modernizr.js',

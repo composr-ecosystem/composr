@@ -198,6 +198,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/font.php',
             'sources/hooks/systems/config/editor_fonts.php',
             'sources/hooks/systems/config/google_fonts.php',
+            'sources/hooks/systems/config/google_fonts_delayed_load.php',
             'sources/hooks/systems/config/edit_under.php',
             'sources/hooks/systems/config/enable_animations.php',
             'sources/hooks/systems/config/breadcrumb_crop_length.php',

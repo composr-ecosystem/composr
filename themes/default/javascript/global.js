@@ -26,6 +26,10 @@
 
 /*{+START,INCLUDE,_cms_behaviors,.js,javascript}{+END}*/
 
+/*{+START,IF_NON_EMPTY,{$CONFIG_OPTION,google_fonts}}{+START,IF,{$CONFIG_OPTION,google_fonts_delayed_load}}*/
+/*{+START,INCLUDE,webfontloader,.js,javascript}{+END}*/
+/*{+END}{+END}*/
+
 (function ($cms, $util, $dom) {
     'use strict';
 
@@ -37,6 +41,15 @@
 
         // Start everything
         $cms.attachBehaviors(document);
+
+        // Google Fonts
+        if (($cms.configOption('google_fonts_delayed_load')) && ($cms.configOption('google_fonts') != '')) {
+            WebFont.load({
+                google: {
+                    families: $cms.configOption('google_fonts').split(',').map(function(e) { return e.trim() + ':300,300i,400,400i,500,500i'; })
+                }
+            });
+        }
     });
 
     /**
