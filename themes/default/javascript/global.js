@@ -1,3 +1,6 @@
+/* Required for $cms.requireJavascript() to work properly as DOM does not currently provide any way to check if a particular script has been already loaded */
+/*{+START,INCLUDE,_polyfill_dom_init,.js,javascript}{+END}*/
+
 /*{+START,INCLUDE,_polyfill_fetch,.js,javascript}{+END}*/
 
 /*{+START,INCLUDE,_polyfill_general,.js,javascript}{+END}*/

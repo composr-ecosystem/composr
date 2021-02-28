@@ -150,6 +150,7 @@ You may want to edit the column CSS, via editing the [tt]columns[/tt] CSS file. 
             'themes/default/css_custom/columns.css',
             'themes/default/javascript_custom/columns.js',
             'sources_custom/hooks/systems/startup/columns.php',
+            'sources_custom/hooks/systems/contentious_overrides/columns.php',
         ];
     }
 }

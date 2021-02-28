@@ -24,8 +24,6 @@ class Hook_startup_columns
             return;
         }
 
-        require_css('columns');
         require_javascript('jquery');
-        require_javascript('columns');
     }
 }
