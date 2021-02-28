@@ -41,7 +41,6 @@ class Hook_config_font_size
             'order_in_category_group' => 5,
             'theme_override' => true,
             'required' => true,
-            'public' => true,
             'addon' => 'core_configuration',
         ];
     }

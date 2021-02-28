@@ -40,7 +40,6 @@ class Hook_config_azure_api_key
             'list_options' => '',
             'order_in_category_group' => 1,
             'required' => false,
-            'public' => true,
             'addon' => 'core_configuration',
         ];
     }

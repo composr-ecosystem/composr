@@ -41,7 +41,6 @@ class Hook_config_curved_borders
             'order_in_category_group' => 3,
             'theme_override' => true,
             'required' => true,
-            'public' => true,
             'addon' => 'core_configuration',
         ];
     }
