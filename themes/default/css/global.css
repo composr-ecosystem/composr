@@ -589,11 +589,6 @@ svg.icon {
 img.icon {
 	object-fit: contain; /* match the svg behavior, preserve the image's aspect-ratio */
 }
-header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link img.icon,
-header.with-seed-navbar.is-hover-interface .top-button img.icon {
-	/* This makes icons white when sprite icons are disabled */
-	filter: invert(100%);
-}
 
 /*input[type="text"],textarea {  So Comcode can be typed
 	unicode-bidi: bidi-override;
@@ -1018,6 +1013,10 @@ header.is-see-through.with-white-navbar {
 	border-bottom: 1px solid transparent;
 	transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
 }
+header.is-see-through.with-white-navbar img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
 
 /*{+START,IF,{$NEQ,{$THEME_OPTION,header_type},side}}*/
 	header:not(.is-see-through).with-white-navbar {
@@ -1092,18 +1091,18 @@ html.is-scrolled .header-modern.is-sticky {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-header.is-see-through.with-white-navbar .logo-link,
-header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link,
-header.is-see-through.with-white-navbar .top-button {
-	color: {$GET,WB};
-}
+	header.is-see-through.with-white-navbar .logo-link,
+	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link,
+	header.is-see-through.with-white-navbar .top-button {
+		color: {$GET,WB};
+	}
 
-header.is-see-through.with-white-navbar .menu-dropdown-item.toplevel:hover > a,
-header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:hover,
-header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:focus,
-header.is-see-through.with-white-navbar .top-button:hover {
-	color: {$COLOR_RGBA,{$GET,WB},0.8};
-}
+	header.is-see-through.with-white-navbar .menu-dropdown-item.toplevel:hover > a,
+	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:hover,
+	header.is-see-through.with-white-navbar .menu-dropdown-item-a.toplevel-link:focus,
+	header.is-see-through.with-white-navbar .top-button:hover {
+		color: {$COLOR_RGBA,{$GET,WB},0.8};
+	}
 /*{+END}*/
 
 html.is-scrolled .header-modern.is-sticky.with-white-navbar {
@@ -1115,12 +1114,22 @@ html.is-scrolled .header-modern.is-sticky.with-white-navbar {
 	color: {$GET,WB};
 	background: {$GET,seed};
 }
+.header-classic.with-seed-navbar .global-navigation img.icon,
+.header-modern.with-seed-navbar img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
 
 header.with-seed-navbar .logo-link,
 header.with-seed-navbar .menu-dropdown-toggle-btn,
 header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link,
 header.with-seed-navbar.is-hover-interface .top-button {
 	color: {$GET,WB};
+}
+header.with-seed-navbar.is-hover-interface .menu-dropdown-item-a.toplevel-link img.icon,
+header.with-seed-navbar.is-hover-interface .top-button img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
 }
 
 header.with-seed-navbar .menu-dropdown-item.toplevel:hover > a,
@@ -1772,6 +1781,11 @@ footer {
 		padding: 1.5em;
 	}
 /*{+END}*/
+
+footer img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
+}
 
 /*{+START,CSS_MODE,mobile}*/
 	footer .global-footer-left,
@@ -5783,6 +5797,11 @@ input[type="submit"].btn-block,
 input[type="reset"].btn-block,
 input[type="button"].btn-block {
 	width: 100%;
+}
+
+.btn img.icon {
+	/* This makes icons white when sprite icons are disabled */
+	filter: invert(100%);
 }
 
 .btn-row {
