@@ -18,6 +18,18 @@
  */
 class Hook_contentious_overrides_search
 {
+    /**
+     * Add to a template being compiled.
+     *
+     * @param  string $data Template data
+     * @param  ID_TEXT $template_name The name of the template (blank: not from a file)
+     * @param  ID_TEXT $theme The name of the theme
+     * @param  ID_TEXT $lang The language it is for
+     * @param  ?string $suffix File type suffix of template file (e.g. .tpl) (null: not from a file)
+     * @set .tpl .js .xml .txt .css
+     * @param  ?string $directory Subdirectory type to look in (null: not from a file)
+     * @set templates javascript xml text css
+     */
     public function compile_template(&$data, $template_name, $theme, $lang, $suffix, $directory)
     {
         if (($template_name != 'global') || ($suffix != '.js')) {
