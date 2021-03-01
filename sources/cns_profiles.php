@@ -72,7 +72,6 @@ function render_profile_tabset(object $title, int $member_id_of, ?int $member_id
 
     // AJAX should load up any scripts embedding in tabs without an issue, but some browsers or optimisers (e.g. Cloudflare) may have issues - so we'll load stuff here
     $scripts = [
-        'ajax_people_lists',
         'checking',
         'editing',
         'core_form_interfaces',

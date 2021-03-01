@@ -53,11 +53,7 @@ class Block_top_personal_stats
             return new Tempcode();
         }
 
-        require_css('personal_stats');
-
         $block_id = get_block_id($map);
-
-        require_javascript('sound');
 
         $member_id = get_member();
 

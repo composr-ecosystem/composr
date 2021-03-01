@@ -1,6 +1,4 @@
-{$REQUIRE_JAVASCRIPT,cns_forum}
-
-<div class="topic-list-topic notification-{$?,{HAS_READ},has-read,has-not-read}" data-tpl="cnsPrivateTopicLink">
+<div class="topic-list-topic notification-{$?,{HAS_READ},has-read,has-not-read}" data-tpl="notificationWeb">
 	{$SET,label,{$?,{$EQ,{BY_POSTER_ID},{$MEMBER}},{!WITH_SIMPLE_LOWER,{$DISPLAYED_USERNAME*,{TO_USERNAME}}},{!BY_SIMPLE_LOWER,{$DISPLAYED_USERNAME*,{BY_USERNAME}}}}}
 	<img class="right spaced" src="{$?*,{$IS_EMPTY,{$AVATAR,{WITH_POSTER_ID}}},{$IMG,cns_default_avatars/default},{$ENSURE_PROTOCOL_SUITABILITY*,{$AVATAR,{WITH_POSTER_ID}}}}" title="{$GET,label}" alt="{$GET,label}" />
 

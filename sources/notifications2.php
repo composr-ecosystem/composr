@@ -61,7 +61,6 @@ function notifications_ui(int $member_id_of) : object
 {
     push_query_limiting(false);
 
-    require_css('notifications');
     require_code('notifications');
     require_lang('notifications');
     require_all_lang();
@@ -250,10 +249,8 @@ function notifications_ui(int $member_id_of) : object
  */
 function notifications_ui_advanced(string $notification_code, ?object $enable_message = null, ?object $disable_message = null) : object
 {
-    require_css('notifications');
     require_code('notifications');
     require_lang('notifications');
-    require_javascript('core_notifications');
     require_all_lang();
 
     $test = notification_locked_down($notification_code);

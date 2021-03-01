@@ -25,7 +25,6 @@ class Hook_startup_facebook
         }
 
         if (running_script('index') || running_script('preview') || running_script('iframe')) {
-            require_javascript('facebook_support');
             require_lang('facebook');
             require_code('site');
 

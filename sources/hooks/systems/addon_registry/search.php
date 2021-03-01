@@ -121,6 +121,7 @@ class Hook_addon_registry_search
             'themes/default/templates/SEARCH_RESULT_TABLE.tpl',
             'sources/hooks/systems/addon_registry/search.php',
             'sources/hooks/modules/admin_setupwizard/search.php',
+            'sources/hooks/systems/contentious_overrides/search.php',
             'themes/default/templates/SEARCH_ADVANCED.tpl',
             'themes/default/templates/BLOCK_MAIN_SEARCH.tpl',
             'themes/default/templates/BLOCK_TOP_SEARCH.tpl',

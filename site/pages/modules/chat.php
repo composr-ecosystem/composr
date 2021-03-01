@@ -403,7 +403,6 @@ class Module_chat
     public function run() : object
     {
         require_javascript('chat');
-        require_javascript('sound');
         require_javascript('editing');
         require_javascript('checking');
 
@@ -471,8 +470,6 @@ class Module_chat
     public function chat_lobby() : object
     {
         require_code('chat_lobby');
-
-        require_javascript('ajax_people_lists');
 
         // Who are we viewing the lobby of?
         $member_id = get_param_integer('member_id', get_member());
@@ -1188,7 +1185,6 @@ class Module_chat
         }
 
         require_javascript('chat');
-        require_javascript('sound');
         require_javascript('plupload');
         require_css('widget_plupload');
 

@@ -49,8 +49,6 @@ class Block_side_personal_stats
      */
     public function run(array $map) : object
     {
-        require_css('personal_stats');
-
         $block_id = get_block_id($map);
 
         $member_id = get_member();

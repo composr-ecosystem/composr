@@ -29,7 +29,6 @@ class Hook_startup_notification_poller_init
     public function run()
     {
         if ((running_script('index')) && (!is_guest()) && (get_option('notification_poll_frequency') != '') && (get_option('notification_poll_frequency') != '0')) {
-            require_javascript('core_notifications');
             attach_to_screen_footer(do_template('NOTIFICATION_POLLER'));
         }
     }

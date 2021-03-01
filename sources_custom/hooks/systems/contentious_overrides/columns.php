@@ -29,17 +29,21 @@ class Hook_contentious_overrides_columns
         }
 
         switch ($suffix) {
-            case '.js':
-                $path = get_file_base() . '/themes/default/css_custom/columns.css';
-                if (is_file($path)) {
-                    $data .= cms_file_get_contents_safe($path);
+            case '.css':
+                $c = 'columns';
+                $found = find_template_place($c, '', $theme, '.css', 'css');
+                if ($found !== null) {
+                    $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $c . $found[2];
+                    $data .= cms_file_get_contents_safe($full_path);
                 }
                 break;
 
-            case '.css':
-                $path = get_file_base() . '/themes/default/javascript_custom/columns.js';
-                if (is_file($path)) {
-                    $data .= cms_file_get_contents_safe($path);
+            case '.js':
+                $j = 'columns';
+                $found = find_template_place($j, '', $theme, '.js', 'javascript');
+                if ($found !== null) {
+                    $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $j . $found[2];
+                    $data .= cms_file_get_contents_safe($full_path);
                 }
                 break;
         }

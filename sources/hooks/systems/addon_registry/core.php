@@ -2399,6 +2399,7 @@ class Hook_addon_registry_core
         return [
             lorem_globalise(do_lorem_template('JAVASCRIPT_NEED', [
                 'CODE' => placeholder_javascript_code(),
+                'SUFFIX' => '',
             ]), null, '', true)
         ];
     }
@@ -2431,6 +2432,7 @@ class Hook_addon_registry_core
         return [
             lorem_globalise(do_lorem_template('CSS_NEED', [
                 'CODE' => lorem_phrase(),
+                'SUFFIX' => '',
             ]), null, '', true)
         ];
     }

@@ -1,6 +1,3 @@
-{$REQUIRE_JAVASCRIPT,core_notifications}
-{$REQUIRE_CSS,notifications}
-
 {+START,IF,{$CONFIG_OPTION,web_notifications_enabled}}
 	<div class="top-button-wrapper" data-tpl="blockTopNotifications_webNotifications" data-tpl-params="{+START,PARAMS_JSON,MAX}{_*}{+END}">
 		<a title="{!NOTIFICATIONS}" id="web-notifications-button" class="top-button count-{NUM_UNREAD_WEB_NOTIFICATIONS%} js-click-toggle-button-popup" data-click-pd="1" href="{$PAGE_LINK*,_SEARCH:notifications:browse}">{+START,INCLUDE,ICON}

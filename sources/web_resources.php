@@ -237,20 +237,21 @@ function _javascript_tempcode(string $j, object &$js, ?bool $_minify = null, ?bo
             }
             $js->attach(do_template('JAVASCRIPT_NEED_FULL', ['_GUID' => 'a2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => $url, 'CODE' => $j]));
         } else {
+            $suffix = '';
             if (!$minify) {
-                $j .= '_non_minified';
+                $suffix .= '_non_minified';
             }
             if ($https) {
-                $j .= '_ssl';
+                $suffix .= '_ssl';
             }
             if ($mobile) {
-                $j .= '_mobile';
+                $suffix .= '_mobile';
             }
 
             $support_smart_decaching = support_smart_decaching();
             $sup = ($support_smart_decaching && $temp != '' && !$GLOBALS['RECORD_TEMPLATES_USED']) ? strval(filemtime($temp)) : null; // Tweaks caching so that upgrades work without needing emptying browser cache; only runs if smart decaching is on because otherwise we won't have the mtime and don't want to introduce an extra filesystem hit
 
-            $js->attach(do_template('JAVASCRIPT_NEED', ['_GUID' => 'b5886d9dfc4d528b7e1b0cd6f0eb1670', 'CODE' => $j, 'SUP' => $sup]));
+            $js->attach(do_template('JAVASCRIPT_NEED', ['_GUID' => 'b5886d9dfc4d528b7e1b0cd6f0eb1670', 'CODE' => $j, 'SUFFIX' => $suffix, 'SUP' => $sup]));
         }
     }
 }
@@ -504,19 +505,20 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
             }
             $css->attach(do_template('CSS_NEED_FULL', ['_GUID' => 'g2d7f0303a08b9aa9e92f8b0208ee9a7', 'CODE' => $c, 'URL' => $url], user_lang(), false, null, '.tpl', 'templates', $theme));
         } else {
+            $suffix = '';
             if (!$minify) {
-                $c .= '_non_minified';
+                $suffix .= '_non_minified';
             }
             if ($https) {
-                $c .= '_ssl';
+                $suffix .= '_ssl';
             }
             if ($mobile) {
-                $c .= '_mobile';
+                $suffix .= '_mobile';
             }
             if (($temp != '') || (!$do_enforce)) {
                 $support_smart_decaching = support_smart_decaching();
                 $sup = ($support_smart_decaching && $temp != '') ? strval(filemtime($temp)) : null; // Tweaks caching so that upgrades work without needing emptying browser cache; only runs if smart decaching is on because otherwise we won't have the mtime and don't want to introduce an extra filesystem hit
-                $css->attach(do_template('CSS_NEED', ['_GUID' => 'ed35fac857214000f69a1551cd483096', 'CODE' => $c, 'SUP' => $sup], user_lang(), false, null, '.tpl', 'templates', $theme));
+                $css->attach(do_template('CSS_NEED', ['_GUID' => 'ed35fac857214000f69a1551cd483096', 'CODE' => $c, 'SUFFIX' => $suffix, 'SUP' => $sup], user_lang(), false, null, '.tpl', 'templates', $theme));
             }
         }
     }

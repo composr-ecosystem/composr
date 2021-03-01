@@ -1,5 +1,3 @@
-{$REQUIRE_JAVASCRIPT,core_notifications}
-
 <div class="notification notification-priority--{PRIORITY*} notification-code--{NOTIFICATION_CODE*} notification-{$?,{HAS_READ},has-read,has-not-read}" data-tpl="notificationWeb">
 	{+START,IF_NON_EMPTY,{FROM_AVATAR_URL}}
 		<img class="right spaced" src="{$ENSURE_PROTOCOL_SUITABILITY*,{FROM_AVATAR_URL}}" title="{FROM_USERNAME*}" alt="{FROM_USERNAME*}" />

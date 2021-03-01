@@ -26,7 +26,6 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
 
         require_code('hybridauth');
         require_lang('hybridauth');
-        require_css('hybridauth');
 
         $providers = enumerate_hybridauth_providers();
 

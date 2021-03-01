@@ -269,12 +269,6 @@
         });
     };
 
-    $cms.templates.cnsPrivateTopicLink = function (params, container) {
-        $dom.on(container, 'click', '.js-click-poll-for-notifications', function () {
-            window.$coreNotifications.pollForNotifications(true, true);
-        });
-    };
-
     $cms.templates.cnsTopicPost = function cnsTopicPost(params, container) {
         var id = strVal(params.id),
             cell = $dom.$('#cell-mark-' + id);

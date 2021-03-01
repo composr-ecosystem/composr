@@ -63,7 +63,6 @@ function internalise_own_screen(object $screen_content, ?int $refresh_time = nul
     $url = find_script('iframe') . $params;
 
     if ($refresh_if_changed !== null) {
-        require_javascript('sound');
         $change_detection_url = find_script('change_detection') . $params;
     } else {
         $refresh_if_changed = '';

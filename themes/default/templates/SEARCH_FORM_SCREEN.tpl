@@ -1,5 +1,3 @@
-{$REQUIRE_JAVASCRIPT,search}
-
 <div data-view="SearchFormScreen" data-view-params="{+START,PARAMS_JSON,SEARCH_TYPE}{_*}{+END}">
 	{TITLE}
 

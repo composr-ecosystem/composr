@@ -44,7 +44,6 @@
 			{+END}
 
 			{+START,IF,{$HAS_PRIVILEGE,support_operator}}
-				{$REQUIRE_JAVASCRIPT,ajax_people_lists}
 				<li>
 					<form title="{!ASSIGN_TO}" action="{$PAGE_LINK*,_SEARCH:tickets:assign:ticket_id={ID}}" method="post" class="inline vertical-alignment">
 						{$INSERT_SPAMMER_BLACKHOLE}

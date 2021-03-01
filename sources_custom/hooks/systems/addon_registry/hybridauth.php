@@ -504,6 +504,7 @@ And also Instagram...
             'adminzone/pages/minimodules_custom/admin_hybridauth.php',
             'sources_custom/hooks/systems/page_groupings/hybridauth.php',
             'sources_custom/hooks/systems/actionlog/hybridauth.php',
+            'sources_custom/hooks/systems/contentious_overrides/hybridauth.php',
 
             'data_custom/hybridauth_admin.php',
             'data_custom/hybridauth_admin_atom.php',

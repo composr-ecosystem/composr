@@ -97,3 +97,12 @@
         xhr.send();
     }
 }(window.$cms, window.$util, window.$dom));
+
+/*
+These are used so frequently that it is better to just include them directly in here.
+We still keep the code in separate files to stop this file getting too bloated.
+*/
+
+/*{+START,INCLUDE,core_notifications,.js,javascript}{+END}*/
+/*{+START,INCLUDE,sound,.js,javascript}{+END}*/
+/*{+START,INCLUDE,ajax_people_lists,.js,javascript}{+END}*/

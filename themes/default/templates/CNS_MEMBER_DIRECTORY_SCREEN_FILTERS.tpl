@@ -5,8 +5,6 @@
 		</div></div>
 	{+END}
 
-	{$REQUIRE_JAVASCRIPT,ajax_people_lists}
-
 	{+START,IF_NON_EMPTY,{FILTERS_ROW_A}{FILTERS_ROW_B}}
 		<div class="box advanced-member-search"><div class="box-inner">
 			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}" target="_self" method="get">

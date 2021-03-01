@@ -172,6 +172,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_PAGE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_SCREEN_ACTIONS.tpl',
             'sources_custom/hooks/systems/hybridauth/facebook.php',
+            'sources_custom/hooks/systems/contentious_overrides/facebook_support.php',
 
             'themes/default/javascript_custom/facebook_support.js',
             'sources_custom/hooks/systems/startup/facebook.php',

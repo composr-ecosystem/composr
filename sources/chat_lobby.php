@@ -31,7 +31,6 @@ function enter_chat_lobby()
     require_lang('chat');
     require_code('chat');
     require_javascript('chat');
-    require_javascript('sound');
 
     chat_room_prune(null);
 

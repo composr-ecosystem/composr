@@ -250,7 +250,6 @@ function do_search_block(array $map) : array
 {
     require_lang('search');
     require_css('search');
-    require_javascript('ajax_people_lists');
 
     $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search');
 

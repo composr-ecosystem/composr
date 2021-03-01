@@ -657,8 +657,6 @@ class Module_groups
             $club_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('f_description') => do_lang('FORUM_FOR_CLUB', $group_name)]);
         }
 
-        require_javascript('ajax_people_lists');
-
         $forum_id = null;
         if ($club) {
             $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];

@@ -76,7 +76,6 @@ PHP;
         }
 
         require_lang('search');
-        require_css('search');
         require_code('content');
         require_code('search');
 
