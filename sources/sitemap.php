@@ -1279,6 +1279,8 @@ function get_root_comcode_pages(string $zone, bool $include_zone = false) : arra
 
     disable_php_memory_limit();
 
+    $pages = find_all_pages_wrap($zone, false, /*$consider_redirects = */true, /*$show_method = */0, /*$page_type = */'comcode');
+
     static $rows = [];
     if (!isset($rows[$zone])) {
         $rows[$zone] = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'p_validated', 'p_parent_page'], ['the_zone' => $zone]);
