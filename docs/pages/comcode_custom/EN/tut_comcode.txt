@@ -163,11 +163,11 @@ If you need to include the [tt]"[/tt] symbol inside a tag parameter, you can put
 
 Also, if you need to literally display a tag without it being parsed, you may type [tt]\[[/tt] for the opening square bracket (e.g. [tt]\[i do not want this as italics][/tt]).
 
-[title="3"]Table syntax[/title]
+[title="3"]Tabular syntax[/title]
 
-[i]If using the WYSIWYG editor you'll be unlikely to want to use this.[/i]
+[i]If using the WYSIWYG editor you'll be unlikely to want to use this and would need to turn WYSIWYG off to enter the code.[/i]
 
-Table syntax is written as in the following examples...
+Tabular syntax allows creating various kind of grids/box-runs, especially tables. Tabular syntax is written as in the following examples...
 
 [box="Preview" float="right"]
 {| This is the table summary
@@ -214,6 +214,18 @@ or in reduced form,
 | Cell 1, row 2 || Cell 2, row 2
 |}
 [/code]
+
+You can also squeeze the following space-separated keywords/syntax at the start of the summary line:
+ - The render model, one of:
+  - [tt]table[/tt] -- a regular semantically-correct HTML table (the default)
+  - [tt]fake_table[/tt] -- DIVs but rendered using the CSS table model, so looks exactly like a table
+  - [tt]floats[/tt] -- Floated DIVs to create a vaguely table-like grid
+  - [tt]inline_blocks[/tt] -- A series of DIVs that display as inline-block (i.e. sequentially as many that will fit on a line); note in this model there is no such thing as a row (except in terms of width assignment)
+  - [tt]flex[/tt] -- A series of DIVs that display using CSS flexbox model (i.e. sequentially but horizontally/vertically auto-padded into a nice 2D grid); ditto about no rows
+ - [tt]wide[/tt] -- For models with rows, each row should take 100% of available width so all horizontal space is filled
+ - [tt]class=foobar[/tt] -- Assign a CSS class ([tt]foobar[/tt] in this example)
+ - [tt]id=foobar[/tt] -- Assign an HTML/CSS ID ([tt]foobar[/tt] in this example)
+ - [tt]12%:34%:56%[/tt] -- Assign width to cells; you can specify any number of colon-separated widths in [tt]px[/tt], [tt]em[/tt] or [tt]%[/tt] units
 
 [title="3"]List syntax[/title]
 

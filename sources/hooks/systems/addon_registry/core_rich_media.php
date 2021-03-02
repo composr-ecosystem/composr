@@ -182,13 +182,6 @@ class Hook_addon_registry_core_rich_media
             'themes/default/templates/COMCODE_TEXTCODE_TAB.tpl',
             'themes/default/templates/COMCODE_WIKI_LINK.tpl',
             'themes/default/templates/COMCODE_CONCEPT_INLINE.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_WRAP_START.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_START_CELL.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_WIDE_START_CELL.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_WIDE_CELL.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_CELL.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_END_CELL.tpl',
-            'themes/default/templates/COMCODE_FAKE_TABLE_WRAP_END.tpl',
             'themes/default/templates/COMCODE_IF_IN_GROUP.tpl',
             'themes/default/templates/COMCODE_OVERLAY.tpl',
             'themes/default/templates/COMCODE_CAROUSEL.tpl',
@@ -199,12 +192,12 @@ class Hook_addon_registry_core_rich_media
             'themes/default/templates/COMCODE_TAB_BODY.tpl',
             'themes/default/templates/COMCODE_SNAPBACK.tpl',
             'themes/default/templates/COMCODE_TOOLTIP.tpl',
-            'themes/default/templates/COMCODE_REAL_TABLE_CELL.tpl',
-            'themes/default/templates/COMCODE_REAL_TABLE_END.tpl',
-            'themes/default/templates/COMCODE_REAL_TABLE_ROW_END.tpl',
-            'themes/default/templates/COMCODE_REAL_TABLE_ROW_START.tpl',
-            'themes/default/templates/COMCODE_REAL_TABLE_START.tpl',
             'themes/default/templates/COMCODE_PULSE.tpl',
+            'themes/default/templates/COMCODE_TABULAR_FAKE_TABLE.tpl',
+            'themes/default/templates/COMCODE_TABULAR_FLEX.tpl',
+            'themes/default/templates/COMCODE_TABULAR_FLOATS.tpl',
+            'themes/default/templates/COMCODE_TABULAR_INLINE_BLOCKS.tpl',
+            'themes/default/templates/COMCODE_TABULAR_TABLE.tpl',
             'themes/default/javascript/pulse.js',
             'themes/default/templates/COMCODE_BIG_TABS_CONTROLLER.tpl',
             'themes/default/templates/COMCODE_BIG_TABS_TAB.tpl',
@@ -262,6 +255,7 @@ class Hook_addon_registry_core_rich_media
             'sources/comcode_from_html.php',
             'sources/comcode_renderer.php',
             'sources/comcode_compiler.php',
+            'sources/comcode_compiler_tabular.php',
             'sources/attachments.php',
             'sources/attachments2.php',
             'sources/attachments3.php',
@@ -443,18 +437,11 @@ class Hook_addon_registry_core_rich_media
             'templates/COMCODE_TEXTCODE_LINE.tpl' => 'comcode_textcode_line',
             'templates/COMCODE_TEXTCODE_TAB.tpl' => 'comcode_textcode_tab',
             'templates/COMCODE_WIKI_LINK.tpl' => 'comcode_wiki_link',
-            'templates/COMCODE_FAKE_TABLE_WRAP_START.tpl' => 'comcode_table_fake_screen',
-            'templates/COMCODE_FAKE_TABLE_WIDE_START_CELL.tpl' => 'comcode_table_fake_wide_screen',
-            'templates/COMCODE_FAKE_TABLE_START_CELL.tpl' => 'comcode_table_fake_screen',
-            'templates/COMCODE_FAKE_TABLE_END_CELL.tpl' => 'comcode_table_fake_screen',
-            'templates/COMCODE_FAKE_TABLE_WIDE_CELL.tpl' => 'comcode_table_fake_wide_screen',
-            'templates/COMCODE_FAKE_TABLE_CELL.tpl' => 'comcode_table_fake_screen',
-            'templates/COMCODE_FAKE_TABLE_WRAP_END.tpl' => 'comcode_table_fake_screen',
-            'templates/COMCODE_REAL_TABLE_START.tpl' => 'comcode_table_real_screen',
-            'templates/COMCODE_REAL_TABLE_ROW_START.tpl' => 'comcode_table_real_screen',
-            'templates/COMCODE_REAL_TABLE_CELL.tpl' => 'comcode_table_real_screen',
-            'templates/COMCODE_REAL_TABLE_ROW_END.tpl' => 'comcode_table_real_screen',
-            'templates/COMCODE_REAL_TABLE_END.tpl' => 'comcode_table_real_screen',
+            'templates/COMCODE_TABULAR_FAKE_TABLE.tpl' => 'comcode_tabular_screen',
+            'templates/COMCODE_TABULAR_FLEX.tpl' => 'comcode_tabular_screen',
+            'templates/COMCODE_TABULAR_FLOATS.tpl' => 'comcode_tabular_screen',
+            'templates/COMCODE_TABULAR_INLINE_BLOCKS.tpl' => 'comcode_tabular_screen',
+            'templates/COMCODE_TABULAR_TABLE.tpl' => 'comcode_tabular_screen',
             'templates/COMCODE_SUBTITLE.tpl' => 'comcode_subtitle',
             'templates/COMCODE_TAB_BODY.tpl' => 'comcode_tab_body',
             'templates/COMCODE_SAMP.tpl' => 'comcode_samp',
@@ -1590,136 +1577,66 @@ class Hook_addon_registry_core_rich_media
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__comcode_table_fake_wide_screen() : array
+    public function tpl_preview__comcode_tabular_screen() : array
     {
-        $tag_output = new Tempcode();
-
-        /*
-        COMCODE_FAKE_TABLE_WRAP_START (row start)
-            COMCODE_FAKE_TABLE_WIDE_START_CELL (cell start)
-                ...
-            COMCODE_FAKE_TABLE_END_CELL (cell end)
-            ...
-            COMCODE_FAKE_TABLE_WIDE_CELL (cell start)
-                ...
-            COMCODE_FAKE_TABLE_END_CELL (cell end)
-        COMCODE_FAKE_TABLE_WRAP_END (row end)
-        */
-
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_WRAP_START', []));
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_WIDE_START_CELL', [
-            'WIDTH' => '100%',
-            'PADDING_AMOUNT' => '0',
-            'FLOAT' => 'left',
-            'PADDING' => '',
-        ]));
-        $tag_output->attach(lorem_paragraph());
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_END_CELL'));
-        foreach (placeholder_array(2) as $cell) {
-            $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_WIDE_CELL', [
-                'WIDTH' => '100%',
-                'PADDING_AMOUNT' => '0',
-                'FLOAT' => 'left',
-                'PADDING' => '',
-            ]));
-            $tag_output->attach($cell);
-            $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_END_CELL'));
-        }
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_WRAP_END'));
-
-        return [
-            lorem_globalise($tag_output, null, '', true)
+        $tpls = [
+            'COMCODE_TABULAR_FAKE_TABLE',
+            'COMCODE_TABULAR_FLEX',
+            'COMCODE_TABULAR_FLOATS',
+            'COMCODE_TABULAR_INLINE_BLOCKS',
+            'COMCODE_TABULAR_TABLE',
         ];
-    }
 
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__comcode_table_fake_screen() : array
-    {
         $tag_output = new Tempcode();
+        foreach ($tpls as $tpl) {
+            $tabular_summary = lorem_phrase();
+            $tabular_class = null;
+            $tabular_is_columned_table = false;
+            $tabular_is_wide = true;
+            $tabular_id = null;
+            $tabular_column_sizes = [];
 
-        /*
-        COMCODE_FAKE_TABLE_WRAP_START (row start)
-            COMCODE_FAKE_TABLE_START_CELL (cell start)
-                ...
-            COMCODE_FAKE_TABLE_END_CELL (cell end)
-            ...
-            COMCODE_FAKE_TABLE_CELL (cell start)
-                ...
-            COMCODE_FAKE_TABLE_END_CELL (cell end)
-        COMCODE_FAKE_TABLE_WRAP_END (row end)
-        */
+            $tabular_rows = [];
 
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_WRAP_START'));
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_START_CELL', [
-            'WIDTH' => '40%',
-            'FLOAT' => 'left',
-            'PADDING' => '-left',
-            'PADDING_AMOUNT' => '10',
-        ]));
-        $tag_output->attach(lorem_paragraph());
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_END_CELL'));
-        foreach (placeholder_array(2) as $cell) {
-            $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_CELL', [
-                'WIDTH' => '100%',
-                'FLOAT' => 'left',
-                'PADDING' => '',
-                'PADDING_AMOUNT' => '5',
-            ]));
-            $tag_output->attach($cell);
-            $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_END_CELL'));
+            $tabular_row_cells = [];
+            $tabular_row_cell = [
+                'IS_HEADER' => false,
+                'FIRST_CELL_ON_ROW' => true,
+                'LAST_CELL_ON_ROW' => false,
+                'WIDTH' => '50%',
+                'VALUE' => lorem_phrase(),
+            ];
+            $tabular_row_cells[] = $tabular_row_cell;
+            $tabular_row_cell = [
+                'IS_HEADER' => false,
+                'FIRST_CELL_ON_ROW' => false,
+                'LAST_CELL_ON_ROW' => true,
+                'WIDTH' => '50%',
+                'VALUE' => lorem_phrase(),
+            ];
+            $tabular_row_cells[] = $tabular_row_cell;
+
+            $tabular_row = [
+                'IS_HEADER_ROW' => false,
+                'FIRST_NON_HEADER_ROW' => false,
+                'LAST_NON_HEADER_ROW' => false,
+                'CELLS' => $tabular_row_cells,
+            ];
+            $tabular_rows[] = $tabular_row;
+            $tabular_rows[] = $tabular_row;
+
+            $out = do_template($tpl, [
+                'SUMMARY' => $tabular_summary,
+                'CLASS' => $tabular_class,
+                'IS_COLUMNED_TABLE' => $tabular_is_columned_table,
+                'IS_WIDE' => $tabular_is_wide,
+                'ID' => $tabular_id,
+                'COLUMN_SIZES' => $tabular_column_sizes,
+                'ROWS' => $tabular_rows,
+            ]);
+
+            $tag_output->attach($out);
         }
-        $tag_output->attach(do_lorem_template('COMCODE_FAKE_TABLE_WRAP_END'));
-
-        return [
-            lorem_globalise($tag_output, null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__comcode_table_real_screen() : array
-    {
-        $tag_output = new Tempcode();
-
-        $column_sizes = [];
-
-        $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_START', [
-            'SUMMARY' => lorem_phrase(),
-            'COLUMNED_TABLE' => false,
-            'WIDE' => true,
-            'COLUMN_SIZES' => $column_sizes,
-        ]));
-        foreach (placeholder_array(2) as $i => $table_row) {
-            $map = [];
-            if ($i == 0) {
-                $map['START_BODY'] = true;
-            }
-            $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_ROW_START', $map));
-            foreach (placeholder_array(2) as $j => $cell) {
-                $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_CELL', [
-                    'WIDTH' => '',
-                    'C_TYPE' => ($j == 0) ? 'th' : 'td',
-                    'MID' => $cell,
-                    'PADDING' => '-left',
-                    'PADDING_AMOUNT' => '2',
-                ]));
-            }
-            $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_ROW_END', [
-                'END_HEAD' => false,
-            ]));
-        }
-        $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_END', ['END_BODY' => true]));
 
         return [
             lorem_globalise($tag_output, null, '', true)

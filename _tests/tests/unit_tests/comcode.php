@@ -28,6 +28,10 @@ class comcode_test_set extends cms_test_case
 
     public function testContentsTag()
     {
+        if (($this->only !== null) && ($this->only != 'testContentsTag')) {
+            return;
+        }
+
         // From Comcode...
 
         $comcode = '
@@ -111,54 +115,106 @@ class comcode_test_set extends cms_test_case
 
     public function testEmoticons()
     {
+        if (($this->only !== null) && ($this->only != 'testEmoticons')) {
+            return;
+        }
+
         $actual = comcode_to_tempcode(':)');
         $this->assertTrue(strpos($actual->evaluate(), '<img') !== false);
     }
 
     public function testRules()
     {
+        if (($this->only !== null) && ($this->only != 'testRules')) {
+            return;
+        }
+
         $actual = comcode_to_tempcode('-----');
         $this->assertTrue(strpos($actual->evaluate(), '<hr />') !== false);
     }
 
     public function testLinks()
     {
+        if (($this->only !== null) && ($this->only != 'testLinks')) {
+            return;
+        }
+
         $actual = comcode_to_tempcode('http://example.com');
         $this->assertTrue(strpos($actual->evaluate(), '<a') !== false);
     }
 
     public function testMemberLinks()
     {
+        if (($this->only !== null) && ($this->only != 'testMemberLinks')) {
+            return;
+        }
+
         $actual = comcode_to_tempcode('{{admin}}');
         $this->assertTrue(strpos($actual->evaluate(), '<a') !== false);
     }
 
     public function testWiki()
     {
+        if (($this->only !== null) && ($this->only != 'testWiki')) {
+            return;
+        }
+
         $actual = comcode_to_tempcode('[[Home]]');
         $this->assertTrue(strpos($actual->evaluate(), '<a') !== false);
     }
 
     public function testShortcode()
     {
+        if (($this->only !== null) && ($this->only != 'testShortcode')) {
+            return;
+        }
+
         $actual = comcode_to_tempcode('-|-');
         $this->assertTrue(strpos($actual->evaluate(), '&dagger;') !== false);
     }
 
     public function testTable()
     {
-        $actual = comcode_to_tempcode('{|
+        if (($this->only !== null) && ($this->only != 'testTable')) {
+            return;
+        }
+
+        $actual = comcode_to_tempcode('{| wide 20%:80% class=foobar id=xxx Summary
+! a
+! b
+|-
+| a || b
+|}');
+        $_actual = $actual->evaluate();
+        $this->assertTrue(substr_count($_actual, '<table') == 1);
+        $this->assertTrue(substr_count($_actual, '<col style="') == 2);
+        $this->assertTrue(substr_count($_actual, 'wide-table"') == 1);
+        $this->assertTrue(substr_count($_actual, 'id="xxx"') == 1);
+        $this->assertTrue(substr_count($_actual, 'foobar') == 1);
+        $this->assertTrue(substr_count($_actual, '<thead>') == 1);
+        $this->assertTrue(substr_count($_actual, '<tr>') == 2);
+        $this->assertTrue(substr_count($_actual, '<tbody>') == 1);
+        $this->assertTrue(substr_count($_actual, '<th>') == 2);
+        $this->assertTrue(substr_count($_actual, '<td>') == 2);
+
+        $actual = comcode_to_tempcode('{| fake_table wide 20%:80% class=foobar id=xxx Summary
 ! a
 ! b
 |-
 | a
 | b
 |}');
-        $this->assertTrue(strpos($actual->evaluate(), '<table') !== false);
+        $_actual = $actual->evaluate();
+        $this->assertTrue(substr_count($_actual, '<table') == 0);
+        $this->assertTrue(substr_count($_actual, '<div') > 0);
     }
 
     public function testCodeTags()
     {
+        if (($this->only !== null) && ($this->only != 'testCodeTags')) {
+            return;
+        }
+
         $expects_no_parse = [
             '[tt]{$IMG,under_construction_animated}[/tt]',
             '[no_parse]{$IMG,under_construction_animated}[/no_parse]',
@@ -199,6 +255,10 @@ class comcode_test_set extends cms_test_case
 
     public function testComcode()
     {
+        if (($this->only !== null) && ($this->only != 'testComcode')) {
+            return;
+        }
+
         $expectations = [" - foo  " => "<ul><li>foo</li></ul>", " - foo\n - bar" => "<ul><li>foo</li><li>bar</li></ul>", " - foo - bar" => " - foo - bar", "" => " ", " -foo" => "-foo", "-foo" => "-foo", "--foo" => "&ndash;foo", "[b]bar[/b]" => "<strong class=\"comcode-bold\">bar</strong>"];
 
         foreach ($expectations as $comcode => $html) {
@@ -214,6 +274,10 @@ class comcode_test_set extends cms_test_case
 
     public function testMentions()
     {
+        if (($this->only !== null) && ($this->only != 'testMentions')) {
+            return;
+        }
+
         if (get_forum_type() != 'cns') {
             $this->assertTrue(false, 'Test only works with Conversr');
             return;

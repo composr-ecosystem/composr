@@ -201,7 +201,7 @@ svg:not(:root) {
 	overflow: hidden;
 }
 
-table {
+table, .fake-table {
 	border-collapse: collapse;
 }
 
@@ -213,7 +213,7 @@ caption {
 	caption-side: bottom;
 }
 
-th {
+th, .fake-th {
 	text-align: inherit;
 }
 
@@ -468,7 +468,7 @@ textarea, input, code {
 	display: none;
 }
 
-td, th {
+td, th, .fake-td, .fake-th {
 	vertical-align: top;
 	padding: 0.25em;
 }
@@ -476,12 +476,18 @@ td, th {
 th > p:first-child,
 td > p:first-child,
 th > h2:first-child,
-td > h3:first-child {
+td > h3:first-child,
+.fake-th > p:first-child,
+.fake-td > p:first-child,
+.fake-th > h2:first-child,
+.fake-td > h3:first-child {
 	margin-top: 0;
 }
 
 th > p:last-child,
-td > p:last-child {
+td > p:last-child,
+.fake-th > p:last-child,
+.fake-td > p:last-child {
 	margin-bottom: 0;
 }
 
@@ -512,7 +518,7 @@ th, .fake-th {
 }
 
 .columned-table[itemprop="significantLinks"] tbody tr th,
-.columned-table[itemprop="significantLinks"] tbody tr .fake-th { /* itemprop is for precedence */
+.columned-table[itemprop="significantLinks"] .fake-tbody .fake-tr .fake-th { /* itemprop is for precedence */
 	background-color: {$GET,box_title_background_2} !important;
 	color: {$GET,box_title_text_2} !important;
 	text-align: left;
@@ -530,6 +536,8 @@ th a:visited,
 
 thead > tr > th,
 .boxless-space .box > table > thead > tr > th,
+.fake-thead > .fake-tr > .fake-th,
+.boxless-space .box > .fake-table > .fake-thead > .fake-tr > .fake-th,
 .pte-set-box .box > table > thead > tr > th {
 	background-color: {$GET,box_title_background_2};
 	border-color: {$GET,box_title_background_2} !important;
@@ -537,21 +545,24 @@ thead > tr > th,
 }
 
 .light-table th, .light-table .fake-th,
-.light-table thead > tr > th, .light-table .boxless-space .box > table > thead > tr > th,
+.light-table thead > tr > th, .light-table .fake-thead > .fake-tr > .fake-th,
+.light-table .boxless-space .box > table > thead > tr > th, .light-table .boxless-space .box > .fake-table > .fake-thead > .fake-tr > .fake-th,
 .light-table .pte-set-box .box > table > thead > tr > th {
 	background-color: {$GET,area_light_background};
 }
 
-.box > table > thead > tr > th {
+.box > table > thead > tr > th,
+.box > .fake-table > .fake-thead > .fake-tr > .fake-th {
 	background-color: {$GET,point_of_interest_background};
 	color: {$GET,area_key_text};
 }
 
-.box thead > tr > th a {
+.box thead > tr > th a, .box .fake-thead > .fake-tr > .fake-th a {
 	color: inherit;
 }
 /* .de-th makes a th look like a td, yet allows us to use correct markup */
 td,
+.fake-td,
 th.de-th {
 	color: {$GET,slightly_seeded_text};
 	font-weight: normal;
@@ -1609,6 +1620,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 }
 
 #panel-bottom td,
+#panel-bottom .fake-td,
 #panel-bottom th.de-th,
 #panel-bottom th.de-th a,
 #panel-bottom th.de-th a:hover,
@@ -2292,6 +2304,7 @@ body button.button-hyperlink:hover {
 
 /* Error/status messages */
 td.red-alert,
+.fake-td.red-alert,
 span.red-alert,
 a.red-alert,
 strong.red-alert,
@@ -2498,9 +2511,9 @@ th.metadata-title {
 .box .box {
 	background-image: none;
 }
-td > .box:first-child, .fake-table-cell > .box:first-child, .fake-table-cell > div:first-child > .box:first-child, .fake-table-cell > div:first-child > div:first-child > .box:first-child, .left .box:first-child:last-child, .right .box:first-child:last-child,
-td > .comcode-code:first-child, .fake-table-cell > .comcode-code:first-child, .fake-table-cell > div:first-child > .comcode-code:first-child, .fake-table-cell > div:first-child > div:first-child > .comcode-code:first-child, .left .comcode-code, .right .comcode-code,
-td > .comcode-quote:first-child, .fake-table-cell > .comcode-quote:first-child, .fake-table-cell > div:first-child > .comcode-quote:first-child, .fake-table-cell > div:first-child > div:first-child > .comcode-quote:first-child, .left .comcode-quote, .right .comcode-quote {
+td > .box:first-child, .fake-td > .box:first-child, .fake-td > div:first-child > .box:first-child, .fake-td > div:first-child > div:first-child > .box:first-child, .left .box:first-child:last-child, .right .box:first-child:last-child,
+td > .comcode-code:first-child, .fake-td > .comcode-code:first-child, .fake-td > div:first-child > .comcode-code:first-child, .fake-td > div:first-child > div:first-child > .comcode-code:first-child, .left .comcode-code, .right .comcode-code,
+td > .comcode-quote:first-child, .fake-td > .comcode-quote:first-child, .fake-td > div:first-child > .comcode-quote:first-child, .fake-td > div:first-child > div:first-child > .comcode-quote:first-child, .left .comcode-quote, .right .comcode-quote {
 	margin: 0;
 }
 /* Accordion boxes don't have margins */
@@ -3145,7 +3158,7 @@ ul.horizontal-links.horiz-field-sep {
 .autosized-table {
 	table-layout: auto !important;
 }
-.autosized-table.forceful, .autosized-table.forceful th, .autosized-table.forceful td {
+.autosized-table.forceful, .autosized-table.forceful th, .autosized-table.forceful td, .autosized-table.forceful .fake-th, .autosized-table.forceful .fake-td {
 	/* Undo some HTML-sourced styles if .forceful is set */
 	width: auto !important;
 }
@@ -3157,17 +3170,23 @@ table.scrollable-inside {
 	table-layout: fixed; /* For permission setting stuff that can scroll off */
 }
 .results-table.forceful > * > tr > th,
-.results-table.forceful > * > tr > td {
+.results-table.forceful > * > tr > td,
+.results-table.forceful > * > .fake-tr > .fake-th,
+.results-table.forceful > * > .fake-tr > .fake-td {
 	/* Undo HTML-sourced style if .forceful is set */
 	border-bottom: 0;
 }
 .results-table.forceful:not(.responsive-table) > * > tr > th:not(:first-child),
-.results-table.forceful:not(.responsive-table) > * > tr > td:not(:first-child) {
+.results-table.forceful:not(.responsive-table) > * > tr > td:not(:first-child),
+.results-table.forceful:not(.responsive-table) > * > .fake-tr > .fake-th:not(:first-child),
+.results-table.forceful:not(.responsive-table) > * > .fake-tr > .fake-td:not(:first-child) {
 	/* Undo HTML-sourced style if .forceful is set */
 	border-left: 0;
 }
 .results-table.forceful th > p:first-child:last-child,
-.results-table.forceful td > p:first-child:last-child {
+.results-table.forceful td > p:first-child:last-child,
+.results-table.forceful .fake-th > p:first-child:last-child,
+.results-table.forceful .fake-td > p:first-child:last-child {
 	/* Some word processors may carry through p tags inside cells */
 	display: inline;
 }
@@ -3194,16 +3213,22 @@ table.scrollable-inside {
 	.map-table.responsive-blocked-table tfoot,
 	.map-table.responsive-blocked-table tr,
 	.map-table.responsive-blocked-table th,
-	.map-table.responsive-blocked-table td {
+	.map-table.responsive-blocked-table td,
+	.map-table.responsive-blocked-table .fake-tbody,
+	.map-table.responsive-blocked-table .fake-tr,
+	.map-table.responsive-blocked-table .fake-th,
+	.map-table.responsive-blocked-table .fake-td {
 		display: block;
 	}
 
-	.results-table.responsive-blocked-table tr {
+	.results-table.responsive-blocked-table tr, .results-table.responsive-blocked-table .fake-tr {
 		margin-bottom: 0.5em;
 	}
 
 	.results-table.responsive-blocked-table th,
-	.results-table.responsive-blocked-table td {
+	.results-table.responsive-blocked-table td,
+	.results-table.responsive-blocked-table .fake-th,
+	.results-table.responsive-blocked-table .fake-td {
 		border-radius: 0 !important;
 		border-left: 1px solid {$GET,standard_border} !important;
 		border-right: 1px solid {$GET,standard_border} !important;
@@ -3213,21 +3238,25 @@ table.scrollable-inside {
 	}
 
 	.map-table.responsive-blocked-table th:first-child,
-	.map-table.responsive-blocked-table td:first-child {
+	.map-table.responsive-blocked-table td:first-child,
+	.map-table.responsive-blocked-table .fake-th:first-child,
+	.map-table.responsive-blocked-table .fake-td:first-child {
 		border-top: 1px solid {$GET,standard_border} !important;
 	}
 
 	.map-table.responsive-blocked-table th:last-child,
-	.map-table.responsive-blocked-table td:last-child {
+	.map-table.responsive-blocked-table td:last-child,
+	.map-table.responsive-blocked-table .fake-th:last-child,
+	.map-table.responsive-blocked-table .fake-td:last-child {
 		border-bottom: 1px solid {$GET,standard_border} !important;
 	}
 /*{+END}*/
 
-.spaced-table th, .spaced-table td {
+.spaced-table th, .spaced-table td, .spaced-table .fake-th, .spaced-table .fake-td {
 	padding: 0.7em;
 }
 /*{+START,CSS_MODE,mobile}*/
-	.spaced-table td {
+	.spaced-table td, .spaced-table .fake-td {
 		overflow-x: auto;
 	}
 /*{+END}*/
@@ -3273,50 +3302,67 @@ table.scrollable-inside {
 /*{+START,IF,{$THEME_OPTION,curved_borders}}*/
 	.results-table > thead:first-child > tr:first-child *:first-child,
 	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:first-child,
-	.results-table > tbody > tr:first-child > *:first-child {
+	.results-table > tbody > tr:first-child > *:first-child,
+	.results-table > .fake-thead:first-child > .fake-tr:first-child *:first-child,
+	.results-table > .fake-thead:nth-child(2)/*after colspan*/ > .fake-tr:first-child *:first-child,
+	.results-table > .fake-tbody > .fake-tr:first-child > *:first-child {
 		border-top-left-radius: 5px;
 	}
 	.results-table > thead:first-child > tr:first-child *:last-child,
 	.results-table > thead:nth-child(2)/*after colspan*/ > tr:first-child *:last-child,
-	.results-table > tbody > tr:first-child > *:last-child {
+	.results-table > tbody > tr:first-child > *:last-child,
+	.results-table > .fake-thead:first-child > .fake-tr:first-child *:last-child,
+	.results-table > .fake-thead:nth-child(2)/*after colspan*/ > .fake-tr:first-child *:last-child,
+	.results-table > .fake-tbody > .fake-tr:first-child > *:last-child {
 		border-top-right-radius: 5px;
 	}
-	.results-table.columned-table > tbody > tr:first-child > *:first-child {
+	.results-table.columned-table > tbody > tr:first-child > *:first-child,
+	.results-table.columned-table > .fake-tbody > .fake-tr:first-child > *:first-child {
 		border-top-left-radius: 0px;
 	}
-	.results-table.columned-table > tbody > tr:first-child > *:last-child {
+	.results-table.columned-table > tbody > tr:first-child > *:last-child,
+	.results-table.columned-table > .fake-tbody > .fake-tr:first-child > *:last-child {
 		border-top-right-radius: 0px;
 	}
 	.results-table > tbody:last-child > tr:last-child > *:first-child,
-	.results-table > tbody > tr.last > *:first-child {
+	.results-table > tbody > tr.last > *:first-child,
+	.results-table > .fake-tbody:last-child > .fake-tr:last-child > *:first-child,
+	.results-table > .fake-tbody > .fake-tr.last > *:first-child {
 		border-bottom-left-radius: 5px;
 	}
 	.results-table > tbody:last-child > tr:last-child > *:last-child,
-	.results-table > tbody > tr.last > *:last-child {
+	.results-table > tbody > tr.last > *:last-child,
+	.results-table > .fake-tbody:last-child > .fake-tr:last-child > *:last-child,
+	.results-table > .fake-tbody > .fake-tr.last > *:last-child {
 		border-bottom-right-radius: 5px;
 	}
 /*{+END}*/
 
-.results-table > * > tr > th {
+.results-table > * > tr > th, .results-table > * > .fake-tr > .fake-th {
 	text-align: right;
 }
 
-.results-table > thead > tr > th {
+.results-table > thead > tr > th, .results-table > .fake-thead > .fake-tr > .fake-th {
 	text-align: left;
 }
 
-.results-table > * > tr > td, .results-table > * > tr > th {
+.results-table > * > tr > td, .results-table > * > tr > th, .results-table > * > .fake-tr > .fake-td, .results-table > * > .fake-tr > .fake-th {
 	border-top: 1px solid {$GET,standard_border};
 	border-right: 1px solid {$GET,standard_border};
 	padding: 0.5em;
 }
 .results-table > * > tr > td:first-child,
-.results-table > * > tr > th:first-child {
+.results-table > * > tr > th:first-child,
+.results-table > * > .fake-tr > .fake-td:first-child,
+.results-table > * > .fake-tr > .fake-th:first-child {
 	border-left: 1px solid {$GET,standard_border};
 }
 .results-table > tbody > tr:last-child > td,
 .results-table > tbody > tr.last > td,
-.results-table > tbody > tr:last-child > th {
+.results-table > tbody > tr:last-child > th,
+.results-table > .fake-tbody > .fake-tr:last-child > .fake-td,
+.results-table > .fake-tbody > .fake-tr.last > .fake-td,
+.results-table > .fake-tbody > .fake-tr:last-child > .fake-th {
 	border-bottom: 1px solid {$GET,standard_border};
 }
 .results-table > tfoot > tr > td,
@@ -3326,17 +3372,25 @@ table.scrollable-inside {
 
 table > * > .zebra-0 > th,
 table > * > .zebra-0 > td,
+.fake-table > * > .zebra-0 > .fake-th,
+.fake-table > * > .zebra-0 > .fake-td,
 div.zebra-0,
 table.zebra > tbody > tr:nth-child(even) > th,
-table.zebra > tbody > tr:nth-child(even) > td {
+table.zebra > tbody > tr:nth-child(even) > td,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-th,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-td {
 	background-color: {$GET,area_zebra_background};
 	color: {$GET,slightly_seeded_text};
 }
 table > * > .zebra-1 > th,
 table > * > .zebra-1 > td,
+.fake-table > * > .zebra-1 > .fake-th,
+.fake-table > * > .zebra-1 > .fake-td,
 div.zebra-1,
 table.zebra > tbody > tr:nth-child(odd) > th,
-table.zebra > tbody > tr:nth-child(even) > td {
+table.zebra > tbody > tr:nth-child(even) > td,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(odd) > .fake-th,
+.fake-table.zebra > .fake-tbody > .fake-tr:nth-child(even) > .fake-td {
 	background-color: {$GET,area_5_background};
 	color: {$GET,slightly_seeded_text};
 }
@@ -3365,7 +3419,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	margin: 0;
 }
 
-.thick-border th, .thick-border td {
+.thick-border th, .thick-border td, .thick-border .fake-th, .thick-border .fake-td {
 	border-top-width: 4px !important;
 }
 
@@ -3399,20 +3453,29 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > tfoot > tr > td,
 	.responsive-table > tr,
 	.responsive-table > tr > th,
-	.responsive-table > tr > td {
+	.responsive-table > tr > td,
+	.responsive-table > .fake-tbody,
+	.responsive-table > .fake-tbody > .fake-tr,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td,
+	.responsive-table > .fake-tr,
+	.responsive-table > .fake-tr > .fake-th,
+	.responsive-table > .fake-tr > .fake-td {
 		display: block;
 		width: auto;
 		overflow: hidden;
 		text-align: left !important;
 	}
 
-	.responsive-table > thead {
+	.responsive-table > thead, .responsive-table > .fake-thead {
 		display: none !important;
 	}
 
 	.responsive-table > tbody > tr,
 	.responsive-table > tfoot > tr,
-	.responsive-table > tr {
+	.responsive-table > tr,
+	.responsive-table > .fake-tbody > .fake-tr,
+	.responsive-table > .fake-tr {
 		border-bottom: 1px solid {$GET,standard_border};
 		margin-bottom: 1em;
 	}
@@ -3422,7 +3485,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > tfoot > tr > th[data-th]::before,
 	.responsive-table > tfoot > tr > td[data-th]::before,
 	.responsive-table > tr > th[data-th]::before,
-	.responsive-table > tr > td[data-th]::before {
+	.responsive-table > tr > td[data-th]::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td[data-th]::before,
+	.responsive-table > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table > .fake-tr > .fake-td[data-th]::before {
 		content: attr(data-th) ":";
 		font-weight: bold;
 		width: 7em;
@@ -3436,7 +3503,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > tfoot > tr > th,
 	.responsive-table > tfoot > tr > td,
 	.responsive-table > tr > th,
-	.responsive-table > tr > td {
+	.responsive-table > tr > td,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td,
+	.responsive-table > .fake-tr > .fake-th,
+	.responsive-table > .fake-tr > .fake-td {
 		border-left: 1px solid {$GET,standard_border};
 		border-radius: 0 !important;
 	}
@@ -3444,7 +3515,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > tbody > tr > th .field-name,
 	.responsive-table > tbody > tr > td .field-name,
 	.responsive-table > tr > th .field-name,
-	.responsive-table > tr > td .field-name {
+	.responsive-table > tr > td .field-name,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th .field-name,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td .field-name,
+	.responsive-table > .fake-tr > .fake-th .field-name,
+	.responsive-table > .fake-tr > .fake-td .field-name {
 		font-weight: normal;
 		font-style: italic;
 	}
@@ -3454,7 +3529,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > tfoot > tr > th:empty,
 	.responsive-table > tfoot > tr > td:empty,
 	.responsive-table > tr > th:empty,
-	.responsive-table > tr > td:empty {
+	.responsive-table > tr > td:empty,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-th:empty,
+	.responsive-table > .fake-tbody > .fake-tr > .fake-td:empty,
+	.responsive-table > .fake-tr > .fake-th:empty,
+	.responsive-table > .fake-tr > .fake-td:empty {
 		display: none;
 	}
 
@@ -3462,7 +3541,10 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table > tbody > tr.last > td,
 	.responsive-table > tfoot > tr:last-child > td,
 	.responsive-table > tfoot > tr.last > td,
-	.responsive-table > tbody > tr:last-child > th {
+	.responsive-table > tbody > tr:last-child > th,
+	.responsive-table > .fake-tbody > .fake-tr:last-child > .fake-td,
+	.responsive-table > .fake-tbody > .fake-tr.last > .fake-td,
+	.responsive-table > .fake-tbody > .fake-tr:last-child > .fake-th {
 		border-bottom: 0;
 	}
 
@@ -3480,7 +3562,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table-bolded-first-column > tfoot > tr > th:first-child,
 	.responsive-table-bolded-first-column > tfoot > tr > td:first-child,
 	.responsive-table-bolded-first-column > tr > th:first-child,
-	.responsive-table-bolded-first-column > tr > td:first-child {
+	.responsive-table-bolded-first-column > tr > td:first-child,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-th:first-child,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-td:first-child,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-th:first-child,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-td:first-child {
 		font-weight: bold;
 	}
 
@@ -3489,7 +3575,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table-bolded-first-column > tfoot > tr > th[data-th]::before,
 	.responsive-table-bolded-first-column > tfoot > tr > td[data-th]::before,
 	.responsive-table-bolded-first-column > tr > th[data-th]::before,
-	.responsive-table-bolded-first-column > tr > td[data-th]::before {
+	.responsive-table-bolded-first-column > tr > td[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tbody > .fake-tr > .fake-td[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-bolded-first-column > .fake-tr > .fake-td[data-th]::before {
 		font-weight: normal; /* Overridden from above */
 	}
 
@@ -3498,7 +3588,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	.responsive-table-separate-lines > tfoot > tr > th[data-th]::before,
 	.responsive-table-separate-lines > tfoot > tr > td[data-th]::before,
 	.responsive-table-separate-lines > tr > th[data-th]::before,
-	.responsive-table-separate-lines > tr > td[data-th]::before {
+	.responsive-table-separate-lines > tr > td[data-th]::before,
+	.responsive-table-separate-lines > .fake-tbody > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-separate-lines > .fake-tbody > .fake-tr > .fake-td[data-th]::before,
+	.responsive-table-separate-lines > .fake-tr > .fake-th[data-th]::before,
+	.responsive-table-separate-lines > .fake-tr > .fake-td[data-th]::before {
 		width: auto;
 		display: block;
 		margin-bottom: 0.5em;
@@ -6464,7 +6558,8 @@ div:hover > .edit-menu-link-inline, div:hover > .edit-page-link-inline {
 	outline: 0;
 	overflow: auto;
 }
-td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-code {
+td > .comcode-code-wrap > .comcode-quote, td > .comcode-code-wrap > .comcode-code,
+.fake-td > .comcode-code-wrap > .comcode-quote, .fake-td > .comcode-code-wrap > .comcode-code {
 	margin: 0;
 }
 
@@ -6821,19 +6916,76 @@ a[rel="lightbox"] {
 	height: auto;
 }
 
-.fake-table-cell {
-	display: inline-block;
-	box-sizing: content-box;
+.fake-table {
+	display: table;
 }
-/*{+START,CSS_MODE,mobile}*/
-	.fake-table-cell {
-		display: block !important;
-		padding: 0 !important;
-		width: auto !important;
-		float: none !important;
+.fake-colgroup {
+	display: table-column-group;
+}
+.fake-col {
+	display: table-column;
+}
+.fake-thead {
+	display: table-header-group;
+}
+.fake-tbody {
+	display: table-row-group;
+}
+.fake-tr {
+	display: table-row;
+}
+.fake-th, .fake-td {
+	display: table-cell;
+}
+
+.flex-wrapper {
+	{$BETA_CSS_PROPERTY,display: flex;}
+}
+.flex-wrapper > div {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	box-sizing: border-box;
+}
+.flex-wrapper > div + div {
+	padding-left: 1em;
+}
+
+/*{+START,CSS_MODE,desktop}*/
+	.floats-wrap .float-surrounder + .float-surrounder {
+		margin-top: 1em;
 	}
-	.fake-table-cell + .fake-table-cell {
-		margin: 1em 0;
+	.floats-wrap .float-left {
+		float: left;
+	}
+	.floats-wrap .float-left + .float-left, .floats-wrap .float-right {
+		box-sizing: border-box;
+		padding-left: 1em;
+	}
+	.floats-wrap .float-right {
+		float: right;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.floats-wrap .float-left, .floats-wrap .float-right {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+/*{+END}*/
+
+/*{+START,CSS_MODE,desktop}*/
+	.inline-block-box {
+		display: inline-block;
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+		box-sizing: border-box;
+	}
+	.inline-block-box + .inline-block-box {
+		margin-left: 1em;
+	}
+/*{+END}*/
+/*{+START,CSS_MODE,mobile}*/
+	.inline-block-box + .inline-block-box {
+		margin-top: 1em;
 	}
 /*{+END}*/
 

@@ -136,17 +136,17 @@
 
     $cms.behaviors.initializeTables = {
         attach: function attach(context) {
-            var tables = $util.once($dom.$$$(context, 'table'), 'behavior.initializeTables');
+            var tables = $util.once($dom.$$$(context, 'table, .fake-table'), 'behavior.initializeTables');
 
             tables.forEach(function (table) {
                 // Responsive table prep work
                 if (table.classList.contains('responsive-table')) {
-                    var trs = table.getElementsByTagName('tr'),
-                        thsFirstRow = trs[0].cells,
+                    var trs = $dom.$$(table, 'tr, .fake-tr'),
+                        thsFirstRow = $dom.$$(trs[0], ':scope > th, :scope > td, :scope > .fake-th, :scope > .fake-td'),
                         i, tds, j, data;
 
                     for (i = 0; i < trs.length; i++) {
-                        tds = trs[i].cells;
+                        tds = $dom.$$(trs[i], ':scope > th, :scope > td, :scope > .fake-th, :scope > .fake-td');
                         for (j = 0; j < tds.length; j++) {
                             if (!tds[j].classList.contains('responsive-table-no-prefix')) {
                                 data = (thsFirstRow[j] == null) ? '' : thsFirstRow[j].textContent.replace(/^\s+/, '').replace(/\s+$/, '');
