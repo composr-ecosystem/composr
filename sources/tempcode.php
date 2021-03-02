@@ -1140,8 +1140,12 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
         }
 
         switch ($key) {
+            case 'dependency__css__global':
+                $SITE_INFO[$key] = 'personal_stats,menu__dropdown,notifications';
+                break;
+
             case 'dependency__javascript__global':
-                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors';
+                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors,core_notifications,sound,ajax_people_lists';
                 break;
 
             case 'dependency__javascript__editing':
