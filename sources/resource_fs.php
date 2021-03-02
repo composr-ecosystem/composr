@@ -248,7 +248,7 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
         }
 
         $dupe_sql = 'SELECT resource_id' . $basic_sql . ' AND ' . db_string_equal_to('resource_moniker', $moniker);
-        $test = $GLOBALS['SITE_DB']->query_value_if_there($dupe_sql);
+        $test = $GLOBALS['SITE_DB']->query_value_if_there($dupe_sql, false, true);
         $ok = (is_null($test)) && ($moniker != '_folder'/*reserved*/);
         if (!$ok) { // Oh dear, will pass to next iteration, but trying a new moniker
             if ($next_num == 1) {

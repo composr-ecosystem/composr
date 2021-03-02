@@ -5,7 +5,7 @@ if (precision_editing)
 	toolbar.push(['Source','-']);
 toolbar.push(['Cut','Copy','Paste',precision_editing?'PasteText':null,precision_editing?'PasteFromWord':null,precision_editing?'PasteCode':null{+START,IF,{$VALUE_OPTION,commercial_spellchecker}},'-','SpellChecker', 'Scayt'{+END}]);
 toolbar.push(['Undo','Redo',precision_editing?'-':null,precision_editing?'Find':null,precision_editing?'Replace':null,(typeof document.body.spellcheck!='undefined')?'spellchecktoggle':null,'-',precision_editing?'SelectAll':null,'RemoveFormat']);
-toolbar.push(['Link','Unlink']);
+toolbar.push(['Link','Unlink','Anchor']);
 toolbar.push(precision_editing?'/':'-');
 var formatting=['Bold','Italic','Strike','-',precision_editing?'Subscript':null,precision_editing?'Superscript':null];
 toolbar.push(formatting);

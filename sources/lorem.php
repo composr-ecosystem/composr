@@ -555,6 +555,31 @@ function lorem_globalise($middle, $message = null, $type = '', $include_header_a
 }
 
 /**
+ * Get tags templating.
+ *
+ * @return Tempcode Tags
+ */
+function placeholder_tags()
+{
+    if (!addon_installed('search')) {
+        return new Tempcode();
+    }
+
+    $_tags = array();
+    foreach (placeholder_array() as $k => $v) {
+        $_tags[] = array(
+            'TAG' => lorem_word(),
+            'LINK_LIMITEDSCOPE' => placeholder_url(),
+            'LINK_FULLSCOPE' => placeholder_url(),
+        );
+    }
+    return do_lorem_template('TAGS', array(
+        'TAGS' => $_tags,
+        'TYPE' => '',
+    ));
+}
+
+/**
  * Get an array of emoticons.
  *
  * @return array Emoticons

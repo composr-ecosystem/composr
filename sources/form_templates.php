@@ -618,7 +618,7 @@ function form_input_codename($pretty_name, $description, $name, $default, $requi
  * @param  ?integer $_maxlength The maximum length of the field (null: default 255)
  * @param  string $type The input type
  * @param  ?string $placeholder The placeholder value for this input field (null: none)
- * @param  ?string $pattern Custom regex pattern (null: none)
+ * @param  ?string $pattern Custom regex pattern, covers whole field value (null: none)
  * @param  ?string $pattern_error Custom regex pattern validation error (null: none)
  * @return Tempcode The input field
  */
@@ -876,7 +876,7 @@ function form_input_line_comcode($pretty_name, $description, $name, $default, $r
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  string $class CSS class for input.
  * @set    line email
- * @param  ?string $pattern Custom regex pattern (null: none)
+ * @param  ?string $pattern Custom regex pattern, covers whole field value (null: none)
  * @param  ?string $pattern_error Custom regex pattern validation error (null: none)
  * @return Tempcode The input field
  */

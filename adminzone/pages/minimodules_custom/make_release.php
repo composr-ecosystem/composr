@@ -98,7 +98,7 @@ function phase_0()
                     $__changes[$git_id] = $change_label;
 
                     $regexp = '/^(Fixed MANTIS-\d+|Implementing MANTIS-\d+|Implemented MANTIS-\d+|Security fix for MANTIS-\d+|New build|Merge branch .*)/';
-                    if (preg_match($regexp, $msg) == 0) {
+                    if (preg_match($regexp, $change_label) == 0) {
                         $dig_deep = true; // We want to search tracker for what this may have been
                     }
                 }
@@ -118,7 +118,7 @@ function phase_0()
 
         // Show Git-only commits
         foreach ($__changes as $git_id => $change_label) {
-            $url = COMPOSR_REPOS_URL . '/commit/' . $id;
+            $url = COMPOSR_REPOS_URL . '/commit/' . $git_id;
             $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
         }
     } else {

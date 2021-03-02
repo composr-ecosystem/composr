@@ -665,6 +665,7 @@ function permissive_groups_cache_signature()
     static $groups_cache = null;
 
     if ($groups_cache === null) {
+        $is_super_admin = $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member());
         $actual_groups = filter_group_permissivity($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()));
         $m_zone = collapse_1d_complexity('zone_name', $GLOBALS['SITE_DB']->query_select('member_zone_access', array('zone_name'), array('member_id' => get_member())));
         $m_page = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_page_access', array('page_name', 'zone_name'), array('member_id' => get_member()), 'ORDER BY zone_name,page_name'));
@@ -673,7 +674,7 @@ function permissive_groups_cache_signature()
         if ((empty($m_zone)) && (empty($m_page)) && (empty($m_privileges)) && (empty($m_categories))) {
             $groups_cache = implode(',', array_map('strval', $actual_groups));
         } else {
-            $groups_cache = json_encode(array($actual_groups, $m_zone, $m_page, $m_privileges, $m_categories));
+            $groups_cache = json_encode(array($actual_groups, $m_zone, $m_page, $m_privileges, $m_categories, $is_super_admin));
         }
 
         if (strlen($groups_cache) > 255) {
