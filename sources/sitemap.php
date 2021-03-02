@@ -1288,11 +1288,6 @@ function get_root_comcode_pages($zone, $include_zone = false)
     disable_php_memory_limit();
 
     $pages = find_all_pages_wrap($zone, false, /*$consider_redirects = */true, /*$show_method = */0, /*$page_type = */'comcode');
-    foreach ($pages as $page => $page_type) {
-        if (isset($non_root[$page])) {
-            unset($pages[$page]);
-        }
-    }
 
     static $rows = array();
     if (!isset($rows[$zone])) {
@@ -1305,6 +1300,12 @@ function get_root_comcode_pages($zone, $include_zone = false)
             $root[$row['the_page']] = $row['p_validated'];
         } else {
             $non_root[$row['the_page']] = $row['p_validated'];
+        }
+    }
+
+    foreach ($pages as $page => $page_type) {
+        if (isset($non_root[$page])) {
+            unset($pages[$page]);
         }
     }
 
