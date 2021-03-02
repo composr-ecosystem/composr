@@ -28,6 +28,10 @@ class image_compression_test_set extends cms_test_case
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
+            if ($theme == '_testing_') {
+                continue;
+            }
+
             foreach (array('images', 'images_custom') as $dir) {
                 $base = get_file_base() . '/themes/' . $theme . '/' . $dir;
                 require_code('files2');
@@ -53,7 +57,9 @@ class image_compression_test_set extends cms_test_case
 
                         list($width, $height) = cms_getimagesize($base . '/' . $file);
                         $area = $width * $height;
-                        $this->assertTrue(floatval($area) / floatval($filesize) > $min_ratio, 'Rubbish compression density on ' . $file . ' theme image');
+                        $ratio = (floatval($area) / floatval($filesize));
+
+                        $this->assertTrue($ratio > $min_ratio, 'Poor compression density on ' . $file . ' theme image; ' . float_format($ratio) . '<=' . float_format($min_ratio));
                     }
                 }
             }
