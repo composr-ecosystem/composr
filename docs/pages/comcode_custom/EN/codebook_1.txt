@@ -571,7 +571,7 @@ class Module_example
         // Bare essentials of this function only here because I'm keeping this
         // example as short as possible. We would normally expect this function
         // to be properly defined.
-        return array('version' => 1,'hack_version' => 1,'hacked_by' => 'Bob');
+        return array('author' => 'Bob', 'organisation' => 'Bob Corp', 'version' => 1,'hack_version' => 1,'hacked_by' => 'Bob');
     }
 
     // This is the function called when the module is loaded up to produce
@@ -593,7 +593,7 @@ class Module_example
     public function screen_a()
     {
         // We normally would use a lang string but this is a short and simple example.
-        $title = get_page_title('Example Title',false); // false='not a lang string'
+        $title = get_screen_title('Example Title',false); // false='not a lang string'
 
         // Produce a URL to screen_b of this module ("this module"=same page, same zone)
         $screen_b_url = build_url(array('page' => '_SELF','type' => 'screen_b'),'_SELF');
@@ -608,7 +608,7 @@ class Module_example
     public function screen_b()
     {
         // We normally would use a lang string but this is a short and simple example.
-        $title = get_page_title('Example Title 2',false); // false='not a lang string'
+        $title = get_screen_title('Example Title 2',false); // false='not a lang string'
 
         // Read in our 'my_checkbox' POST value. Because it's a checkbox, it will only
         // be present if it was actually ticked (checked). So we need to supply a default of 0
@@ -644,23 +644,26 @@ This parameter gets escaped via '*' because it comes in plain-text
 (contains '&' instead of '&amp').
 -->
 <form action="{SCREEN_B_URL*}" method="post">
-<!--
-Put in our checkbox using standard HTML.
-Because Composr is WCAG (accessibility) compliant,
-we need to put in the label.
--->
-<p>
-<label for="my_checkbox">Example checkbox</label>
-<input type="checkbox" value="1" name="my_checkbox" id="my_checkbox" />
-</p>
+	<!-- This catches spam, but most critically it adds the CSRF token which is necessary for POST requests -->
+	{$INSERT_SPAMMER_BLACKHOLE}
 
-<!--
-Our submission button. We use the existing 'proceed_button' CSS class
-as we try to standardise styles in Composr, for consistency.
--->
-<p class="proceed_button">
-<input type="submit" value="Submit form" />
-</p>
+	<!--
+	Put in our checkbox using standard HTML.
+	Because Composr is WCAG (accessibility) compliant,
+	we need to put in the label.
+	-->
+	<p>
+		<label for="my_checkbox">Example checkbox</label>
+		<input type="checkbox" value="1" name="my_checkbox" id="my_checkbox" />
+	</p>
+
+	<!--
+	Our submission button. We use the existing 'proceed_button' CSS class
+	as we try to standardise styles in Composr, for consistency.
+	-->
+	<p class="proceed_button">
+		<input type="submit" value="Submit form" />
+	</p>
 </form>
 [/code]
 
@@ -670,32 +673,32 @@ as we try to standardise styles in Composr, for consistency.
 {TITLE}
 
 <p>
-<!--
-This uses a simple shorthand syntax equivalent to the
-following PHP code...
+	<!--
+	This uses a simple shorthand syntax equivalent to the
+	following PHP code...
 
-echo 'The checkbox was ';
-if (ticked) echo 'ticked'; else echo 'not ticked';
--->
-The checkbox was {$?,{TICKED},ticked,not ticked}.
+	echo 'The checkbox was ';
+	if (ticked) echo 'ticked'; else echo 'not ticked';
+	-->
+	The checkbox was {$?,{TICKED},ticked,not ticked}.
 </p>
 
 <p>
-<!--
-This does the same as above, using the more normal
-'IF directive' syntax. This syntax is more general
-than the above meaning it gets used in more places.
--->
-Repeat, the checkbox was
-{+START,IF,{TICKED}}ticked{+END}
-{+START,IF,{$NOT,{TICKED}}}not ticked{+END}.
+	<!--
+	This does the same as above, using the more normal
+	'IF directive' syntax. This syntax is more general
+	than the above meaning it gets used in more places.
+	-->
+	Repeat, the checkbox was
+	{+START,IF,{TICKED}}ticked{+END}
+	{+START,IF,{$NOT,{TICKED}}}not ticked{+END}.
 </p>
 
 <p>
-<!--
-If we output directly we'll get '1' or '0'.
--->
-It was ticked: {TICKED}.
+	<!--
+	If we output directly we'll get '1' or '0'.
+	-->
+	It was ticked: {TICKED}.
 </p>
 [/code]
 

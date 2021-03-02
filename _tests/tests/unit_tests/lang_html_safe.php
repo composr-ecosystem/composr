@@ -79,7 +79,7 @@ class lang_html_safe_test_set extends cms_test_case
         $forms = array(
             '#do_lang_tempcode\(\'(.+?)\'(,|\))#ims',
             '#do_lang_tempcode\(\\\\\'(.+?)\\\\\'(,|\))#ims',
-            '#get_page_title\(\'(.+?)\'(\,|\))#ims',
+            '#get_screen_title\(\'(.+?)\'(\,|\))#ims',
         );
         foreach ($forms as $php) {
             $this->do_dir(get_file_base(), '', $php, 'php');
