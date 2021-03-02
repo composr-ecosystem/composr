@@ -1807,10 +1807,25 @@ function extract_module_functions(string $path, array $functions, array $params 
             $end = min($end1, $end2) + 2 + $spaces;
             $func = substr($file, $start, $end - $start);
 
-            $new_func = str_replace('function ' . $function . '(', 'function ' . $function . $r . '(', $func) . 'return ' . filter_naughty_harsh($function) . $r . '(' . $_params . '); ';
+            $new_func = str_replace('function ' . $function . '(', 'if (!function_exists(\'' . $function . $r . '\')) { function ' . $function . $r . '(', $func) . ' } return ' . filter_naughty_harsh($function) . $r . '(' . $_params . '); ';
             $out[] = $pre . "\n\n" . $new_func;
 
             if ((strpos($new_func, 'parent::') !== false) || (strpos($new_func, '$this->') !== false)) {
+                return extract_module_functions($path, $functions, $params, true, $class_name);
+            }
+
+            $parse_error = false;
+            try {
+                if (@eval('return true;' . $pre . $new_func) === false) {
+                    $parse_error = true;
+                }
+            } catch (ParseError $e) {
+                $parse_error = true;
+            } catch (Exception $e) {
+                $parse_error = true;
+            }
+
+            if ($parse_error) {
                 return extract_module_functions($path, $functions, $params, true, $class_name);
             }
 

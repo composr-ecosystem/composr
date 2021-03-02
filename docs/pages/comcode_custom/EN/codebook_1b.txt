@@ -17,7 +17,7 @@ The do-next-manager provides a full-screen choice of options, laying out those o
 The do-next-browser is called up by passing in an array of lines. Here is an example of a simplified call to one (the [tt]do_lang[/tt] lookups have been removed -- this is hard-coded as English for simplicity):
 [code="PHP"]
 return do_next_manager(
-	get_page_title('Page Title'),
+	get_screen_title('Page Title'),
 	make_string_tempcode('Text to show on the page'),
 	array(
 		...

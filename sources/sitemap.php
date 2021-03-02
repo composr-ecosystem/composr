@@ -1286,14 +1286,13 @@ function get_root_comcode_pages(string $zone, bool $include_zone = false) : arra
     $non_root = [];
     $root = [];
     foreach ($rows[$zone] as $row) {
-        if ($row['p_parent_page'] == '') {
+        if (($row['p_parent_page'] == '') && (isset($pages[$row['p_parent_page']]))) {
             $root[$row['the_page']] = $row['p_validated'];
         } else {
             $non_root[$row['the_page']] = $row['p_validated'];
         }
     }
 
-    $pages = find_all_pages_wrap($zone, false, /*$consider_redirects = */true, /*$show_method = */0, /*$page_type = */'comcode');
     foreach ($pages as $page => $page_type) {
         if (isset($non_root[$page])) {
             unset($pages[$page]);

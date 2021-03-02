@@ -51,7 +51,11 @@ class _web_resources_test_set extends cms_test_case
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
-            if ($theme == '_unnamed_') {
+            // Exceptions
+            if (in_array($theme, [
+                '_unnamed_',
+                '_testing_',
+            )) {
                 continue;
             }
 
@@ -147,7 +151,11 @@ class _web_resources_test_set extends cms_test_case
     {
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
-            if ($theme == '_unnamed_') {
+            // Exceptions
+            if (in_array($theme, [
+                '_unnamed_',
+                '_testing_',
+            )) {
                 continue;
             }
 
