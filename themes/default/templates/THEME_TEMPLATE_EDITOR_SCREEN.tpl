@@ -22,7 +22,7 @@
 		{$,Instruct Composr to pull in template data dynamically from the POST environment, i.e. do a live preview}
 		<input type="hidden" name="template_preview_op" value="1" />
 
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="template-editor-files-and-tabs">
 			{$,Tree list}

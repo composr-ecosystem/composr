@@ -16,7 +16,7 @@
 	<a id="poll-jump" rel="dovote"></a>
 	{+START,IF_NON_EMPTY,{RESULT_URL}}
 	<form title="{!VOTE}" {+START,IF_NON_EMPTY,{RESULT_URL}}data-ajaxify-target="1"{+END} action="{VOTE_URL*}" method="post" class="poll-form">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 	{+END}
 
 		<div>
@@ -35,7 +35,7 @@
 	<ul class="horizontal-links associated-links-block-group">
 		{+START,IF_NON_EMPTY,{FULL_URL}}<li><a target="_top" href="{FULL_URL*}" title="{!VIEW}: {!POLL} #{PID*}">{!VIEW}</a>{+START,IF,{$NOT,{$MATCH_KEY_MATCH,forum:topicview}}}{+START,IF_PASSED_AND_TRUE,COMMENT_COUNT} <span class="comment-count">{$COMMENT_COUNT,polls,{PID}}</span>{+END}{+END}{+END}</li>
 		{+START,IF_NON_EMPTY,{ARCHIVE_URL}}<li><a rel="archives" target="_top" href="{ARCHIVE_URL*}" title="{!VIEW_ARCHIVE}: {!POLLS}">{!VIEW_ARCHIVE}</a></li>{+END}
-		{+START,IF_NON_EMPTY,{RESULT_URL}}<li><form title="{!POLL_RESULTS}" data-ajaxify-target="1" class="inline" action="{VOTE_URL*}" method="post">{$INSERT_SPAMMER_BLACKHOLE}<button data-click-pd="1" class="button-hyperlink js-click-confirm-forfeit" type="submit">{!POLL_RESULTS}</button></form></li>{+END}
+		{+START,IF_NON_EMPTY,{RESULT_URL}}<li><form title="{!POLL_RESULTS}" data-ajaxify-target="1" class="inline" action="{VOTE_URL*}" method="post">{$INSERT_FORM_POST_SECURITY}<button data-click-pd="1" class="button-hyperlink js-click-confirm-forfeit" type="submit">{!POLL_RESULTS}</button></form></li>{+END}
 		{+START,IF_NON_EMPTY,{SUBMIT_URL}}<li><a rel="add" target="_top" href="{SUBMIT_URL*}">{!ADD}</a></li>{+END}
 	</ul>
 </div></section>

@@ -9,7 +9,7 @@
 {+END}
 
 <form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div class="wide-table-wrap really-long-table-wrap"><table class="columned-table results-table wide-table autosized-table responsive-table">
 		<thead>

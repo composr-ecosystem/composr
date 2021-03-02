@@ -78,7 +78,7 @@
 
 						{+START,IF_NON_EMPTY,{FRIENDS}}
 							<form title="{!FRIEND_LIST}" method="post" action="{$?,{$IS_EMPTY,{URL_REMOVE_FRIENDS}},index.php,{URL_REMOVE_FRIENDS*}}">
-								{$INSERT_SPAMMER_BLACKHOLE}
+								{$INSERT_FORM_POST_SECURITY}
 
 								<div id="friends-wrap">
 									{FRIENDS}
@@ -100,7 +100,7 @@
 							<p>{!MUST_ADD_CONTACTS}</p>
 
 							<form class="form-add-friend js-form-submit-add-friend" data-submit-pd="1" title="{!ADD}: {!FRIEND_LIST}" method="post" action="{URL_ADD_FRIEND*}">
-								{$INSERT_SPAMMER_BLACKHOLE}
+								{$INSERT_FORM_POST_SECURITY}
 
 								<label class="accessibility-hidden" for="friend_username">{!USERNAME}: </label>
 								<div class="input-group">
@@ -117,7 +117,7 @@
 						{CHAT_SOUND}
 
 						<form title="{!SOUND_EFFECTS}" action="index.php" method="post" class="inline sound-effects-form">
-							{$INSERT_SPAMMER_BLACKHOLE}
+							{$INSERT_FORM_POST_SECURITY}
 
 							<p>
 								<label for="play_sound">{!SOUND_EFFECTS}:</label> <input type="checkbox" id="play_sound" name="play_sound" checked="checked" />

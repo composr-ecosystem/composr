@@ -4,7 +4,7 @@
 	{$PARAGRAPH,{TEXT}}
 
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" target="_top" id="catalogue-form" class="js-form-catalogue-edit">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
 			{HIDDEN}

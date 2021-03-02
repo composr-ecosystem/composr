@@ -5,7 +5,7 @@
 		{+START,IF_NON_EMPTY,{ACTION_URL}}
 			<div class="purchase-buy">
 				<form title="{!ADD_TO_CART}" method="post" action="{ACTION_URL*}">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					<button class="btn btn-primary btn-scri buttons--cart-add"{+START,IF,{OUT_OF_STOCK}} data-click-alert="{!OUT_OF_STOCK}" data-click-pd="1"{+END} type="submit">{+START,INCLUDE,ICON}NAME=buttons/cart_add{+END} {!ADD_TO_CART}</button>
 					<input type="hidden" id="quantity" name="quantity" value="1" />
@@ -19,7 +19,7 @@
 			{+START,IF_NON_EMPTY,{PURCHASE_ACTION_URL}}
 				<div class="purchase-buy">
 					<form title="{!BUY_NOW}" method="post" enctype="multipart/form-data" action="{PURCHASE_ACTION_URL*}">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<button class="btn btn-primary btn-scri buttons--cart-checkout" type="submit">{+START,INCLUDE,ICON}NAME=buttons/cart_checkout{+END} {!BUY_NOW}</button>
 					</form>

@@ -29,7 +29,7 @@
 
 				<div class="accessibility-hidden"><label for="tree-list">{!ENTRY}</label></div>
 				<form title="{!PRIMARY_PAGE_FORM}" action="index.php" method="post">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					<input style="display: none" type="text" id="tree-list" name="tree_list" value="{$_GET*,id}" class="form-control js-change-update-details-box" />
 					<div id="tree-list--root-tree-list" class="sitemap-editor">

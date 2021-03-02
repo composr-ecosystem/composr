@@ -10,7 +10,7 @@
 			{MESSAGES}
 
 			<form target="_self" action="{$EXTEND_URL*,{URL},posted=1}" method="post" title="{!SHOUTBOX}">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<div>
 					<p class="accessibility-hidden"><label for="shoutbox-message">{!MESSAGE}</label></p>

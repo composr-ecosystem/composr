@@ -670,7 +670,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
             foreach ($dependencies as $in) {
                 $post_fields->attach(form_input_hidden('install_' . $in . '.tar', $in . '.tar'));
             }
-            $post_fields->attach(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
+            $post_fields->attach(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
 
             if (get_param_string('type', 'browse') == 'addon_install') {
                 $post_fields->attach(form_input_hidden('install_' . $file, $file));
@@ -1241,7 +1241,7 @@ function inform_about_addon_uninstall(string $addon_name, array $also_uninstalli
             foreach ($dependencies as $in) {
                 $post_fields->attach(form_input_hidden('uninstall_' . $in, $in));
             }
-            $post_fields->attach(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
+            $post_fields->attach(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
             if (get_param_string('type', 'browse') == 'addon_uninstall') {
                 $post_fields->attach(form_input_hidden('uninstall_' . $addon_name, $addon_name));
                 $url = static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'multi_action'], '_SELF'));

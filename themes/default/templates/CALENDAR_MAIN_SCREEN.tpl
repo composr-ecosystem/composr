@@ -78,7 +78,7 @@
 				{+START,IF_NON_EMPTY,{EVENT_TYPES_1}}
 					<div class="right event-interest-box"><section class="box"><div class="box-inner">
 						<form title="{!INTERESTS}" method="post" action="{INTERESTS_URL*}">
-							{$INSERT_SPAMMER_BLACKHOLE}
+							{$INSERT_FORM_POST_SECURITY}
 
 							<p><strong>{!DESCRIPTION_INTERESTS}</strong></p>
 
@@ -95,7 +95,7 @@
 				{+START,IF_NON_EMPTY,{EVENT_TYPES_2}}
 					<div class="left event-interest-box"><section class="box"><div class="box-inner">
 						<form title="{!FILTER}" action="{$URL_FOR_GET_FORM*,{FILTER_URL}}" method="get">
-							{$INSERT_SPAMMER_BLACKHOLE}
+							{$INSERT_FORM_POST_SECURITY}
 
 							{$HIDDENS_FOR_GET_FORM,{FILTER_URL}}
 

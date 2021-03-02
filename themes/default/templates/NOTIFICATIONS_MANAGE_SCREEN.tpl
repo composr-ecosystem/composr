@@ -2,7 +2,7 @@
 	{TITLE}
 
 	<form title="{!NOTIFICATIONS}" method="post" action="{ACTION_URL*}">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<input type="hidden" name="submitting" value="1" />
 

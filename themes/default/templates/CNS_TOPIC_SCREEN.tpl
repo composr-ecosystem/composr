@@ -108,7 +108,7 @@
 
 				{+START,IF,{THREADED}}
 					<form class="form-comments-sort" action="{$SELF_URL*}" method="post">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<label for="comments_sort">{!SORT}:</label>
 						<select id="comments_sort" name="comments_sort" class="form-control form-control-sm js-order-change-submit-form">

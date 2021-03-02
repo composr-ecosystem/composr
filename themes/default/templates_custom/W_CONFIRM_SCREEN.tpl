@@ -3,7 +3,7 @@
 <p>{!Q_SURE}</p>
 
 <form method="post" enctype="multipart/form-data" action="{URL*}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<input type="hidden" name="type" value="{COMMAND*}" />
 	<input type="hidden" name="item" value="{ITEM*}" />

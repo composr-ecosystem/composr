@@ -15,7 +15,7 @@
 
 		<form title="{!_LOGIN}" class="js-submit-check-login-username-field" action="{LOGIN_URL*}" method="post" target="_top" autocomplete="on">
 			<div>
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<input type="hidden" name="_active_login" value="1" />
 

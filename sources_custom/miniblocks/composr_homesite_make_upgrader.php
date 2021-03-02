@@ -29,7 +29,7 @@ if (!addon_installed('news')) {
 if (!function_exists('mu_ui')) {
     function mu_ui()
     {
-        $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
+        $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
         $proceed_icon = do_template('ICON', ['_GUID' => '79e1ec738649822eaf1a8c25e7ffbfc8', 'NAME' => 'buttons/proceed']);
         echo <<<END
 <p>

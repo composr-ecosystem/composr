@@ -10,7 +10,7 @@
 
 <div data-view="GitStatus">
 	<form id="git_status_form" action="{$SELF_URL*,0,0,0,type=action,include_ignored={INCLUDE_IGNORED}}" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<input type="hidden" name="action" value="" />
 

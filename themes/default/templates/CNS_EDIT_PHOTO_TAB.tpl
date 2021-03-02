@@ -15,7 +15,7 @@
 
 		{+START,IF_NON_EMPTY,{PHOTO}}
 			<form title="{$WCASE,{!DELETE_PHOTO}}" action="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}#tab--edit--photo" method="post" class="inline">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<p>
 					<input type="hidden" name="delete_photo" value="1" />

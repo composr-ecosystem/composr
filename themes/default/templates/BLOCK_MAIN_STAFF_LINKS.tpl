@@ -25,7 +25,7 @@
 				</ol>
 
 				<form id="staff-links-list-{$GET%,RAND_STAFF_LINKS}-form" title="{!EDIT}: {!LINKS}" action="{URL*}" method="post" style="display: none" aria-hidden="true">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					<div><label for="staff_links_edit" class="accessibility-hidden">{!EDIT}</label><textarea cols="100" rows="30" id="staff_links_edit" name="staff_links_edit" class="form-control form-control-wide">{+START,LOOP,UNFORMATTED_LINKS}{LINKS*}&#10;&#10;{+END}</textarea></div>
 

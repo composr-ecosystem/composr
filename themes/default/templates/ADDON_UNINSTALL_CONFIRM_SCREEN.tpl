@@ -11,7 +11,7 @@
 
 <div class="right">
 	<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<input type="hidden" name="addon_name" value="{NAME*}" />
 

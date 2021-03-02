@@ -1,7 +1,7 @@
 {TITLE}
 
 <form action="{$SELF_URL*}" method="post" title="{!PRIMARY_PAGE_FORM}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<input type="hidden" name="submitting" value="1" />
 

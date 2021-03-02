@@ -55,7 +55,7 @@
 
 				<div class="comments-sorting-box">
 					<form title="{!SORT}" class="inline" action="{$SELF_URL*}" method="post">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<label for="comments_sort">{!SORT_BY}</label>
 						<select class="form-control js-change-select-submit-form" id="comments_sort" name="comments_sort">

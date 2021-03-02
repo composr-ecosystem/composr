@@ -3,7 +3,7 @@
 </p>
 
 <form title="{!PRIMARY_PAGE_FORM}" action="uninstall.php" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div>
 		<p class="lonely-label"><label for="given_password">{!PASSWORD}:</label></p>

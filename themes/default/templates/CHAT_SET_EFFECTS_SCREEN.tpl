@@ -7,7 +7,7 @@
 </p>
 
 <form class="chat-set-effects" title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" enctype="multipart/form-data">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	{HIDDEN}
 

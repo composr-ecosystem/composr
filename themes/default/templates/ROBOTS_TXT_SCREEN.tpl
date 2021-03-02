@@ -2,7 +2,7 @@
 	{TITLE}
 
 	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" autocomplete="off" class="js-form-robots-txt">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
 			<label for="robots_txt" class="accessibility-hidden">{!TEXT}</label>

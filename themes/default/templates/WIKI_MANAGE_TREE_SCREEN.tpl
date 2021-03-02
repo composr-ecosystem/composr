@@ -34,7 +34,7 @@
 		<h2>{!ID_ASSISTANCE_TOOL}</h2>
 
 		<form title="{!PRIMARY_PAGE_FORM}" method="post" action="index.php">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<p><label for="mtp-tree">{!BROWSE_ID_INSERT}</label></p>
 

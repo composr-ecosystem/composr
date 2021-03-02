@@ -5,7 +5,7 @@
 </p>
 
 <form id="main-form" action="{POST_URL*}" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div>
 		<div class="wide-table-wrap"><table class="wide-table results-table autosized-table columned-table responsive-table">

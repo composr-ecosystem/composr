@@ -4,7 +4,7 @@
 	{TITLE}
 
 	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" class="js-form-xml-config">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
 			<label for="xml" class="accessibility-hidden">XML</label>

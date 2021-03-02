@@ -5,7 +5,7 @@
 		<p>{!CURRENTLY_PAUSED,{QUEUE_URL*}}</p>
 
 		<form title="{!UNPAUSE}" action="{UPDATE_URL*}" method="post">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<input type="hidden" name="set_pause" value="0" />
 
@@ -15,7 +15,7 @@
 
 	{+START,IF,{$NOT,{PAUSED}}}
 		<form title="{!PAUSE}" action="{UPDATE_URL*}" method="post">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<input type="hidden" name="set_pause" value="1" />
 

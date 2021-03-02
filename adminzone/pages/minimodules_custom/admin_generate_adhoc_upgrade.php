@@ -272,7 +272,7 @@ if ($type == 'go') {
 $proceed_icon = do_template('ICON', ['_GUID' => '1ca7b77e67c6ba866ca26b77edf36ed9', 'NAME' => 'buttons/proceed']);
 echo '
     <form action="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'auto_probe'], '_SELF'))) . '" method="post">
-        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
+        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
 
         <h2>Auto-probe upgrade settings, and give specialised advice</h2>
 
@@ -295,7 +295,7 @@ echo '
 
 echo '
     <form action="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'go'], '_SELF'))) . '" method="post">
-        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
+        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
 
         <h2>Manually customise upgrade settings</h2>
 

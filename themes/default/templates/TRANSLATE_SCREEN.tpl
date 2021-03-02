@@ -16,7 +16,7 @@
 	{+END}
 
 	<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" class="js-form-submit-modsecurity-workaround">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="wide-table-wrap really-long-table-wrap"><table class="autosized-table columned-table results-table wide-table responsive-table">
 			<thead>

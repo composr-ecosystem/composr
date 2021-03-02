@@ -152,7 +152,7 @@ Here is an example blob of HTML+Tempcode to demonstrate the functionality:
 
     <button type="submit">Send message</button>
 
-    {$INSERT_SPAMMER_BLACKHOLE}
+    {$INSERT_FORM_POST_SECURITY}
 </form>
 [/code]
 
@@ -160,7 +160,7 @@ In this example the subject field has been made required.
 
 If you want to use this outside Composr:
 [indent="30"]
-The Tempcode is just to make it easily portable between sites, no Tempcode is required. You would replace [tt]{$BASE_URL*}[/tt] with your known base URL, replace [tt]{$PAGE_LINK*,:thanks}[/tt] with a static URL, and either remove [tt]{$INSERT_SPAMMER_BLACKHOLE}[/tt] or replace it with whatever Composr outputs for this symbol (as it produces static code based on your website name).
+The Tempcode is just to make it easily portable between sites, no Tempcode is required. You would replace [tt]{$BASE_URL*}[/tt] with your known base URL, replace [tt]{$PAGE_LINK*,:thanks}[/tt] with a static URL, and either remove [tt]{$INSERT_FORM_POST_SECURITY}[/tt] or replace it with whatever Composr outputs for this symbol (as it produces static code based on your website name).
 The required field validation wouldn't work as this is controlled via the Composr JavaScript framework. You'd need to either implement $cms.form.checkForm yourself, or remove/change the onsubmit attribute.
 [/indent]
 

@@ -62,7 +62,7 @@ class csrf_tags_test_set extends cms_test_case
                         continue;
                     }
 
-                    $this->assertTrue(strpos($c, '{$INSERT_SPAMMER_BLACKHOLE') !== false, $file);
+                    $this->assertTrue(strpos($c, '{$INSERT_FORM_POST_SECURITY') !== false, $file);
                 }
             }
             closedir($dh);

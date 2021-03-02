@@ -33,7 +33,7 @@
 			</div>
 
 			<form title="{!CUSTOM_TASKS}" action="{URL*}" method="post" data-submit-pd="1" class="add-custom-task js-submit-custom-task">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<div class="right">
 					<label class="accessibility-hidden" for="recur-interval">{!TASK_LENGTH}</label>

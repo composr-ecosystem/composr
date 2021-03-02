@@ -6,7 +6,7 @@
 		{MESSAGES}
 
 		<form title="{!SHOUTBOX}" data-ajaxify-target="1" action="{URL*}" method="post">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
 				<p class="accessibility-hidden"><label for="shoutbox-message">{!MESSAGE}</label></p>

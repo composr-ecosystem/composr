@@ -10,7 +10,7 @@
 {$REQUIRE_JAVASCRIPT,checking}
 
 <form data-tpl="cnsMemberProfileEdit" data-tpl-params="{+START,PARAMS_JSON,TABS}{_*}{+END}" class="cns-member-profile-edit form-table " title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" enctype="multipart/form-data" id="main-form">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	{HIDDEN}
 

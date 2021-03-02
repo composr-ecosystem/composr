@@ -9,7 +9,7 @@
 	</div>
 	<div class="webstandards-checker-off">
 		<form title="{!PRIMARY_PAGE_FORM}" action="{SUBMIT_URL*}" method="post" id="commandr-form" data-submit-pd="1" class="js-submit-commandr-form-submission">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<div id="command-prompt">
 				<label for="commandr-command">{PROMPT*}</label>

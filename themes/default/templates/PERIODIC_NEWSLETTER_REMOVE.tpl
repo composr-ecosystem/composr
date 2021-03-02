@@ -8,7 +8,7 @@
 	</p>
 
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		{+START,IF_PASSED,HIDDEN}{HIDDEN}{+END}
 

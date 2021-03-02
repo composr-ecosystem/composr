@@ -1,6 +1,6 @@
 <div class="global-middle" data-view="AttachmentsBrowser" data-view-params="{+START,PARAMS_JSON,FIELD_NAME,ID,DESCRIPTION}{_*}{+END}">
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<label for="member_id">{!ATTACHMENTS_OF}:
 		<select id="member_id" name="member_id" class="form-control">
@@ -21,7 +21,7 @@
 
 				{+START,IF,{MAY_DELETE}}
 					<form title="{!DELETE}" class="inline" method="post" action="{DELETE_URL*}">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<input type="hidden" name="delete_{ID*}" value="1" />
 						<button data-cms-confirm-click="{!ARE_YOU_SURE_DELETE}" type="submit" class="btn btn-danger btn-scri">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE}</button>

@@ -4,7 +4,7 @@
 {WARNINGS}
 
 <form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div class="box box---addon-install-confirm-screen"><div class="box-inner">
 		<h2>{!ADDON_FILES}</h2>

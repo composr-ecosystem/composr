@@ -9,7 +9,7 @@
 
 	{+START,IF,{IMMEDIATE}}
 		<form data-tpl="buttonScreenItem" title="{TITLE*}" class="inline" action="{URL*}"{+START,IF_PASSED,TARGET} target="{TARGET*}"{+END} method="post">
-			{+START,IF_PASSED,HIDDEN}{$INSERT_SPAMMER_BLACKHOLE}{HIDDEN}{+END}<button class="btn btn-{$GET*,button_type} btn-scri {$REPLACE,_,-,{$REPLACE,/,--,{IMG}}}" type="submit" title="{FULL_TITLE*}">{+START,INCLUDE,ICON}NAME={IMG}{+END} {TITLE*}</button>
+			{+START,IF_PASSED,HIDDEN}{$INSERT_FORM_POST_SECURITY}{HIDDEN}{+END}<button class="btn btn-{$GET*,button_type} btn-scri {$REPLACE,_,-,{$REPLACE,/,--,{IMG}}}" type="submit" title="{FULL_TITLE*}">{+START,INCLUDE,ICON}NAME={IMG}{+END} {TITLE*}</button>
 		</form>
 	{+END}
 {+END}

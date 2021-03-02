@@ -56,7 +56,7 @@
 	{+END}
 
 	<form action="{POST_URL*}" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
 			{HIDDEN}

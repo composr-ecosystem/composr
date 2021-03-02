@@ -3,7 +3,7 @@
 <h2>{!W_SENTRY_QUESTION}</h2>
 
 <form method="post" enctype="multipart/form-data" action="{$PAGE_LINK*,_SELF:_SELF}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<input type="hidden" name="dx" value="{DX*}" />
 	<input type="hidden" name="dy" value="{DY*}" />

@@ -58,7 +58,7 @@
 			</p>
 
 			<form id="permissions-form" title="{!PRIMARY_PAGE_FORM}" method="post" action="index.php">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<div class="clearfix">
 					<div style="display: none" id="selection-form-fields">

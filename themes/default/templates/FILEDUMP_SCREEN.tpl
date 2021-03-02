@@ -32,7 +32,7 @@
 				{+END}
 
 				<form class="js-submit-check-filedump-selections" title="{!ACTION}" action="{POST_URL*}">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{THUMBNAILS}}
 						<div class="clearfix filedump-thumbnails">
@@ -87,7 +87,7 @@
 				{+END}
 
 				<form class="js-submit-check-filedump-selections" title="{!ACTION}" action="{POST_URL*}" method="post">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					{+START,IF_NON_EMPTY,{LISTING}}
 						{LISTING}

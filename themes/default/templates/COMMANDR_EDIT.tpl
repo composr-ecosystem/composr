@@ -4,7 +4,7 @@
 
 <div data-tpl="commandrEdit" data-tpl-params="{+START,PARAMS_JSON,FILE}{_*}{+END}">
 	<form title="{!EDIT}" action="{SUBMIT_URL*}" class="js-submit-commandr-form-submission" data-submit-pd="1" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
 			<p class="lonely-label"><label for="edit_content{$GET%,rndx}">{!EDIT}:</label></p>

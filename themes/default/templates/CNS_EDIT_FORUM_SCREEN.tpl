@@ -5,7 +5,7 @@
 </p>
 
 <form title="{!PRIMARY_PAGE_FORM}" method="post" action="{REORDER_URL*}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	{ROOT_FORUM}
 

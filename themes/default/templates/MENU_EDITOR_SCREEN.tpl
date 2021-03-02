@@ -16,7 +16,7 @@
 			</form>
 
 			<form title="{!PRIMARY_PAGE_FORM}" id="edit-form" action="{URL*}" method="post" class="js-submit-modsecurity-workaround">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<div class="clearfix menu-edit-main">
 					<div class="menu-editor-rh-side">
@@ -104,7 +104,7 @@
 						<p>{!ABOUT_DELETE_MENU}</p>
 
 						<form title="{!DELETE}" action="{DELETE_URL*}" method="post">
-							{$INSERT_SPAMMER_BLACKHOLE}
+							{$INSERT_FORM_POST_SECURITY}
 
 							<p class="proceed-button">
 								<input type="hidden" name="confirm" value="1" />

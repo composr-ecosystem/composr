@@ -16,7 +16,7 @@
 	</div></div>
 
 	<form title="{!PRIMARY_PAGE_FORM}" class="cns-join-1" method="post" action="{URL*}">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<p class="cns-join-declarations">
 			{+START,LOOP,DECLARATIONS}

@@ -645,7 +645,7 @@ This parameter gets escaped via '*' because it comes in plain-text
 (contains '&' instead of '&amp').
 -->
 <form action="{SCREEN_B_URL*}" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<!--
 	Put in our checkbox using standard HTML.

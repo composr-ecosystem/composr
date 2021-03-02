@@ -34,7 +34,7 @@
 				<h2>{!ADD_MEMBER_TO_GROUP}</h2>
 
 				<form title="{!ADD_MEMBER_TO_GROUP}" class="js-form-submit-add-member-to-group" action="{ADD_URL*}" method="post">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					<div>
 						<label for="vga-username">{!USERNAME}: </label>

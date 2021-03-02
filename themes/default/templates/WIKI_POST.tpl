@@ -70,7 +70,7 @@
 					{+START,IF,{$EQ,{$CONFIG_OPTION,is_on_rating},1}}
 						<div class="wiki-post-below">
 							<form title="{!RATING}" class="inline" action="{RATE_URL*}" method="post">
-								{$INSERT_SPAMMER_BLACKHOLE}
+								{$INSERT_FORM_POST_SECURITY}
 
 								{RATING}
 							</form>

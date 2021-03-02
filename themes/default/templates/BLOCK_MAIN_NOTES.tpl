@@ -17,7 +17,7 @@
 
 			<div class="toggleable-tray js-tray-content">
 				<form title="{$STRIP_TAGS,{TITLE}}" method="post" action="{URL*}" class="js-form-block-main-notes">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					<div class="accessibility-hidden"><label for="n-block-{TITLE|}">{!NOTES}</label></div>
 					<div>

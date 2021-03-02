@@ -5,7 +5,7 @@
 </p>
 
 <form title="{!NOTIFICATIONS}" method="post" action="{ACTION_URL*}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div>
 		{+START,IF_NON_EMPTY,{$TRIM,{TREE}}}

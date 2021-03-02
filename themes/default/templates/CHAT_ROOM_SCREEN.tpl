@@ -16,7 +16,7 @@
 			<div class="clearfix">
 				<div class="left">
 					<form title="{!MESSAGE}" action="{MESSAGES_PHP*}?action=post&amp;room_id={CHATROOM_ID*}" method="post" class="inline">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<div style="display: inline;">
 							<p class="accessibility-hidden"><label for="post">{!MESSAGE}</label></p>
@@ -37,7 +37,7 @@
 
 				<div class="left">
 					<form title="{SUBMIT_VALUE*}" action="{MESSAGES_PHP*}?action=post&amp;room_id={CHATROOM_ID*}" method="post" class="inline">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<button type="button" class="btn btn-primary btn-sm buttons--send js-click-post-chat-message">{+START,INCLUDE,ICON}NAME=buttons/send{+END} {SUBMIT_VALUE*}</button>
 					</form>
@@ -87,7 +87,7 @@
 	</p></div>
 
 	<form title="{$STRIP_TAGS,{!CHAT_OPTIONS_DESCRIPTION}}" class="below-main-chat-window js-form-submit-check-chat-options" method="post" action="{OPTIONS_URL*}">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="box box---chat-screen-options box-prominent"><div class="box-inner">
 			<h2>{!OPTIONS}</h2>

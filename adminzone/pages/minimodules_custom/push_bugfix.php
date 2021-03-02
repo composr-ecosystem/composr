@@ -272,7 +272,7 @@ if ((empty($git_found)) && (!$do_full_scan)) {
 
 $post_url = escape_html(static_evaluate_tempcode(get_self_url()));
 
-$spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
+$spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
 
 $categories = get_tracker_categories();
 if ($categories === null) {

@@ -10,7 +10,7 @@
 {+END}
 
 <form method="post" enctype="multipart/form-data" action="{$PAGE_LINK*,_SELF:_SELF}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<input type="hidden" name="type" value="{PAGE_TYPE*}" />
 	{+START,IF_PASSED,PARAM}

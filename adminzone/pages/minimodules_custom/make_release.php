@@ -152,7 +152,7 @@ function phase_0()
     $proceed_icon = do_template('ICON', ['_GUID' => '114667b8c304d0363000bdb3b0869471', 'NAME' => 'buttons/proceed']);
     echo '
     <form method="post" action="' . escape_html($post_url) . '">
-        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
+        ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
 
         <p>I am going to ask you some questions which will allow you to quickly make the decisions needed to get the whole release out without any additional thought. If you don\'t like these questions (such as finding them personally intrusive), I don\'t care&hellip; I am merely a machine, a device, working against a precomputed script. Now that is out of the way&hellip;</p>
         <hr />
@@ -218,7 +218,7 @@ function phase_1_pre()
 
     echo '
         <form action="' . escape_html($post_url) . '" method="post">
-            ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
+            ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
 
             <input type="hidden" name="intermediary_tasks" value="1" />
     ';
@@ -270,7 +270,7 @@ function phase_1()
     $proceed_icon = do_template('ICON', ['_GUID' => '11cce82f514c6707e2ad35926b81c6c6', 'NAME' => 'buttons/proceed']);
     echo '
         <form action="' . escape_html($post_url) . '" method="post">
-            ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
+            ' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '
 
             <input type="hidden" name="needed" value="' . escape_html($needed) . '" />
             <input type="hidden" name="justification" value="' . escape_html($justification) . '" />
@@ -331,7 +331,7 @@ function phase_2()
             Tag the release with <kbd>git commit -a -m "New build"; git push; git tag ' . escape_html(str_replace(' ', '-', $version_dotted)) . ' ; git push origin ' . escape_html(str_replace(' ', '-', $version_dotted)) . '</kbd>
         </li>
         <li>
-            <strong>Add to compo.sr</strong>: Run the <form target="_blank" style="display: inline" action="' . escape_html($push_url) . '" method="post">' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '<input type="hidden" name="changes" value="' . escape_html($changes) . '" /><button class="hyperlink-button" type="submit">compo.sr setup script</button></form>. Note if you are re-releasing, this will still work &ndash; it will update existing entries appropriately.
+            <strong>Add to compo.sr</strong>: Run the <form target="_blank" style="display: inline" action="' . escape_html($push_url) . '" method="post">' . static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY')) . '<input type="hidden" name="changes" value="' . escape_html($changes) . '" /><button class="hyperlink-button" type="submit">compo.sr setup script</button></form>. Note if you are re-releasing, this will still work &ndash; it will update existing entries appropriately.
         </li>
         <li>
             <strong>Test</strong>: Go to <a target="_blank" href="https://compo.sr/download.htm">Composr download page</a> to ensure the right packages are there and no error messages display.

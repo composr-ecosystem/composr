@@ -49,7 +49,7 @@
 			{+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 
 			<form title="{!PRIMARY_PAGE_FORM}" id="main-form" method="post" action="{URL_EDIT_FILE*}" enctype="multipart/form-data" target="_top">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<div>
 					{HIDDEN_EDIT_FILE}
@@ -83,7 +83,7 @@
 			<p>{!THEME_IMAGE_RECOLOUR_DESCRIPTION}</p>
 
 			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<div>
 					{HIDDEN_THEMEWIZARD}

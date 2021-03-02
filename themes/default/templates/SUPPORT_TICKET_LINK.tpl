@@ -61,7 +61,7 @@
 	{+START,IF_NON_EMPTY,{$GET,ticket_merge_into}}{+START,IF,{$HAS_PRIVILEGE,support_operator}}
 		<td>
 			<form title="{!MERGE_SUPPORT_TICKETS}" action="{$PAGE_LINK*,_SEARCH:tickets:merge:from={$GET,ticket_merge_into}:to={ID}}" method="post">
-				{$INSERT_SPAMMER_BLACKHOLE}
+				{$INSERT_FORM_POST_SECURITY}
 
 				<button class="btn btn-primary btn-scri admin--merge" type="submit" title="{!MERGE_SUPPORT_TICKETS}">{+START,INCLUDE,ICON}NAME=admin/merge{+END} {!_MERGE}</button>
 			</form>

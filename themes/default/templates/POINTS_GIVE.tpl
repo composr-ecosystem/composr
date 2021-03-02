@@ -12,7 +12,7 @@
 		</p>
 
 		<form title="{!GIVE_POINTS}" method="post" class="js-submit-check-form" action="{GIVE_URL*}#tab--points">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
 				<label class="accessibility-hidden" for="give-amount">{!AMOUNT}</label>
@@ -41,7 +41,7 @@
 		</p>
 
 		<form title="{!GIVE_POINTS}" method="post" class="js-submit-check-form" action="{GIVE_URL*}#tab--points">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
 				<div class="points-give-shared-options">

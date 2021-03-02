@@ -2,7 +2,7 @@
 	{CONTENT}
 
 	<form class="chat-sound-effects-checkbox inline" title="{!SOUND_EFFECTS}" action="index.php" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<p>
 			<label for="play_sound">{!SOUND_EFFECTS}:</label> <input type="checkbox" id="play_sound" name="play_sound" checked="checked" />

@@ -1499,7 +1499,7 @@ where:
 			<td>If a [/html]{$IS_MAINTAINED,project_honeypot,Project Honeypot}[html] script is installed, this will insert a link to it, using a different method for different page names to increase the likeliness of a bot snag.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$INSERT_SPAMMER_BLACKHOLE}</td>
+			<td>{$INSERT_FORM_POST_SECURITY}</td>
 			<td>If spammer blackholes are enabled, this inserts a field into a form to create the blackhole. Blackholes allow automatic detection and banning of would-be spammers. Additionally, the CSRF-prevention security token is injected via this symbol.</td>
 		</tr>
 		<tr style="background: #FFDDDD">

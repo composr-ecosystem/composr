@@ -59,7 +59,7 @@
 				<hr class="spaced-rule" />
 
 				<form target="_self" action="{$SELF_URL*,0,0,keep_mobile={$MOBILE}}" method="post">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					{HIDDEN}
 

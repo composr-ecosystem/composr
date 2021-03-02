@@ -23,7 +23,7 @@
 		</p>
 
 		<form title="{!GIVE_POINTS}" method="post" class="js-submit-check-form" action="{GIVE_URL*}#tab--points">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<p>
 				<label for="give-reason-pre">
@@ -63,7 +63,7 @@
 		</p>
 
 		<form title="{!GIVE_POINTS}" method="post" class="js-submit-check-form" action="{GIVE_URL*}#tab--points">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
 				<div class="points-give-shared-options" style="margin-top: 0">

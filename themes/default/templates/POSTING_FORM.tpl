@@ -4,7 +4,7 @@
 	{+END}
 
 	<form title="{!PRIMARY_PAGE_FORM}" id="posting-form" method="post" enctype="multipart/form-data" action="{URL*}" class="{+START,IF_PASSED_AND_TRUE,MODSECURITY_WORKAROUND}js-submit-modsec-workaround{+END}">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<div>
 			<div class="wide-table-wrap"><table class="map-table form-table wide-table">

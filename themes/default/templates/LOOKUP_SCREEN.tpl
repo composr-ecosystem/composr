@@ -114,7 +114,7 @@
 
 {+START,IF_NON_EMPTY,{IP_LIST}}
 	<form title="{!PRIMARY_PAGE_FORM}" action="{$SELF_URL*}" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<p class="lonely-label">
 			{!IP_LIST}

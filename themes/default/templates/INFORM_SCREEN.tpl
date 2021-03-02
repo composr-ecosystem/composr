@@ -12,7 +12,7 @@
 
 {+START,IF_PASSED,BACK_URL}
 <form class="back-button" title="{!NEXT_ITEM_BACK}" action="{BACK_URL*}" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div>
 		{+START,IF_PASSED,FIELDS}{FIELDS}{+END}

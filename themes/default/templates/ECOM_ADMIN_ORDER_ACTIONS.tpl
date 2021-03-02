@@ -2,7 +2,7 @@
 
 <div class="vertical-align" data-tpl="ecomAdminOrderActions">
 	<form title="{!ACTION}: {ORDER_TITLE*}" method="post" action="{ORDER_ACTUALISE_URL*}" data-submit-pd="1" class="js-submit-confirm-admin-order-actions">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<label class="accessibility-hidden" for="action">{!ACTION}</label>
 

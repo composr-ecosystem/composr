@@ -1,7 +1,7 @@
 {TITLE}
 
 <form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<div class="wide-table-wrap"><table class="form-table columned-table wide-table privileges responsive-table responsive-table-bolded-first-column">
 		<colgroup>

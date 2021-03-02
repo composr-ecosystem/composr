@@ -12,7 +12,7 @@
 		<h3>{!NEWSLETTER}{$?,{$NEQ,{NEWSLETTER_TITLE},{!GENERAL}},: {NEWSLETTER_TITLE*}}</h3>
 
 		<form class="js-form-newsletter-email-subscribe" title="{!NEWSLETTER}" action="{URL*}" method="post">
-			{$INSERT_SPAMMER_BLACKHOLE}
+			{$INSERT_FORM_POST_SECURITY}
 
 			{+START,IF_NON_PASSED_OR_FALSE,BUTTON_ONLY}
 				<p class="accessibility-hidden"><label for="baddress">{!EMAIL_ADDRESS}</label></p>

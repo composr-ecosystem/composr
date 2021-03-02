@@ -29,7 +29,7 @@
 								{+START,IF,{HAS_UP_ROOM}}
 									<div>
 										&uarr;<br />
-										<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_SPAMMER_BLACKHOLE}<input type="hidden" name="type" value="up" /><button class="button-hyperlink" type="submit">{UP_ROOM*}</button></form>
+										<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_FORM_POST_SECURITY}<input type="hidden" name="type" value="up" /><button class="button-hyperlink" type="submit">{UP_ROOM*}</button></form>
 									</div>
 								{+END}
 								{+START,IF,{$NOT,{HAS_UP_ROOM}}}
@@ -48,7 +48,7 @@
 						<td>
 							{+START,IF,{HAS_LEFT_ROOM}}
 								<div style="text-align: right">
-									&larr;&nbsp;<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_SPAMMER_BLACKHOLE}<input type="hidden" name="type" value="left" /><button class="button-hyperlink" type="submit">{LEFT_ROOM*}</button></form>
+									&larr;&nbsp;<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_FORM_POST_SECURITY}<input type="hidden" name="type" value="left" /><button class="button-hyperlink" type="submit">{LEFT_ROOM*}</button></form>
 								</div>
 							{+END}
 							{+START,IF,{$NOT,{HAS_LEFT_ROOM}}}
@@ -63,7 +63,7 @@
 						<td>
 							{+START,IF,{HAS_RIGHT_ROOM}}
 								<div style="text-align: left">
-									&nbsp;<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_SPAMMER_BLACKHOLE}<input type="hidden" name="type" value="right" /><button class="button-hyperlink" type="submit">{RIGHT_ROOM*}</button></form>&nbsp;&rarr;
+									&nbsp;<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_FORM_POST_SECURITY}<input type="hidden" name="type" value="right" /><button class="button-hyperlink" type="submit">{RIGHT_ROOM*}</button></form>&nbsp;&rarr;
 								</div>
 							{+END}
 							{+START,IF,{$NOT,{HAS_RIGHT_ROOM}}}
@@ -81,7 +81,7 @@
 							<div style="text-align: center">
 								{+START,IF,{HAS_DOWN_ROOM}}
 									<div>
-										<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_SPAMMER_BLACKHOLE}<input type="hidden" name="type" value="down" /><button class="button-hyperlink" type="submit">{DOWN_ROOM*}</button></form><br />
+										<form target="_self" class="inline" method="post" action="{$PAGE_LINK*,_SELF:_SELF}">{$INSERT_FORM_POST_SECURITY}<input type="hidden" name="type" value="down" /><button class="button-hyperlink" type="submit">{DOWN_ROOM*}</button></form><br />
 										<div class="buildr-arrow">
 											&darr;
 										</div>
@@ -133,7 +133,7 @@
 					<iframe {$?,{$BROWSER_MATCHES,ie}, frameBorder="0" scrolling="no"} title="{!MESSAGES}" src="{$FIND_SCRIPT*,wmessages}{$KEEP*,1}">{!MESSAGES}</iframe> {EMOTICON_CHOOSER}
 				</div>
 				<form method="post" id="posting-form" action="{$PAGE_LINK*,_SELF:_SELF}">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					{$INSERT_FORM_POST_SECURITY}
 
 					<div><input id="post" class="form-control" name="post" type="text" /> <input name="type" type="hidden" value="message" /> <select name="tmember" size="1">
 						<option value="0">
@@ -257,7 +257,7 @@
 
 				<div class="toggleable-tray js-tray-content" style="{HIDE_ACTIONS*}"{+START,IF,{HIDE_ACTIONS}} aria-expanded="false"{+END}>
 					<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<table class="columned-table results-table wide-table autosized-table">
 							<colgroup>
@@ -591,7 +591,7 @@
 				<div class="toggleable-tray js-tray-content" style="{HIDE_MODIFICATIONS*}"{+START,IF,{HIDE_MODIFICATIONS}} aria-expanded="false"{+END}>
 					{+START,IF_NON_EMPTY,{ITEMS_OWNED}}
 						<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
-							{$INSERT_SPAMMER_BLACKHOLE}
+							{$INSERT_FORM_POST_SECURITY}
 
 							<label for="item">{!W_ITEMS}</label>: {ITEMS_OWNED} <input type="hidden" name="type" value="edititem" />
 							<button class="btn btn-primary btn-scri js-click-set-type-edititem admin--edit" type="submit">{+START,INCLUDE,ICON}NAME=admin/edit{+END} {!W_EDIT_ITEM}</button>
@@ -600,7 +600,7 @@
 
 						{+START,IF,{IS_STAFF}}
 							<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
-								{$INSERT_SPAMMER_BLACKHOLE}
+								{$INSERT_FORM_POST_SECURITY}
 
 								<label for="item">{!FROM}</label>: {ITEMS_OWNED} <label for="item2">{!TO}</label>: {ITEMS_OWNED_2} <input type="hidden" name="type" value="mergeitems" /> <button class="btn btn-primary btn-scri admin--merge" type="submit">{!W_MERGE_ITEMS}</button>
 							</div></form>

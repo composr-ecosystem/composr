@@ -18,7 +18,7 @@
             window.google.load('search', '1', {language: 'en'});
             window.google.setOnLoadCallback(function () {
                 var cseForm = document.getElementById('cse-search-form');
-                cseForm.querySelector('.gsc-search-box').innerHTML += '{$INSERT_SPAMMER_BLACKHOLE;^}';
+                cseForm.querySelector('.gsc-search-box').innerHTML += '{$INSERT_FORM_POST_SECURITY;^}';
             });
         });
     };

@@ -1,7 +1,7 @@
 {TITLE}
 
 <form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	<p class="lonely-label">
 		{!DELURK_CONFIRM}

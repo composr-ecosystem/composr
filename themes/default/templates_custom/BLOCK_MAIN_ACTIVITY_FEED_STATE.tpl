@@ -6,7 +6,7 @@
 	{+END}
 
 	<form id="fp-status-form" class="js-form-status-updates" action="#!" method="post">
-		{$INSERT_SPAMMER_BLACKHOLE}
+		{$INSERT_FORM_POST_SECURITY}
 
 		<input type="hidden" name="zone" value="{$?,{$ZONE},{$ZONE*},frontpage}" />
 		<input type="hidden" name="page" value="{$PAGE*}" />

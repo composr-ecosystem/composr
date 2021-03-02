@@ -15,7 +15,7 @@
 			<div class="cns-information-bar clearfix">
 				<div class="cns-guest-column cns-guest-column-a">
 					<form title="{!_LOGIN}" class="inline js-submit-check-field-login-username" action="{LOGIN_URL*}" method="post" autocomplete="on">
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{$INSERT_FORM_POST_SECURITY}
 
 						<input type="hidden" name="_active_login" value="1" />
 

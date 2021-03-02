@@ -5,7 +5,7 @@
 </p>
 
 <form action="{INSTALL_URL*}" method="post">
-	{$INSERT_SPAMMER_BLACKHOLE}
+	{$INSERT_FORM_POST_SECURITY}
 
 	{HIDDEN}
 	<input type="hidden" name="ftp_folder" value="{FTP_FOLDER*}" />
