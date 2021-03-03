@@ -15,7 +15,7 @@
         var frameId = 'preview-frame',
             html = strVal(params.htmlPreview);
 
-        setTimeout(function () {
+        document.getElementById(frameId).onload = function() {
             var adjustedPreview = html.replace(/<!DOCTYPE[^>]*>/i, '').replace(/<html[^>]*>/i, '').replace(/<\/html>/i, '');
             var de = window.frames[frameId].document.documentElement;
             var body = de.querySelector('body');
@@ -35,7 +35,7 @@
             }
 
             $dom.resizeFrame(frameId, 300);
-        }, 500);
+        };
 
         setInterval(function () {
             $dom.resizeFrame(frameId, 300);
