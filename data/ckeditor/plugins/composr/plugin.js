@@ -30,7 +30,9 @@
 					}
 
 					var psoSelector = '#post-special-options--' + editor.element.$.id + ', #post-special-options2--' + editor.element.$.id + ', .post-special-options'/*A parent matching any of these*/;
-					$dom.hide($dom.parent(element, psoSelector));
+					if ($dom.$(psoSelector)) {
+						$dom.hide($dom.parent(element, psoSelector));
+					}
 				}
 			});
 
