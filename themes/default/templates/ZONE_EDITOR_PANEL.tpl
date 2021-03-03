@@ -59,7 +59,7 @@
 				</p>
 				{+START,IF_NON_EMPTY,{COMCODE_EDITOR}}
 					<div>
-						<div class="post-special-options">
+						<div class="post-special-options--{NAME*}">
 							<div class="clearfix" role="toolbar">
 								{COMCODE_EDITOR}
 							</div>

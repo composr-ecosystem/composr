@@ -72,6 +72,9 @@ var editorSettings = {
 
 if ($cms.configOption('eager_wysiwyg') === 1) {
     editorSettings.enterMode = window.CKEDITOR.ENTER_BR;
+} else {
+    editorSettings.enterMode = window.CKEDITOR.ENTER_P;
+    editorSettings.autoParagraph = false;
 }
 
 if ($cms.configOption('autogrow') === 1) {

@@ -18,9 +18,7 @@ Spellcheck toggle button. Works on Chrome/Firefox/Safari/IE10
             editor.setData(oldData); // Needed to force spellchecker reset
 
             if (showMessage) {
-                fauxmodal_alert(window.lang_SPELLCHECKER_ENABLED,function() {
-                     editor.focus();
-                },window.lang_SPELLCHECKER_LABEL);
+                $cms.ui.alert(window.lang_SPELLCHECKER_ENABLED,window.lang_SPELLCHECKER_LABEL).then(function() { editor.focus(); });
             }
 
             document.body.oncontextmenu = function(event) { // Runs before CKEditor handler

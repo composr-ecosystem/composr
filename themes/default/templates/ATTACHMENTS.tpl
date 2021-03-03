@@ -3,7 +3,7 @@
 
 <div data-tpl="attachments" data-tpl-params="{+START,PARAMS_JSON,ATTACHMENT_TEMPLATE,POSTING_FIELD_NAME,NUM_ATTACHMENTS,MAX_ATTACHMENTS,FILTER,POSTING_FIELD_NAME}{_*}{+END}">
 	{+START,IF,{$AND,{TRUE_ATTACHMENT_UI},{$BROWSER_MATCHES,simplified_attachments_ui}}}
-		<div id="js-attachment-store" class="accessibility-hidden">
+		<div id="js-attachment-store--{POSTING_FIELD_NAME%}" class="accessibility-hidden">
 			{$,plupload will attach upload code to here}
 		</div>
 
@@ -13,7 +13,7 @@
 	{+END}
 
 	{+START,IF,{$NAND,{TRUE_ATTACHMENT_UI},{$BROWSER_MATCHES,simplified_attachments_ui}}}
-		<div id="js-attachment-store">
+		<div id="js-attachment-store--{POSTING_FIELD_NAME%}">
 			{ATTACHMENTS}
 		</div>
 

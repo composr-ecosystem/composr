@@ -32,7 +32,7 @@
      * @param postingFieldName
      */
     function addAttachment(startNum, postingFieldName) {
-        var addTo = document.getElementById('js-attachment-store');
+        var addTo = document.getElementById('js-attachment-store--' + postingFieldName);
 
         window.numAttachments++;
 
@@ -45,7 +45,7 @@
 
         // Rebuild uploader button, if we have a singular button. NB: The window.rebuildAttachmentButtonForNext type check is important, don't remove.
         if (typeof window.rebuildAttachmentButtonForNext === 'function') {
-            window.rebuildAttachmentButtonForNext(postingFieldName);
+            window.rebuildAttachmentButtonForNext();
         }
 
         $dom.triggerResize();

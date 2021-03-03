@@ -29,20 +29,21 @@
 						});
 					}
 
-					$dom.hide($dom.parent(element, '#post-special-options, #post-special-options2, .post-special-options'/*A parent matching any of these*/));
+					var psoSelector = '#post-special-options--' + editor.element.$.id + ', #post-special-options2--' + editor.element.$.id + ', .post-special-options'/*A parent matching any of these*/;
+					$dom.hide($dom.parent(element, psoSelector));
 				}
 			});
 
 			var usesPlupload = false,
-				aub = document.getElementById('js-attachment-upload-button'),
+				aub = document.getElementById('js-attachment-upload-button--' + editor.element.$.id),
 				doingAttachmentUploads = Boolean(aub) && (aub.classList.contains('for-field-' + editor.element.$.id));
 
-			if ((typeof window.rebuildAttachmentButtonForNext === 'function') && doingAttachmentUploads) { // NB: The window.rebuildAttachmentButtonForNext type check is important, don't remove.
+			if ((typeof window['rebuildAttachmentButtonForNext__' + editor.element.$.id] === 'function') && doingAttachmentUploads) { // NB: The window.rebuildAttachmentButtonForNext type check is important, don't remove.
 				if (!aub || $dom.notDisplayed($dom.parent(aub, '#post-special-options, #post-special-options2, .post-special-options'))) { // If attachment button was not placed elsewhere
 					// Attach Plupload to the Image button on the WYSIWYG editor
 					setTimeout(function () {
 						var imageButton = document.getElementById('cke_' + editor.element.$.id).querySelector('.cke_button__composr_image');
-						window.rebuildAttachmentButtonForNext(editor.element.$.id, imageButton.id);
+						window['rebuildAttachmentButtonForNext__' + editor.element.$.id](imageButton.id);
 					}, 0);
 
 					usesPlupload = true;

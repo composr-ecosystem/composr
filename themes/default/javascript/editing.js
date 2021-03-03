@@ -110,8 +110,8 @@
         function _toggleWysiwyg() {
             var isWysiwygOn = $editing.wysiwygOn(),
                 forms = document.getElementsByTagName('form'),
-                so = document.getElementById('post-special-options'),
-                so2 = document.getElementById('post-special-options2');
+                so = document.getElementById('post-special-options--' + name),
+                so2 = document.getElementById('post-special-options2--' + name);
 
             if (isWysiwygOn) {
                 // Find if the WYSIWYG has anything in it - if not, discard
@@ -225,7 +225,7 @@
                 textarea.readOnly = false;
 
                 if (typeof window.rebuildAttachmentButtonForNext === 'function') { // NB: The window.rebuildAttachmentButtonForNext type check is important, don't remove.
-                    window.rebuildAttachmentButtonForNext(id, 'js-attachment-upload-button');
+                    window.rebuildAttachmentButtonForNext();
                 }
 
                 // Unload editor
@@ -330,18 +330,6 @@
             return Promise.resolve();
         }
 
-        var so = document.getElementById('post-special-options'),
-            so2 = document.getElementById('post-special-options2');
-
-        if (!postingForm.elements['post'] || postingForm.elements['post'].className.includes('wysiwyg')) {
-            if (so) {
-                $dom.hide(so);
-            }
-            if (so2) {
-                $dom.show(so2);
-            }
-        }
-
         var promiseCalls = [];
         arrVal(postingForm.elements).forEach(function (el) {
             if ((el.type === 'textarea') && el.classList.contains('wysiwyg')) {
@@ -356,6 +344,18 @@
         function loadHtmlForTextarea(postingForm, textarea, ajaxCopy) {
             return new Promise(function (resolvePromise) {
                 var id = textarea.id, indicator;
+
+                var so = document.getElementById('post-special-options--' + id),
+                    so2 = document.getElementById('post-special-options2--' + id);
+
+                if (!postingForm.elements['post'] || postingForm.elements['post'].className.includes('wysiwyg')) {
+                    if (so) {
+                        $dom.hide(so);
+                    }
+                    if (so2) {
+                        $dom.show(so2);
+                    }
+                }
 
                 if (document.getElementById(id + '__is_wysiwyg')) {
                     indicator = document.getElementById(id + '__is_wysiwyg');
@@ -494,7 +494,7 @@
                     info.get('txtCellPad')['default'] = '0';
                 }
             });
-            if (document.getElementById('js-attachment-store')) {
+            if (document.getElementById('js-attachment-store--' + element.id)) {
                 window.lang_PREFER_CMS_ATTACHMENTS = '{!javascript:PREFER_CMS_ATTACHMENTS;^}';
                 window.lang_INPUTSYSTEM_RAW_IMAGE='{!javascript:INPUTSYSTEM_RAW_IMAGE;^}';
                 window.lang_INPUTSYSTEM_ATTACHMENT='{!javascript:INPUTSYSTEM_ATTACHMENT;^}';

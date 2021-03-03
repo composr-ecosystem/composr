@@ -400,10 +400,10 @@
             window.rebuildAttachmentButtonForNext = rebuildAttachmentButtonForNext; // Must only be defined when 'simplified_attachments_ui' is enabled
 
             $dom.load.then(function () {
-                var aub = document.getElementById('js-attachment-upload-button');
+                var aub = document.getElementById('js-attachment-upload-button--' + postingFieldName);
                 if (aub && (aub.classList.contains('for-field-' + postingFieldName))) {
                     // Attach Plupload with #js-attachment-upload-button as browse button
-                    window.rebuildAttachmentButtonForNext(postingFieldName, 'js-attachment-upload-button');
+                    window.rebuildAttachmentButtonForNext();
                 }
             });
         } else {
@@ -421,11 +421,7 @@
          * @param _postingFieldName
          * @param attachmentBrowseButton
          */
-        function rebuildAttachmentButtonForNext(_postingFieldName, attachmentBrowseButton) {
-            if (_postingFieldName !== postingFieldName) {
-                return;
-            }
-
+        function rebuildAttachmentButtonForNext(attachmentBrowseButton) {
             if (attachmentBrowseButton === undefined) {
                 attachmentBrowseButton = lastAttachmentBrowseButton; // Use what was used last time
             }

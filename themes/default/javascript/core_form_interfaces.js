@@ -37,7 +37,7 @@
         },
 
         toggleSubordFields: function (e, target) {
-            toggleSubordinateFields(target, 'fes-attachments-help');
+            toggleSubordinateFields(target, 'fes-attachments-help--' + target.id.replace(/^fes-attachments--/, 'fes-attachments-help--'));
         }
     });
 

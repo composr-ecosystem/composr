@@ -16444,7 +16444,7 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
         filter = strVal(filter) || $cms.configOption('valid_types');
         filter += ',' + filter.toUpperCase();
 
-        var mainDiv = document.getElementById('js-attachment-store');
+        var mainDiv = document.getElementById('js-attachment-store--' + postingFieldName);
 
         if (!document.getElementById(name)) {
             $dom.append(mainDiv, '<input type="text" id="' + name + '" name="' + name + '" style="display: none;" disabled>');

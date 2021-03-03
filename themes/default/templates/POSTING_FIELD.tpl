@@ -68,10 +68,10 @@
 
 		<div class="clearfix">
 			<div role="toolbar" class="clearfix post-options-wrap">
-				<div id="post-special-options2" style="display: none">
+				<div id="post-special-options2--{NAME*}" style="display: none">
 					{COMCODE_EDITOR_SMALL}
 				</div>
-				<div id="post-special-options">
+				<div id="post-special-options--{NAME*}">
 					{COMCODE_EDITOR}
 				</div>
 			</div>
@@ -142,7 +142,7 @@
 	{$SET,init_drag_drop,1}
 	<tr class="form-table-field-spacer" id="field-{$GET*,id}-attachments-ui">
 		<th colspan="2" class="table-heading-cell">
-			<a class="toggleable-tray-button js-click-pf-toggle-subord-fields" id="fes-attachments" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+			<a class="toggleable-tray-button js-click-pf-toggle-subord-fields" id="fes-attachments--{NAME*}" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
 				NAME=trays/expand
 				ICON_SIZE=20
 			{+END}</a>
@@ -159,7 +159,7 @@
 			</span>
 
 			{+START,IF_PASSED,HELP}
-				<p style="display: none" id="fes-attachments-help">
+				<p style="display: none" id="fes-attachments-help--{NAME*}">
 					{HELP*}
 				</p>
 			{+END}
