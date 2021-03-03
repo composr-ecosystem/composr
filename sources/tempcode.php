@@ -931,7 +931,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
 
                 $may_use_cache = false;
                 if ((!$support_smart_decaching) || (($tcp_time !== false) && ($found_disk_file))/*if in install can be found yet no file at path due to running from data.cms*/ && ($found !== null)) {
-                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($codename, $directory, $suffix, $found[0], $tcp_time)))) {
+                    if ((!$support_smart_decaching) || ((is_file($file_path)) && (filemtime($file_path) < $tcp_time) && (dependencies_are_good($codename, $suffix, $directory, $found[0], $tcp_time)))) {
                         $may_use_cache = true;
                     }
                 }
@@ -1140,6 +1140,18 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
         }
 
         switch ($key) {
+            case 'dependency__templates__STANDALONE_HTML_WRAP':
+                $SITE_INFO[$key] = 'HTML_HEAD';
+                break;
+
+            case 'dependency__templates__GLOBAL_HTML_WRAP':
+                $SITE_INFO[$key] = 'HTML_HEAD';
+                break;
+
+            case 'dependency__templates__HTML_HEAD':
+                $SITE_INFO[$key] = 'HTML_HEAD_POLYFILLS';
+                break;
+
             case 'dependency__css__global':
                 $SITE_INFO[$key] = 'personal_stats,menu__dropdown,notifications';
                 break;
