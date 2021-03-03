@@ -2988,6 +2988,10 @@ h3 .toggleable-tray-button .icon {
 	display: block;
 }
 
+.cms-modal-container {
+	height: calc(100% - 20px);
+}
+
 /* Boxes with arrows on the top */
 
 .box.box-arrow {

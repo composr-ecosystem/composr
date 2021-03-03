@@ -452,10 +452,6 @@
 
             this.containerEl = this.overlayEl.appendChild($dom.create('div', {
                 'className': 'box-inner cms-modal-container',
-                'css': {
-                    'width': 'auto',
-                    'height': 'auto'
-                }
             }));
 
             var overlayHeader = null;
@@ -507,7 +503,7 @@
 
                     var iframe = $dom.create('iframe', {
                         'frameBorder': '0',
-                        'scrolling': 'no',
+                        'scrolling': this.windowScrollingBlocked() ? 'yes' : 'no',
                         'title': '',
                         'name': 'overlay-iframe',
                         'id': 'overlay-iframe',
@@ -694,6 +690,10 @@
             }, 100);
         },
 
+        windowScrollingBlocked: function windowScrollingBlocked() {
+            return (document.documentElement.style.overflowY == 'hidden') || (document.documentElement.style.position == 'fixed');
+        },
+
         keyup: function keyup(e) {
             if (e.key === 'ArrowLeft') {
                 this.option('left');
@@ -768,6 +768,11 @@
             var topPageHeight = this.topWindow.$dom.getWindowScrollHeight(),
                 topWindowWidth = this.topWindow.$dom.getWindowWidth(),
                 topWindowHeight = this.topWindow.$dom.getWindowHeight();
+
+            if (this.windowScrollingBlocked()) {
+                forceHeight = true;
+                height = (topWindowHeight - 60) + 'px';
+            }
 
             var bottomGap = this.WINDOW_TOP_GAP;
             if (this.buttonContainerEl.firstElementChild) {
