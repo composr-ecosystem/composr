@@ -6944,7 +6944,6 @@ a[rel="lightbox"] {
 .flex-wrapper > div {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
-	box-sizing: border-box;
 }
 .flex-wrapper > div + div {
 	padding-left: 1em;
@@ -6958,7 +6957,6 @@ a[rel="lightbox"] {
 		float: left;
 	}
 	.floats-wrap .float-left + .float-left, .floats-wrap .float-right {
-		box-sizing: border-box;
 		padding-left: 1em;
 	}
 	.floats-wrap .float-right {
@@ -6977,7 +6975,6 @@ a[rel="lightbox"] {
 		display: inline-block;
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
-		box-sizing: border-box;
 	}
 	.inline-block-box + .inline-block-box {
 		margin-left: 1em;
