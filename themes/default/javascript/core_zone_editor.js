@@ -7,7 +7,9 @@
      * @class
      * @extends $cms.View
      */
-    function ZoneEditorScreen() {
+    function ZoneEditorScreen(params) {
+        window.formPreviewUrl = strVal(params.previewUrl);
+
         ZoneEditorScreen.base(this, 'constructor', arguments);
     }
 
