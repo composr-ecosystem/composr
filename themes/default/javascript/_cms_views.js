@@ -679,7 +679,7 @@
 
             // Enforce focus to stay inside the overlay
             $dom.on(document, 'focusin.modalWindow' + this.uid, function (e) {
-                if ((document !== e.target) && (self.el !== e.target) && !self.el.contains(e.target)) {
+                if ((document !== e.target) && !$dom.contains(self.el, e.target) && !$dom.parent(e.target, '.cms-modal')/*Some other modal dialog*/ && !self.el.contains(e.target)) {
                     self.el.focus();
                 }
             });
