@@ -2036,19 +2036,19 @@ function __param(array $array, string $name, $default, bool $integer = false, ?b
  * Do a wildcard match by converting to a regular expression.
  * Supports the '%' and '_' wildcards and '\' escaping of them (as per most SQL implementations of LIKE).
  *
- * @param  string $context The haystack
- * @param  string $word The needle (a wildcard expression)
+ * @param  string $target The haystack
+ * @param  string $expression The needle (a wildcard expression)
  * @param  boolean $full_cover Whether full-coverage is required
  * @param  boolean $case_sensitive Whether it is case sensitive
  * @return boolean Whether we have a match
  */
-function simulated_wildcard_match(string $context, string $word, bool $full_cover = false, bool $case_sensitive = false) : bool
+function simulated_wildcard_match(string $target, string $expression, bool $full_cover = false, bool $case_sensitive = false) : bool
 {
     $rexp = '';
-    $len = strlen($word);
+    $len = strlen($expression);
     $escape_flag = false;
     for ($i = 0; $i < $len; $i++) {
-        $c = $word[$i];
+        $c = $expression[$i];
         if ($escape_flag) {
             $c = preg_quote($c, '#');
         } else {
@@ -2075,7 +2075,7 @@ function simulated_wildcard_match(string $context, string $word, bool $full_cove
         $_rexp .= 'i';
     }
 
-    return preg_match($_rexp, $context) != 0;
+    return preg_match($_rexp, $target) != 0;
 }
 
 /**
