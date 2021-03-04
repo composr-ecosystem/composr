@@ -400,12 +400,7 @@
             window.rebuildAttachmentButtonForNext = rebuildAttachmentButtonForNext; // Must only be defined when 'simplified_attachments_ui' is enabled
 
             $dom.load.then(function () {
-                var attachmentBrowseButton;
-                if (document.getElementById('cke_' + postingFieldName)) {
-                    attachmentBrowseButton = document.getElementById('cke_' + postingFieldName).getElementsByClassName('cke_button__composr_image')[0].id;
-                } else {
-                    attachmentBrowseButton = document.getElementById('js-attachment-browse-button--' + postingFieldName);
-                }
+                var attachmentBrowseButton = document.getElementById('js-attachment-browse-button--' + postingFieldName);
 
                 if (attachmentBrowseButton && (attachmentBrowseButton.classList.contains('for-field-' + postingFieldName))) {
                     // Attach Plupload with #js-attachment-browse-button as browse button
