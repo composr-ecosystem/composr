@@ -10,7 +10,7 @@
  */
 
 // Shall we show the options overlay?
-showOverlay = !(multi || (isImage && $cms.configOption('simplified_attachments_ui')) || isArchive);
+showOverlay = !(multi || (isImage && $cms.browserMatches('simplified_attachments_ui')) || isArchive);
 
 // Add any defaults into URL
 defaults.thumb = (isImage && !multi && showOverlay) ? '0' : '1';
