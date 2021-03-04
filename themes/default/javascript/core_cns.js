@@ -519,7 +519,13 @@
 
             if (params.useCaptcha && ($cms.configOption('recaptcha_site_key') === '')) {
                 url = params.snippetScript + '?snippet=captcha_wrong&name=' + encodeURIComponent(form.elements['captcha'].value) + $cms.keep();
-                checkPromises.push($cms.form.doAjaxFieldTest(url));
+                checkPromises.push($cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (!valid) {
+                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
+                    }
+
+                    return valid;
+                }));
             }
 
             submitEvent.preventDefault();

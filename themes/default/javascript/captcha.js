@@ -3,6 +3,8 @@
 
     var onLoadCallbackName = 'recaptchaLoaded' + $util.random();
 
+    var soundObject;
+
     var recaptchaLoadedPromise = new Promise(function (resolve) {
         /* Called from reCAPTCHA's recaptcha/api.js, when it loads. */
         window[onLoadCallbackName] = function () {
@@ -11,8 +13,31 @@
         };
     });
 
+    $cms.templates.inputCaptcha = function inputCaptcha(params, container) {
+        if ($cms.configOption('js_captcha')) {
+            $dom.html($dom.$('#captcha-spot'), params.captcha);
+        } else {
+            window.addEventListener('pageshow', function () {
+                $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
+            });
+        }
+
+        $cms.functions.initialiseAudioLink(container, document.getElementById('captcha-audio'));
+    };
+
+    $cms.functions.initialiseAudioLink = function initialiseAudioLink(container, audioCaptchaElement) {
+        if (audioCaptchaElement) {
+            soundObject = (typeof window.Audio !== 'undefined') ? new Audio(audioCaptchaElement.href) : null;
+
+            $dom.on(container, 'click', '.js-click-play-self-audio-link', function (e, link) {
+                e.preventDefault();
+                $cms.playSelfAudioLink(link, soundObject);
+            });
+        }
+    };
+
     // Implementation for [data-recaptcha-captcha]
-    $cms.behaviors.initializeRecaptchaCaptch = {
+    $cms.behaviors.initializeRecaptchaCaptcha = {
         attach: function attach(context) {
             var captchaEls = $util.once($dom.$$$(context, '[data-recaptcha-captcha]'), 'behavior.initializeRecaptchaCaptcha');
 
@@ -88,7 +113,7 @@
                     if (valid) {
                         validValue = value;
                     } else {
-                        document.getElementById('captcha').src += '&'; // Force it to reload latest captcha
+                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
                     }
 
                     return valid;
@@ -97,5 +122,16 @@
                 $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
             });
         });
+    };
+
+    $cms.functions.refreshCaptcha = function refreshCaptcha(captchaReadable, audioCaptchaElement) {
+        // Force it to reload latest captcha
+        if (captchaReadable) {
+            captchaReadable.src = $cms.addKeepStub('{$FIND_SCRIPT;,captcha}?mode=text&cache_break=' + $util.random());
+        }
+        if (audioCaptchaElement) {
+            audioCaptchaElement.href = $cms.addKeepStub('{$FIND_SCRIPT;,captcha}?mode=audio&cache_break=' + $util.random()); // Directly .wav link (needed for Safari) won't be good anymore
+            soundObject.src = audioCaptchaElement.href;
+        }
     };
 }(window.$cms, window.$util, window.$dom));

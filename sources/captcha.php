@@ -402,7 +402,6 @@ function get_captcha_questions() : array
 function generate_captcha()
 {
     if (get_option('recaptcha_site_key') != '') {
-        require_javascript('captcha');
         return;
     }
 
@@ -606,6 +605,5 @@ function captcha_ajax_check_function() : string
         return '';
     }
 
-    require_javascript('captcha');
     return 'captchaCaptchaAjaxCheck';
 }

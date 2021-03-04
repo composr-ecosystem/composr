@@ -1,3 +1,5 @@
+{$REQUIRE_JAVASCRIPT,captcha}
+
 {$SET,early_description,1}
 
 {+START,IF_EMPTY,{$CONFIG_OPTION,recaptcha_site_key}}

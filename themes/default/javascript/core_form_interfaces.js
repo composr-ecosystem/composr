@@ -666,25 +666,6 @@
         }
     };
 
-    $cms.templates.inputCaptcha = function inputCaptcha(params, container) {
-        if ($cms.configOption('js_captcha')) {
-            $dom.html($dom.$('#captcha-spot'), params.captcha);
-        } else {
-            window.addEventListener('pageshow', function () {
-                $dom.$('#captcha-readable').src += '&r=' + $util.random(); // Force it to reload latest captcha
-            });
-        }
-
-        if (document.getElementById('captcha-audio')) {
-            var soundObject = (typeof window.Audio !== 'undefined') ? new Audio($dom.$('#captcha-audio').href) : null;
-
-            $dom.on(container, 'click', '.js-click-play-self-audio-link', function (e, link) {
-                e.preventDefault();
-                $cms.playSelfAudioLink(link, soundObject);
-            });
-        }
-    };
-
     $cms.templates.formScreenInputList = function formScreenInputList(params, selectEl) {
         var select2Options;
 

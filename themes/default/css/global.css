@@ -2504,7 +2504,7 @@ th.metadata-title {
 	margin: 1em 0;
 	background-color: {$GET,WB};
 	/*{+START,IF,{$THEME_OPTION,block_background}}*/
-		background: url('{$IMG_INLINE;,backgrounds/block_background}');
+		background-image: url('{$IMG_INLINE;,backgrounds/block_background}');
 		background-size: 300px 300px;
 	/*{+END}*/
 }

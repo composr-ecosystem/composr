@@ -47,8 +47,6 @@
                 'mouseover .js-img-review-bar': 'reviewBarHover',
                 'mouseout .js-img-review-bar': 'reviewBarHover',
 
-                'click .js-click-play-self-audio-link': 'playSelfAudioLink',
-
                 'focus .js-focus-textarea-post': 'focusTextareaPost',
 
                 'click .js-click-open-site-emoticon-chooser-window': 'openEmoticonChooserWindow',
@@ -94,11 +92,6 @@
                 rating = (e.type === 'mouseover') ? reviewBar.dataset.vwRating : undefined;
 
             this.displayReviewRating(container, rating);
-        },
-
-        playSelfAudioLink: function (e, link, soundObject) {
-            e.preventDefault();
-            $cms.playSelfAudioLink(link, soundObject);
         },
 
         focusTextareaPost: function (e, textarea) {
@@ -239,7 +232,7 @@
             $dom.submit(form);
         },
 
-        /* Set up a form to have its CAPTCHA checked upon submission using AJAX */
+        /* Set up a feedback form to have its CAPTCHA checked upon submission using AJAX */
         addCaptchaChecking: function () {
             var form = this.form,
                 submitBtn = form.querySelector('#submit-button'),
@@ -258,25 +251,13 @@
                     if (valid) {
                         validValue = value;
                     } else {
-                        var image = document.getElementById('captcha-image');
-                        if (!image) {
-                            image = document.getElementById('captcha-frame');
-                        }
-                        image.src += '&'; // Force it to reload latest captcha
+                        $cms.functions.refreshCaptcha(document.getElementById('captcha-readable'), document.getElementById('captcha-audio'));
                     }
 
                     return valid;
                 });
 
                 $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
-            });
-
-            window.addEventListener('pageshow', function () {
-                var image = document.getElementById('captcha-image');
-                if (!image) {
-                    image = document.getElementById('captcha-frame');
-                }
-                image.src += '&'; // Force it to reload latest captcha
             });
         }
     });
