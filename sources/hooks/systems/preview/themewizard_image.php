@@ -51,7 +51,7 @@ class Hook_preview_themewizard_image
         $seed = post_param_string('seed');
         $dark = (post_param_integer('dark', 0) == 1);
 
-        $image = calculate_theme($seed, 'default', 'hsv', $id, $dark);
+        $image = calculate_themewizard_component($seed, 'default', 'hsv', $id, $dark);
         if ($image === null) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }

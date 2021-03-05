@@ -162,7 +162,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         require_code('themewizard');
         $seed = find_theme_seed($theme);
         $dark = find_theme_dark($theme);
-        list($colours, $landscape) = calculate_theme($seed, 'default', 'equations', 'colours', $dark);
+        list($colours, $landscape) = calculate_themewizard_component($seed, 'default', 'equations', 'colours', $dark);
     }
 
     // CSS
@@ -366,7 +366,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
                                 afm_make_directory(dirname($new_path), true, true);
                             }
 
-                            $image = calculate_theme($seed, 'default', 'equations', $new, $dark, $colours, $landscape, $lang);
+                            $image = calculate_themewizard_component($seed, 'default', 'equations', $new, $dark, $colours, $landscape, $lang);
                             if ($image !== null) {
                                 if (!$test_run) {
                                     if (is_string($image)) {

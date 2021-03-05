@@ -86,34 +86,24 @@ class Module_admin_themewizard
 
         if ($type == 'make_logo' || $type == '_make_logo') {
             //set_helper_panel_text(comcode_lang_string('DOC_LOGOWIZARD'));
-        } else {
+        }
+
+        if (($type == 'browse') || ($type == 'actual')) {
+            $this->title = get_screen_title('THEMEWIZARD');
+
             set_helper_panel_tutorial('tut_themes');
 
             set_helper_panel_text(comcode_lang_string('DOC_THEMEWIZARD'));
         }
 
         if ($type == 'browse') {
-            breadcrumb_set_parents([['_SELF:adminzone:browse', do_lang_tempcode('MANAGE_THEMES')]]);
-
-            breadcrumb_set_self(do_lang_tempcode('THEMEWIZARD'));
-
-            $this->title = get_screen_title('_THEMEWIZARD', true, [escape_html(integer_format(1)), escape_html(integer_format(4))]);
+            breadcrumb_set_parents([['_SELF:adminzone:admin_themes', do_lang_tempcode('MANAGE_THEMES')]]);
         }
 
-        if ($type == 'step2') {
-            $this->title = get_screen_title('_THEMEWIZARD', true, [escape_html(integer_format(2)), escape_html(integer_format(4))]);
-        }
+        if ($type == 'actual') {
+            breadcrumb_set_parents([['_SELF:adminzone:admin_themes', do_lang_tempcode('MANAGE_THEMES')], ['_SELF:_SELF', do_lang_tempcode('THEMEWIZARD')]]);
 
-        if ($type == 'step3') {
-            $this->title = get_screen_title('_THEMEWIZARD', true, [escape_html(integer_format(3)), escape_html(integer_format(4))]);
-        }
-
-        if ($type == 'step4') {
-            $this->title = get_screen_title('_THEMEWIZARD', true, [escape_html(integer_format(4)), escape_html(integer_format(4))]);
-        }
-
-        if ($type == 'step2' || $type == 'step3' || $type == 'step4') {
-            breadcrumb_set_parents([['_SEARCH:admin_themes', do_lang_tempcode('THEMES')], ['_SELF:_SELF:browse', do_lang_tempcode('THEMEWIZARD')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == 'make_logo') {
@@ -145,16 +135,10 @@ class Module_admin_themewizard
         $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
-            return $this->step1();
+            return $this->gui();
         }
-        if ($type == 'step2') {
-            return $this->step2();
-        }
-        if ($type == 'step3') {
-            return $this->step3();
-        }
-        if ($type == 'step4') {
-            return $this->step4();
+        if ($type == 'actual') {
+            return $this->actual();
         }
         if ($type == 'make_logo') {
             return $this->make_logo();
@@ -167,14 +151,14 @@ class Module_admin_themewizard
     }
 
     /**
-     * UI for a theme wizard step (choose colour).
+     * UI for Theme Wizard.
      *
      * @return Tempcode The UI
      */
-    public function step1() : object
+    public function gui() : object
     {
-        $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true], false, true);
-        $text = do_lang_tempcode('THEMEWIZARD_1_DESCRIBE');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true], false, true);
+        $text = do_lang_tempcode('THEMEWIZARD_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
 
         require_code('form_templates');
@@ -196,8 +180,6 @@ class Module_admin_themewizard
 
         $fields = new Tempcode();
 
-        $fields->attach(form_input_codename(do_lang_tempcode('NEW_THEME'), do_lang_tempcode('DESCRIPTION_NAME'), 'themename', get_param_string('themename', ''), true));
-
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '0373ce292326fa209a6a44d829f547d4', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PARAMETERS')]));
 
         require_code('themes2');
@@ -214,153 +196,87 @@ class Module_admin_themewizard
 
         $fields->attach(form_input_tick(do_lang_tempcode('DARK_THEME'), do_lang_tempcode('DESCRIPTION_DARK_THEME'), 'dark', get_param_integer('dark', 0) == 1));
 
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '1373ce292326fa209a6a44d829f547d4', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SETTINGS')]));
+
+        $fields->attach(form_input_codename(do_lang_tempcode('NEW_THEME'), do_lang_tempcode('DESCRIPTION_NAME'), 'name', get_param_string('name', ''), false));
+
+        $fields->attach(form_input_tick(do_lang_tempcode('USE_ON_ZONES'), do_lang_tempcode('DESCRIPTION_USE_ON_ZONES'), 'use_on_all', get_param_integer('use_on_all', 0) == 1));
+
         require_javascript('themewizard');
         return do_template('FORM_SCREEN', [
             '_GUID' => '98963f4d7ff60744382f937e6cc5acbf',
-            'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
-            'JS_FUNCTION_CALLS' => ['adminThemeWizardStep1'],
+            'JS_FUNCTION_CALLS' => ['adminThemeWizard'],
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
+            'PREVIEW' => true,
         ]);
     }
 
     /**
-     * UI for a theme wizard step (choose preview).
+     * Actualiser for Theme Wizard.
      *
      * @return Tempcode The UI
      */
-    public function step2() : object
+    public function actual() : object
     {
-        $source_theme = get_param_string('source_theme');
-        if (get_theme_option('enable_themewizard', null, $source_theme) == '0') {
-            warn_exit(do_lang_tempcode('THEME_NOT_SUPPORTING_THEMEWIZARD', escape_html(get_theme_option('title', null, $source_theme)), escape_html($source_theme)));
+        $source_theme = post_param_string('source_theme');
+        $algorithm = post_param_string('algorithm');
+        $seed = preg_replace('/^#/', '', post_param_string('seed'));
+        $dark = (post_param_integer('dark', 0) == 1);
+
+        $name = post_param_string('name');
+
+        $use_on_all = (post_param_integer('use_on_all', 0) == 1);
+
+        // Checks...
+
+        $back_url = build_url(['page' => '_SELF', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'name' => $name, 'dark' => $dark ? 1 : 0, 'use_on_all' => $use_on_all ? 1 : 0], '_SELF');
+
+        $ret = check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_url);
+        if ($ret !== null) {
+            return $ret;
         }
 
-        $algorithm = get_param_string('algorithm');
-        if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
-            $algorithm = 'hsv';
-            attach_message(do_lang_tempcode('EQUATIONS_NOT_SUPPORTED'), 'notice');
-        }
-
-        $seed = preg_replace('/^\#/', '', get_param_string('seed'));
-        $dark = get_param_integer('dark', 0);
-        $themename = get_param_string('themename');
+        $name = post_param_string('name');
 
         if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
             // Older versions of PHP on Windows cannot handle utf-8 filenames
             require_code('character_sets');
-            $themename = transliterate_string($themename);
+            $name = transliterate_string($name);
         }
 
         require_code('type_sanitisation');
-        if ((!is_alphanumeric($themename)) || (strlen($themename) > 40)) {
-            warn_exit(do_lang_tempcode('BAD_CODENAME'));
+        if ((!is_alphanumeric($name)) || (strlen($name) > 40)) {
+            return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('BAD_CODENAME'));
         }
 
-        if ((file_exists(get_custom_file_base() . '/themes/' . $themename)) || ($themename == 'default' || $themename == 'admin')) {
-            warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($themename)));
+        if ($name == 'default' || $name == 'admin') {
+            return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('ALREADY_EXISTS', escape_html($name)));
         }
 
-        // Check length (6 chars)
-        if (strlen($seed) != 6) {
-            warn_exit(do_lang_tempcode('INVALID_COLOUR'));
-        }
+        // Add theme...
 
-        list($_theme,) = calculate_theme($seed, $source_theme, $algorithm, 'colours', $dark == 1);
-        $theme = [];
-        $theme['SOURCE_THEME'] = $source_theme;
-        $theme['ALGORITHM'] = $algorithm;
-        $theme['RED'] = $_theme['red'];
-        $theme['GREEN'] = $_theme['green'];
-        $theme['BLUE'] = $_theme['blue'];
-        $theme['DOMINANT'] = $_theme['dominant'];
-        $theme['LD'] = $_theme['LD'];
-        $theme['DARK'] = $_theme['dark'];
-        $theme['SEED'] = $_theme['seed'];
-        $theme['TITLE'] = $this->title;
-        $theme['CHANGE_URL'] = build_url(['page' => '_SELF', 'type' => 'browse', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'dark' => $dark, 'themename' => $themename], '_SELF');
-        $theme['STAGE3_URL'] = build_url(['page' => '_SELF', 'type' => 'step3', 'source_theme' => $source_theme, 'algorithm' => $algorithm, 'seed' => $seed, 'dark' => $dark, 'themename' => $themename], '_SELF');
-
-        return do_template('THEMEWIZARD_2_SCREEN', $theme);
-    }
-
-    /**
-     * UI for a theme wizard step (choose save).
-     *
-     * @return Tempcode The UI
-     */
-    public function step3() : object
-    {
-        $source_theme = get_param_string('source_theme');
-        $algorithm = get_param_string('algorithm');
-        $seed = get_param_string('seed');
-        $dark = get_param_integer('dark');
-        $themename = get_param_string('themename');
-
-        $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
-        $submit_name = do_lang_tempcode('ADD');
-        require_code('form_templates');
-        $fields = new Tempcode();
-        $fields->attach(form_input_tick(do_lang_tempcode('USE_ON_ZONES'), do_lang_tempcode('DESCRIPTION_USE_ON_ZONES'), 'use_on_all', true));
-        $hidden = new Tempcode();
-        $hidden->attach(form_input_hidden('source_theme', $source_theme));
-        $hidden->attach(form_input_hidden('algorithm', $algorithm));
-        $hidden->attach(form_input_hidden('seed', $seed));
-        $hidden->attach(form_input_hidden('themename', $themename));
-        $hidden->attach(form_input_hidden('dark', strval($dark)));
-
-        return do_template('FORM_SCREEN', [
-            '_GUID' => '349383d77ecfce8c65f3303cfec86ea0',
-            'SKIP_WEBSTANDARDS' => true,
-            'TITLE' => $this->title,
-            'TEXT' => do_lang_tempcode('REFRESH_TO_FINISH'),
-            'FIELDS' => $fields,
-            'URL' => $post_url,
-            'SUBMIT_ICON' => 'buttons/proceed',
-            'SUBMIT_NAME' => $submit_name,
-            'HIDDEN' => $hidden,
-        ]);
-    }
-
-    /**
-     * UI for a theme wizard step (actualisation).
-     *
-     * @return Tempcode The UI
-     */
-    public function step4() : object
-    {
-        // Add theme
-        $source_theme = post_param_string('source_theme');
-        $algorithm = post_param_string('algorithm');
-        $seed = post_param_string('seed');
-        $themename = post_param_string('themename');
-        $use = (post_param_integer('use_on_all', 0) == 1);
-        $dark = post_param_integer('dark');
-
-        require_code('type_sanitisation');
-        if ((!is_alphanumeric($themename)) || (strlen($themename) > 40)) {
-            warn_exit(do_lang_tempcode('BAD_CODENAME'));
-        }
-        make_theme($themename, $source_theme, $algorithm, $seed, $use, $dark == 1);
+        generate_themewizard_theme($name, $source_theme, $algorithm, $seed, $dark, $use_on_all);
         require_code('files');
         $contents = '';
-        $contents .= 'title=' . $themename . "\n";
+        $contents .= 'title=' . $name . "\n";
         $contents .= 'description=' . do_lang('NA') . "\n";
         $contents .= 'seed=' . $seed . "\n";
         $contents .= 'author=' . $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true) . "\n";
         if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
             $contents .= 'supports_themewizard_equations=1' . "\n";
         }
-        cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($themename) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($name) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
-        // We're done
-        $message = do_lang_tempcode('THEMEWIZARD_4_DESCRIBE', escape_html('#' . $seed), escape_html($themename));
+        // We're done...
+
+        $message = do_lang_tempcode('THEMEWIZARD_DONE', escape_html('#' . $seed), escape_html($name));
 
         require_code('templates_donext');
         return do_next_manager(
@@ -382,9 +298,9 @@ class Module_admin_themewizard
             [],
             [],
             [
-                ['admin/edit_this', ['admin_themes', ['type' => 'edit_theme', 'theme' => $themename], get_module_zone('admin_themes')], do_lang_tempcode('EDIT_THEME')],
-                ['menu/adminzone/style/themes/templates', ['admin_themes', ['type' => 'edit_templates', 'theme' => $themename], get_module_zone('admin_themes')], do_lang('EDIT_TEMPLATES')],
-                ['menu/adminzone/style/themes/theme_images', ['admin_themes', ['type' => 'manage_images', 'theme' => $themename], get_module_zone('admin_themes')], do_lang('EDIT_THEME_IMAGES')],
+                ['admin/edit_this', ['admin_themes', ['type' => 'edit_theme', 'theme' => $name], get_module_zone('admin_themes')], do_lang_tempcode('EDIT_THEME')],
+                ['menu/adminzone/style/themes/templates', ['admin_themes', ['type' => 'edit_templates', 'theme' => $name], get_module_zone('admin_themes')], do_lang('EDIT_TEMPLATES')],
+                ['menu/adminzone/style/themes/theme_images', ['admin_themes', ['type' => 'manage_images', 'theme' => $name], get_module_zone('admin_themes')], do_lang('EDIT_THEME_IMAGES')],
                 ['menu/adminzone/style/themes/themes', ['admin_themes', ['type' => 'browse'], get_module_zone('admin_themes')], do_lang('MANAGE_THEMES')],
             ],
             do_lang('THEME')

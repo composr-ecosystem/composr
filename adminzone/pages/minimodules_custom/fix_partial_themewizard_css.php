@@ -64,9 +64,9 @@ if ($default_seed == $seed) {
     warn_exit('Theme has same seed as default theme, cannot continue, would be a no-op.');
 }
 
-list($canonical_theme_map, $canonical_theme_landscape) = calculate_theme($default_seed, 'default', 'equations', 'colours', false);
+list($canonical_theme_map, $canonical_theme_landscape) = calculate_themewizard_component($default_seed, 'default', 'equations', 'colours', false);
 
-list($theme_map, $theme_landscape) = calculate_theme($seed, 'default', 'equations', 'colours', $dark);
+list($theme_map, $theme_landscape) = calculate_themewizard_component($seed, 'default', 'equations', 'colours', $dark);
 
 // ===
 // CSS
@@ -161,7 +161,7 @@ if (function_exists('imagecolorallocatealpha')) {
             $saveat = get_custom_file_base() . '/' . $composite . $image_code . '.png';
             $saveat_url = $composite . $image_code . '.png';
             if (!file_exists($saveat)) {
-                $image = calculate_theme($seed, 'default', 'equations', $image_code, $dark, $theme_map, $theme_landscape, 'EN');
+                $image = calculate_themewizard_component($seed, 'default', 'equations', $image_code, $dark, $theme_map, $theme_landscape, 'EN');
                 if ($image !== null) {
                     $pos = strpos($image_code, '/');
                     if (($pos !== false) || (strpos($orig_url, '/EN/') !== false)) {

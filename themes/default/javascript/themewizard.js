@@ -1,7 +1,7 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
-    $cms.functions.adminThemeWizardStep1 = function () {
+    $cms.functions.adminThemeWizard = function () {
         var form = document.getElementById('main-form');
         form.elements['source_theme'].addEventListener('change', function () {
             var defaultTheme = (form.elements['source_theme'].value === 'default');
@@ -11,25 +11,30 @@
 
         var validValue;
         form.addEventListener('submit', function submitCheck(submitEvent) {
-            var value = form.elements['themename'].value;
+            var value = form.elements['name'].value;
 
             if (value === validValue) {
                 return;
             }
 
-            var submitBtn = form.querySelector('#submit-button');
-            var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
             submitEvent.preventDefault();
 
-            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                }
+            var submitBtn = form.querySelector('#submit-button');
 
-                return valid;
-            });
+            if (value != '') {
+                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
+                var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                    }
 
-            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+                    return valid;
+                });
+                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
+            } else {
+                $dom.submit(form);
+            }
+
         });
     };
 }(window.$cms, window.$util, window.$dom));

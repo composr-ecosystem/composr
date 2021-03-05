@@ -123,8 +123,7 @@ class Hook_addon_registry_themewizard
             'sources/hooks/systems/addon_registry/themewizard.php',
             'sources/themewizard.php',
             'adminzone/pages/modules/admin_themewizard.php',
-            'themes/default/templates/THEMEWIZARD_2_SCREEN.tpl',
-            'themes/default/templates/THEMEWIZARD_2_PREVIEW.tpl',
+            'themes/default/templates/THEMEWIZARD_PREVIEW.tpl',
             'adminzone/themewizard.php',
             'sources/hooks/systems/page_groupings/themewizard.php',
             'sources/hooks/systems/preview/logo.php',
@@ -174,6 +173,7 @@ class Hook_addon_registry_themewizard
             'themes/default/images/logo/default_backgrounds/banner10.png',
             'themes/default/javascript/themewizard.js',
             'sources/hooks/systems/preview/themewizard_image.php',
+            'sources/hooks/systems/preview/themewizard.php',
         ];
     }
 
@@ -185,8 +185,7 @@ class Hook_addon_registry_themewizard
     public function tpl_previews() : array
     {
         return [
-            'templates/THEMEWIZARD_2_PREVIEW.tpl' => 'administrative__themewizard_2_preview',
-            'templates/THEMEWIZARD_2_SCREEN.tpl' => 'administrative__themewizard_2_screen',
+            'templates/THEMEWIZARD_PREVIEW.tpl' => 'administrative__themewizard_preview_screen',
             'templates/LOGOWIZARD_2.tpl' => 'administrative__logowizard_2',
         ];
     }
@@ -198,30 +197,12 @@ class Hook_addon_registry_themewizard
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__themewizard_2_preview() : array
-    {
-        require_lang('themes');
-
-        $content = do_lorem_template('THEMEWIZARD_2_PREVIEW');
-
-        return [
-            lorem_globalise($content, null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__administrative__themewizard_2_screen() : array
+    public function tpl_preview__administrative__themewizard_preview_screen() : array
     {
         require_lang('themes');
 
         return [
-            lorem_globalise(do_lorem_template('THEMEWIZARD_2_SCREEN', [
+            lorem_globalise(do_lorem_template('THEMEWIZARD_PREVIEW', [
                 'SOURCE_THEME' => 'default',
                 'ALGORITHM' => 'equations',
                 'RED' => placeholder_id(),
@@ -231,9 +212,6 @@ class Hook_addon_registry_themewizard
                 'DARK' => true,
                 'DOMINANT' => lorem_word(),
                 'LD' => lorem_phrase(),
-                'TITLE' => lorem_title(),
-                'CHANGE_URL' => placeholder_url(),
-                'STAGE3_URL' => placeholder_url(),
             ]), null, '', true)
         ];
     }

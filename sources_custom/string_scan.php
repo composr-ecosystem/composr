@@ -7078,7 +7078,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REDUCE_PROBATION
         REFERER
         REFRESH_TIME
-        REFRESH_TO_FINISH
         REGULAR_TASKS
         REINSTALL_MODULE
         RELATED_SCREENS
@@ -7604,11 +7603,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEMES
         THEMES_AND_ZONES
         THEMEWIZARD
-        THEMEWIZARD_1_DESCRIBE
-        THEMEWIZARD_2_DOMINANT
-        THEMEWIZARD_2_LIGHT_DARK
-        THEMEWIZARD_2_USE
-        THEMEWIZARD_4_DESCRIBE
+        THEMEWIZARD_DESCRIBE
+        THEMEWIZARD_PREVIEW_DOMINANT
+        THEMEWIZARD_PREVIEW_LIGHT_DARK
+        THEMEWIZARD_DONE
         THEME_ALSO_INCLUDE_PAGES
         THEME_DEFAULT_FOR_SITE
         THEME_EXPORT

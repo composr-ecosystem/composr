@@ -43,7 +43,7 @@ class Hook_snippet_themewizard_equation
         $seed = find_theme_seed($theme);
         $dark = find_theme_dark($theme);
 
-        $colours = calculate_theme($seed, $theme, 'equations', 'colours', $dark);
+        $colours = calculate_themewizard_component($seed, $theme, 'equations', 'colours', $dark);
         $parsed_equation = parse_css_colour_expression($equation);
         if ($parsed_equation === null) {
             return make_string_tempcode('');

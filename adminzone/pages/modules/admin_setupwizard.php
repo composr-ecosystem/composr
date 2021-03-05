@@ -1132,7 +1132,7 @@ class Module_admin_setupwizard
                 global $THEME_IMAGES_CACHE;
                 $old_img_codes_site = $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], ['theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'lang' => user_lang()]);
                 if ($generating_new_theme) {
-                    make_theme($new_theme_name, 'default', 'equations', post_param_string('seed_hex'), /*$use=*/true, post_param_integer('dark', 0) == 1);
+                    generate_themewizard_theme($new_theme_name, 'default', 'equations', post_param_string('seed_hex'), post_param_integer('dark', 0) == 1, /*$use=*/true);
                 }
 
                 $live_theme = $new_theme_name;
