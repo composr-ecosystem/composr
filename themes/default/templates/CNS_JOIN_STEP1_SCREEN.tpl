@@ -38,8 +38,9 @@
 		{+END}
 
 		<p class="btns-cns-join-step1">
-			<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--yes" type="submit" disabled="disabled" id="proceed-button">{+START,INCLUDE,ICON}NAME=buttons/yes{+END} {!PROCEED}</button>
 			<button type="button" data-disable-on-click="1" class="btn btn-secondary btn-scr buttons--no js-click-set-top-location" data-tp-top-location="{$PAGE_LINK*,:}">{+START,INCLUDE,ICON}NAME=buttons/no{+END} {!I_DISAGREE}</button>
+
+			<button accesskey="u" data-disable-on-click="1" class="btn btn-primary btn-scr buttons--yes" type="submit" disabled="disabled" id="proceed-button">{+START,INCLUDE,ICON}NAME=buttons/yes{+END} {!PROCEED}</button>
 		</p>
 	</form>
 </div>
