@@ -229,12 +229,25 @@ function actual_rename_theme(string $theme, string $to)
  *
  * @param  ID_TEXT $theme The original theme name
  * @param  ID_TEXT $to The copy's theme name
+ * @param  array $theme_images_to_skip List of theme images to skip (presumably as they'll be created separately)
+ * @param  array $css_files_to_skip List of CSS files to skip (presumably as they'll be created separately)
  */
-function actual_copy_theme(string $theme, string $to)
+function actual_copy_theme(string $theme, string $to, array $theme_images_to_skip = [], array $css_files_to_skip = [])
 {
     if ($theme == 'default') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+
+    $theme_images_to_skip_path_map = [];
+    foreach ($theme_images_to_skip as $theme_image) {
+        $path = get_custom_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
+        if (!is_file($path)) {
+            $path = get_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
+        }
+        $theme_images_to_skip_path_map[$path] = $theme_image;
+    }
+    $theme_images_to_skip_flipped = array_flip($theme_images_to_skip);
+    $css_files_to_skip_flipped = array_flip($css_files_to_skip);
 
     if ((file_exists(get_custom_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($to)));
@@ -242,12 +255,10 @@ function actual_copy_theme(string $theme, string $to)
 
     require_code('abstract_file_manager');
     require_code('files2');
+
     force_have_afm_details(['themes']);
-    $contents = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, '', null);
-    foreach ($contents as $c) {
-        afm_make_directory(dirname('themes/' . $to . '/' . $c), true, true);
-        afm_copy('themes/' . $theme . '/' . $c, 'themes/' . $to . '/' . $c, true);
-    }
+
+    // Create skeleton
     $needed = [
         'css',
         'css_custom',
@@ -264,11 +275,34 @@ function actual_copy_theme(string $theme, string $to)
         afm_make_directory(dirname('themes/' . $to . '/' . $n), true, true);
     }
 
+    // Copy files
+    global $THEME_IMAGE_EXTENSIONS;
+    $matches = [];
+    $contents = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, '', null);
+    foreach ($contents as $file) {
+        // Skip files as requested
+        if ((preg_match('#^images(?_custom)/(.*)\.(' . implode('|', $THEME_IMAGE_EXTENSIONS) . ')$#', $file, $matches) != 0) && (isset($theme_images_to_skip_path_map['themes/' . $theme . '/' . $file]))) {
+            continue;
+        }
+        if ((preg_match('#^css(?_custom)/(\w+)\.css$#', $file, $matches) != 0) && (isset($css_files_to_skip_flipped[$matches[1]]))) {
+            continue;
+        }
+
+        afm_make_directory(dirname('themes/' . $to . '/' . $file), true, true);
+        afm_copy('themes/' . $theme . '/' . $file, 'themes/' . $to . '/' . $file, true);
+    }
+
+    // Set theme image records
     $images = $GLOBALS['SITE_DB']->query_select('theme_images', ['*'], ['theme' => $theme]);
-    foreach ($images as $i) {
-        $i['theme'] = $to;
-        $i['url'] = str_replace('themes/' . $theme . '/', 'themes/' . $to . '/', $i['url']);
-        $GLOBALS['SITE_DB']->query_insert('theme_images', $i, false, true); // errors suppressed in case already there
+    foreach ($images as $image) {
+        // Skip records as requested
+        if (isset($theme_images_to_skip_flipped[$image['id']])) {
+            continue;
+        }
+
+        $image['theme'] = $to;
+        $image['url'] = preg_replace('#^themes/' . $theme . '/#', 'themes/' . $to . '/', $image['url']);
+        $GLOBALS['SITE_DB']->query_insert('theme_images', $image, false, true); // errors suppressed in case already there
     }
 
     Self_learning_cache::erase_smart_cache();

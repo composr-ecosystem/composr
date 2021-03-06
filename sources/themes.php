@@ -30,6 +30,9 @@ function init__themes()
     $RECORD_THEME_IMAGES_CACHE = false;
     $RECORDED_THEME_IMAGES = [];
 
+    global $THEME_IMAGE_EXTENSIONS;
+    $THEME_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpe', 'jpeg', 'gif', 'ico', 'cur', 'svg', 'webp', 'bmp'];
+
     if (!defined('THEME_IMAGE_PLACE_SITE')) {
         define('THEME_IMAGE_PLACE_SITE', 0);
         define('THEME_IMAGE_PLACE_FORUM', 1);
@@ -67,7 +70,7 @@ function find_theme_image(string $id, bool $silent_fail = false, bool $leave_loc
         }
     }
 
-    // Special case: theme wizard...
+    // Special case: Theme Wizard...
 
     if ((isset($_GET['keep_theme_seed'])) && (get_param_string('keep_theme_seed', null) !== null) && (addon_installed('themewizard')) && (function_exists('has_privilege')) && (has_privilege(get_member(), 'view_profiling_modes'))) {
         require_code('themewizard');
@@ -408,13 +411,14 @@ function cdn_filter(string $url) : string
  */
 function _search_img_file(string $theme, ?string $lang, string $id, string $dir = 'images') : ?string
 {
+    global $THEME_IMAGE_EXTENSIONS;
+
     $places = array_unique([get_custom_file_base(), get_file_base()]);
-    $extensions = ['png', 'jpg', 'jpe', 'jpeg', 'gif', 'ico', 'cur', 'svg', 'webp', 'bmp'];
 
     foreach ($places as $_base) {
         $base = $_base . '/themes/';
 
-        foreach ($extensions as $extension) {
+        foreach ($THEME_IMAGE_EXTENSIONS as $extension) {
             $file_path = $base . $theme . '/';
             if ($dir !== '') {
                 $file_path .= $dir . '/';

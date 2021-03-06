@@ -25,7 +25,7 @@ There is a huge amount of bundled addons which make up the most common component
 [*] Support for multi-site networks
 [*] Chatrooms, shout-boxes and instant messaging across your site
 [*] Community features including allowing guest submission
-[*] A theme wizard allowing you to change the base colour of your theme in less than a minute
+[*] A Theme Wizard allowing you to change the base colour of your theme in less than a minute
 [*] Support for rich media presentation
 [*] Built in template and CSS editor
 [*] Support for short URLs, XML Sitemaps and a range of other tools to aid your Search Engine optimisation

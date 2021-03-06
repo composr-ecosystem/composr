@@ -110,7 +110,7 @@ The template editor is very powerful. Features include:
    - The instantiations on the anchor page of the template you are currently editing (i.e. the active tab) will glow
   - Find different GUIDs used with the template (advanced)
  - Tools for helping to code CSS templates:
-  - CSS equation helper, to help test theme wizard-friendly equations
+  - CSS equation helper, to help test Theme Wizard-friendly equations
   - Build in reference guide links
   - Dynamic mode, if opened from a page ("anchor page"):
    - Show selectors used on the anchor page

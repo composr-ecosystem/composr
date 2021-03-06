@@ -43,12 +43,12 @@ class Hook_snippet_themewizard_equation
         $seed = find_theme_seed($theme);
         $dark = find_theme_dark($theme);
 
-        $colours = calculate_themewizard_component($seed, $theme, 'equations', 'colours', $dark);
-        $parsed_equation = parse_css_colour_expression($equation);
+        list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $theme, 'equations');
+        $parsed_equation = parse_themewizard_css_colour_expression($equation);
         if ($parsed_equation === null) {
             return make_string_tempcode('');
         }
-        $answer = execute_css_colour_expression($parsed_equation, $colours[0]);
+        $answer = execute_themewizard_css_colour_expression($parsed_equation, $colours);
         if ($answer === null) {
             return make_string_tempcode('');
         }

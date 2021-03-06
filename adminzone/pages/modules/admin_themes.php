@@ -1374,7 +1374,7 @@ class Module_admin_themes
         }
 
         // Generate image
-        $img = calculate_themewizard_component($seed, 'default', 'hsv', $id, $dark, null, null, $lang);
+        $img = generate_themewizard_image($seed, $dark, 'default', 'hsv', $id, null, null, $lang);
 
         if ($img === null) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

@@ -99,7 +99,7 @@ class Hook_commandr_command_themewizard_find_color
                 if ($result[1] == 0.0) {
                     $results_printed .= '=';
                 } else {
-                    $results_printed .= '-' . integer_format($result[1]);
+                    $results_printed .= '-' . float_format($result[1]);
                 }
                 $results_printed .= ']';
                 $results_printed .= "\n";

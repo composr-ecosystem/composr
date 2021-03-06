@@ -1228,7 +1228,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
             ],
             'custom_theme' => [
                 'label' => 'Custom theme to upgrade?',
-                'description' => 'Is there a highly-custom theme that needs to be upgraded? Don\'t tick (check) this if you just used the theme wizard to make your theme.',
+                'description' => 'Is there a highly-custom theme that needs to be upgraded? Don\'t tick (check) this if you just used the Theme Wizard to make your theme.',
                 'type' => 'tick',
                 'default' => '0',
                 'options' => '',

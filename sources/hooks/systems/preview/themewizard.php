@@ -52,18 +52,18 @@ class Hook_preview_themewizard
 
         check_themewizard_theme($source_theme, $algorithm, $seed, $dark);
 
-        list($theme) = calculate_themewizard_component($seed, $source_theme, $algorithm, 'colours', $dark);
+        list($colours) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm);
 
         $preview = do_template('THEMEWIZARD_PREVIEW', [
             'SOURCE_THEME' => $source_theme,
             'ALGORITHM' => $algorithm,
-            'RED' => $theme['red'],
-            'GREEN' => $theme['green'],
-            'BLUE' => $theme['blue'],
-            'DOMINANT' => $theme['dominant'],
-            'LD' => $theme['LD'],
-            'DARK' => $theme['dark'],
-            'SEED' => $theme['seed'],
+            'RED' => $colours['red'],
+            'GREEN' => $colours['green'],
+            'BLUE' => $colours['blue'],
+            'DOMINANT' => $colours['dominant'],
+            'LD' => $colours['LD'],
+            'DARK' => $colours['dark'],
+            'SEED' => $colours['seed'],
         ]);
 
         return [$preview, null];

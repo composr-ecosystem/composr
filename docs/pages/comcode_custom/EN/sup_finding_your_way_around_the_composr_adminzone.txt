@@ -34,7 +34,7 @@ It is very likely that the first place you will need to visit is the setup secti
 
 The first page also includes space to input your site's keywords, header text and description. On this page you can also add your Google analytics ID if you have set this up. The second page gives you the choice to remove a lot of the Composr features which you might not want to use or you can leave them all turned on.
 
-Going through this wizard will save you a lot of configuration time including setting one of three levels of strictness for your site rules when other users sign up. The site rules can also be changed on this process and you will be taken to the theme wizard which we will cover more in another tutorial.
+Going through this wizard will save you a lot of configuration time including setting one of three levels of strictness for your site rules when other users sign up. The site rules can also be changed on this process and you will be taken to the Theme Wizard which we will cover more in another tutorial.
 
 Also in the setup section is the main configuration section where you can change a whole host of options relating to your site from Administrative to Accessibility options. Block options which are the elements of each page (e.g. news blocks, RSS feeds etc) can be configured within this area. There are also Privacy options, Forum options and Security options. Site options within this section covers a lot of things such as opening and closing the site, staff e-mail addresses, SEO related options and notifications.
 
@@ -60,7 +60,7 @@ The Structure section also houses the configuration of your forums and chatrooms
 [media width="150" description="Composr Admin Zone style section" float="right"]data_custom/images/docs/sup_finding_your_way_around_the_composr_adminzone/fbe4af1db2a14fe667e670c04cd2a52a.png[/media]
 The style section is used to define how your site appears to its visitors. Within this section there is a Logo Wizard where you can create a logo using a simple process if you do not already have a logo.
 
-One part of this section which you will need to use if you are planning to create your own website style is the Themes section. In this sub section you can control all parts of your theme including the templates that make up the site, the CSS, the images and the theme options. Another very useful tool is the theme wizard which you can use to make very quick changes to the basic colour scheme of your site to set the main colour scheme before working on the rest of the theme.
+One part of this section which you will need to use if you are planning to create your own website style is the Themes section. In this sub section you can control all parts of your theme including the templates that make up the site, the CSS, the images and the theme options. Another very useful tool is the Theme Wizard which you can use to make very quick changes to the basic colour scheme of your site to set the main colour scheme before working on the rest of the theme.
 [/surround]
 
 [title="2"]The Tools section[/title]

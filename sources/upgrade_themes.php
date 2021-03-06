@@ -88,11 +88,14 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
     $errors = [];
     $successes = [];
 
+    if (!is_maintained('theme_upgrader')) {
+        $errors[] = do_lang_tempcode('NO_DEFINED_THEME_UPGRADER');
+        return [$errors, []];
+    }
+
     if (!$test_run) {
         require_code('abstract_file_manager');
         force_have_afm_details([
-            'themes/' . $theme . '/images_custom',
-            'themes/' . $theme . '/images_custom/*',
             'themes/' . $theme . '/css_custom',
             'themes/' . $theme . '/css_custom/*.css',
             'themes/' . $theme . '/templates_custom',
@@ -103,6 +106,8 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
             'themes/' . $theme . '/xml_custom/*.xml',
             'themes/' . $theme . '/text_custom',
             'themes/' . $theme . '/text_custom/*.txt',
+            'themes/' . $theme . '/images_custom',
+            'themes/' . $theme . '/images_custom/*',
         ]);
     }
 
@@ -113,13 +118,15 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
     $css_prepend__multi_match = [];
     $css_append__multi_match = [];
     $css_file_append = [];
-    $theme_images_new = [];
-    $theme_images_renames = [];
     $templates_replace = [];
     $templates_rename = [];
     $templates_borked = [];
+    $theme_images_new = [];
+    $theme_images_renames = [];
 
-    if (false) {
+    if (false/*Currently disabled*/) {
+        // CSS...
+
         $css_recognition_string = '2004-2011'; // Must be defined. Ensures theme is right version.
 
         $css_replace__multi_match = [
@@ -135,12 +142,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
 
         $css_file_append = [];
 
-        // NB: This UNIX command can work out what theme images are added...
-        // OLD=/Library/WebServer/Documents/test/themes/default/images ; NEW=/Library/WebServer/Documents/git/themes/default/images ; diff -r $OLD $NEW | grep "Only in $NEW" | grep -v .DS_Store | sed "s#Only in "$NEW"##g" | sed "s#: #/#g" | sed "s#^/##g" | sed "s#^EN/##g" | sed "s#\.*$##"
-        // Obviously only theme-wizable images should go here
-        $theme_images_new = [];
-
-        $theme_images_renames = [];
+        // Templates...
 
         $templates_replace = [
             '*' => [],
@@ -153,19 +155,27 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         /*Find diff of changes templates
         OLD=/Library/WebServer/Documents/test/themes/default/templates ; NEW=/Library/WebServer/Documents/git/themes/default/templates ; diff -u $OLD $NEW > ~/Desktop/diff.txt*/
         $templates_borked = [];
+
+        // Theme images...
+
+        // NB: This UNIX command can work out what theme images are added...
+        // OLD=/Library/WebServer/Documents/test/themes/default/images ; NEW=/Library/WebServer/Documents/git/themes/default/images ; diff -r $OLD $NEW | grep "Only in $NEW" | grep -v .DS_Store | sed "s#Only in "$NEW"##g" | sed "s#: #/#g" | sed "s#^/##g" | sed "s#^EN/##g" | sed "s#\.*$##"
+        // Obviously only theme-wizable images should go here
+        $theme_images_new = [];
+
+        $theme_images_renames = [];
     } else {
         $errors[] = do_lang_tempcode('NO_DEFINED_THEME_UPGRADER');
         return [$errors, []];
     }
 
+    // CSS
     if (addon_installed('themewizard')) {
         require_code('themewizard');
         $seed = find_theme_seed($theme);
         $dark = find_theme_dark($theme);
-        list($colours, $landscape) = calculate_themewizard_component($seed, 'default', 'equations', 'colours', $dark);
+        list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, 'default', 'equations');
     }
-
-    // CSS
     $css_dir = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/';
     $dh = @opendir($css_dir);
     if ($dh !== false) {
@@ -196,13 +206,13 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
 
                     if (($target_file == '*') || ($target_file == $css_file)) {
                         foreach ($_rule_set as $from => $to) {
-                            // Apply theme wizard to $to
+                            // Apply Theme Wizard to $to
                             if (addon_installed('themewizard')) {
                                 $to = themewizard_colours_to_css($to, $landscape, 'default', 'equations', $seed);
                             }
 
                             $occurrences = substr_count($css_file_contents, $from);
-                            if ($occurrences == 0) { // Try after applying theme wizard
+                            if ($occurrences == 0) { // Try after applying Theme Wizard
                                 if (addon_installed('themewizard')) {
                                     $from = themewizard_colours_to_css($from, $landscape, 'default', 'equations', $seed);
                                     $occurrences = substr_count($css_file_contents, $from);
@@ -243,7 +253,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
                 foreach ($rule_set as $target_file => $_rule_set) {
                     if (($target_file == '*') || ($target_file == $css_file)) {
                         foreach ($_rule_set as $from_a => $to) {
-                            // Apply theme wizard to $to
+                            // Apply Theme Wizard to $to
                             if (addon_installed('themewizard')) {
                                 $to = themewizard_colours_to_css($to, $landscape, 'default', 'equations', $seed);
                             }
@@ -323,67 +333,6 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         }
 
         closedir($dh);
-    }
-
-    // Theme images
-    require_code('themes2');
-    require_code('themes3');
-    $langs = ['EN' => 'lang'];//find_all_langs();
-    foreach ($theme_images_renames as $old => $new) {
-        foreach (array_keys($langs) as $lang) {
-            $path = urldecode(find_theme_image($old, true, true, $theme, $lang));
-            if ($path != '') {
-                $new_path = str_replace('/' . $old, '/' . $new, $path);
-                if (!$test_run) {
-                    if (!file_exists(get_custom_file_base() . '/' . $new_path)) {
-                        if (file_exists($path)) {
-                            afm_move($path, $new_path);
-                        }
-
-                        $where_map = ['theme' => $theme, 'id' => $new];
-                        if (($lang != '') && ($lang !== null)) {
-                            $where_map['lang'] = $lang;
-                        }
-                        $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
-
-                        actual_edit_theme_image($old, $theme, $lang, $new, $new_path);
-
-                        $successes[] = do_lang_tempcode('THEME_IMAGE_RENAMED', escape_html($old), escape_html($new));
-                    }
-                }
-            }
-        }
-    }
-    if (addon_installed('themewizard')) {
-        if ($theme != 'default') {
-            foreach ($theme_images_new as $new) {
-                foreach (array_keys($langs) as $lang) {
-                    $path = urldecode(find_theme_image($new, true, true, 'default', $lang));
-                    if ($path != '') {
-                        $new_path = str_replace('themes/default/images/', 'themes/' . $theme . '/images/', $path);
-                        if (!file_exists(get_custom_file_base() . '/' . $new_path)) {
-                            if (!$test_run) {
-                                afm_make_directory(dirname($new_path), true, true);
-                            }
-
-                            $image = calculate_themewizard_component($seed, 'default', 'equations', $new, $dark, $colours, $landscape, $lang);
-                            if ($image !== null) {
-                                if (!$test_run) {
-                                    if (is_string($image)) {
-                                        cms_file_put_contents_safe(get_custom_file_base() . '/' . $new_path, $image);
-                                    } else {
-                                        cms_imagesave($image, get_custom_file_base() . '/' . $new_path) or intelligent_write_error(get_custom_file_base() . '/' . $new_path);
-                                        imagedestroy($image);
-                                    }
-
-                                    $successes[] = do_lang_tempcode('THEME_IMAGE_NEW', escape_html($new));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     // Templates

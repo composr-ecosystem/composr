@@ -117,7 +117,9 @@ function automate_upgrade()
     foreach (array_keys($themes) as $theme) {
         $from = round(cms_version_number()) - 1;
         $to = cms_version_number();
-        upgrade_theme($theme, $from, $to, false);
+        if (is_maintained('theme_upgrader')) {
+            upgrade_theme($theme, $from, $to, false);
+        }
     }
 }
 

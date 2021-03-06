@@ -51,16 +51,17 @@ class Hook_commandr_command_themewizard_compute_equation
             $theme = array_key_exists(1, $parameters) ? $parameters[1] : 'default';
 
             require_code('themewizard');
+            require_code('themes2');
 
             $seed = find_theme_seed($theme);
             $dark = find_theme_dark($theme);
 
-            $colours = calculate_themewizard_component($seed, $theme, 'equations', 'colours', $dark);
-            $parsed_equation = parse_css_colour_expression($equation);
+            list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $theme, 'equations');
+            $parsed_equation = parse_themewizard_css_colour_expression($equation);
             if ($parsed_equation === null) {
                 return ['', '', '', '?'];
             }
-            $answer = execute_css_colour_expression($parsed_equation, $colours[0]);
+            $answer = execute_themewizard_css_colour_expression($parsed_equation, $colours);
             if ($answer === null) {
                 return ['', '', '', '?'];
             }

@@ -48,7 +48,7 @@ function init__themewizard()
 }
 
 /**
- * Given a source theme name, configure the theme wizard for theme generation from it.
+ * Given a source theme name, configure the Theme Wizard for theme generation from it.
  *
  * @param  ID_TEXT $theme The theme name
  * @param  boolean $guess_images_if_needed Whether we suspect the theme might not be well defined
@@ -66,31 +66,18 @@ function load_themewizard_params_from_theme(string $theme, bool $guess_images_if
     $autodetect_background_images = (($guess_images_if_needed) && (get_theme_option('themewizard_images', '') == ''));
 
     if ($autodetect_background_images) {
-        $css_dir_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/');
-        if (!is_dir($css_dir_path)) {
-            $css_dir_path = get_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/');
-        }
-        $dh = opendir($css_dir_path);
-        while (($sheet = readdir($dh)) !== false) {
-            if (substr($sheet, -4) == '.css') {
-                $css_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/' . $sheet;
-                if (!file_exists($css_path)) {
-                    $css_path = get_custom_file_base() . '/themes/default/css_custom/' . $sheet;
-                }
-                if (!file_exists($css_path)) {
-                    $css_path = get_file_base() . '/themes/default/css/' . $sheet;
-                }
-                $css_file = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                $matches = [];
-                $num_matches = preg_match_all('#\{\$IMG[;\#]?,([\w\-]+)\}#', $css_file, $matches);
-                for ($i = 0; $i < $num_matches; $i++) {
-                    if ((preg_match('#' . preg_quote($matches[0][$i]) . '[\'"]?\)[^\n]*no-repeat#', $css_file) == 0) || (preg_match('#' . preg_quote($matches[0][$i]) . '[\'"]?\)[^\n]*width:\s*\d\d\d+px#', $css_file) != 0) || (preg_match('#width:\s*\d\d\d+px;[^\n]*' . preg_quote($matches[0][$i]) . '[\'"]?\)#', $css_file) != 0)) {
-                        $themewizard_images .= ',' . $matches[1][$i];
-                    }
+        $css_files = themewizard_find_css_sheets($theme) + themewizard_find_css_sheets('default');
+
+        foreach ($css_files as $css_path) {
+            $contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $matches = [];
+            $num_matches = preg_match_all('#\{\$IMG[;\#]?,([\w\-]+)\}#', $contents, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                if ((preg_match('#' . preg_quote($matches[0][$i]) . '[\'"]?\)[^\n]*no-repeat#', $contents) == 0) || (preg_match('#' . preg_quote($matches[0][$i]) . '[\'"]?\)[^\n]*width:\s*\d\d\d+px#', $contents) != 0) || (preg_match('#width:\s*\d\d\d+px;[^\n]*' . preg_quote($matches[0][$i]) . '[\'"]?\)#', $contents) != 0)) {
+                    $themewizard_images .= ',' . $matches[1][$i];
                 }
             }
         }
-        closedir($dh);
 
         if ($theme != 'default') {
             $myfile = cms_fopen_text_write(get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/theme.ini', false, 'ab');
@@ -139,11 +126,11 @@ function find_theme_dark(string $theme) : bool
 }
 
 /**
- * Called by find_theme_image to allow on-the-fly previewing of what theme wizard output would look like.
+ * Called by find_theme_image to allow on-the-fly previewing of what Theme Wizard output would look like.
  *
  * @param  ID_TEXT $id The theme image ID
  * @param  boolean $silent_fail Whether to silently fail (i.e. not give out an error message when a theme image cannot be found)
- * @return ?URLPATH URL to image (null: use standard one, this one is not theme wizard influenced)
+ * @return ?URLPATH URL to image (null: use standard one, this one is not Theme Wizard influenced)
  */
 function find_theme_image_themewizard_preview(string $id, bool $silent_fail = false) : ?string
 {
@@ -185,7 +172,7 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
 }
 
 /**
- * Given a source theme name, configure the theme wizard for theme generation from it.
+ * Given a source theme name, configure the Theme Wizard for theme generation from it.
  *
  * @param  ID_TEXT $source_theme The theme it's being generated from
  * @param  ID_TEXT $algorithm The algorithm to use
@@ -223,6 +210,97 @@ function check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_
 }
 
 /**
+ * Find theme images in the scope of the Theme Wizard.
+ *
+ * @param  ID_TEXT $source_theme The theme it's being generated from
+ * @param  string $seed Seed colour to use
+ * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
+ * @return array List of theme image codes
+ */
+function themewizard_find_theme_images_in_scope($source_theme, $seed, $dark)
+{
+    require_code('themes2');
+    if (($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
+        // Nothing to do
+        return [];
+    }
+
+    global $THEMEWIZARD_IMAGES, $THEMEWIZARD_IMAGES_NO_WILD, $THEME_IMAGES_CACHE;
+
+    require_code('themes2');
+    $full_img_set = [];
+    foreach ($THEMEWIZARD_IMAGES as $expression) {
+        if (substr($expression, -1) == '*') {
+            $expression = substr($expression, 0, strlen($expression) - 2); // remove "/*"
+            $full_img_set = array_merge($full_img_set, array_keys(get_all_image_codes(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/images', $expression)));
+            $full_img_set = array_merge($full_img_set, array_keys(get_all_image_codes(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/images/' . fallback_lang(), $expression)));
+        } else {
+            $full_img_set[] = $expression;
+        }
+    }
+
+    // Filter
+    $full_img_set_filtered = [];
+    foreach ($full_img_set as $image_code) {
+        if ((!in_array($image_code, $THEMEWIZARD_IMAGES_NO_WILD)) && (find_theme_image($image_code, true) != '')) {
+            $full_img_set_filtered[] = $image_code;
+        }
+    }
+    $full_img_set = $full_img_set_filtered;
+
+    // Find if the image various by language
+    $_langs = find_all_langs(true);
+    $full_img_set_with_lang_info = [];
+    foreach ($full_img_set as $image_code) {
+        $urls = [];
+        foreach (array_keys($_langs) as $lang) {
+            $urls[find_theme_image($image_code, false, false, $source_theme, $lang)] = true;
+        }
+
+        $full_img_set_with_lang_info[$image_code] = (count($urls) > 1);
+    }
+
+    return $full_img_set_with_lang_info;
+}
+
+/**
+ * Find CSS files of a theme.
+ *
+ * @param  ID_TEXT $source_theme The theme it's being generated from
+ * @param  ?string $seed Seed colour to use (null: don't consider)
+ * @param  ?boolean $dark Whether it will be a dark theme (null: don't consider)
+ * @param  boolean $in_scope_only Only return if in the scope of the Theme Wizard
+ * @return array Map of CSS files from filename to path
+ */
+function themewizard_find_css_sheets($source_theme, $seed = null, $dark = null, $in_scope_only = true)
+{
+    require_code('themes2');
+    if (($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
+        // Nothing to do
+        return [];
+    }
+
+    $sheets = [];
+
+    foreach ([get_custom_file_base(), get_file_base()] as $file_base) {
+        foreach (['css_custom', 'css'] as $subdir) {
+            $sheets_path = $file_base . '/themes/' . filter_naughty($source_theme) . '/' . $subdir;
+
+            $files = get_directory_contents($sheets_path, $sheets_path, 0, false, true, ['css']);
+            foreach ($files as $path) {
+                if (!isset($sheets[basename($path)])) {
+                    if ((!$in_scope_only) || (strpos(cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), '{$THEMEWIZARD_COLOR,') !== false)) {
+                        $sheets[basename($path)] = $path;
+                    }
+                }
+            }
+        }
+    }
+
+    return $sheets;
+}
+
+/**
  * Make a theme. Note that this will trigger the AFM.
  *
  * @param  string $theme_name Name of the theme
@@ -230,10 +308,10 @@ function check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_
  * @param  ID_TEXT $algorithm The algorithm to use
  * @set equations hsv
  * @param  string $seed Seed colour to use
- * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
+ * @param  boolean $dark Whether it will be a dark theme
  * @param  boolean $use_on_all Whether to use the theme immediately
  */
-function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, ?bool $dark, bool $use_on_all)
+function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all)
 {
     $old_limit = cms_disable_time_limit();
     disable_php_memory_limit();
@@ -242,146 +320,109 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
 
     require_code('themes3');
 
+    // Find what is in scope
+    $theme_images = themewizard_find_theme_images_in_scope($source_theme, $seed, $dark);
+    $css_files = themewizard_find_css_sheets($source_theme, $seed, $dark);
+
+    // Set up parameters
     if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
         $algorithm = 'hsv';
     }
-
     load_themewizard_params_from_theme($source_theme, $algorithm == 'hsv');
 
+    // Create/clone base theme
     if (file_exists(get_custom_file_base() . '/themes/' . $theme_name)) {
         require_code('abstract_file_manager');
         force_have_afm_details(['themes/' . $theme_name . '/css_custom/*', 'themes/' . $theme_name . '/images_custom/*']);
-        $extending_existing = true;
     } else {
         // The below operations will also activate the AFM
         if ($source_theme == 'default') {
             actual_add_theme($theme_name);
         } else {
-            actual_copy_theme($source_theme, $theme_name);
+            actual_copy_theme($source_theme, $theme_name, $theme_images, $css_files);
         }
-        $extending_existing = false;
     }
 
-    if (($seed != find_theme_seed($source_theme)) || ($dark != find_theme_dark($source_theme))) {
-        list($colours, $landscape) = calculate_themewizard_component($seed, $source_theme, $algorithm, 'colours', $dark);
+    // Basic colour calculations
+    list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm);
 
-        // Make images
-        global $THEMEWIZARD_IMAGES, $THEMEWIZARD_IMAGES_NO_WILD, $THEME_IMAGES_CACHE;
-        if (function_exists('imagecolorallocatealpha')) {
-            require_code('themes2');
-            $full_img_set = [];
-            foreach ($THEMEWIZARD_IMAGES as $expression) {
-                if (substr($expression, -1) == '*') {
-                    $expression = substr($expression, 0, strlen($expression) - 2); // remove "/*"
-                    $full_img_set = array_merge($full_img_set, array_keys(get_all_image_codes(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/images', $expression)));
-                    $full_img_set = array_merge($full_img_set, array_keys(get_all_image_codes(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/images/' . fallback_lang(), $expression)));
-                } else {
-                    $full_img_set[] = $expression;
-                }
+    // Make theme images
+    if ((function_exists('imagecolorallocatealpha')) && (!empty($theme_images))) {
+        $_langs = find_all_langs(true);
+        foreach ($theme_images as $theme_image => $image_is_multi_lang) {
+            if ($theme_name != '_temp_') {
+                send_http_output_ping();
             }
 
-            if ($extending_existing) {
-                $temp_all_ids = collapse_2d_complexity('id', 'url', $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], ['theme' => $theme_name]));
-            } else {
-                $temp_all_ids = [];
-            }
-
-            $_langs = find_all_langs(true);
-
-            foreach ($full_img_set as $image_code) {
-                if ($theme_name != '_temp_') {
-                    send_http_output_ping();
+            foreach (array_keys($_langs) as $lang) {
+                if ((!$image_is_multi_lang) && ($lang != fallback_lang())) {
+                    continue;
                 }
 
-                if (!in_array($image_code, $THEMEWIZARD_IMAGES_NO_WILD)) {
-                    if (($extending_existing) && (array_key_exists($image_code, $temp_all_ids)) && (strpos($temp_all_ids[$image_code], $theme_name . '/images_custom/') !== false) && ((!url_is_local($temp_all_ids[$image_code])) || (file_exists(get_custom_file_base() . '/' . $temp_all_ids[$image_code])))) {
+                $image = generate_themewizard_image($seed, $dark, $source_theme, $algorithm, $theme_image, $colours, $landscape, $lang);
+                if ($image !== null) {
+                    // Derive paths and URLs
+                    if ($image_is_multi_lang) {
+                        $composite = 'themes/' . filter_naughty($theme_name) . '/images/' . $lang . '/';
+                    } else {
+                        $composite = 'themes/' . filter_naughty($theme_name) . '/images/';
+                    }
+                    $save_path = get_custom_file_base() . '/' . $composite . $theme_image . '.png';
+                    $save_url = $composite . $theme_image . '.png';
+
+                    // If already made (as we support auto-resume)
+                    if (is_file($save_path)) {
                         continue;
                     }
 
-                    foreach (array_keys($_langs) as $lang) {
-                        $orig_url = find_theme_image($image_code, true, true, $source_theme, $lang);
-                        if ($orig_url == '') {
-                            continue; // Theme has specified non-existent image as themewizard-compatible
-                        }
-
-                        if ((strpos($orig_url, '/' . $lang . '/') === false) && ($lang != fallback_lang())) {
-                            continue;
-                        }
-
-                        if (strpos($orig_url, '/' . fallback_lang() . '/') !== false) {
-                            $composite = 'themes/' . filter_naughty($theme_name) . '/images/' . $lang . '/';
-                        } else {
-                            $composite = 'themes/' . filter_naughty($theme_name) . '/images/';
-                        }
-                        $saveat = get_custom_file_base() . '/' . $composite . $image_code . '.png';
-                        $saveat_url = $composite . $image_code . '.png';
-
-                        // Wipe out ones that might have been copied from source theme
-                        if (($source_theme != 'default') && (strpos($orig_url, 'images_custom') !== false)) {
-                            foreach (['png', 'jpg', 'gif', 'jpeg'] as $ext) {
-                                $old_delete_path = str_replace('/images/', '/images_custom/', basename($saveat, '.png')) . '.' . $ext;
-                                @unlink($old_delete_path);
-                                sync_file($old_delete_path);
-                            }
-                        }
-
-                        if ((!file_exists($saveat)) || ($source_theme != 'default') || ($algorithm == 'hsv')) {
-                            $image = calculate_themewizard_component($seed, $source_theme, $algorithm, $image_code, $dark, $colours, $landscape, $lang);
-                            if ($image !== null) {
-                                $pos = strrpos($image_code, '/');
-                                if (($pos !== false) || (strpos($orig_url, '/' . fallback_lang() . '/') !== false)) {
-                                    afm_make_directory($composite . substr($image_code, 0, $pos), true, true);
-                                    $parts = explode('/', substr($image_code, 0, $pos));
-                                    $build_up = $composite;
-                                    foreach ($parts as $part) {
-                                        $build_up .= '/' . $part;
-                                        afm_make_file($build_up . '/index.html', '', false);
-                                    }
-                                }
-                                if (is_string($image)) {
-                                    cms_file_put_contents_safe($saveat, $image);
-                                } else {
-                                    cms_imagesave($image, $saveat) or intelligent_write_error($saveat);
-                                    imagedestroy($image);
-                                }
-                                actual_edit_theme_image($image_code, $theme_name, $lang, $image_code, $saveat_url, true);
-                            }
-                        } else { // Still need to do the edit, as currently it'll have been mapped to the default theme when this theme was added
-                            actual_edit_theme_image($image_code, $theme_name, $lang, $image_code, $saveat_url, true);
+                    // Make any needed directories
+                    if ($image_is_multi_lang) {
+                        afm_make_file($composite . '/index.html', '', false);
+                    }
+                    $pos = strrpos($theme_image, '/');
+                    if ($pos !== false) {
+                        afm_make_directory($composite . substr($theme_image, 0, $pos), true, true);
+                        $parts = explode('/', substr($theme_image, 0, $pos));
+                        $build_up = $composite;
+                        foreach ($parts as $part) {
+                            $build_up .= '/' . $part;
+                            afm_make_file($build_up . '/index.html', '', false);
                         }
                     }
-                }
-            }
-        }
 
-        // Make sheets
-        $sheets_path = get_file_base() . '/themes/' . filter_naughty($source_theme) . (($source_theme == 'default') ? '/css/' : '/css_custom/');
-        $dh = opendir($sheets_path);
-        while (($sheet = readdir($dh)) !== false) {
-            if (substr($sheet, -4) == '.css') {
-                $saveat = get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $sheet;
-                if ((!file_exists($saveat)) || ($source_theme != 'default') || ($algorithm == 'hsv')) {
-                    $output = themewizard_colours_to_sheet($sheet, $landscape, $source_theme, $algorithm, $seed);
-                    $default_version_path = get_file_base() . '/themes/default/css/' . $sheet;
-                    if (is_file($default_version_path)) {
-                        $default_version = cms_file_get_contents_safe($default_version_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK | FILE_READ_BOM);
-                        $changed_from_default_theme = (cms_file_get_contents_safe($default_version_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK | FILE_READ_BOM) != $output);
+                    // Write file
+                    if (is_string($image)) {
+                        cms_file_put_contents_safe($save_path, $image);
                     } else {
-                        $changed_from_default_theme = true;
+                        cms_imagesave($image, $save_path) or intelligent_write_error($save_path);
+                        imagedestroy($image);
                     }
-                    if ($changed_from_default_theme) {
-                        require_code('files');
-                        cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $sheet, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                        $c_success = @copy(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/css/' . $sheet, $saveat . '.editfrom');
-                        if ($c_success !== false) {
-                            fix_permissions($saveat . '.editfrom');
-                            sync_file($saveat . '.editfrom');
-                        }
-                    }
+
+                    // Update database
+                    actual_edit_theme_image($theme_image, $theme_name, $lang, $theme_image, $save_url, true);
                 }
             }
         }
-        closedir($dh);
+    }
+
+    // Make sheets
+    foreach ($css_files as $file => $css_path) {
+        $save_path = get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $file;
+        if (file_exists($save_path)) { // If already made (as we support auto-resume)
+            continue;
+        }
+
+        $output = generate_theme_wizard_css_sheet($file, $css_path, $landscape, $source_theme, $algorithm, $seed);
+
+        require_code('files');
+        cms_file_put_contents_safe($save_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+
+        // .editfrom file
+        $c_success = @copy(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/css/' . $file, $save_path . '.editfrom');
+        if ($c_success !== false) {
+            fix_permissions($save_path . '.editfrom');
+            sync_file($save_path . '.editfrom');
+        }
     }
 
     // Write theme.ini file
@@ -442,13 +483,13 @@ function themewizard_script()
         case 'css_raw':
             cms_ini_set('ocproducts.xss_detect', '0');
             require_code('tempcode_compiler');
-            list($colours, $landscape) = calculate_themewizard_component($seed, $source_theme, $algorithm, 'colours', $dark);
+            list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm);
             if ($show != '_base.css') { // We need to make sure the _base.css file is parsed, as it contains some shared THEMEWIZARD_COLOR variables that Tempcode will pick up on
-                $css = themewizard_colours_to_sheet('_base.css', $landscape, $source_theme, $algorithm, $seed);
+                $css = generate_theme_wizard_css_sheet('_base.css', null, $landscape, $source_theme, $algorithm, $seed);
                 $tpl = template_to_tempcode($css);
                 $tpl->evaluate();
             }
-            $css = themewizard_colours_to_sheet($show, $landscape, $source_theme, $algorithm, $seed);
+            $css = generate_theme_wizard_css_sheet($show, null, $landscape, $source_theme, $algorithm, $seed);
             header('Content-Type: text/css; charset=' . get_charset());
             if ($type == 'css') {
                 $tpl = template_to_tempcode($css);
@@ -459,7 +500,7 @@ function themewizard_script()
             break;
 
         case 'image':
-            $image = calculate_themewizard_component($seed, $source_theme, $algorithm, $show, $dark);
+            $image = generate_themewizard_image($seed, $dark, $source_theme, $algorithm, $show);
             if ($image === null) {
                 header('Location: ' . escape_header(find_theme_image($show))); // assign_refresh not used, as no UI here
                 exit();
@@ -492,17 +533,16 @@ function themewizard_script()
  * Calculate some component relating to a theme from a colour seed.
  *
  * @param  string $seed Colour seed
+ * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
  * @param  ID_TEXT $source_theme The theme it's being generated from
  * @param  ID_TEXT $algorithm The algorithm to use
  * @set equations hsv
- * @param  ID_TEXT $show What to generate ('colours', or the name of a theme image)
- * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
  * @param  ?array $colours The colour map to use (null: compute)
  * @param  ?array $landscape The computed colour landscape to use (null: compute)
  * @param  ?LANGUAGE_NAME $lang The language to work in (null: default)
- * @return ?mixed Image resource OR Image string OR A pair: extended map of colours, colour expression landscape (null: did not happen)
+ * @return array A pair: extended map of colours, colour expression landscape
  */
-function calculate_themewizard_component(string $seed, string $source_theme, string $algorithm, string $show = 'colours', ?bool $dark = null, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
+function calculate_themewizard_css_colours(string $seed, ?bool &$dark, string $source_theme, string $algorithm, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
 {
     if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
         $algorithm = 'hsv';
@@ -555,16 +595,19 @@ function calculate_themewizard_component(string $seed, string $source_theme, str
     }
 
     // Decide if this is a "light" skin or a "dark" theme
-    if (((intval(round(floatval($red + $green + $blue) / 3.0)) >= 127) || ($dark === false)) && ($dark !== true)) {
-        $light_dark = 'light';
-        $anti_light_dark = 'dark';
-        $wb = 'FFFFFF';
-        $awb = '000000';
-    } else {
+    if ($dark === null) {
+        $dark = (intval(round(floatval($red + $green + $blue) / 3.0)) >= 127);
+    }
+    if ($dark) {
         $light_dark = 'dark';
         $anti_light_dark = 'light';
         $wb = '000000';
         $awb = 'FFFFFF';
+    } else {
+        $light_dark = 'light';
+        $anti_light_dark = 'dark';
+        $wb = 'FFFFFF';
+        $awb = '000000';
     }
 
     if (($landscape === null) || ($colours === null)) {
@@ -584,80 +627,26 @@ function calculate_themewizard_component(string $seed, string $source_theme, str
             'BW' => $awb,
         ];
         if ($algorithm == 'equations') {
-            list($colours, $landscape) = calculate_dynamic_css_colours($colours, $source_theme);
+            list($colours, $landscape) = _calculate_themewizard_dynamic_css_colours($seed, $dark, $colours, $source_theme);
         } else {
             $landscape = [];
         }
     }
 
-    if ($show === 'colours') {// Whether to just calculate colours
-        return [$colours, $landscape];
-    }
-
-    /* Calculate image */
-
-    unset($_GET['keep_theme_seed']);
-    $ti = find_theme_image($show, false, true, $source_theme, $lang);
-    if ($ti == '') {
-        return null;
-    }
-    $path = get_file_base() . '/' . $ti;
-    if (!file_exists($path)) { // File since deleted, we'll revert
-        $ti = find_theme_image($show, false, true, $source_theme, $lang, null, true);
-        if ($ti == '') {
-            return null;
-        }
-        $path = get_file_base() . '/' . $ti;
-    }
-
-    $img = null;
-
-    if (function_exists('imagecolorallocatealpha')) {
-        if ($algorithm == 'hsv') {
-            $img = re_hue_image($path, $seed, $source_theme, true);
-        } else {
-            if ($source_theme == 'default') {
-                $needed = [];
-                foreach ($needed as $colour_needed) {
-                    if (!array_key_exists($colour_needed, $colours)) {
-                        warn_exit(do_lang_tempcode('UNRESOLVABLE_COLOURS', escape_html($colour_needed)), false, true);
-                    }
-                }
-
-                if (substr($path, -4) == '.svg') {
-                    $img = re_hue_image($path, $seed, $source_theme);
-                } else {
-                    // This is for raster images to be specially rendered.
-                    //  We used to have a lot of logic here, before we moved to .svg
-
-                    switch ($show) {
-                        default: // Just change the hue
-                            $img = re_hue_image($path, $seed, $source_theme);
-                            break;
-                    }
-                }
-            } else {
-                $img = re_hue_image($path, $seed, $source_theme);
-            }
-        }
-    }
-
-    return $img;
+    return [$colours, $landscape];
 }
 
 /**
  * Augment an array of CSS colours with colours that are derived actually inside the CSS-sheets.
  *
+ * @param  string $seed Colour seed
+ * @param  boolean $dark Whether it will be a dark theme
  * @param  array $colours Map of colours
  * @param  ID_TEXT $source_theme The theme it's being generated from
  * @return array A pair: extended map of colours, colour expression landscape
  */
-function calculate_dynamic_css_colours(array $colours, string $source_theme) : array
+function _calculate_themewizard_dynamic_css_colours(string $seed, bool $dark, array $colours, string $source_theme) : array
 {
-    $theme = filter_naughty($source_theme);
-    $css_dir = (($theme == 'default') ? 'css' : 'css_custom');
-    $dh = opendir(get_file_base() . '/themes/' . $theme . '/' . $css_dir . '/');
-
     require_lang('themes');
 
     // Initialise landscape
@@ -674,35 +663,31 @@ function calculate_dynamic_css_colours(array $colours, string $source_theme) : a
     }
 
     // First we build up our landscape
-    while (($sheet = readdir($dh)) !== false) {
-        if (substr($sheet, -4) == '.css') {
-            $path = get_file_base() . '/themes/' . $theme . '/' . $css_dir . '/' . $sheet;
-            $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
+    $css_files = themewizard_find_css_sheets($source_theme, $seed, $dark);
+    foreach ($css_files as $file => $path) {
+        $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-            $matches = [];
-            $num_matches = preg_match_all('#\{\$THEMEWIZARD_COLOR,(.*),(.*),(.*)\}#', $contents, $matches);
+        $matches = [];
+        $num_matches = preg_match_all('#\{\$THEMEWIZARD_COLOR,(.*),(.*),(.*)\}#', $contents, $matches);
 
-            for ($i = 0; $i < $num_matches; $i++) {
-                // Skip over our little stored hints (not intended for calculation, comes with new seed)
-                if (in_array($matches[2][$i], ['seed', 'WB', 'BW'])) {
-                    continue;
-                }
+        for ($i = 0; $i < $num_matches; $i++) {
+            // Skip over our little stored hints (not intended for calculation, comes with new seed)
+            if (in_array($matches[2][$i], ['seed', 'WB', 'BW'])) {
+                continue;
+            }
 
-                // A one we're really interested in
-                $parsed = parse_css_colour_expression($matches[3][$i]);
-                if ($parsed !== null) {
-                    $landscape[] = [
-                        $matches[2][$i], // Colour name
-                        $parsed, // Parsed expression
-                        $matches[0][$i], // Full match string
-                        null, // Final colour
-                    ];
-                }
+            // A one we're really interested in
+            $parsed = parse_themewizard_css_colour_expression($matches[3][$i]);
+            if ($parsed !== null) {
+                $landscape[] = [
+                    $matches[2][$i], // Colour name
+                    $parsed, // Parsed expression
+                    $matches[0][$i], // Full match string
+                    null, // Final colour
+                ];
             }
         }
     }
-
-    closedir($dh);
 
     // Then we resolve our expressions
     $resolved_landscaped = [];
@@ -710,7 +695,7 @@ function calculate_dynamic_css_colours(array $colours, string $source_theme) : a
     while (!empty($landscape)) {
         foreach ($landscape as $i => $peak) {
             if ($peak[3] === null) {
-                $peak[3] = execute_css_colour_expression($peak[1], $colours);
+                $peak[3] = execute_themewizard_css_colour_expression($peak[1], $colours);
             }
             if ($peak[3] !== null) { // We were able to get a result
                 $resolved_landscaped[] = $peak;
@@ -744,7 +729,7 @@ function calculate_dynamic_css_colours(array $colours, string $source_theme) : a
  * @param  string $textual Textual expression
  * @return ?array Expression tree (null: not real)
  */
-function parse_css_colour_expression(string $textual) : ?array
+function parse_themewizard_css_colour_expression(string $textual) : ?array
 {
     // '*' is inserted after a %, and then % is dropped
     $textual = preg_replace('#(^| )(\d+)%#', '\\1\\2 *', $textual);
@@ -755,7 +740,7 @@ function parse_css_colour_expression(string $textual) : ?array
     // Perform inner conversion
     $tokens = explode(' ', $textual);
 
-    $expression = _parse_css_colour_expression($tokens);
+    $expression = _parse_themewizard_css_colour_expression($tokens);
     return $expression;
 }
 
@@ -767,7 +752,7 @@ function parse_css_colour_expression(string $textual) : ?array
  *
  * @ignore
  */
-function _parse_css_colour_expression(array $tokens) : ?array
+function _parse_themewizard_css_colour_expression(array $tokens) : ?array
 {
     // We now scan through, structuring into an evaluation-order tree (but not an expression tree  at the level we're operating on)
     // Parentheses
@@ -783,7 +768,7 @@ function _parse_css_colour_expression(array $tokens) : ?array
                 } elseif (($tokens[$i] == ')') && ($extra_opened > 0)) {
                     $extra_opened--;
                 } elseif ($tokens[$i] == ')') {
-                    $new_tokens[] = _parse_css_colour_expression($sub_tokens);
+                    $new_tokens[] = _parse_themewizard_css_colour_expression($sub_tokens);
                     break;
                 }
                 $sub_tokens[] = $tokens[$i];
@@ -796,7 +781,7 @@ function _parse_css_colour_expression(array $tokens) : ?array
     // Additions. Each addition is a pivot.
     for ($i = 0; $i < count($tokens); $i++) {
         if ($tokens[$i] === '+') {
-            return ['+', _parse_css_colour_expression(array_slice($tokens, 0, $i)), _parse_css_colour_expression(array_slice($tokens, $i + 1))];
+            return ['+', _parse_themewizard_css_colour_expression(array_slice($tokens, 0, $i)), _parse_themewizard_css_colour_expression(array_slice($tokens, $i + 1))];
         }
     }
 
@@ -807,7 +792,7 @@ function _parse_css_colour_expression(array $tokens) : ?array
 
     // Or we have a length of more than 3 tokens, in which case we pivot
     if (count($tokens) > 3) {
-        return [$tokens[1], $tokens[0], _parse_css_colour_expression(array_slice($tokens, 2))];
+        return [$tokens[1], $tokens[0], _parse_themewizard_css_colour_expression(array_slice($tokens, 2))];
     }
 
     // Or we have just 3 tokens, a single operation
@@ -824,7 +809,7 @@ function _parse_css_colour_expression(array $tokens) : ?array
  * @param  array $colours Known colours at this point
  * @return ?string RRGGBB colour or possibly just a number (null: answer cannot be computed)
  */
-function execute_css_colour_expression($expression, array $colours) : ?string
+function execute_themewizard_css_colour_expression($expression, array $colours) : ?string
 {
     if (!is_array($expression)) {
         if (preg_match('#^[0-9A-Fa-f]{6}$#', $expression) != 0) {
@@ -847,11 +832,11 @@ function execute_css_colour_expression($expression, array $colours) : ?string
     }
 
     $operation = $expression[0];
-    $operand_a = execute_css_colour_expression($expression[1], $colours);
+    $operand_a = execute_themewizard_css_colour_expression($expression[1], $colours);
     if ($operand_a === null) {
         return null;
     }
-    $operand_b = execute_css_colour_expression($expression[2], $colours);
+    $operand_b = execute_themewizard_css_colour_expression($expression[2], $colours);
     if ($operand_b === null) {
         return null;
     }
@@ -1114,7 +1099,8 @@ function hsv_to_rgb(float $h, float $s, float $v) : string
 /**
  * Rewrite a CSS file's code according to a CSS landscape.
  *
- * @param  ID_TEXT $sheet CSS filename of source file
+ * @param  ID_TEXT $css_file CSS filename of source file
+ * @param  ?PATH $css_source_path Where to get the CSS file from (null: search)
  * @param  array $landscape The colour expression landscape which we'll make substitutions using
  * @param  ID_TEXT $source_theme The theme this is being generated from
  * @param  ID_TEXT $algorithm The algorithm to use
@@ -1122,23 +1108,13 @@ function hsv_to_rgb(float $h, float $s, float $v) : string
  * @param  ID_TEXT $seed The seed colour
  * @return string The sheet
  */
-function themewizard_colours_to_sheet(string $sheet, array $landscape, string $source_theme, string $algorithm, string $seed) : string
+function generate_theme_wizard_css_sheet(string $css_file, ?string $css_source_path, array $landscape, string $source_theme, string $algorithm, string $seed) : string
 {
-    $theme = filter_naughty($source_theme);
-
-    $path = get_file_base() . '/themes/' . $theme . '/css_custom/' . filter_naughty($sheet);
-    if (!file_exists($path)) {
-        $path = get_file_base() . '/themes/' . $theme . '/css/' . filter_naughty($sheet);
+    $css_sheets = themewizard_find_css_sheets($source_theme, null, null, false) + themewizard_find_css_sheets('default', null, null, false);
+    if (!isset($css_sheets[$css_file])) {
+        return ''; // Probably a dynamic Theme Wizard call after an addon was removed
     }
-    if (!file_exists($path)) {
-        $path = get_file_base() . '/themes/default/css_custom/' . filter_naughty($sheet);
-    }
-    if (!file_exists($path)) {
-        $path = get_file_base() . '/themes/default/css/' . filter_naughty($sheet);
-    }
-    if (!file_exists($path)) {
-        return ''; // Probably a dynamic theme wizard call after an addon was removed
-    }
+    $path = $css_sheets[$css_file];
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
@@ -1194,6 +1170,73 @@ function themewizard_colours_to_css(string $contents, array $landscape, string $
 }
 
 /**
+ * Generate a Theme Wizard image.
+ *
+ * @param  string $seed Colour seed
+ * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
+ * @param  ID_TEXT $source_theme The theme it's being generated from
+ * @param  ID_TEXT $algorithm The algorithm to use
+ * @set equations hsv
+ * @param  ID_TEXT $show What theme image to generate
+ * @param  ?array $colours The colour map to use (null: compute)
+ * @param  ?array $landscape The computed colour landscape to use (null: compute)
+ * @param  ?LANGUAGE_NAME $lang The language to work in (null: default)
+ * @return ?mixed Image resource OR Image string (null: did not happen)
+ */
+function generate_themewizard_image(string $seed, ?bool $dark, string $source_theme, string $algorithm, string $show, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
+{
+    list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm, $colours, $landscape, $lang);
+
+    unset($_GET['keep_theme_seed']);
+    $ti = find_theme_image($show, false, true, $source_theme, $lang);
+    if ($ti == '') {
+        return null;
+    }
+    $path = get_file_base() . '/' . $ti;
+    if (!file_exists($path)) { // File since deleted, we'll revert
+        $ti = find_theme_image($show, false, true, $source_theme, $lang, null, true);
+        if ($ti == '') {
+            return null;
+        }
+        $path = get_file_base() . '/' . $ti;
+    }
+
+    $img = null;
+
+    if (function_exists('imagecolorallocatealpha')) {
+        if ($algorithm == 'hsv') {
+            $img = re_hue_image($path, $seed, $source_theme, true);
+        } else {
+            if ($source_theme == 'default') {
+                $needed = [];
+                foreach ($needed as $colour_needed) {
+                    if (!array_key_exists($colour_needed, $colours)) {
+                        warn_exit(do_lang_tempcode('UNRESOLVABLE_COLOURS', escape_html($colour_needed)), false, true);
+                    }
+                }
+
+                if (substr($path, -4) == '.svg') {
+                    $img = re_hue_image($path, $seed, $source_theme);
+                } else {
+                    // This is for raster images to be specially rendered.
+                    //  We used to have a lot of logic here, before we moved to .svg
+
+                    switch ($show) {
+                        default: // Just change the hue
+                            $img = re_hue_image($path, $seed, $source_theme);
+                            break;
+                    }
+                }
+            } else {
+                $img = re_hue_image($path, $seed, $source_theme);
+            }
+        }
+    }
+
+    return $img;
+}
+
+/**
  * Generate a theme image by converting an existing one to a new colour scheme via re-hueing.
  *
  * @param  PATH $path The image path
@@ -1235,10 +1278,10 @@ function re_hue_image(string $path, string $seed, string $source_theme, bool $al
  */
 function _re_hue_image__svg(string $path, int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, bool $also_s_and_v = false, bool $invert = false)
 {
-    $c = cms_file_get_contents_safe($path);
+    $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     $matches = [];
-    $num_matches = preg_match_all('/"#([\dA-F]{6})"/i', $c, $matches);
+    $num_matches = preg_match_all('/"#([\dA-F]{6})"/i', $contents, $matches);
     $colours = [];
     for ($i = 0; $i < $num_matches; $i++) {
         $colour = $matches[1][$i];
@@ -1258,10 +1301,10 @@ function _re_hue_image__svg(string $path, int $seed_h, int $seed_s, int $seed_v,
 
         $new_colour = str_pad(dechex($new_colour_r), 2, '0', STR_PAD_LEFT) . str_pad(dechex($new_colour_g), 2, '0', STR_PAD_LEFT) . str_pad(dechex($new_colour_b), 2, '0', STR_PAD_LEFT);
 
-        $c = str_replace('"#' . $colour . '"', '"#' . $new_colour . '"', $c);
+        $contents = str_replace('"#' . $colour . '"', '"#' . $new_colour . '"', $contents);
     }
 
-    return $c;
+    return $contents;
 }
 
 /**

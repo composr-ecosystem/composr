@@ -1891,19 +1891,19 @@ You can store and retrieve values in Tempcode variables. These work across templ
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$THEMEWIZARD_COLOR,#RRGGBB,name,equation}</td>
-			<td>Sets a theme wizard colour that can be retrieved from <kbd>name</kbd> as a Tempcode variable. The equation is actually ignored during Tempcode evaluation but is picked up by the Theme Wizard.</td>
+			<td>Sets a Theme Wizard colour that can be retrieved from <kbd>name</kbd> as a Tempcode variable. The equation is actually ignored during Tempcode evaluation but is picked up by the Theme Wizard.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$COLOR_RGBA,#RRGGBB,name,fraction}</td>
-			<td>Take a theme wizard colour variable and create a CSS RGBA string with a given opacity fraction.</td>
+			<td>Take a Theme Wizard colour variable and create a CSS RGBA string with a given opacity fraction.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$COLOR_LIGHTEN,#RRGGBB,name,percentage}</td>
-			<td>Take a theme wizard colour variable and lighten it by a given percentage.</td>
+			<td>Take a Theme Wizard colour variable and lighten it by a given percentage.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$COLOR_DARKEN,#RRGGBB,name,percentage}</td>
-			<td>Take a theme wizard colour variable and darken it by a given percentage.</td>
+			<td>Take a Theme Wizard colour variable and darken it by a given percentage.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$CSS_MODE,name,from-to,mobileModeBehaviour}</td>

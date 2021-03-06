@@ -6,12 +6,12 @@ How knowledgeable you are in CSS and HTML will determine how detailed a customis
 
 [title="2"]The Theme Wizard[/title]
 
-[media width="150" description="Composr theme wizard" float="right"]data_custom/images/docs/sup_customising_your_composr_websites_design/13fcdc8b191c7abad8b5a613b9fcc229.png[/media]
-I will start in the most sensible place to begin and that is with the theme wizard which is built into Composr. After logging in to the Admin Zone, go to the Style screen and choose the Themes option. Once you arrive on the page you should see a table of options for the default theme and if you haven't made any theme changes yet this should be the only theme installed.
+[media width="150" description="Composr Theme Wizard" float="right"]data_custom/images/docs/sup_customising_your_composr_websites_design/13fcdc8b191c7abad8b5a613b9fcc229.png[/media]
+I will start in the most sensible place to begin and that is with the Theme Wizard which is built into Composr. After logging in to the Admin Zone, go to the Style screen and choose the Themes option. Once you arrive on the page you should see a table of options for the default theme and if you haven't made any theme changes yet this should be the only theme installed.
 
 Scroll down the page a little and click the Theme Wizard link. Your first task will be to give your theme a name and then choose the seed colour for the theme. The seed colour determines all of the colours on your basic theme from the colour of menus to the colour of links. This doesn't mean everything will be that colour but will be a variation of that base colour which compliments the theme.
 
-To do this you can either use the sliders which are available or input a HTML colour code which will look something like [tt]#232246[/tt]. The next option is for you to choose between equations or HSV Shift. This is a choice between setting the colours for each element via some clever automated maths, and just simply re-tinting the a theme. The former is the normal one to use, the latter is useful for custom themes that don't have good theme wizard support in them.
+To do this you can either use the sliders which are available or input a HTML colour code which will look something like [tt]#232246[/tt]. The next option is for you to choose between equations or HSV Shift. This is a choice between setting the colours for each element via some clever automated maths, and just simply re-tinting the a theme. The former is the normal one to use, the latter is useful for custom themes that don't have good Theme Wizard support in them.
 
 Next you choose whether you are making a dark based theme or not. By this I mean whether you intend to have the main body of your site using a dark colour and light coloured text on top of it.
 
@@ -40,6 +40,6 @@ The next cell relates to the editing the templates of your website theme. Like t
 
 The final section relates to all of the images which make up your theme. These are separated in to sections such as logo images and general images e.g the favicon and apple icon. From here you can quickly edit and update the various theme images which make up your site.
 
-From the above you can see Composr's themes can be pretty complex, but the developers have spent time making and refining these really powerful theme design features which you won't find in any other Open Source CMS. If you just want a different colour and a few minor changes to the default theme then Composr offers you the theme wizard to achieve this in a matter of seconds. If you want to make a massive conversion of the software you have all of the tools at your disposal to be able to efficiently find the individual elements you need to change.
+From the above you can see Composr's themes can be pretty complex, but the developers have spent time making and refining these really powerful theme design features which you won't find in any other Open Source CMS. If you just want a different colour and a few minor changes to the default theme then Composr offers you the Theme Wizard to achieve this in a matter of seconds. If you want to make a massive conversion of the software you have all of the tools at your disposal to be able to efficiently find the individual elements you need to change.
 
 {$SET,tutorial_tags,Design & Themeing,novice}{$SET,tutorial_add_date,Apr 2013}{$SET,tutorial_summary,How knowledgeable you are in CSS and HTML will determine how detailed a customisation you will be able to make. This tutorial aims to make it easier to find your way around the files you need to edit.}[block]main_tutorial_rating[/block]
