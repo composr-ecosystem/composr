@@ -315,9 +315,10 @@ function themewizard_find_css_sheets($source_theme, $seed = null, $dark = null, 
  * @param  string $seed Seed colour to use
  * @param  boolean $dark Whether it will be a dark theme
  * @param  boolean $use_on_all Whether to use the theme immediately
+ * @param  boolean $fix_only Whether we are fixing an existing theme
  * @return array List of files created
  */
-function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all = false)
+function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all = false, bool $fix_only = false)
 {
     $files_created = [];
 
@@ -342,12 +343,12 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
     if (file_exists(get_custom_file_base() . '/themes/' . $theme_name)) {
         require_code('abstract_file_manager');
         force_have_afm_details(['themes/' . $theme_name . '/css_custom/*', 'themes/' . $theme_name . '/images_custom/*']);
-    } else {
+    } elseif (!$fix_only) {
         // The below operations will also activate the AFM
         if ($source_theme == 'default') {
-            actual_add_theme($theme_name);
+            actual_add_theme($theme_name, false);
         } else {
-            actual_copy_theme($source_theme, $theme_name, $theme_images, $css_files);
+            actual_copy_theme($source_theme, $theme_name, $theme_images, $css_files, false);
         }
     }
 
@@ -447,7 +448,6 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
         if ($theme_name !== null) {
             $contents .= 'title=' . titleify($theme_name) . "\n";
         }
-        $contents .= 'seed=' . $seed . "\n";
         $contents .= 'themewizard_built_with_source_theme=' . $source_theme . "\n";
         $contents .= 'themewizard_built_with_algorithm=' . $algorithm . "\n";
         $contents .= 'themewizard_built_with_dark=' . ($dark ? '1' : '0') . "\n";

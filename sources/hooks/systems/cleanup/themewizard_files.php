@@ -52,17 +52,32 @@ class Hook_cleanup_themewizard_files
         require_code('themewizard');
         require_code('themes2');
 
+        $files_added = [];
+
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme_name) {
             if (!in_array($theme_name, ['default', 'admin'])) {
                 $algorithm = get_theme_option('themewizard_built_with_algorithm', '', $theme_name);
                 if ($algorithm != '') {
                     // Will not overwrite anything
-                    generate_themewizard_theme($theme_name, get_theme_option('themewizard_built_with_source_theme', $theme_name), $algorithm, find_theme_seed($theme_name), find_theme_dark($theme_name));
+                    $source_theme = get_theme_option('themewizard_built_with_source_theme', $theme_name);
+                    $seed = find_theme_seed($theme_name);
+                    $dark = find_theme_dark($theme_name);
+                    $_files_added = generate_themewizard_theme($theme_name, $source_theme, $algorithm, $seed, $dark, false, true);
+                    $files_added = array_merge($files_added, $_files_added);
                 }
             }
         }
 
-        return new Tempcode();
+        $out = new Tempcode();
+        if (empty($files_added)) {
+            $out->attach(do_lang_tempcode('upgrade:NO_ISSUES_FOUND'));
+        } else {
+            foreach ($files_added as $file) {
+                $out->attach(div(do_lang_tempcode('ADDED_SIMPLE', escape_html($file))));
+            }
+        }
+
+        return $out;
     }
 }

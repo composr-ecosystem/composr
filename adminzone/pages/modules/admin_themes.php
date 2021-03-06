@@ -591,7 +591,6 @@ class Module_admin_themes
         if (addon_installed('themewizard')) {
             $settings = [
                 'enable_themewizard',
-                'seed',
                 'supports_themewizard_equations',
                 'themewizard_images',
                 'themewizard_images_no_wild',

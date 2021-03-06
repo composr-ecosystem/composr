@@ -251,9 +251,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
             case 'enable_themewizard':
                 $default = '1';
                 break;
-            case 'seed':
-                $default = '2388ef'; // Call find_theme_seed() for a better guess
-                break;
             case 'supports_themewizard_equations':
                 $default = '0';
                 break;

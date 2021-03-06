@@ -119,8 +119,9 @@ function compile_all_templates()
  * Add a theme.
  *
  * @param  ID_TEXT $name The theme name
+ * @param  boolean $include_themeini Whether to create theme.ini
  */
-function actual_add_theme(string $name)
+function actual_add_theme(string $name, bool $include_themeini = true)
 {
     push_query_limiting(false);
 
@@ -166,7 +167,9 @@ function actual_add_theme(string $name)
             afm_copy('themes/default/' . (($dir == '') ? '' : ($dir . '/')) . '.htaccess', $path, false);
         }
     }
-    afm_copy('themes/default/theme.ini', 'themes/' . $name . '/theme.ini', true);
+    if ($include_themeini) {
+        afm_copy('themes/default/theme.ini', 'themes/' . $name . '/theme.ini', true);
+    }
 
     // Copy image references from default
     $start = 0;
@@ -231,8 +234,9 @@ function actual_rename_theme(string $theme, string $to)
  * @param  ID_TEXT $to The copy's theme name
  * @param  array $theme_images_to_skip List of theme images to skip (presumably as they'll be created separately)
  * @param  array $css_files_to_skip List of CSS files to skip (presumably as they'll be created separately)
+ * @param  boolean $include_themeini Whether to create theme.ini
  */
-function actual_copy_theme(string $theme, string $to, array $theme_images_to_skip = [], array $css_files_to_skip = [])
+function actual_copy_theme(string $theme, string $to, array $theme_images_to_skip = [], array $css_files_to_skip = [], bool $include_themeini = true)
 {
     if ($theme == 'default') {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -287,9 +291,13 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
         if ((preg_match('#^css(?_custom)/(\w+)\.css$#', $file, $matches) != 0) && (isset($css_files_to_skip_flipped[$matches[1]]))) {
             continue;
         }
+        if (($file == 'theme.ini') && (!$include_themeini)) {
+            continue;
+        }
 
         afm_make_directory(dirname('themes/' . $to . '/' . $file), true, true);
         afm_copy('themes/' . $theme . '/' . $file, 'themes/' . $to . '/' . $file, true);
+
     }
 
     // Set theme image records
