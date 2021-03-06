@@ -231,6 +231,9 @@ class Module_admin_themewizard
         $dark = (post_param_integer('dark', 0) == 1);
 
         $name = post_param_string('name');
+        if ($name == '') {
+            $name = null;
+        }
 
         $use_on_all = (post_param_integer('use_on_all', 0) == 1);
 
@@ -243,36 +246,53 @@ class Module_admin_themewizard
             return $ret;
         }
 
-        $name = post_param_string('name');
+        if ($name !== null) {
+            if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
+                // Older versions of PHP on Windows cannot handle utf-8 filenames
+                require_code('character_sets');
+                $name = transliterate_string($name);
+            }
 
-        if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
-            // Older versions of PHP on Windows cannot handle utf-8 filenames
-            require_code('character_sets');
-            $name = transliterate_string($name);
+            require_code('type_sanitisation');
+            if ((!is_alphanumeric($name)) || (strlen($name) > 40)) {
+                return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('BAD_CODENAME'));
+            }
+
+            if ($name == 'default' || $name == 'admin') {
+                return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('ALREADY_EXISTS', escape_html($name)));
+            }
         }
 
-        require_code('type_sanitisation');
-        if ((!is_alphanumeric($name)) || (strlen($name) > 40)) {
-            return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('BAD_CODENAME'));
-        }
+        // Create theme...
 
-        if ($name == 'default' || $name == 'admin') {
-            return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('ALREADY_EXISTS', escape_html($name)));
-        }
+        if ($name === null) {
+            require_code('tar');
 
-        // Add theme...
+            generate_themewizard_theme('_temp_', $source_theme, $algorithm, $seed, $dark, $use_on_all);
+
+            $filename = 'theme-' . $seed . '-' . ($dark ? 'dark' : 'light') . '.zip';
+
+            header('Content-Type: application/octet-stream' . '; authoritative=true;');
+            header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
+
+            require_code('zip');
+            $file_array = [];
+            foreach (get_directory_contents(get_file_base() . '/themes/_temp_', 'themes/_temp_', 0) as $subpath) {
+                $file_array[] = [
+                    'full_path' => get_file_base() . '/' . $subpath,
+                    'name' => $subpath,
+                ];
+            }
+            create_zip_file('php://stdout', $file_array);
+
+            require_code('themes3');
+            actual_delete_theme('_temp_');
+
+            $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+            exit();
+        }
 
         generate_themewizard_theme($name, $source_theme, $algorithm, $seed, $dark, $use_on_all);
-        require_code('files');
-        $contents = '';
-        $contents .= 'title=' . $name . "\n";
-        $contents .= 'description=' . do_lang('NA') . "\n";
-        $contents .= 'seed=' . $seed . "\n";
-        $contents .= 'author=' . $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true) . "\n";
-        if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
-            $contents .= 'supports_themewizard_equations=1' . "\n";
-        }
-        cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($name) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         // We're done...
 

@@ -289,7 +289,9 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
             $_langs = find_all_langs(true);
 
             foreach ($full_img_set as $image_code) {
-                send_http_output_ping();
+                if ($theme_name != '_temp_') {
+                    send_http_output_ping();
+                }
 
                 if (!in_array($image_code, $THEMEWIZARD_IMAGES_NO_WILD)) {
                     if (($extending_existing) && (array_key_exists($image_code, $temp_all_ids)) && (strpos($temp_all_ids[$image_code], $theme_name . '/images_custom/') !== false) && ((!url_is_local($temp_all_ids[$image_code])) || (file_exists(get_custom_file_base() . '/' . $temp_all_ids[$image_code])))) {
@@ -353,7 +355,8 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
         }
 
         // Make sheets
-        $dh = opendir(get_file_base() . '/themes/' . filter_naughty($source_theme) . (($source_theme == 'default') ? '/css/' : '/css_custom/'));
+        $sheets_path = get_file_base() . '/themes/' . filter_naughty($source_theme) . (($source_theme == 'default') ? '/css/' : '/css_custom/');
+        $dh = opendir($sheets_path);
         while (($sheet = readdir($dh)) !== false) {
             if (substr($sheet, -4) == '.css') {
                 $saveat = get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $sheet;
@@ -380,6 +383,19 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
         }
         closedir($dh);
     }
+
+    // Write theme.ini file
+    require_code('files');
+    $contents = '';
+    if ($theme_name !== null) {
+        $contents .= 'title=' . titleify($theme_name) . "\n";
+    }
+    $contents .= 'seed=' . $seed . "\n";
+    $contents .= 'author=' . $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true) . "\n";
+    if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
+        $contents .= 'supports_themewizard_equations=1' . "\n";
+    }
+    cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
     // Use it, if requested
     if ($use_on_all) {

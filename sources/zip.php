@@ -93,14 +93,42 @@ function crc32_file(string $filename) : ?int
  * Compression is not supported, only archiving - unless you have the PHP zip extension.
  *
  * @param  PATH $outfile_path File to spool into
- * @param  array $file_array A list of maps (time,data/full_path,name) covering everything to ZIP up
+ * @param  array $file_array A list of maps (data/full_path, name, time [optional]) covering everything to ZIP up
  */
 function create_zip_file(string $outfile_path, array $file_array)
 {
+    // Set any defaults, if needed
+    foreach ($file_array as $i => $file) {
+        if (!isset($file['time'])) {
+            $file_array[$i]['time'] = time();
+        }
+    }
+
     // Support compression via PHP
     if (class_exists('ZipArchive')) {
+        if ($outfile_path == 'php://stdout') {
+            $_outfile_path = cms_tempnam(); // ZipArchive cannot directly write to stdout
+        } else {
+            $_outfile_path = $outfile_path;
+        }
+
         $z = new ZipArchive();
-        $z->open($outfile_path, ZipArchive::OVERWRITE);
+        $result_code = $z->open($_outfile_path, is_file($_outfile_path) ? ZipArchive::OVERWRITE : ZipArchive::CREATE);
+        if ($result_code !== true) {
+            $zip_error_messages = [
+                ZipArchive::ER_EXISTS => 'File already exists.',
+                ZipArchive::ER_INCONS => 'Zip archive inconsistent.',
+                ZipArchive::ER_INVAL => 'Invalid argument.',
+                ZipArchive::ER_MEMORY => 'Malloc failure.',
+                ZipArchive::ER_NOENT => 'No such file.',
+                ZipArchive::ER_NOZIP => 'Not a zip archive.',
+                ZipArchive::ER_OPEN => 'Can\'t open file.',
+                ZipArchive::ER_READ => 'Read error.',
+                ZipArchive::ER_SEEK => 'Seek error.',
+            ];
+            $msg = isset($zip_error_messages[$result_code])? $zip_error_messages[$result_code] : 'Unknown error.';
+            fatal_exit($msg);
+        }
         foreach ($file_array as $i => $file) {
             if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
                 $z->addFile($file['full_path'], $file['name']);
@@ -108,8 +136,18 @@ function create_zip_file(string $outfile_path, array $file_array)
                 $z->addFromString($file['name'], $file['data']);
             }
             $z->setCompressionName($file['name'], ZipArchive::CM_DEFLATE);
+            if (method_exists($z, 'setMtimeName')) {
+                $z->setMtimeName($file['name'], $file['time']);
+            }
         }
         $z->close();
+
+        if ($outfile_path == 'php://stdout') {
+            cms_ini_set('ocproducts.xss_detect', '0');
+
+            echo file_get_contents($_outfile_path);
+            unlink($_outfile_path);
+        }
 
         return;
     }
