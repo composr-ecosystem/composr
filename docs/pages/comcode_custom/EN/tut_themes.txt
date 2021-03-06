@@ -126,7 +126,8 @@ The template editor is very powerful. Features include:
 
 [media width="150" description="Editing a CSS file in the template editor" float="right"]data_custom/images/docs/tut_themes/themes_edit_css.png[/media]
 The main CSS templates that come with Composr are:
- - [tt]_base.css[/tt]: This file contains the colours and responsive design break points
+ - [tt]_base.css[/tt]: This file contains the responsive design break points and some settings
+ - [tt]_colours.css[/tt]: This file contains the colours
  - [tt]global.css[/tt]: This file contains most of the classes used throughout Composr. This is the file you'll be editing most of the time
  - [tt]no_cache.css[/tt]: These are classes that make use of Tempcode (for example, checking what browser is being used) to vary the style of the class
  - [tt]cns.css[/tt]: These are a set of classes that are used within [concept]Conversr[/concept]
@@ -180,7 +181,7 @@ Fortunately there is a solution. If you go to [tt]http://yourbaseurl/index.php?k
 
 [title="4"]Equations[/title]
 
-Some CSS files have [tt]{$THEMEWIZARD_COLOR,#RRGGBB,name,equation}[/tt] lines near the top, mainly [tt]_base.css[/tt].
+Some CSS files have [tt]{$THEMEWIZARD_COLOR,#RRGGBB,name,equation}[/tt] lines near the top, mainly [tt]_colours.css[/tt].
 
 When the Theme Wizard runs the first parameter (the colour) of the [tt]THEMEWIZARD_COLOR[/tt] line is regenerated from the third parameter (the equation) by running through the calculation logic of the Theme Wizard.
 

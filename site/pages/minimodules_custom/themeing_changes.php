@@ -90,6 +90,7 @@ if (post_param_integer('submitting', 0) == 1) { // From form
 } else { // Hard-coded defaults
     $files_to_show = [
         'themes/default/css/_base.css',
+        'themes/default/css/_colours.css',
         'themes/default/css/global.css',
         'themes/default/css/cns.css',
         'themes/default/templates/HTML_HEAD.tpl',

@@ -3,15 +3,7 @@
  Copyright (c) ocProducts, 2004-2021
 */
 
-{$THEMEWIZARD_COLOR,#ffffff,bubble_hover_link,100% #FFFFFF}
-{$THEMEWIZARD_COLOR,#000000,bubble_link,100% #000000}
-{$THEMEWIZARD_COLOR,#ffffff,bubble_link_inverted,100% #FFFFFF}
-{$THEMEWIZARD_COLOR,#000000,bubble_hover_link_inverted,100% #000000}
-{$THEMEWIZARD_COLOR,#ffffff,bubble_text,100% #FFFFFF}
-{$THEMEWIZARD_COLOR,#333333,bubblescape,100% #333333}
-{$THEMEWIZARD_COLOR,#444444,bubblescape_background,100% #444444}
-{$THEMEWIZARD_COLOR,#757575,bubblescape_island,100% #757575}
-{$THEMEWIZARD_COLOR,#3a3a3a,bubblescape_outside,100% #3A3A3A}
+/*{+START,INCLUDE,_realtime_rain_colours,.css,css,default}{+END}*/
 
 .page-running-admin-realtime-rain {
 	background-color: {$GET,bubblescape_outside};

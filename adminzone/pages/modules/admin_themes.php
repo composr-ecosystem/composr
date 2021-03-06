@@ -944,6 +944,7 @@ class Module_admin_themes
                 'templates/HTML_HEAD.tpl',
                 'templates/GLOBAL_HTML_WRAP.tpl',
                 'css/_base.css',
+                'css/_colours.css',
                 'css/global.css',
                 'javascript/global.js',
                 'templates/MAIL.tpl',

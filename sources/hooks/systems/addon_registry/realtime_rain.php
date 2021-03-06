@@ -123,6 +123,7 @@ class Hook_addon_registry_realtime_rain
             'sources/hooks/systems/snippets/realtime_rain_load.php',
             'sources/hooks/systems/page_groupings/realtime_rain.php',
             'themes/default/css/realtime_rain.css',
+            'themes/default/css/_realtime_rain_colours.css',
             'themes/default/templates/REALTIME_RAIN_OVERLAY.tpl',
             'themes/default/templates/REALTIME_RAIN_BUBBLE.tpl',
             'themes/default/javascript/realtime_rain.js',

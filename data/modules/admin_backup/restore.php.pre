@@ -322,7 +322,7 @@ function handle_self_referencing_embedment()
 
             $output = '';
 
-            foreach (['_base', 'global', 'install'] as $css_file) {
+            foreach (['_base', '_colours', 'global', 'install'] as $css_file) {
                 $path = get_file_base() . '/themes/default/css/' . $css_file . '.css';
                 $file = cms_file_get_contents_safe($path);
                 require_code('tempcode_compiler');

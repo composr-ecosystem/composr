@@ -381,7 +381,7 @@ function upgrader_output_header()
 
         <style>/*<![CDATA[*/
 END;
-    foreach (['_base', 'global'] as $css) {
+    foreach (['_base', '_colours', 'global'] as $css) {
         @print(cms_file_get_contents_safe(css_enforce($css, 'default'), FILE_READ_LOCK | FILE_READ_BOM));
     }
     echo <<<END

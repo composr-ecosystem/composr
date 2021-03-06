@@ -89,7 +89,7 @@ class template_parameter_consistency_test_set extends cms_test_case
             $custom_template = ($template_path !== null) && (strpos($template_path, '_custom/') !== false);
             if (!$custom_template) {
                 //$this->assertTrue($found_live, 'Could not find live use of ' . $template); Dynamic code may do weird things, too many false positives with this check
-                if ((!array_key_exists($template, $included_templates)) && (!in_array($template, ['_base', 'global', 'installer', 'COMCODE_REAL_TABLE_ROW_START', 'POST']))) {
+                if ((!array_key_exists($template, $included_templates)) && (!in_array($template, ['_base', '_colours', 'global', 'installer', 'COMCODE_REAL_TABLE_ROW_START', 'POST']))) {
                     $this->assertTrue($found_preview, 'Could not find preview of ' . $template);
                 }
             }

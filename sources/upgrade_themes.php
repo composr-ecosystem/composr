@@ -132,6 +132,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         $css_replace__multi_match = [
             '*' => [],
             '_base.css' => [],
+            '_colours.css' => [],
         ];
 
         $css_replace__single_match = [];

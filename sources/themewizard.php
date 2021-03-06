@@ -111,9 +111,9 @@ function find_theme_dark(string $theme) : bool
     if ($test != '') {
         $THEME_DARK_CACHE[$theme] = ($test == '1');
     } else {
-        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css';
+        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css';
         if (!is_file($css_path)) {
-            $css_path = get_file_base() . '/themes/default/css/_base.css';
+            $css_path = get_file_base() . '/themes/default/css/_colours.css';
         }
         if (!is_file($css_path)) {
             return false;
@@ -509,10 +509,12 @@ function themewizard_script()
             cms_ini_set('ocproducts.xss_detect', '0');
             require_code('tempcode_compiler');
             list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, $source_theme, $algorithm);
-            if ($show != '_base.css') { // We need to make sure the _base.css file is parsed, as it contains some shared THEMEWIZARD_COLOR variables that Tempcode will pick up on
-                $css = generate_theme_wizard_css_sheet('_base.css', null, $landscape, $source_theme, $algorithm, $seed);
-                $tpl = template_to_tempcode($css);
-                $tpl->evaluate();
+            foreach (['_base.css', '_colours.css'] as $extra_file) {
+                if ($show != $extra_file) { // We need to make sure some extra files are parsed that share THEMEWIZARD_COLOR variables and SET commands that Tempcode will pick up on
+                    $css = generate_theme_wizard_css_sheet($extra_file, null, $landscape, $source_theme, $algorithm, $seed);
+                    $tpl = template_to_tempcode($css);
+                    $tpl->evaluate();
+                }
             }
             $css = generate_theme_wizard_css_sheet($show, null, $landscape, $source_theme, $algorithm, $seed);
             header('Content-Type: text/css; charset=' . get_charset());
@@ -1729,10 +1731,10 @@ function generate_logo(string $name, ?string $font_choice = null, ?string $colou
 
     if ($logo_type !== 'small_white') {
         // Override user configured color with $THEMEWIZARD_COLOR "box_title_background" if available
-        if (file_exists(get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css')) {
-            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+        if (file_exists(get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css')) {
+            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         } else {
-            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/_base.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/_colours.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         }
         $matches = [];
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9]),site_name_text_color,#i', $css_file, $matches) != 0) {
