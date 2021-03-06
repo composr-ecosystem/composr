@@ -1089,11 +1089,6 @@ This section is not designed as primary documentation for the tools. Those tools
 | [tt]theme_debug[/tt]
 | Composr module
 |-
-| [tt]adminzone:fix_partial_themewizard_css[/tt]
-| Improve a theme wizard theme that has got outdated.
-| [tt]theme_debug[/tt]
-| Composr module
-|-
 | [tt]adminzone:css_check[/tt]
 | Search for possible CSS problems.
 | [tt]theme_debug[/tt]
