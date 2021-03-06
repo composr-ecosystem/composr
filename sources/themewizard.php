@@ -29,21 +29,6 @@ function init__themewizard()
     $THEMEWIZARD_IMAGES_CACHE = [];
     $THEME_DARK_CACHE = [];
 
-    global $THEMEWIZARD_IMAGES, $THEMEWIZARD_IMAGES_NO_WILD;
-    $THEMEWIZARD_IMAGES = [''];
-    $THEMEWIZARD_IMAGES_NO_WILD = [];
-
-    $hooks = find_all_hook_obs('modules', 'admin_themewizard', 'Hook_admin_themewizard_');
-    foreach ($hooks as $ob) {
-        $results = $ob->run();
-        if ($results === null) {
-            continue;
-        }
-        list($a, $b) = $results;
-        $THEMEWIZARD_IMAGES = array_merge($THEMEWIZARD_IMAGES, $a);
-        $THEMEWIZARD_IMAGES_NO_WILD = array_merge($THEMEWIZARD_IMAGES_NO_WILD, $b);
-    }
-
     require_code('images');
 }
 
@@ -60,10 +45,25 @@ function load_themewizard_params_from_theme(string $theme, bool $guess_images_if
         return;
     }
 
-    $themewizard_images = get_theme_option('themewizard_images');
-    $themewizard_images_no_wild = get_theme_option('themewizard_images_no_wild');
+    global $THEMEWIZARD_IMAGES, $THEMEWIZARD_IMAGES_NO_WILD;
+    $THEMEWIZARD_IMAGES = [''];
+    $THEMEWIZARD_IMAGES_NO_WILD = [];
 
-    $autodetect_background_images = (($guess_images_if_needed) && (get_theme_option('themewizard_images', '') == ''));
+    $hooks = find_all_hook_obs('modules', 'admin_themewizard', 'Hook_admin_themewizard_');
+    foreach ($hooks as $ob) {
+        $results = $ob->run();
+        if ($results === null) {
+            continue;
+        }
+        list($a, $b) = $results;
+        $THEMEWIZARD_IMAGES = array_merge($THEMEWIZARD_IMAGES, $a);
+        $THEMEWIZARD_IMAGES_NO_WILD = array_merge($THEMEWIZARD_IMAGES_NO_WILD, $b);
+    }
+
+    $themewizard_images = get_theme_option('themewizard_images', null, $theme);
+    $themewizard_images_no_wild = get_theme_option('themewizard_images_no_wild', null, $theme);
+
+    $autodetect_background_images = (($guess_images_if_needed) && (get_theme_option('themewizard_images', '', $theme) == ''));
 
     if ($autodetect_background_images) {
         $css_files = themewizard_find_css_sheets($theme) + themewizard_find_css_sheets('default');
@@ -216,6 +216,7 @@ function check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_
 
 /**
  * Find theme images in the scope of the Theme Wizard.
+ * themewizard_find_theme_images_in_scope should be called at least once before running this function.
  *
  * @param  ID_TEXT $source_theme The theme it's being generated from
  * @param  ?string $seed Seed colour to use (null: don't compare to source theme's seed)
@@ -329,15 +330,14 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
 
     require_code('themes3');
 
-    // Find what is in scope
-    $theme_images = themewizard_find_theme_images_in_scope($source_theme, $seed, $dark);
-    $css_files = themewizard_find_css_sheets($source_theme, $seed, $dark);
-
-    // Set up parameters
     if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
         $algorithm = 'hsv';
     }
+
+    // Find what is in scope
     load_themewizard_params_from_theme($source_theme, $algorithm == 'hsv');
+    $theme_images = themewizard_find_theme_images_in_scope($source_theme, $seed, $dark);
+    $css_files = themewizard_find_css_sheets($source_theme, $seed, $dark);
 
     // Create/clone base theme
     if (file_exists(get_custom_file_base() . '/themes/' . $theme_name)) {
