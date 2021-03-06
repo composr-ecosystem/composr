@@ -60,7 +60,7 @@ class Hook_cleanup_themewizard_files
                 $algorithm = get_theme_option('themewizard_built_with_algorithm', '', $theme_name);
                 if ($algorithm != '') {
                     // Will not overwrite anything
-                    $source_theme = get_theme_option('themewizard_built_with_source_theme', $theme_name);
+                    $source_theme = get_theme_option('themewizard_built_with_source_theme', null, $theme_name);
                     $seed = find_theme_seed($theme_name);
                     $dark = find_theme_dark($theme_name);
                     $_files_added = generate_themewizard_theme($theme_name, $source_theme, $algorithm, $seed, $dark, false, true);

@@ -183,7 +183,7 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
  * @param  ID_TEXT $algorithm The algorithm to use
  * @set equations hsv
  * @param  string $seed Seed colour to use
- * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
+ * @param  boolean $dark Whether it will be a dark theme
  * @param  ?Tempcode $back_url The back URL to change settings (null: do error screen instead)
  * @return ?Tempcode Output (null: none)
  */
@@ -218,14 +218,14 @@ function check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_
  * Find theme images in the scope of the Theme Wizard.
  *
  * @param  ID_TEXT $source_theme The theme it's being generated from
- * @param  string $seed Seed colour to use
- * @param  ?boolean $dark Whether it will be a dark theme (null: autodetect)
+ * @param  ?string $seed Seed colour to use (null: don't compare to source theme's seed)
+ * @param  ?boolean $dark Whether it will be a dark theme (null: don't compare to source theme's seed)
  * @return array List of theme image codes
  */
-function themewizard_find_theme_images_in_scope($source_theme, $seed, $dark)
+function themewizard_find_theme_images_in_scope($source_theme, $seed = null, $dark = null)
 {
     require_code('themes2');
-    if (($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
+    if (($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
         // Nothing to do
         return [];
     }
@@ -272,8 +272,8 @@ function themewizard_find_theme_images_in_scope($source_theme, $seed, $dark)
  * Find CSS files of a theme.
  *
  * @param  ID_TEXT $source_theme The theme it's being generated from
- * @param  ?string $seed Seed colour to use (null: don't consider)
- * @param  ?boolean $dark Whether it will be a dark theme (null: don't consider)
+ * @param  ?string $seed Seed colour to use (null: don't compare to source theme's seed)
+ * @param  ?boolean $dark Whether it will be a dark theme (null: don't compare to source theme's seed)
  * @param  boolean $in_scope_only Only return if in the scope of the Theme Wizard
  * @return array Map of CSS files from filename to path
  */
