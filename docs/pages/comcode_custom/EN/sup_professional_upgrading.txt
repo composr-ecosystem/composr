@@ -258,7 +258,7 @@ mysqldump client_<codename> > _temp/stage2.sql
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Run some cleanup tools
-| Go to Admin Zone > Tools > Cleanup tools, run "Sync for lost disk content"; if you're really enthusiastic also "Find orphaned uploads" and "Broken URLs"
+| Go to Admin Zone > Tools > Cleanup tools, run "Sync for lost disk content" and "Theme Wizard files"; if you're really enthusiastic also "Find orphaned uploads" and "Broken URLs"
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Consider replacing all the TAR files in [tt]addons/imports[/tt] so you're sure they're fresh

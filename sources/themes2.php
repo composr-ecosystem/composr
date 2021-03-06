@@ -46,30 +46,35 @@ function find_theme_seed(?string $theme = null) : string
         return $THEME_SEED_CACHE[$theme];
     }
 
-    $seed = get_theme_option('seed', ($theme == 'default') ? null : '');
-
-    if ($seed == '') {
-        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css';
-        if (!is_file($css_path)) {
-            $css_path = get_file_base() . '/themes/default/css/_base.css';
-        }
-        $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-        $matches = [];
-        if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),seed,.*\}#', $css_file_contents, $matches) != 0) {
-            $THEME_SEED_CACHE[$theme] = $matches[1];
-        } else {
-            /*if ($no_easy_anchor)
-            {
-                   We could put some auto-detection code here; possibly a future improvement but not needed currently.
-            } else {*/
-            if ($theme == 'default') {
-                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
-            }
-            $THEME_SEED_CACHE[$theme] = find_theme_seed('default');
-            //}
-        }
+    $test = get_theme_option('themewizard_built_with_seed', '');
+    if ($test != '') {
+        $THEME_SEED_CACHE[$theme] = $test;
     } else {
-        $THEME_SEED_CACHE[$theme] = $seed;
+        $seed = get_theme_option('seed', ($theme == 'default') ? null : '');
+
+        if ($seed == '') {
+            $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css';
+            if (!is_file($css_path)) {
+                $css_path = get_file_base() . '/themes/default/css/_base.css';
+            }
+            $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+            $matches = [];
+            if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),seed,.*\}#', $css_file_contents, $matches) != 0) {
+                $THEME_SEED_CACHE[$theme] = $matches[1];
+            } else {
+                /*if ($no_easy_anchor)
+                {
+                       We could put some auto-detection code here; possibly a future improvement but not needed currently.
+                } else {*/
+                if ($theme == 'default') {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+                $THEME_SEED_CACHE[$theme] = find_theme_seed('default');
+                //}
+            }
+        } else {
+            $THEME_SEED_CACHE[$theme] = $seed;
+        }
     }
 
     return $THEME_SEED_CACHE[$theme];

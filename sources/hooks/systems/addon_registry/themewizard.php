@@ -174,6 +174,7 @@ class Hook_addon_registry_themewizard
             'themes/default/javascript/themewizard.js',
             'sources/hooks/systems/preview/themewizard_image.php',
             'sources/hooks/systems/preview/themewizard.php',
+            'sources/hooks/systems/cleanup/themewizard_files.php',
         ];
     }
 

@@ -107,19 +107,24 @@ function find_theme_dark(string $theme) : bool
         return $THEME_DARK_CACHE[$theme];
     }
 
-    $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css';
-    if (!is_file($css_path)) {
-        $css_path = get_file_base() . '/themes/default/css/_base.css';
-    }
-    if (!is_file($css_path)) {
-        return false;
-    }
-    $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-    $matches = [];
-    if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),WB,.*\}#', $css_file_contents, $matches) != 0) {
-        $THEME_DARK_CACHE[$theme] = (cms_strtoupper_ascii($matches[1]) != 'FFFFFF');
+    $test = get_theme_option('themewizard_built_with_dark', '');
+    if ($test != '') {
+        $THEME_DARK_CACHE[$theme] = ($test == '1');
     } else {
-        $THEME_DARK_CACHE[$theme] = false;
+        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_base.css';
+        if (!is_file($css_path)) {
+            $css_path = get_file_base() . '/themes/default/css/_base.css';
+        }
+        if (!is_file($css_path)) {
+            return false;
+        }
+        $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+        $matches = [];
+        if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),WB,.*\}#', $css_file_contents, $matches) != 0) {
+            $THEME_DARK_CACHE[$theme] = (cms_strtoupper_ascii($matches[1]) != 'FFFFFF');
+        } else {
+            $THEME_DARK_CACHE[$theme] = false;
+        }
     }
 
     return $THEME_DARK_CACHE[$theme];
@@ -310,9 +315,12 @@ function themewizard_find_css_sheets($source_theme, $seed = null, $dark = null, 
  * @param  string $seed Seed colour to use
  * @param  boolean $dark Whether it will be a dark theme
  * @param  boolean $use_on_all Whether to use the theme immediately
+ * @return array List of files created
  */
-function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all)
+function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all = false)
 {
+    $files_created = [];
+
     $old_limit = cms_disable_time_limit();
     disable_php_memory_limit();
 
@@ -400,6 +408,8 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
 
                     // Update database
                     actual_edit_theme_image($theme_image, $theme_name, $lang, $theme_image, $save_url, true);
+
+                    $files_created[] = $composite . $theme_image . '.png';
                 }
             }
         }
@@ -407,7 +417,8 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
 
     // Make sheets
     foreach ($css_files as $file => $css_path) {
-        $save_path = get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/css_custom/' . $file;
+        $_save_path = 'themes/' . filter_naughty($theme_name) . '/css_custom/' . $file;
+        $save_path = get_custom_file_base() . '/' . $_save_path;
         if (file_exists($save_path)) { // If already made (as we support auto-resume)
             continue;
         }
@@ -423,20 +434,32 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
             fix_permissions($save_path . '.editfrom');
             sync_file($save_path . '.editfrom');
         }
+
+        $files_created[] = $_save_path;
     }
 
     // Write theme.ini file
-    require_code('files');
-    $contents = '';
-    if ($theme_name !== null) {
-        $contents .= 'title=' . titleify($theme_name) . "\n";
+    $_themeini_path = 'themes/' . filter_naughty($theme_name) . '/theme.ini';
+    $themeini_path = get_custom_file_base() . '/' . $_themeini_path;
+    if (!is_file($themeini_path)) {
+        require_code('files');
+        $contents = '';
+        if ($theme_name !== null) {
+            $contents .= 'title=' . titleify($theme_name) . "\n";
+        }
+        $contents .= 'seed=' . $seed . "\n";
+        $contents .= 'themewizard_built_with_source_theme=' . $source_theme . "\n";
+        $contents .= 'themewizard_built_with_algorithm=' . $algorithm . "\n";
+        $contents .= 'themewizard_built_with_dark=' . ($dark ? '1' : '0') . "\n";
+        $contents .= 'themewizard_built_with_seed=' . $seed . "\n";
+        $contents .= 'author=' . $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true) . "\n";
+        if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
+            $contents .= 'supports_themewizard_equations=1' . "\n";
+        }
+        cms_file_put_contents_safe($themeini_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+
+        $files_created[] = $themeini_path;
     }
-    $contents .= 'seed=' . $seed . "\n";
-    $contents .= 'author=' . $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true) . "\n";
-    if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
-        $contents .= 'supports_themewizard_equations=1' . "\n";
-    }
-    cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($theme_name) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
     // Use it, if requested
     if ($use_on_all) {
@@ -449,6 +472,8 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
     }
 
     cms_set_time_limit($old_limit);
+
+    return $files_created;
 }
 
 /**

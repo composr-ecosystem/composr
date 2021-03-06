@@ -392,6 +392,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_header_type_VALUE_classic
         CONFIG_OPTION_header_type_VALUE_modern
         CONFIG_OPTION_header_type_VALUE_side
+        THEMEWIZARD_FILES
+        DESCRIPTION_THEMEWIZARD_FILES_CACHE
         RSS_CLOUD_UPDATE
         DESCRIPTION_OVERWRITE_ERROR
         ACTION_OVERWRITE

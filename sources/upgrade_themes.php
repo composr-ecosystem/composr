@@ -389,5 +389,30 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         }
     }
 
+    // Theme images
+    $langs = find_all_langs();
+    foreach ($theme_images_renames as $old => $new) {
+        foreach (array_keys($langs) as $lang) {
+            $path = urldecode(find_theme_image($old, true, true, $theme, $lang));
+            if ($path != '') {
+                $new_path = str_replace('/' . $old, '/' . $new, $path);
+                if (!$test_run) {
+                    if (!file_exists(get_custom_file_base() . '/' . $new_path)) {
+                        if (file_exists($path)) {
+                            afm_move($path, $new_path);
+                        }
+
+                        $where_map = ['theme' => $theme, 'id' => $new, 'lang' => $lang];
+                        $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
+
+                        actual_edit_theme_image($old, $theme, $lang, $new, $new_path);
+
+                        $successes[] = do_lang_tempcode('THEME_IMAGE_RENAMED', escape_html($old), escape_html($new));
+                    }
+                }
+            }
+        }
+    }
+
     return [$errors, $successes];
 }

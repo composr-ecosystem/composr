@@ -319,6 +319,21 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                 $default = '';
                 break;
 
+            // How was built using Theme Wizard
+            case 'themewizard_built_with_source_theme':
+                $default = 'default';
+                break;
+            case 'themewizard_built_with_algorithm':
+                $default = 'equations';
+                break;
+            case 'themewizard_built_with_seed':
+                require_code('themes2');
+                $default = find_theme_seed('default');
+                break;
+            case 'themewizard_built_with_dark':
+                $default = '0';
+                break;
+
             // Logo Wizard ones
             case 'enable_logowizard':
                 $default = '1';
