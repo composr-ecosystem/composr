@@ -263,16 +263,23 @@ class Module_admin_themes
             }
         }
 
+        if ($type == 'validate_page') {
+            $this->title = get_screen_title('WEBSTANDARDS');
+        }
+
         if ($type == 'screen_previews') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_THEMES')]]);
 
             $this->title = get_screen_title('SCREEN_PREVIEWS');
         }
         if ($type == 'screen_preview') {
-            $function = get_param_string('function');
+            if (get_param_string('validate', '') != '') {
+                $this->title = get_screen_title('WEBSTANDARDS');
+            } else {
+                $function = get_param_string('function');
+                $this->title = get_screen_title($function, false);
+            }
 
-            //get_screen_title('SCREEN_PREVIEW', true, [escape_html($function])); // Affects breadcrumbs etc
-            $this->title = get_screen_title($function, false); // Affects breadcrumbs etc
             breadcrumb_set_parents([['_SELF:_SELF:screen_previews', do_lang_tempcode('SCREEN_PREVIEWS')]]);
         }
 
@@ -340,6 +347,9 @@ class Module_admin_themes
         if ($type == '_themewizard_image') {
             return $this->_themewizard_image();
         }
+        if ($type == 'validate_page') {
+            return $this->validate_page();
+        }
         if ($type == 'screen_previews') {
             return $this->screen_previews();
         }
@@ -401,7 +411,7 @@ class Module_admin_themes
             $deletable = ($theme != 'default');
             $edit_url = build_url(['page' => '_SELF', 'type' => 'edit_theme', 'theme' => $theme], '_SELF');
             $delete_url = build_url(['page' => '_SELF', 'type' => 'delete_theme', 'theme' => $theme], '_SELF');
-            $screen_preview_url = build_url(['page' => '_SELF', 'type' => 'screen_previews', 'keep_theme' => $theme], '_SELF');
+            $screen_preview_url = build_url(['page' => '_SELF', 'type' => 'screen_previews', 'theme' => $theme], '_SELF');
 
             // Theme date
             $date = $this->_get_theme_date($theme);
@@ -1403,16 +1413,16 @@ class Module_admin_themes
 
         require_code('lorem');
 
-        // Find all previews
+        $theme = get_param_string('theme');
+
+        $list = [];
+
+        // LISTING SCREEN PREVIEWS...
+
         $all_previews__by_screen = find_all_previews__by_screen();
 
-        // Find other things we may want to preview
-        $comcode_files = find_comcodes();
-        $html_files = find_html();
-
-        // Loop over to display it all
         $displayed_already = [];
-        $list = new Tempcode();
+        $list_non_admin = new Tempcode();
         $list_admin = new Tempcode();
         $done_templates = [];
         foreach ($all_previews__by_screen as $func => $details) {
@@ -1420,7 +1430,12 @@ class Module_admin_themes
 
             list($hook, $tpls) = $details;
 
-            $preview_url = build_url(['page' => '_SELF', 'type' => 'screen_preview', 'id' => isset($tpls[0]) ? $tpls[0] : null, 'hook' => $hook, 'function' => $func], '_SELF');
+            $template = isset($tpls[0]) ? $tpls[0] : null;
+            $url_map = ['page' => '_SELF', 'type' => 'screen_preview', 'id' => $template, 'hook' => $hook, 'function' => $func, 'keep_theme' => $theme, 'keep_wide_high' => 1];
+            $screen_preview_url = build_url($url_map + ['keep_mobile' => 0], '_SELF');
+            $mobile_screen_preview_url = build_url($url_map + ['keep_wide_high' => 1, 'keep_mobile' => 0], '_SELF');
+            $cms_validation_url = build_url($url_map + ['validate' => 'cms'], '_SELF');
+            $w3c_validation_url = build_url($url_map + ['validate' => 'w3c'], '_SELF');
 
             if (empty($tpls)) {
                 $templates_used = '';
@@ -1431,7 +1446,7 @@ class Module_admin_themes
                     if ($templates_used != '(') {
                         $templates_used .= ', ';
                     }
-                    $templates_used .= $tpl;
+                    $templates_used .= preg_replace('#^templates/#', '', $tpl);
                     $done_templates[$tpl] = true;
                 }
                 $templates_used .= ')';
@@ -1441,16 +1456,20 @@ class Module_admin_themes
 
             $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
                 '_GUID' => '1f27f619db553dfcb8d427e70a736226',
-                'URL' => $preview_url,
+
+                'SCREEN_PREVIEW_URL' => $screen_preview_url,
+                'MOBILE_SCREEN_PREVIEW_URL' => $mobile_screen_preview_url,
+                'CMS_VALIDATION_URL' => $plain_text ? '' : $cms_validation_url,
+                'W3C_VALIDATION_URL' => $plain_text ? '' : $w3c_validation_url,
+
                 'COLOR' => 'green',
                 'SCREEN' => preg_replace('#^tpl_preview__#', '', $func),
                 'LIST' => $templates_used,
-                'PLAIN_TEXT' => $plain_text,
             ]);
             if (preg_match('#^tpl_preview__administrative__#', $func) != 0) {
                 $list_admin->attach($tpl_x->evaluate());
             } else {
-                $list->attach($tpl_x->evaluate());
+                $list_non_admin->attach($tpl_x->evaluate());
             }
 
             $displayed_already[$func] = true;
@@ -1458,32 +1477,41 @@ class Module_admin_themes
 
         // Find all templates
         $templates = [];
-        $dh = opendir(get_file_base() . '/themes/default/templates');
-        while (($f = readdir($dh)) !== false) {
-            if (cms_strtolower_ascii(substr($f, -4)) == '.tpl') {
-                $templates[] = 'templates/' . $f;
+        foreach ([get_custom_file_base(), get_file_base()] as $file_base) {
+            foreach (['templates_custom', 'templates'] as $subdir) {
+                foreach (['default', $theme] as $theme) {
+                    $templates = array_merge($templates, get_directory_contents($file_base . '/themes/' . $theme . '/' . $subdir, '', 0, false, true, ['tpl']));
+                }
             }
         }
-        closedir($dh);
+        $templates = array_unique($templates);
         sort($templates);
         foreach ($templates as $t) {
             // No preview for these
-            if (!array_key_exists($t, $done_templates)) {
-                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '96115a3b168769744b4b69fd2e1e7f6c', 'URL' => '', 'COLOR' => 'red', 'TEMPLATE' => $t, 'LIST' => '', 'PLAIN_TEXT' => false]);
-                $list->attach($tpl_x->evaluate());
+            if (!array_key_exists('templates/' . $t, $done_templates)) {
+                $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
+                    '_GUID' => '96115a3b168769744b4b69fd2e1e7f6c',
+
+                    'SCREEN_PREVIEW_URL' => '',
+                    'MOBILE_SCREEN_PREVIEW_URL' => '',
+                    'CMS_VALIDATION_URL' => '',
+                    'W3C_VALIDATION_URL' => '',
+
+                    'COLOR' => 'red',
+                    'SCREEN' => $t,
+                    'LIST' => '',
+                ]);
+                $list_non_admin->attach($tpl_x->evaluate());
             }
         }
 
-        // Prepare all to display...
+        $list[do_lang('menus:SCREENS')] = $list_non_admin;
+        $list[do_lang('ADMIN_SCREENS')] = $list_admin;
 
-        $post = new Tempcode();
+        // LISTING COMCODE FILES...
 
-        /* $list (the main previews) will be displayed in the main INDEX_SCREEN content */
+        $comcode_files = find_comcodes();
 
-        // LISTING ADMIN PREVIEWS
-        $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => '1e847f3c75998f2276765bc0c8ab6b78', 'LI' => $list_admin, 'TITLE' => do_lang('ADMIN_SCREENS')]));
-
-        // LISTING COMCODE FILES
         $com_li = new Tempcode();
         foreach ($comcode_files as $zone => $pages) {
             if ($zone == 'pages') {
@@ -1495,28 +1523,130 @@ class Module_admin_themes
                 }
 
                 $file = $page . '.txt';
-                $url = build_url(['page' => $page], $zone);
+                $screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 0], $zone);
+                $mobile_screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 1], $zone);
+                $cms_validation_url = build_url(['page' => '_SELF', 'type' => 'validate_page', 'id' => $zone . ':' . $page, 'validate' => 'cms', 'keep_theme' => $theme], '_SELF');
+                $w3c_validation_url = build_url(['page' => '_SELF', 'type' => 'validate_page', 'id' => $zone . ':' . $page, 'validate' => 'w3c', 'keep_theme' => $theme], '_SELF');
 
-                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '9db6fa9333470137ccf9bb752fd9b19e', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '', 'PLAIN_TEXT' => false]);
+                $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
+                    '_GUID' => '9db6fa9333470137ccf9bb752fd9b19e',
+
+                    'SCREEN_PREVIEW_URL' => $screen_preview_url,
+                    'MOBILE_SCREEN_PREVIEW_URL' => $mobile_screen_preview_url,
+                    'CMS_VALIDATION_URL' => $cms_validation_url,
+                    'W3C_VALIDATION_URL' => $w3c_validation_url,
+
+                    'COLOR' => '',
+                    'SCREEN' => $file,
+                    'LIST' => '',
+                ]);
                 $com_li->attach($tpl_x->evaluate());
             }
         }
-        $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => 'adf69728048cbdbc3a0d9a2e2485a234', 'LI' => $com_li, 'TITLE' => do_lang('COMCODE_PAGES')]));
+        $list[do_lang('COMCODE_PAGES')] = $com_li;
 
-        // LISTING HTML FILES
+        // LISTING HTML FILES...
+
+        $html_files = find_html();
+
         $htm_li = new Tempcode();
         foreach ($html_files as $zone => $pages) {
             foreach ($pages as $page => $type) {
-                $file = $page . '.htm';
-                $url = build_url(['page' => $page], $zone);
+                if (!is_string($page)) {
+                    $page = strval($page);
+                }
 
-                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '16d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '', 'PLAIN_TEXT' => false]);
+                $file = $page . '.htm';
+                $screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 0], $zone);
+                $mobile_screen_preview_url = build_url(['page' => $page, 'keep_theme' => $theme, 'keep_mobile' => 1], $zone);
+                $cms_validation_url = build_url(['page' => '_SELF', 'type' => 'validate_page', 'id' => $zone . ':' . $page, 'validate' => 'cms', 'keep_theme' => $theme], '_SELF');
+                $w3c_validation_url = build_url(['page' => '_SELF', 'type' => 'validate_page', 'id' => $zone . ':' . $page, 'validate' => 'w3c', 'keep_theme' => $theme], '_SELF');
+
+                $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
+                    '_GUID' => '16d1c1c5dc5556254f7a3f28a44fdb52',
+
+                    'SCREEN_PREVIEW_URL' => $screen_preview_url,
+                    'MOBILE_SCREEN_PREVIEW_URL' => $mobile_screen_preview_url,
+                    'CMS_VALIDATION_URL' => $cms_validation_url,
+                    'W3C_VALIDATION_URL' => $w3c_validation_url,
+
+                    'COLOR' => '',
+                    'SCREEN' => $file,
+                    'LIST' => '',
+                ]);
                 $htm_li->attach($tpl_x->evaluate());
             }
         }
-        $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => '2220938b443ecdb7d3f2d869665b3a4e', 'LI' => $htm_li, 'TITLE' => do_lang('HTML_PAGES')]));
+        $list[do_lang('HTML_PAGES')] = $htm_li;
 
-        return do_template('INDEX_SCREEN', ['_GUID' => '6137f107de679580a6aafe36af427cdd', 'TITLE' => $this->title, 'CONTENT' => $list, 'POST' => $post, 'PRE' => '']);
+        // LISTING CSS FILES...
+
+        $css_files = [];
+        foreach ([get_custom_file_base(), get_file_base()] as $file_base) {
+            foreach (['css_custom', 'css'] as $subdir) {
+                foreach (['default', $theme] as $theme) {
+                    $css_files = array_merge($css_files, get_directory_contents($file_base . '/themes/' . $theme . '/' . $subdir, '', 0, false, true, ['css']));
+                }
+            }
+        }
+        $css_files = array_unique($css_files);
+        sort($css_files);
+
+        $css_li = new Tempcode();
+        foreach ($css_files as $css_file) {
+            $_url = find_script('sheet') . '?sheet=' . urlencode(basename($css_file, '.css'));
+            $_screen_preview_url = 'http://jigsaw.w3.org/css-validator/validator?uri=' . urlencode($_url);
+            $tpl_x = do_template('INDEX_SCREEN_ENTRY', ['_GUID' => '26d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $_screen_preview_url, 'TARGET' => '_blank', 'NAME' => $css_file]);
+            $css_li->attach($tpl_x->evaluate());
+        }
+        $list['CSS (W3C validation)'] = $css_li;
+
+        // --
+
+        return do_template('INDEX_SCREEN_FANCIER_SCREEN', ['_GUID' => '6137f107de679580a6aafe36af427cdd', 'TITLE' => $this->title, 'ARRAY' => true, 'CONTENT' => $list, 'POST' => '', 'PRE' => '']);
+    }
+
+    /**
+     * Validate a page, routing to the correct validator.
+     *
+     * @return Tempcode The UI
+     */
+    public function validate_page() : object
+    {
+        list($zone, $page) = explode(':', get_param_string('id'), 2);
+
+        $preview = request_page($page, true, $zone, null, false, false);
+
+        $validate = get_param_string('validate');
+        switch ($validate) {
+            case 'cms':
+                $global = globalise($preview);
+
+                require_code('view_modes');
+                return make_string_tempcode(check_xhtml_webstandards($global->evaluate(), true, 2, true));
+
+            case 'w3c':
+                $refresh = do_template('JS_REFRESH', ['_GUID' => 'd7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
+
+                $global = globalise($preview);
+
+                $post = new Tempcode();
+                $post->attach(form_input_hidden('fragment', $global->evaluate()));
+
+                $url = 'https://validator.w3.org/check';
+
+                return do_template('REDIRECT_POST_METHOD_SCREEN', [
+                    '_GUID' => '92e056de9150bbed185120eac3571f40',
+                    'REFRESH' => $refresh,
+                    'TITLE' => $this->title,
+                    'TEXT' => do_lang_tempcode('REDIRECTING'),
+                    'URL' => $url,
+                    'POST' => $post,
+                    'ENCTYPE' => 'multipart/form-data',
+                ]);
+        }
+
+        return new Tempcode(); // Should never get here
     }
 
     /**
@@ -1543,7 +1673,6 @@ class Module_admin_themes
         $validate = get_param_string('validate', '');
         switch ($validate) {
             case 'cms':
-                $global = new Tempcode();
                 if ($full_screen) {
                     $global = $preview;
                 } else {
@@ -1556,7 +1685,6 @@ class Module_admin_themes
             case 'w3c':
                 $refresh = do_template('JS_REFRESH', ['_GUID' => 'd7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
 
-                $global = new Tempcode();
                 if ($full_screen) {
                     $global = $preview;
                 } else {

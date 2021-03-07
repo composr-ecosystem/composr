@@ -143,7 +143,6 @@ class Hook_addon_registry_core_themeing
             'themes/default/templates/TEMPCODE_TESTER_SCREEN.tpl',
             'themes/default/templates/TEMPLATE_EDIT_LINK.tpl',
             'themes/default/templates/THEME_SCREEN_PREVIEW.tpl',
-            'themes/default/templates/THEME_SCREEN_PREVIEW_WRAP.tpl',
             'themes/default/templates/TEMPLATE_TREE.tpl',
             'themes/default/templates/TEMPLATE_TREE_ITEM.tpl',
             'themes/default/templates/TEMPLATE_TREE_ITEM_WRAP.tpl',
@@ -185,7 +184,6 @@ class Hook_addon_registry_core_themeing
             'templates/TEMPLATE_EDIT_LINK.tpl' => 'administrative__template_edit_links_screen',
             'templates/THEME_SCREEN_PREVIEW.tpl' => 'administrative__screen_previews_screen',
             'templates/THEME_SCREEN_PREVIEW_WRAP.tpl' => 'administrative__screen_previews_screen',
-            'templates/TEMPLATE_TREE.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_ITEM.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_ITEM_WRAP.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_NODE.tpl' => 'administrative__template_tree_screen',
@@ -445,17 +443,23 @@ class Hook_addon_registry_core_themeing
         }
         foreach (placeholder_array() as $v) {
             $lis->attach(do_lorem_template('THEME_SCREEN_PREVIEW', [
-                'URL' => placeholder_url(),
+                'SCREEN_PREVIEW_URL' => placeholder_url(),
+                'MOBILE_SCREEN_PREVIEW_URL' => placeholder_url(),
+                'CMS_VALIDATION_URL' => placeholder_url(),
+                'W3C_VALIDATION_URL' => placeholder_url(),
+
                 'COLOR' => 'green',
                 'SCREEN' => lorem_word(),
                 'LIST' => '',
-                'PLAIN_TEXT' => false,
             ]));
         }
 
-        $post = do_lorem_template('THEME_SCREEN_PREVIEW_WRAP', [
-            'LI' => $lis,
-            'TITLE' => lorem_phrase(),
+        $post = do_lorem_template('INDEX_SCREEN_FANCIER_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ARRAY' => true,
+            'CONTENT' => [lorem_phrase() => $lis],
+            'POST' => '',
+            'PRE' => ''
         ]);
 
         return [

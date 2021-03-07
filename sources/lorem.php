@@ -260,7 +260,7 @@ function placeholder_form_with_field(string $field_name) : object
  */
 function placeholder_table() : object
 {
-    $text = '<table class="results-table" width="100%"><tbody><tr><th>(Cell 1)</th><td>(Cell 2)</td></tr><tr><td>(Cell 3)</td><td>(Cell 4)</td></tr></tbody></table>'; // XHTMLXHTML
+    $text = '<table class="results-table wide-table"><tbody><tr><th>(Cell 1)</th><td>(Cell 2)</td></tr><tr><td>(Cell 3)</td><td>(Cell 4)</td></tr></tbody></table>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -833,10 +833,13 @@ function find_all_previews__by_screen() : array
 {
     $all_previews = [];
 
-    $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-    foreach ($hooks as $hook => $ob) {
-        if (method_exists($ob, 'tpl_previews')) {
-            $previews = $ob->tpl_previews();
+    $hooks = find_all_hooks('systems', 'addon_registry');
+    foreach ($hooks as $hook => $hook_dir) {
+        $path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
+        $_hook_bits = extract_module_functions($path, ['tpl_previews', 'tpl_previews_extra'], [], false, 'Hook_addon_registry_' . $hook);
+
+        if (isset($_hook_bits[0])) {
+            $previews = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
             foreach ($previews as $tpl => $function) {
                 if (!array_key_exists('tpl_preview__' . $function, $all_previews)) {
                     $all_previews['tpl_preview__' . $function] = [$hook, []];
@@ -845,8 +848,8 @@ function find_all_previews__by_screen() : array
             }
         }
 
-        if (method_exists($ob, 'tpl_previews_extra')) {
-            $previews = $ob->tpl_previews_extra();
+        if (isset($_hook_bits[1])) {
+            $previews = is_array($_hook_bits[1]) ? call_user_func_array($_hook_bits[1][0], $_hook_bits[1][1]) : cms_eval($_hook_bits[1], $path);
             foreach ($previews as $function) {
                 if (!array_key_exists('tpl_preview__' . $function, $all_previews)) {
                     $all_previews['tpl_preview__' . $function] = [$hook, []];
@@ -869,7 +872,7 @@ function find_all_previews__by_screen() : array
  * @param  boolean $full_screen Whether the template is full screen (returned by referenced)
  * @return Tempcode The previewed screen
  */
-function render_screen_preview(?string $hook, string $function, string $template = null, &$full_screen = false) : object
+function render_screen_preview(?string $hook, string $function, ?string $template = null, bool &$full_screen = false) : object
 {
     if ($hook === null) {
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -900,7 +903,10 @@ function render_screen_preview(?string $hook, string $function, string $template
         }
 
         if ((substr($path, -3) == '.js') && (substr($path, 0, 7) == 'themes/')) {
-            require_javascript(cms_strtolower_ascii(basename($path, '.js')));
+            $basename = basename($path, '.js');
+            if (substr($basename, 0, 1) != '_') {
+                require_javascript(cms_strtolower_ascii($basename));
+            }
         }
     }
 

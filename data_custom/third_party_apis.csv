@@ -31,4 +31,5 @@ Transifex,transifex,https://docs.transifex.com/api/introduction,Maintain,No,Apr 
 Vimeo thumbnail detection,vimeo,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,
 WorldPay,gateway_worldpay,https://developer.worldpay.com/docs,No action,Yes,N/A,N/A,N/A,N/A,Deprecated API. No sponsor so no action.
 YouTube thumbnail detection,youtube,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,
-W3C validator,w3c_validator,https://validator.w3.org/,Maintain,Yes,Mar 6th 2021,N/A,,,
+W3C HTML validator,w3c_html_validator,https://validator.w3.org/,Maintain,Yes,Mar 6th 2021,N/A,,,
+W3C CSS validator,w3c_css_validator,https://validator.w3.org/,Maintain,Yes,Mar 6th 2021,N/A,,,

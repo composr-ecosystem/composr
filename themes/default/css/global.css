@@ -3944,6 +3944,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	margin-top: 1.5em;
 }
 
+.index-screen-fancier-screen-entries .not-too-tall {
+	border: 1px solid {$GET,standard_border};
+	padding: 0.5em;
+	margin-bottom: 0.5em;
+}
 /*{+START,CSS_MODE,desktop}*/
 	.index-screen-fancier-screen-entries {
 		margin-left: 1em;
