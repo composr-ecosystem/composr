@@ -20,20 +20,24 @@ class themeini_images_test_set extends cms_test_case
 {
     public function testThemeImageThere()
     {
+        global $THEMEWIZARD_IMAGES;
+
         require_code('themes2');
+        require_code('themewizard');
+
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             // Exceptions
             if (in_array($theme, [
                 '_unnamed_',
                 '_testing_',
-            )) {
+            ])) {
                 continue;
             }
 
-            $themewizard_images = get_theme_option('themewizard_images');
+            load_themewizard_params_from_theme($theme);
 
-            foreach (($themewizard_images == '') ? [] : explode(',', $themewizard_images) as $theme_image) {
+            foreach ($THEMEWIZARD_IMAGES as $theme_image) {
                 if (strpos($theme_image, '*') === false) {
                     $this->assertTrue(find_theme_image($theme_image, true) != '', 'Missing but referenced in theme.ini: ' . $theme_image);
                 } else { // This code branch is assumptive (that the '*' goes on the end), but it works with the current theme.ini...

@@ -31,7 +31,7 @@ class css_beta_test_set extends cms_test_case
             if (in_array($theme, [
                 '_unnamed_',
                 '_testing_',
-            )) {
+            ])) {
                 continue;
             }
 

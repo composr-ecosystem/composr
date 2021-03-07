@@ -29,6 +29,60 @@ class css_file_test_set extends cms_test_case
         require_code('files2');
     }
 
+    public function testBasicCSSIntegrity()
+    {
+        $themes = find_all_themes();
+        foreach (array_keys($themes) as $theme) {
+            // Exceptions
+            if (in_array($theme, [
+                '_unnamed_',
+                '_testing_',
+            ])) {
+                continue;
+            }
+
+            if (($this->only !== null) && ($this->only != $theme)) {
+                continue;
+            }
+
+            $d = @opendir($dir);
+            if ($d !== false) {
+                while (($f = readdir($d)) !== false) {
+                    if (substr($e, -4) == '.css') {
+                        // Exceptions
+                        $exceptions = [
+                        ];
+                        if (in_array($e, $exceptions)) {
+                            continue;
+                        }
+
+                        $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+
+                        // Test comment/brace balancing
+                        if (substr_count($c, '{') != substr_count($c, '}')) {
+                            echo '<br />Mismatched braces in ' . escape_html($f);
+                        }
+                        if (substr_count($c, '/*') != substr_count($c, '*/')) {
+                            echo '<br />Mismatched comments in ' . escape_html($f);
+                        }
+
+                        // Test selectors
+                        $matches = [];
+                        $num_matches = preg_match_all('#^\s*[^@\s].*[^%\s]\s*\{$#m', $c, $matches); // @ is media rules, % is keyframe rules. Neither wanted.
+                        for ($i = 0; $i < $num_matches; $i++) {
+                            $matches2 = [];
+                            $num_matches2 = preg_match_all('#[\w\-]+#', preg_replace('#"[^"]*"#', '', preg_replace('#[:@][\w\-]+#', '', $matches[0][$i])), $matches2);
+                            for ($j = 0; $j < $num_matches2; $j++) {
+                                $selectors[$matches2[0][$j]] = true;
+                            }
+                        }
+                    }
+                }
+                closedir($d);
+            }
+        }
+    }
+
     public function testClassUsage()
     {
         $themes = find_all_themes();
@@ -37,7 +91,7 @@ class css_file_test_set extends cms_test_case
             if (in_array($theme, [
                 '_unnamed_',
                 '_testing_',
-            )) {
+            ])) {
                 continue;
             }
 
@@ -165,7 +219,7 @@ class css_file_test_set extends cms_test_case
             if (in_array($theme, [
                 '_unnamed_',
                 '_testing_',
-            )) {
+            ])) {
                 continue;
             }
 
