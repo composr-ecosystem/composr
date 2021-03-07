@@ -408,7 +408,9 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
                     }
 
                     // Update database
-                    actual_edit_theme_image($theme_image, $theme_name, $lang, $theme_image, $save_url, true);
+                    if ($theme_name != '_temp_') {
+                        actual_edit_theme_image($theme_image, $theme_name, $lang, $theme_image, $save_url, true);
+                    }
 
                     $files_created[] = $composite . $theme_image . '.png';
                 }
