@@ -447,7 +447,7 @@ class Hook_addon_registry_core_themeing
             $lis->attach(do_lorem_template('THEME_SCREEN_PREVIEW', [
                 'URL' => placeholder_url(),
                 'COLOR' => 'green',
-                'TEMPLATE' => lorem_word(),
+                'SCREEN' => lorem_word(),
                 'LIST' => '',
             ]));
         }

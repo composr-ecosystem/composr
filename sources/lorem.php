@@ -524,7 +524,7 @@ function do_lorem_template(string $codename, array $parameters = [], ?string $la
     $KNOWN_TEMPLATE_PARAMETERS[$codename] = array_keys($parameters);
 
     global $THEME_BEING_TESTED;
-    $theme = isset($THEME_BEING_TESTED) ? $GLOBALS['FORUM_DRIVER']->get_theme() : $THEME_BEING_TESTED;
+    $theme = isset($THEME_BEING_TESTED) ? $THEME_BEING_TESTED : $GLOBALS['FORUM_DRIVER']->get_theme();
     return do_template($codename, $parameters, $lang, $light_error, $fallback, $suffix, $directory, $theme);
 }
 
@@ -819,6 +819,8 @@ function find_all_previews__by_template() : array
         }
     }
 
+    ksort($all_previews);
+
     return $all_previews;
 }
 
@@ -837,12 +839,23 @@ function find_all_previews__by_screen() : array
             $previews = $ob->tpl_previews();
             foreach ($previews as $tpl => $function) {
                 if (!array_key_exists('tpl_preview__' . $function, $all_previews)) {
-                    $all_previews['tpl_preview__' . $function] = [];
+                    $all_previews['tpl_preview__' . $function] = [$hook, []];
                 }
-                $all_previews['tpl_preview__' . $function][] = $tpl;
+                $all_previews['tpl_preview__' . $function][1][] = $tpl;
+            }
+        }
+
+        if (method_exists($ob, 'tpl_previews_extra')) {
+            $previews = $ob->tpl_previews_extra();
+            foreach ($previews as $function) {
+                if (!array_key_exists('tpl_preview__' . $function, $all_previews)) {
+                    $all_previews['tpl_preview__' . $function] = [$hook, []];
+                }
             }
         }
     }
+
+    ksort($all_previews);
 
     return $all_previews;
 }
@@ -850,12 +863,12 @@ function find_all_previews__by_screen() : array
 /**
  * Shows the preview of a screen.
  *
- * @param  ID_TEXT $template The template to be previewed (e.g. templates/DOWNLOAD_BOX.tpl)
  * @param  ?ID_TEXT $hook The hook the preview is in (null: search)
  * @param  ID_TEXT $function The name of the screen preview
+ * @param  ?ID_TEXT $template The template to be previewed (e.g. templates/DOWNLOAD_BOX.tpl) (null: do not consider template)
  * @return Tempcode The previewed screen
  */
-function render_screen_preview(string $template, ?string $hook, string $function) : object
+function render_screen_preview(?string $hook, string $function, string $template = null) : object
 {
     if ($hook === null) {
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -890,12 +903,12 @@ function render_screen_preview(string $template, ?string $hook, string $function
         }
     }
 
-    if (is_full_screen_template($template)) {
+    if (($template !== null) && (is_full_screen_template($template))) {
         $complete_html = true;
     } else {
         $complete_html = false;
     }
-    if (is_plain_text_template($template)) {
+     if (($template !== null) && (is_plain_text_template($template))) {
         //@header('Content-Type: text/plain; charset=' . get_charset());     Let it show with WITH_WHITESPACE
         $text = true;
     } else {

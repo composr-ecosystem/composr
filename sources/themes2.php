@@ -398,7 +398,7 @@ function find_template_parameters(string $file) : array
         list($hook, $function) = $all_previews[$file];
         global $LOREM_AVOID_GLOBALISE;
         $LOREM_AVOID_GLOBALISE = true;
-        $temp = render_screen_preview($file, $hook, $function);
+        $temp = render_screen_preview($hook, $function, $file);
     }
 
     global $KNOWN_TEMPLATE_PARAMETERS;

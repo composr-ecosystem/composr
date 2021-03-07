@@ -4578,7 +4578,7 @@ ul.tick-list li {
 
 ul.actions-list {
 	padding: 0;
-	margin: 0;
+	margin-left: 0;
 }
 ul.actions-list > li,
 .attachment ul.actions-list > li /*for higher precedence for attachments within docs zone*/ {

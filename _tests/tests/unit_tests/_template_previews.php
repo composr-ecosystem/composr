@@ -153,7 +153,7 @@ class _template_previews_test_set extends cms_test_case
 
             $RECORDED_TEMPLATES_USED = [];
 
-            $out = render_screen_preview($template, $hook, $function);
+            $out = render_screen_preview($hook, $function, $template);
 
             restore_output_state();
 
@@ -253,7 +253,8 @@ class _template_previews_test_set extends cms_test_case
 
         $lists = find_all_previews__by_screen();
         $this->shuffle_assoc($lists); // So parallelism can work
-        foreach ($lists as $function => $tpls) {
+        foreach ($lists as $function => $details) {
+            $tpls = $details[1];
             $template = $tpls[0];
             $hook = null;
 
@@ -272,7 +273,7 @@ class _template_previews_test_set extends cms_test_case
             $LOADED_TPL_CACHE = [];
             $BLOCKS_CACHE = [];
             $PANELS_CACHE = [];
-            $out1 = render_screen_preview($template, $hook, $function);
+            $out1 = render_screen_preview($hook, $function, $template);
             $_out1 = $this->cleanup_varying_code($out1->evaluate());
             restore_output_state();
 
@@ -281,7 +282,7 @@ class _template_previews_test_set extends cms_test_case
             $LOADED_TPL_CACHE = [];
             $BLOCKS_CACHE = [];
             $PANELS_CACHE = [];
-            $out2 = render_screen_preview($template, $hook, $function);
+            $out2 = render_screen_preview($hook, $function, $template);
             $_out2 = $this->cleanup_varying_code($out2->evaluate());
             restore_output_state();
 
@@ -329,11 +330,12 @@ class _template_previews_test_set extends cms_test_case
 
         $lists = find_all_previews__by_screen();
         $this->shuffle_assoc($lists); // So parallelism can work
-        foreach ($lists as $function => $tpls) {
+        foreach ($lists as $function => $details) {
+            $tpls = $details[1];
             $template = $tpls[0];
             $hook = null;
 
-            if ($template == 'ADMIN_ZONE_SEARCH.tpl') {
+            if ($template === 'ADMIN_ZONE_SEARCH.tpl') {
                 continue; // Only in admin theme, causes problem
             }
 
@@ -345,7 +347,7 @@ class _template_previews_test_set extends cms_test_case
 
             $ATTACHED_MESSAGES = new Tempcode();
             $ATTACHED_MESSAGES_RAW = [];
-            $out1 = render_screen_preview($template, $hook, $function);
+            $out1 = render_screen_preview($hook, $function, $template);
 
             if ($ATTACHED_MESSAGES === null) {
                 $ATTACHED_MESSAGES = new Tempcode();

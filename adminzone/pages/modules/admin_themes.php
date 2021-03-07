@@ -1403,6 +1403,55 @@ class Module_admin_themes
 
         require_code('lorem');
 
+        // Find all previews
+        $all_previews__by_screen = find_all_previews__by_screen();
+
+        // Find other things we may want to preview
+        $comcode_files = find_comcodes();
+        $html_files = find_html();
+
+        // Loop over to display it all
+        $displayed_already = [];
+        $list = new Tempcode();
+        $list_admin = new Tempcode();
+        $done_templates = [];
+        foreach ($all_previews__by_screen as $func => $details) {
+            send_http_output_ping();
+
+            list($hook, $tpls) = $details;
+
+            $preview_url = build_url(['page' => '_SELF', 'type' => 'screen_preview', 'id' => isset($tpls[0]) ? $tpls[0] : null, 'hook' => $hook, 'function' => $func], '_SELF');
+
+            if (empty($tpls)) {
+                $templates_used = '';
+            } else {
+                $templates_used = '(';
+                foreach ($tpls as $tpl) {
+                    if ($templates_used != '(') {
+                        $templates_used .= ', ';
+                    }
+                    $templates_used .= $tpl;
+                    $done_templates[$tpl] = true;
+                }
+                $templates_used .= ')';
+            }
+
+            $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
+                '_GUID' => '1f27f619db553dfcb8d427e70a736226',
+                'URL' => $preview_url,
+                'COLOR' => 'green',
+                'SCREEN' => preg_replace('#^tpl_preview__#', '', $func),
+                'LIST' => $templates_used,
+            ]);
+            if (preg_match('#^tpl_preview__administrative__#', $func) != 0) {
+                $list_admin->attach($tpl_x);
+            } else {
+                $list->attach($tpl_x);
+            }
+
+            $displayed_already[$func] = true;
+        }
+
         // Find all templates
         $templates = [];
         $dh = opendir(get_file_base() . '/themes/default/templates');
@@ -1413,51 +1462,11 @@ class Module_admin_themes
         }
         closedir($dh);
         sort($templates);
-
-        // Find all previews (map of templates to previews)
-        $all_previews = find_all_previews__by_template();
-        // And by screen
-        $all_previews__by_screen = find_all_previews__by_screen();
-
-        // Find other things we may want to preview
-        $comcode_files = find_comcodes();
-        $html_files = find_html();
-
-        // Loop over to display it all
-        $displayed_already = [];
-        $lis = new Tempcode();
-        $lis_admin = new Tempcode();
         foreach ($templates as $t) {
-            // If we have a preview for it
-            if (array_key_exists($t, $all_previews)) {
-                if (!array_key_exists($all_previews[$t][1], $displayed_already)) {
-                    send_http_output_ping();
-
-                    $func = $all_previews[$t][1];
-
-                    $preview_url = build_url(['page' => '_SELF', 'type' => 'screen_preview', 'id' => $t, 'hook' => $all_previews[$t][0], 'function' => $func], '_SELF');
-
-                    $template_used = '(' . implode(', ', $all_previews__by_screen[$func]) . ')';
-
-                    $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
-                        '_GUID' => '1f27f619db553dfcb8d427e70a736226',
-                        'URL' => $preview_url,
-                        'COLOR' => 'green',
-                        'TEMPLATE' => preg_replace('#^tpl_preview__#', '', $func),
-                        'LIST' => $template_used,
-                    ]);
-                    if (preg_match('#^tpl_preview__administrative__#', $func) != 0) {
-                        $lis_admin->attach($tpl_x);
-                    } else {
-                        $lis->attach($tpl_x);
-                    }
-
-                    $displayed_already[$func] = true;
-                }
-            } else {
-                // No preview for these
+            // No preview for these
+            if (!array_key_exists($t, $done_templates)) {
                 $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '96115a3b168769744b4b69fd2e1e7f6c', 'URL' => '', 'COLOR' => 'red', 'TEMPLATE' => $t, 'LIST' => '']);
-                $lis->attach($tpl_x);
+                $list->attach($tpl_x);
             }
         }
 
@@ -1465,10 +1474,10 @@ class Module_admin_themes
 
         $post = new Tempcode();
 
-        /* $lis (the main previews) will be displayed in the main INDEX_SCREEN content */
+        /* $list (the main previews) will be displayed in the main INDEX_SCREEN content */
 
         // LISTING ADMIN PREVIEWS
-        $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => '1e847f3c75998f2276765bc0c8ab6b78', 'LI' => $lis_admin, 'TITLE' => do_lang('ADMIN_SCREENS')]));
+        $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => '1e847f3c75998f2276765bc0c8ab6b78', 'LI' => $list_admin, 'TITLE' => do_lang('ADMIN_SCREENS')]));
 
         // LISTING COMCODE FILES
         $com_li = new Tempcode();
@@ -1483,7 +1492,7 @@ class Module_admin_themes
 
                 $file = $page . '.txt';
                 $url = build_url(['page' => $page], $zone);
-                $com_li->attach(do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '9db6fa9333470137ccf9bb752fd9b19e', 'URL' => $url, 'COLOR' => '', 'TEMPLATE' => $file, 'LIST' => '']));
+                $com_li->attach(do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '9db6fa9333470137ccf9bb752fd9b19e', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '']));
             }
         }
         $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => 'adf69728048cbdbc3a0d9a2e2485a234', 'LI' => $com_li, 'TITLE' => do_lang('COMCODE_PAGES')]));
@@ -1495,12 +1504,12 @@ class Module_admin_themes
                 $file = $page . '.htm';
                 $url = build_url(['page' => $page], $zone);
 
-                $htm_li->attach(do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '16d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $url, 'COLOR' => '', 'TEMPLATE' => $file, 'LIST' => '']));
+                $htm_li->attach(do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '16d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '']));
             }
         }
         $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => '2220938b443ecdb7d3f2d869665b3a4e', 'LI' => $htm_li, 'TITLE' => do_lang('HTML_PAGES')]));
 
-        return do_template('INDEX_SCREEN', ['_GUID' => '6137f107de679580a6aafe36af427cdd', 'TITLE' => $this->title, 'CONTENT' => $lis, 'POST' => $post, 'PRE' => '']);
+        return do_template('INDEX_SCREEN', ['_GUID' => '6137f107de679580a6aafe36af427cdd', 'TITLE' => $this->title, 'CONTENT' => $list, 'POST' => $post, 'PRE' => '']);
     }
 
     /**
@@ -1517,11 +1526,11 @@ class Module_admin_themes
         global $LOREM_AVOID_GLOBALISE;
         $LOREM_AVOID_GLOBALISE = true;
 
-        $template = get_param_string('id');
+        $template = get_param_string('id', null);
         $hook = get_param_string('hook');
         $function = get_param_string('function');
 
-        return render_screen_preview($template, $hook, $function);
+        return render_screen_preview($hook, $function, $template);
     }
 
     /**

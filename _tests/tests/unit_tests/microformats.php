@@ -37,7 +37,7 @@ class microformats_test_set extends cms_test_case
             return;
         }
 
-        $tpl = render_screen_preview('CALENDAR_EVENT_SCREEN.tpl', 'calendar', 'tpl_preview__calendar_event_screen');
+        $tpl = render_screen_preview('calendar', 'tpl_preview__calendar_event_screen', 'CALENDAR_EVENT_SCREEN.tpl');
         $result = $this->do_validation($tpl->evaluate());
         $this->assertTrue($result['items'][0]['type'][0] == 'h-event');
         $this->assertTrue(!empty($result['items'][0]['properties']['start']));
@@ -54,7 +54,7 @@ class microformats_test_set extends cms_test_case
             return;
         }
 
-        $tpl = render_screen_preview('CALENDAR_EVENT_SCREEN.tpl', 'calendar', 'tpl_preview__block_side_calendar_listing');
+        $tpl = render_screen_preview('calendar', 'tpl_preview__block_side_calendar_listing', 'CALENDAR_EVENT_SCREEN.tpl');
         $result = $this->do_validation($tpl->evaluate());
         $this->assertTrue($result['items'][0]['type'][0] == 'h-event');
         $this->assertTrue(!empty($result['items'][0]['properties']['start']));
@@ -68,7 +68,7 @@ class microformats_test_set extends cms_test_case
             return;
         }
 
-        $tpl = render_screen_preview('CNS_MEMBER_PROFILE_SCREEN.tpl', 'core_cns', 'tpl_preview__cns_member_profile_screen');
+        $tpl = render_screen_preview('core_cns', 'tpl_preview__cns_member_profile_screen', 'CNS_MEMBER_PROFILE_SCREEN.tpl');
         $result = $this->do_validation($tpl->evaluate());
         $this->assertTrue($result['items'][0]['type'][0] == 'h-card');
         $this->assertTrue(!empty($result['items'][0]['properties']['name']));

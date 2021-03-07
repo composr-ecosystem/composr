@@ -197,6 +197,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'themes/default/images/icons_monochrome/results/index.html',
             'themes/default/images/icons_monochrome/results/sortablefield_asc.svg',
             'themes/default/images/icons_monochrome/results/sortablefield_desc.svg',
+            'adminzone/frame_test.php',
         ];
     }
 
@@ -270,6 +271,16 @@ class Hook_addon_registry_core_abstract_interfaces
             'templates/COLUMNED_TABLE_ROW_CELL_LINE.tpl' => 'full_table_screen',
             'templates/COLUMNED_TABLE_SCREEN.tpl' => 'administrative__columned_table_screen',
         ];
+    }
+
+    /**
+     * Get previews that do not map to any specific template, or otherwise would not be returnable from tpl_previews.
+     *
+     * @return array The previews
+     */
+    public function tpl_previews_extra() : array
+    {
+        return ['iframe', 'overlay'];
     }
 
     /**
@@ -1072,6 +1083,65 @@ class Hook_addon_registry_core_abstract_interfaces
             lorem_globalise(do_lorem_template('MEMBER_TOOLTIP', [
                 'SUBMITTER' => placeholder_id(),
             ]), null, '', true)
+        ];
+    }
+
+    // Special ones that loop back to a frame...
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__iframe() : array
+    {
+        global $THEME_BEING_TESTED;
+        $theme = isset($THEME_BEING_TESTED) ? $THEME_BEING_TESTED : $GLOBALS['FORUM_DRIVER']->get_theme();
+
+        $keep = symbol_tempcode('KEEP');
+
+        $url = find_script('frame_test') . '?keep_theme=' . urlencode($theme) . $keep->evaluate();
+
+        require_code('tempcode_compiler');
+        $tpl = template_to_tempcode('<iframe width="400px" height="400px" title="{!PREVIEW}" src="' . escape_html($url) . '">{!PREVIEW}</iframe>');
+
+        return [
+            lorem_globalise($tpl, null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__overlay() : array
+    {
+        global $THEME_BEING_TESTED;
+        $theme = isset($THEME_BEING_TESTED) ? $THEME_BEING_TESTED : $GLOBALS['FORUM_DRIVER']->get_theme();
+
+        $keep = symbol_tempcode('KEEP');
+
+        $url = find_script('frame_test') . '?keep_theme=' . urlencode($theme) . $keep->evaluate();
+
+        require_code('tempcode_compiler');
+        $tpl = template_to_tempcode('
+            <button id="button" class="btn btn-primary btn-scri buttons-proceed" type="submit" title="Click me">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} Click me</button>
+
+            <script {$CSP_NONCE_HTML}>
+                document.getElementById("button").addEventListener("click", function () {
+                    var url = "' . str_replace('</', '<\/', addslashes($url)) . '";
+                    $cms.ui.open(url, "overlay", "width=400,height=400,status=no,resizable=yes,scrollbars=no");
+                });
+            </script>
+        ');
+
+        return [
+            lorem_globalise($tpl, null, '', true)
         ];
     }
 }
