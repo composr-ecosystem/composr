@@ -662,7 +662,7 @@ function display_webstandards_results(string $out, array $error, bool $preview_m
             'TITLE' => $title,
             'IGNORE_URL_2' => $ignore_url_2,
             'IGNORE_URL' => $ignore_url,
-            'MESSY_URL' => $messy_url,
+            'MESSY_URL' => $preview_mode ? new Tempcode() : $messy_url,
             'ERRORS' => $errorst,
             'RET' => $ret,
         ]);
@@ -674,7 +674,7 @@ function display_webstandards_results(string $out, array $error, bool $preview_m
             'MSG' => do_lang_tempcode('NEXT_ITEM_BACK'),
             'RETURN_URL' => $return_url,
             'TITLE' => get_screen_title('VIEWING_SOURCE'),
-            'MESSY_URL' => $messy_url,
+            'MESSY_URL' => $preview_mode ? new Tempcode() : $messy_url,
             'RET' => $ret,
         ]);
         $echo->evaluate_echo();

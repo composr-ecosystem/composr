@@ -4,7 +4,7 @@
 
 <div class="site-special-message">
 	<div class="site-special-message-inner">
-		<form title="{!PROCEED}" action="{URL*}" id="redir-form" method="post">
+		<form title="{!PROCEED}" action="{URL*}" id="redir-form" method="post"{+START,IF_PASSED,ENCTYPE} enctype="{ENCTYPE*}"{+END}>
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div class="box box---login-redirect-screen"><div class="box-inner">

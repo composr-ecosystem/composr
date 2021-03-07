@@ -449,6 +449,7 @@ class Hook_addon_registry_core_themeing
                 'COLOR' => 'green',
                 'SCREEN' => lorem_word(),
                 'LIST' => '',
+                'PLAIN_TEXT' => false,
             ]));
         }
 

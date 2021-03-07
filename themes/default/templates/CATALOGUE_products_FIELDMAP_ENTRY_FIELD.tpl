@@ -13,7 +13,7 @@
 	{+END}
 
 	<tr>
-		<th width="30%">{$PREG_REPLACE,^.*: ,,{FIELD*}}</th>
-		<td width="70%">{VALUE}</td>
+		<th style="width: 30%">{$PREG_REPLACE,^.*: ,,{FIELD*}}</th>
+		<td style="width: 70%">{VALUE}</td>
 	</tr>
 {+END}{+END}

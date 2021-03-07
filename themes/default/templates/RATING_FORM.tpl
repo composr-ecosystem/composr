@@ -7,7 +7,7 @@
 
 			<div class="rating-outer">
 				<div class="rating-type-title">
-					<a id="rating--{$GET,identifier}-jump" rel="dorating"></a>
+					<a id="rating--{$GET,identifier}-jump"></a>
 
 					{+START,IF_NON_EMPTY,{TITLE}}<strong>{TITLE*}:</strong>{+END}
 				</div>

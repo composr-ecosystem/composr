@@ -866,9 +866,10 @@ function find_all_previews__by_screen() : array
  * @param  ?ID_TEXT $hook The hook the preview is in (null: search)
  * @param  ID_TEXT $function The name of the screen preview
  * @param  ?ID_TEXT $template The template to be previewed (e.g. templates/DOWNLOAD_BOX.tpl) (null: do not consider template)
+ * @param  boolean $full_screen Whether the template is full screen (returned by referenced)
  * @return Tempcode The previewed screen
  */
-function render_screen_preview(?string $hook, string $function, string $template = null) : object
+function render_screen_preview(?string $hook, string $function, string $template = null, &$full_screen = false) : object
 {
     if ($hook === null) {
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -887,7 +888,7 @@ function render_screen_preview(?string $hook, string $function, string $template
     require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
     $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
 
-    // Load all ini/js/css
+    // Load all .ini/.js/.css
     $files = $ob->get_file_list();
     foreach ($files as $path) {
         if ((substr($path, -4) == '.ini') && ((substr($path, 0, 8) == 'lang/EN/') || (substr($path, 0, 15) == 'lang_custom/EN/'))) {
@@ -903,10 +904,11 @@ function render_screen_preview(?string $hook, string $function, string $template
         }
     }
 
+    // Preview metadata
     if (($template !== null) && (is_full_screen_template($template))) {
-        $complete_html = true;
+        $full_screen = true;
     } else {
-        $complete_html = false;
+        $full_screen = false;
     }
      if (($template !== null) && (is_plain_text_template($template))) {
         //@header('Content-Type: text/plain; charset=' . get_charset());     Let it show with WITH_WHITESPACE
@@ -915,19 +917,20 @@ function render_screen_preview(?string $hook, string $function, string $template
         $text = false;
     }
 
-    // Render preview
+    // Render preview(s)
     $previews = call_user_func([$ob, $function]);
 
-    if ($text) {
-        $previews[0] = with_whitespace($previews[0]->evaluate());
+    // Put it together and return
+    $out = new Tempcode();
+    foreach ($previews as $preview) {
+        // Show as plain text if needed
+        if ($text) {
+            $out->attach(with_whitespace($preview));
+        } else {
+            $out->attach($preview);
+        }
     }
-    $tmp = substr($function, 13);
-
-    if (($complete_html) && (get_page_name() == 'admin_themes')) {
-        exit($previews[0]->evaluate());
-    }
-
-    return $previews[0];
+    return $out;
 }
 
 /**

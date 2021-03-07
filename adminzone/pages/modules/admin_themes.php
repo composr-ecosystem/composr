@@ -272,7 +272,7 @@ class Module_admin_themes
             $function = get_param_string('function');
 
             //get_screen_title('SCREEN_PREVIEW', true, [escape_html($function])); // Affects breadcrumbs etc
-            get_screen_title($function, false); // Affects breadcrumbs etc
+            $this->title = get_screen_title($function, false); // Affects breadcrumbs etc
             breadcrumb_set_parents([['_SELF:_SELF:screen_previews', do_lang_tempcode('SCREEN_PREVIEWS')]]);
         }
 
@@ -1424,6 +1424,7 @@ class Module_admin_themes
 
             if (empty($tpls)) {
                 $templates_used = '';
+                $plain_text = true;
             } else {
                 $templates_used = '(';
                 foreach ($tpls as $tpl) {
@@ -1434,6 +1435,8 @@ class Module_admin_themes
                     $done_templates[$tpl] = true;
                 }
                 $templates_used .= ')';
+
+                $plain_text = is_plain_text_template($tpls[0]);
             }
 
             $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
@@ -1442,11 +1445,12 @@ class Module_admin_themes
                 'COLOR' => 'green',
                 'SCREEN' => preg_replace('#^tpl_preview__#', '', $func),
                 'LIST' => $templates_used,
+                'PLAIN_TEXT' => $plain_text,
             ]);
             if (preg_match('#^tpl_preview__administrative__#', $func) != 0) {
-                $list_admin->attach($tpl_x);
+                $list_admin->attach($tpl_x->evaluate());
             } else {
-                $list->attach($tpl_x);
+                $list->attach($tpl_x->evaluate());
             }
 
             $displayed_already[$func] = true;
@@ -1465,8 +1469,8 @@ class Module_admin_themes
         foreach ($templates as $t) {
             // No preview for these
             if (!array_key_exists($t, $done_templates)) {
-                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '96115a3b168769744b4b69fd2e1e7f6c', 'URL' => '', 'COLOR' => 'red', 'TEMPLATE' => $t, 'LIST' => '']);
-                $list->attach($tpl_x);
+                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '96115a3b168769744b4b69fd2e1e7f6c', 'URL' => '', 'COLOR' => 'red', 'TEMPLATE' => $t, 'LIST' => '', 'PLAIN_TEXT' => false]);
+                $list->attach($tpl_x->evaluate());
             }
         }
 
@@ -1492,7 +1496,9 @@ class Module_admin_themes
 
                 $file = $page . '.txt';
                 $url = build_url(['page' => $page], $zone);
-                $com_li->attach(do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '9db6fa9333470137ccf9bb752fd9b19e', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '']));
+
+                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '9db6fa9333470137ccf9bb752fd9b19e', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '', 'PLAIN_TEXT' => false]);
+                $com_li->attach($tpl_x->evaluate());
             }
         }
         $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => 'adf69728048cbdbc3a0d9a2e2485a234', 'LI' => $com_li, 'TITLE' => do_lang('COMCODE_PAGES')]));
@@ -1504,7 +1510,8 @@ class Module_admin_themes
                 $file = $page . '.htm';
                 $url = build_url(['page' => $page], $zone);
 
-                $htm_li->attach(do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '16d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '']));
+                $tpl_x = do_template('THEME_SCREEN_PREVIEW', ['_GUID' => '16d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $url, 'COLOR' => '', 'SCREEN' => $file, 'LIST' => '', 'PLAIN_TEXT' => false]);
+                $htm_li->attach($tpl_x->evaluate());
             }
         }
         $post->attach(do_template('THEME_SCREEN_PREVIEW_WRAP', ['_GUID' => '2220938b443ecdb7d3f2d869665b3a4e', 'LI' => $htm_li, 'TITLE' => do_lang('HTML_PAGES')]));
@@ -1530,7 +1537,55 @@ class Module_admin_themes
         $hook = get_param_string('hook');
         $function = get_param_string('function');
 
-        return render_screen_preview($hook, $function, $template);
+        $full_screen = false;
+        $preview = render_screen_preview($hook, $function, $template, $full_screen);
+
+        $validate = get_param_string('validate', '');
+        switch ($validate) {
+            case 'cms':
+                $global = new Tempcode();
+                if ($full_screen) {
+                    $global = $preview;
+                } else {
+                    $global = globalise($preview);
+                }
+
+                require_code('view_modes');
+                return make_string_tempcode(check_xhtml_webstandards($global->evaluate(), true, 2, true));
+
+            case 'w3c':
+                $refresh = do_template('JS_REFRESH', ['_GUID' => 'd7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
+
+                $global = new Tempcode();
+                if ($full_screen) {
+                    $global = $preview;
+                } else {
+                    $global = globalise($preview);
+                }
+
+                $post = new Tempcode();
+                $post->attach(form_input_hidden('fragment', $global->evaluate()));
+
+                $url = 'https://validator.w3.org/check';
+
+                return do_template('REDIRECT_POST_METHOD_SCREEN', [
+                    '_GUID' => '92e056de9150bbed185120eac3571f40',
+                    'REFRESH' => $refresh,
+                    'TITLE' => $this->title,
+                    'TEXT' => do_lang_tempcode('REDIRECTING'),
+                    'URL' => $url,
+                    'POST' => $post,
+                    'ENCTYPE' => 'multipart/form-data',
+                ]);
+        }
+
+        if ($full_screen) {
+            $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
+
+            exit($preview->evaluate());
+        }
+
+        return $preview;
     }
 
     /**

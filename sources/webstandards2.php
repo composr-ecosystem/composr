@@ -207,9 +207,9 @@ function __check_tag(string $tag, array $attributes, bool $self_close, bool $clo
                 break;
 
             case 'script':
-                if ($GLOBALS['WEBSTANDARDS_MANUAL']) {
+                if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (!isset($attributes['src']))) {
                     $errors[] = ['MANUAL_WCAG_ANIMATION'];
-                    $EXPECTING_TAG = 'noscript';
+                    //$EXPECTING_TAG = 'noscript'; We require JS nowadays
                 }
                 if (($GLOBALS['WEBSTANDARDS_JAVASCRIPT']) && ((!isset($attributes['type'])) || ((isset($attributes['type'])) && (($attributes['type'] == 'text/javascript') || ($attributes['type'] == 'application/javascript') || (($attributes['type'] == 'application/x-javascript')))))) { // Validate CSS
                     if (function_exists('require_code')) {
