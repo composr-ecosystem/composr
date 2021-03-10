@@ -27,48 +27,78 @@ class _lang_no_unused_test_set extends cms_test_case
         disable_php_memory_limit();
         cms_disable_time_limit();
 
-        $all_code = '';
+        // Exceptions
+        $exceptions_dirs = array_merge(list_untouchable_third_party_directories(), [
+        ]);
+        $exceptions_files = array_merge(list_untouchable_third_party_files(), [
+        ]);
+
+        $all_files = [];
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
-            // Exceptions
-            $exceptions = array_merge(list_untouchable_third_party_directories(), [
-            ]);
-            if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
+            if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
                 continue;
             }
-            $exceptions = array_merge(list_untouchable_third_party_files(), [
-            ]);
-            if (in_array($path, $exceptions)) {
+            if (in_array($path, $exceptions_files)) {
                 continue;
             }
 
-            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
+            $all_files[] = $path;
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['tpl']);
         foreach ($files as $path) {
-            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
+            if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
+                continue;
+            }
+            if (in_array($path, $exceptions_files)) {
+                continue;
+            }
+
+            $all_files[] = $path;
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         foreach ($files as $path) {
+            if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
+                continue;
+            }
+            if (in_array($path, $exceptions_files)) {
+                continue;
+            }
+
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             if (strpos($c, '/*{$,parser hint: pure}*/') === false) {
-                $all_code .= $c;
+                $all_files[] = $path;
             }
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['txt']);
         foreach ($files as $path) {
-            if (preg_match('#^(tracker/|data/modules/admin_stats/)#', $path) != 0) {
+            if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
+                continue;
+            }
+            if (in_array($path, $exceptions_files)) {
                 continue;
             }
 
-            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
+            $all_files[] = $path;
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['xml']);
         foreach ($files as $path) {
+            if (preg_match('#^(' . implode('|', $exceptions_dirs) . ')/#', $path) != 0) {
+                continue;
+            }
+            if (in_array($path, $exceptions_files)) {
+                continue;
+            }
+
+            $all_files[] = $path;
+        }
+        $all_files[] = 'install.php';
+
+        $all_code = '';
+        foreach ($all_files as $path) {
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
         }
-        $all_code .= cms_file_get_contents_safe(get_file_base() . '/install.php', FILE_READ_LOCK);
 
         $skip_prefixes = [
             'RANK_SET_',
@@ -138,8 +168,23 @@ class _lang_no_unused_test_set extends cms_test_case
         $skip_prefixes_regexp = '#^(' . implode('|', $skip_prefixes) . ')#';
 
         $skip = array_flip([
-            'PREDEFINED_CONTENT', // TODO: Can remove once used
-            'PREDEFINED_CONTENT_DESCRIPTION', // TODO: Can remove once used
+            'ALLOWED_FILES',
+            'PLUPLOAD_UPLOADING',
+            'PLUPLOAD_COMPLETE',
+            'PLUPLOAD_FAILED',
+            'CLEAR_COLOR_SELECTION',
+            'NO_COLOR_SELECTION',
+            'SELECT2_REMOVE_ALL_ITEMS',
+            'SELECT2_NO_RESULTS',
+            'SELECT2_LOADING_FAILED',
+            'SELECT2_ENTER',
+            'SELECT2_DELETE',
+            'SELECT2_SELECTION_LIMIT',
+            'SELECT2_LOADING_MORE',
+            'SELECT2_SEARCHING',
+            'THEME_CAPABILITY_administrative',
+            'FROM_COLOUR',
+            'TO_COLOUR',
             'CONTINUE_RESTORATION',
             'ADD_PRIVATE_CALENDAR_EVENT',
             'EDIT_PRIVATE_CALENDAR_EVENT',

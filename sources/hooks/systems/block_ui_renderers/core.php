@@ -92,7 +92,7 @@ class Hook_block_ui_renderers_core
             foreach ($fonts as $font => $font_label) {
                 $list->attach(form_input_list_entry($font, $font == $default, $font_label));
             }
-            return form_input_list(do_lang_tempcode('comcode:FONT'), escape_html($description), $parameter, $list, null, false, false);
+            return form_input_list(do_lang_tempcode('FONT'), escape_html($description), $parameter, $list, null, false, false);
         } elseif ((($default == '') || (is_numeric(str_replace(',', '', $default)))) && ((($parameter == 'forum') || (($parameter == 'param') && (in_array($block, ['main_forum_topics'])))) && (get_forum_type() == 'cns'))) { // Forum blocks: Conversr forum list
             require_code('cns_forums');
             require_code('cns_forums2');

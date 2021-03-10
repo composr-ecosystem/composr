@@ -6961,7 +6961,7 @@ function ecv_DECIMAL_POINT(string $lang, array $escaped, array $param) : string
  */
 function ecv_IS_ICON_IN_SVG_SPRITE(string $lang, array $escaped, array $param) : string
 {
-    if (get_theme_option('sprite_icons') == '0') {
+    if ((!function_exists('get_theme_option')) || (get_theme_option('sprite_icons') == '0')) {
         $value = '0';
         if ($GLOBALS['XSS_DETECT']) {
             ocp_mark_as_escaped($value);

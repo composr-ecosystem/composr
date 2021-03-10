@@ -130,9 +130,6 @@ class Hook_rss_galleries
 
                 $enclosure_url = $row['url'];
                 if ((url_is_local($enclosure_url)) || ($row['type'] == 'image')) {
-                    if (url_is_local($enclosure_url)) {
-                        $enclosure_url = get_custom_base_url() . '/' . $enclosure_url;
-                    }
                     list($enclosure_length, $enclosure_type) = get_enclosure_details($row['url'], $enclosure_url);
                 } else {
                     $enclosure_url = null;

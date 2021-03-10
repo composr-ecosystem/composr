@@ -117,12 +117,8 @@ function gd_text_script()
     if (substr($fg_color, 0, 5) == 'seed-') {
         $theme = substr($fg_color, 5);
 
-        if (addon_installed('themewizard')) {
-            require_code('themewizard');
-            $fg_color = find_theme_seed($theme);
-        } else {
-            $fg_color = get_theme_option('seed');
-        }
+        require_code('themes2');
+        $fg_color = find_theme_seed($theme);
     }
     if (strlen($fg_color) == 3) {
         $fg_color = $fg_color[0] . $fg_color[0] . $fg_color[1] . $fg_color[1] . $fg_color[2] . $fg_color[2];

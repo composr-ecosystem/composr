@@ -48,16 +48,23 @@ class _cqc_nonbundled_test_set extends cms_test_case
                         }
                         $exceptions = array_merge(list_untouchable_third_party_files(), [
                             'sources_custom/hooks/systems/startup/tapatalk.php',
+                            'sources_custom/phpstub.php',
+
+                            // Lots of data
+                            'sources_custom/string_scan.php',
+                            '_tests/tests/unit_tests/_lang_spelling_epic.php',
                         ]);
                         if (in_array($path, $exceptions)) {
                             continue;
                         }
 
-                        $to_scan[] = $path;
+                        $to_scan[$path] = filesize(get_file_base() . '/' . $path);
                     }
                 }
             }
         }
+
+        $to_scan = array_keys($to_scan);
 
         define('PER_RUN', 20);
         $count = count($to_scan);

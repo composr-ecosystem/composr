@@ -177,7 +177,7 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
 }
 
 /**
- * Given a source theme name, configure the Theme Wizard for theme generation from it.
+ * Check the given details for making a Theme Wizard theme are valid.
  *
  * @param  ID_TEXT $source_theme The theme it's being generated from
  * @param  ID_TEXT $algorithm The algorithm to use
@@ -376,8 +376,9 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
                     } else {
                         $composite = 'themes/' . filter_naughty($theme_name) . '/images/';
                     }
-                    $save_path = get_custom_file_base() . '/' . $composite . $theme_image . '.png';
-                    $save_url = $composite . $theme_image . '.png';
+                    $ext = (is_string($image) ? 'svg' : 'png');
+                    $save_path = get_custom_file_base() . '/' . $composite . $theme_image . '.' . $ext;
+                    $save_url = $composite . $theme_image . '.' . $ext;
 
                     // If already made (as we support auto-resume)
                     if (is_file($save_path)) {
@@ -412,7 +413,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
                         actual_edit_theme_image($theme_image, $theme_name, $lang, $theme_image, $save_url, true);
                     }
 
-                    $files_created[] = $composite . $theme_image . '.png';
+                    $files_created[] = $composite . $theme_image . '.' . $ext;
                 }
             }
         }

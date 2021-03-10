@@ -45,18 +45,19 @@ class css_file_test_set extends cms_test_case
                 continue;
             }
 
+            $dir = get_file_base() . '/themes/' . $theme . '/css_custom';
             $d = @opendir($dir);
             if ($d !== false) {
                 while (($f = readdir($d)) !== false) {
-                    if (substr($e, -4) == '.css') {
+                    if (substr($f, -4) == '.css') {
                         // Exceptions
                         $exceptions = [
                         ];
-                        if (in_array($e, $exceptions)) {
+                        if (in_array($f, $exceptions)) {
                             continue;
                         }
 
-                        $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+                        $c = cms_file_get_contents_safe($dir . '/' . $f, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
                         // Test comment/brace balancing
                         if (substr_count($c, '{') != substr_count($c, '}')) {
@@ -64,17 +65,6 @@ class css_file_test_set extends cms_test_case
                         }
                         if (substr_count($c, '/*') != substr_count($c, '*/')) {
                             echo '<br />Mismatched comments in ' . escape_html($f);
-                        }
-
-                        // Test selectors
-                        $matches = [];
-                        $num_matches = preg_match_all('#^\s*[^@\s].*[^%\s]\s*\{$#m', $c, $matches); // @ is media rules, % is keyframe rules. Neither wanted.
-                        for ($i = 0; $i < $num_matches; $i++) {
-                            $matches2 = [];
-                            $num_matches2 = preg_match_all('#[\w\-]+#', preg_replace('#"[^"]*"#', '', preg_replace('#[:@][\w\-]+#', '', $matches[0][$i])), $matches2);
-                            for ($j = 0; $j < $num_matches2; $j++) {
-                                $selectors[$matches2[0][$j]] = true;
-                            }
                         }
                     }
                 }
@@ -372,6 +362,15 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'cms-modal-container',
+            'comcode-fake-table',
+            'fake-table',
+            'fake-td',
+            'flex-wrapper',
+            'float-left',
+            'float-right',
+            'floats-wrap',
+            'inline-block-box',
             'has-no-img',
             'theme-image--header-classic-image',
             'active-repeating',
@@ -1233,6 +1232,7 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'chosen_categories',
             'xslt-introduction',
         ];
         if (in_array($id, $exceptions)) {

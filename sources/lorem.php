@@ -916,7 +916,7 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
     } else {
         $full_screen = false;
     }
-     if (($template !== null) && (is_plain_text_template($template))) {
+    if (($template !== null) && (is_plain_text_template($template))) {
         //@header('Content-Type: text/plain; charset=' . get_charset());     Let it show with WITH_WHITESPACE
         $text = true;
     } else {

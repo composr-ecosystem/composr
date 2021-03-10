@@ -297,7 +297,6 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
 
         afm_make_directory(dirname('themes/' . $to . '/' . $file), true, true);
         afm_copy('themes/' . $theme . '/' . $file, 'themes/' . $to . '/' . $file, true);
-
     }
 
     // Set theme image records

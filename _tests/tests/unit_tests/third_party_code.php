@@ -189,13 +189,13 @@ class third_party_code_test_set extends cms_test_case
 
             foreach ($this->third_party_code as $row) {
                 if (($row['Health check?'] != 'N/A') && (strpos($row['Health check?'], 'TODO') === false)) {
-                    $this->assertTrue(array_key_exists($row['Health check?'], $sections), 'Missing Health Check: ' . $row['Health check?']);
+                    $this->assertTrue(array_key_exists($row['Health check?'], $sections), 'Missing Health Check for ' . $row['Project'] . ': ' . $row['Health check?']);
                 }
             }
 
             foreach ($this->third_party_apis as $row) {
                 if (($row['Health check?'] != 'N/A') && (strpos($row['Health check?'], 'TODO') === false)) {
-                    $this->assertTrue(array_key_exists($row['Health check?'], $sections), 'Missing Health Check: ' . $row['Health check?']);
+                    $this->assertTrue(array_key_exists($row['Health check?'], $sections), 'Missing Health Check for ' . $row['API'] . ': ' . $row['Health check?']);
                 }
             }
         }
@@ -209,13 +209,13 @@ class third_party_code_test_set extends cms_test_case
 
         foreach ($this->third_party_code as $row) {
             if (($row['Unit test?'] != 'N/A') && (strpos($row['Unit test?'], 'TODO') === false)) {
-                $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $row['Unit test?'] . '.php'), 'Could not find referenced test, ' . $row['Unit test?']);
+                $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $row['Unit test?'] . '.php'), 'Could not find referenced test for ' . $row['Project'] . ', ' . $row['Unit test?']);
             }
         }
 
         foreach ($this->third_party_apis as $row) {
             if (($row['Unit test?'] != 'N/A') && (strpos($row['Unit test?'], 'TODO') === false)) {
-                $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $row['Unit test?'] . '.php'), 'Could not find referenced test, ' . $row['Unit test?']);
+                $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $row['Unit test?'] . '.php'), 'Could not find referenced test for ' . $row['API'] . ', ' . $row['Unit test?']);
             }
         }
     }

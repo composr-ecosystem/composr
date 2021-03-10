@@ -245,16 +245,27 @@ function rss_backend_script()
  */
 function get_enclosure_details(string $url, string $enclosure_url) : array
 {
+    require_code('mime_types');
+    $enclosure_type = get_mime_type(get_file_extension($url), false);
+
+    $base_url = get_custom_base_url();
+
+    if (substr($url, 0, strlen($base_url) + 1) == $base_url . '/') {
+        $url = substr($url, strlen($base_url) + 1);
+    }
+
     $enclosure_length = '0';
-    if ((url_is_local($url)) && (file_exists(get_custom_file_base() . '/' . rawurldecode($url)))) {
+    if ((url_is_local($url)) && ((file_exists(get_custom_file_base() . '/' . rawurldecode($url))) || (preg_match('#^(image|video)/#', $enclosure_type) != 0))) {
         $path = get_custom_file_base() . '/' . rawurldecode($url);
         if (!is_file($path)) {
             return [null, null];
         }
         $enclosure_length = strval(filesize($path));
-        require_code('mime_types');
-        $enclosure_type = get_mime_type(get_file_extension($url), false);
     } else {
+        if (url_is_local($url)) {
+            $url = $base_url . '/' . $url;
+        }
+
         $http_response = cms_http_request($enclosure_url, ['trigger_error' => false, 'byte_limit' => 0]);
         if ($http_response->download_size === null) {
             $_data = http_get_contents($enclosure_url, ['trigger_error' => false]);

@@ -435,7 +435,7 @@ function step_1() : object
 
     // Some sanity checks
     if (!@is_array($FILE_ARRAY)) { // Secondary to the file-by-file check. Aims to give more specific information
-        if ((file_exists(get_file_base() . '/themes/default/templates/ANCHOR.tpl')) && (!file_exists(get_file_base() . '/themes/default/templates/COMCODE_REAL_TABLE_CELL.tpl'))) {
+        if ((file_exists(get_file_base() . '/themes/default/templates/ANCHOR.tpl')) && (!file_exists(get_file_base() . '/themes/default/templates/COMCODE_TABULAR_INLINE_BLOCKS.tpl'))) {
             warn_exit(do_lang_tempcode('CORRUPT_FILES_CROP'));
         }
         if ((!file_exists(get_file_base() . '/themes/default/templates/ANCHOR.tpl')) && (file_exists(get_file_base() . '/themes/default/templates/anchor.tpl'))) {

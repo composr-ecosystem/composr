@@ -152,7 +152,7 @@ class Module_admin_robots_txt
             warn_exit(protect_from_escaping($robots_txt_msg));
         }
 
-        log_it('ROBOTS_TXT');
+        log_it('_ROBOTS_TXT');
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }

@@ -38,7 +38,7 @@ class Hook_config_google_fonts_delayed_load
             'explanation' => 'CONFIG_OPTION_google_fonts_delayed_load',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
+            'order_in_category_group' => 4,
             'required' => true,
             'public' => true,
             'addon' => 'core_configuration',

@@ -373,7 +373,7 @@ class Module_admin_themewizard
                 }
             ';
         }
-        $fields->attach(form_input_radio(do_lang_tempcode('comcode:FONT'), '', 'font', $font_choices, true));
+        $fields->attach(form_input_radio(do_lang_tempcode('FONT'), '', 'font', $font_choices, true));
         attach_to_screen_header(do_template('CSS_NEED_INLINE', ['CODE' => $font_code]));
 
         // Find the most appropriate theme to edit for

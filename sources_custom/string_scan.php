@@ -393,7 +393,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_header_type_VALUE_modern
         CONFIG_OPTION_header_type_VALUE_side
         THEMEWIZARD_FILES
-        DESCRIPTION_THEMEWIZARD_FILES_CACHE
+        CONFIG_CATEGORY_CONTENT_EDITING
+        CONFIG_CATEGORY_DESCRIPTION__CONTENT_EDITING
+        CONFIG_CATEGORY_DESCRIPTION__ECOMMERCE_PRODUCTS
+        CONFIG_CATEGORY_ECOMMERCE_PRODUCTS
+        CONFIG_OPTION_google_fonts_delayed_load
+        DESCRIPTION_THEMEWIZARD_FILES
+        GOOGLE_FONTS_DELAYED_LOAD
         RSS_CLOUD_UPDATE
         DESCRIPTION_OVERWRITE_ERROR
         ACTION_OVERWRITE
@@ -736,6 +742,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DAYS_TO_KEEP__HEALTH_CHECK_LOG
         CONFIG_OPTION_days_to_keep__health_check_log
         ROBOTS_TXT
+        _ROBOTS_TXT
         ROBOTS_TXT_ALREADY_EXISTS
         ROBOTS_TXT_CREATED
         ROBOTS_TXT_NOT_MAPPED
@@ -7293,7 +7300,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         STAFF_NEW_TICKET_AS
         STAFF_USERNAME_CHANGED_MAIL
         STAFF_USERNAME_CHANGED_MAIL_SUBJECT
-        STANDARD_BOX
         START_PROBATION
         STAR_ALREADY_DEFINED
         DISPOSABLE_VALUES_CACHE
@@ -7619,7 +7625,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEME_IMAGE_CURRENTLY_LIKE_VECTOR
         THEME_IMAGE_CURRENTLY_UNMODIFIED
         THEME_IMAGE_EDITING
-        THEME_IMAGE_NEW
         THEME_IMAGE_RENAMED
         THEME_MADE_LIVE
         THEME_MAPPING
@@ -8182,7 +8187,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _SUBSCRIPTION_TERM_START_TIME
         _SUHOSIN_MAX_VARS_TOO_LOW
         _TASK_FAILED_SUBJECT
-        _THEMEWIZARD
         _TRANSLATE_CODE
         _WATERMARK
         _WIKI_EDIT_TREE

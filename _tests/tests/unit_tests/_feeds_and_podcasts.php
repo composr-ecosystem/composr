@@ -35,7 +35,7 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         add_gallery('podcast', 'Podcast', '', '', 'root');
         set_global_category_access('galleries', 'podcast');
 
-        add_video('ABC', 'podcast', '', 'http://localhost/example.mp3', 'http://localhost/example.png', 1, 1, 1, 1, '', 100, 100, 10);
+        add_video('ABC', 'podcast', '', get_base_url() . '/example.mp3', get_base_url() . '/example.png', 1, 1, 1, 1, '', 100, 100, 10);
     }
 
     public function testXML()
@@ -103,7 +103,7 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
     public function testDayFilter()
     {
-        if ($this->only !== null) {
+        if (($this->only !== null) && ($this->only != 'day_filter')) {
             return;
         }
 
@@ -118,7 +118,7 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
     public function testMaxFilter()
     {
-        if ($this->only !== null) {
+        if (($this->only !== null) && ($this->only != 'max_filter')) {
             return;
         }
 
@@ -133,7 +133,7 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
     public function testDaysFilter()
     {
-        if ($this->only !== null) {
+        if (($this->only !== null) && ($this->only != 'days_filter')) {
             return;
         }
 
@@ -148,7 +148,7 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
     public function testPodcast()
     {
-        if ($this->only !== null) {
+        if (($this->only !== null) && ($this->only != 'podcast')) {
             return;
         }
 

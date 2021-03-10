@@ -1256,7 +1256,7 @@ class Hook_addon_registry_core
             'data/polyfills/index.html',
             'data/polyfills/class_list.js',
             'data/polyfills/promise.js',
-            'themes/default/javascript/_polyfill_dom_init.js',
+            'data/polyfills/dom_init.js',
             'themes/default/templates/JAVASCRIPT_NEED.tpl',
             'themes/default/templates/JAVASCRIPT_NEED_FULL.tpl',
             'themes/default/templates/CSS_NEED.tpl',

@@ -277,6 +277,9 @@ function _find_words(string $text, bool $unicode_accepted = true) : array
     for ($i = 0; $i < $num_matches; $i++) {
         $word = $_words[1][$i];
 
+        if (preg_match('#^[a-z]+[A-Z]#', $word) != 0) { // someVariableName
+            continue;
+        }
         if ($is_unicode) {
             if (cms_mb_strtoupper($word) == $word) { // Full caps means acronym
                 continue;

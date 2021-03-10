@@ -183,7 +183,7 @@ class Hook_addon_registry_core_themeing
             'templates/TEMPCODE_TESTER_SCREEN.tpl' => 'administrative__tempcode_tester_screen',
             'templates/TEMPLATE_EDIT_LINK.tpl' => 'administrative__template_edit_links_screen',
             'templates/THEME_SCREEN_PREVIEW.tpl' => 'administrative__screen_previews_screen',
-            'templates/THEME_SCREEN_PREVIEW_WRAP.tpl' => 'administrative__screen_previews_screen',
+            'templates/TEMPLATE_TREE.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_ITEM.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_ITEM_WRAP.tpl' => 'administrative__template_tree_screen',
             'templates/TEMPLATE_TREE_NODE.tpl' => 'administrative__template_tree_screen',

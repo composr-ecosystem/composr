@@ -2548,15 +2548,8 @@ function ecv2_FLOAT_UNFORMAT(string $lang, array $escaped, array $param) : strin
  */
 function ecv2_THEME_SEED(string $lang, array $escaped, array $param) : string
 {
-    $value = get_theme_option('seed');
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
-    }
-
-    if (addon_installed('themewizard')) {
-        require_code('themewizard');
-        $value = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
-    }
+    require_code('themes2');
+    $value = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
