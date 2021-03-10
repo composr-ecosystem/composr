@@ -532,7 +532,7 @@ class Hook_addon_registry_core_cns
             'templates/CNS_VIEW_GROUP_MEMBER_SECONDARY.tpl' => 'cns_view_group_screen',
             'templates/CNS_VIEW_GROUP_SCREEN.tpl' => 'cns_view_group_screen',
             'templates/BLOCK_MAIN_MEMBERS.tpl' => 'block_main_members',
-            'templates/BLOCK_MAIN_MEMBERS_COMPLEX.tpl' => 'block_main_members',
+            'templates/BLOCK_MAIN_MEMBERS_COMPLEX.tpl' => 'block_main_members_complex',
             'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTERS.tpl' => 'block_main_members',
             'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTER.tpl' => 'block_main_members',
             'templates/CNS_MEMBER_DIRECTORY_USERNAME.tpl' => 'cns_member_directory_username',
