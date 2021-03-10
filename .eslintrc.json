@@ -1,6 +1,6 @@
 {
     "extends": "eslint:recommended",
-    // Rules info: https://eslint.org/docs/rules/
+    "_RulesInfo": "https://eslint.org/docs/rules/",
     "rules": {
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "linebreak-style": ["error", "unix"],
