@@ -1048,6 +1048,7 @@ function has_low_memory() : bool
 
 /**
  * Disable the PHP memory limit. Do not use this carelessly, use it if a screen is a bit fat or in an importer, don't use it assuming memory is infinite.
+ * Mar 2021: Actually we will still cap it, as nobody needs more than 512MB of RAM (for a PHP process) and bugs can crash a machine.
  */
 function disable_php_memory_limit()
 {
@@ -1060,7 +1061,8 @@ function disable_php_memory_limit()
         // Progressively relax more and more (some PHP installs may block at some point)
         cms_ini_set('memory_limit', '128M');
         cms_ini_set('memory_limit', '256M');
-        cms_ini_set('memory_limit', '-1');
+        cms_ini_set('memory_limit', '512M');
+        //cms_ini_set('memory_limit', '-1');
     } else {
         if (is_numeric($shl)) {
             $shl .= 'M'; // Units are in MB for this, while PHP's memory limit setting has it in bytes

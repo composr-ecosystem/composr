@@ -28,6 +28,14 @@ class _template_previews_test_set extends cms_test_case
     {
         parent::setUp();
 
+        $log_path = get_custom_file_base() . '/data_custom/template_previews.log';
+        global $PREVIEWS_LOG;
+        if (is_file($log_path)) {
+            $PREVIEWS_LOG = fopen($log_path, 'at');
+        } else {
+            $PREVIEWS_LOG = null;
+        }
+
         $a = scandir(get_file_base() . '/_tests/screens_tested');
         if (function_exists('sleep')) {
             sleep(3);
@@ -92,14 +100,14 @@ class _template_previews_test_set extends cms_test_case
                 continue;
             }
 
-            $this->screen_preview_test_for_theme($theme);
+            $this->screen_preview_test_for_theme('testScreenPreview:' . $theme, $theme);
         }
 
         cms_ini_set('ocproducts.type_strictness', '0');
         cms_ini_set('ocproducts.xss_detect', '0');
     }
 
-    protected function screen_preview_test_for_theme($theme)
+    protected function screen_preview_test_for_theme($called_for, $theme)
     {
         global $THEME_BEING_TESTED;
         $THEME_BEING_TESTED = $theme;
@@ -116,6 +124,8 @@ class _template_previews_test_set extends cms_test_case
         $lists = find_all_previews__by_template();
         $this->shuffle_assoc($lists); // So parallelism can work
         foreach ($lists as $template => $list) {
+            $old_limit = cms_set_time_limit(30); // Time to generate and validate, with potential for spiky CPU availability over long-running task
+
             if (!empty($only_do_these)) {
                 if (!in_array($template, $only_do_these)) {
                     continue;
@@ -144,8 +154,6 @@ class _template_previews_test_set extends cms_test_case
                 continue; // To make easier to debug through
             }
 
-            $old_limit = cms_set_time_limit(10);
-
             init__lorem();
             push_output_state();
             $LOADED_TPL_CACHE = [];
@@ -154,7 +162,7 @@ class _template_previews_test_set extends cms_test_case
 
             $RECORDED_TEMPLATES_USED = [];
 
-            $out = render_screen_preview($hook, $function, $template);
+            $out = $this->render_screen_preview($called_for, $hook, $function, $template);
 
             restore_output_state();
 
@@ -259,6 +267,8 @@ class _template_previews_test_set extends cms_test_case
         $lists = find_all_previews__by_screen();
         $this->shuffle_assoc($lists); // So parallelism can work
         foreach ($lists as $function => $details) {
+            $old_limit = cms_set_time_limit(10);
+
             $tpls = $details[1];
             $template = $tpls[0];
             $hook = null;
@@ -271,14 +281,12 @@ class _template_previews_test_set extends cms_test_case
                 continue; // To make easier to debug through
             }
 
-            $old_limit = cms_set_time_limit(10);
-
             init__lorem();
             push_output_state();
             $LOADED_TPL_CACHE = [];
             $BLOCKS_CACHE = [];
             $PANELS_CACHE = [];
-            $out1 = render_screen_preview($hook, $function, $template);
+            $out1 = $this->render_screen_preview('testRepeatConsistency-1', $hook, $function, $template);
             $_out1 = $this->cleanup_varying_code($out1->evaluate());
             restore_output_state();
 
@@ -287,7 +295,7 @@ class _template_previews_test_set extends cms_test_case
             $LOADED_TPL_CACHE = [];
             $BLOCKS_CACHE = [];
             $PANELS_CACHE = [];
-            $out2 = render_screen_preview($hook, $function, $template);
+            $out2 = $this->render_screen_preview('testRepeatConsistency-2', $hook, $function, $template);
             $_out2 = $this->cleanup_varying_code($out2->evaluate());
             restore_output_state();
 
@@ -338,6 +346,8 @@ class _template_previews_test_set extends cms_test_case
         $lists = find_all_previews__by_screen();
         $this->shuffle_assoc($lists); // So parallelism can work
         foreach ($lists as $function => $details) {
+            $old_limit = cms_set_time_limit(10);
+
             $tpls = $details[1];
             $template = $tpls[0];
             $hook = null;
@@ -350,11 +360,9 @@ class _template_previews_test_set extends cms_test_case
                 continue; // To make easier to debug through
             }
 
-            $old_limit = cms_set_time_limit(10);
-
             $ATTACHED_MESSAGES = new Tempcode();
             $ATTACHED_MESSAGES_RAW = [];
-            $out1 = render_screen_preview($hook, $function, $template);
+            $out1 = $this->render_screen_preview('testNoMissingParams', $hook, $function, $template);
 
             if ($ATTACHED_MESSAGES === null) {
                 $ATTACHED_MESSAGES = new Tempcode();
@@ -420,6 +428,17 @@ class _template_previews_test_set extends cms_test_case
         cms_ini_set('ocproducts.xss_detect', '0');
     }
 
+    protected function render_screen_preview($called_form, ?string $hook, string $function, ?string $template = null, bool &$full_screen = false) : object
+    {
+        // Useful for debugging crashes
+        global $PREVIEWS_LOG;
+        if ($PREVIEWS_LOG !== null) {
+            fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - ' . $called_form . ' - ' . $function . "\n");
+        }
+
+        return render_screen_preview($hook, $function, $template, $full_screen);
+    }
+
     protected function shuffle_assoc(&$array)
     {
         $keys = array_keys($array);
@@ -430,5 +449,16 @@ class _template_previews_test_set extends cms_test_case
             $new[$key] = $array[$key];
         }
         $array = $new;
+    }
+
+    public function tearDown()
+    {
+        global $PREVIEWS_LOG;
+        if ($PREVIEWS_LOG !== null) {
+            fclose($PREVIEWS_LOG);
+            $PREVIEWS_LOG = null;
+        }
+
+        parent::tearDown();
     }
 }
