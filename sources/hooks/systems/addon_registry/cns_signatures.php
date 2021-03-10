@@ -139,9 +139,9 @@ class Hook_addon_registry_cns_signatures
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_edit_signature_tab() : array
+    public function tpl_preview__cns_edit_signature_tab() : object
     {
         require_javascript('plupload');
         require_javascript('checking');
@@ -229,12 +229,10 @@ class Hook_addon_registry_cns_signatures
             'SUPPORT_AUTOSAVE' => false,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_EDIT_SIGNATURE_TAB', [
-                'SIZE' => placeholder_filesize(),
-                'SIGNATURE' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_EDIT_SIGNATURE_TAB', [
+            'SIZE' => placeholder_filesize(),
+            'SIGNATURE' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+        ]), null, '', true);
     }
 }

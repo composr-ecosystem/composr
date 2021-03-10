@@ -134,46 +134,44 @@ class Hook_addon_registry_news_shared
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__news_piece_summary() : array
+    public function tpl_preview__news_piece_summary() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('NEWS_BOX', [
-                'BLOG' => lorem_phrase(),
-                'AUTHOR_URL' => placeholder_url(),
-                'TAGS' => placeholder_tags(),
-                'CATEGORY' => lorem_phrase(),
-                '_CATEGORY' => placeholder_id(),
-                'CATEGORY_URL' => placeholder_url(),
-                'REP_IMAGE_URL' => placeholder_image_url(),
-                'AUTHOR' => lorem_phrase(),
-                '_AUTHOR' => lorem_phrase(),
-                'SUBMITTER' => placeholder_id(),
-                'AVATAR' => lorem_phrase(),
-                'NEWS_TITLE' => lorem_phrase(),
-                'NEWS_TITLE_PLAIN' => lorem_phrase(),
-                'DATE' => placeholder_date(),
-                'NEWS' => lorem_phrase(),
-                'COMMENTS' => lorem_phrase(),
-                'VIEW' => lorem_phrase(),
-                'ID' => placeholder_id(),
-                'FULL_URL' => placeholder_url(),
-                'COMMENT_COUNT' => lorem_phrase(),
-                'READ_MORE' => lorem_sentence(),
-                'TRUNCATE' => false,
-                'FIRSTTIME' => placeholder_date(),
-                'LASTTIME' => placeholder_date(),
-                'CLOSED' => false,
-                'FIRSTUSERNAME' => lorem_word(),
-                'LASTUSERNAME' => lorem_word(),
-                'FIRSTMEMBERID' => placeholder_id(),
-                'LASTMEMBERID' => placeholder_id(),
-                'DATE_RAW' => placeholder_date_raw(),
-                'GIVE_CONTEXT' => true,
-                'FORUM_ID' => placeholder_id(),
-                'BRIEF_CONTENT' => lorem_sentence_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWS_BOX', [
+            'BLOG' => lorem_phrase(),
+            'AUTHOR_URL' => placeholder_url(),
+            'TAGS' => placeholder_tags(),
+            'CATEGORY' => lorem_phrase(),
+            '_CATEGORY' => placeholder_id(),
+            'CATEGORY_URL' => placeholder_url(),
+            'REP_IMAGE_URL' => placeholder_image_url(),
+            'AUTHOR' => lorem_phrase(),
+            '_AUTHOR' => lorem_phrase(),
+            'SUBMITTER' => placeholder_id(),
+            'AVATAR' => lorem_phrase(),
+            'NEWS_TITLE' => lorem_phrase(),
+            'NEWS_TITLE_PLAIN' => lorem_phrase(),
+            'DATE' => placeholder_date(),
+            'NEWS' => lorem_phrase(),
+            'COMMENTS' => lorem_phrase(),
+            'VIEW' => lorem_phrase(),
+            'ID' => placeholder_id(),
+            'FULL_URL' => placeholder_url(),
+            'COMMENT_COUNT' => lorem_phrase(),
+            'READ_MORE' => lorem_sentence(),
+            'TRUNCATE' => false,
+            'FIRSTTIME' => placeholder_date(),
+            'LASTTIME' => placeholder_date(),
+            'CLOSED' => false,
+            'FIRSTUSERNAME' => lorem_word(),
+            'LASTUSERNAME' => lorem_word(),
+            'FIRSTMEMBERID' => placeholder_id(),
+            'LASTMEMBERID' => placeholder_id(),
+            'DATE_RAW' => placeholder_date_raw(),
+            'GIVE_CONTEXT' => true,
+            'FORUM_ID' => placeholder_id(),
+            'BRIEF_CONTENT' => lorem_sentence_html(),
+        ]), null, '', true);
     }
 }

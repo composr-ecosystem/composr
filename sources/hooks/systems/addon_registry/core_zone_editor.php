@@ -140,9 +140,9 @@ class Hook_addon_registry_core_zone_editor
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__zone_editor_screen() : array
+    public function tpl_preview__administrative__zone_editor_screen() : object
     {
         require_lang('zones');
 
@@ -172,18 +172,16 @@ class Hook_addon_registry_core_zone_editor
             ]);
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ZONE_EDITOR_SCREEN', [
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TITLE' => lorem_title(),
-                'ID' => '',
-                'LANG' => fallback_lang(),
-                'URL' => placeholder_url(),
-                'LEFT_EDITOR' => $editor['panel_left'],
-                'RIGHT_EDITOR' => $editor['panel_right'],
-                'MIDDLE_EDITOR' => $editor['panel_middle'],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ZONE_EDITOR_SCREEN', [
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TITLE' => lorem_title(),
+            'ID' => '',
+            'LANG' => fallback_lang(),
+            'URL' => placeholder_url(),
+            'LEFT_EDITOR' => $editor['panel_left'],
+            'RIGHT_EDITOR' => $editor['panel_right'],
+            'MIDDLE_EDITOR' => $editor['panel_middle'],
+        ]), null, '', true);
     }
 }

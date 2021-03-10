@@ -390,16 +390,14 @@ class Hook_addon_registry_language_block
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_language() : array
+    public function tpl_preview__block_side_language() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_LANGUAGE', [
-                'BLOCK_ID' => lorem_word(),
-                'LANGS' => placeholder_options(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_LANGUAGE', [
+            'BLOCK_ID' => lorem_word(),
+            'LANGS' => placeholder_options(),
+        ]), null, '', true);
     }
 
     /**
@@ -407,23 +405,21 @@ class Hook_addon_registry_language_block
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declaritive.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_top_language() : array
+    public function tpl_preview__block_top_language() : object
     {
         $langs = [
             'FR' => ['FULL_NAME' => 'French', 'COUNTRY_FLAG' => 'fr'],
             'DE' => ['FULL_NAME' => 'German', 'COUNTRY_FLAG' => 'de'],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_TOP_LANGUAGE', [
-                'LANGS' => $langs,
-                'CURRENT_LANG_FULL_NAME' => 'English',
-                'CURRENT_LANG_COUNTRY_FLAG' => 'gb',
-                'CURRENT_LANG' => 'EN',
-                'BLOCK_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_TOP_LANGUAGE', [
+            'LANGS' => $langs,
+            'CURRENT_LANG_FULL_NAME' => 'English',
+            'CURRENT_LANG_COUNTRY_FLAG' => 'gb',
+            'CURRENT_LANG' => 'EN',
+            'BLOCK_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 }

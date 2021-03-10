@@ -204,9 +204,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__products_entry_screen() : array
+    public function tpl_preview__products_entry_screen() : object
     {
         require_lang('catalogues');
         require_lang('ecommerce');
@@ -269,33 +269,31 @@ class Hook_addon_registry_shopping
         ];
         $entry = do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP', $map);
 
-        return [
-            lorem_globalise(do_lorem_template('CATALOGUE_products_ENTRY_SCREEN', $map + [
-                'TITLE' => lorem_title(),
-                'WARNINGS' => '',
-                'ENTRY' => $entry,
-                'ID' => placeholder_id(),
-                'VIEW_URL' => placeholder_url(),
-                'EDIT_URL' => placeholder_url(),
-                'TRACKBACK_DETAILS' => lorem_phrase(),
-                'RATING_DETAILS' => lorem_phrase(),
-                'COMMENT_DETAILS' => lorem_phrase(),
-                'RATING' => new Tempcode(),
-                'ALLOW_RATING' => false,
-                'ADD_DATE' => placeholder_date(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'VIEWS' => placeholder_number(),
-                'TAGS' => placeholder_tags(),
-                'CART_BUTTONS' => $cart_buttons,
-                'CATALOGUE' => 'products',
-                'SUBMITTER' => placeholder_id(),
-                'FIELD_0' => lorem_phrase(),
-                'FIELD_0_PLAIN' => lorem_phrase(),
-                'FIELD_1' => lorem_phrase(),
-                'FIELD_1_PLAIN' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CATALOGUE_products_ENTRY_SCREEN', $map + [
+            'TITLE' => lorem_title(),
+            'WARNINGS' => '',
+            'ENTRY' => $entry,
+            'ID' => placeholder_id(),
+            'VIEW_URL' => placeholder_url(),
+            'EDIT_URL' => placeholder_url(),
+            'TRACKBACK_DETAILS' => lorem_phrase(),
+            'RATING_DETAILS' => lorem_phrase(),
+            'COMMENT_DETAILS' => lorem_phrase(),
+            'RATING' => new Tempcode(),
+            'ALLOW_RATING' => false,
+            'ADD_DATE' => placeholder_date(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'VIEWS' => placeholder_number(),
+            'TAGS' => placeholder_tags(),
+            'CART_BUTTONS' => $cart_buttons,
+            'CATALOGUE' => 'products',
+            'SUBMITTER' => placeholder_id(),
+            'FIELD_0' => lorem_phrase(),
+            'FIELD_0_PLAIN' => lorem_phrase(),
+            'FIELD_1' => lorem_phrase(),
+            'FIELD_1_PLAIN' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -303,9 +301,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__grid_category_screen__products() : array
+    public function tpl_preview__grid_category_screen__products() : object
     {
         require_lang('catalogues');
         require_lang('ecommerce');
@@ -370,28 +368,26 @@ class Hook_addon_registry_shopping
             'MAX_PARAM' => 'x_max',
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CATALOGUE_products_CATEGORY_SCREEN', $map + [
-                'ID' => placeholder_numeric_id(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'TITLE' => lorem_title(),
-                '_TITLE' => lorem_phrase(),
-                'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => placeholder_tags(),
-                'ENTRIES' => $entries,
-                'CATALOGUE' => lorem_word_2(),
-                'ADD_ENTRY_URL' => placeholder_url(),
-                'ADD_CAT_URL' => placeholder_url(),
-                'ADD_CAT_TITLE' => do_lang_tempcode('ADD_CATALOGUE_CATEGORY'),
-                'EDIT_CAT_URL' => placeholder_url(),
-                'EDIT_CATALOGUE_URL' => placeholder_url(),
-                'DESCRIPTION' => lorem_sentence(),
-                'DISPLAY_TYPE' => 'GRID',
-                'CC_SORT' => 'title',
-                'CAT_SELECT' => '*',
-                'FILTER' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CATALOGUE_products_CATEGORY_SCREEN', $map + [
+            'ID' => placeholder_numeric_id(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'TITLE' => lorem_title(),
+            '_TITLE' => lorem_phrase(),
+            'CATALOGUE_TITLE' => lorem_phrase(),
+            'TAGS' => placeholder_tags(),
+            'ENTRIES' => $entries,
+            'CATALOGUE' => lorem_word_2(),
+            'ADD_ENTRY_URL' => placeholder_url(),
+            'ADD_CAT_URL' => placeholder_url(),
+            'ADD_CAT_TITLE' => do_lang_tempcode('ADD_CATALOGUE_CATEGORY'),
+            'EDIT_CAT_URL' => placeholder_url(),
+            'EDIT_CATALOGUE_URL' => placeholder_url(),
+            'DESCRIPTION' => lorem_sentence(),
+            'DISPLAY_TYPE' => 'GRID',
+            'CC_SORT' => 'title',
+            'CAT_SELECT' => '*',
+            'FILTER' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -399,21 +395,17 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_cart_link_screen() : array
+    public function tpl_preview__ecom_cart_link_screen() : object
     {
         require_lang('ecommerce');
 
-        $cart_link = do_lorem_template('ECOM_CART_LINK', [
+        return lorem_globalise(do_lorem_template('ECOM_CART_LINK', [
             'URL' => placeholder_url(),
             'TITLE' => lorem_phrase(),
             'ITEMS' => placeholder_number(),
-        ]);
-
-        return [
-            lorem_globalise($cart_link, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -421,9 +413,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__results_products_table() : array
+    public function tpl_preview__results_products_table() : object
     {
         require_css('catalogues');
         require_lang('ecommerce');
@@ -479,19 +471,17 @@ class Hook_addon_registry_shopping
             'SELECTORS' => $selectors,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('RESULTS_products_TABLE', [
-                'TEXT_ID' => placeholder_id(),
-                'HEADER_ROW' => $header_row,
-                'RESULT_ENTRIES' => $order_entries,
-                'SORT' => $sort,
-                'PAGINATION' => placeholder_pagination(),
-                'MESSAGE' => lorem_phrase(),
-                'WIDTHS' => [
-                    placeholder_number(),
-                ],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('RESULTS_products_TABLE', [
+            'TEXT_ID' => placeholder_id(),
+            'HEADER_ROW' => $header_row,
+            'RESULT_ENTRIES' => $order_entries,
+            'SORT' => $sort,
+            'PAGINATION' => placeholder_pagination(),
+            'MESSAGE' => lorem_phrase(),
+            'WIDTHS' => [
+                placeholder_number(),
+            ],
+        ]), null, '', true);
     }
 
     /**
@@ -562,9 +552,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_cart_button_via_paypal() : array
+    public function tpl_preview__ecom_cart_button_via_paypal() : object
     {
         require_lang('ecommerce');
 
@@ -579,19 +569,17 @@ class Hook_addon_registry_shopping
                 'QUANTITY' => placeholder_number(),
             ];
         }
-        return [
-            lorem_globalise(do_lorem_template('ECOM_CART_BUTTON_VIA_PAYPAL', [
-                'ITEMS' => $items,
-                'CURRENCY' => 'GBP',
-                'SHIPPING_COST' => placeholder_number(),
-                'PAYMENT_ADDRESS' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-                'ORDER_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'TYPE_CODE' => $items[0]['TYPE_CODE'],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_CART_BUTTON_VIA_PAYPAL', [
+            'ITEMS' => $items,
+            'CURRENCY' => 'GBP',
+            'SHIPPING_COST' => placeholder_number(),
+            'PAYMENT_ADDRESS' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+            'ORDER_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'TYPE_CODE' => $items[0]['TYPE_CODE'],
+        ]), null, '', true);
     }
 
     /**
@@ -599,9 +587,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__shopping_cart_screen() : array
+    public function tpl_preview__shopping_cart_screen() : object
     {
         require_lang('ecommerce');
 
@@ -672,25 +660,23 @@ class Hook_addon_registry_shopping
             'PAGINATION' => placeholder_pagination(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SHOPPING_CART_SCREEN', [
-                'TITLE' => lorem_title(),
-                'RESULTS_TABLE' => $results_table,
-                'UPDATE_CART_URL' => placeholder_url(),
-                'CONTINUE_SHOPPING_URL' => placeholder_url(),
-                'MESSAGE' => lorem_phrase(),
-                'TYPE_CODES' => placeholder_id(),
-                'EMPTY_CART_URL' => placeholder_url(),
-                'TOTAL_PRICE' => placeholder_number(),
-                'TOTAL_TAX' => placeholder_number(),
-                'TOTAL_SHIPPING_COST' => placeholder_number(),
-                'TOTAL_SHIPPING_TAX' => placeholder_number(),
-                'GRAND_TOTAL' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'FIELDS' => placeholder_fields(),
-                'NEXT_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SHOPPING_CART_SCREEN', [
+            'TITLE' => lorem_title(),
+            'RESULTS_TABLE' => $results_table,
+            'UPDATE_CART_URL' => placeholder_url(),
+            'CONTINUE_SHOPPING_URL' => placeholder_url(),
+            'MESSAGE' => lorem_phrase(),
+            'TYPE_CODES' => placeholder_id(),
+            'EMPTY_CART_URL' => placeholder_url(),
+            'TOTAL_PRICE' => placeholder_number(),
+            'TOTAL_TAX' => placeholder_number(),
+            'TOTAL_SHIPPING_COST' => placeholder_number(),
+            'TOTAL_SHIPPING_TAX' => placeholder_number(),
+            'GRAND_TOTAL' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'FIELDS' => placeholder_fields(),
+            'NEXT_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -698,9 +684,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_orders_screen() : array
+    public function tpl_preview__ecom_orders_screen() : object
     {
         require_lang('ecommerce');
 
@@ -722,12 +708,10 @@ class Hook_addon_registry_shopping
                 'FULFILLABLE' => true,
             ];
         }
-        return [
-            lorem_globalise(do_lorem_template('ECOM_ORDERS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'ORDERS' => $orders,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_ORDERS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ORDERS' => $orders,
+        ]), null, '', true);
     }
 
     /**
@@ -735,22 +719,20 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_admin_orders_screen() : array
+    public function tpl_preview__administrative__ecom_admin_orders_screen() : object
     {
         require_lang('ecommerce');
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_ADMIN_ORDERS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'RESULTS_TABLE' => placeholder_table(),
-                'PAGINATION' => placeholder_pagination(),
-                'SEARCH_URL' => placeholder_url(),
-                'SEARCH_VAL' => lorem_phrase(),
-                'HIDDEN' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_ADMIN_ORDERS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'PAGINATION' => placeholder_pagination(),
+            'SEARCH_URL' => placeholder_url(),
+            'SEARCH_VAL' => lorem_phrase(),
+            'HIDDEN' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -758,9 +740,9 @@ class Hook_addon_registry_shopping
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_order_details_screen() : array
+    public function tpl_preview__ecom_order_details_screen() : object
     {
         require_code('ecommerce');
         require_lang('cns_special_cpf');
@@ -798,25 +780,23 @@ class Hook_addon_registry_shopping
             'FORMATTED_ADDRESS' => get_formatted_address($address_parts),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_ORDER_DETAILS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TEXT' => lorem_sentence(),
-                'RESULTS_TABLE' => placeholder_table(),
-                'ORDER_NUMBER' => placeholder_number(),
-                'ADD_DATE' => placeholder_date(),
-                'TOTAL_PRICE' => placeholder_number(),
-                'TOTAL_TAX' => placeholder_number(),
-                'TOTAL_SHIPPING_COST' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'TRANSACTION_LINKER' => lorem_phrase(),
-                'ORDERED_BY_MEMBER_ID' => placeholder_id(),
-                'ORDERED_BY_USERNAME' => lorem_word(),
-                'ORDER_STATUS' => lorem_phrase(),
-                'NOTES' => lorem_phrase(),
-                'ORDER_ACTIONS' => $order_actions,
-                'SHIPPING_ADDRESS' => $shipping_address,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_ORDER_DETAILS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TEXT' => lorem_sentence(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'ORDER_NUMBER' => placeholder_number(),
+            'ADD_DATE' => placeholder_date(),
+            'TOTAL_PRICE' => placeholder_number(),
+            'TOTAL_TAX' => placeholder_number(),
+            'TOTAL_SHIPPING_COST' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'TRANSACTION_LINKER' => lorem_phrase(),
+            'ORDERED_BY_MEMBER_ID' => placeholder_id(),
+            'ORDERED_BY_USERNAME' => lorem_word(),
+            'ORDER_STATUS' => lorem_phrase(),
+            'NOTES' => lorem_phrase(),
+            'ORDER_ACTIONS' => $order_actions,
+            'SHIPPING_ADDRESS' => $shipping_address,
+        ]), null, '', true);
     }
 }

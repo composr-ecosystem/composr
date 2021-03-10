@@ -199,9 +199,9 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__support_tickets_screen() : array
+    public function tpl_preview__support_tickets_screen() : object
     {
         $links = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -237,15 +237,13 @@ class Hook_addon_registry_tickets
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'MESSAGE' => lorem_phrase(),
-                'LINKS' => $links,
-                'ADD_TICKET_URL' => placeholder_url(),
-                'TYPES' => $types,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'MESSAGE' => lorem_phrase(),
+            'LINKS' => $links,
+            'ADD_TICKET_URL' => placeholder_url(),
+            'TYPES' => $types,
+        ]), null, '', true);
     }
 
     /**
@@ -253,9 +251,9 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__support_ticket_screen() : array
+    public function tpl_preview__support_ticket_screen() : object
     {
         require_lang('cns');
 
@@ -319,36 +317,34 @@ class Hook_addon_registry_tickets
             'DATE' => placeholder_date(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('SUPPORT_TICKET_SCREEN', [
-                'ID' => placeholder_id(),
-                'TOGGLE_TICKET_CLOSED_URL' => placeholder_url(),
-                'CLOSED' => lorem_phrase(),
-                'USERNAME' => lorem_word(),
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'NEW' => lorem_phrase(),
-                'TICKET_TYPE' => null,
-                'TICKET_PAGE_TEXT' => lorem_sentence_html(),
-                'POST_TEMPLATES' => '',
-                'TYPES' => placeholder_array(),
-                'STAFF_ONLY' => true,
-                'POSTER' => lorem_phrase(),
-                'TITLE' => lorem_title(),
-                'COMMENTS' => $comments,
-                'COMMENT_FORM' => $comment_form,
-                'STAFF_DETAILS' => placeholder_url(),
-                'URL' => placeholder_url(),
-                'ADD_TICKET_URL' => placeholder_url(),
-                'OTHER_TICKETS' => $other_tickets,
-                'SET_TICKET_EXTRA_ACCESS_URL' => placeholder_url(),
-                'ASSIGNED' => [],
-                'EXTRA_DETAILS' => lorem_phrase(),
-                'WHOS_READ' => $whos_read,
-                'SERIALIZED_OPTIONS' => '',
-                'HASH' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SUPPORT_TICKET_SCREEN', [
+            'ID' => placeholder_id(),
+            'TOGGLE_TICKET_CLOSED_URL' => placeholder_url(),
+            'CLOSED' => lorem_phrase(),
+            'USERNAME' => lorem_word(),
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'NEW' => lorem_phrase(),
+            'TICKET_TYPE' => null,
+            'TICKET_PAGE_TEXT' => lorem_sentence_html(),
+            'POST_TEMPLATES' => '',
+            'TYPES' => placeholder_array(),
+            'STAFF_ONLY' => true,
+            'POSTER' => lorem_phrase(),
+            'TITLE' => lorem_title(),
+            'COMMENTS' => $comments,
+            'COMMENT_FORM' => $comment_form,
+            'STAFF_DETAILS' => placeholder_url(),
+            'URL' => placeholder_url(),
+            'ADD_TICKET_URL' => placeholder_url(),
+            'OTHER_TICKETS' => $other_tickets,
+            'SET_TICKET_EXTRA_ACCESS_URL' => placeholder_url(),
+            'ASSIGNED' => [],
+            'EXTRA_DETAILS' => lorem_phrase(),
+            'WHOS_READ' => $whos_read,
+            'SERIALIZED_OPTIONS' => '',
+            'HASH' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -356,18 +352,16 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__support_tickets_search_screen() : array
+    public function tpl_preview__support_tickets_search_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SEARCH_SCREEN', [
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'POST_FIELDS' => '',
-                'RESULTS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SEARCH_SCREEN', [
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'POST_FIELDS' => '',
+            'RESULTS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -375,17 +369,15 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__support_ticket_type_screen() : array
+    public function tpl_preview__support_ticket_type_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('SUPPORT_TICKET_TYPE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TPL' => placeholder_form(),
-                'ADD_FORM' => placeholder_form(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SUPPORT_TICKET_TYPE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TPL' => placeholder_form(),
+            'ADD_FORM' => placeholder_form(),
+        ]), null, '', true);
     }
 
     /**
@@ -393,22 +385,20 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_reported_post_fcomcode() : array
+    public function tpl_preview__cns_reported_post_fcomcode() : object
     {
         require_lang('cns');
         require_css('cns');
-        return [
-            lorem_globalise(do_lorem_template('CNS_REPORTED_POST_FCOMCODE', [
-                'POST_ID' => placeholder_id(),
-                'POST_MEMBER_ID' => placeholder_id(),
-                'POST_MEMBER' => lorem_phrase(),
-                'TOPIC_TITLE' => lorem_phrase(),
-                'POST' => lorem_phrase(),
-                'REPORT_POST' => lorem_phrase(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_REPORTED_POST_FCOMCODE', [
+            'POST_ID' => placeholder_id(),
+            'POST_MEMBER_ID' => placeholder_id(),
+            'POST_MEMBER' => lorem_phrase(),
+            'TOPIC_TITLE' => lorem_phrase(),
+            'POST' => lorem_phrase(),
+            'REPORT_POST' => lorem_phrase(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -416,23 +406,21 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__reported_content_fcomcode() : array
+    public function tpl_preview__reported_content_fcomcode() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REPORTED_CONTENT_FCOMCODE', [
-                'CONTENT_URL' => placeholder_url(),
-                'CONTENT_TYPE' => lorem_word(),
-                'CONTENT_ID' => placeholder_id(),
-                'CONTENT_MEMBER' => lorem_phrase(),
-                'CONTENT_MEMBER_LINK' => lorem_phrase(),
-                'CONTENT_MEMBER_ID' => placeholder_id(),
-                'CONTENT_TITLE' => lorem_phrase(),
-                'CONTENT_RENDERED' => lorem_paragraph_html(),
-                'REPORT_POST' => lorem_paragraph(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REPORTED_CONTENT_FCOMCODE', [
+            'CONTENT_URL' => placeholder_url(),
+            'CONTENT_TYPE' => lorem_word(),
+            'CONTENT_ID' => placeholder_id(),
+            'CONTENT_MEMBER' => lorem_phrase(),
+            'CONTENT_MEMBER_LINK' => lorem_phrase(),
+            'CONTENT_MEMBER_ID' => placeholder_id(),
+            'CONTENT_TITLE' => lorem_phrase(),
+            'CONTENT_RENDERED' => lorem_paragraph_html(),
+            'REPORT_POST' => lorem_paragraph(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -440,9 +428,9 @@ class Hook_addon_registry_tickets
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_contact_us() : array
+    public function tpl_preview__block_main_contact_us() : object
     {
         require_javascript('posting');
 
@@ -469,13 +457,11 @@ class Hook_addon_registry_tickets
             'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_US', [
-                'BLOCK_ID' => lorem_word(),
-                'COMMENT_DETAILS' => $comment_details,
-                'TYPE' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_US', [
+            'BLOCK_ID' => lorem_word(),
+            'COMMENT_DETAILS' => $comment_details,
+            'TYPE' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**

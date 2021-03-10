@@ -157,9 +157,9 @@ class Hook_addon_registry_custom_comcode
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_custom_comcode_tags() : array
+    public function tpl_preview__block_main_custom_comcode_tags() : object
     {
         $tags = [];
         foreach (placeholder_array() as $tag) {
@@ -170,12 +170,10 @@ class Hook_addon_registry_custom_comcode
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_CUSTOM_COMCODE_TAGS', [
-                'BLOCK_ID' => lorem_word(),
-                'TAGS' => $tags,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_CUSTOM_COMCODE_TAGS', [
+            'BLOCK_ID' => lorem_word(),
+            'TAGS' => $tags,
+        ]), null, '', true);
     }
 
     /**

@@ -237,9 +237,9 @@ class Hook_addon_registry_health_check
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__health_check_screen() : array
+    public function tpl_preview__health_check_screen() : object
     {
         $categories = [
             lorem_phrase() => [
@@ -301,15 +301,13 @@ class Hook_addon_registry_health_check
         ];
         $results = do_lorem_template('HEALTH_CHECK_RESULTS', ['CATEGORIES' => $categories]);
 
-        return [
-            lorem_globalise(do_lorem_template('HEALTH_CHECK_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SECTIONS' => placeholder_options(),
-                'PASSES' => true,
-                'SKIPS' => true,
-                'MANUAL_CHECKS' => true,
-                'RESULTS' => $results,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HEALTH_CHECK_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SECTIONS' => placeholder_options(),
+            'PASSES' => true,
+            'SKIPS' => true,
+            'MANUAL_CHECKS' => true,
+            'RESULTS' => $results,
+        ]), null, '', true);
     }
 }

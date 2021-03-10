@@ -156,17 +156,15 @@ class Hook_addon_registry_authors
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__author_manage_screen() : array
+    public function tpl_preview__administrative__author_manage_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('AUTHOR_MANAGE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'DEFINE_FORM' => placeholder_form(),
-                'MERGE_FORM' => placeholder_form(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('AUTHOR_MANAGE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'DEFINE_FORM' => placeholder_form(),
+            'MERGE_FORM' => placeholder_form(),
+        ]), null, '', true);
     }
 
     /**
@@ -174,9 +172,9 @@ class Hook_addon_registry_authors
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__author_screen() : array
+    public function tpl_preview__author_screen() : object
     {
         $news_released = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -218,22 +216,20 @@ class Hook_addon_registry_authors
         $skills = new Tempcode();
         $description = new Tempcode();
 
-        return [
-            lorem_globalise(do_lorem_template('AUTHOR_SCREEN', [
-                'TAGS' => placeholder_tags(),
-                'TITLE' => lorem_title(),
-                'EDIT_URL' => placeholder_url(),
-                'AUTHOR' => lorem_phrase(),
-                'NEWS_RELEASED' => $news_released,
-                'DOWNLOADS_RELEASED' => $downloads_released,
-                'POINT_DETAILS' => $point_details,
-                'URL_DETAILS' => $url_details,
-                'SEARCH_DETAILS' => $search_details,
-                'FORUM_DETAILS' => $forum_details,
-                'SKILLS' => $skills,
-                'DESCRIPTION' => $description,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('AUTHOR_SCREEN', [
+            'TAGS' => placeholder_tags(),
+            'TITLE' => lorem_title(),
+            'EDIT_URL' => placeholder_url(),
+            'AUTHOR' => lorem_phrase(),
+            'NEWS_RELEASED' => $news_released,
+            'DOWNLOADS_RELEASED' => $downloads_released,
+            'POINT_DETAILS' => $point_details,
+            'URL_DETAILS' => $url_details,
+            'SEARCH_DETAILS' => $search_details,
+            'FORUM_DETAILS' => $forum_details,
+            'SKILLS' => $skills,
+            'DESCRIPTION' => $description,
+        ]), null, '', true);
     }
 
     /**
@@ -241,9 +237,9 @@ class Hook_addon_registry_authors
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__author_popup_window() : array
+    public function tpl_preview__author_popup_window() : object
     {
         $authors = [];
         $authors[] = [
@@ -257,10 +253,9 @@ class Hook_addon_registry_authors
             'DEFINED' => false,
         ];
 
-        $out = do_lorem_template('AUTHOR_POPUP', ['AUTHORS' => $authors, 'NEXT_URL' => placeholder_url()]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('AUTHOR_POPUP', [
+            'AUTHORS' => $authors,
+            'NEXT_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 }

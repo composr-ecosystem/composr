@@ -175,9 +175,9 @@ class Hook_addon_registry_core_addon_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__addon_screen() : array
+    public function tpl_preview__administrative__addon_screen() : object
     {
         $addons = [
             'Test' => [
@@ -230,14 +230,12 @@ class Hook_addon_registry_core_addon_management
             ]);
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ADDON_SCREEN', [
-                'TITLE' => lorem_title(),
-                'ADDON_STRUCTURE' => $addons,
-                'MULTI_ACTION' => placeholder_url(),
-                'UPDATED_ADDONS' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ADDON_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ADDON_STRUCTURE' => $addons,
+            'MULTI_ACTION' => placeholder_url(),
+            'UPDATED_ADDONS' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -245,9 +243,9 @@ class Hook_addon_registry_core_addon_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__addon_multi_confirm_screen() : array
+    public function tpl_preview__administrative__addon_multi_confirm_screen() : object
     {
         $install_files = new Tempcode();
         $uninstall_files = new Tempcode();
@@ -268,16 +266,14 @@ class Hook_addon_registry_core_addon_management
             $install_files->attach('<li>' . $file . '</li>');
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ADDON_MULTI_CONFIRM_SCREEN', [
-                'TITLE' => lorem_title(),
-                'HIDDEN' => '',
-                'URL' => placeholder_url(),
-                'INSTALL_FILES' => $install_files,
-                'UNINSTALL_FILES' => $uninstall_files,
-                'WARNINGS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ADDON_MULTI_CONFIRM_SCREEN', [
+            'TITLE' => lorem_title(),
+            'HIDDEN' => '',
+            'URL' => placeholder_url(),
+            'INSTALL_FILES' => $install_files,
+            'UNINSTALL_FILES' => $uninstall_files,
+            'WARNINGS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -285,9 +281,9 @@ class Hook_addon_registry_core_addon_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__addon_install_confirm_screen() : array
+    public function tpl_preview__administrative__addon_install_confirm_screen() : object
     {
         $_dependencies = new Tempcode();
         foreach (placeholder_array() as $in) {
@@ -316,23 +312,21 @@ class Hook_addon_registry_core_addon_management
                 'DISABLED' => false,
             ]));
         }
-        return [
-            lorem_globalise(do_lorem_template('ADDON_INSTALL_CONFIRM_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FILE' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'FILES' => $files,
-                'WARNINGS' => $warning,
-                'NAME' => lorem_word(),
-                'AUTHOR' => lorem_word_2(),
-                'ORGANISATION' => lorem_phrase(),
-                'VERSION' => placeholder_number(),
-                'CATEGORY' => lorem_phrase(),
-                'COPYRIGHT_ATTRIBUTION' => lorem_phrase(),
-                'LICENCE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ADDON_INSTALL_CONFIRM_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FILE' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'FILES' => $files,
+            'WARNINGS' => $warning,
+            'NAME' => lorem_word(),
+            'AUTHOR' => lorem_word_2(),
+            'ORGANISATION' => lorem_phrase(),
+            'VERSION' => placeholder_number(),
+            'CATEGORY' => lorem_phrase(),
+            'COPYRIGHT_ATTRIBUTION' => lorem_phrase(),
+            'LICENCE' => lorem_phrase(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+        ]), null, '', true);
     }
 
     /**
@@ -340,19 +334,17 @@ class Hook_addon_registry_core_addon_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__addon_uninstall_confirm_screen() : array
+    public function tpl_preview__administrative__addon_uninstall_confirm_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ADDON_UNINSTALL_CONFIRM_SCREEN', [
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'NAME' => lorem_word(),
-                'WARNINGS' => lorem_phrase(),
-                'FILES' => placeholder_list_item(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ADDON_UNINSTALL_CONFIRM_SCREEN', [
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'NAME' => lorem_word(),
+            'WARNINGS' => lorem_phrase(),
+            'FILES' => placeholder_list_item(),
+        ]), null, '', true);
     }
 
     /**
@@ -360,9 +352,9 @@ class Hook_addon_registry_core_addon_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__addon_export_screen() : array
+    public function tpl_preview__administrative__addon_export_screen() : object
     {
         $tpl_languages = new Tempcode();
         $tpl_themes = new Tempcode();
@@ -404,15 +396,13 @@ class Hook_addon_registry_core_addon_management
             $i++;
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ADDON_EXPORT_SCREEN', [
-                'TITLE' => lorem_title(),
-                'LANGUAGES' => $tpl_languages,
-                'URL' => placeholder_url(),
-                'FILES' => $frm_files,
-                'THEMES' => $tpl_themes,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ADDON_EXPORT_SCREEN', [
+            'TITLE' => lorem_title(),
+            'LANGUAGES' => $tpl_languages,
+            'URL' => placeholder_url(),
+            'FILES' => $frm_files,
+            'THEMES' => $tpl_themes,
+        ]), null, '', true);
     }
 
     /**
@@ -420,9 +410,9 @@ class Hook_addon_registry_core_addon_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__module_screen() : array
+    public function tpl_preview__administrative__module_screen() : object
     {
         $modules = [
             'gallery',
@@ -460,11 +450,9 @@ class Hook_addon_registry_core_addon_management
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('MODULE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'MODULES' => $tpl_modules,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('MODULE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'MODULES' => $tpl_modules,
+        ]), null, '', true);
     }
 }

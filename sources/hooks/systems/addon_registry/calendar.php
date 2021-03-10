@@ -267,13 +267,11 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_year_view() : array
+    public function tpl_preview__calendar_year_view() : object
     {
-        return [
-            lorem_globalise($this->calendar_main_screen('year'), null, '', true)
-        ];
+        return lorem_globalise($this->calendar_main_screen('year'), null, '', true);
     }
 
     /**
@@ -281,13 +279,11 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_month_view() : array
+    public function tpl_preview__calendar_month_view() : object
     {
-        return [
-            lorem_globalise($this->calendar_main_screen('month'), null, '', true)
-        ];
+        return lorem_globalise($this->calendar_main_screen('month'), null, '', true);
     }
 
     /**
@@ -295,13 +291,11 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_week_view() : array
+    public function tpl_preview__calendar_week_view() : object
     {
-        return [
-            lorem_globalise($this->calendar_main_screen('week'), null, '', true)
-        ];
+        return lorem_globalise($this->calendar_main_screen('week'), null, '', true);
     }
 
     /**
@@ -309,13 +303,11 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_day_view() : array
+    public function tpl_preview__calendar_day_view() : object
     {
-        return [
-            lorem_globalise($this->calendar_main_screen('day'), null, '', true)
-        ];
+        return lorem_globalise($this->calendar_main_screen('day'), null, '', true);
     }
 
     /**
@@ -323,9 +315,9 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_calendar() : array
+    public function tpl_preview__block_side_calendar() : object
     {
         require_lang('dates');
 
@@ -372,15 +364,13 @@ class Hook_addon_registry_calendar
             'ENTRIES' => $__entries,
         ]));
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_CALENDAR', [
-                'BLOCK_ID' => lorem_word(),
-                'CALENDAR_URL' => placeholder_url(),
-                'ENTRIES' => $_entries,
-                '_MONTH' => lorem_phrase(),
-                'MONTH' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_CALENDAR', [
+            'BLOCK_ID' => lorem_word(),
+            'CALENDAR_URL' => placeholder_url(),
+            'ENTRIES' => $_entries,
+            '_MONTH' => lorem_phrase(),
+            'MONTH' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -388,9 +378,9 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_calendar_listing() : array
+    public function tpl_preview__block_side_calendar_listing() : object
     {
         $days = [
             [
@@ -419,14 +409,12 @@ class Hook_addon_registry_calendar
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_CALENDAR_LISTING', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'DAYS' => $days,
-                'CALENDAR_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_CALENDAR_LISTING', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'DAYS' => $days,
+            'CALENDAR_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -434,17 +422,15 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_event_conflict() : array
+    public function tpl_preview__calendar_event_conflict() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CALENDAR_EVENT_CONFLICT', [
-                'URL' => placeholder_url(),
-                'ID' => placeholder_id(),
-                'TITLE' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CALENDAR_EVENT_CONFLICT', [
+            'URL' => placeholder_url(),
+            'ID' => placeholder_id(),
+            'TITLE' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -452,19 +438,17 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_event_box() : array
+    public function tpl_preview__calendar_event_box() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CALENDAR_EVENT_BOX', [
-                'ID' => placeholder_id(),
-                'URL' => placeholder_url(),
-                'SUMMARY' => lorem_paragraph_html(),
-                'TITLE' => lorem_phrase(),
-                'GIVE_CONTEXT' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CALENDAR_EVENT_BOX', [
+            'ID' => placeholder_id(),
+            'URL' => placeholder_url(),
+            'SUMMARY' => lorem_paragraph_html(),
+            'TITLE' => lorem_phrase(),
+            'GIVE_CONTEXT' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -764,9 +748,9 @@ class Hook_addon_registry_calendar
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__calendar_event_screen() : array
+    public function tpl_preview__calendar_event_screen() : object
     {
         require_javascript('editing');
 
@@ -812,46 +796,44 @@ class Hook_addon_registry_calendar
             'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CALENDAR_EVENT_SCREEN', [
-                'TITLE' => get_screen_title('CALENDAR_EVENT_VCAL', true, [lorem_phrase()]),
+        return lorem_globalise(do_lorem_template('CALENDAR_EVENT_SCREEN', [
+            'TITLE' => get_screen_title('CALENDAR_EVENT_VCAL', true, [lorem_phrase()]),
 
-                'ID' => placeholder_id(),
-                'TAGS' => placeholder_tags(),
-                'WARNING_DETAILS' => '',
-                'SUBMITTER' => placeholder_id(),
-                'ADD_DATE' => placeholder_date(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'VIEWS' => lorem_phrase(),
-                'LOGO' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
-                'RECURRENCE' => placeholder_number(),
-                'IS_PUBLIC' => lorem_phrase(),
-                'PRIORITY' => lorem_phrase(),
-                'PRIORITY_LANG' => lorem_phrase(),
-                'TYPE' => lorem_phrase(),
-                'EDIT_URL' => placeholder_url(),
-                'SUBSCRIPTIONS' => $subscriptions,
-                'SUBSCRIBE_URL' => placeholder_url(),
-                'BACK_URL' => placeholder_url(),
-                'CONTENT' => lorem_phrase(),
-                'SUBSCRIBED' => $subscribed,
-                'RATING_DETAILS' => lorem_sentence_html(),
-                'TRACKBACK_DETAILS' => lorem_sentence_html(),
-                'VALIDATED' => true,
-                'COMMENT_DETAILS' => $comment_details,
+            'ID' => placeholder_id(),
+            'TAGS' => placeholder_tags(),
+            'WARNING_DETAILS' => '',
+            'SUBMITTER' => placeholder_id(),
+            'ADD_DATE' => placeholder_date(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'VIEWS' => lorem_phrase(),
+            'LOGO' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
+            'RECURRENCE' => placeholder_number(),
+            'IS_PUBLIC' => lorem_phrase(),
+            'PRIORITY' => lorem_phrase(),
+            'PRIORITY_LANG' => lorem_phrase(),
+            'TYPE' => lorem_phrase(),
+            'EDIT_URL' => placeholder_url(),
+            'SUBSCRIPTIONS' => $subscriptions,
+            'SUBSCRIBE_URL' => placeholder_url(),
+            'BACK_URL' => placeholder_url(),
+            'CONTENT' => lorem_phrase(),
+            'SUBSCRIBED' => $subscribed,
+            'RATING_DETAILS' => lorem_sentence_html(),
+            'TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'VALIDATED' => true,
+            'COMMENT_DETAILS' => $comment_details,
 
-                'DAY' => get_timezoned_date(123456789),
-                'TIME' => get_timezoned_date(123456789),
-                'TIME_RAW' => strval(123456789),
-                'TIME_VCAL' => strval(123456789),
+            'DAY' => get_timezoned_date(123456789),
+            'TIME' => get_timezoned_date(123456789),
+            'TIME_RAW' => strval(123456789),
+            'TIME_VCAL' => strval(123456789),
 
-                'TO_DAY' => get_timezoned_date(123456789 + 60 * 60 * 24),
-                'TO_TIME' => get_timezoned_date(123456789 + 60 * 60 * 24),
-                'TO_TIME_RAW' => strval(123456789 + 60 * 60 * 24),
-                'TO_TIME_VCAL' => strval(123456789 + 60 * 60 * 24),
-            ]), null, '', true)
-        ];
+            'TO_DAY' => get_timezoned_date(123456789 + 60 * 60 * 24),
+            'TO_TIME' => get_timezoned_date(123456789 + 60 * 60 * 24),
+            'TO_TIME_RAW' => strval(123456789 + 60 * 60 * 24),
+            'TO_TIME_VCAL' => strval(123456789 + 60 * 60 * 24),
+        ]), null, '', true);
     }
 
     /**

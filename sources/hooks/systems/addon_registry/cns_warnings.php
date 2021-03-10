@@ -154,17 +154,14 @@ class Hook_addon_registry_cns_warnings
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_member_profile_warnings() : array
+    public function tpl_preview__cns_member_profile_warnings() : object
     {
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', [
             'MEMBER_ID' => placeholder_id(),
             'WARNINGS' => lorem_phrase(),
-        ]);
-        return [
-            lorem_globalise($tab_content, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -172,21 +169,19 @@ class Hook_addon_registry_cns_warnings
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_saved_warning() : array
+    public function tpl_preview__cns_saved_warning() : object
     {
         require_css('cns');
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_SAVED_WARNING', [
-                'MESSAGE' => lorem_phrase(),
-                'MESSAGE_HTML' => lorem_phrase(),
-                'EXPLANATION' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'DELETE_LINK' => placeholder_link(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_SAVED_WARNING', [
+            'MESSAGE' => lorem_phrase(),
+            'MESSAGE_HTML' => lorem_phrase(),
+            'EXPLANATION' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'DELETE_LINK' => placeholder_link(),
+        ]), null, '', true);
     }
 
     /**
@@ -194,22 +189,20 @@ class Hook_addon_registry_cns_warnings
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cns_warning_history_screen() : array
+    public function tpl_preview__administrative__cns_warning_history_screen() : object
     {
         require_lang('cns');
         require_css('cns');
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', [
-                'TITLE' => lorem_title(),
-                'MEMBER_ID' => placeholder_id(),
-                'VIEW_PROFILE_URL' => placeholder_url(),
-                'ADD_WARNING_URL' => placeholder_url(),
-                'RESULTS_TABLE' => placeholder_table(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', [
+            'TITLE' => lorem_title(),
+            'MEMBER_ID' => placeholder_id(),
+            'VIEW_PROFILE_URL' => placeholder_url(),
+            'ADD_WARNING_URL' => placeholder_url(),
+            'RESULTS_TABLE' => placeholder_table(),
+        ]), null, '', true);
     }
 
     /**
@@ -217,9 +210,9 @@ class Hook_addon_registry_cns_warnings
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_warn_spam_urls() : array
+    public function tpl_preview__cns_warn_spam_urls() : object
     {
         $spam_urls = [
             [
@@ -236,11 +229,9 @@ class Hook_addon_registry_cns_warnings
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_WARN_SPAM_URLS', [
-                'USERNAME' => lorem_phrase(),
-                'SPAM_URLS' => $spam_urls,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_WARN_SPAM_URLS', [
+            'USERNAME' => lorem_phrase(),
+            'SPAM_URLS' => $spam_urls,
+        ]), null, '', true);
     }
 }

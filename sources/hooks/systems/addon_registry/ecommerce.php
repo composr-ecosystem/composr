@@ -432,18 +432,16 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__currency() : array
+    public function tpl_preview__currency() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CURRENCY', [
-                'AMOUNT' => placeholder_number(),
-                'NEW_AMOUNT' => placeholder_number(),
-                'FROM_CURRENCY' => 'GBP',
-                'TO_CURRENCY' => 'GBP',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CURRENCY', [
+            'AMOUNT' => placeholder_number(),
+            'NEW_AMOUNT' => placeholder_number(),
+            'FROM_CURRENCY' => 'GBP',
+            'TO_CURRENCY' => 'GBP',
+        ]), null, '', true);
     }
 
     /**
@@ -451,18 +449,16 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_logos_worldpay() : array
+    public function tpl_preview__ecom_logos_worldpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_LOGOS_WORLDPAY', [
-                'INST_ID' => placeholder_id(),
-                'PD_ADDRESS' => lorem_phrase(),
-                'PD_EMAIL' => lorem_word(),
-                'PD_NUMBER' => placeholder_number(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_LOGOS_WORLDPAY', [
+            'INST_ID' => placeholder_id(),
+            'PD_ADDRESS' => lorem_phrase(),
+            'PD_EMAIL' => lorem_word(),
+            'PD_NUMBER' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -470,15 +466,13 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_logos_authorize() : array
+    public function tpl_preview__ecom_logos_authorize() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_LOGOS_AUTHORIZE', [
-                'CUSTOMER_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_LOGOS_AUTHORIZE', [
+            'CUSTOMER_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -486,14 +480,11 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_payment_processor_links_authorize() : array
+    public function tpl_preview__ecom_payment_processor_links_authorize() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE', [
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE', []), null, '', true);
     }
 
     /**
@@ -501,29 +492,27 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_transaction_button_via_worldpay() : array
+    public function tpl_preview__ecom_transaction_button_via_worldpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', [
-                'TYPE_CODE' => lorem_word(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'DIGEST' => lorem_phrase(),
-                'TEST_MODE' => lorem_phrase(),
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'SHIPPING_COST' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'USERNAME' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'EMAIL_ADDRESS' => lorem_word(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', [
+            'TYPE_CODE' => lorem_word(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'DIGEST' => lorem_phrase(),
+            'TEST_MODE' => lorem_phrase(),
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'SHIPPING_COST' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'USERNAME' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'EMAIL_ADDRESS' => lorem_word(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -531,31 +520,29 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_button_via_worldpay() : array
+    public function tpl_preview__ecom_subscription_button_via_worldpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', [
-                'TYPE_CODE' => lorem_word(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'DIGEST' => lorem_phrase(),
-                'TEST_MODE' => true,
-                'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS_2' => 'm',
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'FIRST_REPEAT' => lorem_phrase(),
-                'CURRENCY' => 'GBP',
-                'USERNAME' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'EMAIL_ADDRESS' => lorem_word(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', [
+            'TYPE_CODE' => lorem_word(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'DIGEST' => lorem_phrase(),
+            'TEST_MODE' => true,
+            'LENGTH' => placeholder_number(),
+            'LENGTH_UNITS_2' => 'm',
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'FIRST_REPEAT' => lorem_phrase(),
+            'CURRENCY' => 'GBP',
+            'USERNAME' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'EMAIL_ADDRESS' => lorem_word(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -563,15 +550,13 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_worldpay() : array
+    public function tpl_preview__ecom_subscription_cancel_button_via_worldpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', [
-                'PURCHASE_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', [
+            'PURCHASE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -579,26 +564,24 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_transaction_button_via_paypal() : array
+    public function tpl_preview__ecom_transaction_button_via_paypal() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_PAYPAL', [
-                'TYPE_CODE' => lorem_word(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'SHIPPING_COST' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'PAYMENT_ADDRESS' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_PAYPAL', [
+            'TYPE_CODE' => lorem_word(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'SHIPPING_COST' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'PAYMENT_ADDRESS' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -606,27 +589,25 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_button_via_paypal() : array
+    public function tpl_preview__ecom_subscription_button_via_paypal() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL', [
-                'TYPE_CODE' => lorem_phrase(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS' => lorem_phrase(),
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'PAYMENT_ADDRESS' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL', [
+            'TYPE_CODE' => lorem_phrase(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'LENGTH' => placeholder_number(),
+            'LENGTH_UNITS' => lorem_phrase(),
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'PAYMENT_ADDRESS' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -634,15 +615,13 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_paypal() : array
+    public function tpl_preview__ecom_subscription_cancel_button_via_paypal() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', [
-                'PURCHASE_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', [
+            'PURCHASE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -650,28 +629,26 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_transaction_button_via_secpay() : array
+    public function tpl_preview__ecom_transaction_button_via_secpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', [
-                'TYPE_CODE' => lorem_word(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'DIGEST' => lorem_phrase(),
-                'TEST_MODE' => true,
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'SHIPPING_COST' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'USERNAME' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', [
+            'TYPE_CODE' => lorem_word(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'DIGEST' => lorem_phrase(),
+            'TEST_MODE' => true,
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'SHIPPING_COST' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'USERNAME' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -679,30 +656,28 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_button_via_secpay() : array
+    public function tpl_preview__ecom_subscription_button_via_secpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', [
-                'TYPE_CODE' => lorem_phrase(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'DIGEST' => lorem_phrase(),
-                'TEST_MODE' => true,
-                'FIRST_REPEAT' => lorem_phrase(),
-                'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS_2' => 'm',
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'USERNAME' => lorem_word(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', [
+            'TYPE_CODE' => lorem_phrase(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'DIGEST' => lorem_phrase(),
+            'TEST_MODE' => true,
+            'FIRST_REPEAT' => lorem_phrase(),
+            'LENGTH' => placeholder_number(),
+            'LENGTH_UNITS_2' => 'm',
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'USERNAME' => lorem_word(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -710,16 +685,14 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_secpay() : array
+    public function tpl_preview__ecom_subscription_cancel_button_via_secpay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', [
-                'CANCEL_URL' => placeholder_url(),
-                'PURCHASE_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', [
+            'CANCEL_URL' => placeholder_url(),
+            'PURCHASE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -727,31 +700,29 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_transaction_button_via_ccbill() : array
+    public function tpl_preview__ecom_transaction_button_via_ccbill() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
-                'TYPE_CODE' => lorem_word(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'SHIPPING_COST' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'PAYMENT_ADDRESS' => lorem_paragraph(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-                'ACCOUNT_NUM' => placeholder_id(),
-                'SUBACCOUNT_NUM' => placeholder_id(),
-                'FORM_NAME' => placeholder_id(),
-                'FORM_PERIOD' => placeholder_id(),
-                'DIGEST' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
+            'TYPE_CODE' => lorem_word(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'SHIPPING_COST' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'PAYMENT_ADDRESS' => lorem_paragraph(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+            'ACCOUNT_NUM' => placeholder_id(),
+            'SUBACCOUNT_NUM' => placeholder_id(),
+            'FORM_NAME' => placeholder_id(),
+            'FORM_PERIOD' => placeholder_id(),
+            'DIGEST' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -759,32 +730,30 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_button_via_ccbill() : array
+    public function tpl_preview__ecom_subscription_button_via_ccbill() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
-                'TYPE_CODE' => lorem_phrase(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS' => 'm',
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'CURRENCY' => 'GBP',
-                'PAYMENT_ADDRESS' => lorem_paragraph(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-                'ACCOUNT_NUM' => placeholder_id(),
-                'SUBACCOUNT_NUM' => placeholder_id(),
-                'FORM_NAME' => placeholder_id(),
-                'FORM_PERIOD' => placeholder_id(),
-                'DIGEST' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
+            'TYPE_CODE' => lorem_phrase(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'LENGTH' => placeholder_number(),
+            'LENGTH_UNITS' => 'm',
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'CURRENCY' => 'GBP',
+            'PAYMENT_ADDRESS' => lorem_paragraph(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+            'ACCOUNT_NUM' => placeholder_id(),
+            'SUBACCOUNT_NUM' => placeholder_id(),
+            'FORM_NAME' => placeholder_id(),
+            'FORM_PERIOD' => placeholder_id(),
+            'DIGEST' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -792,15 +761,13 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_ccbill() : array
+    public function tpl_preview__ecom_subscription_cancel_button_via_ccbill() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', [
-                'PURCHASE_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', [
+            'PURCHASE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -808,31 +775,29 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_transaction_button_via_authorize() : array
+    public function tpl_preview__ecom_transaction_button_via_authorize() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_AUTHORIZE', [
-                'TYPE_CODE' => lorem_word(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-                'SEQUENCE' => placeholder_number(),
-                'TIMESTAMP' => placeholder_date_raw(),
-                'FINGERPRINT' => lorem_word(),
-                'LOGIN_ID' => lorem_word(),
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'SHIPPING_COST' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'IS_TEST' => false,
-                'CUST_ID' => placeholder_id(),
-                'CURRENCY' => 'GBP',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_AUTHORIZE', [
+            'TYPE_CODE' => lorem_word(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+            'SEQUENCE' => placeholder_number(),
+            'TIMESTAMP' => placeholder_date_raw(),
+            'FINGERPRINT' => lorem_word(),
+            'LOGIN_ID' => lorem_word(),
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'SHIPPING_COST' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'IS_TEST' => false,
+            'CUST_ID' => placeholder_id(),
+            'CURRENCY' => 'GBP',
+        ]), null, '', true);
     }
 
     /**
@@ -840,32 +805,30 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_button_via_authorize() : array
+    public function tpl_preview__ecom_subscription_button_via_authorize() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_AUTHORIZE', [
-                'TYPE_CODE' => lorem_phrase(),
-                'ITEM_NAME' => lorem_phrase(),
-                'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
-                'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
-                'SEQUENCE' => placeholder_number(),
-                'TIMESTAMP' => placeholder_date_raw(),
-                'FINGERPRINT' => lorem_word(),
-                'LOGIN_ID' => lorem_word(),
-                'PRICE' => placeholder_number(),
-                'TAX' => placeholder_number(),
-                'AMOUNT' => placeholder_number(),
-                'IS_TEST' => false,
-                'CUST_ID' => placeholder_id(),
-                'CURRENCY' => 'GBP',
-                'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS' => 'm',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_AUTHORIZE', [
+            'TYPE_CODE' => lorem_phrase(),
+            'ITEM_NAME' => lorem_phrase(),
+            'PURCHASE_ID' => placeholder_id(),
+            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'FORM_URL' => placeholder_url(),
+            'MEMBER_ADDRESS' => placeholder_array(),
+            'SEQUENCE' => placeholder_number(),
+            'TIMESTAMP' => placeholder_date_raw(),
+            'FINGERPRINT' => lorem_word(),
+            'LOGIN_ID' => lorem_word(),
+            'PRICE' => placeholder_number(),
+            'TAX' => placeholder_number(),
+            'AMOUNT' => placeholder_number(),
+            'IS_TEST' => false,
+            'CUST_ID' => placeholder_id(),
+            'CURRENCY' => 'GBP',
+            'LENGTH' => placeholder_number(),
+            'LENGTH_UNITS' => 'm',
+        ]), null, '', true);
     }
 
     /**
@@ -873,16 +836,14 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscription_cancel_button_via_authorize() : array
+    public function tpl_preview__ecom_subscription_cancel_button_via_authorize() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_AUTHORIZE', [
-                'CANCEL_URL' => placeholder_url(),
-                'PURCHASE_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_AUTHORIZE', [
+            'CANCEL_URL' => placeholder_url(),
+            'PURCHASE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -890,9 +851,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_screen() : array
+    public function tpl_preview__purchase_screen() : object
     {
         $fields = do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
             'TITLE' => lorem_title(),
@@ -905,16 +866,14 @@ class Hook_addon_registry_ecommerce
             'ITEM_NAME' => lorem_phrase(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'CONTENT' => $fields,
-                'URL' => placeholder_url(),
-                'SUBMIT_NAME' => lorem_phrase(),
-                'ICON' => 'buttons/proceed',
-                'GET' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'CONTENT' => $fields,
+            'URL' => placeholder_url(),
+            'SUBMIT_NAME' => lorem_phrase(),
+            'ICON' => 'buttons/proceed',
+            'GET' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -922,19 +881,17 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_guest() : array
+    public function tpl_preview__purchase_stage_guest() : object
     {
         require_lang('cns');
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_GUEST', [
-                'TEXT' => lorem_sentence_html(),
-                'FORM' => placeholder_form(),
-                'HIDDEN' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_GUEST', [
+            'TEXT' => lorem_sentence_html(),
+            'FORM' => placeholder_form(),
+            'HIDDEN' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -942,9 +899,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_choose() : array
+    public function tpl_preview__purchase_stage_choose() : object
     {
         require_code('currency');
 
@@ -1068,19 +1025,17 @@ class Hook_addon_registry_ecommerce
             $products[] = $map;
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_CHOOSE', [
-                'TITLE' => lorem_title(),
-                'PRODUCTS' => $products,
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_CHOOSE', [
+            'TITLE' => lorem_title(),
+            'PRODUCTS' => $products,
 
-                'CATEGORY' => null,
-                'MUST_SUPPORT_MONEY' => false,
-                'MUST_SUPPORT_POINTS' => false,
+            'CATEGORY' => null,
+            'MUST_SUPPORT_MONEY' => false,
+            'MUST_SUPPORT_POINTS' => false,
 
-                'POINTS_INVOLVED' => true,
-                'MONEY_INVOLVED' => true,
-            ]), null, '', true)
-        ];
+            'POINTS_INVOLVED' => true,
+            'MONEY_INVOLVED' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -1088,18 +1043,16 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_message() : array
+    public function tpl_preview__purchase_stage_message() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_MESSAGE', [
-                'TITLE' => lorem_title(),
-                'ITEM_NAME' => lorem_phrase(),
-                'TYPE_CODE' => lorem_word(),
-                'TEXT' => lorem_sentence_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_MESSAGE', [
+            'TITLE' => lorem_title(),
+            'ITEM_NAME' => lorem_phrase(),
+            'TYPE_CODE' => lorem_word(),
+            'TEXT' => lorem_sentence_html(),
+        ]), null, '', true);
     }
 
     /**
@@ -1107,20 +1060,18 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_terms() : array
+    public function tpl_preview__purchase_stage_terms() : object
     {
         require_lang('installer');
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TERMS', [
-                'TITLE' => lorem_title(),
-                'ITEM_NAME' => lorem_phrase(),
-                'TYPE_CODE' => lorem_word(),
-                'URL' => placeholder_url(),
-                'TERMS' => lorem_paragraph(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TERMS', [
+            'TITLE' => lorem_title(),
+            'ITEM_NAME' => lorem_phrase(),
+            'TYPE_CODE' => lorem_word(),
+            'URL' => placeholder_url(),
+            'TERMS' => lorem_paragraph(),
+        ]), null, '', true);
     }
 
     /**
@@ -1128,20 +1079,18 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_details() : array
+    public function tpl_preview__purchase_stage_details() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_DETAILS', [
-                'TITLE' => lorem_title(),
-                'ITEM_NAME' => lorem_phrase(),
-                'TYPE_CODE' => lorem_word(),
-                'TEXT' => lorem_sentence_html(),
-                'FIELDS' => placeholder_fields(),
-                'JS_FUNCTION_CALLS' => [],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_DETAILS', [
+            'TITLE' => lorem_title(),
+            'ITEM_NAME' => lorem_phrase(),
+            'TYPE_CODE' => lorem_word(),
+            'TEXT' => lorem_sentence_html(),
+            'FIELDS' => placeholder_fields(),
+            'JS_FUNCTION_CALLS' => [],
+        ]), null, '', true);
     }
 
     /**
@@ -1149,22 +1098,20 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_transact() : array
+    public function tpl_preview__purchase_stage_transact() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
-                'TITLE' => lorem_title(),
-                'ITEM_NAME' => lorem_phrase(),
-                'TYPE_CODE' => lorem_word(),
-                'PURCHASE_ID' => placeholder_id(),
-                'FIELDS' => placeholder_fields(),
-                'HIDDEN' => '',
-                'LOGOS' => placeholder_image(),
-                'PAYMENT_PROCESSOR_LINKS' => placeholder_link(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
+            'TITLE' => lorem_title(),
+            'ITEM_NAME' => lorem_phrase(),
+            'TYPE_CODE' => lorem_word(),
+            'PURCHASE_ID' => placeholder_id(),
+            'FIELDS' => placeholder_fields(),
+            'HIDDEN' => '',
+            'LOGOS' => placeholder_image(),
+            'PAYMENT_PROCESSOR_LINKS' => placeholder_link(),
+        ]), null, '', true);
     }
 
     /**
@@ -1172,25 +1119,23 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_pay() : array
+    public function tpl_preview__purchase_stage_pay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_PAY', [
-                'TITLE' => lorem_title(),
-                'TRANSACTION_BUTTON' => placeholder_button(),
-                'CURRENCY' => 'GBP',
-                'ITEM_NAME' => lorem_phrase(),
-                'TYPE_CODE' => lorem_word(),
-                'PURCHASE_ID' => placeholder_id(),
-                'LENGTH' => '3',
-                'LENGTH_UNITS' => '$',
-                'PRICE' => '123.45',
-                'LOGOS' => placeholder_image(),
-                'PAYMENT_PROCESSOR_LINKS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_PAY', [
+            'TITLE' => lorem_title(),
+            'TRANSACTION_BUTTON' => placeholder_button(),
+            'CURRENCY' => 'GBP',
+            'ITEM_NAME' => lorem_phrase(),
+            'TYPE_CODE' => lorem_word(),
+            'PURCHASE_ID' => placeholder_id(),
+            'LENGTH' => '3',
+            'LENGTH_UNITS' => '$',
+            'PRICE' => '123.45',
+            'LOGOS' => placeholder_image(),
+            'PAYMENT_PROCESSOR_LINKS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -1198,18 +1143,16 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__purchase_stage_finish() : array
+    public function tpl_preview__purchase_stage_finish() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_FINISH', [
-                'TITLE' => lorem_title(),
-                'TYPE_CODE' => lorem_word(),
-                'MESSAGE' => lorem_phrase(),
-                'SUCCESS' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PURCHASE_STAGE_FINISH', [
+            'TITLE' => lorem_title(),
+            'TYPE_CODE' => lorem_word(),
+            'MESSAGE' => lorem_phrase(),
+            'SUCCESS' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -1217,9 +1160,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_invoices_screen() : array
+    public function tpl_preview__ecom_invoices_screen() : object
     {
         $invoices = [];
         foreach (placeholder_array() as $k => $v) {
@@ -1239,12 +1182,10 @@ class Hook_addon_registry_ecommerce
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_INVOICES_SCREEN', [
-                'TITLE' => lorem_title(),
-                'INVOICES' => $invoices,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_INVOICES_SCREEN', [
+            'TITLE' => lorem_title(),
+            'INVOICES' => $invoices,
+        ]), null, '', true);
     }
 
     /**
@@ -1252,9 +1193,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_outstanding_invoices_screen() : array
+    public function tpl_preview__administrative__ecom_outstanding_invoices_screen() : object
     {
         $invoices = [];
         foreach (placeholder_array() as $invoice) {
@@ -1273,13 +1214,11 @@ class Hook_addon_registry_ecommerce
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_OUTSTANDING_INVOICES_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FROM' => lorem_phrase(),
-                'INVOICES' => $invoices,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_OUTSTANDING_INVOICES_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FROM' => lorem_phrase(),
+            'INVOICES' => $invoices,
+        ]), null, '', true);
     }
 
     /**
@@ -1287,9 +1226,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_subscriptions_screen() : array
+    public function tpl_preview__ecom_subscriptions_screen() : object
     {
         $button = do_lorem_template('ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER', [
             'STATUS' => lorem_phrase(),
@@ -1330,12 +1269,10 @@ class Hook_addon_registry_ecommerce
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTIONS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SUBSCRIPTIONS' => $subscriptions,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTIONS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SUBSCRIPTIONS' => $subscriptions,
+        ]), null, '', true);
     }
 
     /**
@@ -1343,9 +1280,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__member_subscription_status_screen() : array
+    public function tpl_preview__member_subscription_status_screen() : object
     {
         $button = do_lorem_template('ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER', [
             'STATUS' => lorem_phrase(),
@@ -1386,12 +1323,10 @@ class Hook_addon_registry_ecommerce
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_MEMBER_SUBSCRIPTION_STATUS', [
-                'MEMBER_ID' => placeholder_id(),
-                'SUBSCRIPTIONS' => $subscriptions,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_MEMBER_SUBSCRIPTION_STATUS', [
+            'MEMBER_ID' => placeholder_id(),
+            'SUBSCRIPTIONS' => $subscriptions,
+        ]), null, '', true);
     }
 
     /**
@@ -1399,9 +1334,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_view_manual_transactions_screen() : array
+    public function tpl_preview__ecom_view_manual_transactions_screen() : object
     {
         $lines = do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
             'ID' => placeholder_id(),
@@ -1412,12 +1347,10 @@ class Hook_addon_registry_ecommerce
             'CANCEL_URL' => placeholder_url(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'CONTENT' => $lines,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'CONTENT' => $lines,
+        ]), null, '', true);
     }
 
     /**
@@ -1425,9 +1358,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_sales_log_screen() : array
+    public function tpl_preview__administrative__ecom_sales_log_screen() : object
     {
         $cells = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -1447,13 +1380,11 @@ class Hook_addon_registry_ecommerce
 
         $content = do_lorem_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $out]);
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_SALES_LOG_SCREEN', [
-                'TITLE' => lorem_title(),
-                'CONTENT' => $content,
-                'PAGINATION' => placeholder_pagination(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_SALES_LOG_SCREEN', [
+            'TITLE' => lorem_title(),
+            'CONTENT' => $content,
+            'PAGINATION' => placeholder_pagination(),
+        ]), null, '', true);
     }
 
     /**
@@ -1461,16 +1392,14 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cns_member_profile_ecommerce_logs_screen() : array
+    public function tpl_preview__administrative__cns_member_profile_ecommerce_logs_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', [
-                'CONTENT' => lorem_chunk_html(),
-                'PAGINATION' => placeholder_pagination(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', [
+            'CONTENT' => lorem_chunk_html(),
+            'PAGINATION' => placeholder_pagination(),
+        ]), null, '', true);
     }
 
     /**
@@ -1478,19 +1407,17 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_transaction_logs_screen() : array
+    public function tpl_preview__administrative__ecom_transaction_logs_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TRANSACTION_LOGS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'PRODUCTS' => placeholder_options(),
-                'PURCHASE_ID' => placeholder_id(),
-                'URL' => placeholder_url(),
-                'RESULTS_TABLE' => placeholder_table(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_LOGS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'PRODUCTS' => placeholder_options(),
+            'PURCHASE_ID' => placeholder_id(),
+            'URL' => placeholder_url(),
+            'RESULTS_TABLE' => placeholder_table(),
+        ]), null, '', true);
     }
 
     /**
@@ -1498,9 +1425,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_cash_flow_screen() : array
+    public function tpl_preview__administrative__ecom_cash_flow_screen() : object
     {
         $types = [];
         foreach (placeholder_array() as $v) {
@@ -1510,12 +1437,10 @@ class Hook_addon_registry_ecommerce
                 'SPECIAL' => placeholder_number(),
             ];
         }
-        return [
-            lorem_globalise(do_lorem_template('ECOM_CASH_FLOW_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TYPES' => $types,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_CASH_FLOW_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TYPES' => $types,
+        ]), null, '', true);
     }
 
     /**
@@ -1523,9 +1448,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__ecom_products_price_screen() : array
+    public function tpl_preview__administrative__ecom_products_price_screen() : object
     {
         // This is for getting the do_ajax_request() javascript function.
 
@@ -1536,15 +1461,13 @@ class Hook_addon_registry_ecommerce
             $add_forms->attach(do_lorem_template('ECOM_PRODUCTS_PRICES_FORM_WRAP', ['TITLE' => lorem_phrase(), 'FORM' => placeholder_form()]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PRODUCT_PRICE_SCREEN', [
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => $warning_details,
-                'TITLE' => lorem_title(),
-                'EDIT_FORM' => placeholder_form(),
-                'ADD_FORMS' => $add_forms,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PRODUCT_PRICE_SCREEN', [
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => $warning_details,
+            'TITLE' => lorem_title(),
+            'EDIT_FORM' => placeholder_form(),
+            'ADD_FORMS' => $add_forms,
+        ]), null, '', true);
     }
 
     /**
@@ -1552,21 +1475,17 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_product_forwarder_mail() : array
+    public function tpl_preview__ecom_product_forwarder_mail() : object
     {
-        $temp = do_lorem_template('ECOM_PRODUCT_FORWARDER_MAIL', [
+        return do_lorem_template('ECOM_PRODUCT_FORWARDER_MAIL', [
             'ENCODED_REASON' => lorem_phrase(),
             'EMAIL' => lorem_word(),
             'PREFIX' => lorem_phrase(),
             'SUFFIX' => lorem_phrase(),
             'FORW_URL' => placeholder_url(),
         ], null, false, null, '.txt', 'text');
-
-        return [
-            $temp
-        ];
     }
 
     /**
@@ -1574,11 +1493,11 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_product_pop3_mail() : array
+    public function tpl_preview__ecom_product_pop3_mail() : object
     {
-        $temp = do_lorem_template('ECOM_PRODUCT_POP3_MAIL', [
+        return do_lorem_template('ECOM_PRODUCT_POP3_MAIL', [
             'EMAIL' => lorem_word(),
             'ENCODED_REASON' => lorem_phrase(),
             'LOGIN' => lorem_phrase(),
@@ -1589,10 +1508,6 @@ class Hook_addon_registry_ecommerce
             'SUFFIX' => lorem_phrase(),
             'POP3_URL' => placeholder_url(),
         ], null, false, null, '.txt', 'text');
-
-        return [
-            $temp
-        ];
     }
 
     /**
@@ -1600,18 +1515,16 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_product_quota_mail() : array
+    public function tpl_preview__ecom_product_quota_mail() : object
     {
-        return [
-            do_lorem_template('ECOM_PRODUCT_QUOTA_MAIL', [
-                'ENCODED_REASON' => lorem_phrase(),
-                'QUOTA' => placeholder_number(),
-                'EMAIL' => lorem_word(),
-                'QUOTA_URL' => placeholder_url(),
-            ], null, false, null, '.txt', 'text'),
-        ];
+        return do_lorem_template('ECOM_PRODUCT_QUOTA_MAIL', [
+            'ENCODED_REASON' => lorem_phrase(),
+            'QUOTA' => placeholder_number(),
+            'EMAIL' => lorem_word(),
+            'QUOTA_URL' => placeholder_url(),
+        ], null, false, null, '.txt', 'text');
     }
 
     /**
@@ -1619,11 +1532,11 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_payment_received_mail() : array
+    public function tpl_preview__ecom_payment_received_mail() : object
     {
-        $temp = do_lorem_template('ECOM_PAYMENT_RECEIVED_MAIL', [
+        return do_lorem_template('ECOM_PAYMENT_RECEIVED_MAIL', [
             'AUTOMATIC_SETUP' => false,
             'AMOUNT' => placeholder_number(),
             'CURRENCY' => 'USD',
@@ -1647,10 +1560,6 @@ class Hook_addon_registry_ecommerce
             'SHIPPING_PHONE' => lorem_phrase(),
             'SHIPPING_FORMATTED_ADDRESS' => lorem_phrase(),
         ], null, false, null, '.txt', 'text');
-
-        return [
-            $temp
-        ];
     }
 
     /**
@@ -1658,11 +1567,11 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_payment_sent_mail() : array
+    public function tpl_preview__ecom_payment_sent_mail() : object
     {
-        $temp = do_lorem_template('ECOM_PAYMENT_SENT_MAIL', [
+        return do_lorem_template('ECOM_PAYMENT_SENT_MAIL', [
             'AUTOMATIC_SETUP' => false,
             'AMOUNT' => placeholder_number(),
             'CURRENCY' => 'USD',
@@ -1686,10 +1595,6 @@ class Hook_addon_registry_ecommerce
             'SHIPPING_PHONE' => lorem_phrase(),
             'SHIPPING_FORMATTED_ADDRESS' => lorem_phrase(),
         ], null, false, null, '.txt', 'text');
-
-        return [
-            $temp
-        ];
     }
 
     /**
@@ -1697,9 +1602,9 @@ class Hook_addon_registry_ecommerce
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ecom_tax_invoice_screen() : array
+    public function tpl_preview__ecom_tax_invoice_screen() : object
     {
         $items = [];
         foreach (placeholder_array() as $k => $v) {
@@ -1714,20 +1619,18 @@ class Hook_addon_registry_ecommerce
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('ECOM_TAX_INVOICE', [
-                'TXN_ID' => placeholder_number(),
-                '_DATE' => placeholder_date_raw(),
-                'DATE' => placeholder_date(),
-                'TRANS_ADDRESS' => lorem_phrase() . "\n" . lorem_phrase() . "\n" . lorem_phrase(),
-                'ITEMS' => $items,
-                'STATUS' => lorem_phrase(),
-                'CURRENCY' => 'GBP',
-                'TOTAL_PRICE' => placeholder_number(),
-                'TOTAL_TAX' => placeholder_number(),
-                'TOTAL_AMOUNT' => placeholder_number(),
-                'PURCHASE_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_TAX_INVOICE', [
+            'TXN_ID' => placeholder_number(),
+            '_DATE' => placeholder_date_raw(),
+            'DATE' => placeholder_date(),
+            'TRANS_ADDRESS' => lorem_phrase() . "\n" . lorem_phrase() . "\n" . lorem_phrase(),
+            'ITEMS' => $items,
+            'STATUS' => lorem_phrase(),
+            'CURRENCY' => 'GBP',
+            'TOTAL_PRICE' => placeholder_number(),
+            'TOTAL_TAX' => placeholder_number(),
+            'TOTAL_AMOUNT' => placeholder_number(),
+            'PURCHASE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 }

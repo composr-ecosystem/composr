@@ -204,9 +204,9 @@ class Hook_addon_registry_core_comcode_pages
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__comcode_page_manage_screen() : array
+    public function tpl_preview__administrative__comcode_page_manage_screen() : object
     {
         require_lang('zones');
 
@@ -218,21 +218,19 @@ class Hook_addon_registry_core_comcode_pages
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_MANAGE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TABLE' => placeholder_table(),
-                'SUBMIT_NAME' => lorem_word(),
-                'POST_URL' => placeholder_url(),
-                'HIDDEN' => '',
-                'TEXT' => lorem_paragraph_html(),
-                'LINKS' => $links,
-                'FILTER' => '',
-                'HAS_PAGINATION' => true,
-                'TRANSLATIONS_MODE' => false,
-                'FIELDS' => placeholder_fields(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMCODE_PAGE_MANAGE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TABLE' => placeholder_table(),
+            'SUBMIT_NAME' => lorem_word(),
+            'POST_URL' => placeholder_url(),
+            'HIDDEN' => '',
+            'TEXT' => lorem_paragraph_html(),
+            'LINKS' => $links,
+            'FILTER' => '',
+            'HAS_PAGINATION' => true,
+            'TRANSLATIONS_MODE' => false,
+            'FIELDS' => placeholder_fields(),
+        ]), null, '', true);
     }
 
     /**
@@ -240,19 +238,17 @@ class Hook_addon_registry_core_comcode_pages
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__comcode_page_edit_actions() : array
+    public function tpl_preview__comcode_page_edit_actions() : object
     {
         require_lang('zones');
 
-        return [
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_EDIT_ACTIONS', [
-                'VIEW_URL' => placeholder_url(),
-                'EDIT_URL' => placeholder_url(),
-                'CLONE_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMCODE_PAGE_EDIT_ACTIONS', [
+            'VIEW_URL' => placeholder_url(),
+            'EDIT_URL' => placeholder_url(),
+            'CLONE_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -260,26 +256,24 @@ class Hook_addon_registry_core_comcode_pages
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__comcode_page_screen() : array
+    public function tpl_preview__comcode_page_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_SCREEN', [
-                'BEING_INCLUDED' => false,
-                'IS_PANEL' => false,
-                'SUBMITTER' => placeholder_id(),
-                'TAGS' => placeholder_tags(),
-                'WARNING_DETAILS' => '',
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'SHOW_AS_EDIT' => lorem_phrase(),
-                'CONTENT' => lorem_phrase(),
-                'EDIT_URL' => placeholder_url(),
-                'ADD_CHILD_URL' => placeholder_url(),
-                'NAME' => lorem_word(),
-                'NATIVE_ZONE' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMCODE_PAGE_SCREEN', [
+            'BEING_INCLUDED' => false,
+            'IS_PANEL' => false,
+            'SUBMITTER' => placeholder_id(),
+            'TAGS' => placeholder_tags(),
+            'WARNING_DETAILS' => '',
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'SHOW_AS_EDIT' => lorem_phrase(),
+            'CONTENT' => lorem_phrase(),
+            'EDIT_URL' => placeholder_url(),
+            'ADD_CHILD_URL' => placeholder_url(),
+            'NAME' => lorem_word(),
+            'NATIVE_ZONE' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -287,19 +281,17 @@ class Hook_addon_registry_core_comcode_pages
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__comcode_page_preview() : array
+    public function tpl_preview__comcode_page_preview() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_BOX', [
-                'GIVE_CONTEXT' => true,
-                'PAGE' => lorem_phrase(),
-                'ZONE' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'SUMMARY' => lorem_paragraph_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMCODE_PAGE_BOX', [
+            'GIVE_CONTEXT' => true,
+            'PAGE' => lorem_phrase(),
+            'ZONE' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'SUMMARY' => lorem_paragraph_html(),
+        ]), null, '', true);
     }
 
     /**
@@ -307,9 +299,9 @@ class Hook_addon_registry_core_comcode_pages
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__comcode_page_sitemap() : array
+    public function tpl_preview__administrative__comcode_page_sitemap() : object
     {
         require_lang('zones');
 
@@ -336,13 +328,11 @@ class Hook_addon_registry_core_comcode_pages
             'PAGE_STRUCTURE' => $_page_structure,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('GENERATE_PAGE_SITEMAP_SCREEN', [
-                'TITLE' => lorem_title(),
-                'ZONES' => [lorem_phrase() => lorem_phrase()],
-                'PAGE_STRUCTURE' => $page_structure,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('GENERATE_PAGE_SITEMAP_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ZONES' => [lorem_phrase() => lorem_phrase()],
+            'PAGE_STRUCTURE' => $page_structure,
+        ]), null, '', true);
     }
 
     /**

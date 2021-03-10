@@ -149,9 +149,9 @@ class Hook_addon_registry_syndication_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_rss() : array
+    public function tpl_preview__block_side_rss() : object
     {
         $content = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -166,15 +166,13 @@ class Hook_addon_registry_syndication_blocks
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_RSS', [
-                'BLOCK_ID' => lorem_word(),
-                'FEED_URL' => placeholder_url(),
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => $content,
-                'TICKER' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_RSS', [
+            'BLOCK_ID' => lorem_word(),
+            'FEED_URL' => placeholder_url(),
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $content,
+            'TICKER' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -182,9 +180,9 @@ class Hook_addon_registry_syndication_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_rss() : array
+    public function tpl_preview__block_main_rss() : object
     {
         require_lang('news');
         require_css('news');
@@ -207,15 +205,13 @@ class Hook_addon_registry_syndication_blocks
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_RSS', [
-                'BLOCK_ID' => lorem_word(),
-                'FEED_URL' => placeholder_url(),
-                'TITLE' => lorem_phrase(),
-                'COPYRIGHT' => lorem_phrase(),
-                'AUTHOR' => lorem_phrase(),
-                'CONTENT' => $content,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_RSS', [
+            'BLOCK_ID' => lorem_word(),
+            'FEED_URL' => placeholder_url(),
+            'TITLE' => lorem_phrase(),
+            'COPYRIGHT' => lorem_phrase(),
+            'AUTHOR' => lorem_phrase(),
+            'CONTENT' => $content,
+        ]), null, '', true);
     }
 }

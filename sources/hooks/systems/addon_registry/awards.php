@@ -150,27 +150,25 @@ class Hook_addon_registry_awards
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_awards() : array
+    public function tpl_preview__block_main_awards() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_AWARDS', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => lorem_word(),
-                'DESCRIPTION' => lorem_paragraph_html(),
-                'AWARDEE_PROFILE_URL' => placeholder_url(),
-                'AWARDEE' => lorem_phrase(),
-                'AWARDEE_USERNAME' => lorem_word(),
-                'RAW_AWARD_DATE' => placeholder_date_raw(),
-                'AWARD_DATE' => placeholder_date(),
-                'CONTENT' => lorem_phrase_html(),
-                'ADD_NAME' => lorem_phrase(),
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_AWARDS', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => lorem_word(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'AWARDEE_PROFILE_URL' => placeholder_url(),
+            'AWARDEE' => lorem_phrase(),
+            'AWARDEE_USERNAME' => lorem_word(),
+            'RAW_AWARD_DATE' => placeholder_date_raw(),
+            'AWARD_DATE' => placeholder_date(),
+            'CONTENT' => lorem_phrase_html(),
+            'ADD_NAME' => lorem_phrase(),
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -178,20 +176,18 @@ class Hook_addon_registry_awards
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__awarded_content() : array
+    public function tpl_preview__awarded_content() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('AWARDED_CONTENT', [
-                'AWARDEE_PROFILE_URL' => placeholder_url(),
-                'AWARDEE' => lorem_phrase(),
-                'AWARDEE_USERNAME' => lorem_word(),
-                'RAW_AWARD_DATE' => placeholder_date_raw(),
-                'AWARD_DATE' => placeholder_date(),
-                'CONTENT' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('AWARDED_CONTENT', [
+            'AWARDEE_PROFILE_URL' => placeholder_url(),
+            'AWARDEE' => lorem_phrase(),
+            'AWARDEE_USERNAME' => lorem_word(),
+            'RAW_AWARD_DATE' => placeholder_date_raw(),
+            'AWARD_DATE' => placeholder_date(),
+            'CONTENT' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**

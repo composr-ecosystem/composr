@@ -165,15 +165,13 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poor_xhtml_wrapper() : array
+    public function tpl_preview__poor_xhtml_wrapper() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('POOR_XHTML_WRAPPER', [
-                'CONTENT' => lorem_phrase_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POOR_XHTML_WRAPPER', [
+            'CONTENT' => lorem_phrase_html(),
+        ]), null, '', true);
     }
 
     /**
@@ -181,15 +179,13 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__js_refresh() : array
+    public function tpl_preview__js_refresh() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('JS_REFRESH', [
-                'FORM_NAME' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('JS_REFRESH', [
+            'FORM_NAME' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -197,15 +193,13 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__anchor() : array
+    public function tpl_preview__anchor() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ANCHOR', [
-                'NAME' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ANCHOR', [
+            'NAME' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -213,21 +207,19 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__standalone_html_wrap() : array
+    public function tpl_preview__standalone_html_wrap() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('STANDALONE_HTML_WRAP', [
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => lorem_chunk_html(),
-                'FRAME' => null,
-                'NOINDEX' => null,
-                'TARGET' => null,
-                'POPUP' => null,
-                'OPENS_BELOW' => null,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('STANDALONE_HTML_WRAP', [
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => lorem_chunk_html(),
+            'FRAME' => null,
+            'NOINDEX' => null,
+            'TARGET' => null,
+            'POPUP' => null,
+            'OPENS_BELOW' => null,
+        ]), null, '', true);
     }
 
     /**
@@ -235,16 +227,14 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__meta_refresh_line() : array
+    public function tpl_preview__meta_refresh_line() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('META_REFRESH_LINE', [
-                'URL' => placeholder_url(),
-                'TIME' => placeholder_date_raw(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('META_REFRESH_LINE', [
+            'URL' => placeholder_url(),
+            'TIME' => placeholder_date_raw(),
+        ]), null, '', true);
     }
 
     /**
@@ -252,20 +242,18 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink_popup_window() : array
+    public function tpl_preview__hyperlink_popup_window() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('HYPERLINK_POPUP_WINDOW', [
-                'TITLE' => lorem_phrase(),
-                'CAPTION' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'WIDTH' => placeholder_number(),
-                'HEIGHT' => placeholder_number(),
-                'REL' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HYPERLINK_POPUP_WINDOW', [
+            'TITLE' => lorem_phrase(),
+            'CAPTION' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'WIDTH' => placeholder_number(),
+            'HEIGHT' => placeholder_number(),
+            'REL' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -273,17 +261,15 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__basic_html_wrap() : array
+    public function tpl_preview__basic_html_wrap() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BASIC_HTML_WRAP', [
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => lorem_chunk_html(),
-                'NOINDEX' => null,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BASIC_HTML_WRAP', [
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => lorem_chunk_html(),
+            'NOINDEX' => null,
+        ]), null, '', true);
     }
 
     /**
@@ -291,16 +277,14 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__floater() : array
+    public function tpl_preview__floater() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('FLOATER', [
-                'FLOAT' => 'left',
-                'CONTENT' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FLOATER', [
+            'FLOAT' => 'left',
+            'CONTENT' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -308,15 +292,13 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink_email() : array
+    public function tpl_preview__hyperlink_email() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('HYPERLINK_EMAIL', [
-                'VALUE' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HYPERLINK_EMAIL', [
+            'VALUE' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -324,18 +306,16 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink_tooltip() : array
+    public function tpl_preview__hyperlink_tooltip() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('HYPERLINK_TOOLTIP', [
-                'TOOLTIP' => lorem_phrase(),
-                'CAPTION' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'NEW_WINDOW' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HYPERLINK_TOOLTIP', [
+            'TOOLTIP' => lorem_phrase(),
+            'CAPTION' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'NEW_WINDOW' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -343,15 +323,13 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__div() : array
+    public function tpl_preview__div() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('DIV', [
-                'TEMPCODE' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('DIV', [
+            'TEMPCODE' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -359,16 +337,14 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__span() : array
+    public function tpl_preview__span() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('SPAN', [
-                'TEMPCODE' => lorem_sentence_html(),
-                'CLASS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SPAN', [
+            'TEMPCODE' => lorem_sentence_html(),
+            'CLASS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -376,16 +352,14 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__paragraph() : array
+    public function tpl_preview__paragraph() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('PARAGRAPH', [
-                'TEXT' => lorem_sentence_html(),
-                'CLASS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('PARAGRAPH', [
+            'TEXT' => lorem_sentence_html(),
+            'CLASS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -393,9 +367,9 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__with_whitespace() : array
+    public function tpl_preview__with_whitespace() : object
     {
         $out = new Tempcode();
 
@@ -409,9 +383,7 @@ class Hook_addon_registry_core_html_abstractions
             'USING_TEXTAREA' => true,
         ]));
 
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        return lorem_globalise($out, null, '', true);
     }
 
     /**
@@ -419,21 +391,19 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink() : array
+    public function tpl_preview__hyperlink() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('HYPERLINK', [
-                'REL' => null,
-                'POST_DATA' => null,
-                'ACCESSKEY' => null,
-                'NEW_WINDOW' => false,
-                'TITLE' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'CAPTION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HYPERLINK', [
+            'REL' => null,
+            'POST_DATA' => null,
+            'ACCESSKEY' => null,
+            'NEW_WINDOW' => false,
+            'TITLE' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'CAPTION' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -441,20 +411,18 @@ class Hook_addon_registry_core_html_abstractions
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__hyperlink_button() : array
+    public function tpl_preview__hyperlink_button() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('HYPERLINK_BUTTON', [
-                'REL' => null,
-                'POST_DATA' => '',
-                'ACCESSKEY' => null,
-                'NEW_WINDOW' => false,
-                'TITLE' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'CAPTION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HYPERLINK_BUTTON', [
+            'REL' => null,
+            'POST_DATA' => '',
+            'ACCESSKEY' => null,
+            'NEW_WINDOW' => false,
+            'TITLE' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'CAPTION' => lorem_phrase(),
+        ]), null, '', true);
     }
 }

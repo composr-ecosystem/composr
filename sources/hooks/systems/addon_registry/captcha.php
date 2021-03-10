@@ -189,9 +189,9 @@ class Hook_addon_registry_captcha
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__form_screen_input_captcha() : array
+    public function tpl_preview__form_screen_input_captcha() : object
     {
         require_code('captcha');
         generate_captcha();
@@ -212,24 +212,22 @@ class Hook_addon_registry_captcha
             'COMCODE' => '',
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('FORM_SCREEN', [
-                'SKIP_WEBSTANDARDS' => true,
-                'HIDDEN' => '',
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'FIELDS' => $captcha,
-                'SUBMIT_ICON' => 'buttons/proceed',
-                'SUBMIT_NAME' => lorem_word(),
-                'TEXT' => lorem_sentence_html(),
-                'SUPPORT_AUTOSAVE' => false,
-                'JS_FUNCTION_CALLS' => [],
-                'MODSECURITY_WORKAROUND' => false,
-                'POST' => false,
-                'ANALYTIC_EVENT_CATEGORY' => null,
-                'GET' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FORM_SCREEN', [
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'FIELDS' => $captcha,
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => lorem_word(),
+            'TEXT' => lorem_sentence_html(),
+            'SUPPORT_AUTOSAVE' => false,
+            'JS_FUNCTION_CALLS' => [],
+            'MODSECURITY_WORKAROUND' => false,
+            'POST' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+            'GET' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -237,9 +235,9 @@ class Hook_addon_registry_captcha
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__captcha_loose() : array
+    public function tpl_preview__captcha_loose() : object
     {
         $name = placeholder_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', [
@@ -280,9 +278,7 @@ class Hook_addon_registry_captcha
             'MODSECURITY_WORKAROUND' => false,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CAPTCHA_LOOSE', [
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CAPTCHA_LOOSE', [
+        ]), null, '', true);
     }
 }

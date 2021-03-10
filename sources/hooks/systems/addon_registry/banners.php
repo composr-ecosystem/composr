@@ -191,15 +191,13 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__banner_preview() : array
+    public function tpl_preview__banner_preview() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_PREVIEW', [
-                'PREVIEW' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_PREVIEW', [
+            'PREVIEW' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -207,18 +205,16 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__banner_show_code() : array
+    public function tpl_preview__banner_show_code() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_SHOW_CODE', [
-                'NAME' => placeholder_id(),
-                'WIDTH' => placeholder_number(),
-                'HEIGHT' => placeholder_number(),
-                'TYPE' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_SHOW_CODE', [
+            'NAME' => placeholder_id(),
+            'WIDTH' => placeholder_number(),
+            'HEIGHT' => placeholder_number(),
+            'TYPE' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -226,19 +222,17 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__banner_added_screen() : array
+    public function tpl_preview__administrative__banner_added_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_ADDED_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TEXT' => lorem_sentence_html(),
-                'BANNER_CODE' => lorem_phrase(),
-                'STATS_URL' => placeholder_url(),
-                'DO_NEXT' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_ADDED_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TEXT' => lorem_sentence_html(),
+            'BANNER_CODE' => lorem_phrase(),
+            'STATS_URL' => placeholder_url(),
+            'DO_NEXT' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -246,9 +240,9 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_top_sites() : array
+    public function tpl_preview__block_main_top_sites() : object
     {
         $banners = [];
         foreach (placeholder_array() as $k => $v) {
@@ -260,14 +254,12 @@ class Hook_addon_registry_banners
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_TOP_SITES', [
-                'BLOCK_ID' => lorem_word(),
-                'TYPE' => lorem_phrase(),
-                'BANNERS' => $banners,
-                'SUBMIT_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_TOP_SITES', [
+            'BLOCK_ID' => lorem_word(),
+            'TYPE' => lorem_phrase(),
+            'BANNERS' => $banners,
+            'SUBMIT_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -275,9 +267,9 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_banner_wave() : array
+    public function tpl_preview__block_main_banner_wave() : object
     {
         $banners = new Tempcode();
         $banners->attach(do_lorem_template('BANNER_IMAGE', [
@@ -305,15 +297,13 @@ class Hook_addon_registry_banners
             'REGION' => '',
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_BANNER_WAVE', [
-                'BLOCK_ID' => lorem_word(),
-                'TYPE' => lorem_phrase(),
-                'ASSEMBLE' => $assemble,
-                'MAX' => placeholder_number(),
-                'REGION' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_BANNER_WAVE', [
+            'BLOCK_ID' => lorem_word(),
+            'TYPE' => lorem_phrase(),
+            'ASSEMBLE' => $assemble,
+            'MAX' => placeholder_number(),
+            'REGION' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -321,15 +311,13 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__banners_none() : array
+    public function tpl_preview__banners_none() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNERS_NONE', [
-                'ADD_BANNER_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNERS_NONE', [
+            'ADD_BANNER_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -337,23 +325,21 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__banner_image() : array
+    public function tpl_preview__banner_image() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_IMAGE', [
-                'URL' => placeholder_url(),
-                'B_TYPE' => lorem_phrase(),
-                'WIDTH' => placeholder_number(),
-                'HEIGHT' => placeholder_number(),
-                'SOURCE' => lorem_phrase(),
-                'DEST' => lorem_phrase(),
-                'CAPTION' => lorem_phrase(),
-                'IMG' => placeholder_image_url(),
-                'LOCAL' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_IMAGE', [
+            'URL' => placeholder_url(),
+            'B_TYPE' => lorem_phrase(),
+            'WIDTH' => placeholder_number(),
+            'HEIGHT' => placeholder_number(),
+            'SOURCE' => lorem_phrase(),
+            'DEST' => lorem_phrase(),
+            'CAPTION' => lorem_phrase(),
+            'IMG' => placeholder_image_url(),
+            'LOCAL' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -361,18 +347,16 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__banner_iframe() : array
+    public function tpl_preview__banner_iframe() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_IFRAME', [
-                'B_TYPE' => lorem_phrase(),
-                'IMG' => placeholder_image_url(),
-                'WIDTH' => placeholder_number(),
-                'HEIGHT' => placeholder_number(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_IFRAME', [
+            'B_TYPE' => lorem_phrase(),
+            'IMG' => placeholder_image_url(),
+            'WIDTH' => placeholder_number(),
+            'HEIGHT' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -380,21 +364,19 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__banner_text() : array
+    public function tpl_preview__banner_text() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_TEXT', [
-                'B_TYPE' => lorem_phrase(),
-                'TITLE_TEXT' => lorem_phrase(),
-                'CAPTION' => lorem_phrase(),
-                'SOURCE' => lorem_phrase(),
-                'DEST' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'FILTERED_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_TEXT', [
+            'B_TYPE' => lorem_phrase(),
+            'TITLE_TEXT' => lorem_phrase(),
+            'CAPTION' => lorem_phrase(),
+            'SOURCE' => lorem_phrase(),
+            'DEST' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'FILTERED_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -402,21 +384,19 @@ class Hook_addon_registry_banners
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__banner_view_screen() : array
+    public function tpl_preview__administrative__banner_view_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BANNER_VIEW_SCREEN', [
-                'TITLE' => lorem_title(),
-                'EDIT_URL' => placeholder_url(),
-                'MAP_TABLE' => lorem_phrase(),
-                'BANNER' => lorem_phrase(),
-                'NAME' => placeholder_id(),
-                'RESULTS_TABLE' => placeholder_table(),
-                'RESET_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BANNER_VIEW_SCREEN', [
+            'TITLE' => lorem_title(),
+            'EDIT_URL' => placeholder_url(),
+            'MAP_TABLE' => lorem_phrase(),
+            'BANNER' => lorem_phrase(),
+            'NAME' => placeholder_id(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'RESET_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**

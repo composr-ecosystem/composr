@@ -170,9 +170,9 @@ class Hook_addon_registry_core_permission_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__permissions_tree_editor_screen() : array
+    public function tpl_preview__administrative__permissions_tree_editor_screen() : object
     {
         require_css('sitemap_editor');
 
@@ -186,16 +186,14 @@ class Hook_addon_registry_core_permission_management
             $groups->attach(form_input_list_entry(strval($id), false, $group_name));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('PERMISSIONS_TREE_EDITOR_SCREEN', [
-                'USERGROUPS' => placeholder_array(),
-                'TITLE' => lorem_title(),
-                'INITIAL_GROUP' => lorem_phrase(),
-                'COLOR' => lorem_phrase(),
-                'GROUPS' => $groups,
-                'EDITOR' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('PERMISSIONS_TREE_EDITOR_SCREEN', [
+            'USERGROUPS' => placeholder_array(),
+            'TITLE' => lorem_title(),
+            'INITIAL_GROUP' => lorem_phrase(),
+            'COLOR' => lorem_phrase(),
+            'GROUPS' => $groups,
+            'EDITOR' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -203,9 +201,9 @@ class Hook_addon_registry_core_permission_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__permission_keys_permissions_screen() : array
+    public function tpl_preview__administrative__permission_keys_permissions_screen() : object
     {
         require_lang('permissions');
 
@@ -266,16 +264,14 @@ class Hook_addon_registry_core_permission_management
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('PERMISSION_KEYS_PERMISSIONS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'HEADER_CELLS' => $header_cells,
-                'ROWS' => $rows,
-                'ROWS2' => $rows2,
-                'COLS' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('PERMISSION_KEYS_PERMISSIONS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'HEADER_CELLS' => $header_cells,
+            'ROWS' => $rows,
+            'ROWS2' => $rows2,
+            'COLS' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -283,9 +279,9 @@ class Hook_addon_registry_core_permission_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__permission_s_permissions_screen() : array
+    public function tpl_preview__administrative__permission_s_permissions_screen() : object
     {
         require_lang('permissions');
 
@@ -332,17 +328,13 @@ class Hook_addon_registry_core_permission_management
             'GROUP' => '+/-',
         ]));
 
-        $out = do_lorem_template('PERMISSION_PRIVILEGES_SCREEN', [
+        return lorem_globalise(do_lorem_template('PERMISSION_PRIVILEGES_SCREEN', [
             'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,
             'COLS' => '',
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -350,9 +342,9 @@ class Hook_addon_registry_core_permission_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__content_access_screen() : array
+    public function tpl_preview__administrative__content_access_screen() : object
     {
         require_lang('permissions');
 
@@ -406,14 +398,12 @@ class Hook_addon_registry_core_permission_management
             'SAVE_ID' => lorem_word() . ':' . lorem_word(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'ZONES' => $zones,
-                'MODULES' => $modules,
-                'URL' => placeholder_url(),
-                'COLOR' => 'FFFFFF',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ZONES' => $zones,
+            'MODULES' => $modules,
+            'URL' => placeholder_url(),
+            'COLOR' => 'FFFFFF',
+        ]), null, '', true);
     }
 }

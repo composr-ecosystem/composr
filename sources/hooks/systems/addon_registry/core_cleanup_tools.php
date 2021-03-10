@@ -180,9 +180,9 @@ class Hook_addon_registry_core_cleanup_tools
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cleanup_completed_screen() : array
+    public function tpl_preview__administrative__cleanup_completed_screen() : object
     {
         $urls = [];
         foreach (placeholder_array() as $v) {
@@ -196,12 +196,10 @@ class Hook_addon_registry_core_cleanup_tools
             'FOUND' => $urls,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CLEANUP_COMPLETED_SCREEN', [
-                'TITLE' => lorem_title(),
-                'MESSAGES' => $message,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CLEANUP_COMPLETED_SCREEN', [
+            'TITLE' => lorem_title(),
+            'MESSAGES' => $message,
+        ]), null, '', true);
     }
 
     /**
@@ -209,9 +207,9 @@ class Hook_addon_registry_core_cleanup_tools
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__broken_urls_screen() : array
+    public function tpl_preview__administrative__broken_urls_screen() : object
     {
         require_lang('cleanup');
 
@@ -228,12 +226,10 @@ class Hook_addon_registry_core_cleanup_tools
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BROKEN_URLS', [
-                'URLS' => $urls,
-                'DONE' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BROKEN_URLS', [
+            'URLS' => $urls,
+            'DONE' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -241,19 +237,17 @@ class Hook_addon_registry_core_cleanup_tools
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__broken_content_lang_strings() : array
+    public function tpl_preview__administrative__broken_content_lang_strings() : object
     {
         require_lang('cleanup');
 
-        return [
-            lorem_globalise(do_lorem_template('BROKEN_CONTENT_LANG_STRINGS', [
-                'MISSING_CONTENT_LANG_STRINGS' => placeholder_array(),
-                'FUSED_CONTENT_LANG_STRINGS' => placeholder_array(),
-                'ORPHANED_CONTENT_LANG_STRINGS' => placeholder_array(),
-                'MISSING_CONTENT_LANG_STRINGS_ZERO' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BROKEN_CONTENT_LANG_STRINGS', [
+            'MISSING_CONTENT_LANG_STRINGS' => placeholder_array(),
+            'FUSED_CONTENT_LANG_STRINGS' => placeholder_array(),
+            'ORPHANED_CONTENT_LANG_STRINGS' => placeholder_array(),
+            'MISSING_CONTENT_LANG_STRINGS_ZERO' => placeholder_array(),
+        ]), null, '', true);
     }
 }

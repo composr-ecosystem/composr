@@ -332,11 +332,11 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_image_box() : array
+    public function tpl_preview__gallery_image_box() : object
     {
-        $tab_content = do_lorem_template('GALLERY_IMAGE_BOX', [
+        return lorem_globalise(do_lorem_template('GALLERY_IMAGE_BOX', [
             'TITLE' => lorem_phrase(),
             'BREADCRUMBS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
@@ -349,10 +349,7 @@ class Hook_addon_registry_galleries
             'IMAGE_URL' => placeholder_image_url(),
             'DESCRIPTION' => lorem_paragraph(),
             'GIVE_CONTEXT' => true,
-        ]);
-        return [
-            lorem_globalise($tab_content, null, '', true),
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -360,11 +357,11 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_video_box() : array
+    public function tpl_preview__gallery_video_box() : object
     {
-        $tab_content = do_lorem_template('GALLERY_VIDEO_BOX', [
+        return lorem_globalise(do_lorem_template('GALLERY_VIDEO_BOX', [
             'TITLE' => lorem_phrase(),
             'BREADCRUMBS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
@@ -382,10 +379,7 @@ class Hook_addon_registry_galleries
             'VIDEO_LENGTH' => placeholder_number(),
             'CLOSED_CAPTIONS_URL' => placeholder_url(),
             'GIVE_CONTEXT' => true,
-        ]);
-        return [
-            lorem_globalise($tab_content, null, '', true),
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -393,9 +387,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_member_profile_galleries() : array
+    public function tpl_preview__cns_member_profile_galleries() : object
     {
         $galleries = do_lorem_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', [
             'BLOCK_ID' => lorem_word(),
@@ -414,13 +408,10 @@ class Hook_addon_registry_galleries
             'MAX_PARAM' => 'x_max',
         ]);
 
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_GALLERIES', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_GALLERIES', [
             'MEMBER_ID' => placeholder_id(),
             'GALLERIES' => $galleries,
-        ]);
-        return [
-            lorem_globalise($tab_content, null, '', true),
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -428,23 +419,21 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_image_fader() : array
+    public function tpl_preview__block_main_image_fader() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_IMAGE_FADER', [
-                'BLOCK_ID' => lorem_word(),
-                'GALLERY_URL' => placeholder_url(),
-                'FIRST_URL' => placeholder_image_url(),
-                'PREVIOUS_URL' => placeholder_image_url(),
-                'NEXT_URL' => placeholder_image_url(),
-                'TITLES' => [],
-                'IMAGES' => [],
-                'HTML' => [],
-                'MILL' => '3000',
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_IMAGE_FADER', [
+            'BLOCK_ID' => lorem_word(),
+            'GALLERY_URL' => placeholder_url(),
+            'FIRST_URL' => placeholder_image_url(),
+            'PREVIOUS_URL' => placeholder_image_url(),
+            'NEXT_URL' => placeholder_image_url(),
+            'TITLES' => [],
+            'IMAGES' => [],
+            'HTML' => [],
+            'MILL' => '3000',
+        ]), null, '', true);
     }
 
     /**
@@ -452,9 +441,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__gallery_import_screen() : array
+    public function tpl_preview__administrative__gallery_import_screen() : object
     {
         require_css('forms');
 
@@ -508,13 +497,11 @@ class Hook_addon_registry_galleries
             'GET' => false,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_IMPORT_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FORM2' => placeholder_form(),
-                'FORM' => $form,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_IMPORT_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FORM2' => placeholder_form(),
+            'FORM' => $form,
+        ]), null, '', true);
     }
 
     /**
@@ -522,16 +509,14 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_popular() : array
+    public function tpl_preview__gallery_popular() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_POPULAR', [
-                'CHILDREN' => lorem_sentence_html(),
-                'CAT' => 'root',
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_POPULAR', [
+            'CHILDREN' => lorem_sentence_html(),
+            'CAT' => 'root',
+        ]), null, '', true);
     }
 
     /**
@@ -539,9 +524,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_gallery_embed() : array
+    public function tpl_preview__block_main_gallery_embed() : object
     {
         // Create the 'GALLERY_ENTRY_WRAP' template
         $entries = new Tempcode();
@@ -569,21 +554,19 @@ class Hook_addon_registry_galleries
         }
 
         // Create 'BLOCK_MAIN_GALLERY_EMBED' with 'GALLERY_ENTRY_WRAP' as sub-template
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_EMBED', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'CAT' => placeholder_id(),
-                'ENTRIES' => $entries,
-                'PAGINATION' => placeholder_pagination(),
-                'BLOCK_PARAMS' => '',
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_EMBED', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'CAT' => placeholder_id(),
+            'ENTRIES' => $entries,
+            'PAGINATION' => placeholder_pagination(),
+            'BLOCK_PARAMS' => '',
 
-                'START' => '0',
-                'MAX' => '10',
-                'START_PARAM' => 'x_start',
-                'MAX_PARAM' => 'x_max',
-            ]), null, '', true),
-        ];
+            'START' => '0',
+            'MAX' => '10',
+            'START_PARAM' => 'x_start',
+            'MAX_PARAM' => 'x_max',
+        ]), null, '', true);
     }
 
     /**
@@ -591,9 +574,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with andplaceholder_date_raw() without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_galleries() : array
+    public function tpl_preview__block_side_galleries() : object
     {
         $content = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -606,15 +589,13 @@ class Hook_addon_registry_galleries
             $content->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', ['ID' => placeholder_random_id(), 'CAPTION' => lorem_phrase(), 'CONTENTS' => $out]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_GALLERIES', [
-                'BLOCK_ID' => lorem_word(),
-                'DEPTH' => true,
-                'CONTENT' => $content,
-                'TITLE' => lorem_phrase(),
-                'ID' => placeholder_id(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_GALLERIES', [
+            'BLOCK_ID' => lorem_word(),
+            'DEPTH' => true,
+            'CONTENT' => $content,
+            'TITLE' => lorem_phrase(),
+            'ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**placeholder_date_raw()
@@ -622,18 +603,16 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_video_info() : array
+    public function tpl_preview__gallery_video_info() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_VIDEO_INFO', [
-                'HEIGHT' => placeholder_number(),
-                'WIDTH' => placeholder_number(),
-                'LENGTH' => placeholder_number(),
-                'CLOSED_CAPTIONS_URL' => placeholder_url(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_VIDEO_INFO', [
+            'HEIGHT' => placeholder_number(),
+            'WIDTH' => placeholder_number(),
+            'LENGTH' => placeholder_number(),
+            'CLOSED_CAPTIONS_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -641,16 +620,14 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_entry_list_line() : array
+    public function tpl_preview__gallery_entry_list_line() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_ENTRY_LIST_LINE', [
-                'BREADCRUMBS' => lorem_phrase(),
-                'URL' => placeholder_url(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_ENTRY_LIST_LINE', [
+            'BREADCRUMBS' => lorem_phrase(),
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -658,9 +635,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_carousel_mode_video() : array
+    public function tpl_preview__gallery_carousel_mode_video() : object
     {
         require_javascript('editing');
 
@@ -728,48 +705,46 @@ class Hook_addon_registry_galleries
             'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
-                '_TITLE' => lorem_phrase(),
-                'VIEW_URL' => placeholder_url(),
-                'FULL_URL' => placeholder_url(),
-                'PROBE_TYPE' => lorem_phrase(),
-                'ENTRY_TITLE' => lorem_phrase(),
-                'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
-                'ENTRY_SUBMITTER' => placeholder_id(),
-                'ENTRY_VIEWS' => placeholder_number(),
-                'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
-                'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
-                'ENTRY_TRACKBACK_DETAILS' => lorem_sentence_html(),
-                'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
-                'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
-                'ENTRY_EDIT_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TAGS' => placeholder_tags(),
-                'RATING_DETAILS' => lorem_sentence_html(),
-                'COMMENT_DETAILS' => $comment_details,
-                'REP_IMAGE_URL' => placeholder_image_url(),
-                'TITLE' => lorem_title(),
-                'MEMBER_DETAILS' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph_html(),
-                'CURRENT_ENTRY' => $video,
-                'ENTRIES' => $entries,
-                'EDIT_URL' => placeholder_url(),
-                'ADD_GALLERY_URL' => placeholder_url(),
-                'IMAGE_URL' => placeholder_image_url(),
-                'MEMBER_ID' => placeholder_id(),
-                'VIDEO_URL' => placeholder_url(),
-                'MAY_DOWNLOAD' => lorem_phrase(),
-                'CAT' => placeholder_id(),
-                'FIRST_ENTRY_ID' => placeholder_id(),
-                'SORTING' => lorem_phrase(),
-                'ACCEPT_IMAGES' => true,
-                'ACCEPT_VIDEOS' => true,
-                'VIEWS' => placeholder_number(),
-                'OWNER' => null,
-                'PROBE_ID' => placeholder_id(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
+            '_TITLE' => lorem_phrase(),
+            'VIEW_URL' => placeholder_url(),
+            'FULL_URL' => placeholder_url(),
+            'PROBE_TYPE' => lorem_phrase(),
+            'ENTRY_TITLE' => lorem_phrase(),
+            'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
+            'ENTRY_SUBMITTER' => placeholder_id(),
+            'ENTRY_VIEWS' => placeholder_number(),
+            'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
+            'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
+            'ENTRY_TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
+            'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
+            'ENTRY_EDIT_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TAGS' => placeholder_tags(),
+            'RATING_DETAILS' => lorem_sentence_html(),
+            'COMMENT_DETAILS' => $comment_details,
+            'REP_IMAGE_URL' => placeholder_image_url(),
+            'TITLE' => lorem_title(),
+            'MEMBER_DETAILS' => lorem_phrase(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'CURRENT_ENTRY' => $video,
+            'ENTRIES' => $entries,
+            'EDIT_URL' => placeholder_url(),
+            'ADD_GALLERY_URL' => placeholder_url(),
+            'IMAGE_URL' => placeholder_image_url(),
+            'MEMBER_ID' => placeholder_id(),
+            'VIDEO_URL' => placeholder_url(),
+            'MAY_DOWNLOAD' => lorem_phrase(),
+            'CAT' => placeholder_id(),
+            'FIRST_ENTRY_ID' => placeholder_id(),
+            'SORTING' => lorem_phrase(),
+            'ACCEPT_IMAGES' => true,
+            'ACCEPT_VIDEOS' => true,
+            'VIEWS' => placeholder_number(),
+            'OWNER' => null,
+            'PROBE_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -777,9 +752,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_carousel_mode_image() : array
+    public function tpl_preview__gallery_carousel_mode_image() : object
     {
         require_javascript('editing');
 
@@ -845,48 +820,46 @@ class Hook_addon_registry_galleries
             'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
-                '_TITLE' => lorem_phrase(),
-                'VIEW_URL' => placeholder_url(),
-                'FULL_URL' => placeholder_url(),
-                'PROBE_TYPE' => lorem_phrase(),
-                'ENTRY_VIEWS' => placeholder_number(),
-                'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
-                'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
-                'ENTRY_TRACKBACK_DETAILS' => lorem_sentence_html(),
-                'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
-                'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
-                'ENTRY_EDIT_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TAGS' => placeholder_tags(),
-                'RATING_DETAILS' => lorem_sentence_html(),
-                'COMMENT_DETAILS' => $comment_details,
-                'REP_IMAGE_URL' => placeholder_image_url(),
-                'TITLE' => lorem_title(),
-                'MEMBER_DETAILS' => lorem_paragraph_html(),
-                'DESCRIPTION' => lorem_paragraph_html(),
-                'CURRENT_ENTRY' => $image,
-                'ENTRIES' => $entries,
-                'EDIT_URL' => placeholder_url(),
-                'ADD_GALLERY_URL' => placeholder_url(),
-                'IMAGE_URL' => placeholder_image_url(),
-                'MEMBER_ID' => placeholder_id(),
-                'VIDEO_URL' => placeholder_url(),
-                'MAY_DOWNLOAD' => lorem_phrase(),
-                'CAT' => placeholder_id(),
-                'FIRST_ENTRY_ID' => placeholder_id(),
-                'SORTING' => lorem_phrase(),
-                'ACCEPT_IMAGES' => true,
-                'ACCEPT_VIDEOS' => true,
-                'VIEWS' => placeholder_number(),
-                'OWNER' => null,
-                'PROBE_ID' => placeholder_id(),
-                'ENTRY_TITLE' => lorem_phrase(),
-                'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
-                'ENTRY_SUBMITTER' => placeholder_id(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
+            '_TITLE' => lorem_phrase(),
+            'VIEW_URL' => placeholder_url(),
+            'FULL_URL' => placeholder_url(),
+            'PROBE_TYPE' => lorem_phrase(),
+            'ENTRY_VIEWS' => placeholder_number(),
+            'ENTRY_ADD_DATE_RAW' => placeholder_date_raw(),
+            'ENTRY_EDIT_DATE_RAW' => placeholder_date_raw(),
+            'ENTRY_TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'ENTRY_RATING_DETAILS' => lorem_sentence_html(),
+            'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
+            'ENTRY_EDIT_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TAGS' => placeholder_tags(),
+            'RATING_DETAILS' => lorem_sentence_html(),
+            'COMMENT_DETAILS' => $comment_details,
+            'REP_IMAGE_URL' => placeholder_image_url(),
+            'TITLE' => lorem_title(),
+            'MEMBER_DETAILS' => lorem_paragraph_html(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'CURRENT_ENTRY' => $image,
+            'ENTRIES' => $entries,
+            'EDIT_URL' => placeholder_url(),
+            'ADD_GALLERY_URL' => placeholder_url(),
+            'IMAGE_URL' => placeholder_image_url(),
+            'MEMBER_ID' => placeholder_id(),
+            'VIDEO_URL' => placeholder_url(),
+            'MAY_DOWNLOAD' => lorem_phrase(),
+            'CAT' => placeholder_id(),
+            'FIRST_ENTRY_ID' => placeholder_id(),
+            'SORTING' => lorem_phrase(),
+            'ACCEPT_IMAGES' => true,
+            'ACCEPT_VIDEOS' => true,
+            'VIEWS' => placeholder_number(),
+            'OWNER' => null,
+            'PROBE_ID' => placeholder_id(),
+            'ENTRY_TITLE' => lorem_phrase(),
+            'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
+            'ENTRY_SUBMITTER' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -894,28 +867,26 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_gallery_box() : array
+    public function tpl_preview__gallery_gallery_box() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_BOX', [
-                'GIVE_CONTEXT' => false,
-                'REP_IMAGE_URL' => placeholder_image_url(),
-                'NUM_VIDEOS' => placeholder_number(),
-                'NUM_IMAGES' => placeholder_number(),
-                'NUM_CHILDREN' => placeholder_number(),
-                'ID' => placeholder_id(),
-                'LANG' => lorem_word(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'ADD_DATE' => placeholder_date(),
-                'MEMBER_INFO' => lorem_paragraph(),
-                'URL' => placeholder_url(),
-                'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph(),
-                'COMMENT_COUNT' => placeholder_number(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_BOX', [
+            'GIVE_CONTEXT' => false,
+            'REP_IMAGE_URL' => placeholder_image_url(),
+            'NUM_VIDEOS' => placeholder_number(),
+            'NUM_IMAGES' => placeholder_number(),
+            'NUM_CHILDREN' => placeholder_number(),
+            'ID' => placeholder_id(),
+            'LANG' => lorem_word(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE' => placeholder_date(),
+            'MEMBER_INFO' => lorem_paragraph(),
+            'URL' => placeholder_url(),
+            'TITLE' => lorem_phrase(),
+            'DESCRIPTION' => lorem_paragraph(),
+            'COMMENT_COUNT' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -923,9 +894,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_entries() : array
+    public function tpl_preview__gallery_entries() : object
     {
         $entry = new Tempcode();
         $map = [
@@ -979,9 +950,7 @@ class Hook_addon_registry_galleries
         $entry = do_lorem_template('GALLERY_VIDEO', $map);
         $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
 
-        return [
-            lorem_globalise($entries, null, '', true),
-        ];
+        return lorem_globalise($entries, null, '', true);
     }
 
     /**
@@ -989,9 +958,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_grid_mode_screen() : array
+    public function tpl_preview__gallery_grid_mode_screen() : object
     {
         require_javascript('editing');
 
@@ -1019,33 +988,31 @@ class Hook_addon_registry_galleries
             'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_GRID_MODE_SCREEN', [
-                '_TITLE' => lorem_phrase(),
-                'TAGS' => placeholder_tags(),
-                'CAT' => lorem_word(),
-                'MEMBER_DETAILS' => lorem_sentence_html(),
-                'RATING_DETAILS' => lorem_sentence_html(),
-                'COMMENT_DETAILS' => $comment_details,
-                'ADD_GALLERY_URL' => placeholder_url(),
-                'EDIT_URL' => placeholder_url(),
-                'TITLE' => lorem_title(),
-                'DESCRIPTION' => lorem_paragraph_html(),
-                'IMAGE_URL' => placeholder_url(),
-                'VIDEO_URL' => placeholder_url(),
-                'MAY_DOWNLOAD' => lorem_phrase(),
-                'MEMBER_ID' => placeholder_id(),
-                'ACCEPT_IMAGES' => true,
-                'ACCEPT_VIDEOS' => true,
-                'VIEWS' => placeholder_number(),
-                'OWNER' => placeholder_id(),
-                'CAT_SELECT' => '*',
-                'DAYS' => '',
-                'IMAGE_SELECT' => '*',
-                'VIDEO_SELECT' => '*',
-                'FILTER' => '',
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_GRID_MODE_SCREEN', [
+            '_TITLE' => lorem_phrase(),
+            'TAGS' => placeholder_tags(),
+            'CAT' => lorem_word(),
+            'MEMBER_DETAILS' => lorem_sentence_html(),
+            'RATING_DETAILS' => lorem_sentence_html(),
+            'COMMENT_DETAILS' => $comment_details,
+            'ADD_GALLERY_URL' => placeholder_url(),
+            'EDIT_URL' => placeholder_url(),
+            'TITLE' => lorem_title(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'IMAGE_URL' => placeholder_url(),
+            'VIDEO_URL' => placeholder_url(),
+            'MAY_DOWNLOAD' => lorem_phrase(),
+            'MEMBER_ID' => placeholder_id(),
+            'ACCEPT_IMAGES' => true,
+            'ACCEPT_VIDEOS' => true,
+            'VIEWS' => placeholder_number(),
+            'OWNER' => placeholder_id(),
+            'CAT_SELECT' => '*',
+            'DAYS' => '',
+            'IMAGE_SELECT' => '*',
+            'VIDEO_SELECT' => '*',
+            'FILTER' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -1053,9 +1020,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_entry_screen() : array
+    public function tpl_preview__gallery_entry_screen() : object
     {
         require_javascript('editing');
 
@@ -1103,40 +1070,38 @@ class Hook_addon_registry_galleries
 
         $video = lorem_sentence_html();
 
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_ENTRY_SCREEN', [
-                'CAT' => placeholder_id(),
-                'MEDIA_TYPE' => 'video',
-                'ID' => placeholder_id(),
-                'SLIDESHOW' => false,
-                'TRUE_GALLERY_TITLE' => lorem_phrase(),
-                'E_TITLE' => lorem_phrase(),
-                'GALLERY_TITLE' => lorem_phrase(),
-                'MEMBER_ID' => placeholder_id(),
-                'TAGS' => placeholder_tags(),
-                'TITLE' => lorem_title(),
-                'SUBMITTER' => placeholder_id(),
-                'URL' => placeholder_url(),
-                'MEMBER_DETAILS' => lorem_sentence_html(),
-                'X' => lorem_phrase(),
-                'N' => lorem_phrase(),
-                'VIEWS' => lorem_phrase(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'ADD_DATE' => placeholder_date(),
-                'EDIT_DATE' => placeholder_date(),
-                'RATING_DETAILS' => lorem_sentence_html(),
-                'TRACKBACK_DETAILS' => lorem_sentence_html(),
-                'COMMENT_DETAILS' => $comment_details,
-                'EDIT_URL' => placeholder_url(),
-                'IMAGE_URL' => placeholder_image_url(),
-                'NAV' => $nav,
-                'DESCRIPTION' => lorem_phrase(),
-                'VIDEO' => $video,
-                'WARNING_DETAILS' => '',
-                'VIDEO_DETAILS' => null,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_ENTRY_SCREEN', [
+            'CAT' => placeholder_id(),
+            'MEDIA_TYPE' => 'video',
+            'ID' => placeholder_id(),
+            'SLIDESHOW' => false,
+            'TRUE_GALLERY_TITLE' => lorem_phrase(),
+            'E_TITLE' => lorem_phrase(),
+            'GALLERY_TITLE' => lorem_phrase(),
+            'MEMBER_ID' => placeholder_id(),
+            'TAGS' => placeholder_tags(),
+            'TITLE' => lorem_title(),
+            'SUBMITTER' => placeholder_id(),
+            'URL' => placeholder_url(),
+            'MEMBER_DETAILS' => lorem_sentence_html(),
+            'X' => lorem_phrase(),
+            'N' => lorem_phrase(),
+            'VIEWS' => lorem_phrase(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE' => placeholder_date(),
+            'EDIT_DATE' => placeholder_date(),
+            'RATING_DETAILS' => lorem_sentence_html(),
+            'TRACKBACK_DETAILS' => lorem_sentence_html(),
+            'COMMENT_DETAILS' => $comment_details,
+            'EDIT_URL' => placeholder_url(),
+            'IMAGE_URL' => placeholder_image_url(),
+            'NAV' => $nav,
+            'DESCRIPTION' => lorem_phrase(),
+            'VIDEO' => $video,
+            'WARNING_DETAILS' => '',
+            'VIDEO_DETAILS' => null,
+        ]), null, '', true);
     }
 
     /**
@@ -1144,9 +1109,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_hero_slider() : array
+    public function tpl_preview__block_main_hero_slider() : object
     {
         $content_html = do_lorem_template('GALLERY_HOMEPAGE_HERO_SLIDE', [
             'HEADLINE' => lorem_phrase(),
@@ -1167,18 +1132,16 @@ class Hook_addon_registry_galleries
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_HERO_SLIDER', [
-                'BLOCK_ID' => placeholder_id(),
-                'EFFECT' => 'slide',
-                'FULLSCREEN' => '1',
-                'SHOW_INDICATORS' => '1',
-                'SHOW_SCROLL_DOWN' => '0',
-                'INTERVAL' => '0',
-                'ITEMS' => $items,
-                'HAS_MULTIPLE_ITEMS' => (count($items) > 1) ? '1' : '0',
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_HERO_SLIDER', [
+            'BLOCK_ID' => placeholder_id(),
+            'EFFECT' => 'slide',
+            'FULLSCREEN' => '1',
+            'SHOW_INDICATORS' => '1',
+            'SHOW_SCROLL_DOWN' => '0',
+            'INTERVAL' => '0',
+            'ITEMS' => $items,
+            'HAS_MULTIPLE_ITEMS' => (count($items) > 1) ? '1' : '0',
+        ]), null, '', true);
     }
 
     /**
@@ -1186,9 +1149,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_gallery_mosaic() : array
+    public function tpl_preview__block_main_gallery_mosaic() : object
     {
         $entries = new Tempcode();
 
@@ -1246,22 +1209,20 @@ class Hook_addon_registry_galleries
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_VIDEO', $map));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', [
-                'BLOCK_ID' => placeholder_id(),
-                'BLOCK_PARAMS' => '',
-                'SLIDESHOW_URL' => null,
-                'PAGINATION' => placeholder_pagination(),
-                'ENTRIES' => $entries,
-                'START' => strval(0),
-                'MAX' => strval(10),
-                'START_PARAM' => placeholder_id() . '_start',
-                'MAX_PARAM' => placeholder_id() . '_max',
-                'EXTRA_GET_PARAMS' => null,
-                'TITLE' => lorem_phrase(),
-                'CAT' => lorem_word(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', [
+            'BLOCK_ID' => placeholder_id(),
+            'BLOCK_PARAMS' => '',
+            'SLIDESHOW_URL' => null,
+            'PAGINATION' => placeholder_pagination(),
+            'ENTRIES' => $entries,
+            'START' => strval(0),
+            'MAX' => strval(10),
+            'START_PARAM' => placeholder_id() . '_start',
+            'MAX_PARAM' => placeholder_id() . '_max',
+            'EXTRA_GET_PARAMS' => null,
+            'TITLE' => lorem_phrase(),
+            'CAT' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -1269,37 +1230,35 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_mosaic_mode_screen() : array
+    public function tpl_preview__gallery_mosaic_mode_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', [
-                '_TITLE' => lorem_phrase(),
-                'MEMBER_ID' => '',
-                'TAGS' => placeholder_tags(),
-                'CAT' => '',
-                'MEMBER_DETAILS' => '',
-                'RATING_DETAILS' => '',
-                'COMMENT_DETAILS' => '',
-                'ADD_GALLERY_URL' => placeholder_url(),
-                'EDIT_URL' => placeholder_url(),
-                'TITLE' => lorem_title(),
-                'DESCRIPTION' => lorem_paragraph(),
-                'IMAGE_URL' => placeholder_url(),
-                'VIDEO_URL' => placeholder_url(),
-                'MAY_DOWNLOAD' => true,
-                'ACCEPT_IMAGES' => true,
-                'ACCEPT_VIDEOS' => true,
-                'VIEWS' => strval(123),
-                'OWNER' => null,
-                'CAT_SELECT' => '*',
-                'DAYS' => '',
-                'IMAGE_SELECT' => '*',
-                'VIDEO_SELECT' => '*',
-                'FILTER' => '',
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', [
+            '_TITLE' => lorem_phrase(),
+            'MEMBER_ID' => '',
+            'TAGS' => placeholder_tags(),
+            'CAT' => '',
+            'MEMBER_DETAILS' => '',
+            'RATING_DETAILS' => '',
+            'COMMENT_DETAILS' => '',
+            'ADD_GALLERY_URL' => placeholder_url(),
+            'EDIT_URL' => placeholder_url(),
+            'TITLE' => lorem_title(),
+            'DESCRIPTION' => lorem_paragraph(),
+            'IMAGE_URL' => placeholder_url(),
+            'VIDEO_URL' => placeholder_url(),
+            'MAY_DOWNLOAD' => true,
+            'ACCEPT_IMAGES' => true,
+            'ACCEPT_VIDEOS' => true,
+            'VIEWS' => strval(123),
+            'OWNER' => null,
+            'CAT_SELECT' => '*',
+            'DAYS' => '',
+            'IMAGE_SELECT' => '*',
+            'VIDEO_SELECT' => '*',
+            'FILTER' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -1307,9 +1266,9 @@ class Hook_addon_registry_galleries
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__gallery_slideshow_screen() : array
+    public function tpl_preview__gallery_slideshow_screen() : object
     {
         $carousel_entries = new Tempcode();
 
@@ -1333,18 +1292,16 @@ class Hook_addon_registry_galleries
             'COMMENTS_OPTIONS_HASH' => '',
         ]));
 
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_SLIDESHOW_SCREEN', [
-                'SLIDESHOW_ID' => placeholder_id(),
-                'TOTAL_ITEMS' => '1',
-                'CURRENT_INDEX' => '0',
-                'CURRENT_URL' => placeholder_image_url(),
-                'CURRENT_VIDEO' => null,
-                'CURRENT_TYPE' => 'image',
-                'CURRENT_COMMENT_DETAILS' => '',
-                'CAROUSEL_ENTRIES' => $carousel_entries,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('GALLERY_SLIDESHOW_SCREEN', [
+            'SLIDESHOW_ID' => placeholder_id(),
+            'TOTAL_ITEMS' => '1',
+            'CURRENT_INDEX' => '0',
+            'CURRENT_URL' => placeholder_image_url(),
+            'CURRENT_VIDEO' => null,
+            'CURRENT_TYPE' => 'image',
+            'CURRENT_COMMENT_DETAILS' => '',
+            'CAROUSEL_ENTRIES' => $carousel_entries,
+        ]), null, '', true);
     }
 
     /**

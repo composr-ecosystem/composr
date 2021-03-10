@@ -202,9 +202,9 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notification_browse_screen() : array
+    public function tpl_preview__notification_browse_screen() : object
     {
         $notifications = new Tempcode();
         $notifications->attach(
@@ -225,15 +225,11 @@ class Hook_addon_registry_core_notifications
             ])
         );
 
-        $out = do_lorem_template('NOTIFICATION_BROWSE_SCREEN', [
+        return lorem_globalise(do_lorem_template('NOTIFICATION_BROWSE_SCREEN', [
             'TITLE' => lorem_title(),
             'NOTIFICATIONS' => $notifications,
             'PAGINATION' => placeholder_pagination(),
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -241,11 +237,11 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notification_view_screen() : array
+    public function tpl_preview__notification_view_screen() : object
     {
-        $out = do_lorem_template('NOTIFICATION_VIEW_SCREEN', [
+        return lorem_globalise(do_lorem_template('NOTIFICATION_VIEW_SCREEN', [
             'TITLE' => lorem_title(),
             'ID' => placeholder_id(),
             'SUBJECT' => lorem_phrase(),
@@ -260,11 +256,7 @@ class Hook_addon_registry_core_notifications
             'NOTIFICATION_CODE' => placeholder_id(),
             'CODE_CATEGORY' => placeholder_id(),
             'HAS_READ' => true,
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -272,15 +264,11 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notification_poller() : array
+    public function tpl_preview__notification_poller() : object
     {
-        $out = do_lorem_template('NOTIFICATION_POLLER', []);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NOTIFICATION_POLLER', []), null, '', true);
     }
 
     /**
@@ -288,11 +276,11 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notification_web() : array
+    public function tpl_preview__notification_web() : object
     {
-        $out = do_lorem_template('NOTIFICATION_WEB', [
+        return lorem_globalise(do_lorem_template('NOTIFICATION_WEB', [
             'ID' => placeholder_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
@@ -306,11 +294,7 @@ class Hook_addon_registry_core_notifications
             'NOTIFICATION_CODE' => placeholder_id(),
             'CODE_CATEGORY' => placeholder_id(),
             'HAS_READ' => true,
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -318,11 +302,11 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notification_web_desktop() : array
+    public function tpl_preview__notification_web_desktop() : object
     {
-        $out = do_lorem_template('NOTIFICATION_WEB_DESKTOP', [
+        return lorem_globalise(do_lorem_template('NOTIFICATION_WEB_DESKTOP', [
             'ID' => placeholder_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
@@ -335,11 +319,7 @@ class Hook_addon_registry_core_notifications
             'DATE' => placeholder_date(),
             'NOTIFICATION_CODE' => placeholder_id(),
             'CODE_CATEGORY' => placeholder_id(),
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -347,11 +327,11 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notification_pt_desktop() : array
+    public function tpl_preview__notification_pt_desktop() : object
     {
-        $out = do_lorem_template('NOTIFICATION_PT_DESKTOP', [
+        return lorem_globalise(do_lorem_template('NOTIFICATION_PT_DESKTOP', [
             'ID' => placeholder_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
@@ -361,11 +341,7 @@ class Hook_addon_registry_core_notifications
             'FROM_AVATAR_URL' => placeholder_image_url(),
             '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -373,22 +349,18 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_top_notifications() : array
+    public function tpl_preview__block_top_notifications() : object
     {
-        $out = do_lorem_template('BLOCK_TOP_NOTIFICATIONS', [
+        return lorem_globalise(do_lorem_template('BLOCK_TOP_NOTIFICATIONS', [
             'BLOCK_ID' => lorem_word(),
             'NUM_UNREAD_WEB_NOTIFICATIONS' => placeholder_number(),
             'NUM_UNREAD_PTS' => placeholder_number(),
             'NOTIFICATIONS' => '',
             'PTS' => '',
             'MAX' => '5',
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -396,9 +368,9 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notifications_regular() : array
+    public function tpl_preview__notifications_regular() : object
     {
         require_lang('cns_mailinglists');
 
@@ -443,15 +415,12 @@ class Hook_addon_registry_core_notifications
             'ADVANCED_COLUMN' => true,
             'SHOW_PRIVILEGES' => false,
         ]);
-        $out = do_lorem_template('NOTIFICATIONS_MANAGE_SCREEN', [
+
+        return lorem_globalise(do_lorem_template('NOTIFICATIONS_MANAGE_SCREEN', [
             'TITLE' => lorem_title(),
             'INTERFACE' => $interface,
             'ACTION_URL' => get_self_url(),
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -459,9 +428,9 @@ class Hook_addon_registry_core_notifications
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__notifications_advanced() : array
+    public function tpl_preview__notifications_advanced() : object
     {
         $notification_types = [];
         $notification_types[] = [
@@ -492,7 +461,8 @@ class Hook_addon_registry_core_notifications
             'LABEL' => lorem_phrase(),
             'RAW' => placeholder_number(),
         ];
-        $out = do_lorem_template('NOTIFICATIONS_MANAGE_ADVANCED_SCREEN', [
+
+        return lorem_globalise(do_lorem_template('NOTIFICATIONS_MANAGE_ADVANCED_SCREEN', [
             'TITLE' => lorem_title(),
             '_TITLE' => lorem_phrase(),
             'COLOR' => 'FFFFFF',
@@ -500,10 +470,6 @@ class Hook_addon_registry_core_notifications
             'NOTIFICATION_TYPES_TITLES' => $notification_types_titles,
             'TREE' => $tree,
             'NOTIFICATION_CODE' => placeholder_id(),
-        ]);
-
-        return [
-            lorem_globalise($out, null, '', true)
-        ];
+        ]), null, '', true);
     }
 }

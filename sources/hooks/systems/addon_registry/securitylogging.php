@@ -163,21 +163,19 @@ class Hook_addon_registry_securitylogging
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__ip_ban_screen() : array
+    public function tpl_preview__ip_ban_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('IP_BAN_SCREEN', [
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TITLE' => lorem_title(),
-                'BANS' => placeholder_ip(),
-                'UNBANNABLE' => placeholder_ip(),
-                'LOCKED_BANS' => placeholder_ip(),
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('IP_BAN_SCREEN', [
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TITLE' => lorem_title(),
+            'BANS' => placeholder_ip(),
+            'UNBANNABLE' => placeholder_ip(),
+            'LOCKED_BANS' => placeholder_ip(),
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -185,26 +183,24 @@ class Hook_addon_registry_securitylogging
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__hack_attempt_mail() : array
+    public function tpl_preview__administrative__hack_attempt_mail() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', [
-                'STACK_TRACE' => lorem_phrase(),
-                'USER_AGENT' => lorem_phrase(),
-                'REFERER' => lorem_phrase(),
-                'USER_OS' => lorem_phrase(),
-                'REASON' => lorem_phrase(),
-                'IP' => placeholder_ip(),
-                'ID' => placeholder_id(),
-                'USERNAME' => lorem_word(),
-                'TIME_RAW' => placeholder_date_raw(),
-                'DATE' => placeholder_date(),
-                'URL' => placeholder_url(),
-                'POST' => lorem_phrase(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', [
+            'STACK_TRACE' => lorem_phrase(),
+            'USER_AGENT' => lorem_phrase(),
+            'REFERER' => lorem_phrase(),
+            'USER_OS' => lorem_phrase(),
+            'REASON' => lorem_phrase(),
+            'IP' => placeholder_ip(),
+            'ID' => placeholder_id(),
+            'USERNAME' => lorem_word(),
+            'TIME_RAW' => placeholder_date_raw(),
+            'DATE' => placeholder_date(),
+            'URL' => placeholder_url(),
+            'POST' => lorem_phrase(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -212,20 +208,18 @@ class Hook_addon_registry_securitylogging
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__security_screen() : array
+    public function tpl_preview__administrative__security_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('SECURITY_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FAILED_LOGINS' => placeholder_table(),
-                'NUM_FAILED_LOGINS' => placeholder_number(),
-                'ALERTS' => lorem_phrase(),
-                'NUM_ALERTS' => placeholder_number(),
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SECURITY_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FAILED_LOGINS' => placeholder_table(),
+            'NUM_FAILED_LOGINS' => placeholder_number(),
+            'ALERTS' => lorem_phrase(),
+            'NUM_ALERTS' => placeholder_number(),
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -233,24 +227,22 @@ class Hook_addon_registry_securitylogging
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__security_alert_screen() : array
+    public function tpl_preview__administrative__security_alert_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
-                'TITLE' => lorem_title(),
-                'USER_AGENT' => lorem_phrase(),
-                'REFERER' => lorem_phrase(),
-                'USER_OS' => lorem_phrase(),
-                'REASON' => lorem_phrase(),
-                'IP' => lorem_phrase(),
-                'USERNAME' => lorem_word(),
-                'POST' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'PERCENTAGE_SCORE' => placeholder_number(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
+            'TITLE' => lorem_title(),
+            'USER_AGENT' => lorem_phrase(),
+            'REFERER' => lorem_phrase(),
+            'USER_OS' => lorem_phrase(),
+            'REASON' => lorem_phrase(),
+            'IP' => lorem_phrase(),
+            'USERNAME' => lorem_word(),
+            'POST' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'PERCENTAGE_SCORE' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -258,9 +250,9 @@ class Hook_addon_registry_securitylogging
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__lookup_screen() : array
+    public function tpl_preview__administrative__lookup_screen() : object
     {
         $inner_ip_list = new Tempcode();
         foreach (placeholder_array() as $value) {
@@ -279,25 +271,23 @@ class Hook_addon_registry_securitylogging
             'GROUP' => $inner_ip_list,
             'OPEN_DEFAULT' => true,
         ]);
-        return [
-            lorem_globalise(do_lorem_template('LOOKUP_SCREEN', [
-                'TITLE' => lorem_title(),
-                'ALERTS' => lorem_phrase(),
-                'STATS' => lorem_phrase(),
-                'IP_LIST' => $group,
-                'IP_BANNED' => lorem_phrase(),
-                'SUBMITTER_BANNED' => lorem_phrase(),
-                'MEMBER_BANNED' => lorem_phrase(),
-                'MEMBER_ID' => placeholder_id(),
-                'IP' => placeholder_ip(),
-                'EMAIL_ADDRESS' => lorem_phrase(),
-                'USERNAME' => lorem_word(),
-                'SEARCH_URL' => placeholder_url(),
-                'AUTHOR_URL' => placeholder_url(),
-                'POINTS_URL' => placeholder_url(),
-                'PROFILE_URL' => placeholder_url(),
-                'ACTIONLOG_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('LOOKUP_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ALERTS' => lorem_phrase(),
+            'STATS' => lorem_phrase(),
+            'IP_LIST' => $group,
+            'IP_BANNED' => lorem_phrase(),
+            'SUBMITTER_BANNED' => lorem_phrase(),
+            'MEMBER_BANNED' => lorem_phrase(),
+            'MEMBER_ID' => placeholder_id(),
+            'IP' => placeholder_ip(),
+            'EMAIL_ADDRESS' => lorem_phrase(),
+            'USERNAME' => lorem_word(),
+            'SEARCH_URL' => placeholder_url(),
+            'AUTHOR_URL' => placeholder_url(),
+            'POINTS_URL' => placeholder_url(),
+            'PROFILE_URL' => placeholder_url(),
+            'ACTIONLOG_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 }

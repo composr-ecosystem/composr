@@ -186,16 +186,14 @@ class Hook_addon_registry_community_billboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__community_billboard_screen() : array
+    public function tpl_preview__community_billboard_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', [
-                'QUEUE' => placeholder_number(),
-                'DAYS' => placeholder_number(),
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', [
+            'QUEUE' => placeholder_number(),
+            'DAYS' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -203,9 +201,9 @@ class Hook_addon_registry_community_billboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__community_billboard_manage_screen() : array
+    public function tpl_preview__administrative__community_billboard_manage_screen() : object
     {
         require_css('forms');
 
@@ -250,23 +248,21 @@ class Hook_addon_registry_community_billboard
             'COMCODE' => '',
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('FORM_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TEXT' => $about_current,
-                'HIDDEN' => '',
-                'URL' => placeholder_url(),
-                'GET' => true,
-                'FIELDS' => $fields,
-                'SUBMIT_ICON' => 'buttons/proceed',
-                'SUBMIT_NAME' => lorem_word(),
-                'SKIP_WEBSTANDARDS' => false,
-                'SUPPORT_AUTOSAVE' => false,
-                'JS_FUNCTION_CALLS' => [],
-                'MODSECURITY_WORKAROUND' => false,
-                'POST' => false,
-                'ANALYTIC_EVENT_CATEGORY' => null,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FORM_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TEXT' => $about_current,
+            'HIDDEN' => '',
+            'URL' => placeholder_url(),
+            'GET' => true,
+            'FIELDS' => $fields,
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => lorem_word(),
+            'SKIP_WEBSTANDARDS' => false,
+            'SUPPORT_AUTOSAVE' => false,
+            'JS_FUNCTION_CALLS' => [],
+            'MODSECURITY_WORKAROUND' => false,
+            'POST' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+        ]), null, '', true);
     }
 }

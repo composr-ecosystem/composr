@@ -176,17 +176,15 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_poll() : array
+    public function tpl_preview__block_main_poll() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_POLL', [
-                'BLOCK_ID' => lorem_word(),
-                'CONTENT' => $this->poll('poll'),
-                'BLOCK_PARAMS' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_POLL', [
+            'BLOCK_ID' => lorem_word(),
+            'CONTENT' => $this->poll('poll'),
+            'BLOCK_PARAMS' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -194,9 +192,9 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poll_rss_summary() : array
+    public function tpl_preview__poll_rss_summary() : object
     {
         require_code('xml');
 
@@ -210,21 +208,19 @@ class Hook_addon_registry_polls
             'ID' => placeholder_id(),
         ], null, false, null, '.xml', 'xml');
 
-        return [
-            lorem_globalise(do_lorem_template('RSS_ENTRY', [
-                'VIEW_URL' => placeholder_url(),
-                'SUMMARY' => $summary,
-                'EDIT_DATE' => placeholder_date(),
-                'IF_COMMENTS' => $if_comments,
-                'TITLE' => lorem_phrase(),
-                'CATEGORY_RAW' => null,
-                'CATEGORY' => '',
-                'AUTHOR' => lorem_word(),
-                'ID' => placeholder_id(),
-                'NEWS' => lorem_paragraph(),
-                'DATE' => placeholder_date(),
-            ], null, false, null, '.xml', 'xml'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('RSS_ENTRY', [
+            'VIEW_URL' => placeholder_url(),
+            'SUMMARY' => $summary,
+            'EDIT_DATE' => placeholder_date(),
+            'IF_COMMENTS' => $if_comments,
+            'TITLE' => lorem_phrase(),
+            'CATEGORY_RAW' => null,
+            'CATEGORY' => '',
+            'AUTHOR' => lorem_word(),
+            'ID' => placeholder_id(),
+            'NEWS' => lorem_paragraph(),
+            'DATE' => placeholder_date(),
+        ], null, false, null, '.xml', 'xml'), null, '', true);
     }
 
     /**
@@ -232,9 +228,9 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poll_answer() : array
+    public function tpl_preview__poll_answer() : object
     {
         return $this->poll('poll');
     }
@@ -244,9 +240,9 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poll_answer_result() : array
+    public function tpl_preview__poll_answer_result() : object
     {
         return $this->poll('result');
     }
@@ -257,9 +253,9 @@ class Hook_addon_registry_polls
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
      * @param  string $section View type
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function poll(string $section = '') : array
+    public function poll(string $section = '') : object
     {
         $tpl = new Tempcode();
         switch ($section) {
@@ -318,7 +314,7 @@ class Hook_addon_registry_polls
                 }
         }
 
-        $wrap_content = do_lorem_template('POLL_BOX', [
+        return lorem_globalise(do_lorem_template('POLL_BOX', [
             '_GUID' => '4c6b026f7ed96f0b5b8408eb5e5affb5',
             'VOTE_URL' => placeholder_url(),
             'GIVE_CONTEXT' => true,
@@ -333,11 +329,7 @@ class Hook_addon_registry_polls
             'CONTENT' => $tpl,
             'FULL_URL' => placeholder_url(),
             'TOTAL_VOTES' => placeholder_number(),
-        ]);
-
-        return [
-            lorem_globalise($wrap_content, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -345,16 +337,14 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poll_list_line() : array
+    public function tpl_preview__poll_list_line() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('POLL_LIST_LINE', [
-                'QUESTION' => lorem_phrase(),
-                'STATUS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POLL_LIST_LINE', [
+            'QUESTION' => lorem_phrase(),
+            'STATUS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -362,9 +352,9 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poll_screen() : array
+    public function tpl_preview__poll_screen() : object
     {
         require_lang('trackbacks');
 
@@ -406,25 +396,23 @@ class Hook_addon_registry_polls
 
         $poll_details = $this->poll('poll');
 
-        return [
-            lorem_globalise(do_lorem_template('POLL_SCREEN', [
-                'TITLE' => lorem_title(),
-                'DATE_RAW' => placeholder_date_raw(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'DATE' => placeholder_date(),
-                'ADD_DATE' => placeholder_date(),
-                'EDIT_DATE' => placeholder_date(),
-                'VIEWS' => placeholder_number(),
-                'TRACKBACK_DETAILS' => $trackback_details,
-                'RATING_DETAILS' => $rating_details,
-                'COMMENT_DETAILS' => $comment_details,
-                'EDIT_URL' => placeholder_url(),
-                'POLL_DETAILS' => $poll_details,
-                'SUBMITTER' => placeholder_id(),
-                'ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POLL_SCREEN', [
+            'TITLE' => lorem_title(),
+            'DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'DATE' => placeholder_date(),
+            'ADD_DATE' => placeholder_date(),
+            'EDIT_DATE' => placeholder_date(),
+            'VIEWS' => placeholder_number(),
+            'TRACKBACK_DETAILS' => $trackback_details,
+            'RATING_DETAILS' => $rating_details,
+            'COMMENT_DETAILS' => $comment_details,
+            'EDIT_URL' => placeholder_url(),
+            'POLL_DETAILS' => $poll_details,
+            'SUBMITTER' => placeholder_id(),
+            'ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -432,15 +420,13 @@ class Hook_addon_registry_polls
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__poll_archive_screen() : array
+    public function tpl_preview__poll_archive_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('POLL_ARCHIVE_SCREEN', [
-                'TITLE' => lorem_title(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POLL_ARCHIVE_SCREEN', [
+            'TITLE' => lorem_title(),
+        ]), null, '', true);
     }
 
     /**

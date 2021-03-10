@@ -142,20 +142,18 @@ class Hook_addon_registry_content_reviews
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__review_status() : array
+    public function tpl_preview__review_status() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REVIEW_STATUS', [
-                'LAST_REVIEWED_DATE' => placeholder_date(),
-                'NEXT_REVIEW_DATE' => placeholder_date(),
-                '_LAST_REVIEWED_TIME' => placeholder_date_raw(),
-                '_NEXT_REVIEW_TIME' => placeholder_date_raw(),
-                'CONTENT_TYPE' => placeholder_id(),
-                'CONTENT_ID' => placeholder_id(),
-                'DISPLAY' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REVIEW_STATUS', [
+            'LAST_REVIEWED_DATE' => placeholder_date(),
+            'NEXT_REVIEW_DATE' => placeholder_date(),
+            '_LAST_REVIEWED_TIME' => placeholder_date_raw(),
+            '_NEXT_REVIEW_TIME' => placeholder_date_raw(),
+            'CONTENT_TYPE' => placeholder_id(),
+            'CONTENT_ID' => placeholder_id(),
+            'DISPLAY' => true,
+        ]), null, '', true);
     }
 }

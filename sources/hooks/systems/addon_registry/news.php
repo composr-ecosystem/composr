@@ -240,9 +240,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_image_fader_news() : array
+    public function tpl_preview__block_main_image_fader_news() : object
     {
         require_lang('news');
 
@@ -259,16 +259,13 @@ class Hook_addon_registry_news
             'AUTHOR_URL' => placeholder_url(),
         ];
 
-        $block = do_lorem_template('BLOCK_MAIN_IMAGE_FADER_NEWS', [
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_IMAGE_FADER_NEWS', [
             'BLOCK_ID' => lorem_word(),
             'TITLE' => lorem_phrase(),
             'ARCHIVE_URL' => placeholder_url(),
             'NEWS' => $news,
             'MILL' => '8000',
-        ]);
-        return [
-            lorem_globalise($block, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -276,21 +273,18 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_member_profile_blog() : array
+    public function tpl_preview__cns_member_profile_blog() : object
     {
         require_lang('news');
 
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_BLOG', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_BLOG', [
             'MEMBER_ID' => placeholder_id(),
             'RECENT_BLOG_POSTS' => lorem_paragraph_html(),
             'RSS_URL' => placeholder_url(),
             'ADD_BLOG_POST_URL' => placeholder_url(),
-        ]);
-        return [
-            lorem_globalise($tab_content, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -298,9 +292,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_news_archive() : array
+    public function tpl_preview__block_side_news_archive() : object
     {
         require_lang('news');
         require_lang('dates');
@@ -338,13 +332,11 @@ class Hook_addon_registry_news
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_NEWS_ARCHIVE', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'YEARS' => $years,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_NEWS_ARCHIVE', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'YEARS' => $years,
+        ]), null, '', true);
     }
 
     /**
@@ -396,9 +388,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_news() : array
+    public function tpl_preview__block_main_news() : object
     {
         require_lang('news');
         require_lang('cns');
@@ -420,27 +412,25 @@ class Hook_addon_registry_news
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWS', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOG' => true,
-                'TITLE' => lorem_phrase(),
-                'SLIDER' => '',
-                'SUMMARY_CONTENT' => $brief_contents,
-                'BRIEF_CONTENT' => lorem_phrase(),
-                'RSS_URL' => placeholder_url(),
-                'ATOM_URL' => placeholder_url(),
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-                'BLOCK_PARAMS' => '',
-                'FILTER' => '',
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWS', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOG' => true,
+            'TITLE' => lorem_phrase(),
+            'SLIDER' => '',
+            'SUMMARY_CONTENT' => $brief_contents,
+            'BRIEF_CONTENT' => lorem_phrase(),
+            'RSS_URL' => placeholder_url(),
+            'ATOM_URL' => placeholder_url(),
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+            'BLOCK_PARAMS' => '',
+            'FILTER' => '',
 
-                'START' => '0',
-                'MAX' => '10',
-                'START_PARAM' => 'x_start',
-                'MAX_PARAM' => 'x_max',
-            ]), null, '', true)
-        ];
+            'START' => '0',
+            'MAX' => '10',
+            'START_PARAM' => 'x_start',
+            'MAX_PARAM' => 'x_max',
+        ]), null, '', true);
     }
 
     /**
@@ -448,9 +438,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_news_grid() : array
+    public function tpl_preview__block_main_news_grid() : object
     {
         require_lang('news');
         require_lang('cns');
@@ -496,27 +486,25 @@ class Hook_addon_registry_news
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWS_GRID', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOG' => true,
-                'TITLE' => lorem_phrase(),
-                'SLIDER' => $slider,
-                'SUMMARY_CONTENT' => $brief_contents,
-                'BRIEF_CONTENT' => lorem_phrase(),
-                'RSS_URL' => placeholder_url(),
-                'ATOM_URL' => placeholder_url(),
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-                'BLOCK_PARAMS' => '',
-                'FILTER' => '',
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWS_GRID', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOG' => true,
+            'TITLE' => lorem_phrase(),
+            'SLIDER' => $slider,
+            'SUMMARY_CONTENT' => $brief_contents,
+            'BRIEF_CONTENT' => lorem_phrase(),
+            'RSS_URL' => placeholder_url(),
+            'ATOM_URL' => placeholder_url(),
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+            'BLOCK_PARAMS' => '',
+            'FILTER' => '',
 
-                'START' => '0',
-                'MAX' => '10',
-                'START_PARAM' => 'x_start',
-                'MAX_PARAM' => 'x_max',
-            ]), null, '', true)
-        ];
+            'START' => '0',
+            'MAX' => '10',
+            'START_PARAM' => 'x_start',
+            'MAX_PARAM' => 'x_max',
+        ]), null, '', true);
     }
 
     /**
@@ -524,9 +512,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_news() : array
+    public function tpl_preview__block_side_news() : object
     {
         require_lang('news');
 
@@ -548,16 +536,14 @@ class Hook_addon_registry_news
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_NEWS', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOG' => true,
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => $contents,
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_NEWS', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOG' => true,
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $contents,
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -565,9 +551,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_news_categories() : array
+    public function tpl_preview__block_side_news_categories() : object
     {
         require_lang('news');
 
@@ -579,14 +565,12 @@ class Hook_addon_registry_news
                 'COUNT' => placeholder_number(),
             ];
         }
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_NEWS_CATEGORIES', [
-                'BLOCK_ID' => lorem_word(),
-                'CATEGORIES' => $categories,
-                'PRE' => '',
-                'POST' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_NEWS_CATEGORIES', [
+            'BLOCK_ID' => lorem_word(),
+            'CATEGORIES' => $categories,
+            'PRE' => '',
+            'POST' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -594,9 +578,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_bottom_news() : array
+    public function tpl_preview__block_bottom_news() : object
     {
         require_lang('news');
 
@@ -608,13 +592,11 @@ class Hook_addon_registry_news
                 'NEWS_TITLE' => lorem_phrase(),
             ];
         }
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_BOTTOM_NEWS', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOG' => true,
-                'POSTS' => $contents_arr,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_BOTTOM_NEWS', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOG' => true,
+            'POSTS' => $contents_arr,
+        ]), null, '', true);
     }
 
     /**
@@ -622,19 +604,17 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__news_wordpress_import_screen() : array
+    public function tpl_preview__administrative__news_wordpress_import_screen() : object
     {
         require_lang('news');
 
-        return [
-            lorem_globalise(do_lorem_template('NEWS_WORDPRESS_IMPORT_SCREEN', [
-                'TITLE' => lorem_title(),
-                'XML_UPLOAD_FORM' => placeholder_form(),
-                'DB_IMPORT_FORM' => placeholder_form(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWS_WORDPRESS_IMPORT_SCREEN', [
+            'TITLE' => lorem_title(),
+            'XML_UPLOAD_FORM' => placeholder_form(),
+            'DB_IMPORT_FORM' => placeholder_form(),
+        ]), null, '', true);
     }
 
     /**
@@ -642,26 +622,24 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__news_archive_screen() : array
+    public function tpl_preview__news_archive_screen() : object
     {
         require_lang('news');
 
-        return [
-            lorem_globalise(do_lorem_template('NEWS_ARCHIVE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SUBMIT_URL' => placeholder_url(),
-                'EDIT_CAT_URL' => placeholder_url(),
-                'BLOG' => false,
-                'BLOGS' => '-1',
-                'FILTER' => '',
-                'SELECT' => '*',
-                'SELECT_AND' => '*',
-                'MAX' => '30',
-                'INLINE' => '0',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWS_ARCHIVE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SUBMIT_URL' => placeholder_url(),
+            'EDIT_CAT_URL' => placeholder_url(),
+            'BLOG' => false,
+            'BLOGS' => '-1',
+            'FILTER' => '',
+            'SELECT' => '*',
+            'SELECT_AND' => '*',
+            'MAX' => '30',
+            'INLINE' => '0',
+        ]), null, '', true);
     }
 
     /**
@@ -669,9 +647,9 @@ class Hook_addon_registry_news
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__news_full_screen() : array
+    public function tpl_preview__news_full_screen() : object
     {
         require_javascript('editing');
 
@@ -701,36 +679,34 @@ class Hook_addon_registry_news
             'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('NEWS_ENTRY_SCREEN', [
-                'ID' => placeholder_id(),
-                'CATEGORY_ID' => placeholder_id(),
-                'BLOG' => true,
-                '_TITLE' => lorem_phrase(),
-                'CATEGORIES' => placeholder_array(),
-                'NEWSLETTER_URL' => addon_installed('newsletter') ? placeholder_url() : '',
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => '',
-                'SUBMITTER' => placeholder_id(),
-                'CATEGORY' => lorem_phrase(),
-                'REP_IMAGE_URL' => placeholder_image_url(),
-                'TITLE' => lorem_title(),
-                'VIEWS' => '3',
-                'COMMENT_DETAILS' => $comment_details,
-                'RATING_DETAILS' => lorem_sentence(),
-                'TRACKBACK_DETAILS' => lorem_sentence(),
-                'DATE' => placeholder_date(),
-                'AUTHOR' => lorem_word(),
-                'AUTHOR_URL' => placeholder_url(),
-                'NEWS_FULL' => lorem_paragraph(),
-                'NEWS_FULL_PLAIN' => lorem_sentence(),
-                'EDIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-                'SUBMIT_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TAGS' => placeholder_tags(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWS_ENTRY_SCREEN', [
+            'ID' => placeholder_id(),
+            'CATEGORY_ID' => placeholder_id(),
+            'BLOG' => true,
+            '_TITLE' => lorem_phrase(),
+            'CATEGORIES' => placeholder_array(),
+            'NEWSLETTER_URL' => addon_installed('newsletter') ? placeholder_url() : '',
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => '',
+            'SUBMITTER' => placeholder_id(),
+            'CATEGORY' => lorem_phrase(),
+            'REP_IMAGE_URL' => placeholder_image_url(),
+            'TITLE' => lorem_title(),
+            'VIEWS' => '3',
+            'COMMENT_DETAILS' => $comment_details,
+            'RATING_DETAILS' => lorem_sentence(),
+            'TRACKBACK_DETAILS' => lorem_sentence(),
+            'DATE' => placeholder_date(),
+            'AUTHOR' => lorem_word(),
+            'AUTHOR_URL' => placeholder_url(),
+            'NEWS_FULL' => lorem_paragraph(),
+            'NEWS_FULL_PLAIN' => lorem_sentence(),
+            'EDIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+            'SUBMIT_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TAGS' => placeholder_tags(),
+        ]), null, '', true);
     }
 
     /**

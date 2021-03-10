@@ -924,19 +924,16 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
     }
 
     // Render preview(s)
-    $previews = call_user_func([$ob, $function]);
+    $preview = call_user_func([$ob, $function]);
 
-    // Put it together and return
-    $out = new Tempcode();
-    foreach ($previews as $preview) {
-        // Show as plain text if needed
-        if ($text) {
-            $out->attach(with_whitespace($preview));
-        } else {
-            $out->attach($preview);
-        }
+    // Show as plain text if needed
+    if ($text) {
+        $out = with_whitespace($preview);
+    } else {
+        $out = $preview;
     }
     return $out;
+
 }
 
 /**

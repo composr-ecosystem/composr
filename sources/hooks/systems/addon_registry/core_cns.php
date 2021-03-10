@@ -550,9 +550,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__cns_delurk_confirm() : array
+    public function tpl_preview__administrative__cns_delurk_confirm() : object
     {
         $lurkers = [
             [
@@ -567,13 +567,11 @@ class Hook_addon_registry_core_cns
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_DELURK_CONFIRM', [
-                'TITLE' => lorem_title(),
-                'LURKERS' => $lurkers,
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_DELURK_CONFIRM', [
+            'TITLE' => lorem_title(),
+            'LURKERS' => $lurkers,
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -581,9 +579,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_join_step1_screen() : array
+    public function tpl_preview__cns_join_step1_screen() : object
     {
         $group_select = new Tempcode();
 
@@ -591,16 +589,14 @@ class Hook_addon_registry_core_cns
             $group_select->attach(form_input_list_entry(strval($key), false, $value));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_JOIN_STEP1_SCREEN', [
-                'TITLE' => lorem_title(),
-                'RULES' => lorem_chunk_html(),
-                'URL' => placeholder_url(),
-                'HIDDEN' => '',
-                'GROUP_SELECT' => $group_select,
-                'DECLARATIONS' => [do_lang('I_AGREE')],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_JOIN_STEP1_SCREEN', [
+            'TITLE' => lorem_title(),
+            'RULES' => lorem_chunk_html(),
+            'URL' => placeholder_url(),
+            'HIDDEN' => '',
+            'GROUP_SELECT' => $group_select,
+            'DECLARATIONS' => [do_lang('I_AGREE')],
+        ]), null, '', true);
     }
 
     /**
@@ -608,9 +604,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_join_step2_screen() : array
+    public function tpl_preview__cns_join_step2_screen() : object
     {
         require_css('forms');
 
@@ -716,12 +712,10 @@ class Hook_addon_registry_core_cns
             'GET' => false,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_JOIN_STEP2_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FORM' => $form,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_JOIN_STEP2_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FORM' => $form,
+        ]), null, '', true);
     }
 
     /**
@@ -729,21 +723,19 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_user_member() : array
+    public function tpl_preview__cns_user_member() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CNS_USER_MEMBER', [
-                'FIRST' => true,
-                'COLOUR' => '',
-                'PROFILE_URL' => placeholder_url(),
-                'USERNAME' => lorem_word(),
-                'MEMBER_ID' => placeholder_id(),
-                'USERGROUP' => lorem_word_2(),
-                'AT' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_USER_MEMBER', [
+            'FIRST' => true,
+            'COLOUR' => '',
+            'PROFILE_URL' => placeholder_url(),
+            'USERNAME' => lorem_word(),
+            'MEMBER_ID' => placeholder_id(),
+            'USERGROUP' => lorem_word_2(),
+            'AT' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -751,9 +743,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_emoticon_table() : array
+    public function tpl_preview__cns_emoticon_table() : object
     {
         $rows = [];
         $cols = 4;
@@ -779,35 +771,158 @@ class Hook_addon_registry_core_cns
             ];
         }
 
-        $content = do_lorem_template('CNS_EMOTICON_TABLE', [
+        return lorem_globalise(do_lorem_template('CNS_EMOTICON_TABLE', [
             'ROWS' => $rows,
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__cns_member_directory_username() : object
+    {
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_USERNAME', [
+            'ID' => placeholder_id(),
+            'USERNAME' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'AVATAR_URL' => placeholder_image_url(),
+            'PHOTO_URL' => placeholder_image_url(),
+            'VALIDATED' => true,
+            'CONFIRMED' => true,
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__cns_member_directory_screen() : object
+    {
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_SCREEN', [
+            'TITLE' => lorem_title(),
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members() : object
+    {
+        return $this->block_main_members_preview('BLOCK_MAIN_MEMBERS');
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__block_main_members_complex() : object
+    {
+        return $this->block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX');
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @param  string $tpl Template
+     * @return Tempcode Preview
+     */
+    public function block_main_members_preview($tpl) : object
+    {
+        $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+            'NAME' => lorem_phrase(),
+            'RAW' => placeholder_ip(),
+            'VALUE' => placeholder_ip(),
+            'MEMBER_ID' => placeholder_id(),
+        ]);
+        $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
+            'CUSTOM_FIELDS' => $custom_fields,
+        ]);
+        $box = do_lorem_template('CNS_MEMBER_BOX', [
+            'GIVE_CONTEXT' => false,
+            'MEMBER_ID' => placeholder_id(),
+            'USERNAME' => lorem_phrase(),
+            'POSTS' => placeholder_number(),
+            'POINTS' => placeholder_number(),
+            'JOIN_DATE_RAW' => placeholder_date_raw(),
+            'JOIN_DATE' => placeholder_date(),
+            'PRIMARY_GROUP_NAME' => lorem_phrase(),
+            'SECONDARY_GROUPS' => [
+                lorem_word(),
+            ],
+            'CUSTOM_FIELDS' => lorem_phrase(),
+            'ONLINE' => false,
+            'AVATAR_URL' => placeholder_image_url(),
+            'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
+            'DOB' => lorem_title(),
+            '_DOB' => placeholder_date_raw(),
+            '_DOB_CENSORED' => placeholder_date_raw(),
+            'NUM_WARNINGS' => placeholder_number(),
         ]);
 
-        return [
-            lorem_globalise($content, null, '', true)
+        $member_boxes = [];
+        $member_boxes[] = [
+            'I' => '0',
+            'BREAK' => false,
+            'BOX' => $box,
+            'MEMBER_ID' => placeholder_id(),
+            'GALLERY_NAME' => '',
+            'GALLERY_TITLE' => '',
         ];
-    }
 
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__cns_member_directory_username() : array
-    {
-        return [
-            lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_USERNAME', [
-                'ID' => placeholder_id(),
-                'USERNAME' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'AVATAR_URL' => placeholder_image_url(),
-                'PHOTO_URL' => placeholder_image_url(),
-                'VALIDATED' => true,
-                'CONFIRMED' => true,
-            ]), null, '', true)
+        $per_row = 6;
+
+        $usergroups = [];
+        $usergroups[placeholder_id()] = ['USERGROUP' => lorem_phrase(), 'NUM' => placeholder_number()];
+
+        $symbols = [
+            [
+                'START' => '0',
+                'SYMBOL' => 'a',
+            ],
+            [
+                'START' => '1',
+                'SYMBOL' => 'b',
+            ],
+            [
+                'START' => '3',
+                'SYMBOL' => 'c',
+            ]
         ];
+
+        return lorem_globalise(do_lorem_template($tpl, [
+            'BLOCK_ID' => '',
+            'START' => strval(0),
+            'MAX' => strval(30),
+            'SORTABLE' => 'm_join_time',
+            'SORT_ORDER' => 'DESC',
+            'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0/*avoid possibility of rounding issues as pixels will not divide perfectly*/ / floatval($per_row)) . '%'),
+            'PER_ROW' => strval($per_row),
+            'DISPLAY_MODE' => 'avatars',
+            'MEMBER_BOXES' => $member_boxes,
+            'PAGINATION' => placeholder_pagination(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'USERGROUPS' => $usergroups,
+            'SYMBOLS' => $symbols,
+            'HAS_ACTIVE_FILTER' => true,
+            'INCLUDE_FORM' => false,
+            'SORT' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -815,121 +930,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_member_directory_screen() : array
-    {
-        return [
-            lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_SCREEN', [
-                'TITLE' => lorem_title(),
-            ]), null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__block_main_members() : array
-    {
-        $out = [];
-
-        foreach (['BLOCK_MAIN_MEMBERS', 'BLOCK_MAIN_MEMBERS_COMPLEX'] as $tpl) {
-            $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
-                'NAME' => lorem_phrase(),
-                'RAW' => placeholder_ip(),
-                'VALUE' => placeholder_ip(),
-                'MEMBER_ID' => placeholder_id(),
-            ]);
-            $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
-                'CUSTOM_FIELDS' => $custom_fields,
-            ]);
-            $box = do_lorem_template('CNS_MEMBER_BOX', [
-                'GIVE_CONTEXT' => false,
-                'MEMBER_ID' => placeholder_id(),
-                'USERNAME' => lorem_phrase(),
-                'POSTS' => placeholder_number(),
-                'POINTS' => placeholder_number(),
-                'JOIN_DATE_RAW' => placeholder_date_raw(),
-                'JOIN_DATE' => placeholder_date(),
-                'PRIMARY_GROUP_NAME' => lorem_phrase(),
-                'SECONDARY_GROUPS' => [
-                    lorem_word(),
-                ],
-                'CUSTOM_FIELDS' => lorem_phrase(),
-                'ONLINE' => false,
-                'AVATAR_URL' => placeholder_image_url(),
-                'DOB_LABEL' => do_lang('DATE_OF_BIRTH'),
-                'DOB' => lorem_title(),
-                '_DOB' => placeholder_date_raw(),
-                '_DOB_CENSORED' => placeholder_date_raw(),
-                'NUM_WARNINGS' => placeholder_number(),
-            ]);
-
-            $member_boxes = [];
-            $member_boxes[] = [
-                'I' => '0',
-                'BREAK' => false,
-                'BOX' => $box,
-                'MEMBER_ID' => placeholder_id(),
-                'GALLERY_NAME' => '',
-                'GALLERY_TITLE' => '',
-            ];
-
-            $per_row = 6;
-
-            $usergroups = [];
-            $usergroups[placeholder_id()] = ['USERGROUP' => lorem_phrase(), 'NUM' => placeholder_number()];
-
-            $symbols = [
-                [
-                    'START' => '0',
-                    'SYMBOL' => 'a',
-                ],
-                [
-                    'START' => '1',
-                    'SYMBOL' => 'b',
-                ],
-                [
-                    'START' => '3',
-                    'SYMBOL' => 'c',
-                ]
-            ];
-
-            $out[] = lorem_globalise(do_lorem_template($tpl, [
-                'BLOCK_ID' => '',
-                'START' => strval(0),
-                'MAX' => strval(30),
-                'SORTABLE' => 'm_join_time',
-                'SORT_ORDER' => 'DESC',
-                'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0/*avoid possibility of rounding issues as pixels will not divide perfectly*/ / floatval($per_row)) . '%'),
-                'PER_ROW' => strval($per_row),
-                'DISPLAY_MODE' => 'avatars',
-                'MEMBER_BOXES' => $member_boxes,
-                'PAGINATION' => placeholder_pagination(),
-                'RESULTS_TABLE' => placeholder_table(),
-                'USERGROUPS' => $usergroups,
-                'SYMBOLS' => $symbols,
-                'HAS_ACTIVE_FILTER' => true,
-                'INCLUDE_FORM' => false,
-                'SORT' => '',
-            ]), null, '', true);
-        }
-
-        return $out;
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__cns_member_profile_screen() : array
+    public function tpl_preview__cns_member_profile_screen() : object
     {
         $sections = [
             'contact' => lorem_word(),
@@ -1071,13 +1074,11 @@ class Hook_addon_registry_core_cns
             'TAB_LAST' => true,
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_SCREEN', [
-                'TITLE' => get_screen_title('MEMBER_ACCOUNT', true, [lorem_phrase(), lorem_phrase()]),
-                'MEMBER_ID' => placeholder_id(),
-                'TABS' => $tabs,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_SCREEN', [
+            'TITLE' => get_screen_title('MEMBER_ACCOUNT', true, [lorem_phrase(), lorem_phrase()]),
+            'MEMBER_ID' => placeholder_id(),
+            'TABS' => $tabs,
+        ]), null, '', true);
     }
 
     /**
@@ -1085,9 +1086,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_users_online_screen() : array
+    public function tpl_preview__cns_users_online_screen() : object
     {
         $rows = [];
         foreach (placeholder_array() as $key => $value) {
@@ -1100,12 +1101,10 @@ class Hook_addon_registry_core_cns
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_USERS_ONLINE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'ROWS' => $rows,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_USERS_ONLINE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'ROWS' => $rows,
+        ]), null, '', true);
     }
 
     /**
@@ -1113,18 +1112,16 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_group_directory_screen() : array
+    public function tpl_preview__cns_group_directory_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CNS_GROUP_DIRECTORY_SCREEN', [
-                'TITLE' => lorem_title(),
-                'STAFF' => lorem_phrase(),
-                'OTHERS' => lorem_phrase(),
-                'RANKS' => [placeholder_table(), placeholder_table()],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_GROUP_DIRECTORY_SCREEN', [
+            'TITLE' => lorem_title(),
+            'STAFF' => lorem_phrase(),
+            'OTHERS' => lorem_phrase(),
+            'RANKS' => [placeholder_table(), placeholder_table()],
+        ]), null, '', true);
     }
 
     /**
@@ -1132,9 +1129,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_view_group_screen() : array
+    public function tpl_preview__cns_view_group_screen() : object
     {
         $_primary_members = placeholder_array();
         $primary_members = new Tempcode();
@@ -1235,24 +1232,22 @@ class Hook_addon_registry_core_cns
             'PAGINATION' => '',
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_VIEW_GROUP_SCREEN', [
-                'GROUP_NAME' => lorem_phrase(),
-                'ID' => placeholder_id(),
-                'FORUM' => '',
-                'CLUB' => false,
-                'EDIT_URL' => placeholder_url(),
-                'TITLE' => lorem_title(),
-                'LEADER' => lorem_phrase(),
-                'PROMOTION_INFO' => new Tempcode(),
-                'ADD_URL' => placeholder_url(),
-                'APPLY_URL' => placeholder_url(),
-                'APPLY_TEXT' => lorem_phrase(),
-                'PRIMARY_MEMBERS' => $primary_members,
-                'SECONDARY_MEMBERS' => $secondary_members,
-                'PROSPECTIVE_MEMBERS' => $prospective_members,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_VIEW_GROUP_SCREEN', [
+            'GROUP_NAME' => lorem_phrase(),
+            'ID' => placeholder_id(),
+            'FORUM' => '',
+            'CLUB' => false,
+            'EDIT_URL' => placeholder_url(),
+            'TITLE' => lorem_title(),
+            'LEADER' => lorem_phrase(),
+            'PROMOTION_INFO' => new Tempcode(),
+            'ADD_URL' => placeholder_url(),
+            'APPLY_URL' => placeholder_url(),
+            'APPLY_TEXT' => lorem_phrase(),
+            'PRIMARY_MEMBERS' => $primary_members,
+            'SECONDARY_MEMBERS' => $secondary_members,
+            'PROSPECTIVE_MEMBERS' => $prospective_members,
+        ]), null, '', true);
     }
 
     /**
@@ -1260,9 +1255,9 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_post_map() : array
+    public function tpl_preview__cns_post_map() : object
     {
         $items = new Tempcode();
 
@@ -1306,11 +1301,9 @@ class Hook_addon_registry_core_cns
             'POST_NUMBER' => '3',
         ]));
 
-        return [
-            lorem_globalise(do_lorem_template('CNS_POST_MAP', [
-                'ITEMS' => $items,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CNS_POST_MAP', [
+            'ITEMS' => $items,
+        ]), null, '', true);
     }
 
     /**
@@ -1318,17 +1311,15 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_join() : array
+    public function tpl_preview__block_main_join() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN', [
-                'FORM' => placeholder_form(),
-                'HAS_EMAIL_TO_SEND' => true,
-                'BLOCK_PARAMS' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN', [
+            'FORM' => placeholder_form(),
+            'HAS_EMAIL_TO_SEND' => true,
+            'BLOCK_PARAMS' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -1336,19 +1327,17 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_join_done() : array
+    public function tpl_preview__block_main_join_done() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN_DONE', [
-                'MESSAGE' => lorem_paragraph_html(),
-                'LOGGED_IN' => true,
-                'HAS_EMAIL_TO_SEND' => true,
-                'EMAIL_SENT' => true,
-                'EMAIL_ADDRESS' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN_DONE', [
+            'MESSAGE' => lorem_paragraph_html(),
+            'LOGGED_IN' => true,
+            'HAS_EMAIL_TO_SEND' => true,
+            'EMAIL_SENT' => true,
+            'EMAIL_ADDRESS' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -1356,26 +1345,24 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__join_form() : array
+    public function tpl_preview__join_form() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('JOIN_FORM', [
-                'HIDDEN' => '',
-                'URL' => placeholder_url(),
-                'FIELDS' => placeholder_fields(),
-                'SUBMIT_ICON' => 'menu/site_meta/user_actions/join',
-                'SUBMIT_NAME' => lorem_word(),
-                'TEXT' => lorem_sentence_html(),
-                'USERNAME_CHECK_SCRIPT' => placeholder_url(),
-                'SNIPPET_SCRIPT' => placeholder_url(),
-                'INVITES_ENABLED' => true,
-                'ONE_PER_EMAIL_ADDRESS' => true,
-                'USE_CAPTCHA' => true,
-                'ANALYTIC_EVENT_CATEGORY' => null,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('JOIN_FORM', [
+            'HIDDEN' => '',
+            'URL' => placeholder_url(),
+            'FIELDS' => placeholder_fields(),
+            'SUBMIT_ICON' => 'menu/site_meta/user_actions/join',
+            'SUBMIT_NAME' => lorem_word(),
+            'TEXT' => lorem_sentence_html(),
+            'USERNAME_CHECK_SCRIPT' => placeholder_url(),
+            'SNIPPET_SCRIPT' => placeholder_url(),
+            'INVITES_ENABLED' => true,
+            'ONE_PER_EMAIL_ADDRESS' => true,
+            'USE_CAPTCHA' => true,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+        ]), null, '', true);
     }
 
     /**
@@ -1383,22 +1370,20 @@ class Hook_addon_registry_core_cns
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__coppa_mail() : array
+    public function tpl_preview__coppa_mail() : object
     {
         $fields_done = [];
         $fields_done[] = ['LABEL' => lorem_phrase(), 'VALUE' => lorem_phrase()];
 
-        return [
-            lorem_globalise(do_lorem_template('COPPA_MAIL', [
-                'FAX' => lorem_phrase(),
-                'POSTAL_ADDRESS' => lorem_phrase(),
-                'EMAIL_ADDRESS' => lorem_phrase(),
-                'FIELDS_DONE' => $fields_done,
-                'PRIVACY_POLICY_URL' => placeholder_url(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COPPA_MAIL', [
+            'FAX' => lorem_phrase(),
+            'POSTAL_ADDRESS' => lorem_phrase(),
+            'EMAIL_ADDRESS' => lorem_phrase(),
+            'FIELDS_DONE' => $fields_done,
+            'PRIVACY_POLICY_URL' => placeholder_url(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**

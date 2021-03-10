@@ -208,9 +208,9 @@ class Hook_addon_registry_stats
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__stats_screen() : array
+    public function tpl_preview__administrative__stats_screen() : object
     {
         $existing_kpis = [];
         $existing_kpis[] = [
@@ -230,12 +230,10 @@ class Hook_addon_registry_stats
             'KPI_ADD_URL' => placeholder_url(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('STATS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'GRAPHS' => $graphs,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('STATS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'GRAPHS' => $graphs,
+        ]), null, '', true);
     }
 
     /**
@@ -243,9 +241,9 @@ class Hook_addon_registry_stats
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__stats_graph_screen() : array
+    public function tpl_preview__administrative__stats_graph_screen() : object
     {
         $existing_kpis = [];
         $existing_kpis[] = [
@@ -254,17 +252,15 @@ class Hook_addon_registry_stats
             'KPI_EDIT_URL' => placeholder_url(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('STATS_GRAPH', [
-                'GRAPH_NAME' => lorem_word(),
-                'GRAPH_LABEL' => lorem_phrase(),
-                'GRAPH_FORM' => placeholder_form(),
-                'GRAPH_RENDERED' => lorem_chunk_html(),
-                'RESULTS_TABLE' => placeholder_table(),
-                'EXISTING_KPIS' => $existing_kpis,
-                'KPI_ADD_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('STATS_GRAPH', [
+            'GRAPH_NAME' => lorem_word(),
+            'GRAPH_LABEL' => lorem_phrase(),
+            'GRAPH_FORM' => placeholder_form(),
+            'GRAPH_RENDERED' => lorem_chunk_html(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -272,9 +268,9 @@ class Hook_addon_registry_stats
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__kpi_screen() : array
+    public function tpl_preview__administrative__kpi_screen() : object
     {
         $existing_kpis = [];
         $existing_kpis[] = [
@@ -305,13 +301,11 @@ class Hook_addon_registry_stats
             'GRAPH_NAME' => lorem_word(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('KPI_SCREEN', [
-                'TITLE' => lorem_title(),
-                'GRAPHS' => $graphs,
-                'KPIS' => $kpis,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('KPI_SCREEN', [
+            'TITLE' => lorem_title(),
+            'GRAPHS' => $graphs,
+            'KPIS' => $kpis,
+        ]), null, '', true);
     }
 
     /**
@@ -319,9 +313,9 @@ class Hook_addon_registry_stats
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__form_screen_input_stats_date_range_screen() : array
+    public function tpl_preview__administrative__form_screen_input_stats_date_range_screen() : object
     {
         $field = do_lorem_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
             'TABINDEX' => placeholder_number(),
@@ -344,25 +338,23 @@ class Hook_addon_registry_stats
             'COMCODE' => '',
         ]));
 
-        return [
-            lorem_globalise(do_lorem_template('FORM', [
-                'GET' => false,
-                'SKIP_WEBSTANDARDS' => true,
-                'HIDDEN' => '',
-                'URL' => placeholder_url(),
-                'FIELDS' => $fields,
-                'SUBMIT_ICON' => 'buttons/proceed',
-                'SUBMIT_NAME' => lorem_word(),
-                'TEXT' => lorem_sentence_html(),
-                'JS_FUNCTION_CALLS' => [],
-                'SKIP_REQUIRED' => false,
-                'SECONDARY_FORM' => false,
-                'TABINDEX' => placeholder_number(),
-                'SUPPORT_AUTOSAVE' => false,
-                'ANALYTIC_EVENT_CATEGORY' => null,
-                'MODSECURITY_WORKAROUND' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FORM', [
+            'GET' => false,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'URL' => placeholder_url(),
+            'FIELDS' => $fields,
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => lorem_word(),
+            'TEXT' => lorem_sentence_html(),
+            'JS_FUNCTION_CALLS' => [],
+            'SKIP_REQUIRED' => false,
+            'SECONDARY_FORM' => false,
+            'TABINDEX' => placeholder_number(),
+            'SUPPORT_AUTOSAVE' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+            'MODSECURITY_WORKAROUND' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -370,9 +362,9 @@ class Hook_addon_registry_stats
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__kpi_update_mail() : array
+    public function tpl_preview__administrative__kpi_update_mail() : object
     {
         $kpis = [];
         $kpis[] = [
@@ -387,11 +379,9 @@ class Hook_addon_registry_stats
             'ADDED' => placeholder_date(),
             'NOTES' => lorem_phrase(),
         ];
-        $tpl = do_lorem_template('KPI_UPDATE_MAIL', [
+
+        return lorem_globalise(do_lorem_template('KPI_UPDATE_MAIL', [
             'KPIS' => $kpis,
-        ], null, false, null, '.txt', 'text');
-        return [
-            lorem_globalise($tpl, null, '', true)
-        ];
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 }

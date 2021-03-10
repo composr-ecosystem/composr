@@ -160,15 +160,13 @@ class Hook_addon_registry_actionlog
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__show_revisions_wrap() : array
+    public function tpl_preview__administrative__show_revisions_wrap() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REVISIONS_WRAP', [
-                'RESULTS' => placeholder_table(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REVISIONS_WRAP', [
+            'RESULTS' => placeholder_table(),
+        ]), null, '', true);
     }
 
     /**
@@ -176,15 +174,13 @@ class Hook_addon_registry_actionlog
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__show_revision_diff_icon() : array
+    public function tpl_preview__administrative__show_revision_diff_icon() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REVISIONS_DIFF_ICON', [
-                'RENDERED_DIFF' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REVISIONS_DIFF_ICON', [
+            'RENDERED_DIFF' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -192,18 +188,16 @@ class Hook_addon_registry_actionlog
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__revisions_screen() : array
+    public function tpl_preview__revisions_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REVISIONS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'RESULTS' => lorem_phrase(),
-                'INCLUDE_FILTER_FORM' => true,
-                'RESOURCE_TYPES' => [lorem_phrase()],
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REVISIONS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'RESULTS' => lorem_phrase(),
+            'INCLUDE_FILTER_FORM' => true,
+            'RESOURCE_TYPES' => [lorem_phrase()],
+        ]), null, '', true);
     }
 
     /**
@@ -211,14 +205,12 @@ class Hook_addon_registry_actionlog
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__revision_undo() : array
+    public function tpl_preview__revision_undo() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REVISION_UNDO', [
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REVISION_UNDO', [
+        ]), null, '', true);
     }
 
     /**
@@ -226,19 +218,17 @@ class Hook_addon_registry_actionlog
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__actionlog_followup_urls() : array
+    public function tpl_preview__administrative__actionlog_followup_urls() : object
     {
         $urls = [];
         $urls[lorem_phrase()] = placeholder_url();
         $urls[lorem_phrase() . ' 2'] = placeholder_url();
 
-        return [
-            lorem_globalise(do_lorem_template('ACTIONLOG_FOLLOWUP_URLS', [
-                'WRITTEN_CONTEXT' => lorem_phrase(),
-                'FOLLOWUP_URLS' => $urls,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('ACTIONLOG_FOLLOWUP_URLS', [
+            'WRITTEN_CONTEXT' => lorem_phrase(),
+            'FOLLOWUP_URLS' => $urls,
+        ]), null, '', true);
     }
 }

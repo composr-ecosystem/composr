@@ -159,9 +159,9 @@ class Hook_addon_registry_filedump
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__filedump_screen() : array
+    public function tpl_preview__filedump_screen() : object
     {
         require_css('forms');
 
@@ -185,27 +185,25 @@ class Hook_addon_registry_filedump
             'EMBED_URL' => placeholder_url(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('FILEDUMP_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SUBPATH' => placeholder_id(),
-                'THUMBNAILS' => $thumbnails,
-                'LISTING' => placeholder_table(),
-                'UPLOAD_FORM' => placeholder_form(),
-                'CREATE_FOLDER_FORM' => placeholder_form(),
-                'TYPE_FILTER' => '',
-                'SEARCH' => '',
-                'SORT' => 'time ASC',
-                'PAGINATION_LISTING' => placeholder_pagination(),
-                'PAGINATION_THUMBNAILS' => placeholder_pagination(),
-                'POST_URL' => placeholder_url(),
-                'DIRECTORIES' => [lorem_word()],
-                'OTHER_DIRECTORIES' => [lorem_word()],
-                'FILTERED_DIRECTORIES' => [lorem_word()],
-                'FILTERED_DIRECTORIES_MISSES' => [],
-                'SOMETHING_EDITABLE' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FILEDUMP_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SUBPATH' => placeholder_id(),
+            'THUMBNAILS' => $thumbnails,
+            'LISTING' => placeholder_table(),
+            'UPLOAD_FORM' => placeholder_form(),
+            'CREATE_FOLDER_FORM' => placeholder_form(),
+            'TYPE_FILTER' => '',
+            'SEARCH' => '',
+            'SORT' => 'time ASC',
+            'PAGINATION_LISTING' => placeholder_pagination(),
+            'PAGINATION_THUMBNAILS' => placeholder_pagination(),
+            'POST_URL' => placeholder_url(),
+            'DIRECTORIES' => [lorem_word()],
+            'OTHER_DIRECTORIES' => [lorem_word()],
+            'FILTERED_DIRECTORIES' => [lorem_word()],
+            'FILTERED_DIRECTORIES_MISSES' => [],
+            'SOMETHING_EDITABLE' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -213,9 +211,9 @@ class Hook_addon_registry_filedump
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__filedump_embed_screen() : array
+    public function tpl_preview__filedump_embed_screen() : object
     {
         $image_sizes = [];
         foreach (placeholder_array() as $k => $v) {
@@ -227,14 +225,12 @@ class Hook_addon_registry_filedump
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('FILEDUMP_EMBED_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FORM' => placeholder_form(),
-                'IMAGE_SIZES' => $image_sizes,
-                'URL' => placeholder_image_url(),
-                'EXISTING_COUNT' => placeholder_number(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FILEDUMP_EMBED_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FORM' => placeholder_form(),
+            'IMAGE_SIZES' => $image_sizes,
+            'URL' => placeholder_image_url(),
+            'EXISTING_COUNT' => placeholder_number(),
+        ]), null, '', true);
     }
 }

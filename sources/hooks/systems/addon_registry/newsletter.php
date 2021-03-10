@@ -216,9 +216,9 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__newsletter_automated_fcomcode() : array
+    public function tpl_preview__newsletter_automated_fcomcode() : object
     {
         $automatic = [];
         foreach (placeholder_array() as $k => $v) {
@@ -247,11 +247,9 @@ class Hook_addon_registry_newsletter
             $content .= $tp;
         }
 
-        return [
-            lorem_globalise(do_lorem_template('NEWSLETTER_WHATSNEW_FCOMCODE', [
-                'CONTENT' => $content,
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWSLETTER_WHATSNEW_FCOMCODE', [
+            'CONTENT' => $content,
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -259,9 +257,9 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__newsletter_subscribers_screen() : array
+    public function tpl_preview__administrative__newsletter_subscribers_screen() : object
     {
         $subscribers_table_rows = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -275,14 +273,12 @@ class Hook_addon_registry_newsletter
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('NEWSLETTER_SUBSCRIBERS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SUBSCRIBERS_TABLE_ROWS' => $subscribers_table_rows,
-                'PAGINATION' => '',
-                'DOMAINS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWSLETTER_SUBSCRIBERS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SUBSCRIBERS_TABLE_ROWS' => $subscribers_table_rows,
+            'PAGINATION' => '',
+            'DOMAINS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -290,17 +286,15 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__newsletter_default() : array
+    public function tpl_preview__newsletter_default() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('NEWSLETTER_DEFAULT_FCOMCODE', [
-                'CONTENT' => lorem_phrase(),
-                'LANG' => fallback_lang(),
-                'SUBJECT' => lorem_phrase(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWSLETTER_DEFAULT_FCOMCODE', [
+            'CONTENT' => lorem_phrase(),
+            'LANG' => fallback_lang(),
+            'SUBJECT' => lorem_phrase(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -308,9 +302,9 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__newsletter_confirm_wrap() : array
+    public function tpl_preview__administrative__newsletter_confirm_wrap() : object
     {
         $preview = do_lorem_template('NEWSLETTER_CONFIRM_WRAP', [
             'TEXT_PREVIEW' => lorem_sentence(),
@@ -320,15 +314,13 @@ class Hook_addon_registry_newsletter
             'SPAM_SCORE' => placeholder_number(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CONFIRM_SCREEN', [
-                'URL' => placeholder_url(),
-                'BACK_URL' => placeholder_url(),
-                'PREVIEW' => $preview,
-                'FIELDS' => new Tempcode(),
-                'TITLE' => lorem_title(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CONFIRM_SCREEN', [
+            'URL' => placeholder_url(),
+            'BACK_URL' => placeholder_url(),
+            'PREVIEW' => $preview,
+            'FIELDS' => new Tempcode(),
+            'TITLE' => lorem_title(),
+        ]), null, '', true);
     }
 
     /**
@@ -336,20 +328,18 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_newsletter_signup() : array
+    public function tpl_preview__block_main_newsletter_signup() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOCK_PARAMS' => '',
-                'URL' => placeholder_url(),
-                'NEWSLETTER_TITLE' => lorem_phrase(),
-                'NID' => placeholder_id(),
-                'BUTTON_ONLY' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOCK_PARAMS' => '',
+            'URL' => placeholder_url(),
+            'NEWSLETTER_TITLE' => lorem_phrase(),
+            'NID' => placeholder_id(),
+            'BUTTON_ONLY' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -357,20 +347,18 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_newsletter_signup_done() : array
+    public function tpl_preview__block_main_newsletter_signup_done() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWSLETTER_SIGNUP_DONE', [
-                'BLOCK_ID' => lorem_word(),
-                'PASSWORD' => lorem_phrase(),
-                'NEWSLETTER_TITLE' => lorem_phrase(),
-                'PATH_EXISTS' => true,
-                'BLOCK_PARAMS' => '',
-                'NID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_NEWSLETTER_SIGNUP_DONE', [
+            'BLOCK_ID' => lorem_word(),
+            'PASSWORD' => lorem_phrase(),
+            'NEWSLETTER_TITLE' => lorem_phrase(),
+            'PATH_EXISTS' => true,
+            'BLOCK_PARAMS' => '',
+            'NID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -378,16 +366,14 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__periodic_newsletter_remove() : array
+    public function tpl_preview__periodic_newsletter_remove() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('PERIODIC_NEWSLETTER_REMOVE', [
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('PERIODIC_NEWSLETTER_REMOVE', [
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -395,20 +381,18 @@ class Hook_addon_registry_newsletter
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__newsletter_status_overview() : array
+    public function tpl_preview__newsletter_status_overview() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('NEWSLETTER_STATUS_OVERVIEW', [
-                'UPDATE_URL' => placeholder_url(),
-                'NUM_IN_QUEUE' => placeholder_number(),
-                '_NUM_IN_QUEUE' => placeholder_number(),
-                'ETA' => placeholder_date(),
-                '_ETA' => placeholder_date_raw(),
-                'PAUSED' => true,
-                'QUEUE_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('NEWSLETTER_STATUS_OVERVIEW', [
+            'UPDATE_URL' => placeholder_url(),
+            'NUM_IN_QUEUE' => placeholder_number(),
+            '_NUM_IN_QUEUE' => placeholder_number(),
+            'ETA' => placeholder_date(),
+            '_ETA' => placeholder_date_raw(),
+            'PAUSED' => true,
+            'QUEUE_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 }

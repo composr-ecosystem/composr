@@ -163,9 +163,9 @@ class Hook_addon_registry_import
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__import_action_screen() : array
+    public function tpl_preview__administrative__import_action_screen() : object
     {
         $extra = do_lorem_template('IMPORT_MESSAGE', [
             'MESSAGE' => lorem_phrase(),
@@ -178,18 +178,16 @@ class Hook_addon_registry_import
             'ADVANCED_URL' => placeholder_url(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('IMPORT_ACTION_SCREEN', [
-                'EXTRA' => $extra,
-                'MESSAGE' => lorem_phrase(),
-                'TITLE' => lorem_title(),
-                'FIELDS' => lorem_phrase(),
-                'HIDDEN' => '',
-                'IMPORTER' => lorem_phrase(),
-                'IMPORT_LIST' => $import_list,
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('IMPORT_ACTION_SCREEN', [
+            'EXTRA' => $extra,
+            'MESSAGE' => lorem_phrase(),
+            'TITLE' => lorem_title(),
+            'FIELDS' => lorem_phrase(),
+            'HIDDEN' => '',
+            'IMPORTER' => lorem_phrase(),
+            'IMPORT_LIST' => $import_list,
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -197,20 +195,18 @@ class Hook_addon_registry_import
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__import_mkportal_fcomcodepage() : array
+    public function tpl_preview__administrative__import_mkportal_fcomcodepage() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('IMPORT_MKPORTAL_FCOMCODEPAGE', [
-                'TITLE' => lorem_phrase(),
-                'SUBTITLE' => lorem_phrase(),
-                'PAGE_HEADER' => lorem_phrase(),
-                'TEXT' => lorem_sentence_html(),
-                'PAGE_FOOTER' => lorem_phrase(),
-                'SIGNATURE' => lorem_phrase(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('IMPORT_MKPORTAL_FCOMCODEPAGE', [
+            'TITLE' => lorem_phrase(),
+            'SUBTITLE' => lorem_phrase(),
+            'PAGE_HEADER' => lorem_phrase(),
+            'TEXT' => lorem_sentence_html(),
+            'PAGE_FOOTER' => lorem_phrase(),
+            'SIGNATURE' => lorem_phrase(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -218,19 +214,17 @@ class Hook_addon_registry_import
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__import_phpnuke_fcomcodepage() : array
+    public function tpl_preview__administrative__import_phpnuke_fcomcodepage() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('IMPORT_PHPNUKE_FCOMCODEPAGE', [
-                'TITLE' => lorem_phrase(),
-                'SUBTITLE' => lorem_phrase(),
-                'PAGE_HEADER' => lorem_phrase(),
-                'TEXT' => lorem_sentence_html(),
-                'PAGE_FOOTER' => lorem_phrase(),
-                'SIGNATURE' => lorem_phrase(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('IMPORT_PHPNUKE_FCOMCODEPAGE', [
+            'TITLE' => lorem_phrase(),
+            'SUBTITLE' => lorem_phrase(),
+            'PAGE_HEADER' => lorem_phrase(),
+            'TEXT' => lorem_sentence_html(),
+            'PAGE_FOOTER' => lorem_phrase(),
+            'SIGNATURE' => lorem_phrase(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 }

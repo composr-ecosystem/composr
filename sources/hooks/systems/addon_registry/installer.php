@@ -172,27 +172,25 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_wrap() : array
+    public function tpl_preview__administrative__installer_wrap() : object
     {
         require_css('install');
         require_lang('installer');
         require_lang('version');
 
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
-                'CSS_NOCACHE' => '.nocss{}',
-                'DEFAULT_FORUM' => lorem_phrase(),
-                'PASSWORD_PROMPT' => lorem_phrase(),
-                'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
-                'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
-                'LOGO_URL' => placeholder_image_url(),
-                'STEP' => '1',
-                'CONTENT' => lorem_paragraph_html(),
-                'VERSION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+            'CSS_NOCACHE' => '.nocss{}',
+            'DEFAULT_FORUM' => lorem_phrase(),
+            'PASSWORD_PROMPT' => lorem_phrase(),
+            'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
+            'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
+            'LOGO_URL' => placeholder_image_url(),
+            'STEP' => '1',
+            'CONTENT' => lorem_paragraph_html(),
+            'VERSION' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -200,9 +198,9 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_1() : array
+    public function tpl_preview__administrative__installer_step_1() : object
     {
         require_css('install');
         require_css('forms');
@@ -236,19 +234,17 @@ class Hook_addon_registry_installer
             'HIDDEN' => '',
             'LANGUAGES' => $languages,
         ]);
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
-                'CSS_NOCACHE' => '.nocss{}',
-                'DEFAULT_FORUM' => lorem_phrase(),
-                'PASSWORD_PROMPT' => lorem_phrase(),
-                'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
-                'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
-                'LOGO_URL' => placeholder_image_url(),
-                'STEP' => '1',
-                'CONTENT' => $content,
-                'VERSION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+            'CSS_NOCACHE' => '.nocss{}',
+            'DEFAULT_FORUM' => lorem_phrase(),
+            'PASSWORD_PROMPT' => lorem_phrase(),
+            'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
+            'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
+            'LOGO_URL' => placeholder_image_url(),
+            'STEP' => '1',
+            'CONTENT' => $content,
+            'VERSION' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -256,9 +252,9 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_2() : array
+    public function tpl_preview__administrative__installer_step_2() : object
     {
         require_css('install');
         require_css('forms');
@@ -270,19 +266,17 @@ class Hook_addon_registry_installer
             'HIDDEN' => '',
             'LICENCE' => lorem_chunk(),
         ]);
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
-                'CSS_NOCACHE' => '.nocss{}',
-                'DEFAULT_FORUM' => lorem_phrase(),
-                'PASSWORD_PROMPT' => lorem_phrase(),
-                'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
-                'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
-                'LOGO_URL' => placeholder_image_url(),
-                'STEP' => '1',
-                'CONTENT' => $content,
-                'VERSION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+            'CSS_NOCACHE' => '.nocss{}',
+            'DEFAULT_FORUM' => lorem_phrase(),
+            'PASSWORD_PROMPT' => lorem_phrase(),
+            'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
+            'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
+            'LOGO_URL' => placeholder_image_url(),
+            'STEP' => '1',
+            'CONTENT' => $content,
+            'VERSION' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -290,9 +284,9 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_3() : array
+    public function tpl_preview__administrative__installer_step_3() : object
     {
         require_css('forms');
         require_css('install');
@@ -358,19 +352,17 @@ class Hook_addon_registry_installer
             'IS_QUICK' => false,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
-                'CSS_NOCACHE' => '.nocss{}',
-                'DEFAULT_FORUM' => lorem_phrase(),
-                'PASSWORD_PROMPT' => lorem_phrase(),
-                'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
-                'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
-                'LOGO_URL' => placeholder_image_url(),
-                'STEP' => '1',
-                'CONTENT' => $step3,
-                'VERSION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+            'CSS_NOCACHE' => '.nocss{}',
+            'DEFAULT_FORUM' => lorem_phrase(),
+            'PASSWORD_PROMPT' => lorem_phrase(),
+            'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
+            'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
+            'LOGO_URL' => placeholder_image_url(),
+            'STEP' => '1',
+            'CONTENT' => $step3,
+            'VERSION' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -437,9 +429,9 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_4() : array
+    public function tpl_preview__administrative__installer_step_4() : object
     {
         require_css('forms');
         require_css('install');
@@ -475,19 +467,17 @@ class Hook_addon_registry_installer
             'MAX' => '1000',
             'HIDDEN' => '',
         ]);
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
-                'CSS_NOCACHE' => '.nocss{}',
-                'DEFAULT_FORUM' => lorem_phrase(),
-                'PASSWORD_PROMPT' => lorem_phrase(),
-                'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
-                'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
-                'LOGO_URL' => placeholder_image_url(),
-                'STEP' => '1',
-                'CONTENT' => $content,
-                'VERSION' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_HTML_WRAP', [
+            'CSS_NOCACHE' => '.nocss{}',
+            'DEFAULT_FORUM' => lorem_phrase(),
+            'PASSWORD_PROMPT' => lorem_phrase(),
+            'CSS_URL' => get_base_url() . '/themes/default/css/installer.css',
+            'CSS_URL_2' => get_base_url() . '/themes/default/css/installer.css',
+            'LOGO_URL' => placeholder_image_url(),
+            'STEP' => '1',
+            'CONTENT' => $content,
+            'VERSION' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -495,9 +485,9 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_log() : array
+    public function tpl_preview__administrative__installer_step_log() : object
     {
         $message = do_lorem_template('INSTALLER_DONE_SOMETHING', [
             'SOMETHING' => lorem_sentence(),
@@ -506,15 +496,13 @@ class Hook_addon_registry_installer
         require_css('install');
         require_lang('installer');
 
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_STEP_LOG', [
-                'PREVIOUS_STEP' => placeholder_number(),
-                'CURRENT_STEP' => placeholder_number(),
-                'URL' => placeholder_url(),
-                'LOG' => $message,
-                'HIDDEN' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_STEP_LOG', [
+            'PREVIOUS_STEP' => placeholder_number(),
+            'CURRENT_STEP' => placeholder_number(),
+            'URL' => placeholder_url(),
+            'LOG' => $message,
+            'HIDDEN' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -522,9 +510,9 @@ class Hook_addon_registry_installer
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__installer_step_10() : array
+    public function tpl_preview__administrative__installer_step_10() : object
     {
         require_css('install');
         require_lang('installer');
@@ -534,14 +522,12 @@ class Hook_addon_registry_installer
             'SOMETHING' => lorem_sentence(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('INSTALLER_STEP_10', [
-                'PREVIOUS_STEP' => placeholder_number(),
-                'CURRENT_STEP' => placeholder_number(),
-                'FINAL' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'LOG' => $message,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('INSTALLER_STEP_10', [
+            'PREVIOUS_STEP' => placeholder_number(),
+            'CURRENT_STEP' => placeholder_number(),
+            'FINAL' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'LOG' => $message,
+        ]), null, '', true);
     }
 }

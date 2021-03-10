@@ -210,9 +210,9 @@ class Hook_addon_registry_points
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__points_leader_board() : array
+    public function tpl_preview__points_leader_board() : object
     {
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -226,13 +226,11 @@ class Hook_addon_registry_points
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
-                'URL' => placeholder_url(),
-                'LIMIT' => placeholder_number(),
-                'ROWS' => $out,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
+            'URL' => placeholder_url(),
+            'LIMIT' => placeholder_number(),
+            'ROWS' => $out,
+        ]), null, '', true);
     }
 
     /**
@@ -240,9 +238,9 @@ class Hook_addon_registry_points
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__points_leader_board_screen() : array
+    public function tpl_preview__points_leader_board_screen() : object
     {
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -263,12 +261,10 @@ class Hook_addon_registry_points
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
-                'TITLE' => lorem_title(),
-                'WEEKS' => $out,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
+            'TITLE' => lorem_title(),
+            'WEEKS' => $out,
+        ]), null, '', true);
     }
 
     /**
@@ -276,9 +272,9 @@ class Hook_addon_registry_points
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__points_search_screen() : array
+    public function tpl_preview__points_search_screen() : object
     {
         $results = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
@@ -289,12 +285,10 @@ class Hook_addon_registry_points
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('POINTS_SEARCH_SCREEN', [
-                'TITLE' => lorem_title(),
-                'RESULTS' => $results,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POINTS_SEARCH_SCREEN', [
+            'TITLE' => lorem_title(),
+            'RESULTS' => $results,
+        ]), null, '', true);
     }
 
     /**
@@ -302,9 +296,9 @@ class Hook_addon_registry_points
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__points_screen() : array
+    public function tpl_preview__points_screen() : object
     {
         $chargelog_details = placeholder_table();
 
@@ -343,11 +337,9 @@ class Hook_addon_registry_points
             'POINTS_RECORDS' => $points_records,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('POINTS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'CONTENT' => $content,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('POINTS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'CONTENT' => $content,
+        ]), null, '', true);
     }
 }

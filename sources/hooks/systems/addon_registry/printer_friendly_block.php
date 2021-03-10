@@ -132,15 +132,13 @@ class Hook_addon_registry_printer_friendly_block
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_printer_friendly() : array
+    public function tpl_preview__block_side_printer_friendly() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_PRINTER_FRIENDLY', [
-                'BLOCK_ID' => lorem_word(),
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_PRINTER_FRIENDLY', [
+            'BLOCK_ID' => lorem_word(),
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 }

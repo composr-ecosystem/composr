@@ -192,9 +192,9 @@ class Hook_addon_registry_core_adminzone_dashboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__block_main_staff_links() : array
+    public function tpl_preview__administrative__block_main_staff_links() : object
     {
         $formatted = [];
         foreach (placeholder_array() as $v) {
@@ -210,16 +210,14 @@ class Hook_addon_registry_core_adminzone_dashboard
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_LINKS', [
-                'BLOCK_ID' => lorem_word(),
-                'FORMATTED_LINKS' => $formatted,
-                'UNFORMATTED_LINKS' => $unformatted,
-                'URL' => placeholder_url(),
-                'BLOCK_NAME' => '',
-                'MAP' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_LINKS', [
+            'BLOCK_ID' => lorem_word(),
+            'FORMATTED_LINKS' => $formatted,
+            'UNFORMATTED_LINKS' => $unformatted,
+            'URL' => placeholder_url(),
+            'BLOCK_NAME' => '',
+            'MAP' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -227,21 +225,19 @@ class Hook_addon_registry_core_adminzone_dashboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_notes() : array
+    public function tpl_preview__block_main_notes() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_NOTES', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'SCROLLS' => lorem_phrase(),
-                'CONTENTS' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'BLOCK_NAME' => '',
-                'MAP' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_NOTES', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'SCROLLS' => lorem_phrase(),
+            'CONTENTS' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'BLOCK_NAME' => '',
+            'MAP' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -249,9 +245,9 @@ class Hook_addon_registry_core_adminzone_dashboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__block_main_staff_checklist() : array
+    public function tpl_preview__administrative__block_main_staff_checklist() : object
     {
         $_status = do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
@@ -306,16 +302,14 @@ class Hook_addon_registry_core_adminzone_dashboard
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST', [
-                'BLOCK_ID' => lorem_word(),
-                'URL' => placeholder_url(),
-                'CUSTOM_TASKS' => $custom_task,
-                'DATES' => $dates,
-                'NO_TIMES' => $no_times,
-                'TODO_COUNTS' => $todo,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST', [
+            'BLOCK_ID' => lorem_word(),
+            'URL' => placeholder_url(),
+            'CUSTOM_TASKS' => $custom_task,
+            'DATES' => $dates,
+            'NO_TIMES' => $no_times,
+            'TODO_COUNTS' => $todo,
+        ]), null, '', true);
     }
 
     /**
@@ -323,19 +317,17 @@ class Hook_addon_registry_core_adminzone_dashboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__block_main_staff_new_version() : array
+    public function tpl_preview__administrative__block_main_staff_new_version() : object
     {
         require_lang('version');
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_NEW_VERSION', [
-                'BLOCK_ID' => lorem_word(),
-                'VERSION' => lorem_phrase(),
-                'VERSION_TABLE' => placeholder_table(),
-                'HAS_UPDATED_ADDONS' => true,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_NEW_VERSION', [
+            'BLOCK_ID' => lorem_word(),
+            'VERSION' => lorem_phrase(),
+            'VERSION_TABLE' => placeholder_table(),
+            'HAS_UPDATED_ADDONS' => true,
+        ]), null, '', true);
     }
 
     /**
@@ -343,20 +335,18 @@ class Hook_addon_registry_core_adminzone_dashboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__block_main_staff_tips() : array
+    public function tpl_preview__administrative__block_main_staff_tips() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_TIPS', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOCK_PARAMS' => '',
-                'TIP' => lorem_phrase(),
-                'TIP_CODE' => lorem_phrase(),
-                'LEVEL' => lorem_phrase(),
-                'COUNT' => placeholder_number(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_TIPS', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOCK_PARAMS' => '',
+            'TIP' => lorem_phrase(),
+            'TIP_CODE' => lorem_phrase(),
+            'LEVEL' => lorem_phrase(),
+            'COUNT' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -364,25 +354,23 @@ class Hook_addon_registry_core_adminzone_dashboard
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__block_main_staff_actions() : array
+    public function tpl_preview__administrative__block_main_staff_actions() : object
     {
         if (!addon_installed('actionlog')) {
-            return [];
+            return new Tempcode();
         }
 
         require_lang('actionlog');
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_ACTIONS', [
-                'BLOCK_ID' => lorem_word(),
-                'BLOCK_PARAMS' => '',
-                'CONTENT' => lorem_paragraph_html(),
-                'FILTER_BY_MEMBER' => false,
-                'INCLUDE_DUPLICATES' => true,
-                'INCLUDE_USER_ACTIVITIES' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_ACTIONS', [
+            'BLOCK_ID' => lorem_word(),
+            'BLOCK_PARAMS' => '',
+            'CONTENT' => lorem_paragraph_html(),
+            'FILTER_BY_MEMBER' => false,
+            'INCLUDE_DUPLICATES' => true,
+            'INCLUDE_USER_ACTIVITIES' => false,
+        ]), null, '', true);
     }
 }

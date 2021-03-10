@@ -174,9 +174,9 @@ class Hook_addon_registry_core_webstandards
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__webstandards() : array
+    public function tpl_preview__administrative__webstandards() : object
     {
         $display = new Tempcode();
         $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN', [
@@ -209,9 +209,7 @@ class Hook_addon_registry_core_webstandards
 
         $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', ['RET' => false]));
 
-        return [
-            lorem_globalise($display, null, '', true)
-        ];
+        return lorem_globalise($display, null, '', true);
     }
 
     /**
@@ -219,9 +217,9 @@ class Hook_addon_registry_core_webstandards
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__webstandards_error_screen() : array
+    public function tpl_preview__administrative__webstandards_error_screen() : object
     {
         $errors = new Tempcode();
         $display = new Tempcode();
@@ -269,8 +267,6 @@ class Hook_addon_registry_core_webstandards
 
         $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', ['RET' => false]));
 
-        return [
-            lorem_globalise($display, null, '', true)
-        ];
+        return lorem_globalise($display, null, '', true);
     }
 }

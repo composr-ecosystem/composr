@@ -141,9 +141,9 @@ class Hook_addon_registry_forum_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_forum_topics() : array
+    public function tpl_preview__block_main_forum_topics() : object
     {
         require_lang('cns');
 
@@ -163,15 +163,13 @@ class Hook_addon_registry_forum_blocks
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_TOPICS', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'TOPICS' => $topics,
-                'FORUM_NAME' => lorem_phrase(),
-                'SUBMIT_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_TOPICS', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'TOPICS' => $topics,
+            'FORUM_NAME' => lorem_phrase(),
+            'SUBMIT_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -179,9 +177,9 @@ class Hook_addon_registry_forum_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_forum_news() : array
+    public function tpl_preview__block_side_forum_news() : object
     {
         require_lang('news');
         require_lang('cns');
@@ -204,16 +202,14 @@ class Hook_addon_registry_forum_blocks
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_FORUM_NEWS', [
-                'BLOCK_ID' => lorem_word(),
-                'FORUM_NAME' => lorem_phrase(),
-                'TITLE' => lorem_phrase_html(),
-                'NEWS' => $news,
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_FORUM_NEWS', [
+            'BLOCK_ID' => lorem_word(),
+            'FORUM_NAME' => lorem_phrase(),
+            'TITLE' => lorem_phrase_html(),
+            'NEWS' => $news,
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -221,9 +217,9 @@ class Hook_addon_registry_forum_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_forum_news() : array
+    public function tpl_preview__block_main_forum_news() : object
     {
         require_lang('news');
 
@@ -265,18 +261,16 @@ class Hook_addon_registry_forum_blocks
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_NEWS', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase_html(),
-                'FORUM_NAME' => lorem_phrase(),
-                'CONTENT' => $out,
-                'ARCHIVE_URL' => placeholder_url(),
-                'SUBMIT_URL' => placeholder_url(),
-                'RSS_URL' => placeholder_url(),
-                'ATOM_URL' => placeholder_url(),
-                'BRIEF_CONTENT' => lorem_sentence_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_NEWS', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase_html(),
+            'FORUM_NAME' => lorem_phrase(),
+            'CONTENT' => $out,
+            'ARCHIVE_URL' => placeholder_url(),
+            'SUBMIT_URL' => placeholder_url(),
+            'RSS_URL' => placeholder_url(),
+            'ATOM_URL' => placeholder_url(),
+            'BRIEF_CONTENT' => lorem_sentence_html(),
+        ]), null, '', true);
     }
 }

@@ -237,9 +237,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__menu_editor_screen() : array
+    public function tpl_preview__administrative__menu_editor_screen() : object
     {
         $branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => true, 'I' => placeholder_id(), 'CHILD_BRANCHES' => '']);
 
@@ -263,23 +263,21 @@ class Hook_addon_registry_core_menus
 
         $root_branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => true, 'CHILD_BRANCHES' => '', 'I' => '']);
 
-        return [
-            lorem_globalise(do_lorem_template('MENU_EDITOR_SCREEN', [
-                'ALL_MENUS' => placeholder_array(),
-                'MENU_NAME' => lorem_word(),
-                'DELETE_URL' => placeholder_url(),
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'FIELDS_TEMPLATE' => placeholder_fields(),
-                'HIGHEST_ORDER' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'CHILD_BRANCH_TEMPLATE' => $child_branch_template,
-                'ROOT_BRANCH' => $root_branch,
-                'TITLE' => lorem_title(),
-                'TOTAL_ITEMS' => placeholder_number(),
-                'MENU_TYPE' => 'dropdown',
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('MENU_EDITOR_SCREEN', [
+            'ALL_MENUS' => placeholder_array(),
+            'MENU_NAME' => lorem_word(),
+            'DELETE_URL' => placeholder_url(),
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'FIELDS_TEMPLATE' => placeholder_fields(),
+            'HIGHEST_ORDER' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'CHILD_BRANCH_TEMPLATE' => $child_branch_template,
+            'ROOT_BRANCH' => $root_branch,
+            'TITLE' => lorem_title(),
+            'TOTAL_ITEMS' => placeholder_number(),
+            'MENU_TYPE' => 'dropdown',
+        ]), null, '', true);
     }
 
     /**
@@ -287,20 +285,18 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__page_link_chooser() : array
+    public function tpl_preview__page_link_chooser() : object
     {
         require_javascript('tree_list');
-        return [
-            lorem_globalise(do_lorem_template('PAGE_LINK_CHOOSER', [
-                'NAME' => lorem_word(),
-                'VALUE' => lorem_word(),
-                'GET_TITLE_TOO' => false,
-                'AS_FIELD' => null,
-                'PAGE_TYPE' => null,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('PAGE_LINK_CHOOSER', [
+            'NAME' => lorem_word(),
+            'VALUE' => lorem_word(),
+            'GET_TITLE_TOO' => false,
+            'AS_FIELD' => null,
+            'PAGE_TYPE' => null,
+        ]), null, '', true);
     }
 
     /**
@@ -308,9 +304,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__mobile() : array
+    public function tpl_preview__block_menu__mobile() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -374,17 +370,15 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'mobile', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MENU', [
-                'BLOCK_ID' => lorem_word(),
-                'CONTENT' => $menu,
-                'PARAM' => lorem_phrase(),
-                'TRAY_STATUS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => 'mobile',
-                'JAVASCRIPT_HIGHLIGHTING' => false,
-            ]), null, '', false),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MENU', [
+            'BLOCK_ID' => lorem_word(),
+            'CONTENT' => $menu,
+            'PARAM' => lorem_phrase(),
+            'TRAY_STATUS' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => 'mobile',
+            'JAVASCRIPT_HIGHLIGHTING' => false,
+        ]), null, '', false);
     }
 
     /**
@@ -392,9 +386,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__tree() : array
+    public function tpl_preview__block_menu__tree() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -458,17 +452,15 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'tree', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MENU', [
-                'BLOCK_ID' => lorem_word(),
-                'CONTENT' => $menu,
-                'PARAM' => lorem_phrase(),
-                'TRAY_STATUS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => 'tree',
-                'JAVASCRIPT_HIGHLIGHTING' => false,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MENU', [
+            'BLOCK_ID' => lorem_word(),
+            'CONTENT' => $menu,
+            'PARAM' => lorem_phrase(),
+            'TRAY_STATUS' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => 'tree',
+            'JAVASCRIPT_HIGHLIGHTING' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -476,9 +468,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__dropdown() : array
+    public function tpl_preview__block_menu__dropdown() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -542,9 +534,7 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'dropdown', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise($menu, null, '', true),
-        ];
+        return lorem_globalise($menu, null, '', true);
     }
 
     /**
@@ -552,9 +542,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__embossed() : array
+    public function tpl_preview__block_menu__embossed() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -618,17 +608,15 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'embossed', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MENU', [
-                'BLOCK_ID' => lorem_word(),
-                'CONTENT' => $menu,
-                'PARAM' => lorem_phrase(),
-                'TRAY_STATUS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => 'embossed',
-                'JAVASCRIPT_HIGHLIGHTING' => false,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MENU', [
+            'BLOCK_ID' => lorem_word(),
+            'CONTENT' => $menu,
+            'PARAM' => lorem_phrase(),
+            'TRAY_STATUS' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => 'embossed',
+            'JAVASCRIPT_HIGHLIGHTING' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -636,9 +624,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__popup() : array
+    public function tpl_preview__block_menu__popup() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -702,17 +690,15 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'popup', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MENU', [
-                'BLOCK_ID' => lorem_word(),
-                'CONTENT' => $menu,
-                'PARAM' => lorem_phrase(),
-                'TRAY_STATUS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => 'popup',
-                'JAVASCRIPT_HIGHLIGHTING' => false,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MENU', [
+            'BLOCK_ID' => lorem_word(),
+            'CONTENT' => $menu,
+            'PARAM' => lorem_phrase(),
+            'TRAY_STATUS' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => 'popup',
+            'JAVASCRIPT_HIGHLIGHTING' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -720,9 +706,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__select() : array
+    public function tpl_preview__block_menu__select() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -786,17 +772,15 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'select', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MENU', [
-                'BLOCK_ID' => lorem_word(),
-                'CONTENT' => $menu,
-                'PARAM' => lorem_phrase(),
-                'TRAY_STATUS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => 'select',
-                'JAVASCRIPT_HIGHLIGHTING' => false,
-            ]), null, '', true),
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MENU', [
+            'BLOCK_ID' => lorem_word(),
+            'CONTENT' => $menu,
+            'PARAM' => lorem_phrase(),
+            'TRAY_STATUS' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => 'select',
+            'JAVASCRIPT_HIGHLIGHTING' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -804,9 +788,9 @@ class Hook_addon_registry_core_menus
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_menu__sitemap() : array
+    public function tpl_preview__block_menu__sitemap() : object
     {
         $child = new Tempcode();
         $content = new Tempcode();
@@ -865,8 +849,6 @@ class Hook_addon_registry_core_menus
 
         $menu->attach(do_lorem_template('MENU_STAFF_LINK', ['TYPE' => 'sitemap', 'EDIT_URL' => placeholder_url(), 'NAME' => lorem_phrase()]));
 
-        return [
-            lorem_globalise($menu, null, '', true),
-        ];
+        return lorem_globalise($menu, null, '', true);
     }
 }

@@ -156,18 +156,16 @@ class Hook_addon_registry_backup
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__backup_launch_screen() : array
+    public function tpl_preview__administrative__backup_launch_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BACKUP_LAUNCH_SCREEN', [
-                'TITLE' => lorem_title(),
-                'TEXT' => lorem_sentence(),
-                'RESULTS' => lorem_phrase(),
-                'FORM' => placeholder_form_with_field('submit_button'),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BACKUP_LAUNCH_SCREEN', [
+            'TITLE' => lorem_title(),
+            'TEXT' => lorem_sentence(),
+            'RESULTS' => lorem_phrase(),
+            'FORM' => placeholder_form_with_field('submit_button'),
+        ]), null, '', true);
     }
 
     /**
@@ -175,18 +173,16 @@ class Hook_addon_registry_backup
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__restore_wrap() : array
+    public function tpl_preview__administrative__restore_wrap() : object
     {
         // This preview inevitably looks ugly because the install CSS can't be shown (its loaded via self-reference to a non-existent file)
 
-        return [
-            lorem_globalise(do_lorem_template('RESTORE_HTML_WRAP', [
-                'MESSAGE' => lorem_sentence_html(),
-                'CSS_NOCACHE' => '',
-                'ERROR' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('RESTORE_HTML_WRAP', [
+            'MESSAGE' => lorem_sentence_html(),
+            'CSS_NOCACHE' => '',
+            'ERROR' => false,
+        ]), null, '', true);
     }
 }

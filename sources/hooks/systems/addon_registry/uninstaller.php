@@ -131,12 +131,10 @@ class Hook_addon_registry_uninstaller
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__uninstall_screen() : array
+    public function tpl_preview__administrative__uninstall_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('UNINSTALL_SCREEN', []), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('UNINSTALL_SCREEN', []), null, '', true);
     }
 }

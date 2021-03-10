@@ -183,27 +183,25 @@ class Hook_addon_registry_core_fields
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__catalogue_multilist() : array
+    public function tpl_preview__catalogue_multilist() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_MULTILIST', [
-                'SHOW_UNSET_VALUES' => false,
-                'ALL' => [
-                    [
-                        'HAS' => true,
-                        'OPTION' => lorem_phrase() . 'a',
-                    ],
-                    [
-                        'HAS' => false,
-                        'OPTION' => lorem_phrase() . 'b',
-                    ],
+        return lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_MULTILIST', [
+            'SHOW_UNSET_VALUES' => false,
+            'ALL' => [
+                [
+                    'HAS' => true,
+                    'OPTION' => lorem_phrase() . 'a',
                 ],
-                'FLAT' => [lorem_phrase() . 'a', lorem_phrase() . 'b'],
-                'FIELD_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+                [
+                    'HAS' => false,
+                    'OPTION' => lorem_phrase() . 'b',
+                ],
+            ],
+            'FLAT' => [lorem_phrase() . 'a', lorem_phrase() . 'b'],
+            'FIELD_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -211,18 +209,16 @@ class Hook_addon_registry_core_fields
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__catalogue_picture() : array
+    public function tpl_preview__catalogue_picture() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_PICTURE', [
-                'URL' => placeholder_url(),
-                'IMAGE_URL' => placeholder_image_url(),
-                'I' => '0',
-                'WIDTH' => '',
-                'HEIGHT' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_PICTURE', [
+            'URL' => placeholder_url(),
+            'IMAGE_URL' => placeholder_image_url(),
+            'I' => '0',
+            'WIDTH' => '',
+            'HEIGHT' => '',
+        ]), null, '', true);
     }
 }

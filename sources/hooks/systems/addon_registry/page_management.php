@@ -140,19 +140,17 @@ class Hook_addon_registry_page_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__sitemap_editor_screen() : array
+    public function tpl_preview__administrative__sitemap_editor_screen() : object
     {
         require_javascript('tree_list');
 
         require_lang('zones');
 
-        return [
-            lorem_globalise(do_lorem_template('SITEMAP_EDITOR_SCREEN', [
-                'TITLE' => lorem_title(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SITEMAP_EDITOR_SCREEN', [
+            'TITLE' => lorem_title(),
+        ]), null, '', true);
     }
 
     /**
@@ -160,9 +158,9 @@ class Hook_addon_registry_page_management
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__webstandards_check_screen() : array
+    public function tpl_preview__administrative__webstandards_check_screen() : object
     {
         require_lang('webstandards');
 
@@ -173,11 +171,9 @@ class Hook_addon_registry_page_management
                 'POINT' => lorem_phrase(),
             ]));
         }
-        return [
-            lorem_globalise(do_lorem_template('WEBSTANDARDS_CHECK_SCREEN', [
-                'TITLE' => lorem_title(),
-                'CONTENTS' => $content,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('WEBSTANDARDS_CHECK_SCREEN', [
+            'TITLE' => lorem_title(),
+            'CONTENTS' => $content,
+        ]), null, '', true);
     }
 }

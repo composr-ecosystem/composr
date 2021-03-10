@@ -221,27 +221,25 @@ class Hook_addon_registry_search
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_main_search() : array
+    public function tpl_preview__block_main_search() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_SEARCH', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'INPUT_FIELDS' => ['a' => ['LABEL' => lorem_phrase(), 'INPUT' => '']],
-                'EXTRA' => placeholder_array(),
-                'SORT' => lorem_phrase(),
-                'AUTHOR' => lorem_phrase(),
-                'DAYS' => lorem_phrase(),
-                'DIRECTION' => lorem_phrase(),
-                'ONLY_TITLES' => '1',
-                'ONLY_SEARCH_META' => '1',
-                'LIMIT_TO' => placeholder_array(),
-                'URL' => placeholder_url(),
-                'FULL_SEARCH_URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_SEARCH', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'INPUT_FIELDS' => ['a' => ['LABEL' => lorem_phrase(), 'INPUT' => '']],
+            'EXTRA' => placeholder_array(),
+            'SORT' => lorem_phrase(),
+            'AUTHOR' => lorem_phrase(),
+            'DAYS' => lorem_phrase(),
+            'DIRECTION' => lorem_phrase(),
+            'ONLY_TITLES' => '1',
+            'ONLY_SEARCH_META' => '1',
+            'LIMIT_TO' => placeholder_array(),
+            'URL' => placeholder_url(),
+            'FULL_SEARCH_URL' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -249,26 +247,24 @@ class Hook_addon_registry_search
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_top_search() : array
+    public function tpl_preview__block_top_search() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_TOP_SEARCH', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'EXTRA' => placeholder_array(),
-                'SORT' => lorem_phrase(),
-                'AUTHOR' => lorem_phrase(),
-                'DAYS' => lorem_phrase(),
-                'DIRECTION' => lorem_phrase(),
-                'ONLY_TITLES' => '1',
-                'ONLY_SEARCH_META' => '1',
-                'LIMIT_TO' => placeholder_array(),
-                'URL' => placeholder_url(),
-                'FULL_SEARCH_URL' => placeholder_url(),
-            ]), null, '', false)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_TOP_SEARCH', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'EXTRA' => placeholder_array(),
+            'SORT' => lorem_phrase(),
+            'AUTHOR' => lorem_phrase(),
+            'DAYS' => lorem_phrase(),
+            'DIRECTION' => lorem_phrase(),
+            'ONLY_TITLES' => '1',
+            'ONLY_SEARCH_META' => '1',
+            'LIMIT_TO' => placeholder_array(),
+            'URL' => placeholder_url(),
+            'FULL_SEARCH_URL' => placeholder_url(),
+        ]), null, '', false);
     }
 
     /**
@@ -276,9 +272,9 @@ class Hook_addon_registry_search
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_tag_cloud() : array
+    public function tpl_preview__block_side_tag_cloud() : object
     {
         $tpl_tags = [];
         $tags = [
@@ -295,13 +291,11 @@ class Hook_addon_registry_search
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_TAG_CLOUD', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_phrase(),
-                'TAGS' => $tpl_tags,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_TAG_CLOUD', [
+            'BLOCK_ID' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'TAGS' => $tpl_tags,
+        ]), null, '', true);
     }
 
     /**
@@ -309,9 +303,9 @@ class Hook_addon_registry_search
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__tags() : array
+    public function tpl_preview__tags() : object
     {
         $tags = [
             [
@@ -326,12 +320,10 @@ class Hook_addon_registry_search
             ],
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('TAGS', [
-                'TAGS' => $tags,
-                'TYPE' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('TAGS', [
+            'TAGS' => $tags,
+            'TYPE' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -339,15 +331,13 @@ class Hook_addon_registry_search
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__opensearch() : array
+    public function tpl_preview__opensearch() : object
     {
-        return [
-            do_lorem_template('OPENSEARCH', [
-                'DESCRIPTION' => lorem_paragraph(),
-            ], null, false, null, '.xml', 'xml')
-        ];
+        return do_lorem_template('OPENSEARCH', [
+            'DESCRIPTION' => lorem_paragraph(),
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -355,9 +345,9 @@ class Hook_addon_registry_search
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__search_form_screen() : array
+    public function tpl_preview__search_form_screen() : object
     {
         require_css('forms');
 
@@ -485,34 +475,32 @@ class Hook_addon_registry_search
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('SEARCH_FORM_SCREEN', [
-                'SEARCH_TERM' => lorem_word_2(),
-                'NUM_RESULTS' => placeholder_number(),
-                'EXTRA_SORT_FIELDS' => placeholder_array(0),
-                'USER_LABEL' => lorem_word(),
-                'DAYS_LABEL' => lorem_word(),
-                'ONLY_TITLES' => true,
-                'DAYS' => placeholder_id(),
-                'SORT' => 'relevance',
-                'DIRECTION' => 'DESC',
-                'CONTENT' => lorem_phrase(),
-                'RESULTS' => null,
-                'PAGINATION' => '',
-                'HAS_FULLTEXT_SEARCH' => true,
-                'TITLE' => lorem_title(),
-                'AUTHOR' => lorem_phrase(),
-                'SPECIALISATION' => $specialisation,
-                'URL' => placeholder_url(),
-                'HAS_TEMPLATE_SEARCH' => true,
-                'SEARCH_TYPE' => lorem_word(),
-                'CUTOFF_FROM_DAY' => '',
-                'CUTOFF_FROM_MONTH' => '',
-                'CUTOFF_FROM_YEAR' => '',
-                'CUTOFF_TO_DAY' => '',
-                'CUTOFF_TO_MONTH' => '',
-                'CUTOFF_TO_YEAR' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('SEARCH_FORM_SCREEN', [
+            'SEARCH_TERM' => lorem_word_2(),
+            'NUM_RESULTS' => placeholder_number(),
+            'EXTRA_SORT_FIELDS' => placeholder_array(0),
+            'USER_LABEL' => lorem_word(),
+            'DAYS_LABEL' => lorem_word(),
+            'ONLY_TITLES' => true,
+            'DAYS' => placeholder_id(),
+            'SORT' => 'relevance',
+            'DIRECTION' => 'DESC',
+            'CONTENT' => lorem_phrase(),
+            'RESULTS' => null,
+            'PAGINATION' => '',
+            'HAS_FULLTEXT_SEARCH' => true,
+            'TITLE' => lorem_title(),
+            'AUTHOR' => lorem_phrase(),
+            'SPECIALISATION' => $specialisation,
+            'URL' => placeholder_url(),
+            'HAS_TEMPLATE_SEARCH' => true,
+            'SEARCH_TYPE' => lorem_word(),
+            'CUTOFF_FROM_DAY' => '',
+            'CUTOFF_FROM_MONTH' => '',
+            'CUTOFF_FROM_YEAR' => '',
+            'CUTOFF_TO_DAY' => '',
+            'CUTOFF_TO_MONTH' => '',
+            'CUTOFF_TO_YEAR' => '',
+        ]), null, '', true);
     }
 }

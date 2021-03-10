@@ -270,9 +270,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_member_profile_friends() : array
+    public function tpl_preview__cns_member_profile_friends() : object
     {
         require_lang('cns');
         require_css('cns');
@@ -304,14 +304,11 @@ class Hook_addon_registry_chat
             'MAX_PARAM' => 'x_max',
         ]);
 
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_FRIENDS', [
+        return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_FRIENDS', [
             'MEMBER_ID' => placeholder_id(),
             'ADD_FRIEND_URL' => placeholder_url(),
             'REMOVE_FRIEND_URL' => placeholder_url(),
-        ]);
-        return [
-            lorem_globalise($tab_content, null, '', true)
-        ];
+        ]), null, '', true);
     }
 
     /**
@@ -319,19 +316,17 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__chat_moderate_screen() : array
+    public function tpl_preview__administrative__chat_moderate_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CHAT_MODERATE_SCREEN', [
-                'URL' => placeholder_url(),
-                'TITLE' => lorem_title(),
-                'INTRODUCTION' => lorem_phrase(),
-                'CONTENT' => placeholder_table(),
-                'LINKS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_MODERATE_SCREEN', [
+            'URL' => placeholder_url(),
+            'TITLE' => lorem_title(),
+            'INTRODUCTION' => lorem_phrase(),
+            'CONTENT' => placeholder_table(),
+            'LINKS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -339,9 +334,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_message() : array
+    public function tpl_preview__chat_message() : object
     {
         if (addon_installed('securitylogging')) {
             require_lang('submitban');
@@ -354,22 +349,20 @@ class Hook_addon_registry_chat
             'BAN_URL' => addon_installed('securitylogging') ? placeholder_url() : '',
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CHAT_MESSAGE', [
-                'SYSTEM_MESSAGE' => lorem_phrase(),
-                'STAFF' => '1',
-                'OLD_MESSAGES' => lorem_phrase(),
-                'AVATAR_URL' => placeholder_avatar(),
-                'STAFF_ACTIONS' => $chat_actions,
-                'MEMBER_LINK' => lorem_word(),
-                'MEMBER_ID' => placeholder_id(),
-                'MESSAGE' => lorem_phrase(),
-                'DATE' => placeholder_date(),
-                '_TIME' => placeholder_date_raw(),
-                'FONT_COLOUR' => '#0000FF',
-                'FONT_FACE' => 'Arial',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_MESSAGE', [
+            'SYSTEM_MESSAGE' => lorem_phrase(),
+            'STAFF' => '1',
+            'OLD_MESSAGES' => lorem_phrase(),
+            'AVATAR_URL' => placeholder_avatar(),
+            'STAFF_ACTIONS' => $chat_actions,
+            'MEMBER_LINK' => lorem_word(),
+            'MEMBER_ID' => placeholder_id(),
+            'MESSAGE' => lorem_phrase(),
+            'DATE' => placeholder_date(),
+            '_TIME' => placeholder_date_raw(),
+            'FONT_COLOUR' => '#0000FF',
+            'FONT_FACE' => 'Arial',
+        ]), null, '', true);
     }
 
     /**
@@ -377,17 +370,15 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_private() : array
+    public function tpl_preview__chat_private() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CHAT_PRIVATE', [
-                'SYSTEM_MESSAGE' => lorem_phrase(),
-                'MESSAGE' => lorem_phrase_html(),
-                'USERNAME' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_PRIVATE', [
+            'SYSTEM_MESSAGE' => lorem_phrase(),
+            'MESSAGE' => lorem_phrase_html(),
+            'USERNAME' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -395,17 +386,15 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_invite() : array
+    public function tpl_preview__chat_invite() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CHAT_INVITE', [
-                'USERNAME' => lorem_word(),
-                'CHATROOM' => lorem_phrase(),
-                'LINK' => placeholder_link(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_INVITE', [
+            'USERNAME' => lorem_word(),
+            'CHATROOM' => lorem_phrase(),
+            'LINK' => placeholder_link(),
+        ]), null, '', true);
     }
 
     /**
@@ -413,9 +402,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_shoutbox() : array
+    public function tpl_preview__block_side_shoutbox() : object
     {
         $tpl = do_lorem_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', [
             'MEMBER_ID' => placeholder_id(),
@@ -426,17 +415,15 @@ class Hook_addon_registry_chat
             'DATE' => placeholder_date(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_SHOUTBOX', [
-                'BLOCK_ID' => lorem_word(),
-                'CHATROOM_ID' => placeholder_id(),
-                'NUM_MESSAGES' => placeholder_number(),
-                'LAST_MESSAGE_ID' => placeholder_id(),
-                'MESSAGES' => $tpl,
-                'URL' => placeholder_url(),
-                'BLOCK_PARAMS' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_SHOUTBOX', [
+            'BLOCK_ID' => lorem_word(),
+            'CHATROOM_ID' => placeholder_id(),
+            'NUM_MESSAGES' => placeholder_number(),
+            'LAST_MESSAGE_ID' => placeholder_id(),
+            'MESSAGES' => $tpl,
+            'URL' => placeholder_url(),
+            'BLOCK_PARAMS' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -444,17 +431,15 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_sitewide_im() : array
+    public function tpl_preview__chat_sitewide_im() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM', [
-                'IM_AREA_TEMPLATE' => lorem_phrase(),
-                'IM_PARTICIPANT_TEMPLATE' => lorem_phrase(),
-                'CHAT_SOUND' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM', [
+            'IM_AREA_TEMPLATE' => lorem_phrase(),
+            'IM_PARTICIPANT_TEMPLATE' => lorem_phrase(),
+            'CHAT_SOUND' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -462,9 +447,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__block_side_friends() : array
+    public function tpl_preview__block_side_friends() : object
     {
         $friends = [];
         foreach (placeholder_array() as $key => $friend) {
@@ -488,12 +473,10 @@ class Hook_addon_registry_chat
             'SIMPLER' => true,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_FRIENDS', [
-                'BLOCK_ID' => lorem_word(),
-                'FRIENDS' => $friends_tpl,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_SIDE_FRIENDS', [
+            'BLOCK_ID' => lorem_word(),
+            'FRIENDS' => $friends_tpl,
+        ]), null, '', true);
     }
 
     /**
@@ -501,9 +484,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_lobby_screen() : array
+    public function tpl_preview__chat_lobby_screen() : object
     {
         $sound_effects = [];
         foreach (placeholder_array() as $k => $v) {
@@ -584,26 +567,24 @@ class Hook_addon_registry_chat
             'SIMPLER' => false,
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('CHAT_LOBBY_SCREEN', [
-                'TITLE' => lorem_title(),
-                'MESSAGE' => lorem_phrase(),
-                'CHAT_SOUND' => $chat_sound,
-                'IM_PARTICIPANT_TEMPLATE' => $im_participant_template,
-                'IM_AREA_TEMPLATE' => $im_area_template,
-                'CAN_IM' => true,
-                'FRIENDS' => $friends_tpl,
-                'URL_ADD_FRIEND' => placeholder_url(),
-                'URL_REMOVE_FRIENDS' => placeholder_url(),
-                'CHATROOMS' => $chatrooms,
-                'PRIVATE_CHATROOM' => placeholder_link(),
-                'MOD_LINK' => placeholder_link(),
-                'BLOCKING_LINK' => placeholder_link(),
-                'SETEFFECTS_LINK' => placeholder_link(),
-                'ADD_CHATROOM_URL' => placeholder_url(),
-                'MEMBER_ID' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_LOBBY_SCREEN', [
+            'TITLE' => lorem_title(),
+            'MESSAGE' => lorem_phrase(),
+            'CHAT_SOUND' => $chat_sound,
+            'IM_PARTICIPANT_TEMPLATE' => $im_participant_template,
+            'IM_AREA_TEMPLATE' => $im_area_template,
+            'CAN_IM' => true,
+            'FRIENDS' => $friends_tpl,
+            'URL_ADD_FRIEND' => placeholder_url(),
+            'URL_REMOVE_FRIENDS' => placeholder_url(),
+            'CHATROOMS' => $chatrooms,
+            'PRIVATE_CHATROOM' => placeholder_link(),
+            'MOD_LINK' => placeholder_link(),
+            'BLOCKING_LINK' => placeholder_link(),
+            'SETEFFECTS_LINK' => placeholder_link(),
+            'ADD_CHATROOM_URL' => placeholder_url(),
+            'MEMBER_ID' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -611,9 +592,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_room_screen() : array
+    public function tpl_preview__chat_room_screen() : object
     {
         require_lang('comcode');
         require_javascript('chat');
@@ -680,30 +661,28 @@ class Hook_addon_registry_chat
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('CHAT_ROOM_SCREEN', [
-                'CHATTERS' => $usernames,
-                'CHAT_SOUND' => $chat_sound,
-                'CHATROOM_ID' => placeholder_number(),
-                'DEBUG' => '0',
-                'MESSAGES_PHP' => find_script('messages'),
-                'CHATROOM_NAME' => lorem_word(),
-                'MICRO_BUTTONS' => $micro_buttons,
-                'BUTTONS' => $buttons,
-                'YOUR_NAME' => lorem_word(),
-                'MESSAGES_URL' => placeholder_url(),
-                'POSTING_URL' => placeholder_url(),
-                'OPTIONS_URL' => placeholder_url(),
-                'SUBMIT_VALUE' => lorem_word(),
-                'INTRODUCTION' => '',
-                'TITLE' => lorem_title(),
-                'LINKS' => ['admin/edit2' => placeholder_link(), 'checklist/toggle' => placeholder_link()],
-                'TEXT_COLOUR_DEFAULT' => lorem_word(),
-                'FONT_NAME_DEFAULT' => 'Tahoma',
-                'CHATCODE_HELP' => placeholder_url(),
-                'COMCODE_HELP' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_ROOM_SCREEN', [
+            'CHATTERS' => $usernames,
+            'CHAT_SOUND' => $chat_sound,
+            'CHATROOM_ID' => placeholder_number(),
+            'DEBUG' => '0',
+            'MESSAGES_PHP' => find_script('messages'),
+            'CHATROOM_NAME' => lorem_word(),
+            'MICRO_BUTTONS' => $micro_buttons,
+            'BUTTONS' => $buttons,
+            'YOUR_NAME' => lorem_word(),
+            'MESSAGES_URL' => placeholder_url(),
+            'POSTING_URL' => placeholder_url(),
+            'OPTIONS_URL' => placeholder_url(),
+            'SUBMIT_VALUE' => lorem_word(),
+            'INTRODUCTION' => '',
+            'TITLE' => lorem_title(),
+            'LINKS' => ['admin/edit2' => placeholder_link(), 'checklist/toggle' => placeholder_link()],
+            'TEXT_COLOUR_DEFAULT' => lorem_word(),
+            'FONT_NAME_DEFAULT' => 'Tahoma',
+            'CHATCODE_HELP' => placeholder_url(),
+            'COMCODE_HELP' => placeholder_url(),
+        ]), null, '', true);
     }
 
     /**
@@ -711,9 +690,9 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_set_effects_screen() : array
+    public function tpl_preview__chat_set_effects_screen() : object
     {
         require_javascript('checking');
         require_javascript('plupload');
@@ -742,17 +721,15 @@ class Hook_addon_registry_chat
             $setting_blocks->attach($block);
         }
 
-        return [
-            lorem_globalise(do_lorem_template('CHAT_SET_EFFECTS_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SUBMIT_ICON' => 'buttons/save',
-                'SUBMIT_NAME' => lorem_word(),
-                'HIDDEN' => '',
-                'POST_URL' => placeholder_url(),
-                'SETTING_BLOCKS' => $setting_blocks,
-                'CHAT_SOUND' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_SET_EFFECTS_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SUBMIT_ICON' => 'buttons/save',
+            'SUBMIT_NAME' => lorem_word(),
+            'HIDDEN' => '',
+            'POST_URL' => placeholder_url(),
+            'SETTING_BLOCKS' => $setting_blocks,
+            'CHAT_SOUND' => '',
+        ]), null, '', true);
     }
 
     /**
@@ -760,20 +737,18 @@ class Hook_addon_registry_chat
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__chat_sitewide_im_popup() : array
+    public function tpl_preview__chat_sitewide_im_popup() : object
     {
         $im_area_template = do_lorem_template('CHAT_LOBBY_IM_AREA', [
             'MESSAGES_PHP' => find_script('messages'),
             'CHATROOM_ID' => placeholder_id(),
         ]);
-        return [
-            lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM_POPUP', [
-                'CONTENT' => $im_area_template,
-                'CHAT_SOUND' => '',
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM_POPUP', [
+            'CONTENT' => $im_area_template,
+            'CHAT_SOUND' => '',
+        ]), null, '', true);
     }
 
     /**

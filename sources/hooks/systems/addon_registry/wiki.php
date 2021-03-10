@@ -188,20 +188,18 @@ class Hook_addon_registry_wiki
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__wiki_manage_tree_screen() : array
+    public function tpl_preview__administrative__wiki_manage_tree_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('WIKI_MANAGE_TREE_SCREEN', [
-                'PAGE_TITLE' => lorem_phrase(),
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TITLE' => lorem_title(),
-                'FORM' => placeholder_form(),
-                'WIKI_TREE' => placeholder_options(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('WIKI_MANAGE_TREE_SCREEN', [
+            'PAGE_TITLE' => lorem_phrase(),
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TITLE' => lorem_title(),
+            'FORM' => placeholder_form(),
+            'WIKI_TREE' => placeholder_options(),
+        ]), null, '', true);
     }
 
     /**
@@ -209,9 +207,9 @@ class Hook_addon_registry_wiki
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__wiki_page_screen() : array
+    public function tpl_preview__wiki_page_screen() : object
     {
         require_lang('cns');
 
@@ -286,22 +284,20 @@ class Hook_addon_registry_wiki
             'BODY_CONTENT' => placeholder_number(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
-                'TAGS' => placeholder_tags(),
-                'SHOW_POSTS' => placeholder_id(),
-                'ID' => placeholder_id(),
-                'CHAIN' => placeholder_id(),
-                'VIEWS' => placeholder_number(),
-                'STAFF_ACCESS' => '1',
-                'DESCRIPTION' => lorem_paragraph_html(),
-                'TITLE' => lorem_title(),
-                'CHILDREN' => $children,
-                'POSTS' => $posts,
-                'NUM_POSTS' => placeholder_number(),
-                'BUTTONS' => placeholder_button(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
+            'TAGS' => placeholder_tags(),
+            'SHOW_POSTS' => placeholder_id(),
+            'ID' => placeholder_id(),
+            'CHAIN' => placeholder_id(),
+            'VIEWS' => placeholder_number(),
+            'STAFF_ACCESS' => '1',
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'TITLE' => lorem_title(),
+            'CHILDREN' => $children,
+            'POSTS' => $posts,
+            'NUM_POSTS' => placeholder_number(),
+            'BUTTONS' => placeholder_button(),
+        ]), null, '', true);
     }
 
     /**
@@ -309,9 +305,9 @@ class Hook_addon_registry_wiki
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__wiki_posting_screen() : array
+    public function tpl_preview__wiki_posting_screen() : object
     {
         require_javascript('checking');
         require_lang('comcode');
@@ -347,15 +343,13 @@ class Hook_addon_registry_wiki
             'DESCRIPTION' => lorem_paragraph(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('WIKI_POSTING_SCREEN', [
-                'PING_URL' => '',
-                'WARNING_DETAILS' => '',
-                'TEXT' => lorem_phrase(),
-                'TITLE' => lorem_title(),
-                'POSTING_FORM' => $posting_form,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('WIKI_POSTING_SCREEN', [
+            'PING_URL' => '',
+            'WARNING_DETAILS' => '',
+            'TEXT' => lorem_phrase(),
+            'TITLE' => lorem_title(),
+            'POSTING_FORM' => $posting_form,
+        ]), null, '', true);
     }
 
     /**

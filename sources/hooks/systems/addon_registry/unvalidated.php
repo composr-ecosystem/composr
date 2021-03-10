@@ -143,20 +143,18 @@ class Hook_addon_registry_unvalidated
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__validation_request_mail() : array
+    public function tpl_preview__administrative__validation_request_mail() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('VALIDATION_REQUEST_MAIL', [
-                'USERNAME' => lorem_word(),
-                'CONTENT_TYPE_LABEL' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'TYPE' => lorem_phrase(),
-                'ID' => placeholder_id(),
-                'URL' => placeholder_url(),
-            ], null, false, null, '.txt', 'text'), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('VALIDATION_REQUEST_MAIL', [
+            'USERNAME' => lorem_word(),
+            'CONTENT_TYPE_LABEL' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'TYPE' => lorem_phrase(),
+            'ID' => placeholder_id(),
+            'URL' => placeholder_url(),
+        ], null, false, null, '.txt', 'text'), null, '', true);
     }
 
     /**
@@ -164,20 +162,18 @@ class Hook_addon_registry_unvalidated
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__unvalidated_screen() : array
+    public function tpl_preview__administrative__unvalidated_screen() : object
     {
         $section = do_lorem_template('UNVALIDATED_SECTION', [
             'TITLE' => lorem_phrase(),
             'CONTENT' => lorem_phrase(),
         ]);
-        return [
-            lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SECTIONS' => $section,
-                'TEXT' => lorem_paragraph_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SECTIONS' => $section,
+            'TEXT' => lorem_paragraph_html(),
+        ]), null, '', true);
     }
 }

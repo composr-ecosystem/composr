@@ -140,9 +140,9 @@ class Hook_addon_registry_cns_post_templates
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__cns_post_template_select() : array
+    public function tpl_preview__cns_post_template_select() : object
     {
         require_lang('cns');
         require_css('cns');
@@ -177,24 +177,22 @@ class Hook_addon_registry_cns_post_templates
             'COMCODE' => '',
         ]));
 
-        return [
-            lorem_globalise(do_lorem_template('FORM_SCREEN', [
-                'SKIP_WEBSTANDARDS' => true,
-                'HIDDEN' => '',
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'FIELDS' => $fields,
-                'SUBMIT_ICON' => 'buttons/proceed',
-                'SUBMIT_NAME' => lorem_phrase(),
-                'TEXT' => lorem_sentence_html(),
-                'SUPPORT_AUTOSAVE' => false,
-                'JS_FUNCTION_CALLS' => [],
-                'MODSECURITY_WORKAROUND' => false,
-                'POST' => false,
-                'ANALYTIC_EVENT_CATEGORY' => null,
-                'GET' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('FORM_SCREEN', [
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'FIELDS' => $fields,
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => lorem_phrase(),
+            'TEXT' => lorem_sentence_html(),
+            'SUPPORT_AUTOSAVE' => false,
+            'JS_FUNCTION_CALLS' => [],
+            'MODSECURITY_WORKAROUND' => false,
+            'POST' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+            'GET' => false,
+        ]), null, '', true);
     }
 
     /**

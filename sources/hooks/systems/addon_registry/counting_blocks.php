@@ -137,21 +137,19 @@ class Hook_addon_registry_counting_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__main_countdown() : array
+    public function tpl_preview__main_countdown() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNTDOWN', [
-                'BLOCK_ID' => lorem_word(),
-                'LANG' => placeholder_number(),
-                'POSITIVE' => true,
-                'PRECISION' => placeholder_number(),
-                'MILLISECONDS_FOR_PRECISION' => placeholder_number(),
-                'DISTANCE_FOR_PRECISION' => placeholder_number(),
-                'TAILING' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNTDOWN', [
+            'BLOCK_ID' => lorem_word(),
+            'LANG' => placeholder_number(),
+            'POSITIVE' => true,
+            'PRECISION' => placeholder_number(),
+            'MILLISECONDS_FOR_PRECISION' => placeholder_number(),
+            'DISTANCE_FOR_PRECISION' => placeholder_number(),
+            'TAILING' => false,
+        ]), null, '', true);
     }
 
     /**
@@ -159,17 +157,15 @@ class Hook_addon_registry_counting_blocks
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__main_count() : array
+    public function tpl_preview__main_count() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNT', [
-                'BLOCK_ID' => lorem_word(),
-                'NAME' => lorem_word(),
-                'VALUE' => placeholder_number(),
-                'UPDATE' => null,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNT', [
+            'BLOCK_ID' => lorem_word(),
+            'NAME' => lorem_word(),
+            'VALUE' => placeholder_number(),
+            'UPDATE' => null,
+        ]), null, '', true);
     }
 }

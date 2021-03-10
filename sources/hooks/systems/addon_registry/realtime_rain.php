@@ -423,15 +423,13 @@ class Hook_addon_registry_realtime_rain
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__realtime_rain_overlay() : array
+    public function tpl_preview__administrative__realtime_rain_overlay() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REALTIME_RAIN_OVERLAY', [
-                'MIN_TIME' => placeholder_id(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REALTIME_RAIN_OVERLAY', [
+            'MIN_TIME' => placeholder_id(),
+        ]), null, '', true);
     }
 
     /**
@@ -439,22 +437,20 @@ class Hook_addon_registry_realtime_rain
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__realtime_rain_bubble() : array
+    public function tpl_preview__administrative__realtime_rain_bubble() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('REALTIME_RAIN_BUBBLE', [
-                'TITLE' => lorem_phrase(),
-                'URL' => placeholder_url(),
-                'IMAGE' => placeholder_image_url(),
-                'GROUP_ID' => placeholder_id(),
-                'RELATIVE_TIMESTAMP' => placeholder_date_raw(),
-                'TICKER_TEXT' => lorem_phrase(),
-                'TYPE' => lorem_word(),
-                'IS_POSITIVE' => true,
-                'IS_NEGATIVE' => false,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('REALTIME_RAIN_BUBBLE', [
+            'TITLE' => lorem_phrase(),
+            'URL' => placeholder_url(),
+            'IMAGE' => placeholder_image_url(),
+            'GROUP_ID' => placeholder_id(),
+            'RELATIVE_TIMESTAMP' => placeholder_date_raw(),
+            'TICKER_TEXT' => lorem_phrase(),
+            'TYPE' => lorem_word(),
+            'IS_POSITIVE' => true,
+            'IS_NEGATIVE' => false,
+        ]), null, '', true);
     }
 }

@@ -455,9 +455,9 @@ class Hook_addon_registry_core_configuration
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__config_category_screen() : array
+    public function tpl_preview__administrative__config_category_screen() : object
     {
         $groups = [];
 
@@ -470,19 +470,17 @@ class Hook_addon_registry_core_configuration
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('CONFIG_CATEGORY_SCREEN', [
-                'CATEGORY_DESCRIPTION' => lorem_word_2(),
-                '_GROUPS' => placeholder_array(),
-                'PING_URL' => placeholder_url(),
-                'WARNING_DETAILS' => '',
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'GROUPS' => $groups,
-                'SUBMIT_ICON' => 'buttons/save',
-                'SUBMIT_NAME' => lorem_word(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('CONFIG_CATEGORY_SCREEN', [
+            'CATEGORY_DESCRIPTION' => lorem_word_2(),
+            '_GROUPS' => placeholder_array(),
+            'PING_URL' => placeholder_url(),
+            'WARNING_DETAILS' => '',
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'GROUPS' => $groups,
+            'SUBMIT_ICON' => 'buttons/save',
+            'SUBMIT_NAME' => lorem_word(),
+        ]), null, '', true);
     }
 
     /**
@@ -490,17 +488,15 @@ class Hook_addon_registry_core_configuration
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__xml_config_screen() : array
+    public function tpl_preview__administrative__xml_config_screen() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('XML_CONFIG_SCREEN', [
-                'XML' => '<test />',
-                'POST_URL' => placeholder_url(),
-                'TITLE' => lorem_title(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('XML_CONFIG_SCREEN', [
+            'XML' => '<test />',
+            'POST_URL' => placeholder_url(),
+            'TITLE' => lorem_title(),
+        ]), null, '', true);
     }
 
     /**
@@ -508,9 +504,9 @@ class Hook_addon_registry_core_configuration
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__oauth_screen() : array
+    public function tpl_preview__administrative__oauth_screen() : object
     {
         $services = [];
 
@@ -528,11 +524,9 @@ class Hook_addon_registry_core_configuration
             'REFRESH_TOKEN' => lorem_word(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('OAUTH_SCREEN', [
-                'TITLE' => lorem_title(),
-                'SERVICES' => $services,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('OAUTH_SCREEN', [
+            'TITLE' => lorem_title(),
+            'SERVICES' => $services,
+        ]), null, '', true);
     }
 }

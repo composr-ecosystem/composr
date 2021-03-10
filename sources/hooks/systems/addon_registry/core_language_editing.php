@@ -173,9 +173,9 @@ class Hook_addon_registry_core_language_editing
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__translate_language_criticise_screen() : array
+    public function tpl_preview__administrative__translate_language_criticise_screen() : object
     {
         $file = new Tempcode();
         $files = '';
@@ -192,12 +192,10 @@ class Hook_addon_registry_core_language_editing
 
         $files .= $file_result->evaluate();
 
-        return [
-            lorem_globalise(do_lorem_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', [
-                'TITLE' => lorem_title(),
-                'FILES' => $files,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', [
+            'TITLE' => lorem_title(),
+            'FILES' => $files,
+        ]), null, '', true);
     }
 
     /**
@@ -205,9 +203,9 @@ class Hook_addon_registry_core_language_editing
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__translate_screen_content_screen() : array
+    public function tpl_preview__administrative__translate_screen_content_screen() : object
     {
         require_lang('lang');
         $lines = new Tempcode();
@@ -230,22 +228,20 @@ class Hook_addon_registry_core_language_editing
             ]));
         }
 
-        return [
-            lorem_globalise(do_lorem_template('TRANSLATE_SCREEN_CONTENT_SCREEN', [
-                'LANG_NICE_NAME' => lorem_word(),
-                'LANG_NICE_ORIGINAL_NAME' => lorem_word(),
-                'TOO_MANY' => lorem_phrase(),
-                'TRANSLATION_CREDIT' => '',
-                'TOTAL' => placeholder_number(),
-                'LANG' => fallback_lang(),
-                'LANG_ORIGINAL_NAME' => fallback_lang(),
-                'LINES' => $lines,
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-                'MAX' => placeholder_number(),
-                'PAGINATION' => placeholder_pagination(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('TRANSLATE_SCREEN_CONTENT_SCREEN', [
+            'LANG_NICE_NAME' => lorem_word(),
+            'LANG_NICE_ORIGINAL_NAME' => lorem_word(),
+            'TOO_MANY' => lorem_phrase(),
+            'TRANSLATION_CREDIT' => '',
+            'TOTAL' => placeholder_number(),
+            'LANG' => fallback_lang(),
+            'LANG_ORIGINAL_NAME' => fallback_lang(),
+            'LINES' => $lines,
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+            'MAX' => placeholder_number(),
+            'PAGINATION' => placeholder_pagination(),
+        ]), null, '', true);
     }
 
     /**
@@ -253,9 +249,9 @@ class Hook_addon_registry_core_language_editing
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__translate_screen() : array
+    public function tpl_preview__administrative__translate_screen() : object
     {
         require_lang('lang');
         $lines = '';
@@ -270,15 +266,13 @@ class Hook_addon_registry_core_language_editing
             $lines .= $temp->evaluate();
         }
 
-        return [
-            lorem_globalise(do_lorem_template('TRANSLATE_SCREEN', [
-                'PAGE' => lorem_phrase(),
-                'TRANSLATION_CREDIT' => '',
-                'LANG' => fallback_lang(),
-                'LINES' => $lines,
-                'TITLE' => lorem_title(),
-                'URL' => placeholder_url(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('TRANSLATE_SCREEN', [
+            'PAGE' => lorem_phrase(),
+            'TRANSLATION_CREDIT' => '',
+            'LANG' => fallback_lang(),
+            'LINES' => $lines,
+            'TITLE' => lorem_title(),
+            'URL' => placeholder_url(),
+        ]), null, '', true);
     }
 }

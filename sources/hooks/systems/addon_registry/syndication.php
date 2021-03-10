@@ -165,9 +165,9 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__rss_wrapper() : array
+    public function tpl_preview__rss_wrapper() : object
     {
         $comments = do_lorem_template('RSS_ENTRY_COMMENTS', ['COMMENT_URL' => placeholder_url(), 'ID' => placeholder_id()], null, false, null, '.xml', 'xml');
 
@@ -193,20 +193,18 @@ class Hook_addon_registry_syndication
             'PATH' => '/composr',
         ], null, false, null, '.xml', 'xml');
 
-        return [
-            do_lorem_template('RSS_WRAPPER', [
-                'MODE' => lorem_word(),
-                'MODE_NICE' => lorem_word(),
-                'SELECT' => lorem_word_2(),
-                'DATE' => placeholder_date(),
-                'LOGO_URL' => placeholder_image_url(),
-                'CONTENT' => $content,
-                'CUTOFF' => placeholder_number(),
-                'ABOUT' => lorem_paragraph(),
-                'VERSION' => lorem_word(),
-                'RSS_CLOUD' => '',
-            ], null, false, null, '.xml', 'xml'),
-        ];
+        return do_lorem_template('RSS_WRAPPER', [
+            'MODE' => lorem_word(),
+            'MODE_NICE' => lorem_word(),
+            'SELECT' => lorem_word_2(),
+            'DATE' => placeholder_date(),
+            'LOGO_URL' => placeholder_image_url(),
+            'CONTENT' => $content,
+            'CUTOFF' => placeholder_number(),
+            'ABOUT' => lorem_paragraph(),
+            'VERSION' => lorem_word(),
+            'RSS_CLOUD' => '',
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -214,9 +212,9 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__atom_wrapper() : array
+    public function tpl_preview__atom_wrapper() : object
     {
         $content = do_lorem_template('ATOM_ENTRY', [
             'TITLE' => lorem_phrase(),
@@ -230,20 +228,18 @@ class Hook_addon_registry_syndication
             'IF_COMMENTS' => '',
         ], null, false, null, '.xml', 'xml');
 
-        return [
-            do_lorem_template('ATOM_WRAPPER', [
-                'MODE' => lorem_word(),
-                'MODE_NICE' => lorem_word(),
-                'SELECT' => lorem_word_2(),
-                'DATE' => placeholder_date(),
-                'LOGO_URL' => placeholder_image_url(),
-                'CONTENT' => $content,
-                'CUTOFF' => placeholder_number(),
-                'ABOUT' => lorem_paragraph(),
-                'VERSION' => lorem_word(),
-                'RSS_CLOUD' => '',
-            ], null, false, null, '.xml', 'xml'),
-        ];
+        return do_lorem_template('ATOM_WRAPPER', [
+            'MODE' => lorem_word(),
+            'MODE_NICE' => lorem_word(),
+            'SELECT' => lorem_word_2(),
+            'DATE' => placeholder_date(),
+            'LOGO_URL' => placeholder_image_url(),
+            'CONTENT' => $content,
+            'CUTOFF' => placeholder_number(),
+            'ABOUT' => lorem_paragraph(),
+            'VERSION' => lorem_word(),
+            'RSS_CLOUD' => '',
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -251,17 +247,15 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__rss_xslt() : array
+    public function tpl_preview__rss_xslt() : object
     {
         require_lang('rss');
 
-        return [
-            do_lorem_template('RSS_XSLT', [
-                'JAVASCRIPT_XSL_MOPUP' => '',
-            ], null, false, null, '.xml', 'xml'),
-        ];
+        return do_lorem_template('RSS_XSLT', [
+            'JAVASCRIPT_XSL_MOPUP' => '',
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -269,17 +263,15 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__atom_xslt() : array
+    public function tpl_preview__atom_xslt() : object
     {
         require_lang('rss');
 
-        return [
-            do_lorem_template('ATOM_XSLT', [
-                'JAVASCRIPT_XSL_MOPUP' => '',
-            ], null, false, null, '.xml', 'xml'),
-        ];
+        return do_lorem_template('ATOM_XSLT', [
+            'JAVASCRIPT_XSL_MOPUP' => '',
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -287,17 +279,15 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__opml_xslt() : array
+    public function tpl_preview__opml_xslt() : object
     {
         require_lang('rss');
 
-        return [
-            do_lorem_template('OPML_XSLT', [
-                'JAVASCRIPT_XSL_MOPUP' => '',
-            ], null, false, null, '.xml', 'xml'),
-        ];
+        return do_lorem_template('OPML_XSLT', [
+            'JAVASCRIPT_XSL_MOPUP' => '',
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -305,19 +295,17 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__opml_wrapper() : array
+    public function tpl_preview__opml_wrapper() : object
     {
         require_lang('rss');
 
-        return [
-            do_lorem_template('OPML_WRAPPER', [
-                'FEEDS' => placeholder_array(),
-                'ABOUT' => lorem_phrase(),
-                'DATE' => placeholder_date(),
-            ], null, false, null, '.xml', 'xml'),
-        ];
+        return do_lorem_template('OPML_WRAPPER', [
+            'FEEDS' => placeholder_array(),
+            'ABOUT' => lorem_phrase(),
+            'DATE' => placeholder_date(),
+        ], null, false, null, '.xml', 'xml');
     }
 
     /**
@@ -325,14 +313,12 @@ class Hook_addon_registry_syndication
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__rss_header() : array
+    public function tpl_preview__rss_header() : object
     {
-        return [
-            do_lorem_template('RSS_HEADER', [
-                'FEED_URL' => placeholder_url(),
-            ]),
-        ];
+        return do_lorem_template('RSS_HEADER', [
+            'FEED_URL' => placeholder_url(),
+        ]);
     }
 }

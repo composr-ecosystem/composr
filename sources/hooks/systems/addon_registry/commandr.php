@@ -269,18 +269,16 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_main() : array
+    public function tpl_preview__administrative__commandr_main() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_MAIN', [
-                'COMMANDS' => lorem_phrase(),
-                'SUBMIT_URL' => placeholder_url(),
-                'page' => lorem_phrase(),
-                'PROMPT' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_MAIN', [
+            'COMMANDS' => lorem_phrase(),
+            'SUBMIT_URL' => placeholder_url(),
+            'page' => lorem_phrase(),
+            'PROMPT' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -288,9 +286,9 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_main_screen() : array
+    public function tpl_preview__administrative__commandr_main_screen() : object
     {
         $content = do_lorem_template('COMMANDR_MAIN', [
             'SUBMIT_URL' => placeholder_url(),
@@ -298,12 +296,10 @@ class Hook_addon_registry_commandr
             'COMMANDS' => lorem_phrase(),
         ]);
 
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_MAIN_SCREEN', [
-                'TITLE' => lorem_title(),
-                'CONTENT' => $content,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_MAIN_SCREEN', [
+            'TITLE' => lorem_title(),
+            'CONTENT' => $content,
+        ]), null, '', true);
     }
 
     /**
@@ -311,19 +307,17 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_command() : array
+    public function tpl_preview__administrative__commandr_command() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_COMMAND', [
-                'METHOD' => lorem_phrase(),
-                'STDOUT' => lorem_phrase(),
-                'STDHTML' => lorem_phrase(),
-                'STDERR' => lorem_phrase(),
-                'STDCOMMAND' => null,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_COMMAND', [
+            'METHOD' => lorem_phrase(),
+            'STDOUT' => lorem_phrase(),
+            'STDHTML' => lorem_phrase(),
+            'STDERR' => lorem_phrase(),
+            'STDCOMMAND' => null,
+        ]), null, '', true);
     }
 
     /**
@@ -331,9 +325,9 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_array() : array
+    public function tpl_preview__administrative__commandr_array() : object
     {
         $elements = [];
         $elements[] = [
@@ -341,11 +335,9 @@ class Hook_addon_registry_commandr
             'VALUE' => lorem_phrase(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_ARRAY', [
-                'ELEMENTS' => $elements,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_ARRAY', [
+            'ELEMENTS' => $elements,
+        ]), null, '', true);
     }
 
     /**
@@ -353,17 +345,15 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_help() : array
+    public function tpl_preview__administrative__commandr_help() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_HELP', [
-                'INTRODUCTION' => lorem_phrase(),
-                'OPTIONS' => placeholder_array(),
-                'PARAMETERS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_HELP', [
+            'INTRODUCTION' => lorem_phrase(),
+            'OPTIONS' => placeholder_array(),
+            'PARAMETERS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -371,15 +361,13 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_box() : array
+    public function tpl_preview__administrative__commandr_box() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_BOX', [
-                'HTML' => lorem_sentence_html(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_BOX', [
+            'HTML' => lorem_sentence_html(),
+        ]), null, '', true);
     }
 
     /**
@@ -387,15 +375,13 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_commands() : array
+    public function tpl_preview__administrative__commandr_commands() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_COMMANDS', [
-                'COMMANDS' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_COMMANDS', [
+            'COMMANDS' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -403,9 +389,9 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_rss() : array
+    public function tpl_preview__administrative__commandr_rss() : object
     {
         $content = [];
         $content[] = [
@@ -415,12 +401,10 @@ class Hook_addon_registry_commandr
             'SUMMARY' => lorem_paragraph(),
         ];
 
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_RSS', [
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => $content,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_RSS', [
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $content,
+        ]), null, '', true);
     }
 
     /**
@@ -428,17 +412,15 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_edit() : array
+    public function tpl_preview__administrative__commandr_edit() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_EDIT', [
-                'FILE' => lorem_phrase(),
-                'SUBMIT_URL' => placeholder_url(),
-                'FILE_CONTENTS' => lorem_sentence(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_EDIT', [
+            'FILE' => lorem_phrase(),
+            'SUBMIT_URL' => placeholder_url(),
+            'FILE_CONTENTS' => lorem_sentence(),
+        ]), null, '', true);
     }
 
     /**
@@ -446,20 +428,18 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_users_online() : array
+    public function tpl_preview__administrative__commandr_users_online() : object
     {
         $memb = [];
         foreach (placeholder_array() as $k => $v) {
             $memb[$v] = $k;
         }
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_USERS_ONLINE', [
-                'MEMBERS' => $memb,
-                'GUESTS' => placeholder_number(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_USERS_ONLINE', [
+            'MEMBERS' => $memb,
+            'GUESTS' => placeholder_number(),
+        ]), null, '', true);
     }
 
     /**
@@ -467,15 +447,13 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_find_codes() : array
+    public function tpl_preview__administrative__commandr_find_codes() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_FIND_CODES', [
-                'FILES' => placeholder_array(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_FIND_CODES', [
+            'FILES' => placeholder_array(),
+        ]), null, '', true);
     }
 
     /**
@@ -483,20 +461,18 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_whois() : array
+    public function tpl_preview__administrative__commandr_whois() : object
     {
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_WHOIS', [
-                'STATS' => lorem_phrase(),
-                'IP_LIST' => placeholder_list_item(),
-                'MEMBER_ID' => placeholder_id(),
-                'IP' => placeholder_ip(),
-                'USERNAME' => lorem_word(),
-                'EMAIL_ADDRESS' => lorem_phrase(),
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_WHOIS', [
+            'STATS' => lorem_phrase(),
+            'IP_LIST' => placeholder_list_item(),
+            'MEMBER_ID' => placeholder_id(),
+            'IP' => placeholder_ip(),
+            'USERNAME' => lorem_word(),
+            'EMAIL_ADDRESS' => lorem_phrase(),
+        ]), null, '', true);
     }
 
     /**
@@ -504,19 +480,17 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_entry_points() : array
+    public function tpl_preview__administrative__commandr_entry_points() : object
     {
         $points = [];
         foreach (placeholder_array() as $k => $v) {
             $points[$v] = $k;
         }
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_ENTRY_POINTS', [
-                'ENTRY_POINTS' => $points,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_ENTRY_POINTS', [
+            'ENTRY_POINTS' => $points,
+        ]), null, '', true);
     }
 
     /**
@@ -524,9 +498,9 @@ class Hook_addon_registry_commandr
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
      * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
      *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     * @return Tempcode Preview
      */
-    public function tpl_preview__administrative__commandr_ls() : array
+    public function tpl_preview__administrative__commandr_ls() : object
     {
         $directories = [];
         foreach (placeholder_array() as $k => $v) {
@@ -546,12 +520,10 @@ class Hook_addon_registry_commandr
             ];
         }
 
-        return [
-            lorem_globalise(do_lorem_template('COMMANDR_LS', [
-                'DIRECTORY' => lorem_phrase(),
-                'DIRECTORIES' => $directories,
-                'FILES' => $files,
-            ]), null, '', true)
-        ];
+        return lorem_globalise(do_lorem_template('COMMANDR_LS', [
+            'DIRECTORY' => lorem_phrase(),
+            'DIRECTORIES' => $directories,
+            'FILES' => $files,
+        ]), null, '', true);
     }
 }
