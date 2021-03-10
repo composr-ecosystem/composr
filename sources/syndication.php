@@ -32,7 +32,7 @@ function syndicate_content(string $content_type, string $content_id, array $acti
         return;
     }
 
-    cms_disable_time_limit();
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
     if ($syndication_context === null) {
         $syndication_context = read_get_syndication_option_fields($content_type);

@@ -290,11 +290,11 @@ function actual_add_catalogue_field(string $c_name, $name, $description = '', st
 
     $ob = get_fields_hook($type);
 
-    $old_limit = cms_disable_time_limit();
-
     // Now add field values for all pre-existing entries (in the ideal world, there would be none yet)
     $start = 0;
     do {
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
         send_http_output_ping();
 
         $entries = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id'], ['c_name' => $c_name], '', 300, $start));
@@ -317,9 +317,9 @@ function actual_add_catalogue_field(string $c_name, $name, $description = '', st
         }
 
         $start += 300;
-    } while (array_key_exists(0, $entries));
 
-    cms_set_time_limit($old_limit);
+        cms_set_time_limit($old_limit);
+    } while (array_key_exists(0, $entries));
 
     return $cf_id;
 }
@@ -449,24 +449,30 @@ function actual_delete_catalogue(string $name)
     $myrow = $rows[0];
 
     // Delete anything involved (ha ha destruction!)
-    $old_limit = cms_disable_time_limit();
     do {
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
         $entries = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id'], ['c_name' => $name], '', 500));
         foreach ($entries as $entry) {
             actual_delete_catalogue_entry($entry);
         }
+
+        cms_set_time_limit($old_limit);
     } while (array_key_exists(0, $entries));
     do {
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
         $categories = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id'], ['c_name' => $name], '', 30));
         foreach ($categories as $category) {
             actual_delete_catalogue_category($category, true);
         }
+
+        cms_set_time_limit($old_limit);
     } while (array_key_exists(0, $categories));
     $fields = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id'], ['c_name' => $name]));
     foreach ($fields as $field) {
         actual_delete_catalogue_field($field);
     }
-    cms_set_time_limit($old_limit);
     $GLOBALS['SITE_DB']->query_delete('catalogues', ['c_name' => $name], '', 1);
     $_title = $myrow['c_title'];
     delete_lang($myrow['c_title']);
@@ -716,8 +722,6 @@ function actual_add_catalogue_category(string $catalogue_name, $title, $descript
  */
 function rebuild_catalogue_cat_treecache()
 {
-    $old_limit = cms_disable_time_limit();
-
     $GLOBALS['SITE_DB']->query_delete('catalogue_cat_treecache');
     $GLOBALS['SITE_DB']->query_delete('catalogue_childcountcache');
 
@@ -726,6 +730,8 @@ function rebuild_catalogue_cat_treecache()
     $max = 1000;
     $start = 0;
     do {
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
         $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_parent_id'], [], '', $max, $start);
 
         foreach ($rows as $row) {
@@ -733,9 +739,13 @@ function rebuild_catalogue_cat_treecache()
         }
 
         $start += $max;
+
+        cms_set_time_limit($old_limit);
     } while (!empty($rows));
     $start = 0;
     do {
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
         $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_parent_id'], [], '', $max, $start);
 
         foreach ($rows as $row) {
@@ -743,9 +753,9 @@ function rebuild_catalogue_cat_treecache()
         }
 
         $start += $max;
-    } while (!empty($rows));
 
-    cms_set_time_limit($old_limit);
+        cms_set_time_limit($old_limit);
+    } while (!empty($rows));
 }
 
 /**
@@ -943,19 +953,23 @@ function actual_delete_catalogue_category(int $id, bool $deleting_all = false)
     delete_upload('uploads/repimages', 'catalogue_categories', 'rep_image', 'id', $id);
 
     if (!$deleting_all) { // If not deleting the whole catalogue
-        $old_limit = cms_disable_time_limit();
-
         if ($myrow['c_is_tree'] == 1) {
+            $old_limit = cms_disable_time_limit();
+
             // If we're in a tree...
 
             $GLOBALS['SITE_DB']->query_update('catalogue_categories', ['cc_parent_id' => $myrow['cc_parent_id']], ['cc_parent_id' => $id]);
             $GLOBALS['SITE_DB']->query_update('catalogue_entries', ['cc_id' => $myrow['cc_parent_id']], ['cc_id' => $id]);
+
+            cms_set_time_limit($old_limit);
         } else { // If we're not in a tree catalogue we can't move them, we have to delete
             // If we're not in a tree...
 
             $GLOBALS['SITE_DB']->query_delete('catalogue_categories', ['cc_parent_id' => $id]); // Does nothing, in theory, as it's not a tree!
             $start = 0;
             do {
+            $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
                 send_http_output_ping();
 
                 $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id'], ['cc_id' => $id], '', 500, $start);
@@ -963,10 +977,10 @@ function actual_delete_catalogue_category(int $id, bool $deleting_all = false)
                     actual_delete_catalogue_entry($entry['id']);
                 }
                 $start += 500;
+
+                cms_set_time_limit($old_limit);
             } while (!empty($entries));
         }
-
-        cms_set_time_limit($old_limit);
 
         $GLOBALS['SITE_DB']->query_update('catalogue_categories', ['cc_move_target' => null], ['cc_move_target' => $id]);
     }

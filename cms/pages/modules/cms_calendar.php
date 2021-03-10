@@ -888,8 +888,6 @@ class Module_cms_calendar extends Standard_crud_module
 
         // Reminders
         if (has_privilege(get_member(), 'set_reminders')) {
-            cms_disable_time_limit();
-
             $rem_groups = [];
             if ((has_privilege(get_member(), 'add_public_events')) && (array_key_exists('sign_up_reminder_groups', $_POST))) {
                 $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
@@ -914,6 +912,8 @@ class Module_cms_calendar extends Standard_crud_module
             }
             $start = 0;
             do {
+                $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
                 $members = [];
                 if (!empty($rem_groups)) {
                     $members = array_keys($GLOBALS['FORUM_DRIVER']->member_group_query($rem_groups, 300, $start));
@@ -951,6 +951,8 @@ class Module_cms_calendar extends Standard_crud_module
                     ]);
                 }
                 $start += 300;
+
+                cms_set_time_limit($old_limit);
             } while (array_key_exists(0, $members));
 
             $start = 0;

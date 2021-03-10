@@ -63,14 +63,14 @@ class Hook_cron_catalogue_entry_timeouts
     {
         $time_now = time();
 
-        cms_disable_time_limit();
-
         $catalogue_categories = $GLOBALS['SITE_DB']->query('SELECT id,cc_move_target,cc_move_days_lower,cc_move_days_higher FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_move_target IS NOT NULL');
         foreach ($catalogue_categories as $row) {
             $changed = false;
 
             $start = 0;
             do {
+                $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
                 $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id', 'ce_submitter', 'ce_last_moved'], ['cc_id' => $row['id']], '', 1000, $start);
                 foreach ($entries as $entry) {
                     $higher = has_privilege($entry['ce_submitter'], 'high_catalogue_entry_timeout');
@@ -82,6 +82,8 @@ class Hook_cron_catalogue_entry_timeouts
                     }
                 }
                 $start += 1000;
+
+                cms_set_time_limit($old_limit);
             } while (count($entries) == 1000);
 
             if ($changed) {

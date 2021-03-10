@@ -20,7 +20,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
 {
     public function testNonBundled()
     {
-        cms_disable_time_limit();
+        cms_set_time_limit(300);
 
         require_code('third_party_code');
 

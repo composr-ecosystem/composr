@@ -106,8 +106,6 @@ function set_member_group_timeout(int $member_id, int $group_id, int $timestamp,
  */
 function cleanup_member_timeouts()
 {
-    cms_disable_time_limit();
-
     $db = get_db_for('f_group_member_timeouts');
 
     require_code('cns_groups_action');
@@ -119,6 +117,8 @@ function cleanup_member_timeouts()
     $time_now = time();
     $has_timeout = false;
     do {
+        $old_limit = cms_set_time_limit(10);
+
         $timeouts = $db->query('SELECT member_id,group_id FROM ' . $db->get_table_prefix() . 'f_group_member_timeouts WHERE timeout<' . strval($time_now), 100, $start);
         foreach ($timeouts as $timeout) {
             $has_timeout = true;
@@ -144,6 +144,8 @@ function cleanup_member_timeouts()
             }
         }
         $start += 100;
+
+        cms_set_time_limit($old_limit);
     } while (!empty($timeouts));
 
     if ($has_timeout) {

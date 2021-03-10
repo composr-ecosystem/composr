@@ -630,6 +630,8 @@ class Module_admin_cns_members
     {
         $start = 0;
         do {
+            cms_extend_time_limit(10);
+
             send_http_output_ping();
 
             $sql = 'SELECT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE';
@@ -682,8 +684,6 @@ class Module_admin_cns_members
      */
     public function _delurk() : object
     {
-        cms_disable_time_limit();
-
         check_privilege('mass_import');
 
         require_lang('cns_lurkers');

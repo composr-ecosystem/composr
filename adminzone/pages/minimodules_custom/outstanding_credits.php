@@ -48,9 +48,7 @@ if ($start == $max) {
 }
 $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
 if ($spreadsheet) {
-    cms_disable_time_limit();
     $start = 0;
-    $max = 10000;
 }
 require_code('cns_members');
 require_code('mantis');
@@ -99,41 +97,53 @@ if ($field_id !== null) {
     $header_row = results_header_row([$uname, $ucredits, $ujoin, $ulast], $sortables, 'sort', $sortable . ' ' . $sort_order);
     $fields_values = new Tempcode();
 
-    $sql = 'SELECT a.m_username AS m_username, a.m_join_time AS m_join_time, a.m_last_visit_time AS m_last_visit_time, b.mf_member_id AS mf_member_id, field_' . $field_id . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields b JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members a ON a.id=b.mf_member_id WHERE field_' . strval($field_id) . '>0 ORDER BY ' . $orderby . ' ' . $sort_order;
-    $members = $GLOBALS['FORUM_DB']->query($sql, $max, $start);
-    if (count($members) < 1) {
-        $msg_tpl = inform_screen($title, do_lang_tempcode('NO_RESULTS_SORRY'));
-        $msg_tpl->evaluate_echo();
-        return;
-    }
     $total = 0;
     $i = 0;
-    foreach ($members as $member) {
-        $credits = $member['field_' . $field_id];
-        $member_id = intval($member['mf_member_id']);
-        $member_name = $member['m_username'];
-        $member_join_date = get_timezoned_date_time($member['m_join_time']);
-        $member_visit_date = get_timezoned_date_time($member['m_last_visit_time']);
 
-        if ($spreadsheet) {
-            $spreadsheet_data = [];
-            $sname = do_lang('USERNAME');
-            $scredits = do_lang('CREDITS');
-            $sjoin = do_lang('JOIN_DATE');
-            $slast = do_lang('LAST_VISIT_TIME');
-            $spreadsheet_data[] = [
-                $sname => $member_name,
-                $scredits => $credits,
-                $sjoin => $member_join_date,
-                $slast => $member_visit_date,
-            ];
+    do {
+        $old_limit = cms_set_time_limit(10);
+
+        $sql = 'SELECT a.m_username AS m_username, a.m_join_time AS m_join_time, a.m_last_visit_time AS m_last_visit_time, b.mf_member_id AS mf_member_id, field_' . $field_id . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields b JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members a ON a.id=b.mf_member_id WHERE field_' . strval($field_id) . '>0 ORDER BY ' . $orderby . ' ' . $sort_order;
+        $members = $GLOBALS['FORUM_DB']->query($sql, $max, $start);
+        if ((empty($members)) && ($spreadsheet)) {
+            $msg_tpl = inform_screen($title, do_lang_tempcode('NO_RESULTS_SORRY'));
+            $msg_tpl->evaluate_echo();
+            return;
         }
 
-        $member_linked = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, '', false);
-        $fields_values->attach(results_entry([$member_linked, integer_format($credits), $member_join_date, $member_visit_date, true], true));
-        $total += $credits;
-        $i++;
-    }
+        foreach ($members as $member) {
+            $credits = $member['field_' . $field_id];
+            $member_id = intval($member['mf_member_id']);
+            $member_name = $member['m_username'];
+            $member_join_date = get_timezoned_date_time($member['m_join_time']);
+            $member_visit_date = get_timezoned_date_time($member['m_last_visit_time']);
+
+            if ($spreadsheet) {
+                $spreadsheet_data = [];
+                $sname = do_lang('USERNAME');
+                $scredits = do_lang('CREDITS');
+                $sjoin = do_lang('JOIN_DATE');
+                $slast = do_lang('LAST_VISIT_TIME');
+                $spreadsheet_data[] = [
+                    $sname => $member_name,
+                    $scredits => $credits,
+                    $sjoin => $member_join_date,
+                    $slast => $member_visit_date,
+                ];
+            } else {
+                $member_linked = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, '', false);
+                $fields_values->attach(results_entry([$member_linked, integer_format($credits), $member_join_date, $member_visit_date, true], true));
+            }
+
+            $total += $credits;
+            $i++;
+        }
+
+        $start += $max;
+
+        cms_set_time_limit($old_limit);
+    } while ($spreadsheet);
+
     if ($spreadsheet) {
         require_code('files_spreadsheets_write');
         $filename = 'unspent_credits.' . spreadsheet_write_default();

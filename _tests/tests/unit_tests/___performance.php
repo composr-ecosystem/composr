@@ -67,7 +67,7 @@ class ___performance_test_set extends cms_test_case
 
     public function _test_screen_performance($node)
     {
-        cms_disable_time_limit();
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $session_id = $this->establish_admin_callback_session();
 
@@ -118,6 +118,8 @@ class ___performance_test_set extends cms_test_case
         if ($slow) {
             fwrite($this->log_warnings_file, $message . "\n");
         }
+
+        cms_set_time_limit($old_limit);
     }
 
     public function tearDown()

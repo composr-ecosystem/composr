@@ -598,7 +598,7 @@ function find_all_tables(object $db) : array
 function get_sql_dump($out_file, bool $include_drops = false, bool $output_statuses = false, array $skip = [], ?array $only = null, ?object $db = null, ?string $intended_db_type = null)
 {
     disable_php_memory_limit();
-    cms_disable_time_limit();
+    $old_limit = cms_disable_time_limit();
     push_db_scope_check(false);
     push_query_limiting(false);
 
@@ -761,4 +761,6 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
         pop_db_scope_check();
         pop_query_limiting();
     }
+
+    cms_set_time_limit($old_limit);
 }

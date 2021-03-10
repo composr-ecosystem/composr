@@ -38,8 +38,6 @@ function do_user_import()
 {
     header('X-Robots-Tag: noindex');
 
-    cms_disable_time_limit();
-
     if (!USER_IMPORT_TEST_MODE) {
         require_code('files');
         $infile = cms_fopen_text_write(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH);
@@ -75,6 +73,8 @@ function do_user_import()
     }
 
     while (($row = $sheet_reader->read_row()) !== false) {
+        cms_extend_time_limit(1);
+
         // Match to ID
         $remote_match_key_value = $row[$USER_IMPORT_WANTED[USER_IMPORT_MATCH_KEY]];
         if ($remote_match_key_value == '') {
@@ -112,6 +112,8 @@ function do_user_import()
 
         if ($member_id === null) {
             if ($username !== null) {
+                cms_extend_time_limit(5);
+
                 // Add
                 if ($password === null) {
                     require_code('crypt');

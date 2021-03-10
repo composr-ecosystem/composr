@@ -37,7 +37,6 @@ class _template_previews_test_set extends cms_test_case
             exit('Already running');
         }
 
-        cms_disable_time_limit();
         disable_php_memory_limit();
 
         $_GET['keep_has_js'] = '0';
@@ -112,6 +111,8 @@ class _template_previews_test_set extends cms_test_case
 
         $only_do_these = []; // If you want to test specific templates temporarily put the template names (without .tpl) in this array. But remove again before you commit!
 
+        $old_limit = null;
+
         $lists = find_all_previews__by_template();
         $this->shuffle_assoc($lists); // So parallelism can work
         foreach ($lists as $template => $list) {
@@ -143,7 +144,7 @@ class _template_previews_test_set extends cms_test_case
                 continue; // To make easier to debug through
             }
 
-            cms_disable_time_limit();
+            $old_limit = cms_set_time_limit(10);
 
             init__lorem();
             push_output_state();
@@ -239,6 +240,10 @@ class _template_previews_test_set extends cms_test_case
             }
         }
 
+        if ($old_limit !== null) {
+            cms_set_time_limit($old_limit);
+        }
+
         $THEME_BEING_TESTED = null;
     }
 
@@ -266,7 +271,7 @@ class _template_previews_test_set extends cms_test_case
                 continue; // To make easier to debug through
             }
 
-            cms_disable_time_limit();
+            $old_limit = cms_set_time_limit(10);
 
             init__lorem();
             push_output_state();
@@ -301,6 +306,8 @@ class _template_previews_test_set extends cms_test_case
 
             unset($out1);
             unset($out2);
+
+            cms_set_time_limit($old_limit);
         }
 
         cms_ini_set('ocproducts.type_strictness', '0');
@@ -343,7 +350,7 @@ class _template_previews_test_set extends cms_test_case
                 continue; // To make easier to debug through
             }
 
-            cms_disable_time_limit();
+            $old_limit = cms_set_time_limit(10);
 
             $ATTACHED_MESSAGES = new Tempcode();
             $ATTACHED_MESSAGES_RAW = [];
@@ -360,6 +367,8 @@ class _template_previews_test_set extends cms_test_case
             }
 
             unset($out1);
+
+            cms_set_time_limit($old_limit);
         }
 
         cms_ini_set('ocproducts.type_strictness', '0');

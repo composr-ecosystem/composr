@@ -290,7 +290,9 @@ class Module_sites
             // Is the entry a directory?
             if ((strpos($entry, '.') === false) && (@ftp_chdir($conn_id, $directory . '/' . $entry))) {
                 $full_path = $directory . $entry . '/';
+                $old_limit = cms_set_time_limit(10);
                 $list->attach($this->_hostingcopy_do_dir($conn_id, $full_path, $depth + 1));
+                cms_set_time_limit($old_limit);
             }
         }
 
@@ -335,8 +337,6 @@ class Module_sites
         if (!addon_installed('search')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
-
-        cms_disable_time_limit();
 
         $hidden = build_keep_post_fields();
 
@@ -383,8 +383,6 @@ class Module_sites
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        cms_disable_time_limit();
-
         $conn_id = $this->_hostingcopy_ftp_connect();
         $path = post_param_string('path');
         $extra_path = post_param_string('extra_path');
@@ -405,6 +403,7 @@ class Module_sites
         }
 
         // Do upload to hosting
+        $old_limit = cms_disable_time_limit();
         $array = ['install.php' => get_file_base() . '/uploads/downloads/install.php', 'data.cms' => get_file_base() . '/uploads/downloads/data.cms'];
         foreach ($array as $filename => $tmp_file) {
             if (!@ftp_put($conn_id, $filename, $tmp_file, FTP_BINARY)) {
@@ -412,6 +411,7 @@ class Module_sites
                 warn_exit(do_lang_tempcode('HOSTING_NO_UPLOAD', cms_error_get_last()));
             }
         }
+        cms_set_time_limit($old_limit);
         $file_list = ftp_nlist($conn_id, '.');
         if ((is_array($file_list)) && (!in_array($filename, $file_list))) {
             warn_exit(do_lang_tempcode('HOSTING_FILE_GONE_MISSING'));

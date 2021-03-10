@@ -603,10 +603,10 @@ function regenerate_event_reminder_jobs(int $id, bool $force = false)
                 'j_event_id' => $id,
             ]);
         } else {
-            $old_limit = cms_disable_time_limit();
-
             $start = 0;
             do {
+                $old_limit = cms_set_time_limit(30);
+
                 $reminders = $GLOBALS['SITE_DB']->query_select('calendar_reminders', ['*'], ['e_id' => $id], '', 500, $start);
 
                 foreach ($reminders as $reminder) {
@@ -618,9 +618,9 @@ function regenerate_event_reminder_jobs(int $id, bool $force = false)
                     ]);
                 }
                 $start += 500;
-            } while (array_key_exists(0, $reminders));
 
-            cms_set_time_limit($old_limit);
+                cms_set_time_limit($old_limit);
+            } while (array_key_exists(0, $reminders));
         }
     }
 }

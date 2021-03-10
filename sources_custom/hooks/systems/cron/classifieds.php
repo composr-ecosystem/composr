@@ -61,12 +61,14 @@ class Hook_cron_classifieds
     {
         $time_now = time();
 
-        cms_disable_time_limit();
+        $max = 300;
 
         $start = 0;
         do {
+            $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+
             $table = 'catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices p ON p.c_catalogue_name=e.c_name';
-            $entries = $GLOBALS['SITE_DB']->query_select($table, ['e.*'], ['ce_validated' => 1], ' AND ce_last_moved<' . strval(time() + 60 * 60 * 24), 1000, $start);
+            $entries = $GLOBALS['SITE_DB']->query_select($table, ['e.*'], ['ce_validated' => 1], ' AND ce_last_moved<' . strval(time() + 60 * 60 * 24), 300, $start);
             foreach ($entries as $entry) {
                 if ($entry['ce_last_moved'] == $entry['ce_add_date']) {
                     require_code('classifieds');
@@ -103,7 +105,9 @@ class Hook_cron_classifieds
                 }
             }
 
-            $start += 1000;
+            $start += 300;
+
+            cms_set_time_limit($old_limit);
         } while (!empty($entries));
     }
 }

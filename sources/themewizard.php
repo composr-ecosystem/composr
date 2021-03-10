@@ -323,7 +323,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
 {
     $files_created = [];
 
-    $old_limit = cms_disable_time_limit();
+    $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
     disable_php_memory_limit();
 
     push_query_limiting(false);

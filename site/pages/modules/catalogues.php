@@ -282,12 +282,13 @@ class Module_catalogues
             rebuild_catalogue_cat_treecache();
 
             // Move floats and integers into their own new tables
-            cms_disable_time_limit();
             $sql_integer = db_string_equal_to('cf_type', 'integer') . ' OR ' . db_string_equal_to('cf_type', 'member') . ' OR ' . db_string_equal_to('cf_type', 'tick');
             $sql_float = db_string_equal_to('cf_type', 'float');
             foreach ([$sql_float => 'float', $sql_integer => 'integer'] as $where => $new_type) {
                 $fields = $GLOBALS['SITE_DB']->query('SELECT id FROM ' . get_table_prefix() . 'catalogue_fields WHERE ' . $where, null, 0, false, true);
                 foreach ($fields as $field) {
+                    $old_limit = cms_set_time_limit(10);
+
                     do {
                         $or_list = '';
                         $rows = $GLOBALS['SITE_DB']->query_select('catalogue_efv_short', ['*'], ['cf_id' => $field['id']], '', 100);
@@ -309,6 +310,8 @@ class Module_catalogues
                             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'catalogue_efv_short WHERE ' . $or_list, null, 0, false, true);
                         }
                     } while (!empty($rows));
+
+                    cms_set_time_limit($old_limit);
                 }
             }
         }

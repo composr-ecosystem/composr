@@ -82,10 +82,10 @@ class Hook_ecommerce_catalogue_items
             $where['id'] = intval($search);
         }
 
-        cms_disable_time_limit();
-
         $start = 0;
         do {
+            $old_limit = cms_set_time_limit(10);
+
             $entry_rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries t1 LEFT JOIN ' . get_table_prefix() . 'catalogues t2 ON t1.c_name=t2.c_name', ['t1.id', 't1.c_name'], $where, '', 500, $start);
             foreach ($entry_rows as $entry_row) {
                 $fields_map = find_shopping_catalogue_fields($entry_row['c_name']);
@@ -178,6 +178,8 @@ class Hook_ecommerce_catalogue_items
                 ];
             }
             $start += 500;
+
+            cms_set_time_limit($old_limit);
         } while (count($entry_rows) == 500);
 
         return $products;

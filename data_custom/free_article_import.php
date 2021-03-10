@@ -57,8 +57,6 @@ if (!addon_installed('news')) {
 
 header('X-Robots-Tag: noindex');
 
-cms_disable_time_limit();
-
 require_code('news');
 require_code('news2');
 require_code('content2');
@@ -94,6 +92,8 @@ $done = 0;
 require_code('files_spreadsheets_read');
 $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/data_custom/free_article_import__articles.csv');
 while (($r = $sheet_reader->read_row()) !== false) {
+    $time_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
     $url = $r['URL'];
 
     if ($r['Body'] == '') {
@@ -143,6 +143,8 @@ while (($r = $sheet_reader->read_row()) !== false) {
 
         $done++;
     }
+
+    cms_set_time_limit($time_limit);
 }
 $sheet_reader->close();
 

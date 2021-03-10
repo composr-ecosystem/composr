@@ -20,7 +20,7 @@ class cqc_cns_test_set extends cms_test_case
 {
     public function testSite()
     {
-        cms_disable_time_limit();
+        cms_set_time_limit(120);
         $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=sources&filter=cns_.*';
         $url = $this->extend_cqc_call($url);
         $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);

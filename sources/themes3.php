@@ -28,8 +28,6 @@ function compile_all_templates()
 
     require_all_lang();
 
-    cms_disable_time_limit();
-
     $themes = [
         'admin',
         $GLOBALS['FORUM_DRIVER']->get_theme(''),
@@ -80,6 +78,8 @@ function compile_all_templates()
                     $tcp_path = $base_path . '/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.' . $suffix . '.tcp';
 
                     if (!is_file($tcp_path)) {
+                        $old_limit = cms_set_time_limit(5);
+
                         do_template($codename, [], $lang, true, null, '.' . $suffix, $directory, $theme);
 
                         switch ($directory) {
@@ -93,6 +93,8 @@ function compile_all_templates()
                                 css_enforce($codename, $theme);
                                 break;
                         }
+
+                        cms_set_time_limit($old_limit);
 
                         if (memory_get_usage() > $max_memory) {
                             closedir($dh);

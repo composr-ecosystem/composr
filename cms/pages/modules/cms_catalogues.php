@@ -2117,10 +2117,10 @@ class Module_cms_catalogues_alt extends Standard_crud_module
         $send_view_reports = post_param_string('send_view_reports', STRING_MAGIC_NULL);
         if (!fractional_edit()) {
             if (post_param_integer('reset_category_permissions', 0) == 1) {
-                cms_disable_time_limit();
-
                 $start = 0;
                 do {
+                    $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
                     send_http_output_ping();
 
                     $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id'], ['c_name' => $name], '', 300, $start);
@@ -2129,6 +2129,8 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                     }
 
                     $start += 300;
+
+                    cms_set_time_limit($old_limit);
                 } while (array_key_exists(0, $rows));
             }
         }

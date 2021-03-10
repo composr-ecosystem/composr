@@ -47,7 +47,6 @@ if (!addon_installed('stress_test')) {
 
 header('X-Robots-Tag: noindex');
 
-cms_disable_time_limit();
 cms_ini_set('ocproducts.xss_detect', '0');
 @header('Content-Type: text/plain; charset=' . get_charset());
 disable_php_memory_limit();
@@ -61,6 +60,11 @@ do_work();
 
 function do_work()
 {
+    $num_wanted = isset($_SERVER['argv'][1]) ? intval($_SERVER['argv'][1]) : 200;
+    $want_zones = isset($_SERVER['argv'][2]) ? (in_array('zones', explode(',', $_SERVER['argv'][2]))) : false;
+
+    cms_set_time_limit($num_wanted * 30);
+
     if (!is_cli()) {
         header('Content-Type: text/plain; charset=' . get_charset());
         exit('Must run this script on command line, for security reasons');
@@ -92,9 +96,6 @@ function do_work()
     if (get_forum_type() != 'cns') {
         warn_exit(do_lang_tempcode('NO_CNS'));
     }
-
-    $num_wanted = isset($_SERVER['argv'][1]) ? intval($_SERVER['argv'][1]) : 200;
-    $want_zones = isset($_SERVER['argv'][2]) ? (in_array('zones', explode(',', $_SERVER['argv'][2]))) : false;
 
     require_code('config2');
     set_option('post_read_history_days', '0'); // Needed for a little sanity in recent post retrieval

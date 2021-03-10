@@ -289,10 +289,11 @@ function install_cns(?float $upgrade_from = null)
         delete_config_option('prevent_shouting');
 
         // Initialise f_password_history with current data (we'll assume m_last_submit_time represents last password change, which is not true - but ok enough for early initialisation, and will scatter things quite nicely to break in the new rules gradually)
-        cms_disable_time_limit();
         $max = 500;
         $start = 0;
         do {
+            $old_limit = cms_set_time_limit(30);
+
             $members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_pass_hash_salted', 'm_pass_salt', 'm_last_submit_time', 'm_join_time'], [], '', $max, $start);
             foreach ($members as $member) {
                 if ($member['id'] != $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
@@ -305,6 +306,8 @@ function install_cns(?float $upgrade_from = null)
                 }
             }
             $start += $max;
+
+            cms_set_time_limit($old_limit);
         } while (!empty($members));
 
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_options', 'SHORT_TEXT');

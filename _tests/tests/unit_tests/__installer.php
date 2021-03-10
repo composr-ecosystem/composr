@@ -20,13 +20,6 @@
  */
 class __installer_test_set extends cms_test_case
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        cms_disable_time_limit();
-    }
-
     public function testQuickInstallerBuildsAndDoesNotFullyCrash()
     {
         if (($this->only !== null) && ($this->only != 'testQuickInstallerBuildsAndDoesNotFullyCrash')) {
@@ -45,6 +38,8 @@ class __installer_test_set extends cms_test_case
 
         require_code('version2');
         require_code('make_release');
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         $builds_path = get_builds_path();
         $version_dotted = get_version_dotted();
@@ -137,6 +132,8 @@ class __installer_test_set extends cms_test_case
         global $SITE_INFO;
         require_code('install_headless');
         for ($i = 0; $i < (($this->only === null) ? 2 : 1); $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
+            cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
             $success = do_install_to(
                 $database,
                 (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root',

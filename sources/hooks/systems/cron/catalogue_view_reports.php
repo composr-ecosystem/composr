@@ -102,12 +102,12 @@ class Hook_cron_catalogue_view_reports
             require_lang('catalogues');
         }
 
-        cms_disable_time_limit();
-
         // Now for the intensive part
         foreach ($this->doing as $catalogue) {
             $start = 0;
             do {
+                $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
                 // So, we find all the entries in their catalogue, and group them by submitters
                 $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id', 'ce_submitter', 'ce_views', 'ce_views_prior'], ['c_name' => $catalogue['c_name']], 'ORDER BY ce_submitter', 2000, $start);
                 $members = [];
@@ -151,6 +151,8 @@ class Hook_cron_catalogue_view_reports
                 }
 
                 $start += 2000;
+
+                cms_set_time_limit($old_limit);
             } while (count($entries) == 2000);
         }
     }

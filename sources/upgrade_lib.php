@@ -159,13 +159,13 @@ function perform_search_replace(array $reps)
  */
 function rename_zone(string $zone, string $new_zone, bool $dont_bother_with_main_row = false)
 {
-    cms_disable_time_limit();
-
     require_code('zones2');
     require_code('zones3');
     actual_rename_zone_lite($zone, $new_zone, $dont_bother_with_main_row);
     $pages = find_all_pages_wrap($zone, true, false, FIND_ALL_PAGES__ALL);
     foreach ($pages as $page => $type) {
+        cms_extend_time_limit(1);
+
         send_http_output_ping();
 
         $path = get_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/' . $type . '/' . $page;

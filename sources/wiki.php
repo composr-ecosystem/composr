@@ -562,8 +562,6 @@ function wiki_edit_page(int $page_id, string $title, string $description, string
  */
 function wiki_delete_page(int $page_id)
 {
-    $old_limit = cms_disable_time_limit();
-
     // Get page details
     $pages = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => $page_id], '', 1);
     if (!array_key_exists(0, $pages)) {
@@ -576,6 +574,8 @@ function wiki_delete_page(int $page_id)
     // Delete posts
     $start = 0;
     do {
+        $old_limit = cms_set_time_limit(30);
+
         send_http_output_ping();
 
         $posts = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['id'], ['page_id' => $page_id], '', 500, $start);
@@ -583,9 +583,9 @@ function wiki_delete_page(int $page_id)
             wiki_delete_post($post['id']);
         }
         //$start += 500;    No, we just deleted, so offsets would have changed
-    } while (array_key_exists(0, $posts));
 
-    cms_set_time_limit($old_limit);
+        cms_set_time_limit($old_limit);
+    } while (array_key_exists(0, $posts));
 
     // Log revision
     $log_id = log_it('WIKI_DELETE_PAGE', strval($page_id), get_translated_text($_title), true);

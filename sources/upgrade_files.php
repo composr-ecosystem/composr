@@ -99,7 +99,7 @@ function _upgrader_file_upgrade_screen() : string
     }
 
     // Turn off limits, this may be exhaustive
-    cms_disable_time_limit();
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
     disable_php_memory_limit();
 
     // How we can get file

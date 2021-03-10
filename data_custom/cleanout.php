@@ -110,8 +110,6 @@ function cleanup()
 
     /* Actioning code follows... */
 
-    cms_disable_time_limit();
-
     $GLOBALS['SITE_INFO']['no_email_output'] = '1';
 
     require_code('cns_groups2');
@@ -467,6 +465,8 @@ function cleanup()
                 }
                 $rows = $GLOBALS['SITE_DB']->query_select($table, $select, [], '', 100, $start);
                 foreach ($rows as $i => $row) {
+                    $old_limit = cms_set_time_limit(10);
+
                     if (($function == 'actual_delete_catalogue_category') && ($row['cc_parent_id'] === null) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_catalogues', 'c_is_tree', ['c_name' => $row['c_name']]) == 1)) {
                         unset($rows[$i]);
                         continue;
@@ -482,11 +482,15 @@ function cleanup()
                     }
 
                     call_user_func_array($function, array_merge($row, $extra_params));
+
+                    cms_set_time_limit($old_limit);
                 }
                 //$start+=100;   Actually, don't do this - as deletion will have changed offsets
             } while (!empty($rows));
         }
     }
+
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
     require_code('database_relations');
     $table_purposes = get_table_purpose_flags();

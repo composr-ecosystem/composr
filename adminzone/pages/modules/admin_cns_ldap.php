@@ -184,10 +184,10 @@ class Module_admin_cns_ldap
             }
         }
 
-        cms_disable_time_limit();
-
         $start = 0;
         do {
+            $old_limit = cms_set_time_limit(10);
+
             send_http_output_ping();
 
             $all_ldap_members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username'], ['m_password_compat_scheme' => 'ldap'], '', 400, $start);
@@ -201,6 +201,8 @@ class Module_admin_cns_ldap
                 }
             }
             $start += 400;
+
+            cms_set_time_limit($old_limit);
         } while (array_key_exists(0, $all_ldap_members));
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');

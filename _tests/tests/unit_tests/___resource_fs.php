@@ -33,8 +33,6 @@ class ___resource_fs_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_disable_time_limit();
-
         push_query_limiting(false);
 
         require_code('content');
@@ -81,6 +79,8 @@ class ___resource_fs_test_set extends cms_test_case
     public function testAdd()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             $path = '';
             if ($ob->folder_resource_type !== null) {
                 $folder_resource_type_1 = is_array($ob->folder_resource_type) ? $ob->folder_resource_type[0] : $ob->folder_resource_type;
@@ -116,6 +116,8 @@ class ___resource_fs_test_set extends cms_test_case
             destrictify();
             $this->assertTrue($result !== false, 'Failed to file_add ' . $commandr_fs_hook . ' (' . $path . ')');
             $this->paths[$commandr_fs_hook] = $path;
+
+            cms_set_time_limit($old_limit);
         }
     }
 
@@ -124,6 +126,8 @@ class ___resource_fs_test_set extends cms_test_case
         $commandr_fs = new Commandr_fs();
 
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             $count_folders = 0;
             if ($ob->folder_resource_type !== null) {
                 foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : [$ob->folder_resource_type] as $resource_type) {
@@ -150,6 +154,8 @@ class ___resource_fs_test_set extends cms_test_case
                 $ok,
                 'File/folder count mismatch for ' . $commandr_fs_hook . ' (' . integer_format($count_folders) . ' folders + ' . integer_format($count_files) . ' files -vs- ' . integer_format(count($listing)) . ' in Commandr-fs listing)'
             );
+
+            cms_set_time_limit($old_limit);
         }
     }
 
@@ -174,6 +180,8 @@ class ___resource_fs_test_set extends cms_test_case
     public function testSearch()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             if ($ob->folder_resource_type !== null) {
                 $folder_resource_type = is_array($ob->folder_resource_type) ? $ob->folder_resource_type[0] : $ob->folder_resource_type;
                 list(, $folder_resource_id) = $ob->folder_convert_filename_to_id('test-a', $folder_resource_type);
@@ -198,12 +206,16 @@ class ___resource_fs_test_set extends cms_test_case
                     }
                 }
             }
+
+            cms_set_time_limit($old_limit);
         }
     }
 
     public function testFindByLabel()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             if ($ob->folder_resource_type !== null) {
                 $results = [];
                 foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : [$ob->folder_resource_type] as $resource_type) {
@@ -217,12 +229,16 @@ class ___resource_fs_test_set extends cms_test_case
                 $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test_content'));
             }
             $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (file) ' . $commandr_fs_hook);
+
+            cms_set_time_limit($old_limit);
         }
     }
 
     public function testLoad()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             $path = $this->paths[$commandr_fs_hook];
 
             if ($path != '') {
@@ -232,12 +248,16 @@ class ___resource_fs_test_set extends cms_test_case
 
             $result = $ob->file_load('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
             $this->assertTrue($result !== false, 'Failed to file_load ' . $commandr_fs_hook . ' (' . $path . ')');
+
+            cms_set_time_limit($old_limit);
         }
     }
 
     public function testEdit()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             $path = $this->paths[$commandr_fs_hook];
 
             if ($path != '') {
@@ -259,12 +279,16 @@ class ___resource_fs_test_set extends cms_test_case
 
             $result = $ob->file_edit('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, ['label' => 'test_content']);
             $this->assertTrue($result !== false, 'Failed to file_edit ' . $commandr_fs_hook . ' (' . $path . ')');
+
+            cms_set_time_limit($old_limit);
         }
     }
 
     public function testDelete()
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
+            $old_limit = cms_set_time_limit(10);
+
             $path = $this->paths[$commandr_fs_hook];
 
             $result = $ob->file_delete('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
@@ -285,6 +309,8 @@ class ___resource_fs_test_set extends cms_test_case
                 }
                 set_throw_errors(false);
             }
+
+            cms_set_time_limit($old_limit);
         }
     }
 }

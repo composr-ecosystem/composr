@@ -28,7 +28,6 @@ class _broken_links_test_set extends cms_test_case
         require_code('site');
         require_code('global4');
 
-        cms_disable_time_limit();
         disable_php_memory_limit();
     }
 
@@ -158,6 +157,8 @@ class _broken_links_test_set extends cms_test_case
 
     protected function check_link($url, $context)
     {
+        cms_extend_time_limit(2);
+
         /*// This is just for temporary testing of a list of broken links
         if (!in_array($url, [
         ])) {

@@ -51,8 +51,6 @@ function output_ical(bool $headers_and_exit = true)
         return;
     }
 
-    cms_disable_time_limit();
-
     $filter = get_param_integer('type_filter', null);
     if ($filter === 0) {
         $filter = null;
@@ -101,6 +99,8 @@ function output_ical(bool $headers_and_exit = true)
 
     $start = 0;
     do {
+        $old_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         $events = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'calendar_events r' . $privacy_join . ' WHERE ' . $where . ' ORDER BY e_add_date ASC', 1000, $start);
         foreach ($events as $event) {
             if (!has_category_access(get_member(), 'calendar', strval($event['e_type']))) {
@@ -330,6 +330,8 @@ function output_ical(bool $headers_and_exit = true)
         }
 
         $start += 1000;
+
+        cms_set_time_limit($old_limit);
     } while (array_key_exists(0, $events));
 
     echo "END:VCALENDAR\r\n";

@@ -22,8 +22,6 @@ class _commandr_fs_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_disable_time_limit();
-
         push_query_limiting(false);
 
         require_code('commandr_fs');
@@ -140,6 +138,8 @@ class _commandr_fs_test_set extends cms_test_case
         }
 
         foreach ($commandr_fs_hooks as $commandr_fs_hook => $dir) {
+            cms_extend_time_limit(5);
+
             if (get_forum_type() != 'cns') {
                 if (in_array($commandr_fs_hook, ['forums', 'groups'])) {
                     continue;

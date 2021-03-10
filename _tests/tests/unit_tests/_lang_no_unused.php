@@ -25,7 +25,7 @@ class _lang_no_unused_test_set extends cms_test_case
         require_code('lang_compile');
 
         disable_php_memory_limit();
-        cms_disable_time_limit();
+        cms_set_time_limit(200);
 
         // Exceptions
         $exceptions_dirs = array_merge(list_untouchable_third_party_directories(), [
