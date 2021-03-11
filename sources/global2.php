@@ -1042,8 +1042,8 @@ function memory_limit_for_max_param(string $max_param)
  */
 function has_low_memory() : bool
 {
-    $ml = ini_get('memory_limit');
-    return ((substr($ml, -1) == 'M') && (intval(substr($ml, 0, strlen($ml) - 1)) < 64));
+    $ml = php_return_bytes(ini_get('memory_limit'));
+    return ($ml != -1) && ($ml < 64 * 1024 * 1024);
 }
 
 /**

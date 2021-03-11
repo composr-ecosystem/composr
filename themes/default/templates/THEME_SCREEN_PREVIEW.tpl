@@ -1,6 +1,6 @@
 {$REQUIRE_JAVASCRIPT,core_themeing}
 
-<li data-tpl="themeScreenPreview">
+<div data-tpl="themeScreenPreview">
 	{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END}
 
 	{+START,IF_NON_EMPTY,{SCREEN_PREVIEW_URL}}
@@ -35,4 +35,4 @@
 			<ul class="meta-details-list">{LIST*}</ul>
 		</div>
 	{+END}
-</li>
+</div>

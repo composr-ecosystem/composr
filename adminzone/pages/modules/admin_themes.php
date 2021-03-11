@@ -1596,7 +1596,14 @@ class Module_admin_themes
         foreach ($css_files as $css_file) {
             $_url = find_script('sheet') . '?sheet=' . urlencode(basename($css_file, '.css'));
             $_screen_preview_url = 'http://jigsaw.w3.org/css-validator/validator?uri=' . urlencode($_url);
-            $tpl_x = do_template('INDEX_SCREEN_ENTRY', ['_GUID' => '26d1c1c5dc5556254f7a3f28a44fdb52', 'URL' => $_screen_preview_url, 'TARGET' => '_blank', 'NAME' => $css_file]);
+            $tpl_x = do_template('INDEX_SCREEN_FANCIER_ENTRY', [
+                '_GUID' => '26d1c1c5dc5556254f7a3f28a44fdb52',
+                'URL' => $_screen_preview_url,
+                'TARGET' => '_blank',
+                'NAME' => $css_file,
+                'TITLE' => '',
+                'DESCRIPTION' => '',
+            ]);
             $css_li->attach($tpl_x->evaluate());
         }
         $list['CSS (W3C validation)'] = $css_li;

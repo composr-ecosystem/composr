@@ -819,7 +819,7 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__block_main_members() : object
     {
-        return $this->block_main_members_preview('BLOCK_MAIN_MEMBERS');
+        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS');
     }
 
     /**
@@ -831,7 +831,7 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__block_main_members_complex() : object
     {
-        return $this->block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX');
+        return $this->do_block_main_members_preview('BLOCK_MAIN_MEMBERS_COMPLEX');
     }
 
     /**
@@ -842,7 +842,7 @@ class Hook_addon_registry_core_cns
      * @param  string $tpl Template
      * @return Tempcode Preview
      */
-    public function block_main_members_preview($tpl) : object
+    protected function do_block_main_members_preview($tpl) : object
     {
         $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
             'NAME' => lorem_phrase(),

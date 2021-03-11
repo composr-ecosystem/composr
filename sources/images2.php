@@ -707,15 +707,13 @@ function _image_path_to_url(string $to_path) : string
  */
 function check_memory_limit_for(string $file_path, bool $exit_on_error = true) : bool
 {
-    $ov = ini_get('memory_limit');
+    $total_memory_limit_in_bytes = php_return_bytes(ini_get('memory_limit'));
 
     $_what_we_will_allow = get_value('real_memory_available_mb');
     $what_we_will_allow = ($_what_we_will_allow === null) ? null : (intval($_what_we_will_allow) * 1024 * 1024);
 
-    if ((substr($ov, -1) == 'M') || ($what_we_will_allow !== null)) {
+    if (($total_memory_limit_in_bytes != -1) || ($what_we_will_allow !== null)) {
         if ($what_we_will_allow === null) {
-            $total_memory_limit_in_bytes = intval(substr($ov, 0, strlen($ov) - 1)) * 1024 * 1024;
-
             $what_we_will_allow = $total_memory_limit_in_bytes - memory_get_usage() - 1024 * 1024 * 8; // 8 is for 8MB extra space needed to finish off
         }
 

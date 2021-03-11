@@ -22,7 +22,7 @@ class clean_reinstall_test_set extends cms_test_case
     {
         require_code('files2');
 
-        cms_ini_set('memory_limit', '-1');
+        disable_php_memory_limit();
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 

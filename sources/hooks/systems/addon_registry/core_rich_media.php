@@ -1494,6 +1494,31 @@ class Hook_addon_registry_core_rich_media
 
             $tabular_row_cells = [];
             $tabular_row_cell = [
+                'IS_HEADER' => true,
+                'FIRST_CELL_ON_ROW' => true,
+                'LAST_CELL_ON_ROW' => false,
+                'WIDTH' => '50%',
+                'VALUE' => lorem_phrase(),
+            ];
+            $tabular_row_cells[] = $tabular_row_cell;
+            $tabular_row_cell = [
+                'IS_HEADER' => true,
+                'FIRST_CELL_ON_ROW' => false,
+                'LAST_CELL_ON_ROW' => true,
+                'WIDTH' => '50%',
+                'VALUE' => lorem_phrase(),
+            ];
+            $tabular_row_cells[] = $tabular_row_cell;
+            $tabular_row = [
+                'IS_HEADER_ROW' => true,
+                'FIRST_NON_HEADER_ROW' => false,
+                'LAST_NON_HEADER_ROW' => false,
+                'CELLS' => $tabular_row_cells,
+            ];
+            $tabular_rows[] = $tabular_row;
+
+            $tabular_row_cells = [];
+            $tabular_row_cell = [
                 'IS_HEADER' => false,
                 'FIRST_CELL_ON_ROW' => true,
                 'LAST_CELL_ON_ROW' => false,
@@ -1509,14 +1534,12 @@ class Hook_addon_registry_core_rich_media
                 'VALUE' => lorem_phrase(),
             ];
             $tabular_row_cells[] = $tabular_row_cell;
-
             $tabular_row = [
                 'IS_HEADER_ROW' => false,
-                'FIRST_NON_HEADER_ROW' => false,
-                'LAST_NON_HEADER_ROW' => false,
+                'FIRST_NON_HEADER_ROW' => true,
+                'LAST_NON_HEADER_ROW' => true,
                 'CELLS' => $tabular_row_cells,
             ];
-            $tabular_rows[] = $tabular_row;
             $tabular_rows[] = $tabular_row;
 
             $out = do_template($tpl, [

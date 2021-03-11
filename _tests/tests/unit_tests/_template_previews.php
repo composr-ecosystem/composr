@@ -50,7 +50,6 @@ class _template_previews_test_set extends cms_test_case
         $_GET['keep_has_js'] = '0';
         push_query_limiting(false);
         $_GET['keep_query_limit'] = '0';
-        cms_ini_set('memory_limit', '-1');
         $_GET['wide'] = '1';
         $_GET['keep_devtest'] = '1';
         $_GET['keep_has_js'] = '0';
@@ -88,10 +87,6 @@ class _template_previews_test_set extends cms_test_case
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
-            if (($this->only !== null) && ($this->only != $theme)) {
-                continue;
-            }
-
             // Exceptions
             if (in_array($theme, [
                 '_unnamed_',
@@ -117,27 +112,29 @@ class _template_previews_test_set extends cms_test_case
         global $RECORD_TEMPLATES_USED, $RECORDED_TEMPLATES_USED;
         $RECORD_TEMPLATES_USED = true;
 
-        $only_do_these = []; // If you want to test specific templates temporarily put the template names (without .tpl) in this array. But remove again before you commit!
-
         $old_limit = null;
 
-        $lists = find_all_previews__by_template();
-        $this->shuffle_assoc($lists); // So parallelism can work
-        foreach ($lists as $template => $list) {
+        $previews__by_template = find_all_previews__by_template();
+        $previews__by_screen = find_all_previews__by_screen();
+        $this->shuffle_assoc($previews__by_template); // So parallelism can work
+        foreach ($previews__by_template as $template => $list) {
             $old_limit = cms_set_time_limit(30); // Time to generate and validate, with potential for spiky CPU availability over long-running task
 
-            if (!empty($only_do_these)) {
-                if (!in_array($template, $only_do_these)) {
-                    continue;
-                }
+            $hook = $list[0];
+            $function = $list[1];
+
+            // Exceptions...
+
+            if (($this->only !== null) && ($this->only != $template)) {
+                continue;
             }
 
             if ((!is_file(get_file_base() . '/themes/' . $theme . '/' . $template)) && (!is_file(get_file_base() . '/themes/' . $theme . '/' . str_replace('/', '_custom/', $template)))) {
-                continue;
+                continue; // Does not exist in theme
             }
 
             if ($template == 'templates/tempcode_test.tpl') {
-                continue;
+                continue; // Only a test template
             }
             if ($template == 'templates/ADMIN_ZONE_SEARCH.tpl') {
                 continue; // Only in admin theme, causes problem
@@ -147,12 +144,11 @@ class _template_previews_test_set extends cms_test_case
                 continue;
             }
 
-            $hook = $list[0];
-            $function = $list[1];
-
             if (is_file(get_file_base() . '/_tests/screens_tested/' . $theme . '__' . $function . '.tmp')) {
                 continue; // To make easier to debug through
             }
+
+            // Render...
 
             init__lorem();
             push_output_state();
@@ -166,68 +162,57 @@ class _template_previews_test_set extends cms_test_case
 
             restore_output_state();
 
-            $flag = false;
-            foreach ($lists as $template_2 => $list_2) {
-                if (!empty($only_do_these)) {
-                    if (!in_array($template_2, $only_do_these)) {
-                        continue;
-                    }
-                }
-
-                if ($template_2 == 'templates/tempcode_test.tpl') {
-                    continue;
-                }
-
-                if (is_plain_text_template($template_2)) {
-                    continue;
-                }
-                if ($list_2[1] == $function) {
-                    // Ignore templates designed for indirect inclusion
-                    if (in_array($template_2, [
-                        'templates/NEWSLETTER_PREVIEW.tpl',
-                        'templates/GLOBAL_HELPER_PANEL.tpl',
-                        'templates/HTML_HEAD.tpl',
-                        'templates/HTML_HEAD_POLYFILLS.tpl',
-                        'templates/MEMBER_TOOLTIP.tpl',
-                        'templates/FORM_STANDARD_END.tpl',
-                        'templates/MEMBER_BAR_SEARCH.tpl',
-                        'templates/MENU_LINK_PROPERTIES.tpl',
-                        'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTER.tpl',
-                        'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTERS.tpl',
-                        'templates/ADMIN_ZONE_SEARCH.tpl',
-                        'templates/FILEDUMP_FOOTER.tpl',
-                        'templates/FILEDUMP_SEARCH.tpl',
-                        'templates/FONT_SIZER.tpl',
-                        'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
-                        'templates/FORM_SCREEN_FIELD_DESCRIPTION.tpl',
-                        'templates/FORM_STANDARD_END.tpl',
-                        'templates/MEDIA__DOWNLOAD_LINK.tpl',
-                        'templates/MEMBER_BAR_SEARCH.tpl',
-                        'templates/NOTIFICATION_BUTTONS.tpl',
-                        'templates/NOTIFICATION_TYPES.tpl',
-                        'templates/CNS_MEMBER_PROFILE_FIELDS.tpl',
-                        'templates/CNS_MEMBER_PROFILE_FIELD.tpl',
-                        'templates/ICON.tpl',
-                        'templates/RED_ALERT.tpl',
-                        'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
-                        'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
-                        'templates/PERMISSIONS_CONTENT_ACCESS_LIST.tpl',
-                        'templates/PERMISSIONS_CONTENT_ACCESS_TICK.tpl',
-                    ])) {
-                        continue;
-                    }
-
-                    $this->assertTrue(array_key_exists($template_2, $RECORDED_TEMPLATES_USED), $template_2 . ' not used in preview as claimed in ' . $hook . '/' . $function);
-                    if (!array_key_exists($template_2, $RECORDED_TEMPLATES_USED)) {
-                        $flag = true;
-                    }
-                }
-            }
-
             if (!is_object($out)) {
                 fatal_exit('Claimed screen for ' . $template . ' is not defined');
             }
             $_out = $out->evaluate();
+
+            // Test all templates in this screen really were used...
+
+            $flag = false;
+            foreach ($previews__by_screen[$function][1] as $template_2) {
+                // Ignore templates designed for indirect inclusion
+                if (in_array($template_2, [
+                    'templates/NEWSLETTER_PREVIEW.tpl',
+                    'templates/GLOBAL_HELPER_PANEL.tpl',
+                    'templates/HTML_HEAD.tpl',
+                    'templates/HTML_HEAD_POLYFILLS.tpl',
+                    'templates/MEMBER_TOOLTIP.tpl',
+                    'templates/FORM_STANDARD_END.tpl',
+                    'templates/MEMBER_BAR_SEARCH.tpl',
+                    'templates/MENU_LINK_PROPERTIES.tpl',
+                    'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTER.tpl',
+                    'templates/CNS_MEMBER_DIRECTORY_SCREEN_FILTERS.tpl',
+                    'templates/ADMIN_ZONE_SEARCH.tpl',
+                    'templates/FILEDUMP_FOOTER.tpl',
+                    'templates/FILEDUMP_SEARCH.tpl',
+                    'templates/FONT_SIZER.tpl',
+                    'templates/FORM_SCREEN_ARE_REQUIRED.tpl',
+                    'templates/FORM_SCREEN_FIELD_DESCRIPTION.tpl',
+                    'templates/FORM_STANDARD_END.tpl',
+                    'templates/MEDIA__DOWNLOAD_LINK.tpl',
+                    'templates/MEMBER_BAR_SEARCH.tpl',
+                    'templates/NOTIFICATION_BUTTONS.tpl',
+                    'templates/NOTIFICATION_TYPES.tpl',
+                    'templates/CNS_MEMBER_PROFILE_FIELDS.tpl',
+                    'templates/CNS_MEMBER_PROFILE_FIELD.tpl',
+                    'templates/ICON.tpl',
+                    'templates/RED_ALERT.tpl',
+                    'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
+                    'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
+                    'templates/PERMISSIONS_CONTENT_ACCESS_LIST.tpl',
+                    'templates/PERMISSIONS_CONTENT_ACCESS_TICK.tpl',
+                ])) {
+                    continue;
+                }
+
+                $this->assertTrue(array_key_exists($template_2, $RECORDED_TEMPLATES_USED), $template_2 . ' not used in preview as claimed in ' . $hook . '/' . $function);
+                if (!array_key_exists($template_2, $RECORDED_TEMPLATES_USED)) {
+                    $flag = true;
+                }
+            }
+
+            // Validate...
 
             if ((stripos($_out, '<html') !== false) && (strpos($_out, '<xsl') === false)) {
                 $result = check_xhtml($_out, false, false, false, true, true, true, false, false, true);
@@ -242,6 +227,7 @@ class _template_previews_test_set extends cms_test_case
                 require_code('view_modes');
                 display_webstandards_results($_out, $result, false, false);
             } else {
+                // Mark done
                 if (!$flag) {
                     cms_file_put_contents_safe(get_file_base() . '/_tests/screens_tested/' . $theme . '__' . $function . '.tmp', '1', FILE_WRITE_FIX_PERMISSIONS);
                 }
@@ -264,14 +250,18 @@ class _template_previews_test_set extends cms_test_case
         $_GET['wide'] = '1';
         $HAS_KEEP_IN_URL_CACHE = null;
 
-        $lists = find_all_previews__by_screen();
-        $this->shuffle_assoc($lists); // So parallelism can work
-        foreach ($lists as $function => $details) {
+        $previews__by_screen = find_all_previews__by_screen();
+        $this->shuffle_assoc($previews__by_screen); // So parallelism can work
+        foreach ($previews__by_screen as $function => $details) {
             $old_limit = cms_set_time_limit(10);
 
             $tpls = $details[1];
             $template = $tpls[0];
             $hook = null;
+
+            if (($this->only !== null) && ($this->only != $template)) {
+                continue;
+            }
 
             if ($template == 'ADMIN_ZONE_SEARCH.tpl') {
                 continue; // Only in admin theme, causes problem
@@ -343,14 +333,18 @@ class _template_previews_test_set extends cms_test_case
     {
         global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW;
 
-        $lists = find_all_previews__by_screen();
-        $this->shuffle_assoc($lists); // So parallelism can work
-        foreach ($lists as $function => $details) {
+        $previews__by_screen = find_all_previews__by_screen();
+        $this->shuffle_assoc($previews__by_screen); // So parallelism can work
+        foreach ($previews__by_screen as $function => $details) {
             $old_limit = cms_set_time_limit(10);
 
             $tpls = $details[1];
             $template = $tpls[0];
             $hook = null;
+
+            if (($this->only !== null) && ($this->only != $template)) {
+                continue;
+            }
 
             if ($template === 'ADMIN_ZONE_SEARCH.tpl') {
                 continue; // Only in admin theme, causes problem
@@ -385,6 +379,10 @@ class _template_previews_test_set extends cms_test_case
 
     public function testNoRedundantFunctions()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         $hooks = find_all_hooks('systems', 'addon_registry');
         foreach ($hooks as $hook => $place) {
             require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
@@ -410,6 +408,10 @@ class _template_previews_test_set extends cms_test_case
 
     public function testNoDoublePreviews()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         $all_used = [];
 
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
@@ -433,10 +435,16 @@ class _template_previews_test_set extends cms_test_case
         // Useful for debugging crashes
         global $PREVIEWS_LOG;
         if ($PREVIEWS_LOG !== null) {
-            fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - ' . $called_form . ' - ' . $function . "\n");
+            fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - BEFORE:' . $called_form . ':' . $function . "\n");
         }
 
-        return render_screen_preview($hook, $function, $template, $full_screen);
+        $ret = render_screen_preview($hook, $function, $template, $full_screen);
+
+        // Useful for debugging crashes
+        if ($PREVIEWS_LOG !== null) {
+            fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - AFTER:' . $called_form . ':' . $function . "\n");
+        }
+        return $ret;
     }
 
     protected function shuffle_assoc(&$array)
