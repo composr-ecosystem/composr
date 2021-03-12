@@ -424,7 +424,7 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
     if ($only_global) {
         $css_to_do = ['global' => true, 'no_cache' => true];
         if (isset($CSSS['email'])) {
-            $css_to_do['email'] = true;
+            $css_to_do['email'] = true; // Needed as this is global for e-mail
         }
     } else {
         $css_to_do = $CSSS;
@@ -441,6 +441,26 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
     }
     $css_need_inline->attach($css);
     return $css_need_inline;
+}
+
+/**
+ * Make sure environmental CSS Tempcode is executed in advance of other CSS.
+ *
+ * @param  ID_TEXT $active_theme The theme the file is being loaded for
+ */
+function initialise_css_tempcode_context($active_theme)
+{
+    static $done = false;
+    if ($done) {
+        return;
+    }
+
+    foreach (['_base', '_colours'] as $extra_file) { // We need to make sure some extra files are parsed, as they contain some shared THEMEWIZARD_COLOR variables and SET commands that Tempcode will pick up on
+        $temp = do_template($extra_file, [], null, false, null, '.css', 'css', $active_theme);
+        $temp->evaluate(); // We just need it to evaluate, not do anything with it
+    }
+
+    $done = true;
 }
 
 /**
@@ -468,6 +488,8 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
         $keep = symbol_tempcode('KEEP');
         $css->attach(do_template('CSS_NEED_FULL', ['_GUID' => 'f2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => find_script('themewizard') . '?type=css&show=' . urlencode($c) . '.css' . $keep->evaluate()], user_lang(), false, null, '.tpl', 'templates', $theme));
     } elseif (($c == 'no_cache') || ($inline)) {
+        initialise_css_tempcode_context($theme);
+
         if ($context !== null) {
             require_code('mail');
             $__css = filter_css($c, $theme, $context);

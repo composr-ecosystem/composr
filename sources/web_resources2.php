@@ -94,17 +94,7 @@ function css_compile(string $active_theme, string $theme, string $c, string $ful
 {
     cms_profile_start_for('css_compile');
 
-    foreach (['_base', '_colours'] as $extra_file) { // We need to make sure some extra files are parsed, as they contain some shared THEMEWIZARD_COLOR variables and SET commands that Tempcode will pick up on
-        if ($c != $extra_file) {
-            require_code('themes2');
-            $global_full_path = find_template_path($extra_file . '.css', 'css', $active_theme);
-
-            require_code('tempcode_compiler');
-            $parameters = null;
-            $temp = template_to_tempcode(cms_file_get_contents_safe($global_full_path, FILE_READ_LOCK | FILE_READ_BOM), 0, false, $c, $active_theme, user_lang(), false, $parameters, '.css', 'css');
-            $temp->evaluate(); // We just need it to evaluate, not do anything with it
-        }
-    }
+    initialise_css_tempcode_context($active_theme);
 
     list($success_status, $out) = _css_compile($active_theme, $theme, $c, $full_path, $minify);
     require_code('files');
