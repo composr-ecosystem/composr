@@ -97,11 +97,11 @@ class Module_admin_themewizard
         }
 
         if ($type == 'browse') {
-            breadcrumb_set_parents([['_SELF:admin_themes', do_lang_tempcode('MANAGE_THEMES')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_themes', do_lang_tempcode('MANAGE_THEMES')]]);
         }
 
         if ($type == 'actual') {
-            breadcrumb_set_parents([['_SELF:admin_themes', do_lang_tempcode('MANAGE_THEMES')], ['_SELF:_SELF', do_lang_tempcode('THEMEWIZARD')]]);
+            breadcrumb_set_parents([['_SEARCH:admin_themes', do_lang_tempcode('MANAGE_THEMES')], ['_SELF:_SELF', do_lang_tempcode('THEMEWIZARD')]]);
 
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
