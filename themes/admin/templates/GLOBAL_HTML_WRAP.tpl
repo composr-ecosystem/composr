@@ -237,12 +237,12 @@
 							{+END}
 							{+START,IF,{$HAS_ZONE_ACCESS,adminzone}}
 								{+START,IF,{$ADDON_INSTALLED,commandr}}{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_commandr}}{+START,IF,{$CONFIG_OPTION,bottom_show_commandr_button}}{+START,IF,{$NEQ,{$ZONE}:{$PAGE},adminzone:admin_commandr}}
-									<li class="inlineblock-mobile"><a id="commandr-button" accesskey="o" href="{$PAGE_LINK*,adminzone:admin_commandr}">{!commandr:COMMANDR}</a></li>
+									<li class="inlineblock-mobile"><a href="{$PAGE_LINK*,adminzone:admin_commandr}">{!commandr:COMMANDR}</a></li>
 								{+END}{+END}{+END}{+END}
 								<li class="inlineblock-mobile"><a href="{$PAGE_LINK*,adminzone:}">{!ADMIN_ZONE}</a></li>
 							{+END}
 							{+START,IF,{$CONFIG_OPTION,bottom_show_top_button}}
-								<li class="inlineblock-mobile"><a rel="back_to_top" accesskey="g" href="#">{!_BACK_TO_TOP}</a></li>
+								<li class="inlineblock-mobile"><a rel="back_to_top" href="#">{!_BACK_TO_TOP}</a></li>
 							{+END}
 							{+START,IF_NON_EMPTY,{$HONEYPOT_LINK}}
 								<li class="accessibility-hidden">{$HONEYPOT_LINK}</li>

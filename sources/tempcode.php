@@ -1195,8 +1195,9 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
  *
  * @param  array $seq_part Symbol details
  * @param  array $children Where we store children stuff
+ * @param  ID_TEXT $template_name The name of the template this came from (blank: not from a file / unknown); only passed for directives to avoid infinite loops with INCLUDE
  */
-function handle_symbol_preprocessing(array $seq_part, array &$children)
+function handle_symbol_preprocessing(array $seq_part, array &$children, $template_name = '')
 {
     switch ($seq_part[2]) {
         case 'PAGE_LINK':
@@ -1249,7 +1250,7 @@ function handle_symbol_preprocessing(array $seq_part, array &$children)
             if ($GLOBALS['RECORD_TEMPLATES_USED']) {
                 $param = $seq_part[3];
 
-                $template_file = is_object($param[0]) ? $param[0]->evaluate() : $param[0];
+                $_template_name = is_object($param[0]) ? $param[0]->evaluate() : $param[0];
                 $ex = isset($param[2]) ? (is_object($param[1]) ? $param[1]->evaluate() : '') : '';
                 if ($ex == '') {
                     $ex = '.tpl';
@@ -1267,11 +1268,11 @@ function handle_symbol_preprocessing(array $seq_part, array &$children)
                     $force_original = '0';
                 }
 
-                $tpl_path_descrip = $td . '/' . $template_file . $ex;
+                $tpl_path_descrip = $td . '/' . $_template_name . $ex;
 
                 record_template_used($tpl_path_descrip);
 
-                $temp = @do_template($template_file, [], null, true, null, $ex, $td, $theme, $force_original == '1');
+                $temp = @do_template($_template_name, [], null, true, null, $ex, $td, $theme, ($template_name == $_template_name) || ($force_original == '1'));
 
                 require_code('themes_meta_tree');
                 $children[] = create_template_tree_metadata(TEMPLATE_TREE_NODE__INCLUDE, $tpl_path_descrip, $temp);
@@ -2216,7 +2217,7 @@ class Tempcode
 
         if (!empty($this->preprocessable_bits)) {
             foreach ($this->preprocessable_bits as $seq_part) {
-                handle_symbol_preprocessing($seq_part, $children);
+                handle_symbol_preprocessing($seq_part, $children, $this->codename);
             }
         }
 

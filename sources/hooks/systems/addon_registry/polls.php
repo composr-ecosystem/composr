@@ -182,7 +182,7 @@ class Hook_addon_registry_polls
     {
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_POLL', [
             'BLOCK_ID' => lorem_word(),
-            'CONTENT' => $this->poll('poll'),
+            'CONTENT' => $this->_tpl_preview_poll('poll'),
             'BLOCK_PARAMS' => '',
         ]), null, '', true);
     }
@@ -232,7 +232,7 @@ class Hook_addon_registry_polls
      */
     public function tpl_preview__poll_answer() : object
     {
-        return $this->poll('poll');
+        return lorem_globalise($this->_tpl_preview_poll('poll'), null, '', true);
     }
 
     /**
@@ -244,7 +244,7 @@ class Hook_addon_registry_polls
      */
     public function tpl_preview__poll_answer_result() : object
     {
-        return $this->poll('result');
+        return lorem_globalise($this->_tpl_preview_poll('result'), null, '', true);
     }
 
     /**
@@ -255,7 +255,7 @@ class Hook_addon_registry_polls
      * @param  string $section View type
      * @return Tempcode Preview
      */
-    public function poll(string $section = '') : object
+    protected function _tpl_preview_poll(string $section = '') : object
     {
         $tpl = new Tempcode();
         switch ($section) {
@@ -314,7 +314,7 @@ class Hook_addon_registry_polls
                 }
         }
 
-        return lorem_globalise(do_lorem_template('POLL_BOX', [
+        return do_lorem_template('POLL_BOX', [
             '_GUID' => '4c6b026f7ed96f0b5b8408eb5e5affb5',
             'VOTE_URL' => placeholder_url(),
             'GIVE_CONTEXT' => true,
@@ -329,7 +329,7 @@ class Hook_addon_registry_polls
             'CONTENT' => $tpl,
             'FULL_URL' => placeholder_url(),
             'TOTAL_VOTES' => placeholder_number(),
-        ]), null, '', true);
+        ]);
     }
 
     /**
@@ -394,7 +394,7 @@ class Hook_addon_registry_polls
             'IS_THREADED' => false,
         ]);
 
-        $poll_details = $this->poll('poll');
+        $poll_details = $this->_tpl_preview_poll('poll');
 
         return lorem_globalise(do_lorem_template('POLL_SCREEN', [
             'TITLE' => lorem_title(),

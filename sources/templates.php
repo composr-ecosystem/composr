@@ -328,11 +328,11 @@ function form_input_list_entry(string $value, bool $selected = false, $text = ''
 /**
  * Display some raw text so that it is repeated as raw visually in HTML.
  *
- * @param  string $in Input
+ * @param  mixed $in Input
  * @param  boolean $using_textarea Whether to show using a textarea (more reliable to use clipboard to get from)
  * @return Tempcode Output
  */
-function with_whitespace(string $in, bool $using_textarea = false) : object
+function with_whitespace($in, bool $using_textarea = false) : object
 {
     if ($in == '') {
         return new Tempcode();

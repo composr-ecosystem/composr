@@ -62,6 +62,10 @@ class _template_previews_test_set extends cms_test_case
 
     public function testNoMissingPreviews()
     {
+        if ($this->only !== null) {
+            return;
+        }
+
         $templates = [];
 
         $files = get_directory_contents(get_file_base() . '/themes/default/templates', get_file_base() . '/themes/default/templates', null, false, true, ['tpl']);
@@ -112,6 +116,8 @@ class _template_previews_test_set extends cms_test_case
         global $RECORD_TEMPLATES_USED, $RECORDED_TEMPLATES_USED;
         $RECORD_TEMPLATES_USED = true;
 
+        $skip = empty($_GET['skip']) ? [] : explode(',', $_GET['skip']);
+
         $old_limit = null;
 
         $previews__by_template = find_all_previews__by_template();
@@ -125,7 +131,10 @@ class _template_previews_test_set extends cms_test_case
 
             // Exceptions...
 
-            if (($this->only !== null) && ($this->only != $template)) {
+            if (($this->only !== null) && ($this->only != $function)) {
+                continue;
+            }
+            if (in_array($function, $skip)) {
                 continue;
             }
 
@@ -250,16 +259,24 @@ class _template_previews_test_set extends cms_test_case
         $_GET['wide'] = '1';
         $HAS_KEEP_IN_URL_CACHE = null;
 
+        $skip = empty($_GET['skip']) ? [] : explode(',', $_GET['skip']);
+
         $previews__by_screen = find_all_previews__by_screen();
         $this->shuffle_assoc($previews__by_screen); // So parallelism can work
         foreach ($previews__by_screen as $function => $details) {
+            if (empty($details[1])) {
+                continue; // No templates in this preview
+            }
+
             $old_limit = cms_set_time_limit(10);
 
-            $tpls = $details[1];
-            $template = $tpls[0];
+            $template = $details[1][0];
             $hook = null;
 
-            if (($this->only !== null) && ($this->only != $template)) {
+            if (($this->only !== null) && ($this->only != $function)) {
+                continue;
+            }
+            if (in_array($function, $skip)) {
                 continue;
             }
 
@@ -333,16 +350,24 @@ class _template_previews_test_set extends cms_test_case
     {
         global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW;
 
+        $skip = empty($_GET['skip']) ? [] : explode(',', $_GET['skip']);
+
         $previews__by_screen = find_all_previews__by_screen();
         $this->shuffle_assoc($previews__by_screen); // So parallelism can work
         foreach ($previews__by_screen as $function => $details) {
+            if (empty($details[1])) {
+                continue; // No templates in this preview
+            }
+
             $old_limit = cms_set_time_limit(10);
 
-            $tpls = $details[1];
-            $template = $tpls[0];
+            $template = $details[1][0];
             $hook = null;
 
-            if (($this->only !== null) && ($this->only != $template)) {
+            if (($this->only !== null) && ($this->only != $function)) {
+                continue;
+            }
+            if (in_array($function, $skip)) {
                 continue;
             }
 
@@ -398,6 +423,14 @@ class _template_previews_test_set extends cms_test_case
             $matches = [];
             $num_matches = preg_match_all('#function tpl_preview__(.*)\(#U', $code, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
+                // Exceptions
+                if (in_array($matches[1][$i], [
+                    'iframe',
+                    'overlay',
+                ])) {
+                    continue;
+                }
+
                 $this->assertTrue(in_array($matches[1][$i], $used), 'Non-used screen function ' . $matches[1][$i]);
             }
         }

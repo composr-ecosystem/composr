@@ -24,7 +24,9 @@
 
 			<div class="gallery-mosaic-item-overlay-bottom">
 				<div class="add-date">{$DATE_TIME,{ADD_DATE_RAW*}}</div>
-				<h3 class="title">{TITLE}</h3>
+				{+START,IF_NON_EMPTY,{TITLE}}
+					<h3 class="title">{TITLE}</h3>
+				{+END}
 				<div class="submitter">{+START,INCLUDE,ICON}NAME=content_types/member{+END} {$USERNAME*,{SUBMITTER},1}</div>
 			</div>
 		</div>

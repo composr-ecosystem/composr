@@ -1173,7 +1173,6 @@ class Hook_addon_registry_galleries
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
             ];
-
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_IMAGE', $map));
         }
 
@@ -1205,7 +1204,6 @@ class Hook_addon_registry_galleries
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
             ];
-
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_VIDEO', $map));
         }
 

@@ -17,9 +17,11 @@
 		{+END}
 	{+END}
 
-	<h3 class="gallery-grid-item-heading">
-		<a href="{VIEW_URL*}" class="subtle-link">{+START,FRACTIONAL_EDITABLE,{TITLE},title,_SEARCH:cms_galleries:__edit:{ID},1,1,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{TITLE}{+END}</a>
-	</h3>
+	{+START,IF_NON_EMPTY,{TITLE}}
+		<h3 class="gallery-grid-item-heading">
+			<a href="{VIEW_URL*}" class="subtle-link">{+START,FRACTIONAL_EDITABLE,{TITLE},title,_SEARCH:cms_galleries:__edit:{ID},1,1,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{$TRUNCATE_LEFT,{TITLE},23,0,0}{+END}</a>
+		</h3>
+	{+END}
 
 	<div class="gallery-grid-item-details">
 		<ul class="horizontal-links">

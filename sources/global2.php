@@ -1217,6 +1217,8 @@ function catch_fatal_errors()
     $error = error_get_last(); // If the last error is E_*_ERROR then it would have been fatal, so we should show it via this function
 
     if ($error !== null) {
+        //@var_dump($error);@debug_print_backtrace();exit(); // Useful for debugging
+
         if (substr($error['message'], 0, 26) == 'Maximum execution time of ') {
             if (function_exists('i_force_refresh')) {
                 i_force_refresh();
