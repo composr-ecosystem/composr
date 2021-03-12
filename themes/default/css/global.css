@@ -958,6 +958,7 @@ header h1 {
 
 .header-classic .logo-image {
 	width: 100%;
+	height: auto;
 }
 
 .header-classic .logo-link {
@@ -969,11 +970,18 @@ header h1 {
 	/*{+END}*/
 	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
 		background: url('{$IMG_INLINE,{$THEME_OPTION,header_classic_image}}') no-repeat;
-		height: {$IMG_HEIGHT,{$IMG,{$THEME_OPTION,header_classic_image}}}px;
-		background-size: 100%;
+		background-size: cover;
 	/*{+END}*/
 	padding-left: 2em;
 }
+
+/*{+START,CSS_MODE,desktop}*/
+	/*{+START,IF,{$AND,{$IS_NON_EMPTY,{$THEME_OPTION,header_classic_image}},{$NEQ,{$THEME_OPTION,fixed_width},0}}}*/
+		.header-classic .logo-link {
+			height: {$IMG_HEIGHT,{$IMG,{$THEME_OPTION,header_classic_image}}}px;
+		}
+	/*{+END}*/
+/*{+END}*/
 
 @media (max-width: 539.98px) {
 	.header-classic .logo-image-large {
