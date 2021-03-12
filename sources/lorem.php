@@ -933,7 +933,6 @@ function render_screen_preview(?string $hook, string $function, ?string $templat
         $out = $preview;
     }
     return $out;
-
 }
 
 /**

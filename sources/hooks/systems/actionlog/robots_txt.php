@@ -37,7 +37,7 @@ class Hook_actionlog_robots_txt extends Hook_actionlog
         require_lang('robots_txt');
 
         return [
-            'ROBOTS_TXT' => [
+            '_ROBOTS_TXT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,

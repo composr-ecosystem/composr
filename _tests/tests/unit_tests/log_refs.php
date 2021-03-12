@@ -47,9 +47,21 @@ class log_refs_test_set extends cms_test_case
         for ($i = 0; $i < $num_matches; $i++) {
             $log = $matches[0][$i];
 
-            if (!in_array(basename($log), ['performance.log', 'performance_warnings.log', 'sugarcrm.log', 'tapatalk.log'])) {
-                $logs_in_code[] = $log;
+            // Exceptions
+            if (in_array(basename($log), [
+                // For development
+                'performance.log',
+                'performance_warnings.log',
+                'template_previews.log',
+
+                // For non-bundled addons
+                'sugarcrm.log',
+                'tapatalk.log',
+            ])) {
+                continue;
             }
+
+            $logs_in_code[] = $log;
         }
         $logs_in_code = array_unique($logs_in_code);
 

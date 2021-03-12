@@ -248,7 +248,7 @@ function init__webstandards()
         'border-top-width' => $enforce_border_width,
         'border-width' => $enforce_potential_4d_border_width,
         'bottom' => $enforce_auto_or_length,
-        'box-shadow' => '(none|(' . $enforce_box_shadow . '(,\s*' . $enforce_box_shadow . '(,\s*' . $enforce_box_shadow . '(,\s*' . $enforce_box_shadow . ')?)?)?))',
+        'box-shadow' => '(none|(' . $enforce_box_shadow . '( \s*' . $enforce_box_shadow . '( \s*' . $enforce_box_shadow . '( \s*' . $enforce_box_shadow . ')?)?)?))',
         'box-sizing' => '(border-box|content-box|padding-box)',
         'caption-side' => '(top|bottom|left|right)',
         'clear' => '(both|left|right|none)',

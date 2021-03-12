@@ -692,7 +692,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/auth.php',
             '_tests/tests/unit_tests/awards.php',
             '_tests/tests/unit_tests/aws_ses.php',
-            '_tests/tests/unit_tests/_backups.php',
+            '_tests/tests/unit_tests/__backups.php',
             '_tests/tests/unit_tests/banners.php',
             '_tests/tests/unit_tests/___bash_parser.php',
             '_tests/tests/unit_tests/basic_code_formatting.php',

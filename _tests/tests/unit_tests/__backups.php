@@ -18,7 +18,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class _backups_test_set extends cms_test_case
+class __backups_test_set extends cms_test_case
 {
     public function testBackup()
     {

@@ -7144,7 +7144,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SCHEDULE_TIME
         SCOPE
         SCREENS
-        SCREEN_PREVIEW
         SCREEN_PREVIEWS
         SCREEN_TITLE
         SCREEN_TITLE_DESC
