@@ -205,7 +205,7 @@ function do_access(string $given_password)
 
         'prefer_direct_code_call' => '<em>Tuning:</em> Whether to assume a good opcode cache is present, so load up full code files via this rather than trying to save RAM by loading up small parts of files on occasion.',
 
-        'backdoor_ip' => '<em>Security:</em> Always allow users accessing from this IP address in, automatically logged in as the oldest admin of the site.',
+        'backdoor_ip' => '<em>Security:</em> Always allow users accessing from this IP address/CIDR/hostname in, automatically logged in as the oldest admin of the site. You can enter comma-separated addresses. Hostname checks only work if <kbd>keep_check_backdoor_ip_dns=1</kbd> is set in the URL, for performance reasons.',
         'trusted_proxies' => '<em>Security:</em> Proxies to trust. For any incoming request by an IP covered in one of the comma-separated IPs (or IP CIDR ranges), "forwarded for" IP headers will be trusted to identify the real IP address. This improves security as Composr will be targeting the true IP of visitors rather than the proxy IP, so long as it is a real proxy and not a trick by a hacker trying to masquerade their IP by pretending they\'re just an innocent intermediary node. Defaults to all Cloudflare IP addresses.',
         'full_ips' => '<em>Security:</em> Whether to match sessions to the full IP addresses. Set this to 1 if you are sure users don\'t jump around IP addresses on the same 255.255.255.0 subnet (e.g. due to proxy server randomisation).',
         /*  Don't want this in here, we want it autodetected unless explicitly overridden

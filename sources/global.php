@@ -713,6 +713,67 @@ function fixup_bad_php_env_vars_pre()
 }
 
 /**
+ * See if we should consider the user admin based on the backdoor_ip setting.
+ * If Composr is not fully bootstrapped then it will do simpler checks.
+ *
+ * @return boolean Whether backdoor is activated
+ */
+function has_backdoor_ip_triggered()
+{
+    global $SITE_INFO;
+
+    $backdoor_ip_address = []; // Enable to a real IP address to force login from FTP access (if lost admin password)
+    if (!empty($SITE_INFO['backdoor_ip'])) {
+        $backdoor_ip_addresses = array_map('trim', explode(',', $SITE_INFO['backdoor_ip']));
+    }
+    if (!empty($backdoor_ip_addresses)) {
+        $user_ip = @strval($_SERVER['REMOTE_ADDR']);
+        if (empty($user_ip)) {
+            return false;
+        }
+        if (function_exists('get_localhost_ips')) {
+            $localhost_ips = get_localhost_ips();
+        } else {
+            $localhost_ips = [];
+        }
+
+        foreach ($backdoor_ip_addresses as $backdoor_ip) {
+            if ($backdoor_ip == '') {
+                continue;
+            }
+
+            $cidr = (strpos($backdoor_ip, '/') !== false);
+            if ($cidr) {
+                // CIDR
+                if (ip_cidr_check($user_ip, $backdoor_ip)) {
+                    return true;
+                }
+            } else {
+                if ((function_exists('is_valid_ip')) && (!is_valid_ip($backdoor_ip)) && (!empty($_GET['keep_check_backdoor_ip_dns']))) {
+                    // Host name
+                    $backdoor_ip = gethostbyname($backdoor_ip);
+                } elseif (function_exists('normalise_ip_address')) {
+                    // IP
+                    $backdoor_ip = normalise_ip_address($backdoor_ip);
+                }
+
+                if (!empty($backdoor_ip)) {
+                    if ($backdoor_ip === $user_ip) {
+                        return true;
+                    }
+
+                    if ((in_array($backdoor_ip, $localhost_ips)) && (in_array($user_ip, $localhost_ips))) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
  * Find if an IP address is within a CIDR range. Based on comment in PHP manual: http://php.net/manual/en/ref.network.php.
  *
  * @param  IP $ip IP address

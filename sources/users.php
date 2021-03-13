@@ -153,11 +153,7 @@ function get_member(bool $quick_only = false) : int
     }
 
     // Try via restricted_manually_enabled_backdoor that someone with full server access can place
-    $backdoor_ip_address = null; // Enable to a real IP address to force login from FTP access (if lost admin password)
-    if (!empty($SITE_INFO['backdoor_ip'])) {
-        $backdoor_ip_address = normalise_ip_address($SITE_INFO['backdoor_ip']);
-    }
-    if ((is_string($backdoor_ip_address)) && ($backdoor_ip_address != '') && ((get_ip_address() == $backdoor_ip_address) || ((in_array($backdoor_ip_address, get_localhost_ips())) && (in_array(get_ip_address(), get_localhost_ips()))))) {
+    if (has_backdoor_ip_triggered()) {
         require_code('users_active_actions');
         if (function_exists('restricted_manually_enabled_backdoor')) { // May be trying to check in safe mode when doing above require_code, so recurse
             $MEMBER_CACHED = restricted_manually_enabled_backdoor();

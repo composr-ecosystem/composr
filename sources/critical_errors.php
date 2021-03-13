@@ -178,7 +178,7 @@ if (!function_exists('critical_error')) {
             ((($relay === null)) || (strpos($relay, 'Stack trace') === false)) &&
             (
                 ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) || // Not perfect, but we'll just try a simple check here
-                ((isset($SITE_INFO['backdoor_ip'])) && ($_SERVER['REMOTE_ADDR'] == $SITE_INFO['backdoor_ip'])) ||
+                (has_backdoor_ip_triggered()) ||
                 ((preg_match('#^localhost(\.|\:|$)#', $_SERVER['HTTP_HOST']) != 0) && (function_exists('get_base_url')) && (substr(get_base_url(), 0, 16) == 'http://localhost')) ||
                 ($in_upgrader)
             )

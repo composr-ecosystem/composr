@@ -762,7 +762,7 @@ function web_client_may_use_static_cache(bool $early_boot_check = false, ?int &$
     $mode = STATIC_CACHE__GUEST;
 
     if ($early_boot_check) {
-        if ((isset($SITE_INFO['backdoor_ip'])) && ($SITE_INFO['backdoor_ip'] == @strval($_SERVER['REMOTE_ADDR']))) {
+        if (has_backdoor_ip_triggered()) {
             $reason = '[Conservative early boot check] Authorised by backdoor_ip';
             return false;
         }
@@ -1647,7 +1647,7 @@ function in_safe_mode() : bool
         }
     }
 
-    $backdoor_ip = ((!empty($SITE_INFO['backdoor_ip'])) && ($_SERVER['REMOTE_ADDR'] == $SITE_INFO['backdoor_ip']));
+    $backdoor_ip = has_backdoor_ip_triggered();
 
     global $CHECKING_SAFEMODE, $REQUIRED_CODE;
     if (!$backdoor_ip) {
