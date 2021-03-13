@@ -388,13 +388,6 @@
         var space = document.createTextNode(' ');
         form.appendChild(space);
 
-        var token = document.createElement('input');
-        token.type = 'hidden';
-        token.name = 'csrf_token';
-        token.id = 'csrf_token';
-        token.value = $cms.getCsrfToken();
-        form.appendChild(token);
-
         var input = document.createElement('input');
         input.type = 'password';
         input.name = 'decrypt';
@@ -422,6 +415,7 @@
         /*{+START,SET,proceed_icon}{+START,INCLUDE,ICON}NAME=buttons/proceed{+END}{+END}*/
         button = document.createElement('button');
         button.type = 'submit';
+        button.disabled = true;
         button.className = 'btn btn-primary btn-scri buttons--proceed';
         $dom.html(button, '{$GET;^,proceed_icon} {!encryption:DECRYPT;^}');
         // Hide the form upon submission
@@ -429,6 +423,16 @@
             container.style.display = 'none';
         });
         proceedDiv.appendChild(button);
+
+        var token = document.createElement('input');
+        token.type = 'hidden';
+        token.name = 'csrf_token';
+        token.id = 'csrf_token';
+        $cms.getCsrfToken().then(function (text) {
+            token.value = text;
+            button.disabled = false;
+        });
+        form.appendChild(token);
 
         form.appendChild(proceedDiv);
 

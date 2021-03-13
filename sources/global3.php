@@ -3681,8 +3681,7 @@ function has_cookies() // Will fail on users first visit, but then will catch on
         return true;
     }
     if (running_script('index')) {
-        require_code('users_active_actions');
-        cms_setcookie('has_cookies', '1');
+        cms_setcookie('has_cookies', '1', false, false);
     }
     $has_cookies_cache = false;
     return false;
@@ -5121,4 +5120,75 @@ function statistical_update_model(string $table, int $view_count) : int
     }
 
     return $st_increment;
+}
+
+/**
+ * Create a cookie, inside Composr's cookie environment.
+ *
+ * @param  string $name The name of the cookie
+ * @param  string $value The value to store in the cookie
+ * @param  boolean $session Whether it is a session cookie (gets removed once the browser window closes)
+ * @param  boolean $httponly Whether the cookie should not be readable by JavaScript
+ * @param  ?float $days Days to store (null: default)
+ * @return boolean The result of the PHP setcookie command
+ */
+function cms_setcookie(string $name, string $value, bool $session = false, bool $httponly = true, ?float $days = null) : bool
+{
+    /*if (($GLOBALS['DEV_MODE']) && (running_script('index')) && (get_forum_type() == 'cns') && (get_param_integer('keep_debug_has_cookies', 0) == 0) && ($name != 'has_referers')) {    Annoying, and non-cookie support is very well tested by now
+        return true;
+    }*/
+
+    static $cache = [];
+    $sz = serialize([$name, $value, $session, $httponly]);
+    if (isset($cache[$sz])) {
+        return $cache[$sz];
+    }
+
+    if ($days === null) {
+        $days = get_cookie_days();
+    }
+    $expires = ($session ? 0 : (time() + intval($days * 24.0 * 60.0 * 60.0)));
+
+    $path = get_cookie_path();
+    if ($path == '') {
+        $base_url = get_base_url();
+        $pos = strpos($base_url, '/');
+        if ($pos === false) {
+            $path = '/';
+        } else {
+            $path = substr($base_url, $pos) . '/';
+        }
+    }
+
+    $domain = get_cookie_domain();
+
+    $secure = (substr(get_base_url(), 0, 7) === 'https://');
+
+    if (version_compare(PHP_VERSION, '7.3.0', '>=')) { // LEGACY
+        $options = [
+            'expires' => $expires,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httponly' => $httponly,
+        ];
+
+        // Stops HTTP POSTs from external sites inheriting cookie value.
+        //  Note that Lax is not necessarily the same as setting no value.
+        //  That said for Chrome 80+ all are Lax by default.
+        //  Tracked at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+        $options['samesite'] = 'Lax';
+
+        $output = @call_user_func_array('setcookie', [$name, $value, $options]);
+    } else {
+        $output = @setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
+    }
+
+    if ($name != 'has_cookies') {
+        $_COOKIE[$name] = $value;
+    }
+
+    $cache[$sz] = $output;
+
+    return $output;
 }

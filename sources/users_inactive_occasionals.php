@@ -228,7 +228,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
  * @param  ID_TEXT $id The session ID
  * @param  boolean $guest_session Whether this is a guest session (guest sessions will use persistent cookies)
  */
-function set_session_id(string $id, bool $guest_session = false)  // NB: Guests sessions can persist because they are more benign
+function set_session_id(string $id, bool $guest_session = false)
 {
     global $DID_CHANGE_SESSION_ID;
     $DID_CHANGE_SESSION_ID = true;
@@ -241,22 +241,13 @@ function set_session_id(string $id, bool $guest_session = false)  // NB: Guests 
 
     // Save cookie
     if ($id != '') {
-        $timeout = $guest_session ? (time() + intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) : null;
-        /*if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_debug_has_cookies', 0) == 0)) {     Useful for testing non-cookie support, but annoying if left on
-            $test = false;
-        } else {*/
-        $test = @setcookie(get_session_cookie(), $id, $timeout, get_cookie_path(), get_cookie_domain()); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and URLs do the rest
-        if ($test === null) {
-            $test = false;
-        }
-        //}
-        $_COOKIE[get_session_cookie()] = $id; // So we remember for this page view
+        $success = cms_setcookie(get_session_cookie(), $id, !$guest_session, true, max(1.0 / 24.0 / 60.0 / 60.0, floatval(get_option('session_expiry_time')) / 24.0));
     } else {
-        $test = true;
+        $success = true;
     }
 
     // If we really have to, store in URL
-    if (((!has_cookies()) || (!$test)) && (!$guest_session/*restorable with no special auth*/) && (get_bot_type() === null)) {
+    if (((!has_cookies()) || (!$success)) && (!$guest_session/*restorable with no special auth*/) && (get_bot_type() === null) && (get_option('sessions_in_urls') == '1')) {
         $_GET['keep_session'] = strval($id);
     }
 

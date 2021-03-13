@@ -21,6 +21,25 @@
 /*EXTRA FUNCTIONS: simplexml_load_string*/
 
 /**
+ * AJAX script for generating a CSRF token.
+ *
+ * @ignore
+ */
+function generate_csrf_token_script()
+{
+    prepare_for_known_ajax_response();
+
+    header('Content-Type: text/plain; charset=' . get_charset());
+
+    cms_ini_set('ocproducts.xss_detect', '0');
+
+    require_code('csrf_filter');
+    echo generate_csrf_token();
+
+    cms_safe_exit_flow();
+}
+
+/**
  * Prepare to inject COR headers.
  *
  * @ignore

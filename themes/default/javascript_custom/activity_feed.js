@@ -221,21 +221,16 @@
                         window.latestActivity = parseInt(data);
 
                         // Now grab whatever updates are available (this is NOT pagination, it's checking for updates and doesn't use the block code)
-                        var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_updater}' + $cms.keep(true),
+                        var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_updater}?last_id=' + lastId + '&mode=' + window.activitiesMode + '&max=' + window.activitiesFeedMax + $cms.keep(),
                             listElements = jQuery('li', '#activities-feed'),
                             lastId = ((listElements.attr('id') == null) ? '-1' : listElements.attr('id').replace(/^activity-/, '')),
-                            postVal = 'last_id=' + lastId + '&mode=' + window.activitiesMode + '&max=' + window.activitiesFeedMax;
 
                         if ((window.activitiesMemberIds != null) && (window.activitiesMemberIds !== '')) {
-                            postVal = postVal + '&member_ids=' + window.activitiesMemberIds;
+                            url += '&member_ids=' + window.activitiesMemberIds;
                         }
-
-                        postVal += '&csrf_token=' + encodeURIComponent($cms.getCsrfToken()); // For CSRF prevention
 
                         jQuery.ajax({
                             url: url,
-                            type: 'POST',
-                            data: postVal,
                             cache: false,
                             timeout: 5000,
                             success: function (data, stat) {
@@ -316,21 +311,23 @@
                 if (result) {
                     var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_removal}' + $cms.keep(true);
 
-                    var postVal = 'removal_id=' + id;
-                    postVal += '&csrf_token=' + encodeURIComponent($cms.getCsrfToken()); // For CSRF prevention
+                    $cms.getCsrfToken().then(function (text) {
+                        var postVal = 'removal_id=' + id;
+                        postVal += '&csrf_token=' + encodeURIComponent(text);
 
-                    jQuery.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: postVal,
-                        cache: false,
-                        timeout: 5000,
-                        success: function (data, stat) {
-                            sUpdateRemoveShow(data, stat);
-                        },
-                        error: function (a, stat, err) {
-                            sUpdateRemoveShow(err, stat);
-                        }
+                        jQuery.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: postVal,
+                            cache: false,
+                            timeout: 5000,
+                            success: function (data, stat) {
+                                sUpdateRemoveShow(data, stat);
+                            },
+                            error: function (a, stat, err) {
+                                sUpdateRemoveShow(err, stat);
+                            }
+                        });
                     });
                 }
             }

@@ -447,7 +447,7 @@ function is_httpauth_login() : bool
  */
 function enforce_sessioned_url(string $url) : string
 {
-    if ((!has_cookies()) && (get_bot_type() === null)) {
+    if ((!has_cookies()) && (get_bot_type() === null) && (get_option('sessions_in_urls') == '1')) {
         require_code('users_inactive_occasionals');
         return _enforce_sessioned_url($url);
     }

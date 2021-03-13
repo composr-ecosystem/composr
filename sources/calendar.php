@@ -762,7 +762,6 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
         $feed_urls_todo = [];
         for ($i = 0; $i < 10; $i++) {
             $feed_url = post_param_string('feed_' . strval($i), cms_admirecookie('feed_' . strval($i), ''));
-            require_code('users_active_actions');
             cms_setcookie('feed_' . strval($i), $feed_url);
             if (($feed_url != '') && (preg_match('#^[\w\-]*$#', $feed_url) == 0)) {
                 $feed_urls_todo[$feed_url] = null;

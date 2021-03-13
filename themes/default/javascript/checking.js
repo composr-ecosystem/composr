@@ -203,6 +203,21 @@
 
                 return $cms.form.startUploads(form);
             }).then(function () {
+                // Refresh CSRF tokens if expired
+                if (form.method.toLowerCase() === 'post') {
+                    var hoursSincePageLoad = (Date.now() - $cms.pageGenerationTimestamp) / 1000 / 60 / 60 + 0.05 /*A little extra give*/,
+                        tokenField = form.elements['csrf_token'],
+                        expireFresh = $cms.configOption('csrf_token_expire_fresh'),
+                        expireNew = $cms.configOption('csrf_token_expire_new');
+                    if (tokenField) {
+                        if ((hoursSincePageLoad >= expireNew) || ((expireFresh != 0) && (hoursSincePageLoad >= expireFresh))) {
+                            return $cms.getCsrfToken().then(function (text) {
+                                tokenField.value = text;
+                            });
+                        }
+                    }
+                }
+            }).then(function () {
                 if (form.method.toLowerCase() === 'get') {
                     /* Remove any stuff that is only in the form for previews if doing a GET request */
                     var previewInputs = $dom.$$(form, 'input[name^="label_for__"], input[name^="tick_on_form__"], input[name^="comcode__"], input[name^="require__"]');

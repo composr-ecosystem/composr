@@ -1104,8 +1104,7 @@ class Module_chat
     public function chat_save_options() : object
     {
         $value = post_param_string('text_colour', get_option('chat_default_post_colour')) . ';' . post_param_string('font_name', get_option('chat_default_post_font')) . ';';
-        require_code('users_active_actions');
-        cms_setcookie('software_chat_prefs', $value);
+        cms_setcookie('software_chat_prefs', $value, false, false);
 
         $url = build_url(['page' => '_SELF', 'type' => 'room', 'id' => get_param_integer('id'), 'no_reenter_message' => 1], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));

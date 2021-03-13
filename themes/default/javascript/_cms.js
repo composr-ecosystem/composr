@@ -244,6 +244,12 @@
      * @returns {object}
      */
     $cms.staffTooltipsUrlPatterns = $util.constant(objVal(JSON.parse('{$STAFF_TOOLTIPS_URL_PATTERNS_JSON;}')));
+    /**
+     * @memberof $cms
+     * @method
+     * @returns {integer}
+     */
+    $cms.pageGenerationTimestamp = Date.now();
 
     /**
      * Addons can add functions under this namespace
@@ -511,7 +517,11 @@
      * @return {string}
      */
     $cms.getCsrfToken = function getCsrfToken() {
-        return $cms.readCookie($cms.getSessionCookie()); // Session also works as a CSRF-token, as client-side knows it (AJAX)
+        return new Promise(function (resolve) {
+            $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,generate_csrf_token}' + $cms.keep(true)).then(function (xhr) {
+                resolve(xhr.responseText);
+            });
+        });
     };
 
     /* Cookies */
@@ -1205,44 +1215,51 @@
         url = strVal(url);
         timeout = intVal(timeout, 30000);
 
-        return new Promise(function (resolvePromise) {
-            var xhr = new XMLHttpRequest();
+        if ((typeof post === 'string') && (!post.startsWith('csrf_token=') && !post.includes('&csrf_token='))) {
+            return $cms.getCsrfToken().then(function (text) {
+                post += '&csrf_token=' + encodeURIComponent(text);
+                return initiateRequestPromise();
+            });
+        } else {
+            return initiateRequestPromise();
+        }
 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    readyStateChangeListener(xhr, function (responseXml) {
-                        if (callback != null) {
-                            callback(responseXml, xhr);
-                        }
-                        resolvePromise(xhr);
-                    });
-                }
-            };
+        function initiateRequestPromise() {
+            return new Promise(function (resolvePromise) {
+                var xhr = new XMLHttpRequest();
 
-            if (typeof post === 'string') {
-                if (!post.startsWith('csrf_token=') && !post.includes('&csrf_token=')) { // For CSRF prevention
-                    post += '&csrf_token=' + encodeURIComponent($cms.getCsrfToken());
-                }
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        readyStateChangeListener(xhr, function (responseXml) {
+                            if (callback != null) {
+                                callback(responseXml, xhr);
+                            }
+                            resolvePromise(xhr);
+                        });
+                    }
+                };
 
-                xhr.open('POST', url, true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                if (!synchronous) {
-                    xhr.timeout = timeout;
-                }
-                if ((boolVal('{$VALUE_OPTION;,http2_post_fix}')) && (!synchronous)) {
-                    var imgTmp = new Image();
-                    imgTmp.onload = function() {
+                if (typeof post === 'string') {
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    if (!synchronous) {
+                        xhr.timeout = timeout;
+                    }
+                    if ((boolVal('{$VALUE_OPTION;,http2_post_fix}')) && (!synchronous)) {
+                        var imgTmp = new Image();
+                        imgTmp.onload = function() {
+                            xhr.send(post);
+                        };
+                        imgTmp.src = $cms.getBaseUrl() + '/themes/default/images/blank.gif?rand=' + Math.random();
+                    } else {
                         xhr.send(post);
-                    };
-                    imgTmp.src = $cms.getBaseUrl() + '/themes/default/images/blank.gif?rand=' + Math.random();
+                    }
                 } else {
-                    xhr.send(post);
+                    xhr.open('GET', url, true);
+                    xhr.send(null);
                 }
-            } else {
-                xhr.open('GET', url, true);
-                xhr.send(null);
-            }
-        });
+            });
+        }
 
         function readyStateChangeListener(xhr, ajaxCallback) {
             var okStatusCodes = [200, 500, 400, 401];

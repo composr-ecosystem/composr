@@ -45,7 +45,6 @@ class Hook_endpoint_account_login
         }
 
         require_code('cns_general');
-        require_code('users_active_actions');
 
         cms_setcookie(get_member_cookie(), strval($member_id));
         $password_hashed_salted = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');

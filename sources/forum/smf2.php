@@ -1133,7 +1133,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $_password = sha1($row['passwd'] . $row['password_salt']);
         }
 
-        $data = [$id, $_password, (time() + get_cookie_days() * 24 * 60 * 60), 3];
+        $data = [$id, $_password, (time() + intval(get_cookie_days()) * 24 * 60 * 60), 3];
 
         cms_setcookie($stub, serialize($data));
     }

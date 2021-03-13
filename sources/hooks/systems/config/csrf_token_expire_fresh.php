@@ -40,7 +40,7 @@ class Hook_config_csrf_token_expire_fresh
             'list_options' => '',
             'order_in_category_group' => 3,
             'required' => true,
-            'public' => false,
+            'public' => true,
             'addon' => 'core_configuration',
         ];
     }
@@ -52,6 +52,6 @@ class Hook_config_csrf_token_expire_fresh
      */
     public function get_default() : ?string
     {
-        return strval(1 * 24 * 10); // 10 days
+        return strval(0); // Disabled
     }
 }

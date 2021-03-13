@@ -49,8 +49,6 @@ class CMSMemberACL
      */
     public function set_auth(int $id, bool $invisible = false)
     {
-        require_code('users_active_actions');
-
         cms_setcookie(get_member_cookie(), strval($id));
 
         $password_compat_scheme = $GLOBALS['FORUM_DRIVER']->get_member_row_field($id, 'm_password_compat_scheme');

@@ -82,10 +82,6 @@ function check_csrf_token(?string $token)
 
     delete_expired_tokens();
 
-    if ($token == get_session_id()) { // Session also works as a CSRF-token, as client-side knows it (AJAX)
-        return;
-    }
-
     $token_rows = $GLOBALS['SITE_DB']->query_select('post_tokens', ['*'], ['token' => $token], '', 1);
     if (isset($token_rows[0])) {
         $token_row = $token_rows[0];
