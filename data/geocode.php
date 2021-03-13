@@ -55,18 +55,4 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 require($FILE_BASE . '/sources/global.php');
 
 require_code('locations_geocoding');
-
-prepare_for_known_ajax_response();
-
-header('Content-Type: text/plain; charset=' . get_charset());
-
-cms_ini_set('ocproducts.xss_detect', '0');
-
-$location = get_param_string('location', null, INPUT_FILTER_GET_COMPLEX);
-if ($location !== null) {
-    echo json_encode(geocode($location));
-} else {
-    echo json_encode(reverse_geocode(floatval(get_param_string('latitude')), floatval(get_param_string('longitude'))));
-}
-
-cms_safe_exit_flow();
+geocode_script();
