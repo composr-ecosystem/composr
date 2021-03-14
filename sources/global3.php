@@ -5129,7 +5129,7 @@ function statistical_update_model(string $table, int $view_count) : int
  * @param  string $value The value to store in the cookie
  * @param  boolean $session Whether it is a session cookie (gets removed once the browser window closes)
  * @param  boolean $httponly Whether the cookie should not be readable by JavaScript
- * @param  ?float $days Days to store (null: default)
+ * @param  ?float $days Days to store (null: default); not applicable for session cookies
  * @return boolean The result of the PHP setcookie command
  */
 function cms_setcookie(string $name, string $value, bool $session = false, bool $httponly = true, ?float $days = null) : bool

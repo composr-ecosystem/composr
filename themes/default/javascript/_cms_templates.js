@@ -230,7 +230,7 @@
         var checkboxWasFocused = (document.activeElement === checkbox);
 
         if (checkbox.checked) {
-            $cms.ui.confirm('{!REMEMBER_ME_COOKIE;}').then(function (answer) {
+            $cms.ui.confirm('{!REMEMBER_ME_COOKIE;,{$SITE_NAME}}').then(function (answer) {
                 if (!answer) {
                     checkbox.checked = false;
                 }

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_remember_me_by_default
+class Hook_config_remember_me_behaviour
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,14 @@ class Hook_config_remember_me_by_default
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'REMEMBER_ME_BY_DEFAULT',
-            'type' => 'tick',
+            'human_name' => 'REMEMBER_ME_BEHAVIOUR',
+            'type' => 'list',
             'category' => (get_forum_type() == 'cns') ? 'USERS' : 'FEATURE',
             'group' => '_LOGIN',
-            'explanation' => 'CONFIG_OPTION_remember_me_by_default',
+            'explanation' => 'CONFIG_OPTION_remember_me_behaviour',
             'shared_hosting_restricted' => '0',
-            'list_options' => '',
+            'list_options' => 'off|default_off|default_on|always_on',
+            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
@@ -51,6 +52,6 @@ class Hook_config_remember_me_by_default
      */
     public function get_default() : ?string
     {
-        return '0';
+        return 'default_off';
     }
 }

@@ -11,9 +11,12 @@
 					<div class="accessibility-hidden"><label for="s-password">{!PASSWORD}</label></div>
 					<input maxlength="255" size="10" type="password" placeholder="{!PASSWORD}" name="password" autocomplete="current-password" id="s-password" class="form-control" />
 
-					{+START,IF,{$CONFIG_OPTION,password_cookies}}
+					{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
 						<label class="accessibility-hidden" for="s-remember">{!REMEMBER_ME}</label>
-						<input title="{!REMEMBER_ME}"{+START,IF,{$CONFIG_OPTION,remember_me_by_default}} checked="checked"{+END} class="{+START,IF,{$NOT,{$CONFIG_OPTION,remember_me_by_default}}}js-click-confirm-remember-me{+END}" type="checkbox" value="1" id="s-remember" name="remember" />
+						<input type="checkbox" id="s-remember" name="remember" value="1" title="{!REMEMBER_ME}"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-confirm-remember-me{+END}" />
+					{+END}
+					{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
+						<input type="hidden" name="remember" value="1" />
 					{+END}
 
 					<button class="btn btn-primary menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} {!_LOGIN}</button>

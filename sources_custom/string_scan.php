@@ -3755,7 +3755,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         YOU_ADMIN_NO_EMAIL
         CONFIG_OPTION_overt_whisper_suggestion
         CONFIG_OPTION_password_change_days
-        CONFIG_OPTION_password_cookies
+        CONFIG_OPTION_remember_me_behaviour
         CONFIG_OPTION_password_expiry_days
         CONFIG_OPTION_password_reset_process
         CONFIG_OPTION_password_reset_process_VALUE_emailed
@@ -3809,7 +3809,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_quota_price_points
         CONFIG_OPTION_quota_url
         CONFIG_OPTION_random_avatars
-        CONFIG_OPTION_remember_me_by_default
         CONFIG_OPTION_require_new_member_validation
         CONFIG_OPTION_restricted_usernames
         CONFIG_OPTION_reverse_thumb_order
@@ -6652,7 +6651,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PARENT_PAGE
         PASSWORDS_DO_NOT_MATCH
         PASSWORD_CHANGE_DAYS
-        PASSWORD_COOKIES
+        REMEMBER_ME_BEHAVIOUR
         PASSWORD_EXPIRY_DAYS
         PASSWORD_HASH
         PASSWORD_RESET_PROCESS
@@ -7094,7 +7093,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REINSTALL_MODULE
         RELATED_SCREENS
         RELEVANCE_LEVEL
-        REMEMBER_ME_BY_DEFAULT
         REMEMBER_PASSWORD
         REMOVE_PERIODIC
         REMOVE_PERIODIC_NEWSLETTER

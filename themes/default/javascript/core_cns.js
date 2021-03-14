@@ -59,7 +59,7 @@
 
         $dom.on(container, 'click', '.js-click-checkbox-remember-me-confirm', function (e, checkbox) {
             if (checkbox.checked) {
-                $cms.ui.confirm('{!REMEMBER_ME_COOKIE;}', function (answer) {
+                $cms.ui.confirm('{!REMEMBER_ME_COOKIE;,{$SITE_NAME}}', function (answer) {
                     if (!answer) {
                         checkbox.checked = false;
                     }

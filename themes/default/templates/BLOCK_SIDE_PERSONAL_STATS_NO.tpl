@@ -16,12 +16,15 @@
 					<input maxlength="255" class="form-control form-control-wide" type="password" placeholder="{!PASSWORD}" name="password" autocomplete="current-password" id="ps-password" />
 				</div>
 
-				{+START,IF,{$CONFIG_OPTION,password_cookies}}
+				{+START,IF,{$OR,{$CONFIG_OPTION,is_on_invisibility},{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}}
 					<div class="login-block-cookies">
-						<div class="clearfix">
-							<label for="ps-remember">{!REMEMBER_ME}</label>
-							<input {+START,IF,{$CONFIG_OPTION,remember_me_by_default}} checked="checked"{+END} class="{+START,IF,{$NOT,{$CONFIG_OPTION,remember_me_by_default}}}js-click-checkbox-remember-me-confirm{+END}" type="checkbox" value="1" id="ps-remember" name="remember" />
-						</div>
+						{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
+							<div class="clearfix">
+								<label for="ps-remember">{!REMEMBER_ME}</label>
+								<input type="checkbox" id="ps-remember" name="remember" value="1"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-checkbox-remember-me-confirm{+END}" />
+							</div>
+						{+END}
+
 						{+START,IF,{$CONFIG_OPTION,is_on_invisibility}}
 							<div class="clearfix">
 								<label for="login_invisible">{!INVISIBLE}</label>
@@ -29,6 +32,9 @@
 							</div>
 						{+END}
 					</div>
+				{+END}
+				{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
+					<input type="hidden" name="remember" value="1" />
 				{+END}
 
 				<p class="proceed-button">

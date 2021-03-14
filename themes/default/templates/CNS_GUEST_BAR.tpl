@@ -24,10 +24,15 @@
 							<div class="accessibility-hidden"><label for="member-bar-s-password">{!PASSWORD}</label></div>
 							<input size="15" type="text" placeholder="{!USERNAME}" id="member-bar-login-username" class="form-control" name="username" autocomplete="username" />
 							<input size="15" type="password" placeholder="{!PASSWORD}" name="password" autocomplete="current-password" id="member-bar-s-password" class="form-control" />
-							{+START,IF,{$CONFIG_OPTION,password_cookies}}
+
+							{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
 								<label for="remember">{!REMEMBER_ME}:</label>
-								<input class="{+START,IF,{$NOT,{$CONFIG_OPTION,remember_me_by_default}}}js-click-checkbox-remember-me-confirm{+END}"{+START,IF,{$CONFIG_OPTION,remember_me_by_default}} checked="checked"{+END} type="checkbox" value="1" id="remember" name="remember" />
+								<input type="checkbox" id="remember" name="remember" value="1"{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-checkbox-remember-me-confirm{+END}" />
 							{+END}
+							{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
+								<input type="hidden" name="remember" value="1" />
+							{+END}
+
 							<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} {!_LOGIN}</button>
 						</div>
 					</form>

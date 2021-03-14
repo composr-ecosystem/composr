@@ -39,15 +39,17 @@
 						</tbody>
 					</table>
 
-					{+START,IF,{$CONFIG_OPTION,password_cookies}}
+					{+START,IF,{$OR,{$CONFIG_OPTION,is_on_invisibility},{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}}
 						<div class="login-page-options">
-							<p>
-								<label for="remember">
-									<input id="remember" type="checkbox" value="1" name="remember"{+START,IF,{$OR,{$EQ,{$_POST,remember},1},{$CONFIG_OPTION,remember_me_by_default}}} checked="checked"{+END} class="{+START,IF,{$NOT,{$CONFIG_OPTION,remember_me_by_default}}}js-click-confirm-remember-me{+END}" />
-									<span class="field-name">{!REMEMBER_ME}</span>
-								</label>
-								<span class="associated-details">{!REMEMBER_ME_TEXT}</span>
-							</p>
+							{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off,default_on}}
+								<p>
+									<label for="remember">
+										<input type="checkbox" id="remember" name="remember" value="1"{+START,IF,{$OR,{$EQ,{$_POST,remember},1},{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_on}}} checked="checked"{+END} class="{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},default_off}}js-click-confirm-remember-me{+END}" />
+										<span class="field-name">{!REMEMBER_ME}</span>
+									</label>
+									<span class="associated-details">{!REMEMBER_ME_TEXT}</span>
+								</p>
+							{+END}
 
 							{+START,IF,{$CONFIG_OPTION,is_on_invisibility}}
 								<p>
@@ -59,6 +61,9 @@
 								</p>
 							{+END}
 						</div>
+					{+END}
+					{+START,IF,{$EQ,{$CONFIG_OPTION,remember_me_behaviour},always_on}}
+						<input type="hidden" name="remember" value="1" />
 					{+END}
 				</div>
 
