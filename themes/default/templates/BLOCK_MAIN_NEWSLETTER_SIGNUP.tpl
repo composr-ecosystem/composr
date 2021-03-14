@@ -15,10 +15,17 @@
 			{$INSERT_FORM_POST_SECURITY}
 
 			{+START,IF_NON_PASSED_OR_FALSE,BUTTON_ONLY}
-				<p class="accessibility-hidden"><label for="baddress">{!EMAIL_ADDRESS}</label></p>
-
 				<div class="form-group">
-					<input class="form-control form-control-wide" id="baddress" name="address{NID*}" autocomplete="email" placeholder="{!EMAIL_ADDRESS}" />
+					<!--
+					<p class="accessibility-hidden"><label for="bforename">{!FORENAME}</label></p>
+					<p><input class="form-control form-control-wide" id="bforename" name="forename{NID*}" autocomplete="given-name" placeholder="{!FORENAME}" /></p>
+
+					<p class="accessibility-hidden"><label for="bsurname">{!FORENAME}</label></p>
+					<p><input class="form-control form-control-wide" id="bsurname" name="surname{NID*}" autocomplete="family-name" placeholder="{!SURNAME}" /></p>
+					-->
+
+					<p class="accessibility-hidden"><label for="baddress">{!EMAIL_ADDRESS}</label></p>
+					<p><input class="form-control form-control-wide" id="baddress" name="address{NID*}" autocomplete="email" placeholder="{!EMAIL_ADDRESS}" /></p>
 				</div>
 			{+END}
 

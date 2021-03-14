@@ -115,8 +115,8 @@ PHP;
             $path_exists = file_exists(get_custom_file_base() . '/' . $map['path']);
 
             require_code('character_sets');
-            $forename = post_param_string('firstname' . strval($newsletter_id), '');
-            $surname = post_param_string('lastname' . strval($newsletter_id), '');
+            $forename = post_param_string('forename' . strval($newsletter_id), '');
+            $surname = post_param_string('surname' . strval($newsletter_id), '');
             $password = basic_newsletter_join($address, null, !$path_exists/*Send confirm if we're not sending an intro e-mail through this block*/, $newsletter_id, $forename, $surname);
 
             if (addon_installed('stats')) {
