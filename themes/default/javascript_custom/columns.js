@@ -4,15 +4,17 @@
 //  But with fixes and better flexibility, and pure CSS-based activation
 
 $dom.load.then(function () {
-    jQuery('.column-wrapper').columnize({columns: 3});
-    jQuery('.column-wrapper-2').columnize({columns: 2});
+    if (window.jQuery) {
+        jQuery('.column-wrapper').columnize({columns: 3});
+        jQuery('.column-wrapper-2').columnize({columns: 2});
+    }
 });
 
 // version 1.6.2
 // http://welcome.totheinter.net/columnizer-jquery-plugin/
 // created by: Adam Wulf @adamwulf, adam.wulf@gmail.com
 
-(function($){
+if (window.jQuery) (function($){
     var DATA_ORIGINAL_DOM_KEY = 'columnizer-original-dom';
 
  $.fn.columnize = function(options) {

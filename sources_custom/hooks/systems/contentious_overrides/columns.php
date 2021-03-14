@@ -28,8 +28,6 @@ class Hook_contentious_overrides_columns
             return;
         }
 
-        require_javascript('jquery');
-
         switch ($suffix) {
             case '.css':
                 $c = 'columns';
