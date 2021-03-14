@@ -2629,11 +2629,15 @@ function normalise_ip_address(string $ip, ?int $amount = null) : string
 
     // Normalise
     if (strpos($ip, '.') === false) { // IPv6
+        if ($amount !== null) {
+            $amount -= (4 - $amount);
+        }
+
         if (substr_count($ip, ':') < 7) {
             $ip = str_replace('::', str_repeat(':', (7 - substr_count($ip, ':')) + 2), $ip);
         }
         $parts = explode(':', $ip);
-        for ($i = 0; $i < (is_null($amount) ? 8 : ($amount * 2)); $i++) {
+        for ($i = 0; $i < (($amount === null) ? 8 : $amount); $i++) {
             if (isset($parts[$i])) {
                 if ($parts[$i] != '*') {
                     $parts[$i] = cms_strtoupper_ascii(str_pad($parts[$i], 4, '0', STR_PAD_LEFT));
@@ -2642,8 +2646,8 @@ function normalise_ip_address(string $ip, ?int $amount = null) : string
                 $parts[$i] = '0000';
             }
         }
-        if (!is_null($amount)) {
-            for ($i = $amount * 2; $i < 8; $i++) {
+        if ($amount !== null) {
+            for ($i = $amount; $i < 8; $i++) {
                 $parts[$i] = '*';
             }
         }
@@ -2651,12 +2655,12 @@ function normalise_ip_address(string $ip, ?int $amount = null) : string
         $ip_cache[$raw_ip][$amount] = $ip;
     } else { // IPv4
         $parts = explode('.', $ip);
-        for ($i = 0; $i < (is_null($amount) ? 4 : $amount); $i++) {
+        for ($i = 0; $i < (($amount === null) ? 4 : $amount); $i++) {
             if (!array_key_exists($i, $parts)) {
                 $parts[$i] = '0';
             }
         }
-        if (!is_null($amount)) {
+        if ($amount !== null) {
             for ($i = $amount; $i < 4; $i++) {
                 $parts[$i] = '*';
             }
