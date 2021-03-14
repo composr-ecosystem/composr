@@ -656,7 +656,7 @@ if (!function_exists('git_repos')) {
 \$SITE_INFO['pass_cookie'] = 'cms_member_hash';
 \$SITE_INFO['cookie_domain'] = '';
 \$SITE_INFO['cookie_path'] = '/';
-\$SITE_INFO['cookie_days'] = '120';
+\$SITE_INFO['cookie_days'] = '1825';
 \$SITE_INFO['session_cookie'] = 'cms_session__567206a440a52943735248';
 \$SITE_INFO['self_learning_cache'] = '1';
 

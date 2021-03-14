@@ -807,7 +807,7 @@ function step_4() : object
 
     $cookie_domain = '';//(($domain == 'localhost') || (strpos($domain, '.') === false)) ? '' : ('.' . $domain);
     $cookie_path = '/';
-    $cookie_days = '120';
+    $cookie_days = '1825';
     $use_persistent = false;
     require_code('version');
     if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {

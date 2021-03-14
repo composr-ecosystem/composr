@@ -1620,7 +1620,7 @@ function get_cookie_domain() : string
 function get_cookie_days() : float
 {
     global $SITE_INFO;
-    return array_key_exists('cookie_days', $SITE_INFO) ? floatval($SITE_INFO['cookie_days']) : 120.0;
+    return array_key_exists('cookie_days', $SITE_INFO) ? floatval($SITE_INFO['cookie_days']) : 1825.0;
 }
 
 /**

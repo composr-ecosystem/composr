@@ -98,7 +98,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'pass_cookie' => 'cms_member_hash',
         'cookie_domain' => '',
         'cookie_path' => '/',
-        'cookie_days' => '120',
+        'cookie_days' => '1825',
         'db_forums' => $database_forums,
         'db_forums_host' => get_db_site_host(),
         'db_forums_user' => $username_forums,
