@@ -25,35 +25,47 @@
         rgxNotWhite = /\S+/g;
 
     setTimeout(function () {
-        $dom._resolveInit();
-        delete $dom._resolveInit;
+        if ($dom._resolveInit) {
+            $dom._resolveInit();
+            delete $dom._resolveInit;
+        }
 
         if (document.readyState === 'interactive') {
             // Workaround for browser bug, document.readyState == 'interactive' before [defer]'d <script>s are loaded.
             // See: https://github.com/jquery/jquery/issues/3271
             $dom.waitForResources($util.toArray(document.querySelectorAll('script[src][defer]'))).then(function () {
-                $dom._resolveReady();
-                delete $dom._resolveReady;
+                if ($dom._resolveReady) {
+                    $dom._resolveReady();
+                    delete $dom._resolveReady;
+                }
             });
         } else if (document.readyState === 'complete') {
-            $dom._resolveReady();
-            delete $dom._resolveReady;
+            if ($dom._resolveReady) {
+                $dom._resolveReady();
+                delete $dom._resolveReady;
+            }
         } else {
             document.addEventListener('DOMContentLoaded', function listener() {
                 document.removeEventListener('DOMContentLoaded', listener);
-                $dom._resolveReady();
-                delete $dom._resolveReady;
+                if ($dom._resolveReady) {
+                    $dom._resolveReady();
+                    delete $dom._resolveReady;
+                }
             });
         }
 
         if (document.readyState === 'complete') {
-            $dom._resolveLoad();
-            delete $dom._resolveLoad;
+            if ($dom._resolveLoad) {
+                $dom._resolveLoad();
+                delete $dom._resolveLoad;
+            }
         } else {
             window.addEventListener('load', function listener() {
                 window.removeEventListener('load', listener);
-                $dom._resolveLoad();
-                delete $dom._resolveLoad;
+                if ($dom._resolveLoad) {
+                    $dom._resolveLoad();
+                    delete $dom._resolveLoad;
+                }
             });
         }
     }, 0);
