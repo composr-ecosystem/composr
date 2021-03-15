@@ -2,7 +2,7 @@
 
 <div class="webstandards-checker-off" data-tpl="realtimeRainOverlay" data-tpl-params="{+START,PARAMS_JSON,MIN_TIME}{_*}{+END}">
 	<div id="real-time-surround">
-		<div id="real-time">
+		<div id="real-time" aria-live="polite">
 			<div id="news-ticker" class="js-hover-window-pause">
 				<h1>{!NEWS_FLASHES}</h1>
 
