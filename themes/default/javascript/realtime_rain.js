@@ -170,7 +170,7 @@
 
     function getMoreEvents(from, to) {
         if (document.hidden) {
-            return; /*{$,Don't hurt server performance needlessly when running in a background tab - let an e-mail notification alert them instead}*/
+            return; /* Don't hurt server performance needlessly when running in a background tab - let an e-mail notification alert them instead */
         }
 
         from = Math.round(from);
