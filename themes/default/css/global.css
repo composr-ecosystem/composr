@@ -1211,20 +1211,36 @@ header.with-seed-navbar .top-button:hover {
 	height: 24px;
 }
 
-.top-button-bubble {
-	/*{+START,IF,{$THEME_OPTION,curved_borders}}*/
-		border-radius: {$GET,border_radius};
-	/*{+END}*/
+.notification-button-bubble {
+	border-radius: {$GET,border_radius};
 	margin-top: -50%;
 	margin-left: -25%;
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(255, 0, 0, 0.7);
 	padding: 0 3px;
 	font-size: 11px;
 	color: {$GET,WB};
+	z-index: 10;
 }
 
-.top-button.count-0 .top-button-bubble {
+.notification-button.count-0 .notification-button-bubble {
 	display: none;
+}
+
+.notification-button img, .notification-button svg {
+	animation-name: countanimation;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+}
+.notification-button.count-0 img, .notification-button.count-0 svg {
+	animation-iteration-count: 0;
+	animation-play-state: paused;
+}
+@keyframes countanimation {
+	0%   { opacity: 0.5; }
+	25%  { opacity: 0.0; }
+	50%  { opacity: 0.5; }
+	75%  { opacity: 1.0; }
+	100% { opacity: 0.5; }
 }
 
 .global-navigation .top-form {
