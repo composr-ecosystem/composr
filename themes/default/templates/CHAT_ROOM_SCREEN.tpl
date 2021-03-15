@@ -76,7 +76,7 @@
 		{$GET,posting_box}
 	{+END}
 
-	<div class="messages-window"><div role="marquee" class="messages-window-full-chat" id="messages-window"></div></div>
+	<div class="messages-window"><div role="marquee" class="messages-window-full-chat" id="messages-window" aria-live="polite"></div></div>
 
 	{+START,IF,{$EQ,{$CONFIG_OPTION,chat_message_direction},downwards}}
 		{$GET,posting_box}
