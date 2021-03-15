@@ -77,6 +77,12 @@
         });
 
         function notificationsMarkAllRead() {
+            var eCount = document.getElementById('live-notifications-count');
+            if (eCount) {
+                $dom.html(eCount, '0');
+                eCount.parentNode.className = eCount.parentNode.className.replace(/count-\d+/, 'count-0');
+            }
+
             var url = '{$FIND_SCRIPT_NOHTTP;,notifications}?type=mark_all_read';
             if (window.maxNotificationsToShow !== undefined) {
                 url += '&max=' + window.maxNotificationsToShow;
@@ -221,7 +227,7 @@
                 unread = responseXml.getElementsByTagName('unread_web_notifications');
                 $dom.html(spot, $dom.html(display[0]));
                 $dom.html(button.firstElementChild, $dom.html(unread[0]));
-                button.className = 'count-' + $dom.html(unread[0]);
+                button.className = button.className.replace(/count-\d+/, 'count-' + $dom.html(unread[0]));
             }
         }
 
@@ -233,7 +239,7 @@
                 unread = responseXml.getElementsByTagName('unread_pts');
                 $dom.html(spot, $dom.html(display[0]));
                 $dom.html(button.firstElementChild, $dom.html(unread[0]));
-                button.className = 'count-' + $dom.html(unread[0]);
+                button.className = button.className.replace(/count-\d+/, 'count-' + $dom.html(unread[0]));
             }
         }
 
