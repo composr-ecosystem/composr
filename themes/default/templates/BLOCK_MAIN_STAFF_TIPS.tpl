@@ -22,6 +22,7 @@
 							{+START,IF,{$NEQ,{TIP_CODE},0a}}
 								<li><a data-ajaxify-target="1" accesskey="k" href="{$PAGE_LINK*,adminzone:rand={$RAND}}">{!ANOTHER_TIP}</a></li>
 							{+END}
+							<li><a target="_blank" title="{!ALL} {!LINK_NEW_WINDOW}" href="{$TUTORIAL_URL*,tut_do}#title--3">{!ALL}</a></li>
 						</ul>
 					{+END}
 				</div>
