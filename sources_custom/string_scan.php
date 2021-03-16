@@ -9277,6 +9277,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_THIS_TEMPLATE
         EDIT_TOPIC
         EDIT_TOPIC_POLL
+        EDIT_THIS_TOPIC
+        DELETE_THIS_TOPIC
+        EDIT_THIS_POST
+        DELETE_THIS_POST
         EMAIL
         EMAIL_ACCOUNTS
         EMAIL_ADDRESS

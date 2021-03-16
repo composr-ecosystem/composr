@@ -773,7 +773,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         }
         $edit_url = build_url($map, get_module_zone('topics'));
         $_title = do_lang_tempcode('EDIT');
-        $_title_full = do_lang_tempcode('EDIT_POST');
+        $_title_full = do_lang_tempcode('EDIT_THIS_POST');
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'f341cfc94b3d705437d43e89f572bff6', 'REL' => 'edit nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/edit', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $edit_url]));
@@ -798,7 +798,7 @@ function cns_render_post_buttons(array $topic_info, array $_postdetails, bool $m
         $delete_url = build_url($map, get_module_zone('topics'));
         $_title = do_lang_tempcode('DELETE');
         $_title_full = new Tempcode();
-        $_title_full->attach(do_lang_tempcode('DELETE_POST'));
+        $_title_full->attach(do_lang_tempcode('DELETE_THIS_POST'));
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '8bf6d098ddc217eef75718464dc03d41', 'REL' => 'delete nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/delete3', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $delete_url]));
     }

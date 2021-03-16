@@ -897,10 +897,10 @@ class Module_topicview
                 $moderator_actions .= '<option value="move_topic">' . do_lang('MOVE_TOPIC') . '</option>';
             }
             if (array_key_exists('may_edit_topic', $topic_info)) {
-                $moderator_actions .= '<option value="edit_topic">' . do_lang('EDIT_TOPIC') . '</option>';
+                $moderator_actions .= '<option value="edit_topic">' . do_lang('EDIT_THIS_TOPIC') . '</option>';
             }
             if (array_key_exists('may_delete_topic', $topic_info)) {
-                $moderator_actions .= '<option value="delete_topic">' . do_lang('DELETE_TOPIC') . '</option>';
+                $moderator_actions .= '<option value="delete_topic">' . do_lang('DELETE_THIS_TOPIC') . '</option>';
             }
             if (array_key_exists('may_pin_topic', $topic_info)) {
                 $moderator_actions .= '<option value="pin_topic">' . do_lang('PIN_TOPIC') . '</option>';
