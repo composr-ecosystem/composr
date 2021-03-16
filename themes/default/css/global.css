@@ -1563,6 +1563,21 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	/*{+END}*/
 }
 
+#main-website-inner.faded::before {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	content: "";
+}
+#main-website-inner.faded>header, #main-website-inner.faded>div {
+	opacity: 0.3;
+	transition: opacity 0.5s ease-in-out;
+	filter: blur(2px);
+}
+
 .main-website-faux {
 	background-color: {$GET,fixed_width_background} !important;
 }
@@ -7218,15 +7233,10 @@ a[title="{!VIRTUAL_ROOT}"]:hover {
 =========================
 */
 
-.cms-modal-background {
-	background: rgba(0, 0, 0, 0.7);
-	overflow: hidden;
-	left: 0;
+.cms-modal {
+	position: absolute;
 	top: 0;
-	width: 100%;
-	height: 100%;
-	outline: 0;
-	position: fixed;
+	left: 0;
 }
 
 .cms-modal-overlay {

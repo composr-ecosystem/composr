@@ -2402,18 +2402,17 @@
      * @memberof $dom
      * @param { Element|number} destY
      * @param [expectedScrollY]
-     * @param [direction]
      * @param [callback]
      * @param [_recursing] - Internal only
      */
-    $dom.smoothScroll = function smoothScroll(destY, expectedScrollY, direction, callback, _recursing) {
+    $dom.smoothScroll = function smoothScroll(destY, expectedScrollY, callback, _recursing) {
         if ($util.isEl(destY)) {
             destY = $dom.findPosY(destY, true);
         } else if (typeof destY === 'string') {
             destY = $dom.findPosY($dom.$id(destY), true);
         }
 
-        if (!_recursing && document.querySelector('.header.is-sticky')) {
+        if (!_recursing && document.querySelector('.header.is-sticky') && destY != 0) {
             destY -= document.querySelector('.header.is-sticky').offsetHeight;
         }
 
@@ -2430,23 +2429,20 @@
 
         var scrollY = window.scrollY;
         if ((expectedScrollY != null) && (Number(expectedScrollY) !== scrollY)) {
-            // We must terminate, as the user has scrolled during our animation and we do not want to interfere with their action -- or because our last scroll failed, due to us being on the last scroll screen already
+            // We must terminate early, as the user has scrolled during our animation and we do not want to interfere with their action -- or because our last scroll failed, due to us being on the last scroll screen already
+
+            if (callback) {
+                callback();
+            }
+
             return;
         }
 
-        direction = (destY > scrollY) ? 1 : -1;
+        var direction = (destY > scrollY) ? 1 : -1;
 
-        var distanceToGo = (destY - scrollY) * direction,
-            distance = Math.round(direction * (distanceToGo / 25));
+        if (((direction == 1) && (scrollY >= destY)) || ((direction == -1) && (scrollY <= destY)) || (destY - scrollY > 2000)) {
+            // Termination step
 
-        if (direction === -1 && distance > -25) {
-            distance = -25;
-        }
-        if (direction === 1 && distance < 25) {
-            distance = 25;
-        }
-
-        if (((direction === 1) && (scrollY + distance >= destY)) || ((direction === -1) && (scrollY + distance <= destY)) || (distanceToGo > 2000)) {
             try {
                 window.scrollTo(0, destY);
             } catch (e) {}
@@ -2454,18 +2450,28 @@
             if (callback) {
                 callback();
             }
+
             return;
         }
 
+        var pixels = direction * 5;
+        if ((direction == 1) && (scrollY + pixels > destY)) {
+            pixels = destY - pixels;
+        } else if ((direction == -1) && (scrollY + pixels > destY)) {
+            pixels = pixels - destY;
+        }
+
         try {
-            window.scrollBy(0, distance);
+            window.scrollBy(0, pixels);
         } catch (e) {
             return; // May be stopped by pop-up blocker
         }
 
-        requestAnimationFrame(function () {
-            $dom.smoothScroll(destY, scrollY + distance, direction, callback, true);
-        });
+        window.setTimeout(function() {
+            requestAnimationFrame(function () {
+                $dom.smoothScroll(destY, window.scrollY, callback, true);
+            });
+        }, 10);
     };
 
     /**

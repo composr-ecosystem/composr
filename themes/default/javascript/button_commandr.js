@@ -106,7 +106,7 @@
                     img.classList.remove('footer-button-loading');
                 }
 
-                $dom.smoothScroll(0, null, null, function () {
+                $dom.smoothScroll(0, null, function () {
                     document.getElementById('commandr-command').focus();
                 });
 
@@ -116,8 +116,7 @@
 
                 bi = document.getElementById('main-website-inner');
                 if (bi) {
-                    bi.style.opacity = 1.0;
-                    $dom.fadeTo(bi, null, 0.3);
+                    bi.classList.add('faded');
                 }
 
                 document.getElementById('commandr-command').focus();
@@ -130,7 +129,7 @@
                 $dom.hide(commandrBox);
                 bi = document.getElementById('main-website-inner');
                 if (bi) {
-                    $dom.fadeTo(bi, null, 1);
+                    bi.classList.remove('faded');
                 }
             }
         }

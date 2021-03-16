@@ -427,7 +427,7 @@
             this.option('right');
         },
 
-        // class="cms-modal-background cms-modal-button-container cms-modal-overlay cms-modal-type-alert cms-modal-type-confirm"
+        // class="cms-modal-button-container cms-modal-overlay cms-modal-type-alert cms-modal-type-confirm"
         // ^ Above comment serves to mark the classes as _used_ for the 'css_file' unit test
 
         _setElement: function _setElement() {
@@ -436,7 +436,7 @@
             this.topWindow.overlayZIndex || (this.topWindow.overlayZIndex = 999999); // Has to be higher than plupload, which is 99999
 
             this.el = $dom.create('div', { // Black out the background
-                'className': 'cms-modal cms-modal-background cms-modal-type-' + this.type,
+                'className': 'cms-modal cms-modal-type-' + this.type,
                 'tabIndex': '-1', // So that we can enforce focus, see the 'focusin.modalWindow' event listener attached in this._setElement()
                 'css': {
                     'zIndex': this.topWindow.overlayZIndex++
@@ -483,6 +483,11 @@
             this.buttonContainerEl = $dom.create('p', {
                 'className': 'proceed-button cms-modal-button-container'
             });
+
+            var bi = document.getElementById('main-website-inner');
+            if (bi) {
+                bi.classList.add('faded');
+            }
 
             var self = this;
 
@@ -732,6 +737,11 @@
                 $dom.off(document, 'mousemove.modalWindow' + this.uid);
             }
             this.opened = false;
+
+            var bi = document.getElementById('main-website-inner');
+            if (bi) {
+                bi.classList.remove('faded');
+            }
         },
 
         option: function (method) {
@@ -881,7 +891,7 @@
                 var wasFixed = (this.el.style.position === 'fixed');
 
                 this.el.style.position = 'absolute';
-                this.el.style.height = ((topPageHeight > (detectedBoxHeight + bottomGap + boxPosLeft)) ? topPageHeight : (detectedBoxHeight + bottomGap + boxPosLeft)) + 'px';
+                this.el.style.height = ((topPageHeight > (detectedBoxHeight + bottomGap + boxPosTop)) ? topPageHeight : (detectedBoxHeight + bottomGap + boxPosTop)) + 'px';
                 this.topWindow.document.body.style.overflow = '';
 
                 if (!$cms.isMobile()) {
@@ -1265,6 +1275,8 @@
             }
             url += '#composrcms';
 
+            var bi = document.getElementById('main-website-inner');
+
             var SOFTWARE_CHAT_EXTRA = $util.format('{!SOFTWARE_CHAT_EXTRA;^}', [$cms.filter.html(window.location.href.replace($cms.getBaseUrl(), 'http://baseurl'))]);
             var html = /** @lang HTML */'' +
                 '<div class="software-chat">' +
@@ -1277,12 +1289,13 @@
                 '</div>' +
                 '<iframe class="software-chat-iframe" style="border: 0" src="' + $cms.filter.html(url) + '"></iframe>';
 
-            var box = $dom.$('#software-chat-box'), img;
+            var box = $dom.$('#software-chat-box');
             if (box) {
                 box.remove();
 
-                img = $dom.$('.software-chat-img');
-                img.style.opacity = 1;
+                if (bi) {
+                    bi.classList.remove('faded');
+                }
             } else {
                 var width = 950,
                     height = 550;
@@ -1308,8 +1321,9 @@
 
                 $dom.smoothScroll(0);
 
-                img = $dom.$('.software-chat-img');
-                img.style.opacity = 0.5;
+                if (bi) {
+                    bi.classList.add('faded');
+                }
             }
         },
 

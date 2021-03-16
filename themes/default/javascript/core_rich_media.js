@@ -571,7 +571,7 @@
         $dom.on(container, 'click', '.js-click-dismiss-overlay', function () {
             var bi = document.getElementById('main-website-inner');
             if (bi) {
-                bi.style.opacity = 1;
+                bi.classList.remove('faded');
             }
 
             document.getElementById(params.randIdOverlay).style.display = 'none';
@@ -596,7 +596,7 @@
 
                 if (bi) {
                     bi.style.left = (Number(params.x) + $dom.findPosX(bi, true)) + 'px';
-                    bi.style.opacity = 0.4;
+                    bi.classList.add('faded');
                 }
 
                 $dom.fadeIn(element);
@@ -605,7 +605,7 @@
                 if (timeout !== -1) {
                     setTimeout(function () {
                         if (bi) {
-                            bi.style.opacity = 1;
+                            bi.classList.remove('faded');
                         }
 
                         if (element) {
