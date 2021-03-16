@@ -53,7 +53,6 @@ var editorSettings = {
     autoUpdateElement: true,
     contentsCss : pageStylesheets,
     cssStatic: css,
-    startupOutlineBlocks: true,
     language: $cms.userLang() ? $cms.userLang().toLowerCase() : 'en',
     emailProtection: false,
     resize_enabled: true,
@@ -75,6 +74,10 @@ if ($cms.configOption('eager_wysiwyg') === 1) {
 } else {
     editorSettings.enterMode = window.CKEDITOR.ENTER_P;
     editorSettings.autoParagraph = false;
+}
+
+if ($cms.configOption('outline_blocks') === 1) {
+    editorSettings.startupOutlineBlocks = true;
 }
 
 if ($cms.configOption('autogrow') === 1) {

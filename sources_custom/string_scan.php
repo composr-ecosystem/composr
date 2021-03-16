@@ -114,6 +114,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        CONFIG_OPTION_outline_blocks
+        OUTLINE_BLOCKS
         SESSIONS
         SESSIONS_IN_URLS
         CONFIG_OPTION_sessions_in_urls
