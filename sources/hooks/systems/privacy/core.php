@@ -146,6 +146,11 @@ class Hook_privacy_core extends Hook_privacy_base
                     'action' => do_lang_tempcode('PRIVACY_ACTION_web_code'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_web_code'),
                 ],
+                (get_option('gravatars') == '0') ? null : [
+                    'heading' => do_lang('INFORMATION_DISCLOSURE'),
+                    'action' => do_lang_tempcode('PRIVACY_ACTION_gravatar'),
+                    'reason' => do_lang_tempcode('PRIVACY_REASON_gravatar'),
+                ],
             ],
 
             'database_records' => [

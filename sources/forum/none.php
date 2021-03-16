@@ -378,7 +378,7 @@ class Forum_driver_none extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member) : string
     {
         return '';
     }

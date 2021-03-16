@@ -19,6 +19,59 @@
  */
 
 /**
+ * Pick a default avatar for a member.
+ * Does not support gravatar, that is supported by get_member_avatar_url.
+ *
+ * @param  EMAIL $email_address E-mail address is used to create a bias (or perhaps something else if this function is overridden)
+ * @param  string $algorithm Algorithm to use (if possible). 'avoid_conflict' tries to avoid conflict with existing members. 'dynamic' uses the $email_address as a bias
+ * @set avoid_conflict dynamic
+ * @return URLPATH Avatar (blank: none)
+ * @ignore
+ */
+function cns_choose_default_avatar($email_address = '', $algorithm = 'avoid_conflict')
+{
+    if (get_option('random_avatars', true) === '1') {
+        require_code('themes2');
+        $codes = get_all_image_ids_type('cns_default_avatars/default_set', false, $GLOBALS['FORUM_DB']);
+        if ($algorithm == 'avoid_conflict') {
+            shuffle($codes);
+        }
+        $results = [];
+        foreach ($codes as $code) {
+            if ($code == 'system') {
+                continue;
+            }
+
+            if ($algorithm == 'avoid_conflict') {
+                $count = @intval($GLOBALS['FORUM_DB']->query_select_value('f_members', 'SUM(m_cache_num_posts)', ['m_avatar_url' => find_theme_image($code, false, true)]));
+            } else {
+                $count = null;
+            }
+            $results[$code] = $count;
+        }
+        if ($algorithm == 'avoid_conflict') {
+            @asort($results); // @'d as type checker fails for some odd reason
+            $found_avatars = array_keys($results);
+            $avatar_id = array_shift($found_avatars);
+        } else {
+            $found_avatars = array_keys($results);
+            $crc = crc32($email_address);
+            $avatar_id = $found_avatars[$crc % count($found_avatars)];
+        }
+        $avatar_url = find_theme_image($avatar_id, true, true);
+    }
+
+    if ($avatar_url === null) {
+        $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'cns_default_avatars/default', 'url' => '']); // In case failure cached, gets very confusing
+        $avatar_url = find_theme_image('cns_default_avatars/default', true, true);
+        if ($avatar_url === null) {
+            $avatar_url = '';
+        }
+    }
+    return $avatar_url;
+}
+
+/**
  * Make sure we are doing necessary join to be able to access the given field.
  *
  * @param  object $db Database connector

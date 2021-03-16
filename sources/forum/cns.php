@@ -1077,7 +1077,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member) : string
     {
         if ((!addon_installed('cns_member_avatars')) && (!addon_installed('cns_member_photos'))) {
             return '';
@@ -1096,18 +1096,20 @@ class Forum_driver_cns extends Forum_driver_base
         $avatar = $this->get_member_row_field($member, 'm_avatar_url');
         if ($avatar === null) {
             $avatar = '';
-        } else {
+        }
+
+        if ($avatar != '') {
             $base_url = get_base_url();
             if ((!is_on_multi_site_network()) && (substr($avatar, 0, strlen($base_url) + 1) == $base_url . '/')) { // So we can do an is_file check
                 $avatar = substr($avatar, strlen($base_url) + 1);
             }
+        }
 
-            if ((url_is_local($avatar)) && ($avatar != '')) {
-                if ((is_on_multi_site_network()) || (is_file(get_file_base() . '/' . rawurldecode($avatar))) || (is_file(get_custom_file_base() . '/' . rawurldecode($avatar)))) {
-                    $avatar = get_complex_base_url($avatar) . '/' . $avatar;
-                } else {
-                    $avatar = '';
-                }
+        if ((url_is_local($avatar)) && ($avatar != '')) {
+            if ((is_on_multi_site_network()) || (is_file(get_file_base() . '/' . rawurldecode($avatar))) || (is_file(get_custom_file_base() . '/' . rawurldecode($avatar)))) {
+                $avatar = get_complex_base_url($avatar) . '/' . $avatar;
+            } else {
+                $avatar = '';
             }
         }
 

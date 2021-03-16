@@ -346,7 +346,7 @@ class Forum_driver_mybb extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member) : string
     {
         $avatar_path = get_forum_base_url();
 

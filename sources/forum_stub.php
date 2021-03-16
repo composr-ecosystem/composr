@@ -79,6 +79,37 @@ class Forum_driver_base
     }
 
     /**
+     * Get the avatar URL for the specified member ID.
+     *
+     * @param  MEMBER $member The member ID
+     * @param  boolean $fallback_support Support default avatars / gravatars (if enabled)
+     * @return URLPATH The URL (blank: none)
+     */
+    public function get_member_avatar_url(int $member, bool $fallback_support = true) : string
+    {
+        $avatar = $this->_get_member_avatar_url($member);
+
+        if (($avatar == '') && ($member != $this->get_guest_id()) && ($fallback_support)) {
+            if (($this->get_member_email_address($member) == '') || (get_option('gravatars') == '0')) {
+                if (get_forum_type() == 'cns') {
+                    // Conversr supports late defaults here
+                    require_code('cns_members2');
+                    $avatar = cns_choose_default_avatar('', 'dynamic');
+
+                    if ((url_is_local($avatar)) && ($avatar != '')) {
+                        $avatar = get_complex_base_url($avatar) . '/' . $avatar;
+                    }
+                }
+            } else {
+                $keep = symbol_tempcode('KEEP');
+                return find_script('gravatar') . '?id=' . strval($member) . $keep->evaluate();
+            }
+        }
+
+        return $avatar;
+    }
+
+    /**
      * Get a URL to a forum member's member profile.
      *
      * @param  MEMBER $id The forum member

@@ -772,7 +772,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member) : string
     {
         $member_extra_rows = $this->db->query_select('profile_portal', ['avatar_location', 'avatar_type'], ['pp_member_id' => $member]);
         if (!array_key_exists(0, $member_extra_rows)) {

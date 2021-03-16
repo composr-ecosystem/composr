@@ -484,7 +484,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member) : string
     {
         $options = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'config WHERE ' . db_string_equal_to('config_name', 'avatar_path') . ' OR ' . db_string_equal_to('config_name', 'avatar_gallery_path'));
         $avatar_path = $options[0]['config_value'];

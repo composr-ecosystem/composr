@@ -166,34 +166,11 @@ function cns_make_member(string $username, string $password, string $email_addre
     }
 
     if ($avatar_url === null) {
-        if (($GLOBALS['IN_MINIKERNEL_VERSION']) || (!addon_installed('cns_member_avatars'))) {
+        if (($GLOBALS['IN_MINIKERNEL_VERSION']) || (!addon_installed('cns_member_avatars')) || (get_option('gravatars') == '1') || (running_script('stress_test_loader'))) {
             $avatar_url = '';
         } else {
-            if ((get_option('random_avatars') == '1') && (!running_script('stress_test_loader'))) {
-                require_code('themes2');
-                $codes = get_all_image_ids_type('cns_default_avatars/default_set', false, $GLOBALS['FORUM_DB']);
-                shuffle($codes);
-                $results = [];
-                foreach ($codes as $code) {
-                    if ($code == 'system') {
-                        continue;
-                    }
-
-                    $count = @intval($GLOBALS['FORUM_DB']->query_select_value('f_members', 'SUM(m_cache_num_posts)', ['m_avatar_url' => find_theme_image($code, false, true)]));
-                    $results[$code] = $count;
-                }
-                @asort($results); // @'d as type checker fails for some odd reason
-                $found_avatars = array_keys($results);
-                $avatar_url = find_theme_image(array_shift($found_avatars), true, true);
-            }
-
-            if ($avatar_url === null) {
-                $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'cns_default_avatars/default', 'url' => '']); // In case failure cached, gets very confusing
-                $avatar_url = find_theme_image('cns_default_avatars/default', true, true);
-                if ($avatar_url === null) {
-                    $avatar_url = '';
-                }
-            }
+            require_code('cns_members2');
+            $avatar_url = cns_choose_default_avatar($email_address);
         }
     }
 

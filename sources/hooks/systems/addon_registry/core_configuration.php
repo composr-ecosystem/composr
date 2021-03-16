@@ -134,6 +134,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/trusted_sites_2.php',
             'sources/hooks/systems/config/sprite_icons.php',
             'sources/hooks/systems/config/page_after_login.php',
+            'sources/hooks/systems/config/gravatars.php',
             'sources_custom/hooks/systems/config_categories/.htaccess',
             'sources_custom/hooks/systems/config_categories/index.html',
             'sources/hooks/systems/config_categories/messages.php',

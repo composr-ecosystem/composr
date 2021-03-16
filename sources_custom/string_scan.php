@@ -376,6 +376,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_news_PARAM_render_mode_TITLE
         BLOCK_main_news_PARAM_slider_interval
         BLOCK_main_news_PARAM_slider_interval_TITLE
+        GRAVATARS
+        CONFIG_OPTION_gravatars
         CONFIG_OPTION_galleries_sort_order_VALUE_recent__ASC
         CONFIG_OPTION_galleries_sort_order_VALUE_recent__DESC
         CONFIG_OPTION_galleries_sort_order_VALUE_title__ASC
@@ -10865,6 +10867,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_last_chat_msg
         PRIVACY_SETTINGS_EXPLANATION
         INFORMATION_TRANSFER_ECOMMERCE
+        PRIVACY_ACTION_gravatar
+        PRIVACY_REASON_gravatar
         PRIVACY_ACTION_shippo
         PRIVACY_REASON_shippo
         PRIVACY_ACTION_taxcloud

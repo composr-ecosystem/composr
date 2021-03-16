@@ -1350,6 +1350,7 @@ class Hook_addon_registry_core
             'temp/index.html',
             'caches/http/.htaccess',
             'caches/http/index.html',
+            'data/gravatar.php',
             'config_editor.php',
             'index.php',
             '_config.php',

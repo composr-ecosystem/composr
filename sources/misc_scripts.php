@@ -21,6 +21,81 @@
 /*EXTRA FUNCTIONS: curl_.*|imagefilledrectangle|usleep*/
 
 /**
+ * Script to access a gravatar, while protecting the user's privacy.
+ *
+ * @ignore
+ */
+function gravatar_script()
+{
+    header('X-Robots-Tag: noindex');
+
+    $id = get_param_integer('id');
+
+    $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($id);
+    $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($id, false);
+
+    $is_error = true; // We'll only set to false once everything is good
+
+    if (($avatar_url == '') && ($email_address != '')) {
+        $gravatar_url = 'https://www.gravatar.com/avatar/' . md5($email_address) . '?d=404';
+        $f = @fopen($gravatar_url, 'rb');
+    } else {
+        $f = false; // We already have an avatar, or can't get a gravatar, so let it get to error state
+    }
+
+    if (($f !== false) && (!empty($http_response_header))) {
+        // Work out appropriate content type (with restrictions)
+        $content_type = 'image/png';
+        $matches = [];
+        foreach ($http_response_header as $header) {
+            if (preg_match('#^HTTP/[\d\.]* 20#i', $header, $matches) != 0) {
+                $is_error = false;
+            }
+            if (preg_match('#^Content-Type:\s*(.*)\s*#i', $header, $matches) != 0) {
+                $content_type = $matches[1];
+            }
+        }
+        if (substr($content_type, 0, 6) != 'image/') {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+    }
+
+    if ($is_error) {
+        if (($avatar_url == '') && (get_forum_type() == 'cns')) {
+            require_code('cns_members2');
+            $avatar_url = cns_choose_default_avatar($email_address, 'dynamic');
+        }
+
+        if ((url_is_local($avatar_url)) && ($avatar_url != '')) {
+            $avatar_url = get_complex_base_url($avatar_url) . '/' . $avatar_url;
+        }
+
+        if ($avatar_url == '') {
+            $avatar_url = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+        }
+
+        header('Location: ' . $avatar_url);
+        return;
+    }
+
+    // All good, so show gravatar...
+
+    cms_ini_set('ocproducts.xss_detect', '0');
+
+    foreach ($http_response_header as $header) {
+        if (preg_match('#^Content-Type:\s*(.*)\s*#i', $header) == 0) {
+            header($header);
+        }
+    }
+
+    header('Content-Type: ' . $content_type);
+
+    cms_ob_end_clean();
+    fpassthru($f);
+    @fclose($f);
+}
+
+/**
  * Script to make a nice textual image, vertical writing.
  *
  * @ignore

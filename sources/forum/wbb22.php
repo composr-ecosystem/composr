@@ -323,7 +323,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_avatar_url(int $member) : string
+    protected function _get_member_avatar_url(int $member) : string
     {
         $avatar = $this->db->query_select_value_if_there('avatars', 'avatarname', ['userid' => $member]);
         if ((empty($avatar)) || (!url_is_local($avatar))) {
