@@ -38,6 +38,7 @@ class Hook_config_globally_included_js_files
             'explanation' => 'CONFIG_OPTION_globally_included_js_files',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'theme_override' => true,
             'required' => false,
             'public' => false,
             'addon' => 'core_configuration',
