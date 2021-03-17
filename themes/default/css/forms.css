@@ -691,7 +691,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	color: {$GET,WB} !important;
 	position: relative;
 	overflow: hidden;
-	padding: 3px 6px;
+	padding: 2px 4px;
 	text-align: left;
 }
 
@@ -704,7 +704,6 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	font-size: 0.8em;
 	float: left;
 	white-space: normal;
-	max-width: 3.5em;
 }
 
 .btn-comcode .icon {
@@ -714,13 +713,11 @@ span.validated-checkbox + input[name="validated"].input-tick {
 .btn-comcode-thumb,
 .btn-comcode-block,
 .btn-comcode-url,
-.btn-comcode-box {
-	padding-right: 28px;
-}
-
+.btn-comcode-box,
+.btn-comcode-email,
 .btn-comcode-comcode,
 .btn-comcode-apply_changes {
-	padding-right: 38px;
+	padding-right: 35px;
 }
 
 .btn-comcode-thumb .icon,
@@ -805,9 +802,9 @@ span.validated-checkbox + input[name="validated"].input-tick {
 }
 
 .posting-form-insert-buttons .divider {
-	margin-left: 0.3em;
+	margin-left: 0.2em;
 	border-left: 1px solid {$GET,standard_border};
-	width: 0.3em;
+	width: 0.2em;
 	display: inline-block;
 	height: 2em;
 }

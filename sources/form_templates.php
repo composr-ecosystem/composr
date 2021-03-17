@@ -446,37 +446,38 @@ function get_comcode_editor(string $field_name = 'post', bool $cut_down = false,
 
     // Non-wrappers
     if (!$cut_down) {
-        $_buttons[] = 'thumb';
+        $_buttons['thumb'] = do_lang_tempcode('ADD_COMCODE_IMAGE');
     }
     if (has_privilege(get_member(), 'comcode_dangerous')) {
-        $_buttons[] = 'block';
+        $_buttons['block'] = do_lang_tempcode('ADD_BLOCK');
     }
-    $_buttons[] = 'comcode';
+    $_buttons['comcode'] = do_lang_tempcode('COMCODE_ADD_TAG');
     if (!$cut_down) {
-        $_buttons[] = 'list'; // NB: list isn't actually a Comcode tag, it's a textcode syntax
+        $_buttons['list'] = do_lang_tempcode('LIST'); // NB: list isn't actually a Comcode tag, it's a textcode syntax
     }
 
     // Links
     if (!$cut_down) {
-        $_buttons[] = 'url';
+        $_buttons['url'] = do_lang_tempcode('ADD_LINK');
     }
     if (has_zone_access(get_member(), 'adminzone')) {
-        $_buttons[] = 'page';
+        $_buttons['page'] = do_lang_tempcode('PAGE');
     }
-    //if (!$cut_down) $_buttons[]='email';   Not enough space anymore
+    //if (!$cut_down) $_buttons['email'] = do_lang_tempcode('config:_EMAIL');   Not enough space anymore
 
     // Wrappers
-    $_buttons[] = 'quote';
+    $_buttons['quote'] = do_lang_tempcode('QUOTE');
     if ((get_option('simplify_wysiwyg_by_permissions') == '0') || (has_privilege(get_member(), 'allow_html'))) {
-        $_buttons[] = 'box'; // This leads to precisionEditing being set in _wysiwyg_settings.js
+        $_buttons['box'] = do_lang_tempcode('ADD_BOX'); // This leads to precisionEditing being set in _wysiwyg_settings.js
     }
-    $_buttons[] = 'code';
+    $_buttons['code'] = do_lang_tempcode('CODE');
     if (has_privilege(get_member(), 'allow_html')) {
         if (!$cut_down) {
-            $_buttons[] = 'html';
+            $_buttons['html'] = do_lang_tempcode('HTML');
         }
     }
-    foreach ($_buttons as $i => $button) {
+    $i = 0;
+    foreach ($_buttons as $button => $label) {
         $divider = false;
         if (($button == 'url') || ($button == 'quote') || ($i == 0)) {
             $divider = true;
@@ -485,10 +486,12 @@ function get_comcode_editor(string $field_name = 'post', bool $cut_down = false,
             '_GUID' => 'e4fe3bc16cec070e06532fedc598d075',
             'DIVIDER' => $divider,
             'FIELD_NAME' => $field_name,
+            'LABEL' => $label,
             'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button),
             'B' => $button,
             'IS_POSTING_FIELD' => $is_posting_field,
         ]));
+        $i++;
     }
 
     $micro_buttons = new Tempcode();

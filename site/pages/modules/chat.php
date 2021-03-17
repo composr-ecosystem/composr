@@ -636,18 +636,18 @@ class Module_chat
         $messages_link = find_script('messages') . '?room_id=' . strval($room_id) . '&zone=' . urlencode(get_zone_name()) . $keep->evaluate();
         $buttons = new Tempcode();
         $_buttons = [
-            //'url', Bloat
-            'thumb',
-            //'email', Bloat
-            'quote',
-            'code',
-            'hide',
+            //'url' => do_lang_tempcode('ADD_LINK'), Bloat
+            'thumb' => do_lang_tempcode('ADD_COMCODE_IMAGE'),
+            //'email' => do_lang_tempcode('config:_EMAIL'), Bloat
+            'quote' => do_lang_tempcode('QUOTE'),
+            'code' => do_lang_tempcode('CODE'),
+            'hide' => do_lang_tempcode('HIDE'),
         ];
         if (has_privilege(get_member(), 'comcode_dangerous')) {
-            //$_buttons[] = 'html'; Bloat
+            //$_buttons['html'] = do_lang_tempcode('HTML'); Bloat
         }
-        foreach ($_buttons as $button) {
-            $buttons->attach(do_template('COMCODE_EDITOR_BUTTON', ['_GUID' => '4fd75edb2d091b1c78a71c653efb18f0', 'DIVIDER' => false, 'IS_POSTING_FIELD' => false, 'FIELD_NAME' => 'post', 'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button), 'B' => $button]));
+        foreach ($_buttons as $button => $label) {
+            $buttons->attach(do_template('COMCODE_EDITOR_BUTTON', ['_GUID' => '4fd75edb2d091b1c78a71c653efb18f0', 'DIVIDER' => false, 'IS_POSTING_FIELD' => false, 'FIELD_NAME' => 'post', 'LABEL' => $label, 'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button), 'B' => $button]));
         }
 
         if (!is_guest()) {

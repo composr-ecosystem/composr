@@ -1973,6 +1973,7 @@ class Hook_addon_registry_core_form_interfaces
             $buttons->attach(do_lorem_template('COMCODE_EDITOR_BUTTON', [
                 'DIVIDER' => true,
                 'FIELD_NAME' => lorem_word(),
+                'LABEL' => lorem_word(),
                 'TITLE' => lorem_phrase(),
                 'B' => $button,
                 'IS_POSTING_FIELD' => true,

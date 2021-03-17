@@ -149,6 +149,7 @@ class Hook_addon_registry_core_zone_editor
         $comcode_editor = do_lorem_template('COMCODE_EDITOR_BUTTON', [
             'DIVIDER' => true,
             'FIELD_NAME' => lorem_word(),
+            'LABEL' => lorem_word(),
             'TITLE' => lorem_word(),
             'B' => 'block',
             'IS_POSTING_FIELD' => false,
