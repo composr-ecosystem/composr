@@ -118,6 +118,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         OUTLINE_BLOCKS
         SESSIONS
         SESSIONS_IN_URLS
+        GLOBALLY_INCLUDED_CSS_FILES
+        CONFIG_OPTION_globally_included_css_files
+        GLOBALLY_INCLUDED_JS_FILES
+        CONFIG_OPTION_globally_included_js_files
         CONFIG_OPTION_sessions_in_urls
         VIRTUAL_ROOT_LINKS
         CONFIG_OPTION_virtual_root_links

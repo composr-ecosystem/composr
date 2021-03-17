@@ -78,6 +78,8 @@ PHP;
             return do_template('RED_ALERT', ['_GUID' => '8wj7a899zxqp7vnxaio4hamm6p3j651d', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
+        require_css('personal_stats');
+
         $block_id = get_block_id($map);
 
         $title = do_lang_tempcode('NOT_LOGGED_IN');

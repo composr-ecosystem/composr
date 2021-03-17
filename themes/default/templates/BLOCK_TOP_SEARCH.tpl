@@ -1,3 +1,5 @@
+{$REQUIRE_JAVASCRIPT,search}
+
 <form class="top-button-wrapper" role="search" title="{TITLE*}" data-tpl="blockTopSearch" data-tpl-params="{+START,PARAMS_JSON,SEARCH_TYPE}{_*}{+END}" action="{$URL_FOR_GET_FORM*,{URL}}" method="get">
 	{$HIDDENS_FOR_GET_FORM,{URL}}
 

@@ -204,18 +204,8 @@ Comcode tips:
 
 Miscellaneous tips:
  - Serve pre-compressed CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is not commented as there are problems on some servers
+ - Merge always-needed CSS and JS files into the global files via the "Globally-included CSS/JS files" configuration options
 
-[title="3"]Merging JavaScript or CSS files[/title]
-
-You can do overrides and includes in a smart way to identify how to merge files together.
-
-For example, imagine you want [tt]galleries.css[/tt] to be delivered within [tt]global.css[/tt], because galleries is commonly required and therefore it has no need for a separate request.
-
-You could:
-1) override [tt]galleries.css[/tt] as blank (which will prompt Composr to not link it in via the HTML)
-2) add this to the end of [tt]global.css[/tt]: [tt]{+START,INCLUDE,galleries,.css,css,,1}{+END}[/tt]. The [tt]1[/tt] at the end indicates to include the original file (so it's not just including your blank override).
-
-Of course you may want to make changes to [tt]galleries.css[/tt] too. In which case you'd need to copy and paste the contents onto the end of [tt]global.css[/tt] and make changes there, rather than doing an include.
 
 [title="3"]Content Delivery Networks (CDNs)[/title]
 

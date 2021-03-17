@@ -24,6 +24,7 @@
 					</select>
 				</div>
 
+				{$REQUIRE_JAVASCRIPT,ajax_people_lists}
 				<div class="revisions-filter-item">
 					<label class="lonely-label" for="username">{!USERNAME}:</label>
 					<input class="form-control js-focus-update-ajax-member-list js-keyup-update-ajax-member-list" type="text" name="username" id="username" value="{$_GET*,username}" />

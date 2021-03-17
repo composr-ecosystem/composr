@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    search
+ * @package    core_configuration
  */
 
 /**
  * Hook class.
  */
-class Hook_contentious_overrides_search
+class Hook_contentious_overrides_configured
 {
     /**
      * Add to a template being compiled.
@@ -37,19 +37,39 @@ class Hook_contentious_overrides_search
      */
     public function compile_template(&$data, $template_name, $theme, $lang, $suffix, $directory)
     {
-        if (($template_name != 'global') || ($suffix != '.js')) {
+        switch ($suffix) {
+            case '.js':
+                $_extra_templates = get_option('globally_included_js_files');
+                break;
+
+            case '.css':
+                $_extra_templates = get_option('globally_included_css_files');
+                break;
+
+            default:
+                return;
+        }
+
+        if (trim($_extra_templates) == '') {
             return;
         }
 
-        if (!addon_installed('search')) {
-            return;
-        }
+        $extra_templates = array_map('trim', explode(',', $_extra_templates));
 
-        $j = 'search';
-        $found = find_template_place($j, '', $theme, '.js', 'javascript');
-        if ($found !== null) {
-            $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $j . $found[2];
-            $data .= cms_file_get_contents_safe($full_path);
+        if ($template_name == 'global') { // Merge into global as required
+            foreach ($extra_templates as $file) {
+                if ($file == '') {
+                    continue;
+                }
+
+                $found = find_template_place($file, '', $theme, $suffix, $directory);
+                if ($found !== null) {
+                    $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $file . $found[2];
+                    $data .= cms_file_get_contents_safe($full_path);
+                }
+            }
+        } elseif (in_array($template_name, $extra_templates)) {
+            $data = ''; // Wipe it out, as it will be merged into global
         }
     }
 }

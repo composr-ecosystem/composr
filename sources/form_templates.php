@@ -750,6 +750,8 @@ function form_input_username($pretty_name, $description, string $name, ?string $
     $default = filter_form_field_default($name, $default);
     $required = filter_form_field_required($name, $required);
 
+    require_javascript('ajax_people_lists');
+
     $autocomplete = _get_autocomplete_attribute_value($name, $autocomplete);
 
     $tabindex = get_form_field_tabindex($tabindex);
@@ -791,6 +793,8 @@ function form_input_author($pretty_name, $description, string $name, ?string $de
 
     $default = filter_form_field_default($name, $default);
     $required = filter_form_field_required($name, $required);
+
+    require_javascript('ajax_people_lists');
 
     $autocomplete = _get_autocomplete_attribute_value($name, $autocomplete);
 
@@ -1115,6 +1119,8 @@ function form_input_username_multi($pretty_name, $description, string $name, arr
     if (substr($name, -1) != '_') {
         $name .= '_';
     }
+
+    require_javascript('ajax_people_lists');
 
     $tabindex = get_form_field_tabindex($tabindex);
 

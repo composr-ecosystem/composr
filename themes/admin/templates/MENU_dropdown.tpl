@@ -1,3 +1,5 @@
+{$REQUIRE_CSS,menu__dropdown}
+
 {+START,IF_NON_EMPTY,{CONTENT}}
 
 {$SET,menu_id,r-{$RAND}-d}

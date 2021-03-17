@@ -164,6 +164,7 @@ class Module_admin_notifications
      */
     public function selection_ui(int $mode) : object
     {
+        require_css('notifications');
         require_code('notifications');
         require_code('notifications2');
         require_all_lang();

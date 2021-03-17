@@ -191,7 +191,7 @@ function cms_fopen_text_write(string $path, bool $locking = false, ?string $mode
 function cms_file_put_contents_safe(string $path, string $contents, int $flags = 4, ?string $charset = null, int $retry_depth = 0) : bool
 {
     // Add BOM (byte-order-mark) to identify character set within the file
-    if (($flags & FILE_WRITE_BOM) != 0) {
+    if ((($flags & FILE_WRITE_BOM) != 0) && ($contents != '')) {
         $boms = _get_boms();
         if ($charset === null) {
             $charset = get_charset();

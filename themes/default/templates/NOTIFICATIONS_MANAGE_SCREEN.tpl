@@ -1,3 +1,5 @@
+{$REQUIRE_JAVASCRIPT,core_notifications}
+
 <div data-tpl="notificationsManageScreen">
 	{TITLE}
 

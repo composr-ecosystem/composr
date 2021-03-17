@@ -1,4 +1,5 @@
 {$REQUIRE_JAVASCRIPT,core_rich_media}
+{$REQUIRE_JAVASCRIPT,core_notifications}
 {$REQUIRE_JAVASCRIPT,checking}
 {$REQUIRE_JAVASCRIPT,galleries}
 {$REQUIRE_JAVASCRIPT,mediaelement-and-player}

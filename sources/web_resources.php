@@ -537,6 +537,7 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
             if ($mobile) {
                 $suffix .= '_mobile';
             }
+
             if (($temp != '') || (!$do_enforce)) {
                 $support_smart_decaching = support_smart_decaching();
                 $sup = ($support_smart_decaching && $temp != '') ? strval(filemtime($temp)) : null; // Tweaks caching so that upgrades work without needing emptying browser cache; only runs if smart decaching is on because otherwise we won't have the mtime and don't want to introduce an extra filesystem hit
