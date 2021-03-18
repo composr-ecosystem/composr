@@ -233,7 +233,12 @@
                         if (node.getAttribute('description')) {
                             description = $cms.filter.html('. ' + node.getAttribute('description'));
                         }
-                        descriptionInUse = escapedTitle + ': {!TREE_LIST_SELECT*;^}' + description + ((node.getAttribute('serverid') === '') ? (' (' + $cms.filter.html(node.getAttribute('serverid')) + ')') : '');
+                        descriptionInUse = escapedTitle + ': {!TREE_LIST_SELECT*;^}' + description;
+                        if (node.getAttribute('serverid')) {
+                            descriptionInUse += ' ({!IDENTIFIER;}: <kbd>' + $cms.filter.html(node.getAttribute('serverid')) + '</kbd>)';
+                        } else if (node.getAttribute('id')) {
+                            descriptionInUse += ' ({!IDENTIFIER;}: <kbd>' + $cms.filter.html(node.getAttribute('id')) + '</kbd>)';
+                        }
                     }
                     var imgUrl = $util.srl('{$IMG;,icons/tree_field/category}');
                     if (node.getAttribute('img_url')) {
