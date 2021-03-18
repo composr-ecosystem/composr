@@ -281,8 +281,9 @@ class Hook_addon_registry_polls
                         'ANSWER' => lorem_phrase(),
                         'ANSWER_PLAIN' => lorem_phrase(),
                         'WIDTH' => strval($k),
-                        'VOTES' => placeholder_number(),
                         '_VOTES' => placeholder_number(),
+                        'VOTES' => placeholder_number(),
+                        '_TOTAL_VOTES' => placeholder_number(),
                         'TOTAL_VOTES' => placeholder_number(),
                     ]));
                 }
@@ -307,8 +308,9 @@ class Hook_addon_registry_polls
                         'ANSWER' => lorem_phrase(),
                         'ANSWER_PLAIN' => lorem_phrase(),
                         'WIDTH' => strval($k),
-                        'VOTES' => placeholder_number(),
                         '_VOTES' => placeholder_number(),
+                        'VOTES' => placeholder_number(),
+                        '_TOTAL_VOTES' => placeholder_number(),
                         'TOTAL_VOTES' => placeholder_number(),
                     ]));
                 }
@@ -404,6 +406,7 @@ class Hook_addon_registry_polls
             'DATE' => placeholder_date(),
             'ADD_DATE' => placeholder_date(),
             'EDIT_DATE' => placeholder_date(),
+            '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
             'TRACKBACK_DETAILS' => $trackback_details,
             'RATING_DETAILS' => $rating_details,

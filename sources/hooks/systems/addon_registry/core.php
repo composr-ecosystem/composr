@@ -2736,6 +2736,7 @@ class Hook_addon_registry_core
             'FULL' => placeholder_url(),
             'FILENAME' => lorem_word(),
             'CLEAN_SIZE' => placeholder_filesize(),
+            '_NUM_DOWNLOADS' => placeholder_number(),
             'NUM_DOWNLOADS' => placeholder_number(),
         ]));
 

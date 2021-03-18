@@ -62,7 +62,7 @@ class Hook_actionlog_composr_homesite_support_credits extends Hook_actionlog
                     $username = '#' . $actionlog_row['param_a'];
                 }
 
-                $written_context = do_lang('SOMETHING_FROM', integer_format(intval($actionlog_row['param_b'])), $username);
+                $written_context = do_lang('SOMETHING_FROM', integer_format(intval($actionlog_row['param_b']), 0), $username);
                 return $written_context;
         }
 

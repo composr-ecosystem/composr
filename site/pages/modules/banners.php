@@ -429,7 +429,7 @@ class Module_banners
                 $type = do_lang_tempcode('BANNER_PERMANENT');
                 break;
             case BANNER_CAMPAIGN:
-                $type = do_lang_tempcode('BANNER_HITS_LEFT', do_lang_tempcode('BANNER_CAMPAIGN'), make_string_tempcode(integer_format($myrow['campaign_remaining'])));
+                $type = do_lang_tempcode('BANNER_HITS_LEFT', do_lang_tempcode('BANNER_CAMPAIGN'), make_string_tempcode(integer_format($myrow['campaign_remaining'], 0)));
                 break;
             case BANNER_FALLBACK:
                 $type = do_lang_tempcode('BANNER_FALLBACK');
@@ -470,11 +470,11 @@ class Module_banners
         $fields->attach(map_table_field(do_lang_tempcode('EXPIRY_DATE'), $expiry_date));
 
         if ($has_banner_network) {
-            $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_FROM'), escape_html(integer_format($myrow['hits_from'])), false, 'hits_from'));
-            $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_FROM'), escape_html(integer_format($myrow['views_from'])), false, 'views_from'));
+            $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_FROM'), escape_html(integer_format($myrow['hits_from'], 0)), false, 'hits_from'));
+            $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_FROM'), escape_html(integer_format($myrow['views_from'], 0)), false, 'views_from'));
         }
-        $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['hits_to']))), false, 'hits_to'));
-        $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['views_to']))), false, 'views_to'));
+        $fields->attach(map_table_field(do_lang_tempcode('BANNER_HITS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['hits_to'], 0))), false, 'hits_to'));
+        $fields->attach(map_table_field(do_lang_tempcode('BANNER_VIEWS_TO'), ($myrow['site_url'] == '') ? do_lang_tempcode('CANT_TRACK') : protect_from_escaping(escape_html(integer_format($myrow['views_to'], 0))), false, 'views_to'));
         $fields->attach(map_table_field(do_lang_tempcode('BANNER_CLICKTHROUGH'), $click_through));
 
         $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($myrow['submitter']);

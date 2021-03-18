@@ -39,7 +39,7 @@ class Hook_page_groupings_banners
         require_lang('banners');
 
         return [
-            has_privilege(get_member(), 'submit_midrange_content', 'cms_banners') ? ['cms', 'menu/cms/banners', ['cms_banners', ['type' => 'browse'], get_module_zone('cms_banners')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('banners:BANNERS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)')))))), 'banners:DOC_BANNERS'] : null,
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_banners') ? ['cms', 'menu/cms/banners', ['cms_banners', ['type' => 'browse'], get_module_zone('cms_banners')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('banners:BANNERS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)')), 0)))), 'banners:DOC_BANNERS'] : null,
             ['audit', 'menu/cms/banners', ['admin_banners', ['type' => 'browse'], get_module_zone('admin_banners')], do_lang_tempcode('banners:BANNER_STATISTICS'), 'banners:DOC_BANNERS'],
             ['site_meta', 'menu/cms/banners', ['banners', ['type' => 'browse'], get_module_zone('banners')], do_lang_tempcode('banners:BANNERS')],
         ];

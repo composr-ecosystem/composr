@@ -887,7 +887,11 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                     continue;
                 }
 
-                $lines[] = ['CNT' => integer_format($row['cnt']), 'VAL' => is_integer($val) ? integer_format($val) : $val];
+                $lines[] = [
+                    '_CNT' => strval($row['cnt']),
+                    'CNT' => integer_format($row['cnt']),
+                    'VAL' => is_integer($val) ? integer_format($val) : $val,
+                ];
             }
         }
         if (empty($lines)) {

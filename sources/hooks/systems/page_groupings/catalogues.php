@@ -49,7 +49,7 @@ class Hook_page_groupings_catalogues
                 $where .= 'WHERE ' . db_string_not_equal_to('c_name', 'products');
             }
             $cnt = intval($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'COUNT(*)', [], $where));
-            $ret[] = ['cms', 'menu/rich_content/catalogues/catalogues', ['cms_catalogues', ['type' => 'browse'], get_module_zone('cms_catalogues')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('catalogues:CATALOGUES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'catalogues:DOC_CATALOGUES'];
+            $ret[] = ['cms', 'menu/rich_content/catalogues/catalogues', ['cms_catalogues', ['type' => 'browse'], get_module_zone('cms_catalogues')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('catalogues:CATALOGUES'), make_string_tempcode(escape_html(integer_format($cnt, 0)))), 'catalogues:DOC_CATALOGUES'];
         }
         if ($exhaustive) {
             $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], [], 'ORDER BY c_add_date', 50);
@@ -74,7 +74,7 @@ class Hook_page_groupings_catalogues
 
                         if (has_submit_permission('mid', $member_id, get_ip_address(), 'cms_catalogues', ['catalogues_catalogue', $row['c_name']])) {
                             if ($count < 10) {
-                                $ret2[] = ['cms', $menu_icon, ['cms_catalogues', ['type' => 'browse', 'catalogue_name' => $row['c_name']], get_module_zone('cms_catalogues')], do_lang_tempcode('ITEMS_HERE', escape_html(get_translated_text($row['c_title'])), escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $row['c_name']]))))), get_translated_tempcode('catalogues', $row, 'c_description')];
+                                $ret2[] = ['cms', $menu_icon, ['cms_catalogues', ['type' => 'browse', 'catalogue_name' => $row['c_name']], get_module_zone('cms_catalogues')], do_lang_tempcode('ITEMS_HERE', escape_html(get_translated_text($row['c_title'])), escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $row['c_name']]), 0)))), get_translated_tempcode('catalogues', $row, 'c_description')];
                             }
                             $count++;
                         }

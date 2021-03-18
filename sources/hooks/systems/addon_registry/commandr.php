@@ -438,6 +438,7 @@ class Hook_addon_registry_commandr
         }
         return lorem_globalise(do_lorem_template('COMMANDR_USERS_ONLINE', [
             'MEMBERS' => $memb,
+            '_GUESTS' => placeholder_number(),
             'GUESTS' => placeholder_number(),
         ]), null, '', true);
     }

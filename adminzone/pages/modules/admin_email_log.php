@@ -625,7 +625,7 @@ class Module_admin_email_log
         $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['m_queued' => 1]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('SENT_NUM', escape_html(integer_format(count($rows)))));
+        return redirect_screen($this->title, $url, do_lang_tempcode('SENT_NUM', escape_html(integer_format(count($rows), 0))));
     }
 
     /**
@@ -640,6 +640,6 @@ class Module_admin_email_log
         $GLOBALS['SITE_DB']->query_delete('logged_mail_messages', ['m_queued' => 1]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-        return redirect_screen($this->title, $url, do_lang_tempcode('DELETE_NUM', escape_html(integer_format($count))));
+        return redirect_screen($this->title, $url, do_lang_tempcode('DELETE_NUM', escape_html(integer_format($count, 0))));
     }
 }

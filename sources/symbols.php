@@ -1613,7 +1613,7 @@ function ecv_REFRESH(string $lang, array $escaped, array $param) : string
         if (!isset($REFRESH_URL[1])) {
             $REFRESH_URL[1] = 1;
         }
-        $refresh = do_template('META_REFRESH_LINE', ['_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => integer_format($REFRESH_URL[1])]);
+        $refresh = do_template('META_REFRESH_LINE', ['_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => strval($REFRESH_URL[1])]);
     } else {
         $refresh = new Tempcode();
     }
@@ -4185,7 +4185,7 @@ function ecv_SHOW_DOCS(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_NUMBER_FORMAT(string $lang, array $escaped, array $param) : string
+function ecv_INTEGER_FORMAT(string $lang, array $escaped, array $param) : string
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -4193,7 +4193,7 @@ function ecv_NUMBER_FORMAT(string $lang, array $escaped, array $param) : string
     }
 
     if ((isset($param[0])) && (is_numeric($param[0]))) {
-        $value = integer_format(intval($param[0]));
+        $value = integer_format(intval($param[0]), (isset($param[1]) && is_numeric($param[1])) ? intval($param[1]) : null);
     }
 
     if (!empty($escaped)) {
@@ -5549,14 +5549,14 @@ function ecv_COMMENT_COUNT(string $lang, array $escaped, array $param) : string
                         $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $count, 0, 0, false);
                         if (($count != 0) || (empty($param[2]))) {
                             if (is_array($_comments)) {
-                                $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count)));
+                                $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count, 0)));
                             } else {
-                                $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
+                                $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0, 0)));
                             }
                             $value = $_value->evaluate();
                         }
                     } else {
-                        $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0)));
+                        $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format(0, 0)));
                         $value = $_value->evaluate();
                     }
                 } else {

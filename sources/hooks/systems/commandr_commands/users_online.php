@@ -54,7 +54,12 @@ class Hook_commandr_command_users_online
                 }
             }
 
-            return ['', do_template('COMMANDR_USERS_ONLINE', ['_GUID' => 'fcf779ef175895d425b706e40fb3252a', 'MEMBERS' => $valid_members, 'GUESTS' => integer_format($guests)]), '', ''];
+            return ['', do_template('COMMANDR_USERS_ONLINE', [
+                '_GUID' => 'fcf779ef175895d425b706e40fb3252a',
+                'MEMBERS' => $valid_members,
+                '_GUESTS' => strval($guests),
+                'GUESTS' => integer_format($guests, 0),
+            ]), '', ''];
         }
     }
 }

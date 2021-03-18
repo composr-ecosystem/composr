@@ -56,7 +56,7 @@ if (get_forum_type() != 'cns') {
             $_avatar = ($_avatar_url != '') ? ('<img alt="Avatar" src="' . $_avatar_url . '" />') : '';
             $_username = escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true));
             $_av_post_length = escape_html(integer_format($av_post_length));
-            $_num_posts = escape_html(integer_format($_member['cnt']));
+            $_num_posts = escape_html(integer_format($_member['cnt'], 0));
 
             echo <<<END
             <tr>

@@ -164,7 +164,7 @@ class Hook_search_cns_clubs extends FieldsSearchHook
 
         $title = do_lang('CONTENT_IS_OF_TYPE', do_lang('CLUB'), $group_name);
 
-        $summary = do_lang_tempcode(($row['g_open_membership'] == 1) ? 'CLUB_WITH_MEMBERS_OPEN' : 'CLUB_WITH_MEMBERS_APPROVAL', escape_html($group_name), escape_html(integer_format($num_members)), $leader);
+        $summary = do_lang_tempcode(($row['g_open_membership'] == 1) ? 'CLUB_WITH_MEMBERS_OPEN' : 'CLUB_WITH_MEMBERS_APPROVAL', escape_html($group_name), escape_html(integer_format($num_members, 0)), $leader);
 
         $url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups'));
 

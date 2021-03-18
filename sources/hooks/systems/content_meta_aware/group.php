@@ -147,7 +147,7 @@ class Hook_content_meta_aware_group extends Hook_CMA
         $keymap = [];
 
         $num_members = cns_get_group_members_raw_count($row['id']);
-        $keymap['entry_count'] = escape_html(integer_format($num_members));
+        $keymap['entry_count'] = escape_html(integer_format($num_members, 0));
 
         return $keymap;
     }

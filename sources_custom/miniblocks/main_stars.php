@@ -58,7 +58,8 @@ foreach ($gifts as $gift) {
             'USERNAME' => $username,
             'URL' => $url,
             'AVATAR_URL' => $avatar_url,
-            'POINTS' => integer_format($points),
+            '_POINTS' => strval($points),
+            'POINTS' => integer_format($points, 0),
             'RANK' => $rank,
             'SIGNATURE' => $signature,
         ];

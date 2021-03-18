@@ -57,10 +57,10 @@ class Hook_points_rating
         $points_rating = intval(get_option('points_rating'));
 
         return [
-            'LABEL' => do_lang('RATING_CONTENT'),
-            'COUNT' => integer_format($points_gained_rating),
-            'POINTS_EACH' => integer_format($points_rating),
-            'POINTS_TOTAL' => integer_format($points_gained_rating * $points_rating)
+            'label' => do_lang('RATING_CONTENT'),
+            'count' => $points_gained_rating,
+            'points_each' => $points_rating,
+            'points_total' => $points_gained_rating * $points_rating
         ];
     }
 }

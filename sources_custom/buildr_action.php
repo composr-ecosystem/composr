@@ -150,7 +150,7 @@ function add_item_wrap_copy(int $member_id, string $name, int $price, int $not_i
     if (!has_privilege($member_id, 'administer_buildr')) {
         $price = get_product_price_points('mud_item_copy');
         if (available_points($member_id) < $price) {
-            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price))), 'warn');
+            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
         }
         require_code('points2');
         charge_member($member_id, $price, do_lang('W_MADE_BUILDR', $name));
@@ -259,7 +259,7 @@ function add_room_wrap(int $member_id, int $relative, string $name, string $text
     if (!has_privilege($member_id, 'administer_buildr')) {
         $price = get_product_price_points('mud_room');
         if (available_points($member_id) < $price) {
-            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price))), 'warn');
+            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
         }
         require_code('points2');
         charge_member($member_id, $price, do_lang('W_MADE_ROOM_BUILDR', $name));
@@ -363,7 +363,7 @@ function add_realm_wrap(?int $member_id, string $name, string $troll_name, strin
 
         $price = get_product_price_points('mud_realm');
         if (available_points($member_id) < $price) {
-            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price))), 'warn');
+            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
         }
         require_code('points2');
         charge_member($member_id, $price, do_lang('W_MADE_REALM_BUILDR', $name));
@@ -507,7 +507,7 @@ function add_portal_wrap(int $member_id, string $name, string $text, int $end_lo
         require_code('points2');
         $price = get_product_price_points('mud_portal');
         if (available_points($member_id) < $price) {
-            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price))), 'warn');
+            buildr_refresh_with_message(do_lang_tempcode('W_EXPENSIVE', escape_html(integer_format($price, 0))), 'warn');
         }
         charge_member($member_id, $price, do_lang('W_MADE_PORTAL_BUILDR', $name));
     }

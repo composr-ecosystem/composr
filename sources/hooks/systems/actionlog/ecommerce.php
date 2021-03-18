@@ -155,7 +155,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
                     $username = do_lang('UNKNOWN');
                 }
 
-                $written_context = do_lang('SOMETHING_FROM', integer_format(intval($actionlog_row['param_b'])) . ' ' . get_option('currency'), $username);
+                $written_context = do_lang('SOMETHING_FROM', integer_format(intval($actionlog_row['param_b']), 0) . ' ' . get_option('currency'), $username);
                 return $written_context;
         }
 

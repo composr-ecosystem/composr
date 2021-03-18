@@ -120,7 +120,7 @@ class Hook_profiles_tabs_warnings
                 $row_contents->attach('<br />' . do_lang('PROBATION') . ': ' . escape_html(do_lang('DAYS', $row['p_probation']))); // XHTMLXHTML
             }
             if ($row['p_charged_points'] !== 0) {
-                $row_contents->attach('<br />' . do_lang('CHARGED_POINTS') . ': ' . escape_html(integer_format($row['p_charged_points']))); // XHTMLXHTML
+                $row_contents->attach('<br />' . do_lang('CHARGED_POINTS') . ': ' . escape_html(integer_format($row['p_charged_points'], 0))); // XHTMLXHTML
             }
             if (($row['p_changed_usergroup_from'] !== null) && ($row['p_changed_usergroup_to'] !== null)) {
                 $html = '<br />' . do_lang('CHANGED_USERGROUP_TO') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_to'], true));

@@ -2,7 +2,7 @@
 	<label for="time-period-{ID*}">Period to show:</label>
 	<select id="time-period-{ID*}" name="time-period-{ID*}" class="js-select-onchange-trigger-tab-ga-reinit" data-tp-tab-id="ga-{ID*}">
 		{+START,IF,{$NEQ,{DAYS},7,14,31,62,92,183,365,730,1825}}
-			<option selected="selected" value="{DAYS*}">Past {$NUMBER_FORMAT*,{DAYS}} {$?,{$EQ,
+			<option selected="selected" value="{DAYS*}">Past {$INTEGER_FORMAT*,{DAYS}} {$?,{$EQ,
 				{DAYS},1},day,days} (default)</option>
 		{+END}
 

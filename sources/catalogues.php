@@ -168,7 +168,7 @@ function render_catalogue_category_box(array $row, string $zone = '_SEARCH', boo
     $child_counts = count_catalogue_category_children($row['id']);
     $num_children = $child_counts['num_children_children'];
     $num_entries = $child_counts['num_entries_children'];
-    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE', escape_html(integer_format($num_entries)), escape_html(integer_format($num_children)));
+    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE', escape_html(integer_format($num_entries, 0)), escape_html(integer_format($num_children, 0)));
 
     // Render
     return do_template('SIMPLE_PREVIEW_BOX', [
@@ -219,7 +219,7 @@ function render_catalogue_box(array $row, string $zone = '_SEARCH', bool $give_c
 
     $num_children = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $row['c_name']]);
     $num_entries = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $row['c_name']]);
-    $entry_details = do_lang_tempcode(($row['c_is_tree'] == 1) ? 'CATEGORY_SUBORDINATE' : 'CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries)), escape_html(integer_format($num_children)));
+    $entry_details = do_lang_tempcode(($row['c_is_tree'] == 1) ? 'CATEGORY_SUBORDINATE' : 'CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries, 0)), escape_html(integer_format($num_children, 0)));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : ('8d7eaf6bb3170a92fd6a4876462e6f2e_' . $row['c_name']),
@@ -1476,7 +1476,12 @@ function create_selection_list_catalogue_category_tree(string $catalogue_name, ?
         }
 
         $selected = ($category['id'] == $it);
-        $line = do_template('CATALOGUE_CATEGORIES_LIST_LINE', ['_GUID' => '9f6bfc4f28c154c8f5d8887ce0d47c1c', 'BREADCRUMBS' => $category['breadcrumbs'], 'COUNT' => integer_format($category['entries_count'])]);
+        $line = do_template('CATALOGUE_CATEGORIES_LIST_LINE', [
+            '_GUID' => '9f6bfc4f28c154c8f5d8887ce0d47c1c',
+            'BREADCRUMBS' => $category['breadcrumbs'],
+            '_COUNT' => strval($category['entries_count']),
+            'COUNT' => integer_format($category['entries_count'], 0),
+        ]);
         $out->attach(form_input_list_entry(!$use_compound_list ? strval($category['id']) : $category['compound_list'], $selected, protect_from_escaping($line->evaluate())));
     }
 

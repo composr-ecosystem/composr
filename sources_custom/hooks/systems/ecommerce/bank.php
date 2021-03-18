@@ -34,8 +34,8 @@ class Hook_ecommerce_bank
         $bank_dividend = intval(get_option('bank_dividend'));
 
         return [
-            'category_name' => do_lang('BANKING', integer_format($bank_dividend)),
-            'category_description' => do_lang_tempcode('BANK_DESCRIPTION', escape_html(integer_format($bank_dividend))),
+            'category_name' => do_lang('BANKING', integer_format($bank_dividend, 0)),
+            'category_description' => do_lang_tempcode('BANK_DESCRIPTION', escape_html(integer_format($bank_dividend, 0))),
             'category_image_url' => find_theme_image('icons/menu/adminzone/audit/ecommerce/cash_flow'),
         ];
     }
@@ -59,7 +59,7 @@ class Hook_ecommerce_bank
 
         foreach ([10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000] as $amount) {
             $products['BANK_' . strval($amount)] = [
-                'item_name' => do_lang('BANK', integer_format($amount)),
+                'item_name' => do_lang('BANK', integer_format($amount, 0)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
@@ -152,7 +152,7 @@ class Hook_ecommerce_bank
         $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('BANKING', null, null, null, get_site_default_lang()), 'details2' => strval($amount), 'txn_id' => $details['TXN_ID']]);
 
         // Show an instant message (plus buying via points, so will definitely be seen)
-        $result = do_lang_tempcode('BANKING_CONGRATULATIONS', escape_html(integer_format($amount)), escape_html(integer_format($bank_dividend)));
+        $result = do_lang_tempcode('BANKING_CONGRATULATIONS', escape_html(integer_format($amount, 0)), escape_html(integer_format($bank_dividend)));
         global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
         $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE = $result;
 

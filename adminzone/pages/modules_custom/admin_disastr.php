@@ -244,11 +244,11 @@ class Module_admin_disastr extends Standard_crud_module
             'NAME' => $name,
             'IMAGE' => $image,
             'CURE' => $cure,
-            'CURE_PRICE' => integer_format($cure_price),
+            'CURE_PRICE' => integer_format($cure_price, 0),
             'IMMUNISATION' => $immunisation,
-            'IMMUNISATION_PRICE' => integer_format($immunisation_price),
+            'IMMUNISATION_PRICE' => integer_format($immunisation_price, 0),
             'SPREAD_RATE' => integer_format($spread_rate),
-            'POINTS_PER_SPREAD' => integer_format($points_per_spread),
+            'POINTS_PER_SPREAD' => integer_format($points_per_spread, 0),
             'ENABLED' => $enabled,
         ]);
     }

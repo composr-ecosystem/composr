@@ -60,7 +60,7 @@ class Hook_ecommerce_topic_pin
 
         foreach ([1, 3, 5, 10, 20, 31, 90] as $days) {
             $products['TOPIC_PIN_' . strval($days)] = automatic_discount_calculation([
-                'item_name' => do_lang('TOPIC_PINNED_FOR', integer_format($days)),
+                'item_name' => do_lang('TOPIC_PINNED_FOR', integer_format($days, 0)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 

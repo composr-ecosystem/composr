@@ -187,7 +187,12 @@ function pagination(object $title, int $start, string $start_name, int $max, str
             $selector_value = $max_rows;
         }
         $selected = ($max == $selector_value);
-        $selectors->attach(do_template('PAGINATION_PER_PAGE_OPTION', ['_GUID' => '1a0583bab42257c60289459ce1ac1e05', 'SELECTED' => $selected, 'VALUE' => strval($selector_value), 'NAME' => integer_format($selector_value)]));
+        $selectors->attach(do_template('PAGINATION_PER_PAGE_OPTION', [
+            '_GUID' => '1a0583bab42257c60289459ce1ac1e05',
+            'SELECTED' => $selected,
+            'VALUE' => strval($selector_value),
+            'NAME' => integer_format($selector_value),
+        ]));
 
         if ($selector_value == $max_rows) {
             break;
@@ -223,7 +228,14 @@ function pagination(object $title, int $start, string $start_name, int $max, str
             if ($start > 0) {
                 $url_array = ['page' => '_SELF', $start_name => strval(max($start - $max, 0)), $start_name . '__keyed' => null];
                 $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
-                $previous = do_template('PAGINATION_PREVIOUS_LINK', ['_GUID' => 'ec4d4da9677b5b9c8cea08676337c6eb', 'TITLE' => $title, 'P' => integer_format(($max == 0) ? 1 : intval($start / $max)), 'URL' => $cat_url]);
+                $p = ($max == 0) ? 1 : intval($start / $max);
+                $previous = do_template('PAGINATION_PREVIOUS_LINK', [
+                    '_GUID' => 'ec4d4da9677b5b9c8cea08676337c6eb',
+                    'TITLE' => $title,
+                    '_P' => strval($p),
+                    'P' => integer_format($p),
+                    'URL' => $cat_url,
+                ]);
             } else {
                 $previous = do_template('PAGINATION_PREVIOUS');
             }
@@ -298,7 +310,7 @@ function pagination(object $title, int $start, string $start_name, int $max, str
                 $url_array[$start_name . '__keyed'] = $keyset_value;
             }
             $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
-            $p = ($max == 0) ? 1.0 : ($start / $max + 2);
+            $p = ($max == 0) ? 1 : intval($start / $max + 2);
             $rel = null;
             if (($start + $max * 2) > $max_rows) {
                 $rel = 'last';
@@ -308,8 +320,10 @@ function pagination(object $title, int $start, string $start_name, int $max, str
                 'NOFOLLOW' => ($start + $max > $max * 5) && ($bot),
                 'REL' => $rel,
                 'TITLE' => $title,
-                'NUM_PAGES' => integer_format($num_pages),
-                'P' => integer_format(intval($p)),
+                '_NUM_PAGES' => strval($num_pages),
+                'NUM_PAGES' => integer_format($num_pages, 0),
+                '_P' => strval($p),
+                'P' => integer_format($p),
                 'URL' => $cat_url,
             ]);
         } else {

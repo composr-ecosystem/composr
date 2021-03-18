@@ -149,14 +149,20 @@ class Module_leader_board
                     '_GUID' => '6d323b4b5abea0e82a14cb4745c4af4f',
                     'POINTS_URL' => $points_url,
                     'PROFILE_URL' => $profile_url,
-                    'POINTS' => integer_format($points),
+                    '_POINTS' => strval($points),
+                    'POINTS' => integer_format($points, 0),
                     'USERNAME' => $username,
                     'ID' => strval($member_id),
                     'HAS_RANK_IMAGES' => $has_rank_images,
                 ]));
             }
             $nice_week = intval(($week - $first_week) / (7 * 24 * 60 * 60) + 1);
-            $out->attach(do_template('POINTS_LEADER_BOARD_WEEK', ['_GUID' => '3a0f71bf20f9098e5711e85cf25f6549', 'WEEK' => integer_format($nice_week), 'ROWS' => $week_tpl]));
+            $out->attach(do_template('POINTS_LEADER_BOARD_WEEK', [
+                '_GUID' => '3a0f71bf20f9098e5711e85cf25f6549',
+                '_WEEK' => strval($nice_week),
+                'WEEK' => integer_format($nice_week),
+                'ROWS' => $week_tpl,
+            ]));
         }
 
         require_code('templates_pagination');

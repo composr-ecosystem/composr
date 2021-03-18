@@ -101,7 +101,7 @@ function render_calendar_type_box(array $row, string $zone = '_SEARCH', bool $gi
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('EVENT_TYPE'), $_title) : $_title;
 
     $num_entries = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)', ['e_type' => $row['id'], 'validated' => 1]);
-    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries)));
+    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries, 0)));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : '0eaa10d9fab32599ff095e1121d41c49',

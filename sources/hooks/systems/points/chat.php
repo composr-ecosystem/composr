@@ -69,10 +69,10 @@ class Hook_points_chat
         $points_chat_posting = intval($_points_chat);
 
         return [
-            'LABEL' => do_lang('chat:COUNT_CHATPOSTS'),
-            'COUNT' => integer_format($chat_post_count),
-            'POINTS_EACH' => integer_format($points_chat_posting),
-            'POINTS_TOTAL' => integer_format($chat_post_count * $points_chat_posting)
+            'label' => do_lang('chat:COUNT_CHATPOSTS'),
+            'count' => $chat_post_count,
+            'points_each' => $points_chat_posting,
+            'points_total' => $chat_post_count * $points_chat_posting
         ];
     }
 }

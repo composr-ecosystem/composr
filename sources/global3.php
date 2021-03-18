@@ -1779,11 +1779,24 @@ function float_unformat(string $str, bool $includes_thousands_sep = true) : floa
  * Format the given integer number as a nicely formatted string (using the locale).
  *
  * @param  integer $val The value to format
+ * @param  ?integer $dps Number of decimal points to show when simplifying down (null: show the full number)
  * @return string Nicely formatted string
  */
-function integer_format(int $val) : string
+function integer_format(int $val, ?int $dps = null) : string
 {
-    return number_format(floatval($val), 0, do_lang('locale_decimal_point'), do_lang('locale_thousands_sep'));
+    $ldp = do_lang('locale_decimal_point');
+    $lts = do_lang('locale_thousands_sep');
+
+    if ($dps !== null) {
+        $units = ['INTEGER_UNITS_billions' => 1000000000, 'INTEGER_UNITS_millions' => 1000000, 'INTEGER_UNITS_thousands' => 1000];
+        foreach ($units as $lang_string => $threshold) {
+            if ($val > $threshold) {
+                return do_lang($lang_string, number_format(floatval($val) / floatval($threshold), $dps, $ldp, $lts));
+            }
+        }
+    }
+
+    return number_format(floatval($val), $dps, $ldp, $lts);
 }
 
 /**

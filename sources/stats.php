@@ -450,7 +450,7 @@ function stats_generate_results_table(string $graph_name, array $filters = [], $
     $i = 0;
     foreach ($data as $key => $val) {
         if (($i >= $start) && ($i <= $start + $max)) {
-            $_val = is_integer($val) ? integer_format($val) : float_format($val, 2, true);
+            $_val = is_integer($val) ? integer_format($val, 0) : float_format($val, 2, true);
             $values = [
                 $key,
                 $_val,
@@ -503,7 +503,7 @@ function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$fi
 
     $spreadsheet_rows = [];
     foreach ($graph_final_details['data'] as $key => $val) {
-        $_val = is_integer($val) ? integer_format($val) : float_format($val, 2, true);
+        $_val = is_integer($val) ? integer_format($val, 0) : float_format($val, 2, true);
         $spreadsheet_rows[] = [$x_axis_label => $key, $y_axis_label => $_val];
     }
 
@@ -1646,7 +1646,7 @@ function send_kpi_notifications()
             $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
             $kpis_for_tpl[] = [
                 'TITLE' => $kpi_row['k_title'],
-                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current, 0) : float_format($current, 4, true)),
                 'HITS_TARGET' => $hits_target,
                 'TARGET' => ($target === null) ? null : float_format($target, 4, true),
                 'EDIT_URL' => $edit_url,

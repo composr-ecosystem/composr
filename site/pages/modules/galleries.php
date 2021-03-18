@@ -754,6 +754,7 @@ class Module_galleries
                 $entry_add_date_raw = ($row['add_date'] === null) ? '' : strval($row['add_date']);
                 $entry_edit_date_raw = ($row['edit_date'] === null) ? '' : strval($row['edit_date']);
                 $entry_views = integer_format($row['video_views']);
+
                 $current_entry = do_template('GALLERY_CAROUSEL_MODE_VIDEO', [
                     '_GUID' => 'b6a795dc3853789df2a2951293d0fb26',
                     '_TITLE' => get_translated_text($row['title']),
@@ -1261,6 +1262,7 @@ class Module_galleries
         return do_template('GALLERY_SLIDESHOW_SCREEN', [
             '_GUID' => 'idkcfef2d71a4d8086d5351ede7731fe',
             'SLIDESHOW_ID' => $slideshow_id,
+            '_TOTAL_ITEMS' => strval($total_items),
             'TOTAL_ITEMS' => integer_format($total_items),
             'CURRENT_INDEX' => strval($current_index),
             'CURRENT_URL' => $current_url,
@@ -1374,8 +1376,11 @@ class Module_galleries
             'TITLE' => $this->title,
             'SUBMITTER' => strval($myrow['submitter']),
             'MEMBER_DETAILS' => $member_details,
+            '_X' => strval($x),
             'X' => integer_format($x),
+            '_N' => strval($n),
             'N' => integer_format($n),
+            '_VIEWS' => strval($myrow['image_views']),
             'VIEWS' => integer_format($myrow['image_views']),
             'ADD_DATE_RAW' => strval($myrow['add_date']),
             'EDIT_DATE_RAW' => ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']),
@@ -1505,8 +1510,11 @@ class Module_galleries
             'URL' => $url,
             'VIDEO_DETAILS' => $video_details,
             'MEMBER_DETAILS' => $member_details,
+            '_X' => strval($x),
             'X' => integer_format($x),
+            '_N' => strval($n),
             'N' => integer_format($n),
+            '_VIEWS' => strval($myrow['video_views']),
             'VIEWS' => integer_format($myrow['video_views']),
             'ADD_DATE_RAW' => strval($myrow['add_date']),
             'EDIT_DATE_RAW' => ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']),

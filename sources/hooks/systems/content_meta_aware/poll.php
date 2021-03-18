@@ -150,7 +150,7 @@ class Hook_content_meta_aware_poll extends Hook_CMA
         for ($i = 1; $i <= $num_options; $i++) {
             $total_votes += $row['votes' . strval($i)];
         }
-        $keymap['total_votes'] = escape_html(integer_format($total_votes));
+        $keymap['total_votes'] = escape_html(integer_format($total_votes, 0));
 
         return $keymap;
     }

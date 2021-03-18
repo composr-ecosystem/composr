@@ -45,7 +45,14 @@ class Hook_stats_filedump
         $bits = new Tempcode();
 
         if (get_option('filedump_show_stats_count_total_files') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => 'd420666251bd9e70804f97ff737c775a', 'KEY' => do_lang_tempcode('COUNT_FILES'), 'VALUE' => integer_format(count(get_directory_contents(get_custom_file_base() . '/uploads/filedump')))]));
+            $files_cnt = count(get_directory_contents(get_custom_file_base() . '/uploads/filedump'));
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => 'd420666251bd9e70804f97ff737c775a',
+                'KEY' => do_lang_tempcode('COUNT_FILES'),
+                'RAW_VALUE' => strval($files_cnt),
+                'VALUE' => integer_format($files_cnt, 0),
+            ]));
         }
         if (get_option('filedump_show_stats_count_total_space') == '1') {
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '995ec487ce5f445f2a74aa483a75910a', 'KEY' => do_lang_tempcode('DISK_USAGE'), 'VALUE' => clean_file_size(get_directory_size(get_custom_file_base() . '/uploads/filedump'))]));

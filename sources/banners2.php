@@ -44,7 +44,7 @@ function render_banner_type_box(array $row, string $zone = '_SEARCH', bool $give
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('BANNER_TYPE'), $_title) : $_title;
 
     $num_entries = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)', ['b_type' => $row['id'], 'validated' => 1]);
-    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries)));
+    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries, 0)));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'ba1f8d9da6b65415483d0d235f29c3d4',
@@ -327,7 +327,8 @@ function check_banner(string $title_text = '', string $direct_code = '', string 
                     @unlink(get_custom_file_base() . '/' . rawurldecode($test_url));
                     sync_file(rawurldecode($test_url));
                 }
-                warn_exit(do_lang_tempcode('BANNER_TOO_LARGE', escape_html(integer_format(intval(ceil(strlen($data) / 1024)))), escape_html(integer_format($banner_type_row['t_max_file_size']))));
+                require_code('files');
+                warn_exit(do_lang_tempcode('BANNER_TOO_LARGE', escape_html(clean_file_size(strlen($data))), escape_html(clean_file_size($banner_type_row['t_max_file_size'] * 1024))));
             }
 
             require_code('images');
@@ -349,7 +350,7 @@ function check_banner(string $title_text = '', string $direct_code = '', string 
                         @unlink(get_custom_file_base() . '/' . rawurldecode($test_url));
                         sync_file(rawurldecode($test_url));
                     }
-                    warn_exit(do_lang_tempcode('BANNER_RES_BAD', escape_html(integer_format($banner_type_row['t_image_width'])), escape_html(integer_format($banner_type_row['t_image_height']))));
+                    warn_exit(do_lang_tempcode('BANNER_RES_BAD', escape_html(strval($banner_type_row['t_image_width'])), escape_html(strval($banner_type_row['t_image_height']))));
                 }
             }
         } else {

@@ -857,7 +857,9 @@ class Hook_addon_registry_core_cns
             'GIVE_CONTEXT' => false,
             'MEMBER_ID' => placeholder_id(),
             'USERNAME' => lorem_phrase(),
+            '_POSTS' => placeholder_number(),
             'POSTS' => placeholder_number(),
+            '_POINTS' => placeholder_number(),
             'POINTS' => placeholder_number(),
             'JOIN_DATE_RAW' => placeholder_date_raw(),
             'JOIN_DATE' => placeholder_date(),
@@ -872,6 +874,7 @@ class Hook_addon_registry_core_cns
             'DOB' => lorem_title(),
             '_DOB' => placeholder_date_raw(),
             '_DOB_CENSORED' => placeholder_date_raw(),
+            '_NUM_WARNINGS' => placeholder_number(),
             'NUM_WARNINGS' => placeholder_number(),
         ]);
 
@@ -978,7 +981,8 @@ class Hook_addon_registry_core_cns
             'MOST_ACTIVE_FORUM' => lorem_phrase(),
             'TIME_FOR_THEM' => placeholder_date(),
             'TIME_FOR_THEM_RAW' => placeholder_date_raw(),
-            'SUBMIT_DAYS_AGO' => lorem_phrase(),
+            '_SUBMIT_DAYS_AGO' => placeholder_number(),
+            'SUBMIT_DAYS_AGO' => placeholder_number(),
             'SUBMIT_TIME_RAW' => placeholder_date_raw(),
             'LAST_VISIT_TIME_RAW' => placeholder_date_raw(),
             'ONLINE_NOW' => lorem_phrase(),
@@ -992,6 +996,7 @@ class Hook_addon_registry_core_cns
             '_DOB_CENSORED' => placeholder_date_raw(),
             'IP_ADDRESS' => lorem_phrase(),
             'COUNT_POSTS' => placeholder_number(),
+            '_COUNT_POINTS' => placeholder_number(),
             'COUNT_POINTS' => placeholder_number(),
             'PRIMARY_GROUP' => lorem_phrase(),
             'PRIMARY_GROUP_ID' => placeholder_id(),
@@ -1018,6 +1023,7 @@ class Hook_addon_registry_core_cns
             'USERS_TIMEZONE' => lorem_word(),
             'USERS_TIMEZONE_RAW' => lorem_word(),
             'EXTRA_SECTIONS' => [],
+            '__COUNT_POSTS' => placeholder_number(),
             '_COUNT_POSTS' => placeholder_number(),
         ]);
         $tabs[] = [
@@ -1097,7 +1103,8 @@ class Hook_addon_registry_core_cns
                 'AT_URL' => placeholder_url(),
                 'LOCATION' => lorem_word(),
                 'MEMBER' => placeholder_link(),
-                'TIME' => placeholder_date(),
+                '_TIME' => placeholder_number(),
+                'TIME' => placeholder_number(),
             ];
         }
 

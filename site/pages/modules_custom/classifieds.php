@@ -245,7 +245,8 @@ class Module_classifieds
                 'PURCHASE_URL' => $purchase_url,
                 'ID' => strval($row['id']),
                 'URL' => $url,
-                'NUM_VIEWS' => integer_format($row['ce_views']),
+                '_NUM_VIEWS' => strval($row['ce_views']),
+                'NUM_VIEWS' => integer_format($row['ce_views'], 0),
             ];
         }
 

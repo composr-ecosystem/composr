@@ -487,9 +487,9 @@ class Module_admin_cns_groups extends Standard_crud_module
             $num_members = cns_get_group_members_raw_count($row['id'], true, false, true, true);
 
             if ($row['g_promotion_target'] === null) {
-                $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_NORMAL', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members))]);
+                $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_NORMAL', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members, 0))]);
             } else {
-                $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_RANK', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [strval($row['g_promotion_target']), escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members))]);
+                $text = do_lang_tempcode('EXTENDED_GROUP_TITLE_RANK', escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])), escape_html(strval($row['id'])), [strval($row['g_promotion_target']), escape_html(integer_format($row['g_order'] + 1)), escape_html(integer_format($num_members, 0))]);
             }
             $fields->attach(form_input_list_entry(strval($row['id']), false, $text));
         }

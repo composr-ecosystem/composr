@@ -384,7 +384,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
 
                 $all_rating_criteria[$i] = [
                     '_NUM_RATINGS' => strval($num_ratings),
-                    'NUM_RATINGS' => integer_format($num_ratings),
+                    'NUM_RATINGS' => integer_format($num_ratings, 0),
                     'RATING' => strval($calculated_rating)
                 ] + $all_rating_criteria[$i];
 
@@ -429,7 +429,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
             'URL' => $rate_url,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
             '_OVERALL_NUM_RATINGS' => strval($overall_num_ratings),
-            'OVERALL_NUM_RATINGS' => integer_format($overall_num_ratings),
+            'OVERALL_NUM_RATINGS' => integer_format($overall_num_ratings, 0),
             'OVERALL_RATING' => strval(intval($overall_rating / floatval(count($all_rating_criteria)))),
             'HAS_RATINGS' => $has_ratings,
             'SIMPLISTIC' => (count($all_rating_criteria) == 1),

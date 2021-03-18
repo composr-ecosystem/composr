@@ -156,8 +156,8 @@ class Hook_content_meta_aware_forum extends Hook_CMA
     {
         $keymap = [];
 
-        $keymap['entry_count'] = escape_html(integer_format($row['f_cache_num_topics']));
-        $keymap['post_count'] = escape_html(integer_format($row['f_cache_num_posts']));
+        $keymap['entry_count'] = escape_html(integer_format($row['f_cache_num_topics'], 0));
+        $keymap['post_count'] = escape_html(integer_format($row['f_cache_num_posts'], 0));
 
         return $keymap;
     }

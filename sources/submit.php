@@ -134,7 +134,7 @@ function give_submit_points(string $type, ?int $member_id = null) : ?string
         }
         require_code('points2');
         system_gift_transfer(do_lang($type), intval($points), $member_id);
-        return do_lang('SUBMIT_AWARD', integer_format(intval($points)));
+        return do_lang('SUBMIT_AWARD', integer_format(intval($points), 0));
     }
     return null;
 }

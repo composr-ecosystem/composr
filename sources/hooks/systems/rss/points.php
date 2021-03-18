@@ -62,7 +62,7 @@ class Hook_rss_points
             $edit_date = '';
 
             $to = $GLOBALS['FORUM_DRIVER']->get_username($row['gift_to']);
-            $news_title = xmlentities(do_lang('POINTS_RSS_LINE', $to, integer_format($row['amount'])));
+            $news_title = xmlentities(do_lang('POINTS_RSS_LINE', $to, integer_format($row['amount'], 0)));
             $summary = xmlentities(get_translated_text($row['reason']));
             $news = '';
 

@@ -2764,7 +2764,7 @@ class Module_topics
             $count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($time - 60 * 60 * 24) . ' AND p_time<' . strval($time + 60 * 60 * 24) . ' AND ' . db_string_equal_to('p_ip_address', $ip));
             $_ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => get_ip_address()], get_module_zone('admin_lookup'));
             $ip_url = $_ip_url->evaluate();
-            $text = paragraph(do_lang_tempcode('DELETE_POSTS_DESCRIPTION', escape_html(integer_format($count)), escape_html($ip), escape_html($ip_url)));
+            $text = paragraph(do_lang_tempcode('DELETE_POSTS_DESCRIPTION', escape_html(integer_format($count, 0)), escape_html($ip), escape_html($ip_url)));
             $submit_name = do_lang_tempcode('DELETE_POST');
             $post_url = build_url(['page' => '_SELF', 'type' => '_delete_post', 'id' => $post_id], '_SELF', [], true);
             $fields = new Tempcode();

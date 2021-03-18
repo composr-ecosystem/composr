@@ -232,8 +232,8 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
                             $new_post_or_not = $subforum['has_new'] ? 'new_posts' : 'no_new_posts';
                         }
 
-                        $subforum_num_posts = protect_from_escaping(escape_html(integer_format($subforum['num_posts'])));
-                        $subforum_num_topics = protect_from_escaping(escape_html(integer_format($subforum['num_topics'])));
+                        $subforum_num_posts = protect_from_escaping(escape_html(integer_format($subforum['num_posts'], 0)));
+                        $subforum_num_topics = protect_from_escaping(escape_html(integer_format($subforum['num_topics'], 0)));
 
                         // Subsubforums
                         $subforums = new Tempcode();
@@ -734,8 +734,10 @@ function cns_render_topic(array $topic, bool $has_topic_marking, bool $pt = fals
         'TITLE' => $title,
         '_POSTER' => ($topic['first_member_id'] === null) ? '' : strval($topic['first_member_id']),
         'POSTER' => $poster,
-        'NUM_POSTS' => integer_format($topic['num_posts']),
-        'NUM_VIEWS' => integer_format($topic['num_views']),
+        '_NUM_POSTS' => strval($topic['num_posts']),
+        'NUM_POSTS' => integer_format($topic['num_posts'], 0),
+        '_NUM_VIEWS' => strval($topic['num_views']),
+        'NUM_VIEWS' => integer_format($topic['num_views'], 0),
         'LAST_POST' => $last_post,
     ]);
 }

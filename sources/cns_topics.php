@@ -55,7 +55,7 @@ function render_topic_box(array $row, string $zone = '_SEARCH', bool $give_conte
     }
 
     $num_posts = $row['t_cache_num_posts'];
-    $entry_details = do_lang_tempcode('FORUM_NUM_POSTS', escape_html(integer_format($num_posts)));
+    $entry_details = do_lang_tempcode('FORUM_NUM_POSTS', escape_html(integer_format($num_posts, 0)));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : '85727b71bebcab45977363c8cb0a3ee6',

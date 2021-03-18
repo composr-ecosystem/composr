@@ -154,7 +154,7 @@ class Module_admin_sitemap
         require_css('sitemap_editor');
 
         if ($GLOBALS['SITE_DB']->query_select_value('zones', 'COUNT(*)') >= 300) {
-            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(50))), 'warn');
+            attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__ALPHABETICAL', escape_html(integer_format(300))), 'warn');
         }
 
         require_javascript('tree_list');

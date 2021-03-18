@@ -373,7 +373,7 @@ function find_template_guids(string $file, ?string $active_guid = null) : array
         foreach ($_guids[$clean_file] as $_guid) {
             $guids[] = [
                 'GUID_FILENAME' => $_guid[0],
-                'GUID_LINE' => integer_format($_guid[1]),
+                'GUID_LINE' => strval($_guid[1]),
                 'GUID_GUID' => $_guid[2],
                 'GUID_IS_LIVE' => ($_guid[2] === $active_guid),
             ];

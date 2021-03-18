@@ -372,7 +372,7 @@ function comcode_parse_error_exit(bool $preparse_mode, array $_message, int $pos
     if (!$check_only) {
         if (((get_mass_import_mode()) || (!has_interesting_post_fields()) || (!$posted)) && (!$preparse_mode)) {
             $line = substr_count(substr($comcode, 0, $pos), "\n") + 1;
-            $out = do_template('COMCODE_CRITICAL_PARSE_ERROR', ['_GUID' => '29da9dc5c6b9a527cb055b7da35bb6b8', 'LINE' => integer_format($line), 'MESSAGE' => $message, 'SOURCE' => $comcode]); // Won't parse, but we can't help it, so we will skip on
+            $out = do_template('COMCODE_CRITICAL_PARSE_ERROR', ['_GUID' => '29da9dc5c6b9a527cb055b7da35bb6b8', 'LINE' => strval($line), 'MESSAGE' => $message, 'SOURCE' => $comcode]); // Won't parse, but we can't help it, so we will skip on
             return $out;
         }
     }
@@ -431,7 +431,7 @@ function comcode_parse_error_exit(bool $preparse_mode, array $_message, int $pos
             }
         }
         if ($name === null) {
-            warn_exit(do_lang_tempcode('COMCODE_ERROR', $message, escape_html(integer_format($line))));
+            warn_exit(do_lang_tempcode('COMCODE_ERROR', $message, escape_html(strval($line))));
         }
     }
 
@@ -463,7 +463,7 @@ function comcode_parse_error_exit(bool $preparse_mode, array $_message, int $pos
         'EDITABLE' => !running_script('preview'),
         'FORM' => $form,
         'TITLE' => get_screen_title('ERROR_OCCURRED'),
-        'LINE' => integer_format($line),
+        'LINE' => strval($line),
         'MESSAGE' => $message,
         'LINES' => $lines,
     ]);
@@ -876,7 +876,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 }
 
                 if ($s_title === null) {
-                    $s_title = do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(integer_format($post_id)));
+                    $s_title = do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(strval($post_id)));
                 }
             } else {
                 $s_title = make_string_tempcode($attributes['param']);
@@ -896,14 +896,14 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
         case 'post':
             $post_id = intval($embed->evaluate());
-            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(integer_format($post_id))) : escape_html($attributes['param']);
+            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(strval($post_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->post_url($post_id, $forum, true), $s_title, false, false));
             break;
 
         case 'topic':
             $topic_id = intval($embed->evaluate());
-            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_TOPIC_NUMBERED', escape_html(integer_format($topic_id))) : escape_html($attributes['param']);
+            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_TOPIC_NUMBERED', escape_html(strval($topic_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->topic_url($topic_id, $forum, true), $s_title, false, false));
             break;
@@ -2128,7 +2128,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                             'RESTRICT_VISIBILITY' => strval($source_member),
                             'WARNING' => do_lang_tempcode(
                                 $over_quota_str,
-                                escape_html(integer_format($daily_quota)),
+                                escape_html(integer_format($daily_quota, 0)),
                                 escape_html(float_format($size_uploaded_today)),
                                 [
                                     escape_html($GLOBALS['FORUM_DRIVER']->get_username($source_member)),

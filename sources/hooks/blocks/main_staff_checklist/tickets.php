@@ -61,7 +61,7 @@ class Hook_checklist_tickets
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('SUPPORT_TICKETS'),
-            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($outstanding))),
+            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($outstanding, 0))),
         ]);
         return [[$tpl, null, $outstanding, null]];
     }

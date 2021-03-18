@@ -192,12 +192,14 @@ foreach ($_issues as $issue) {
         'HOURS' => $_hours,
         'CREDITS' => $_credits,
 
-        'NUM_COMMENTS' => integer_format($issue['num_comments']),
+        '_NUM_COMMENTS' => strval($issue['num_comments']),
+        'NUM_COMMENTS' => integer_format($issue['num_comments'], 0),
         'DATE' => get_timezoned_date($issue['date_submitted']),
         'MEMBER_LINK' => $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($issue['reporter_id']),
 
         'VOTED' => $voted,
-        'VOTES' => integer_format(intval($issue['num_votes'])),
+        '_VOTES' => strval(intval($issue['num_votes'])),
+        'VOTES' => integer_format(intval($issue['num_votes']), 0),
         'VOTE_URL' => get_base_url() . '/tracker/bug_monitor_add.php?bug_id=' . strval($issue['id']),
         'UNVOTE_URL' => get_base_url() . '/tracker/bug_monitor_delete.php?bug_id=' . strval($issue['id']),
 

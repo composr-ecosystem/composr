@@ -48,7 +48,7 @@ class Hook_checklist_content_reviews
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_CONTENT_REVIEWS', escape_html_tempcode($url)),
-            'INFO' => do_lang_tempcode('CONTENT_NEEDING_REVIEWING', escape_html(integer_format($num_to_review))),
+            'INFO' => do_lang_tempcode('CONTENT_NEEDING_REVIEWING', escape_html(integer_format($num_to_review, 0))),
         ]);
         return [[$tpl, null, $num_to_review, null]];
     }

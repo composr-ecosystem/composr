@@ -59,7 +59,7 @@ function render_chat_box(array $row, string $zone = '_SEARCH', bool $give_contex
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('CHATROOM'), $_title) : $_title;
 
     $num_in_room = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'chat_active WHERE room_id=' . strval($row['id']) . ' AND date_and_time<' . strval(time() - CHAT_ACTIVITY_PRUNE));
-    $entry_details = escape_html(integer_format($num_in_room));
+    $entry_details = escape_html(integer_format($num_in_room, 0));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'dacd41bad78b545f179582f83209c070',

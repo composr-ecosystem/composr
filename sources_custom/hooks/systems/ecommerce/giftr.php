@@ -74,7 +74,7 @@ class Hook_ecommerce_giftr
 
             $products['GIFTR_' . strval($gift['id'])] = [
                 'item_name' => do_lang('_GIFT', $gift['name']),
-                'item_description' => do_lang_tempcode('GIFT_DESCRIPTION', escape_html($gift['category']), escape_html(integer_format($gift['popularity'])), escape_html($gift['name'])),
+                'item_description' => do_lang_tempcode('GIFT_DESCRIPTION', escape_html($gift['category']), escape_html(integer_format($gift['popularity'], 0)), escape_html($gift['name'])),
                 'item_image_url' => $image_url,
 
                 'type' => PRODUCT_PURCHASE,

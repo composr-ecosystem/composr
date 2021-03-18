@@ -28,7 +28,7 @@
 {+END}
 
 {+START,IF_NON_EMPTY,{DOMAINS}}
-	<h2>{!DOMAIN_STATISTICS,{$NUMBER_FORMAT*,{DOMAINS}},{$NUMBER_FORMAT*,{DOMAINS}}}</h2>
+	<h2>{!DOMAIN_STATISTICS,{$INTEGER_FORMAT*,{DOMAINS},0},{$INTEGER_FORMAT*,{DOMAINS},0}}</h2>
 
 	<div class="wide-table-wrap"><table class="columned-table wide-table results-table">
 		<thead>
@@ -41,7 +41,7 @@
 			{+START,LOOP,DOMAINS}
 				<tr>
 					<td>{_loop_key*}</td>
-					<td>{$NUMBER_FORMAT*,{_loop_var}}</td>
+					<td>{$INTEGER_FORMAT*,{_loop_var},0}</td>
 				</tr>
 			{+END}
 		</tbody>

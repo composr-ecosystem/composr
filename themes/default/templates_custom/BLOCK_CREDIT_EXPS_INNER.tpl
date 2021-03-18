@@ -9,14 +9,14 @@
 		<label for="type_code">{!SUPPORT_CREDITS_BUY}</label>
 		<select name="type_code" id="type_code" class="form-control js-change-update-product-info-display">
 			{+START,LOOP,CREDIT_KINDS}
-				<option {+START,IF,{$EQ,{NUM_CREDITS},50}} selected="selected"{+END} value="{NUM_CREDITS*}_CREDITS">{$NUMBER_FORMAT*,{NUM_CREDITS}} credits</option>
+				<option {+START,IF,{$EQ,{NUM_CREDITS},50}} selected="selected"{+END} value="{NUM_CREDITS*}_CREDITS">{$INTEGER_FORMAT*,{NUM_CREDITS},0} credits</option>
 			{+END}
 		</select>
 	</div>
 
 	{+START,LOOP,CREDIT_KINDS}
 		<div class="creditsInfo" id="info-{NUM_CREDITS*}-credits">
-			<p>{!BLOCK_CREDITS_EXP_INNER_MSG,{$NUMBER_FORMAT*,{NUM_CREDITS}},{$CURRENCY,{PRICE},{$?,{$CONFIG_OPTION,currency_auto},{$CURRENCY_USER},{$CURRENCY}}}}</p>
+			<p>{!BLOCK_CREDITS_EXP_INNER_MSG,{$INTEGER_FORMAT*,{NUM_CREDITS},0},{$CURRENCY,{PRICE},{$?,{$CONFIG_OPTION,currency_auto},{$CURRENCY_USER},{$CURRENCY}}}}</p>
 
 			<table class="columned-table topTble">
 				<thead>
@@ -36,7 +36,7 @@
 							{!SUPPORT_PRIORITY_backburner}
 						</td>
 						<td>
-							{!MINUTES,<strong>{$NUMBER_FORMAT*,{$MULT,{NUM_CREDITS},{BACKBURNER_MINUTES}}}</strong>}
+							{!MINUTES,<strong>{$INTEGER_FORMAT*,{$MULT,{NUM_CREDITS},{BACKBURNER_MINUTES}}}</strong>}
 						</td>
 					</tr>
 
@@ -45,7 +45,7 @@
 							{!SUPPORT_PRIORITY_regular}
 						</td>
 						<td>
-							{!MINUTES,<strong>{$NUMBER_FORMAT*,{$MULT,{NUM_CREDITS},{REGULAR_MINUTES}}}</strong>}
+							{!MINUTES,<strong>{$INTEGER_FORMAT*,{$MULT,{NUM_CREDITS},{REGULAR_MINUTES}}}</strong>}
 						</td>
 					</tr>
 				</tbody>

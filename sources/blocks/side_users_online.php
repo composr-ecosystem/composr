@@ -151,10 +151,10 @@ PHP;
             '_GUID' => 'fdfa68dff479b4ea7d517585297ea6af',
             'BLOCK_ID' => $block_id,
             'ONLINE' => $online,
-            'GUESTS' => integer_format($guests),
-            'MEMBERS' => integer_format($_members),
             '_GUESTS' => strval($guests),
             '_MEMBERS' => strval($_members),
+            'GUESTS' => integer_format($guests, 0),
+            'MEMBERS' => integer_format($_members, 0),
             'BIRTHDAYS' => $birthdays,
             'NEWEST' => $newest,
         ]);

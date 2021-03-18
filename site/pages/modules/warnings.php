@@ -263,7 +263,7 @@ class Module_warnings extends Standard_crud_module
         if ($new) {
             $hidden->attach(form_input_hidden('member_id', strval($member_id)));
 
-            $this->add_text = do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]);
+            $this->add_text = do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]);
         }
 
         // Warnings...
@@ -271,7 +271,7 @@ class Module_warnings extends Standard_crud_module
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => 'cb4511a58a4c78eb75346a468e6e6fdf',
             'TITLE' => do_lang_tempcode('WARNINGS'),
-            'HELP' => do_lang_tempcode('HAS_ALREADY_X_WARNINGS', escape_html($username), escape_html(integer_format($num_warnings)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]),
+            'HELP' => do_lang_tempcode('HAS_ALREADY_X_WARNINGS', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]),
         ]));
 
         $warning_radios = new Tempcode();
@@ -447,7 +447,7 @@ class Module_warnings extends Standard_crud_module
                 if (has_actual_page_access(get_member(), 'admin_points')) {
                     require_code('points');
                     $num_points_currently = available_points($member_id);
-                    $fields->attach(form_input_integer(do_lang_tempcode('CHARGED_POINTS'), do_lang_tempcode('DESCRIPTION_CHARGED_POINTS', escape_html(integer_format($num_points_currently))), 'charged_points', 0, true));
+                    $fields->attach(form_input_integer(do_lang_tempcode('CHARGED_POINTS'), do_lang_tempcode('DESCRIPTION_CHARGED_POINTS', escape_html(integer_format($num_points_currently, 0))), 'charged_points', 0, true));
                 }
             }
         }
@@ -464,26 +464,26 @@ class Module_warnings extends Standard_crud_module
                 $list_options->attach(form_input_list_entry('', !$spam_mode, do_lang_tempcode('HANDLE_POST__NOTHING')));
                 switch ($post_context) {
                     case POST_STANDALONE_AT_END:
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_AT_END', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())]);
-                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_AT_END', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())]);
+                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
                         break;
 
                     case POST_STANDALONE_IN_MIDDLE:
                         $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_IN_MIDDLE', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))]);
-                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', false, do_lang_tempcode('HANDLE_POST__DELETE_POST_AND_FOLLOWING', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_IN_MIDDLE', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))]);
+                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
+                        $list_options->attach(form_input_list_entry('delete_post_and_following', false, do_lang_tempcode('HANDLE_POST__DELETE_POST_AND_FOLLOWING', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(strval($num_replies))])));
                         break;
 
                     case POST_AS_TOPIC_FULL:
                         $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_FULL', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))]);
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_FULL', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))]);
+                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies, 0))])));
                         break;
 
                     case POST_AS_TOPIC_STARTER:
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_STARTER', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())]);
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_STARTER', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())]);
+                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(strval($_post_id)), [escape_html(strval($topic_id)), escape_html($post_url->evaluate())])));
                         break;
                 }
                 $fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
@@ -1157,7 +1157,7 @@ class Module_warnings extends Standard_crud_module
             $fields['ACTIONS']->attach(div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_group_change'], '_SELF'), do_lang_tempcode('RESTORE_USERGROUP_TO', escape_html(cns_get_group_name($row['p_changed_usergroup_from'], false))), false, true, '', null, form_input_hidden('id', strval($row['id']))), '53y5ryrtyhrtyrt'));
         }
         if (addon_installed('points')) {
-            $charged_points = ($row['p_charged_points'] == 0) ? new Tempcode() : div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_charge'], '_SELF'), do_lang_tempcode('RESTORE_POINTS', escape_html(integer_format($row['p_charged_points']))), false, true, '', null, form_input_hidden('id', strval($row['id']))), 'dsgsgdfgddgdf');
+            $charged_points = ($row['p_charged_points'] == 0) ? new Tempcode() : div(hyperlink(build_url(['page' => '_SELF', 'type' => 'undo_charge'], '_SELF'), do_lang_tempcode('RESTORE_POINTS', escape_html(integer_format($row['p_charged_points'], 0))), false, true, '', null, form_input_hidden('id', strval($row['id']))), 'dsgsgdfgddgdf');
             $fields['ACTIONS']->attach($charged_points);
         }
         if ($row['p_banned_ip'] != '') {

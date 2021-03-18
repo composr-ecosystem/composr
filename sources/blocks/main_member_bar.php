@@ -80,7 +80,7 @@ class Block_main_member_bar
             list($links, $links_ecommerce, $details, $num_unread_pps) = member_personal_links_and_details($member_id);
 
             // Any unread PT-PPs?
-            $pt_extra = ($num_unread_pps == 0) ? new Tempcode() : do_lang_tempcode('NUM_UNREAD', escape_html(integer_format($num_unread_pps)));
+            $pt_extra = ($num_unread_pps == 0) ? new Tempcode() : do_lang_tempcode('NUM_UNREAD', escape_html(integer_format($num_unread_pps, 0)));
             $private_topic_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($member_id == get_member()) ? null : $member_id], get_module_zone('members'), [], true, false, false, 'tab--pts');
 
             $bar = do_template('CNS_MEMBER_BAR', [
@@ -89,9 +89,6 @@ class Block_main_member_bar
                 'PROFILE_URL' => $profile_url,
                 'USERNAME' => $member_info['username'],
                 'LOGOUT_URL' => build_url(['page' => 'login', 'type' => 'logout'], get_module_zone('login')),
-                'NUM_POINTS_ADVANCE' => isset($member_info['num_points_advance']) ? integer_format($member_info['num_points_advance']) : null,
-                'NUM_POINTS' => isset($member_info['points']) ? integer_format($member_info['points']) : '',
-                'NUM_POSTS' => integer_format($member_info['posts']),
                 'PRIMARY_GROUP' => $member_info['primary_group_name'],
                 'LAST_VISIT_DATE_RAW' => strval($member_info['last_visit_time']),
                 'LAST_VISIT_DATE' => $member_info['last_visit_date'],
@@ -103,13 +100,24 @@ class Block_main_member_bar
                 'UNANSWERED_TOPICS_URL' => build_url(['page' => 'vforums', 'type' => 'unanswered'], get_module_zone('vforums')),
                 'INVOLVED_TOPICS_URL' => build_url(['page' => 'vforums', 'type' => 'involved'], get_module_zone('vforums')),
                 'PT_EXTRA' => $pt_extra,
-                'NUM_UNREAD_PTS' => strval($num_unread_pps),
-                'NEW_TOPICS' => integer_format($member_info['new_topics']),
-                'NEW_POSTS' => integer_format($member_info['new_posts']),
                 'MAX_AVATAR_HEIGHT' => strval($max_avatar_height),
                 'LINKS' => $links,
                 'LINKS_ECOMMERCE' => $links_ecommerce,
                 'DETAILS' => $details,
+
+                '_NUM_POINTS_ADVANCE' => isset($member_info['num_points_advance']) ? strval($member_info['num_points_advance']) : null,
+                '_NUM_POINTS' => isset($member_info['points']) ? strval($member_info['points']) : '',
+                '_NUM_POSTS' => strval($member_info['posts']),
+                '_NUM_UNREAD_PTS' => strval($num_unread_pps),
+                '_NEW_TOPICS' => strval($member_info['new_topics']),
+                '_NEW_POSTS' => strval($member_info['new_posts']),
+
+                'NUM_POINTS_ADVANCE' => isset($member_info['num_points_advance']) ? integer_format($member_info['num_points_advance'], 0) : null,
+                'NUM_POINTS' => isset($member_info['points']) ? integer_format($member_info['points'], 0) : '',
+                'NUM_POSTS' => integer_format($member_info['posts'], 0),
+                'NUM_UNREAD_PTS' => integer_format($num_unread_pps, 0),
+                'NEW_TOPICS' => integer_format($member_info['new_topics'], 0),
+                'NEW_POSTS' => integer_format($member_info['new_posts'], 0),
             ]);
         } else { // Guest
             list($full_url, $login_url, $join_url) = get_login_url();

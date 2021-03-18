@@ -196,7 +196,7 @@ class CMS_Topic
                         '_REVIEW_RATING' => ($rating === null) ? '' : float_to_raw_string($rating),
                         'REVIEW_RATING' => ($rating === null) ? '' : float_format($rating),
                         '_NUM_REVIEW_RATINGS' => ($rating === null) ? '' : strval($rating_count),
-                        'NUM_REVIEW_RATINGS' => ($rating === null) ? '' : integer_format($rating_count),
+                        'NUM_REVIEW_RATINGS' => ($rating === null) ? '' : integer_format($rating_count, 0),
                     ];
                     if ($rating !== null) {
                         set_extra_request_metadata([

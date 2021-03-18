@@ -744,7 +744,7 @@ function check_memory_limit_for(string $file_path, bool $exit_on_error = true) :
                     }
                 }
 
-                $message = do_lang_tempcode('IMAGE_TOO_LARGE_FOR_THUMB', escape_html(integer_format($max_dim)), escape_html(integer_format($max_dim)));
+                $message = do_lang_tempcode('IMAGE_TOO_LARGE_FOR_THUMB', escape_html(strval($max_dim)), escape_html(strval($max_dim)));
                 if (!$exit_on_error) {
                     attach_message($message, 'warn');
                 } else {

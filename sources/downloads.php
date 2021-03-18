@@ -192,11 +192,13 @@ function render_download_box(array $row, bool $pic = true, bool $include_breadcr
         'AUTHOR' => $row['author'],
         'ID' => array_key_exists('id', $row) ? strval($row['id']) : '',
         'RATING' => $rating,
-        'VIEWS' => integer_format($row['download_views']),
+        '_VIEWS' => strval($row['download_views']),
+        'VIEWS' => integer_format($row['download_views'], 0),
+        '_DOWNLOADS' => strval($row['num_downloads']),
+        'DOWNLOADS' => integer_format($row['num_downloads'], 0),
         'SUBMITTER' => strval($row['submitter']),
         'DESCRIPTION' => reasonable_html_reduce($description),
         'FILE_SIZE' => $file_size,
-        'DOWNLOADS' => integer_format($row['num_downloads']),
         'DATE_RAW' => strval($date_raw),
         'DATE' => $date,
         'EDIT_DATE_RAW' => ($row['edit_date'] === null) ? '' : strval($row['edit_date']),
@@ -256,7 +258,7 @@ function render_download_category_box(array $row, string $zone = '_SEARCH', bool
     $child_counts = count_download_category_children($row['id']);
     $num_children = $child_counts['num_children_children'];
     $num_entries = $child_counts['num_downloads_children'];
-    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE', escape_html(integer_format($num_entries)), escape_html(integer_format($num_children)));
+    $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE', escape_html(integer_format($num_entries, 0)), escape_html(integer_format($num_children, 0)));
 
     // Image
     $rep_image_url = '';

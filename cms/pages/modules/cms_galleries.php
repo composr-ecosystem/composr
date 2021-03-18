@@ -243,12 +243,12 @@ class Module_cms_galleries extends Standard_crud_module
             if (strpos($type, '_other') !== false) { // Video
                 $remaining = $this->alt_crud_module->check_videos_allowed($cat, true);
                 if ($remaining !== null) {
-                    $this->alt_crud_module->add_text->attach(paragraph(do_lang_tempcode('X_ENTRIES_REMAINING', escape_html(integer_format($remaining)))));
+                    $this->alt_crud_module->add_text->attach(paragraph(do_lang_tempcode('X_ENTRIES_REMAINING', escape_html(integer_format($remaining, 0)))));
                 }
             } elseif (strpos($type, '_category') === false) { // Image
                 $remaining = $this->check_images_allowed($cat, true);
                 if ($remaining !== null) {
-                    $this->add_text = paragraph(do_lang_tempcode('X_ENTRIES_REMAINING', escape_html(integer_format($remaining))));
+                    $this->add_text = paragraph(do_lang_tempcode('X_ENTRIES_REMAINING', escape_html(integer_format($remaining, 0))));
                 }
             }
         }

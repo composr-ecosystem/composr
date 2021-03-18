@@ -376,7 +376,7 @@ class Module_groups
                 $_p_t = $row['g_promotion_threshold'];
                 $p_t = new Tempcode();
                 if (($_p_t !== null) && (array_key_exists($row['g_promotion_target'], $_rank))) {
-                    $p_t = do_lang_tempcode('PROMOTION_TO', escape_html(integer_format($_p_t)), escape_html($_rank[$row['g_promotion_target']]['_name']));
+                    $p_t = do_lang_tempcode('PROMOTION_TO', escape_html(integer_format($_p_t, 0)), escape_html($_rank[$row['g_promotion_target']]['_name']));
                 }
 
                 $entry = [];
@@ -526,7 +526,7 @@ class Module_groups
         // Promotion
         if ((addon_installed('points')) && ($group['g_promotion_threshold'] !== null) && ($group['g_promotion_target'] !== null)) {
             $promote_link = cns_get_group_link($group['g_promotion_target']);
-            $promotion_info = do_lang_tempcode('CNS_PROMOTION_INFO', escape_html(integer_format($group['g_promotion_threshold'])), $promote_link->evaluate());
+            $promotion_info = do_lang_tempcode('CNS_PROMOTION_INFO', escape_html(integer_format($group['g_promotion_threshold'], 0)), $promote_link->evaluate());
         } else {
             $promotion_info = new Tempcode();
         }

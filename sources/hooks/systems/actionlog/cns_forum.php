@@ -311,7 +311,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                     $topic_title = do_lang('UNKNOWN');
                 }
 
-                $written_context = do_lang('SOMETHING_IN', integer_format(intval($actionlog_row['param_b'])), $topic_title);
+                $written_context = do_lang('SOMETHING_IN', integer_format(intval($actionlog_row['param_b']), 0), $topic_title);
                 return $written_context;
 
             case 'MOVE_POSTS':
@@ -325,7 +325,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                     $topic_title = do_lang('UNKNOWN');
                 }
 
-                $written_context = do_lang('SOMETHING_TO', integer_format(intval($actionlog_row['param_b'])), $topic_title);
+                $written_context = do_lang('SOMETHING_TO', integer_format(intval($actionlog_row['param_b']), 0), $topic_title);
                 return $written_context;
         }
 

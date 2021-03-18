@@ -37,7 +37,7 @@ class Hook_page_groupings_authors
         }
 
         return [
-            has_privilege(get_member(), 'set_own_author_profile') ? ['cms', 'menu/rich_content/authors', ['cms_authors', ['type' => 'browse'], get_module_zone('cms_authors')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('authors:AUTHORS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('authors', 'COUNT(*)')))))), 'authors:DOC_AUTHORS'] : null,
+            has_privilege(get_member(), 'set_own_author_profile') ? ['cms', 'menu/rich_content/authors', ['cms_authors', ['type' => 'browse'], get_module_zone('cms_authors')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('authors:AUTHORS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('authors', 'COUNT(*)')), 0)))), 'authors:DOC_AUTHORS'] : null,
             ['rich_content', 'menu/rich_content/authors', ['authors', [], get_module_zone('authors')], do_lang_tempcode('authors:AUTHORS')],
         ];
     }

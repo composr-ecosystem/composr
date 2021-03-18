@@ -473,9 +473,12 @@ class Module_tickets
             $extra_details = new Tempcode();
         }
 
+        $num_posts = $topic['num'] - 1;
+
         $tpl = do_template('SUPPORT_TICKET_LINK', [
             '_GUID' => '4a39a6b5a7d56ead2d9c20b8a7a71398',
-            'NUM_POSTS' => integer_format($topic['num'] - 1),
+            '_NUM_POSTS' => strval($num_posts),
+            'NUM_POSTS' => integer_format($num_posts, 0),
             'CLOSED' => strval($topic['closed']),
             'URL' => $url,
             'ID' => $ticket_id,

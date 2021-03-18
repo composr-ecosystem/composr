@@ -145,7 +145,7 @@ class Hook_content_meta_aware_banner_type extends Hook_CMA
         $keymap = [];
 
         $num_entries = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)', ['b_type' => $row['id'], 'validated' => 1]);
-        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+        $keymap['entry_count'] = escape_html(integer_format($num_entries, 0));
 
         return $keymap;
     }

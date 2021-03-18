@@ -35,11 +35,11 @@
 					</td>
 
 					<td>
-						{$NUMBER_FORMAT*,{HITS_FROM}}
+						{$INTEGER_FORMAT*,{HITS_FROM},0}
 					</td>
 
 					<td>
-						{$NUMBER_FORMAT*,{HITS_TO}}
+						{$INTEGER_FORMAT*,{HITS_TO},0}
 					</td>
 				</tr>
 			{+END}

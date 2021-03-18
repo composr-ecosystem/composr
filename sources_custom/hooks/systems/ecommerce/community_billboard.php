@@ -128,7 +128,13 @@ class Hook_ecommerce_community_billboard
 
         $days = intval(preg_replace('#^COMMUNITY_BILLBOARD_#', '', $type_code));
 
-        return do_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', ['_GUID' => '92d51c5b87745c31397d9165595262d3', 'QUEUE' => integer_format($queue), 'DAYS' => integer_format($days)]);
+        return do_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', [
+            '_GUID' => '92d51c5b87745c31397d9165595262d3',
+            '_QUEUE' => strval($queue),
+            'QUEUE' => integer_format($queue),
+            '_DAYS' => strval($days),
+            'DAYS' => integer_format($days),
+        ]);
     }
 
     /**

@@ -124,7 +124,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
 
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'hackattack WHERE date_and_time>' . strval(time() - 60 * 60 * 24);
         $num_failed = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-        $this->assertTrue($num_failed < 100, integer_format($num_failed) . ' hack-attack alerts happened today');
+        $this->assertTrue($num_failed < 100, integer_format($num_failed, 0) . ' hack-attack alerts happened today');
     }
 
     /**
@@ -148,7 +148,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
 
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'failedlogins WHERE date_and_time>' . strval(time() - 60 * 60 * 24);
         $num_failed = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-        $this->assertTrue($num_failed < 100, integer_format($num_failed) . ' failed logins happened today');
+        $this->assertTrue($num_failed < 100, integer_format($num_failed, 0) . ' failed logins happened today');
     }
 
     /**

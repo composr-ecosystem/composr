@@ -220,8 +220,10 @@ class Module_forumview
             'TITLE' => $this->title,
             'CONTENT' => $content,
             'ID' => ($id === null) ? '' : strval($id),
-            'NUM_GUESTS' => ($num_guests === null) ? '' : integer_format($num_guests),
-            'NUM_MEMBERS' => ($num_members === null) ? '' : integer_format($num_members),
+            '_NUM_GUESTS' => ($num_guests === null) ? '' : strval($num_guests),
+            '_NUM_MEMBERS' => ($num_members === null) ? '' : strval($num_members),
+            'NUM_GUESTS' => ($num_guests === null) ? '' : integer_format($num_guests, 0),
+            'NUM_MEMBERS' => ($num_members === null) ? '' : integer_format($num_members, 0),
             'MEMBERS_VIEWING' => $members_viewing,
         ]);
 

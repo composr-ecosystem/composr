@@ -281,7 +281,7 @@ class Module_cms_chat
                         $username = make_string_tempcode($_username);
                     }
                 }
-                $result_entries->attach(results_entry([hyperlink($url, $row['room_name'], false, true), $username, $row['room_language'], integer_format($messages)], true));
+                $result_entries->attach(results_entry([hyperlink($url, $row['room_name'], false, true), $username, $row['room_language'], integer_format($messages, 0)], true));
             }
         }
         if ($result_entries->is_empty()) {

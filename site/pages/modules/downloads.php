@@ -533,7 +533,7 @@ class Module_downloads
                     require_code('currency');
                     $price = currency_convert_wrap($product_details[0]['p_price']);
                 } elseif ($product_details[0]['p_price_points'] !== null) {
-                    $price = escape_html(integer_format($product_details[0]['p_price_points'])) . ' ' . do_lang('POINTS');
+                    $price = escape_html(integer_format($product_details[0]['p_price_points'], 0)) . ' ' . do_lang('POINTS');
                 } else {
                     $price = do_lang('UNKNOWN');
                 }
@@ -721,7 +721,7 @@ class Module_downloads
         // Cost warning
         if (($myrow['download_cost'] != 0) && (addon_installed('points'))) {
             require_lang('points');
-            $warning_details->attach(do_template('WARNING_BOX', ['_GUID' => '05fc448bf79b373385723c5af5ec93af', 'WARNING' => do_lang_tempcode('WILL_COST', escape_html(integer_format($myrow['download_cost'])))]));
+            $warning_details->attach(do_template('WARNING_BOX', ['_GUID' => '05fc448bf79b373385723c5af5ec93af', 'WARNING' => do_lang_tempcode('WILL_COST', escape_html(integer_format($myrow['download_cost'], 0)))]));
         }
 
         // Management links
@@ -803,11 +803,13 @@ class Module_downloads
             'SUBMITTER' => strval($myrow['submitter']),
             'EDIT_DATE' => $edit_date,
             'EDIT_DATE_RAW' => ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']),
-            'VIEWS' => integer_format($myrow['download_views']),
+            '_VIEWS' => strval($myrow['download_views']),
+            'VIEWS' => integer_format($myrow['download_views'], 0),
             'NAME' => $name,
             'DATE' => $add_date,
             'DATE_RAW' => strval($myrow['add_date']),
-            'NUM_DOWNLOADS' => integer_format($myrow['num_downloads']),
+            '_NUM_DOWNLOADS' => strval($myrow['num_downloads']),
+            'NUM_DOWNLOADS' => integer_format($myrow['num_downloads'], 0),
             'TITLE' => $this->title,
             'OUTMODE_URL' => $outmode_url,
             'WARNING_DETAILS' => $warning_details,

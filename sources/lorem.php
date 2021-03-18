@@ -721,7 +721,8 @@ function placeholder_pagination() : object
     ]);
     $previous = do_lorem_template('PAGINATION_PREVIOUS_LINK', [
         'TITLE' => lorem_phrase(),
-        'P' => placeholder_date_raw(),
+        '_P' => placeholder_number(),
+        'P' => placeholder_number(),
         'URL' => placeholder_url(),
         'NOFOLLOW' => null,
     ]);
@@ -729,7 +730,9 @@ function placeholder_pagination() : object
     $next = do_lorem_template('PAGINATION_NEXT_LINK', [
         'REL' => null,
         'TITLE' => lorem_phrase(),
+        '_NUM_PAGES' => placeholder_number(),
         'NUM_PAGES' => placeholder_number(),
+        '_P' => placeholder_number(),
         'P' => placeholder_number(),
         'URL' => placeholder_url(),
         'NOFOLLOW' => null,

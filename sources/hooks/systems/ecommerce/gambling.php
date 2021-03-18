@@ -68,7 +68,7 @@ class Hook_ecommerce_gambling
 
         foreach ($amounts as $amount) {
             $products['GAMBLING_' . strval($amount)] = [
-                'item_name' => do_lang('GAMBLE_THIS', integer_format($amount)),
+                'item_name' => do_lang('GAMBLE_THIS', integer_format($amount, 0)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
@@ -194,9 +194,9 @@ class Hook_ecommerce_gambling
 
         // Show an instant message so the member knows how it worked out (plus buying via points, so will definitely be seen)
         if ($winnings > $amount) {
-            $result = do_lang_tempcode('GAMBLE_CONGRATULATIONS', escape_html(integer_format($winnings - $amount)), escape_html(integer_format($amount)));
+            $result = do_lang_tempcode('GAMBLE_CONGRATULATIONS', escape_html(integer_format($winnings - $amount, 0)), escape_html(integer_format($amount, 0)));
         } else {
-            $result = do_lang_tempcode('GAMBLE_COMMISERATIONS', escape_html(integer_format($amount - $winnings)), escape_html(integer_format($amount)));
+            $result = do_lang_tempcode('GAMBLE_COMMISERATIONS', escape_html(integer_format($amount - $winnings, 0)), escape_html(integer_format($amount, 0)));
         }
         global $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE;
         $ECOMMERCE_SPECIAL_SUCCESS_MESSAGE = $result;

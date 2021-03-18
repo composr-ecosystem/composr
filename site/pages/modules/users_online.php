@@ -151,7 +151,16 @@ class Module_users_online
             $link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id);
 
             if ($ip != '') { // System scheduler?
-                $rows[] = ['IP' => $ip, 'AT_URL' => $at_url, 'LOCATION' => $location, 'MEMBER' => $link, 'TIME' => integer_format(intval((time() - $last_activity) / 60))];
+                $time = intval((time() - $last_activity) / 60);
+
+                $rows[] = [
+                    'IP' => $ip,
+                    'AT_URL' => $at_url,
+                    'LOCATION' => $location,
+                    'MEMBER' => $link,
+                    '_TIME' => strval($time),
+                    'TIME' => integer_format($time),
+                ];
             }
         }
 

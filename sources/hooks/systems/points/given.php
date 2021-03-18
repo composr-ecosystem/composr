@@ -56,7 +56,8 @@ class Hook_points_given
         $points_gained_given = array_key_exists('points_gained_given', $point_info) ? $point_info['points_gained_given'] : 0;
 
         return [
-            'POINTS_GAINED_GIVEN' => integer_format($points_gained_given),
+            '_POINTS_GAINED_GIVEN' => strval($points_gained_given),
+            'POINTS_GAINED_GIVEN' => integer_format($points_gained_given, 0),
         ];
     }
 }

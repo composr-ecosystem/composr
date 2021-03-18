@@ -199,11 +199,11 @@ class Hook_cron_stealr
         require_code('points2');
 
         // Get STOLEN points
-        charge_member($victim_member_id, $points_to_steal, do_lang('STEALR_GET', integer_format($points_to_steal)));
+        charge_member($victim_member_id, $points_to_steal, do_lang('STEALR_GET', integer_format($points_to_steal, 0)));
 
         if ($victor_member_id !== null) {
             // Give STOLEN points
-            system_gift_transfer(do_lang('STEALR_GAVE_YOU', integer_format($points_to_steal)), $points_to_steal, $victor_member_id);
+            system_gift_transfer(do_lang('STEALR_GAVE_YOU', integer_format($points_to_steal, 0)), $points_to_steal, $victor_member_id);
 
             // Create private topic to message about it...
 
@@ -212,7 +212,7 @@ class Hook_cron_stealr
             $victor_displayname = $GLOBALS['FORUM_DRIVER']->get_username($victor_member_id, true);
             $victim_username = $GLOBALS['FORUM_DRIVER']->get_username($victim_member_id);
             $victor_username = $GLOBALS['FORUM_DRIVER']->get_username($victor_member_id);
-            $subject = do_lang('STEALR_PT_TOPIC', integer_format($points_to_steal), $victim_displayname, [$victor_displayname, $victim_username, $victor_username]);
+            $subject = do_lang('STEALR_PT_TOPIC', integer_format($points_to_steal, 0), $victim_displayname, [$victor_displayname, $victim_username, $victor_username]);
             $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $victim_member_id, $victor_member_id, false, 0, null, '');
 
             require_code('cns_posts_action');

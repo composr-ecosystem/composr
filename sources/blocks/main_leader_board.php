@@ -133,7 +133,8 @@ PHP;
                 'ID' => strval($member_id),
                 'POINTS_URL' => $points_url,
                 'PROFILE_URL' => $profile_url,
-                'POINTS' => integer_format($points),
+                '_POINTS' => strval($points),
+                'POINTS' => integer_format($points, 0),
                 'USERNAME' => $username,
                 'HAS_RANK_IMAGES' => $has_rank_images,
             ]));
@@ -143,10 +144,13 @@ PHP;
 
         $url = build_url(['page' => 'leader_board'], $zone);
 
+        $limit = intval(get_option('leader_board_size'));
+
         return do_template('POINTS_LEADER_BOARD', [
             '_GUID' => 'c875cce925e73f46408acc0a153a2902',
             'URL' => $url,
-            'LIMIT' => integer_format(intval(get_option('leader_board_size'))),
+            '_LIMIT' => strval($limit),
+            'LIMIT' => integer_format($limit),
             'ROWS' => $out,
         ]);
     }

@@ -37,15 +37,35 @@ class Hook_stats_galleries
         require_lang('galleries');
 
         $bits = new Tempcode();
-
         if (get_option('galleries_show_stats_count_galleries') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '979bcf993db7c01ced08d8f8a696fec0', 'KEY' => do_lang_tempcode('GALLERIES'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'galleries WHERE name NOT LIKE \'' . db_encode_like('download\_%') . '\''))]));
+            $num_galleries = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'galleries WHERE name NOT LIKE \'' . db_encode_like('download\_%') . '\'');
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '979bcf993db7c01ced08d8f8a696fec0',
+                'KEY' => do_lang_tempcode('GALLERIES'),
+                'RAW_VALUE' => strval($num_galleries),
+                'VALUE' => integer_format($num_galleries, 0),
+            ]));
         }
         if (get_option('galleries_show_stats_count_images') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '0f06d6a5e1632bae0101a531912b1c29', 'KEY' => do_lang_tempcode('IMAGES'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)'))]));
+            $num_images = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)');
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '0f06d6a5e1632bae0101a531912b1c29',
+                'KEY' => do_lang_tempcode('IMAGES'),
+                'RAW_VALUE' => strval($num_images),
+                'VALUE' => integer_format($num_images, 0),
+            ]));
         }
         if (get_option('galleries_show_stats_count_videos') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => 'a9274594cde52028fc810b7b780e9942', 'KEY' => do_lang_tempcode('VIDEOS'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)'))]));
+            $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)');
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => 'a9274594cde52028fc810b7b780e9942',
+                'KEY' => do_lang_tempcode('VIDEOS'),
+                'RAW_VALUE' => strval($num_videos),
+                'VALUE' => integer_format($num_videos, 0),
+            ]));
         }
         if ($bits->is_empty_shell()) {
             return new Tempcode();

@@ -41,7 +41,7 @@ class Hook_page_groupings_wiki
         }
 
         return [
-            has_privilege(get_member(), 'submit_lowrange_content', 'cms_wiki') ? ['cms', 'menu/rich_content/wiki', ['cms_wiki', ['type' => 'browse'], get_module_zone('cms_wiki')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('wiki:WIKI'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)')))))), 'wiki:DOC_WIKI'] : null,
+            has_privilege(get_member(), 'submit_lowrange_content', 'cms_wiki') ? ['cms', 'menu/rich_content/wiki', ['cms_wiki', ['type' => 'browse'], get_module_zone('cms_wiki')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('wiki:WIKI'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)')), 0)))), 'wiki:DOC_WIKI'] : null,
             ['rich_content', 'menu/rich_content/wiki', ['wiki', ['type' => 'browse'], get_module_zone('wiki')], do_lang_tempcode('wiki:WIKI')],
         ];
     }

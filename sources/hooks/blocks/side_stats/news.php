@@ -37,12 +37,25 @@ class Hook_stats_news
         require_lang('news');
 
         $bits = new Tempcode();
-
         if (get_option('news_show_stats_count_total_posts') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '1b886065ad1190c2b7862024c8aad430', 'KEY' => do_lang_tempcode('COUNT_POSTS'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)'))]));
+            $num_posts = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)');
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '1b886065ad1190c2b7862024c8aad430',
+                'KEY' => do_lang_tempcode('COUNT_POSTS'),
+                '_VALUE' => strval($num_posts),
+                'VALUE' => integer_format($num_posts, 0),
+            ]));
         }
         if (get_option('news_show_stats_count_blogs') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => 'da519440ca5ad67869000bae8caab935', 'KEY' => do_lang_tempcode('BLOGS'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'news_categories WHERE nc_owner IS NOT NULL'))]));
+            $num_blogs = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'news_categories WHERE nc_owner IS NOT NULL');
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => 'da519440ca5ad67869000bae8caab935',
+                'KEY' => do_lang_tempcode('BLOGS'),
+                '_VALUE' => strval($num_blogs),
+                'VALUE' => integer_format($num_blogs, 0),
+            ]));
         }
         if ($bits->is_empty_shell()) {
             return new Tempcode();

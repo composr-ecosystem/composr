@@ -55,7 +55,7 @@ class Hook_ecommerce_support_credits
         $bundles = [1, 2, 3, 4, 5, 6, 9, 20, 25, 35, 50, 90, 180, 550];
         foreach ($bundles as $bundle) {
             $products[strval($bundle) . '_CREDITS'] = [
-                'item_name' => do_lang('CUSTOMER_SUPPORT_CREDITS', integer_format($bundle)),
+                'item_name' => do_lang('CUSTOMER_SUPPORT_CREDITS', integer_format($bundle, 0)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 

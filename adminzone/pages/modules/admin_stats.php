@@ -615,7 +615,7 @@ class Module_admin_stats extends Standard_crud_module
 
             $kpi = [
                 'TITLE' => $kpi_row['k_title'],
-                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current, 0) : float_format($current, 4, true)),
                 'HITS_TARGET' => $hits_target,
                 'TARGET' => ($target === null) ? null : float_format($target, 4, true),
                 'KPI_EDIT_URL' => $edit_url,

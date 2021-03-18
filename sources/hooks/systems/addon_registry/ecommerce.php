@@ -958,7 +958,7 @@ class Hook_addon_registry_ecommerce
                 case 2:
                     $_full_price = currency_convert(4.56, 'GBP', 'GBP', CURRENCY_DISPLAY_TEMPLATED);
                     $_discounted_price = currency_convert(3.45, 'GBP', 'GBP', CURRENCY_DISPLAY_TEMPLATED);
-                    $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_WITH_DISCOUNT', $_discounted_price, $_full_price, [escape_html(integer_format(5))]);
+                    $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_WITH_DISCOUNT', $_discounted_price, $_full_price, [escape_html(integer_format(5, 0))]);
 
                     $map += [
                         'WRITTEN_PRICE' => $written_price,
@@ -978,7 +978,7 @@ class Hook_addon_registry_ecommerce
                 case 3:
                     $_full_price = currency_convert(1.23, 'GBP', 'GBP', CURRENCY_DISPLAY_TEMPLATED);
                     $_discounted_price = currency_convert(0.00, 'GBP', 'GBP', CURRENCY_DISPLAY_TEMPLATED);
-                    $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format(5))]);
+                    $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format(5, 0))]);
 
                     $map += [
                         'WRITTEN_PRICE' => $written_price,
@@ -1501,6 +1501,7 @@ class Hook_addon_registry_ecommerce
             'EMAIL' => lorem_word(),
             'ENCODED_REASON' => lorem_phrase(),
             'LOGIN' => lorem_phrase(),
+            '_QUOTA' => placeholder_number(),
             'QUOTA' => placeholder_number(),
             'MAIL_SERVER' => lorem_phrase(),
             'PASSWORD' => lorem_phrase(),
@@ -1521,6 +1522,7 @@ class Hook_addon_registry_ecommerce
     {
         return do_lorem_template('ECOM_PRODUCT_QUOTA_MAIL', [
             'ENCODED_REASON' => lorem_phrase(),
+            '_QUOTA' => placeholder_number(),
             'QUOTA' => placeholder_number(),
             'EMAIL' => lorem_word(),
             'QUOTA_URL' => placeholder_url(),

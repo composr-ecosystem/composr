@@ -165,7 +165,7 @@ class Hook_content_meta_aware_calendar_type extends Hook_CMA
         $keymap = [];
 
         $num_entries = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)', ['e_type' => $row['id'], 'validated' => 1]);
-        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+        $keymap['entry_count'] = escape_html(integer_format($num_entries, 0));
 
         return $keymap;
     }

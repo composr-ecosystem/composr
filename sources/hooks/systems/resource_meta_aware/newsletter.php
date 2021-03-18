@@ -145,7 +145,7 @@ class Hook_resource_meta_aware_newsletter extends Hook_CMA
         $keymap = [];
 
         $num_subscribers = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribe', 'COUNT(*)', ['newsletter_id' => $row['id']]);
-        $keymap['entry_count'] = escape_html(integer_format($num_subscribers));
+        $keymap['entry_count'] = escape_html(integer_format($num_subscribers, 0));
 
         return $keymap;
     }

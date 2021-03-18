@@ -655,7 +655,7 @@ abstract class EmailIntegration
             $filedata = $attachment['data'];
 
             if (($max_attachments_per_post !== null) && ($max_attachments_per_post <= $num_attachments_handed)) {
-                $errors[] = do_lang('MAIL_INTEGRATION_ATTACHMENT_TOO_MANY', integer_format($num_attachments_handed), integer_format($max_attachments_per_post));
+                $errors[] = do_lang('MAIL_INTEGRATION_ATTACHMENT_TOO_MANY', integer_format($num_attachments_handed, 0), integer_format($max_attachments_per_post, 0));
                 break;
             }
 

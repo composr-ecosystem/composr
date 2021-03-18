@@ -460,11 +460,11 @@ PHP;
 
                 if (addon_installed('points')) {
                     require_code('points');
-                    $_entry[] = escape_html(integer_format(total_points($row['id'])));
+                    $_entry[] = escape_html(integer_format(total_points($row['id']), 0));
                 }
 
                 if (addon_installed('cns_forum')) {
-                    $_entry[] = escape_html(integer_format($row['m_cache_num_posts']));
+                    $_entry[] = escape_html(integer_format($row['m_cache_num_posts'], 0));
                 }
 
                 if (get_option('use_lastondate') == '1') {

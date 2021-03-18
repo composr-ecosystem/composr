@@ -164,7 +164,7 @@ class Hook_content_meta_aware_chat extends Hook_CMA
         $keymap = [];
 
         $num_in_room = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'chat_active WHERE room_id=' . strval($row['id']) . ' date_and_time<' . strval(time() - CHAT_ACTIVITY_PRUNE));
-        $keymap['entry_count'] = escape_html(integer_format($num_in_room));
+        $keymap['entry_count'] = escape_html(integer_format($num_in_room, 0));
 
         return $keymap;
     }

@@ -116,7 +116,7 @@ class Hook_deep_clean
                 $start += $max;
             } while (!empty($rows));
 
-            $result = do_lang('CLEANED_X_FIELDS', integer_format($total), integer_format($total_changed));
+            $result = do_lang('CLEANED_X_FIELDS', integer_format($total, 0), integer_format($total_changed, 0));
 
             return ['', $result, '', ''];
         }

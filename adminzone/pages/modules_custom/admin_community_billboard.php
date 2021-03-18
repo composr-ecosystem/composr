@@ -282,6 +282,7 @@ class Module_admin_community_billboard extends Standard_crud_module
         $text = do_template('COMMUNITY_BILLBOARD_DETAILS', [
             '_GUID' => 'dcc7a8b027d450a3c17c79b23b39cd87',
             'USERNAME' => $username,
+            '_DAYS_ORDERED' => strval($myrow['days']),
             'DAYS_ORDERED' => integer_format($myrow['days']),
             'DATE_RAW' => strval($date_raw),
             'DATE' => $date,

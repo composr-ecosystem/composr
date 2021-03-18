@@ -280,8 +280,10 @@ class Hook_addon_registry_wiki
             'URL' => placeholder_url(),
             'MY_CHILD_POSTS' => placeholder_number(),
             'MY_CHILD_CHILDREN' => placeholder_number(),
+            '_MY_CHILD_POSTS' => placeholder_number(),
+            '_MY_CHILD_CHILDREN' => placeholder_number(),
             'CHILD' => lorem_phrase(),
-            'BODY_CONTENT' => placeholder_number(),
+            'BODY_CONTENT' => lorem_phrase(),
         ];
 
         return lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
@@ -289,12 +291,14 @@ class Hook_addon_registry_wiki
             'SHOW_POSTS' => placeholder_id(),
             'ID' => placeholder_id(),
             'CHAIN' => placeholder_id(),
+            '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
             'STAFF_ACCESS' => '1',
             'DESCRIPTION' => lorem_paragraph_html(),
             'TITLE' => lorem_title(),
             'CHILDREN' => $children,
             'POSTS' => $posts,
+            '_NUM_POSTS' => placeholder_number(),
             'NUM_POSTS' => placeholder_number(),
             'BUTTONS' => placeholder_button(),
         ]), null, '', true);

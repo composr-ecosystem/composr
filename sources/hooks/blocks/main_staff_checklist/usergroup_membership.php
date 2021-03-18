@@ -51,7 +51,7 @@ class Hook_checklist_usergroup_membership
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('USERGROUP_APPLICATIONS'),
-            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($cnt))),
+            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($cnt, 0))),
         ]);
         return [[$tpl, null, $cnt, null]];
     }

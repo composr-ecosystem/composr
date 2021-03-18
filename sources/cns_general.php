@@ -412,7 +412,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
     if (($need === null) || (in_array('posts_details', $need))) {
         $days_joined = intval(round((time() - $join_time) / 60 / 60 / 24));
         $total_posts = $GLOBALS['FORUM_DRIVER']->get_num_forum_posts();
-        $member_info['posts_details'] = do_lang_tempcode('_COUNT_POSTS', escape_html(integer_format($post_count)), escape_html(float_format(floatval($post_count) / floatval(($days_joined == 0) ? 1 : $days_joined))), [escape_html(float_format(floatval(100 * $post_count) / floatval(($total_posts == 0) ? 1 : $total_posts)))]);
+        $member_info['posts_details'] = do_lang_tempcode('_COUNT_POSTS', escape_html(integer_format($post_count, 0)), escape_html(float_format(floatval($post_count) / floatval(($days_joined == 0) ? 1 : $days_joined))), [escape_html(float_format(floatval(100 * $post_count) / floatval(($total_posts == 0) ? 1 : $total_posts)))]);
     }
 
     // Find photo

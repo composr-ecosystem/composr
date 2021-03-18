@@ -58,7 +58,7 @@ if ($credits == 0) {
     $help_url = build_url(['page' => 'tut_software_feedback']);
     $no_credits_link = do_lang_tempcode('SHOW_CREDITS_NO_CREDITS_LINK', escape_html($help_url->evaluate()));
 } else {
-    $credits_msg = do_lang_tempcode('SHOW_CREDITS_SOME_CREDITS', escape_html(integer_format($credits)), escape_html($professional_support_url->evaluate()));
+    $credits_msg = do_lang_tempcode('SHOW_CREDITS_SOME_CREDITS', escape_html(integer_format($credits, 0)), escape_html($professional_support_url->evaluate()));
     $no_credits_link = new Tempcode();
 }
 
@@ -76,7 +76,7 @@ foreach ($topic_filters as $topic_filter) {
 }
 $tickets_url = build_url(['page' => 'tickets', 'type' => 'browse'], get_module_zone('tickets'));
 $tickets_open = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT ' . $query, false, true);
-$tickets_open_msg = do_lang_tempcode('SHOW_CREDITS_TICKETS_OPEN', escape_html(integer_format($tickets_open)), escape_html($tickets_url->evaluate()));
+$tickets_open_msg = do_lang_tempcode('SHOW_CREDITS_TICKETS_OPEN', escape_html(integer_format($tickets_open, 0)), escape_html($tickets_url->evaluate()));
 
 $tpl = do_template('SHOW_CREDITS_BAR', [
     '_GUID' => '43e6e18c180cda2e6f4627d2a2bb8677',
@@ -84,11 +84,12 @@ $tpl = do_template('SHOW_CREDITS_BAR', [
     'WHATS_THIS' => $whats_this,
 
     'CREDITS_MSG' => $credits_msg,
-    'CREDITS' => integer_format($credits),
     '_CREDITS' => strval($credits),
+    'CREDITS' => integer_format($credits),
     'NO_CREDITS_LINK' => $no_credits_link,
 
     'TICKETS_OPEN_MSG' => $tickets_open_msg,
+    '_TICKETS_OPEN' => strval($tickets_open),
     'TICKETS_OPEN' => integer_format($tickets_open),
 ]);
 $tpl->evaluate_echo();

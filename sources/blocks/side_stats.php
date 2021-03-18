@@ -79,64 +79,86 @@ PHP;
         $on_forum = $GLOBALS['FORUM_DRIVER']->get_num_users_forums();
         if ($on_forum !== null) {
             if (get_option('activity_show_stats_count_users_online') == '1') {
+                $users_site = get_num_users_site();
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => '5ac97313d4c83e8afdeec09a48cea030',
                     'KEY' => do_lang_tempcode('COUNT_ONSITE'),
-                    'VALUE' => integer_format(get_num_users_site()),
+                    'RAW_VALUE' => strval($users_site),
+                    'VALUE' => integer_format($users_site, 0),
                 ]));
             }
             if (get_option('activity_show_stats_count_users_online_record') == '1') {
+                $users_peak = get_num_users_peak();
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => 'dc6d0893cf98703a951da168c6a9d0ac',
                     'KEY' => do_lang_tempcode('COUNT_ONSITE_RECORD'),
-                    'VALUE' => integer_format(get_num_users_peak()),
+                    'RAW_VALUE' => strval($users_peak),
+                    'VALUE' => integer_format($users_peak, 0),
                 ]));
             }
             if (get_option('activity_show_stats_count_users_online_forum') == '1') {
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => '14f2fdbf59e86c34d93cbf16bed3f0eb',
                     'KEY' => do_lang_tempcode('COUNT_ONFORUMS'),
-                    'VALUE' => integer_format($on_forum),
+                    'RAW_VALUE' => strval($on_forum),
+                    'VALUE' => integer_format($on_forum, 0),
                 ]));
             }
             $title = do_lang_tempcode('USERS_ONLINE');
         } else {
             if (get_option('activity_show_stats_count_users_online') == '1') {
+                $users_site = get_num_users_site();
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => '9c9760b2ed9e985e96b53c91c511e84e',
                     'KEY' => do_lang_tempcode('USERS_ONLINE'),
-                    'VALUE' => integer_format(get_num_users_site()),
+                    'RAW_VALUE' => strval($users_site),
+                    'VALUE' => integer_format($users_site, 0),
                 ]));
             }
             if (get_option('activity_show_stats_count_users_online_record') == '1') {
+                $users_peak = get_num_users_peak();
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => 'd18068d747fe1fe364042133e4b3ba84',
                     'KEY' => do_lang_tempcode('USERS_ONLINE_RECORD'),
-                    'VALUE' => integer_format(get_num_users_peak()),
+                    'RAW_VALUE' => strval($users_peak),
+                    'VALUE' => integer_format($users_peak, 0),
                 ]));
             }
             $title = do_lang_tempcode('ACTIVITY');
         }
         if (addon_installed('stats')) {
             if (get_option('activity_show_stats_count_page_views_today') === '1') {
+                $today = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => 'fc9760b2ed9e985e96b53c91c511e84e',
                     'KEY' => do_lang_tempcode('PAGE_VIEWS_TODAY'),
-                    'VALUE' => integer_format($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24))),
+                    'RAW_VALUE' => strval($today),
+                    'VALUE' => integer_format($today, 0),
                 ]));
             }
             if (get_option('activity_show_stats_count_page_views_this_week') === '1') {
+                $week = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * 7));
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => 'gc9760b2ed9e985e96b53c91c511e84e',
                     'KEY' => do_lang_tempcode('PAGE_VIEWS_THIS_WEEK'),
-                    'VALUE' => integer_format($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * 7))),
+                    'RAW_VALUE' => strval($week),
+                    'VALUE' => integer_format($week, 0),
                 ]));
             }
             if (get_option('activity_show_stats_count_page_views_this_month') === '1') {
+                $month = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * 31));
+
                 $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                     '_GUID' => 'hc9760b2ed9e985e96b53c91c511e84e',
                     'KEY' => do_lang_tempcode('PAGE_VIEWS_THIS_MONTH'),
-                    'VALUE' => integer_format($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * 31))),
+                    'RAW_VALUE' => strval($month),
+                    'VALUE' => integer_format($month, 0),
                 ]));
             }
         }

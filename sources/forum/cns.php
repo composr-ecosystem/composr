@@ -1712,7 +1712,7 @@ class Forum_driver_cns extends Forum_driver_base
                     require_code('failure_spammers');
                     add_ip_ban($ip, do_lang('SPAM_REPORT_SITE_FLOODING'));
                     require_code('notifications');
-                    dispatch_notification('auto_ban', null, do_lang('AUTO_BAN_SUBJECT', $ip, null, null, get_site_default_lang()), do_notification_lang('AUTO_BAN_DOS_MESSAGE', $ip, integer_format($count_threshold), integer_format($time_threshold), get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
+                    dispatch_notification('auto_ban', null, do_lang('AUTO_BAN_SUBJECT', $ip, null, null, get_site_default_lang()), do_notification_lang('AUTO_BAN_DOS_MESSAGE', $ip, integer_format($count_threshold, 0), integer_format($time_threshold), get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
                     syndicate_spammer_report($ip, is_guest() ? '' : $GLOBALS['FORUM_DRIVER']->get_username(get_member()), $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), do_lang('SPAM_REPORT_SITE_FLOODING'));
                 }
                 if (!function_exists('require_lang')) {

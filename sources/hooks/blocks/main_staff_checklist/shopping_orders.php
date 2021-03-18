@@ -54,7 +54,7 @@ class Hook_checklist_shopping_orders
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('ORDERS'),
-            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($to_dispatch_order_cnt))),
+            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($to_dispatch_order_cnt, 0))),
         ]);
         return [[$tpl, null, $to_dispatch_order_cnt, null]];
     }

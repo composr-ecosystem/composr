@@ -158,9 +158,9 @@ class Hook_content_meta_aware_gallery extends Hook_CMA
 
         list($num_children, $num_images, $num_videos) = get_recursive_gallery_details($row['name']);
 
-        $keymap['subcategory_count'] = escape_html(integer_format($num_children));
-        $keymap['image_count'] = escape_html(integer_format($num_images));
-        $keymap['video_count'] = escape_html(integer_format($num_videos));
+        $keymap['subcategory_count'] = escape_html(integer_format($num_children, 0));
+        $keymap['image_count'] = escape_html(integer_format($num_images, 0));
+        $keymap['video_count'] = escape_html(integer_format($num_videos, 0));
 
         return $keymap;
     }

@@ -58,8 +58,9 @@ class Hook_preview_poll
                     'ANSWER' => $answer,
                     'ANSWER_PLAIN' => $answer_plain,
                     'WIDTH' => strval($width),
-                    'VOTES' => integer_format($votes),
                     '_VOTES' => strval($votes),
+                    'VOTES' => integer_format($votes, 0),
+                    '_TOTAL_VOTES' => '0',
                     'TOTAL_VOTES' => '0',
                 ]));
                 $i++;

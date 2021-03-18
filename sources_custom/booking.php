@@ -542,12 +542,12 @@ function make_booking_request_printable(array $request) : array
             'PRICE' => float_format($bookable_row[0]['price']),
             'CATEGORISATION' => get_translated_text($bookable_row[0]['categorisation']),
             'DESCRIPTION' => get_translated_tempcode('bookable', $bookable_row[0], 'the_description'),
-            'QUANTITY' => integer_format($_part['quantity']),
             '_QUANTITY' => strval($_part['quantity']),
-            'START' => get_timezoned_date($start, false),
-            'END' => ($start == $end) ? '' : get_timezoned_date($end, false),
+            'QUANTITY' => integer_format($_part['quantity']),
             '_START' => strval($start),
             '_END' => strval($end),
+            'START' => get_timezoned_date($start, false),
+            'END' => ($start == $end) ? '' : get_timezoned_date($end, false),
             'NOTES' => $_part['notes'],
             'SUPPLEMENTS' => [],
         ];
@@ -558,8 +558,8 @@ function make_booking_request_printable(array $request) : array
                 'SUPPLEMENT_TITLE' => get_translated_tempcode('bookable_supplement', $supplement_row[0], 'title'),
                 'SUPPLEMENT_PRICE' => float_format($supplement_row[0]['price']),
                 'SUPPLEMENT_PRICE_IS_PER_PERIOD' => $supplement_row[0]['price_is_per_period'] == 1,
-                'SUPPLEMENT_QUANTITY' => integer_format($supplement['quantity']),
                 '_SUPPLEMENT_QUANTITY' => strval($supplement['quantity']),
+                'SUPPLEMENT_QUANTITY' => integer_format($supplement['quantity']),
                 'SUPPLEMENT_NOTES' => $supplement['notes'],
             ];
         }

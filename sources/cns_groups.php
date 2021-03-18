@@ -58,7 +58,7 @@ function render_group_box(array $row, string $zone = '_SEARCH', bool $give_conte
 
     require_code('cns_groups2');
     $num_members = cns_get_group_members_raw_count($row['id']);
-    $entry_details = do_lang_tempcode('GROUP_NUM_MEMBERS', escape_html(integer_format($num_members)));
+    $entry_details = do_lang_tempcode('GROUP_NUM_MEMBERS', escape_html(integer_format($num_members, 0)));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'efeac1c8465974edd27bb0d805c4fbe0',

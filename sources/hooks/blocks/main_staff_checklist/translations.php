@@ -56,7 +56,7 @@ class Hook_checklist_translations
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('TRANSLATE_CONTENT'),
-            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($cnt))),
+            'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($cnt, 0))),
         ]);
         return [[$tpl, null, $cnt, null]];
     }

@@ -1043,7 +1043,8 @@ class Forum_driver_ipb3 extends Forum_driver_base
                                 'FULL' => $url,
                                 'FILENAME' => $attachment['attach_file'],
                                 'CLEAN_SIZE' => clean_file_size($attachment['attach_filesize']),
-                                'NUM_DOWNLOADS' => integer_format($attachment['attach_hits']),
+                                '_NUM_DOWNLOADS' => strval($attachment['attach_hits']),
+                                'NUM_DOWNLOADS' => integer_format($attachment['attach_hits'], 0),
                             ]);
                         }
                     } else { // Must be an inline image

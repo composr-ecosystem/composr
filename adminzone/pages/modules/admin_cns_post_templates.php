@@ -60,7 +60,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
         }
 
         return [
-            'browse' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('POST_TEMPLATES'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 'COUNT(*)'))))), 'menu/adminzone/structure/forum/post_templates'],
+            'browse' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('POST_TEMPLATES'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 'COUNT(*)')), 0)))), 'menu/adminzone/structure/forum/post_templates'],
         ] + parent::get_entry_points();
     }
 

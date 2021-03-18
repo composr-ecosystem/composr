@@ -376,7 +376,7 @@ class Module_points
                     if (mt_rand(0, 100) < $gift_reward_chance && floatval($gift_reward_chance) / 100.0 * $gift_reward_amount >= floatval($amount)) {
                         system_gift_transfer(do_lang('_PR_LUCKY'), $gift_reward_amount, $member_id_viewing, $anonymous == 0 /*if original transaction anonymous we can't log this, otherwise could be worked out via some cross-checking*/);
 
-                        $message = do_lang_tempcode('PR_LUCKY', escape_html(integer_format($gift_reward_amount)));
+                        $message = do_lang_tempcode('PR_LUCKY', escape_html(integer_format($gift_reward_amount, 0)));
                     } else {
                         $message = do_lang_tempcode('PR_NORMAL');
                     }
@@ -396,7 +396,7 @@ class Module_points
                     $left = available_points($member_id_of);
 
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of);
-                    $message = do_lang_tempcode('MEMBER_HAS_BEEN_CHARGED', escape_html($username), escape_html(integer_format($amount)), escape_html(integer_format($left)));
+                    $message = do_lang_tempcode('MEMBER_HAS_BEEN_CHARGED', escape_html($username), escape_html(integer_format($amount, 0)), escape_html(integer_format($left, 0)));
 
                     $worked = true;
                 } else {

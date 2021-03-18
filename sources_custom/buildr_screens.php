@@ -104,14 +104,22 @@ function output_inventory_screen(int $member_id) : object
         $bribable = $item_row['bribable'];
         $healthy = $item_row['healthy'];
 
-        $inventory->attach(do_template('W_INVENTORY_ITEM', ['_GUID' => '6850866532d2e5a65ca1b74f5ed8e49a', 'HEALTHY' => $healthy == 1, 'BRIBABLE' => $bribable == 1, 'PIC_URL' => $pic_url, 'ITEM_NAME' => $myrow['item_name'], 'DESCRIPTION' => $description, 'ITEM_COUNT' => integer_format($myrow['item_count'])]));
+        $inventory->attach(do_template('W_INVENTORY_ITEM', [
+            '_GUID' => '6850866532d2e5a65ca1b74f5ed8e49a',
+            'HEALTHY' => $healthy == 1,
+            'BRIBABLE' => $bribable == 1,
+            'PIC_URL' => $pic_url,
+            'ITEM_NAME' => $myrow['item_name'],
+            'DESCRIPTION' => $description,
+            'ITEM_COUNT' => integer_format($myrow['item_count'], 0),
+        ]));
     }
 
     return do_template('W_INVENTORY_SCREEN', [
         '_GUID' => '74dd29919831eb75212b9805511fdca8',
         'TITLE' => $title,
         'USERNAME' => $username,
-        'HEALTH' => integer_format($health),
+        'HEALTH' => integer_format($health, 0),
         'AVATAR' => $avatar,
         'PHOTO' => $photo,
         'INVENTORY' => $inventory,
@@ -223,7 +231,15 @@ function output_room_screen(int $member_id) : object
             $member_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($id, true);
         }
 
-        $members->attach(do_template('W_MAIN_MEMBER', ['_GUID' => '83d9f930b68d4988b009b3c06ef783e9', 'HEALTH' => integer_format($health), 'ID' => strval($id), 'MEMBER_URL' => $member_url, 'STYLE' => $style, 'NAME' => $name, 'AUX' => $aux]));
+        $members->attach(do_template('W_MAIN_MEMBER', [
+            '_GUID' => '83d9f930b68d4988b009b3c06ef783e9',
+            'HEALTH' => integer_format($health, 0),
+            'ID' => strval($id),
+            'MEMBER_URL' => $member_url,
+            'STYLE' => $style,
+            'NAME' => $name,
+            'AUX' => $aux,
+        ]));
     }
 
     $rows = $GLOBALS['SITE_DB']->query_select('w_items', ['*'], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'price' => 0], 'ORDER BY name');
@@ -242,7 +258,7 @@ function output_room_screen(int $member_id) : object
         }
         $edit_item_copy_access = ((has_privilege($member_id, 'administer_buildr')) || ($myrow['copy_owner'] == $member_id));
 
-        $count = ($myrow['not_infinite'] == 1) ? make_string_tempcode(integer_format($myrow['i_count'])) : do_lang_tempcode('W_INFINITE');
+        $count = ($myrow['not_infinite'] == 1) ? make_string_tempcode(integer_format($myrow['i_count'], 0)) : do_lang_tempcode('W_INFINITE');
 
         $picture_url = $myrow2['picture_url'];
         if ((url_is_local($picture_url)) && ($picture_url != '')) {
@@ -280,7 +296,7 @@ function output_room_screen(int $member_id) : object
         }
         $edit_item_copy_access = ((has_privilege($member_id, 'administer_buildr')) || ($myrow['copy_owner'] == $member_id));
 
-        $count = ($myrow['not_infinite'] == 1) ? make_string_tempcode(integer_format($myrow['i_count'])) : do_lang_tempcode('W_INFINITE');
+        $count = ($myrow['not_infinite'] == 1) ? make_string_tempcode(integer_format($myrow['i_count'], 0)) : do_lang_tempcode('W_INFINITE');
 
         $items_sale->attach(do_template('W_MAIN_ITEM', [
             '_GUID' => 'ab12f8373378abe5852f1d8ee0a05f27',
@@ -293,7 +309,7 @@ function output_room_screen(int $member_id) : object
             'AUX' => $aux,
             'NAME' => $myrow['name'],
             'COUNT' => $count,
-            'PRICE' => integer_format($myrow['price']),
+            'PRICE' => integer_format($myrow['price'], 0),
         ]));
     }
 

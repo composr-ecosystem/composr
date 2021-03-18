@@ -191,6 +191,8 @@ class Hook_addon_registry_community_billboard
     public function tpl_preview__community_billboard_screen() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', [
+            '_QUEUE' => placeholder_number(),
+            '_DAYS' => placeholder_number(),
             'QUEUE' => placeholder_number(),
             'DAYS' => placeholder_number(),
         ]), null, '', true);
@@ -209,7 +211,8 @@ class Hook_addon_registry_community_billboard
 
         $about_current = do_lorem_template('COMMUNITY_BILLBOARD_DETAILS', [
             'USERNAME' => lorem_word(),
-            'DAYS_ORDERED' => lorem_phrase(),
+            '_DAYS_ORDERED' => placeholder_number(),
+            'DAYS_ORDERED' => placeholder_number(),
             'DATE_RAW' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
         ]);

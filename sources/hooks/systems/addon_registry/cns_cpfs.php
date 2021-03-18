@@ -165,6 +165,7 @@ class Hook_addon_registry_cns_cpfs
         $lines = [];
         foreach (placeholder_array() as $value) {
             $lines[] = [
+                '_CNT' => placeholder_number(),
                 'CNT' => placeholder_number(),
                 'VAL' => lorem_phrase(),
             ];

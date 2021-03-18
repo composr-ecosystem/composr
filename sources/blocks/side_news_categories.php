@@ -125,7 +125,12 @@ PHP;
             list($category, $count) = $_category;
             $url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $category['id']], get_module_zone('news'));
             $name = $category['_nc_title'];
-            $_categories[] = ['URL' => $url, 'NAME' => $name, 'COUNT' => integer_format($count)];
+            $_categories[] = [
+                'URL' => $url,
+                'NAME' => $name,
+                '_COUNT' => strval($count),
+                'COUNT' => integer_format($count, 0),
+            ];
         }
 
         return do_template('BLOCK_SIDE_NEWS_CATEGORIES', [

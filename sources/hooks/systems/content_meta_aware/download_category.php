@@ -150,8 +150,8 @@ class Hook_content_meta_aware_download_category extends Hook_CMA
         $child_counts = count_download_category_children($row['id']);
         $num_children = $child_counts['num_children_children'];
         $num_entries = $child_counts['num_downloads_children'];
-        $keymap['subcategory_count'] = escape_html(integer_format($num_children));
-        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+        $keymap['subcategory_count'] = escape_html(integer_format($num_children, 0));
+        $keymap['entry_count'] = escape_html(integer_format($num_entries, 0));
 
         return $keymap;
     }

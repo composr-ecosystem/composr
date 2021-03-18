@@ -534,8 +534,10 @@ class Module_wiki
                     'URL' => $url,
                     'CHILD' => $child_title,
 
-                    'MY_CHILD_POSTS' => integer_format($my_child_posts),
-                    'MY_CHILD_CHILDREN' => integer_format($my_child_children),
+                    '_MY_CHILD_POSTS' => strval($my_child_posts),
+                    '_MY_CHILD_CHILDREN' => strval($my_child_children),
+                    'MY_CHILD_POSTS' => integer_format($my_child_posts, 0),
+                    'MY_CHILD_CHILDREN' => integer_format($my_child_children, 0),
                     'BODY_CONTENT' => (trim($child_description) != '') ? strval(strlen($child_description)) : '0',
                     'SHOW_POSTS' => $myrow['show_posts'] == 1,
                 ];
@@ -623,13 +625,15 @@ class Module_wiki
             'SHOW_POSTS' => $page['show_posts'] == 1,
             'ID' => strval($id),
             'CHAIN' => $chain,
-            'VIEWS' => integer_format($page['wiki_views']),
+            '_VIEWS' => strval($page['wiki_views']),
+            'VIEWS' => integer_format($page['wiki_views'], 0),
             'STAFF_ACCESS' => $staff_access,
             'DESCRIPTION' => $description,
             'TITLE' => $this->title,
             'CHILDREN' => $children,
             'POSTS' => $posts,
-            'NUM_POSTS' => integer_format($num_posts),
+            '_NUM_POSTS' => strval($num_posts),
+            'NUM_POSTS' => integer_format($num_posts, 0),
             'BUTTONS' => $buttons,
         ]);
     }

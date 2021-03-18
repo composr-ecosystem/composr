@@ -73,10 +73,10 @@ class Hook_points_posts
         $points_posting = intval(get_option('points_posting'));
 
         return [
-            'LABEL' => do_lang('COUNT_POSTS'),
-            'COUNT' => integer_format($post_count),
-            'POINTS_EACH' => integer_format($points_posting),
-            'POINTS_TOTAL' => integer_format($post_count * $points_posting)
+            'label' => do_lang('COUNT_POSTS'),
+            'count' => $post_count,
+            'points_each' => $points_posting,
+            'points_total' => $post_count * $points_posting
         ];
     }
 }

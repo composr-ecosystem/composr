@@ -476,6 +476,7 @@ class Hook_addon_registry_search
 
         return lorem_globalise(do_lorem_template('SEARCH_FORM_SCREEN', [
             'SEARCH_TERM' => lorem_word_2(),
+            '_NUM_RESULTS' => placeholder_number(),
             'NUM_RESULTS' => placeholder_number(),
             'EXTRA_SORT_FIELDS' => placeholder_array(0),
             'USER_LABEL' => lorem_word(),

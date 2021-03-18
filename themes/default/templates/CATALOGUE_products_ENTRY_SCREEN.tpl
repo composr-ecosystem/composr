@@ -59,7 +59,7 @@
 				<p class="product-ids sku">{!ECOM_CAT_sku}: <kbd>{FIELD_1}</kbd>{$,Product code}</p>
 			{+END}
 			{+START,IF_NON_EMPTY,{FIELD_3}}
-				<p class="stock-level">{!STOCK}: <kbd>{$NUMBER_FORMAT*,{$STOCK_CHECK,{ID}}}</kbd>{$,Stock level}</p>
+				<p class="stock-level">{!STOCK}: <kbd>{$INTEGER_FORMAT*,{$STOCK_CHECK,{ID}},0}</kbd>{$,Stock level}</p>
 			{+END}
 
 			{CART_BUTTONS}

@@ -483,7 +483,7 @@ class Module_admin_quiz
                 foreach ($all_answers as $bits => $count) {
                     list($answer, $i) = unserialize($bits);
 
-                    $answers->attach(paragraph(do_lang_tempcode('QUIZ_ANSWER_RESULT', escape_html($answer), escape_html(integer_format($count)), escape_html(integer_format($i + 1)))));
+                    $answers->attach(paragraph(do_lang_tempcode('QUIZ_ANSWER_RESULT', escape_html($answer), escape_html(integer_format($count, 0)), escape_html(integer_format($i + 1)))));
                 }
                 if ($answers->is_empty()) {
                     $answers = do_lang_tempcode('FREE_ENTRY_ANSWER');

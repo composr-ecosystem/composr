@@ -50,7 +50,14 @@ function results_launcher(object $title, string $page, int $category_id, int $ma
         $num_pages = intval(ceil(floatval($max_rows) / floatval($max)));
         if ($num_pages > $max_page_links) {
             $url_stub = build_url(['page' => $page, 'type' => $type, 'id' => $category_id], '_SELF');
-            $part->attach(do_template('RESULTS_LAUNCHER_CONTINUE', ['_GUID' => '0a55d3c1274618c16bd6d8d2cf36676c', 'TITLE' => $title, 'MAX' => strval($max), 'NUM_PAGES' => integer_format($num_pages), 'URL_STUB' => $url_stub]));
+            $part->attach(do_template('RESULTS_LAUNCHER_CONTINUE', [
+                '_GUID' => '0a55d3c1274618c16bd6d8d2cf36676c',
+                'TITLE' => $title,
+                'MAX' => strval($max),
+                '_NUM_PAGES' => strval($num_pages),
+                'NUM_PAGES' => integer_format($num_pages),
+                'URL_STUB' => $url_stub,
+            ]));
         }
 
         $out->attach(do_template('RESULTS_LAUNCHER_WRAP', ['_GUID' => 'c1c01ee07c456832e7e66a03f26c2288', 'PART' => $part]));

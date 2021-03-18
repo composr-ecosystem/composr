@@ -51,7 +51,7 @@ class Hook_checklist_unvalidated
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_VALIDATE', escape_html_tempcode($url)),
-            'INFO' => do_lang_tempcode('UNVALIDATED_ENTRIES', escape_html(integer_format($num_unvalidated_1)), escape_html(integer_format($num_unvalidated_2))),
+            'INFO' => do_lang_tempcode('UNVALIDATED_ENTRIES', escape_html(integer_format($num_unvalidated_1, 0)), escape_html(integer_format($num_unvalidated_2, 0))),
         ]);
 
         return [[$tpl, null, $num_unvalidated_1, null]];

@@ -90,7 +90,7 @@ function opensearch_script()
                 if ($i != 0) {
                     echo ',';
                 }
-                echo '"' . php_addslashes(do_lang('NUM_RESULTS', integer_format($suggestion))) . '"';
+                echo '"' . php_addslashes(do_lang('NUM_RESULTS', integer_format($suggestion, 0))) . '"';
             }
             echo '],' . "\n";
 

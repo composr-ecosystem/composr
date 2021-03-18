@@ -59,7 +59,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         }
 
         return [
-            'browse' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('MULTI_MODERATIONS'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_multi_moderations', 'COUNT(*)'))))), 'menu/adminzone/structure/forum/multi_moderations'],
+            'browse' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('MULTI_MODERATIONS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['FORUM_DB']->query_select_value('f_multi_moderations', 'COUNT(*)')), 0)))), 'menu/adminzone/structure/forum/multi_moderations'],
         ] + parent::get_entry_points();
     }
 

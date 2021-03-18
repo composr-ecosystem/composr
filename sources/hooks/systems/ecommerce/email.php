@@ -238,7 +238,7 @@ class Hook_ecommerce_email
     public function get_product_category() : ?array
     {
         return [
-            'category_name' => do_lang('EMAIL_ACCOUNTS', integer_format(intval(get_option('initial_quota')))),
+            'category_name' => do_lang('EMAIL_ACCOUNTS', integer_format(intval(get_option('initial_quota')), 0)),
             'category_description' => do_lang_tempcode('EMAIL_TYPES_DESCRIPTION', escape_html(integer_format(intval(get_option('initial_quota'))))),
             'category_image_url' => find_theme_image('icons/contact_methods/email'),
         ];
@@ -276,8 +276,8 @@ class Hook_ecommerce_email
                 }
 
                 $products['QUOTA_' . strval($amount)] = automatic_discount_calculation([
-                    'item_name' => do_lang('PURCHASE_QUOTA', integer_format($amount), integer_format($current_amount), integer_format($current_amount + $amount)),
-                    'item_description' => do_lang_tempcode('PURCHASE_QUOTA_DESCRIPTION', escape_html(integer_format($amount)), escape_html(integer_format($current_amount)), escape_html(integer_format($current_amount + $amount))),
+                    'item_name' => do_lang('PURCHASE_QUOTA', integer_format($amount, 0), integer_format($current_amount, 0), integer_format($current_amount + $amount, 0)),
+                    'item_description' => do_lang_tempcode('PURCHASE_QUOTA_DESCRIPTION', escape_html(integer_format($amount, 0)), escape_html(integer_format($current_amount, 0)), escape_html(integer_format($current_amount + $amount, 0))),
                     'item_image_url' => find_theme_image('icons/admin/add_to_category'),
 
                     'type' => PRODUCT_PURCHASE,
@@ -319,8 +319,8 @@ class Hook_ecommerce_email
                 }
 
                 $products[$protocol_label . '_' . $domain] = automatic_discount_calculation([
-                    'item_name' => do_lang('NEW' . $protocol_label . '_TITLE', $domain, integer_format($initial_quota)),
-                    'item_description' => do_lang_tempcode('NEW' . $protocol_label . '_DESCRIPTION', escape_html($domain), escape_html(integer_format($initial_quota))),
+                    'item_name' => do_lang('NEW' . $protocol_label . '_TITLE', $domain, integer_format($initial_quota, 0)),
+                    'item_description' => do_lang_tempcode('NEW' . $protocol_label . '_DESCRIPTION', escape_html($domain), escape_html(integer_format($initial_quota, 0))),
                     'item_image_url' => $image_url,
 
                     'type' => PRODUCT_PURCHASE,
@@ -571,13 +571,15 @@ class Hook_ecommerce_email
                 $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
                 $encoded_reason = do_lang('NEWPOP3_TITLE', $suffix);
                 require_code('notifications');
+                require_code('files');
                 $subject = do_lang('MAIL_REQUEST_POP3', null, null, null, get_site_default_lang());
                 $body = do_notification_template('ECOM_PRODUCT_POP3_MAIL', [
                     '_GUID' => '19022c49d0bdde39735245850d04fca7',
                     'EMAIL' => $email,
                     'ENCODED_REASON' => $encoded_reason,
                     'LOGIN' => $login,
-                    'QUOTA' => integer_format($initial_quota),
+                    '_QUOTA' => strval($initial_quota),
+                    'QUOTA' => clean_file_size($initial_quota * 1024 * 1024),
                     'MAIL_SERVER' => $mail_server,
                     'PASSWORD' => $password,
                     'PREFIX' => $prefix,
@@ -607,11 +609,13 @@ class Hook_ecommerce_email
                 $quota_url = get_option('quota_url');
                 $encoded_reason = do_lang('TITLE_QUOTA');
                 require_code('notifications');
+                require_code('files');
                 $subject = do_lang('MAIL_REQUEST_QUOTA', null, null, null, get_site_default_lang());
                 $body = do_notification_template('ECOM_PRODUCT_QUOTA_MAIL', [
                     '_GUID' => '5a4e0bb5e53e6ccf8e57581c377557f4',
                     'ENCODED_REASON' => $encoded_reason,
-                    'QUOTA' => integer_format($quota),
+                    '_QUOTA' => strval($quota),
+                    'QUOTA' => clean_file_size($quota * 1024 * 1024),
                     'EMAIL' => $prefix . $suffix,
                     'QUOTA_URL' => $quota_url,
                 ], null, false, null, '.txt', 'text');

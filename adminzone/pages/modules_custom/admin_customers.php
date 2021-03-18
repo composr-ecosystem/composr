@@ -735,7 +735,7 @@ class Module_admin_customers
                 $num_credits = $_fields['field_' . strval($cpf_id)];
             }
 
-            $text = paragraph(do_lang_tempcode('CUSTOMER_CURRENTLY_HAS', escape_html(integer_format($num_credits))));
+            $text = paragraph(do_lang_tempcode('CUSTOMER_CURRENTLY_HAS', escape_html(integer_format($num_credits, 0))));
         } else {
             $text = new Tempcode();
         }

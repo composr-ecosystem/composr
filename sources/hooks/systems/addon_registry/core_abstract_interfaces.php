@@ -540,7 +540,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'PAGE' => lorem_phrase(),
             'DID_MEAN_ZONE' => lorem_word(),
             'DID_MEAN_PAGE' => lorem_word(),
-            'DID_MEAN_ZONE_TITLE' => lorem_phase(),
+            'DID_MEAN_ZONE_TITLE' => lorem_phrase(),
             'ADD_REDIRECT_URL' => placeholder_url(),
             'SKIP_SITEMAP' => true,
         ]), null, '', true);
@@ -985,6 +985,7 @@ class Hook_addon_registry_core_abstract_interfaces
             $part->attach(do_lorem_template('RESULTS_LAUNCHER_CONTINUE', [
                 'TITLE' => lorem_phrase(),
                 'MAX' => placeholder_number(),
+                '_NUM_PAGES' => placeholder_number(),
                 'NUM_PAGES' => placeholder_number(),
                 'URL_STUB' => placeholder_url(),
             ]));

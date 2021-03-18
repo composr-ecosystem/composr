@@ -54,8 +54,16 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
     foreach ($hook_obs as $hook_ob) {
         $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
         if ($_array !== null) {
-            if (array_key_exists('POINTS_EACH', $_array)) {
-                $points_records[] = $_array;
+            if (array_key_exists('label', $_array)) {
+                $points_records[] = [
+                    'LABEL' => $_array['label'],
+                    '_COUNT' => strval($_array['count']),
+                    'COUNT' => integer_format($_array['count'], 0),
+                    '_POINTS_EACH' => strval($_array['points_each']),
+                    'POINTS_EACH' => integer_format($_array['points_each'], 0),
+                    '_POINTS_TOTAL' => strval($_array['points_total']),
+                    'POINTS_TOTAL' => integer_format($_array['points_total'], 0),
+                ];
             } else {
                 $additional_fields += $_array;
             }
@@ -98,7 +106,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
             $amount = $myrow['amount'];
             $reason = get_translated_tempcode('chargelog', $myrow, 'reason');
 
-            $charges->attach(results_entry([$date, integer_format($amount), $from_name, $to_name, $reason], true));
+            $charges->attach(results_entry([$date, integer_format($amount, 0), $from_name, $to_name, $reason], true));
         }
         $chargelog_details = results_table(do_lang_tempcode('CHARGES'), $start, 'charge_start', $max, 'charge_max', $max_rows, $header_row, $charges, $sortables, $sortable, $sort_order, 'charge_sort', null, [], null, 8, 'fgfdgfdgfdgfdger4gtrhg', false, 'tab--points');
     }
@@ -117,7 +125,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
                 '_GUID' => 'fa1749d5a803d86b1efbcfde2ad81702',
                 'GIVE_URL' => $give_url,
                 'MEMBER' => strval($member_id_of),
-                'VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : integer_format($viewer_gift_points_available),
+                '_VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : strval($viewer_gift_points_available),
+                'VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : integer_format($viewer_gift_points_available, 0),
             ]);
         } else {
             $give_template = do_lang_tempcode('PE_LACKING_GIFT_POINTS');
@@ -140,10 +149,15 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
 
             'POINTS_RECORDS' => $points_records,
 
-            'POINTS_USED' => integer_format($points_used),
-            'REMAINING' => integer_format($remaining),
-            'GIFT_POINTS_USED' => integer_format($gift_points_used),
-            'GIFT_POINTS_AVAILABLE' => integer_format($gift_points_available),
+            '_POINTS_USED' => strval($points_used),
+            'POINTS_USED' => integer_format($points_used, 0),
+            '_REMAINING' => strval($remaining),
+            'REMAINING' => integer_format($remaining, 0),
+            '_GIFT_POINTS_USED' => strval($gift_points_used),
+            'GIFT_POINTS_USED' => integer_format($gift_points_used, 0),
+            '_GIFT_POINTS_AVAILABLE' => strval($gift_points_available),
+            'GIFT_POINTS_AVAILABLE' => integer_format($gift_points_available, 0),
+
             'TO' => $to,
             'FROM' => $from,
             'CHARGELOG_DETAILS' => $chargelog_details,
@@ -211,7 +225,7 @@ function points_get_transactions(string $type, int $member_id_of, int $member_id
         $amount = $myrow['amount'];
         $reason = get_translated_tempcode('gifts', $myrow, 'reason');
 
-        $out->attach(results_entry([escape_html($date), escape_html(integer_format($amount)), $_from_name, $_to_name, $reason], false));
+        $out->attach(results_entry([escape_html($date), escape_html(integer_format($amount, 0)), $_from_name, $_to_name, $reason], false));
     }
     return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'gift_start_' . $type, $max, 'gift_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'gift_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
 }

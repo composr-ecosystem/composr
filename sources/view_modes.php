@@ -648,8 +648,8 @@ function display_webstandards_results(string $out, array $error, bool $preview_m
             $errorst->attach(do_template('WEBSTANDARDS_ERROR', [
                 '_GUID' => '2239470f4b9bd38fcb570689cecaedd2',
                 'I' => strval($j),
-                'LINE' => integer_format($_error['line']),
-                'POS' => integer_format($_error['pos']),
+                'LINE' => strval($_error['line']),
+                'POS' => strval($_error['pos']),
                 'ERROR' => $_error['error'],
             ]));
             $error_lines[$_error['line']] = 1;

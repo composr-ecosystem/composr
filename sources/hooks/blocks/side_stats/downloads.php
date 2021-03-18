@@ -37,19 +37,44 @@ class Hook_stats_downloads
         require_code('files');
         require_lang('downloads');
         require_code('downloads_stats');
-        $bits = new Tempcode();
 
+        $bits = new Tempcode();
         if (get_option('downloads_show_stats_count_total') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => 'ff2bd884d88ddc8c5a81cff897f99a5a', 'KEY' => do_lang_tempcode('COUNT_TOTAL'), 'VALUE' => integer_format(get_num_archive_downloads())]));
+            $archive_downloads = get_num_archive_downloads();
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => 'ff2bd884d88ddc8c5a81cff897f99a5a',
+                'KEY' => do_lang_tempcode('COUNT_TOTAL'),
+                'RAW_VALUE' => strval($archive_downloads),
+                'VALUE' => integer_format($archive_downloads, 0),
+            ]));
         }
         if (get_option('downloads_show_stats_count_archive') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '3d221f2145581a3af51c8948f28b7ac7', 'KEY' => do_lang_tempcode('COUNT_ARCHIVE'), 'VALUE' => get_download_archive_size()]));
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '3d221f2145581a3af51c8948f28b7ac7',
+                'KEY' => do_lang_tempcode('COUNT_ARCHIVE'),
+                'VALUE' => get_download_archive_size(),
+            ]));
         }
         if (get_option('downloads_show_stats_count_downloads') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '47c544ef053f9be47e2c48c3a694da1c', 'KEY' => do_lang_tempcode('COUNT_DOWNLOADS'), 'VALUE' => integer_format(get_num_downloads_downloaded())]));
+            $downloads_downloaded = get_num_downloads_downloaded();
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '47c544ef053f9be47e2c48c3a694da1c',
+                'KEY' => do_lang_tempcode('COUNT_DOWNLOADS'),
+                'RAW_VALUE' => strval($downloads_downloaded),
+                'VALUE' => integer_format($downloads_downloaded, 0),
+            ]));
         }
         if (get_option('downloads_show_stats_count_bandwidth') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => 'b2589ae83652953ece220267043d75c9', 'KEY' => do_lang_tempcode('COUNT_BANDWIDTH'), 'VALUE' => clean_file_size(get_download_bandwidth())]));
+            $download_bandwidth = get_download_bandwidth();
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => 'b2589ae83652953ece220267043d75c9',
+                'KEY' => do_lang_tempcode('COUNT_BANDWIDTH'),
+                'RAW_VALUE' => strval($download_bandwidth),
+                'VALUE' => clean_file_size($download_bandwidth),
+            ]));
         }
         if ($bits->is_empty_shell()) {
             return new Tempcode();

@@ -220,6 +220,7 @@ class Hook_addon_registry_points
                 'ID' => placeholder_id(),
                 'POINTS_URL' => placeholder_url(),
                 'PROFILE_URL' => placeholder_url(),
+                '_POINTS' => placeholder_number(),
                 'POINTS' => placeholder_number(),
                 'USERNAME' => lorem_phrase(),
                 'HAS_RANK_IMAGES' => true,
@@ -228,6 +229,7 @@ class Hook_addon_registry_points
 
         return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
             'URL' => placeholder_url(),
+            '_LIMIT' => placeholder_number(),
             'LIMIT' => placeholder_number(),
             'ROWS' => $out,
         ]), null, '', true);
@@ -250,12 +252,14 @@ class Hook_addon_registry_points
                     'ID' => placeholder_id(),
                     'POINTS_URL' => placeholder_url(),
                     'PROFILE_URL' => placeholder_url(),
+                    '_POINTS' => placeholder_number(),
                     'POINTS' => placeholder_number(),
                     'USERNAME' => lorem_phrase(),
                     'HAS_RANK_IMAGES' => true,
                 ]));
             }
             $out->attach(do_lorem_template('POINTS_LEADER_BOARD_WEEK', [
+                '_WEEK' => placeholder_number(),
                 'WEEK' => placeholder_number(),
                 'ROWS' => $week_tpl,
             ]));
@@ -309,12 +313,16 @@ class Hook_addon_registry_points
         $give_template = do_lorem_template('POINTS_GIVE', [
             'GIVE_URL' => placeholder_url(),
             'MEMBER' => placeholder_id(),
+            '_VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
             'VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
         ]);
 
         $points_records = [];
         $points_records[] = [
             'LABEL' => lorem_phrase(),
+            '_COUNT' => placeholder_number(),
+            '_POINTS_EACH' => placeholder_number(),
+            '_POINTS_TOTAL' => placeholder_number(),
             'COUNT' => placeholder_number(),
             'POINTS_EACH' => placeholder_number(),
             'POINTS_TOTAL' => placeholder_number(),
@@ -329,7 +337,11 @@ class Hook_addon_registry_points
             'GIFT_POINTS_USED' => placeholder_number(),
             'GIFT_POINTS_AVAILABLE' => placeholder_number(),
             'POINTS_GAINED_GIVEN' => placeholder_number(),
-            'DAYS_JOINED' => placeholder_number(),
+            '_POINTS_USED' => placeholder_number(),
+            '_REMAINING' => placeholder_number(),
+            '_GIFT_POINTS_USED' => placeholder_number(),
+            '_GIFT_POINTS_AVAILABLE' => placeholder_number(),
+            '_POINTS_GAINED_GIVEN' => placeholder_number(),
             'TO' => $to,
             'FROM' => $from,
             'CHARGELOG_DETAILS' => $chargelog_details,

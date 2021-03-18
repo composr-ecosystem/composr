@@ -37,7 +37,7 @@ class Hook_page_groupings_custom_comcode
         }
 
         return [
-            ['setup', 'menu/adminzone/setup/custom_comcode', ['admin_custom_comcode', ['type' => 'browse'], get_module_zone('admin_custom_comcode')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('custom_comcode:CUSTOM_COMCODE'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('custom_comcode', 'COUNT(*)')))))), 'custom_comcode:DOC_CUSTOM_COMCODE'],
+            ['setup', 'menu/adminzone/setup/custom_comcode', ['admin_custom_comcode', ['type' => 'browse'], get_module_zone('admin_custom_comcode')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('custom_comcode:CUSTOM_COMCODE'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('custom_comcode', 'COUNT(*)')), 0)))), 'custom_comcode:DOC_CUSTOM_COMCODE'],
         ];
     }
 }

@@ -1824,7 +1824,7 @@ Understanding of these symbols requires an understanding of basic boolean operat
 			<td>Put a space after commas in a comma-separated list.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$NUMBER_FORMAT,1234}</td>
+			<td>{$INTEGER_FORMAT,1234}</td>
 			<td>Make a number (integer) look nice, with commas etc (takes a Tempcode number)</td>
 		</tr>
 		<tr style="background: #FFDDDD">

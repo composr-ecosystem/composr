@@ -33,72 +33,106 @@ class Hook_stats_forum
         if (get_forum_type() != 'none') {
             $bits = new Tempcode();
             if (get_option('forum_show_stats_count_members') == '1') {
-                $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => 'a2dbcdec813d5a5edbb416bf087b4a97', 'KEY' => do_lang_tempcode('COUNT_MEMBERS'), 'VALUE' => integer_format($GLOBALS['FORUM_DRIVER']->get_num_members())]));
+                $num_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
+
+                $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                    '_GUID' => 'a2dbcdec813d5a5edbb416bf087b4a97',
+                    'KEY' => do_lang_tempcode('COUNT_MEMBERS'),
+                    'RAW_VALUE' => strval($num_members),
+                    'VALUE' => integer_format($num_members, 0),
+                ]));
             }
             if (get_forum_type() == 'cns') {
                 if (get_option('forum_show_stats_count_members_new_today') == '1') {
+                    $new_today = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval(time() - 60 * 60 * 24));
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => 'fd2e149f6921836e3c2ea1039644e2e7',
                         'KEY' => do_lang_tempcode('MEMBERS_NEW_TODAY'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval(time() - 60 * 60 * 24))),
+                        'RAW_VALUE' => strval($new_today),
+                        'VALUE' => integer_format($new_today, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_members_new_this_week') == '1') {
+                    $new_this_week = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval(time() - 60 * 60 * 24 * 7));
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => '10128b288dec4a578517de75cc9e404d',
                         'KEY' => do_lang_tempcode('MEMBERS_NEW_THIS_WEEK'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval(time() - 60 * 60 * 24 * 7))),
+                        'RAW_VALUE' => strval($new_this_week),
+                        'VALUE' => integer_format($new_this_week, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_members_new_this_month') == '1') {
+                    $new_this_month = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval(time() - 60 * 60 * 24 * 31));
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => 'b2dbcdec813d5a5edbb416bf087b4a97',
                         'KEY' => do_lang_tempcode('MEMBERS_NEW_THIS_MONTH'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval(time() - 60 * 60 * 24 * 31))),
+                        'RAW_VALUE' => strval($new_this_month),
+                        'VALUE' => integer_format($new_this_month, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_members_active_today') == '1') {
+                    $active_today = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_last_visit_time>' . strval(time() - 60 * 60 * 24));
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => 'cc9760b2ed9e985e96b53c91c511e84e',
                         'KEY' => do_lang_tempcode('MEMBERS_ACTIVE_TODAY'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_last_visit_time>' . strval(time() - 60 * 60 * 24))),
+                        'RAW_VALUE' => strval($active_today),
+                        'VALUE' => integer_format($active_today, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_members_active_this_week') == '1') {
+                    $active_this_week = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_last_visit_time>' . strval(time() - 60 * 60 * 24 * 7));
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => 'dc9760b2ed9e985e96b53c91c511e84e',
                         'KEY' => do_lang_tempcode('MEMBERS_ACTIVE_THIS_WEEK'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_last_visit_time>' . strval(time() - 60 * 60 * 24 * 7))),
+                        'RAW_VALUE' => strval($active_this_week),
+                        'VALUE' => integer_format($active_this_week, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_members_active_this_month') == '1') {
+                    $active_this_month = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_last_visit_time>' . strval(time() - 60 * 60 * 24 * 31));
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => 'ec9760b2ed9e985e96b53c91c511e84e',
                         'KEY' => do_lang_tempcode('MEMBERS_ACTIVE_THIS_MONTH'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_last_visit_time>' . strval(time() - 60 * 60 * 24 * 31))),
+                        'RAW_VALUE' => strval($active_this_month),
+                        'VALUE' => integer_format($active_this_month, 0),
                     ]));
                 }
             }
             if (!has_no_forum()) {
                 if (get_option('forum_show_stats_count_topics') == '1') {
+                    $num_topics = $GLOBALS['FORUM_DRIVER']->get_num_topics();
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => '2e0fe7ccbb15052743c94aab6a3654bc',
                         'KEY' => do_lang_tempcode('COUNT_TOPICS'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DRIVER']->get_num_topics()),
+                        'RAW_VALUE' => strval($num_topics),
+                        'VALUE' => integer_format($num_topics, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_posts') == '1') {
+                    $num_posts = $GLOBALS['FORUM_DRIVER']->get_num_forum_posts();
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => 'de7e97b855cfbc4d60d069ca3f652b17',
                         'KEY' => do_lang_tempcode('COUNT_POSTS'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DRIVER']->get_num_forum_posts()),
+                        'RAW_VALUE' => strval($num_posts),
+                        'VALUE' => integer_format($num_posts, 0),
                     ]));
                 }
                 if (get_option('forum_show_stats_count_posts_today') == '1') {
+                    $num_new_posts = $GLOBALS['FORUM_DRIVER']->get_num_new_forum_posts();
+
                     $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                         '_GUID' => '8649eee4a70ce0383c5534da43e2b58c',
                         'KEY' => do_lang_tempcode('COUNT_POSTSTODAY'),
-                        'VALUE' => integer_format($GLOBALS['FORUM_DRIVER']->get_num_new_forum_posts()),
+                        'RAW_VALUE' => strval($num_new_posts),
+                        'VALUE' => integer_format($num_new_posts, 0),
                     ]));
                 }
             }

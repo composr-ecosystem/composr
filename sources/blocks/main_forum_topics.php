@@ -215,7 +215,8 @@ PHP;
                     'DATE_RAW' => strval($topic[$date_key]),
                     'USERNAME' => $username,
                     'MEMBER_ID' => ($member_id === null) ? '' : strval($member_id),
-                    'NUM_POSTS' => integer_format($topic['num']),
+                    '_NUM_POSTS' => strval($topic['num']),
+                    'NUM_POSTS' => integer_format($topic['num'], 0),
                 ];
 
                 $done++;

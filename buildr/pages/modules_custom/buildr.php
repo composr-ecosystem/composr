@@ -669,7 +669,7 @@ class Module_buildr
             if ($name == '') {
                 $tpl = do_template('W_ITEM_SCREEN', [
                     '_GUID' => '0246f7037a360996bdfb4f1dcf96bcfc',
-                    'PRICE' => integer_format(get_product_price_points('mud_item')),
+                    'PRICE' => integer_format(get_product_price_points('mud_item'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ITEM_TEXT')),
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'additem',
@@ -708,7 +708,7 @@ class Module_buildr
 
                 $tpl = do_template('W_ITEMCOPY_SCREEN', [
                     '_GUID' => '15799930bca51eafdee3c0a8e197866a',
-                    'PRICE' => integer_format(get_product_price_points('mud_item_copy')),
+                    'PRICE' => integer_format(get_product_price_points('mud_item_copy'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ITEM_COPY_TEXT')),
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'additemcopy',
@@ -729,7 +729,7 @@ class Module_buildr
                 list($realm, $x, $y) = get_loc_details($member_id);
                 $tpl = do_template('W_ROOM_SCREEN', [
                     '_GUID' => '5357a6cf8648c952cf29c2b7234cfa6c',
-                    'PRICE' => integer_format(get_product_price_points('mud_room')),
+                    'PRICE' => integer_format(get_product_price_points('mud_room'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ROOM_TEXT')),
                     'ROOM_TEXT' => '',
                     'TITLE' => $this->title,
@@ -769,8 +769,8 @@ class Module_buildr
 
                 $tpl = do_template('W_REALM_SCREEN', [
                     '_GUID' => '7ae26fe1766aed02233e1be84772759b',
-                    'PRICE' => integer_format(get_product_price_points('mud_realm')),
-                    'TEXT' => paragraph(do_lang_tempcode('W_ADD_REALM_TEXT', integer_format($left))),
+                    'PRICE' => integer_format(get_product_price_points('mud_realm'), 0),
+                    'TEXT' => paragraph(do_lang_tempcode('W_ADD_REALM_TEXT', integer_format($left, 0))),
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'addrealm',
                     'QA' => $_qa,
@@ -803,7 +803,7 @@ class Module_buildr
             if ($name == '') {
                 $tpl = do_template('W_PORTAL_SCREEN', [
                     '_GUID' => '69e74a964f69721d0381a920c4a25ce5',
-                    'PRICE' => integer_format(get_product_price_points('mud_portal')),
+                    'PRICE' => integer_format(get_product_price_points('mud_portal'), 0),
                     'TEXT' => paragraph(do_lang_tempcode('W_ABOUT_PORTALS')),
                     'TITLE' => $this->title,
                     'PORTAL_TEXT' => '',

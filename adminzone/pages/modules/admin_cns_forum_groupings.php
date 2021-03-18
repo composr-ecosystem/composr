@@ -66,7 +66,7 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
         $ret = [
             'browse' => ['FORUM_GROUPINGS', 'admin/view_this_category'],
             'add' => ['ADD_' . $this->lang_type, 'admin/add'],
-            'edit' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('EDIT_FORUM_GROUPING'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'COUNT(*)'))))), 'admin/view_this_category'],
+            'edit' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('EDIT_FORUM_GROUPING'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'COUNT(*)')), 0)))), 'admin/view_this_category'],
         ] + parent::get_entry_points();
 
         return $ret;

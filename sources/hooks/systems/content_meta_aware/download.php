@@ -145,7 +145,7 @@ class Hook_content_meta_aware_download extends Hook_CMA
     {
         $keymap = [];
 
-        $keymap['entry_count'] = escape_html(integer_format($row['num_downloads']));
+        $keymap['entry_count'] = escape_html(integer_format($row['num_downloads'], 0));
 
         $file_size = $row['file_size'];
         $keymap['file_size'] = escape_html(($file_size > 0) ? clean_file_size($file_size) : do_lang('UNKNOWN'));

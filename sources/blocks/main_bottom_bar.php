@@ -119,7 +119,7 @@ class Block_main_bottom_bar
             if ($num_guests != 0) {
                 if (!$users_online->is_empty() && do_lang('NUM_GUESTS', 'xxx') != '') {
                     $users_online->attach(do_lang_tempcode('LIST_SEP'));
-                    $users_online->attach(do_lang_tempcode('NUM_GUESTS', escape_html(integer_format($num_guests))));
+                    $users_online->attach(do_lang_tempcode('NUM_GUESTS', escape_html(integer_format($num_guests, 0))));
                 }
             }
         }
@@ -157,15 +157,22 @@ class Block_main_bottom_bar
             'BLOCK_ID' => $block_id,
             'NEWEST_MEMBER_PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($stats['newest_member_id'], true),
             'NEWEST_MEMBER_USERNAME' => $stats['newest_member_username'],
-            'NUM_MEMBERS' => integer_format($stats['num_members']),
-            'NUM_TOPICS' => integer_format($stats['num_topics']),
-            'NUM_POSTS' => integer_format($stats['num_posts']),
             'BIRTHDAYS' => $birthdays,
             'USERS_ONLINE' => $users_online,
             'USERS_ONLINE_URL' => has_actual_page_access(get_member(), 'users_online') ? build_url(['page' => 'users_online'], get_module_zone('users_online')) : new Tempcode(),
             'GROUPS' => $groups,
-            '_NUM_GUESTS' => strval($num_guests),
-            '_NUM_MEMBERS' => strval($num_members),
+
+            '_NUM_MEMBERS' => strval($stats['num_members']),
+            '_NUM_TOPICS' => strval($stats['num_topics']),
+            '_NUM_POSTS' => strval($stats['num_posts']),
+            '_NUM_GUESTS_ONLINE' => strval($num_guests),
+            '_NUM_MEMBERS_ONLINE' => strval($num_members),
+
+            'NUM_MEMBERS' => integer_format($stats['num_members'], 0),
+            'NUM_TOPICS' => integer_format($stats['num_topics'], 0),
+            'NUM_POSTS' => integer_format($stats['num_posts'], 0),
+            'NUM_GUESTS_ONLINE' => integer_format($num_guests, 0),
+            'NUM_MEMBERS_ONLINE' => integer_format($num_members, 0),
         ]);
     }
 }

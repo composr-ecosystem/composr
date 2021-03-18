@@ -206,6 +206,7 @@ class Hook_addon_registry_tickets
         $links = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $links->attach(do_lorem_template('SUPPORT_TICKET_LINK', [
+                '_NUM_POSTS' => placeholder_number(),
                 'NUM_POSTS' => placeholder_number(),
                 'CLOSED' => lorem_phrase(),
                 'URL' => placeholder_url(),

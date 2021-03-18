@@ -1500,7 +1500,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
 
             $total = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)', ['e_type' => $row['id']]);
 
-            $fields->attach(results_entry([get_translated_text($row['t_title']), integer_format($total), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
+            $fields->attach(results_entry([get_translated_text($row['t_title']), integer_format($total, 0), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
         $search_url = null;

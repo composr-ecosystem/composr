@@ -562,6 +562,7 @@ class Hook_addon_registry_news
             $categories[] = [
                 'URL' => placeholder_url(),
                 'NAME' => lorem_phrase(),
+                '_COUNT' => placeholder_number(),
                 'COUNT' => placeholder_number(),
             ];
         }
@@ -692,7 +693,8 @@ class Hook_addon_registry_news
             'CATEGORY' => lorem_phrase(),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'TITLE' => lorem_title(),
-            'VIEWS' => '3',
+            '_VIEWS' => placeholder_number(),
+            'VIEWS' => placeholder_number(),
             'COMMENT_DETAILS' => $comment_details,
             'RATING_DETAILS' => lorem_sentence(),
             'TRACKBACK_DETAILS' => lorem_sentence(),

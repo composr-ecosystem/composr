@@ -673,6 +673,7 @@ class Hook_addon_registry_catalogues
     {
         return lorem_globalise(do_lorem_template('CATALOGUE_CATEGORIES_LIST_LINE', [
             'BREADCRUMBS' => lorem_phrase(),
+            '_COUNT' => placeholder_number(),
             'COUNT' => placeholder_number(),
         ]), null, '', true);
     }

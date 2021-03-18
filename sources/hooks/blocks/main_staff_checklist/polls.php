@@ -64,7 +64,7 @@ class Hook_checklist_polls
         $url = build_url(['page' => 'cms_polls'], get_module_zone('cms_polls'));
         $num_queue = $this->get_num_poll_queue();
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
-        $info->attach(do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($num_queue))));
+        $info->attach(do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($num_queue, 0))));
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '5d709aa8a09bbf3e46aefa7fe7e02660',
             'CONFIG_URL' => $config_url,

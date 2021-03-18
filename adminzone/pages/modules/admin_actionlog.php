@@ -166,7 +166,7 @@ class Module_admin_actionlog
         $member_choice_list->attach(form_input_list_entry('', true, do_lang_tempcode('_ALL')));
         foreach ($_member_choice_list as $id => $user_actions) {
             list($username, $action_count) = $user_actions;
-            $member_choice_list->attach(form_input_list_entry(strval($id), false, do_lang(($action_count == 1) ? 'ACTIONLOG_USERCOUNT_UNI' : 'ACTIONLOG_USERCOUNT', $username, integer_format($action_count))));
+            $member_choice_list->attach(form_input_list_entry(strval($id), false, do_lang(($action_count == 1) ? 'ACTIONLOG_USERCOUNT_UNI' : 'ACTIONLOG_USERCOUNT', $username, integer_format($action_count, 0))));
         }
         $fields->attach(form_input_list(do_lang_tempcode('USERNAME'), '', 'id', $member_choice_list, null, true));
 

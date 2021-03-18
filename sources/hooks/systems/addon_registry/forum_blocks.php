@@ -159,6 +159,7 @@ class Hook_addon_registry_forum_blocks
                 'DATE_RAW' => placeholder_date_raw(),
                 'USERNAME' => lorem_word(),
                 'MEMBER_ID' => null,
+                '_NUM_POSTS' => placeholder_number(),
                 'NUM_POSTS' => placeholder_number(),
             ];
         }

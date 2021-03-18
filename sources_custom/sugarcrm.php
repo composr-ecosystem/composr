@@ -405,7 +405,7 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
                 return false;
             }
 
-            $sugarcrm_data['description']['value'] .= "\n\n" . do_lang('EXISTING_LEADS', integer_format($num_existing_leads));
+            $sugarcrm_data['description']['value'] .= "\n\n" . do_lang('EXISTING_LEADS', integer_format($num_existing_leads, 0));
         }
     }
     sugarcrm_log_action($_sync_type, [array_values($sugarcrm_data)]);

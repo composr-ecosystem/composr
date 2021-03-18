@@ -95,9 +95,10 @@ function render_poll_box(bool $results, array $myrow, string $zone = '_SEARCH', 
                 'ANSWER' => $answer,
                 'ANSWER_PLAIN' => $answer_plain,
                 'WIDTH' => strval($width),
-                'VOTES' => integer_format($votes),
                 '_VOTES' => strval($votes),
-                'TOTAL_VOTES' => strval($total_votes),
+                'VOTES' => integer_format($votes, 0),
+                '_TOTAL_VOTES' => strval($total_votes),
+                'TOTAL_VOTES' => integer_format($total_votes, 0),
             ]));
         }
     }

@@ -131,9 +131,9 @@ class Hook_cron_catalogue_view_reports
                         $entry_title = $field_values[0]['effective_value'];
                         $views = $entry['ce_views'] - $entry['ce_views_prior'];
                         $GLOBALS['SITE_DB']->query_update('catalogue_entries', ['ce_views_prior' => $entry['ce_views']], ['id' => $entry['id']], '', 1);
-                        $temp = do_lang($catalogue['c_name'] . '__CATALOGUE_VIEW_REPORT_LINE', comcode_escape(is_object($entry_title) ? $entry_title->evaluate() : $entry_title), integer_format($views), null, null, false);
+                        $temp = do_lang($catalogue['c_name'] . '__CATALOGUE_VIEW_REPORT_LINE', comcode_escape(is_object($entry_title) ? $entry_title->evaluate() : $entry_title), integer_format($views, 0), null, null, false);
                         if ($temp === null) {
-                            $temp = do_lang('DEFAULT__CATALOGUE_VIEW_REPORT_LINE', comcode_escape(is_object($entry_title) ? $entry_title->evaluate() : $entry_title), integer_format($views));
+                            $temp = do_lang('DEFAULT__CATALOGUE_VIEW_REPORT_LINE', comcode_escape(is_object($entry_title) ? $entry_title->evaluate() : $entry_title), integer_format($views, 0));
                         }
                         $buildup .= $temp;
                     }

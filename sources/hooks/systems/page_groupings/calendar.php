@@ -37,7 +37,7 @@ class Hook_page_groupings_calendar
         }
 
         return [
-            has_privilege(get_member(), 'submit_midrange_content', 'cms_calendar') ? ['cms', 'menu/rich_content/calendar', ['cms_calendar', ['type' => 'browse'], get_module_zone('cms_calendar')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('calendar:CALENDAR'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)')))))), 'calendar:DOC_CALENDAR'] : null,
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_calendar') ? ['cms', 'menu/rich_content/calendar', ['cms_calendar', ['type' => 'browse'], get_module_zone('cms_calendar')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('calendar:CALENDAR'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)')), 0)))), 'calendar:DOC_CALENDAR'] : null,
             ['social', 'menu/rich_content/calendar', ['calendar', [], get_module_zone('calendar')], do_lang_tempcode('calendar:CALENDAR')],
         ];
     }

@@ -61,9 +61,9 @@ function render_forum_box(array $row, string $zone = '_SEARCH', bool $give_conte
     $num_posts = $row['f_cache_num_posts'];
 
     $entry_details = new Tempcode();
-    $entry_details->attach(do_lang_tempcode('FORUM_NUM_TOPICS', escape_html(integer_format($num_topics))));
+    $entry_details->attach(do_lang_tempcode('FORUM_NUM_TOPICS', escape_html(integer_format($num_topics, 0))));
     $entry_details->attach(do_lang_tempcode('LIST_SEP'));
-    $entry_details->attach(do_lang_tempcode('FORUM_NUM_POSTS', escape_html(integer_format($num_posts))));
+    $entry_details->attach(do_lang_tempcode('FORUM_NUM_POSTS', escape_html(integer_format($num_posts, 0))));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'f61cd0ea4c2ac496da958a36f118495d',

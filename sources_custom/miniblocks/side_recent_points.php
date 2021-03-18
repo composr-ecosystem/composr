@@ -51,8 +51,8 @@ foreach ($gifts as $gift) {
     $reason = get_translated_text($gift['reason']);
 
     $_gifts[] = [
-        'AMOUNT' => integer_format($amount),
         '_AMOUNT' => strval($amount),
+        'AMOUNT' => integer_format($amount, 0),
 
         'FROM_NAME' => $from_name,
         'FROM_ID' => strval($gift['gift_from']),

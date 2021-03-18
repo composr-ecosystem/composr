@@ -736,7 +736,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
             $ip_ban_url = $_ip_ban_url->evaluate();
 
             if ($ban_happened) {
-                $ip_ban_todo = do_lang('AUTO_BAN_HACK_MESSAGE', $ip, integer_format($hack_threshold), [$summary, $ip_ban_url], get_site_default_lang());
+                $ip_ban_todo = do_lang('AUTO_BAN_HACK_MESSAGE', $ip, integer_format($hack_threshold, 0), [$summary, $ip_ban_url], get_site_default_lang());
             }
         }
     }

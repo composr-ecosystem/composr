@@ -254,19 +254,19 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
     list($num_children, $num_images, $num_videos) = get_recursive_gallery_details($myrow['name']);
     if ($num_children == 0) {
         if ($myrow['accept_videos'] == 0) {
-            $lang = do_lang_tempcode('_SUBGALLERY_BITS_IMAGES', escape_html(integer_format($num_images)), escape_html(integer_format($num_videos)), escape_html(integer_format($num_images + $num_videos)));
+            $lang = do_lang_tempcode('_SUBGALLERY_BITS_IMAGES', escape_html(integer_format($num_images, 0)), escape_html(integer_format($num_videos, 0)), escape_html(integer_format($num_images + $num_videos, 0)));
         } elseif ($myrow['accept_images'] == 0) {
-            $lang = do_lang_tempcode('_SUBGALLERY_BITS_VIDEOS', escape_html(integer_format($num_images)), escape_html(integer_format($num_videos)), escape_html(integer_format($num_images + $num_videos)));
+            $lang = do_lang_tempcode('_SUBGALLERY_BITS_VIDEOS', escape_html(integer_format($num_images, 0)), escape_html(integer_format($num_videos, 0)), escape_html(integer_format($num_images + $num_videos, 0)));
         } else {
-            $lang = do_lang_tempcode('_SUBGALLERY_BITS', escape_html(integer_format($num_images)), escape_html(integer_format($num_videos)), escape_html(integer_format($num_images + $num_videos)));
+            $lang = do_lang_tempcode('_SUBGALLERY_BITS', escape_html(integer_format($num_images, 0)), escape_html(integer_format($num_videos, 0)), escape_html(integer_format($num_images + $num_videos, 0)));
         }
     } else {
         if ($myrow['accept_videos'] == 0) {
-            $lang = do_lang_tempcode('SUBGALLERY_BITS_IMAGES', escape_html(integer_format($num_children)), escape_html(integer_format($num_images)), [integer_format($num_videos), escape_html(integer_format($num_images + $num_videos))]);
+            $lang = do_lang_tempcode('SUBGALLERY_BITS_IMAGES', escape_html(integer_format($num_children, 0)), escape_html(integer_format($num_images, 0)), [integer_format($num_videos, 0), escape_html(integer_format($num_images + $num_videos, 0))]);
         } elseif ($myrow['accept_images'] == 0) {
-            $lang = do_lang_tempcode('SUBGALLERY_BITS_VIDEOS', escape_html(integer_format($num_children)), escape_html(integer_format($num_images)), [integer_format($num_videos), escape_html(integer_format($num_images + $num_videos))]);
+            $lang = do_lang_tempcode('SUBGALLERY_BITS_VIDEOS', escape_html(integer_format($num_children, 0)), escape_html(integer_format($num_images, 0)), [integer_format($num_videos, 0), escape_html(integer_format($num_images + $num_videos, 0))]);
         } else {
-            $lang = do_lang_tempcode('SUBGALLERY_BITS', escape_html(integer_format($num_children)), escape_html(integer_format($num_images)), [integer_format($num_videos), escape_html(integer_format($num_images + $num_videos))]);
+            $lang = do_lang_tempcode('SUBGALLERY_BITS', escape_html(integer_format($num_children, 0)), escape_html(integer_format($num_images, 0)), [integer_format($num_videos, 0), escape_html(integer_format($num_images + $num_videos, 0))]);
         }
     }
 
@@ -478,8 +478,8 @@ function show_video_details(array $myrow) : object
 {
     return do_template('GALLERY_VIDEO_INFO', [
         '_GUID' => '46d32c84cb2f6ab77d825ad711e24e13',
-        'WIDTH' => integer_format($myrow['video_width']),
-        'HEIGHT' => integer_format($myrow['video_height']),
+        'WIDTH' => strval($myrow['video_width']),
+        'HEIGHT' => strval($myrow['video_height']),
         'LENGTH' => strval($myrow['video_length']),
         'CLOSED_CAPTIONS_URL' => strval($myrow['closed_captions_url'])
     ]);

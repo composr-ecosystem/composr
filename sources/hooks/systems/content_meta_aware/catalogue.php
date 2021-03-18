@@ -147,8 +147,8 @@ class Hook_content_meta_aware_catalogue extends Hook_CMA
 
         $num_children = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $row['c_name']]);
         $num_entries = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $row['c_name']]);
-        $keymap['subcategory_count'] = escape_html(integer_format($num_children));
-        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+        $keymap['subcategory_count'] = escape_html(integer_format($num_children, 0));
+        $keymap['entry_count'] = escape_html(integer_format($num_entries, 0));
 
         return $keymap;
     }

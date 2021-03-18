@@ -167,8 +167,8 @@ class Hook_profiles_tabs_edit_avatar
             'MEMBER_ID' => strval($member_id_of),
             'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id_of),
             'AVATAR' => $avatar,
-            'WIDTH' => integer_format($width),
-            'HEIGHT' => integer_format($height),
+            'WIDTH' => strval($width),
+            'HEIGHT' => strval($height),
         ]);
 
         $hidden->attach(form_input_hidden('submitting_avatar_tab', '1'));

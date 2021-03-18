@@ -310,6 +310,7 @@ class Module_admin_security
             'USERNAME' => hyperlink($member_url, $username, false, true),
             'POST' => $post,
             'URL' => $row['url'],
+            '_PERCENTAGE_SCORE' => strval($row['percentage_score']),
             'PERCENTAGE_SCORE' => integer_format($row['percentage_score']),
         ]);
     }

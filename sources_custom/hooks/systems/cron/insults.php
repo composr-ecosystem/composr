@@ -94,7 +94,7 @@ class Hook_cron_insults
                 $username1 = $GLOBALS['FORUM_DRIVER']->get_username($selected_member1);
                 $username2 = $GLOBALS['FORUM_DRIVER']->get_username($selected_member2);
 
-                $insult_pt_topic_post = do_lang('INSULT_EXPLANATION', get_site_name(), $get_insult, [integer_format($insult_points), $displayname2, $displayname1, $username2, $username1]);
+                $insult_pt_topic_post = do_lang('INSULT_EXPLANATION', get_site_name(), $get_insult, [integer_format($insult_points, 0), $displayname2, $displayname1, $username2, $username1]);
 
                 $subject = do_lang('INSULT_PT_TOPIC', $displayname2, $displayname1, [$username2, $username1]);
 

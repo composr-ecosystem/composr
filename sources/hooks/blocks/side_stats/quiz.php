@@ -38,7 +38,14 @@ class Hook_stats_quiz
 
         $bits = new Tempcode();
         if (get_option('quiz_show_stats_count_total_open') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '736e5008b15c984768234dde7586adf7', 'KEY' => do_lang_tempcode('QUIZZES'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)'))]));
+            $quiz_count = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)');
+
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '736e5008b15c984768234dde7586adf7',
+                'KEY' => do_lang_tempcode('QUIZZES'),
+                'RAW_VALUE' => strval($quiz_count),
+                'VALUE' => integer_format($quiz_count, 0),
+            ]));
         }
         if ($bits->is_empty_shell()) {
             return new Tempcode();

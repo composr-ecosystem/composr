@@ -390,7 +390,8 @@ function get_pts(?int $max = null, int $start = 0) : array
             'TO_POSTER_URL' => $to_member_url,
             'TO_USERNAME' => $to_username,
             'TO_POSTER_ID' => strval($to_poster_id),
-            'NUM_POSTS' => integer_format($num_posts),
+            '_NUM_POSTS' => strval($num_posts),
+            'NUM_POSTS' => integer_format($num_posts, 0),
             'HAS_READ' => !$is_unread,
         ]));
 
