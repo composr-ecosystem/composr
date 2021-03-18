@@ -222,6 +222,7 @@
         // Send it through XMLHttpRequest, and append the results.
         document.getElementById('commandr-command').focus();
         document.getElementById('commandr-command').disabled = true;
+        document.getElementById('commandr-loading-image').style.display = 'inline';
 
         var post = 'command=' + encodeURIComponent(command);
         if ($cms.form.isModSecurityWorkaroundEnabled()) {
@@ -230,8 +231,7 @@
         $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,commandr}' + $cms.keep(true, true), commandrCommandResponse, post);
 
         window.disableTimeout = setTimeout(function () {
-            document.getElementById('commandr-command').disabled = false;
-            document.getElementById('commandr-command').focus();
+            disableLoadingIndication();
             if (window.disableTimeout) {
                 clearTimeout(window.disableTimeout);
                 window.disableTimeout = null;
@@ -242,6 +242,11 @@
         }
     }
 
+    function disableLoadingIndication() {
+        document.getElementById('commandr-command').disabled = false;
+        document.getElementById('commandr-command').focus();
+        document.getElementById('commandr-loading-image').style.display = 'none';
+    }
 
     // Deal with the response to a command
     function commandrCommandResponse(responseXml) {
@@ -252,8 +257,7 @@
             window.disableTimeout = null;
         }
 
-        document.getElementById('commandr-command').disabled = false;
-        document.getElementById('commandr-command').focus();
+        disableLoadingIndication();
 
         var command = document.getElementById('commandr-command');
         var cl = document.getElementById('commands-go-here');
