@@ -1571,6 +1571,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.7);
 	content: "";
+	pointer-events: none;
 }
 #main-website-inner.faded>header, #main-website-inner.faded>div {
 	opacity: 0.3;
