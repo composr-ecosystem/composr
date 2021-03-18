@@ -538,7 +538,9 @@ class Hook_addon_registry_core_abstract_interfaces
             'TITLE' => lorem_title(),
             'ADD_URL' => placeholder_url(),
             'PAGE' => lorem_phrase(),
-            'DID_MEAN' => lorem_phrase(),
+            'DID_MEAN_ZONE' => lorem_word(),
+            'DID_MEAN_PAGE' => lorem_word(),
+            'DID_MEAN_ZONE_TITLE' => lorem_phase(),
             'ADD_REDIRECT_URL' => placeholder_url(),
             'SKIP_SITEMAP' => true,
         ]), null, '', true);

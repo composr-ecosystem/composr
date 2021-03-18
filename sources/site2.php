@@ -254,11 +254,11 @@ function closed_site_exit()
 /**
  * Render that the page wasn't found. Show alternate likely candidates based on misspellings.
  *
- * @param  ID_TEXT $codename The codename of the page to load
+ * @param  ID_TEXT $page The codename of the page to load
  * @param  ID_TEXT $zone The zone the page is being loaded in
  * @return Tempcode Message
  */
-function page_not_found(string $codename, string $zone) : object
+function page_not_found(string $page, string $zone) : object
 {
     global $PAGE_NAME_CACHE;
     $PAGE_NAME_CACHE = '404';
@@ -278,49 +278,62 @@ function page_not_found(string $codename, string $zone) : object
     }
 
     // "Did you mean?" support
-    $all_pages_in_zone = array_keys(find_all_pages_wrap($zone));
-    $did_mean = [];
-    foreach ($all_pages_in_zone as $possibility) {
-        if (is_integer($possibility)) {
-            $possibility = strval($possibility); // e.g. '404' page has been converted to integer by PHP, grr
+    $zone_search_list = [$zone];
+    if ($zone == 'adminzone') {
+        $zone_search_list[] = 'cms';
+    } elseif ($zone == 'cms') {
+        $zone_search_list[] = 'adminzone';
+    } elseif (get_option('single_public_zone') == '0') {
+        if ($zone == '') {
+            $zone_search_list[] = 'site';
+        } elseif ($zone == 'site') {
+            $zone_search_list[] = '';
         }
+    }
+    foreach ($zone_search_list as $_zone) {
+        $all_pages_in_zone = array_keys(find_all_pages_wrap($_zone));
+        $did_mean = [];
+        foreach ($all_pages_in_zone as $_page) {
+            if (is_integer($_page)) {
+                $_page = strval($_page); // e.g. '404' page has been converted to integer by PHP, grr
+            }
 
-        $from = str_replace(['-', 'cms_', 'admin_'], ['_', '', ''], $possibility);
-        $to = str_replace(['-', 'cms_', 'admin_'], ['_', '', ''], $codename);
-        //$dist = levenshtein($from, $to);  If we use this, change > to < also
-        //$threshold = 4;
-        $dist = 0.0;
-        similar_text($from, $to, $dist);
-        $threshold = 75.0;
-        if (($dist > $threshold) && (has_page_access(get_member(), $codename, $zone))) {
-            $did_mean[$dist] = $possibility;
+            $from = str_replace(['-', 'cms_', 'admin_'], ['_', '', ''], $_page);
+            $to = str_replace(['-', 'cms_', 'admin_'], ['_', '', ''], $page);
+
+            $similarity = 0.0;
+            similar_text($from, $to, $similarity);
+
+            $threshold = 75.0;
+            if (($similarity > $threshold) && (has_page_access(get_member(), $_page, $_zone))) {
+                $did_mean[$similarity] = [$_zone, $_page];
+            }
         }
     }
     ksort($did_mean);
     $_did_mean = array_pop($did_mean);
-    if ($_did_mean == '') {
-        $_did_mean = null;
-    }
 
-    if (($_SERVER['HTTP_REFERER'] != '') && (get_value_newer_than('gave-error-notificiation-for-request-' . $zone . ':' . $codename, time() - 60 * 60 * 24 * 30) === null)) {
+    if (($_SERVER['HTTP_REFERER'] != '') && (get_value_newer_than('gave-error-notificiation-for-request-' . $zone . ':' . $page, time() - 60 * 60 * 24 * 30) === null)) {
         require_code('failure');
-        relay_error_notification(do_lang('_MISSING_RESOURCE', $zone . ':' . $codename, do_lang('PAGE')) . ' ' . do_lang('REFERRER', $_SERVER['HTTP_REFERER'], substr(get_browser_string(), 0, 255)), false, 'error_occurred_missing_page');
-        set_value('gave-error-notificiation-for-request-' . $zone . ':' . $codename, '1', true);
+        relay_error_notification(do_lang('_MISSING_RESOURCE', $zone . ':' . $page, do_lang('PAGE')) . ' ' . do_lang('REFERRER', $_SERVER['HTTP_REFERER'], substr(get_browser_string(), 0, 255)), false, 'error_occurred_missing_page');
+        set_value('gave-error-notificiation-for-request-' . $zone . ':' . $page, '1', true);
     }
 
     $title = get_screen_title('ERROR_OCCURRED');
     $add_access = has_add_comcode_page_permission($zone);
     $redirect_access = addon_installed('redirects_editor') && has_actual_page_access(get_member(), 'admin_redirects');
     require_lang('zones');
-    $add_url = $add_access ? build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'may_choose_template' => '1', 'page_link' => $zone . ':' . $codename], get_module_zone('cms_comcode_pages')) : new Tempcode();
-    $add_redirect_url = $redirect_access ? build_url(['page' => 'admin_redirects', 'type' => 'page', 'page_link' => $zone . ':' . $codename], get_module_zone('admin_redirects')) : new Tempcode();
+    $add_url = $add_access ? build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'may_choose_template' => '1', 'page_link' => $zone . ':' . $page], get_module_zone('cms_comcode_pages')) : new Tempcode();
+    $add_redirect_url = $redirect_access ? build_url(['page' => 'admin_redirects', 'type' => 'page', 'page_link' => $zone . ':' . $page], get_module_zone('admin_redirects')) : new Tempcode();
     return do_template('MISSING_SCREEN', [
         '_GUID' => '22f371577cd2ba437e7b0cb241931575',
         'TITLE' => $title,
-        'DID_MEAN' => $_did_mean,
+        'DID_MEAN_ZONE' => ($_did_mean === null) ? null : $_did_mean[0],
+        'DID_MEAN_PAGE' => ($_did_mean === null) ? null : $_did_mean[1],
+        'DID_MEAN_ZONE_TITLE' => ($_did_mean === null) ? null : get_translated_text($GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => $_did_mean[0]])),
         'ADD_URL' => $add_url,
         'ADD_REDIRECT_URL' => $add_redirect_url,
-        'PAGE' => $codename,
+        'PAGE' => $page,
         'SKIP_SITEMAP' => false,
     ]);
 }
