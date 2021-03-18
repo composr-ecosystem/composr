@@ -1429,6 +1429,7 @@ class Hook_addon_registry_core
             'themes/default/images/backgrounds/background_image.svg',
             'themes/default/images/blank.gif',
             'themes/default/images/loading.gif',
+            'themes/default/images/loading.gif.png',
             'themes/default/images/edited.svg',
             'themes/default/images/icons/editor/comcode.svg',
             'themes/default/images/icons_monochrome/editor/comcode.svg',

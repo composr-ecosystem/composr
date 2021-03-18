@@ -87,9 +87,11 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # If rewrites are directing to bogus URLs, try adding a "RewriteBase /" line, or a "RewriteBase /subdir" line if you're in a subdirectory. Requirements vary from server to server.
 
-# Rewrite .gif emoticons for browsers that support APNG (LEGACY; when possible we want to get rid of the gifs, but Edge does not yet support)
+# Rewrite .gif animations for browsers that support APNG (LEGACY; when possible we want to get rid of the gifs, but IE11 does not yet support)
 RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
 RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteRule ^(themes/default/images/loading\.gif)$ $themes/default/images/loading.gif.png [L,QSA]
 
 # Anything that would point to a real file should actually be allowed to do so. If you have a "RewriteBase /subdir" command, you may need to change to "%{DOCUMENT_ROOT}/subdir/$1".
 RewriteCond $1 ^\d+.shtml [OR]
