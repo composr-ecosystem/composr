@@ -1059,7 +1059,12 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                         if (($pos <= $len) || (!$lax)) {
                                             $tag_output->attach($ret);
 
+                                            global $COMCODE_PARSE_TITLE;
+                                            $comcode_parse_title_bak = $COMCODE_PARSE_TITLE;
+
                                             $ret->handle_symbol_preprocessing(); // In case there is a 'SET' in there that was intended for being known by PHP code
+
+                                            $COMCODE_PARSE_TITLE = $comcode_parse_title_bak;
                                         }
                                     }
                                 } else {
