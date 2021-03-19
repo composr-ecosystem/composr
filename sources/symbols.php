@@ -881,7 +881,7 @@ function ecv_REFRESH($lang, $escaped, $param)
         if (!array_key_exists(1, $REFRESH_URL)) {
             $REFRESH_URL[1] = 1;
         }
-        $refresh = do_template('META_REFRESH_LINE', array('_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => integer_format($REFRESH_URL[1])));
+        $refresh = do_template('META_REFRESH_LINE', array('_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => strval($REFRESH_URL[1])));
     } else {
         $refresh = new Tempcode();
     }
