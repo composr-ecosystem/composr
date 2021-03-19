@@ -166,6 +166,7 @@ class Hook_addon_registry_stats_block
         foreach (placeholder_array() as $v) {
             $bits->attach(do_lorem_template('BLOCK_SIDE_STATS_SUBLINE', [
                 'KEY' => lorem_phrase(),
+                'RAW_VALUE' => placeholder_number(),
                 'VALUE' => placeholder_number(),
             ]));
         }

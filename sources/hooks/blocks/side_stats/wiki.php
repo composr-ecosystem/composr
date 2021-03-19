@@ -44,7 +44,7 @@ class Hook_stats_wiki
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => '8bbd18d5169c4e5449b252880ecda716',
                 'KEY' => do_lang_tempcode('COUNT_PAGES'),
-                '_VALUE' => strval($num_pages),
+                'RAW_VALUE' => strval($num_pages),
                 'VALUE' => integer_format($num_pages, 0),
             ]));
         }
@@ -54,7 +54,7 @@ class Hook_stats_wiki
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => 'd8cf3d5aabc18777f609760010303ace',
                 'KEY' => do_lang_tempcode('COUNT_POSTS'),
-                '_VALUE' => strval($num_posts),
+                'RAW_VALUE' => strval($num_posts),
                 'VALUE' => integer_format($num_posts, 0),
             ]));
         }

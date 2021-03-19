@@ -217,6 +217,11 @@ class template_parameter_consistency_test_set extends cms_test_case
             $context = $path . ':' . strval(substr_count($c, "\n", 0, strpos($c, $matches[0][$i])) + 1);
 
             $template = $matches[2][$i];
+
+            if (($this->only !== null) && ($this->only != $template)) {
+                continue;
+            }
+
             $parameters = [];
             $template_instances[$template][$context] = $parameters;
         }
@@ -228,6 +233,11 @@ class template_parameter_consistency_test_set extends cms_test_case
             $context = $path . ':' . strval(substr_count($c, "\n", 0, strpos($c, $matches[0][$i])) + 1);
 
             $template = $matches[2][$i];
+
+            if (($this->only !== null) && ($this->only != $template)) {
+                continue;
+            }
+
             $_parameters = $matches[3][$i];
             $matches_2 = [];
             $parameters = [];
@@ -252,6 +262,11 @@ class template_parameter_consistency_test_set extends cms_test_case
             $context = $path . ':' . strval(substr_count($c, "\n", 0, strpos($c, $matches[0][$i])) + 1);
 
             $template = $matches[2][$i];
+
+            if (($this->only !== null) && ($this->only != $template)) {
+                continue;
+            }
+
             $_parameters = $matches[3][$i];
             $matches_2 = [];
             $parameters = [];

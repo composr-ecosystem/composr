@@ -53,6 +53,7 @@ class Hook_stats_downloads
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => '3d221f2145581a3af51c8948f28b7ac7',
                 'KEY' => do_lang_tempcode('COUNT_ARCHIVE'),
+                'RAW_VALUE' => null,
                 'VALUE' => get_download_archive_size(),
             ]));
         }

@@ -11164,6 +11164,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         links__CATALOGUE_ENTRY
         links__CATALOGUE_INDEX
         locale
+        INTEGER_UNITS_thousands
+        INTEGER_UNITS_millions
+        INTEGER_UNITS_billions
         CONTINENT_AFRICA
         CONTINENT_NORTH_AMERICA
         CONTINENT_SOUTH_AMERICA

@@ -43,7 +43,7 @@ class Hook_stats_news
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => '1b886065ad1190c2b7862024c8aad430',
                 'KEY' => do_lang_tempcode('COUNT_POSTS'),
-                '_VALUE' => strval($num_posts),
+                'RAW_VALUE' => strval($num_posts),
                 'VALUE' => integer_format($num_posts, 0),
             ]));
         }
@@ -53,7 +53,7 @@ class Hook_stats_news
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => 'da519440ca5ad67869000bae8caab935',
                 'KEY' => do_lang_tempcode('BLOGS'),
-                '_VALUE' => strval($num_blogs),
+                'RAW_VALUE' => strval($num_blogs),
                 'VALUE' => integer_format($num_blogs, 0),
             ]));
         }

@@ -55,7 +55,12 @@ class Hook_stats_filedump
             ]));
         }
         if (get_option('filedump_show_stats_count_total_space') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '995ec487ce5f445f2a74aa483a75910a', 'KEY' => do_lang_tempcode('DISK_USAGE'), 'VALUE' => clean_file_size(get_directory_size(get_custom_file_base() . '/uploads/filedump'))]));
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
+                '_GUID' => '995ec487ce5f445f2a74aa483a75910a',
+                'KEY' => do_lang_tempcode('DISK_USAGE'),
+                'RAW_VALUE' => null,
+                'VALUE' => clean_file_size(get_directory_size(get_custom_file_base() . '/uploads/filedump')),
+            ]));
         }
         if ($bits->is_empty_shell()) {
             return new Tempcode();
