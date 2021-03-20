@@ -2909,7 +2909,7 @@ END;
 
         // Show it worked / Refresh
         $url = get_param_string('redirect', null);
-        if ($url !== null) {
+        if (($url !== null) && ((strpos($url, 'topicview') === false) || ($_topic_info[0]['t_cache_first_post_id'] != $post_id))) {
             return redirect_screen(get_screen_title('DELETE_POST'), $url, do_lang_tempcode('SUCCESS'));
         }
 
