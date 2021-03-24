@@ -573,6 +573,7 @@ function set_permissions(setting)
 		// Send AJAX request
 		if (set_request!='')
 		{
+			set_request=modsecurity_workaround_ajax(set_request);
 			do_ajax_request('{$BASE_URL_NOHTTP;}/data/sitemap.php?set_perms=1'+keep_stub(),function() {
 				window.fauxmodal_alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
 			},set_request);
