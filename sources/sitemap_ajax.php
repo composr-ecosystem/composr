@@ -572,7 +572,7 @@ function sitemap_script_saving()
                 $zone = $matches[1];
                 $page = $matches[2];
 
-                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
+                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS | SITEMAP_GEN_REQUIRE_PERMISSION_SUPPORT/*needed to not disable if no entry points*/);
 
                 if ($node === null) {
                     warn_exit('Could not lookup node for ' . $page_link);
