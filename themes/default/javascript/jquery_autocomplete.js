@@ -672,6 +672,8 @@ function set_up_comcode_autocomplete(name,wysiwyg)
 				do_ajax_request(
 					'{$FIND_SCRIPT;,namelike}?id='+window.encodeURIComponent(token)+keep_stub(),
 					function(result,list_contents) {
+						if (!list_contents) return;
+
 						var new_values = [];
 						for (var i=0;i<list_contents.childNodes.length;i++)
 						{
