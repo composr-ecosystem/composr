@@ -700,7 +700,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/blocks.php',
             '_tests/tests/unit_tests/bot_detection.php',
             '_tests/tests/unit_tests/broken_includes.php',
-            '_tests/tests/unit_tests/_broken_links.php',
+            '_tests/tests/unit_tests/__broken_links.php',
             '_tests/tests/unit_tests/browser_upgrade_suggest.php',
             '_tests/tests/unit_tests/bump_member_group_timeout.php',
             '_tests/tests/unit_tests/calendar_events.php',

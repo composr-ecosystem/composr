@@ -622,7 +622,7 @@ function comcode_safelisted(string $tag, int $marker, string $comcode) : bool
  * @param  integer $marker The position this tag occurred at in the Comcode
  * @param  MEMBER $source_member The member who is responsible for this Comcode
  * @param  boolean $as_admin Whether to check as arbitrary admin
- * @param  object $db The database connector to use
+ * @param  ?object $db The database connector to use (null: none; only do this for very simple Comcode)
  * @param  string $comcode The whole chunk of Comcode
  * @param  boolean $structure_sweep Whether this is only a structure sweep
  * @param  boolean $semiparse_mode Whether we are in semi-parse-mode (some tags might convert differently)
@@ -635,7 +635,7 @@ function comcode_safelisted(string $tag, int $marker, string $comcode) : bool
  *
  * @ignore
  */
-function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_dangerous, string $pass_id, int $marker, int $source_member, bool $as_admin, object $db, string &$comcode, bool $structure_sweep, bool $semiparse_mode, array $highlight_bits = [], ?int $on_behalf_of_member = null, bool $in_semihtml = false, bool $is_all_semihtml = false, bool $html_errors = false) : object
+function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_dangerous, string $pass_id, int $marker, int $source_member, bool $as_admin, ?object $db, string &$comcode, bool $structure_sweep, bool $semiparse_mode, array $highlight_bits = [], ?int $on_behalf_of_member = null, bool $in_semihtml = false, bool $is_all_semihtml = false, bool $html_errors = false) : object
 {
     if (($structure_sweep) && ($tag != 'title')) {
         return new Tempcode();

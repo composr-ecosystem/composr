@@ -18,7 +18,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class _broken_links_test_set extends cms_test_case
+class __broken_links_test_set extends cms_test_case
 {
     public function setUp()
     {

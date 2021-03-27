@@ -145,6 +145,8 @@ class lang_spelling_test_set extends cms_test_case
                     'DEFAULT_SLIDE3_TEXT',
                     'THEME_COMPOSR_VERSION',
                     'THEME_DESCRIPTION_COMPOSR_VERSION',
+                    'CONFIG_OPTION_csrf_token_expire_new',
+                    'CONFIG_OPTION_csrf_token_expire_fresh',
                 ])) &&
                 (!in_array($file, [
                     'lang.ini',

@@ -61,6 +61,7 @@ class file_naming_test_set extends cms_test_case
                 'data_custom/images/causes/w3c-css.gif',
                 'data/plupload/Moxie.swf',
                 'data/plupload/Moxie.xap',
+                'themes/default/images/loading.gif.png',
             ]);
             if (in_array($path, $exceptions)) {
                 continue;

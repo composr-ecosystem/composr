@@ -37,6 +37,10 @@ class Hook_contentious_overrides_configured
      */
     public function compile_template(&$data, $template_name, $theme, $lang, $suffix, $directory)
     {
+        if (!function_exists('get_option')) {
+            return;
+        }
+
         switch ($suffix) {
             case '.js':
                 $_extra_templates = get_option('globally_included_js_files');
