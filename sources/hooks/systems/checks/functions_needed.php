@@ -67,17 +67,16 @@ class Hook_check_functions_needed
             strnatcmp strncasecmp strncmp strrchr strrev strspn substr_replace tan unpack version_compare
             gettype var_dump vprintf vsprintf touch tanh sinh soundex stripcslashes
             readgzfile restore_error_handler rewind rewinddir quoted_printable_decode
-            quotemeta exp ezmlm_hash lcg_value localtime addcslashes
+            quotemeta exp lcg_value localtime addcslashes
             array_filter array_map array_merge_recursive array_multisort array_pad array_reduce array_walk
-            atan2 fgetc fgetcsv fgetss filetype fscanf fstat array_change_key_case
+            atan2 fgetc fgetcsv filetype fscanf fstat array_change_key_case
             date_default_timezone_get ftruncate func_get_arg func_get_args func_num_args
             parse_ini_file parse_str is_executable memory_get_usage
             is_scalar is_subclass_of metaphone natcasesort natsort nl2br ob_get_length ob_gzhandler
-            ob_implicit_flush ob_clean printf convert_cyr_string cosh count_chars
-            gethostbynamel getlastmod fpassthru create_function
-            gettimeofday get_cfg_var get_magic_quotes_runtime get_meta_tags get_parent_class
+            ob_implicit_flush ob_clean printf cosh count_chars gethostbynamel getlastmod fpassthru
+            gettimeofday get_cfg_var get_meta_tags get_parent_class
             get_included_files get_resource_type gzcompress gzdeflate gzencode gzfile gzinflate
-            gzuncompress hypot ignore_user_abort hebrev hebrevc array_intersect_assoc
+            gzuncompress hypot ignore_user_abort hebrev array_intersect_assoc
             is_link is_callable debug_print_backtrace stream_context_create next array_sum
             gzclose gzopen gzwrite file_get_contents str_word_count html_entity_decode
             array_combine array_diff_uassoc array_udiff array_uintersect_uassoc

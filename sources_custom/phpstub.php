@@ -4362,17 +4362,6 @@ function exp($arg)
 }
 
 /**
- * Calculate the hash value needed by EZMLM mailing lists in a MySQL database.
- *
- * @param  string $addr The email address that's being hashed.
- * @return integer Hash.
- */
-function ezmlm_hash($addr)
-{
-    return 0;
-}
-
-/**
  * Combined linear congruential generator.
  *
  * @return float Random number.
@@ -4540,19 +4529,6 @@ function fgetc($handle)
 function fgetcsv($handle, $length = null, $delimiter = ',')
 {
     return array();
-}
-
-/**
- * Gets line from file pointer and strip HTML tags.
- *
- * @param  resource $handle File handle.
- * @param  ?integer $length The maximum length of the line (null: no limit).
- * @param  string $allowable_tags Allowable HTML tags separated by spaces.
- * @return ~string Line (false: error).
- */
-function fgetss($handle, $length = null, $allowable_tags = '')
-{
-    return '';
 }
 
 /**
@@ -4761,19 +4737,6 @@ function printf($format, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null,
 }
 
 /**
- * Convert from one Cyrillic character set to another.
- *
- * @param  string $in Input.
- * @param  string $from From.
- * @param  string $to To.
- * @return string Output.
- */
-function convert_cyr_string($in, $from, $to)
-{
-    return '';
-}
-
-/**
  * Hyperbolic cosine.
  *
  * @param  float $arg Argument.
@@ -4793,18 +4756,6 @@ function cosh($arg)
  * @return mixed Result, depending on mode used.
  */
 function count_chars($string, $mode = 0)
-{
-    return '';
-}
-
-/**
- * Create a function dynamically. Do not use unless absolutely needed.
- *
- * @param  string $args Arguments.
- * @param  string $code Code to run.
- * @return string Function reference.
- */
-function create_function($args, $code)
 {
     return '';
 }
@@ -4873,16 +4824,6 @@ function gettimeofday($return_float = false)
 function get_cfg_var($varname)
 {
     return '';
-}
-
-/**
- * Gets the current active configuration setting of magic_quotes_runtime.
- *
- * @return boolean Current value (Actually BINARY, but boolean will work).
- */
-function get_magic_quotes_runtime()
-{
-    return true;
 }
 
 /**
@@ -5008,18 +4949,6 @@ function gzuncompress($data, $length = 0)
  * @return string Out.
  */
 function hebrev($hebrew_text, $max_chars_per_line = null)
-{
-    return '';
-}
-
-/**
- * Convert logical Hebrew text to visual text with newline conversion.
- *
- * @param  string $hebrew_text In.
- * @param  ?integer $max_chars_per_line Maximum number of characters per line (null: no limit).
- * @return string Out.
- */
-function hebrevc($hebrew_text, $max_chars_per_line = null)
 {
     return '';
 }

@@ -407,7 +407,6 @@ $FALSE_ERROR_FUNCS = array(
     'fread' => true,
     'fgets' => true,
     'fgetcsv' => true,
-    'fgetss' => true,
     'ftruncate' => true,
     'pfsockopen' => true,
     'ob_get_length' => true,
@@ -1562,7 +1561,7 @@ function get_insecure_functions()
 {
     return array('eval',
                  'ldap_search', 'ldap_list',
-                 'register_shutdown_function', 'register_tick_function', 'create_function', 'call_user_method_array', 'call_user_func_array', 'call_user_method', 'call_user_func',
+                 'register_shutdown_function', 'register_tick_function', 'call_user_method_array', 'call_user_func_array', 'call_user_method', 'call_user_func',
                  'fsockopen', 'chroot', 'chdir', 'chgrp', 'chmod', 'copy', 'delete', 'fopen', 'file', 'file_get_contents', 'fpassthru', 'mkdir', 'move_uploaded_file', 'popen', 'readfile', 'rename', 'rmdir', 'unlink', 'imagepng', 'imagejpeg', 'imagegif',
                  'mail', 'header',
                  'better_parse_ini_file', 'deldir_contents',
