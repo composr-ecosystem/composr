@@ -2749,7 +2749,9 @@ function parse_tempcode_include(string $var_data, array &$tpl_params) : array
  */
 function apply_tempcode_substitutions(string &$value, array $substitutions)
 {
-    $escaped_before = ocp_is_escaped($value);
+    if ($GLOBALS['XSS_DETECT']) {
+        $escaped_before = ocp_is_escaped($value);
+    }
 
     // Do substitutions
     foreach ($substitutions as $substitution) {
@@ -2781,7 +2783,9 @@ function apply_tempcode_substitutions(string &$value, array $substitutions)
         }
     }
 
-    if ($escaped_before) {
-        ocp_mark_as_escaped($value);
+    if ($GLOBALS['XSS_DETECT']) {
+        if ($escaped_before) {
+            ocp_mark_as_escaped($value);
+        }
     }
 }
