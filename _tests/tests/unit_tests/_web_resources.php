@@ -133,7 +133,7 @@ class _web_resources_test_set extends cms_test_case
             if (($errors !== null) && (empty($errors['errors']))) {
                 $errors = null; // Normalise
             }
-            $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path_compiled) . '&debug=1&keep_minify=0 to see errors)') : ''));
+            $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1&keep_minify=0 to see errors)') : ''));
             if ($errors !== null) {
                 if ($this->debug) {
                     unset($errors['tag_ranges']);

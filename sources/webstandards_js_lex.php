@@ -580,12 +580,12 @@ function js_pos_to_line_details(int $i, bool $absolute = false) : array
  *
  * @param  string $system The system causing the error
  * @param  integer $pos The position
- * @param  string $line The line
+ * @param  integer $line The line
  * @param  string $message The error
  * @param  integer $i The global position
  * @return ?boolean Always null (null: exit)
  */
-function js_die_error(string $system, int $pos, string $line, string $message, int $i) : ?bool
+function js_die_error(string $system, int $pos, int $line, string $message, int $i) : ?bool
 {
     $error = ['JS ERROR (' . $system . '): ' . $message, $pos, $line, $i];
     global $JS_ERRORS;

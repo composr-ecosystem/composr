@@ -38,7 +38,6 @@ class Hook_config_remember_me_behaviour
             'explanation' => 'CONFIG_OPTION_remember_me_behaviour',
             'shared_hosting_restricted' => '0',
             'list_options' => 'off|default_off|default_on|always_on',
-            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

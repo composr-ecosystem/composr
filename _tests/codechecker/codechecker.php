@@ -26,14 +26,6 @@ if (function_exists('set_time_limit')) {
     @set_time_limit(10000);
 }
 
-// Load code
-require_once('metadata.php');
-require_once('check.php');
-require_once('tests.php');
-require_once('lex.php');
-require_once('parse.php');
-require_once('lib.php');
-
 // Handle options
 $available_options = [
     // CQC flags
@@ -134,8 +126,16 @@ foreach (array_keys($options) as $key) {
 if (array_key_exists('base_path', $options)) {
     $COMPOSR_PATH = $options['base_path'];
 } else {
-    $COMPOSR_PATH = '.';
+    $COMPOSR_PATH = dirname(__DIR__, 2);
 }
+
+// Load code
+require_once('metadata.php');
+require_once('check.php');
+require_once('tests.php');
+require_once('lex.php');
+require_once('parse.php');
+require_once('lib.php');
 
 // To get it started...
 

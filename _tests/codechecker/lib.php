@@ -23,7 +23,9 @@ if (function_exists('set_time_limit')) {
     @set_time_limit(1000);
 }
 global $COMPOSR_PATH;
-$COMPOSR_PATH = dirname(__DIR__, 2);
+if (!isset($COMPOSR_PATH)) {
+    $COMPOSR_PATH = dirname(__DIR__, 2);
+}
 
 function cnl()
 {

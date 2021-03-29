@@ -43,11 +43,11 @@ class Hook_contentious_overrides_configured
 
         switch ($suffix) {
             case '.js':
-                $_extra_templates = get_option('globally_included_js_files');
+                $_extra_templates = get_theme_option('globally_included_js_files');
                 break;
 
             case '.css':
-                $_extra_templates = get_option('globally_included_css_files');
+                $_extra_templates = get_theme_option('globally_included_css_files');
                 break;
 
             default:

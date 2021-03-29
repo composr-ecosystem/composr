@@ -22,7 +22,7 @@ class cqc__explicit_fail_test_set extends cms_test_case
     {
         $url = get_base_url() . '/_tests/codechecker/codechecker.php?test=10';
         $result = http_get_contents($url, ['convert_to_internal_encoding' => true]);
-        $this->assertTrue(strpos($result, 'Bad return type') !== false);
+        $this->assertTrue(strpos($result, 'Bad return type') !== false, $result);
     }
 
     public function testCQCFailuresStillWork()

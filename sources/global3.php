@@ -2643,7 +2643,7 @@ function normalise_ip_address(string $ip, ?int $amount = null) : string
     // Normalise
     if (strpos($ip, '.') === false) { // IPv6
         if ($amount !== null) {
-            $amount -= (4 - $amount);
+            $amount += (8 - $amount);
         }
 
         if (substr_count($ip, ':') < 7) {
