@@ -3744,7 +3744,7 @@ function add_captcha_checking(form)
 		form.elements['submit_button'].disabled=true;
 		var url='{$FIND_SCRIPT;,snippet}?snippet=captcha_wrong&name='+window.encodeURIComponent(form.elements['captcha'].value);
 		if (!do_ajax_field_test(url))
-		{captcha_readable
+		{
 			var captcha_readable=document.getElementById('captcha_readable');
 			if (!captcha_readable) captcha_readable=document.getElementById('captcha_image'); // LEGACY
 			if (!captcha_readable) captcha_readable=document.getElementById('captcha_frame'); // LEGACY

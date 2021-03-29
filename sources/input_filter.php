@@ -375,8 +375,8 @@ function hard_filter_input_data__html(&$val, $lite = false)
     // Event vectors (anything that *might* have got into a tag context, or out of an attribute context, that looks like it could potentially be a JS attribute -- intentionally broad as invalid-but-working HTML can trick regexps)
     do {
         $before = $val;
-        $val = preg_replace('#([<"\'].*\s)o([nN])(.*=)#s', '${1}&#111;${2}${3}', $val);
-        $val = preg_replace('#([<"\'].*\s)O([nN])(.*=)#s', '${1}&#79;${2}${3}', $val);
+        $val = preg_replace('#([<"\'].*\s)o([nN])([\w\s]*=)#Us', '${1}&#111;${2}${3}', $val);
+        $val = preg_replace('#([<"\'].*\s)O([nN])([\w\s]*=)#Us', '${1}&#79;${2}${3}', $val);
     } while ($before != $val);
 
     if ($lite) {
