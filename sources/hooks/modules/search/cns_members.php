@@ -238,9 +238,8 @@ class Hook_search_cns_members extends FieldsSearchHook
             $ob = get_fields_hook($row['cf_type']);
             list(, , $storage_type) = $ob->get_field_value_row_bits($row);
 
-            $doing_slow_boolean_search = (($boolean_search) && ($GLOBALS['SITE_DB']->has_full_text_boolean());
             $fulltext_possible = ($GLOBALS['SITE_DB']->has_full_text()) && (array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#');
-            $fulltext_searched = $fulltext_possible && !$doing_slow_boolean_search;
+            $fulltext_searched = $fulltext_possible;
 
             if ($row['cf_allow_template_search'] == 1) {
                 // Filter form
@@ -278,13 +277,13 @@ class Hook_search_cns_members extends FieldsSearchHook
 
             // Standard search
             if ($row['cf_include_in_main_search'] == 1) {
-                if (($fulltext_searched) || ($doing_slow_boolean_search)) {
+                if ($fulltext_searched) {
                     if (strpos($storage_type, '_trans') === false) {
-                        if ((!$reduced_ft_searching) || ($doing_slow_boolean_search)) {
+                        if (!$reduced_ft_searching) {
                             $raw_fields[] = 'field_' . strval($row['id']);
                         }
                     } else {
-                        if ((multi_lang_content()) || (!$reduced_ft_searching) || ($doing_slow_boolean_search)) {
+                        if ((multi_lang_content()) || (!$reduced_ft_searching)) {
                             $trans_fields['field_' . strval($row['id'])] = 'LONG_TRANS__COMCODE';
                         }
                     }

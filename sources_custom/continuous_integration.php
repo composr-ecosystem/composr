@@ -37,8 +37,8 @@ function init__continuous_integration()
             // Very slow
             'unit_tests/_actionlog',
             'unit_tests/___bash_parser',
-            'unit_tests/_backups',
-            'unit_tests/_broken_links',
+            'unit_tests/__backups',
+            'unit_tests/__broken_links',
             'unit_tests/_images',
             'unit_tests/__installer_xml_db', // (Messes with _config.php too)
             'unit_tests/_tutorial_quality',
