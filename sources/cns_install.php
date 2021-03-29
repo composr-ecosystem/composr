@@ -349,6 +349,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups SET g_rank_image=REPLACE(g_rank_image,\'ocf_\',\'cns_\') WHERE g_rank_image LIKE \'%ocf\_%\'');
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_emoticon=REPLACE(t_emoticon,\'ocf_\',\'cns_\') WHERE t_emoticon LIKE \'%ocf\_%\'');
+        $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_emoticon' => 'icons/14x14/cns_topic_modifiers/announcement'], ['t_emoticon' => 'cns_topic_modifiers/announcement']);
 
         $GLOBALS['FORUM_DB']->change_primary_key('f_multi_moderations', ['id']);
 

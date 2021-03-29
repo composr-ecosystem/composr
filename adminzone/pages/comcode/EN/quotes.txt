@@ -6,5 +6,5 @@ Place each new quote on a separate line.
 [block="quotes" title="Quotes" scrolls="1"]main_notes[/block]
 
 [box="Multiple quote sets"]
-Please note that this editing page is just a Comcode page set up to edit the [tt]quotes[/tt] text-file, and the use of the [tt]quotes[/tt] file with the [tt]main_quotes[/tt] block is just a default -- you may have multiple quote blocks using multiple quote files, if you wish. If you wish to be able to edit all quote files from within this editor, click 'Edit page' below and add in new [tt]main_notes[/tt] blocks.
+Please note that this editing page is just a Comcode page set up to edit the [tt]quotes[/tt] text-file, and the use of the [tt]quotes[/tt] file with the [tt]main_quotes[/tt] block is just a default for the block's [tt]param[/tt] ("Filename") parameter -- you may have multiple quote blocks using multiple quote files, if you wish. If you wish to be able to edit all quote files from within this editor, click 'Edit page' below and add in new [tt]main_notes[/tt] blocks.
 [/box]

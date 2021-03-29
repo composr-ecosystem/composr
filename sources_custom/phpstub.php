@@ -5103,27 +5103,6 @@ Disabled due to often being ill-configured or disabled on hosts...
 tmpfile
 tempnam
 
-Disabled due to being removed/deprecated from PHP...
-
-set_magic_quotes_runtime
-get_magic_quotes_runtime
-get_magic_quotes_gpc
-call_user_method
-call_user_method_array
-split
-spliti
-ereg
-ereg_replace
-eregi
-eregi_replace
-sql_regcase
-define_syslog_variables
-create_function
-money_format
-convert_cyr_string
-hebrevc
-restore_include_path
-
 Disabled simply as we don't feel a need to use them (can enable if we find a use)...
 
 idate
@@ -5248,7 +5227,6 @@ imageresolution
 fileinode
 soundex
 quotemeta
-ezmlm_hash
 filetype
 is_executable
 is_subclass_of

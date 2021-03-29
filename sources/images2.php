@@ -100,10 +100,10 @@ function convert_image_plus(string $orig_url, ?string $dimensions = null, string
     }
 
     $exp_dimensions = array_map('intval', explode('x', $dimensions, 2));
-    if ($exp_dimensions[0] == 0) {
+    if (($exp_dimensions[0] == 0) || (!is_numeric($exp_dimensions[0]))) {
         $exp_dimensions[0] = null;
     }
-    if ((count($exp_dimensions) == 1) || ($exp_dimensions[1] == 0)) {
+    if ((count($exp_dimensions) == 1) || ($exp_dimensions[1] == 0) || (!is_numeric($exp_dimensions[1]))) {
         $exp_dimensions[1] = null;
     }
 

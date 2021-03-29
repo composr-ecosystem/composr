@@ -851,13 +851,17 @@
                         if ($cms.form.isModSecurityWorkaroundEnabled()) {
                             post = $cms.form.modSecurityWorkaroundAjax(post);
                         }
-                        $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post).then(function () {
+                        $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store' + $cms.keep(), null, post).then(function (xhr) {
                             if (document.body.style.cursor === 'wait') {
                                 document.body.style.cursor = '';
                             }
 
-                            var message = foundValidatedField ? '{!javascript:DRAFT_SAVED_WITH_VALIDATION;^}' : '{!javascript:DRAFT_SAVED_WITHOUT_VALIDATION;^}';
-                            $cms.ui.alert(message, '{!javascript:DRAFT_SAVE;^}');
+                            if (xhr.status != 500) {
+                                var message = foundValidatedField ? '{!javascript:DRAFT_SAVED_WITH_VALIDATION;^}' : '{!javascript:DRAFT_SAVED_WITHOUT_VALIDATION;^}';
+                                $cms.ui.alert(message, '{!javascript:DRAFT_SAVE;^}');
+                            } else {
+                                $cms.ui.alert(message, '{!INTERNAL_ERROR;^}');
+                            }
                         });
                     }
                 }

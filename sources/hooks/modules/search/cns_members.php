@@ -203,6 +203,7 @@ class Hook_search_cns_members extends FieldsSearchHook
         require_lang('cns');
 
         $indexes = collapse_2d_complexity('i_fields', 'i_name', $GLOBALS['FORUM_DB']->query_select('db_meta_indices', ['i_fields', 'i_name'], ['i_table' => 'f_member_custom_fields'], 'ORDER BY i_name'));
+        // ^ the ORDER BY above causes fulltext indexes to be given precedence in $indexes for any field_x
 
         // Calculate our where clause (search)
         if ($author != '') {
@@ -227,10 +228,7 @@ class Hook_search_cns_members extends FieldsSearchHook
                 $non_trans_fields++;
             }
         }
-        $force_like = ($non_trans_fields > 16); // MySQL limit for full-text index querying. We'll therefore not throw EVERY searchable field into the search query (only core ones, and ones we're explicitly filtering on)
-        if ($force_like) {
-            list($content_where) = build_content_where($search_query, false, true); // Rebuilding $content_where from what was passed to this function
-        }
+        $reduced_ft_searching = ((get_param_integer('force_like', 0) == 0) && ($non_trans_fields > 16)); // MySQL limit for fulltext index querying. We'll therefore not throw EVERY searchable field into the search query (only core ones, and ones we're explicitly filtering on)
         $gdpr_log = false;
         foreach ($rows as $i => $row) {
             if (($row['cf_allow_template_search'] == 0) && ($row['cf_include_in_main_search'] == 0)) {
@@ -239,6 +237,10 @@ class Hook_search_cns_members extends FieldsSearchHook
 
             $ob = get_fields_hook($row['cf_type']);
             list(, , $storage_type) = $ob->get_field_value_row_bits($row);
+
+            $doing_slow_boolean_search = (($boolean_search) && ($GLOBALS['SITE_DB']->has_full_text_boolean());
+            $fulltext_possible = ($GLOBALS['SITE_DB']->has_full_text()) && (array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#');
+            $fulltext_searched = $fulltext_possible && !$doing_slow_boolean_search;
 
             if ($row['cf_allow_template_search'] == 1) {
                 // Filter form
@@ -259,13 +261,7 @@ class Hook_search_cns_members extends FieldsSearchHook
                         $temp = '?=' . float_to_raw_string(floatval($param));
                     } elseif ($storage_type == 'list') {
                         $temp = db_string_equal_to('?', $param);
-                    } elseif (
-                        (array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#') &&
-                        ($GLOBALS['SITE_DB']->has_full_text()) &&
-                        ($GLOBALS['SITE_DB']->has_full_text_boolean()) &&
-                        (!$force_like) &&
-                        (!is_under_radar($param))
-                    ) {
+                    } elseif (($fulltext_searched) && (!is_under_radar($param))) { // Anything is fulltext-searched, if possible
                         $temp = $GLOBALS['SITE_DB']->full_text_assemble('"' . $param . '"');
                     } else {
                         list($temp,) = db_like_assemble($param);
@@ -282,11 +278,15 @@ class Hook_search_cns_members extends FieldsSearchHook
 
             // Standard search
             if ($row['cf_include_in_main_search'] == 1) {
-                if (((array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#')) || ($force_like)) {
+                if (($fulltext_searched) || ($doing_slow_boolean_search)) {
                     if (strpos($storage_type, '_trans') === false) {
-                        $raw_fields[] = 'field_' . strval($row['id']);
+                        if ((!$reduced_ft_searching) || ($doing_slow_boolean_search)) {
+                            $raw_fields[] = 'field_' . strval($row['id']);
+                        }
                     } else {
-                        $trans_fields['field_' . strval($row['id'])] = 'LONG_TRANS__COMCODE';
+                        if ((multi_lang_content()) || (!$reduced_ft_searching) || ($doing_slow_boolean_search)) {
+                            $trans_fields['field_' . strval($row['id'])] = 'LONG_TRANS__COMCODE';
+                        }
                     }
                 }
             }

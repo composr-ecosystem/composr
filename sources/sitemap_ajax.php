@@ -38,6 +38,9 @@ function sitemap_script()
         exit();
     }
 
+    require_code('input_filter_2');
+    modsecurity_workaround_enable();
+
     disable_php_memory_limit(); // Needed for loading large amount of permissions (potentially)
 
     if (get_param_integer('set_perms', 0) == 1) {
@@ -502,7 +505,7 @@ function sitemap_script_saving()
     foreach ($map as $i => $page_link) { // For everything we're setting at once
         $is_root = (($page_link == ((get_option('single_public_zone') == '0') ? ':' : '')));
 
-        $view = post_param_integer(strval($i) . 'g_view_' . $guest_groups[0], -1);
+        $view = post_param_integer(strval($i) . 'g_view_' . strval($guest_groups[0]), -1);
         if ($view != -1) { // -1 means unchanged
             $GLOBALS['SITE_DB']->query_update('sitemap_cache', ['guest_access' => $view], ['page_link' => $page_link], '', 1);
         }
@@ -565,7 +568,7 @@ function sitemap_script_saving()
                 $zone = $matches[1];
                 $page = $matches[2];
 
-                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
+                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS | SITEMAP_GEN_REQUIRE_PERMISSION_SUPPORT/*needed to not disable if no entry points*/);
 
                 if ($node === null) {
                     warn_exit('Could not lookup node for ' . $page_link);

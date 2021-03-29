@@ -670,6 +670,9 @@ jQuery(function ($) {
                     $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,namelike}?id=' + encodeURIComponent(token) + $cms.keep()).then(function (response) {
                         var responseXML = response.responseXML;
                         var listContents = responseXML && responseXML.querySelector('result');
+                        if (!listContents) {
+                            return;
+                        }
 
                         var newValues = [];
                         for (var i = 0; i < listContents.childNodes.length; i++) {

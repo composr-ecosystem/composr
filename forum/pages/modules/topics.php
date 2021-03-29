@@ -2891,7 +2891,7 @@ class Module_topics
 
         // Show it worked / Refresh
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($url != '') {
+        if (($url != '') && ((strpos($url, 'topicview') === false) || ($_topic_info[0]['t_cache_first_post_id'] != $post_id))) {
             return redirect_screen(get_screen_title('DELETE_POST'), $url, do_lang_tempcode('SUCCESS'));
         }
 
