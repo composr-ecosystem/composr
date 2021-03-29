@@ -170,10 +170,10 @@ function dload_script()
     require_code('mime_types');
     $mime_type = get_mime_type(get_file_extension($myrow['original_filename']), false);
     if (get_option('immediate_downloads') == '1' && $mime_type != 'application/octet-stream') {
-        header('Content-Type: ' . $mime_type . '; authoritative=true;');
+        header('Content-Type: ' . $mime_type . '; authoritative=true');
         header('Content-Disposition: inline; filename="' . escape_header($myrow['original_filename'], true) . '"');
     } else {
-        header('Content-Type: application/octet-stream' . '; authoritative=true;');
+        header('Content-Type: application/octet-stream' . '; authoritative=true');
         header('Content-Disposition: attachment; filename="' . escape_header($myrow['original_filename'], true) . '"');
     }
 

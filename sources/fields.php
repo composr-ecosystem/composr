@@ -112,7 +112,7 @@ function catalogue_file_script()
 
     // Send header
     require_code('mime_types');
-    header('Content-Type: ' . get_mime_type(get_file_extension($original_filename), false) . '; authoritative=true;');
+    header('Content-Type: ' . get_mime_type(get_file_extension($original_filename), false) . '; authoritative=true');
     if ($original_filename !== null) {
         $original_filename = filter_naughty($original_filename);
 
@@ -122,7 +122,7 @@ function catalogue_file_script()
         if (get_option('immediate_downloads', true) === '1' || get_param_integer('inline', 0) == 1) {
             require_code('mime_types');
             $as_admin = ($submitter !== null) && (has_privilege($submitter, 'comcode_dangerous'));
-            header('Content-Type: ' . get_mime_type(get_file_extension($original_filename), $as_admin) . '; authoritative=true;');
+            header('Content-Type: ' . get_mime_type(get_file_extension($original_filename), $as_admin) . '; authoritative=true');
             header('Content-Disposition: inline; filename="' . escape_header($original_filename, true) . '"');
         } else {
             header('Content-Disposition: attachment; filename="' . escape_header($original_filename, true) . '"');
