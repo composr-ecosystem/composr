@@ -26,6 +26,8 @@ class cms_test_case extends WebTestCase
     {
         require_code('config2');
 
+        @ignore_user_abort(false);
+
         static $done_once = false;
         if (!$done_once) {
             // Make sure the site is open

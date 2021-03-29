@@ -5095,7 +5095,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ECOM_CAT_height
         ECOM_ORDER
         EDITAREA
-        EDITING
         EDITING_CONTENT_IN_LANGUAGE_STAFF
         EDITING_CUSTOM_FIELDS_HELP
         EDITING_ON_WRONG_MSN
@@ -5693,7 +5692,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GEOCODE_REQUEST_DENIED
         GEOCODE_UNKNOWN_ERROR
         GEOCODE_ZERO_RESULTS
-        GRAPH
         GROUP_LEADER
         GROUP_MEMBER_TIMEOUTS
         GROUP_PRIVATE_CHATROOMS
@@ -9950,12 +9948,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NEW_PERSONAL_POST_MESSAGE
         NEW_PERSONAL_POST_SUBJECT
         NEW_POSTS
-        NEW_PP_NOTIFICATION
         NEW_PRIVATE_TOPIC
         NEW_PRIVATE_TOPIC_MESSAGE
         NEW_PRIVATE_TOPIC_SHORT
         NEW_PRIVATE_TOPIC_SUBJECT
-        NEW_PT_NOTIFICATION
         NEW_TICKET_WELCOME
         NEW_TOPICS
         NEW_UGROUP_SUB_FOR

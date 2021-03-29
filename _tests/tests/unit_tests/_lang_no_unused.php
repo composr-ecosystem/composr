@@ -33,7 +33,8 @@ class _lang_no_unused_test_set extends cms_test_case
         $exceptions_files = array_merge(list_untouchable_third_party_files(), [
         ]);
 
-        $all_files = [];
+        $all_php_files = [];
+        $all_template_files = [];
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
@@ -44,7 +45,7 @@ class _lang_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $all_files[] = $path;
+            $all_php_files[] = $path;
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['tpl']);
         foreach ($files as $path) {
@@ -55,7 +56,7 @@ class _lang_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $all_files[] = $path;
+            $all_template_files[] = $path;
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         foreach ($files as $path) {
@@ -68,7 +69,7 @@ class _lang_no_unused_test_set extends cms_test_case
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             if (strpos($c, '/*{$,parser hint: pure}*/') === false) {
-                $all_files[] = $path;
+                $all_template_files[] = $path;
             }
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['txt']);
@@ -80,7 +81,7 @@ class _lang_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $all_files[] = $path;
+            $all_template_files[] = $path;
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['xml']);
         foreach ($files as $path) {
@@ -91,14 +92,29 @@ class _lang_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $all_files[] = $path;
+            $all_template_files[] = $path;
         }
-        $all_files[] = 'install.php';
 
-        $all_code = '';
-        foreach ($all_files as $path) {
-            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
+        $_all_php_code = [];
+        foreach ($all_php_files as $path) {
+            $code = cms_file_get_contents_safe(get_file_base() . '/' . $path);
+            foreach (explode("\n", $code) as $line) {
+                if (strpos($line, "'") !== false) {
+                    $_all_php_code[] = $line;
+                }
+            }
         }
+        $all_php_code = implode("\n", $_all_php_code);
+        $_all_template_code = [];
+        foreach ($all_template_files as $path) {
+            $code = cms_file_get_contents_safe(get_file_base() . '/' . $path);
+            foreach (explode("\n", $code) as $line) {
+                if (strpos($line, '{!') !== false) {
+                    $_all_template_code[] = $line;
+                }
+            }
+        }
+        $all_template_code = implode("\n", $_all_template_code);
 
         $skip_prefixes = [
             'RANK_SET_',
@@ -294,7 +310,7 @@ class _lang_no_unused_test_set extends cms_test_case
             }
 
             foreach ($input as $key => $val) {
-                if (strpos($all_code, '\'' . $key . '\'') !== false) { // Most efficient check
+                if (strpos($all_php_code, '\'' . $key . '\'') !== false) { // Most efficient check
                     $contains = true;
                 } else { // Remaining check
                     if (preg_match($skip_prefixes_regexp, $key) != 0) {
@@ -306,7 +322,7 @@ class _lang_no_unused_test_set extends cms_test_case
                     }
 
                     $_key = preg_quote($key, '#');
-                    $contains = (preg_match('#(\{!' . $key . '|:' . $key . ')#', $all_code) != 0);
+                    $contains = (preg_match('#(\{!' . $key . '|:' . $key . ')#', $all_template_code) != 0) || (strpos($all_php_code, ':' . $key . "'") != 0);
                 }
                 $this->assertTrue($contains, $key . ': cannot find usage of language string (' . $val . ')');
             }
