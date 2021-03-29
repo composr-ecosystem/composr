@@ -420,7 +420,7 @@
                 if (xhr.status != 500) {
                     $cms.ui.alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
                 } else {
-                    $cms.ui.alert('{!permissions:INTERNAL_ERROR;^}');
+                    $cms.ui.alert('{!INTERNAL_ERROR;^}');
                 }
             });
             return;
