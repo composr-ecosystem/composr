@@ -573,8 +573,14 @@ function set_permissions(setting)
 		// Send AJAX request
 		if (set_request!='')
 		{
-			do_ajax_request('{$BASE_URL_NOHTTP;}/data/sitemap.php?set_perms=1'+keep_stub(),function() {
-				window.fauxmodal_alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
+			set_request=modsecurity_workaround_ajax(set_request);
+			do_ajax_request('{$BASE_URL_NOHTTP;}/data/sitemap.php?set_perms=1'+keep_stub(),function(ajax_result) {
+				if (ajax_result.status!=500)
+				{
+					window.fauxmodal_alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
+				} else {
+					window.fauxmodal_alert('{!INTERNAL_ERROR;^}');
+				}
 			},set_request);
 			return;
 		}

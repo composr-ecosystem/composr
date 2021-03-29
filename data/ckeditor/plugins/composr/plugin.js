@@ -66,6 +66,20 @@
 				label: editor.lang.common.image,
 				command: 'composr_image'
 			});
+
+			// Cannot add images to figcaption
+			editor.on('selectionChange', function(evt)
+			{
+				if (editor.readOnly) return;
+
+				var command = editor.getCommand('composr_image'),
+					element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant('figcaption', true);
+
+				if (element && element.getName() == 'figcaption')
+					command.setState(CKEDITOR.TRISTATE_DISABLED);
+				else
+					command.setState(CKEDITOR.TRISTATE_OFF);
+			});
 		}
 	});
 })();

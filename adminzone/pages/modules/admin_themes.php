@@ -1955,7 +1955,7 @@ class Module_admin_themes
         $use_all_langs = post_param_integer('use_all_langs', 0);
 
         $target_dir = 'themes/' . (($use_all_themes == 1) ? 'default' : $theme) . '/images_custom';
-        if (str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) != '1') {
+        if ((strpos($id, '/') !== false) && (str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) != '1')) {
             $target_dir .= '/' . dirname($id);
         }
         $path = get_url('path', 'file', $target_dir);
@@ -1969,8 +1969,8 @@ class Module_admin_themes
         if (($use_all_themes == 1) && ($use_all_langs == 1)) {
             $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => $id));
             foreach ($theme_list as $theme) {
-                foreach (array_keys($lang_list) as $lang) {
-                    actual_add_theme_image($theme, $lang, $id, $path[0], true);
+                foreach (array_keys($lang_list) as $_lang) {
+                    actual_add_theme_image($theme, $_lang, $id, $path[0], true);
                 }
             }
         } elseif ($use_all_themes == 1) {
@@ -1980,8 +1980,8 @@ class Module_admin_themes
             }
         } elseif ($use_all_langs == 1) {
             $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => $id, 'theme' => $theme));
-            foreach (array_keys($lang_list) as $lang) {
-                actual_add_theme_image($theme, $lang, $id, $path[0], true);
+            foreach (array_keys($lang_list) as $_lang) {
+                actual_add_theme_image($theme, $_lang, $id, $path[0], true);
             }
         } else {
             actual_add_theme_image($theme, $lang, $id, $path[0]);

@@ -1121,8 +1121,13 @@ function handle_form_saving_explicit(event,form)
 				do_ajax_request('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store'+keep_stub(),function() {
 					if (document.body.style.cursor=='wait') document.body.style.cursor='';
 
-					var message=found_validated_field?'{!javascript:DRAFT_SAVED_WITH_VALIDATION;^}':'{!javascript:DRAFT_SAVED_WITHOUT_VALIDATION;^}';
-					fauxmodal_alert(message,null,'{!javascript:DRAFT_SAVE;^}');
+					if (ajax_result.status!=500)
+					{
+						var message=found_validated_field?'{!javascript:DRAFT_SAVED_WITH_VALIDATION;^}':'{!javascript:DRAFT_SAVED_WITHOUT_VALIDATION;^}';
+						fauxmodal_alert(message,null,'{!javascript:DRAFT_SAVE;^}');
+					} else {
+						fauxmodal_alert('{!INTERNAL_ERROR;^}');
+					}
 				},post);
 			}
 		}

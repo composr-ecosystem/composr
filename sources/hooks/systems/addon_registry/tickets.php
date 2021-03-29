@@ -224,8 +224,10 @@ class Hook_addon_registry_tickets
      */
     public function tpl_preview__support_ticket_screen()
     {
-        require_javascript('ajax');
         require_lang('cns');
+
+        require_javascript('ajax');
+        require_javascript('editing');
 
         $comments = new Tempcode();
 

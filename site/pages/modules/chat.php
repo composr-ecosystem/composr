@@ -602,8 +602,7 @@ class Module_chat
     {
         require_javascript('posting');
 
-        $prefs = @$_COOKIE['software_chat_prefs'];
-        $prefs = @explode(';', $prefs);
+        $prefs = @explode(';', $_COOKIE['software_chat_prefs']);
         $room_id = $this->room_id;
         $room_row = $this->room_row;
         $room_name = $this->room_name;
@@ -1064,7 +1063,7 @@ class Module_chat
      */
     public function chat_save_options()
     {
-        $value = preg_replace('#^\##', '', post_param_string('text_colour', get_option('chat_default_post_colour'))) . ';' . post_param_string('font_name', get_option('chat_default_post_font')) . ';';
+        $value = post_param_string('text_colour', get_option('chat_default_post_colour')) . ';' . post_param_string('font_name', get_option('chat_default_post_font')) . ';';
         require_code('users_active_actions');
         cms_setcookie('software_chat_prefs', $value);
 

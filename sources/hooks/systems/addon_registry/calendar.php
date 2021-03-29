@@ -740,6 +740,8 @@ class Hook_addon_registry_calendar
      */
     public function tpl_preview__calendar_event_screen()
     {
+        require_javascript('editing');
+
         $subscriptions = array();
         foreach (placeholder_array() as $v) {
             $subscriptions[] = array(

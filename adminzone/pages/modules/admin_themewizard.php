@@ -84,7 +84,7 @@ class Module_admin_themewizard
         }
 
         if ($type == 'browse') {
-            breadcrumb_set_parents(array(array('_SELF:adminzone:browse', do_lang_tempcode('MANAGE_THEMES'))));
+            breadcrumb_set_parents(array(array('_SEARCH:admin_themes:browse', do_lang_tempcode('MANAGE_THEMES'))));
 
             breadcrumb_set_self(do_lang_tempcode('THEMEWIZARD'));
 

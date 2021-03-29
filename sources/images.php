@@ -122,11 +122,11 @@ function _symbol_thumbnail($param)
         }
         $dimensions = $param[1]; // Generation dimensions.
         $exp_dimensions = explode('x', $dimensions);
-        if (count($exp_dimensions) == 1) {
-            $exp_dimensions[] = '-1';
+        if ((count($exp_dimensions) == 1) || (!is_numeric($exp_dimensions[1]))) {
+            $exp_dimensions[1] = '-1';
         }
 
-        if ($exp_dimensions[0] == '') {
+        if (!is_numeric($exp_dimensions[0])) {
             $exp_dimensions[0] = '-1';
         }
 

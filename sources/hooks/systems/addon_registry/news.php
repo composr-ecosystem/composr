@@ -558,6 +558,8 @@ class Hook_addon_registry_news
     {
         require_lang('news');
 
+        require_javascript('editing');
+
         $tags = array();
         foreach (placeholder_array() as $k => $v) {
             $tags[] = array(
@@ -592,10 +594,7 @@ class Hook_addon_registry_news
                 'CATEGORY_ID' => placeholder_id(),
                 'BLOG' => true,
                 '_TITLE' => lorem_phrase(),
-                'TAGS' => do_lorem_template('TAGS', array(
-                    'TAGS' => $tags,
-                    'TYPE' => '',
-                )),
+                'TAGS' => placeholder_tags(),
                 'CATEGORIES' => placeholder_array(),
                 'NEWSLETTER_URL' => addon_installed('newsletter') ? placeholder_url() : '',
                 'ADD_DATE_RAW' => placeholder_date_raw(),

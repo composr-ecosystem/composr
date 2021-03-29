@@ -231,7 +231,7 @@ function attachments_script()
     $mime_type = get_mime_type($extension, has_privilege($myrow['a_member_id'], 'comcode_dangerous'));
 
     // Send header
-    header('Content-Type: ' . $mime_type . '; authoritative=true;');
+    header('Content-Type: ' . $mime_type . '; authoritative=true');
     if ((strpos($original_filename, "\n") !== false) || (strpos($original_filename, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
     }

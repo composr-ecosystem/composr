@@ -634,6 +634,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_flow_mode_video()
     {
+        require_javascript('editing');
+
         $video = do_lorem_template('GALLERY_FLOW_MODE_VIDEO', array(
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
@@ -653,12 +655,6 @@ class Hook_addon_registry_galleries
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        ));
-        $tags = do_lorem_template('TAGS', array(
-            'TAG' => lorem_word(),
-            'TAGS' => placeholder_array(),
-            'LINK_FULLSCOPE' => lorem_word(),
-            'TYPE' => null,
         ));
 
         $entries = new Tempcode();
@@ -718,7 +714,7 @@ class Hook_addon_registry_galleries
                         'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
                         'ENTRY_EDIT_URL' => placeholder_url(),
                         'WARNING_DETAILS' => '',
-                        'TAGS' => $tags,
+                        'TAGS' => placeholder_tags(),
                         'RATING_DETAILS' => lorem_sentence_html(),
                         'COMMENT_DETAILS' => $comment_details,
                         'REP_IMAGE_URL' => placeholder_image_url(),
@@ -751,6 +747,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_flow_mode_image()
     {
+        require_javascript('editing');
+
         $image = do_lorem_template('GALLERY_FLOW_MODE_IMAGE', array(
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
@@ -769,12 +767,6 @@ class Hook_addon_registry_galleries
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        ));
-        $tags = do_lorem_template('TAGS', array(
-            'TAG' => lorem_word(),
-            'TAGS' => placeholder_array(),
-            'LINK_FULLSCOPE' => lorem_word(),
-            'TYPE' => null,
         ));
 
         $entries = new Tempcode();
@@ -831,7 +823,7 @@ class Hook_addon_registry_galleries
                         'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
                         'ENTRY_EDIT_URL' => placeholder_url(),
                         'WARNING_DETAILS' => '',
-                        'TAGS' => $tags,
+                        'TAGS' => placeholder_tags(),
                         'RATING_DETAILS' => lorem_sentence_html(),
                         'COMMENT_DETAILS' => $comment_details,
                         'REP_IMAGE_URL' => placeholder_image_url(),
@@ -868,12 +860,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_regular_mode_screen()
     {
-        $tags = do_lorem_template('TAGS', array(
-            'LINK_FULLSCOPE' => lorem_word(),
-            'TAG' => lorem_word(),
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-        ));
+        require_javascript('editing');
 
         $entry = new Tempcode();
         $map = array(
@@ -966,7 +953,7 @@ class Hook_addon_registry_galleries
             lorem_globalise(
                 do_lorem_template('GALLERY_REGULAR_MODE_SCREEN', array(
                         '_TITLE' => lorem_phrase(),
-                        'TAGS' => $tags,
+                        'TAGS' => placeholder_tags(),
                         'CAT' => lorem_word(),
                         'MEMBER_DETAILS' => lorem_sentence_html(),
                         'RATING_DETAILS' => lorem_sentence_html(),
@@ -999,6 +986,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_entry_screen()
     {
+        require_javascript('editing');
+
         $nav = do_lorem_template('GALLERY_NAV', array('BACK_URL' => placeholder_url(), 'SLIDESHOW' => false, '_X' => placeholder_number(), '_N' => placeholder_number(), 'X' => placeholder_number(), 'N' => placeholder_number(), 'SLIDESHOW_URL' => placeholder_url(), 'SLIDESHOW_NEXT_URL' => placeholder_url(), 'PREVIOUS_URL' => placeholder_url(), 'NEXT_URL' => placeholder_url(), 'MORE_URL' => placeholder_url(), 'CATEGORY_NAME' => lorem_word()));
 
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(

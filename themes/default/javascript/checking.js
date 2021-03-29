@@ -511,7 +511,7 @@ function check_field(the_element,the_form,for_preview)
 		// Shim for HTML5 regexp patterns
 		if (the_element.getAttribute('pattern'))
 		{
-			if ((my_value!='') && (!my_value.match(new RegExp(the_element.getAttribute('pattern')))))
+			if ((my_value!='') && (!my_value.match(new RegExp('^'+the_element.getAttribute('pattern')+'$'))))
 			{
 				error_msg='{!javascript:PATTERN_NOT_MATCHED;^}'.replace('\{1}',my_value);
 			}

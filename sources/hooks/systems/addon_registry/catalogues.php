@@ -259,12 +259,6 @@ class Hook_addon_registry_catalogues
             'URL' => placeholder_url(),
             'RESOURCE_TYPE' => 'catalogue_category',
         )));
-        $tags = do_lorem_template('TAGS', array(
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ));
 
         $entries = new Tempcode();
         $fields = new Tempcode();
@@ -313,7 +307,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -338,12 +332,6 @@ class Hook_addon_registry_catalogues
     public function tpl_preview__fieldmap_category_screen()
     {
         $subcategories = new Tempcode();
-        $tags = do_lorem_template('TAGS', array(
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ));
 
         $entries = new Tempcode();
         $fields = new Tempcode();
@@ -400,7 +388,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -439,13 +427,6 @@ class Hook_addon_registry_catalogues
             'CONTENT' => $content,
         ));
 
-        $tags = do_lorem_template('TAGS', array(
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ));
-
         $entries = do_lorem_template('CATALOGUE_DEFAULT_CATEGORY_EMBED', array(
             'DISPLAY_TYPE' => 'TITLELIST',
             'ENTRIES' => $entries,
@@ -467,7 +448,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -492,12 +473,6 @@ class Hook_addon_registry_catalogues
     public function tpl_preview__tabular_category_screen__links()
     {
         $subcategories = new Tempcode();
-        $tags = do_lorem_template('TAGS', array(
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ));
 
         $row = new Tempcode();
         $entry_fields = new Tempcode();
@@ -558,7 +533,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -583,12 +558,6 @@ class Hook_addon_registry_catalogues
     public function tpl_preview__tabular_category_screen()
     {
         $subcategories = new Tempcode();
-        $tags = do_lorem_template('TAGS', array(
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ));
 
         $entries = new Tempcode();
         $head = do_lorem_template('CATALOGUE_DEFAULT_TABULAR_HEADCELL', array(
@@ -648,7 +617,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -672,13 +641,6 @@ class Hook_addon_registry_catalogues
      */
     public function tpl_preview__entry_screen()
     {
-        $tags = do_lorem_template('TAGS', array(
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ));
-
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
             $fields->attach(do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_FIELD', array(
@@ -720,7 +682,7 @@ class Hook_addon_registry_catalogues
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'VIEWS' => placeholder_number(),
-                'TAGS' => $tags,
+                'TAGS' => placeholder_tags(),
                 'SUBMITTER' => placeholder_id(),
                 'FIELD_1' => lorem_word(),
             )), null, '', true)

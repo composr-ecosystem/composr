@@ -276,8 +276,10 @@ class Hook_addon_registry_core_feedback_features
     public function tpl_preview__comments()
     {
         require_lang('comcode');
+
         require_javascript('plupload');
         require_javascript('posting');
+        require_javascript('editing');
 
         require_css('forms');
 
@@ -337,6 +339,8 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__comments_wrapper()
     {
+        require_javascript('editing');
+
         $review_titles = array();
         $review_titles[] = array(
             'REVIEW_TITLE' => lorem_phrase(),

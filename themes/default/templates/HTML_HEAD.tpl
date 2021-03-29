@@ -133,7 +133,7 @@
 {+END}{+END}
 
 {$,Cookie Consent plugin by Silktide - http://silktide.com/cookieconsent}
-{+START,IF,{$AND,{$CONFIG_OPTION,cookie_notice},{$RUNNING_SCRIPT,index}}}
+{+START,IF,{$AND,{$CONFIG_OPTION,cookie_notice},{$RUNNING_SCRIPT,index},{$IS_EMPTY,{$REFRESH}}}}
 	<script>
 		window.cookieconsent_options={'message':'{!COOKIE_NOTICE;/,{$SITE_NAME}}','dismiss':'{!INPUTSYSTEM_OK;}','learnMore':'{!READ_MORE;}','link':'{$PAGE_LINK;/,:privacy}','theme':'dark-top'};
 	</script>
