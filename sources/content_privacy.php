@@ -203,9 +203,16 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
         // Is something being set right now by POST? (this layers on EXTRA security, so is not any kind of security risk)
         if (cms_srv('REQUEST_METHOD') == 'POST') {
             require_code('content_privacy2');
-            list($privacy_level, $additional_access) = read_privacy_fields();
+            list($privacy_level, $_additional_access) = read_privacy_fields();
             if ($privacy_level == '') {
                 return null;
+            }
+            $additional_access = [];
+            foreach ($_additional_access as $member) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member);
+                if ($member_id !== null) {
+                    $additional_access[] = $member_id;
+                }
             }
             list($member_view, $friend_view, $guest_view) = privacy_level_to_binary_settings($privacy_level);
         } else {
