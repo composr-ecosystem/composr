@@ -579,7 +579,7 @@ function set_permissions(setting)
 				{
 					window.fauxmodal_alert('{!permissions:PERMISSIONS_TREE_EDITOR_SAVED;^}');
 				} else {
-					window.fauxmodal_alert('{!permissions:INTERNAL_ERROR;^}');
+					window.fauxmodal_alert('{!INTERNAL_ERROR;^}');
 				}
 			},set_request);
 			return;
