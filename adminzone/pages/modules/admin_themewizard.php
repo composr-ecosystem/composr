@@ -272,7 +272,7 @@ class Module_admin_themewizard
 
             $filename = 'theme-' . $seed . '-' . ($dark ? 'dark' : 'light') . '.zip';
 
-            header('Content-Type: application/octet-stream' . '; authoritative=true;');
+            header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 
             require_code('zip');

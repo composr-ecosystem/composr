@@ -181,7 +181,7 @@ function _git_status__tar($stub, $filename)
 {
     $paths = git_status__paths($stub);
 
-    header('Content-Type: application/octet-stream' . '; authoritative=true;');
+    header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
 
     require_code('tar');
