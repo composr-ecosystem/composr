@@ -207,7 +207,7 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
             if ($privacy_level == '') {
                 return null;
             }
-            $additional_access = [];
+            $additional_access = array();
             foreach ($_additional_access as $member) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member);
                 if ($member_id !== null) {
