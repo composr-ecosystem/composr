@@ -60,6 +60,7 @@ function crossdomain_script()
     require_code('xml');
 
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     echo '<' . '?xml version="1.0"?' . '>
 <!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
@@ -141,7 +142,10 @@ function namelike_script()
 
     safe_ini_set('ocproducts.xss_detect', '0');
 
+    require_code('xml');
+
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
     echo '<?xml version="1.0" encoding="' . get_charset() . '"?' . '>';
     echo '<request><result>';
 
@@ -178,7 +182,7 @@ function namelike_script()
         }
 
         foreach ($names as $name) {
-            echo '<option value="' . escape_html($name) . '" displayname="" />';
+            echo '<option value="' . xmlentities($name) . '" displayname="" />';
         }
     } elseif ($special == 'search') {
         if (addon_installed('search')) {
@@ -189,7 +193,7 @@ function namelike_script()
         }
 
         foreach ($names as $name) {
-            echo '<option value="' . escape_html($name) . '" displayname="" />';
+            echo '<option value="' . xmlentities($name) . '" displayname="" />';
         }
     } else {
         if ((strlen($id) == 0) && (addon_installed('chat'))) {
@@ -203,7 +207,7 @@ function namelike_script()
             }
 
             foreach ($names as $name) {
-                echo '<option value="' . escape_html($name) . '" displayname="" />';
+                echo '<option value="' . xmlentities($name) . '" displayname="" />';
             }
         } else {
             $names = array();
@@ -214,7 +218,7 @@ function namelike_script()
                 $names = collapse_1d_complexity('author', $rows);
 
                 foreach ($names as $name) {
-                    echo '<option value="' . escape_html($name) . '" displayname="" />';
+                    echo '<option value="' . xmlentities($name) . '" displayname="" />';
                 }
             } else {
                 if ((!addon_installed('authors')) || ($special != 'author') || ($GLOBALS['FORUM_DRIVER']->get_members() < 5000)) {
@@ -231,7 +235,7 @@ function namelike_script()
                 }
 
                 foreach ($names as $member_id => $name) {
-                    echo '<option value="' . escape_html($name) . '" displayname="' . escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
+                    echo '<option value="' . xmlentities($name) . '" displayname="' . xmlentities($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
                 }
             }
         }
@@ -325,7 +329,8 @@ function retrieve_autosave()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/xml; charset=' . get_charset());
+    header('Content-Type: text/xml; charset=' . get_charset());
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     $member_id = get_member();
     $stem = either_param_string('stem');
@@ -333,6 +338,7 @@ function retrieve_autosave()
     require_code('xml');
 
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
     echo '<?xml version="1.0" encoding="' . get_charset() . '"?' . '>';
     echo '<request><result>' . "\n";
 
@@ -484,6 +490,7 @@ function ajax_tree_script()
 
     require_code('xml');
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
     $hook = filter_naughty_harsh(get_param_string('hook'));
     require_code('hooks/systems/ajax_tree/' . $hook, true);
     $object = object_factory('Hook_' . $hook, true);

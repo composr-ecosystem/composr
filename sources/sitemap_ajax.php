@@ -61,6 +61,8 @@ function sitemap_script()
  */
 function sitemap_script_loading()
 {
+    require_code('xml');
+
     // Usergroups we have
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -68,6 +70,8 @@ function sitemap_script_loading()
     $default = get_param_string('default', null, true);
 
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
+
     $permissions_needed = (get_param_integer('get_perms', 0) == 1); // Whether we are limiting our tree to permission-supporting
     safe_ini_set('ocproducts.xss_detect', '0');
 
@@ -127,8 +131,8 @@ function sitemap_script_loading()
                 $buildup .= ':';
             }
             $buildup .= $part;
-            echo "\n" . '<expand>' . $buildup . '</expand>';
-            echo "\n" . '<expand>' . $buildup . ':</expand>';
+            echo "\n" . '<expand>' . xmlentities($buildup) . '</expand>';
+            echo "\n" . '<expand>' . xmlentities($buildup) . ':</expand>';
         }
     }
 

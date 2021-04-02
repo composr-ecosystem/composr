@@ -89,6 +89,17 @@ function xmlentities($string, $charset = null)
 }
 
 /**
+ * Escape an XML CDATA section.
+ *
+ * @param  string $string Input string
+ * @return string Escaped version of input string
+ */
+function escape_cdata($string)
+{
+    return str_replace(']]>', ']]]]><![CDATA[>', $string);
+}
+
+/**
  * Convert HTML entities to plain characters for XML conformance.
  *
  * @param  string $data HTML to convert entities from

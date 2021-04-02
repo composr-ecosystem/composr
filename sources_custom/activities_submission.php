@@ -113,6 +113,7 @@ function activities_ajax_submit_handler()
     prepare_for_known_ajax_response();
 
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     $response = '<' . '?xml version="1.0" encoding="' . get_charset() . '" ?' . '>';
     $response .= '<response><content>';
@@ -183,6 +184,7 @@ function activities_ajax_update_list_handler()
     require_lang('activities');
     require_code('activities');
     require_code('addons');
+    require_code('xml');
 
     $proceed_selection = true; //There are some cases in which even glancing at the database is a waste of precious time.
 
@@ -199,6 +201,7 @@ function activities_ajax_update_list_handler()
     prepare_for_known_ajax_response();
 
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     $response = '<' . '?xml version="1.0" encoding="' . get_charset() . '" ?' . '>';
 
@@ -242,7 +245,7 @@ function activities_ajax_update_list_handler()
                 // tag so that the JavaScript knows what it's received
                 $list_items .= '<listitem id="' . strval($row['id']) . '"><![CDATA[' . base64_encode($list_item->evaluate()) . ']]></listitem>';
             }
-            $response .= '<response><success>1</success><feedlen>' . strval($max) . '</feedlen><content>' . $list_items . '</content><supp>' . escape_html($where_clause) . '</supp></response>';
+            $response .= '<response><success>1</success><feedlen>' . strval($max) . '</feedlen><content>' . $list_items . '</content><supp>' . xmlentities($where_clause) . '</supp></response>';
         } else {
             $response .= '<response><success>2</success><content>NU - Nothing new.</content></response>';
         }
@@ -272,6 +275,7 @@ function activities_ajax_removal_handler()
     prepare_for_known_ajax_response();
 
     header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     $response = '<' . '?xml version="1.0" encoding="' . get_charset() . '" ?' . '>';
     $response .= '<response>';

@@ -185,6 +185,7 @@ function comcode_convert_script()
         }
 
         header('Content-Type: text/xml');
+        header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
         echo '<?xml version="1.0" encoding="' . get_charset() . '"?' . '>';
         echo '<request><result>';
         echo xmlentities($out);

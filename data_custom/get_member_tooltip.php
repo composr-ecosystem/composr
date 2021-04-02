@@ -43,11 +43,14 @@ require_code('cns_members2');
 
 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username(get_param_string('member', ''));
 
+require_code('xml');
+
 header('Content-Type: text/xml');
+header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 echo '<' . '?xml version="1.0" encoding="' . get_charset() . '"?' . '>';
 echo '<request><result>';
 echo '<![CDATA[';
 $box = render_member_box($member_id, false, null, null, true, null, false);
-$box->evaluate_echo();    // '' will be returned if member ID is invalid.
+echo escape_cdata($box->evaluate());    // '' will be returned if member ID is invalid.
 echo ']]>';
 echo '</result></request>';

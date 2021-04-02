@@ -141,7 +141,8 @@ function commandr_script()
                 }
 
                 @header('HTTP/1.0 200 Ok');
-                @header('Content-type: text/xml; charset=' . get_charset());
+                @header('Content-Type: text/xml; charset=' . get_charset());
+                header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
                 $output = '<' . '?xml version="1.0" encoding="' . get_charset() . '" ?' . '>
                     <response>
                         <result>
@@ -278,6 +279,7 @@ class Virtual_shell
         }
 
         header('Content-Type: text/xml');
+        header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
         header('HTTP/1.0 200 Ok');
 
         if (is_object($this->output[STREAM_STDCOMMAND])) {
@@ -1431,7 +1433,7 @@ function get_queued_messages($xml = true)
             if (is_object($object_values[2])) {
                 $object_values[2] = $object_values[2]->evaluate();
             }
-            $output .= '<notification section="' . escape_html($object_values[0]) . '" type="' . escape_html($object_values[1]) . '">' . $object_values[2] . '</notification>';
+            $output .= '<notification section="' . xmlentities($object_values[0]) . '" type="' . xmlentities($object_values[1]) . '">' . $object_values[2] . '</notification>';
         } else {
             $output->attach(do_template('COMMANDR_NOTIFICATION', array('_GUID' => '0254d84dfbb2ce7b7410bdc0c2989833', 'SECTION' => $object_values[0], 'TYPE' => $object_values[1], 'NOTIFICATION_CONTENT' => $object_values[2])));
         }
