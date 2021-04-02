@@ -212,6 +212,8 @@ class Module_admin_cns_emoticons extends Standard_crud_module
     {
         post_param_string('test'); // To pick up on max file size exceeded errors
 
+        require_code('files2');
+
         require_code('images');
         is_plupload(true);
 
@@ -238,6 +240,10 @@ class Module_admin_cns_emoticons extends Standard_crud_module
                             zip_entry_open($myfile, $entry);
 
                             $_file = zip_entry_name($entry);
+
+                            if (!check_extension($_file, false, null, true)) {
+                                continue;
+                            }
 
                             if (is_image($_file)) {
                                 if (file_exists(get_file_base() . '/themes/default/images/emoticons/index.html')) {
@@ -286,6 +292,10 @@ class Module_admin_cns_emoticons extends Standard_crud_module
                             // Load in file
                             $_file = $entry['path'];
 
+                            if (!check_extension($_file, false, null, true)) {
+                                continue;
+                            }
+
                             if (is_image($_file)) {
                                 if (file_exists(get_file_base() . '/themes/default/images/emoticons/index.html')) {
                                     $path = get_custom_file_base() . '/themes/default/images_custom/emoticons__' . basename($_file);
@@ -303,6 +313,10 @@ class Module_admin_cns_emoticons extends Standard_crud_module
                     }
                     break;
                 default:
+                    if (!check_extension($file, false, null, true)) {
+                        break;
+                    }
+
                     if (is_image($file)) {
                         $urls = get_url('', $attach_name, 'themes/default/images_custom');
                         $path = $urls[0];

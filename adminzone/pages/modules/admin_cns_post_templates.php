@@ -189,6 +189,8 @@ class Module_admin_cns_post_templates extends Standard_crud_module
     {
         require_lang('dearchive');
 
+        require_code('files2');
+
         require_code('uploads');
         is_plupload(true);
 
@@ -224,6 +226,10 @@ class Module_admin_cns_post_templates extends Standard_crud_module
 
                             $filename = zip_entry_name($entry);
 
+                            if (!check_extension($filename, false, null, true)) {
+                                continue;
+                            }
+
                             if ((strtolower(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
                                 $data = '';
                                 do {
@@ -253,6 +259,10 @@ class Module_admin_cns_post_templates extends Standard_crud_module
                         foreach ($directory as $entry) {
                             $filename = $entry['path'];
 
+                            if (!check_extension($filename, false, null, true)) {
+                                continue;
+                            }
+
                             if ((strtolower(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
                                 // Load in file
                                 $_in = tar_get_file($myfile, $entry['path'], false);
@@ -265,6 +275,10 @@ class Module_admin_cns_post_templates extends Standard_crud_module
                     }
                     break;
                 default:
+                    if (!check_extension($file, false, null, true)) {
+                        break;
+                    }
+
                     if (strtolower(substr($file, -4)) == '.txt') {
                         $this->_import_stock_response($file, file_get_contents($tmp_name), $target_forum);
                     } else {

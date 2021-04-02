@@ -470,6 +470,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/images.php',
             '_tests/tests/unit_tests/downloads.php',
             '_tests/tests/unit_tests/downloads_category.php',
+            '_tests/tests/unit_tests/file_security.php',
             '_tests/tests/unit_tests/antispam.php',
             '_tests/tests/unit_tests/_critical_error_display.php',
             '_tests/tests/unit_tests/downloads_http_cycle.php',

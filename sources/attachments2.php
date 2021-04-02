@@ -306,7 +306,7 @@ function _handle_attachment_extraction(&$comcode, $key, $type, $id, $matches_ext
                     continue; // Ignore folders
                 }
 
-                $_file = preg_replace('#\..*\.#', '.', basename($entry['path']));
+                $_file = basename($entry['path']);
 
                 if (!check_extension($_file, false, null, true)) {
                     continue;

@@ -11,6 +11,23 @@ php_value engine off
 php_value engine off
 </IfModule>
 
+<IfModule mod_php8.c>
+php_value engine off
+</IfModule>
+
+<FilesMatch ".*\.(phtml|php|php3|php4|php5|phar|phps|py|rhtml|rb|pl|jsp|dll|aspx|ashx|asmx|asx|axd|asp|vbs|cgi|fcgi|sh)$">
+    # < Apache 2.4
+    <IfModule !mod_authz_core.c>
+    order deny,allow
+    deny from all
+    </IfModule>
+
+    # >= Apache 2.4
+    <IfModule mod_authz_core.c>
+    Require all denied
+    </IfModule>
+</FilesMatch>
+
 <IfModule mod_headers.c>
 Header set X-Content-Type-Options "nosniff"
 Header set Content-Security-Policy "default-src 'none'"

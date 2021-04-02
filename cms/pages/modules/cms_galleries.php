@@ -478,6 +478,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         require_code('images');
         require_code('files');
+        require_code('files2');
 
         check_privilege('mass_import'/*Not currently scoped to categories, array('galleries', $cat)*/);
 
@@ -538,6 +539,13 @@ class Module_cms_galleries extends Standard_crud_module
                                 continue;
                             }
 
+                            if (!check_extension($_file, false, null, true)) {
+                                continue;
+                            }
+                            if (strtolower(substr($_file, -5)) == '.phar') { // TODO: Remove in v11, as check_extension now covers this (only added in case of partial patching of v10)
+                                continue;
+                            }
+
                             // Load in file
                             zip_entry_open($myfile, $entry);
                             $tmp_name_2 = cms_tempnam();
@@ -581,6 +589,13 @@ class Module_cms_galleries extends Standard_crud_module
                                 continue;
                             }
 
+                            if (!check_extension($entry['path'], false, null, true)) {
+                                continue;
+                            }
+                            if (strtolower(substr($entry['path'], -5)) == '.phar') { // TODO: Remove in v11, as check_extension now covers this (only added in case of partial patching of v10)
+                                continue;
+                            }
+
                             $tmp_name_2 = cms_tempnam();
 
                             // Load in file
@@ -609,6 +624,13 @@ class Module_cms_galleries extends Standard_crud_module
                     }
                     break;
                 default:
+                    if (!check_extension($file, false, null, true)) {
+                        break;
+                    }
+                    if (strtolower(substr($file, -5)) == '.phar') { // TODO: Remove in v11, as check_extension now covers this (only added in case of partial patching of v10)
+                        break;
+                    }
+
                     if ((is_image($file)) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous')))) {
                         $tmp_name_2 = cms_tempnam();
 
