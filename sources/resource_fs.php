@@ -890,6 +890,8 @@ function remap_portable_as_urlpath($portable_data, $ignore_conflicts = false)
         return $portable_data;
     }
 
+    require_code('files2');
+
     $binary = base64_decode($portable_data[1]);
 
     $urlpath = $portable_data[0];
@@ -905,7 +907,8 @@ function remap_portable_as_urlpath($portable_data, $ignore_conflicts = false)
             }
 
             $ext = '.' . get_file_extension($urlpath);
-            $filename = basename(preg_replace('#\..*\.#', '.', urldecode($urlpath)), $ext) . '_' . strval($i) . $ext;
+            $filename = basename(urldecode($urlpath), $ext) . '_' . strval($i) . $ext;
+            check_extension($filename, false, null, true);
             $place = get_custom_file_base() . '/' . dirname(urldecode($urlpath)) . '/' . $filename;
             $urlpath = dirname($urlpath) . '/' . urlencode($filename);
             $i++;

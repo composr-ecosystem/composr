@@ -781,15 +781,36 @@ function get_max_file_size($source_member = null, $connection = null, $consider_
 /**
  * Check uploaded file extensions for possible malicious intent, and if some is found, an error is put out, and the hackattack logged.
  *
- * @param  string $name The filename
+ * @param  string $path The file path or filename
  * @param  boolean $skip_server_side_security_check Whether to skip the server side security check
  * @param  ?string $file_to_delete Delete this file if we have to exit (null: no file to delete)
  * @param  boolean $accept_errors Whether to allow errors without dying
  * @return boolean Success status
  */
-function check_extension($name, $skip_server_side_security_check = false, $file_to_delete = null, $accept_errors = false)
+function check_extension(&$path, $skip_server_side_security_check = false, $file_to_delete = null, $accept_errors = false)
 {
-    $ext = get_file_extension($name);
+    $bad_file_extensions = array(
+        // Also see .htaccess files that use these same lists
+        'phtml', 'php', 'php3', 'php4', 'php5', 'phar', 'phps', // PHP
+        'py', // Python
+        'rhtml', 'rb', // Ruby
+        'pl', // Perl
+        'jsp', // JavaServer Pages
+        'dll', 'aspx', 'ashx', 'asmx', 'asx', 'axd', 'asp', // ASP / .net
+        'vbs', // Server-side VBScript
+        'cgi', 'fcgi', 'sh', // CGI
+    );
+
+    $filename = basename($path);
+    $dir = dirname($path);
+    $filename = preg_replace('#\.(' . implode('|', $bad_file_extensions) . ')(?=\.)#', '-$1', $filename);
+    if (($dir != '') && ($dir != '.')) {
+        $path = $dir . '/' . $filename;
+    } else {
+        $path = $filename;
+    }
+
+    $ext = get_file_extension($filename);
     $_types = get_option('valid_types');
     $types = array_flip(explode(',', $_types));
     $_types = '';
@@ -810,7 +831,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
     }
     $_types = substr($_types, 0, strlen($_types) - 1);
     if (!$skip_server_side_security_check) {
-        if (($ext == 'py') || ($ext == 'fcgi') || ($ext == 'yaws') || ($ext == 'dll') || ($ext == 'cgi') || ($ext == 'cfm') || ($ext == 'vbs') || ($ext == 'rhtml') || ($ext == 'rb') || ($ext == 'pl') || ($ext == 'phtml') || ($ext == 'php') || ($ext == 'php3') || ($ext == 'php4') || ($ext == 'php5') || ($ext == 'php6') || ($ext == 'phtml') || ($ext == 'aspx') || ($ext == 'ashx') || ($ext == 'asmx') || ($ext == 'asx') || ($ext == 'axd') || ($ext == 'asp') || ($ext == 'aspx') || ($ext == 'jsp') || ($ext == 'sh') || ($ext == 'cgi') || (strtolower($name) == '.htaccess')) {
+        if ((in_array($ext, $bad_file_extensions)) || (strtolower($filename) == '.htaccess')) {
             if (!is_null($file_to_delete)) {
                 unlink($file_to_delete);
             }

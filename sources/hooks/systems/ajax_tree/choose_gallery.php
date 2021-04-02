@@ -114,7 +114,7 @@ class Hook_choose_gallery
         if ((!is_null($default)) && ($default != '')) {
             $cat = $default;
             while ((!is_null($cat)) && ($cat != '')) {
-                $out .= '<expand>' . $cat . '</expand>';
+                $out .= '<expand>' . xmlentities($cat) . '</expand>';
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => $cat));
             }
         }

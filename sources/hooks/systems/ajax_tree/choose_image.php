@@ -87,7 +87,7 @@ class Hook_choose_image
         if ((!is_null($default)) && ($default != '')) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array('id' => intval($default)));
             while ((!is_null($cat)) && ($cat != '')) {
-                $out .= '<expand>' . $cat . '</expand>';
+                $out .= '<expand>' . xmlentities($cat) . '</expand>';
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => $cat));
             }
         }
