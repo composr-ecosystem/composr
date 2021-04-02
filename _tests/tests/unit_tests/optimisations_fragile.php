@@ -33,6 +33,10 @@ class optimisations_fragile_test_set extends cms_test_case
 
         $modules = find_all_pages('site', 'modules');
         foreach (array_keys($modules) as $module) {
+            if (!empty($_GET['debug'])) { // TODO: Change in v11
+                @var_dump($module);
+            }
+
             try {
                 $out = load_module_page('site/pages/modules/' . $module . '.php', $module);
             }
