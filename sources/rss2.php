@@ -162,6 +162,7 @@ function rss_backend_script()
 
     if ($mode == 'opml') {
         header('Content-Type: text/xml');
+        header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
 
         $_feeds = find_all_hooks('systems', 'rss');
         $feeds = array();
@@ -222,6 +223,7 @@ function rss_backend_script()
 
     // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
     header('Content-Type: text/xml'); // application/rss+xml ?
+    header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     if (cms_srv('REQUEST_METHOD') == 'HEAD') {
         return;

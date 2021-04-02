@@ -455,7 +455,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                 if (($obfuscate != 0) && ($obfuscate != 3)) {
                     $ext = (($obfuscate == 2) && (!is_image($HTTP_FILENAME))) ? 'bin' : get_file_extension($HTTP_FILENAME);
 
-                    $filename = preg_replace('#\..*\.#', '.', $HTTP_FILENAME) . ((substr($HTTP_FILENAME, -strlen($ext) - 1) == '.' . $ext) ? '' : ('.' . $ext));
+                    $filename = $HTTP_FILENAME . ((substr($HTTP_FILENAME, -strlen($ext) - 1) == '.' . $ext) ? '' : ('.' . $ext));
                     $place = $upload_folder_full . '/' . $filename;
                     while (file_exists($place)) {
                         $filename = uniqid('', true) . '.' . $ext;
@@ -869,13 +869,13 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
     if (is_null($filename)) {
         // If we are not obfuscating then we will need to search for an available filename
         if (($obfuscate == 0) || ($obfuscate == 3) || (strlen($file) > 150)) {
-            $filename = preg_replace('#\..*\.#', '.', $file);
+            $filename = $file;
             $place = $upload_folder_full . '/' . $filename;
             // Hunt with sensible names until we don't get a conflict
             $i = 2;
             while (file_exists($place)) {
                 $ext = '.' . get_file_extension($file);
-                $filename = basename(preg_replace('#\..*\.#', '.', $file), $ext) . '_' . strval($i) . $ext;
+                $filename = basename($file, $ext) . '_' . strval($i) . $ext;
                 $place = $upload_folder_full . '/' . $filename;
                 $i++;
             }

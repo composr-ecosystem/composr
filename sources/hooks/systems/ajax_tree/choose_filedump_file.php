@@ -101,7 +101,7 @@ class Hook_choose_filedump_file
                         $cat .= '/';
                         $cat .= $_cat;
                     }
-                    $out .= '<expand>' . $cat . '</expand>';
+                    $out .= '<expand>' . xmlentities($cat) . '</expand>';
                 }
             }
         }

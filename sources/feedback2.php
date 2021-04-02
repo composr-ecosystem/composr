@@ -92,7 +92,8 @@ function trackback_script()
 
     require_lang('trackbacks');
 
-    header('Content-type: text/xml');
+    header('Content-Type: text/xml');
+    header("Content-Security-Policy: default-src 'none'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     $feedback_type = get_param_string('page');
     $id = get_param_integer('id');

@@ -236,9 +236,10 @@ function static_cache($mode)
     // Is cached
     if (is_file($fast_cache_path)) {
         if (($file_extension == '.htm') || ($file_extension == '.htm.gz')) {
-            header('Content-type: text/html');
+            header('Content-Type: text/html');
         } else {
-            header('Content-type: text/xml');
+            header('Content-Type: text/xml');
+            header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
         }
 
         $expires = intval(60.0 * 60.0 * floatval($SITE_INFO['fast_spider_cache']));
