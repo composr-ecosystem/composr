@@ -1012,7 +1012,7 @@ function memory_tracking()
  * @param  ?string $content_type The MIME content type (null: don't output one)
  * @param  integer $settings Bitmask of BACKEND_RESPONSE_* settings
  */
-function prepare_backend_response(?string $content_type = 'text/xml', int $settings = 11)
+function prepare_backend_response(?string $content_type = 'text/xml', int $settings = 19)
 {
     if (($settings & BACKEND_RESPONSE_NOINDEX) != 0) {
         header('X-Robots-Tag: noindex');
