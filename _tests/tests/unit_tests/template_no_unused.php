@@ -49,7 +49,6 @@ class template_no_unused_test_set extends cms_test_case
             'BLOCK_MAIN_MEMBERS_COMPLEX',
             'CAPTCHA_LOOSE',
             'COMMENTS_POSTING_FORM_CAPTCHA',
-            'PASSWORD_CHECK_JS',
             'AJAX_PAGINATION',
             'BLOCK_SIDE_GALLERIES_LINE',
             'BLOCK_SIDE_GALLERIES_LINE_DEPTH',

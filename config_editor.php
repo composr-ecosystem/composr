@@ -78,7 +78,7 @@ function ce_do_header()
     <meta name="robots" content="noindex, nofollow" />';
 
     global $FILE_BASE;
-    $password_check_js = file_get_contents($FILE_BASE . '/themes/default/templates/PASSWORD_CHECK_JS.tpl');
+    $password_check_js = file_get_contents($FILE_BASE . '/themes/default/javascript/password_checks.js');
     $ls_rep = [
         '{!ADMIN_USERS_PASSWORD;^/}' => 'Administration account password',
         '{!MASTER_PASSWORD;^/}' => 'Master password',

@@ -381,7 +381,9 @@ class _template_previews_test_set extends cms_test_case
 
             $ATTACHED_MESSAGES = new Tempcode();
             $ATTACHED_MESSAGES_RAW = [];
+            push_output_state();
             $out1 = $this->render_screen_preview('testNoMissingParams', $hook, $function, $template);
+            restore_output_state();
 
             if ($ATTACHED_MESSAGES === null) {
                 $ATTACHED_MESSAGES = new Tempcode();

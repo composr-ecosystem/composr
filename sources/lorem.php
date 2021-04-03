@@ -958,7 +958,6 @@ function get_text_templates() : array
         'templates/META_REFRESH_LINE.tpl',
         'templates/PREVIEW_SCRIPT_CODE.tpl',
         'templates/HANDLE_CONFLICT_RESOLUTION.tpl',
-        'templates/PASSWORD_CHECK_JS.tpl',
         'templates/POLL_RSS_SUMMARY.tpl',
         'templates/FORM_SCREEN_FIELD_DESCRIPTION.tpl',
         'templates/FORM_SCREEN_ARE_REQUIRED.tpl',

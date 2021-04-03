@@ -450,8 +450,7 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
  */
 function initialise_css_tempcode_context($active_theme)
 {
-    static $done = false;
-    if ($done) {
+    if (!empty($GLOBALS['TEMPCODE_SETGET']['loaded_base'])) {
         return;
     }
 
@@ -459,8 +458,6 @@ function initialise_css_tempcode_context($active_theme)
         $temp = do_template($extra_file, [], null, false, null, '.css', 'css', $active_theme);
         $temp->evaluate(); // We just need it to evaluate, not do anything with it
     }
-
-    $done = true;
 }
 
 /**

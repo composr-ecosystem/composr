@@ -1028,11 +1028,12 @@ class Forum_driver_cns extends Forum_driver_base
      * Get the e-mail address for the specified member ID.
      *
      * @param  MEMBER $member The member ID
-     * @return SHORT_TEXT The e-mail address
+     * @return ?SHORT_TEXT The e-mail address (null: member deleted)
      */
     protected function _get_member_email_address(int $member) : string
     {
-        return $this->get_member_row_field($member, 'm_email_address');
+        $ret = $this->get_member_row_field($member, 'm_email_address');
+        return ($ret === null) ? '' : $ret;
     }
 
     /**

@@ -1886,7 +1886,7 @@ class Hook_addon_registry_core
             'sources/deep_clean.php',
             'sources/hooks/systems/symbols/DEEP_CLEAN.php',
             'sources/hooks/systems/snippets/background_template_compilation.php',
-            'themes/default/templates/PASSWORD_CHECK_JS.tpl',
+            'themes/default/javascript/password_checks.js',
             'themes/default/templates/SPONSORS_SCREEN.tpl',
             'sources/hooks/systems/actionlog/.htaccess',
             'sources/hooks/systems/actionlog/index.html',

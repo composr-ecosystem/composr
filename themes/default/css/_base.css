@@ -63,3 +63,6 @@ In mobile mode:
 {$SET,box_shadow_sm,0 2px 4px {$COLOR_RGBA,{$GET,BW},0.075}}
 {$SET,box_shadow,0 7px 14px {$COLOR_RGBA,{$GET,BW},0.15}}
 {$SET,box_shadow_lg,0 14px 42px {$COLOR_RGBA,{$GET,BW},0.175}}
+
+/* Leave this alone */
+{$SET,loaded_base,1}

@@ -1,6 +1,6 @@
 var passwordPrompt = '{PASSWORD_PROMPT;/}';
 /**
- * NOTE: This function also has a copy in themes/default/javascript/installer.js so update that as well when modifying here.
+ * NOTE: This function also has a similar copy in themes/default/javascript/installer.js so update that as well when modifying here.
  * @param form
  * @return {boolean}
  */
