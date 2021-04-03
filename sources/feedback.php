@@ -206,7 +206,7 @@ function embed_feedback_systems(string $content_type, string $content_id, int $a
  */
 function post_comment_script()
 {
-    prepare_for_known_ajax_response();
+    prepare_backend_response('text/plain');
 
     // Read in context of what we're doing
     $options = either_param_string('options', false, INPUT_FILTER_NONE);
@@ -223,7 +223,6 @@ function post_comment_script()
     require_code('crypt');
 
     if (!ratchet_hash_verify($options, get_site_salt(), $hash)) {
-        header('Content-Type: text/plain; charset=' . get_charset());
         exit();
     }
 
@@ -249,7 +248,6 @@ function post_comment_script()
     }
 
     // And output as text
-    header('Content-Type: text/plain; charset=' . get_charset());
     $comment_details->evaluate_echo();
 
     cms_safe_exit_flow();

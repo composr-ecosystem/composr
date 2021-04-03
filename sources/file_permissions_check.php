@@ -235,7 +235,6 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
             'data_custom/errorlog.php',
             'data_custom/firewall_rules.txt',
             'data_custom/modules/admin_backup',
-            'data_custom/modules/admin_stats',
             'data_custom/modules/chat',
             'data_custom/modules/web_notifications',
             'data_custom/sitemaps',

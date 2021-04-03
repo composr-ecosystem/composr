@@ -91,10 +91,10 @@ class standard_dir_files_test_set extends cms_test_case
             'e829b8bdcef68c92b0926288106048b6' => true, // data*/images/.htaccess, uploads/.htaccess
             '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess
             '362eb392e7da973c77733262cf1d0e90' => true, // sources/.htaccess
-            '4751dc3cdd5d93c11fbc7b5bc86d8a71' => true, // themes/*/images*/.htaccess
-            '9bc9716b414d96e6800c5b2fe70b15a1' => true, // themes/*/templates_cached/.htaccess
-            'de500d1e1a3c5fa182fcc6d9a7656d79' => true, // uploads/*/.htaccess
-            'e8c3e39b09dac4a56f032a37762351fe' => true, // uploads/incoming/.htaccess
+            '41d9b1620bedead143f0c140b0ecc75f' => true, // themes/*/images*/.htaccess
+            '168a3f2e79fb5ea718b3bcd752e4f4e0' => true, // themes/*/templates_cached/.htaccess
+            '61eae916d74d23f55280f0c7bdc4adad' => true, // uploads/*/.htaccess
+            '7e7348767d635c432cd2ab2a221e3d84' => true, // uploads/incoming/.htaccess
             '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess
         ];
         foreach ($types as $hash => $file_paths) {

@@ -212,6 +212,8 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         require_code('files');
         require_lang('dearchive');
 
+        require_code('files2');
+
         require_code('uploads');
         is_plupload(true);
 
@@ -262,6 +264,10 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
                             $filename = zip_entry_name($entry);
 
+                            if (!check_extension($filename, false, null, true)) {
+                                continue;
+                            }
+
                             if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
                                 $data = '';
                                 do {
@@ -291,6 +297,10 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                         foreach ($directory as $entry) {
                             $filename = $entry['path'];
 
+                            if (!check_extension($filename, false, null, true)) {
+                                continue;
+                            }
+
                             if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
                                 // Load in file
                                 $_in = tar_get_file($myfile, $entry['path'], false);
@@ -303,6 +313,10 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                     }
                     break;
                 default:
+                    if (!check_extension($file, false, null, true)) {
+                        break;
+                    }
+
                     if (cms_strtolower_ascii(substr($file, -4)) == '.txt') {
                         $this->_import_stock_response($file, cms_file_get_contents_safe($tmp_name, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), $target_forum);
                     } else {

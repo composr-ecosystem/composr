@@ -31,8 +31,9 @@ function activity_feed_updater_script()
 
     require_lang('activity_feed');
     require_code('addons');
+    require_code('xml');
 
-    $proceed_selection = true; //There are some cases in which even glancing at the database is a waste of precious time.
+    $proceed_selection = true; // There are some cases in which even glancing at the database is a waste of precious time.
 
     $guest_id = intval($GLOBALS['FORUM_DRIVER']->get_guest_id());
     $viewer_id = intval(get_member()); //We'll need this later anyway.
@@ -44,9 +45,7 @@ function activity_feed_updater_script()
 
     list($proceed_selection, $where_clause) = get_activity_querying_sql($viewer_id, $mode, $member_ids);
 
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/xml; charset=' . get_charset());
+    prepare_backend_response();
 
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
 
@@ -84,7 +83,7 @@ function activity_feed_updater_script()
                 // CDATA tag so that the JavaScript knows what it's received
                 $list_items .= '<listitem id="' . strval($row['id']) . '"><![CDATA[' . base64_encode($list_item->evaluate()) . ']]></listitem>';
             }
-            $response .= '<response><success>1</success><feedlen>' . strval($max) . '</feedlen><content>' . $list_items . '</content><supp>' . escape_html($where_clause) . '</supp></response>';
+            $response .= '<response><success>1</success><feedlen>' . strval($max) . '</feedlen><content>' . $list_items . '</content><supp>' . xmlentities($where_clause) . '</supp></response>';
         } else {
             $response .= '<response><success>2</success><content>NU - Nothing new.</content></response>';
         }

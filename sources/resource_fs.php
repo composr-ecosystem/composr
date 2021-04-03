@@ -901,9 +901,13 @@ function remap_portable_as_urlpath($portable_data, bool $ignore_conflicts = fals
         return $portable_data;
     }
 
+    require_code('files2');
+
     $binary = base64_decode($portable_data[1]);
 
     $urlpath = $portable_data[0];
+
+    check_extension($urlpath, false, null, true);
 
     $path = get_custom_file_base() . '/' . $urlpath;
 

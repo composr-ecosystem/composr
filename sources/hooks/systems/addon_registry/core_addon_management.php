@@ -132,6 +132,7 @@ class Hook_addon_registry_core_addon_management
             'adminzone/pages/modules/admin_addons.php',
             'exports/index.html',
             'exports/addons/index.html',
+            'exports/addons/.htaccess',
             'imports/index.html',
             'imports/.htaccess',
             'imports/addons/.htaccess',

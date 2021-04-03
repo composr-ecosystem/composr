@@ -311,9 +311,6 @@
           <mapping url="data_custom/modules/admin_backup">
             <php:permissions writable="true"/>
           </mapping>
-          <mapping url="data_custom/modules/admin_stats">
-            <php:permissions writable="true"/>
-          </mapping>
           <mapping url="data_custom/modules/chat">
             <php:permissions writable="true"/>
           </mapping>

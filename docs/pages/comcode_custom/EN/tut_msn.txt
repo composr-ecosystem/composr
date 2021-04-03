@@ -210,8 +210,6 @@ sites/www/data_custom/index.html
 sites/www/data_custom/modules
 sites/www/data_custom/modules/admin_backup
 sites/www/data_custom/modules/admin_backup/index.html
-sites/www/data_custom/modules/admin_stats
-sites/www/data_custom/modules/admin_stats/index.html
 sites/www/data_custom/modules/index.html
 sites/www/data_custom/spelling
 sites/www/data_custom/spelling/index.html

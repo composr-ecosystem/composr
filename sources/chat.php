@@ -84,8 +84,6 @@ function messages_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('chat')));
     }
 
-    prepare_for_known_ajax_response();
-
     get_screen_title('', false); // Force session time to be updated
 
     require_code('xml');
@@ -94,9 +92,11 @@ function messages_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-Type: text/plain; charset=' . get_charset());
+        prepare_backend_response('text/plain');
         @exit(get_option('closed'));
     }
+
+    prepare_backend_response();
 
     // Check we are allowed here
     //if (!has_actual_page_access(get_member(), 'chat')) access_denied('PAGE_ACCESS');  Actually we'll use room permissions for that; don't want to block the shoutbox
@@ -637,8 +637,6 @@ function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $m
     $last_event = $GLOBALS['SITE_DB']->query_select_value('chat_events', 'MAX(id)');
     $tracking_output = '<chat_tracking last_msg="' . (($last_msg === null) ? '' : strval($last_msg)) . '" last_event="' . (($last_event === null) ? '' : strval($last_event)) . '">' . strval($room_id) . '</chat_tracking>' . "\n";
 
-    set_http_caching(null);
-    header('Content-Type: text/xml; charset=' . get_charset());
     $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 ' . get_xml_entities() . '
 <response>
@@ -732,7 +730,6 @@ function _chat_post_message_ajax(int $room_id, string $message, string $font, st
         ]);
         $messages_output = '<div sender_id="' . strval($_message['member_id']) . '" room_id="' . strval($_message['room_id']) . '" id="123456789" timestamp="' . strval($_message['date_and_time']) . '">' . $template->evaluate() . '</div>';
 
-        header('Content-Type: text/xml; charset=' . get_charset());
         $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 <!DOCTYPE xc:content [
 <!ENTITY euro "&#8364;">
@@ -827,7 +824,6 @@ function _chat_post_message_ajax(int $room_id, string $message, string $font, st
 
     /*if ($return == '0') Flood control creates error, but we'd rather see it shown inline
     {
-        header('Content-Type: text/xml; charset=' . get_charset());
         $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 <!DOCTYPE xc:content [
 <!ENTITY euro "&#8364;">

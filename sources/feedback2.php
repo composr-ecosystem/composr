@@ -86,15 +86,13 @@ function set_comment_forum_for(string $feedback_code, ?string $category_id, stri
  */
 function trackback_script()
 {
-    header('X-Robots-Tag: noindex');
+    prepare_backend_response();
 
     if (get_option('is_on_trackbacks') == '0') {
         return;
     }
 
     require_lang('trackbacks');
-
-    header('Content-Type: text/xml; charset=' . get_charset());
 
     $feedback_type = get_param_string('page');
     $id = get_param_integer('id');

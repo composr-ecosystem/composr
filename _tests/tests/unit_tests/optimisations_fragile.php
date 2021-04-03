@@ -47,6 +47,10 @@ class optimisations_fragile_test_set extends cms_test_case
 
         $modules = find_all_pages('site', 'modules');
         foreach (array_keys($modules) as $module) {
+            if ($this->debug) {
+                @var_dump($module);
+            }
+
             try {
                 $out = load_module_page('site/pages/modules/' . $module . '.php', $module);
             } catch (Exception $e) {

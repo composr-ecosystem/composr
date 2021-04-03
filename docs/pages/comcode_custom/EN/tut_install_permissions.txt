@@ -57,7 +57,6 @@ Set the following to [b]777[/b] (full directory permissions):
  - [tt]cms/pages/comcode_custom/<for-each-language>[/tt]
  - [tt]cms/pages/html_custom/<for-each-language>[/tt]
  - [tt]data_custom/modules/admin_backup[/tt]
- - [tt]data_custom/modules/admin_stats[/tt]
  - [tt]data_custom/modules/chat[/tt]
  - [tt]data_custom/modules/web_notifications[/tt]
  - [tt]data_custom/sitemaps[/tt]

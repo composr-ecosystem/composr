@@ -566,20 +566,41 @@ function get_max_file_size(?int $source_member = null, ?object $db = null, bool 
 /**
  * Check uploaded file extensions for possible malicious intent, and if some is found, an error is put out, and the hackattack logged.
  *
- * @param  string $name The filename
+ * @param  string $path The file path or filename
  * @param  boolean $skip_server_side_security_check Whether to skip the server side security check
  * @param  ?string $file_to_delete Delete this file if we have to exit (null: no file to delete)
  * @param  boolean $accept_errors Whether to allow errors without dying
  * @param  ?MEMBER $member_id Member to check as (null: current member)
  * @return boolean Success status
  */
-function check_extension(string $name, bool $skip_server_side_security_check = false, ?string $file_to_delete = null, bool $accept_errors = false, ?int $member_id = null) : bool
+function check_extension(string &$path, bool $skip_server_side_security_check = false, ?string $file_to_delete = null, bool $accept_errors = false, ?int $member_id = null) : bool
 {
     if ($member_id === null) {
         $member_id = get_member();
     }
 
-    $ext = get_file_extension($name);
+    $bad_file_extensions = [
+        // Also see .htaccess files that use these same lists
+        'phtml', 'php', 'php3', 'php4', 'php5', 'phar', 'phps', // PHP
+        'py', // Python
+        'rhtml', 'rb', // Ruby
+        'pl', // Perl
+        'jsp', // JavaServer Pages
+        'dll', 'aspx', 'ashx', 'asmx', 'asx', 'axd', 'asp', // ASP / .net
+        'vbs', // Server-side VBScript
+        'cgi', 'fcgi', 'sh', // CGI
+    ];
+
+    $filename = basename($path);
+    $dir = dirname($path);
+    $filename = preg_replace('#\.(' . implode('|', $bad_file_extensions) . ')(?=\.)#', '-$1', $filename);
+    if (($dir != '') && ($dir != '.')) {
+        $path = $dir . '/' . $filename;
+    } else {
+        $path = $filename;
+    }
+
+    $ext = get_file_extension($filename);
 
     $_types = get_option('valid_types');
     $types = array_flip(explode(',', $_types));
@@ -617,36 +638,7 @@ function check_extension(string $name, bool $skip_server_side_security_check = f
     }
 
     if (!$skip_server_side_security_check) {
-        $dangerous_code_types = [
-            'py',
-            'dll',
-            'cfm',
-            'vbs',
-            'rhtml',
-            'rb',
-            'pl',
-            'phtml',
-            'php',
-            'php3',
-            'php4',
-            'php5',
-            'php7',
-            'phps',
-            'aspx',
-            'ashx',
-            'asmx',
-            'asx',
-            'axd',
-            'asp',
-            'aspx',
-            'asmx',
-            'ashx',
-            'jsp',
-            'sh',
-            'cgi',
-            'fcgi',
-        ];
-        if ((in_array($ext, $dangerous_code_types)) || (cms_strtolower_ascii($name) == '.htaccess')) {
+        if ((in_array($ext, $bad_file_extensions)) || (cms_strtolower_ascii($filename) == '.htaccess')) {
             if ($file_to_delete !== null) {
                 unlink($file_to_delete);
             }

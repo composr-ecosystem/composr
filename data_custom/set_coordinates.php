@@ -55,13 +55,11 @@ set_coordinates();
 
 function set_coordinates()
 {
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     if (get_forum_type() != 'cns') {
         warn_exit(do_lang_tempcode('NO_CNS'));
     }
-
-    header('X-Robots-Tag: noindex');
 
     $_coords = get_param_string('coord', '');
     $member_id = get_param_integer('mid', get_member());

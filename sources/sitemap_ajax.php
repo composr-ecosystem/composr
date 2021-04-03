@@ -27,7 +27,7 @@ AJAX tree-list browsing for the whole sitemap, with particular support for permi
  */
 function sitemap_script()
 {
-    prepare_for_known_ajax_response();
+    prepare_backend_response();
 
     require_code('zones2');
     require_code('zones3');
@@ -57,13 +57,14 @@ function sitemap_script()
  */
 function sitemap_script_loading()
 {
+    require_code('xml');
+
     // Usergroups we have
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
 
     $default = get_param_string('default', null, INPUT_FILTER_GET_COMPLEX);
 
-    header('Content-Type: text/xml; charset=' . get_charset());
     $permissions_needed = (get_param_integer('get_perms', 0) == 1); // Whether we are limiting our tree to permission-supporting
     cms_ini_set('ocproducts.xss_detect', '0');
 
@@ -123,8 +124,8 @@ function sitemap_script_loading()
                 $buildup .= ':';
             }
             $buildup .= $part;
-            echo "\n" . '<expand>' . $buildup . '</expand>';
-            echo "\n" . '<expand>' . $buildup . ':</expand>';
+            echo "\n" . '<expand>' . xmlentities($buildup) . '</expand>';
+            echo "\n" . '<expand>' . xmlentities($buildup) . ':</expand>';
         }
     }
 

@@ -24,7 +24,6 @@ function list_untouchable_third_party_directories()
         'data/ckeditor',
         'data/ckeditor/plugins/codemirror',
         'data_custom/ckeditor',
-        'data_custom/modules/admin_stats',
         'data_custom/pdf_viewer',
         'data/polyfills',
         'docs/api',

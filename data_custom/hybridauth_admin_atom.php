@@ -98,7 +98,8 @@ try {
     warn_exit($e->getMessage());
 }
 
-header('Content-Type: text/xml; charset=utf-8');
+prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_SUPER_STRICT | BACKEND_RESPONSE_CHARSET_UTF8);
+
 echo $feed;
 
 cms_ini_set('ocproducts.type_strictness', $before_type_strictness);

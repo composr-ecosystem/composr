@@ -46,14 +46,14 @@ function commandr_script()
 
     // Closed site
     if (!is_cli()) {
-        prepare_for_known_ajax_response();
-
         $site_closed = get_option('site_closed');
         if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
             http_response_code(503);
-            header('Content-Type: text/plain; charset=' . get_charset());
+            prepare_backend_response('text/plain');
             @exit(get_option('closed'));
         }
+
+        prepare_backend_response();
 
         if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
@@ -114,7 +114,7 @@ function commandr_script()
             }
 
             @http_response_code(200);
-            @header('Content-Type: text/xml; charset=' . get_charset());
+
             $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
                 <response>
                     <result>
@@ -243,7 +243,6 @@ class Virtual_shell
             return false;
         }
 
-        header('Content-Type: text/xml; charset=' . get_charset());
         http_response_code(200);
 
         if (is_object($this->output[STREAM_STDCOMMAND])) {

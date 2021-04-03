@@ -64,7 +64,6 @@
   <setAcl path="composr/data_custom/errorlog.php" setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/data_custom/firewall_rules.txt" setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/data_custom/modules/admin_backup" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
-  <setAcl path="composr/data_custom/modules/admin_stats" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/data_custom/modules/chat" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/data_custom/modules/web_notifications" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/data_custom/sitemaps" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />

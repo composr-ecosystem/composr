@@ -27,9 +27,7 @@
  */
 function generate_csrf_token_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
@@ -76,9 +74,7 @@ function cor_prepare()
  */
 function username_check_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     require_code('cns_members_action');
     require_code('cns_members_action2');
@@ -109,9 +105,7 @@ function username_check_script()
  */
 function username_exists_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     $username = trim(get_param_string('username', false, INPUT_FILTER_GET_COMPLEX));
     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
@@ -129,14 +123,15 @@ function username_exists_script()
  */
 function namelike_script()
 {
-    prepare_for_known_ajax_response();
+    prepare_backend_response();
 
     $id = str_replace('*', '%', get_param_string('id', false, INPUT_FILTER_GET_COMPLEX));
     $special = get_param_string('special', '');
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    header('Content-Type: text/xml; charset=' . get_charset());
+    require_code('xml');
+
     echo '<?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
     echo '<request><result>';
 
@@ -168,7 +163,7 @@ function namelike_script()
         }
 
         foreach ($names as $name) {
-            echo '<option value="' . escape_html($name) . '" displayname="" />';
+            echo '<option value="' . xmlentities($name) . '" displayname="" />';
         }
     } elseif ($special == 'search') {
         if (addon_installed('search')) {
@@ -179,7 +174,7 @@ function namelike_script()
         }
 
         foreach ($names as $name) {
-            echo '<option value="' . escape_html($name) . '" displayname="" />';
+            echo '<option value="' . xmlentities($name) . '" displayname="" />';
         }
     } else {
         if ((strlen($id) == 0) && (addon_installed('chat'))) {
@@ -193,7 +188,7 @@ function namelike_script()
             }
 
             foreach ($names as $name) {
-                echo '<option value="' . escape_html($name) . '" displayname="" />';
+                echo '<option value="' . xmlentities($name) . '" displayname="" />';
             }
         } else {
             $names = [];
@@ -204,7 +199,7 @@ function namelike_script()
                 $names = collapse_1d_complexity('author', $rows);
 
                 foreach ($names as $name) {
-                    echo '<option value="' . escape_html($name) . '" displayname="" />';
+                    echo '<option value="' . xmlentities($name) . '" displayname="" />';
                 }
             } else {
                 if ((!addon_installed('authors')) || ($special != 'author') || ($GLOBALS['FORUM_DRIVER']->get_num_members() < 5000)) {
@@ -221,7 +216,7 @@ function namelike_script()
                 }
 
                 foreach ($names as $member_id => $name) {
-                    echo '<option value="' . escape_html($name) . '" displayname="' . escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
+                    echo '<option value="' . xmlentities($name) . '" displayname="' . xmlentities($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
                 }
             }
         }
@@ -242,9 +237,7 @@ function namelike_script()
  */
 function find_permissions_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     require_code('permissions2');
 
@@ -283,9 +276,7 @@ function find_permissions_script()
  */
 function fractional_edit_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     $_POST['fractional_edit'] = '1'; // FUDGE
 
@@ -334,9 +325,7 @@ function fractional_edit_script()
  */
 function change_detection_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     $page = get_page_name();
 
@@ -357,9 +346,7 @@ function change_detection_script()
  */
 function edit_ping_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE the_time<' . strval(time() - 200));
 
@@ -399,17 +386,16 @@ function ajax_tree_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-Type: text/plain; charset=' . get_charset());
+        prepare_backend_response('text/plain');
         @exit(get_option('closed'));
     }
 
-    prepare_for_known_ajax_response();
+    prepare_backend_response();
 
     // NB: We use ajax_tree hooks to power this. Those hooks may or may not use the Sitemap API to get the tree structure. However, the default ones are hard-coded, for better performance.
 
     require_code('xml');
 
-    header('Content-Type: text/xml; charset=' . get_charset());
     $hook = filter_naughty_harsh(get_param_string('hook'));
     require_code('hooks/systems/ajax_tree/' . $hook, true);
     $object = object_factory('Hook_ajax_tree_' . $hook, true);
@@ -448,11 +434,10 @@ function ajax_tree_script()
  */
 function confirm_session_script()
 {
-    prepare_for_known_ajax_response();
+    prepare_backend_response('text/plain');
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    header('Content-Type: text/plain; charset=' . get_charset());
     global $SESSION_CONFIRMED_CACHE;
     if (!$SESSION_CONFIRMED_CACHE) {
         echo $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -468,7 +453,7 @@ function confirm_session_script()
  */
 function load_template_script()
 {
-    prepare_for_known_ajax_response();
+    prepare_backend_response('text/plain');
 
     if (!has_actual_page_access(get_member(), 'admin_themes')) {
         exit();
@@ -507,8 +492,7 @@ function sheet_script()
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    @header('Content-Type: text/css; charset=' . get_charset());
-    prepare_for_known_ajax_response();
+    prepare_backend_response('text/css');
 
     $sheet = get_param_string('sheet');
     if ($sheet != '') {
@@ -531,8 +515,7 @@ function script_script()
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    @header('Content-Type: application/javascript; charset=' . get_charset());
-    prepare_for_known_ajax_response();
+    prepare_backend_response('application/javascript');
 
     $script = get_param_string('script');
     if ($script != '') {
@@ -553,7 +536,7 @@ function script_script()
  */
 function snippet_script()
 {
-    prepare_for_known_ajax_response();
+    prepare_backend_response('text/plain');
 
     global $RELATIVE_PATH, $ZONE;
     $test = get_module_zone(get_page_name());
@@ -564,9 +547,6 @@ function snippet_script()
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    header('X-Robots-Tag: noindex');
-
-    header('Content-Type: text/plain; charset=' . get_charset());
     $hook = filter_naughty_harsh(get_param_string('snippet'));
     require_code('hooks/systems/snippets/' . $hook, true);
     $object = object_factory('Hook_snippet_' . $hook);

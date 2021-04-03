@@ -871,8 +871,7 @@ function _get_upload_url(int $member_id, string $attach_name, string $upload_fol
     if ($filename === null) {
         // If we are not obfuscating then we will need to search for an available filename
         if (($obfuscate == OBFUSCATE_NEVER) || (strlen($file) > 150)) {
-            $filename = preg_replace('#\..*\.#', '.', $file);
-            list($place, , $filename) = find_unique_path($upload_folder, $filename);
+            list($place, , $filename) = find_unique_path($upload_folder, $file);
         } else { // A result of some randomness
             $ext = get_file_extension($file);
             $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($file);

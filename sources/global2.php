@@ -54,6 +54,12 @@ function init__global2()
     define('INPUT_FILTER_URL_INTERNAL', INPUT_FILTER_JS_URLS | INPUT_FILTER_URL_DESTINATION | INPUT_FILTER_EARLY_XSS | INPUT_FILTER_DYNAMIC_FIREWALL | INPUT_FILTER_URL_SCHEMES | INPUT_FILTER_MODSECURITY_URL_PARAMETER | INPUT_FILTER_URL_RECODING);
     define('INPUT_FILTER_NONE', 0);
 
+    define('BACKEND_RESPONSE_NOINDEX', 1);
+    define('BACKEND_RESPONSE_CSP_SUPER_STRICT', 2);
+    define('BACKEND_RESPONSE_CSP_STRICT', 4);
+    define('BACKEND_RESPONSE_CHARSET_UTF8', 8);
+    define('BACKEND_RESPONSE_AJAX', 16);
+
     fixup_bad_php_env_vars();
 
     cms_ini_set('log_errors', '1');
@@ -188,9 +194,7 @@ function init__global2()
         chat_poller();
     }
     if ((running_script('notifications')) && (get_param_integer('time_barrier', null) !== null) && (@filemtime(get_custom_file_base() . '/data_custom/modules/web_notifications/latest.bin') <= get_param_integer('time_barrier')) && (get_param_string('type', '') == 'poller')) {
-        prepare_for_known_ajax_response();
-
-        header('Content-Type: application/xml');
+        prepare_backend_response();
 
         //  encoding="' . escape_html(get_charset()) . '" not needed due to no data in it
         $output = '<?xml version="1.0" ?' . '><response><result><time>' . strval(time()) . '</time></result></response>';
@@ -1003,18 +1007,38 @@ function memory_tracking()
 }
 
 /**
- * Get ready for outputting an AJAX response.
+ * Prepare what we need for a web browser's behind-the-scenes (e.g. AJAX) response.
+ *
+ * @param  ?string $content_type The MIME content type (null: don't output one)
+ * @param  integer $settings Bitmask of BACKEND_RESPONSE_* settings
  */
-function prepare_for_known_ajax_response()
+function prepare_backend_response(?string $content_type = 'text/xml', int $settings = 11)
 {
-    header('X-Robots-Tag: noindex');
+    if (($settings & BACKEND_RESPONSE_NOINDEX) != 0) {
+        header('X-Robots-Tag: noindex');
+    }
 
-    set_http_caching(null);
+    // Don't allow special execution via a vector of namespace-injected HTML
+    if (($settings & BACKEND_RESPONSE_CSP_SUPER_STRICT) != 0) {
+        header("Content-Security-Policy: default-src 'none'");
+    }
+    if (($settings & BACKEND_RESPONSE_CSP_STRICT) != 0) {
+        header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'");
+    }
 
-    convert_request_data_encodings(true);
+    if ($content_type !== null) {
+        $charset = (($settings & BACKEND_RESPONSE_CHARSET_UTF8) != 0) ? 'utf-8' : get_charset();
+        header('Content-Type: ' . $content_type . '; charset=' . $charset);
+    }
 
-    global $KNOWN_AJAX;
-    $KNOWN_AJAX = true;
+    if (($settings & BACKEND_RESPONSE_AJAX) != 0) {
+        set_http_caching(null);
+
+        convert_request_data_encodings(true);
+
+        global $KNOWN_AJAX;
+        $KNOWN_AJAX = true;
+    }
 }
 
 /**

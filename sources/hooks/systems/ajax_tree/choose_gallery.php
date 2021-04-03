@@ -114,7 +114,7 @@ class Hook_ajax_tree_choose_gallery
         if (!cms_empty_safe($default)) {
             $cat = $default;
             while (!cms_empty_safe($cat)) {
-                $out .= '<expand>' . $cat . '</expand>' . "\n";
+                $out .= '<expand>' . xmlentities($cat) . '</expand>' . "\n";
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => $cat]);
             }
         }

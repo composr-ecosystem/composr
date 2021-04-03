@@ -45,19 +45,17 @@ if (get_forum_type() != 'cns') {
     warn_exit(do_lang_tempcode('NO_CNS'));
 }
 
-prepare_for_known_ajax_response();
-
 require_code('cns_members');
 require_code('cns_members2');
 
 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username(get_param_string('member', ''));
 
-header('Content-Type: text/xml; charset=' . get_charset());
+prepare_backend_response();
 
 echo '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
 echo '<request><result>';
 echo '<![CDATA[';
 $box = render_member_box($member_id, false, true, [], false);
-$box->evaluate_echo();    // '' will be returned if member ID is invalid.
+echo escape_cdata($box->evaluate()); // '' will be returned if member ID is invalid.
 echo ']]>';
 echo '</result></request>';

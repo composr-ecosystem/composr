@@ -31,11 +31,10 @@ function realtime_rain_script()
         access_denied('I_ERROR');
     }
 
-    prepare_for_known_ajax_response();
-
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    header('Content-Type: text/xml; charset=' . get_charset());
+    prepare_backend_response();
+
     echo '<?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
     echo '<request><result>';
     require_code('realtime_rain');

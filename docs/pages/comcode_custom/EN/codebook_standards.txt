@@ -743,7 +743,7 @@ Put your code in a function named [tt]<filename>_script()[/tt]
 | 
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Call [tt]prepare_for_known_ajax_response[/tt]
+Call [tt]prepare_backend_response[/tt]
 | Internationalisation
 | Product development only
 | Manually

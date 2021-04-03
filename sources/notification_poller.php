@@ -37,8 +37,6 @@ function init__notification_poller()
  */
 function notification_script()
 {
-    header('X-Robots-Tag: noindex');
-
     $type = get_param_string('type');
     switch ($type) {
         case 'mark_all_read':
@@ -58,6 +56,8 @@ function notification_script()
  */
 function notification_mark_all_read_script()
 {
+    prepare_backend_response('text/plain');
+
     $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['d_read' => 0, 'd_to_member_id' => get_member()]);
 
     delete_cache_entry('_get_notifications', null, get_member());
@@ -68,8 +68,7 @@ function notification_mark_all_read_script()
  */
 function notification_display_script()
 {
-    set_http_caching(null);
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     $max = post_param_integer('max', null);
 
@@ -86,8 +85,8 @@ function notification_poller_script()
 
     require_code('xml');
 
-    set_http_caching(null);
-    header('Content-Type: application/xml');
+    prepare_backend_response();
+
     $xml .= '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 ' . get_xml_entities() . '
 <response>

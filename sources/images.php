@@ -552,7 +552,8 @@ function is_video(string $name, bool $as_admin, bool $must_be_true_video = false
     require_code('media_renderer');
     $acceptable_media = $allow_audio ? (MEDIA_TYPE_VIDEO | MEDIA_TYPE_AUDIO | MEDIA_TYPE_OTHER /* but not images */) : MEDIA_TYPE_VIDEO;
     $hooks = find_media_renderers($name, [], $as_admin, null, $acceptable_media);
-    return $hooks !== null;
+    $hooks = array_diff($hooks, ['hyperlink', 'code']);
+    return !empty($hooks);
 }
 
 /**

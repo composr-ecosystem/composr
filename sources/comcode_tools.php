@@ -30,8 +30,6 @@ function comcode_convert_script()
         modsecurity_workaround_enable();
     }
 
-    prepare_for_known_ajax_response();
-
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
     require_lang('comcode');
@@ -83,10 +81,6 @@ function comcode_convert_script()
         $out2->evaluate_echo();
 
         return;
-    }
-
-    if (either_param_integer('raw_output', 0) == 1) {
-        header('Content-Type: text/plain; charset=' . get_charset());
     }
 
     $from_html = either_param_integer('from_html', 0);
@@ -166,13 +160,16 @@ function comcode_convert_script()
             $out = static_evaluate_tempcode(put_in_standard_box(make_string_tempcode($out), $box_title));
         }
 
-        header('Content-Type: text/xml; charset=' . get_charset());
+        prepare_backend_response();
+
         echo '<?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
         echo '<request><result>';
         echo xmlentities($out);
         echo '</result></request>';
     } else {
         cms_ini_set('ocproducts.xss_detect', '0');
+
+        prepare_backend_response('text/plain');
 
         echo $out;
     }

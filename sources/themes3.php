@@ -358,9 +358,7 @@ function set_live_theme(string $theme_name)
  */
 function tempcode_tester_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/plain; charset=' . get_charset());
+    prepare_backend_response('text/plain');
 
     $tempcode = post_param_string('tempcode');
 

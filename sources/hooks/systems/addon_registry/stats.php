@@ -146,11 +146,9 @@ class Hook_addon_registry_stats
             'themes/default/css/stats.css',
             'data/modules/admin_stats/index.html',
             'data/modules/admin_stats/IP_Country.txt', // http://geolite.maxmind.com/download/geoip/database/
-            'data_custom/modules/admin_stats/index.html',
             'lang/EN/stats.ini',
             'sources/hooks/systems/tasks/install_geolocation_data.php',
             'data/modules/admin_stats/.htaccess',
-            'data_custom/modules/admin_stats/.htaccess',
             'text/search_engine_domains.txt',
             'text/social_media_domains.txt',
             'sources/blocks/main_staff_stats_graph.php',

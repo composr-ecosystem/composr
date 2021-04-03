@@ -23,9 +23,7 @@
  */
 function endpoint_script()
 {
-    set_http_caching(null);
-
-    @header('X-Robots-Tag: noindex');
+    prepare_backend_response(null, BACKEND_RESPONSE_NOINDEX | BACKEND_RESPONSE_CSP_SUPER_STRICT);
 
     cms_ini_set('ocproducts.xss_detect', '0');
 

@@ -234,6 +234,8 @@ class Module_admin_cns_emoticons extends Standard_crud_module
     {
         post_param_string('test'); // To pick up on max file size exceeded errors
 
+        require_code('files2');
+
         require_code('images');
         is_plupload(true);
 
@@ -242,6 +244,10 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         foreach ($_FILES as $attach_name => $__file) {
             $tmp_name = $__file['tmp_name'];
             $file = $__file['name'];
+
+            if (!check_extension($file, false, null, true)) {
+                continue;
+            }
 
             if (is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) {
                 $urls = get_url('', $attach_name, 'themes/default/images_custom');

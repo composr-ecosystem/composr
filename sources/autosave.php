@@ -30,7 +30,7 @@ function store_autosave_script()
         modsecurity_workaround_enable();
     }
 
-    prepare_for_known_ajax_response();
+    prepare_backend_response('text/plain');
 
     $member_id = get_member();
     $time = time();
@@ -57,16 +57,12 @@ function store_autosave_script()
  */
 function retrieve_autosave_script()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/xml; charset=' . get_charset());
+    prepare_backend_response();
 
     $member_id = get_member();
     $stem = either_param_string('stem');
 
     require_code('xml');
-
-    header('Content-Type: text/xml; charset=' . get_charset());
 
     cms_ini_set('ocproducts.xss_detect', '0');
 

@@ -792,7 +792,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
 
         $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
             ['(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/chat'], // Various chat data files
-            ['(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/admin_stats'], // Various temporary XML files get created under here, for SVG graphs
         ]);
 
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [

@@ -534,11 +534,6 @@
   </parameter>
 
   <parameter
-    name="SetAclParameter34" description="Sets the ACL on the right file" defaultValue="{Application Path}/data_custom/modules/admin_stats" tags="Hidden">
-    <parameterEntry type="ProviderPath" scope="setAcl" match="composr/data_custom/modules/admin_stats" />
-  </parameter>
-
-  <parameter
     name="SetAclParameter35" description="Sets the ACL on the right file" defaultValue="{Application Path}/imports/addons" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="composr/imports/addons" />
   </parameter>

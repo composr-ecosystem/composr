@@ -101,7 +101,7 @@ class Hook_ajax_tree_choose_filedump_file
                         $cat .= '/';
                         $cat .= $_cat;
                     }
-                    $out .= '<expand>' . $cat . '</expand>' . "\n";
+                    $out .= '<expand>' . xmlentities($cat) . '</expand>' . "\n";
                 }
             }
         }

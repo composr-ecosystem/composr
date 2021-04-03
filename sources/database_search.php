@@ -128,8 +128,9 @@ function opensearch_script()
 
         // Provide details about the site search engine
         default:
-            //header('Content-Type: application/opensearchdescription+xml; charset=' . get_charset());
-            header('Content-Type: text/xml; charset=' . get_charset());
+            // Ideally we would use application/opensearchdescription+xml not text/xml, but that doesn't work consistently
+            prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_SUPER_STRICT);
+
             $tpl = do_template('OPENSEARCH', ['_GUID' => '1fe46743805ade5958dcba0d58c4b0f2', 'DESCRIPTION' => get_option('description')], null, false, null, '.xml', 'xml');
             $tpl->evaluate_echo();
             break;
@@ -522,13 +523,15 @@ class Composr_fast_custom_index
 
         $t_rows_sql = 'SELECT ' . $select . ' FROM ' . $join . ' WHERE 1=1' . $where_clause . $extra_where_clause . ' ORDER BY ' . $order . ' ' . $direction;
 
-        if (get_param_integer('keep_show_query', 0) == 1) {
-            attach_message($t_rows_sql, 'inform');
-        }
-        if (get_param_integer('keep_just_show_query', 0) == 1) {
-            cms_ini_set('ocproducts.xss_detect', '0');
-            header('Content-type: text/plain; charset=' . get_charset());
-            exit($t_rows_sql);
+        if (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN'])) {
+            if (get_param_integer('keep_show_query', 0) == 1) {
+                attach_message($t_rows_sql, 'inform');
+            }
+            if (get_param_integer('keep_just_show_query', 0) == 1) {
+                cms_ini_set('ocproducts.xss_detect', '0');
+                header('Content-Type: text/plain; charset=' . get_charset());
+                exit($t_rows_sql);
+            }
         }
 
         // Useful for automated testing
@@ -2345,13 +2348,15 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
                 }
             }
 
-            if (get_param_integer('keep_show_query', 0) == 1) {
-                attach_message($query, 'inform');
-            }
-            if (get_param_integer('keep_just_show_query', 0) == 1) {
-                cms_ini_set('ocproducts.xss_detect', '0');
-                @header('Content-Type: text/plain; charset=' . get_charset());
-                exit($query);
+            if (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN'])) {
+                if (get_param_integer('keep_show_query', 0) == 1) {
+                    attach_message($query, 'inform');
+                }
+                if (get_param_integer('keep_just_show_query', 0) == 1) {
+                    cms_ini_set('ocproducts.xss_detect', '0');
+                    @header('Content-Type: text/plain; charset=' . get_charset());
+                    exit($query);
+                }
             }
 
             $db->dedupe_mode = true;

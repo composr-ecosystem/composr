@@ -101,13 +101,13 @@ We did previously have native inbuilt transcoding support, but due to the buggin
 
 [title="3"]Audio (and more)[/title]
 
-Audio is supported as specialisation of video support if the "Allow audio as videos" configuration option (Admin Zone > Setup > Configuration > Content editing options > Media) is on.
+Audio is supported as specialisation of video support if the "Allow audio(+) as videos" configuration option (Admin Zone > Setup > Configuration > Content editing options > Media) is on.
 
 Naturally a gallery must also have video files enabled for it, for audio files to be supported.
 
 In fact, virtually any kind of media, including random things like URLs to Google Maps, may be posted as a video. The media rendering system Composr uses is quite extensive.
 
-If you would rather the system said 'multimedia' instead of 'video', you can set the "Allow audio as videos" configuration option in a way to do that.
+If you would rather the system said 'multimedia' instead of 'video', you can set the "Allow audio(+) as videos" configuration option in a way to do that.
 
 [title="3"]Length, width, and height[/title]
 

@@ -511,6 +511,8 @@ class Module_cms_galleries extends Standard_crud_module
     {
         $cat = get_param_string('cat');
 
+        require_code('files2');
+
         check_privilege('mass_import'/*Not currently scoped to categories, ['galleries', $cat]*/);
 
         post_param_string('test'); // To pick up on max file size exceeded errors
@@ -543,6 +545,10 @@ class Module_cms_galleries extends Standard_crud_module
             $filename = $__file['name'];
             if ($filename == '') {
                 continue; // Not filled in this one
+            }
+
+            if (!check_extension($filename, false, null, true)) {
+                continue;
             }
 
             $tmp_name = $__file['tmp_name'];

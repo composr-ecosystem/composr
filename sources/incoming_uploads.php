@@ -66,7 +66,7 @@ function incoming_uploads_script()
             @move_uploaded_file($_FILES['file']['tmp_name'], get_custom_file_base() . '/' . $savename) or intelligent_write_error(get_custom_file_base() . '/' . $savename);
         }
     } elseif (post_param_string('name', '') != '') { // Less nice raw post, which most HTML5 browsers have to do. OR *post_max_size* exceeded (which blocks $_FILES population, even with error messages)
-        prepare_for_known_ajax_response();
+        prepare_backend_response(null);
 
         $name = post_param_string('name');
 

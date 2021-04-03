@@ -157,4 +157,4 @@
 {$FEEDS}
 
 {$,Tab colour, particularly Android-Chrome}
-<meta name="theme-color" content="{$THEME_OPTION*,themewizard_built_with_seed}">
+<meta name="theme-color" content="{$THEME_OPTION*,themewizard_built_with_seed}" />

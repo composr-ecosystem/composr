@@ -55,9 +55,7 @@ if (!addon_installed('locations_catalogues')) {
 
 require_code('locations_catalogues_geopositioning');
 
-prepare_for_known_ajax_response();
-
-header('Content-Type: text/plain; charset=' . get_charset());
+prepare_backend_response('text/plain');
 
 cms_ini_set('ocproducts.xss_detect', '0');
 

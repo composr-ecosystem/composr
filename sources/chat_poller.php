@@ -64,9 +64,7 @@ function chat_poller()
  */
 function chat_null_exit()
 {
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: application/xml');
+    prepare_backend_response();
 
     //  encoding="' . escape_html(get_charset()) . '" not needed due to no data in it
     $output = '<?xml version="1.0" ?' . '><response><result></result></response>';

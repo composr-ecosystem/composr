@@ -151,7 +151,7 @@ function rss_backend_script()
     }
 
     if ($mode == 'opml') {
-        header('Content-Type: text/xml; charset=' . get_charset());
+        prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_STRICT);
 
         $_feeds = find_all_hook_obs('systems', 'rss', 'Hook_rss_');
         $feeds = [];
@@ -182,8 +182,8 @@ function rss_backend_script()
         return;
     }
 
-    // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
-    header('Content-Type: text/xml; charset=' . get_charset()); // application/rss+xml ?
+    prepare_backend_response('text/xml', BACKEND_RESPONSE_CSP_STRICT);
+    // NB: Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom / text/xml+rss, even if the Content-Disposition is sent to inline :(
 
     push_query_limiting(false);
 

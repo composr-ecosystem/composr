@@ -314,8 +314,7 @@ The XML frame you should output from PHP should be structured as follows:
 This example of the full usage. However normally you don't return any method or messages, so you will see real code is usually much simpler, like:
 [code="PHP"]
 <?php
-header('Content-Type: text/xml; charset=' . get_charset());
-prepare_for_known_ajax_response(); // Make sure input data is converted, as JavaScript always uses utf-8 even if we are not set to use it
+prepare_backend_response(); // Make sure input data is converted, as JavaScript always uses utf-8 even if we are not set to use it
 echo '<?xml version="1.0" encoding="' . get_charset() . '"?' . '>';
 echo '<request><result>';
 $out=do_something_and_get_tempcode();

@@ -142,9 +142,7 @@ function activity_feed_handler_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('activity_feed')));
     }
 
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/xml; charset=' . get_charset());
+    prepare_backend_response();
 
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
     $response .= '<response><content>';
@@ -222,9 +220,7 @@ function activity_feed_removal_script()
 
     $can_remove_others = (has_zone_access($viewer_id, 'adminzone'));
 
-    prepare_for_known_ajax_response();
-
-    header('Content-Type: text/xml; charset=' . get_charset());
+    prepare_backend_response();
 
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
     $response .= '<response>';
