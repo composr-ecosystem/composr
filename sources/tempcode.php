@@ -1153,11 +1153,11 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
                 break;
 
             case 'dependency__css__global':
-                $SITE_INFO[$key] = 'personal_stats,menu__dropdown,notifications';
+                $SITE_INFO[$key] = get_option('globally_included_css_files');
                 break;
 
             case 'dependency__javascript__global':
-                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors,core_notifications,sound,ajax_people_lists';
+                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors,' . get_option('globally_included_js_files');
                 break;
 
             case 'dependency__javascript__editing':
@@ -1176,6 +1176,11 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
     $dep = explode(',', $SITE_INFO[$key]);
 
     foreach ($dep as $d) {
+        $d = trim($d);
+        if ($d == '') {
+            continue;
+        }
+
         $found = find_template_place($d, '', $theme, $suffix, $directory);
         $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
         if (!is_file($full_path)) {
