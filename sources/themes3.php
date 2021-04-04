@@ -639,7 +639,7 @@ function cleanup_after_theme_image_file_removal(string $old_url)
  * @param  boolean $userland Whether to include icons from the custom directory, and save the sprite in the custom directory
  * @return array A pair: Sprite path, list of icons added to sprite
  */
-function generate_svg_sprite($theme, $monochrome, $userland) : array
+function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : array
 {
     require_code('files2');
     require_code('xml');
@@ -677,6 +677,10 @@ function generate_svg_sprite($theme, $monochrome, $userland) : array
 
     ksort($icon_paths);
 
+    $xml_namespaces = ['' => 'http://www.w3.org/2000/svg', 'xlink:' => 'http://www.w3.org/1999/xlink'];
+    $skip_tags = ['http://www.w3.org/2000/svg:metadata'];
+    $skip_xml_namespaces = ['http://www.inkscape.org/namespaces/inkscape', 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'];
+
     $output = '<' . '?xml version="1.0" encoding="utf-8"?' . '>' . "\n";
     $output .= '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' . "\n";
 
@@ -688,11 +692,21 @@ function generate_svg_sprite($theme, $monochrome, $userland) : array
                 // whitespace?
                 continue;
             }
-            $child_xml = $xml->pull_together([$child], ['' => 'http://www.w3.org/2000/svg', 'xlink:' => 'http://www.w3.org/1999/xlink']) . "\n";
 
-            if (preg_replace('/\s/', '', $child_xml) === '<defs></defs>') {
-                continue; // Skip empty <defs> elements
+            // Skip empty <defs> elements
+            if (($child[0] == 'http://www.w3.org/2000/svg:defs')) {
+                $has_child_nodes = false;
+                foreach ($child[3] as $_child) {
+                    if (is_array($_child)) {
+                        $has_child_nodes = true;
+                    }
+                }
+                if (!$has_child_nodes) {
+                    continue;
+                }
             }
+
+            $child_xml = $xml->pull_together([$child], $xml_namespaces, $skip_tags, $skip_xml_namespaces) . "\n";
 
             $output .= $child_xml;
         }

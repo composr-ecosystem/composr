@@ -244,22 +244,40 @@ class CMS_simple_xml_reader
      *
      * @param  array $xml_children Level of XML tree
      * @param  array $xml_namespaces XML namespaces [ 'ns-prefix:' => 'http://example.com/namespace-uri' ]
+     * @param  array $skip_xml_namespaces XML namespaces to skip any attributes or elements of
      * @return string The combined XML
      */
-    public function pull_together(array $xml_children, array $xml_namespaces = []) : string
+    public function pull_together(array $xml_children, array $xml_namespaces = [], array $skip_tags = [], array $skip_xml_namespaces = []) : string
     {
         $data = '';
         foreach ($xml_children as $_) {
             if (is_array($_)) {
                 list($tag, $attributes, , $children) = $_;
+
+                if (in_array($tag, $skip_tags)) {
+                    continue;
+                }
+
+                foreach ($skip_xml_namespaces as $skip_xml_namespace) {
+                    if (substr($tag, 0, strlen($skip_xml_namespace) + 1) == $skip_xml_namespace . ':') {
+                        continue 2;
+                    }
+                }
+
                 $tag = $this->_fix_namespace($tag, $xml_namespaces);
                 $drawn = '';
                 foreach ($attributes as $key => $val) {
+                    foreach ($skip_xml_namespaces as $skip_xml_namespace) {
+                        if (substr($key, 0, strlen($skip_xml_namespace) + 1) == $skip_xml_namespace . ':') {
+                            continue 2;
+                        }
+                    }
+
                     $key = $this->_fix_namespace($key, $xml_namespaces);
                     $drawn .= ' ' . $key . '="' . xmlentities($val) . '"';
                 }
                 if (!empty($children)) {
-                    $data .= '<' . $tag . $drawn . '>' . $this->pull_together($children, $xml_namespaces) . '</' . $tag . '>';
+                    $data .= '<' . $tag . $drawn . '>' . $this->pull_together($children, $xml_namespaces, $skip_tags, $skip_xml_namespaces) . '</' . $tag . '>';
                 } else {
                     // No child nodes, self-close
                     $data .= '<' . $tag . $drawn . '/>';
