@@ -653,7 +653,7 @@ abstract class Hook_sitemap_base
      * @param  string $_title Input string
      * @return Tempcode Output string
      */
-    protected function _lang_string_or_literal($_title)
+    protected function _lang_string_or_literal(string $_title) : object
     {
         if ((preg_match('#^[A-Z\_]+$#', $_title) == 0) || (do_lang($_title, null, null, null, null, false) === null)) {
             $title = make_string_tempcode($_title);

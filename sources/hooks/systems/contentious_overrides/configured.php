@@ -35,7 +35,7 @@ class Hook_contentious_overrides_configured
      * @param  ?string $directory Subdirectory type to look in (null: not from a file)
      * @set templates javascript xml text css
      */
-    public function compile_template(&$data, $template_name, $theme, $lang, $suffix, $directory)
+    public function compile_template(string &$data, string $template_name, string $theme, string $lang, ?string $suffix, ?string $directory)
     {
         if (!function_exists('get_option')) {
             return;

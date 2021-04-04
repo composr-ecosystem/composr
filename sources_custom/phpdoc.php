@@ -896,18 +896,22 @@ function check_function_parameter_typing(string $phpdoc_type, ?string $php_type,
             if ($php_type_nullable != $null_allowed) {
                 attach_message('The phpdoc type and the PHP type hint conflict around nullability', 'warn');
             }
-        } elseif (($expected_php_type !== null) && ($funcdef_line_new !== null)) {
-            // Code write-back
-            $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
-            if ($name == '(return)') {
-                $funcdef_line_new = rtrim($funcdef_line_new);
-                if (substr($funcdef_line_new, -1) == ';') {
-                    $funcdef_line_new = rtrim($funcdef_line_new, ';') . ' : ' . $_expected_php_type . ';' . "\n";
+        } elseif ($expected_php_type !== null) {
+            if ($funcdef_line_new !== null) {
+                // Code write-back
+                $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
+                if ($name == '(return)') {
+                    $funcdef_line_new = rtrim($funcdef_line_new);
+                    if (substr($funcdef_line_new, -1) == ';') {
+                        $funcdef_line_new = rtrim($funcdef_line_new, ';') . ' : ' . $_expected_php_type . ';' . "\n";
+                    } else {
+                        $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type . "\n";
+                    }
                 } else {
-                    $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type . "\n";
+                    $funcdef_line_new = preg_replace('#(&?(\.\.\.)?\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
                 }
             } else {
-                $funcdef_line_new = preg_replace('#(&?(\.\.\.)?\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
+                attach_message('Missing PHP type hint that should be possible from what the phpdoc says (' . $expected_php_type . ') for ' . $name, 'warn');
             }
         }
     }

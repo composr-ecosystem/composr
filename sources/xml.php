@@ -94,7 +94,7 @@ function xmlentities(string $string, ?string $charset = null) : string
  * @param  string $string Input string
  * @return string Escaped version of input string
  */
-function escape_cdata($string)
+function escape_cdata(string $string) : string
 {
     return str_replace(']]>', ']]]]><![CDATA[>', $string);
 }

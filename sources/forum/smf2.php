@@ -672,7 +672,7 @@ class Forum_driver_smf2 extends Forum_driver_base
      * @param  integer $start Return primary members after this offset and secondary members after this offset
      * @return ?array The array of members (null: no members)
      */
-    public function member_group_query(array $groups, ?int $max = null, int $start = 0) // Doesn't support multi usergroups currently. I don't think it's needed : ?array
+    public function member_group_query(array $groups, ?int $max = null, int $start = 0) : ?array // Doesn't support multi usergroups currently. I don't think it's needed
     {
         $_groups = '';
         foreach ($groups as $group) {

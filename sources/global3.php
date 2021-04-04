@@ -3680,7 +3680,7 @@ function get_bot_type(?string $agent = null) : ?string
  *
  * @return boolean Whether the user has definitely got cookies
  */
-function has_cookies() // Will fail on users first visit, but then will catch on : bool
+function has_cookies() : bool // Will fail on users first visit, but then will catch on
 {
     static $has_cookies_cache = null;
     if ($has_cookies_cache !== null) {

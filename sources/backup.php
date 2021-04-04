@@ -131,7 +131,7 @@ function get_table_backup($log_file, string $db_meta, string $db_meta_indices, &
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  * @return Tempcode Success message
  */
-function make_backup(string $file, string $b_type = 'full', int $max_size = 100, $callback = null) // This is called as a shutdown function and thus cannot script-timeout : object
+function make_backup(string $file, string $b_type = 'full', int $max_size = 100, $callback = null) : object // This is called as a shutdown function and thus cannot script-timeout
 {
     cms_disable_time_limit();
 

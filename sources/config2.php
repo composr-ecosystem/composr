@@ -28,7 +28,7 @@
  * @param  boolean $include_group Whether to include the config group title as part of the inputter
  * @return Tempcode Inputter
  */
-function build_config_inputter(string $name, array $details, ?string $current_value = null, bool $is_override = false, $include_group = false) : object
+function build_config_inputter(string $name, array $details, ?string $current_value = null, bool $is_override = false, bool $include_group = false) : object
 {
     if ($current_value === null) {
         $current_value = get_option($name);

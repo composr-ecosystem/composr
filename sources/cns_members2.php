@@ -28,7 +28,7 @@
  * @return URLPATH Avatar (blank: none)
  * @ignore
  */
-function cns_choose_default_avatar($email_address = '', $algorithm = 'avoid_conflict')
+function cns_choose_default_avatar(string $email_address = '', string $algorithm = 'avoid_conflict') : string
 {
     if (get_option('random_avatars', true) === '1') {
         require_code('themes2');

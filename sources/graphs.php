@@ -376,7 +376,7 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_stacked_bar_chart($datasets, $labels, $x_axis_label = '', $y_axis_label = '', $options = [], $color_pool = null, $width = null, $height = null)
+function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label = '', $y_axis_label = '', array $options = [], ?array $color_pool = null, ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 

@@ -442,7 +442,7 @@ class Module_groups
      * @param  array $row The group row
      * @return Tempcode The rank image
      */
-    protected function display_rank_image(array $row)
+    protected function display_rank_image(array $row) : object
     {
         $rank_image = $row['g_rank_image'];
         if ($rank_image != '') {
@@ -461,7 +461,7 @@ class Module_groups
      * @param  boolean $include_club_labelling Include special labelling for clubs
      * @return Tempcode The link
      */
-    protected function display_group_link(array $row, bool $include_club_labelling = true)
+    protected function display_group_link(array $row, bool $include_club_labelling = true) : object
     {
         $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id']], '_SELF');
 

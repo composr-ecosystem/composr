@@ -145,7 +145,7 @@ function find_default_font(bool $mono = false) : string
  * @param  boolean $include_paths Whether to include local paths to the font files
  * @return array A map between font name and label to use for the font
  */
-function find_all_fonts(bool $test_character_support = false, $include_paths = false) : array
+function find_all_fonts(bool $test_character_support = false, bool $include_paths = false) : array
 {
     if (($test_character_support) && (has_ttf())) {
         $test_text = get_site_name();

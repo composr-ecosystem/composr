@@ -1584,7 +1584,7 @@ function ecv_HAS_FORUM(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_(string $lang, array $escaped, array $param) // A Tempcode comment : string
+function ecv_(string $lang, array $escaped, array $param) : string // A Tempcode comment
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {
@@ -5115,7 +5115,7 @@ function ecv_SUBSTR(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_ALTERNATOR_TRUNCATED(string $lang, array $escaped, array $param) // Alternate values according to whether some given text WOULD have been truncated. 0: text to check against, 1: the truncate length, 2:IF would not be do this, 3: if it would be do this, 4: whether given text is encoded as HTML (0=no [default, plain-text], 1=yes) : string
+function ecv_ALTERNATOR_TRUNCATED(string $lang, array $escaped, array $param) : string // Alternate values according to whether some given text WOULD have been truncated. 0: text to check against, 1: the truncate length, 2:IF would not be do this, 3: if it would be do this, 4: whether given text is encoded as HTML (0=no [default, plain-text], 1=yes)
 {
     $value = '';
     if ($GLOBALS['XSS_DETECT']) {

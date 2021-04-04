@@ -563,7 +563,7 @@ function lorem_globalise(object $middle, $message = null, string $type = '', boo
  *
  * @return Tempcode Tags
  */
-function placeholder_tags()
+function placeholder_tags() : object
 {
     if (!addon_installed('search')) {
         return new Tempcode();

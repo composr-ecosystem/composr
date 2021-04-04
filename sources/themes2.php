@@ -137,7 +137,7 @@ function autoprobe_cdns() : string
  * @param  boolean $needs_themewizard_support Whether to only return Theme Wizard supporting themes
  * @return array A map of all themes (name=>title) OR if requested a map of theme name to full theme details
  */
-function find_all_themes($needs_themewizard_support = false) : array
+function find_all_themes(bool $needs_themewizard_support = false) : array
 {
     if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
         return ['default' => do_lang('DEFAULT')];

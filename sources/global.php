@@ -718,7 +718,7 @@ function fixup_bad_php_env_vars_pre()
  *
  * @return boolean Whether backdoor is activated
  */
-function has_backdoor_ip_triggered()
+function has_backdoor_ip_triggered() : bool
 {
     global $SITE_INFO;
 

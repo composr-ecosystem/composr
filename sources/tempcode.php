@@ -1202,7 +1202,7 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
  * @param  array $children Where we store children stuff
  * @param  ID_TEXT $template_name The name of the template this came from (blank: not from a file / unknown); only passed for directives to avoid infinite loops with INCLUDE
  */
-function handle_symbol_preprocessing(array $seq_part, array &$children, $template_name = '')
+function handle_symbol_preprocessing(array $seq_part, array &$children, string $template_name = '')
 {
     switch ($seq_part[2]) {
         case 'PAGE_LINK':

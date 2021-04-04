@@ -59,7 +59,7 @@ function map_table_screen(object $title, array $fields, ?object $text = null, ?o
  * @param  string $abbr Field abbreviation (blank: none)
  * @return Tempcode The generated map field
  */
-function map_table_field($name, $value, bool $raw = false, string $abbr = '') // Not for use with the above, which takes the fields as a raw map : object
+function map_table_field($name, $value, bool $raw = false, string $abbr = '') : object // Not for use with the above, which takes the fields as a raw map
 {
     if ($raw) {
         $value = protect_from_escaping($value);

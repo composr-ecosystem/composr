@@ -448,7 +448,7 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
  *
  * @param  ID_TEXT $active_theme The theme the file is being loaded for
  */
-function initialise_css_tempcode_context($active_theme)
+function initialise_css_tempcode_context(string $active_theme)
 {
     if (!empty($GLOBALS['TEMPCODE_SETGET']['loaded_base'])) {
         return;

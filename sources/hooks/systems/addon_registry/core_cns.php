@@ -842,7 +842,7 @@ class Hook_addon_registry_core_cns
      * @param  string $tpl Template
      * @return Tempcode Preview
      */
-    protected function do_block_main_members_preview($tpl) : object
+    protected function do_block_main_members_preview(string $tpl) : object
     {
         $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
             'NAME' => lorem_phrase(),

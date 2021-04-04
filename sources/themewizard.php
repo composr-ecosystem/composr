@@ -187,7 +187,7 @@ function find_theme_image_themewizard_preview(string $id, bool $silent_fail = fa
  * @param  ?Tempcode $back_url The back URL to change settings (null: do error screen instead)
  * @return ?Tempcode Output (null: none)
  */
-function check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_url = null)
+function check_themewizard_theme(string $source_theme, string $algorithm, string $seed, bool $dark, ?object $back_url = null) : ?object
 {
     if (get_theme_option('enable_themewizard', null, $source_theme) == '0') {
         $error = do_lang_tempcode('THEME_NOT_SUPPORTING_THEMEWIZARD', escape_html(get_theme_option('title', null, $source_theme)), escape_html($source_theme));
@@ -223,7 +223,7 @@ function check_themewizard_theme($source_theme, $algorithm, $seed, $dark, $back_
  * @param  ?boolean $dark Whether it will be a dark theme (null: don't compare to source theme's seed)
  * @return array List of theme image codes
  */
-function themewizard_find_theme_images_in_scope($source_theme, $seed = null, $dark = null)
+function themewizard_find_theme_images_in_scope(string $source_theme, ?string $seed = null, ?bool $dark = null) : array
 {
     require_code('themes2');
     if (($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
@@ -278,7 +278,7 @@ function themewizard_find_theme_images_in_scope($source_theme, $seed = null, $da
  * @param  boolean $in_scope_only Only return if in the scope of the Theme Wizard
  * @return array Map of CSS files from filename to path
  */
-function themewizard_find_css_sheets($source_theme, $seed = null, $dark = null, $in_scope_only = true)
+function themewizard_find_css_sheets(string $source_theme, ?string $seed = null, ?bool $dark = null, bool $in_scope_only = true) : array
 {
     require_code('themes2');
     if (($seed !== null) && ($dark !== null) && ($seed == find_theme_seed($source_theme)) && ($dark == find_theme_dark($source_theme))) {
@@ -319,7 +319,7 @@ function themewizard_find_css_sheets($source_theme, $seed = null, $dark = null, 
  * @param  boolean $fix_only Whether we are fixing an existing theme
  * @return array List of files created
  */
-function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all = false, bool $fix_only = false)
+function generate_themewizard_theme(string $theme_name, string $source_theme, string $algorithm, string $seed, bool $dark, bool $use_on_all = false, bool $fix_only = false) : array
 {
     $files_created = [];
 
@@ -572,7 +572,7 @@ function themewizard_script()
  * @param  ?LANGUAGE_NAME $lang The language to work in (null: default)
  * @return array A pair: extended map of colours, colour expression landscape
  */
-function calculate_themewizard_css_colours(string $seed, ?bool &$dark, string $source_theme, string $algorithm, ?array $colours = null, ?array $landscape = null, ?string $lang = null)
+function calculate_themewizard_css_colours(string $seed, ?bool &$dark, string $source_theme, string $algorithm, ?array $colours = null, ?array $landscape = null, ?string $lang = null) : array
 {
     if (get_theme_option('supports_themewizard_equations', null, $source_theme) == '0') {
         $algorithm = 'hsv';
@@ -1306,7 +1306,7 @@ function re_hue_image(string $path, string $seed, string $source_theme, bool $al
  * @param  boolean $invert Whether to invert the colours
  * @return string The image
  */
-function _re_hue_image__svg(string $path, int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, bool $also_s_and_v = false, bool $invert = false)
+function _re_hue_image__svg(string $path, int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, bool $also_s_and_v = false, bool $invert = false) : string
 {
     $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
@@ -1405,7 +1405,7 @@ function _re_hue_image__raster(string $path, int $seed_h, int $seed_s, int $seed
  * @param  boolean $invert Whether to invert the colours
  * @return array New RGB colour components
  */
-function _re_hue_image_colour(int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, int $r, int $g, int $b, bool $also_s_and_v = false, bool $invert = false)
+function _re_hue_image_colour(int $seed_h, int $seed_s, int $seed_v, int $hue_dif, int $sat_dif, int $val_dif, int $r, int $g, int $b, bool $also_s_and_v = false, bool $invert = false) : array
 {
     list($h, $s, $v) = rgb_to_hsv(str_pad(dechex($r), 2, '0', STR_PAD_LEFT) . str_pad(dechex($g), 2, '0', STR_PAD_LEFT) . str_pad(dechex($b), 2, '0', STR_PAD_LEFT));
     if ($invert) {
