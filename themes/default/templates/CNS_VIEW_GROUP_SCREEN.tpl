@@ -3,6 +3,12 @@
 <div data-tpl="cnsViewGroupScreen">
 	{TITLE}
 
+	{+START,IF,{CLUB}}
+		<p>
+			{!CLUB_EXPLANATION}
+		</p>
+	{+END}
+
 	{LEADER}
 
 	{+START,IF_NON_EMPTY,{PROMOTION_INFO}}

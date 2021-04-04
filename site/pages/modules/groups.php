@@ -451,9 +451,16 @@ class Module_groups
 
         $group_name = get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']);
 
-        $link = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true);
+        $club = ($row['g_is_private_club'] == 1);
 
-        return do_lang_tempcode(($row['g_is_private_club'] == 1) ? 'VIEW_CLUB' : 'VIEW_USERGROUP', $link);
+        $title = new Tempcode();
+        if ($club) {
+            $title = do_lang_tempcode('CLUB_EXPLANATION');
+        }
+
+        $link = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true, $title);
+
+        return do_lang_tempcode($club ? 'VIEW_CLUB' : 'VIEW_USERGROUP', $link);
     }
 
     /**

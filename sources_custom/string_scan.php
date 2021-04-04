@@ -9742,6 +9742,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MAILING_LIST_SIMPLE_MAIL_new
         MAILING_LIST_SIMPLE_MAIL_reply
         MAILING_LIST_SIMPLE_MAIL_regexp
+        CLUB_EXPLANATION
         MEDIA
         MEDIA_FEATURES
         MEDIA_SET
