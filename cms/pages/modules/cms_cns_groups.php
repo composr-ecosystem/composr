@@ -104,6 +104,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         $this->add_one_label = do_lang_tempcode('ADD_CLUB');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_CLUB');
         $this->edit_one_label = do_lang_tempcode('EDIT_CLUB');
+        $this->view_label = do_lang_tempcode('VIEW');
 
         if ($type == 'browse') {
             return $this->browse();

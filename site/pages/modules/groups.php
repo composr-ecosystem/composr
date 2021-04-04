@@ -297,7 +297,7 @@ class Module_groups
                 $has_images = true;
             }
         }
-        list($col_widths, $titles) = $this->_find_table_headings($has_images, false);
+        list($col_widths, $titles) = $this->find_table_headings($has_images, false);
         $header_row = results_header_row($titles, $sortables);
         $staff = new Tempcode();
         $i = 0;
@@ -310,22 +310,12 @@ class Module_groups
                 break;
             }
 
-            $group_name = $row['_name'];
-
-            $rank_image = $row['g_rank_image'];
-            if ($rank_image != '') {
-                $rank_image_tpl = do_template('CNS_RANK_IMAGE', ['_GUID' => '3753739ac2bebcfb9fff8b80e4bd71d0', 'GROUP_NAME' => $group_name, 'IMG' => $rank_image, 'IS_LEADER' => false]);
-            } else {
-                $rank_image_tpl = new Tempcode();
-            }
-
-            $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id']], '_SELF');
-
             $num_members = integer_format(cns_get_group_members_raw_count($row['id'], true, false, true, false));
 
             $entry = [];
-            $entry[] = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true);
+            $entry[] = $this->display_group_link($row);
             if ($has_images) {
+                $rank_image_tpl = $this->display_rank_image($row);
                 $entry[] = $rank_image_tpl;
             }
             $entry[] = escape_html($num_members);
@@ -347,7 +337,7 @@ class Module_groups
                     $has_images = true;
                 }
             }
-            list($col_widths, $titles) = $this->_find_table_headings($has_images, true);
+            list($col_widths, $titles) = $this->find_table_headings($has_images, true);
             $header_row = results_header_row($titles, $sortables);
             $rank = new Tempcode();
             $i = 0;
@@ -360,17 +350,6 @@ class Module_groups
                     break;
                 }
 
-                $group_name = $row['_name'];
-
-                $rank_image = $row['g_rank_image'];
-                if ($rank_image != '') {
-                    $rank_image_tpl = do_template('CNS_RANK_IMAGE', ['_GUID' => '598558286a1f701fe5f4a59ed94bff3a', 'GROUP_NAME' => $group_name, 'IMG' => $rank_image, 'IS_LEADER' => false]);
-                } else {
-                    $rank_image_tpl = new Tempcode();
-                }
-
-                $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id']], '_SELF');
-
                 $num_members = integer_format(cns_get_group_members_raw_count($row['id'], true, false, true, false));
 
                 $_p_t = $row['g_promotion_threshold'];
@@ -380,9 +359,10 @@ class Module_groups
                 }
 
                 $entry = [];
-                $entry[] = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true);
+                $entry[] = $this->display_group_link($row);
                 $entry[] = $p_t;
                 if ($has_images) {
+                    $rank_image_tpl = $this->display_rank_image($row);
                     $entry[] = $rank_image_tpl;
                 }
                 $entry[] = escape_html($num_members);
@@ -415,26 +395,16 @@ class Module_groups
                 $has_images = true;
             }
         }
-        list($col_widths, $titles) = $this->_find_table_headings($has_images, false);
+        list($col_widths, $titles) = $this->find_table_headings($has_images, false);
         $header_row = results_header_row($titles, $sortables);
         $others = new Tempcode();
         foreach ($_others as $row) {
-            $group_name = get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']);
-
-            $rank_image = $row['g_rank_image'];
-            if ($rank_image != '') {
-                $rank_image_tpl = do_template('CNS_RANK_IMAGE', ['_GUID' => 'e43b9775c7ab9a524f0073f749c75cd1', 'GROUP_NAME' => $group_name, 'IMG' => $rank_image, 'IS_LEADER' => false]);
-            } else {
-                $rank_image_tpl = new Tempcode();
-            }
-
-            $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id']], '_SELF');
-
             $num_members = integer_format(cns_get_group_members_raw_count($row['id'], true, false, true, false));
 
             $entry = [];
-            $entry[] = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true);
+            $entry[] = $this->display_group_link($row);
             if ($has_images) {
+                $rank_image_tpl = $this->display_rank_image($row);
                 $entry[] = $rank_image_tpl;
             }
             $entry[] = escape_html($num_members);
@@ -452,13 +422,48 @@ class Module_groups
     }
 
     /**
+     * Display a link to a rank image for the directory.
+     *
+     * @param  array $row The group row
+     * @return Tempcode The rank image
+     */
+    protected function display_rank_image(array $row)
+    {
+        $rank_image = $row['g_rank_image'];
+        if ($rank_image != '') {
+            $group_name = get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']);
+            $rank_image_tpl = do_template('CNS_RANK_IMAGE', ['_GUID' => '3753739ac2bebcfb9fff8b80e4bd71d0', 'GROUP_NAME' => $group_name, 'IMG' => $rank_image, 'IS_LEADER' => false]);
+        } else {
+            $rank_image_tpl = new Tempcode();
+        }
+        return $rank_image_tpl;
+    }
+
+    /**
+     * Display a link to a group from the directory.
+     *
+     * @param  array $row The group row
+     * @return Tempcode The link
+     */
+    protected function display_group_link(array $row)
+    {
+        $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id']], '_SELF');
+
+        $group_name = get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']);
+
+        $link = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true);
+
+        return do_lang_tempcode(($row['g_is_private_club'] == 1) ? 'VIEW_CLUB' : 'VIEW_USERGROUP', $link);
+    }
+
+    /**
      * Find table column widths and headings.
      *
      * @param  boolean $has_images Whether there are rank images
      * @param  boolean $has_rank Whether there are rank promotions
      * @return array A pair: column widths, table headings
      */
-    protected function _find_table_headings(bool $has_images, bool $has_rank) : array
+    protected function find_table_headings(bool $has_images, bool $has_rank) : array
     {
         if ($has_images) {
             if ($has_rank) {
