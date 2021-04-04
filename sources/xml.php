@@ -244,6 +244,7 @@ class CMS_simple_xml_reader
      *
      * @param  array $xml_children Level of XML tree
      * @param  array $xml_namespaces XML namespaces [ 'ns-prefix:' => 'http://example.com/namespace-uri' ]
+     * @param  array $skip_tags XML tags to skip
      * @param  array $skip_xml_namespaces XML namespaces to skip any attributes or elements of
      * @return string The combined XML
      */
