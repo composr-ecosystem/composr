@@ -114,6 +114,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        MAX_PAGINATION_LINKS
+        CONFIG_OPTION_max_pagination_links
         CONFIG_OPTION_remember_me_behaviour_VALUE_always_on
         CONFIG_OPTION_remember_me_behaviour_VALUE_default_off
         CONFIG_OPTION_remember_me_behaviour_VALUE_default_on
