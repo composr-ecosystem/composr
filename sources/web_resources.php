@@ -446,9 +446,9 @@ function css_tempcode(bool $inline = false, bool $only_global = false, ?string $
 /**
  * Make sure environmental CSS Tempcode is executed in advance of other CSS.
  *
- * @param  ID_TEXT $active_theme The theme the file is being loaded for
+ * @param  ?ID_TEXT $active_theme The theme the file is being loaded for (null: current theme)
  */
-function initialise_css_tempcode_context(string $active_theme)
+function initialise_css_tempcode_context(?string $active_theme)
 {
     if (!empty($GLOBALS['TEMPCODE_SETGET']['loaded_base'])) {
         return;
