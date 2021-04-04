@@ -123,17 +123,6 @@ We would choose to edit the cricket practice event:
 
 It is preferable that we did this before the actual cancelled event recurrence. If we were too late, we would undergo the same process, but delete the last hard-coded event that was added.
 
-[title="2"]Scheduling commands[/title]
-
-To schedule a command for execution, add an event with the event type of 'System command'. All settings (including recurrence) are as for any event, except the event text should be either:
-[list="a"]
-[*] a URL for Composr to call up (the process of calling a URL can be used to invoke some function of a web application)
-[*] a portion of Commandr code
-[/list]
-[b]Make sure the WYSIWYG editor is off[/b] when using this event type.
-
-For scheduled commands to be executed you need to have the system scheduler configured as specified in the [page="_SEARCH:tut_configuration"]basic configuration[/page] tutorial.
-
 [title="2"]Feeds[/title]
 
 Users may choose to overlay [concept]RSS[/concept] or [concept]Atom[/concept] feeds of their choice onto the calendar. A time based view of feed entries is very useful in some situations.
@@ -141,6 +130,17 @@ Users may choose to overlay [concept]RSS[/concept] or [concept]Atom[/concept] fe
 [title="2"]Internationalisation / Culture[/title]
 
 It is possible to customise the calendar to have a different start-of-week-day, or to use a 24 hour clock. This is done by editing the time strings in the [tt]global[/tt] language file. For more information, see the [page="_SEARCH:tut_intl"]Localisation and internationalisation[/page] tutorial.
+
+[title="2"]Scheduling commands (advanced)[/title]
+
+To schedule a command for execution, add an event with the event type of 'System command'. The "Allow adding System command events" option has first to be enabled in the configuration to see this event type. All settings (including recurrence) are as for any event, except the event text should be either:
+[list="a"]
+[*] a URL for Composr to call up (the process of calling a URL can be used to invoke some function of a web application)
+[*] a portion of Commandr code
+[/list]
+[b]Make sure the WYSIWYG editor is off[/b] when using this event type.
+
+For scheduled commands to be executed you need to have the system scheduler configured as specified in the [page="_SEARCH:tut_configuration"]basic configuration[/page] tutorial.
 
 [concepts
  1_key="Event"                1_value="An entry in the calendar system that may recur"
