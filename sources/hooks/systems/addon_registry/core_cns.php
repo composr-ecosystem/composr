@@ -1125,8 +1125,9 @@ class Hook_addon_registry_core_cns
     {
         return lorem_globalise(do_lorem_template('CNS_GROUP_DIRECTORY_SCREEN', [
             'TITLE' => lorem_title(),
-            'STAFF' => lorem_phrase(),
-            'OTHERS' => lorem_phrase(),
+            'STAFF' => placeholder_table(),
+            'OTHERS' => placeholder_table(),
+            'CLUBS' => placeholder_table(),
             'RANKS' => [placeholder_table(), placeholder_table()],
         ]), null, '', true);
     }

@@ -299,7 +299,7 @@ class Module_groups
         }
         list($col_widths, $titles) = $this->find_table_headings($has_images, false);
         $header_row = results_header_row($titles, $sortables);
-        $staff = new Tempcode();
+        $staff_entries = new Tempcode();
         $i = 0;
         foreach ($_staff as $row) {
             if ($i < $start) {
@@ -320,10 +320,10 @@ class Module_groups
             }
             $entry[] = escape_html($num_members);
 
-            $staff->attach(results_entry($entry, false));
+            $staff_entries->attach(results_entry($entry, false));
             $i++;
         }
-        $staff = results_table(do_lang_tempcode('STAFF'), $start, 'staff_start', $max, 'staff_max', $max_rows, $header_row, $staff, $sortables, $sortable, $sort_order, 'staff_sort', null, $col_widths);
+        $staff = results_table(do_lang_tempcode('STAFF'), $start, 'staff_start', $max, 'staff_max', $max_rows, $header_row, $staff_entries, $sortables, $sortable, $sort_order, 'staff_sort', null, $col_widths);
 
         //-Ranks
         $ranks = [];
@@ -339,7 +339,7 @@ class Module_groups
             }
             list($col_widths, $titles) = $this->find_table_headings($has_images, true);
             $header_row = results_header_row($titles, $sortables);
-            $rank = new Tempcode();
+            $rank_entries = new Tempcode();
             $i = 0;
             foreach ($_rank as $row) {
                 if ($i < $start) {
@@ -367,55 +367,70 @@ class Module_groups
                 }
                 $entry[] = escape_html($num_members);
 
-                $rank->attach(results_entry($entry, false));
+                $rank_entries->attach(results_entry($entry, false));
             }
-            $rank = results_table(do_lang_tempcode('RANK_SETS'), $start, 'rank_start_' . strval($g_id), $max, 'rank_max_' . strval($g_id), $max_rows, $header_row, $rank, $sortables, $sortable, $sort_order, 'rank_sort_' . strval($g_id), null, $col_widths);
+            $rank = results_table(do_lang_tempcode('RANK_SETS'), $start, 'rank_start_' . strval($g_id), $max, 'rank_max_' . strval($g_id), $max_rows, $header_row, $rank_entries, $sortables, $sortable, $sort_order, 'rank_sort_' . strval($g_id), null, $col_widths);
             $ranks[] = $rank;
         }
 
-        //-Others
-        $start = get_param_integer('others_start', 0);
-        $max = get_param_integer('others_max', intval(get_option('normal_groups_per_page')));
-        $sql = 'SELECT g.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ';
-        if (!has_privilege(get_member(), 'see_hidden_groups')) {
-            $sql .= '(g_hidden=0 OR g.id IN (' . implode(',', array_map('strval', $members_groups)) . ')) AND ';
-        }
-        $sql .= '(g_promotion_target IS NULL AND NOT EXISTS(SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups h WHERE h.g_promotion_target=g.id)';
-        foreach ($staff_groups as $g_id) {
-            $sql .= ' AND g.id<>' . strval($g_id);
-        }
-        $sql .= ' AND g.id<>' . strval(db_get_first_id());
-        $sql .= ')';
-        $sql .= ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name');
-        $_others = $GLOBALS['FORUM_DB']->query($sql, $max, $start, false, false, $lang_fields);
-        $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there(str_replace('SELECT * ', 'SELECT COUNT(*) ', $sql), false, false, $lang_fields);
-        $has_images = false;
-        foreach ($_others as $row) {
-            if ($row['g_rank_image'] != '') {
-                $has_images = true;
-            }
-        }
-        list($col_widths, $titles) = $this->find_table_headings($has_images, false);
-        $header_row = results_header_row($titles, $sortables);
+        //-Others / Clubs
         $others = new Tempcode();
-        foreach ($_others as $row) {
-            $num_members = integer_format(cns_get_group_members_raw_count($row['id'], true, false, true, false));
-
-            $entry = [];
-            $entry[] = $this->display_group_link($row);
-            if ($has_images) {
-                $rank_image_tpl = $this->display_rank_image($row);
-                $entry[] = $rank_image_tpl;
+        $clubs = new Tempcode();
+        foreach ([0 => 'others', 1 => 'clubs'] as $is_private_club => $prefix) {
+            $start = get_param_integer($prefix . '_start', 0);
+            $max = get_param_integer($prefix . '_max', intval(get_option('normal_groups_per_page')));
+            $sql = 'SELECT g.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ';
+            if (!has_privilege(get_member(), 'see_hidden_groups')) {
+                $sql .= '(g_hidden=0 OR g.id IN (' . implode(',', array_map('strval', $members_groups)) . ')) AND ';
             }
-            $entry[] = escape_html($num_members);
+            $sql .= 'g_is_private_club=' . strval($is_private_club) . ' AND ';
+            $sql .= '(g_promotion_target IS NULL AND NOT EXISTS(SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups h WHERE h.g_promotion_target=g.id)';
+            foreach ($staff_groups as $g_id) {
+                $sql .= ' AND g.id<>' . strval($g_id);
+            }
+            $sql .= ' AND g.id<>' . strval(db_get_first_id());
+            $sql .= ')';
+            $sql .= ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name');
+            $_rows = $GLOBALS['FORUM_DB']->query($sql, $max, $start, false, false, $lang_fields);
+            $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there(str_replace('SELECT * ', 'SELECT COUNT(*) ', $sql), false, false, $lang_fields);
+            $has_images = false;
+            foreach ($_rows as $row) {
+                if ($row['g_rank_image'] != '') {
+                    $has_images = true;
+                }
+            }
+            list($col_widths, $titles) = $this->find_table_headings($has_images, false);
+            $header_row = results_header_row($titles, $sortables);
+            $entries = new Tempcode();
+            foreach ($_rows as $row) {
+                $num_members = integer_format(cns_get_group_members_raw_count($row['id'], true, false, true, false));
 
-            $others->attach(results_entry($entry, false));
-        }
-        if (!$others->is_empty()) {
-            $others = results_table(do_lang_tempcode(empty($ranks) ? 'OTHER' : 'OTHER_USERGROUPS'), $start, 'others_start', $max, 'others_max', $max_rows, $header_row, $others, $sortables, $sortable, $sort_order, 'others_sort', null, $col_widths);
+                $entry = [];
+                $entry[] = $this->display_group_link($row, false);
+                if ($has_images) {
+                    $rank_image_tpl = $this->display_rank_image($row);
+                    $entry[] = $rank_image_tpl;
+                }
+                $entry[] = escape_html($num_members);
+
+                $entries->attach(results_entry($entry, false));
+            }
+            if (!$entries->is_empty()) {
+                if ($is_private_club == 0) {
+                    $pagination_label = empty($ranks) ? 'OTHER' : 'OTHER_USERGROUPS';
+                } else {
+                    $pagination_label = 'CLUBS';
+                }
+                $results_table = results_table(do_lang_tempcode($pagination_label), $start, $prefix . '_start', $max, $prefix . '_max', $max_rows, $header_row, $entries, $sortables, $sortable, $sort_order, $prefix . '_sort', null, $col_widths);
+                if ($is_private_club == 0) {
+                    $others = $results_table;
+                } else {
+                    $clubs = $results_table;
+                }
+            }
         }
 
-        $tpl = do_template('CNS_GROUP_DIRECTORY_SCREEN', ['_GUID' => '39aebd8fcb618c2ae45e867d0c96a4cf', 'TITLE' => $this->title, 'STAFF' => $staff, 'OTHERS' => $others, 'RANKS' => $ranks]);
+        $tpl = do_template('CNS_GROUP_DIRECTORY_SCREEN', ['_GUID' => '39aebd8fcb618c2ae45e867d0c96a4cf', 'TITLE' => $this->title, 'STAFF' => $staff, 'OTHERS' => $others, 'CLUBS' => $clubs, 'RANKS' => $ranks]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -443,9 +458,10 @@ class Module_groups
      * Display a link to a group from the directory.
      *
      * @param  array $row The group row
+     * @param  boolean $include_club_labelling Include special labelling for clubs
      * @return Tempcode The link
      */
-    protected function display_group_link(array $row)
+    protected function display_group_link(array $row, bool $include_club_labelling = true)
     {
         $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $row['id']], '_SELF');
 
@@ -460,7 +476,10 @@ class Module_groups
 
         $link = hyperlink($url, make_fractionable_editable('group', $row['id'], $group_name), false, true, $title);
 
-        return do_lang_tempcode($club ? 'VIEW_CLUB' : 'VIEW_USERGROUP', $link);
+        if ($include_club_labelling) {
+            return do_lang_tempcode($club ? 'VIEW_CLUB' : 'VIEW_USERGROUP', $link);
+        }
+        return $link;
     }
 
     /**

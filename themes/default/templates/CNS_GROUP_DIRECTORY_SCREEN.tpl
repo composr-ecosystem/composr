@@ -20,6 +20,16 @@
 	{OTHERS}
 {+END}
 
+{+START,IF_NON_EMPTY,{CLUBS}}
+	<h2>{!CLUBS}</h2>
+
+	<p>
+		{!CLUB_EXPLANATION}
+	</p>
+
+	{CLUBS}
+{+END}
+
 {$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 {+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_cns_groups}}
 	{+START,INCLUDE,STAFF_ACTIONS}
