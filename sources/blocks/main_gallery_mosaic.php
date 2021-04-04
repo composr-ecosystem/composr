@@ -333,7 +333,7 @@ PHP;
         if ($do_pagination) {
             require_code('templates_pagination');
             $_selectors = array_map('intval', explode(',', get_option('gallery_selectors')));
-            $pagination = pagination(do_lang_tempcode('MEDIA'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, $_selectors);
+            $pagination = pagination(do_lang_tempcode('MEDIA'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, null, $_selectors);
         }
 
         // Render

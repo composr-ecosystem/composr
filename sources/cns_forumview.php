@@ -417,7 +417,7 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
         }
 
         require_code('templates_pagination');
-        $pagination = pagination(make_string_tempcode(escape_html($forum_name)), $true_start, 'forum_start', $max, 'forum_max', $details['max_rows'], false, 5, null, ($type == 'pt' && get_page_name() == 'members') ? 'tab--pts' : '', $keyset_value);
+        $pagination = pagination(make_string_tempcode(escape_html($forum_name)), $true_start, 'forum_start', $max, 'forum_max', $details['max_rows'], false, null, null, ($type == 'pt' && get_page_name() == 'members') ? 'tab--pts' : '', $keyset_value);
 
         $topic_wrapper = do_template('CNS_FORUM_TOPIC_WRAPPER', [
             '_GUID' => 'e452b81001e5c6b7adb4d82e627bf983',

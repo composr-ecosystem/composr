@@ -156,7 +156,7 @@ class Block_main_cns_involved_topics
                 $forum_name = do_lang_tempcode('TOPICS_PARTICIPATED_IN', escape_html(integer_format($start + 1)) . '-' . integer_format($start + $max));
                 $breadcrumbs = new Tempcode();
                 require_code('templates_pagination');
-                $pagination = pagination(do_lang_tempcode('FORUM_TOPICS'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, null);
+                $pagination = pagination(do_lang_tempcode('FORUM_TOPICS'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, null, null);
                 $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', [
                     '_GUID' => '8723270b128b4eea47ab3c756b342e14',
                     'TYPE' => 'main_cns_involved_topics',

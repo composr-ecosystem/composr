@@ -666,8 +666,8 @@ class Module_filedump
         $post_url = build_url(['page' => '_SELF', 'type' => 'mass', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
 
         require_code('templates_pagination');
-        $pagination_listing = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, 5, null, 'tab--listing');
-        $pagination_thumbnails = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, 5, null, 'tab--thumbnails');
+        $pagination_listing = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, null, null, 'tab--listing');
+        $pagination_thumbnails = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, null, null, 'tab--thumbnails');
 
         return do_template('FILEDUMP_SCREEN', [
             '_GUID' => '3f49a8277a11f543eff6488622949c84',

@@ -175,7 +175,7 @@ PHP;
             }
 
             require_code('templates_pagination');
-            $pagination = pagination(do_lang_tempcode('ACTIVITY'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, null, 'tab--activities');
+            $pagination = pagination(do_lang_tempcode('ACTIVITY'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, null, null, 'tab--activities');
 
             foreach ($activities as $row) {
                 list($message, $member_avatar, $timestamp, $member_url, $lang_string, $is_public) = render_activity($row);

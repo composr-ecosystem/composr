@@ -226,6 +226,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/session_prudence.php',
             'sources/hooks/systems/config/tornevall_api_password.php',
             'sources/hooks/systems/config/tornevall_api_username.php',
+            'sources/hooks/systems/config/max_pagination_links.php',
             'sources/hooks/systems/config/message_received_emails.php',
             'sources/hooks/systems/config/use_true_from.php',
             'sources/hooks/systems/config/email_log_store_time.php',

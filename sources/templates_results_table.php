@@ -37,14 +37,14 @@
  * @param  ?Tempcode $message Message to show (null: auto)
  * @param  array $widths Widths to specify to the table (strings, ending 'px')
  * @param  ?string $tpl_set The template set to use (null: default)
- * @param  integer $max_page_links The maximum number of quick-jump page-links to show
+ * @param  ?integer $max_pagination_links The maximum number of quick-jump pagination-links to show (null: configured default)
  * @param  string $guid GUID to pass to template
  * @param  boolean $skip_sortables_form Whether to skip showing a sort form (useful if there is another form wrapped around this)
  * @param  ?ID_TEXT $hash URL hash component (null: none)
  * @param  boolean $interactive Whether to allow interactive sorting and filtering
  * @return Tempcode The results table
  */
-function results_table($text_id, int $start, string $start_name, int $max, string $max_name, int $max_rows, object $header_row, object $result_entries, array $sortables = [], ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?object $message = null, array $widths = [], ?string $tpl_set = null, int $max_page_links = 8, string $guid = '1c8645bc2a3ff5bec2e003142185561f', bool $skip_sortables_form = false, ?string $hash = null, bool $interactive = false) : object
+function results_table($text_id, int $start, string $start_name, int $max, string $max_name, int $max_rows, object $header_row, object $result_entries, array $sortables = [], ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?object $message = null, array $widths = [], ?string $tpl_set = null, ?int $max_pagination_links = null, string $guid = '1c8645bc2a3ff5bec2e003142185561f', bool $skip_sortables_form = false, ?string $hash = null, bool $interactive = false) : object
 {
     require_code('templates_pagination');
 
@@ -75,7 +75,7 @@ function results_table($text_id, int $start, string $start_name, int $max, strin
     }
 
     // Pagination
-    $pagination = pagination(is_object($text_id) ? $text_id : make_string_tempcode($text_id), $start, $start_name, $max, $max_name, $max_rows, true, $max_page_links, null, ($hash === null) ? '' : $hash);
+    $pagination = pagination(is_object($text_id) ? $text_id : make_string_tempcode($text_id), $start, $start_name, $max, $max_name, $max_rows, true, $max_pagination_links, null, ($hash === null) ? '' : $hash);
 
     return do_template(
         ($tpl_set === null) ? 'RESULTS_TABLE' : ('RESULTS_' . $tpl_set . '_TABLE'),

@@ -143,17 +143,21 @@ function get_keyset_pagination_settings(string $max_name, int $max_default, stri
  * @param  ID_TEXT $max_name The parameter name used to store the total number of results to show per-page (usually, 'max')
  * @param  integer $max_rows The maximum number of rows in the entire dataset
  * @param  boolean $keep_post Whether to keep post data when browsing through
- * @param  integer $max_page_links The maximum number of quick-jump page-links to show
+ * @param  ?integer $max_pagination_links The maximum number of quick-jump pagination-links to show (null: configured default)
  * @param  ?array $_selectors List of per-page selectors to show (null: show hard-coded ones)
  * @param  ID_TEXT $hash Hash component to URL
  * @param  ?mixed $keyset_value Keyset-pagination reference value for the 'next' page of results (null: no keyset pagination)
  * @return Tempcode The pagination
  */
-function pagination(object $title, int $start, string $start_name, int $max, string $max_name, int $max_rows, bool $keep_post = false, int $max_page_links = 5, ?array $_selectors = null, string $hash = '', $keyset_value = null) : object
+function pagination(object $title, int $start, string $start_name, int $max, string $max_name, int $max_rows, bool $keep_post = false, ?int $max_pagination_links = null, ?array $_selectors = null, string $hash = '', $keyset_value = null) : object
 {
     inform_non_canonical_parameter($max_name);
     inform_non_canonical_parameter($start_name);
     inform_non_canonical_parameter($start_name . '__keyed');
+
+    if ($max_pagination_links === null) {
+        $max_pagination_links = intval(get_option('max_pagination_links'));
+    }
 
     $post_array = [];
     if ($keep_post) {
@@ -247,7 +251,7 @@ function pagination(object $title, int $start, string $start_name, int $max, str
         // $from is the index number (one less than written page number) we start showing page-links from
         // $to is the index number (one less than written page number) we stop showing page-links from
         if ($max != 0) {
-            $max_dispersal = $max_page_links / 2;
+            $max_dispersal = $max_pagination_links / 2;
             $from = max(0, intval(floatval($start) / floatval($max) - $max_dispersal));
             $to = intval(ceil(min(floatval($max_rows) / floatval($max), floatval($start) / floatval($max) + $max_dispersal)));
             $dif = (floatval($start) / floatval($max) - $max_dispersal);
@@ -340,7 +344,7 @@ function pagination(object $title, int $start, string $start_name, int $max, str
         }
 
         // Page jump dropdown, if we had to crop
-        if ($num_pages > $max_page_links && $has_full_pagination) {
+        if ($num_pages > $max_pagination_links && $has_full_pagination) {
             $list = new Tempcode();
             $pg_start = 0;
             $pg_to = $num_pages;
