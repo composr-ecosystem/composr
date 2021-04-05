@@ -652,11 +652,23 @@ function _build_url(array $parameters, string $zone_name = '', array $skip = [],
     $self_page = ((!$has_page) || ((function_exists('get_zone_name')) && (get_zone_name() === $zone_name) && (($parameters['page'] === '_SELF') || ($parameters['page'] === get_page_name())))) && ((!isset($parameters['type'])) || ($parameters['type'] === get_param_string('type', 'browse', INPUT_FILTER_GET_COMPLEX))) && ($hash !== '#_top') && (!$KNOWN_AJAX);
     if ($can_try_url_schemes) {
         if ((!$self_page) || ($_what_is_running === 'index')) {
-            $test_rewrite = _url_rewrite_params($zone_name, $parameters, !empty($keep_actual));
+            $test_rewrite = _url_rewrite_params($zone_name, $parameters);
         }
     }
     if ($test_rewrite === null) {
-        $url = (($self_page) && ($_what_is_running !== 'index')) ? find_script($_what_is_running) : ($stub . 'index.php');
+        if (($self_page) && ($_what_is_running !== 'index')) {
+            $url = find_script($_what_is_running);
+        } else {
+            $url = $stub;
+
+            if (get_option('url_scheme_omit_default_zone_pages') == '1') {
+                if ((empty($parameters)) || (count($parameters) == 1) && (isset($parameters['page'])) && (($parameters['page'] == '') || ($parameters['page'] == get_zone_default_page($zone_name)))) {
+                    return $url . $hash;
+                }
+            }
+
+            $url .= 'index.php';
+        }
 
         // Fix sort order
         if (isset($parameters['id'])) {
@@ -729,11 +741,10 @@ function _handle_array_var_append(string $key, array $val, array &$parameters)
  *
  * @param  ID_TEXT $zone_name The name of the zone for this
  * @param  array $parameters A map of parameters to include in our URL
- * @param  boolean $force_index_php Force inclusion of the index.php name into a URL Scheme, so something may tack on extra parameters to the result here
  * @return ?URLPATH The improved URL (null: couldn't do anything)
  * @ignore
  */
-function _url_rewrite_params(string $zone_name, array $parameters, bool $force_index_php = false) : ?string
+function _url_rewrite_params(string $zone_name, array $parameters) : ?string
 {
     global $URL_REMAPPINGS;
     if ($URL_REMAPPINGS === null) {
@@ -744,68 +755,75 @@ function _url_rewrite_params(string $zone_name, array $parameters, bool $force_i
         }
     }
 
-    static $url_scheme = null;
-    if ($url_scheme === null) {
-        $url_scheme = get_option('url_scheme');
+    // Normalise for type-strictness if needed
+    if ($GLOBALS['DEV_MODE']) {
+        foreach ($parameters as $key => $val) {
+            if (is_integer($val)) {
+                $parameters[$key] = strval($val);
+            }
+        }
     }
 
     // Find mapping
     foreach ($URL_REMAPPINGS as $_remapping) {
-        list($remapping, $target, $require_full_coverage, $last_key_num) = $_remapping;
+        list($remapping, $match_string, $require_full_coverage, $last_key_num) = $_remapping;
+
+        // Basic check / completion of specially-bound map parameters...
+
         $good = true;
-
-        $loop_cnt = 0;
-        foreach ($remapping as $key => $val) {
-            $loop_cnt++;
-            $last = ($loop_cnt == $last_key_num);
-
-            if ((isset($parameters[$key])) && (is_integer($parameters[$key]))) {
-                $parameters[$key] = strval($parameters[$key]);
-            }
-
-            if (!(((isset($parameters[$key])) || (($val === null) && ($key === 'type') && ((isset($parameters['id'])) || (array_key_exists('id', $parameters))))) && (($key !== 'page') || ($parameters[$key] != '') || ($val === '')) && ((!isset($parameters[$key]) && !array_key_exists($key, $parameters)/*NB this is just so the next clause does not error, we have other checks for non-existence*/) || ($parameters[$key] != '') || (!$last)) && (($val === null) || ($parameters[$key] === $val)))) {
+        foreach ($remapping as $key => &$val) {
+            if (!isset($parameters[$key])) {
                 $good = false;
                 break;
             }
-        }
 
-        if ($require_full_coverage) {
-            foreach ($_GET as $key => $val) {
-                if (!is_string($val)) {
-                    continue;
-                }
-
-                if ((substr($key, 0, 5) === 'keep_') && (!skippable_keep($key, $val))) {
-                    $good = false;
-                }
-            }
-            foreach ($parameters as $key => $val) {
-                if ((!array_key_exists($key, $remapping)) && ($val !== null) && (($key !== 'page') || ($parameters[$key] != ''))) {
-                    $good = false;
-                }
-            }
-        }
-        if ($good) {
-            // We've found one, now let's sort out the target
-            $makeup = $target;
-            if ($GLOBALS['DEV_MODE']) {
-                foreach ($parameters as $key => $val) {
-                    if (is_integer($val)) {
-                        $parameters[$key] = strval($val);
-                    }
-                }
-            }
-
-            $extra_vars = [];
-            foreach ($remapping as $key => $_) {
-                if (!isset($parameters[$key])) {
-                    continue;
-                }
-
+            if ($val === null) {
                 $val = $parameters[$key];
-                unset($parameters[$key]);
+            } else {
+                if ($val === false) {
+                    $val = get_zone_default_page($zone_name);
+                }
+
+                if ($parameters[$key] != $val) {
+                    $good = false;
+                    break;
+                }
+            }
+        }
+
+        if (($good) && ($require_full_coverage)) {
+            // Full coverage check...
+
+            foreach ($_GET as $get_key => $get_val) {
+                if (!is_string($get_val)) {
+                    continue;
+                }
+
+                if ((substr($get_key, 0, 5) === 'keep_') && (!skippable_keep($get_key, $get_val))) {
+                    $good = false;
+                }
+            }
+            foreach ($parameters as $parameter_key => $parameter_val) {
+                if ((!array_key_exists($parameter_key, $remapping)) && ($parameter_val !== null)) {
+                    $good = false;
+                }
+            }
+        }
+
+        if ($good) {
+            // We've found one, now let's sort out the target match string...
+
+            $makeup = $match_string;
+
+            if (strpos($makeup, 'DEFAULT_PAGE') !== false) {
+                $makeup = str_replace('DEFAULT_PAGE', get_zone_default_page($zone_name), $makeup);
+            }
+
+            foreach ($remapping as $key => &$val) {
+                unset($parameters[$key]); // Mark as used
 
                 switch ($key) {
+                    // Hard-coded for performance reasons
                     case 'page':
                         $key = 'PAGE';
                         break;
@@ -815,6 +833,8 @@ function _url_rewrite_params(string $zone_name, array $parameters, bool $force_i
                     case 'id':
                         $key = 'ID';
                         break;
+
+                    // Should always work
                     default:
                         $key = cms_strtoupper_ascii($key);
                         break;
@@ -822,33 +842,25 @@ function _url_rewrite_params(string $zone_name, array $parameters, bool $force_i
                 $makeup = str_replace($key, cms_rawurlencode($val, true), $makeup);
             }
             if (!$require_full_coverage) {
-                $extra_vars += $parameters;
+                $extra_parameters = $parameters;
+            } else {
+                $extra_parameters = null;
             }
-            $makeup = str_replace('TYPE', 'browse', $makeup);
-            if ($makeup === '') {
-                switch ($url_scheme) {
-                    case 'HTM':
-                        $makeup .= get_zone_default_page($zone_name) . '.htm';
-                        break;
 
-                    case 'SIMPLE':
-                        $makeup .= get_zone_default_page($zone_name);
-                        break;
-                }
-            }
-            if ((!empty($extra_vars)) || ($force_index_php)) {
+            // Add these extra parameters in explicitly
+            if (!empty($extra_parameters))  {
                 $first = true;
                 $_makeup = '';
-                foreach ($extra_vars as $key => $val) { // Add these in explicitly
-                    if ($val === null) {
+                foreach ($extra_parameters as $parameter_key => $parameter_val) {
+                    if ($parameter_val === null) {
                         continue;
                     }
 
-                    if (is_integer($key)) {
-                        $key = strval($key);
+                    if (is_integer($parameter_key)) {
+                        $parameter_key = strval($parameter_key);
                     }
 
-                    $_makeup .= ($first ? '?' : '&') . $key . '=' . cms_urlencode($val, true);
+                    $_makeup .= ($first ? '?' : '&') . $parameter_key . '=' . cms_urlencode($parameter_val, true);
 
                     $first = false;
                 }

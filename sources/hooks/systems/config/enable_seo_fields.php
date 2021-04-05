@@ -38,7 +38,7 @@ class Hook_config_enable_seo_fields
             'explanation' => 'CONFIG_OPTION_enable_seo_fields',
             'shared_hosting_restricted' => '0',
             'list_options' => 'yes|no|only_on_edit',
-            'order_in_category_group' => 7,
+            'order_in_category_group' => 3,
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',

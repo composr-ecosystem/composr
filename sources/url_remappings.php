@@ -44,9 +44,15 @@ function get_remappings(string $url_scheme) : array
                 $rules[] = [['page' => 'wiki', 'type' => 'browse', 'id' => null], 'pg/s/ID', false];
             }
             $rules[] = [['page' => null, 'type' => null, 'id' => null], 'pg/PAGE/TYPE/ID', false];
+            $rules[] = [['page' => null, 'id' => null], 'pg/PAGE/browse/ID', false];
+            $rules[] = [['page' => null, 'type' => 'browse'], 'pg/PAGE', false];
             $rules[] = [['page' => null, 'type' => null], 'pg/PAGE/TYPE', false];
+            if (get_option('url_scheme_omit_default_zone_pages') == '1') {
+                $rules[] = [['page' => false/*will map to get_zone_default_page*/], '', true];
+                $rules[] = [['page' => ''], '', true];
+            }
+            $rules[] = [['page' => ''], 'pg/DEFAULT_PAGE', false];
             $rules[] = [['page' => null], 'pg/PAGE', false];
-            $rules[] = [['page' => ''], 'pg', false];
             $rules[] = [[], 'pg', true];
             break;
 
@@ -55,9 +61,15 @@ function get_remappings(string $url_scheme) : array
                 $rules[] = [['page' => 'wiki', 'type' => 'browse', 'id' => null], 's/ID.htm', false];
             }
             $rules[] = [['page' => null, 'type' => null, 'id' => null], 'PAGE/TYPE/ID.htm', false];
+            $rules[] = [['page' => null, 'id' => null], 'PAGE/browse/ID.htm', false];
+            $rules[] = [['page' => null, 'type' => 'browse'], 'PAGE.htm', false];
             $rules[] = [['page' => null, 'type' => null], 'PAGE/TYPE.htm', false];
+            if (get_option('url_scheme_omit_default_zone_pages') == '1') {
+                $rules[] = [['page' => false/*will map to get_zone_default_page*/], '', true];
+                $rules[] = [['page' => ''], '', true];
+            }
+            $rules[] = [['page' => ''], 'DEFAULT_PAGE.htm', false];
             $rules[] = [['page' => null], 'PAGE.htm', false];
-            $rules[] = [['page' => ''], '', false];
             $rules[] = [[], '', false];
             break;
 
@@ -66,10 +78,15 @@ function get_remappings(string $url_scheme) : array
                 $rules[] = [['page' => 'wiki', 'type' => 'browse', 'id' => null], 's/ID', false];
             }
             $rules[] = [['page' => null, 'type' => null, 'id' => null], 'PAGE/TYPE/ID', false];
+            $rules[] = [['page' => null, 'id' => null], 'PAGE/browse/ID', false];
             $rules[] = [['page' => null, 'type' => 'browse'], 'PAGE', false];
             $rules[] = [['page' => null, 'type' => null], 'PAGE/TYPE', false];
+            if (get_option('url_scheme_omit_default_zone_pages') == '1') {
+                $rules[] = [['page' => false/*will map to get_zone_default_page*/], '', true];
+                $rules[] = [['page' => ''], '', true];
+            }
+            $rules[] = [['page' => ''], 'DEFAULT_PAGE', false];
             $rules[] = [['page' => null], 'PAGE', false];
-            $rules[] = [['page' => ''], '', false];
             $rules[] = [[], '', false];
             break;
     }

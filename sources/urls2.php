@@ -453,25 +453,27 @@ function _url_to_page_link(string $url, bool $abs_only = false, bool $perfect_on
     // Convert URL Scheme path info into extra implied attribute data
     require_code('url_remappings');
     $does_match = false;
-    foreach (['PG', 'HTM', 'SIMPLE', 'RAW'] as $url_scheme) {
-        $mappings = get_remappings($url_scheme);
-        foreach ($mappings as $mapping) { // e.g. [['page' => 'wiki', 'id' => null], 'pg/s/ID', true],
-            if ($mapping === null) {
+    $url_schemes = array_unique([get_option('url_scheme'), 'PG', 'HTM', 'SIMPLE', 'RAW']);
+    foreach ($url_schemes as $url_scheme) {
+        $remappings = get_remappings($url_scheme);
+        foreach ($remappings as $_remapping) { // e.g. [['page' => 'wiki', 'id' => null], 'pg/s/ID', true],
+            if ($_remapping === null) {
                 continue;
             }
 
-            list($params, $match_string,) = $mapping;
+            list($remapping, $match_string,) = $_remapping;
             $match_string_pattern = preg_replace('#[A-Z]+#', '[^\&\?]+', preg_quote($match_string)); // Turn match string into a regexp
 
             $does_match = (preg_match('#^' . $match_string_pattern . '#', $parsed_url['path']) != 0);
             if ($does_match) {
-                $attributes = array_merge($attributes, $params);
+                $attributes = array_merge($attributes, $remapping);
 
                 if ($url_scheme == 'HTM') {
                     if (strpos($parsed_url['path'], '.htm') === false) {
                         continue;
                     }
 
+                    // This just adds complexity we don't need
                     $_match_string = preg_replace('#\.htm$#', '', $match_string);
                     $_path = preg_replace('#\.htm($|\?)#', '', $parsed_url['path']);
                 } else {
@@ -487,12 +489,20 @@ function _url_to_page_link(string $url, bool $abs_only = false, bool $perfect_on
                 $bits_real = explode('/', $_path, count($bits_pattern));
 
                 foreach ($bits_pattern as $i => $bit) {
-                    if ((cms_strtoupper_ascii($bit) == $bit) && (array_key_exists(cms_strtolower_ascii($bit), $params)) && ($params[cms_strtolower_ascii($bit)]) === null) {
+                    if ($bit == 'DEFAULT_PAGE') {
+                        $bit = get_zone_default_page($zone);
+                    }
+
+                    if ((cms_strtoupper_ascii($bit) == $bit) && (array_key_exists(cms_strtolower_ascii($bit), $remapping)) && ($remapping[cms_strtolower_ascii($bit)]) === null) {
                         $attributes[cms_strtolower_ascii($bit)] = $bits_real[$i];
                     }
                 }
 
                 foreach ($attributes as &$attribute) {
+                    if ($attribute === false) {
+                        $attribute = get_zone_default_page($zone);
+                    }
+
                     $attribute = cms_urldecode_post_process(urldecode($attribute));
                 }
 

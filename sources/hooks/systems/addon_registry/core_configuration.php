@@ -190,6 +190,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/header_classic_image.php',
             'sources/hooks/systems/config/header_classic_text_colour.php',
             'sources/hooks/systems/config/sticky_header.php',
+            'sources/hooks/systems/config/url_scheme_omit_default_zone_pages.php',
             'adminzone/pages/modules/admin_oauth.php',
             'sources/oauth.php',
             'sources/hooks/systems/oauth/.htaccess',

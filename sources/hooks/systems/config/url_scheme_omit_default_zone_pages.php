@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_moniker_transliteration
+class Hook_config_url_scheme_omit_default_zone_pages
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_moniker_transliteration
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'MONIKER_TRANSLITERATION',
+            'human_name' => 'URL_SCHEME_OMIT_DEFAULT_ZONE_PAGES',
             'type' => 'tick',
             'category' => 'SITE',
             'group' => 'SEO_URLS',
-            'explanation' => 'CONFIG_OPTION_moniker_transliteration',
+            'explanation' => 'CONFIG_OPTION_url_scheme_omit_default_zone_pages',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 5,
+            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
@@ -52,6 +52,6 @@ class Hook_config_moniker_transliteration
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '0';
     }
 }
