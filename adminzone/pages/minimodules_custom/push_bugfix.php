@@ -26,6 +26,14 @@ openssl rsa -in /home/you/.ssh/id_rsa -out /home/you/.ssh/id_rsa
 Only do this if you have secure file permissions on the key file and are very confident nobody can get into your filesystem.
 */
 
+/*
+Testing params...
+
+keep_testing - set this to simulate any connection to compo.sr
+include_push_bugfix
+full_scan
+*/
+
 /*EXTRA FUNCTIONS: shell_exec*/
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
@@ -37,16 +45,6 @@ if (!addon_installed__messaged('composr_release_build', $error_msg)) {
 
 restrictify();
 cms_ini_set('ocproducts.xss_detect', '0');
-
-if ((!is_suexec_like()) && (function_exists('posix_getpwuid')) && (function_exists('posix_getuid'))) {
-    $user = posix_getpwuid(posix_getuid());
-    attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $user['name'] . '), your file permissions will likely get mangled.', 'warn');
-}
-
-$_title = get_screen_title('Composr bugfix tool', false);
-$_title->evaluate_echo();
-
-$type = isset($_GET['type']) ? $_GET['type'] : '0';
 
 require_code('version2');
 require_code('files2');
@@ -65,10 +63,381 @@ if (strpos($git_result, 'git: command not found') !== false) {
     }
 }
 
-// Actualisation
-// =============
+echo <<<END
+    <style>
+    #bugfix-form>fieldset>div>label {
+        float: left;
+        width: 430px;
+    }
 
-if (post_param_integer('submitting', 0) == 1) {
+    #bugfix-form>fieldset>div>div>label {
+        clear: both;
+        float: left;
+        margin-left: 430px;
+    }
+    </style>
+END;
+
+$type = get_param_string('type', 'browse');
+
+switch ($type) {
+    case 'browse':
+        push_bugfix_ui();
+        break;
+
+    case 'actual':
+        push_bugfix_actualiser();
+        break;
+
+    case 'hotfix':
+        push_bugfix_hotfix();
+        break;
+}
+
+// Screens
+// =======
+
+function push_bugfix_ui()
+{
+    global $REMOTE_BASE_URL;
+
+    if ((!is_suexec_like()) && (function_exists('posix_getpwuid')) && (function_exists('posix_getuid'))) {
+        $user = posix_getpwuid(posix_getuid());
+        attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $user['name'] . '), your file permissions will likely get mangled.', 'warn');
+    }
+
+    $_title = get_screen_title('Composr bugfix tool 1/3', false);
+    $_title->evaluate_echo();
+
+    require_code('version2');
+    $on_disk_version = get_version_dotted();
+
+    $git_found = git_find_uncommitted_files(get_param_integer('include_push_bugfix', 0) == 1);
+    $do_full_scan = (get_param_integer('full_scan', 0) == 1);
+    if (($do_full_scan) || (empty($git_found))) {
+        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
+        if (empty($files)) {
+            $checkout_seconds = time() - website_creation_time();
+            $days = min(14, intval(round($checkout_seconds / (60 * 60 * 24) - 1)));
+            $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
+        }
+    } else {
+        $files = array_keys($git_found);
+    }
+
+    $git_status = 'placeholder="optional"';
+    $git_status_2 = ' <span style="font-size: 0.8em">(if not entered a new one will be made)</span>';
+    $git_status_3 = 'Git commit ID';
+    $choose_files_label = 'Choose files';
+
+    if ((empty($git_found)) && (!$do_full_scan)) {
+        echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on Git). You can enter a Git ID or select files.</p>';
+        $git_status_3 = 'Git commit ID';
+    }
+
+    $_post_url = escape_html(get_self_url(true, false, ['type' => 'actual']));
+    $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
+    $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => '3806e63e8f1e854871afe200b9c0dabe', 'NAME' => 'buttons/proceed']));
+
+    $categories = get_tracker_categories();
+    if ($categories === null) {
+        warn_exit('Failed to connect to compo.sr');
+    }
+    $categories_list = '<option selected="selected"></option>';
+    foreach ($categories as $category_id => $category_title) {
+        $categories_list .= '<option value="' . escape_html(strval($category_id)) . '">' . escape_html($category_title) . '</option>';
+    }
+
+    $projects = [
+        1 => 'Composr',
+        2 => 'Composr alpha testing',
+        8 => 'Composr build tools',
+        7 => 'Composr documentation',
+        5 => 'Composr downloadable themes',
+        9 => 'Composr testing platform',
+        10 => 'Composr website (compo.sr)',
+        4 => 'Composr non-bundled addons',
+    ];
+    if (in_array(cms_version_branch_status(), [VERSION_ALPHA, VERSION_BETA])) {
+        $default_project_id = 2;
+    } else {
+        $default_project_id = 1;
+    }
+    $projects_list = '';
+    foreach ($projects as $project_id => $project_title) {
+        $projects_list .= '<option' . (($project_id == $default_project_id) ? ' selected="selected"' : '') . ' value="' . strval($project_id) . '" >' . escape_html($project_title) . '</option>';
+    }
+
+    echo <<<END
+    <p>This script will push individual bug fixes to all the right places. Run it after you've developed a fix, and tell it how to link the fix in and what the fix is.</p>
+
+    <form action="{$_post_url}" method="post" id="bugfix-form">
+        {$spammer_blackhole}
+
+        <fieldset>
+            <legend>Description</legend>
+
+            <div>
+                <label for="title">Bug summary</label>
+                <input size="60" required="required" name="title" id="title" type="text" value="" />
+            </div>
+
+            <div>
+                <label for="notes">Notes / Description</label>
+                <textarea cols="40" rows="7" required="required" name="notes" id="notes"></textarea>
+            </div>
+
+            <div>
+                <label for="affects">Affects</label>
+                <input size="40" name="affects" id="affects" type="text" value="" placeholder="optional" />
+            </div>
+        </fieldset>
+END;
+
+    if (!empty($files)) {
+        echo <<<END
+        <fieldset>
+            <legend>Fix</legend>
+
+            <div>
+                <label for="fixed_files">{$choose_files_label}</label>
+                <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
+END;
+        foreach ($files as $path) {
+            $git_dirty = isset($git_found[$path]);
+            echo '<option' . ($git_dirty ? ' selected="selected"' : '') . '>' . escape_html($path) . '</option>';
+        }
+        $_default_project_id = strval($default_project_id);
+        $_git_found = json_encode($git_found);
+        echo <<<END
+                </select>
+            </div>
+        </fieldset>
+
+        <script>
+            function update_automatic_category()
+            {
+                // See if we can match all the selected files to a particular category
+                var fixed_files = [];
+                var fixed_files_e = document.getElementById('fixed_files');
+                var file_addons = {$_git_found};
+                var category_title = null;
+                for (var i = 0; i < fixed_files_e.options.length; i++) {
+                    if (fixed_files_e.options[i].selected) {
+                        fixed_files.push(fixed_files_e.options[i].value);
+                    }
+                }
+                for (var i = 0; i < fixed_files.length; i++) {
+                    var filename = fixed_files[i];
+                    if ((typeof file_addons[filename] != 'undefined') && (file_addons[filename] !== null)) {
+                        if (category_title === null) {
+                            category_title = file_addons[filename]; // Nice match to a bundled addon
+                        } else if ((file_addons[filename] != category_title) && (!file_addons[filename].match(/^core(_.*)?$/))) {
+                            category_title = 'core'; // Conflict with something other than core, so bump it back to core as a generalisation
+                            break; // ... and stop trying
+                        }
+                    }
+                }
+                if (category_title === null) {
+                    category_title = 'General'; // Must be from non-bundled addon
+                }
+
+                // Find some special general matches
+                var is_all_tests = true;
+                var is_all_documentation = true;
+                var is_all_build_tools = true;
+                for (var i = 0; i < fixed_files.length; i++) {
+                    var filename = fixed_files[i];
+                    if (!filename.match(/^_tests\//)) {
+                        is_all_tests = false;
+                    }
+                    if (!filename.match(/^docs\//)) {
+                        is_all_documentation = false;
+                    }
+                    if (!['sources_custom/make_release.php', 'adminzone/pages/minimodules_custom/make_release.php', 'adminzone/pages/minimodules_custom/push_bugfix.php'].includes(filename)) {
+                        is_all_build_tools = false;
+                    }
+
+                }
+                var correct_general_project = '4';
+                if (is_all_tests) {
+                    correct_general_project = '9';
+                }
+                if (is_all_documentation) {
+                    correct_general_project = '7';
+                }
+                if (is_all_build_tools) {
+                    correct_general_project = '8';
+                }
+
+                // Now select that category
+                var category_e = document.getElementById('category');
+                for (var i = 0; i < category_e.options.length; i++) {
+                    if (category_e.options[i].text == category_title) {
+                        category_e.selectedIndex = i;
+                        break;
+                    }
+                }
+
+                // Now select the corresponding project
+                var project_e = document.getElementById('project');
+                for (var i = 0; i < project_e.options.length; i++) {
+                    if (((project_e.options[i].value == '{$_default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == correct_general_project) && (category_title == 'General'))) {
+                        project_e.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            window.addEventListener('load', function() {
+                update_automatic_category();
+            });
+
+            function security_hole_radio()
+            {
+                var ob = document.getElementById('severity-95');
+                document.getElementById('security-process').style.display = ob.checked ? 'inline' : 'none';
+            }
+        </script>
+END;
+    }
+
+    echo <<<END
+        <fieldset>
+            <legend>Classification</legend>
+
+            <div>
+                <label for="version">Version</label>
+                <input step="0.1" size="8" required="required" name="version" id="version" type="text" value="{$on_disk_version}" />
+            </div>
+
+            <div>
+                <label for="project">Project</label>
+                <select id="project" name="project" required="required">
+                    {$projects_list}
+                </select>
+            </div>
+
+            <div>
+                <label for="category">Category</label>
+                <select id="category" name="category" required="required">
+                    {$categories_list}
+                </select>
+            </div>
+
+            <div>
+                <label>Severity</label>
+
+                <div>
+                    <label for="severity-10">
+                        <input type="radio" id="severity-10" name="severity" value="10" onchange="return security_hole_radio(this);" />
+                        Feature-request
+                    </label>
+                    <label for="severity-20">
+                        <input type="radio" id="severity-20" name="severity" value="20" onchange="return security_hole_radio(this);" checked="checked" />
+                        Trivial-bug
+                    </label>
+                    <label for="severity-50">
+                        <input type="radio" id="severity-50" name="severity" value="50" onchange="return security_hole_radio(this);" />
+                        Minor-bug
+                    </label>
+                    <label for="severity-60">
+                        <input type="radio" id="severity-60" name="severity" value="60" onchange="return security_hole_radio(this);" />
+                        Major-bug
+                    </label>
+                    <label for="severity-95">
+                        <input type="radio" id="severity-95" name="severity" value="95" onchange="return security_hole_radio(this);" />
+                        Security-hole
+
+                        <span style="display: none" id="security-process">
+                            &ndash; Follow the <a target="_blank" title="Security policy (this link will open in a new window)" href="{$REMOTE_BASE_URL}/docs/tut-software-feedback.htm#title__46">security policy</a>.
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Post to</legend>
+
+            <div>
+                <label for="tracker_id">Tracker ID to attach to <span style="font-size: 0.8em">(if not entered a new one will be made)</span></label>
+                <input name="tracker_id" id="tracker_id" size="5" type="number" value="" placeholder="optional" />
+
+                <div style="float: right">
+                    <div style="display: inline-block">
+                        <input name="close_issue" id="close_issue" type="checkbox" value="1" checked="checked" />
+                        <label for="close_issue">Close issue?</label>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label for="git_commit_id">{$git_status_3}{$git_status_2}</label>
+                <input onchange="document.getElementById('fixed_files').required=(this.value=='');" name="git_commit_id" id="git_commit_id" type="text" value="" {$git_status} />
+            </div>
+
+            <div>
+                <label for="post_id">Forum post ID to reply to</label>
+                <input name="post_id" id="post_id" size="8" type="number" value="" placeholder="optional" />
+            </div>
+        </fieldset>
+END;
+
+    echo <<<END
+        <fieldset>
+            <legend>Submission</legend>
+
+            <div>
+                <label for="username">Username</label>
+                <input autocomplete="autocomplete" name="username" autocomplete="current-password" id="username" type="text" value="" />
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input required="required" name="password" autocomplete="username" id="password" type="password" value="" />
+            </div>
+
+            <div>
+                <label for="submit_to_test">
+                    Submit to localhost test site
+                    <input name="submit_to" id="submit_to_test" type="radio" value="test" />
+                </label>
+
+                <label for="submit_to_live">
+                    Submit to live site
+                    <input name="submit_to" id="submit_to_live" type="radio" value="live" checked="checked" />
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Confirmations</legend>
+
+            <div>
+                <label for="tested">Has been tested?</label>
+                <input name="tested" id="tested" type="checkbox" required="required" value="1" />
+            </div>
+        </fieldset>
+
+        <p style="margin-left: 440px;">
+            <button class="btn btn-primary btn-scr buttons--proceed" type="submit">{$proceed_icon} Submit fix</button>
+        </p>
+
+        <p>
+            <em>Once submitted, fixes to the fix should be handled using this tool again, to submit to the tracker ID that had been auto-created the first time.</em>
+        </p>
+    </form>
+END;
+}
+
+function push_bugfix_actualiser()
+{
+    global $GIT_PATH;
+
+    $_title = get_screen_title('Composr bugfix tool 2/3', false);
+    $_title->evaluate_echo();
+
     $git_commit_id = post_param_string('git_commit_id', '');
 
     $done = [];
@@ -171,16 +540,9 @@ if (post_param_integer('submitting', 0) == 1) {
     }
 
     // Make tracker comment with fix link
-    $create_hotfix = (post_param_integer('create_hotfix', 0) == 1);
     $tracker_comment_message = '';
     if ($git_commit_id !== null) {
         $tracker_comment_message .= 'Fixed in Git commit ' . escape_html($git_commit_id) . ' (' . escape_html($git_url) . ' - link will become active once code pushed to GitLab)';
-        if ($create_hotfix) {
-            $tracker_comment_message .= "\n\n";
-        }
-    }
-    if ($create_hotfix) {
-        $tracker_comment_message .= 'A hotfix (a TAR of files to upload) has been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. If there are files in a hot-fix that you don\'t have then they probably relate to addons that you don\'t have installed and should be skipped. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
     }
     if ($tracker_id !== null) {
         $update_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
@@ -188,15 +550,6 @@ if (post_param_integer('submitting', 0) == 1) {
             $done['Created update post on tracker'] = null;
         } else {
             $done['Failed to create update post on tracker'] = null;
-        }
-    }
-    // A TAR of fixed files is uploaded to the tracker issue (correct relative file paths intact)
-    if (($create_hotfix) && ($tracker_id !== null)) {
-        $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
-        if ($file_id !== null) {
-            $done['Uploaded hotfix'] = null;
-        } else {
-            $done['Failed to upload hotfix'] = null;
         }
     }
     // The tracker issue gets closed
@@ -237,355 +590,97 @@ if (post_param_integer('submitting', 0) == 1) {
         echo '<p><strong>This was for a non-bundled addon.</strong> Remember to run <a href="' . escape_html(get_base_url()) . '/adminzone/index.php?page=build_addons&amp;addon_limit=' . escape_html(urlencode(implode(',', $addons_involved))) . '">the addon update script</a>, and then upload the appropriate addon TARs and post the has-updated comments (or when the next patch release if this is what is currently preferred).</p>';
     }
 
-    return;
-}
-
-// UI
-// ==
-
-require_code('version2');
-$on_disk_version = get_version_dotted();
-
-$git_found = git_find_uncommitted_files(get_param_integer('include_push_bugfix', 0) == 1);
-$do_full_scan = (get_param_integer('full_scan', 0) == 1);
-if (($do_full_scan) || (empty($git_found))) {
-    $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
-    if (empty($files)) {
-        $checkout_seconds = time() - website_creation_time();
-        $days = min(14, intval(round($checkout_seconds / (60 * 60 * 24) - 1)));
-        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
+    if ($tracker_id === null) {
+        return;
     }
-} else {
-    $files = array_keys($git_found);
-}
 
-$git_status = 'placeholder="optional"';
-$git_status_2 = ' <span style="font-size: 0.8em">(if not entered a new one will be made)</span>';
-$git_status_3 = 'Git commit ID';
-$choose_files_label = 'Choose files';
+    $_username = escape_html(post_param_string('username'));
+    $_password = escape_html(post_param_string('password'));
 
-if ((empty($git_found)) && (!$do_full_scan)) {
-    echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on Git). You can enter a Git ID or select files.</p>';
-    $git_status_3 = 'Git commit ID';
+    $_tracker_id = escape_html(strval($tracker_id));
+
     $choose_files_label = 'Choose files';
-}
 
-$post_url = escape_html(static_evaluate_tempcode(get_self_url()));
+    $_post_url = escape_html(get_self_url(true, false, ['type' => 'hotfix']));
+    $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
+    $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => '3806e63e8f1e854871afe200b9c0dabe', 'NAME' => 'buttons/upload']));
 
-$spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_FORM_POST_SECURITY'));
-
-$categories = get_tracker_categories();
-if ($categories === null) {
-    warn_exit('Failed to connect to compo.sr');
-}
-$categories_list = '<option selected="selected"></option>';
-foreach ($categories as $category_id => $category_title) {
-    $categories_list .= '<option value="' . escape_html(strval($category_id)) . '">' . escape_html($category_title) . '</option>';
-}
-
-$projects = [
-    1 => 'Composr',
-    2 => 'Composr alpha testing',
-    8 => 'Composr build tools',
-    7 => 'Composr documentation',
-    5 => 'Composr downloadable themes',
-    9 => 'Composr testing platform',
-    10 => 'Composr website (compo.sr)',
-    4 => 'Composr non-bundled addons',
-];
-if (in_array(cms_version_branch_status(), [VERSION_ALPHA, VERSION_BETA])) {
-    $default_project_id = 2;
-} else {
-    $default_project_id = 1;
-}
-$projects_list = '';
-foreach ($projects as $project_id => $project_title) {
-    $projects_list .= '<option' . (($project_id == $default_project_id) ? ' selected="selected"' : '') . ' value="' . strval($project_id) . '" >' . escape_html($project_title) . '</option>';
-}
-
-echo <<<END
-<p>This script will push individual bug fixes to all the right places. Run it after you've developed a fix, and tell it how to link the fix in and what the fix is.</p>
-
-<style>
-#bugfix-form>fieldset>div>label {
-    float: left;
-    width: 430px;
-}
-
-#bugfix-form>fieldset>div>div>label {
-    clear: both;
-    float: left;
-    margin-left: 430px;
-}
-</style>
-
-<form action="{$post_url}" method="post" id="bugfix-form">
-    {$spammer_blackhole}
-
-    <input type="hidden" name="submitting" value="1" />
-
-    <fieldset>
-        <legend>Description</legend>
-
-        <div>
-            <label for="title">Bug summary</label>
-            <input size="60" required="required" name="title" id="title" type="text" value="" />
-        </div>
-
-        <div>
-            <label for="notes">Notes / Description</label>
-            <textarea cols="40" rows="7" required="required" name="notes" id="notes"></textarea>
-        </div>
-
-        <div>
-            <label for="affects">Affects</label>
-            <input size="40" name="affects" id="affects" type="text" value="" placeholder="optional" />
-        </div>
-    </fieldset>
-END;
-
-if (!empty($files)) {
     echo <<<END
-    <fieldset>
-        <legend>Fix</legend>
+    <hr />
 
-        <div>
-            <label for="fixed_files">{$choose_files_label}</label>
-            <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
-END;
-    foreach ($files as $path) {
-        $git_dirty = isset($git_found[$path]);
-        echo '<option' . ($git_dirty ? ' selected="selected"' : '') . '>' . escape_html($path) . '</option>';
-    }
-    $_default_project_id = strval($default_project_id);
-    $_git_found = json_encode($git_found);
-    echo <<<END
-            </select>
-        </div>
-    </fieldset>
+    <form action="{$_post_url}" method="post" id="bugfix-form">
+        {$spammer_blackhole}
 
-    <script>
-        function update_automatic_category()
-        {
-            // See if we can match all the selected files to a particular category
-            var fixed_files = [];
-            var fixed_files_e = document.getElementById('fixed_files');
-            var file_addons = {$_git_found};
-            var category_title = null;
-            for (var i = 0; i < fixed_files_e.options.length; i++) {
-                if (fixed_files_e.options[i].selected) {
-                    fixed_files.push(fixed_files_e.options[i].value);
-                }
-            }
-            for (var i = 0; i < fixed_files.length; i++) {
-                var filename = fixed_files[i];
-                if ((typeof file_addons[filename] != 'undefined') && (file_addons[filename] !== null)) {
-                    if (category_title === null) {
-                        category_title = file_addons[filename]; // Nice match to a bundled addon
-                    } else if ((file_addons[filename] != category_title) && (!file_addons[filename].match(/^core(_.*)?$/))) {
-                        category_title = 'core'; // Conflict with something other than core, so bump it back to core as a generalisation
-                        break; // ... and stop trying
-                    }
-                }
-            }
-            if (category_title === null) {
-                category_title = 'General'; // Must be from non-bundled addon
-            }
-
-            // Find some special general matches
-            var is_all_tests = true;
-            var is_all_documentation = true;
-            var is_all_build_tools = true;
-            for (var i = 0; i < fixed_files.length; i++) {
-                var filename = fixed_files[i];
-                if (!filename.match(/^_tests\//)) {
-                    is_all_tests = false;
-                }
-                if (!filename.match(/^docs\//)) {
-                    is_all_documentation = false;
-                }
-                if (!['sources_custom/make_release.php', 'adminzone/pages/minimodules_custom/make_release.php', 'adminzone/pages/minimodules_custom/push_bugfix.php'].includes(filename)) {
-                    is_all_build_tools = false;
-                }
-
-            }
-            var correct_general_project = '4';
-            if (is_all_tests) {
-                correct_general_project = '9';
-            }
-            if (is_all_documentation) {
-                correct_general_project = '7';
-            }
-            if (is_all_build_tools) {
-                correct_general_project = '8';
-            }
-
-            // Now select that category
-            var category_e = document.getElementById('category');
-            for (var i = 0; i < category_e.options.length; i++) {
-                if (category_e.options[i].text == category_title) {
-                    category_e.selectedIndex = i;
-                    break;
-                }
-            }
-
-            // Now select the corresponding project
-            var project_e = document.getElementById('project');
-            for (var i = 0; i < project_e.options.length; i++) {
-                if (((project_e.options[i].value == '{$_default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == correct_general_project) && (category_title == 'General'))) {
-                    project_e.selectedIndex = i;
-                    break;
-                }
-            }
-        }
-
-        add_event_listener_abstract(window,'load',function() {
-            update_automatic_category();
-        });
-
-        function security_hole_radio()
-        {
-            var ob = document.getElementById('severity-95');
-            document.getElementById('security-process').style.display = ob.checked ? 'inline' : 'none';
-        }
-    </script>
-END;
-}
-
-$proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => '3806e63e8f1e854871afe200b9c0dabe', 'NAME' => 'buttons/proceed']));
-
-echo <<<END
-    <fieldset>
-        <legend>Classification</legend>
-
-        <div>
-            <label for="version">Version</label>
-            <input step="0.1" size="8" required="required" name="version" id="version" type="text" value="{$on_disk_version}" />
-        </div>
-
-        <div>
-            <label for="project">Project</label>
-            <select id="project" name="project" required="required">
-                {$projects_list}
-            </select>
-        </div>
-
-        <div>
-            <label for="category">Category</label>
-            <select id="category" name="category" required="required">
-                {$categories_list}
-            </select>
-        </div>
-
-        <div>
-            <label>Severity</label>
+        <fieldset>
+            <legend>Add hotfix</legend>
 
             <div>
-                <label for="severity-10">
-                    <input type="radio" id="severity-10" name="severity" value="10" onchange="return security_hole_radio(this);" />
-                    Feature-request
-                </label>
-                <label for="severity-20">
-                    <input type="radio" id="severity-20" name="severity" value="20" onchange="return security_hole_radio(this);" checked="checked" />
-                    Trivial-bug
-                </label>
-                <label for="severity-50">
-                    <input type="radio" id="severity-50" name="severity" value="50" onchange="return security_hole_radio(this);" />
-                    Minor-bug
-                </label>
-                <label for="severity-60">
-                    <input type="radio" id="severity-60" name="severity" value="60" onchange="return security_hole_radio(this);" />
-                    Major-bug
-                </label>
-                <label for="severity-95">
-                    <input type="radio" id="severity-95" name="severity" value="95" onchange="return security_hole_radio(this);" />
-                    Security-hole
-
-                    <span style="display: none" id="security-process">
-                        &ndash; Follow the <a target="_blank" title="Security policy (this link will open in a new window)" href="{$REMOTE_BASE_URL}/docs/tut-software-feedback.htm#title__46">security policy</a>.
-                    </span>
-                </label>
-            </div>
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <legend>Post to</legend>
-
-        <div>
-            <label for="tracker_id">Tracker ID to attach to <span style="font-size: 0.8em">(if not entered a new one will be made)</span></label>
-            <input name="tracker_id" id="tracker_id" size="5" type="number" value="" placeholder="optional" />
-
-            <div style="float: right">
-                <div style="display: inline-block">
-                    <input name="close_issue" id="close_issue" type="checkbox" value="1" checked="checked" />
-                    <label for="close_issue">Close issue?</label>
-                </div>
-
-                <div style="display: inline-block">
-                    <input name="create_hotfix" id="create_hotfix" type="checkbox" value="1" checked="checked" />
-                    <label for="create_hotfix">Create hotfix?</label>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <label for="git_commit_id">{$git_status_3}{$git_status_2}</label>
-            <input onchange="document.getElementById('fixed_files').required=(this.value=='');" name="git_commit_id" id="git_commit_id" type="text" value="" {$git_status} />
-        </div>
-
-        <div>
-            <label for="post_id">Forum post ID to reply to</label>
-            <input name="post_id" id="post_id" size="8" type="number" value="" placeholder="optional" />
-        </div>
-    </fieldset>
+                <label for="fixed_files">{$choose_files_label}</label>
+                <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files">
 END;
+    foreach ($_POST['fixed_files'] as $fixed_file) {
+        $selected = true;
 
-echo <<<END
-    <fieldset>
-        <legend>Submission</legend>
+        // Exceptions
+        if (preg_match('#^docs/#', $file) != 0) {
+            $selected = false;
+        }
+        if (in_array($file, [
+            'sources_custom/string_scan.php',
+        ])) {
+            $selected = false;
+        }
 
-        <div>
-            <label for="username">Username</label>
-            <input autocomplete="autocomplete" name="username" autocomplete="current-password" id="username" type="text" value="" />
-        </div>
+        echo '<option' . ($selected ? ' selected="selected"' : '') . '>' . escape_html($fixed_file) . '</option>';
+    }
+    echo <<<END
+                </select>
+            </div>
+        </fieldset>
 
-        <div>
-            <label for="password">Password</label>
-            <input required="required" name="password" autocomplete="username" id="password" type="password" value="" />
-        </div>
+        <input type="hidden" name="username" value="{$_username}" />
+        <input type="hidden" name="password" value="{$_password}" />
 
-        <div>
-            <label for="submit_to_test">
-                Submit to localhost test site
-                <input name="submit_to" id="submit_to_test" type="radio" value="test" />
-            </label>
+        <input type="hidden" name="tracker_id" value="{$_tracker_id}" />
 
-            <label for="submit_to_live">
-                Submit to live site
-                <input name="submit_to" id="submit_to_live" type="radio" value="live" checked="checked" />
-            </label>
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <legend>Confirmations</legend>
-
-        <div>
-            <label for="tested">Has been tested?</label>
-            <input name="tested" id="tested" type="checkbox" required="required" value="1" />
-        </div>
-    </fieldset>
-
-    <p style="margin-left: 440px;">
-        <button class="btn btn-primary btn-scr buttons--proceed" type="submit">{$proceed_icon} Submit fix</button>
-    </p>
-
-    <p>
-        <em>Once submitted, fixes to the fix should be handled using this tool again, to submit to the tracker ID that had been auto-created the first time.</em>
-    </p>
-</form>
+        <p style="margin-left: 440px;">
+            <button class="btn btn-primary btn-scr buttons--proceed" type="submit">{$proceed_icon} Upload hotfix</button>
+        </p>
+    </form>
 END;
+}
+
+function push_bugfix_hotfix()
+{
+    $_title = get_screen_title('Composr bugfix tool 3/3', false);
+    $_title->evaluate_echo();
+
+    $tracker_id = post_param_integer('tracker_id');
+
+    $fixed_files = $_POST['fixed_files'];
+
+    // A TAR of fixed files is uploaded to the tracker issue (correct relative file paths intact)
+    $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
+    if ($file_id !== null) {
+        $tracker_comment_message = 'A hotfix (a TAR of files to upload) has been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. If there are files in a hot-fix that you don\'t have then they probably relate to addons that you don\'t have installed and should be skipped. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
+        $tracker_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
+
+        $done['Uploaded hotfix'] = null;
+    } else {
+        $done['Failed to upload hotfix'] = null;
+    }
+
+    // Show progress
+    echo '<ol>';
+    foreach ($done as $done_title => $done_url) {
+        if ($done_url === null) {
+            echo '<li>' . $done_title . '</li>';
+        } else {
+            echo '<li><a href="' . escape_html($done_url) . '">' . $done_title . '</a></li>';
+        }
+    }
+    echo '</ol>';
+}
 
 // API
 // ===
@@ -621,6 +716,10 @@ function git_find_uncommitted_files($include_push_bugfix)
 
 function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 {
+    if (get_param_integer('keep_testing', 0) == 1) {
+        return 'xyz';
+    }
+
     global $GIT_PATH;
 
     chdir(get_file_base());
@@ -672,6 +771,10 @@ function get_tracker_categories()
 
 function create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project)
 {
+    if (get_param_integer('keep_testing', 0) == 1) {
+        return 123;
+    }
+
     $args = func_get_args();
     $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (cms_empty_safe($result)) {
@@ -682,6 +785,10 @@ function create_tracker_issue($version_dotted, $tracker_title, $tracker_message,
 
 function create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
 {
+    if (get_param_integer('keep_testing', 0) == 1) {
+        return 123;
+    }
+
     $args = func_get_args();
     $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (!is_numeric($result)) {
@@ -692,6 +799,10 @@ function create_tracker_post($tracker_id, $tracker_comment_message, $version_dot
 
 function upload_to_tracker_issue($tracker_id, $tar_path)
 {
+    if (get_param_integer('keep_testing', 0) == 1) {
+        return 123;
+    }
+
     $result = make_call('upload_to_tracker_issue', ['parameters' => [$tracker_id]], $tar_path);
     if (!is_numeric($result)) {
         return null;
@@ -701,6 +812,10 @@ function upload_to_tracker_issue($tracker_id, $tar_path)
 
 function close_tracker_issue($tracker_id)
 {
+    if (get_param_integer('keep_testing', 0) == 1) {
+        return true;
+    }
+
     $args = func_get_args();
     $result = make_call(__FUNCTION__, ['parameters' => $args]);
     return ($result === '1');
@@ -708,6 +823,10 @@ function close_tracker_issue($tracker_id)
 
 function create_forum_post($replying_to_post, $post_reply_title, $post_reply_message, $post_important)
 {
+    if (get_param_integer('keep_testing', 0) == 1) {
+        return 123;
+    }
+
     $args = func_get_args();
     $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (!is_numeric($result)) {
@@ -742,24 +861,9 @@ function create_hotfix_tar($tracker_id, $files)
         }
     }
 
-    $files_filtered = [];
-    foreach ($files as $file) {
-        // Exceptions
-        if (preg_match('#^docs/#', $file) != 0) {
-            continue;
-        }
-        if (in_array($file, [
-            'sources_custom/string_scan.php',
-        ])) {
-            continue;
-        }
-
-        $files_filtered[$file] = true;
-    }
-
     $tar_path = $hotfix_path . '/hotfix-' . strval($tracker_id) . ', ' . date('Y-m-d ga') . '.tar';
     $tar_file = tar_open($tar_path, 'wb');
-    foreach (array_keys($files_filtered) as $path) {
+    foreach (array_unique($files) as $path) {
         $file_fullpath = get_file_base() . '/' . $path;
         if (is_file($file_fullpath)) { // If it's a deletion, obviously we cannot put it into a hotfix
             tar_add_file($tar_file, $path, $file_fullpath, 0644, filemtime($file_fullpath), true);
