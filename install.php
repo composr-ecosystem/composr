@@ -15,6 +15,8 @@
  * @package    installer
  */
 
+ignore_user_abort(false);
+
 if (!function_exists('preg_match')) {
     header('Content-type: text/plain');
     exit('The PHP preg support may not be disabled');

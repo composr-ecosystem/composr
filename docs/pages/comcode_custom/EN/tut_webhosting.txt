@@ -78,6 +78,7 @@ The remainder of this section details Composr's requirements. If you have troubl
   - If running Windows, you should use an NTFS partition not a FAT32 partition, as FAT32 cannot support file locking
   - If running Apache using a [tt]mod_php[/tt] (as opposed to a CGI version of PHP), the server configuration needs to have [tt]AllowOverride All[/tt] or at least [tt]AllowOverride Options FileInfo Limit[/tt] (because we use distributed [tt].htaccess[/tt] files containing settings to increase security)
   - If you want URL Schemes on Apache, [tt]mod_rewrite[/tt] must be enabled
+  - If running IIS, the [tt]rewrite[/tt] module may need to be enabled [i]or[/i] the bundled [tt]web.config[/tt] may need editing to remove the [tt]<rewrite>...</rewrite>[/tt] section
  - The CGI timeout on the server must not be lower than 60 seconds (which is the default on Apache)
  - That the web server is not overloaded with too many users, or has very poor performance
  - That the web server does not have a Firewall that stops outgoing connections or internal connections to itself (sometimes referred to 'HTTP loopback') -- this applies to both TCP port 80 and 443
