@@ -26,6 +26,8 @@
 
 /*{+START,INCLUDE,_cms_behaviors,.js,javascript}{+END}*/
 
+/*{+START,INCLUDE,toastify,.js,javascript}{+END}*/
+
 /*{+START,IF_NON_EMPTY,{$CONFIG_OPTION,google_fonts}}{+START,IF,{$CONFIG_OPTION,google_fonts_delayed_load}}*/
 /*{+START,INCLUDE,webfontloader,.js,javascript}{+END}*/
 /*{+END}{+END}*/

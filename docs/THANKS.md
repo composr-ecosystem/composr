@@ -88,6 +88,7 @@ This product includes:
  - JSON5 (MIT licence)
  - Bootstrap slider (MIT licence)
  - Web Font Loader (Apache licence)
+ - Toastify (MIT licence)
 - Smaller front-end polyfills:
  - Web Animations (Google, Apache licence)
  - URL Search parameters (WebReflection, BSD-like licence)

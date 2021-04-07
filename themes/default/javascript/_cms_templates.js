@@ -649,6 +649,12 @@
         if (soundObject && document.hasFocus()/*don't want multiple tabs all pinging*/) {
             soundObject.play();
         }
+
+        var myToast = Toastify({
+            text: '{!CONTENT_CHANGE_DETECTED;/}',
+            duration: 4000
+        });
+        myToast.showToast();
     }
 
     $cms.functions.decisionTreeRender = function decisionTreeRender(parameter, value, notice, noticeTitle) {

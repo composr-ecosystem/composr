@@ -9388,6 +9388,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXCEEDED_TIME_LIMIT
         EXISTING
         EXISTING_BLOCKS
+        CONTENT_CHANGE_DETECTED
         EXPAND
         EXPLAINED_BLOCK_MEMBER
         EXPLAINED_UNBLOCK_MEMBER

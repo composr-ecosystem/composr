@@ -618,6 +618,8 @@ class Hook_addon_registry_core
             'lang/EN/locations.ini',
             'data/geocode.php',
             'exports/backups/index.html',
+            'themes/default/css/toastify.css',
+            'themes/default/javascript/toastify.js',
             'sources/hooks/systems/spam_heuristics/.htaccess',
             'sources/hooks/systems/spam_heuristics/index.html',
             'sources/hooks/systems/spam_heuristics/guest.php',

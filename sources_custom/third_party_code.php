@@ -112,6 +112,7 @@ function list_untouchable_third_party_files()
         'themes/default/css/widget_plupload.css',
         'themes/default/css/widget_select2.css',
         'themes/default/css/widget_date.css',
+        'themes/default/css/toastify.css',
         'themes/default/javascript/charts.js',
         'themes/default/javascript_custom/columns.js',
         'themes/default/javascript_custom/confluence2.js',
@@ -143,6 +144,7 @@ function list_untouchable_third_party_files()
         'themes/default/javascript/_polyfill_url.js',
         'themes/default/javascript/_polyfill_web_animations.js',
         'themes/default/javascript/jquery_autocomplete.js',
+        'themes/default/javascript/toastify.css',
         'user.sql',
     ];
 }
