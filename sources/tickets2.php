@@ -226,7 +226,7 @@ function ticket_add_post(string $ticket_id, ?int $ticket_type_id, string $title,
 
     // Make post
     $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
-        $fid,
+        strval($fid),
         $ticket_id,
         $member_id,
         $title,
