@@ -392,8 +392,14 @@ class RevisionEngineFiles
                 $rendered_diff_immediately_after = diff_simple_text($revision['r_original_text'], $more_recent_text, false, false);
                 $rendered_diff_everything_after = diff_simple_text($revision['r_original_text'], $text, false, false);
 
-                $diff_immediately_after_url = get_self_url(false, false, ['diffing' => 1, 'more_recent_revision' => $more_recent_revision, 'revision' => $revision['id']]);
-                $diff_everything_after_url = get_self_url(false, false, ['diffing' => 1, 'revision' => $revision['id']]);
+                if ((running_script('snippet')) && (get_param_string('snippet', '') == 'template_editor_load')) {
+                    // FUDGE
+                    $diff_immediately_after_url = build_url(['page' => 'admin_themes', 'type' => 'diff', 'directory' => $directory, 'filename' => $filename_id, 'ext' => $ext, 'more_recent_revision' => $more_recent_revision, 'revision' => $revision['id']], get_module_zone('admin_themes'));
+                    $diff_everything_after_url = build_url(['page' => 'admin_themes', 'type' => 'diff', 'directory' => $directory, 'filename' => $filename_id, 'ext' => $ext, 'revision' => $revision['id']]);
+                } else {
+                    $diff_immediately_after_url = get_self_url(false, false, ['diffing' => 1, 'more_recent_revision' => $more_recent_revision, 'revision' => $revision['id']]);
+                    $diff_everything_after_url = get_self_url(false, false, ['diffing' => 1, 'revision' => $revision['id']]);
+                }
 
                 $diff_icon = do_template('REVISIONS_DIFF_ICON', [
                     '_GUID' => '9ea39609ba90f5f756b53df5269d036d',
@@ -524,6 +530,9 @@ class RevisionEngineFiles
         require_lang('actionlog');
 
         $path_recent = get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext;
+        if (!is_file($path_recent)) {
+            $path_recent = get_file_base() . '/' . str_replace('_custom', '', $directory) . '/' . $filename_id . '.' . $ext;
+        }
         if ($more_recent_revision !== null) {
             $path_recent .= '.' . strval($more_recent_revision);
         }

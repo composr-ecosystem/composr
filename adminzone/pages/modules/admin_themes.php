@@ -359,6 +359,9 @@ class Module_admin_themes
         if ($type == 'tempcode_tester') {
             return $this->tempcode_tester();
         }
+        if ($type == 'diff') {
+            return $this->diff();
+        }
 
         return new Tempcode();
     }
@@ -1813,5 +1816,45 @@ class Module_admin_themes
             null,
             $section_title
         );
+    }
+
+    /**
+     * Show a diff.
+     *
+     * @return Tempcode The UI
+     */
+    public function diff() : object
+    {
+        if (!addon_installed('actionlog')) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        require_code('revisions_engine_files');
+        $revision_engine = new RevisionEngineFiles();
+
+        $directory = get_param_string('directory');
+        $filename = get_param_string('filename');
+        $ext = get_param_string('ext');
+
+        if ((strpos($directory, '..') !== false) || (preg_match('#(^themes/|pages/comcode/\w+$|pages/comcode_custom/\w+$)#', $directory) == 0)) {
+            log_hack_attack_and_exit('PATH_HACK');
+        }
+        if (!in_array($ext, ['txt', 'tpl', 'xml', 'css', 'js'])) {
+            log_hack_attack_and_exit('PATH_HACK');
+        }
+
+        $diff_more_recent_revision = get_param_integer('more_recent_revision', null);
+        $diff_revision = get_param_integer('revision');
+
+        $revision_loaded = null;
+        $revisions = $revision_engine->render_diff_between(
+            $directory,
+            $filename,
+            $ext,
+            $diff_more_recent_revision,
+            $diff_revision
+        );
+
+        return $revisions;
     }
 }

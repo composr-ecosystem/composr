@@ -1068,6 +1068,7 @@
         if (revisionId !== undefined) {
             url += '&undo_revision=' + encodeURIComponent(revisionId);
         }
+        url += '&self_routing=1';
         return url;
     }
 

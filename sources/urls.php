@@ -649,7 +649,7 @@ function _build_url(array $parameters, string $zone_name = '', array $skip = [],
         $_what_is_running = 'index';
     }
     $test_rewrite = null;
-    $self_page = ((!$has_page) || ((function_exists('get_zone_name')) && (get_zone_name() === $zone_name) && (($parameters['page'] === '_SELF') || ($parameters['page'] === get_page_name())))) && ((!isset($parameters['type'])) || ($parameters['type'] === get_param_string('type', 'browse', INPUT_FILTER_GET_COMPLEX))) && ($hash !== '#_top') && (!$KNOWN_AJAX);
+    $self_page = ((!$has_page) || ((function_exists('get_zone_name')) && (get_zone_name() === $zone_name) && (($parameters['page'] === '_SELF') || ($parameters['page'] === get_page_name())))) && ((!isset($parameters['type'])) || ($parameters['type'] === get_param_string('type', 'browse', INPUT_FILTER_GET_COMPLEX))) && ($hash !== '#_top') && ($IN_SELF_ROUTING_SCRIPT);
     if ($can_try_url_schemes) {
         if ((!$self_page) || ($_what_is_running === 'index')) {
             $test_rewrite = _url_rewrite_params($zone_name, $parameters);

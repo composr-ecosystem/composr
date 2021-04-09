@@ -112,9 +112,6 @@ class Hook_snippet_template_editor_load
                         $contents,
                         $revision_loaded
                     );
-                    if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
-                        return $revisions;
-                    }
                 }
             }
 
@@ -175,9 +172,6 @@ class Hook_snippet_template_editor_load
                         $contents,
                         $revision_loaded
                     );
-                    if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
-                        return $revisions;
-                    }
                 }
             }
 

@@ -96,7 +96,7 @@ function _diff_simple(array $old, array $new, bool $unified, bool $include_uncha
         }
     } else {
         $renderer = new Text_Diff_Renderer_inline();
-        if ($include_unchanged) {
+        if (!$include_unchanged) {
             $renderer->_leading_context_lines = 0;
             $renderer->_trailing_context_lines = 0;
         }
