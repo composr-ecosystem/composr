@@ -28,9 +28,10 @@
  * @param  ID_TEXT $new_current_script The running script
  * @param  boolean $erase_keep_also Whether to get rid of keep_ variables in current URL
  * @param  ?boolean $new_in_self_routing_script Whether we are in a self-routing script (null: if new_current_script is 'index')
+ * @param  boolean $replace_existing_get Replace all existing GET parameters
  * @return array A list of parameters that would be required to be passed back to reset the state
  */
-function set_execution_context(array $new_get, string $new_zone = '_SEARCH', string $new_current_script = 'index', bool $erase_keep_also = false, ?bool $new_in_self_routing_script = null) : array
+function set_execution_context(array $new_get, string $new_zone = '_SEARCH', string $new_current_script = 'index', bool $erase_keep_also = false, ?bool $new_in_self_routing_script = null, ?bool $replace_existing_get = true) : array
 {
     global $IN_SELF_ROUTING_SCRIPT;
 
@@ -39,13 +40,15 @@ function set_execution_context(array $new_get, string $new_zone = '_SEARCH', str
     $old_current_script = current_script();
     $old_in_self_routing_script = $IN_SELF_ROUTING_SCRIPT;
 
-    foreach ($_GET as $key => $val) {
-        if (is_integer($key)) {
-            $key = strval($key);
-        }
+    if ($replace_existing_get) {
+        foreach ($_GET as $key => $val) {
+            if (is_integer($key)) {
+                $key = strval($key);
+            }
 
-        if ((substr($key, 0, 5) != 'keep_') || ($erase_keep_also)) {
-            unset($_GET[$key]);
+            if ((substr($key, 0, 5) != 'keep_') || ($erase_keep_also)) {
+                unset($_GET[$key]);
+            }
         }
     }
 
@@ -57,6 +60,9 @@ function set_execution_context(array $new_get, string $new_zone = '_SEARCH', str
         }
     }
 
+    global $PAGE_NAME_CACHE;
+    $PAGE_NAME_CACHE = null;
+
     global $RELATIVE_PATH, $ZONE, $SELF_URL_CACHED;
     $RELATIVE_PATH = ($new_zone == '_SEARCH') ? get_page_zone(get_page_name()) : $new_zone;
     if ($new_zone != $old_zone) {
@@ -64,8 +70,6 @@ function set_execution_context(array $new_get, string $new_zone = '_SEARCH', str
     }
     $SELF_URL_CACHED = null;
 
-    global $PAGE_NAME_CACHE;
-    $PAGE_NAME_CACHE = null;
     if ($new_in_self_routing_script === null) {
         $IN_SELF_ROUTING_SCRIPT = ($new_current_script == 'index');
     } else {

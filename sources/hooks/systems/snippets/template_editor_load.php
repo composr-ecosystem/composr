@@ -54,6 +54,9 @@ class Hook_snippet_template_editor_load
         $live_preview_url = get_param_string('live_preview_url', null, INPUT_FILTER_URL_INTERNAL);
         $screen_preview_url = null;
 
+        require_code('urls2');
+        list($old_get, $old_zone, $old_current_script) = set_execution_context(['page' => 'admin_themes', 'type' => 'edit_templates'], '_SEARCH', 'index', false, null, false);
+
         if (strpos($file, ':') === false) {
             // Template...
 
@@ -202,6 +205,15 @@ class Hook_snippet_template_editor_load
             make_missing_directory(dirname($custom_path));
         }
 
+        $_revisions = $revisions->evaluate(); // For it to evaluate in proper context
+
+        set_execution_context(
+            $old_get,
+            $old_zone,
+            $old_current_script,
+            false
+        );
+
         return do_template('THEME_TEMPLATE_EDITOR_TAB', [
             '_GUID' => 'd4b022ce1d71666c1c7f5f5bd5a9dbb3',
             'THEME' => $theme,
@@ -209,7 +221,7 @@ class Hook_snippet_template_editor_load
             'FILE_ID' => $file_id,
             'CONTENTS' => $contents,
             'HIGHLIGHTER_TYPE' => $highlighter_type,
-            'REVISIONS' => $revisions,
+            'REVISIONS' => $_revisions,
             'GUIDS' => $guids,
             'RELATED' => $related,
             'LIVE_PREVIEW_URL' => $live_preview_url,

@@ -392,7 +392,7 @@ class RevisionEngineFiles
                 $rendered_diff_immediately_after = diff_simple_text($revision['r_original_text'], $more_recent_text, false, false);
                 $rendered_diff_everything_after = diff_simple_text($revision['r_original_text'], $text, false, false);
 
-                if ((running_script('snippet')) && (get_param_string('snippet', '') == 'template_editor_load')) {
+                if (get_page_name() == 'admin_themes') {
                     // FUDGE
                     $diff_immediately_after_url = build_url(['page' => 'admin_themes', 'type' => 'diff', 'directory' => $directory, 'filename' => $filename_id, 'ext' => $ext, 'more_recent_revision' => $more_recent_revision, 'revision' => $revision['id']], get_module_zone('admin_themes'));
                     $diff_everything_after_url = build_url(['page' => 'admin_themes', 'type' => 'diff', 'directory' => $directory, 'filename' => $filename_id, 'ext' => $ext, 'revision' => $revision['id']]);
@@ -414,7 +414,7 @@ class RevisionEngineFiles
                 $diff_icon = new Tempcode();
             }
 
-            if ((running_script('snippet')) && (get_param_string('snippet', '') == 'template_editor_load')) {
+            if (get_page_name() == 'admin_themes') {
                 // FUDGE
                 $undo_link = do_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', ['_GUID' => '5a1466ae2d0df6804132ac63381a5f64', 'DATE' => $date, 'FILE' => get_param_string('file'), 'REVISION_ID' => strval($revision['id'])]);
             } else {
