@@ -104,7 +104,7 @@ class Hook_snippet_template_editor_load
                     require_code('revisions_engine_files');
                     $revision_engine = new RevisionEngineFiles();
                     $revision_loaded = null;
-                    $revisions = $revision_engine->ui_revision_undoer(
+                    $revisions = $revision_engine->ui_revisions_controller(
                         dirname($custom_path_short),
                         $clean_file,
                         ltrim($suffix, '.'),
@@ -112,6 +112,9 @@ class Hook_snippet_template_editor_load
                         $contents,
                         $revision_loaded
                     );
+                    if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
+                        return $revisions;
+                    }
                 }
             }
 
@@ -164,7 +167,7 @@ class Hook_snippet_template_editor_load
                     require_code('revisions_engine_files');
                     $revision_engine = new RevisionEngineFiles();
                     $revision_loaded = null;
-                    $revisions = $revision_engine->ui_revision_undoer(
+                    $revisions = $revision_engine->ui_revisions_controller(
                         dirname($custom_path_short),
                         $page,
                         'txt',
@@ -172,6 +175,9 @@ class Hook_snippet_template_editor_load
                         $contents,
                         $revision_loaded
                     );
+                    if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
+                        return $revisions;
+                    }
                 }
             }
 

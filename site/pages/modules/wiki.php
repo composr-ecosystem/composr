@@ -751,7 +751,7 @@ class Module_wiki
 
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();
-        return $revision_engine->ui_browse_revisions(
+        return $revision_engine->ui_revisions_browser(
             $this->title,
             $_header_rows,
             ['wiki_page', 'wiki_post'],

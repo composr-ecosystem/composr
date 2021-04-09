@@ -44,14 +44,16 @@ function init__diff()
  *
  * @param  string $old_contents First string
  * @param  string $new_contents Second string
+ * @param  boolean $unified Whether to show a unified diff
+ * @param  boolean $include_unchanged Whether to include unchanged lines and trailing whitespace
  * @return string Diff
  */
-function diff_simple_text(string $old_contents, string $new_contents) : string
+function diff_simple_text(string $old_contents, string $new_contents, bool $unified = false, bool $include_unchanged = true) : string
 {
     $before = ini_get('ocproducts.type_strictness');
     cms_ini_set('ocproducts.type_strictness', '0');
 
-    $ret = _diff_simple(($old_contents == '') ? [] : explode("\n", $old_contents), ($new_contents == '') ? [] : explode("\n", $new_contents));
+    $ret = _diff_simple(($old_contents == '') ? [] : explode("\n", $old_contents), ($new_contents == '') ? [] : explode("\n", $new_contents), $unified, $include_unchanged);
 
     cms_ini_set('ocproducts.type_strictness', $before);
 
@@ -63,13 +65,13 @@ function diff_simple_text(string $old_contents, string $new_contents) : string
  *
  * @param  array $old First array
  * @param  array $new Second array
+ * @param  boolean $unified Whether to show a unified diff
+ * @param  boolean $include_unchanged Whether to include unchanged lines and trailing whitespace
  * @return string Diff
  * @ignore
  */
-function _diff_simple(array $old, array $new) : string
+function _diff_simple(array $old, array $new, bool $unified, bool $include_unchanged = true) : string
 {
-    $unified = true;
-
     $diff = new Text_Diff($old, $new);
     if ($unified) {
         $renderer = new Text_Diff_Renderer_unified();
@@ -78,12 +80,15 @@ function _diff_simple(array $old, array $new) : string
         foreach (explode("\n", $diff_text) as $diff_line) {
             switch (substr($diff_line, 0, 1)) {
                 case '+':
-                    $diff_html .= '<span style="color: green">' . escape_html($diff_line) . '</span>';
+                    $diff_html .= '<ins>' . escape_html($diff_line) . '</ins>';
                     break;
                 case '-':
-                    $diff_html .= '<span style="color: red">' . escape_html($diff_line) . '</span>';
+                    $diff_html .= '<del>' . escape_html($diff_line) . '</del>';
                     break;
                 default:
+                    if (!$include_unchanged) {
+                        continue 2;
+                    }
                     $diff_html .= escape_html($diff_line);
                     break;
             }
@@ -91,11 +96,21 @@ function _diff_simple(array $old, array $new) : string
         }
     } else {
         $renderer = new Text_Diff_Renderer_inline();
+        if ($include_unchanged) {
+            $renderer->_leading_context_lines = 0;
+            $renderer->_trailing_context_lines = 0;
+        }
         $diff_html = $renderer->render($diff);
     }
+
+    if (!$include_unchanged) {
+        $diff_html = preg_replace('#(^|\n)[ \t]*(.*)#', '$1$2', $diff_html);
+    }
+
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($diff_html);
     }
+
     return $diff_html;
 }
 

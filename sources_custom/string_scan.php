@@ -114,6 +114,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        SYNC_REVISIONS_WITH_GIT
+        SYNC_REVISIONS_WITH_GIT_CONFIRM
+        SYNC_REVISIONS_WITH_GIT_MESSAGE
         SEO_URLS
         URL_SCHEME_OMIT_DEFAULT_ZONE_PAGES
         CONFIG_OPTION_url_scheme_omit_default_zone_pages
@@ -4899,7 +4902,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEVELOPMENT_VIEWS
         DEV_DATABASE_SETTINGS
         DEV_DATABASE_SETTINGS_HELP
-        DIFF
+        DIFF_BETWEEN
+        DIFF_EVERYTHING_AFTER
+        DIFF_IMMEDIATELY_AFTER
+        DIFF_WITHOUT_WHITESPACE
+        DIFF_WITHOUT_HTML_TAGS
         DIFF_NONE
         DIFF_TOO_MUCH
         DIMENSIONS

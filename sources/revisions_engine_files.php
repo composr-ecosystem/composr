@@ -173,11 +173,9 @@ class RevisionEngineFiles
         foreach ($times as $time) {
             $full_path = $base . '/' . $filename_id . '.' . $ext . '.' . strval($time);
 
-            $mtime = filemtime($full_path);
-
             if ($limited_data) {
                 $ret[$time] = [
-                    'id' => $mtime,
+                    'id' => $time,
                     'r_time' => $time,
                 ];
 
@@ -187,7 +185,7 @@ class RevisionEngineFiles
             $original_text = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
 
             $ret[$time] = [
-                'id' => $mtime,
+                'id' => $time,
                 'r_original_text' => $original_text,
                 'r_time' => $time,
 
@@ -205,7 +203,7 @@ class RevisionEngineFiles
             ];
 
             if ($action !== null) {
-                $test = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['date_and_time' => $mtime, 'the_type' => $action], '', 1);
+                $test = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['date_and_time' => $time, 'the_type' => $action], '', 1);
                 if (array_key_exists(0, $test)) {
                     $ret[$time] = [
                         'r_actionlog_id' => $test[0]['id'],
@@ -321,12 +319,18 @@ class RevisionEngineFiles
      * @param  ?boolean $revision_loaded Whether a revision was loaded, passed by reference (null: initial value)
      * @return Tempcode UI
      */
-    public function ui_revision_undoer(string $directory, string $filename_id, string $ext, string $action, string &$text, ?bool &$revision_loaded = null) : object
+    public function ui_revisions_controller(string $directory, string $filename_id, string $ext, string $action, string &$text, ?bool &$revision_loaded = null) : object
     {
         $revision_loaded = false;
 
         if (!$this->enabled(true)) {
             return new Tempcode();
+        }
+
+        if (get_param_integer('diffing', 0) == 1) {
+            $diff_more_recent_revision = get_param_integer('more_recent_revision', null);
+            $diff_revision = get_param_integer('revision');
+            return $this->render_diff_between($directory, $filename_id, $ext, $diff_more_recent_revision, $diff_revision);
         }
 
         require_lang('actionlog');
@@ -370,6 +374,7 @@ class RevisionEngineFiles
             $_header_row[] = do_lang_tempcode('LOG');
         }
 
+        $more_recent_revision = null;
         $more_recent_text = $text;
         $field_rows = new Tempcode();
         foreach ($revisions as $revision) {
@@ -384,13 +389,27 @@ class RevisionEngineFiles
             }
 
             if (function_exists('diff_simple_text')) {
-                $rendered_diff = diff_simple_text($revision['r_original_text'], $more_recent_text);
-                $diff_icon = do_template('REVISIONS_DIFF_ICON', ['_GUID' => '9ea39609ba90f5f756b53df5269d036d', 'RENDERED_DIFF' => $rendered_diff]);
+                $rendered_diff_immediately_after = diff_simple_text($revision['r_original_text'], $more_recent_text, false, false);
+                $rendered_diff_everything_after = diff_simple_text($revision['r_original_text'], $text, false, false);
+
+                $diff_immediately_after_url = get_self_url(false, false, ['diffing' => 1, 'more_recent_revision' => $more_recent_revision, 'revision' => $revision['id']]);
+                $diff_everything_after_url = get_self_url(false, false, ['diffing' => 1, 'revision' => $revision['id']]);
+
+                $diff_icon = do_template('REVISIONS_DIFF_ICON', [
+                    '_GUID' => '9ea39609ba90f5f756b53df5269d036d',
+                    'MORE_RECENT_REVISION' => ($more_recent_revision === null) ? '' : strval($more_recent_revision),
+                    'REVISION' => strval($revision['id']),
+                    'RENDERED_DIFF_IMMEDIATELY_AFTER' => $rendered_diff_immediately_after,
+                    'RENDERED_DIFF_EVERYTHING_AFTER' => $rendered_diff_everything_after,
+                    'DIFF_IMMEDIATELY_AFTER_URL' => $diff_immediately_after_url,
+                    'DIFF_EVERYTHING_AFTER_URL' => $diff_everything_after_url,
+                ]);
             } else {
                 $diff_icon = new Tempcode();
             }
 
-            if (running_script('snippet') && get_param_string('snippet', '') == 'template_editor_load') {
+            if ((running_script('snippet')) && (get_param_string('snippet', '') == 'template_editor_load')) {
+                // FUDGE
                 $undo_link = do_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', ['_GUID' => '5a1466ae2d0df6804132ac63381a5f64', 'DATE' => $date, 'FILE' => get_param_string('file'), 'REVISION_ID' => strval($revision['id'])]);
             } else {
                 $undo_url = get_self_url(false, false, ['undo_revision' => $revision['id']]);
@@ -416,7 +435,9 @@ class RevisionEngineFiles
             }
             $field_rows->attach(results_entry($_revision, false));
 
-            $more_recent_text = $revision['r_original_text']; // For next iteration
+            // For next iteration
+            $more_recent_revision = $revision['id'];
+            $more_recent_text = $revision['r_original_text'];
         }
 
         if ($field_rows->is_empty()) {
@@ -436,7 +457,14 @@ class RevisionEngineFiles
             $sortables,
             $sortable,
             $sort_order,
-            'revisions_sort'
+            'revisions_sort',
+            null,
+            [],
+            null,
+            null,
+            '13243t34tj349tmdfg4d',
+            false,
+            'revisions'
         );
 
         $revisions_tpl = do_template('REVISIONS_WRAP', [
@@ -475,5 +503,58 @@ class RevisionEngineFiles
         }
 
         return $revisions_tpl;
+    }
+
+    /**
+     * Show a full-screen diff.
+     *
+     * @param  PATH $directory Directory where revisions are stored
+     * @param  string $filename_id ID of what was revised (=base filename, no extension)
+     * @param  string $ext File extension for revisable files
+     * @param  ?integer $more_recent_revision Revision to diff to (null: current version)
+     * @param  integer $revision Revision to diff from
+     * @return Tempcode UI
+     */
+    public function render_diff_between(string $directory, string $filename_id, string $ext, ?int $more_recent_revision, int $revision) : object
+    {
+        $without_whitespace = (post_param_integer('without_whitespace', 0) == 1);
+        $without_html_tags = (post_param_integer('without_html_tags', 0) == 1);
+        $unified_diff = (post_param_integer('unified_diff', 0) == 1);
+
+        require_lang('actionlog');
+
+        $path_recent = get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext;
+        if ($more_recent_revision !== null) {
+            $path_recent .= '.' . strval($more_recent_revision);
+        }
+        $path_older = get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext . '.' . strval($revision);
+
+        $text_recent = cms_file_get_contents_safe($path_recent);
+        $text_older = cms_file_get_contents_safe($path_older);
+
+        if ($without_whitespace) {
+            $text_recent = preg_replace('#(^|\n)[ \t]+#', '$1', preg_replace('#[\t ]+#', ' ', $text_recent));
+            $text_older = preg_replace('#(^|\n)[ \t]+#', '$1', preg_replace('#[\t ]+#', ' ', $text_older));
+        }
+        if ($without_html_tags) {
+            $text_recent = preg_replace('#<[^<>]+>#', '', $text_recent);
+            $text_older = preg_replace('#<[^<>]+>#', '', $text_older);
+        }
+
+        $date_recent = get_timezoned_date(($more_recent_revision === null) ? time() : $more_recent_revision, false);
+        $date_older = get_timezoned_date($revision, false);
+
+        $title = get_screen_title('DIFF_BETWEEN', true, [$filename_id, $date_older, $date_recent]);
+
+        require_code('diff');
+        $rendered_diff = diff_simple_text($text_older, $text_recent, $unified_diff, true);
+
+        return do_template('DIFF_SCREEN', [
+            'TITLE' => $title,
+            'DIFF' => $rendered_diff,
+            'WITHOUT_WHITESPACE' => $without_whitespace,
+            'WITHOUT_HTML_TAGS' => $without_html_tags,
+            'UNIFIED_DIFF' => $unified_diff,
+        ]);
     }
 }

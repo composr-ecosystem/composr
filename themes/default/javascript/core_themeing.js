@@ -94,6 +94,8 @@
                 $cms.loadSnippet(url, post).then(function (ajaxResult) {
                     $cms.ui.alert(ajaxResult);
                     templateEditorTabMarkNonchangedContent(file);
+
+                    e.target.disabled = false;
                 });
             }
 

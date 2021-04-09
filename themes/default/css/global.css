@@ -3759,11 +3759,14 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	opacity: 0.2;
 }
 
-.diff del {
-	color: {$GET,red_highlight_text};
+.diff {
+	white-space: pre-wrap;
 }
-
+.diff del {
+	color: {$GET,red_highlight_text} !important;
+}
 .diff ins {
+	color: {$GET,green_highlight_text} !important;
 	font-weight: bold;
 	text-decoration: none;
 }

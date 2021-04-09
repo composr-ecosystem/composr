@@ -296,7 +296,7 @@
             });
 
             $dom.on(el, 'mousemove.cmsTooltip', function () {
-                $cms.ui.repositionTooltip(el, event, false, false, null, false, win);
+                $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);
             });
         } else {
             $dom.on(window, 'click.cmsTooltip' + $util.uid(el), function (e) {
@@ -325,7 +325,7 @@
             tooltipEl.style.display = 'none';
             $dom.empty(tooltipEl);
             setTimeout(function () {
-                $cms.ui.repositionTooltip(el, event, bottom, true, tooltipEl, forceWidth);
+                $cms.ui.repositionTooltip(el, event, bottom, true, tooltipEl, forceWidth, win);
             }, 0);
         } else {
             tooltipEl = document.createElement('div');
@@ -504,8 +504,9 @@
         if (x < 0) {
             x = 0;
         }
+
         if (bottom) {
-            tooltipElement.style.top = (y - height) + 'px';
+            tooltipElement.style.top = (y - height - 20) + 'px';
         } else {
             var yExcess = y - $dom.getWindowHeight(win) - win.pageYOffset + height + styleOffsetY;
             if (yExcess > 0) {

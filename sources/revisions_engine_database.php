@@ -325,7 +325,7 @@ class RevisionEngineDatabase
 
     /**
      * Show a revisions browsing UI for particular resource types.
-     * Intended as a simple front-end browsing UI. Full details are in action-log, and restoration details are via ui_revision_undoer.
+     * Intended as a simple front-end browsing UI. Full details are in action-log, and restoration details are via ui_revisions_controller.
      * Does not check permissions, assumes only low-privilege data is revealed.
      * More details are shown in the actionlog, which is linked from here.
      *
@@ -340,7 +340,7 @@ class RevisionEngineDatabase
      * @param  boolean $include_filter_form Include a form for filtering revisions
      * @return Tempcode Revision UI
      */
-    public function ui_browse_revisions(?object $title, array $_header_row, ?array $resource_types, $row_renderer, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null, ?string $category_permission_type = null, bool $include_filter_form = false) : object
+    public function ui_revisions_browser(?object $title, array $_header_row, ?array $resource_types, $row_renderer, ?string $resource_id = null, ?string $category_id = null, ?int $member_id = null, ?string $category_permission_type = null, bool $include_filter_form = false) : object
     {
         if (!$this->enabled(false)) {
             return new Tempcode();
@@ -433,12 +433,18 @@ class RevisionEngineDatabase
      * @param  ?boolean $revision_loaded Whether a revision was loaded, passed by reference (null: initial value)
      * @return Tempcode UI
      */
-    public function ui_revision_undoer(string $resource_type, string $resource_id, string &$text, ?bool &$revision_loaded) : object
+    public function ui_revisions_controller(string $resource_type, string $resource_id, string &$text, ?bool &$revision_loaded) : object
     {
         $revision_loaded = false;
 
         if (!$this->enabled(true)) {
             return new Tempcode();
+        }
+
+        if (get_param_integer('diffing', 0) == 1) {
+            $diff_more_recent_revision = get_param_integer('more_recent_revision', null);
+            $diff_revision = get_param_integer('revision');
+            return $this->render_diff_between($resource_type, $resource_id, $text, $diff_more_recent_revision, $diff_revision);
         }
 
         require_lang('actionlog');
@@ -481,6 +487,7 @@ class RevisionEngineDatabase
             $_header_row[] = do_lang_tempcode('LOG');
         }
 
+        $more_recent_revision = null;
         $more_recent_text = $text;
         $field_rows = new Tempcode();
         foreach ($revisions as $revision) {
@@ -491,8 +498,21 @@ class RevisionEngineDatabase
             $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($revision['log_member_id']);
 
             if (function_exists('diff_simple_text')) {
-                $rendered_diff = diff_simple_text($revision['r_original_text'], $more_recent_text);
-                $diff_icon = do_template('REVISIONS_DIFF_ICON', ['_GUID' => 'e7e8b28e58f1699ecc960ad7032e3730', 'RENDERED_DIFF' => $rendered_diff]);
+                $rendered_diff_immediately_after = diff_simple_text($revision['r_original_text'], $more_recent_text, false, false);
+                $rendered_diff_everything_after = diff_simple_text($revision['r_original_text'], $text, false, false);
+
+                $diff_immediately_after_url = get_self_url(false, false, ['diffing' => 1, 'more_recent_revision' => $more_recent_revision, 'revision' => $revision['id']]);
+                $diff_everything_after_url = get_self_url(false, false, ['diffing' => 1, 'revision' => $revision['id']]);
+
+                $diff_icon = do_template('REVISIONS_DIFF_ICON', [
+                    '_GUID' => 'xea39609ba90f5f756b53df5269d036d',
+                    'MORE_RECENT_REVISION' => ($more_recent_revision === null) ? '' : strval($more_recent_revision),
+                    'REVISION' => strval($revision['id']),
+                    'RENDERED_DIFF_IMMEDIATELY_AFTER' => $rendered_diff_immediately_after,
+                    'RENDERED_DIFF_EVERYTHING_AFTER' => $rendered_diff_everything_after,
+                    'DIFF_IMMEDIATELY_AFTER_URL' => $diff_immediately_after_url,
+                    'DIFF_EVERYTHING_AFTER_URL' => $diff_everything_after_url,
+                ]);
             } else {
                 $diff_icon = do_lang_tempcode('NA_EM');
             }
@@ -520,7 +540,9 @@ class RevisionEngineDatabase
             }
             $field_rows->attach(results_entry($_revision, false));
 
-            $more_recent_text = $revision['r_original_text']; // For next iteration
+            // For next iteration
+            $more_recent_revision = $revision['id'];
+            $more_recent_text = $revision['r_original_text'];
         }
 
         if ($field_rows->is_empty()) {
@@ -540,7 +562,14 @@ class RevisionEngineDatabase
             $sortables,
             $sortable,
             $sort_order,
-            'revisions_sort'
+            'revisions_sort',
+            null,
+            [],
+            null,
+            null,
+            '53243t34tj349tmdfg4d',
+            false,
+            'revisions'
         );
 
         $revisions_tpl = do_template('REVISIONS_WRAP', [
@@ -557,5 +586,55 @@ class RevisionEngineDatabase
         }
 
         return $revisions_tpl;
+    }
+
+    /**
+     * Show a full-screen diff.
+     *
+     * @param  string $resource_type Resource type
+     * @param  string $resource_id Resource ID
+     * @param  string $text Current resource text
+     * @param  ?integer $more_recent_revision Revision to diff to (null: current version)
+     * @param  integer $revision Revision to diff from
+     * @return Tempcode UI
+     */
+    public function render_diff_between(string $resource_type, string $resource_id, string $text, ?int $more_recent_revision, int $revision) : object
+    {
+        $without_whitespace = (post_param_integer('without_whitespace', 0) == 1);
+        $without_html_tags = (post_param_integer('without_html_tags', 0) == 1);
+        $unified_diff = (post_param_integer('unified_diff', 0) == 1);
+
+        $revisions_recent = ($more_recent_revision === null) ? null : $this->find_revisions([$resource_type], $resource_id, null, null, $more_recent_revision);
+        $revisions_older = $this->find_revisions([$resource_type], $resource_id, null, null, $revision);
+
+        require_lang('actionlog');
+
+        $text_recent = ($more_recent_revision === null) ? $text : $revisions_recent[0]['r_original_text'];
+        $text_older = $revisions_older[0]['r_original_text'];
+
+        if ($without_whitespace) {
+            $text_recent = preg_replace('#(^|\n)\s+#', '$1', preg_replace('#[\t ]+#', ' ', $text_recent));
+            $text_older = preg_replace('#(^|\n)\s+#', '$1', preg_replace('#[\t ]+#', ' ', $text_older));
+        }
+        if ($without_html_tags) {
+            $text_recent = preg_replace('#<[^<>]+>#', '', $text_recent);
+            $text_older = preg_replace('#<[^<>]+>#', '', $text_older);
+        }
+
+        $date_recent = get_timezoned_date(($more_recent_revision === null) ? time() : $revisions_recent[0]['log_time'], false);
+        $date_older = get_timezoned_date($revisions_older[0]['log_time'], false);
+
+        $title = get_screen_title('DIFF_BETWEEN', true, [$resource_type . ':' . $resource_id, $date_older, $date_recent]);
+
+        require_code('diff');
+        $rendered_diff = diff_simple_text($text_older, $text_recent, false, true);
+
+        return do_template('DIFF_SCREEN', [
+            'TITLE' => $title,
+            'DIFF' => $rendered_diff,
+            'WITHOUT_WHITESPACE' => $without_whitespace,
+            'WITHOUT_HTML_TAGS' => $without_html_tags,
+            'UNIFIED_DIFF' => $unified_diff,
+        ]);
     }
 }

@@ -133,6 +133,7 @@ class Hook_addon_registry_actionlog
             'themes/default/templates/REVISIONS_WRAP.tpl',
             'themes/default/templates/REVISIONS_DIFF_ICON.tpl',
             'themes/default/templates/REVISION_UNDO.tpl',
+            'themes/default/templates/DIFF_SCREEN.tpl',
 
             'sources/hooks/modules/admin_stats/actionlogs.php',
         ];
@@ -152,6 +153,7 @@ class Hook_addon_registry_actionlog
             'templates/REVISIONS_SCREEN.tpl' => 'revisions_screen',
             'templates/REVISION_UNDO.tpl' => 'revision_undo',
             'templates/ACTIONLOG_FOLLOWUP_URLS.tpl' => 'administrative__actionlog_followup_urls',
+            'templates/DIFF_SCREEN.tpl' => 'administrative__diff_screen',
         ];
     }
 
@@ -179,7 +181,12 @@ class Hook_addon_registry_actionlog
     public function tpl_preview__administrative__show_revision_diff_icon() : object
     {
         return lorem_globalise(do_lorem_template('REVISIONS_DIFF_ICON', [
-            'RENDERED_DIFF' => lorem_phrase(),
+            'MORE_RECENT_REVISION' => '',
+            'REVISION' => '',
+            'RENDERED_DIFF_IMMEDIATELY_AFTER' => lorem_phrase(),
+            'RENDERED_DIFF_EVERYTHING_AFTER' => lorem_phrase(),
+            'DIFF_IMMEDIATELY_AFTER_URL' => placeholder_url(),
+            'DIFF_EVERYTHING_AFTER_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -197,6 +204,24 @@ class Hook_addon_registry_actionlog
             'RESULTS' => lorem_phrase(),
             'INCLUDE_FILTER_FORM' => true,
             'RESOURCE_TYPES' => [lorem_phrase()],
+        ]), null, '', true);
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__administrative__diff_screen() : object
+    {
+        return lorem_globalise(do_lorem_template('DIFF_SCREEN', [
+            'TITLE' => lorem_title(),
+            'DIFF' => lorem_chunk_html(),
+            'WITHOUT_WHITESPACE' => false,
+            'WITHOUT_HTML_TAGS' => false,
+            'UNIFIED_DIFF' => false,
         ]), null, '', true);
     }
 

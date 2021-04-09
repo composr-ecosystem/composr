@@ -475,6 +475,12 @@ function sitemap_do_next_manager(object $title, ?string $page, string $zone, obj
     $special = array_merge($special, [
         ['menu/adminzone/structure/sitemap/sitemap_editor', ['admin_sitemap', ['type' => 'browse'], get_module_zone('admin_sitemap')], do_lang_tempcode('SITEMAP_EDITOR')],
     ]);
+    if ((is_dir(get_custom_file_base() . '/.git')) && (php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
+        if (has_privilege(get_member(), 'mass_import')) {
+            $special[] = ['admin/sync', ['cms_comcode_pages', ['type' => 'sync_revisions_with_git'], get_module_zone('cms_comcode_pages')], do_lang_tempcode('SYNC_REVISIONS_WITH_GIT')];
+        }
+    }
+
     return do_next_manager(
         $title,
         $completion_text,

@@ -179,6 +179,7 @@ class Hook_addon_registry_core_comcode_pages
             'themes/default/images/icons_monochrome/tiers/platinum.svg',
             'themes/default/images/icons_monochrome/tiers/silver.svg',
             'sources/hooks/systems/config/search_comcode_pages.php',
+            'themes/default/css/comcode_page_manage.css',
         ];
     }
 

@@ -1,3 +1,1 @@
-<p {+START,IF_PASSED,CLASS} class="{CLASS*}"{+END}>
-	{TEXT}
-</p>
+<p {+START,IF_PASSED,CLASS} class="{CLASS*}"{+END}>{TEXT}</p>

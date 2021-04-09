@@ -18,6 +18,8 @@
  * @package    core_comcode_pages
  */
 
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg*/
+
 /**
  * Module page class.
  */
@@ -51,11 +53,21 @@ class Module_cms_comcode_pages
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         $ret = [
             'browse' => ['COMCODE_PAGE_MANAGEMENT', 'menu/cms/comcode_page_edit'],
             '_edit' => ['BLANK_COMCODE_PAGE', 'admin/add'],
             'generate_page_sitemap' => ['GENERATE_PAGE_SITEMAP', 'tool_buttons/sitemap'],
         ];
+
+        if ((is_dir(get_custom_file_base() . '/.git')) && (php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
+            if ((!$check_perms) || (has_privilege($member_id, 'mass_import'))) {
+                $ret['sync_revisions_with_git'] = ['SYNC_REVISIONS_WITH_GIT', 'admin/sync'];
+            }
+        }
 
         if ($support_crosslinks) {
             require_code('fields');
@@ -166,6 +178,10 @@ class Module_cms_comcode_pages
             breadcrumb_set_parents([['_SELF:_SELF:browse:lang=' . get_param_string('lang', ''), do_lang_tempcode('menus:_COMCODE_PAGES')]]);
         }
 
+        if ($type == 'sync_revisions_with_git') {
+            $this->title = get_screen_title('SYNC_REVISIONS_WITH_GIT');
+        }
+
         return null;
     }
 
@@ -193,6 +209,9 @@ class Module_cms_comcode_pages
         }
         if ($type == 'generate_page_sitemap') {
             return $this->generate_page_sitemap();
+        }
+        if ($type == 'sync_revisions_with_git') {
+            return $this->sync_revisions_with_git();
         }
 
         return new Tempcode();
@@ -222,7 +241,7 @@ class Module_cms_comcode_pages
      * @param  LANGUAGE_NAME $lang The language we are searching for pages of
      * @param  ?array $zone_filter List of zones to limit to (null: no filter)
      * @param  boolean $check_permissions Whether to check edit permissions
-     * @return array The map (page name => map [path & row])
+     * @return array The map (page-link => map [path & row])
      */
     public function get_comcode_files_list_disk_search(string $lang, ?array $zone_filter, bool $check_permissions = true) : array
     {
@@ -281,6 +300,8 @@ class Module_cms_comcode_pages
             require_code('autosave');
             clear_cms_autosave();
         }
+
+        require_css('comcode_page_manage');
 
         require_code('templates_results_table');
 
@@ -417,7 +438,7 @@ class Module_cms_comcode_pages
             $found_via_query = true;
 
             // Sorting
-            $orderer = 'p_add_date ASC';
+            $orderer = 'MAX(p_add_date,p_edit_date) ASC';
             switch ($sortable) {
                 case 'page_title':
                     $orderer = $GLOBALS['SITE_DB']->translate_field_ref('cc_page_title') . ' ' . $sort_order;
@@ -554,7 +575,7 @@ class Module_cms_comcode_pages
                 $order = null;
                 $parent_page = '';
                 $submitter = null;
-                $add_date = null;
+                $edit_date = filemtime($path_bits[0]);
                 $validated = null;
             } else {
                 if ($db_row['cc_page_title'] === null) {
@@ -566,7 +587,10 @@ class Module_cms_comcode_pages
                 $order = $db_row['p_order'];
                 $parent_page = $db_row['p_parent_page'];
                 $submitter = $db_row['p_submitter'];
-                $add_date = $db_row['p_add_date'];
+                $edit_date = $db_row['p_add_date'];
+                if ($db_row['p_edit_date'] !== null) {
+                    $edit_date = $db_row['p_edit_date'];
+                }
                 $validated = $db_row['p_validated'];
             }
             $page_path = $path_bits[0];
@@ -580,7 +604,7 @@ class Module_cms_comcode_pages
                 'order' => $order,
                 'parent_page' => $parent_page,
                 'submitter' => $submitter,
-                'add_date' => $add_date,
+                'edit_date' => $edit_date,
                 'validated' => $validated,
                 'page_path' => $page_path,
             ];
@@ -637,7 +661,6 @@ class Module_cms_comcode_pages
 
         // Results table
         $has_pagination = (count($rows) > $max);
-        $show_helper_panel = (!isset($_COOKIE['hide_helper_panel'])) || ($_COOKIE['hide_helper_panel'] != '1');
         $columns = [];
         $interactive_options = [];
         $columns[] = do_lang_tempcode('TITLE');
@@ -652,14 +675,12 @@ class Module_cms_comcode_pages
                 $interactive_options[] = [false,  false, 'alphanumeric'];
             }
         } else {
-            if (!$show_helper_panel) {
-                $columns[] = do_lang_tempcode('metadata:OWNER');
-                $interactive_options[] = [false,  false, 'alphanumeric'];
-                $columns[] = do_lang_tempcode('ADDED');
-                $interactive_options[] = [false,  false, 'date'];
-                $columns[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb727', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
-                $interactive_options[] = [false,  false, 'alphanumeric'];
-            }
+            $columns[] = do_lang_tempcode('metadata:OWNER');
+            $interactive_options[] = [false,  false, 'alphanumeric'];
+            $columns[] = do_lang_tempcode('ADDED');
+            $interactive_options[] = [false,  false, 'date'];
+            $columns[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb727', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
+            $interactive_options[] = [false,  false, 'alphanumeric'];
         }
         $columns[] = do_lang_tempcode('ACTIONS');
         $interactive_options[] = [false,  false, null];
@@ -725,13 +746,11 @@ class Module_cms_comcode_pages
                 $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['submitter']));
             }
 
-            if ($row['add_date'] === null) {
-                $raw_add_date = website_creation_time();
-            } else {
-                $raw_add_date = $row['add_date'];
-            }
-            $add_date = get_timezoned_date($raw_add_date);
-            $add_date__tempcode = do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb728', 'TITLE' => $add_date, 'CONTENT' => date('Y-m-d', $raw_add_date)]);
+            $raw_edit_date = $row['edit_date'];
+            $edit_date = make_string_tempcode(escape_html(get_timezoned_date($raw_edit_date, false)));
+            $edit_date->attach(' &ndash; ');
+            $edit_date->attach(do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $raw_edit_date))));
+            $edit_date__tempcode = do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb728', 'TITLE' => protect_from_escaping($edit_date), 'CONTENT' => date('Y-m-d', $raw_edit_date)]);
 
             if ($row['validated'] === null) {
                 $validated = do_lang_tempcode('YES');
@@ -753,24 +772,20 @@ class Module_cms_comcode_pages
             if ($translations_mode) {
                 foreach ($langs as $_lang => $language_full_name) {
                     if (array_key_exists($_lang, $translations_found)) {
-                        if (file_exists(get_file_base() . '/.git')) {
-                            $translation_label = do_lang_tempcode('EDIT');
-                        } else {
-                            $translation_time = $translations_found[$_lang];
-                            $translation_label = do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $translation_time)));
-                        }
+                        $translation_time = $translations_found[$_lang];
+                        $translation_label = do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $translation_time)));
+                        $translation_tooltip = '';
                     } else {
                         $translation_label = do_lang_tempcode('ADD');
+                        $translation_tooltip = get_timezoned_date($translation_time);
                     }
                     $edit_link = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => $row['page_link'], 'lang' => $_lang], '_SELF');
-                    $display_map[] = hyperlink($edit_link, $translation_label, false, true);
+                    $display_map[] = hyperlink($edit_link, $translation_label, false, true, $translation_tooltip);
                 }
             } else {
-                if (!$show_helper_panel) {
-                    $display_map[] = $username;
-                    $display_map[] = protect_from_escaping($add_date__tempcode);
-                    $display_map[] = $validated;
-                }
+                $display_map[] = $username;
+                $display_map[] = protect_from_escaping($edit_date__tempcode);
+                $display_map[] = $validated;
             }
             $display_map[] = protect_from_escaping($actions);
 
@@ -778,12 +793,7 @@ class Module_cms_comcode_pages
 
             $i++;
         }
-        if (($show_helper_panel) && (!$translations_mode)) {
-            $widths = ['33%', '19%', '28%', '20%'];
-        } else {
-            $widths = [];
-        }
-        $table = results_table(do_lang('COMCODE_PAGES'), $start, 'start', $max, 'max', $max_rows, $header_row, $table_rows, $sortables, $sortable, $sort_order, 'sort', null, $widths, null, 8, 'fdgfdfdfdggfd', true, null, true);
+        $table = results_table(do_lang('COMCODE_PAGES'), $start, 'start', $max, 'max', $max_rows, $header_row, $table_rows, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'fdgfdfdfdggfd', true, null, true);
 
         // Form
         if ($fields->is_empty()) {
@@ -992,10 +1002,14 @@ class Module_cms_comcode_pages
         if (addon_installed('actionlog')) {
             require_code('revisions_engine_files');
             $revision_engine = new RevisionEngineFiles();
+            $directory = $zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang;
             $revision_loaded = null;
-            $revisions = $revision_engine->ui_revision_undoer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang, $file, 'txt', 'COMCODE_PAGE_EDIT', $contents, $revision_loaded);
+            $revisions = $revision_engine->ui_revisions_controller($directory, $file, 'txt', 'COMCODE_PAGE_EDIT', $contents, $revision_loaded);
             if ($revision_loaded) {
                 $parsed = null;
+            }
+            if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
+                return $revisions;
             }
         } else {
             $revisions = new Tempcode();
@@ -1412,7 +1426,7 @@ class Module_cms_comcode_pages
      */
     public function generate_page_sitemap() : object
     {
-        require_css('sitemap_editor');
+        require_css('comcode_page_manage');
 
         require_code('type_sanitisation');
         require_code('global4');
@@ -1630,5 +1644,92 @@ class Module_cms_comcode_pages
         }
 
         return do_template('GENERATE_PAGE_SITEMAP', ['_GUID' => 'f92876ca45010873c71a9fea574d17c1', 'PAGE_STRUCTURE' => $page_structure]);
+    }
+
+    /**
+     * Scour Git for revisions to pages and create revisions locally as needed.
+     *
+     * @return Tempcode The UI
+     */
+    public function sync_revisions_with_git() : object
+    {
+        check_privilege('mass_import');
+
+        if ((!is_dir(get_custom_file_base() . '/.git')) || (!php_function_allowed('shell_exec')) || (!php_function_allowed('escapeshellarg'))) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        if (post_param_integer('confirm', 0) == 0) {
+            $preview = do_lang_tempcode('SYNC_REVISIONS_WITH_GIT_CONFIRM');
+            $confirm_url = get_self_url();
+            require_code('templates_confirm_screen');
+            return confirm_screen($this->title, $preview, $confirm_url, null, ['confirm' => 1]);
+        }
+
+        $only = get_param_string('only', null);
+
+        push_query_limiting(false);
+
+        $num_revisions = 0;
+
+        $langs = find_all_langs();
+        foreach (array_keys($langs) as $lang) {
+            $pages = $this->get_comcode_files_list_disk_search($lang, null, false);
+            foreach ($pages as $page_link => $parts) {
+                list($path, $row) = $parts;
+
+                $path = preg_replace('#^' . preg_quote(get_custom_file_base()) . '/#', '', $path);
+
+                if (($only !== null) && ($only != $path)) {
+                    continue;
+                }
+
+                $cmd = 'git log ' . escapeshellarg($path);
+                $result = shell_exec($cmd);
+                if (empty($result)) {
+                    continue; // File not in Git (probably)
+                }
+                $matches = [];
+                $num_matches = preg_match_all('#(^|\n)commit (\w+)(.|\n)*?Date: \s*(.*)#', $result, $matches);
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $commit = $matches[2][$i];
+                    $timestamp = strtotime($matches[4][$i]);
+                    if ($timestamp !== false) {
+                        $revision_path = $path . '.' . strval($timestamp);
+                        $cmd = 'git show ' . escapeshellarg($commit . '~:' . $path);
+                        $revision = shell_exec($cmd);
+                        if (empty($revision)) {
+                            continue; // Revision not in tree for some reason (probably)
+                        }
+
+                        if (($i > 0) || ($revision != cms_file_get_contents_safe(get_custom_file_base() . '/' . $path))) {
+                            cms_file_put_contents_safe(get_custom_file_base() . '/' . $revision_path, $revision);
+                        }
+
+                        $num_revisions++;
+
+                        if ($i == 0) {
+                            list($zone, $page) = explode(':', $page_link, 2);
+
+                            $rows = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['p_add_date', 'p_edit_date'], ['the_zone' => $zone, 'the_page' => $page], '', 1);
+                            if (array_key_exists(0, $rows)) {
+                                if ($rows[0]['p_add_date'] > $timestamp) {
+                                    $timestamp = $rows[0]['p_add_date'];
+                                }
+                                if (($rows[0]['p_edit_date'] !== null) && ($rows[0]['p_edit_date'] > $timestamp)) {
+                                    $timestamp = $rows[0]['p_edit_date'];
+                                }
+                            }
+
+                            $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_edit_date' => $timestamp], ['the_zone' => $zone, 'the_page' => $page], '', 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        pop_query_limiting();
+
+        return inform_screen($this->title, do_lang_tempcode('SYNC_REVISIONS_WITH_GIT_MESSAGE', escape_html(integer_format($num_revisions))));
     }
 }

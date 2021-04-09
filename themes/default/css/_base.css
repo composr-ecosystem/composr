@@ -42,6 +42,7 @@ In mobile mode:
 {$CSS_MODE,smartphone_landscape,667-982,mobileModeMedia}/*Based on from iPhone6 landscape up to our tablet size; also good for small tablets in portrait mode*/
 {$CSS_MODE,tablet_fixed_viewport,982-982,mobileModeDiscard}/*This corresponds to the fixed width tablet mode viewport defined in HTML_HEAD.tpl optimised for landscape mode; fixed width is not on by default, so tablet is the same as desktop in that case*/
 {$CSS_MODE,regular_desktop,982-infinity,mobileModeMedia}/*1024 is considered the industry-standard, which is 982 with scrollbar; also good for small tablets in landscape mode and large tablets in portrait mode*/
+{$CSS_MODE,regular_desktop_only,982-1366,mobileModeMedia}
 {$CSS_MODE,large_desktop,1366-infinity,mobileModeMedia}/*Also good for large tablets in landscape mode*/
 
 /*

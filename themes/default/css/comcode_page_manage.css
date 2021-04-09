@@ -1,0 +1,76 @@
+/*
+ {$BRAND_NAME`}
+ Copyright (c) ocProducts, 2004-2021
+*/
+
+/* Page codenames could be very long */
+.comcode-page-management-choose-ui th:nth-child(3), .comcode-page-management-choose-ui td:nth-child(3) /*codename*/ {
+    word-wrap: break-word;
+    max-width: 24em;
+}
+
+/*{+START,CSS_MODE,regular_desktop_only}*/
+    .comcode-page-management-choose-ui th:nth-child(4), .comcode-page-management-choose-ui td:nth-child(4) /*username*/,
+    .comcode-page-management-choose-ui th:nth-child(5), .comcode-page-management-choose-ui td:nth-child(5) /*date*/,
+    .comcode-page-management-choose-ui th:nth-child(6), .comcode-page-management-choose-ui td:nth-child(6) /*validated*/ {
+        display: none;
+    }
+/*{+END}*/
+
+.comcode-page-management-choose-ui th:nth-child(7), .comcode-page-management-choose-ui td:nth-child(7) /*actions*/ {
+    white-space: nowrap;
+}
+
+/*
+=========================
+==Generate page sitemap==
+=========================
+*/
+
+.generate-page-sitemap-screen ul.page-structure {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.generate-page-sitemap-screen ul.page-structure > li {
+	margin: 0.75em 0.5em;
+	padding: 0.75em 0.5em;
+	border: 1px solid {$GET,standard_border};
+}
+
+.generate-page-sitemap-screen ul.page-structure > li,
+.generate-page-sitemap-screen ul.page-structure > li > ul.page-structure > li > ul.page-structure > li,
+.generate-page-sitemap-screen ul.page-structure > li > ul.page-structure > li > ul.page-structure > li > ul.page-structure > li > ul.page-structure > li {
+	background-color: {$GET,area_3_background};
+}
+
+.generate-page-sitemap-screen ul.page-structure > li > ul.page-structure > li,
+.generate-page-sitemap-screen ul.page-structure > li > ul.page-structure > li > ul.page-structure > li > ul.page-structure > li,
+.generate-page-sitemap-screen ul.page-structure > li > ul.page-structure > li > ul.page-structure > li > ul.page-structure > li > ul.page-structure > li > ul.page-structure > li {
+	background-color: {$GET,area_5_background};
+}
+
+.generate-page-sitemap-screen .page-structure .page-state span {
+	font-size: 0.8em;
+	padding: 0.2em;
+	margin-left: 2em;
+	display: inline-block;
+	border: 1px solid {$GET,light_error_border};
+	background-color: {$GET,light_error_background};
+}
+
+.generate-page-sitemap-screen ul.page-structure ul.menu-links {
+	list-style-type: none;
+	margin: 0.5em 0 0 0;
+	padding: 0;
+}
+
+.generate-page-sitemap-screen ul.page-structure ul.menu-links li {
+	margin: 0;
+	padding: 0;
+}
+
+.generate-page-sitemap-screen ul.page-structure ul.menu-links .breadcrumbs span:last-child {
+	font-weight: normal;
+}

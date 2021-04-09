@@ -1,4 +1,4 @@
-<div>
+<div class="comcode-page-management-choose-ui">
 	{TITLE}
 
 	{$PARAGRAPH,{TEXT}}

@@ -456,7 +456,10 @@ class Module_cms_wiki
             require_code('revisions_engine_database');
             $revision_engine = new RevisionEngineDatabase();
             $revision_loaded = null;
-            $revisions = $revision_engine->ui_revision_undoer('wiki_page', strval($id), $description, $revision_loaded);
+            $revisions = $revision_engine->ui_revisions_controller('wiki_page', strval($id), $description, $revision_loaded);
+            if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
+                return $revisions;
+            }
         } else {
             $revisions = new Tempcode();
         }

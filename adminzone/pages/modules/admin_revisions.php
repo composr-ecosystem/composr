@@ -216,7 +216,7 @@ class Module_admin_revisions
 
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();
-        return $revision_engine->ui_browse_revisions($this->title, $_header_row, ($resource_types === null) ? null : explode(',', $resource_types), $row_renderer, $resource_id, $category_id, $member_id, null, true);
+        return $revision_engine->ui_revisions_browser($this->title, $_header_row, ($resource_types === null) ? null : explode(',', $resource_types), $row_renderer, $resource_id, $category_id, $member_id, null, true);
     }
 
     /**
