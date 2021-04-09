@@ -214,6 +214,10 @@ class Hook_snippet_template_editor_load
             false
         );
 
+        if (get_param_integer('revisions_only', 0) == 1) {
+            return do_template('THEME_TEMPLATE_EDITOR_TAB_REVISIONS', ['REVISIONS' => $_revisions]);
+        }
+
         return do_template('THEME_TEMPLATE_EDITOR_TAB', [
             '_GUID' => 'd4b022ce1d71666c1c7f5f5bd5a9dbb3',
             'THEME' => $theme,
