@@ -92,7 +92,7 @@ class Database_super_mysql
         } else {
             $type = 'INDEX';
         }
-        return array('ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')');
+        return array($this->fix_mysql8_query('ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')'));
     }
 
     /**
@@ -277,7 +277,7 @@ class Database_super_mysql
 
         $query .= ' ' . $type_key . '=' . $table_type;
 
-        return array($query);
+        return array($this->fix_mysql8_query($query));
     }
 
     /**
