@@ -182,7 +182,7 @@ function _cms_file_put_contents_safe_failed($error_message, $path, $flags = 4)
 
     if (($flags & FILE_WRITE_FAILURE_SOFT) != 0) {
         global $IN_MINIKERNEL_VERSION;
-        if (!$IN_MINIKERNEL_VERSION) {
+        if ((!$IN_MINIKERNEL_VERSION) && (function_exists('user_lang'))) {
             require_code('site');
             attach_message($error_message, 'warn');
         }
