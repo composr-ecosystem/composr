@@ -408,7 +408,7 @@ class Module_cms_comcode_pages
             'page' => do_lang_tempcode('PAGE'),
             'zone' => do_lang_tempcode('ZONE'),
             'page_link' => do_lang_tempcode('PAGE_LINK'),
-            'p_add_date' => do_lang_tempcode('ADDED'),
+            'p_add_date' => do_lang_tempcode('EDITED'),
             'p_submitter' => do_lang_tempcode('metadata:OWNER'),
         ];
         if (get_value('disable_comcode_page_order') !== '1') {
@@ -677,7 +677,7 @@ class Module_cms_comcode_pages
         } else {
             $columns[] = do_lang_tempcode('metadata:OWNER');
             $interactive_options[] = [false,  false, 'alphanumeric'];
-            $columns[] = do_lang_tempcode('ADDED');
+            $columns[] = do_lang_tempcode('EDITED');
             $interactive_options[] = [false,  false, 'date'];
             $columns[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb727', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
             $interactive_options[] = [false,  false, 'alphanumeric'];
