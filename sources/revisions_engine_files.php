@@ -546,8 +546,8 @@ class RevisionEngineFiles
             $text_older = preg_replace('#(^|\n)[ \t]+#', '$1', preg_replace('#[\t ]+#', ' ', $text_older));
         }
         if ($without_html_tags) {
-            $text_recent = preg_replace('#<[^<>]+>#', '', $text_recent);
-            $text_older = preg_replace('#<[^<>]+>#', '', $text_older);
+            $text_recent = strip_html(str_replace('&nbsp;', ' ', $text_recent));
+            $text_older = strip_html(str_replace('&nbsp;', ' ', $text_older));
         }
 
         $date_recent = get_timezoned_date(($more_recent_revision === null) ? time() : $more_recent_revision, false);
