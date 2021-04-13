@@ -69,8 +69,8 @@ class newsletter_test_set extends cms_test_case
 
         $rendered = static_evaluate_tempcode(comcode_to_tempcode($newsletter_message_substituted, null, true));
         $rendered = preg_replace('#' . preg_quote(get_base_url(), '#') . '[^" <>]*#', 'xxx', $rendered);
-        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can unsubscribe from this newsletter at: <a class=\"user_link\" href=\"xxx\" target=\"_top\">xxx</a></span><br /><br />";
-        $this->assertTrue($rendered == $expected);
+        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can unsubscribe from this newsletter at: <a class=\"user_link\" href=\"xxx\" rel=\"external\" target=\"_blank\" title=\"xxx (this link will open in a new window)\">xxx</a></span><br /><br />";
+        $this->assertTrue($rendered == $expected, 'Expected: ' . $expected . '; Got: ' . $rendered);
     }
 
     public function tearDown()
