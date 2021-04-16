@@ -1169,7 +1169,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
     public function add_actualisation() : array
     {
         if (get_option('member_booking_only') == '1') {
-            $username = post_param_string('username');
+            $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($member_id === null) {
                 require_code('cns_members_action');

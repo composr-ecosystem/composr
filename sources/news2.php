@@ -743,11 +743,11 @@ DIRECT WORDPRESS DATABASE IMPORT (imports more than RSS import can)
  */
 function _get_wordpress_db_data() : array
 {
-    $host_name = post_param_string('wp_host');
-    $db_name = post_param_string('wp_db');
-    $db_user = post_param_string('wp_db_user');
-    $db_passwrod = post_param_string('wp_db_password', false, INPUT_FILTER_NONE);
-    $db_table_prefix = post_param_string('wp_table_prefix');
+    $host_name = post_param_string('wp_host', false, INPUT_FILTER_POST_IDENTIFIER);
+    $db_name = post_param_string('wp_db', false, INPUT_FILTER_POST_IDENTIFIER);
+    $db_user = post_param_string('wp_db_user', false, INPUT_FILTER_POST_IDENTIFIER);
+    $db_passwrod = post_param_string('wp_db_password', false, INPUT_FILTER_PASSWORD);
+    $db_table_prefix = post_param_string('wp_table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
 
     if (substr($db_table_prefix, -1) != '_') {
         $db_table_prefix .= '_';

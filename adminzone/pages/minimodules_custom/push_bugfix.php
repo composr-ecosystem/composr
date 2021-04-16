@@ -594,8 +594,8 @@ function push_bugfix_actualiser()
         return;
     }
 
-    $_username = escape_html(post_param_string('username'));
-    $_password = escape_html(post_param_string('password'));
+    $_username = escape_html(post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER));
+    $_password = escape_html(post_param_string('password', false, INPUT_FILTER_PASSWORD));
 
     $_tracker_id = escape_html(strval($tracker_id));
 
@@ -890,9 +890,9 @@ function make_call($call, $post_params, $file = null)
         }
     }
 
-    $_username = post_param_string('username', null);
+    $_username = post_param_string('username', null, INPUT_FILTER_POST_IDENTIFIER);
     if ($_username !== null) {
-        $_password = post_param_string('password', '', INPUT_FILTER_NONE);
+        $_password = post_param_string('password', '', INPUT_FILTER_PASSWORD);
         if ($post_params === null) {
             $post_params = [];
         }

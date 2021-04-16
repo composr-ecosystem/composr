@@ -531,8 +531,8 @@ class Module_purchase
         $type = get_param_string('type', 'browse');
 
         // Recognise join operations
-        $new_username = post_param_string('username', null);
-        $new_password = post_param_string('password', null);
+        $new_username = post_param_string('username', null, INPUT_FILTER_POST_IDENTIFIER);
+        $new_password = post_param_string('password', null, INPUT_FILTER_PASSWORD);
         if (($new_username !== null) && ($new_password !== null)) {
             require_code('cns_join');
             list($messages) = cns_join_actual(true, false, false, true, null, null, null, null, ['email_validation_if_enabled' => '0', 'staff_validation_if_enabled' => '0', 'coppa_if_enabled' => '0']);

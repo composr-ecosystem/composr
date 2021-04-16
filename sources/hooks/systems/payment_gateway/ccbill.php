@@ -367,7 +367,7 @@ class Hook_payment_gateway_ccbill
             'a_state' => post_param_string('state', ''),
             'a_post_code' => post_param_string('zipcode', ''),
             'a_country' => post_param_string('country', ''),
-            'a_email' => post_param_string('email', ''),
+            'a_email' => post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER),
             'a_phone' => post_param_string('phone_number', ''),
         ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);

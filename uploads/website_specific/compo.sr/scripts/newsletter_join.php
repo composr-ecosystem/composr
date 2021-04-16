@@ -49,7 +49,7 @@ if (!addon_installed('newsletter')) {
 }
 
 $url = get_param_string('url', false, INPUT_FILTER_URL_GENERAL);
-$email = get_param_string('email', false, INPUT_FILTER_GET_COMPLEX);
+$email = get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER);
 $advertise_on = get_param_integer('advertise_on', 0);
 $lang = get_param_string('lang');
 

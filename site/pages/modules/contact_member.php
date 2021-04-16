@@ -281,7 +281,7 @@ class Module_contact_member
 
         $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
 
-        $from_email = trim(post_param_string('email'));
+        $from_email = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
         require_code('type_sanitisation');
         if (!is_valid_email_address($from_email)) {
             warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));

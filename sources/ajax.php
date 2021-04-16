@@ -80,15 +80,12 @@ function username_check_script()
     require_code('cns_members_action2');
     require_lang('cns');
 
-    $username = get_param_string('username', null, INPUT_FILTER_NONE);
+    $username = get_param_string('username', null, INPUT_FILTER_GET_IDENTIFIER);
     if ($username !== null) {
         $username = trim($username);
     }
-    $password = post_param_string('password', null, INPUT_FILTER_NONE);
-    if ($password !== null) {
-        $password = trim($password);
-    }
-    $email_address = post_param_string('email_address', '');
+    $password = post_param_string('password', null, INPUT_FILTER_PASSWORD);
+    $email_address = post_param_string('email_address', '', INPUT_FILTER_POST_IDENTIFIER);
     $dob = post_param_date('birthday', true, false);
     $error = cns_check_name_valid($username, null, $password, $email_address, $dob, true);
     if ($error !== null) {
@@ -107,7 +104,7 @@ function username_exists_script()
 {
     prepare_backend_response('text/plain');
 
-    $username = trim(get_param_string('username', false, INPUT_FILTER_GET_COMPLEX));
+    $username = get_param_string('username', false, INPUT_FILTER_GET_IDENTIFIER);
     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
     if ($member_id === null) {
         echo 'false';

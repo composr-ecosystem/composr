@@ -886,7 +886,7 @@ class Module_tickets
 
             // Spam check
             require_code('antispam');
-            inject_action_spamcheck(null, post_param_string('email', null));
+            inject_action_spamcheck(null, post_param_string('email', null, INPUT_FILTER_POST_IDENTIFIER));
 
             // Check ticket type access
             if (!has_category_access(get_member(), 'tickets', strval($ticket_type_id))) {
@@ -911,7 +911,7 @@ class Module_tickets
 
         // Wrap around e-mail address if needed...
 
-        $email = trim(post_param_string('email', ''));
+        $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
         if ($ticket_type_id !== null) {
             $post = ticket_wrap_with_email_address($post, $email, ($ticket_type_details['guest_emails_mandatory'] == 1));
         }
@@ -1369,7 +1369,7 @@ class Module_tickets
 
         list($ticket_title) = get_ticket_meta_details($ticket_id);
 
-        $username = post_param_string('username');
+        $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         if ($member_id === null) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);

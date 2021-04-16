@@ -148,10 +148,10 @@ class Module_admin_privacy
      */
     public function _search() : object
     {
-        $username = post_param_string('username', '');
+        $username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
         $ip_addresses = isset($_POST['ip_addresses']) ? $_POST['ip_addresses'] : [];
         $member_id = either_param_integer('member_id', null);
-        $email_address = post_param_string('email', '');
+        $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
         $others = isset($_POST['others']) ? $_POST['others'] : [];
 
         // Error if no search parameters given
@@ -272,10 +272,10 @@ class Module_admin_privacy
      */
     public function __search() : object
     {
-        $username = post_param_string('username', '');
+        $username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
         $ip_addresses = isset($_POST['ip_addresses']) ? $_POST['ip_addresses'] : [];
         $member_id = post_param_integer('member_id', null);
-        $email_address = post_param_string('email', '');
+        $email_address = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
         $others = isset($_POST['others']) ? $_POST['others'] : [];
         $member_id_username = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
 

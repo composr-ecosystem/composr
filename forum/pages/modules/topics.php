@@ -3677,7 +3677,7 @@ class Module_topics
      */
     public function _invite_member() : object
     {
-        $username = trim(post_param_string('username'));
+        $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);

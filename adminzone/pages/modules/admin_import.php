@@ -636,7 +636,7 @@ class Module_admin_import
         $db_host = $session_row[0]['imp_db_host'];
         $db_name = $session_row[0]['imp_db_name'];
         $db_user = $session_row[0]['imp_db_user'];
-        $db_password = post_param_string('db_password', '', INPUT_FILTER_NONE);
+        $db_password = post_param_string('db_password', '', INPUT_FILTER_PASSWORD);
         $db_table_prefix = $session_row[0]['imp_db_table_prefix'];
         $parts_done = collapse_2d_complexity('imp_id', 'imp_session', $GLOBALS['SITE_DB']->query_select('import_parts_done', ['imp_id', 'imp_session'], ['imp_session' => get_session_id()]));
 

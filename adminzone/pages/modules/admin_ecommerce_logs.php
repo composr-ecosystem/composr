@@ -416,7 +416,7 @@ class Module_admin_ecommerce_logs
 
         $purchase_id = post_param_string('purchase_id', null);
         if ($purchase_id === null) {
-            $_purchase_id = post_param_string('purchase_id_username', null);
+            $_purchase_id = post_param_string('purchase_id_username', null, INPUT_FILTER_POST_IDENTIFIER);
             if ($_purchase_id !== null) {
                 $__purchase_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_purchase_id);
                 if ($__purchase_id !== null) {
@@ -475,9 +475,9 @@ class Module_admin_ecommerce_logs
         $item_name = $details['item_name'];
 
         if ($details['type'] == PRODUCT_SUBSCRIPTION) {
-            if (($purchase_id == '') || (post_param_string('username', '') != '')) {
+            if (($purchase_id == '') || (post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER) != '')) {
                 $member_id = get_member();
-                $username = post_param_string('username', '');
+                $username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
                 if ($username != '') {
                     $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
                     if (($_member_id !== null) && (!is_guest($_member_id))) {
@@ -522,7 +522,7 @@ class Module_admin_ecommerce_logs
 
             if ($purchase_id == '') {
                 $member_id = get_member();
-                $username = post_param_string('username', '');
+                $username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
                 if ($username != '') {
                     $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
                     if (($_member_id !== null) && (!is_guest($_member_id))) {

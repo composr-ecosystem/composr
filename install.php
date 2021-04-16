@@ -249,7 +249,7 @@ global $DATADOTCMS_FILE;
 if (@is_resource($DATADOTCMS_FILE)) {
     if ((intval($_GET['step']) == 10) && (!is_suexec_like())) {
         $conn = false;
-        $domain = trim(post_param_string('ftp_domain'));
+        $domain = post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER);
         $port = 21;
         if (strpos($domain, ':') !== false) {
             list($domain, $_port) = explode(':', $domain, 2);
@@ -259,8 +259,8 @@ if (@is_resource($DATADOTCMS_FILE)) {
             $conn = @ftp_ssl_connect($domain, $port);
         }
         $ssl = ($conn !== false);
-        $username = trim(post_param_string('ftp_username'));
-        $password = trim(post_param_string('ftp_password', false, INPUT_FILTER_NONE));
+        $username = post_param_string('ftp_username', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('ftp_password', false, INPUT_FILTER_PASSWORD);
         if (($ssl) && (!@ftp_login($conn, $username, $password))) {
             $conn = false;
             $ssl = false;
@@ -271,7 +271,7 @@ if (@is_resource($DATADOTCMS_FILE)) {
         if (!$ssl) {
             ftp_login($conn, $username, $password);
         }
-        $ftp_folder = trim(post_param_string('ftp_folder'));
+        $ftp_folder = post_param_string('ftp_folder', false, INPUT_FILTER_POST_IDENTIFIER);
         if (substr($ftp_folder, -1) != '/') {
             $ftp_folder .= '/';
         }
@@ -772,7 +772,7 @@ function step_4() : object
     $PROBED_FORUM_CONFIG['sql_database'] = '';
     $PROBED_FORUM_CONFIG['sql_user'] = '';
     $PROBED_FORUM_CONFIG['sql_pass'] = '';
-    $board_path = post_param_string('board_path', '');
+    $board_path = post_param_string('board_path', '', INPUT_FILTER_POST_IDENTIFIER);
     find_forum_path($board_path);
 
     if ((!array_key_exists('forum_base_url', $PROBED_FORUM_CONFIG)) || (!(strlen($PROBED_FORUM_CONFIG['forum_base_url']) > 0))) {
@@ -948,10 +948,10 @@ function step_4() : object
         $text = do_lang_tempcode('AUTO_INSTALL');
         $hidden = new Tempcode();
         $options = new Tempcode();
-        $options->attach(make_option(do_lang_tempcode('FTP_DOMAIN'), new Tempcode(), 'ftp_domain', post_param_string('ftp_domain', $ftp_domain), false, true));
-        $options->attach(make_option(do_lang_tempcode('FTP_USERNAME'), new Tempcode(), 'ftp_username', post_param_string('ftp_username', $ftp_username), false, true));
-        $options->attach(make_option(do_lang_tempcode('FTP_PASSWORD'), new Tempcode(), 'ftp_password', post_param_string('ftp_password', '', INPUT_FILTER_NONE), true));
-        $options->attach(make_option(do_lang_tempcode('FTP_DIRECTORY'), do_lang_tempcode('FTP_FOLDER'), 'ftp_folder', post_param_string('ftp_folder', $ftp_folder)));
+        $options->attach(make_option(do_lang_tempcode('FTP_DOMAIN'), new Tempcode(), 'ftp_domain', post_param_string('ftp_domain', $ftp_domain, INPUT_FILTER_POST_IDENTIFIER), false, true));
+        $options->attach(make_option(do_lang_tempcode('FTP_USERNAME'), new Tempcode(), 'ftp_username', post_param_string('ftp_username', $ftp_username, INPUT_FILTER_POST_IDENTIFIER), false, true));
+        $options->attach(make_option(do_lang_tempcode('FTP_PASSWORD'), new Tempcode(), 'ftp_password', post_param_string('ftp_password', '', INPUT_FILTER_PASSWORD), true));
+        $options->attach(make_option(do_lang_tempcode('FTP_DIRECTORY'), do_lang_tempcode('FTP_FOLDER'), 'ftp_folder', post_param_string('ftp_folder', $ftp_folder, INPUT_FILTER_POST_IDENTIFIER)));
         $options->attach(make_option(do_lang_tempcode('FTP_FILES_PER_GO'), do_lang_tempcode('DESCRIPTION_FTP_FILES_PER_GO'), 'max', post_param_string('max', '1000')));
         $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '50fcb00f4d1da1813e94d86529ea0862', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     }
@@ -969,7 +969,7 @@ function step_4() : object
         $hidden->attach(form_input_hidden('base_url', $base_url));
         $options->attach(make_option(do_lang_tempcode('GAE_BUCKET_NAME'), do_lang_tempcode('DESCRIPTION_GAE_BUCKET_NAME'), 'gae_bucket_name', '<application>', false, true));
     }
-    $options->attach(make_option(do_lang_tempcode('EMAIL_ADDRESS'), example('', 'INSTALLER_EMAIL_ADDRESS'), 'email', post_param_string('email', ''), false, false));
+    $options->attach(make_option(do_lang_tempcode('EMAIL_ADDRESS'), example('', 'INSTALLER_EMAIL_ADDRESS'), 'email', post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER), false, false));
     $master_password = '';
     $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), example('', 'CHOOSE_MASTER_PASSWORD'), 'master_password', $master_password, true));
     require_lang('config');
@@ -1180,8 +1180,8 @@ function step_5() : object
     }
 
     // Check cookie settings. IF THIS CODE IS CHANGED ALSO CHANGE COPY&PASTED CODE IN CONFIG_EDITOR.PHP
-    $cookie_path = post_param_string('cookie_path');
-    $cookie_domain = trim(post_param_string('cookie_domain'));
+    $cookie_path = post_param_string('cookie_path', false, INPUT_FILTER_POST_IDENTIFIER);
+    $cookie_domain = post_param_string('cookie_domain', false, INPUT_FILTER_POST_IDENTIFIER);
     $base_url = post_param_string('base_url', false, INPUT_FILTER_URL_GENERAL);
     if (strpos($base_url, '://') === false) {
         $base_url = 'http://' . $base_url;
@@ -1217,7 +1217,7 @@ function step_5() : object
     }
 
     // Check table prefix
-    $table_prefix = post_param_string('table_prefix');
+    $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
 
     // Test base URL isn't subject to redirects
     $test_url = $base_url . '/installer_is_testing_base_urls.php';
@@ -1263,7 +1263,7 @@ function step_5() : object
     // Give warning if database contains data
     require_code('database');
     if (post_param_integer('confirm', 0) == 0) {
-        $tmp = new DatabaseConnector(trim(post_param_string('db_site')), trim(post_param_string('db_site_host')), trim(post_param_string('db_site_user')), trim(post_param_string('db_site_password', false, INPUT_FILTER_NONE)), $table_prefix);
+        $tmp = new DatabaseConnector(post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD), $table_prefix);
         $test = $tmp->query_select_value_if_there('config', 'c_value', ['c_name' => 'is_on_block_cache'], '', true);
         unset($tmp);
         if ($test !== null) {
@@ -1283,7 +1283,7 @@ function step_5() : object
                 'LANG' => $INSTALL_LANG,
                 'DB_TYPE' => post_param_string('db_type'),
                 'FORUM_TYPE' => post_param_string('forum_type'),
-                'BOARD_PATH' => post_param_string('board_path'),
+                'BOARD_PATH' => post_param_string('board_path', false, INPUT_FILTER_POST_IDENTIFIER),
                 'SECTIONS' => $sections,
                 'MAX' => null,
             ]);
@@ -1292,7 +1292,7 @@ function step_5() : object
 
     // Give warning if setting up a multi-site-network to a bad database
     if (($_POST['db_forums'] != $_POST['db_site']) && (get_forum_type() == 'cns')) {
-        $tmp = new DatabaseConnector(trim(post_param_string('db_forums')), trim(post_param_string('db_forums_host')), trim(post_param_string('db_forums_user')), trim(post_param_string('db_forums_password', false, INPUT_FILTER_NONE)), post_param_string('cns_table_prefix'));
+        $tmp = new DatabaseConnector(post_param_string('db_forums', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_password', false, INPUT_FILTER_PASSWORD), post_param_string('cns_table_prefix', false, INPUT_FILTER_POST_IDENTIFIER));
         if ($tmp->query_select_value('db_meta', 'COUNT(*)', [], '', true) === null) {
             warn_exit(do_lang_tempcode('MSN_FORUM_DB_NOT_CNS_ALREADY'));
         }
@@ -1373,7 +1373,7 @@ function step_5_ftp() : array
             warn_exit(do_lang_tempcode('NO_PHP_FTP'));
         }
 
-        $ftp_domain = trim(post_param_string('ftp_domain'));
+        $ftp_domain = post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER);
         if (strpos($ftp_domain, 'ftp://') !== false) {
             warn_exit(do_lang_tempcode('FTP_DOMAIN_NOT_LIKE_THIS'));
         }
@@ -1389,8 +1389,8 @@ function step_5_ftp() : array
         }
         $ssl = ($conn !== false);
 
-        $username = trim(post_param_string('ftp_username'));
-        $password = trim(post_param_string('ftp_password', false, INPUT_FILTER_NONE));
+        $username = post_param_string('ftp_username', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('ftp_password', false, INPUT_FILTER_PASSWORD);
 
         if (($ssl) && (@ftp_login($conn, $username, $password) === false)) {
             $conn = false;
@@ -1407,7 +1407,7 @@ function step_5_ftp() : array
             warn_exit(do_lang_tempcode('NO_FTP_LOGIN', cms_error_get_last()));
         }
 
-        $ftp_folder = post_param_string('ftp_folder');
+        $ftp_folder = post_param_string('ftp_folder', false, INPUT_FILTER_POST_IDENTIFIER);
         if (substr($ftp_folder, -1) != '/') {
             $ftp_folder .= '/';
         }
@@ -1837,13 +1837,13 @@ if (!function_exists(\'git_repos\')) {
     if (GOOGLE_APPENGINE) {
         $gae_live_code = "
 if (appengine_is_live()) {
-    \$SITE_INFO['db_site'] = '" . addslashes(post_param_string('gae_live_db_site')) . "';
-    \$SITE_INFO['db_site_host'] = '" . addslashes(post_param_string('gae_live_db_site_host')) . "';
-    \$SITE_INFO['db_site_user'] = '" . addslashes(post_param_string('gae_live_db_site_user')) . "';
-    \$SITE_INFO['db_site_password'] = '" . addslashes(post_param_string('gae_live_db_site_password', false, INPUT_FILTER_NONE)) . "';
-    \$SITE_INFO['custom_file_base'] = '" . addslashes('gs://' . post_param_string('gae_bucket_name')) . "';
+    \$SITE_INFO['db_site'] = '" . addslashes(post_param_string('gae_live_db_site', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
+    \$SITE_INFO['db_site_host'] = '" . addslashes(post_param_string('gae_live_db_site_host', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
+    \$SITE_INFO['db_site_user'] = '" . addslashes(post_param_string('gae_live_db_site_user', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
+    \$SITE_INFO['db_site_password'] = '" . addslashes(post_param_string('gae_live_db_site_password', false, INPUT_FILTER_PASSWORD)) . "';
+    \$SITE_INFO['custom_file_base'] = '" . addslashes('gs://' . post_param_string('gae_bucket_name', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
     if ((strpos(\$_SERVER['HTTP_HOST'],'.appspot.com') !== false) || (!tacit_https())) {
-        \$SITE_INFO['custom_base_url'] = '" . addslashes((tacit_https() ? 'https://' : 'http://') . post_param_string('gae_bucket_name') . '.storage.googleapis.com') . "';
+        \$SITE_INFO['custom_base_url'] = '" . addslashes((tacit_https() ? 'https://' : 'http://') . post_param_string('gae_bucket_name', false, INPUT_FILTER_POST_IDENTIFIER) . '.storage.googleapis.com') . "';
     } else { // Assumes a storage.<domain> CNAME has been created
         \$SITE_INFO['custom_base_url'] = '" . addslashes((tacit_https() ? 'https://' : 'http://') . 'storage.') . "'.\$_SERVER['HTTP_HOST'];
     }
@@ -1878,7 +1878,7 @@ if (appengine_is_live()) {
     global $FILE_ARRAY, $DIR_ARRAY;
     if ((@is_array($FILE_ARRAY)) && (!is_suexec_like())) {
         $conn = false;
-        $domain = trim(post_param_string('ftp_domain'));
+        $domain = post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER);
         $port = 21;
         if (strpos($domain, ':') !== false) {
             list($domain, $_port) = explode(':', $domain, 2);
@@ -1889,8 +1889,8 @@ if (appengine_is_live()) {
         }
         $ssl = ($conn !== false);
 
-        $username = trim(post_param_string('ftp_username'));
-        $password = trim(post_param_string('ftp_password', false, INPUT_FILTER_NONE));
+        $username = post_param_string('ftp_username', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('ftp_password', false, INPUT_FILTER_PASSWORD);
 
         if (($ssl) && (!@ftp_login($conn, $username, $password))) {
             $conn = false;
@@ -1902,7 +1902,7 @@ if (appengine_is_live()) {
         if (!$ssl) {
             ftp_login($conn, $username, $password);
         }
-        $ftp_folder = post_param_string('ftp_folder');
+        $ftp_folder = post_param_string('ftp_folder', false, INPUT_FILTER_POST_IDENTIFIER);
         if (substr($ftp_folder, -1) != '/') {
             $ftp_folder .= '/';
         }
@@ -2037,7 +2037,7 @@ function step_5_core() : object
         'c_value_trans' => '?LONG_TRANS', // If it's a translatable/Comcode one, we store the language ID in here (or just a string if we don't have multi-lang-content enabled)
         'c_needs_dereference' => 'BINARY',
     ]);
-    $email = post_param_string('email', '');
+    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
     if ($email != '') {
         $GLOBALS['SITE_DB']->query_insert('config', [
             'c_name' => 'staff_address',
@@ -2722,7 +2722,7 @@ function handle_self_referencing_embedment()
                     exit();
                 }
                 $conn = false;
-                $domain = trim(post_param_string('ftp_domain', false, INPUT_FILTER_GET_COMPLEX));
+                $domain = post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER);
                 $port = 21;
                 if (strpos($domain, ':') !== false) {
                     list($domain, $_port) = explode(':', $domain, 2);
@@ -2732,8 +2732,8 @@ function handle_self_referencing_embedment()
                     $conn = @ftp_ssl_connect($domain, $port);
                 }
                 $ssl = ($conn !== false);
-                $username = post_param_string('ftp_username', false, INPUT_FILTER_GET_COMPLEX);
-                $password = post_param_string('ftp_password', false, INPUT_FILTER_GET_COMPLEX);
+                $username = post_param_string('ftp_username', false, INPUT_FILTER_POST_IDENTIFIER);
+                $password = post_param_string('ftp_password', false, INPUT_FILTER_PASSWORD);
                 $ssl = ($conn !== false);
                 if (($ssl) && (!@ftp_login($conn, $username, $password))) {
                     $conn = false;
@@ -2751,7 +2751,7 @@ function handle_self_referencing_embedment()
                     ftp_close($conn);
                     exit();
                 }
-                $ftp_folder = post_param_string('ftp_folder', false, INPUT_FILTER_GET_COMPLEX);
+                $ftp_folder = post_param_string('ftp_folder', false, INPUT_FILTER_POST_IDENTIFIER);
                 if (substr($ftp_folder, -1) != '/') {
                     $ftp_folder .= '/';
                 }
@@ -2780,12 +2780,12 @@ function handle_self_referencing_embedment()
                 if (!isset($SITE_INFO)) {
                     $SITE_INFO = [];
                 }
-                $SITE_INFO['db_type'] = post_param_string('db_type');
+                $SITE_INFO['db_type'] = post_param_string('db_type', false, INPUT_FILTER_POST_IDENTIFIER);
                 require_code('database');
-                if (post_param_string('db_site') == '') {
-                    $db = new DatabaseConnector(post_param_string('db_forums'), post_param_string('db_forums_host'), post_param_string('db_forums_user'), post_param_string('db_forums_password', false, INPUT_FILTER_GET_COMPLEX), '', true);
+                if (post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER) == '') {
+                    $db = new DatabaseConnector(post_param_string('db_forums', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_password', false, INPUT_FILTER_PASSWORD), '', true);
                 } else {
-                    $db = new DatabaseConnector(post_param_string('db_site'), post_param_string('db_site_host'), post_param_string('db_site_user'), post_param_string('db_site_password', false, INPUT_FILTER_GET_COMPLEX), '', true);
+                    $db = new DatabaseConnector(post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD), '', true);
                 }
                 $db->ensure_connected();
                 exit();

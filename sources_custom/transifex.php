@@ -978,12 +978,12 @@ function _transifex_credentials()
     if (isset($_SERVER['argv'][1])) {
         $username = $_SERVER['argv'][1];
     } else {
-        $username = get_param_string('username', get_value('transifex_username', null, true));
+        $username = get_param_string('username', get_value('transifex_username', null, true), INPUT_FILTER_GET_IDENTIFIER);
     }
     if (isset($_SERVER['argv'][2])) {
         $password = $_SERVER['argv'][2];
     } else {
-        $password = get_param_string('password', get_value('transifex_password', null, true));
+        $password = get_param_string('password', get_value('transifex_password', null, true), INPUT_FILTER_PASSWORD);
     }
 
     if (cms_empty_safe($username)) {

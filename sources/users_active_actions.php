@@ -106,7 +106,7 @@ function handle_active_login(string $username)
         $serialized = false;
     }
 
-    $password = trim(post_param_string('password', false, INPUT_FILTER_NONE));
+    $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
     $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant($password, $username), $password);
     $member_id = $login_array['id'];
 
@@ -184,7 +184,7 @@ function handle_active_login(string $username)
         enforce_temporary_passwords($member_id);
     } else {
         $GLOBALS['SITE_DB']->query_insert('failedlogins', [
-            'failed_account' => cms_mb_substr(trim(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES)), 0, 80),
+            'failed_account' => cms_mb_substr(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES | INPUT_FILTER_TRIMMED), 0, 80),
             'date_and_time' => time(),
             'ip' => get_ip_address(),
         ]);

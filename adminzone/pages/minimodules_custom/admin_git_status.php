@@ -61,7 +61,7 @@ function git_status__browse($include_ignored = null)
         $include_ignored = (get_param_integer('include_ignored', 0) == 1);
     }
 
-    $sort = get_param_string('sort', 'path ASC');
+    $sort = get_param_string('sort', 'path ASC', INPUT_FILTER_GET_COMPLEX);
 
     $branch = find_branch();
     if ($branch === null) {

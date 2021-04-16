@@ -466,7 +466,7 @@ class Hook_ecommerce_email
             case 'POP3':
                 $suffix = preg_replace('#^POP3_#', '', $type_code);
 
-                $prefix = post_param_string('email_prefix', $from_admin ? '' : false);
+                $prefix = post_param_string('email_prefix', $from_admin ? '' : false, INPUT_FILTER_POST_IDENTIFIER);
                 if ($prefix == '') {
                     return ['', null]; // Default is blank
                 }
@@ -495,11 +495,11 @@ class Hook_ecommerce_email
             case 'FORWARDING':
                 $suffix = preg_replace('#^FORWARDING_#', '', $type_code);
 
-                $email = post_param_string('email', $from_admin ? '' : false);
+                $email = post_param_string('email', $from_admin ? '' : false, INPUT_FILTER_POST_IDENTIFIER);
                 if ($email == '') {
                     return ['', null]; // Default is blank
                 }
-                $prefix = post_param_string('email_prefix');
+                $prefix = post_param_string('email_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
 
                 // Does the prefix contain valid characters?
                 require_code('type_sanitisation');

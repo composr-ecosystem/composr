@@ -32,9 +32,9 @@ class Hook_snippet_password_strength
     {
         require_code('password_rules');
         $score = test_password(
-            post_param_string('password', false, INPUT_FILTER_NONE),
-            post_param_string('username', ''),
-            post_param_string('email_address', ''),
+            post_param_string('password', false, INPUT_FILTER_PASSWORD),
+            post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER),
+            post_param_string('email_address', '', INPUT_FILTER_POST_IDENTIFIER),
             post_param_date('birthday', true, false)
         );
         return make_string_tempcode(strval($score));

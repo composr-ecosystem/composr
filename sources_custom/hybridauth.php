@@ -397,10 +397,10 @@ function hybridauth_create_authenticated_account($provider, $id, $email_address,
     $spam_check_level = get_option('spam_check_level');
     if (($spam_check_level == 'EVERYTHING') || ($spam_check_level == 'ACTIONS') || ($spam_check_level == 'GUESTACTIONS') || ($spam_check_level == 'JOINING')) {
         require_code('antispam');
-        check_for_spam(post_param_string('username', $username), $email_address, false);
+        check_for_spam(post_param_string('username', $username, INPUT_FILTER_POST_IDENTIFIER), $email_address, false);
     }
 
-    $username = post_param_string('username', $username); // User may have customised username
+    $username = post_param_string('username', $username, INPUT_FILTER_POST_IDENTIFIER); // User may have customised username
     if (!empty($_custom_fields)) { // Was not auto-generated, so needs to be checked
         cns_check_name_valid($username);
     }

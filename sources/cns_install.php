@@ -924,9 +924,9 @@ function install_cns(?float $upgrade_from = null)
         );
         // Make admin user
         cns_make_member(
-            post_param_string('admin_username', 'admin'), // username
-            post_param_string('cns_admin_password', 'admin', INPUT_FILTER_NONE), // password
-            post_param_string('email', ''), // email_address
+            post_param_string('admin_username', 'admin', INPUT_FILTER_POST_IDENTIFIER), // username
+            post_param_string('cns_admin_password', 'admin', INPUT_FILTER_PASSWORD), // password
+            post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER), // email_address
             $administrator_group, // primary_group
             null, // secondary_groups
             null, // dob_day
@@ -962,7 +962,7 @@ function install_cns(?float $upgrade_from = null)
         // Make test user
         cns_make_member(
             'test', // username
-            post_param_string('cns_admin_password', 'admin', INPUT_FILTER_NONE), // password
+            post_param_string('cns_admin_password', 'admin', INPUT_FILTER_PASSWORD), // password
             '', // email_address
             $member_group_0, // primary_group
             null, // secondary_groups

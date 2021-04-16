@@ -192,7 +192,7 @@ class Module_admin_revisions
         if ($category_id == '') {
             $category_id = null;
         }
-        $username = get_param_string('username', '');
+        $username = get_param_string('username', '', INPUT_FILTER_GET_IDENTIFIER);
         if ($username == '') {
             $username = null;
         }

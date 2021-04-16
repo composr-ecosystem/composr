@@ -887,7 +887,7 @@ class Module_chat
 
         $blocked = $GLOBALS['SITE_DB']->query_select('chat_blocking', ['member_blocked'], ['member_blocker' => get_member()]);
 
-        $username = trim(post_param_string('username', ''));
+        $username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
         if ($username != '') {
             $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($_member_id === null) {
@@ -1015,7 +1015,7 @@ class Module_chat
 
         $member_id = either_param_integer('member_id', null);
         if ($member_id === null) {
-            $username = post_param_string('friend_username');
+            $username = post_param_string('friend_username', false, INPUT_FILTER_POST_IDENTIFIER);
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if (($member_id === null) || (is_guest($member_id))) {
                 warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);

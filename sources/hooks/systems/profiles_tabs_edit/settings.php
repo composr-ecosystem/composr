@@ -85,18 +85,18 @@ class Hook_profiles_tabs_edit_settings
             $on_probation_until = null;
 
             if ((has_actual_page_access($member_id_viewing, 'admin_cns_members')) || (has_privilege($member_id_of, 'rename_self'))) {
-                $username = ($is_ldap) ? null : post_param_string('edit_username', null/*May not be passed if username not editable for member type*/);
+                $username = ($is_ldap) ? null : post_param_string('edit_username', null/*May not be passed if username not editable for member type*/, INPUT_FILTER_POST_IDENTIFIER);
                 $username_old = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of);
             }
 
             if (($is_ldap) || ($is_httpauth) || (($member_id_of != $member_id_viewing) && (!has_privilege($member_id_viewing, 'assume_any_member')))) {
                 $password = null;
             } else {
-                $password = post_param_string('edit_password', '', INPUT_FILTER_NONE);
+                $password = post_param_string('edit_password', '', INPUT_FILTER_PASSWORD);
                 if ($password == '') {
                     $password = null;
                 } else {
-                    $password_confirm = trim(post_param_string('password_confirm', false, INPUT_FILTER_NONE));
+                    $password_confirm = post_param_string('password_confirm', false, INPUT_FILTER_PASSWORD);
                     if ($password != $password_confirm) {
                         warn_exit(make_string_tempcode(escape_html(do_lang('PASSWORD_MISMATCH'))));
                     }
@@ -104,7 +104,7 @@ class Hook_profiles_tabs_edit_settings
             }
 
             if ((cns_field_editable('email', $special_type)) && (!fractional_edit())) {
-                $email_address = trim(post_param_string('email', member_field_is_required($member_id_of, 'email_address', null, $member_id_viewing) ? false : ''));
+                $email_address = post_param_string('email', member_field_is_required($member_id_of, 'email_address', null, $member_id_viewing) ? false : '', INPUT_FILTER_POST_IDENTIFIER);
             }
 
             if (!fractional_edit()) {

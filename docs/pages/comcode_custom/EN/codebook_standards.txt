@@ -307,6 +307,13 @@ These rules are very standard, but if broken then code-overriding may not work c
 | URLs-within-URLs need to be encoded carefully so as to bypass ModSecurity restrictions (often any embedded URL is blocked). Basically URLs should be read in with a [tt]INPUT_FILTER_URL_*[/tt] flag to [tt]*_param_string[/tt], and URLs should be placed within URLs/forms with a [tt]protect_url_parameter[/tt] call around their value.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Trim white-space for usernames/passwords/e-mails[/color]
+| User experience
+| Composr development +
+| Manually
+| Look to see how usernames/passwords/e-mails/domain-names/paths etc are input in other parts of the code and do the same. Mainly we trim white-space to reduce the chance of copy & paste errors. Also we don't do other normal manipulations on password fields.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use Composr APIs wherever appropriate[/color]
 | Security, stability, consistency
 | Composr development +

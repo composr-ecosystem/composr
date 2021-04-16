@@ -51,7 +51,7 @@ function cns_make_topic(?int $forum_id, string $description = '', string $emotic
 
     if (!running_script('install')) {
         require_code('antispam');
-        inject_action_spamcheck(post_param_string('name', null), post_param_string('email', null));
+        inject_action_spamcheck(post_param_string('name', null), post_param_string('email', null, INPUT_FILTER_POST_IDENTIFIER));
     }
 
     if ($check_perms) {

@@ -228,7 +228,7 @@ function cns_member_external_linker(string $type, string $username, string $pass
     require_code('temporal2');
     require_code('cns_groups');
 
-    $email_address = trim(post_param_string('email', $email_address));
+    $email_address = post_param_string('email', $email_address, INPUT_FILTER_POST_IDENTIFIER);
 
     $groups = cns_get_all_default_groups(true); // $groups will contain the built in default primary group too (it is not $secondary_groups)
     $primary_group = post_param_integer('primary_group', null);
@@ -552,7 +552,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     // E-mail address
     if (cns_field_editable('email', $special_type)) {
         if ($email_address == '') {
-            $email_address = trim(get_param_string('email', '', INPUT_FILTER_GET_COMPLEX));
+            $email_address = get_param_string('email', '', INPUT_FILTER_GET_IDENTIFIER);
         }
         $email_description = new Tempcode();
         $valid_email_domains = get_option_with_overrides('valid_email_domains', $adjusted_config_options);

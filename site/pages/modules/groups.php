@@ -764,7 +764,7 @@ class Module_groups
         }
 
         if ($username === null) {
-            $username = trim(post_param_string('username'));
+            $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
         }
 
         if ($username == '') {

@@ -152,7 +152,7 @@ function activity_feed_handler_script()
     $guest_id = intval($GLOBALS['FORUM_DRIVER']->get_guest_id());
 
     if (!is_guest(get_member())) {
-        $map['STATUS'] = trim(post_param_string('status', ''));
+        $map['STATUS'] = post_param_string('status', '');
 
         if ((post_param_string('zone', '') != '') && ($map['STATUS'] != '') && ($map['STATUS'] != do_lang('activity_feed:TYPE_HERE'))) {
             comcode_to_tempcode($map['STATUS'], $guest_id, false);

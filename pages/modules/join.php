@@ -146,7 +146,7 @@ class Module_join
         // Show rules
         $rules = request_page('_rules', true, get_comcode_zone('_rules'), null, true);
         $map = ['page' => '_SELF', 'type' => 'step2'];
-        $email_address = trim(get_param_string('email', '', INPUT_FILTER_GET_COMPLEX));
+        $email_address = get_param_string('email', '', INPUT_FILTER_GET_IDENTIFIER);
         if ($email_address != '') {
             $map['email'] = $email_address;
         }
@@ -286,9 +286,9 @@ class Module_join
                 'SUBMIT_NAME' => $submit_name,
             ]);
         }
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_validated'], ['m_validated_email_confirm_code' => strval($code), 'm_email_address' => trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX))]);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_validated'], ['m_validated_email_confirm_code' => strval($code), 'm_email_address' => get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER)]);
         if (!array_key_exists(0, $rows)) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_validated'], ['m_validated_email_confirm_code' => '', 'm_email_address' => trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX))]);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_validated'], ['m_validated_email_confirm_code' => '', 'm_email_address' => get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER)]);
             if (!array_key_exists(0, $rows)) {
                 warn_exit(do_lang_tempcode('INCORRECT_CONFIRM_CODE'));
             } else {

@@ -101,15 +101,15 @@ function force_have_afm_details(array $writable_paths = [])
         $uses_ftp = post_param_integer('uses_ftp', 0);
         set_value('uses_ftp', strval($uses_ftp));
         if ($uses_ftp == 1) {
-            set_value('ftp_username', post_param_string('ftp_username'));
+            set_value('ftp_username', post_param_string('ftp_username', false, INPUT_FILTER_POST_IDENTIFIER));
             $ftp_directory = post_param_string('ftp_directory');
             if (substr($ftp_directory, 0, 1) != '/') {
                 $ftp_directory = '/' . $ftp_directory;
             }
             set_value('ftp_directory', $ftp_directory);
-            set_value('ftp_domain', post_param_string('ftp_domain'));
+            set_value('ftp_domain', post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER));
             if (post_param_integer('remember_password', 0) == 1) {
-                set_value('ftp_password', post_param_string('ftp_password', false, INPUT_FILTER_NONE));
+                set_value('ftp_password', post_param_string('ftp_password', false, INPUT_FILTER_PASSWORD));
             }
         }
     }
@@ -259,7 +259,7 @@ function _ftp_info(bool $light_fail = false)
         require_lang('installer');
 
         $conn = false;
-        $domain = post_param_string('ftp_domain', get_value('ftp_domain'));
+        $domain = post_param_string('ftp_domain', get_value('ftp_domain'), INPUT_FILTER_POST_IDENTIFIER);
         $port = 21;
         if (strpos($domain, ':') !== false) {
             list($domain, $_port) = explode(':', $domain, 2);
@@ -270,8 +270,8 @@ function _ftp_info(bool $light_fail = false)
         }
         $ssl = ($conn !== false);
 
-        $username = post_param_string('ftp_username', get_value('ftp_username'));
-        $password = post_param_string('ftp_password', get_value('ftp_password'), INPUT_FILTER_NONE);
+        $username = post_param_string('ftp_username', get_value('ftp_username'), INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('ftp_password', get_value('ftp_password'), INPUT_FILTER_PASSWORD);
 
         if (($ssl) && (!@ftp_login($conn, $username, $password))) {
             $conn = false;
@@ -295,8 +295,8 @@ function _ftp_info(bool $light_fail = false)
             }
         }
 
-        $username = post_param_string('ftp_username', get_value('ftp_username'));
-        $password = post_param_string('ftp_password', get_value('ftp_password'), INPUT_FILTER_NONE);
+        $username = post_param_string('ftp_username', get_value('ftp_username'), INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('ftp_password', get_value('ftp_password'), INPUT_FILTER_PASSWORD);
 
         if ((!$ssl) && (@ftp_login($conn, $username, $password) === false)) {
             set_value('ftp_password', '');
@@ -311,7 +311,7 @@ function _ftp_info(bool $light_fail = false)
             }
         }
 
-        $ftp_folder = post_param_string('ftp_folder', get_value('ftp_directory'));
+        $ftp_folder = post_param_string('ftp_folder', get_value('ftp_directory'), INPUT_FILTER_POST_IDENTIFIER);
         if (substr($ftp_folder, -1) != '/') {
             $ftp_folder .= '/';
         }
@@ -436,7 +436,7 @@ function _access_string(int $access_int) : string
 function _rescope_path(string $path) : string
 {
     if (post_param_string('uses_ftp', running_script('upgrader') ? '0' : get_value('uses_ftp')) == '1') {
-        $ftp_folder = post_param_string('ftp_folder', get_value('ftp_directory'));
+        $ftp_folder = post_param_string('ftp_folder', get_value('ftp_directory'), INPUT_FILTER_POST_IDENTIFIER);
         if (substr($ftp_folder, -1) != '/') {
             $ftp_folder .= '/';
         }
@@ -483,7 +483,7 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
     $conn = _ftp_info();
     if ($conn !== false) {
         if ($recursive) {
-            $build_up = post_param_string('ftp_folder', get_value('ftp_directory'));
+            $build_up = post_param_string('ftp_folder', get_value('ftp_directory'), INPUT_FILTER_POST_IDENTIFIER);
             foreach ($parts as $part) {
                 $build_up .= '/' . $part;
                 @ftp_mkdir($conn, $build_up);

@@ -41,7 +41,7 @@ function upgrade_script()
         return;
     }
 
-    $given_password = post_param_string('given_password', false, INPUT_FILTER_NONE);
+    $given_password = post_param_string('given_password', false, INPUT_FILTER_PASSWORD);
     require_code('crypt_master');
     if (!check_master_password($given_password)) {
         upgrader_output_header();
@@ -61,7 +61,7 @@ function upgrade_script()
 
     upgrader_output_header();
 
-    if (post_param_string('ftp_username', '') != '') {
+    if (post_param_string('ftp_username', '', INPUT_FILTER_POST_IDENTIFIER) != '') {
         $_POST['uses_ftp'] = '1';
         _ftp_info(true); // To give early error if there's a problem
     }
@@ -318,7 +318,7 @@ function upgrader_output_login(?string $message = null)
     " . (($news_id === null) ? '' : ('<input type="hidden" name="news_id" value="' . strval($news_id) . '" />')) . "
     " . (($from_version === null) ? '' : ('<input type="hidden" name="from_version" value="' . escape_html($from_version) . '" />')) . "
     <p>
-        {$l_password}: <input type=\"password\" name=\"given_password\" value=\"" . escape_html(post_param_string('password', '', INPUT_FILTER_NONE)) . "\" class=\"form-control\" />
+        {$l_password}: <input type=\"password\" name=\"given_password\" value=\"" . escape_html(post_param_string('password', '', INPUT_FILTER_PASSWORD)) . "\" class=\"form-control\" />
     </p>
     ";
 

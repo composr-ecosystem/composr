@@ -156,7 +156,7 @@ function cns_make_post(int $topic_id, string $title, string $post, int $skip_sig
 
     if ((!running_script('install')) && (!get_mass_import_mode())) {
         require_code('antispam');
-        inject_action_spamcheck($poster_name_if_guest, post_param_string('email', null, INPUT_FILTER_GET_COMPLEX));
+        inject_action_spamcheck($poster_name_if_guest, post_param_string('email', null, INPUT_FILTER_POST_IDENTIFIER));
     }
 
     if ($check_permissions) {

@@ -1083,7 +1083,7 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
         }
     }
 
-    $shipping_email = post_param_string('shipping_email', $shipping_email);
+    $shipping_email = post_param_string('shipping_email', $shipping_email, INPUT_FILTER_POST_IDENTIFIER);
     $shipping_phone = post_param_string('shipping_phone', $shipping_phone);
     $shipping_firstname = post_param_string('shipping_firstname', $shipping_firstname);
     $shipping_lastname = post_param_string('shipping_lastname', $shipping_lastname);
@@ -1095,7 +1095,7 @@ function get_default_ecommerce_fields(?int $member_id = null, string &$shipping_
     $shipping_country = post_param_string('shipping_country', $shipping_country);
     $cardholder_name = post_param_string('cardholder_name', $cardholder_name);
     $card_type = post_param_string('card_type', $card_type);
-    $_card_number = post_param_string('card_number', ($card_number === null) ? '' : strval($card_number));
+    $_card_number = post_param_string('card_number', ($card_number === null) ? '' : strval($card_number), INPUT_FILTER_POST_IDENTIFIER);
     $card_number = ($_card_number == '') ? null : str_replace(['-', ' '], ['', ''], $_card_number);
     $card_start_date_year = post_param_integer('card_start_date_year', $card_start_date_year);
     $card_start_date_month = post_param_integer('card_start_date_month', $card_start_date_month);

@@ -35,8 +35,8 @@ class Hook_endpoint_account_lost_password
             warn_exit(do_lang_tempcode('NO_CNS'));
         }
 
-        $_username = trim(post_param_string('username', ''));
-        $_email = trim(post_param_string('email', ''));
+        $_username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
+        $_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
 
         require_code('cns_lost_password');
         require_lang('cns');

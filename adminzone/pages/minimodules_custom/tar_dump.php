@@ -43,7 +43,7 @@ header('Content-Disposition: attachment; filename="' . escape_header($filename, 
 $tar = tar_open('php://stdout', 'wb');
 
 $max_size = get_param_integer('max_size', null);
-$subpath = get_param_string('path', '', INPUT_FILTER_GET_COMPLEX);
+$subpath = get_param_string('path', '', INPUT_FILTER_GET_IDENTIFIER);
 tar_add_folder($tar, null, get_file_base() . (($subpath == '') ? '' : '/') . $subpath, $max_size, $subpath, [], null, false, null);
 
 tar_close($tar);

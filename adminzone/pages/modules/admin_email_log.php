@@ -516,7 +516,7 @@ class Module_admin_email_log
 
                 $subject = post_param_string('subject');
                 $from_name = post_param_string('from_name');
-                $from_email = post_param_string('from_email');
+                $from_email = post_param_string('from_email', false, INPUT_FILTER_POST_IDENTIFIER);
                 $message = post_param_string('message');
 
                 $remap = [

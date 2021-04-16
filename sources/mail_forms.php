@@ -163,8 +163,8 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
 
     // Find from details if simple...
 
-    $from_email = trim(post_param_string('email', ''));
-    $from_name = trim(post_param_string('name', ''));
+    $from_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
+    $from_name = post_param_string('name', '');
 
     // Find body...
 
@@ -221,7 +221,7 @@ function _form_to_email(array $extra_boring_fields = [], ?string $subject = null
 
     $to_name = null;
     if (($to_email === null) && (get_value('allow_member_mail_relay') !== null)) {
-        $to = post_param_integer('to_members_email', null);
+        $to = post_param_integer('to_members_email', null, INPUT_FILTER_POST_IDENTIFIER);
         if ($to !== null) {
             $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($to);
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($to, true);

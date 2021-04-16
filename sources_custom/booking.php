@@ -156,8 +156,8 @@ function get_booking_request_from_form() : array
                 }
             }
 
-            $customer_email = post_param_string('customer_email', '');
-            $customer_email_confirm = post_param_string('customer_email_confirm', null);
+            $customer_email = post_param_string('customer_email', '', INPUT_FILTER_POST_IDENTIFIER);
+            $customer_email_confirm = post_param_string('customer_email_confirm', null, INPUT_FILTER_POST_IDENTIFIER);
             if (($customer_email_confirm !== null) && ($customer_email != $customer_email_confirm)) {
                 warn_exit(do_lang_tempcode('EMAIL_ADDRESS_MISMATCH'));
             }

@@ -138,7 +138,7 @@ class Hook_ecommerce_giftr
         require_lang('giftr');
 
         $fields = new Tempcode();
-        $fields->attach(form_input_username(do_lang_tempcode('TO_USERNAME'), do_lang_tempcode('DESCRIPTION_MEMBER_TO_GIVE'), 'username', get_param_string('username', ''), true));
+        $fields->attach(form_input_username(do_lang_tempcode('TO_USERNAME'), do_lang_tempcode('DESCRIPTION_MEMBER_TO_GIVE'), 'username', get_param_string('username', '', INPUT_FILTER_GET_IDENTIFIER), true));
         $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_GIFT_MESSAGE'), 'gift_message', '', true));
         $fields->attach(form_input_tick(do_lang_tempcode('ANON'), do_lang_tempcode('DESCRIPTION_ANONYMOUS'), 'anonymous', false));
 
@@ -155,7 +155,7 @@ class Hook_ecommerce_giftr
      */
     public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
     {
-        $to_member = post_param_string('username', $from_admin ? '' : false);
+        $to_member = post_param_string('username', $from_admin ? '' : false), INPUT_FILTER_POST_IDENTIFIER;
         $gift_message = post_param_string('gift_message', '');
         $anonymous = post_param_integer('anonymous', 0);
 

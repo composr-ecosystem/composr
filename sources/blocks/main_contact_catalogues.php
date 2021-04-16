@@ -142,7 +142,7 @@ PHP;
             }
 
             require_code('antispam');
-            inject_action_spamcheck(null, post_param_string('email', null));
+            inject_action_spamcheck(null, post_param_string('email', null, INPUT_FILTER_POST_IDENTIFIER));
 
             if (addon_installed('stats')) {
                 require_code('stats');

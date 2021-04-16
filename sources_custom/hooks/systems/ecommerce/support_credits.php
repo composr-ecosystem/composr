@@ -183,7 +183,7 @@ class Hook_ecommerce_support_credits
                 $manual = 1;
                 $member_id = $id;
             } else {
-                $username = post_param_string('member_username', null);
+                $username = post_param_string('member_username', null, INPUT_FILTER_POST_IDENTIFIER);
                 if ($username !== null) {
                     $manual = 1;
                     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);

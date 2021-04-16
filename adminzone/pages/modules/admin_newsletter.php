@@ -563,11 +563,11 @@ class Module_admin_newsletter extends Standard_crud_module
         require_code('mail');
         require_code('mail2');
 
-        $type = post_param_string('type');
-        $host = post_param_string('host');
+        $type = post_param_string('type', false, INPUT_FILTER_POST_IDENTIFIER);
+        $host = post_param_string('host', false, INPUT_FILTER_POST_IDENTIFIER);
         $port = post_param_integer('port');
-        $username = post_param_string('username');
-        $password = post_param_string('password', false, INPUT_FILTER_NONE);
+        $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
 
         $_folders = find_mail_folders($host, $port, $type, $username, $password);
 
@@ -612,12 +612,12 @@ class Module_admin_newsletter extends Standard_crud_module
         require_code('mail');
         require_code('mail2');
 
-        $type = post_param_string('type');
-        $host = post_param_string('host');
+        $type = post_param_string('type', false, INPUT_FILTER_POST_IDENTIFIER);
+        $host = post_param_string('host', false, INPUT_FILTER_POST_IDENTIFIER);
         $port = post_param_integer('port');
-        $folder = post_param_string('folder');
-        $username = post_param_string('username');
-        $password = post_param_string('password', false, INPUT_FILTER_NONE);
+        $folder = post_param_string('folder', false, INPUT_FILTER_POST_IDENTIFIER);
+        $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
 
         $out = _find_mail_bounces($host, $port, $type, $folder, $username, $password, false);
         $num = count($out);
@@ -978,9 +978,9 @@ class Module_admin_newsletter extends Standard_crud_module
         if ((addon_installed('calendar')) && ($periodic_action == 'none') && (cron_installed())) {
             $fields->attach(form_input_date__cron(do_lang_tempcode('DEFER_TIME'), do_lang_tempcode('DESCRIPTION_DEFER_TIME'), 'schedule', false, true, true));
         }
-        $from_email = post_param_string('from_email', get_option('staff_address'));
+        $from_email = post_param_string('from_email', get_option('staff_address'), INPUT_FILTER_POST_IDENTIFIER);
         if ($defaults !== null) {
-            $from_email = post_param_string('from_email', $defaults['np_from_email']);
+            $from_email = post_param_string('from_email', $defaults['np_from_email'], INPUT_FILTER_POST_IDENTIFIER);
         }
         $fields->attach(form_input_email(do_lang_tempcode('FROM_EMAIL'), do_lang_tempcode('DESCRIPTION_NEWSLETTER_FROM_EMAIL'), 'from_email', $from_email, true));
         $from_name = post_param_string('from_name', get_site_name());
@@ -1201,7 +1201,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $template = post_param_string('template', 'MAIL');
         $in_full = post_param_integer('in_full', 0);
         $html_only = post_param_integer('html_only', 0);
-        $from_email = post_param_string('from_email', '');
+        $from_email = post_param_string('from_email', '', INPUT_FILTER_POST_IDENTIFIER);
         $from_name = post_param_string('from_name', '');
         $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
         if ($email_address == '') {
@@ -1326,7 +1326,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $in_full = post_param_integer('in_full', 0);
 
         $html_only = post_param_integer('html_only', 0);
-        $from_email = post_param_string('from_email', '');
+        $from_email = post_param_string('from_email', '', INPUT_FILTER_POST_IDENTIFIER);
         $from_name = post_param_string('from_name', '');
         $priority = post_param_integer('priority', 3);
 

@@ -828,7 +828,7 @@ function actualise_post_comment(bool $allow_comments, string $content_type, stri
         }
     }
 
-    $email = trim(post_param_string('email', ''));
+    $email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
     if ($email != '') {
         $body = '> ' . str_replace("\n", "\n" . '> ', $post);
         if (substr($body, -2) == '> ') {

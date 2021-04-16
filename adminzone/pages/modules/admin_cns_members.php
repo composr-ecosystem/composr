@@ -333,9 +333,9 @@ class Module_admin_cns_members
     {
         // Read in data...
 
-        $username = trim(post_param_string('username'));
-        $password = trim(post_param_string('password', false, INPUT_FILTER_NONE));
-        $email_address = trim(post_param_string('email', member_field_is_required(null, 'email_address') ? false : ''));
+        $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
+        $email_address = post_param_string('email', member_field_is_required(null, 'email_address') ? false : '', INPUT_FILTER_POST_IDENTIFIER);
 
         $primary_group = (has_privilege(get_member(), 'assume_any_member')) ? post_param_integer('primary_group') : null;
         if (!array_key_exists('secondary_groups', $_POST)) {
@@ -459,8 +459,8 @@ class Module_admin_cns_members
         log_it('ADD_MEMBER', strval($id), $username);
 
         // Send e-mail, if requested
-        $email_subject = trim(post_param_string('email_subject', ''));
-        $email_message = trim(post_param_string('email_message', ''));
+        $email_subject = post_param_string('email_subject', '');
+        $email_message = post_param_string('email_message', '');
         if ($email_message != '') {
             $to_name = $GLOBALS['FORUM_DRIVER']->get_displayname($username);
 

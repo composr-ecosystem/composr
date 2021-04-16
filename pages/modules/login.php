@@ -127,9 +127,9 @@ class Module_login
         if ($type == 'login') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_LOGIN')]]);
 
-            $username = trim(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES));
+            $username = post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES | INPUT_FILTER_TRIMMED);
 
-            $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant(trim(post_param_string('password', false, INPUT_FILTER_NONE)), $username), trim(post_param_string('password', false, INPUT_FILTER_NONE)));
+            $feedback = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant(post_param_string('password', false, INPUT_FILTER_PASSWORD), $username), post_param_string('password', false, INPUT_FILTER_POST_IDENTIFIER));
             if ($feedback['id'] !== null) {
                 $this->title = get_screen_title('LOGGED_IN');
             } else {
@@ -246,7 +246,7 @@ class Module_login
         // Render
         $login_url = build_url(['page' => '_SELF', 'type' => 'login'], '_SELF');
         require_css('login');
-        $username = trim(get_param_string('username', ''));
+        $username = get_param_string('username', '', INPUT_FILTER_GET_IDENTIFIER);
         if (!is_guest()) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_BLANK);
         }

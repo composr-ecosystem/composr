@@ -142,9 +142,9 @@ class Module_lost_password
         $set_title = do_lang_tempcode('ACCOUNT');
         $field_set = alternate_fields_set__start($set_name);
 
-        $field_set->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', trim(get_param_string('email', '', INPUT_FILTER_GET_COMPLEX)), false));
+        $field_set->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', get_param_string('email', '', INPUT_FILTER_GET_IDENTIFIER), false));
 
-        $field_set->attach(form_input_line(do_lang_tempcode('USERNAME'), '', 'username', trim(get_param_string('username', '')), false));
+        $field_set->attach(form_input_line(do_lang_tempcode('USERNAME'), '', 'username', get_param_string('username', '', INPUT_FILTER_GET_IDENTIFIER), false));
         // form_input_username not used, so as to stop someone accidentally autocompleting to someone else's similar name - very possible for a person already known to be forgetful
 
         return alternate_fields_set__end($set_name, $set_title, '', $field_set, $required);
@@ -205,8 +205,8 @@ class Module_lost_password
             enforce_captcha();
         }
 
-        $_username = trim(post_param_string('username', ''));
-        $_email = trim(post_param_string('email', ''));
+        $_username = post_param_string('username', '', INPUT_FILTER_POST_IDENTIFIER);
+        $_email = post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER);
 
         list($email, $member_id) = lost_password_emailer_step($_username, $_email);
 
@@ -254,7 +254,7 @@ class Module_lost_password
         $password_reset_process = get_password_reset_process();
 
         // Lookup code
-        $code = trim(get_param_string('code', ''));
+        $code = get_param_string('code', '', INPUT_FILTER_GET_IDENTIFIER);
         if ($code == '') {
             // Code being manually typed
             $fields = new Tempcode();
@@ -280,7 +280,7 @@ class Module_lost_password
         // Find member involved
         $member_id = get_param_integer('member', null);
         if ($member_id === null) {
-            $username = get_param_string('username', null);
+            $username = get_param_string('username', null, INPUT_FILTER_GET_IDENTIFIER);
             if ($username !== null) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
                 if (($member_id === null) || (is_guest($member_id))) {
@@ -290,7 +290,7 @@ class Module_lost_password
                     warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_ACCOUNT_NOT_FOUND'));
                 }
             } else {
-                $email = get_param_string('email', null, INPUT_FILTER_GET_COMPLEX);
+                $email = get_param_string('email', null, INPUT_FILTER_GET_IDENTIFIER);
                 if ($email !== null) {
                     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
                     if ($member_id === null) {

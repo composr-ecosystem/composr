@@ -238,7 +238,7 @@ class Module_recommend
         $hidden = new Tempcode();
 
         $name = post_param_string('name', is_guest() ? '' : $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true));
-        $recommender_email_address = post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()));
+        $recommender_email_address = post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), INPUT_FILTER_POST_IDENTIFIER);
 
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('YOUR_NAME'), '', 'name', $name, true));
@@ -545,7 +545,7 @@ class Module_recommend
     {
         $name = post_param_string('name');
         $message = post_param_string('message');
-        $recommender_email_address = post_param_string('email');
+        $recommender_email_address = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
 
         $invite = false;
 

@@ -163,13 +163,13 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
     // Read in data
 
     if ($username === null) {
-        $username = trim(post_param_string('username'));
+        $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
     }
     cns_check_name_valid($username, null, null, null, null, true); // Adjusts username if needed; other errors are ignored and will be picked up in cns_make_member's call to cns_check_name_valid
 
     if ($password === null) {
-        $password = trim(post_param_string('password', false, INPUT_FILTER_NONE));
-        $password_confirm = trim(post_param_string('password_confirm', false, INPUT_FILTER_NONE));
+        $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
+        $password_confirm = post_param_string('password_confirm', false, INPUT_FILTER_PASSWORD);
         if ($password != $password_confirm) {
             warn_exit(make_string_tempcode(escape_html(do_lang('PASSWORD_MISMATCH'))));
         }
@@ -177,7 +177,7 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
 
     if ($email_address === null) {
         $confirm_email_address = post_param_string('email_address_confirm', null);
-        $email_address = trim(post_param_string('email', member_field_is_required(null, 'email_address', null, null, $adjusted_config_options) ? false : ''));
+        $email_address = post_param_string('email', member_field_is_required(null, 'email_address', null, null, $adjusted_config_options) ? false : '', INPUT_FILTER_POST_IDENTIFIER);
         if ($confirm_email_address !== null) {
             if (trim($confirm_email_address) != $email_address) {
                 warn_exit(make_string_tempcode(escape_html(do_lang('EMAIL_ADDRESS_MISMATCH'))));
@@ -190,7 +190,7 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
     }
 
     // Check e-mail domain, if applicable
-    $email_address = trim(post_param_string('email'));
+    $email_address = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
     if ($email_address != '') {
         $valid_email_domains = get_option_with_overrides('valid_email_domains', $adjusted_config_options);
         if ($valid_email_domains != '') {

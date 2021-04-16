@@ -318,7 +318,7 @@ class Module_cms_downloads extends Standard_crud_module
 
         check_privilege('mass_import'/*Not currently scoped to categories, ['downloads', $destination]*/);
 
-        $server_path = post_param_string('server_path');
+        $server_path = post_param_string('server_path', false, INPUT_FILTER_POST_IDENTIFIER);
 
         $subfolders = post_param_integer('subfolders', 0);
 

@@ -56,6 +56,15 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
         log_hack_attack_and_exit('DODGY_GET_HACK', $name, $val);
     }
 
+    if (($filters & INPUT_FILTER_TRIMMED) != 0) {
+        // Remove leading/trailing nbsp
+        if (get_charset() == 'utf-8') {
+            $val = preg_replace('#^(\s|' . hex2bin('C2A0') . ')*|(\s|' . hex2bin('C2A0') . ')*$#', ' ', $val);
+        }
+
+        $val = trim($val);
+    }
+
     if (($filters & INPUT_FILTER_URL_RECODING) != 0) {
         // We should use compliant encoding
         require_code('urls_simplifier');

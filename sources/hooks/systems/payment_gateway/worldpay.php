@@ -402,7 +402,7 @@ class Hook_payment_gateway_worldpay
             'a_state' => '',
             'a_post_code' => post_param_string('delvPostcode', ''),
             'a_country' => post_param_string('delvCountryString', ''),
-            'a_email' => post_param_string('email', ''),
+            'a_email' => post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER),
             'a_phone' => post_param_string('tel', ''),
         ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);

@@ -621,13 +621,13 @@ class Module_admin_cns_forums extends Standard_crud_module
     {
         require_lang('cns_mailinglists');
 
-        $mail_email_address = post_param_string('mail_email_address', '');
-        $mail_server_type = post_param_string('mail_server_type', '');
-        $mail_server_host = post_param_string('mail_server_host', '');
+        $mail_email_address = post_param_string('mail_email_address', '', INPUT_FILTER_POST_IDENTIFIER);
+        $mail_server_type = post_param_string('mail_server_type', '', INPUT_FILTER_POST_IDENTIFIER);
+        $mail_server_host = post_param_string('mail_server_host', '', INPUT_FILTER_POST_IDENTIFIER);
         $mail_server_port = post_param_integer('mail_server_port', null);
-        $mail_folder = post_param_string('mail_folder', '');
-        $mail_username = post_param_string('mail_username', '');
-        $mail_password = post_param_string('mail_password', '');
+        $mail_folder = post_param_string('mail_folder', '', INPUT_FILTER_POST_IDENTIFIER);
+        $mail_username = post_param_string('mail_username', '', INPUT_FILTER_POST_IDENTIFIER);
+        $mail_password = post_param_string('mail_password', '', INPUT_FILTER_PASSWORD);
         $mail_nonmatch_policy = post_param_string('mail_nonmatch_policy', 'post_as_guest');
         $mail_unconfirmed_notice = post_param_integer('mail_unconfirmed_notice', 0);
 

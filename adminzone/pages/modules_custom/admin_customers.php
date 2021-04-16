@@ -704,7 +704,7 @@ class Module_admin_customers
         $post_url = build_url(['page' => '_SELF', 'type' => '_charge'], '_SELF');
         $submit_name = do_lang_tempcode('CHARGE');
 
-        $username = get_param_string('username', null);
+        $username = get_param_string('username', null, INPUT_FILTER_GET_IDENTIFIER);
         if ($username === null) {
             $member_id = get_param_integer('member_id', null);
             if ($member_id !== null) {
@@ -780,7 +780,7 @@ class Module_admin_customers
      */
     public function _charge() : object
     {
-        $username = post_param_string('member_username');
+        $username = post_param_string('member_username', false, INPUT_FILTER_POST_IDENTIFIER);
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);

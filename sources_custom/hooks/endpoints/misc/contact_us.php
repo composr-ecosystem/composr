@@ -40,8 +40,8 @@ class Hook_endpoint_account_contact_us
         $category = post_param_string('category', do_lang('GENERAL'));
         $post = post_param_string('post');
         $title = post_param_string('title', '');
-        $email_from = trim(post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member())));
-        $from_name = substr(trim(post_param_string('name', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true))), 0, 80);
+        $email_from = post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), INPUT_FILTER_POST_IDENTIFIER);
+        $from_name = substr(post_param_string('name', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true), INPUT_FILTER_POST_IDENTIFIER), 0, 80);
 
         // Send notification
         require_code('notifications');
@@ -51,7 +51,6 @@ class Hook_endpoint_account_contact_us
         dispatch_notification('ticket_reply', $type . '_' . $id, $notification_subject, $notification_message, null, null, ['create_ticket' => true]);
 
         // Send standard confirmation e-mail to current user
-        $email_from = trim(post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member())));
         if ($email_from != '' && get_option('message_received_emails') == '1') {
             require_code('mail');
             dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), [$email_from], ($from_name == '') ? null : $from_name, '', '', ['as' => get_member()]);

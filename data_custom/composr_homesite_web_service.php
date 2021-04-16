@@ -68,7 +68,7 @@ $call = get_param_string('call');
 
 $parameters = isset($_POST['parameters']) ? $_POST['parameters'] : [];
 
-$password_given = post_param_string('password', null, INPUT_FILTER_NONE);
+$password_given = post_param_string('password', null, INPUT_FILTER_PASSWORD);
 if ($password_given === null) {
     call_user_func_array('server__public__' . $call, $parameters);
 } else {

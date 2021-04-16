@@ -306,7 +306,7 @@ class Module_sites
      */
     public function _hostingcopy_ftp_connect()
     {
-        $domain = trim(post_param_string('ftp_domain'));
+        $domain = post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER);
         $port = 21;
         if (strpos($domain, ':') !== false) {
             list($domain, $_port) = explode(':', $domain, 2);
@@ -315,9 +315,9 @@ class Module_sites
         $conn_id = @ftp_connect($domain, $port);
 
         if ($conn_id === false) {
-            warn_exit(do_lang_tempcode('COULD_NOT_CONNECT_SERVER', escape_html(post_param_string('ftp_domain')), cms_error_get_last()));
+            warn_exit(do_lang_tempcode('COULD_NOT_CONNECT_SERVER', escape_html(post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER)), cms_error_get_last()));
         }
-        $login_result = @ftp_login($conn_id, post_param_string('ftp_username'), post_param_string('ftp_password', false, INPUT_FILTER_NONE));
+        $login_result = @ftp_login($conn_id, post_param_string('ftp_username', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('ftp_password', false, INPUT_FILTER_NONE));
 
         // Check connection
         if (!$login_result) {
@@ -351,7 +351,7 @@ class Module_sites
             warn_exit(do_lang_tempcode('HOSTING_NO_FIND_DIR'));
         }
 
-        $base_url = 'http://' . preg_replace('#^ftp\.#', '', post_param_string('ftp_domain')) . preg_replace('#/(public_html|www|httpdocs|htdocs)/#', '/', $search_under);
+        $base_url = 'http://' . preg_replace('#^ftp\.#', '', post_param_string('ftp_domain', false, INPUT_FILTER_POST_IDENTIFIER)) . preg_replace('#/(public_html|www|httpdocs|htdocs)/#', '/', $search_under);
 
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('FTP_DIRECTORY'), '', 'path', $list));
@@ -384,8 +384,8 @@ class Module_sites
         }
 
         $conn_id = $this->_hostingcopy_ftp_connect();
-        $path = post_param_string('path');
-        $extra_path = post_param_string('extra_path');
+        $path = post_param_string('path', false, INPUT_FILTER_POST_IDENTIFIER);
+        $extra_path = post_param_string('extra_path', false, INPUT_FILTER_POST_IDENTIFIER);
         if (!@ftp_chdir($conn_id, $path)) {
             warn_exit(do_lang_tempcode('HOSTING_NO_FIND_DIR'));
         }
@@ -479,12 +479,12 @@ class Module_sites
 
         $codename = cms_mb_strtolower(post_param_string('codename'));
         $name = post_param_string('name', '');
-        $email_address = post_param_string('email');
+        $email_address = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
         $description = post_param_string('description', '');
         $category = post_param_string('category', '');
         $show_in_directory = post_param_integer('show_in_directory', 0);
-        $password = post_param_string('password', false, INPUT_FILTER_NONE);
-        $confirm_password = post_param_string('confirm_password', false, INPUT_FILTER_NONE);
+        $password = post_param_string('password', false, INPUT_FILTER_PASSWORD);
+        $confirm_password = post_param_string('confirm_password', false, INPUT_FILTER_PASSWORD);
 
         if ($password != $confirm_password) {
             warn_exit(do_lang_tempcode('PASSWORD_MISMATCH'));

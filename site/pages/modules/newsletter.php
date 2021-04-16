@@ -331,7 +331,7 @@ class Module_newsletter
         $forename = '';
         $surname = '';
         if (!is_guest()) {
-            $their_email = get_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), INPUT_FILTER_GET_COMPLEX);
+            $their_email = get_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), INPUT_FILTER_GET_IDENTIFIER);
             $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
             $parts = explode(' ', $username);
             if (count($parts) >= 2) {
@@ -347,7 +347,7 @@ class Module_newsletter
                 $surname = $existing_record[0]['n_surname'];
             }*/
         } else {
-            $their_email = get_param_string('email', '', INPUT_FILTER_GET_COMPLEX);
+            $their_email = get_param_string('email', '', INPUT_FILTER_GET_IDENTIFIER);
         }
 
         $message = get_option('newsletter_text');
@@ -427,11 +427,11 @@ class Module_newsletter
         }
 
         // Add
-        $email = trim(post_param_string('email'));
-        $password = trim(post_param_string('password', '', INPUT_FILTER_NONE));
-        $forename = trim(post_param_string('forename'));
-        $surname = trim(post_param_string('surname'));
-        if ($password != trim(post_param_string('password_confirm', '', INPUT_FILTER_NONE))) {
+        $email = post_param_string('email', false, INPUT_FILTER_POST_IDENTIFIER);
+        $password = post_param_string('password', '', INPUT_FILTER_PASSWORD);
+        $forename = post_param_string('forename');
+        $surname = post_param_string('surname');
+        if ($password != post_param_string('password_confirm', '', INPUT_FILTER_PASSWORD)) {
             warn_exit(make_string_tempcode(escape_html(do_lang('PASSWORD_MISMATCH'))));
         }
         $language = post_param_string('lang', user_lang());
@@ -524,7 +524,7 @@ class Module_newsletter
     {
         require_code('crypt');
 
-        $email = trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX));
+        $email = get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER);
         $language = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'language', ['email' => $email]);
         $salt = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'pass_salt', ['email' => $email]);
         $new_password = get_secure_random_string();
@@ -604,7 +604,7 @@ class Module_newsletter
     public function newsletter_confirm_joining() : object
     {
         $code_confirm = get_param_integer('confirm');
-        $email = trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX));
+        $email = get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER);
         $correct_confirm = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'code_confirm', ['email' => $email]);
         if ($correct_confirm === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
