@@ -661,7 +661,7 @@ function _build_url(array $parameters, string $zone_name = '', array $skip = [],
         } else {
             $url = $stub;
 
-            if (get_option('url_scheme_omit_default_zone_pages') == '1') {
+            if ((function_exists('get_option')) && (get_option('url_scheme_omit_default_zone_pages') == '1')) {
                 if ((empty($parameters)) || (count($parameters) == 1) && (isset($parameters['page'])) && (($parameters['page'] == '') || ($parameters['page'] == get_zone_default_page($zone_name)))) {
                     return $url . $hash;
                 }
