@@ -316,17 +316,6 @@ function clean_php_file_for_eval(string $c, ?string $path = null) : string
     return str_replace(array_keys($reps), array_values($reps), $c);
 }
 
-// LEGACY (PHP < 7)
-if (!class_exists('Error')) {
-    /**
-     * Error class.
-     * @package core
-     */
-    class Error
-    {
-    }
-}
-
 /**
  * Run some code that is to be included. Bail out on failure.
  *

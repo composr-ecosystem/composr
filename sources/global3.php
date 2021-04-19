@@ -1201,10 +1201,6 @@ function cms_mb_substr(string $in, int $from, ?int $amount = null, bool $force =
         $amount = cms_mb_strlen($in, $force) - $from;
     }
 
-    if ($in == '' || strlen($in) == $from) {
-        return ''; // LEGACY Workaround PHP bug/inconsistency (https://bugs.php.net/bug.php?id=72320)
-    }
-
     if ((!$force) && (get_charset() != 'utf-8')) {
         return substr($in, $from, $amount);
     }
@@ -2222,7 +2218,7 @@ function sort_maps_by__strlen(array $rows, $sort_key)
         return;
     }
 
-    @uasort($rows, '_strlen_sort'); // LEGACY (< PHP 7): @ is to stop PHP bug (https://bugs.php.net/bug.php?id=50688 / https://github.com/php/php-src/commit/179c8a2a09a993bfa35f65828d40b68e3f69f64e#diff-497f073aa1ab88afcb8b248fc25d2a12) warning about altered array contents when Tempcode copies are evaluated internally
+    uasort($rows, '_strlen_sort');
 }
 
 /**
@@ -2280,9 +2276,9 @@ function sort_maps_by(array &$rows, $sort_keys, bool $preserve_order_if_possible
 
         $first_key = key($rows);
         if ((is_integer($first_key)) && (array_unique(array_map('is_integer', array_keys($rows))) === [true])) {
-            @usort($rows, '_multi_sort'); // LEGACY (< PHP 7): @ is to stop PHP bug (https://bugs.php.net/bug.php?id=50688 / https://github.com/php/php-src/commit/179c8a2a09a993bfa35f65828d40b68e3f69f64e#diff-497f073aa1ab88afcb8b248fc25d2a12) warning about altered array contents when Tempcode copies are evaluated internally
+            usort($rows, '_multi_sort');
         } else {
-            @uasort($rows, '_multi_sort'); // LEGACY (< PHP 7): @ is to stop PHP bug (https://bugs.php.net/bug.php?id=50688 / https://github.com/php/php-src/commit/179c8a2a09a993bfa35f65828d40b68e3f69f64e#diff-497f073aa1ab88afcb8b248fc25d2a12) warning about altered array contents when Tempcode copies are evaluated internally
+            uasort($rows, '_multi_sort');
         }
     }
 }

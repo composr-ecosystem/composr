@@ -1958,7 +1958,7 @@ function ltrim(string $string, string $characters = " \t\n\r\0\x0B") : string
  * @param  string $subject The subject
  * @param  string $message The message
  * @param  string $additional_headers Additional headers
- * @param  string $additional_flags Additional stuff to send to sendmail executable
+ * @param  mixed $additional_flags Additional stuff to send to sendmail executable (array or string)
  * @return boolean Success status
  */
 function mail(string $to, string $subject, string $message, string $additional_headers = '', string $additional_flags = '') : bool
@@ -5341,16 +5341,14 @@ socket_addrinfo_lookup
 socket_addrinfo_connect
 socket_addrinfo_bind
 socket_addrinfo_explain
+stream_isatty
+imagecreatefrombmp
+imagebmp
 
 GD stuff that's not on by default...
 
 imagecreatefromwebp
 imagewebp
-
-PHP7.2, so cannot use yet...
-
-imagecreatefrombmp
-imagebmp
 
 
 

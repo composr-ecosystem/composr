@@ -35,17 +35,6 @@
  */
 function init__minikernel()
 {
-    // LEGACY (PHP < 7)
-    if (!class_exists('Error')) {
-        /**
-         * Error class.
-         * @package core
-         */
-        class Error
-        {
-        }
-    }
-
     // Input filtering constants
     if (!defined('INPUT_FILTER_WORDFILTER')) {
         // Input filtering constants (filters to apply)

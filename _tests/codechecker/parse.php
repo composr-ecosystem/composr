@@ -248,6 +248,10 @@ function _parse_namespace_use_list($is_generalised = true)
         }
 
         if (pparse__parser_peek() == 'COMMA') {
+            if ((pparse__parser_peek() == 'COMMAND_TERMINATE') || (pparse__parser_peek() == 'CURLY_CLOSE')) {
+                break;
+            }
+
             pparse__parser_next();
         } else {
             break;

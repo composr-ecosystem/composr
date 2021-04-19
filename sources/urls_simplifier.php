@@ -28,12 +28,6 @@
  */
 function shorten_urlencoded_filename(string $filename, int $length = 226) : string
 {
-    if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
-        // Older versions of PHP on Windows cannot handle utf-8 filenames
-        require_code('character_sets');
-        $filename = transliterate_string($filename);
-    }
-
     // Default length is... maxDBFieldSize - maxUploadDirSize - suffixingLeeWay = 255 - (7 + 1 + 23 + 1) - 6 = 230
     // (maxUploadDirSize is LEN('uploads') + LEN('/') + LEN(maxUploadSubdirSize) + LEN('/')
     // Suffixing leeway is so we can have up to ~99999 different files with the same base filename, varying by auto-generated suffixes
@@ -147,7 +141,7 @@ class HarmlessURLCoder
     {
         if ((function_exists('idn_to_utf8')) && (strpos($str, '://') !== false) && (get_charset() == 'utf-8')) {
             $domain = parse_url($str, PHP_URL_HOST);
-            $_domain = @/*LEGACY @ to remove awkward temporary INTL_IDNA_VARIANT_2003 deprecation message that exists until PHP4*/idn_to_utf8($domain);
+            $_domain = @/*LEGACY @ to remove awkward temporary INTL_IDNA_VARIANT_2003 deprecation message that exists until PHP 7.4*/idn_to_utf8($domain);
             if ($_domain !== false) {
                 $str = preg_replace('#(^.*://)' . preg_quote($domain, '#') . '(.*$)#U', '$1' . $_domain . '$2', $str);
             }
@@ -186,7 +180,7 @@ class HarmlessURLCoder
     {
         if ((function_exists('idn_to_ascii')) && (strpos($str, '://') !== false) && (get_charset() == 'utf-8')) {
             $domain = preg_replace('#(^.*://)([^:/]*)(.*$)#', '$2', $str);
-            $_domain = @/*LEGACY @ to remove awkward temporary INTL_IDNA_VARIANT_2003 deprecation message that exists until PHP4*/idn_to_ascii($domain);
+            $_domain = @/*LEGACY @ to remove awkward temporary INTL_IDNA_VARIANT_2003 deprecation message that exists until PHP7.4*/idn_to_ascii($domain);
             if ($_domain !== false) {
                 $str = preg_replace('#(^.*://)' . preg_quote($domain, '#') . '(.*$)#U', '${1}' . $_domain . '${2}', $str);
             }

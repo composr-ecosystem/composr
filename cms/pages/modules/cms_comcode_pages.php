@@ -888,12 +888,6 @@ class Module_cms_comcode_pages
             warn_exit(do_lang_tempcode('NO_SUCH_ZONE'), false, false, 404);
         }
 
-        if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
-            // Older versions of PHP on Windows cannot handle utf-8 filenames
-            require_code('character_sets');
-            $file = transliterate_string($file);
-        }
-
         if (strlen($file) > 80) {
             warn_exit(do_lang_tempcode('BAD_CODENAME'));
         }
@@ -1259,12 +1253,6 @@ class Module_cms_comcode_pages
             $new_file = filter_naughty(has_actual_page_access(get_member(), 'admin_sitemap') ? post_param_string('title', $file) : $file);
         } else {
             $new_file = filter_naughty($file);
-        }
-
-        if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
-            // Older versions of PHP on Windows cannot handle utf-8 filenames
-            require_code('character_sets');
-            $new_file = transliterate_string($new_file);
         }
 
         require_code('type_sanitisation');

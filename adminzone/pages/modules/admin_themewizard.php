@@ -247,12 +247,6 @@ class Module_admin_themewizard
         }
 
         if ($name !== null) {
-            if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
-                // Older versions of PHP on Windows cannot handle utf-8 filenames
-                require_code('character_sets');
-                $name = transliterate_string($name);
-            }
-
             require_code('type_sanitisation');
             if ((!is_alphanumeric($name)) || (strlen($name) > 40)) {
                 return redirect_screen(get_screen_title('ERROR_OCCURRED'), $back_url, do_lang_tempcode('BAD_CODENAME'));
