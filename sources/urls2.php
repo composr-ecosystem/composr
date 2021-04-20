@@ -31,7 +31,7 @@
  * @param  boolean $replace_existing_get Replace all existing GET parameters
  * @return array A list of parameters that would be required to be passed back to reset the state
  */
-function set_execution_context(array $new_get, string $new_zone = '_SEARCH', string $new_current_script = 'index', bool $erase_keep_also = false, ?bool $new_in_self_routing_script = null, ?bool $replace_existing_get = true) : array
+function set_execution_context(array $new_get, string $new_zone = '_SEARCH', string $new_current_script = 'index', bool $erase_keep_also = false, ?bool $new_in_self_routing_script = null, bool $replace_existing_get = true) : array
 {
     global $IN_SELF_ROUTING_SCRIPT;
 

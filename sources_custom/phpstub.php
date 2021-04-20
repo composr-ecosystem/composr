@@ -1961,7 +1961,7 @@ function ltrim(string $string, string $characters = " \t\n\r\0\x0B") : string
  * @param  mixed $additional_flags Additional stuff to send to sendmail executable (array or string)
  * @return boolean Success status
  */
-function mail(string $to, string $subject, string $message, string $additional_headers = '', string $additional_flags = '') : bool
+function mail(string $to, string $subject, string $message, string $additional_headers = '', $additional_flags = '') : bool
 {
     return false;
 }
