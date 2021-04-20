@@ -20,12 +20,14 @@
                 'click .js-btn-refresh-without-ignored': 'refreshWithoutIgnored',
                 'click .js-btn-show-local-shell-paths': 'showLocalShellPaths',
                 'click .js-btn-download-local-tar': 'downloadLocalTar',
+                'click .js-btn-push': 'push',
                 'click .js-btn-delete-local-changes': 'deleteLocalChanges',
                 'click .js-git-local-select-all': 'localSelectAll',
                 'click .js-git-local-select-none': 'localSelectNone',
 
                 'click .js-btn-show-remote-shell-paths': 'showRemoteShellPaths',
                 'click .js-btn-download-remote-tar': 'downloadRemoteTar',
+                'click .js-btn-pull': 'pull',
                 'click .js-git-remote-select-all': 'remoteSelectAll',
                 'click .js-git-remote-select-none': 'remoteSelectNone',
 
@@ -47,6 +49,10 @@
 
         downloadLocalTar: function () {
             this.form.elements['action'].value = 'local_tar';
+        },
+
+        push: function () {
+            this.form.elements['action'].value = 'push';
         },
 
         deleteLocalChanges: function () {
@@ -72,6 +78,10 @@
 
         downloadRemoteTar: function () {
             this.form.elements['action'].value = 'remote_tar';
+        },
+
+        pull: function () {
+            this.form.elements['action'].value = 'pull';
         },
 
         remoteSelectAll: function () {
@@ -102,11 +112,13 @@
 
             hasSelection = this._refreshFileSelection('local_select_');
             document.getElementById('button_local_tar').disabled = !hasSelection;
+            document.getElementById('button_push').disabled = !has_selection;
             document.getElementById('button_local_shell_paths').disabled = !hasSelection;
             document.getElementById('button_revert').disabled = !hasSelection;
 
             hasSelection = this._refreshFileSelection('remote_select_');
             document.getElementById('button_remote_tar').disabled = !hasSelection;
+            document.getElementById('button_pull').disabled = !has_selection;
             document.getElementById('button_remote_shell_paths').disabled = !hasSelection;
         },
 

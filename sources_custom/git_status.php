@@ -13,6 +13,8 @@
  * @package    git_status
  */
 
+/*EXTRA FUNCTIONS: shell_exec*/
+
 function init__git_status()
 {
     define('GIT_STATUS__IGNORED', 0);
@@ -60,9 +62,9 @@ function find_branch()
 
 function num_unsynched_local_commits()
 {
-    $lines = git_exec('status');
+    $result = _git_exec('status');
     $matches = [];
-    if (preg_match('# ahead of \'[^\']*\' by (\d+) commit#', implode("\n", $lines), $matches) != 0) {
+    if (preg_match('# ahead of \'[^\']*\' by (\d+) commit#', $result, $matches) != 0) {
         return intval($matches[1]);
     }
     return '0';
@@ -72,9 +74,9 @@ function num_unsynched_remote_commits()
 {
     git_exec('fetch');
 
-    $lines = git_exec('status');
+    $result = _git_exec('status');
     $matches = [];
-    if (preg_match('# behind \'[^\']*\' by (\d+) commit#', implode("\n", $lines), $matches) != 0) {
+    if (preg_match('# behind \'[^\']*\' by (\d+) commit#', $result, $matches) != 0) {
         return intval($matches[1]);
     }
     return '0';
@@ -141,13 +143,12 @@ function get_local_changes($include_metadata = false, $include_ignored = false)
 
 function get_local_diff($path)
 {
-    $lines = git_exec('diff "' . $path . '"');
-    return implode("\n", $lines);
+    return _git_exec('diff ' . cms_escapeshellarg($path));
 }
 
 function git_revert($path)
 {
-    git_exec('checkout -- "' . $path . '"');
+    git_exec('checkout -- ' . cms_escapeshellarg($path));
 }
 
 function get_remote_changes($include_metadata = false)
@@ -210,7 +211,7 @@ function get_remote_file_size($path)
 {
     git_exec('fetch');
 
-    $lines = git_exec('cat-file -s "origin/' . find_branch() . ':' . $path . '"');
+    $lines = git_exec('cat-file -s ' . cms_escapeshellarg('origin/' . find_branch() . ':' . $path));
     return array_key_exists(0, $lines) ? intval($lines[0]) : null;
 }
 
@@ -218,7 +219,7 @@ function get_remote_mtime($path)
 {
     git_exec('fetch');
 
-    $lines = git_exec('log origin/' . find_branch() . ' -1 --format="%aD" -- ' . '"' . $path . '"');
+    $lines = git_exec('log origin/' . find_branch() . ' -1 --format="%aD" -- ' . cms_escapeshellarg($path));
     return array_key_exists(0, $lines) ? strtotime($lines[0]) : null;
 }
 
@@ -226,18 +227,51 @@ function get_remote_diff($path)
 {
     git_exec('fetch');
 
-    $lines = git_exec('diff HEAD..origin/' . find_branch() . ' --no-renames "' . $path . '"');
-    return implode("\n", $lines);
+    return _git_exec('diff HEAD..origin/' . find_branch() . ' --no-renames ' . cms_escapeshellarg($path));
+}
+
+function git_add($path)
+{
+    return _git_exec('add ' . cms_escapeshellarg($path));
+}
+
+function git_commit($paths)
+{
+    $_paths = '';
+    foreach ($paths as $path) {
+        $_paths .= ' ' . cms_escapeshellarg($path);
+    }
+    return _git_exec('commit' . $_paths . ' -m ' . cms_escapeshellarg('Web commit from ' . get_base_url()));
+}
+
+function git_push()
+{
+    return _git_exec('push');
+}
+
+function git_pull()
+{
+    return _git_exec('pull');
+}
+
+function get_git_file($path, $revision = 'HEAD')
+{
+    return _git_exec('show ' . cms_escapeshellarg($revision . ':' . $path));
 }
 
 function git_exec($cmd)
+{
+    return explode("\n", trim(_git_exec($cmd)));
+}
+
+function _git_exec($cmd)
 {
     static $cache = [];
     if (array_key_exists($cmd, $cache)) {
         return $cache[$cmd];
     }
     chdir(get_git_file_base());
-    $lines = shell_exec('git ' . $cmd . ' 2>&1');
-    $cache[$cmd] = explode("\n", trim($lines));
+
+    $cache[$cmd] = shell_exec('git ' . $cmd . ' 2>&1');
     return $cache[$cmd];
 }

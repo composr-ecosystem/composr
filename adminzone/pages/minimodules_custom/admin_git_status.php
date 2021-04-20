@@ -18,6 +18,8 @@ i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_
 require_code('git_status');
 require_code('files');
 
+require_css('git_status');
+
 require_javascript('git_status');
 
 $type = get_param_string('type', 'browse');
@@ -46,11 +48,23 @@ if ($type == 'browse') {
         case 'exclude':
             git_status__browse(false);
             break;
+
+        case 'push':
+            git_status__push();
+            break;
+
+        case 'pull':
+            git_status__pull();
+            break;
     }
 } elseif ($type == 'local_diff') {
     git_status__local_diff();
 } elseif ($type == 'remote_diff') {
     git_status__remote_diff();
+} elseif ($type == 'local_view') {
+    git_status__local_view();
+} elseif ($type == 'remote_view') {
+    git_status__remote_view();
 }
 
 function git_status__browse($include_ignored = null)
@@ -114,6 +128,7 @@ function git_status__browse($include_ignored = null)
         $local_files[] = [
             'PATH_HASH' => md5($path),
             'PATH' => $path,
+            'PATH_ENCODED' => base64_encode($path),
             'FILENAME' => $filename,
             'DIRECTORY' => $directory,
             'FILE_SIZE' => ($details['file_size'] === null) ? null : clean_file_size($details['file_size']),
@@ -136,6 +151,7 @@ function git_status__browse($include_ignored = null)
         $remote_files[] = [
             'PATH_HASH' => md5($path),
             'PATH' => $path,
+            'PATH_ENCODED' => base64_encode($path),
             'FILENAME' => $filename,
             'DIRECTORY' => $directory,
             'FILE_SIZE' => ($details['file_size'] === null) ? null : clean_file_size($details['file_size']),
@@ -239,27 +255,74 @@ function git_status__revert()
     attach_message($msg, 'inform');
 }
 
+function git_status__local_view()
+{
+    $title = get_screen_title('Preview local file', false);
+
+    $path = base64_decode(get_param_string('id', false, INPUT_FILTER_NONE));
+
+    $media_current = git_render_preview_from_path($path);
+
+    $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
+        'TITLE' => $title,
+        'MEDIA_CURRENT' => $media_current,
+    ]);
+    $tpl->evaluate_echo();
+}
+
+function git_status__remote_view()
+{
+    $title = get_screen_title('Preview remote file', false);
+
+    $path = base64_decode(get_param_string('id', false, INPUT_FILTER_NONE));
+
+    $media_current = git_render_preview_from_raw_data($path, get_git_file($path));
+
+    $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
+        'TITLE' => $title,
+        'MEDIA_CURRENT' => $media_current,
+    ]);
+    $tpl->evaluate_echo();
+}
+
 function git_status__local_diff()
 {
-    $path = get_param_string('id', false, INPUT_FILTER_NONE);
+    $path = base64_decode(get_param_string('id', false, INPUT_FILTER_NONE));
 
     $diff = get_local_diff($path);
 
-    _git_status__diff($diff);
+    _git_status__diff($diff, $path, false);
 }
 
 function git_status__remote_diff()
 {
-    $path = get_param_string('id', false, INPUT_FILTER_NONE);
+    $path = base64_decode(get_param_string('id', false, INPUT_FILTER_NONE));
 
     $diff = get_remote_diff($path);
 
-    _git_status__diff($diff);
+    _git_status__diff($diff, $path, true);
 }
 
-function _git_status__diff($diff)
+function _git_status__diff($diff, $path, $is_remote)
 {
     $title = get_screen_title('Git diff', false);
+
+    if (preg_match("#^diff --git a/.* b/.*\nindex \w+\.\.\w+ \d+\nBinary files a/.* and .* differ$#", $diff) != 0) {
+        if ($is_remote) {
+            $media_before = git_render_preview_from_raw_data($path, get_git_file($path));
+            $media_current = git_render_preview_from_raw_data($path, get_git_file($path, 'origin/' . find_branch()));
+        } else {
+            $media_before = git_render_preview_from_raw_data($path, get_git_file($path));
+            $media_current = git_render_preview_from_path($path);
+        }
+
+        $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
+            'TITLE' => $title,
+            'MEDIA_BEFORE' => $media_before,
+            'MEDIA_CURRENT' => $media_current,
+        ]);
+        $tpl->evaluate_echo();
+    }
 
     if (addon_installed('geshi')) {
         require_code('geshi');
@@ -268,18 +331,54 @@ function _git_status__diff($diff)
         $geshi = new GeSHi($diff, 'diff');
         $geshi->set_header_type(GESHI_HEADER_DIV);
         require_code('xhtml');
-        $diff_nice = xhtmlise_html($geshi->parse_code());
+        $diff_nice = make_string_tempcode(xhtmlise_html($geshi->parse_code()));
         restrictify();
     } else {
-        $diff_nice = nl2br(escape_html($diff));
+        $diff_nice = with_whitespace(escape_html($diff));
     }
 
-    $tpl = do_template('GIT_STATUS_DIFF_SCREEN', [
+    $tpl = do_template('GIT_STATUS_FILE_SCREEN', [
         '_GUID' => '1ed30738a878cd637c6273c6bd817948',
         'TITLE' => $title,
         'DIFF' => $diff_nice,
     ]);
     $tpl->evaluate_echo();
+}
+
+function git_render_preview_from_raw_data($path, $raw_data)
+{
+    require_code('mime_types');
+    $url = 'data:' . get_mime_type(get_file_extension($path), true) . ';base64,' . base64_encode($raw_data);
+
+    require_code('media_renderer');
+    $renderers = find_media_renderers($url, [], true);
+    if (($renderers === null) || (empty(array_diff($renderers, ['hyperlink', 'code'])))) {
+        return with_whitespace(escape_html($raw_data));
+    }
+
+    return _git_render_media_preview($path, $url);
+}
+
+function git_render_preview_from_path($path)
+{
+    if (!is_file(get_custom_file_base() . '/' . $path)) {
+        return paragraph(do_lang_tempcode('MISSING_RESOURCE'), '', 'red_alert');
+    }
+
+    $url = get_custom_base_url() . '/' . str_replace('%2F', '/', rawurlencode($path));
+
+    require_code('media_renderer');
+    $renderers = find_media_renderers($url, [], true);
+    if (($renderers === null) || (empty(array_diff($renderers, ['hyperlink', 'code'])))) {
+        return with_whitespace(escape_html(cms_file_get_contents_safe(get_custom_file_base() . '/' . $path)));
+    }
+
+    return _git_render_media_preview($path, $url);
+}
+
+function _git_render_media_preview($path, $url)
+{
+    return render_media_url($url, $url, [], true);
 }
 
 function git_status__paths($stub)
@@ -291,4 +390,44 @@ function git_status__paths($stub)
         }
     }
     return $paths;
+}
+
+function git_status__push()
+{
+    $title = get_screen_title('Commit & Push', false);
+    $title->evaluate_echo();
+
+    if (num_unsynched_remote_commits() > 0) {
+        return paragraph('There are remote changes to pull first.', '', 'red_alert');
+    }
+
+    $output = [];
+
+    $local_changes = get_local_changes(true, true);
+
+    $paths = git_status__paths('local_select_');
+    foreach ($paths as $path) {
+        switch ($local_changes[$path]['git_status']) {
+            case GIT_STATUS__NEW:
+            case GIT_STATUS__IGNORED:
+                $output[] = git_add($path);
+                break;
+        }
+    }
+
+    $output[] = git_commit($paths);
+
+    $output[] = git_push();
+
+    foreach ($output as $result) {
+        echo static_evaluate_tempcode(with_whitespace(escape_html($result) . "\n"));
+    }
+}
+
+function git_status__pull()
+{
+    $title = get_screen_title('Pull', false);
+    $title->evaluate_echo();
+
+    echo static_evaluate_tempcode(with_whitespace(escape_html(git_pull())));
 }

@@ -93,7 +93,7 @@ function peek_media_mode() : int
  * @param  ?string $original_filename Originally filename to display as a link caption where appropriate (null: use $url_safe)
  * @return ?array The hooks (null: cannot find one)
  */
-function find_media_renderers(string $url, array $attributes, bool $as_admin, ?int $source_member, int $acceptable_media = 15, ?string $limit_to = null, ?string $original_filename = null) : ?array
+function find_media_renderers(string $url, array $attributes, bool $as_admin, ?int $source_member = null, int $acceptable_media = 15, ?string $limit_to = null, ?string $original_filename = null) : ?array
 {
     if ($source_member === null) {
         $source_member = get_member();
@@ -162,16 +162,22 @@ function find_media_renderers(string $url, array $attributes, bool $as_admin, ?i
         }
     }
 
-    // Find via download (oEmbed / mime-type) - last resort, as it is more 'costly' to do
-    require_code('http');
-    $meta_details = get_webpage_meta_details($url);
-    if ((array_key_exists('mime_type', $attributes)) && ($attributes['mime_type'] != '')) {
-        $mime_type = $attributes['mime_type'];
+    // Find via base-64?
+    $matches = [];
+    if (preg_match('#^data:([^/]*/[^/]*);base64,#', $url, $matches) != 0) {
+        $mime_type = $matches[1];
     } else {
-        $mime_type = $meta_details['t_mime_type'];
-        if (($mime_type == 'application/octet-stream') || ($mime_type == '')) {
-            require_code('mime_types');
-            $mime_type = get_mime_type(get_file_extension(($original_filename === null) ? $url : $original_filename), true);
+        // Find via download (oEmbed / mime-type) - last resort, as it is more 'costly' to do
+        require_code('http');
+        $meta_details = get_webpage_meta_details($url);
+        if ((array_key_exists('mime_type', $attributes)) && ($attributes['mime_type'] != '')) {
+            $mime_type = $attributes['mime_type'];
+        } else {
+            $mime_type = $meta_details['t_mime_type'];
+            if (($mime_type == 'application/octet-stream') || ($mime_type == '')) {
+                require_code('mime_types');
+                $mime_type = get_mime_type(get_file_extension(($original_filename === null) ? $url : $original_filename), true);
+            }
         }
     }
     if ($mime_type != '') {

@@ -1,0 +1,7 @@
+.git-status-diff {
+	overflow-x: scroll;
+}
+
+.git-status-diff, .git-status-diff .diff {
+	white-space: nowrap;
+}
