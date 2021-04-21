@@ -15,7 +15,7 @@
 
 /** Text_Diff */
 if (!class_exists('Text_Diff')) {
-    require_once 'Text/Diff.php';
+    require_once('Text/Diff.php');
 }
 
 /**

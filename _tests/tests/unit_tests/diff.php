@@ -27,8 +27,13 @@ class diff_test_set extends cms_test_case
 
     public function testSimpleDiff()
     {
-        $result = diff_simple_text("a\nb\nc", "a\nb\nd");
-        $this->assertTrue($result == '@@ -1,3 +1,3 @@<br /> a<br /> b<br /><span style="color: red">-c</span><br /><span style="color: green">+d</span><br /><br />');
+        // Unified
+        $result = diff_simple_text("a\nb\nc", "a\nb\nd", true);
+        $this->assertTrue($result == '@@ -1,3 +1,3 @@<br /> a<br /> b<br /><del>-c</del><br /><ins>+d</ins><br /><br />');
+
+        // Not unified
+        $result = diff_simple_text("a\nb\nc", "a\nb\nd", false);
+        $this->assertTrue($result == 'a<br />b<br /><del>c</del><ins>d</ins><br />');
     }
 
     public function test3WayDiff()

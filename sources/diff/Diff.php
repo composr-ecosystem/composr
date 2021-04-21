@@ -51,7 +51,7 @@ class Text_Diff {
 
         $class = 'Text_Diff_Engine_' . $engine;
         if (!class_exists($class)) {
-            require_once 'Text/Diff/Engine/' . $engine . '.php';
+            require_once('Text/Diff/Engine/' . $engine . '.php');
         }
 
         $diff_engine = new $class();
@@ -124,7 +124,7 @@ class Text_Diff {
     function reverse()
     {
         if (version_compare(zend_version(), '2', '>')) {
-            $rev = clone($this);
+            $rev = clone $this;
         } else {
             $rev = $this;
         }

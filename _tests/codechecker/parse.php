@@ -1060,9 +1060,17 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             pparse__parser_expect('COMMAND_TERMINATE');
             $control_expression = _parse_expression();
             pparse__parser_expect('COMMAND_TERMINATE');
-            $control_command = _parse_command_actual(true);
+            if (pparse__parser_peek() == 'PARENTHESIS_CLOSE') {
+                $control_command = null;
+            } else {
+                $control_command = _parse_command_actual(true);
+            }
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $loop_command = _parse_command(true, $is_braced);
+            if (pparse__parser_peek() == 'COMMAND_TERMINATE') {
+                $loop_command = null;
+            } else {
+                $loop_command = _parse_command(true, $is_braced);
+            }
             $command = ['FOR', $init_command, $control_expression, $control_command, $loop_command, $c_pos];
             break;
 
@@ -1083,7 +1091,11 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             pparse__parser_expect('PARENTHESIS_OPEN');
             $control_expression = _parse_expression();
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $loop_command = _parse_command(true, $is_braced);
+            if (pparse__parser_peek() == 'COMMAND_TERMINATE') {
+                $loop_command = null;
+            } else {
+                $loop_command = _parse_command(true, $is_braced);
+            }
             $command = ['WHILE', $control_expression, $loop_command, $c_pos];
             break;
 

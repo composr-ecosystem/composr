@@ -101,6 +101,7 @@ function _diff_simple(array $old, array $new, bool $unified, bool $include_uncha
             $renderer->_trailing_context_lines = 0;
         }
         $diff_html = $renderer->render($diff);
+        $diff_html = str_replace("\n", '<br />', $diff_html);
     }
 
     if (!$include_unchanged) {

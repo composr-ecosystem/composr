@@ -39,8 +39,8 @@ class Text_Diff_Renderer {
     {
         foreach ($params as $param => $value) {
             $v = '_' . $param;
-            if (isset($this->$v)) {
-                $this->$v = $value;
+            if (property_exists($this, $v)) {
+                eval('$this->$v = $value;');
             }
         }
     }

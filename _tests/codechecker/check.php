@@ -691,12 +691,16 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 if ($c[1] !== null) {
                     check_command([$c[1]], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
                 }
-                check_command([$c[3]], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
+                if ($c[3] !== null) {
+                    check_command([$c[3]], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
+                }
                 $passes = ensure_type(['boolean'], check_expression($c[2], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (for)', true);
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[2]);
                 }
-                check_command($c[4], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
+                if ($c[4] !== null) {
+                    check_command($c[4], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
+                }
                 break;
 
             case 'DO':
@@ -712,7 +716,9 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[1]);
                 }
-                check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['WHILE']));
+                if ($c[2] !== null) {
+                    check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['WHILE']));
+                }
                 break;
 
             case 'CONTINUE':

@@ -35,7 +35,7 @@ function list_untouchable_third_party_directories()
         'mobiquo/smartbanner',
         'nbproject',
         '_old',
-        'sources/diff',
+        //'sources/diff', We maintain this now
         'sources_custom/aws_ses',
         'sources_custom/Cloudinary',
         'sources_custom/composr_mobile_sdk',
