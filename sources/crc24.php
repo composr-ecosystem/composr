@@ -1,8 +1,8 @@
 <?php
 
 /*CQC: No API check*/
-
-/*CQC: No check*/
+/*CQC: !FLAG__SOMEWHAT_PEDANTIC*/
+/*CQC: !FLAG__ESLINT*/
 
 /**
  * @package search

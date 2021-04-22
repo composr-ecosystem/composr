@@ -1,7 +1,8 @@
 <?php
 
 /*CQC: No API check*/
-/*CQC: No check*/
+/*CQC: !FLAG__SOMEWHAT_PEDANTIC*/
+/*CQC: !FLAG__ESLINT*/
 
 /**
  * Copyright (c) 2005 Richard Heyes (http://www.phpguru.org/)
@@ -42,7 +43,7 @@ class Stemmer_EN
     /**
      * Stems a word. Simple huh?
      *
-     * @param  string $word Word to stem
+     * @param string $word Word to stem
      * @return string Stemmed word
      */
     public static function stem($word)
@@ -68,15 +69,14 @@ class Stemmer_EN
     {
         // Part a
         if (substr($word, -1) == 's') {
-
-            self::replace($word, 'sses', 'ss')
-            OR self::replace($word, 'ies', 'i')
-            OR self::replace($word, 'ss', 'ss')
-            OR self::replace($word, 's', '');
+            $_ = (self::replace($word, 'sses', 'ss')
+            || self::replace($word, 'ies', 'i')
+            || self::replace($word, 'ss', 'ss')
+            || self::replace($word, 's', ''));
         }
 
         // Part b
-        if (substr($word, -2, 1) != 'e' OR !self::replace($word, 'eed', 'ee', 0)) { // First rule
+        if (substr($word, -2, 1) != 'e' || !self::replace($word, 'eed', 'ee', 0)) { // First rule
             $v = self::$regex_vowel;
 
             // ing and ed
@@ -86,20 +86,20 @@ class Stemmer_EN
 
                 // If one of above two test successful
                 if (!self::replace($word, 'at', 'ate')
-                    AND !self::replace($word, 'bl', 'ble')
-                        AND !self::replace($word, 'iz', 'ize')
+                    && !self::replace($word, 'bl', 'ble')
+                        && !self::replace($word, 'iz', 'ize')
                 ) {
 
                     // Double consonant ending
                     if (self::doubleConsonant($word)
-                        AND substr($word, -2) != 'll'
-                            AND substr($word, -2) != 'ss'
-                                AND substr($word, -2) != 'zz'
+                        && substr($word, -2) != 'll'
+                            && substr($word, -2) != 'ss'
+                                && substr($word, -2) != 'zz'
                     ) {
 
                         $word = substr($word, 0, -1);
                     } else {
-                        if (self::m($word) == 1 AND self::cvc($word)) {
+                        if (self::m($word) == 1 && self::cvc($word)) {
                             $word .= 'e';
                         }
                     }
@@ -113,7 +113,7 @@ class Stemmer_EN
     /**
      * Step 1c
      *
-     * @param  string $word Word to stem
+     * @param string $word Word to stem
      */
     private static function step1c($word)
     {
@@ -129,54 +129,54 @@ class Stemmer_EN
     /**
      * Step 2
      *
-     * @param  string $word Word to stem
+     * @param string $word Word to stem
      */
     private static function step2($word)
     {
         switch (substr($word, -2, 1)) {
             case 'a':
-                self::replace($word, 'ational', 'ate', 0)
-                OR self::replace($word, 'tional', 'tion', 0);
+                $_ = self::replace($word, 'ational', 'ate', 0)
+                || self::replace($word, 'tional', 'tion', 0);
                 break;
 
             case 'c':
-                self::replace($word, 'enci', 'ence', 0)
-                OR self::replace($word, 'anci', 'ance', 0);
+                $_ = self::replace($word, 'enci', 'ence', 0)
+                || self::replace($word, 'anci', 'ance', 0);
                 break;
 
             case 'e':
-                self::replace($word, 'izer', 'ize', 0);
+                $_ = self::replace($word, 'izer', 'ize', 0);
                 break;
 
             case 'g':
-                self::replace($word, 'logi', 'log', 0);
+                $_ = self::replace($word, 'logi', 'log', 0);
                 break;
 
             case 'l':
-                self::replace($word, 'entli', 'ent', 0)
-                OR self::replace($word, 'ousli', 'ous', 0)
-                OR self::replace($word, 'alli', 'al', 0)
-                OR self::replace($word, 'bli', 'ble', 0)
-                OR self::replace($word, 'eli', 'e', 0);
+                $_ = self::replace($word, 'entli', 'ent', 0)
+                || self::replace($word, 'ousli', 'ous', 0)
+                || self::replace($word, 'alli', 'al', 0)
+                || self::replace($word, 'bli', 'ble', 0)
+                || self::replace($word, 'eli', 'e', 0);
                 break;
 
             case 'o':
-                self::replace($word, 'ization', 'ize', 0)
-                OR self::replace($word, 'ation', 'ate', 0)
-                OR self::replace($word, 'ator', 'ate', 0);
+                $_ = self::replace($word, 'ization', 'ize', 0)
+                || self::replace($word, 'ation', 'ate', 0)
+                || self::replace($word, 'ator', 'ate', 0);
                 break;
 
             case 's':
-                self::replace($word, 'iveness', 'ive', 0)
-                OR self::replace($word, 'fulness', 'ful', 0)
-                OR self::replace($word, 'ousness', 'ous', 0)
-                OR self::replace($word, 'alism', 'al', 0);
+                $_ = self::replace($word, 'iveness', 'ive', 0)
+                || self::replace($word, 'fulness', 'ful', 0)
+                || self::replace($word, 'ousness', 'ous', 0)
+                || self::replace($word, 'alism', 'al', 0);
                 break;
 
             case 't':
-                self::replace($word, 'biliti', 'ble', 0)
-                OR self::replace($word, 'aliti', 'al', 0)
-                OR self::replace($word, 'iviti', 'ive', 0);
+                $_ = self::replace($word, 'biliti', 'ble', 0)
+                || self::replace($word, 'aliti', 'al', 0)
+                || self::replace($word, 'iviti', 'ive', 0);
                 break;
         }
 
@@ -186,7 +186,7 @@ class Stemmer_EN
     /**
      * Step 3
      *
-     * @param  string $word String to stem
+     * @param string $word String to stem
      */
     private static function step3($word)
     {
@@ -201,7 +201,7 @@ class Stemmer_EN
 
             case 't':
                 self::replace($word, 'icate', 'ic', 0)
-                OR self::replace($word, 'iciti', 'ic', 0);
+                or self::replace($word, 'iciti', 'ic', 0);
                 break;
 
             case 'u':
@@ -223,67 +223,67 @@ class Stemmer_EN
     /**
      * Step 4
      *
-     * @param  string $word Word to stem
+     * @param string $word Word to stem
      */
     private static function step4($word)
     {
         switch (substr($word, -2, 1)) {
             case 'a':
-                self::replace($word, 'al', '', 1);
+                $_ = self::replace($word, 'al', '', 1);
                 break;
 
             case 'c':
-                self::replace($word, 'ance', '', 1)
-                OR self::replace($word, 'ence', '', 1);
+                $_ = self::replace($word, 'ance', '', 1)
+                || self::replace($word, 'ence', '', 1);
                 break;
 
             case 'e':
-                self::replace($word, 'er', '', 1);
+                $_ = self::replace($word, 'er', '', 1);
                 break;
 
             case 'i':
-                self::replace($word, 'ic', '', 1);
+                $_ = self::replace($word, 'ic', '', 1);
                 break;
 
             case 'l':
-                self::replace($word, 'able', '', 1)
-                OR self::replace($word, 'ible', '', 1);
+                $_ = self::replace($word, 'able', '', 1)
+                || self::replace($word, 'ible', '', 1);
                 break;
 
             case 'n':
-                self::replace($word, 'ant', '', 1)
-                OR self::replace($word, 'ement', '', 1)
-                OR self::replace($word, 'ment', '', 1)
-                OR self::replace($word, 'ent', '', 1);
+                $_ = self::replace($word, 'ant', '', 1)
+                || self::replace($word, 'ement', '', 1)
+                || self::replace($word, 'ment', '', 1)
+                || self::replace($word, 'ent', '', 1);
                 break;
 
             case 'o':
-                if (substr($word, -4) == 'tion' OR substr($word, -4) == 'sion') {
-                    self::replace($word, 'ion', '', 1);
+                if (substr($word, -4) == 'tion' || substr($word, -4) == 'sion') {
+                    $_ = self::replace($word, 'ion', '', 1);
                 } else {
-                    self::replace($word, 'ou', '', 1);
+                    $_ = self::replace($word, 'ou', '', 1);
                 }
                 break;
 
             case 's':
-                self::replace($word, 'ism', '', 1);
+                $_ = self::replace($word, 'ism', '', 1);
                 break;
 
             case 't':
-                self::replace($word, 'ate', '', 1)
-                OR self::replace($word, 'iti', '', 1);
+                $_ = self::replace($word, 'ate', '', 1)
+                || self::replace($word, 'iti', '', 1);
                 break;
 
             case 'u':
-                self::replace($word, 'ous', '', 1);
+                $_ = self::replace($word, 'ous', '', 1);
                 break;
 
             case 'v':
-                self::replace($word, 'ive', '', 1);
+                $_ = self::replace($word, 'ive', '', 1);
                 break;
 
             case 'z':
-                self::replace($word, 'ize', '', 1);
+                $_ = self::replace($word, 'ize', '', 1);
                 break;
         }
 
@@ -293,7 +293,7 @@ class Stemmer_EN
     /**
      * Step 5
      *
-     * @param  string $word Word to stem
+     * @param string $word Word to stem
      */
     private static function step5($word)
     {
@@ -312,7 +312,7 @@ class Stemmer_EN
         }
 
         // Part b
-        if (self::m($word) > 1 AND self::doubleConsonant($word) AND substr($word, -1) == 'l') {
+        if (self::m($word) > 1 && self::doubleConsonant($word) && substr($word, -1) == 'l') {
             $word = substr($word, 0, -1);
         }
 
@@ -323,10 +323,10 @@ class Stemmer_EN
      * Replaces the first string with the second, at the end of the string. If third
      * arg is given, then the preceding string must match that m count at least.
      *
-     * @param  string $str String to check
-     * @param  string $check Ending to check for
-     * @param  string $repl Replacement string
-     * @param  int $m Optional minimum number of m() to meet
+     * @param string $str String to check
+     * @param string $check Ending to check for
+     * @param string $repl Replacement string
+     * @param int $m Optional minimum number of m() to meet
      * @return bool Whether the $check string was at the end
      *                       of the $str string. True does not necessarily mean
      *                       that it was replaced.
@@ -337,7 +337,7 @@ class Stemmer_EN
 
         if (substr($str, $len) == $check) {
             $substr = substr($str, 0, $len);
-            if (($m === null) OR self::m($substr) > $m) {
+            if (($m === null) || self::m($substr) > $m) {
                 $str = $substr . $repl;
             }
 
@@ -359,7 +359,7 @@ class Stemmer_EN
      * <c>vcvc<v>   gives 2
      * <c>vcvcvc<v> gives 3
      *
-     * @param  string $str The string to return the m count for
+     * @param string $str The string to return the m count for
      * @return int The m count
      */
     private static function m($str)
@@ -379,20 +379,20 @@ class Stemmer_EN
      * Returns true/false as to whether the given string contains two
      * of the same consonant next to each other at the end of the string.
      *
-     * @param  string $str String to check
+     * @param string $str String to check
      * @return bool Result
      */
     private static function doubleConsonant($str)
     {
         $c = self::$regex_consonant;
 
-        return preg_match("#$c{2}$#", $str, $matches) AND $matches[0][0] == $matches[0][1];
+        return preg_match("#$c{2}$#", $str, $matches) && $matches[0][0] == $matches[0][1];
     }
 
     /**
      * Checks for ending CVC sequence where second C is not W, X or Y
      *
-     * @param  string $str String to check
+     * @param string $str String to check
      * @return bool Result
      */
     private static function cvc($str)
@@ -401,9 +401,9 @@ class Stemmer_EN
         $v = self::$regex_vowel;
 
         return preg_match("#($c$v$c)$#", $str, $matches)
-               AND strlen($matches[1]) == 3
-                   AND $matches[1][2] != 'w'
-                       AND $matches[1][2] != 'x'
-                           AND $matches[1][2] != 'y';
+               && strlen($matches[1]) == 3
+                   && $matches[1][2] != 'w'
+                       && $matches[1][2] != 'x'
+                           && $matches[1][2] != 'y';
     }
 }

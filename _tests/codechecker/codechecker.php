@@ -45,6 +45,10 @@ $available_options = [
         'auto_global' => true,
         'takes_value' => false,
     ],
+    'somewhat_pedantic' => [
+        'auto_global' => true,
+        'takes_value' => false,
+    ],
     'security' => [
         'auto_global' => true,
         'takes_value' => false,
@@ -183,7 +187,7 @@ if (isset($options['test'])) {
         }
 
         try {
-            check(parse_file($full_path, false, false, $i, count($files_to_check)));
+            $parsed = check_file($full_path, false, false, $i, count($files_to_check));
         } catch (Exception $e) {
             $has_errors = true;
             echo $e->getMessage() . cnl();
@@ -206,10 +210,7 @@ if (isset($options['test'])) {
         }
 
         try {
-            $structure = parse_file($full_path);
-            if ($structure !== null) {
-                check($structure);
-            }
+            $parsed = check_file($full_path);
         } catch (Exception $e) {
             $has_errors = true;
             echo $e->getMessage() . cnl();
@@ -223,6 +224,37 @@ if (!empty($GLOBALS['DID_OUTPUT_CQC_WARNINGS'])) {
 
 echo 'FINAL Done!';
 exit($has_errors ? 1 : 0);
+
+function check_file($to_use, $verbose = false, $very_verbose = false, $i = null, $count = null)
+{
+    global $TEXT;
+    $TEXT = str_replace("\r", '', file_get_contents($to_use));
+    if (substr($TEXT, 0, 4) == hex2bin('efbbbf')) { // Strip a utf-8 BOM
+        $TEXT = substr($TEXT, 4);
+    }
+
+    $backed_up_flags = [];
+    foreach (array_keys($GLOBALS) as $key) {
+        if (substr($key, 0, 6) == 'FLAG__') {
+            if (strpos($TEXT, '/*CQC: ' . $key . '*/') !== false) {
+                $backed_up_flags[$key] = $GLOBALS[$key];
+                $GLOBALS['FLAG__' . $key] = true;
+            } elseif (strpos($TEXT, '/*CQC: !' . $key . '*/') !== false) {
+                $backed_up_flags[$key] = $GLOBALS[$key];
+                $GLOBALS['FLAG__' . $key] = false;
+            }
+        }
+    }
+
+    $parsed = parse_file($to_use, $verbose, $very_verbose, $i, $count);
+    if ($parsed !== null) {
+        check($parsed);
+    }
+
+    foreach ($backed_up_flags as $key => $setting) {
+        $GLOBALS[$key] = $setting;
+    }
+}
 
 function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null, $count = null)
 {
@@ -240,13 +272,6 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
     }
 
     $codesniffer_only = null; // For debugging
-
-    if ($codesniffer_only === null) {
-        $TEXT = str_replace("\r", '', file_get_contents($to_use));
-        if (substr($TEXT, 0, 4) == hex2bin('efbbbf')) { // Strip a utf-8 BOM
-            $TEXT = substr($TEXT, 4);
-        }
-    }
 
     if ($verbose) {
         echo '<hr /><p>DOING ' . $to_use . '</p>';
@@ -278,12 +303,12 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
         echo "\n\n" . '<b>Starting parsing...</b>' . "\n";
     }
     if ($codesniffer_only === null) {
-        $structure = parse();
+        $parsed = parse();
         if ($very_verbose) {
-            print_r($structure);
+            print_r($parsed);
         }
     } else {
-        $structure = null;
+        $parsed = null;
     }
 
     if ($verbose) {
@@ -381,7 +406,7 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
         }
     }
 
-    return $structure;
+    return $parsed;
 }
 
 function filtered_codesniffer_result($message)

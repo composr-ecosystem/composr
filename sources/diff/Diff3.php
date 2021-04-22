@@ -1,4 +1,10 @@
 <?php
+
+/*EXTRA FUNCTIONS: Text_Diff|Text_Diff_Engine_\w+|extension_loaded*/
+/*CQC: No API check*/
+/*CQC: !FLAG__SOMEWHAT_PEDANTIC*/
+/*CQC: !FLAG__ESLINT*/
+
 /**
  * A class for computing three way diffs.
  *
@@ -24,23 +30,23 @@ if (!class_exists('Text_Diff')) {
  * @package Text_Diff
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
-class Text_Diff3 extends Text_Diff {
-
+class Text_Diff3 extends Text_Diff
+{
     /**
      * Conflict counter.
      *
      * @var integer
      */
-    var $_conflictingBlocks = 0;
+    public $_conflictingBlocks = 0;
 
     /**
      * Computes diff between 3 sequences of strings.
      *
-     * @param array $orig    The original lines to use.
-     * @param array $final1  The first version to compare to.
-     * @param array $final2  The second version to compare to.
+     * @param array $orig The original lines to use.
+     * @param array $final1 The first version to compare to.
+     * @param array $final2 The second version to compare to.
      */
-    function __construct($orig, $final1, $final2)
+    public function __construct($orig, $final1, $final2)
     {
         if (extension_loaded('xdiff')) {
             $engine = new Text_Diff_Engine_xdiff();
@@ -49,23 +55,23 @@ class Text_Diff3 extends Text_Diff {
         }
 
         $this->_edits = $this->_diff3($engine->diff($orig, $final1),
-                                      $engine->diff($orig, $final2));
+            $engine->diff($orig, $final2));
     }
 
     /**
      */
-    function mergedOutput($label1 = false, $label2 = false)
+    public function mergedOutput($label1 = false, $label2 = false)
     {
-        $lines = array();
+        $lines = [];
         foreach ($this->_edits as $edit) {
             if ($edit->isConflict()) {
                 /* FIXME: this should probably be moved somewhere else. */
                 $lines = array_merge($lines,
-                                     array('<<<<<<<' . ($label1 ? ' ' . $label1 : '')),
-                                     $edit->final1,
-                                     array("======="),
-                                     $edit->final2,
-                                     array('>>>>>>>' . ($label2 ? ' ' . $label2 : '')));
+                    ['<<<<<<<' . ($label1 ? (' ' . $label1) : '')],
+                    $edit->final1,
+                    ["======="],
+                    $edit->final2,
+                    ['>>>>>>>' . ($label2 ? (' ' . $label2) : '')]);
                 $this->_conflictingBlocks++;
             } else {
                 $lines = array_merge($lines, $edit->merged());
@@ -78,9 +84,9 @@ class Text_Diff3 extends Text_Diff {
     /**
      * @access private
      */
-    function _diff3($edits1, $edits2)
+    public function _diff3($edits1, $edits2)
     {
-        $edits = array();
+        $edits = [];
         $bb = new Text_Diff3_BlockBuilder();
 
         $e1 = current($edits1);
@@ -129,11 +135,11 @@ class Text_Diff3 extends Text_Diff {
                     }
                 }
 
-                if ($e1 && ! $e1->orig) {
+                if ($e1 && !$e1->orig) {
                     $bb->out1($e1->final);
                     $e1 = next($edits1);
                 }
-                if ($e2 && ! $e2->orig) {
+                if ($e2 && !$e2->orig) {
                     $bb->out2($e2->final);
                     $e2 = next($edits2);
                 }
@@ -155,16 +161,17 @@ class Text_Diff3 extends Text_Diff {
  *
  * @access private
  */
-class Text_Diff3_Op {
+class Text_Diff3_Op
+{
 
-    function __construct($orig = false, $final1 = false, $final2 = false)
+    public function __construct($orig = false, $final1 = false, $final2 = false)
     {
-        $this->orig = $orig ? $orig : array();
-        $this->final1 = $final1 ? $final1 : array();
-        $this->final2 = $final2 ? $final2 : array();
+        $this->orig = $orig ? $orig : [];
+        $this->final1 = $final1 ? $final1 : [];
+        $this->final2 = $final2 ? $final2 : [];
     }
 
-    function merged()
+    public function merged()
     {
         if (!isset($this->_merged)) {
             if ($this->final1 === $this->final2) {
@@ -181,7 +188,7 @@ class Text_Diff3_Op {
         return $this->_merged;
     }
 
-    function isConflict()
+    public function isConflict()
     {
         return $this->merged() === false;
     }
@@ -194,21 +201,22 @@ class Text_Diff3_Op {
  *
  * @access private
  */
-class Text_Diff3_Op_copy extends Text_Diff3_Op {
+class Text_Diff3_Op_copy extends Text_Diff3_Op
+{
 
-    function __construct($lines = false)
+    public function __construct($lines = false)
     {
-        $this->orig = $lines ? $lines : array();
+        $this->orig = $lines ? $lines : [];
         $this->final1 = &$this->orig;
         $this->final2 = &$this->orig;
     }
 
-    function merged()
+    public function merged()
     {
         return $this->orig;
     }
 
-    function isConflict()
+    public function isConflict()
     {
         return false;
     }
@@ -221,40 +229,41 @@ class Text_Diff3_Op_copy extends Text_Diff3_Op {
  *
  * @access private
  */
-class Text_Diff3_BlockBuilder {
+class Text_Diff3_BlockBuilder
+{
 
-    function __construct()
+    public function __construct()
     {
         $this->_init();
     }
 
-    function input($lines)
+    public function input($lines)
     {
         if ($lines) {
             $this->_append($this->orig, $lines);
         }
     }
 
-    function out1($lines)
+    public function out1($lines)
     {
         if ($lines) {
             $this->_append($this->final1, $lines);
         }
     }
 
-    function out2($lines)
+    public function out2($lines)
     {
         if ($lines) {
             $this->_append($this->final2, $lines);
         }
     }
 
-    function isEmpty()
+    public function isEmpty()
     {
         return !$this->orig && !$this->final1 && !$this->final2;
     }
 
-    function finish()
+    public function finish()
     {
         if ($this->isEmpty()) {
             return false;
@@ -265,14 +274,13 @@ class Text_Diff3_BlockBuilder {
         }
     }
 
-    function _init()
+    public function _init()
     {
-        $this->orig = $this->final1 = $this->final2 = array();
+        $this->orig = $this->final1 = $this->final2 = [];
     }
 
-    function _append(&$array, $lines)
+    public function _append(&$array, $lines)
     {
-        array_splice($array, sizeof($array), 0, $lines);
+        array_splice($array, count($array), 0, $lines);
     }
-
 }

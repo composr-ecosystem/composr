@@ -2001,6 +2001,18 @@ function method_exists(object $object, string $method_name) : bool
 }
 
 /**
+ * Checks if the class property exists.
+ *
+ * @param  object $object Object of the class we want to check
+ * @param  string $property_name The property name
+ * @return boolean Whether the class property exists
+ */
+function property_exists(object $object, string $property_name) : bool
+{
+    return false;
+}
+
+/**
  * Return current UNIX timestamp with microseconds.
  *
  * @param  boolean $as_float Whether to return a float result
@@ -4108,9 +4120,10 @@ function array_reduce(array $input, $callback, ?int $initial = null) : ?int
  * Apply a user function to every member of an array .
  *
  * @param  array $array Data
+ * @param  mixed $callback Process function
  * @return boolean Success status
  */
-function array_walk(array &$array) : bool
+function array_walk(array &$array, $callback) : bool
 {
     return true;
 }
@@ -4929,6 +4942,39 @@ function intdiv(int $dividend, int $divisor) : int
     return 0;
 }
 
+/**
+ * Gets the class methods' names.
+ *
+ * @param  string $class_name The class name or an object instance 
+ * @return ?array An array of method names defined for the class specified by $class_name (null: error)
+ */
+function get_class_methods(string $class_name) : ?array
+{
+    return [];
+}
+
+/**
+ * Get the default properties of the class.
+ *
+ * @param  string $class_name The class name
+ * @return ~array an associative array of declared properties visible from the current scope, with their default value (false: error)
+ */
+function get_class_vars(string $class_name)
+{
+    return [];
+}
+
+/**
+ * Gets the properties of the given object.
+ *
+ * @param  object $object An object instance
+ * @return ~array An associative array of defined object accessible non-static properties for the specified object in scope (false: error)
+ */
+function get_object_vars(object $object)
+{
+    return [];
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed
@@ -5107,7 +5153,6 @@ Disabled simply as we don't feel a need to use them (can enable if we find a use
 
 idate
 get_called_class
-property_exists
 interface_exists
 trait_exists
 class_alias
@@ -5273,9 +5318,6 @@ array_replace
 array_replace_recursive
 cli_set_process_title
 cli_get_process_title
-get_class_methods
-get_class_vars
-get_object_vars
 quoted_printable_decode
 quoted_printable_encode
 gzrewind

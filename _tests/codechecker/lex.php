@@ -50,6 +50,12 @@ $PTOKENS['MUL_EQUAL'] = '*=';
 $PTOKENS['PLUS_EQUAL'] = '+=';
 $PTOKENS['EQUAL'] = '=';
 $PTOKENS['BOR_EQUAL'] = '|=';
+$PTOKENS['SL_EQUAL'] = '>>=';
+$PTOKENS['SR_EQUAL'] = '<<=';
+$PTOKENS['BW_XOR_EQUAL'] = '^=';
+$PTOKENS['BW_AND_EQUAL'] = '&=';
+$PTOKENS['BW_OR_EQUAL'] = '|=';
+$PTOKENS['BW_NOT_EQUAL'] = '~=';
 // General structural
 $PTOKENS['SUPPRESS_ERROR'] = '@';
 $PTOKENS['COLON'] = ':';
@@ -235,7 +241,9 @@ function lex($text = null)
     }
 
     if ((strpos($TEXT, '?' . '>') !== false) && (trim(substr($TEXT, strrpos($TEXT, '?' . '>') + 2)) == '')) {
-        log_warning('It is best to only have one PHP code block and not to terminate it. This stops problems with white-space at the end of files.');
+        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+            log_warning('It is best to only have one PHP code block and not to terminate it. This stops problems with white-space at the end of files.');
+        }
     } else {
         $TEXT .= '?' . '>' . ((substr($TEXT, -1) == "\n") ? "\n" : ''); // Append missing closing tag
     }
@@ -288,7 +296,9 @@ function lex($text = null)
 
     // So that we don't have to consider end-of-file states as much.
     if (substr($TEXT, -1) != "\n") {
-        log_warning('Files are supposed to end with a blank line according to PSR-2', $i, true);
+        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+            log_warning('Files are supposed to end with a blank line according to PSR-2', $i, true);
+        }
         $TEXT .= "\n";
     }
 
@@ -340,7 +350,9 @@ function lex($text = null)
                     }
                 } while (trim($char) == '');
                 if ($has_tab) {
-                    log_warning('PSR-2 says to use soft tabs, not hard tabs', $i, true);
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('PSR-2 says to use soft tabs, not hard tabs', $i, true);
+                    }
                 }
                 if ((trim($previous_char) == '')) {
                     if ($char == '{') {
@@ -355,7 +367,9 @@ function lex($text = null)
                         if (preg_replace('#\s#', '', $line) == '){') {
                             $should_not_be_on_same_line = (preg_match('#^\s*(function|class|public|private|protected|static|abstract|interface) #', $line) != 0);
                             if ($should_not_be_on_same_line != $new_line) {
-                                log_warning('Bracing error (opening brace on wrong line)', $i, true);
+                                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                    log_warning('Bracing error (opening brace on wrong line)', $i, true);
+                                }
                             }
                         }
                         if ($indentation % 4 == 0 || strpos($line, '=>') === false) {
@@ -365,26 +379,36 @@ function lex($text = null)
                         }
 
                         if (substr($TEXT, $i, 2) == "\n\n") {
-                            log_warning('PSR-12 says not to have extra blank lines around opening braces', $i, true);
+                            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                log_warning('PSR-12 says not to have extra blank lines around opening braces', $i, true);
+                            }
                         }
                     } elseif ($char == '}') {
                         $line = substr($TEXT, 0, $i);
                         if (substr(ltrim($line), 0, 4) != 'use ') {
                             if (!$new_line) {
-                                log_warning('Bracing error (closing brace not on new line)', $i, true);
+                                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                    log_warning('Bracing error (closing brace not on new line)', $i, true);
+                                }
                             }
                             $past_indentation = array_pop($brace_stack);
                             if ($past_indentation != $indentation) {
-                                log_warning('Bracing error (' . $past_indentation . ' vs ' . strval($indentation) . ')', $i, true);
+                                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                    log_warning('Bracing error (' . $past_indentation . ' vs ' . strval($indentation) . ')', $i, true);
+                                }
                             }
 
                             $backtrack_i = max(0, $i - 103);
                             if (substr(rtrim(substr($TEXT, $backtrack_i, $i - $backtrack_i - 1), "\t "), -2, 2) == "\n\n") {
-                                log_warning('PSR-12 says not to have extra blank lines around closing braces', $i, true);
+                                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                    log_warning('PSR-12 says not to have extra blank lines around closing braces', $i, true);
+                                }
                             }
 
                             if ((substr($TEXT, $i, 1) == '/') || (substr($TEXT, $i, 2) == ' /')) {
-                                log_warning('PSR-12 says not to put a comment after a closing brace', $i, true);
+                                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                    log_warning('PSR-12 says not to put a comment after a closing brace', $i, true);
+                                }
                             }
                         }
                     }
@@ -469,7 +493,7 @@ function lex($text = null)
                     } else {
                         if (!in_array($token_found, ['COMMA', 'DOUBLE_ARROW'])) { // We don't count array definitions, etc
                             $tokens_since_comment++;
-                            if ((isset($GLOBALS['pedantic'])) && ($tokens_since_comment > 200)) {
+                            if ((!empty($GLOBALS['FLAG__PEDANTIC'])) && ($tokens_since_comment > 200)) {
                                 log_warning('Bad comment density', $i, true);
                                 $tokens_since_comment = 0;
                             }
@@ -477,7 +501,9 @@ function lex($text = null)
                     }
 
                     if (($token_found == 'IF') && (@$tokens[count($tokens) - 1][0] == 'ELSE')) {
-                        log_warning('Use \'elseif\' not \'else if\'', $i, true);
+                        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                            log_warning('Use \'elseif\' not \'else if\'', $i, true);
+                        }
                     }
 
                     if (($token_found == 'CURLY_OPEN') && (isset($tokens[0]))) {
@@ -507,40 +533,42 @@ function lex($text = null)
                         }
                     }
 
-                    if (($i_current > 0) && (isset($TEXT[$i])) && ($TEXT[$i] == '(') && (in_array($token_found, ['FUNCTION', 'USE']))) {
-                        log_warning('PSR-12: Closures should have a space after keywords', $i, true);
-                    }
-                    if (($i_current > 0) && (isset($TEXT[$i_current - 2])) && ($TEXT[$i_current - 1] == ' ') && ($TEXT[$i_current - 2] != ' ') && (in_array($token_found, ['OBJECT_OPERATOR']))) {
-                        log_warning('Superfluous spacing (for ' . $token_found . ') against coding standards', $i, true);
-                    }
-                    if (($i_current > 0) && (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != ')') && ($TEXT[$i] != ']') && ($TEXT[$i] != "/") && ($TEXT[$i] != "\r")) && (in_array($token_found, ['COMMA', 'COMMAND_TERMINATE']))) {
-                        log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
-                    }
-                    if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['IS_EQUAL', 'IS_GREATER', 'IS_SMALLER', 'IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_IDENTICAL', 'IS_NOT_EQUAL', 'IS_NOT_IDENTICAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'EQUAL', 'BW_XOR', 'BW_OR', 'SL', 'SR', 'CONC', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER']))) {
-                        if ($token_found != 'SUBTRACT' || is_alphanumeric($TEXT[$i_current - 1])) { // As could be minus sign
-                            if (count($tokens) >= 3 && $tokens[count($tokens) - 3][0] != 'DECLARE') { // As declare has no spaces
-                                log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        if (($i_current > 0) && (isset($TEXT[$i])) && ($TEXT[$i] == '(') && (in_array($token_found, ['FUNCTION', 'USE']))) {
+                            log_warning('PSR-12: Closures should have a space after keywords', $i, true);
+                        }
+                        if (($i_current > 0) && (isset($TEXT[$i_current - 2])) && ($TEXT[$i_current - 1] == ' ') && ($TEXT[$i_current - 2] != ' ') && (in_array($token_found, ['OBJECT_OPERATOR']))) {
+                            log_warning('Superfluous spacing (for ' . $token_found . ') against coding standards', $i, true);
+                        }
+                        if (($i_current > 0) && (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != ')') && ($TEXT[$i] != ']') && ($TEXT[$i] != "/") && ($TEXT[$i] != "\r")) && (in_array($token_found, ['COMMA', 'COMMAND_TERMINATE']))) {
+                            log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
+                        }
+                        if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['IS_EQUAL', 'IS_GREATER', 'IS_SMALLER', 'IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_IDENTICAL', 'IS_NOT_EQUAL', 'IS_NOT_IDENTICAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'EQUAL', 'BW_XOR', 'BW_OR', 'SL', 'SR', 'CONC', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER']))) {
+                            if ($token_found != 'SUBTRACT' || is_alphanumeric($TEXT[$i_current - 1])) { // As could be minus sign
+                                if (count($tokens) >= 3 && $tokens[count($tokens) - 3][0] != 'DECLARE') { // As declare has no spaces
+                                    log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
+                                }
                             }
                         }
-                    }
-                    if (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH', 'INTERFACE', 'CLASS', 'FUNCTION'])) {
-                        $line_end = strpos($TEXT, "\n", $i);
-                        if (($line_end !== false) && ((empty($tokens)) || ($tokens[count($tokens) - 1][0] != 'NEW'))) {
-                            $remaining_line = str_replace("\r", '', substr($TEXT, $i, $line_end - $i + 1));
+                        if (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH', 'INTERFACE', 'CLASS', 'FUNCTION'])) {
+                            $line_end = strpos($TEXT, "\n", $i);
+                            if (($line_end !== false) && ((empty($tokens)) || ($tokens[count($tokens) - 1][0] != 'NEW'))) {
+                                $remaining_line = str_replace("\r", '', substr($TEXT, $i, $line_end - $i + 1));
 
-                            $next_line_end = strpos($TEXT, "\n", $line_end + 1);
-                            $next_line = ($next_line_end === false) ? '' : substr($TEXT, $line_end + 1, $next_line_end - $line_end - 1 + 1);
+                                $next_line_end = strpos($TEXT, "\n", $line_end + 1);
+                                $next_line = ($next_line_end === false) ? '' : substr($TEXT, $line_end + 1, $next_line_end - $line_end - 1 + 1);
 
-                            if ((strpos($remaining_line, ' {') === false) && (strpos($remaining_line, '/*') === false) && (($token_found != 'WHILE') || (substr($remaining_line, -2) != ";\n")) && (strpos($next_line, '{') !== false/*brace should move to own line for multi-line boolean checks*/) && (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH']))) {
-                                log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
-                            }
-                            if ((strpos($remaining_line, ' {') !== false) && (strpos($remaining_line, ' (') === false) && (strpos($next_line, '{') === false/*To weed out edge cases like when a parameter default contains ' {'*/) && (in_array($token_found, ['INTERFACE', 'CLASS', 'FUNCTION']))) {
-                                log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
+                                if ((strpos($remaining_line, ' {') === false) && (strpos($remaining_line, '/*') === false) && (($token_found != 'WHILE') || (substr($remaining_line, -2) != ";\n")) && (strpos($next_line, '{') !== false/*brace should move to own line for multi-line boolean checks*/) && (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH']))) {
+                                    log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
+                                }
+                                if ((strpos($remaining_line, ' {') !== false) && (strpos($remaining_line, ' (') === false) && (strpos($next_line, '{') === false/*To weed out edge cases like when a parameter default contains ' {'*/) && (in_array($token_found, ['INTERFACE', 'CLASS', 'FUNCTION']))) {
+                                    log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
+                                }
                             }
                         }
-                    }
-                    if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['BOOLEAN_AND', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_OR_2']))) {
-                        log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
+                        if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['BOOLEAN_AND', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_OR_2']))) {
+                            log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
+                        }
                     }
 
                     $tokens[] = [$token_found, $i];
@@ -577,7 +605,9 @@ function lex($text = null)
                         }
                     } else {
                         if ($token_found == 'NULL' || $token_found == 'TRUE' || $token_found == 'FALSE') {
-                            log_warning('Use lower-case for null/false/true', $i, true);
+                            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                log_warning('Use lower-case for null/false/true', $i, true);
+                            }
                         }
 
                         if ($token_found == '') {
@@ -726,7 +756,9 @@ function lex($text = null)
                             $i++;
                         } elseif (($char == '[') && (preg_match('#\[([\'A-Za-z0-9_]+)\]#A', $TEXT, $matches, 0, $i - 1) != 0)) {
                             if (strpos($matches[1], "'") !== false) {
-                                log_warning('Do not use quotes with the simple variable embedding syntax', $i, true);
+                                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                    log_warning('Do not use quotes with the simple variable embedding syntax', $i, true);
+                                }
                                 break 2;
                             }
                             $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];

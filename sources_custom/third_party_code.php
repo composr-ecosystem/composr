@@ -65,6 +65,7 @@ function list_untouchable_third_party_directories()
 function list_untouchable_third_party_files()
 {
     return [
+        //'sources/crc24.php', We maintain this now
         '_config.php',
         'aps/test/TEST-META.xml',
         'aps/test/composrIDEtest.xml',
@@ -92,8 +93,9 @@ function list_untouchable_third_party_files()
         'sources_custom/sugar_crm_lib.php',
         'sources_custom/twitter.php',
         'sources/firephp.php',
-        'sources/jsmin.php',
-        'sources/lang_stemmer_EN.php',
+        //'sources/m_zip.php', We maintain this now
+        //'sources/jsmin.php', We maintain this now
+        //'sources/lang_stemmer_EN.php', We maintain this now
         'sources/mail_dkim.php',
         '_tests/codechecker/codechecker.ini',
         '_tests/codechecker/nbactions.xml',

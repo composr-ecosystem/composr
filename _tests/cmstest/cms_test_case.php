@@ -95,7 +95,7 @@ class cms_test_case extends WebTestCase
         }
         $url .= '&base_path=' . urlencode(get_file_base());
         if ($this->debug) {
-            $url .= '&manual_checks=1&pedantic=1&security=1&mixed=1';
+            $url .= '&manual_checks=1&pedantic=1&somewhat_pedantic=1&security=1&mixed=1';
         }
         return $url;
     }

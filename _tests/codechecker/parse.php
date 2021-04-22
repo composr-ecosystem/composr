@@ -27,7 +27,9 @@ function parse($_tokens = null)
     $structure['ok_extra_functions'] = $OK_EXTRA_FUNCTIONS;
     global $FILENAME;
     if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources/global.php') && ($FILENAME != 'sources/static_cache.php') && ($FILENAME != 'sources/critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
-        log_warning('Sources files should not contain loose code');
+        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+            log_warning('Sources files should not contain loose code');
+        }
     }
 
     return $structure;
@@ -139,7 +141,9 @@ function _parse_php($inside_namespace = false)
 
             case 'ABSTRACT':
                 if (!empty($modifiers)) {
-                    log_warning('Abstract keyword must appear first: ' . implode(', ', $modifiers) . ', abstract');
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('Abstract keyword must appear first: ' . implode(', ', $modifiers) . ', abstract');
+                    }
                 }
                 pparse__parser_next();
                 switch (pparse__parser_peek()) {
@@ -262,7 +266,7 @@ function _parse_namespace_use_list($is_generalised = true)
 
 function _parse_class_def($modifiers = [])
 {
-    global $FUNCTION_SIGNATURES, $KNOWN_EXTRA_INTERFACES, $KNOWN_EXTRA_CLASSES;
+    global $FUNCTION_SIGNATURES, $KNOWN_EXTRA_INTERFACES, $KNOWN_EXTRA_CLASSES, $OK_EXTRA_FUNCTIONS;
 
     $class = ['type' => 'class', 'superclass' => null, 'interfaces' => []];
     if (!empty($modifiers)) {
@@ -285,7 +289,9 @@ function _parse_class_def($modifiers = [])
             if (isset($KNOWN_EXTRA_INTERFACES[$superclass])) {
                 log_warning('Class trying to extend a non-class, ' . $superclass);
             } elseif (!isset($KNOWN_EXTRA_CLASSES[$superclass])) {
-                log_warning('Could not find class ' . $superclass);
+                if ((($OK_EXTRA_FUNCTIONS === null) || (preg_match('#^' . $OK_EXTRA_FUNCTIONS . '#', $superclass) == 0))) {
+                    log_warning('Could not find class ' . $superclass);
+                }
             }
         }
     }
@@ -471,9 +477,90 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                 }
                 // no break
 
-            case 'CONST': // Lots flows to here, used for parsing properties, functions, constants
+            case 'STATIC':
+            case 'ABSTRACT':
+            case 'FINAL':
+                if (in_array($next, ['STATIC', 'ABSTRACT', 'FINAL'])) {
+                    if ($next == 'ABSTRACT') {
+                        if ($type == 'interface') {
+                            log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword');
+                        }
+                        if ($type == 'trait') {
+                            log_warning('Traits are inherently abstract, do not use the abstract keyword');
+                        }
+
+                        $modifiers[] = 'abstract';
+                        if (!in_array('abstract', $class_modifiers)) {
+                            log_warning('Abstract keyword found in a non-abstract class');
+                        }
+                    } elseif ($next == 'STATIC') {
+                        if (empty($modifiers)) {
+                            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                                log_warning('Static keyword must not appear before visibility');
+                            }
+                        }
+                        $modifiers[] = 'static';
+                    } else {
+                        $modifiers[] = 'final';
+                    }
+                    // Peek ahead to make sure the next token can be abstract
+                    switch (pparse__parser_peek_dist(1)) {
+                        case 'PUBLIC':
+                        case 'PRIVATE':
+                        case 'PROTECTED':
+                            // If we're followed by another modifier, peek ahead further
+                            switch (pparse__parser_peek_dist(2)) {
+                                case 'FUNCTION':
+                                    // Valid
+                                    break;
+                                case 'variable':
+                                case 'VAR':
+                                    if ($next == 'ABSTRACT') {
+                                        // Invalid
+                                        log_warning('Abstract keyword applied to member variable');
+                                        break;
+                                    }
+                                    // no break
+                                default:
+                                    // Invalid
+                                    log_warning('Visibility keywords are only valid for functions and member variables, not ' . pparse__parser_peek_dist(1));
+                                    break;
+                            }
+                            break;
+                        case 'FUNCTION':
+                            // Valid
+                            break;
+                        case 'variable':
+                        case 'VAR':
+                            if ($next != 'STATIC') {
+                                log_warning($next . ' keyword applied to member variable');
+                            }
+                            break;
+                        case 'STATIC':
+                            break;
+                        case 'ABSTRACT':
+                            break;
+                        case 'FINAL':
+                            break;
+                        default:
+                            log_warning('The ' . $next . ' keyword only applies to classes and methods, not ' . pparse__parser_peek_dist(1));
+                            break;
+                    }
+
+                    if (($next == 'STATIC') && (pparse__parser_peek_dist(1) == 'variable')) {
+                        // Fall through to VAR
+                    } else {
+                        pparse__parser_next(); // Consume the static/abstract/final keyword
+                        break;
+                    }
+                }
+                // no break
+
+            case 'CONST': // Lots flows to here, used for parsing properties & constants
                 if ($next == 'CONST') {
-                    log_warning('PSR-12 says you should always specify class constant visibility');
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('PSR-12 says you should always specify class constant visibility');
+                    }
                     $is_const = true;
                 } else {
                     if (pparse__parser_peek_dist(1) == 'CONST') {
@@ -489,7 +576,7 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                     if ($is_const) {
                         $identifier = pparse__parser_expect('IDENTIFIER');
 
-                        if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (@strtoupper($identifier) != $identifier)) {
+                        if ((!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) && (@strtoupper($identifier) != $identifier)) {
                             log_warning('Constants should be upper case');
                         }
                     } else {
@@ -516,7 +603,9 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                     $next_2 = pparse__parser_peek();
 
                     if ($next_2 == 'COMMA') {
-                        log_warning('PSR-12: Don\'t define multiple class properties/constants on a single line');
+                        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                            log_warning('PSR-12: Don\'t define multiple class properties/constants on a single line');
+                        }
                     }
                 } while ($next_2 == 'COMMA');
 
@@ -557,73 +646,6 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                 }
 
                 $modifiers = [];
-                break;
-
-            case 'STATIC':
-            case 'ABSTRACT':
-            case 'FINAL':
-                if ($next == 'ABSTRACT') {
-                    if ($type == 'interface') {
-                        log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword');
-                    }
-                    if ($type == 'trait') {
-                        log_warning('Traits are inherently abstract, do not use the abstract keyword');
-                    }
-
-                    $modifiers[] = 'abstract';
-                    if (!in_array('abstract', $class_modifiers)) {
-                        log_warning('Abstract keyword found in a non-abstract class');
-                    }
-                } elseif ($next == 'STATIC') {
-                    if (empty($modifiers)) {
-                        log_warning('Static keyword must not appear before visibility');
-                    }
-                    $modifiers[] = 'static';
-                } else {
-                    $modifiers[] = 'final';
-                }
-                pparse__parser_next(); // Consume the abstract keyword
-                // Peek ahead to make sure the next token can be abstract
-                switch (pparse__parser_peek()) {
-                    case 'PUBLIC':
-                    case 'PRIVATE':
-                    case 'PROTECTED':
-                        // If we're followed by another modifier, peek ahead further
-                        switch (pparse__parser_peek_dist(1)) {
-                            case 'FUNCTION':
-                                // Valid
-                                break;
-                            case 'variable':
-                            case 'VAR':
-                                if ($next == 'ABSTRACT') {
-                                    // Invalid
-                                    log_warning('Abstract keyword applied to member variable');
-                                    break;
-                                }
-                                // no break
-                            default:
-                                // Invalid
-                                log_warning('Visibility keywords are only valid for functions and member variables, not ' . pparse__parser_peek());
-                                break;
-                        }
-                        break;
-                    case 'FUNCTION':
-                        // Valid
-                        break;
-                    case 'variable':
-                    case 'VAR':
-                        log_warning($next . ' keyword applied to member variable');
-                        break;
-                    case 'STATIC':
-                        break;
-                    case 'ABSTRACT':
-                        break;
-                    case 'FINAL':
-                        break;
-                    default:
-                        log_warning('The ' . $next . ' keyword only applies to classes and methods, not ' . pparse__parser_peek());
-                        break;
-                }
                 break;
 
             default:
@@ -888,7 +910,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
                         // We should be at the end of a chain by here.
                         // We may still be an assignment, despire the $next_3 branch
                         // above. Handle this if so:
-                        if (in_array(pparse__parser_peek(), ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL'], true)) {
+                        if (in_array(pparse__parser_peek(), ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'BW_XOR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL', 'BW_NOT_EQUAL'], true)) {
                             $assignment = _parse_assignment_operator();
                             $expression = _parse_expression();
                             if ($is_static && $expression[0] != 'LITERAL' && $expression[0] != 'NEGATE' && $expression[0] != 'CREATE_ARRAY') {
@@ -1220,9 +1242,11 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
         case 'GLOBAL':
             pparse__parser_next();
             $command = ['GLOBAL', _parse_comma_variables(), $GLOBALS['I']];
-            foreach ($command[1] as $variable) {
-                if (strtoupper($variable[1]) != $variable[1]) {
-                    log_warning('Globalised variable ' . $variable[1] . ' is in non-canonical format');
+            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                foreach ($command[1] as $variable) {
+                    if (strtoupper($variable[1]) != $variable[1]) {
+                        log_warning('Globalised variable ' . $variable[1] . ' is in non-canonical format');
+                    }
                 }
             }
             if (!$no_term_needed) {
@@ -1234,7 +1258,9 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             pparse__parser_next();
             $label = pparse__parser_expect('IDENTIFIER');
             $command = ['GOTO', $label, $GLOBALS['I']];
-            log_warning('There is rarely a good reason to use goto');
+            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                log_warning('There is rarely a good reason to use goto');
+            }
             break;
 
         default:
@@ -1348,12 +1374,14 @@ function _parse_cases()
                     $commands = array_merge($commands, _parse_command());
                     $next_2 = pparse__parser_peek();
                 }
-                if (count($commands) > 0) {
-                    $last_command = $commands[count($commands) - 1];
-                    if (!in_array($last_command[0], ['BREAK', 'CONTINUE', 'CASE', 'RETURN'])) {
-                        global $TOKENS, $I;
-                        if ((!isset($TOKENS[$I - 1])) || ($TOKENS[$I - 1][0] != 'comment') || (strpos($TOKENS[$I - 1][1], 'no break') === false)) {
-                            log_warning('PSR-12: Missing break at end of case statement, and not marked with "no break" comment (last token was ' . $TOKENS[$I - 1][0] . ')');
+                if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                    if (count($commands) > 0) {
+                        $last_command = $commands[count($commands) - 1];
+                        if (!in_array($last_command[0], ['BREAK', 'CONTINUE', 'CASE', 'RETURN'])) {
+                            global $TOKENS, $I;
+                            if ((!isset($TOKENS[$I - 1])) || ($TOKENS[$I - 1][0] != 'comment') || (strpos($TOKENS[$I - 1][1], 'no break') === false)) {
+                                log_warning('PSR-12: Missing break at end of case statement, and not marked with "no break" comment (last token was ' . $TOKENS[$I - 1][0] . ')');
+                            }
                         }
                     }
                 }
@@ -1551,7 +1579,9 @@ function _parse_expression_inner()
                 //log_special('functions', $next[1] . '/' . count($parameters));
             } else {
                 if (strtolower($next[1]) == $next[1]) {
-                    log_warning('Lower case constant, breaks convention. Likely a variable with a missing $');
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('Lower case constant, breaks convention. Likely a variable with a missing $');
+                    }
                 }
                 $expression = ['CONSTANT', $next[1], $GLOBALS['I']];
             }
@@ -1607,7 +1637,9 @@ function _parse_expression_inner()
             pparse__parser_expect('PARENTHESIS_CLOSE');
             $expression = ['CREATE_ARRAY', $details, $GLOBALS['I']];
 
-            log_warning('Short array syntax is preferred');
+            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                log_warning('Short array syntax is preferred');
+            }
 
             break;
 
@@ -1625,7 +1657,9 @@ function _parse_expression_inner()
                 pparse__parser_expect('PARENTHESIS_CLOSE');
             } elseif ((in_array($next_2, ['INTEGER', 'INT', 'BOOLEAN', 'BOOL', 'FLOAT', 'DOUBLE', 'REAL', 'ARRAY', 'OBJECT', 'STRING'])) && ($next_3 == 'PARENTHESIS_CLOSE')) {
                 if (in_array($next_2, ['INTEGER', 'BOOLEAN', 'DOUBLE', 'REAL'])) {
-                    log_warning('PSR-12: Don\'t use non-canonical casts');
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('PSR-12: Don\'t use non-canonical casts');
+                    }
                 }
 
                 pparse__parser_next();
@@ -1653,14 +1687,18 @@ function _parse_expression_inner()
             pparse__parser_next();
             $variable = _parse_variable($suppress_error);
             $expression = ['PRE_DEC', $variable, $GLOBALS['I']];
-            log_warning('Decrement used within expression is messy, put parentheses around it');
+            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                log_warning('Decrement used within expression is messy, put parentheses around it');
+            }
             break;
 
         case 'INC':
             pparse__parser_next();
             $variable = _parse_variable($suppress_error);
             $expression = ['PRE_INC', $variable, $GLOBALS['I']];
-            log_warning('Increment used within expression is messy, put parentheses around it');
+            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                log_warning('Increment used within expression is messy, put parentheses around it');
+            }
             break;
 
         case 'variable':
@@ -1673,7 +1711,9 @@ function _parse_expression_inner()
                     }
                     pparse__parser_next();
                     $expression = ['DEC', $target, $GLOBALS['I']];
-                    log_warning('Decrement used within expression is messy, put parentheses around it');
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('Decrement used within expression is messy, put parentheses around it');
+                    }
                     break;
 
                 case 'INC':
@@ -1682,7 +1722,9 @@ function _parse_expression_inner()
                     }
                     pparse__parser_next();
                     $expression = ['INC', $target, $GLOBALS['I']];
-                    log_warning('Increment used within expression is messy, put parentheses around it');
+                    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                        log_warning('Increment used within expression is messy, put parentheses around it');
+                    }
                     break;
 
                 default: // Either an assignment or an indirect function call or a method call
@@ -1690,11 +1732,13 @@ function _parse_expression_inner()
                     // We should be at the end of a chain by here.
                     // We may still be an assignment, despire the $next_3 branch
                     // above. Handle this if so:
-                    if (in_array(pparse__parser_peek(), ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL'], true)) {
+                    if (in_array(pparse__parser_peek(), ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'BW_XOR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL', 'BW_NOT_EQUAL'], true)) {
                         $assignment = _parse_assignment_operator();
                         $expression_inner = _parse_expression();
                         $expression = ['ASSIGNMENT', $assignment, $expression, $expression_inner, $GLOBALS['I']];
-                        log_warning('Assignment used within expression is messy, put parentheses around it');
+                        if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                            log_warning('Assignment used within expression is messy, put parentheses around it');
+                        }
                     }
                     break;
             }
@@ -1763,15 +1807,17 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
         $actual_expression = ['VARIABLE', $variable[1], [], $GLOBALS['I']];
     }
 
-    if ((isset($GLOBALS['pedantic'])) && (in_array($variable[1], ['_GET', '_POST', '_COOKIE', '_REQUEST', '_FILES', '_SESSION']))) {
+    if ((!empty($GLOBALS['FLAG__PEDANTIC'])) && (in_array($variable[1], ['_GET', '_POST', '_COOKIE', '_REQUEST', '_FILES', '_SESSION']))) {
         log_warning($variable[1] . ' variable referenced');
     }
 
     // Canonical check for the start of the chain
-    global $FOUND_NON_CANONICAL;
-    if ((strtolower($variable[1]) != $variable[1]) && (strtoupper($variable[1]) != $variable[1]) && (!isset($FOUND_NON_CANONICAL[$variable[1]]))) {
-        $FOUND_NON_CANONICAL[$variable[1]] = 1;
-        log_warning($variable[1] . ' is in non-canonical format');
+    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+        global $FOUND_NON_CANONICAL;
+        if ((strtolower($variable[1]) != $variable[1]) && (strtoupper($variable[1]) != $variable[1]) && (!isset($FOUND_NON_CANONICAL[$variable[1]]))) {
+            $FOUND_NON_CANONICAL[$variable[1]] = 1;
+            log_warning($variable[1] . ' is in non-canonical format');
+        }
     }
 
     return $actual_expression;
@@ -1857,10 +1903,10 @@ function _parse_variable_dereferencing_chain_segment($suppress_error)
 
 function _parse_assignment_operator()
 {
-    // Choice{"EQUAL" | "CONCAT_EQUAL" | "DIV_EQUAL" | "MUL_EQUAL" | "MINUS_EQUAL" | "PLUS_EQUAL" | "BOR_EQUAL"}
+    // Choice{"EQUAL" | "CONCAT_EQUAL" | "DIV_EQUAL" | "MUL_EQUAL" | "MINUS_EQUAL" | "PLUS_EQUAL" | "BOR_EQUAL" | "SL_EQUAL" | "SR_EQUAL" | "BW_XOR_EQUAL" | "BW_AND_EQUAL" | "BW_OR_EQUAL" | "BW_NOT_EQUAL"}
 
     $next = pparse__parser_next();
-    if (!in_array($next, ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'MINUS_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL'])) {
+    if (!in_array($next, ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'MINUS_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'BW_XOR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL', 'BW_NOT_EQUAL'])) {
         parser_error('Expected assignment operator but got ' . $next);
     }
     return $next;
@@ -1930,7 +1976,9 @@ function _parse_literal()
             pparse__parser_expect('PARENTHESIS_CLOSE');
             $literal = ['CREATE_ARRAY', $details, $GLOBALS['I']];
 
-            log_warning('Short array syntax is preferred');
+            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+                log_warning('Short array syntax is preferred');
+            }
 
             break;
 
@@ -2353,13 +2401,15 @@ function handle_comment($comment)
     if (substr($comment[1], 0, 17) == 'EXTRA FUNCTIONS: ') {
         $OK_EXTRA_FUNCTIONS = substr($comment[1], 17);
     }
-    if (strpos($comment[1], 'FIXME') !== false) {
-        log_warning('FIXME comment found [should be a TODO] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
+    if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
+        if (strpos($comment[1], 'FIXME') !== false) {
+            log_warning('FIXME comment found [should be a TODO] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
+        }
+        if (strpos($comment[1], 'HACKHACK') !== false) {
+            log_warning('HACKHACK comment found [should be a FUDGE] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
+        }
     }
-    if (strpos($comment[1], 'HACKHACK') !== false) {
-        log_warning('HACKHACK comment found [should be a FUDGE] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
-    }
-    if (isset($GLOBALS['FLAG__TODO'])) {
+    if (!empty($GLOBALS['FLAG__TODO'])) {
         if (strpos($comment[1], 'TODO') !== false) {
             log_warning('TODO comment found (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
         }
