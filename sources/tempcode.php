@@ -1153,11 +1153,11 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
                 break;
 
             case 'dependency__css__global':
-                $SITE_INFO[$key] = 'toastify,' . get_option('globally_included_css_files');
+                $SITE_INFO[$key] = 'toastify,' . get_theme_option('globally_included_css_files');
                 break;
 
             case 'dependency__javascript__global':
-                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors,toastify,' . get_option('globally_included_js_files');
+                $SITE_INFO[$key] = '_json5,_util,_dom,_cms,_cms_form,_cms_ui,_cms_templates,_cms_views,_cms_behaviors,toastify,' . get_theme_option('globally_included_js_files');
                 break;
 
             case 'dependency__javascript__editing':

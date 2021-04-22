@@ -294,6 +294,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             imagecolorresolvealpha imagecolorset imagecolorstotal imagecopymerge getimagesize image_type_to_extension imagefilter
             gd_info is_iterable
             imagecreatefromstring imagejpeg imagepng imagettfbbox
+            get_class_methods get_class_vars get_object_vars property_exists
 END;
 
         foreach (preg_split('#\s+#', $baseline_functions) as $function) {

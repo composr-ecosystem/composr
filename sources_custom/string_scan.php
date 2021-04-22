@@ -178,6 +178,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_password_reset_privacy_VALUE_disclose
         CONFIG_OPTION_password_reset_privacy_VALUE_email
         CONFIG_OPTION_password_reset_privacy_VALUE_silent
+        ALLOW_ADDING_COMMANDR_EVENTS
+        CONFIG_OPTION_allow_adding_commandr_events
         BLANK_COMCODE_PAGE
         PASSWORD_RESET_PRIVACY
         COMPOSR_FAST_CUSTOM_INDEX

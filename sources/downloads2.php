@@ -18,7 +18,7 @@
  * @package    downloads
  */
 
-/*EXTRA FUNCTIONS: shell_exec*/
+/*EXTRA FUNCTIONS: shell_exec|zip_\w+*/
 
 /**
  * Interstitial page for downloads.

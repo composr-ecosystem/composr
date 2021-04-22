@@ -109,7 +109,7 @@ Many of these issues can be solved by enabling Composr's own search engine, the 
 
 [title="2"]OpenSearch (advanced)[/title]
 
-Composr can support [url="OpenSearch"]http://www.opensearch.org/[/url], which allows your users to search your website from directly within their web browser. It also supports search suggestions, based on past searches performed.
+Composr can support [url="OpenSearch"]https://github.com/dewitt/opensearch[/url], which allows your users to search your website from directly within their web browser. It also supports search suggestions, based on past searches performed.
 
 By default OpenSearch is configured (via the [tt]HTML_HEAD.tpl[/tt] template) to only be active within a zone named [tt]docs[/tt] and for it to only search Comcode pages. You can, however, configure it to perform any search types you like via changing the code used in this template. You should make sure you have a 'favicon' before enabling OpenSearch, as it is important the web browser has one of these available to use.
 

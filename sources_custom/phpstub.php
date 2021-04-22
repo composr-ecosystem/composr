@@ -4945,7 +4945,7 @@ function intdiv(int $dividend, int $divisor) : int
 /**
  * Gets the class methods' names.
  *
- * @param  string $class_name The class name or an object instance 
+ * @param  string $class_name The class name or an object instance
  * @return ?array An array of method names defined for the class specified by $class_name (null: error)
  */
 function get_class_methods(string $class_name) : ?array

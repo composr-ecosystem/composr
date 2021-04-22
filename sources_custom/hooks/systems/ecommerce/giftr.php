@@ -155,7 +155,7 @@ class Hook_ecommerce_giftr
      */
     public function handle_needed_fields(string $type_code, bool $from_admin = false) : array
     {
-        $to_member = post_param_string('username', $from_admin ? '' : false), INPUT_FILTER_POST_IDENTIFIER;
+        $to_member = post_param_string('username', $from_admin ? '' : false, INPUT_FILTER_POST_IDENTIFIER);
         $gift_message = post_param_string('gift_message', '');
         $anonymous = post_param_integer('anonymous', 0);
 

@@ -77,7 +77,7 @@ class Text_Diff_Engine_shell
 
         foreach ($matches as $match) {
             if (!isset($match[5])) {
-                // This paren is not set every time (see regex).
+                // This parent is not set every time (see regex).
                 $match[5] = false;
             }
 

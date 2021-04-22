@@ -37,7 +37,7 @@ class Hook_config_allow_adding_commandr_events
             'group' => 'CALENDAR',
             'explanation' => 'CONFIG_OPTION_allow_adding_commandr_events',
             'shared_hosting_restricted' => '0',
-            'list_options' => '0|1|2',
+            'list_options' => '',
             'required' => true,
             'public' => false,
             'addon' => 'calendar',

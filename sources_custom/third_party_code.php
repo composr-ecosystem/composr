@@ -146,7 +146,7 @@ function list_untouchable_third_party_files()
         'themes/default/javascript/_polyfill_url.js',
         'themes/default/javascript/_polyfill_web_animations.js',
         'themes/default/javascript/jquery_autocomplete.js',
-        'themes/default/javascript/toastify.css',
+        'themes/default/css/toastify.css',
         'user.sql',
     ];
 }

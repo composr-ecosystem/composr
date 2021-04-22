@@ -18,6 +18,8 @@
  * @package    cns_multi_moderations
  */
 
+/*EXTRA FUNCTIONS: zip_\w+*/
+
 require_code('crud_module');
 
 /**

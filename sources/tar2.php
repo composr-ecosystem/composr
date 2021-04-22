@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: zip_\w+*/
+
 /**
  * Convert a ZIP file to a TAR file.
  *

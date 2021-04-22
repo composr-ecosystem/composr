@@ -175,7 +175,7 @@ function init__webstandards()
     $enforce_border_style = '(auto|none|dotted|dashed|solid|double|groove|ridge|inset|outset|transparent)'; // 'auto' may be used by shadow-dom
     $enforce_border = '((' . $enforce_border_width . '|' . $enforce_border_style . '|' . $enforce_css_color . ')( |$))+';
 
-    $enforce_box_shadow = '((inset )?' . $enforce_length . '( ' . $enforce_length . '( ' . $enforce_length . '( ' . $enforce_length . ')?)?)? ' . $enforce_css_color . ')';
+    $enforce_box_shadow = '((inset )?' . $enforce_length . '( ' . $enforce_length . '( ' . $enforce_length . '( ' . $enforce_length . ')?)?)?( ' . $enforce_css_color . ')?)';
 
     $_enforce_font_list_standard = '((?i)cursive|fantasy|monospace|serif|sans-serif|Georgia|Times|Trebuchet|Tahoma|Geneva|Verdana|Arial|Helvetica|Courier|Courier New|Impact(?-i))'; // We only allow very standard web fonts to be outside quotes
     $_enforce_font_list_quoted = '(\'[\w\- ]+\'|"[\w\- ]+")';
@@ -191,7 +191,7 @@ function init__webstandards()
 
     $_counter_increment = '((\w+( \d+)?)+)';
     $enforce_counter_increment = $_counter_increment . '( ' . $_counter_increment . ')*';
-    $enforce_transition_timing_function = '(linear|ease|ease-in|ease-out|ease-in-out|cubic-bezier\(' . $enforce_fraction . ' ' . $enforce_fraction . ' ' . $enforce_fraction . ' ' . $enforce_fraction . '\))';
+    $enforce_transition_timing_function = '(linear|ease|ease-in|ease-out|ease-in-out|cubic-bezier\(' . $enforce_fraction . ',\s*' . $enforce_fraction . ',\s*' . $enforce_fraction . ',\s*' . $enforce_fraction . '\))';
     $enforce_time = '\d[\d\.]*s';
     $enforce_transition_property = '[\w,\-]+';
     $enforce_transition = $enforce_transition_property . '( ' . $enforce_time . '( ' . $enforce_transition_timing_function . '( ' . $enforce_time . ')?)?)?';

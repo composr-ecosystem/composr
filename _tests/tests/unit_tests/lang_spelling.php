@@ -448,7 +448,7 @@ class lang_spelling_test_set extends cms_test_case
         }
         if (
             (preg_match('#([^\$:_A-Za-z\[\]></\']+)url([^\}\(A-Za-z=\']+)#', $string, $matches) != 0) &&
-            (!in_array($file, ['attachments3.php', 'cns_install.php', 'tut_fields.txt', 'maintenance_status.csv']))
+            (!in_array($file, ['attachments3.php', 'cns_install.php', 'tut_fields.txt', 'maintenance_status.csv', 'toastify.js']))
         ) {
             $prefix = $matches[1];
             if ($prefix != '="') {

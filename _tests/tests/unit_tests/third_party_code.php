@@ -296,6 +296,14 @@ class third_party_code_test_set extends cms_test_case
             unset($phpcs['*.css']);
 
             foreach (array_keys($phpcs) as $path) {
+                if (in_array($path, [
+                    'sources/jsmin.php',
+                    'sources/lang_stemmer_EN.php',
+                    'sources/diff',
+                ])) {
+                    continue;
+                }
+
                 $this->assertTrue(false, 'Unexpected reference for phpcs: ' . $path);
             }
         }
@@ -320,7 +328,14 @@ class third_party_code_test_set extends cms_test_case
                 if (preg_match('#^sources/(forum|database)/#', $path) != 0) {
                     continue;
                 }
-                if ($path == 'sources/minikernel.php') {
+                if (preg_match('#^sources/diff/#', $path) != 0) {
+                    continue;
+                }
+                if (in_array($path, [
+                    'sources/minikernel.php',
+                    'sources/jsmin.php',
+                    'sources/lang_stemmer_EN.php',
+                ])) {
                     continue;
                 }
 

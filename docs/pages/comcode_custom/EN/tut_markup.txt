@@ -195,7 +195,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>A basic understanding of SQL is useful. Sometimes going down to the database level, bypassing Composr, is useful. For example, to make a bulk text change across the system you could write some queries to do so.</td>
 		</tr>
 		<tr>
-			<td>[url="http://www.opensearch.org/Home"]OpenSearch 1.0[/url]</td>
+			<td>[url="https://github.com/dewitt/opensearch"]OpenSearch 1.0[/url]</td>
 			<td>This allows site searching (with auto-completion) integrated direct into web browsers.</td>
 			<td>You are unlikely to need any awareness of this.</td>
 		</tr>

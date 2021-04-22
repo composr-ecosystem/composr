@@ -353,6 +353,7 @@ class css_file_test_set extends cms_test_case
             'faded',
             'notification-button',
             'btn-comcode-(block|box|code|comcode|hide|html|list|page|quote|thumb|url|email)',
+            'toast',
         ];
         if (preg_match('#^' . implode('|', $prefix_exceptions) . '#', $class) != 0) {
             return true;

@@ -18,6 +18,8 @@
  * @package    cns_post_templates
  */
 
+/*EXTRA FUNCTIONS: zip_\w+*/
+
 require_code('crud_module');
 
 /**

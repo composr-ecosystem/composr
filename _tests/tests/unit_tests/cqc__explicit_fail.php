@@ -20,7 +20,7 @@ class cqc__explicit_fail_test_set extends cms_test_case
 {
     public function testCQCTestsStillWork()
     {
-        $url = get_base_url() . '/_tests/codechecker/codechecker.php?test=10';
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?test=10&somewhat_pedantic=1';
         $result = http_get_contents($url, ['convert_to_internal_encoding' => true]);
         $this->assertTrue(strpos($result, 'Bad return type') !== false, $result);
     }
@@ -30,7 +30,7 @@ class cqc__explicit_fail_test_set extends cms_test_case
         $path = get_file_base() . '/temp/temp.php';
         require_code('files');
         cms_file_put_contents_safe($path, "<" . "?= foo() . 1 + ''\n");
-        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=temp&api=1';
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=temp&api=1&somewhat_pedantic=1';
         $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
         unlink($path);
 

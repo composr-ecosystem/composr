@@ -70,6 +70,8 @@ class url_management_test_set extends cms_test_case
     {
         global $CAN_TRY_URL_SCHEMES_CACHE, $URL_REMAPPINGS, $SITE_INFO;
 
+        unset($_GET['keep_devtest']);
+
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme', 'RAW');
@@ -307,6 +309,10 @@ class url_management_test_set extends cms_test_case
             $url_map['foo'] = 'bar';
         }
         $url = build_url($url_map, $zone);
-        return preg_replace('#^' . preg_quote(get_base_url() . '/', '#') . '#', '', $url->evaluate());
+
+        $_url = preg_replace('#^' . preg_quote(get_base_url() . '/', '#') . '#', '', $url->evaluate());
+        $_url = preg_replace('#[&?]keep_devtest=1#', '', $_url);
+
+        return $_url;
     }
 }

@@ -38,6 +38,8 @@ class js_strict_mode_test_set extends cms_test_case
                     '_wysiwyg_settings.js',
                     'xsl_mopup.js',
                     '_polyfill_web_animations.js',
+                    'toastify.js',
+                    'password_checks.js', // Not a standalone file
                 ])) {
                     continue;
                 }
