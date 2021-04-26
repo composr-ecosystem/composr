@@ -615,7 +615,7 @@ function find_php_path($cgi = false)
         foreach ($filenames as $file) {
             if ((!$cgi) || (strpos($file, 'cgi') !== false)) {
                 $path = $dir . '/' . $file;
-                $_path = glob($path);
+                $_path = @glob($path);
                 if (!@empty($_path)) {
                     $php_path = $_path[0];
                     break 2;
