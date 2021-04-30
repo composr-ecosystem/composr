@@ -290,9 +290,9 @@ function page_not_found(string $page, string $zone) : object
             $zone_search_list[] = '';
         }
     }
+    $did_mean = [];
     foreach ($zone_search_list as $_zone) {
         $all_pages_in_zone = array_keys(find_all_pages_wrap($_zone));
-        $did_mean = [];
         foreach ($all_pages_in_zone as $_page) {
             if (is_integer($_page)) {
                 $_page = strval($_page); // e.g. '404' page has been converted to integer by PHP, grr
