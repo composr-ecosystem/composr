@@ -272,6 +272,12 @@ function _git_exec($cmd)
     }
     chdir(get_git_file_base());
 
-    $cache[$cmd] = shell_exec('git ' . $cmd . ' 2>&1');
+    putenv('GIT_COMMITTER_EMAIL=' . get_option('staff_address'));
+    putenv('GIT_AUTHOR_EMAIL=' . get_option('staff_address'));
+    putenv('GIT_COMMITTER_NAME=' . get_domain());
+    putenv('GIT_AUTHOR_NAME=' . get_domain());
+    $_cmd = 'git ' . $cmd . ' 2>&1';
+
+    $cache[$cmd] = shell_exec($_cmd);
     return $cache[$cmd];
 }

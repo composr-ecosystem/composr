@@ -352,7 +352,8 @@ function git_render_preview_from_raw_data($path, $raw_data)
 
     require_code('media_renderer');
     $renderers = find_media_renderers($url, [], true);
-    if (($renderers === null) || (empty(array_diff($renderers, ['hyperlink', 'code'])))) {
+    $_renderers = array_diff($renderers, ['hyperlink', 'code']);
+    if (($renderers === null) || (empty($_renderers))) {
         return with_whitespace(escape_html($raw_data));
     }
 
@@ -369,7 +370,8 @@ function git_render_preview_from_path($path)
 
     require_code('media_renderer');
     $renderers = find_media_renderers($url, [], true);
-    if (($renderers === null) || (empty(array_diff($renderers, ['hyperlink', 'code'])))) {
+    $_renderers = array_diff($renderers, ['hyperlink', 'code']);
+    if (($renderers === null) || (empty($_renderers))) {
         return with_whitespace(escape_html(cms_file_get_contents_safe(get_custom_file_base() . '/' . $path)));
     }
 
