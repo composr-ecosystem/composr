@@ -522,6 +522,9 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
         }
         //$additional_flags.=' -v';     mini_sendmail puts everything onto stderr if using this https://github.com/mattrude/mini_sendmail/blob/master/mini_sendmail.c
         $command = ini_get('sendmail_path') . $additional_flags;
+
+        $this->log('EXECUTE', $command);
+
         $handle = @proc_open($command, $descriptorspec, $pipes);
         if ($handle !== false) {
             fprintf($pipes[0], "To: %s\n", $to);

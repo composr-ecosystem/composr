@@ -36,14 +36,14 @@ class Hook_commandr_command_test_mail
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('test_mail', ['h'], [true]), '', ''];
         } else {
-            $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+            $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
 
             if (!array_key_exists(0, $parameters)) {
-                if ($email_address == '') {
+                if ($to_email == '') {
                     return ['', '', '', do_lang('MISSING_PARAM', '1', 'test_mail')];
                 }
             } else {
-                $email_address = $parameters[0];
+                $to_email = $parameters[0];
             }
 
             require_code('mail');
@@ -55,12 +55,8 @@ class Hook_commandr_command_test_mail
                 return ['', '', '', 'no_email_output==1'];
             }
 
-            $result = dispatch_mail('Test', 'Test', [$email_address], null, '', '', ['priority' => 1, 'bypass_queue' => true]);
-            if ($result->worked) {
-                return ['', '', do_lang('SUCCESS'), ''];
-            } else {
-                return ['', '', '', empty($result->error) ? do_lang('INTERNAL_ERROR') : $result->error];
-            }
+            $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true]);
+            return ['', '', $mail_ob->log, ''];
         }
     }
 }

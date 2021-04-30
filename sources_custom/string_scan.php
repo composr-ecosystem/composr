@@ -797,6 +797,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EQUATIONS_NOT_SUPPORTED
         INSTALLPROFILE_WITH_THEME
         CONFIG_OPTION_supports_wide
+        SEND_TEST_EMAIL
+        SEND_TEST_EMAIL_DESCRIPTION
         MOBILE_PAGES
         EMPTY_CODENAME
         CONFIG_OPTION_mobile_pages

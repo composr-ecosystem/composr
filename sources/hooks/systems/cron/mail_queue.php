@@ -79,7 +79,7 @@ class Hook_cron_mail_queue
                     continue;
                 }
 
-                $result_ob = dispatch_mail(
+                $mail_ob = dispatch_mail(
                     $subject,
                     $message,
                     $to_email,
@@ -102,7 +102,7 @@ class Hook_cron_mail_queue
                         'plain_subject' => $plain_subject == 1,
                     ]
                 );
-                $success = $result_ob->worked;
+                $success = $mail_ob->worked;
 
                 if ($success) {
                     $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['id' => $row['id']], '', 1);

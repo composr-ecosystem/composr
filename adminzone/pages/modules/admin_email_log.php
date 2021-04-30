@@ -53,6 +53,7 @@ class Module_admin_email_log
     {
         return [
             'browse' => ['EMAIL_LOG', 'menu/adminzone/audit/email_log'],
+            'test' => ['SEND_TEST_EMAIL', 'buttons/send'],
         ];
     }
 
@@ -97,6 +98,10 @@ class Module_admin_email_log
             $this->title = get_screen_title('DELETE_ALL');
         }
 
+        if (($type == 'test') || ($type == '_test')) {
+            $this->title = get_screen_title('SEND_TEST_EMAIL');
+        }
+
         return null;
     }
 
@@ -129,6 +134,12 @@ class Module_admin_email_log
         }
         if ($type == 'mass_delete') {
             return $this->mass_delete();
+        }
+        if ($type == 'test') {
+            return $this->test();
+        }
+        if ($type == '_test') {
+            return $this->_test();
         }
 
         return new Tempcode();
@@ -641,5 +652,49 @@ class Module_admin_email_log
 
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('DELETE_NUM', escape_html(integer_format($count, 0))));
+    }
+
+    /**
+     * UI to do a test e-mail.
+     *
+     * @return Tempcode UI
+     */
+    public function test() : object
+    {
+        require_code('form_templates');
+
+        $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+
+        $fields = new Tempcode();
+        $fields->attach(form_input_email(do_lang_tempcode('TO'), '', 'to_email', $to_email, true));
+
+        return do_template('FORM_SCREEN', [
+            'TITLE' => $this->title,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'URL' => build_url(['page' => '_SELF', 'type' => '_test'], '_SELF'),
+            'FIELDS' => $fields,
+            'TEXT' => do_lang_tempcode('SEND_TEST_EMAIL_DESCRIPTION'),
+            'SUBMIT_ICON' => 'buttons__send',
+            'SUBMIT_NAME' => do_lang_tempcode('SEND'),
+        ]);
+    }
+
+    /**
+     * Actualiser to do a test e-mail.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function _test() : object
+    {
+        $to_email = post_param_string('to_email');
+
+        require_code('mail');
+        $mail_ob = dispatch_mail('Testing', 'Testing', [$to_email], 'Tester', '', '', ['priority' => 1, 'bypass_queue' => true]);
+
+        return do_template('FULL_MESSAGE_SCREEN', [
+            'TITLE' => $this->title,
+            'TEXT' => protect_from_escaping($mail_ob->log),
+        ]);
     }
 }

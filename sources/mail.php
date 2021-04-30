@@ -247,6 +247,12 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
                 $signed_headers = str_replace("\r\n", $this->line_term, $signature->get_signed_headers($to_line, $subject_wrapped, str_replace($this->line_term, "\r\n", $sending_message), str_replace($this->line_term, "\r\n", $headers)));
             }
 
+            $this->log('PHP-MAIL-to', $to_line);
+            $this->log('PHP-MAIL-subject', $subject_wrapped);
+            $this->log('PHP-MAIL-message', $sending_message);
+            $this->log('PHP-MAIL-headers', $signed_headers . $headers);
+            $this->log('PHP-MAIL-additional', $additional);
+
             if (function_exists('error_clear_last')) {
                 error_clear_last();
             }
@@ -384,16 +390,18 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
         foreach ($to_emails as $i => $to) {
             // Open up a connection
             global $SMTP_SOCKET;
-            $cache_key = $this->smtp_sockets_host . ':' . $this->smtp_sockets_port;
+            $cache_key = $this->smtp_sockets_host . ':' . strval($this->smtp_sockets_port);
             $socket = array_key_exists($cache_key, $SMTP_SOCKET) ? $SMTP_SOCKET[$cache_key] : null;
             $new_connection = false;
             if ($socket !== false) {
                 if ($socket !== null) {
+                    $this->log('RECYCLED-SOCKET', $cache_key);
+
                     $socket = $SMTP_SOCKET[$cache_key];
 
                     // Test connection still works
-                    fwrite($socket, "NOOP\r\n");
-                    $rcv = fread($socket, 1024);
+                    $this->fwrite($socket, "NOOP\r\n");
+                    $rcv = $this->fread($socket, 1024);
                     if (substr($rcv, 0, 3) != '250') {
                         @fclose($socket);
                         $socket = null;
@@ -402,6 +410,8 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
 
                 // Connection opening for first time, or previous connection abruptly closed - so new connection
                 if ($socket === null) {
+                    $this->log('OPEN-SOCKET', $cache_key);
+
                     $socket = @fsockopen($this->smtp_sockets_host, $this->smtp_sockets_port, $errno, $errstr, 30.0);
                     $SMTP_SOCKET[$cache_key] = $socket;
                     $new_connection = true;
@@ -413,21 +423,21 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                 if ($new_connection) {
                     $domain = get_base_url_hostname();
 
-                    $rcv = fread($socket, 1024);
+                    $rcv = $this->fread($socket, 1024);
 
                     // Log in if necessary
                     if ($this->smtp_sockets_username != '') {
-                        fwrite($socket, 'EHLO ' . $domain . "\r\n");
-                        $rcv = fread($socket, 1024);
+                        $this->fwrite($socket, 'EHLO ' . $domain . "\r\n");
+                        $rcv = $this->fread($socket, 1024);
 
-                        fwrite($socket, "AUTH LOGIN\r\n");
-                        $rcv = fread($socket, 1024);
+                        $this->fwrite($socket, "AUTH LOGIN\r\n");
+                        $rcv = $this->fread($socket, 1024);
                         if (substr($rcv, 0, 3) == '334') {
-                            fwrite($socket, base64_encode($this->smtp_sockets_username) . "\r\n");
-                            $rcv = fread($socket, 1024);
+                            $this->fwrite($socket, base64_encode($this->smtp_sockets_username) . "\r\n");
+                            $rcv = $this->fread($socket, 1024);
                             if ((substr($rcv, 0, 3) == '235') || (substr($rcv, 0, 3) == '334')) {
-                                fwrite($socket, base64_encode($this->smtp_sockets_password) . "\r\n");
-                                $rcv = fread($socket, 1024);
+                                $this->fwrite($socket, base64_encode($this->smtp_sockets_password) . "\r\n");
+                                $rcv = $this->fread($socket, 1024);
                                 if (substr($rcv, 0, 3) == '235') {
                                 } else {
                                     $error = do_lang('MAIL_ERROR_CONNECT_PASSWORD') . ' (' . str_replace($this->smtp_sockets_password, '*', $rcv) . ')';
@@ -439,26 +449,26 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                             $error = do_lang('MAIL_ERROR_CONNECT_AUTH') . ' (' . $rcv . ')';
                         }
                     } else {
-                        fwrite($socket, 'HELO ' . $domain . "\r\n");
-                        $rcv = fread($socket, 1024);
+                        $this->fwrite($socket, 'HELO ' . $domain . "\r\n");
+                        $rcv = $this->fread($socket, 1024);
                     }
                 }
 
                 if (($error === null)) {
-                    fwrite($socket, 'MAIL FROM:<' . $this->smtp_from_address . ">\r\n");
-                    $rcv = fread($socket, 1024);
+                    $this->fwrite($socket, 'MAIL FROM:<' . $this->smtp_from_address . ">\r\n");
+                    $rcv = $this->fread($socket, 1024);
                     if ((substr($rcv, 0, 3) == '250') || (substr($rcv, 0, 3) == '251')) {
                         $sent_one = false;
-                        fwrite($socket, "RCPT TO:<" . $to_emails[$i] . ">\r\n");
-                        $rcv = fread($socket, 1024);
+                        $this->fwrite($socket, "RCPT TO:<" . $to_emails[$i] . ">\r\n");
+                        $rcv = $this->fread($socket, 1024);
                         if ((substr($rcv, 0, 3) != '250') && (substr($rcv, 0, 3) != '251')) {
                             $error = do_lang('MAIL_ERROR_TO') . ' (' . $rcv . ')' . ' ' . $to_emails[$i];
                         } else {
                             $sent_one = true;
                         }
                         if ($sent_one) {
-                            fwrite($socket, "DATA\r\n");
-                            $rcv = fread($socket, 1024);
+                            $this->fwrite($socket, "DATA\r\n");
+                            $rcv = $this->fread($socket, 1024);
                             if (substr($rcv, 0, 3) == '354') {
                                 $to_line = '';
                                 $mime_message = $this->assemble_full_mime_message($to_emails, $to_names, $i, $subject_wrapped, $signed_headers . $headers, $sending_message, $to_line);
@@ -469,14 +479,14 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                                     $signed_headers = str_replace("\r\n", $this->line_term, $signature->get_signed_headers($to_line, $subject_wrapped, str_replace($this->line_term, "\r\n", $sending_message), str_replace($this->line_term, "\r\n", $headers)));
                                 }
 
-                                fwrite($socket, preg_replace('#^\.#m', '..', $mime_message));
-                                fwrite($socket, "\r\n.\r\n");
-                                $rcv = fread($socket, 1024);
+                                $this->fwrite($socket, preg_replace('#^\.#m', '..', $mime_message));
+                                $this->fwrite($socket, "\r\n.\r\n");
+                                $rcv = $this->fread($socket, 1024);
                                 if (substr($rcv, 0, 3) != '250') {
                                     $error = do_lang('MAIL_ERROR_DATA') . ' (' . $rcv . ')';
                                 }
-                                fwrite($socket, "QUIT\r\n");
-                                $rcv = fread($socket, 1024);
+                                $this->fwrite($socket, "QUIT\r\n");
+                                $rcv = $this->fread($socket, 1024);
                             } else {
                                 $error = do_lang('MAIL_ERROR_DATA') . ' (' . $rcv . ')';
                             }
@@ -485,12 +495,12 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                         $error = do_lang('MAIL_ERROR_FROM') . ' (' . $rcv . ')';
                     }
 
-                    if (@fwrite($socket, "RSET\r\n") === false) { // Cut out. At least one server does this
+                    if (@$this->fwrite($socket, "RSET\r\n") === false) { // Cut out. At least one server does this
                         @fclose($socket);
                         $socket = null;
                         $SMTP_SOCKET[$cache_key] = null;
                     } else {
-                        $rcv = fread($socket, 1024);
+                        $rcv = $this->fread($socket, 1024);
                     }
                 }
 
@@ -506,6 +516,33 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
         }
 
         return [$worked, $error];
+    }
+
+    /**
+     * Wrapper for fwrite that adds logging.
+     *
+     * @param  resource $handle The file handle
+     * @param  string $text The string to write to the file
+     * @return ~integer The number of bytes written (false: error)
+     */
+    protected function fwrite($handle, string $text)
+    {
+        $this->log('SOCKET-WRITE', with_whitespace($text));
+        return fwrite($handle, $text);
+    }
+
+    /**
+     * Wrapper for fread that adds logging.
+     *
+     * @param  resource $handle The file handle
+     * @param  integer $length Maximum length to read
+     * @return ~string The read data (false: error)
+     */
+    protected function fread($handle, int $length)
+    {
+        $ret = fread($handle, $length);
+        $this->log('SOCKET-READ', with_whitespace($ret));
+        return $ret;
     }
 }
 
@@ -554,6 +591,7 @@ abstract class Mail_dispatcher_base
     // Return status
     public $worked = null;
     public $error = false;
+    public $log = '';
 
     /**
      * Construct e-mail dispatcher.
@@ -637,6 +675,8 @@ abstract class Mail_dispatcher_base
         global $EMAIL_ATTACHMENTS;
         $EMAIL_ATTACHMENTS = [];
 
+        $this->log('INIT', get_class($this));
+
         // May not be enabled for various reasons
         if (!$this->is_enabled()) {
             require_code('files2');
@@ -670,6 +710,8 @@ abstract class Mail_dispatcher_base
             $through_queue = $this->is_through_queue();
             $this->log_message($through_queue, $subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
             if ($through_queue) {
+                $this->log('QUEUED', 'Entered queue');
+
                 require_code('files2');
                 clean_temporary_mail_attachments($this->attachments);
 
@@ -682,6 +724,8 @@ abstract class Mail_dispatcher_base
         if ($SENDING_MAIL) {
             require_code('files2');
             clean_temporary_mail_attachments($this->attachments);
+
+            $this->log('SKIPPED', 'Sending another e-mail currently, some kind of recursion happening');
 
             return null;
         }
@@ -714,11 +758,15 @@ abstract class Mail_dispatcher_base
         }
 
         // Error reporting if necessary
-        if (!$worked) {
+        if ($worked) {
+            $this->log('SUCCESS', ':-)');
+        } else {
             // May have already been attached (depending on our error_handling_* functions), but we'll risk double reporting because it's important
             if ($error === null) {
+                $this->log('ERROR', '?');
                 $_error = do_lang_tempcode('MAIL_FAIL', escape_html(get_option('staff_address')));
             } else {
+                $this->log('ERROR', $error);
                 $_error = make_string_tempcode($error);
             }
             attach_message($_error, 'warn', false, true);
@@ -1148,6 +1196,8 @@ abstract class Mail_dispatcher_base
         if ($this->priority != 1 && $to_emails !== null) {
             foreach ($to_emails as $key => $email) {
                 if ($GLOBALS['FORUM_DRIVER']->is_banned($GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email))) {
+                    $this->log('SKIPPED', $email . ' is for a banned member');
+
                     unset($to_emails[$key]);
                 }
             }
@@ -1320,6 +1370,8 @@ abstract class Mail_dispatcher_base
         }
 
         if (@$GLOBALS['SITE_INFO']['no_email_output'] === '1') {
+            $this->log('DISABLED', 'no_email_output==1');
+
             return false;
         }
 
@@ -1457,6 +1509,17 @@ abstract class Mail_dispatcher_base
             return 'url(\'data:' . $value . '\')';
         }
         return 'none';
+    }
+
+    /**
+     * Log something (to the class's internal logging, which can be accessed by the caller).
+     *
+     * @param  string $verb Log verb (category of what is happening)
+     * @param  string $message Log message
+     */
+    protected function log(string $verb, string $message)
+    {
+        $this->log .= '<p><strong>' . escape_html($verb) . '</strong>:<br />' . static_evaluate_tempcode(with_whitespace($message)) . '</p>';
     }
 }
 
