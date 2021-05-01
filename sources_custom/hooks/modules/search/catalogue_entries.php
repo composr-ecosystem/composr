@@ -261,7 +261,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 break;
 
             case 'title':
-                $remapped_orderer = 'b_cv_value'; // short table
+                if (get_param_string('catalogue_name', '') != '') {
+                    $remapped_orderer = 'b_cv_value'; // short table
+                }
                 break;
 
             case 'add_date':
@@ -337,15 +339,17 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
             $engine = new Composr_fulltext_engine();
 
-            if ($engine->active_search_has_special_filtering()) {
-                $catalogue_name = get_param_string('catalogue_name', '');
-                if ($catalogue_name != '') {
-                    $trans_fields = array();
-                    $nontrans_fields = array();
-                    list($sup_table, $_where_clause, $trans_fields, $nontrans_fields) = $this->_get_search_parameterisation_advanced($catalogue_name);
-                    $table .= $sup_table;
-                    $where_clause .= $_where_clause;
-                    // ^ Nothing done with trans_fields and nontrans_fields
+            $catalogue_name = get_param_string('catalogue_name', '');
+            if (($catalogue_name != '') && ($engine->active_search_has_special_filtering()) || ($remapped_orderer == 'b_cv_value') || (strpos($remapped_orderer, '.') !== false)) {
+                $trans_fields = array();
+                $nontrans_fields = array();
+                list($sup_table, $_where_clause, $trans_fields, $nontrans_fields, $title_field) = $this->_get_search_parameterisation_advanced($catalogue_name);
+                $table .= $sup_table;
+                $where_clause .= $_where_clause;
+                // ^ Nothing done with trans_fields and nontrans_fields
+
+                if ($remapped_orderer == 'b_cv_value') {
+                    $remapped_orderer = $title_field;
                 }
             }
 
