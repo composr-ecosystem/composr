@@ -400,14 +400,14 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         seo_meta_set_for_explicit('news', strval($id), $meta_keywords, $meta_description);
     }
 
-    if ($validated == 1) {
-        decache('main_news');
-        decache('main_image_fader_news');
-        decache('side_news');
-        decache('side_news_archive');
-        decache('bottom_news');
-        decache('side_news_categories');
+    decache('main_news');
+    decache('main_image_fader_news');
+    decache('side_news');
+    decache('side_news_archive');
+    decache('bottom_news');
+    decache('side_news_categories');
 
+    if ($validated == 1) {
         dispatch_news_notification($id, $title, $main_news_category_id);
     }
 
