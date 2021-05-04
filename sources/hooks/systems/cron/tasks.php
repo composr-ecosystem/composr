@@ -29,9 +29,13 @@ class Hook_cron_tasks
     public function run()
     {
         if (!GOOGLE_APPENGINE) { // GAE has its own external task queue
-            require_code('tasks');
-
             $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', array('*'), array('t_locked' => 0));
+
+            if (!empty($task_rows)) {
+                require_code('tasks');
+                require_code('notifications'); // Needed as a task may require the notification object, and any class that has a deserialized reference needs to be loaded first to avoid being an 'incomplete object'
+            }
+
             foreach ($task_rows as $task_row) {
                 $GLOBALS['SITE_DB']->query_update('task_queue', array(
                     't_locked' => 1,
