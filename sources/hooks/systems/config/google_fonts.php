@@ -52,6 +52,6 @@ class Hook_config_google_fonts
      */
     public function get_default() : ?string
     {
-        return 'Roboto';
+        return '';
     }
 }
