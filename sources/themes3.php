@@ -717,16 +717,21 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
 
     $theme_image = $icons_dir . '_sprite';
     if ($userland) {
-        $_sprite_path = 'themes/default/images_custom/' . $theme_image . '.svg';
+        $_sprite_path = 'themes/' . $theme . '/images_custom/' . $theme_image . '.svg';
         $sprite_path = get_custom_file_base() . '/' . $_sprite_path;
     } else {
-        $_sprite_path = 'themes/default/images/' . $theme_image . '.svg';
+        $_sprite_path = 'themes/' . $theme . '/images/' . $theme_image . '.svg';
         $sprite_path = get_file_base() . '/' . $_sprite_path;
     }
 
     cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
     $icons_added = array_keys($icon_paths);
+
+    if ($userland) {
+        $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $theme_image]);
+        actual_edit_theme_image($theme_image, $theme, '', $theme_image, $_sprite_path, false);
+    }
 
     return [$_sprite_path, $icons_added];
 }
