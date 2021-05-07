@@ -1176,14 +1176,14 @@ abstract class Mail_dispatcher_base
      *
      * @param  string $subject_line The subject of the mail in plain text
      * @param  LONG_TEXT $message_raw The message, as Comcode
-     * @param  array $to_emails To e-mail addresses
+     * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
      * @param  array $to_names To names
      * @param  EMAIL $from_email From e-mail address
      * @param  string $from_name From name
      * @param  LANGUAGE_NAME $lang Language
      * @param  ID_TEXT $theme Theme
      */
-    protected function tidy_parameters(string &$subject_line, string &$message_raw, array &$to_emails, array &$to_names, string &$from_email, string &$from_name, string &$lang, string &$theme)
+    protected function tidy_parameters(string &$subject_line, string &$message_raw, array &$to_emails, &$to_names, string &$from_email, string &$from_name, string &$lang, string &$theme)
     {
         escape_header($subject_line);
 
@@ -1195,7 +1195,8 @@ abstract class Mail_dispatcher_base
         // Filter our e-mails of banned members
         if ($this->priority != 1 && $to_emails !== null) {
             foreach ($to_emails as $key => $email) {
-                if ($GLOBALS['FORUM_DRIVER']->is_banned($GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email))) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
+                if (($member_id !== null) && ($GLOBALS['FORUM_DRIVER']->is_banned($member_id))) {
                     $this->log('SKIPPED', $email . ' is for a banned member');
 
                     unset($to_emails[$key]);
