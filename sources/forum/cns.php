@@ -304,7 +304,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @set date rating
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts(int $topic_id, ?int &$count = null, int $max = 100, int $start = 0, bool $mark_read = true, bool $reverse = false, bool $light_if_threaded = false, ?array $posts = null, bool $load_spacer_posts_too = false, string $sort = 'date')
+    public function get_forum_topic_posts(int $topic_id, ?int &$count = null, ?int $max = 100, int $start = 0, bool $mark_read = true, bool $reverse = false, bool $light_if_threaded = false, ?array $posts = null, bool $load_spacer_posts_too = false, string $sort = 'date')
     {
         require_code('cns_forum_driver_helper');
         return _helper_get_forum_topic_posts($this, $topic_id, $count, $max, $start, $mark_read, $reverse, $light_if_threaded, $posts, $load_spacer_posts_too, $sort);

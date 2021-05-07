@@ -404,7 +404,7 @@ class Forum_driver_vb3 extends Forum_driver_base
      * @param  boolean $reverse Whether to show in reverse
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts(int $topic_id, ?int &$count = null, int $max = 100, int $start = 0, bool $mark_read = true, bool $reverse = false)
+    public function get_forum_topic_posts(int $topic_id, ?int &$count = null, ?int $max = 100, int $start = 0, bool $mark_read = true, bool $reverse = false)
     {
         if ($topic_id === null) {
             return (-2);
