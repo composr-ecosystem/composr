@@ -97,7 +97,7 @@ When composing your newsletter you will be given a choice to send it out at a sc
 [box="Be wary of WYSIWYG" width="25em" float="right"]
 You can use the WYSIWYG editor for making newsletters if you wish, but it is not advisable if "Support plain-text e-mails" is enabled, because plain-text readers will get some really ugly plain-text from it. If you make the newsletter using manual Comcode, the plain-text readers will see the Comcode, which is intrinsically easy to read.
 [/box]
-If the "Support plain-text e-mails" configuration option (Admin Zone > Setup > Configuration > Messages > Newsletter) is enabled (it's not by default) then newsletters are sent out in a dual format: both text and HTML. Most users will be able to read the HTML variant, as this is now by far the standard for common e-mail messages; however if they have this disabled, or an unusual e-mail client that cannot read HTML mails, then they will see the plain text version, which is your original Comcode.
+If the "Support plain-text e-mails" configuration option (Admin Zone > Setup > Configuration > Messages > Newsletter) is enabled (it's not by default) then newsletters are sent out in a dual format: both text and HTML. Most users will be able to read the HTML variant, as this is now by far the standard for common e-mail messages; however if they have this disabled, or an unusual e-mail client that cannot read HTML mails, then they will see the plain text version, which is based on your original Comcode.
 
 [title="3"]Basic templating[/title]
 
@@ -109,7 +109,7 @@ You also are likely to want to edit the [tt]MAIL.tpl[/tt] template, which define
 
 You will almost certainly want to edit these templates within the default theme, because if you are sending newsletters from the Admin Zone almost certainly the default theme will be the active theme when the newsletters are generated.
 
-Information on very advanced templating is provided further down in this tutorial.
+Information on more advanced templating is provided further down in this tutorial.
 
 [title="4"]Custom mail templates for newsletters (advanced)[/title]
 
@@ -163,18 +163,38 @@ All these features are available under Admin Zone > Tools > Newsletter.
 
 [title="2"]Detailed templating (advanced)[/title]
 
-Want to take things to the next level with your newsletters? You can create full HTML newsletters, with embedded unsubscribe links, using newsletter templating.
+[title="3"]Parameters[/title]
+
+You have the following template variables available to you to reference in your newsletters:
+ - [tt]{TITLE}[/tt], The subject line of the e-mail (and also the equivalent of [tt]{TITLE}[/tt] in the [tt]MAIL.tpl[/tt] template)
+ - [tt]{FORENAME}[/tt], The forename (first name) of the subscriber (may be blank if it is not known)
+ - [tt]{SURNAME}[/tt], The surname (last name) of the subscriber (may be blank if it is not known)
+ - [tt]{NAME}[/tt], The full name of the subscriber (either a combination of forename and surname, the members username, or the [tt]NEWSLETTER_SUBSCRIBER_DEFAULT_NAME[/tt] language string -- depending on what data is available on the reader)
+ - [tt]{MEMBER_ID}[/tt], The member ID of the subscriber, or blank if there is no discerned member ID
+ - [tt]{EMAIL_ADDRESS}[/tt], The e-mail address of the subscriber
+ - [tt]{SEND_ID}[/tt], A special code identifying the subscriber (starts with [tt]m[/tt] if it is a member, or [tt]n[/tt] if it is a newsletter subscriber)
+ - [tt]{UNSUB_URL}[/tt], A URL to unsubscribe from (one-click unsubscribe for newsletter recipients, a link to account settings for other recipients). If you are using [tt]unsub_url[/tt] in a Comcode newsletter it is very important not to insert it plainly, as Composr will look at the link for a link caption and incidentally click that link for every user. Instead use a Comcode [tt]url[/tt] tag and hence tell Composr what caption to give the link.
+
+These parameters work both in the body of an individual newsletter and the [tt]NEWSLETTER_DEFAULT_FCOMCODE[/tt] template.
+
+[title="3"]Custom Profile Fields[/title]
+
+If sending newsletters to members (via usergroups), rather than via newsletter signup, you can reference Custom Profile Fields using normal Tempcode. For example, to find field #20 for the recipient, [tt]{$CPF_VALUE,20,{MEMBER_ID}}[/tt].
+
+[title="3"]Full HTML[/title]
+
+Want to take things to the next level with your newsletters? You can create full HTML newsletters.
 
 Creating templated newsletters is best shown by example (this is the newsletter itself, fed into the field when you send the newsletter, or put inside the [tt]NEWSLETTER_DEFAULT_FCOMCODE.txt[/tt] template that prepopulates that field):
 [code="HTML"]
-<html lang="{$LCASE*,{$LANG}}" dir="{!dir}">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={!charset}" />
-<title>{title*}</title>
+<title>{TITLE*}</title>
 </head>
 <body>
 	{$,Try and figure out the best greeting from the data available - we prefer to welcome people by forename but we might not have it}
-	<p>Dear {+START,IF_NON_EMPTY,{FORENAME}}{FORENAME}{+END}{+START,IF_EMPTY,{FORENAME}}{NAME}{+END},</p>
+	<p>Dear {+START,IF_NON_EMPTY,{FORENAME*}}{FORENAME}{+END}{+START,IF_EMPTY,{FORENAME}}{NAME*}{+END},</p>
 
 	{$PARAGRAPH,{$?,{$IS_EMPTY,{CONTENT}},Your text goes here.,{CONTENT}}}
 
@@ -190,26 +210,19 @@ Creating templated newsletters is best shown by example (this is the newsletter 
 </html>
 [/code]
 
-Note how the example includes the [tt]html[/tt] tag, etc -- it is not a snippet, it is a full piece of HTML. This is optional, but if you do write your newsletters like this Composr will be clever enough to bypass wrapping the newsletter in the standard [tt]MAIL.tpl[/tt] template.
-
-You have the following template variables available to you (beyond all the default capabilities of Comcode):
- - [tt]TITLE[/tt], The subject line of the e-mail (and also the equivalent of [tt]{TITLE}[/tt] in the [tt]MAIL.tpl[/tt] template)
- - [tt]FORENAME[/tt], The forename (first name) of the subscriber (may be blank if it is not known)
- - [tt]SURNAME[/tt], The surname (last name) of the subscriber (may be blank if it is not known)
- - [tt]NAME[/tt], The full name of the subscriber (either a combination of forename and surname, the members username, or the [tt]NEWSLETTER_SUBSCRIBER_DEFAULT_NAME[/tt] language string -- depending on what data is available on the reader)
- - [tt]MEMBER_ID[/tt], The member ID of the subscriber, or blank if there is no discerned member ID
- - [tt]EMAIL_ADDRESS[/tt], The e-mail address of the subscriber
- - [tt]SEND_ID[/tt], A special code identifying the subscriber (starts with [tt]m[/tt] if it is a member, or [tt]n[/tt] if it is a newsletter subscriber)
- - [tt]UNSUB_URL[/tt], A URL to unsubscribe from (one-click unsubscribe for newsletter recipients, a link to account settings for other recipients). If you are using [tt]unsub_url[/tt] in a Comcode newsletter it is very important not to insert it plainly, as Composr will look at the link for a link caption and incidentally click that link for every user. Instead use a Comcode [tt]url[/tt] tag and hence tell Composr what caption to give the link.
+Note how the example includes the [tt]html[/tt] tag, etc -- it is not a snippet, it is a full piece of HTML. This is optional, but if you do write your newsletters like this Composr will be clever enough to bypass wrapping the newsletter in the standard [tt]MAIL.tpl[/tt] template. It will also assume that the body of any new newsletter is in HTML, so Comcode will no longer be supported (but Tempcode will work).
 
 This bit may confuse you: [tt]{+START,IF_NON_EMPTY,{forename}}{forename}{+END}{+START,IF_EMPTY,{forename}}{name}{+END}[/tt]
 It is saying "if the forename is available, use the forename, if the forename is not available, use the username".
-If you are using Tempcode directives like this then I strongly recommended to tick (check) the 'HTML only' box when you go to send your newsletters, as the auto-generated text equivalents will not be easily readable.
-The vast majority of e-mail applications have HTML capabilities nowadays, so you are not really sacrificing anything if you do this.
 
-[title="3"]Custom Profile Fields[/title]
+[title="3"]Processing flow[/title]
 
-If sending newsletters to members (via usergroups), rather than via newsletter signup, you can reference Custom Profile Fields using normal Tempcode. For example, to find field #20 for the recipient, [tt]{$CPF_VALUE,20,{member_id}}[/tt].
+Newsletters are processed for each recipient in the following steps:
+1) Tempcode evaluated in the newsletter body
+2) Parameters bound to the above Tempcode ([tt]{FORENAME}[/tt] etc)
+3) Wrapper template applied
+4) Parameters bound to the wrapper template
+5) If in Comcode format, Comcode is evaluated by Composr's mailer &ndash; otherwise raw-HTML is sent
 
 [title="2"]Bounce filtering (advanced)[/title]
 
