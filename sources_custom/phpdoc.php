@@ -879,22 +879,22 @@ function check_function_parameter_typing(string $phpdoc_type, ?string $php_type,
         if ($php_type !== null) {
             if ($expected_php_type === null) {
                 if (($php_type !== null) && ($php_type !== 'callable'/*No representation in our phpdoc*/)) {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint', 'warn');
+                    attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint for ' . $name, 'warn');
                 }
             } else {
                 if ($expected_php_type == 'object') {
                     if (in_array($php_type, ['array', 'bool', 'callable', 'float', 'int', 'iterable', 'string', 'void'])) { // If not an object or class
-                        attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
+                        attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint for ' . $name, 'warn');
                     }
                 } else {
                     if ($php_type != $expected_php_type) {
-                        attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
+                        attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint for ' . $name, 'warn');
                     }
                 }
             }
 
             if ($php_type_nullable != $null_allowed) {
-                attach_message('The phpdoc type and the PHP type hint conflict around nullability', 'warn');
+                attach_message('The phpdoc type and the PHP type hint conflict around nullability for ' . $name, 'warn');
             }
         } elseif ($expected_php_type !== null) {
             if ($funcdef_line_new !== null) {
@@ -918,7 +918,7 @@ function check_function_parameter_typing(string $phpdoc_type, ?string $php_type,
 
     // Check phpdoc type
     if (!array_key_exists($_phpdoc_type, $valid_types)) {
-        attach_message('The phpdoc type ' . $phpdoc_type . ' used in ' . $function_name . ' is not valid', 'warn');
+        attach_message('The phpdoc type ' . $phpdoc_type . ' used in ' . $function_name . ' is not valid for ' . $name, 'warn');
     }
 
     // Check value
@@ -943,7 +943,7 @@ function check_function_parameter_typing(string $phpdoc_type, ?string $php_type,
             'string',
         ];
         if ((!in_array($_phpdoc_type, $allowed)) && (!in_array($_phpdoc_type, $allowed_string)) && ($phpdoc_type != 'array')) {
-            attach_message('A range was specified for a parameter type ' . $_phpdoc_type . ' in function name ' . $function_name . '; this parameter type cannot have a range', 'warn');
+            attach_message('A range was specified for a parameter type ' . $_phpdoc_type . ' in function name ' . $function_name . '; this parameter type cannot have a range for ' . $name, 'warn');
         }
 
         list($min, $max) = explode(' ', $range);

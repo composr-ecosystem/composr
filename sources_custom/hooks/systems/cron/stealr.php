@@ -28,7 +28,7 @@ class Hook_cron_stealr
     public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('stealr')) {
-            return;
+            return null;
         }
         if (!addon_installed('points')) {
             return null;
