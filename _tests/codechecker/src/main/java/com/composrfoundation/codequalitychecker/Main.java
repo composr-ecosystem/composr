@@ -12,6 +12,7 @@ public class Main {
     public static boolean relay__todo = true;
     public static boolean relay__mixed = false;
     public static boolean relay__pedantic = false;
+    public static boolean relay__somewhat_pedantic = false;
     public static boolean relay__security = false;
     public static boolean relay__manual_checks = false;
     public static boolean relay__spelling = false;
@@ -57,6 +58,11 @@ public class Main {
             }
             try {
                 relay__pedantic = (p.getProperty("relay__pedantic").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__somewhat_pedantic = (p.getProperty("relay__somewhat_pedantic").equals("1"));
             }
             catch (NullPointerException e) {
             }

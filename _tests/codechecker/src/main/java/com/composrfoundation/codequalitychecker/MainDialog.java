@@ -559,6 +559,9 @@ public class MainDialog extends JFrame {
         if (Main.relay__pedantic) {
             line = line + " --pedantic";
         }
+        if (Main.relay__somewhat_pedantic) {
+            line = line + " --somewhat_pedantic";
+        }
         if (Main.relay__security) {
             line = line + " --security";
         }

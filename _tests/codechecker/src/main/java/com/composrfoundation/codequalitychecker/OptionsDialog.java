@@ -31,6 +31,7 @@ public class OptionsDialog extends JDialog {
     JCheckBox todo = new JCheckBox();
     JCheckBox mixed = new JCheckBox();
     JCheckBox pedantic = new JCheckBox();
+    JCheckBox somewhat_pedantic = new JCheckBox();
     JCheckBox security = new JCheckBox();
     JCheckBox manual_checks = new JCheckBox();
     JCheckBox spelling = new JCheckBox();
@@ -120,6 +121,11 @@ public class OptionsDialog extends JDialog {
         pedantic.setText("Show pedantic warnings (comment density, etc)");
         flags.add(pedantic);
 
+        somewhat_pedantic = new JCheckBox(somewhat_pedantic.getText(), Main.relay__somewhat_pedantic);
+        somewhat_pedantic.setActionCommand("somewhat_pedantic");
+        somewhat_pedantic.setText("Show Composr-coding-standards warnings");
+        flags.add(somewhat_pedantic);
+
         security = new JCheckBox(security.getText(), Main.relay__security);
         security.setActionCommand("security");
         security.setText("Flag security hotspots (e.g. query and exec)");
@@ -145,17 +151,17 @@ public class OptionsDialog extends JDialog {
         eslint.setText("Run 3rd party ESLint (must be installed via npm)");
         flags.add(eslint);
 
-        jTabbedPane1.setBounds(new Rectangle(10, 13, 451, 287));
+        jTabbedPane1.setBounds(new Rectangle(10, 13, 476, 287));
         jTabbedPane1.add(flags, "Flags");
         jTabbedPane1.add(environment, "Environment");
 
-        closeBtn.setBounds(new Rectangle(389, 313, 71, 23));
+        closeBtn.setBounds(new Rectangle(414, 313, 71, 23));
         closeBtn.setMargin(new Insets(0, 0, 0, 0));
         closeBtn.setActionCommand("closeBtn");
         closeBtn.setText("Close");
         closeBtn.addActionListener(new OptionsDialog_closeBtn_actionAdapter(this));
 
-        cancelBtn.setBounds(new Rectangle(308, 313, 71, 23));
+        cancelBtn.setBounds(new Rectangle(333, 313, 71, 23));
         cancelBtn.setMargin(new Insets(0, 0, 0, 0));
         cancelBtn.setActionCommand("cancelBtn");
         cancelBtn.setText("Cancel");
@@ -166,7 +172,7 @@ public class OptionsDialog extends JDialog {
         panel1.add(jTabbedPane1);
         panel1.add(closeBtn);
         panel1.add(cancelBtn);
-        panel1.setPreferredSize(new Dimension(475, 347));
+        panel1.setPreferredSize(new Dimension(500, 347));
     }
 
     public void closeBtn_actionPerformed(ActionEvent e) {
@@ -174,6 +180,7 @@ public class OptionsDialog extends JDialog {
         Main.relay__todo = todo.isSelected();
         Main.relay__mixed = mixed.isSelected();
         Main.relay__pedantic = pedantic.isSelected();
+        Main.relay__somewhat_pedantic = somewhat_pedantic.isSelected();
         Main.relay__security = security.isSelected();
         Main.relay__manual_checks = manual_checks.isSelected();
         Main.relay__spelling = spelling.isSelected();
@@ -189,6 +196,7 @@ public class OptionsDialog extends JDialog {
             p.put("relay__todo", Main.relay__todo ? "1" : "0");
             p.put("relay__mixed", Main.relay__mixed ? "1" : "0");
             p.put("relay__pedantic", Main.relay__pedantic ? "1" : "0");
+            p.put("relay__somewhat_pedantic", Main.relay__somewhat_pedantic ? "1" : "0");
             p.put("relay__security", Main.relay__security ? "1" : "0");
             p.put("relay__manual_checks", Main.relay__manual_checks ? "1" : "0");
             p.put("relay__spelling", Main.relay__spelling ? "1" : "0");
