@@ -499,9 +499,14 @@ class Forum_driver_none extends Forum_driver_base
      * Get an array of maps for the topic in the given forum.
      *
      * @param  integer $topic_id The topic ID
+     * @param  ?integer $count The comment count will be returned here by reference (null: do not gather it)
+     * @param  ?integer $max Maximum comments to returned (null: no limit)
+     * @param  integer $start Comment to start at
+     * @param  boolean $mark_read Whether to mark the topic read (ignored for this forum driver)
+     * @param  boolean $reverse Whether to show in reverse
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts(int $topic_id)
+    public function get_forum_topic_posts(int $topic_id, ?int &$count = null, int $max = 100, int $start = 0, bool $mark_read = true, bool $reverse = false)
     {
         return (-1);
     }

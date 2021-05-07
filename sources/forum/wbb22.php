@@ -476,7 +476,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
      *
      * @param  integer $topic_id The topic ID
      * @param  ?integer $count The comment count will be returned here by reference (null: do not gather it)
-     * @param  integer $max Maximum comments to returned
+     * @param  ?integer $max Maximum comments to returned (null: no limit)
      * @param  integer $start Comment to start at
      * @param  boolean $mark_read Whether to mark the topic read (ignored for this forum driver)
      * @param  boolean $reverse Whether to show in reverse

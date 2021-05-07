@@ -338,7 +338,7 @@ function cron_bridge_script(string $caller)
         $include_msn = (get_param_integer('include_msn', 0) == 1);
     }
     if ($_limit_hooks == '') {
-        $limit_hooks = [];
+        $limit_hooks = null;
     } else {
         $limit_hooks = explode(',', $_limit_hooks);
         foreach ($limit_hooks as &$limit_hook) {
