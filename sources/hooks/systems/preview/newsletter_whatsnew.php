@@ -43,6 +43,7 @@ class Hook_preview_newsletter_whatsnew
     {
         require_code('newsletter');
         require_lang('newsletter');
+        require_javascript('newsletter');
 
         $lang = post_param_string('lang', user_lang());
 
@@ -59,11 +60,10 @@ class Hook_preview_newsletter_whatsnew
             $cutoff_time = post_param_date('cutoff');
             $in_full = post_param_integer('in_full', 0);
             $chosen_categories = post_param_string('chosen_categories');
-            $_message = generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_time);
-            list($message) = get_full_newsletter_code($_message, $lang, do_lang('EXAMPLE'));
+            $message = generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_time);
 
-            list($_output) = newsletter_preview($message, do_lang('EXAMPLE'), true, do_lang('SAMPLE_FORENAME'), do_lang('SAMPLE_SURNAME'), do_lang('SAMPLE_NAME'), do_lang('SAMPLE_ADDRESS'));
-            $output = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '3790bb2b050e0c8c4339db54a063579a', 'HTML_PREVIEW' => $_output]);
+            list($preview) = newsletter_preview($message, do_lang('EXAMPLE'), $lang, true, do_lang('SAMPLE_FORENAME'), do_lang('SAMPLE_SURNAME'), do_lang('SAMPLE_NAME'), do_lang('SAMPLE_ADDRESS'));
+            $output = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '3790bb2b050e0c8c4339db54a063579a', 'HTML_PREVIEW' => $preview]);
         }
 
         return [$output, null, false];

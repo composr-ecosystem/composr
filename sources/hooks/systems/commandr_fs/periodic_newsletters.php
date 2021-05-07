@@ -93,6 +93,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
         $last_sent = $this->_default_property_time($properties, 'last_sent');
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         $id = add_periodic_newsletter($label, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent);
 
@@ -168,6 +169,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
         $last_sent = $this->_default_property_time($properties, 'last_sent');
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         edit_periodic_newsletter(intval($resource_id), $label, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent);
 
@@ -188,6 +190,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         delete_periodic_newsletter(intval($resource_id));
 

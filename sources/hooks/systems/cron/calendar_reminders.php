@@ -75,8 +75,13 @@ class Hook_cron_calendar_reminders
                 $_start_hour = ($job['e_start_hour'] === null) ? find_timezone_start_hour_in_utc($job['e_timezone'], $job['e_start_year'], $job['e_start_month'], $job['e_start_day'], $job['e_start_monthly_spec_type']) : $job['e_start_hour'];
                 $_start_minute = ($job['e_start_minute'] === null) ? find_timezone_start_minute_in_utc($job['e_timezone'], $job['e_start_year'], $job['e_start_month'], $job['e_start_day'], $job['e_start_monthly_spec_type']) : $job['e_start_minute'];
 
-                $_end_hour = ($job['e_end_hour'] === null) ? find_timezone_end_hour_in_utc($job['e_timezone'], $job['e_end_year'], $job['e_end_month'], $job['e_end_day'], $job['e_end_monthly_spec_type']) : $job['e_end_hour'];
-                $_end_minute = ($job['e_end_minute'] === null) ? find_timezone_end_minute_in_utc($job['e_timezone'], $job['e_end_year'], $job['e_end_month'], $job['e_end_day'], $job['e_end_monthly_spec_type']) : $job['e_end_minute'];
+                if ($job['e_end_year'] === null) {
+                    $_end_hour = null;
+                    $_end_minute = null;
+                } else {
+                    $_end_hour = ($job['e_end_hour'] === null) ? find_timezone_end_hour_in_utc($job['e_timezone'], $job['e_end_year'], $job['e_end_month'], $job['e_end_day'], $job['e_end_monthly_spec_type']) : $job['e_end_hour'];
+                    $_end_minute = ($job['e_end_minute'] === null) ? find_timezone_end_minute_in_utc($job['e_timezone'], $job['e_end_year'], $job['e_end_month'], $job['e_end_day'], $job['e_end_monthly_spec_type']) : $job['e_end_minute'];
+                }
 
                 $recurrences = find_periods_recurrence($job['e_timezone'], 1, $job['e_start_year'], $job['e_start_month'], $job['e_start_day'], $job['e_start_monthly_spec_type'], $_start_hour, $_start_minute, $job['e_end_year'], $job['e_end_month'], $job['e_end_day'], $job['e_end_monthly_spec_type'], $_end_hour, $_end_minute, $job['e_recurrence'], min(1, $job['e_recurrences']));
 

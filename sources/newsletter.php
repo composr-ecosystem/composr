@@ -18,99 +18,11 @@
  * @package    newsletter
  */
 
-/**
- * Script to read in a bounced e-mail.
+/*
+ * ---------------------
+ * What's New generation
+ * ---------------------
  */
-function incoming_bounced_email_script()
-{
-    if (!addon_installed('newsletter')) {
-        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('newsletter')));
-    }
-
-    if (!GOOGLE_APPENGINE) {
-        return;
-    }
-
-    if (!gae_is_admin()) {
-        return;
-    }
-
-    header('X-Robots-Tag: noindex');
-
-    $bounce_email = file_get_contents('php://input');
-
-    $matches = [];
-    if (preg_match('#^From: .*([^ ]+@[^ ]+)#m', $bounce_email, $matches) != 0) {
-        $email = $matches[1];
-
-        $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', ['email' => $email]);
-        if ($id !== null) {
-            delete_newsletter_subscriber($id);
-        }
-    }
-}
-
-/**
- * Add to the newsletter, in the simplest way.
- * No authorisation support here, checks it works only for non-subscribed or non-confirmed members.
- *
- * @param  EMAIL $email The e-mail address of the subscriber
- * @param  ?LANGUAGE_NAME $language The language (null: users)
- * @param  boolean $get_confirm_mail Whether to require a confirmation mail
- * @param  ?AUTO_LINK $newsletter_id The newsletter to join (null: the first)
- * @param  string $forename Subscribers forename
- * @param  string $surname Subscribers surname
- * @return string Newsletter password
- */
-function basic_newsletter_join(string $email, ?string $language = null, bool $get_confirm_mail = false, ?int $newsletter_id = null, string $forename = '', string $surname = '') : string
-{
-    require_lang('newsletter');
-
-    if ($language === null) {
-        $language = user_lang();
-    }
-    if ($newsletter_id === null) {
-        $newsletter_id = db_get_first_id();
-    }
-
-    $code_confirm = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'code_confirm', ['email' => $email]);
-    if ($code_confirm === null) {
-        // New, set their details
-        require_code('crypt');
-        $password = get_secure_random_string();
-        $salt = get_secure_random_string();
-        $code_confirm = $get_confirm_mail ? get_secure_random_number() : 0;
-        add_newsletter_subscriber($email, time(), $code_confirm, ratchet_hash($password, $salt), $salt, $language, $forename, $surname);
-    } else {
-        if ($code_confirm > 0) {
-            // Was not confirmed, allow confirm mail to go again as if this was new, and update their details
-            $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', ['email' => $email]);
-            if ($id !== null) {
-                edit_newsletter_subscriber($id, $email, time(), null, null, null, $language, $forename, $surname);
-            }
-            $password = do_lang('NEWSLETTER_PASSWORD_ENCRYPTED');
-        } else {
-            // Already on newsletter and confirmed so don't allow tampering without authorisation, which this method can't do
-            return do_lang('NA');
-        }
-    }
-
-    // Send confirm e-mail
-    if ($get_confirm_mail) {
-        $_url = build_url(['page' => 'newsletter', 'type' => 'confirm', 'email' => $email, 'confirm' => $code_confirm], get_module_zone('newsletter'));
-        $url = $_url->evaluate();
-        $newsletter_url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
-        $message = do_lang('NEWSLETTER_SIGNUP_TEXT', comcode_escape($url), comcode_escape($password), [$forename, $surname, $email, get_site_name(), $newsletter_url->evaluate()], $language);
-        require_code('mail');
-        dispatch_mail(do_lang('NEWSLETTER_SIGNUP', null, null, null, $language), $message, [$email], null, '', '', ['bypass_queue' => true]);
-    }
-
-    // Set subscription
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $email], '', 1);
-    $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $email], false, true); // race condition
-
-    return $password;
-}
 
 /**
  * Get text representing content categories the user can rearrange etc.
@@ -282,93 +194,277 @@ function generate_whatsnew_comcode(string $chosen_categories, int $in_full, stri
     $__message = do_template('NEWSLETTER_WHATSNEW_FCOMCODE', ['_GUID' => '20f6adc244b04d9e5206682ec4e0cc0f', 'CONTENT' => $_automatic], null, false, null, '.txt', 'text');
     $_message = $__message->evaluate($lang);
 
-    $message = newsletter_wrap($_message, $lang);
-    $message = newsletter_rewrap_with_early_comcode_parse_if_needed($_message, $message, $lang);
-
-    return $message;
-}
-
-/**
- * Convert what may be a snippet of a newsletter, into a full newsletter with wrapper.
- * Find if it is HTML or Comcode.
- * Supports reading one referenced from the GET environment via 'from_news' parameter.
- * Supports reading one populated into the POST environment via 'message' parameter.
- *
- * @param  LONG_TEXT $_message A default newsletter message, with the newsletter wrapper assumed already-applied unless it's blank
- * @param  LANGUAGE_NAME $lang The language
- * @param  string $default_subject The default subject for this newsletter
- * @return array A pair: The newsletter message, Whether it is written in HTML
- */
-function get_full_newsletter_code(string $_message, string $lang, string $default_subject) : array
-{
-    $_message = post_param_string('message', $_message);
-
-    if ($_message == '') {
-        // from_news GET parameter?
-        $from_news = get_param_integer('from_news', null);
-        if (($from_news !== null) && (addon_installed('news'))) {
-            $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $from_news], '', 1);
-            if (!array_key_exists(0, $rows)) {
-                require_lang('news');
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
-            }
-            $myrow = $rows[0];
-
-            $_message = get_translated_text($myrow['news_article'], null, $lang);
-            if ($_message == '') {
-                $_message = get_translated_text($myrow['news'], null, $lang);
-            }
-        }
-
-        $message = newsletter_wrap($_message, $lang, $default_subject);
-        $message = newsletter_rewrap_with_early_comcode_parse_if_needed($_message, $message, $lang, $default_subject);
+    if (newsletter_is_html()) {
+        $message = static_evaluate_tempcode(comcode_to_tempcode($_message, get_member(), true));
     } else {
         $message = $_message;
     }
 
-    $final_message_is_html = (strpos(trim($message), '<') === 0);
-
-    return [$message, $final_message_is_html];
+    return $message;
 }
 
-/**
- * Apply the newsletter wrapper with a Comcode early parse, if we find the newsletter wrapper is sending us straight to HTML.
- *
- * @param  LONG_TEXT $_message The newsletter message without wrapper
- * @param  LONG_TEXT $message The newsletter message with wrapper
- * @param  LANGUAGE_NAME $lang The language
- * @param  SHORT_TEXT $subject The newsletter subject
- * @return string The newsletter with wrapper, with Comcode pre-parsed
+/*
+ * ----------------
+ * Generation logic
+ * ----------------
  */
-function newsletter_rewrap_with_early_comcode_parse_if_needed(string $_message, string $message, string $lang, string $subject = '') : string
-{
-    $original_message_is_html = (strpos(trim($_message), '<') === 0);
-    $final_message_is_html = (strpos(trim($message), '<') === 0);
 
-    if ($final_message_is_html && !$original_message_is_html) {
-        // Ah, can't allow Comcode through, as Comcode parser won't run after final send
-        $html = static_evaluate_tempcode(comcode_to_tempcode($_message, get_member(), true));
-        $tempcode_escaped_html = str_replace('{', '\{', $html);
-        $message = newsletter_wrap($tempcode_escaped_html, $lang, $subject);
+/**
+ * Prepare a newsletter, with the Tempcode/Wrapper/Substitution flow.
+ *
+ * @param  string $message_raw The unprocessed newsletter message
+ * @param  SHORT_TEXT $subject The newsletter subject
+ * @param  ?LANGUAGE_NAME $lang User language (null: default site language)
+ * @param  SHORT_TEXT $forename Subscribers forename (blank: unknown)
+ * @param  SHORT_TEXT $surname Subscribers surname (blank: unknown)
+ * @param  ?SHORT_TEXT $name Subscribers name (or username) (null: generic)
+ * @param  EMAIL $email_address Subscribers e-mail address
+ * @param  ID_TEXT $send_id Specially encoded ID of subscriber (begins either 'n' for newsletter subscriber, or 'm' for member - then has normal subscriber/member ID following)
+ * @param  SHORT_TEXT $hash Password hash of subscriber (blank: can not unsubscribe by URL)
+ * @param  array $extra_mappings Extra mappings to be substituted
+ * @param  ?string $wrapper_tpl Wrapper template (null: do not wrap)
+ * @return string The processed newsletter message
+ */
+function newsletter_prepare(string $message_raw, string &$subject, ?string $lang = null, string $forename = '', string $surname = '', ?string $name = null, string $email_address = '', string $send_id = '', string $hash = '', array $extra_mappings = [], ?string $wrapper_tpl = 'NEWSLETTER_DEFAULT_FCOMCODE') : string
+{
+    if ($lang === null) {
+        $lang = fallback_lang();
     }
 
-    return $message;
+    // Step 1: Evaluate tempcode
+    require_code('tempcode_compiler');
+    $message_tempcode = template_to_tempcode($message_raw);
+
+    // Step 2: Apply variable substitution to message
+    $message_tempcode = newsletter_variable_substitution($message_tempcode, $subject, $lang, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings);
+
+    // Step 3: Wrap
+    if ($wrapper_tpl === null) {
+        $message_wrapped = $message_tempcode;
+    } else {
+        $message_wrapped = newsletter_wrap($message_tempcode, $subject, $lang, $wrapper_tpl);
+    }
+
+    // Step 4: Apply variable substitution to wrapper
+    $message_wrapped = newsletter_variable_substitution($message_wrapped, $subject, $lang, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings);
+
+    // NB: Any Comcode formatting is done within the mailer, or not done at all if newsletter_is_html(), or for content-autogeneration && newsletter_is_html() done as a step 0 before further hand-editing
+
+    return $message_wrapped->evaluate($lang);
 }
 
 /**
  * Apply the newsletter wrapper.
  *
- * @param  LONG_TEXT $_message The newsletter message
- * @param  LANGUAGE_NAME $lang The language
+ * @param  Tempcode $message_tempcode The newsletter message
  * @param  SHORT_TEXT $subject The newsletter subject
- * @return string The newsletter with wrapper
+ * @param  ?LANGUAGE_NAME $lang User language (null: default site language)
+ * @param  string $wrapper_tpl Wrapper template
+ * @return Tempcode The newsletter with wrapper
  */
-function newsletter_wrap(string $_message, string $lang, string $subject = '') : string
+function newsletter_wrap(object $message_tempcode, string $subject = '', ?string $lang = null, string $wrapper_tpl = 'NEWSLETTER_DEFAULT_FCOMCODE') : object
 {
-    $message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '53c02947915806e519fe14c318813f42', 'CONTENT' => $_message, 'LANG' => $lang, 'SUBJECT' => $subject], null, false, null, '.txt', 'text');
-    $message = $message_wrapped->evaluate($lang);
+    if ($lang === null) {
+        $lang = fallback_lang();
+    }
+
+    require_css('email');
+
+    return do_template($wrapper_tpl, ['_GUID' => '53c02947915806e519fe14c318813f42', 'CONTENT' => $message_tempcode, 'LANG' => $lang, 'SUBJECT' => $subject], null, false, null, '.txt', 'text');
+}
+
+/**
+ * Sub in newsletter variables.
+ *
+ * @param  Tempcode $message The original newsletter message
+ * @param  SHORT_TEXT $subject The newsletter subject
+ * @param  LANGUAGE_NAME $lang The language
+ * @param  SHORT_TEXT $forename Subscribers forename (blank: unknown)
+ * @param  SHORT_TEXT $surname Subscribers surname (blank: unknown)
+ * @param  ?SHORT_TEXT $name Subscribers name (or username) (null: generic)
+ * @param  EMAIL $email_address Subscribers e-mail address
+ * @param  ID_TEXT $send_id Specially encoded ID of subscriber (begins either 'n' for newsletter subscriber, or 'm' for member - then has normal subscriber/member ID following)
+ * @param  SHORT_TEXT $hash Password hash of subscriber (blank: can not unsubscribe by URL)
+ * @param  array $extra_mappings Extra mappings to be substituted
+ * @return Tempcode The new newsletter message
+ */
+function newsletter_variable_substitution(object $message, string &$subject, string $lang, string $forename = '', string $surname = '', ?string $name = null, string $email_address = '', string $send_id = '', string $hash = '', array $extra_mappings = []) : object
+{
+    if ($name === null) {
+        require_lang('newsletter');
+        $name = do_lang('READER');
+    }
+
+    $unsub_url = new Tempcode();
+    if (($hash == '') || ($send_id == '')) {
+        if (get_option('staff_email_receipt_configurability') != '0') {
+            $unsub_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
+        } else {
+            $unsub_url = new Tempcode();
+        }
+    } else {
+        $unsub_hash = get_unsubscribe_hash($hash);
+        if (substr($send_id, 0, 1) == 'm') {
+            $unsub_url = build_url(['page' => 'members', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash], get_module_zone('members'), [], false, false, true);
+        } else {
+            $unsub_url = build_url(['page' => 'newsletter', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash], get_module_zone('newsletter'), [], false, false, true);
+        }
+    }
+
+    $member_id = null;
+    $prefix = substr($send_id, 0, 1);
+    if (($prefix == 'm') || ($prefix == 'w')) {
+        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($name);
+        $name = $GLOBALS['FORUM_DRIVER']->get_displayname($name);
+    }
+
+    require_lang('newsletter');
+
+    $vars = [
+        'title' => $subject,
+        'forename' => $forename,
+        'surname' => $surname,
+        'name' => $name,
+        'member_id' => cms_empty_safe($member_id) ? '' : strval($member_id),
+        'email_address' => $email_address,
+        'send_id' => $send_id,
+        'unsub_url' => $unsub_url,
+        'unsub_comcode' => do_lang(cms_empty_safe($member_id) ? 'NEWSLETTER_UNSUBSCRIBE_NEWSLETTER' : 'NEWSLETTER_UNSUBSCRIBE_MEMBER', $unsub_url->evaluate()),
+    ] + $extra_mappings;
+
+    require_code('tempcode_compiler');
+    $_subject = template_to_tempcode($subject);
+
+    foreach ($vars as $var => $sub) {
+        $message->singular_bind(cms_strtoupper_ascii($var), $sub);
+        $_subject->singular_bind(cms_strtoupper_ascii($var), $sub);
+    }
+
+    $subject = $_subject->evaluate($lang);
+
     return $message;
 }
+
+/**
+ * Get the unsubscription hash from a newsletter subscriber hash (salt is not involved).
+ *
+ * @param  string $hash Subscriber hash
+ * @return string Unsubscription hash
+ */
+function get_unsubscribe_hash(string $hash) : string
+{
+    require_code('crypt');
+    return ratchet_hash($hash, 'xunsub');
+}
+
+/**
+ * Find if a newsletter is HTML.
+ *
+ * @param  ?string $message Newsletter message after wrapping applied (null: just look at wrapper on its own)
+ * @return boolean Whether it is
+ */
+function newsletter_is_html(?string $message = null) : bool
+{
+    if ($message === null) {
+        $_message = newsletter_wrap(make_string_tempcode('test'), 'test', fallback_lang());
+        $message = $_message->evaluate();
+    }
+
+    return (preg_match('#^\s*<html(\s|>)#i', $message) != 0);
+}
+
+/**
+ * Generate a newsletter preview in full HTML and full text.
+ *
+ * @param  string $message_raw The message
+ * @param  string $subject The subject
+ * @param  LANGUAGE_NAME $lang The language
+ * @param  boolean $html_only Send in HTML only
+ * @param  ?string $forename Forename (null: reasonable default)
+ * @param  ?string $surname Surname (null: reasonable default)
+ * @param  ?string $name Name (null: reasonable default)
+ * @param  ?string $email_address E-mail address (null: reasonable default)
+ * @param  ?string $send_id Send ID (null: reasonable default)
+ * @param  ?string $hash Password hash (null: reasonable default)
+ * @param  ID_TEXT $template The mail template to preview with
+ * @return array A triple: HTML version, Text version, Whether the e-mail has to be fully HTML
+ */
+function newsletter_preview(string $message_raw, string $subject, string $lang, bool $html_only, ?string $forename = null, ?string $surname = null, ?string $name = null, ?string $email_address = null, ?string $send_id = null, ?string $hash = null, string $template = 'MAIL') : array
+{
+    if ($forename === null) {
+        $forename = do_lang('SAMPLE_FORENAME');
+    }
+
+    if ($surname === null) {
+        $surname = do_lang('SAMPLE_SURNAME');
+    }
+
+    if ($name === null) {
+        $name = do_lang('SAMPLE_NAME');
+    }
+
+    if ($email_address === null) {
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+        if ($email_address == '') {
+            $email_address = do_lang('SAMPLE_ADDRESS');
+        }
+    }
+
+    if ($send_id === null) {
+        $send_id = 'm' . strval(get_member());
+    }
+
+    if ($hash === null) {
+        $hash = $GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_pass_hash_salted');
+    }
+
+    $message_wrapped = newsletter_prepare($message_raw, $subject, $lang, $forename, $surname, $name, $email_address, $send_id, $hash);
+
+    // HTML message
+    if (newsletter_is_html($message_wrapped)) {
+        // Is already full HTML (with maybe some Tempcode)
+
+        $html_version = make_string_tempcode($message_wrapped);
+
+        $html_only = true; // Force on, regardless
+    } else {
+        // Is Comcode
+
+        require_code('media_renderer');
+        push_media_mode(peek_media_mode() | MEDIA_LOWFI);
+        $comcode_version = comcode_to_tempcode($message_wrapped, get_member(), true);
+        pop_media_mode();
+
+        $html_version = do_template(
+            $template,
+            [
+                '_GUID' => 'b081cf9104748b090f63b6898027985e',
+                'TITLE' => $subject,
+                'CSS' => css_tempcode(true, true, $comcode_version->evaluate()),
+                'LANG' => get_site_default_lang(),
+                'LOGOURL' => get_logo_url(''),
+                'CONTENT' => $comcode_version,
+            ],
+            null,
+            false,
+            null,
+            '.tpl',
+            'templates',
+            $GLOBALS['FORUM_DRIVER']->get_theme('')
+        );
+    }
+
+    // Text message
+    $text_version = $html_only ? '' : strip_comcode($message_wrapped);
+
+    return [$html_version, $text_version, $html_only];
+}
+
+/*
+ * -------
+ * Sending
+ * -------
+ */
 
 /**
  * Send out the newsletter.
@@ -478,14 +574,14 @@ function newsletter_who_send_to(?array $send_details = null, ?string $lang = nul
 
     // Conversr imports
     if (get_forum_type() == 'cns') {
-        $fields = 'm.id,m.m_email_address,m.m_username,m.m_pass_hash_salted,m.m_language,m.m_pass_salt,m.m_join_time';
+        $fields = 'm.id,m.m_email_address,m.m_username,m.m_pass_hash_salted,m.m_language,m.m_pass_salt,m.m_join_time,m.m_validated_email_confirm_code';
 
         $table = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m';
 
         $where_lang = ((multi_lang()) && ($lang !== null)) ? (' AND (' . db_string_equal_to('m_language', $lang) . ' OR ' . db_string_equal_to('m_language', '') . ')') : '';
         $where = db_string_not_equal_to('m_email_address', '') . $where_lang . ' AND m_validated=1 AND m_is_perm_banned=\'0\'';
         if ($filter_confirms) {
-            $where .= ' AND ' . db_string_not_equal_to('m_validated_email_confirm_code', '');
+            $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         }
         if (get_option('staff_email_receipt_configurability') != '0') {
             $where .= ' AND m_allow_emails=1';
@@ -521,7 +617,7 @@ function newsletter_who_send_to(?array $send_details = null, ?string $lang = nul
                                 'forename' => '',
                                 'surname' => '',
                                 'name' => $_temp['m_username'],
-                                'id' => 'm' . strval($_temp['id']),
+                                'send_id' => 'm' . strval($_temp['id']),
                                 'hash' => $_temp['m_pass_hash_salted'],
                                 'language' => $_temp['m_language'],
                                 'salt' => $_temp['m_pass_salt'],
@@ -634,6 +730,12 @@ function newsletter_who_send_to(?array $send_details = null, ?string $lang = nul
     return [$subscribers, $totals];
 }
 
+/*
+ * ---------
+ * Importing
+ * ---------
+ */
+
 /**
  * Try and detect what columns are what in a newsletter spreadsheet.
  *
@@ -702,6 +804,12 @@ function detect_newsletter_spreadsheet_columns(array $header_row) : array
     ];
 }
 
+/*
+ * --------
+ * Metadata
+ * --------
+ */
+
 /**
  * Work out stats of what domains are used.
  * Returns in reverse count order.
@@ -759,173 +867,6 @@ function newsletter_domain_subscriber_stats(string $key) : array
 }
 
 /**
- * Sub in newsletter variables.
- *
- * @param  string $message The original newsletter message
- * @param  SHORT_TEXT $subject The newsletter subject
- * @param  SHORT_TEXT $forename Subscribers forename (blank: unknown)
- * @param  SHORT_TEXT $surname Subscribers surname (blank: unknown)
- * @param  SHORT_TEXT $name Subscribers name (or username)
- * @param  EMAIL $email_address Subscribers e-mail address
- * @param  ID_TEXT $send_id Specially encoded ID of subscriber (begins either 'n' for newsletter subscriber, or 'm' for member - then has normal subscriber/member ID following)
- * @param  SHORT_TEXT $hash Password hash of subscriber (blank: can not unsubscribe by URL)
- * @param  array $extra_mappings Extra mappings to be substituted
- * @return string The new newsletter message
- */
-function newsletter_variable_substitution(string $message, string &$subject, string $forename, string $surname, string $name, string $email_address, string $send_id, string $hash, array $extra_mappings = []) : string
-{
-    $unsub_url = new Tempcode();
-    if (($hash == '') || ($send_id == '')) {
-        if (get_option('staff_email_receipt_configurability') != '0') {
-            $unsub_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
-        } else {
-            $unsub_url = new Tempcode();
-        }
-    } else {
-        $unsub_hash = get_unsubscribe_hash($hash);
-        if (substr($send_id, 0, 1) == 'm') {
-            $unsub_url = build_url(['page' => 'members', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash], get_module_zone('members'), [], false, false, true);
-        } else {
-            $unsub_url = build_url(['page' => 'newsletter', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash], get_module_zone('newsletter'), [], false, false, true);
-        }
-    }
-
-    $member_id = null;
-    $prefix = substr($send_id, 0, 1);
-    if (($prefix == 'm') || ($prefix == 'w')) {
-        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($name);
-        $name = $GLOBALS['FORUM_DRIVER']->get_displayname($name);
-    }
-
-    require_lang('newsletter');
-
-    $vars = [
-        'title' => $subject,
-        'forename' => $forename,
-        'surname' => $surname,
-        'name' => $name,
-        'member_id' => cms_empty_safe($member_id) ? '' : strval($member_id),
-        'email_address' => $email_address,
-        'send_id' => $send_id,
-        'unsub_url' => $unsub_url,
-        'unsub_comcode' => do_lang(cms_empty_safe($member_id) ? 'NEWSLETTER_UNSUBSCRIBE_NEWSLETTER' : 'NEWSLETTER_UNSUBSCRIBE_MEMBER', $unsub_url->evaluate()),
-    ] + $extra_mappings;
-
-    foreach ($vars as $var => $sub) {
-        $message = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $message);
-        $message = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $message);
-    }
-
-    foreach ($vars as $var => $sub) {
-        if ($var != 'subject') {
-            $subject = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $subject);
-            $subject = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $subject);
-        }
-    }
-
-    return $message;
-}
-
-/**
- * Get the unsubscription hash from a newsletter subscriber hash (salt is not involved).
- *
- * @param  string $hash Subscriber hash
- * @return string Unsubscription hash
- */
-function get_unsubscribe_hash(string $hash) : string
-{
-    require_code('crypt');
-    return ratchet_hash($hash, 'xunsub');
-}
-
-/**
- * Generate a newsletter preview in full HTML and full text.
- *
- * @param  string $message The message
- * @param  string $subject The subject
- * @param  boolean $html_only Send in HTML only
- * @param  ?string $forename Forename (null: reasonable default)
- * @param  ?string $surname Surname (null: reasonable default)
- * @param  ?string $name Name (null: reasonable default)
- * @param  ?string $address Address (null: reasonable default)
- * @param  ?string $send_id Send ID (null: reasonable default)
- * @param  ?string $hash Password hash (null: reasonable default)
- * @param  ID_TEXT $template The mail template to preview with
- * @return array A triple: HTML version, Text version, Whether the e-mail has to be fully HTML
- */
-function newsletter_preview(string $message, string $subject, bool $html_only, ?string $forename = null, ?string $surname = null, ?string $name = null, ?string $address = null, ?string $send_id = null, ?string $hash = null, string $template = 'MAIL') : array
-{
-    if ($forename === null) {
-        $forename = do_lang('SAMPLE_FORENAME');
-    }
-
-    if ($surname === null) {
-        $surname = do_lang('SAMPLE_SURNAME');
-    }
-
-    if ($name === null) {
-        $name = do_lang('SAMPLE_NAME');
-    }
-
-    if ($address === null) {
-        $address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-        if ($address == '') {
-            $address = do_lang('SAMPLE_ADDRESS');
-        }
-    }
-
-    if ($send_id === null) {
-        $send_id = 'm' . strval(get_member());
-    }
-
-    if ($hash === null) {
-        $hash = $GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_pass_hash_salted');
-    }
-
-    require_code('tempcode_compiler');
-
-    // HTML message
-    $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $address, $send_id, $hash);
-    if (stripos(trim($message), '<') === 0) {
-        // Is already full HTML (with maybe some Tempcode)
-
-        $html_version = template_to_tempcode($message);
-
-        $html_only = true; // Force on, regardless
-    } else {
-        // Is Comcode
-
-        require_code('media_renderer');
-        push_media_mode(peek_media_mode() | MEDIA_LOWFI);
-        $comcode_version = comcode_to_tempcode($message, get_member(), true);
-        pop_media_mode();
-
-        $html_version = do_template(
-            $template,
-            [
-                '_GUID' => 'b081cf9104748b090f63b6898027985e',
-                'TITLE' => $subject,
-                'CSS' => css_tempcode(true, true, $comcode_version->evaluate()),
-                'LANG' => get_site_default_lang(),
-                'LOGOURL' => get_logo_url(''),
-                'CONTENT' => $comcode_version,
-            ],
-            null,
-            false,
-            null,
-            '.tpl',
-            'templates',
-            $GLOBALS['FORUM_DRIVER']->get_theme('')
-        );
-    }
-
-    // Text message
-    $text_version = $html_only ? '' : strip_comcode($message);
-
-    return [$html_version, $text_version, $html_only];
-}
-
-/**
  * Work out newsletter block list.
  *
  * @return array List of blocked e-mail addresses (actually a map)
@@ -945,371 +886,4 @@ function newsletter_block_list() : array
         $sheet_reader->close();
     }
     return $blocked;
-}
-
-/**
- * Make a newsletter.
- *
- * @param  SHORT_TEXT $title The title
- * @param  LONG_TEXT $description The description
- * @return AUTO_LINK The ID
- */
-function add_newsletter(string $title, string $description) : int
-{
-    require_code('global4');
-    prevent_double_submit('ADD_NEWSLETTER', null, $title);
-
-    $map = [];
-    $map += insert_lang('title', $title, 2);
-    $map += insert_lang('the_description', $description, 2);
-    $id = $GLOBALS['SITE_DB']->query_insert('newsletters', $map, true);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        generate_resource_fs_moniker('newsletter', strval($id), null, null, true);
-    }
-
-    log_it('ADD_NEWSLETTER', strval($id), $title);
-
-    delete_cache_entry('main_newsletter_signup');
-
-    return $id;
-}
-
-/**
- * Edit a newsletter.
- *
- * @param  AUTO_LINK $id The ID
- * @param  SHORT_TEXT $title The title
- * @param  LONG_TEXT $description The description
- */
-function edit_newsletter(int $id, string $title, string $description)
-{
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
-
-    if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'newsletter'));
-    }
-
-    $myrow = $rows[0];
-    $_title = $myrow['title'];
-    $_description = $myrow['the_description'];
-    $map = [];
-    $map += lang_remap('title', $_title, $title);
-    $map += lang_remap('the_description', $_description, $description);
-    $GLOBALS['SITE_DB']->query_update('newsletters', $map, ['id' => $id], '', 1);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        generate_resource_fs_moniker('newsletter', strval($id));
-    }
-
-    log_it('EDIT_NEWSLETTER', strval($id), $_title);
-
-    delete_cache_entry('main_newsletter_signup');
-}
-
-/**
- * Delete a newsletter.
- *
- * @param  AUTO_LINK $id The ID
- */
-function delete_newsletter(int $id)
-{
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
-
-    if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-    }
-
-    $myrow = $rows[0];
-    $_title = $myrow['title'];
-    $_description = $myrow['the_description'];
-
-    $GLOBALS['SITE_DB']->query_delete('newsletters', ['id' => $id], '', 1);
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['newsletter_id' => $id]);
-    delete_lang($_title);
-    delete_lang($_description);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        expunge_resource_fs_moniker('newsletter', strval($id));
-    }
-
-    log_it('DELETE_NEWSLETTER', strval($id), get_translated_text($_title));
-
-    delete_cache_entry('main_newsletter_signup');
-}
-
-/**
- * Make a periodic newsletter.
- *
- * @param  LONG_TEXT $subject Subject
- * @param  LONG_TEXT $message Message
- * @param  LANGUAGE_NAME $lang Language to send for
- * @param  LONG_TEXT $send_details The data sent in each newsletter
- * @param  BINARY $html_only Whether to send in HTML only
- * @param  SHORT_TEXT $from_email From address
- * @param  SHORT_TEXT $from_name From name
- * @param  SHORT_INTEGER $priority Priority
- * @param  LONG_TEXT $spreadsheet_data Spreadsheet data of who to send to (JSON)
- * @param  SHORT_TEXT $frequency Send frequency
- * @set weekly biweekly monthly
- * @param  SHORT_INTEGER $day Weekday to send on
- * @param  BINARY $in_full Embed full articles
- * @param  ID_TEXT $template Mail template to use, e.g. MAIL
- * @param  ?TIME $last_sent When was last sent (null: now)
- * @return AUTO_LINK The ID
- */
-function add_periodic_newsletter(string $subject, string $message, string $lang, string $send_details, int $html_only, string $from_email, string $from_name, int $priority, string $spreadsheet_data, string $frequency, int $day, int $in_full = 0, string $template = 'MAIL', ?int $last_sent = null) : int
-{
-    require_code('global4');
-    prevent_double_submit('ADD_PERIODIC_NEWSLETTER', null, $subject);
-
-    if ($last_sent === null) {
-        $last_sent = time();
-    }
-
-    $id = $GLOBALS['SITE_DB']->query_insert('newsletter_periodic', [
-        'np_subject' => $subject,
-        'np_message' => $message,
-        'np_lang' => $lang,
-        'np_send_details' => $send_details,
-        'np_html_only' => $html_only,
-        'np_from_email' => $from_email,
-        'np_from_name' => $from_name,
-        'np_priority' => $priority,
-        'np_spreadsheet_data' => $spreadsheet_data,
-        'np_frequency' => $frequency,
-        'np_day' => $day,
-        'np_in_full' => $in_full,
-        'np_template' => $template,
-        'np_last_sent' => $last_sent,
-    ], true);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        generate_resource_fs_moniker('periodic_newsletter', strval($id), null, null, true);
-    }
-
-    log_it('ADD_PERIODIC_NEWSLETTER', strval($id), $subject);
-
-    return $id;
-}
-
-/**
- * Edit a periodic newsletter.
- *
- * @param  AUTO_LINK $id The ID
- * @param  LONG_TEXT $subject Subject
- * @param  LONG_TEXT $message Message
- * @param  LANGUAGE_NAME $lang Language to send for
- * @param  LONG_TEXT $send_details The data sent in each newsletter
- * @param  BINARY $html_only Whether to send in HTML only
- * @param  SHORT_TEXT $from_email From address
- * @param  SHORT_TEXT $from_name From name
- * @param  SHORT_INTEGER $priority Priority
- * @param  LONG_TEXT $spreadsheet_data Spreadsheet data of who to send to (JSON)
- * @param  SHORT_TEXT $frequency Send frequency
- * @set weekly biweekly monthly
- * @param  SHORT_INTEGER $day Weekday to send on
- * @param  BINARY $in_full Embed full articles
- * @param  ID_TEXT $template Mail template to use, e.g. MAIL
- * @param  ?TIME $last_sent When was last sent (null: don't change)
- */
-function edit_periodic_newsletter(int $id, string $subject, string $message, string $lang, string $send_details, int $html_only, string $from_email, string $from_name, int $priority, string $spreadsheet_data, string $frequency, int $day, int $in_full, string $template, ?int $last_sent = null)
-{
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
-
-    if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
-    }
-
-    $map = [
-        'np_subject' => $subject,
-        'np_message' => $message,
-        'np_lang' => $lang,
-        'np_send_details' => $send_details,
-        'np_html_only' => $html_only,
-        'np_from_email' => $from_email,
-        'np_from_name' => $from_name,
-        'np_priority' => $priority,
-        'np_spreadsheet_data' => $spreadsheet_data,
-        'np_frequency' => $frequency,
-        'np_day' => $day,
-        'np_in_full' => $in_full,
-        'np_template' => $template,
-    ];
-    if ($last_sent !== null) {
-        $map['np_last_sent'] = $last_sent;
-    }
-    $GLOBALS['SITE_DB']->query_update('newsletter_periodic', $map, ['id' => $id]);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        generate_resource_fs_moniker('periodic_newsletter', strval($id));
-    }
-
-    log_it('EDIT_PERIODIC_NEWSLETTER', strval($id), $subject);
-}
-
-/**
- * Delete a periodic newsletter.
- *
- * @param  AUTO_LINK $id The ID
- */
-function delete_periodic_newsletter(int $id)
-{
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
-
-    if (!array_key_exists(0, $rows)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-    }
-
-    $subject = $rows[0]['np_subject'];
-
-    $GLOBALS['SITE_DB']->query_delete('newsletter_periodic', ['id' => $id]);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        expunge_resource_fs_moniker('periodic_newsletter', strval($id));
-    }
-
-    log_it('DELETE_PERIODIC_NEWSLETTER', strval($id), $subject);
-}
-
-/**
- * Add a newsletter subscriber to the system (not to any particular newsletters though).
- *
- * @param  EMAIL $email The e-mail address of the subscriber
- * @param  TIME $join_time The join time
- * @param  integer $code_confirm Confirm code
- * @param  ID_TEXT $password Newsletter password (hashed)
- * @param  ID_TEXT $salt Newsletter salt
- * @param  LANGUAGE_NAME $language The language
- * @param  string $forename Subscribers forename
- * @param  string $surname Subscribers surname
- * @return AUTO_LINK Subscriber ID
- */
-function add_newsletter_subscriber(string $email, int $join_time, int $code_confirm, string $password, string $salt, string $language, string $forename, string $surname) : int
-{
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', [
-        'email' => $email,
-    ]);
-    $id = $GLOBALS['SITE_DB']->query_insert('newsletter_subscribers', [
-        'email' => $email,
-        'join_time' => $join_time,
-        'code_confirm' => $code_confirm,
-        'the_password' => $password,
-        'pass_salt' => $salt,
-        'language' => $language,
-        'n_forename' => $forename,
-        'n_surname' => $surname,
-    ], true, true/*race condition*/);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        generate_resource_fs_moniker('newsletter_subscriber', strval($id), null, null, true);
-    }
-
-    return $id;
-}
-
-/**
- * Edit a newsletter subscriber.
- *
- * @param  AUTO_LINK $id Subscriber ID
- * @param  ?EMAIL $email The e-mail address of the subscriber (null: don't change)
- * @param  ?TIME $join_time The join time (null: don't change)
- * @param  ?integer $code_confirm Confirm code (null: don't change)
- * @param  ?ID_TEXT $password Newsletter password (hashed) (null: don't change)
- * @param  ?ID_TEXT $salt Newsletter salt (null: don't change)
- * @param  ?LANGUAGE_NAME $language The language (null: don't change)
- * @param  ?string $forename Subscribers forename (null: don't change)
- * @param  ?string $surname Subscribers surname (null: don't change)
- */
-function edit_newsletter_subscriber(int $id, ?string $email = null, ?int $join_time = null, ?int $code_confirm = null, ?string $password = null, ?string $salt = null, ?string $language = null, ?string $forename = null, ?string $surname = null)
-{
-    $map = [];
-    if ($email !== null) {
-        $map['email'] = $email;
-    }
-    if ($join_time !== null) {
-        $map['join_time'] = $join_time;
-    }
-    if ($code_confirm !== null) {
-        $map['code_confirm'] = $code_confirm;
-    }
-    if ($password !== null) {
-        $map['the_password'] = $password;
-    }
-    if ($salt !== null) {
-        $map['pass_salt'] = $salt;
-    }
-    if ($language !== null) {
-        $map['language'] = $language;
-    }
-    if ($forename !== null) {
-        $map['n_forename'] = $forename;
-    }
-    if ($surname !== null) {
-        $map['n_surname'] = $surname;
-    }
-
-    $GLOBALS['SITE_DB']->query_update('newsletter_subscribers', $map, ['id' => $id], '', 1);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        generate_resource_fs_moniker('newsletter_subscriber', strval($id));
-    }
-}
-
-/**
- * Delete a newsletter subscriber.
- *
- * @param  AUTO_LINK $id Subscriber ID
- */
-function delete_newsletter_subscriber(int $id)
-{
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', ['id' => $id], '', 1);
-
-    if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
-        require_code('resource_fs');
-        expunge_resource_fs_moniker('newsletter_subscriber', strval($id));
-    }
-}
-
-/**
- * Remove bounced addresses from the newsletter / turn off staff e-mails on member accounts.
- *
- * @param  array $bounces List of e-mail addresses
- */
-function remove_email_bounces(array $bounces)
-{
-    if (empty($bounces)) {
-        return;
-    }
-
-    $delete_sql = '';
-    $delete_sql_members = '';
-
-    foreach ($bounces as $email_address) {
-        if ($delete_sql != '') {
-            $delete_sql .= ' OR ';
-            $delete_sql_members .= ' OR ';
-        }
-        $delete_sql .= db_string_equal_to('email', $email_address);
-        $delete_sql_members .= db_string_equal_to('m_email_address', $email_address);
-    }
-
-    $query = 'DELETE FROM ' . get_table_prefix() . 'newsletter_subscribers WHERE ' . $delete_sql;
-    $GLOBALS['SITE_DB']->query($query);
-
-    $query = 'DELETE FROM ' . get_table_prefix() . 'newsletter_subscribe WHERE ' . $delete_sql;
-    $GLOBALS['SITE_DB']->query($query);
-
-    if (get_forum_type() == 'cns') {
-        $query = 'UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_allow_emails_from_staff=0 WHERE ' . $delete_sql_members;
-        $GLOBALS['FORUM_DB']->query($query);
-    }
 }

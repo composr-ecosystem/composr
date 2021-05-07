@@ -151,6 +151,7 @@ class Hook_addon_registry_newsletter
             'sources_custom/hooks/modules/admin_newsletter/.htaccess',
             'sources/hooks/systems/page_groupings/newsletter.php',
             'sources/newsletter.php',
+            'sources/newsletter2.php',
             'sources/hooks/systems/config/max_newsletter_whatsnew.php',
             'sources/hooks/modules/admin_newsletter/index.html',
             'sources_custom/hooks/modules/admin_newsletter/index.html',

@@ -93,6 +93,7 @@ PHP;
             // Actualiser...
 
             require_code('newsletter');
+            require_code('newsletter2');
 
             require_code('type_sanitisation');
             if (!is_valid_email_address($address)) {

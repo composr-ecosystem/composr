@@ -212,10 +212,10 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
-     * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
+     * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = true;
         $error = null;
@@ -370,10 +370,10 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
-     * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
+     * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = false;
         $error = null;
@@ -527,7 +527,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      */
     protected function fwrite($handle, string $text)
     {
-        $this->log('SOCKET-WRITE', with_whitespace($text));
+        $this->log('SOCKET-WRITE', static_evaluate_tempcode(with_whitespace($text)));
         return fwrite($handle, $text);
     }
 
@@ -541,7 +541,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
     protected function fread($handle, int $length)
     {
         $ret = fread($handle, $length);
-        $this->log('SOCKET-READ', with_whitespace($ret));
+        $this->log('SOCKET-READ', static_evaluate_tempcode(with_whitespace($ret)));
         return $ret;
     }
 }
@@ -793,10 +793,10 @@ abstract class Mail_dispatcher_base
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
-     * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
+     * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    abstract protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array;
+    abstract protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array;
 
 
     /**
@@ -1176,14 +1176,14 @@ abstract class Mail_dispatcher_base
      *
      * @param  string $subject_line The subject of the mail in plain text
      * @param  LONG_TEXT $message_raw The message, as Comcode
+     * @param  ?array $to_emails The destination (recipient) e-mail address(es) [array of strings] (null: site staff address)
      * @param  ?mixed $to_names The recipient name(s). Array or string. (null: site name)
-     * @param  array $to_names To names
      * @param  EMAIL $from_email From e-mail address
      * @param  string $from_name From name
      * @param  LANGUAGE_NAME $lang Language
      * @param  ID_TEXT $theme Theme
      */
-    protected function tidy_parameters(string &$subject_line, string &$message_raw, array &$to_emails, &$to_names, string &$from_email, string &$from_name, string &$lang, string &$theme)
+    protected function tidy_parameters(string &$subject_line, string &$message_raw, ?array &$to_emails, &$to_names, string &$from_email, string &$from_name, string &$lang, string &$theme)
     {
         escape_header($subject_line);
 
@@ -1550,6 +1550,10 @@ function filter_css(string $c, ?string $theme, string $context) : string
     $_css = do_template($c, [], user_lang(), true/*can't fail on this error because it could be an e-mail from queue, with different addon state*/, null, '.css', 'css', $theme);
     $css = $_css->evaluate();
 
+    if ($c == 'email') {
+        return $css; // No filtering for this file
+    }
+
     // Find out all our IDs
     $ids = [];
     $matches = [];
@@ -1570,7 +1574,10 @@ function filter_css(string $c, ?string $theme, string $context) : string
     $classes = array_flip($classes);
 
     // Find all our XHTML tags
-    $tags = [];
+    $tags = [
+        'html' => true,
+        'body' => true,
+    ];
     $count = preg_match_all('#<(\w+)([^\w])#', $context, $matches);
     for ($i = 0; $i < $count; $i++) {
         $tags[$matches[1][$i]] = true;

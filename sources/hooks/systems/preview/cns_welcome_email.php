@@ -34,25 +34,6 @@ class Hook_preview_cns_welcome_email
 
         $applies = (addon_installed('welcome_emails')) && (get_page_name() == 'admin_cns_welcome_emails');
 
-        if ($applies) {
-            $mail = $this->get_mail_row();
-
-            require_code('cns_welcome_emails');
-            list($subject, $message, $is_html, $name) = cns_prepare_welcome_email($mail);
-            if ($is_html) {
-                $applies = false;
-
-                // Send e-mail instead, as we cannot display raw HTML in the preview...
-
-                require_code('mail');
-                $to = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-                if ($to == '') {
-                    $to = get_option('staff_address');
-                }
-                dispatch_mail($subject, $message, [$to], $name, '', '', ['as' => get_member(), 'as_admin' => true]);
-            }
-        }
-
         return [$applies, null];
     }
 
@@ -68,7 +49,13 @@ class Hook_preview_cns_welcome_email
         require_code('cns_welcome_emails');
         list($subject, $message, $is_html, $name) = cns_prepare_welcome_email($mail);
 
-        $preview = comcode_to_tempcode($message);
+        if (($is_html) && (addon_installed('newsletter')/*will actually always be true if $is_html*/)) {
+            require_javascript('newsletter');
+
+            $preview = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '3790bb2b050e0c8c4339db54a063579a', 'HTML_PREVIEW' => $message]);
+        } else {
+            $preview = comcode_to_tempcode($message);
+        }
 
         return [$preview, null];
     }
@@ -80,7 +67,7 @@ class Hook_preview_cns_welcome_email
      */
     protected function get_mail_row() : array
     {
-        $name = post_param_string('name');
+        $name = post_param_string('welcome_email_name');
         $subject = post_param_string('subject');
         $text = post_param_string('text');
         $send_time = post_param_integer('send_time');

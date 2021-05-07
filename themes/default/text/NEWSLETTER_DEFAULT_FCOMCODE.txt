@@ -1,7 +1,7 @@
 {CONTENT}
 
-\{+START,IF_NON_EMPTY,{unsub_url}\}
+{+START,IF_NON_EMPTY,{UNSUB_URL}}
 -------------------------
 
-[font size="0.8"]{unsub_comcode}[/font]
-\{+END\}
+[font size="0.8"]{UNSUB_COMCODE}[/font]
+{+END}

@@ -73,7 +73,7 @@ class Hook_whatsnew_downloads
             list($privacy_join, $privacy_where) = get_privacy_where_clause('download', 'r', $GLOBALS['FORUM_DRIVER']->get_guest_id());
         }
 
-        $rows = $GLOBALS['SITE_DB']->query('SELECT name,description,id,add_date,submitter FROM ' . get_table_prefix() . 'download_downloads r' . $privacy_join . ' WHERE validated=1 AND add_date>' . strval($cutoff_time) . ' AND (' . $or_list . ')' . $privacy_where . ' ORDER BY add_date DESC', $max);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT name,the_description,id,add_date,submitter FROM ' . get_table_prefix() . 'download_downloads r' . $privacy_join . ' WHERE validated=1 AND add_date>' . strval($cutoff_time) . ' AND (' . $or_list . ')' . $privacy_where . ' ORDER BY add_date DESC', $max);
 
         if (count($rows) == $max) {
             return [];

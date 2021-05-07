@@ -82,6 +82,7 @@ function amazon_sns_topic_handler_script($data = null)
                     $bounces[] = $recipient['emailAddress'];
                 }
 
+                require_code('newsletter2');
                 remove_email_bounces($bounces);
             }
             break;

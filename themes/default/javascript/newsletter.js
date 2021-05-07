@@ -15,7 +15,7 @@
         var frameId = 'preview-frame',
             html = strVal(params.htmlPreview);
 
-        document.getElementById(frameId).onload = function() {
+        var show_html_preview = function() {
             var adjustedPreview = html.replace(/<!DOCTYPE[^>]*>/i, '').replace(/<html[^>]*>/i, '').replace(/<\/html>/i, '');
             var de = window.frames[frameId].document.documentElement;
             var body = de.querySelector('body');
@@ -31,11 +31,21 @@
                     $dom.html(headElement, adjustedPreview.replace(/^(.|\n)*<head[^>]*>((.|\n)*)<\/head>(.|\n)*$/i, '$2'));
                 }
 
+                body.className = adjustedPreview.replace(/^(.|\n)*<body[^>]*\sclass="([^"]*)"(.|\n)*$/i, '$2');
+
                 $dom.html(body, adjustedPreview.replace(/^(.|\n)*<body[^>]*>((.|\n)*)<\/body>(.|\n)*$/i, '$2'));
             }
 
             $dom.resizeFrame(frameId, 300);
         };
+
+        var iframe = document.getElementById(frameId);
+        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        if (iframeDoc.readyState  == 'complete') {
+            show_html_preview();
+        } else {
+            iframe.onload = show_html_preview;
+        }
 
         setInterval(function () {
             $dom.resizeFrame(frameId, 300);

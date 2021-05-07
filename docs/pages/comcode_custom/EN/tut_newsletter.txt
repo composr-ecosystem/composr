@@ -174,16 +174,18 @@ Creating templated newsletters is best shown by example (this is the newsletter 
 </head>
 <body>
 	{$,Try and figure out the best greeting from the data available - we prefer to welcome people by forename but we might not have it}
-	<p>Dear \{+START,IF_NON_EMPTY,{forename}\}{forename}\{+END\}\{+START,IF_EMPTY,{forename}\}{name}\{+END\},</p>
+	<p>Dear {+START,IF_NON_EMPTY,{FORENAME}}{FORENAME}{+END}{+START,IF_EMPTY,{FORENAME}}{NAME}{+END},</p>
 
 	{$PARAGRAPH,{$?,{$IS_EMPTY,{CONTENT}},Your text goes here.,{CONTENT}}}
 
-	\{+START,IF_NON_EMPTY,{unsub_url}\}
-	<p>You're receiving this newsletter because you subscribed at some point. Not interested anymore? <a href="{unsub_url*}">Unsubscribe</a>.</p>
-	\{+END\}
-	\{+START,IF_EMPTY,{unsub_url}\}
-	<p>You're receiving this e-mail because you are a member on {$SITE_NAME*}.</p>
-	\{+END\}
+	<hr />
+
+	{+START,IF_NON_EMPTY,{UNSUB_URL}}
+		<p style="font-size: 0.8em">You're receiving this newsletter because you subscribed at some point. Not interested anymore? <a href="{UNSUB_URL*}">Unsubscribe</a>.</p>
+	{+END}
+	{+START,IF_EMPTY,{UNSUB_URL}}
+		<p style="font-size: 0.8em">You're receiving this e-mail because you are a member on {$SITE_NAME*}.</p>
+	{+END}
 </body>
 </html>
 [/code]
@@ -191,14 +193,14 @@ Creating templated newsletters is best shown by example (this is the newsletter 
 Note how the example includes the [tt]html[/tt] tag, etc -- it is not a snippet, it is a full piece of HTML. This is optional, but if you do write your newsletters like this Composr will be clever enough to bypass wrapping the newsletter in the standard [tt]MAIL.tpl[/tt] template.
 
 You have the following template variables available to you (beyond all the default capabilities of Comcode):
- - [tt]title[/tt], The subject line of the e-mail (and also the equivalent of [tt]{TITLE}[/tt] in the [tt]MAIL.tpl[/tt] template)
- - [tt]forename[/tt], The forename (first name) of the subscriber (may be blank if it is not known)
- - [tt]surname[/tt], The surname (last name) of the subscriber (may be blank if it is not known)
- - [tt]name[/tt], The full name of the subscriber (either a combination of forename and surname, the members username, or the [tt]NEWSLETTER_SUBSCRIBER_DEFAULT_NAME[/tt] language string -- depending on what data is available on the reader)
- - [tt]member_id[/tt], The member ID of the subscriber, or blank if there is no discerned member ID
- - [tt]email_address[/tt], The e-mail address of the subscriber
- - [tt]send_id[/tt], A special code identifying the subscriber (starts with [tt]m[/tt] if it is a member, or [tt]n[/tt] if it is a newsletter subscriber)
- - [tt]unsub_url[/tt], A URL to unsubscribe from (one-click unsubscribe for newsletter recipients, a link to account settings for other recipients). If you are using [tt]unsub_url[/tt] in a Comcode newsletter it is very important not to insert it plainly, as Composr will look at the link for a link caption and incidentally click that link for every user. Instead use a Comcode [tt]url[/tt] tag and hence tell Composr what caption to give the link.
+ - [tt]TITLE[/tt], The subject line of the e-mail (and also the equivalent of [tt]{TITLE}[/tt] in the [tt]MAIL.tpl[/tt] template)
+ - [tt]FORENAME[/tt], The forename (first name) of the subscriber (may be blank if it is not known)
+ - [tt]SURNAME[/tt], The surname (last name) of the subscriber (may be blank if it is not known)
+ - [tt]NAME[/tt], The full name of the subscriber (either a combination of forename and surname, the members username, or the [tt]NEWSLETTER_SUBSCRIBER_DEFAULT_NAME[/tt] language string -- depending on what data is available on the reader)
+ - [tt]MEMBER_ID[/tt], The member ID of the subscriber, or blank if there is no discerned member ID
+ - [tt]EMAIL_ADDRESS[/tt], The e-mail address of the subscriber
+ - [tt]SEND_ID[/tt], A special code identifying the subscriber (starts with [tt]m[/tt] if it is a member, or [tt]n[/tt] if it is a newsletter subscriber)
+ - [tt]UNSUB_URL[/tt], A URL to unsubscribe from (one-click unsubscribe for newsletter recipients, a link to account settings for other recipients). If you are using [tt]unsub_url[/tt] in a Comcode newsletter it is very important not to insert it plainly, as Composr will look at the link for a link caption and incidentally click that link for every user. Instead use a Comcode [tt]url[/tt] tag and hence tell Composr what caption to give the link.
 
 This bit may confuse you: [tt]{+START,IF_NON_EMPTY,{forename}}{forename}{+END}{+START,IF_EMPTY,{forename}}{name}{+END}[/tt]
 It is saying "if the forename is available, use the forename, if the forename is not available, use the username".

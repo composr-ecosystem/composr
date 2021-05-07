@@ -44,6 +44,7 @@ class Hook_task_import_newsletter_subscribers
         require_lang('cns');
         require_lang('newsletter');
         require_code('newsletter');
+        require_code('newsletter2');
 
         $done_special_notice = false;
 

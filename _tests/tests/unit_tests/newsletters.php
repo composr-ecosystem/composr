@@ -25,6 +25,7 @@ class newsletters_test_set extends cms_test_case
         parent::setUp();
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         $this->news_id = add_newsletter('New Offer', 'The new offer of the week.');
 
@@ -40,10 +41,8 @@ class newsletters_test_set extends cms_test_case
 
     public function testVariableSubstitution()
     {
-        // Comcode to plain text...
-
-        $message = 'abc {forename} {surname} {name} {email_address} {send_id} {123}';
-        $subject = 'def {forename}';
+        $message_raw = 'abc {FORENAME} {SURNAME} {NAME} {EMAIL_ADDRESS} {SEND_ID} {X123}';
+        $subject = 'def {FORENAME}';
         $forename = 'ghi';
         $surname = 'jkl';
         $name = 'mno';
@@ -51,24 +50,20 @@ class newsletters_test_set extends cms_test_case
         $send_id = 'stu';
         $hash = 'vwx';
         $extra_mappings = [
-            '123' => 'yz'
+            'x123' => 'yz'
         ];
 
-        $wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['CONTENT' => $message, 'LANG' => fallback_lang(), 'SUBJECT' => $subject], null, false, null, '.txt', 'text');
+        $message_wrapped = newsletter_prepare($message_raw, $subject, null, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings);
 
-        $newsletter_message_substituted = newsletter_variable_substitution($wrapped->evaluate(), $subject, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings);
-        $rendered = strip_comcode($newsletter_message_substituted);
-        $rendered = preg_replace('#\([^)]*hash=[^)]*\)#', '(hash=vwx)', $rendered);
+        // Comcode
+        $got = preg_replace('#\][^\[\]]*\[/url\]#', '][/url]', $message_wrapped);
+        $expected = "abc ghi jkl mno pqr@example.com stu yz\n\n\n-------------------------\n\n[font size=\"0.8\"]You can [url=\"unsubscribe\"][/url] from this newsletter[/font]\n\n";
+        $this->assertTrue($got == $expected, 'Got: ' . $got . '; Expected: ' . $expected);
 
-        $expected = "abc ghi jkl mno pqr@example.com stu yz\n\n-------------------------\n\nYou can unsubscribe (hash=vwx) from this newsletter";
-        $this->assertTrue($rendered == $expected);
-
-        // Comcode to HTML...
-
-        $rendered = static_evaluate_tempcode(comcode_to_tempcode($newsletter_message_substituted, null, true));
-        $rendered = preg_replace('# href="[^"]*"#', ' href=""', $rendered);
+        // HTML
+        $got = preg_replace('# href="[^"]*"#', ' href=""', comcode_to_tempcode($message_wrapped, null, true));
         $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can <a class=\"user-link\" href=\"\" target=\"_top\">unsubscribe</a> from this newsletter</span><br /><br />";
-        $this->assertTrue($rendered == $expected);
+        $this->assertTrue($got == $expected, 'Got: ' . $got . '; Expected: ' . $expected);
     }
 
     public function tearDown()

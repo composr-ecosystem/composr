@@ -27,7 +27,7 @@ class Hook_task_send_newsletter
      * Run the task hook.
      *
      * @param  integer $message_id The newsletter message in the newsletter archive
-     * @param  LONG_TEXT $message The newsletter message
+     * @param  LONG_TEXT $message_raw The newsletter message
      * @param  SHORT_TEXT $subject The newsletter subject
      * @param  LANGUAGE_NAME $lang The language
      * @param  array $send_details A map describing what newsletters the newsletter is being sent to
@@ -40,7 +40,7 @@ class Hook_task_send_newsletter
      * @param  ID_TEXT $mail_template The template used to show the e-mail
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run(int $message_id, string $message, string $subject, string $lang, array $send_details, int $html_only, string $from_email, string $from_name, int $priority, array $spreadsheet_data, string $mail_template) : ?array
+    public function run(int $message_id, string $message_raw, string $subject, string $lang, array $send_details, int $html_only, string $from_email, string $from_name, int $priority, array $spreadsheet_data, string $mail_template) : ?array
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -65,16 +65,11 @@ class Hook_task_send_newsletter
 
         $using_drip_queue = ($last_cron !== null) || (get_option('newsletter_paused') == '1');
 
-        $in_html = false;
-        if (stripos(trim($message), '<') === 0) {
-            $in_html = true;
+        if ($using_drip_queue) {
+            $already_queued = collapse_2d_complexity('d_to_email', 'tmp', $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['d_to_email', '1 AS tmp'], ['d_message_id' => $message_id]));
         } else {
-            if ($html_only == 1) {
-                $in_html = true;
-            }
+            $already_queued = [];
         }
-
-        $already_queued = collapse_2d_complexity('d_to_email', 'tmp', $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['d_to_email', '1 AS tmp'], ['d_message_id' => $message_id]));
 
         $max = 300;
         $max_rows = null;
@@ -105,37 +100,34 @@ class Hook_task_send_newsletter
                     continue;
                 }
 
-                if ($using_drip_queue) {
-                    if (!isset($already_queued[$email_address])) {
-                        $insert_map = [
-                            'd_inject_time' => time(),
-                            'd_message_id' => $message_id,
-                            'd_message_binding' => json_encode($subscriber_map),
-                            'd_to_email' => $email_address,
-                            'd_to_name' => $subscriber_map['name'],
-                        ];
-                        foreach ($insert_map as $key => $val) {
-                            $insert_maps[$key][] = $val;
-                        }
+                if (isset($already_queued[$email_address])) {
+                    continue;
+                }
+                $already_queued[$email_address] = true;
 
-                        $already_queued[$email_address] = 1;
+                if ($using_drip_queue) {
+                    $insert_map = [
+                        'd_inject_time' => time(),
+                        'd_message_id' => $message_id,
+                        'd_message_binding' => json_encode($subscriber_map),
+                        'd_to_email' => $email_address,
+                        'd_to_name' => $subscriber_map['name'],
+                    ];
+                    foreach ($insert_map as $key => $val) {
+                        $insert_maps[$key][] = $val;
                     }
-                } else { // Unlikely to use this code path, but we should support operation without the system scheduler in those rare cases. Code path not optimised
-                    $newsletter_message_substituted = newsletter_variable_substitution($message, $subject, $subscriber_map['forename'], $subscriber_map['surname'], $subscriber_map['name'], $email_address, $subscriber_map['send_id'], $subscriber_map['hash']);
-                    if (stripos(trim($message), '<') === 0) { // HTML
-                        require_code('tempcode_compiler');
-                        $_m = template_to_tempcode($newsletter_message_substituted);
-                        $newsletter_message_substituted = $_m->evaluate($lang);
-                    } else { // Comcode
-                        if ($html_only == 1) {
-                            $_m = comcode_to_tempcode($newsletter_message_substituted, get_member(), true);
-                            $newsletter_message_substituted = $_m->evaluate($lang);
-                        }
+
+                    if (($using_drip_queue) && (count($insert_maps['d_to_email']) >= 100)) {
+                        $GLOBALS['SITE_DB']->query_insert('newsletter_drip_send', $insert_maps);
+                        $insert_maps = [];
                     }
+                } else { // Unlikely to use this code path, but we should support operation without the system scheduler in those rare cases
+                    $message_wrapped = newsletter_prepare($message_raw, $subject, $lang, $subscriber_map['forename'], $subscriber_map['surname'], $subscriber_map['name'], $email_address, $subscriber_map['send_id'], $subscriber_map['hash']);
+                    $is_html = newsletter_is_html($message_wrapped);
 
                     dispatch_mail(
                         $subject,
-                        $newsletter_message_substituted,
+                        $message_wrapped,
                         [$email_address],
                         [$subscriber_map['name']],
                         $from_email,
@@ -144,7 +136,7 @@ class Hook_task_send_newsletter
                             'priority' => $priority,
                             'no_cc' => true,
                             'as_admin' => true,
-                            'in_html' => $in_html,
+                            'in_html' => $is_html,
                             'mail_template' => $mail_template,
                             'bypass_queue' => true,
                             'smtp_sockets_use' => (get_option('newsletter_smtp_sockets_use') == '1'),
@@ -187,6 +179,9 @@ class Hook_task_send_newsletter
         }
 
         $newsletter_manage_url = build_url(['page' => 'admin_newsletter'], get_module_zone('admin_newsletter'));
-        return ['text/html', do_lang_tempcode($auto_pause ? 'SENDING_NEWSLETTER_TO_QUEUE' : 'SENDING_NEWSLETTER', escape_html($newsletter_manage_url))];
+        if (!$using_drip_queue) {
+            return ['text/html', do_lang_tempcode('SENT_NEWSLETTER', escape_html($newsletter_manage_url), escape_html(integer_format($count)))];
+        }
+        return ['text/html', do_lang_tempcode($auto_pause ? 'SENDING_NEWSLETTER_TO_PAUSED_QUEUE' : 'SENDING_NEWSLETTER_TO_QUEUE', escape_html($newsletter_manage_url), escape_html(integer_format($count)))];
     }
 }

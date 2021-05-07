@@ -92,6 +92,7 @@ class Hook_commandr_fs_newsletter_subscribers extends Resource_fs_base
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         $email = $label;
         $join_time = $this->_default_property_time($properties, 'join_time');
@@ -161,6 +162,7 @@ class Hook_commandr_fs_newsletter_subscribers extends Resource_fs_base
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         $email = $this->_default_property_str($properties, 'label');
         $join_time = $this->_default_property_time($properties, 'join_time');

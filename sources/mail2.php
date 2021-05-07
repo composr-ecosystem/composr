@@ -466,10 +466,10 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      * @param  string $sending_message Full MIME message
      * @param  string $charset Character set to use
      * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
-     * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
+     * @param  ?string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message) (null: HTML only)
      * @return array A pair: Whether it worked, and an error message
      */
-    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, string $message_plain) : array
+    protected function _dispatch(array $to_emails, array $to_names, string $from_email, string $from_name, string $subject_wrapped, string $headers, string $sending_message, string $charset, string $html_evaluated, ?string $message_plain) : array
     {
         $worked = false;
         $error = null;

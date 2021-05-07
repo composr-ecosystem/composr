@@ -52,5 +52,5 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-require_code('newsletter');
+require_code('newsletter2');
 incoming_bounced_email_script();

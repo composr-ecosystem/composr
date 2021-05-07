@@ -265,13 +265,17 @@ class Module_admin_email_log
         }
         $row = $rows[0];
 
+        if ($row['m_in_html'] == 1) {
+            $plain_text = strip_html($row['m_message']);
+        } else {
+            $plain_text = strip_comcode($row['m_message']);
+        }
+
         $fields = [];
 
         $fields['SUBJECT'] = $row['m_subject'];
 
         $fields['DATE_TIME'] = get_timezoned_date_time($row['m_date_and_time']);
-
-        $body = strip_comcode($row['m_message']);
 
         $from_email = $row['m_from_email'];
         if ($from_email == '') {
@@ -296,7 +300,7 @@ class Module_admin_email_log
         foreach ($to_email as $i => $_to_email) {
             $to_url = 'mailto:' . $_to_email;
             $to_url .= '?subject=' . rawurlencode($row['m_subject']);
-            $to_url .= '&body=' . rawurlencode($body);
+            $to_url .= '&body=' . rawurlencode($plain_text);
             if ($i != 0) {
                 $to_emails->attach(escape_html(', '));
             }
@@ -326,11 +330,14 @@ class Module_admin_email_log
             $fields['EXTRA_BCC_ADDRESSES'] = protect_from_escaping(escape_html(implode(', ', $extra_bcc_addresses)));
         }
 
-        $fields['MESSAGE'] = protect_from_escaping(comcode_to_tempcode($row['m_message']));
+        if ($row['m_in_html'] == 1) {
+            $fields['comcode:HTML'] = protect_from_escaping($row['m_message']);
+        } else {
+            $fields['comcode:HTML'] = protect_from_escaping(comcode_to_tempcode($row['m_message']));
 
-        $fields['TEXT'] = with_whitespace($body);
-
-        $fields['_COMCODE'] = with_whitespace($row['m_message'], true);
+            $fields['_COMCODE'] = with_whitespace($row['m_message'], true);
+        }
+        $fields['TEXT'] = with_whitespace($plain_text);
 
         $attachments = @unserialize($row['m_attachments']);
         if (!is_array($attachments)) {

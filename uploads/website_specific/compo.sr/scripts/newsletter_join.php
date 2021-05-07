@@ -59,5 +59,6 @@ if ($advertise_on == 1) {
 
 if (($email != 'dont_sign_me_up@compo.sr') && ($email != '')) {
     require_code('newsletter');
+    require_code('newsletter2');
     basic_newsletter_join($email, $lang);
 }

@@ -381,6 +381,7 @@ function do_work()
 
     // newsletter subscribers
     require_code('newsletter');
+    require_code('newsletter2');
     for ($i = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'COUNT(*)'); $i < $num_wanted; $i++) {
         basic_newsletter_join(uniqid('', true) . '@example.com');
     }

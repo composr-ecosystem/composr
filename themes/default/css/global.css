@@ -6342,9 +6342,11 @@ NB: Form buttons are wrapped in either:
 	height: 150px; /* Referenced also in global.js */
 }
 
-.hidden-save-frame, .hidden-preview-frame {
+#preview-frame, .hidden-save-frame, .hidden-preview-frame {
 	width: 100%;
 	height: 0;
+}
+.hidden-save-frame, .hidden-preview-frame {
 	float: left; /* Stops it breaking up margin collapsing */
 }
 

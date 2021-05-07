@@ -37,29 +37,16 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
 
     $subject = get_translated_text($mail['w_subject'], null, get_lang($member['id']));
 
-    $message = get_translated_text($mail['w_text'], null, get_lang($member['id']));
+    $message_raw = get_translated_text($mail['w_text'], null, get_lang($member['id']));
 
     // Special syntax for referring to specific date-times up to 100 hours into the future
     $matches = [];
-    $num_matches = preg_match_all('#\{\{(\d+)\}\}#', $message, $matches);
+    $num_matches = preg_match_all('#\{\{(\d+)\}\}#', $message_raw, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
-        $message = str_replace('{{' . strval($i) . '}}', get_timezoned_date(time() + $matches[1][$i] * 60 * 60 * 24), $message);
+        $message_raw = str_replace('{{' . strval($i) . '}}', get_timezoned_date(time() + $matches[1][$i] * 60 * 60 * 24), $message_raw);
     }
 
-    // Filter through newsletter template, if available
-    $is_html = false;
-    if (addon_installed('newsletter')) {
-        require_lang('newsletter');
-        $_message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '8ffc0470c6e457cee14c413c10f7a90f', 'SUBJECT' => $subject, 'CONTENT' => $message, 'LANG' => get_lang($member['id'])], null, false, null, '.txt', 'text');
-        if (strpos($_message_wrapped->evaluate(), '<html') !== false) {
-            $is_html = true;
-            $message_parsed = comcode_to_tempcode($message, null, true);
-            $_message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '8ffc0470c6e457cee14c413c10f7a90g', 'SUBJECT' => $subject, 'CONTENT' => $message_parsed, 'LANG' => get_lang($member['id'])], null, false, null, '.txt', 'text');
-        }
-        $message = $_message_wrapped->evaluate(get_lang($member['id']));
-    }
-
-    // Load up member metadata
+    // Load up metadata
     if ($newsletter_style) {
         $forename = $member['n_forename'];
         $surname = $member['n_surname'];
@@ -68,38 +55,48 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
         if ($name == '') {
             $name = do_lang('NEWSLETTER_SUBSCRIBER_DEFAULT_NAME', get_site_name());
         }
+        $email_address = $member['email'];
+        $lang = $member['language'];
+
+        $send_id = 'n' . strval($member['id']);
+
+        require_code('crypt');
+        $hash = ratchet_hash($member['the_password'], 'xunsub');
     } else {
         $forename = '';
         $surname = '';
         $name = $GLOBALS['FORUM_DRIVER']->get_displayname($member['m_username']);
+        $email_address = $member['m_email_address'];
+        $lang = get_lang($member['id']);
+
+        $send_id = 'm' . strval($member['id']);
+
+        $hash = '';
     }
 
-    // Do newsletter-style variable substitution
+    // Process with all the newsletter magic, if available
     if (addon_installed('newsletter')) {
-        if ($newsletter_style) {
-            $send_id = 'n' . strval($member['id']);
-            require_code('crypt');
-            $hash = ratchet_hash($member['the_password'], 'xunsub');
-        } else {
-            $send_id = 'w' . strval($member['id']);
-            $hash = '';
-        }
-
         require_code('newsletter');
+        require_lang('newsletter');
+
         $extra_mappings = $member;
         if (get_forum_type() == 'cns') {
             require_code('cns_members');
             $extra_mappings += cns_get_custom_field_mappings($member['id']);
         }
-        $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $member['m_email_address'], $send_id, $hash, @array_map('strval', $extra_mappings));
+
+        $is_html = newsletter_is_html();
+        if ($is_html) {
+            $message_raw = static_evaluate_tempcode(comcode_to_tempcode($message_raw, get_member(), true));
+        }
+
+        $message_wrapped = newsletter_prepare($message_raw, $subject, $lang, $forename, $surname, $name, $email_address, $send_id, $hash, @array_map('strval', $extra_mappings));
+        $message_final = $message_wrapped;
+    } else {
+        $is_html = false;
+        $_message_final = comcode_to_tempcode($message_raw, null, true);
+        $message_final = $_message_final->evaluate($lang);
     }
 
-    // Process for Tempcode, if in HTML format (as Comcode processing will NOT happen in mail_wrap for HTML, and since do_template we substituted in our final variable values for Tempcode logic to do its work on)
-    if ($is_html) {
-        require_code('tempcode_compiler');
-        $temp = template_to_tempcode($message);
-        $message = $temp->evaluate(get_lang($member['id']));
-    }
-
-    return [$subject, $message, $is_html, $name];
+    return [$subject, $message_final, $is_html, $name];
 }

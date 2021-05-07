@@ -7202,7 +7202,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SELECT_TO_IMPORT
         SELECT_USERGROUPS_TO_FILTER
         SELF_LEARNING_CACHE
-        SENDING_NEWSLETTER
+        SENT_NEWSLETTER
+        SENDING_NEWSLETTER_TO_PAUSED_QUEUE
+        SENDING_NEWSLETTER_TO_QUEUE
         SEND_ALL
         SEND_DISPATCH_NOTIFICATION
         SEND_ERROR_EMAILS_OCPRODUCTS
@@ -7572,7 +7574,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SAMPLE_SURNAME
         SCREEN_TREES
         SEARCH_DEFAULTS
-        SENDING_NEWSLETTER_TO_QUEUE
         SPAM_SCORE
         TEMPLATES_CSS_RELATED
         TEMPLATES_HTML_RELATED

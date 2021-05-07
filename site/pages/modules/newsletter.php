@@ -420,6 +420,7 @@ class Module_newsletter
     {
         require_code('type_sanitisation');
         require_code('crypt');
+        require_code('newsletter2');
 
         if (addon_installed('captcha')) {
             require_code('captcha');

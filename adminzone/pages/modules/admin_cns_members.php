@@ -465,13 +465,14 @@ class Module_admin_cns_members
             $to_name = $GLOBALS['FORUM_DRIVER']->get_displayname($username);
 
             if (addon_installed('newsletter')) {
+                // Newsletter-style variable substitution
                 require_code('newsletter');
                 $extra_mappings = $GLOBALS['FORUM_DRIVER']->get_member_row($id);
                 require_code('cns_members');
                 $extra_mappings += cns_get_custom_field_mappings($id);
                 $extra_mappings['username'] = $username;
                 $extra_mappings['password'] = $password;
-                $email_message = newsletter_variable_substitution($email_message, $email_subject, '', '', $to_name, $email_address, 'w' . strval($id), '', @array_map('strval', $extra_mappings));
+                $email_message = newsletter_prepare($email_message, $email_subject, $language, '', '', $to_name, $email_address, 'w' . strval($id), '', @array_map('strval', $extra_mappings), null/*no wrapper*/);
             }
 
             require_code('mail');
@@ -640,7 +641,7 @@ class Module_admin_cns_members
             $sql .= ' AND m_last_visit_time<' . strval(time() - $min_days_since_login * 60 * 60 * 24);
             $sql .= ' AND m_join_time<' . strval(time() - $min_days_since_join * 60 * 60 * 24);
             if ($non_confirmed) {
-                $sql .= ' AND ' . db_string_not_equal_to('m_validated_email_confirm_code', '');
+                $sql .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
             }
             $rows = $GLOBALS['FORUM_DB']->query($sql, 500, $start);
             $out = [];

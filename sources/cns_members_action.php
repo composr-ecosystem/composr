@@ -39,12 +39,12 @@ function get_option_with_overrides(string $option_name, ?array $overrides) : str
  * @param  ?MEMBER $member_id The member being edited (null: new member)
  * @param  string $field_class Special code representing what kind of field it is
  * @set email_address dob required_cpfs
- * @param  ?string $current_value The value the field has now (null: lookup from member record; cannot do this for a CPF)
+ * @param  ?mixed $current_value The value the field has now (null: lookup from member record; cannot do this for a CPF)
  * @param  ?MEMBER $editing_member The member doing the adding/editing operation (null: current member)
  * @param  array $adjusted_config_options A map of adjusted config options
  * @return boolean Whether the field must be filled in
  */
-function member_field_is_required(?int $member_id, string $field_class, ?string $current_value = null, ?int $editing_member = null, array $adjusted_config_options = []) : bool
+function member_field_is_required(?int $member_id, string $field_class, $current_value = null, ?int $editing_member = null, array $adjusted_config_options = []) : bool
 {
     if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) == '0') || ((get_option_with_overrides('dobs', $adjusted_config_options) == '1') && ($member_id === null)))) {
         return false;
@@ -64,8 +64,10 @@ function member_field_is_required(?int $member_id, string $field_class, ?string 
             $current_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, ($field_class == 'dob') ? ('m_' . $field_class . '_day') : ('m_' . $field_class));
         }
 
-        $cv = trim($current_value);
-        if ((cms_empty_safe($cv)) && (has_privilege($editing_member, 'bypass_' . $field_class . '_if_already_empty'))) {
+        if (is_string($current_value)) {
+            $current_value = trim($current_value);
+        }
+        if ((cms_empty_safe($current_value)) && (has_privilege($editing_member, 'bypass_' . $field_class . '_if_already_empty'))) {
             return false;
         }
     }

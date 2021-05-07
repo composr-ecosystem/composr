@@ -64,10 +64,6 @@ class Hook_cron_newsletter_drip_send
 
         $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['*'], [], 'ORDER BY id DESC', $mails_per_send); // From disk-end, for maximum performance (truncating files to mark done is quicker?)
         if (!empty($to_send)) {
-            // These variables are for optimisation, we detect if we can avoid work on the loop iterations via looking at what happened on the first
-            $needs_substitutions = null;
-            $needs_tempcode = null;
-
             // We'll cache messages here
             $cached_messages = [];
 
@@ -77,6 +73,7 @@ class Hook_cron_newsletter_drip_send
             $sent = [];
             foreach ($to_send as $mail) {
                 $message_id = $mail['d_message_id'];
+                $email_address = $mail['d_to_email'];
 
                 $message_binding = json_decode($mail['d_message_binding'], true);
                 $forename = $message_binding['forename'];
@@ -92,7 +89,7 @@ class Hook_cron_newsletter_drip_send
                 }
                 $message_row = $cached_messages[$message_id];
                 $lang = $message_row['language'];
-                $message = $message_row['newsletter'];
+                $message_raw = $message_row['newsletter'];
                 $subject = $message_row['subject'];
                 $from_email = $message_row['from_email'];
                 $from_name = $message_row['from_name'];
@@ -100,42 +97,13 @@ class Hook_cron_newsletter_drip_send
                 $template = $message_row['template'];
                 $html_only = $message_row['html_only'];
 
-                // Variable substitution in body
-                if ($needs_substitutions === null || $needs_substitutions) {
-                    $newsletter_message_substituted = (strpos($message, '{') === false) ? $message : newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $mail['d_to_email'], $send_id, $hash);
-
-                    if ($needs_substitutions === null) {
-                        $needs_substitutions = ($newsletter_message_substituted != $message);
-                    }
-                } else {
-                    $newsletter_message_substituted = $message;
-                }
-                $in_html = false;
-                if (stripos(trim($message), '<') === 0) { // HTML
-                    if ($needs_tempcode === null || $needs_tempcode) {
-                        require_code('tempcode_compiler');
-                        $_m = template_to_tempcode($newsletter_message_substituted);
-                        $temp = $_m->evaluate($lang);
-
-                        if ($needs_tempcode === null) {
-                            $needs_tempcode = (trim($temp) != trim($newsletter_message_substituted));
-                        }
-
-                        $newsletter_message_substituted = $temp;
-                    }
-                    $in_html = true;
-                } else { // Comcode
-                    if ($html_only == 1) {
-                        $_m = comcode_to_tempcode($newsletter_message_substituted, get_member(), true);
-                        $newsletter_message_substituted = $_m->evaluate($lang);
-                        $in_html = true;
-                    }
-                }
+                $message_wrapped = newsletter_prepare($message_raw, $subject, $lang, $forename, $surname, $name, $email_address, $send_id, $hash);
+                $is_html = newsletter_is_html($message_wrapped);
 
                 $mail_ob = dispatch_mail(
                     $subject,
-                    $newsletter_message_substituted,
-                    [$mail['d_to_email']],
+                    $message_wrapped,
+                    [$email_address],
                     [$mail['d_to_name']],
                     $from_email,
                     $from_name,
@@ -143,7 +111,7 @@ class Hook_cron_newsletter_drip_send
                         'priority' => $priority,
                         'no_cc' => true,
                         'as_admin' => true,
-                        'in_html' => ($html_only == 1),
+                        'in_html' => $is_html,
                         'mail_template' => $template,
                         'bypass_queue' => true,
                         'smtp_sockets_use' => (get_option('newsletter_smtp_sockets_use') == '1'),

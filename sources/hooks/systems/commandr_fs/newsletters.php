@@ -79,6 +79,7 @@ class Hook_commandr_fs_newsletters extends Resource_fs_base
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         $description = $this->_default_property_str($properties, 'description');
 
@@ -139,6 +140,7 @@ class Hook_commandr_fs_newsletters extends Resource_fs_base
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
         require_code('newsletter');
+        require_code('newsletter2');
 
         $label = $this->_default_property_str($properties, 'label');
         $description = $this->_default_property_str($properties, 'description');
@@ -170,6 +172,7 @@ class Hook_commandr_fs_newsletters extends Resource_fs_base
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
         require_code('newsletter');
+        require_code('newsletter2');
         delete_newsletter(intval($resource_id));
 
         return true;

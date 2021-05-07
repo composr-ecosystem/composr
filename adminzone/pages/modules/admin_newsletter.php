@@ -147,6 +147,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         require_code('newsletter');
         require_css('newsletter');
+        require_javascript('newsletter');
 
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_PERIODIC_NEWSLETTER');
 
@@ -689,6 +690,7 @@ class Module_admin_newsletter extends Standard_crud_module
             warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
+        require_code('newsletter2');
         remove_email_bounces($bounces);
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
@@ -832,6 +834,7 @@ class Module_admin_newsletter extends Standard_crud_module
         }
         // Actualiser for removal
         if (preg_match('#^periodic_remove_confirmed_(\d+)$#', post_param_string('periodic_choice', ''), $matches) != 0) {
+            require_code('newsletter2');
             delete_periodic_newsletter(intval($matches[1]));
 
             // We redirect back to the admin_newsletter main page
@@ -858,10 +861,10 @@ class Module_admin_newsletter extends Standard_crud_module
     /**
      * The UI to send a newsletter.
      *
-     * @param  LONG_TEXT $_message Default newsletter to put in
+     * @param  LONG_TEXT $message Default newsletter to put in
      * @return Tempcode The UI
      */
-    public function send_gui(string $_message = '') : object
+    public function send_gui(string $message = '') : object
     {
         $blocked = newsletter_block_list();
         if (!empty($blocked)) {
@@ -936,8 +939,33 @@ class Module_admin_newsletter extends Standard_crud_module
         $in_full = post_param_integer('in_full', 0);
         $chosen_categories = post_param_string('chosen_categories', '');
 
+        $message_is_html = newsletter_is_html();
+
+        // Read in default newsletter message overridden by GET/POST
+        $message = post_param_string('message', $message);
+        if ($message == '') {
+            // from_news GET parameter?
+            $from_news = get_param_integer('from_news', null);
+            if (($from_news !== null) && (addon_installed('news'))) {
+                $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $from_news], '', 1);
+                if (!array_key_exists(0, $rows)) {
+                    require_lang('news');
+                    warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+                }
+                $myrow = $rows[0];
+
+                $_message = get_translated_text($myrow['news_article'], null, $lang);
+                if ($_message == '') {
+                    $_message = get_translated_text($myrow['news'], null, $lang);
+                }
+
+                if ($message_is_html) {
+                    $message = static_evaluate_tempcode(comcode_to_tempcode($_message, get_member(), true));
+                }
+            }
+        }
+
         // Newsletter message (complex, as will depend if an automatic periodical being made, meaning no message defined now)
-        list($message, $message_is_html) = get_full_newsletter_code($_message, $lang, $default_subject);
         if ($periodic_action == 'make' || $periodic_action == 'replace') {
             // We are making a periodic newsletter. This means we need to pass through the chosen categories - add extra fields to the form - and there's no direct editing
             if ($defaults !== null) {
@@ -1249,7 +1277,7 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         // Render
-        list($html_version, $text_version, $in_html) = newsletter_preview($message, $subject, $html_only == 1, null, null, null, null, null, null, $template);
+        list($html_version, $text_version, $in_html) = newsletter_preview($message, $subject, $lang, $html_only == 1, null, null, null, null, null, null, $template);
 
         // Subject line
         $_full_subject = $subject;
@@ -1262,7 +1290,7 @@ class Module_admin_newsletter extends Standard_crud_module
         require_code('mail');
         $mail_dispatcher = dispatch_mail(
             $full_subject,
-            ($html_only == 1) ? $html_version->evaluate() : $message,
+            $in_html ? $html_version->evaluate() : $text_version,
             [$email_address],
             $name/*do_lang('NEWSLETTER_SUBSCRIBER',get_site_name())*/,
             $from_email,
@@ -1276,6 +1304,8 @@ class Module_admin_newsletter extends Standard_crud_module
         );
 
         // Spam check, if possible
+        $spam_report = null;
+        $spam_score = null;
         if ($mail_dispatcher->mime_data !== null) {
             require_code('mail');
             require_code('mail2');
@@ -1379,11 +1409,13 @@ class Module_admin_newsletter extends Standard_crud_module
                 if (post_param_string('periodic_for') != 'future') {
                     $last_sent = 0;
                 }
+                require_code('newsletter2');
                 edit_periodic_newsletter(intval($matches[1]), $subject, post_param_string('chosen_categories', ''), $lang, serialize($send_details), $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $when, $day, $in_full, $template, $last_sent);
                 $message = do_lang('PERIODIC_SUCCESS_MESSAGE_EDIT', $when, $each);
             } else {
                 $last_sent = (post_param_string('periodic_for') == 'future') ? time() : 0;
 
+                require_code('newsletter2');
                 add_periodic_newsletter($subject, post_param_string('chosen_categories', ''), $lang, serialize($send_details), $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $when, $day, $in_full, $template, $last_sent);
                 $message = do_lang('PERIODIC_SUCCESS_MESSAGE_ADD', $when, $each);
             }
@@ -1501,8 +1533,10 @@ class Module_admin_newsletter extends Standard_crud_module
         $subject = $rows[0]['subject'];
         $display_map['SUBJECT'] = $subject;
 
+        $lang = $rows[0]['language'];
+
         $message = $rows[0]['newsletter'];
-        list($html_version, $text_version) = newsletter_preview($message, $subject, $rows[0]['html_only'] == 1, null, null, null, null, null, null, $rows[0]['template']);
+        list($html_version, $text_version) = newsletter_preview($message, $subject, $lang, $rows[0]['html_only'] == 1, null, null, null, null, null, null, $rows[0]['template']);
         $display_map['HTML_VERSION'] = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '5efb08a7867bd1cd90271568853fcbb9', 'HTML_PREVIEW' => $html_version]);
         if ($text_version != '') {
             $display_map['TEXT_VERSION'] = $text_version;
@@ -1547,7 +1581,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $copy_url = build_url(['page' => '_SELF', 'type' => 'new'], '_SELF');
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('subject', $rows[0]['subject']));
-        $hidden->attach(form_input_hidden('lang', $rows[0]['language']));
+        $hidden->attach(form_input_hidden('lang', $lang));
         $hidden->attach(form_input_hidden('from_email', $rows[0]['from_email']));
         $hidden->attach(form_input_hidden('from_name', $rows[0]['from_name']));
         $hidden->attach(form_input_hidden('priority', strval($rows[0]['priority'])));
@@ -1671,6 +1705,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $title = post_param_string('title');
         $description = post_param_string('description');
 
+        require_code('newsletter2');
         $id = add_newsletter($title, $description);
 
         return [strval($id), null];
@@ -1687,6 +1722,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $title = post_param_string('title');
         $description = post_param_string('description');
 
+        require_code('newsletter2');
         edit_newsletter(intval($id), $title, $description);
 
         return null;
@@ -1699,6 +1735,7 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function delete_actualisation(string $id)
     {
+        require_code('newsletter2');
         delete_newsletter(intval($id));
     }
 }
