@@ -542,6 +542,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/shopping.php',
             '_tests/tests/unit_tests/standard_dir_files.php',
             '_tests/tests/unit_tests/tempcode.php',
+            '_tests/tests/unit_tests/simulated_wildcard_match.php',
             '_tests/tests/unit_tests/httpauth.php',
             '_tests/tests/unit_tests/template_previews.php',
             '_tests/tests/unit_tests/ticket_type.php',

@@ -1719,6 +1719,8 @@ function __param($array, $name, $default, $integer = false, $posted = false)
  */
 function simulated_wildcard_match($context, $word, $full_cover = false)
 {
+    $word = str_replace('\\', '', $word); // Needed for our escaping manipulation to be robust
+
     $rexp = str_replace('%', '.*', str_replace('_', '.', str_replace('\\?', '.', str_replace('\\*', '.*', preg_quote($word)))));
     if ($full_cover) {
         $rexp = '^' . $rexp . '$';
