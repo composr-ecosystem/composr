@@ -4752,6 +4752,18 @@ dl.meta-details-list > dt, dl.meta-details-list > dd {
 }
 
 .staff-actions .box-inner {
+	padding-right: 25px;
+	position: relative;
+}
+.staff-actions .box-inner::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	opacity: 0.3;
+	z-index: -1;
 	background: transparent right center no-repeat;
 	/*{+START,IF,{$THEME_OPTION,use_monochrome_icons}}*/
 	background-image: url('{$IMG_INLINE;,icons_monochrome/buttons/settings}');
@@ -4760,7 +4772,6 @@ dl.meta-details-list > dt, dl.meta-details-list > dd {
 	background-image: url('{$IMG_INLINE;,icons/buttons/settings}');
 	/*{+END}*/
 	background-size: 24px 24px;
-	padding-right: 25px;
 }
 
 .staff-actions .field-name.standard-field-name {
