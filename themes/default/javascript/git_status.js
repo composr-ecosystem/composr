@@ -118,7 +118,6 @@
 
             hasSelection = this._refreshFileSelection('remote_select_');
             document.getElementById('button_remote_tar').disabled = !hasSelection;
-            document.getElementById('button_pull').disabled = !has_selection;
             document.getElementById('button_remote_shell_paths').disabled = !hasSelection;
         },
 

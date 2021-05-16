@@ -211,7 +211,7 @@
 
 						<button id="button_remote_tar" class="button-screen-item buttons--save js-btn-download-remote-tar" type="submit" disabled="disabled">{+START,INCLUDE,ICON}NAME=buttons/save{+END} Download TAR (to backup what would be overwritten)</button>
 
-						<button id="button_pull" class="button-screen-item buttons--copy js-btn-pull" type="submit" disabled="disabled">{+START,INCLUDE,ICON}NAME=buttons/copy{+END} Pull</button>
+						<button id="button_pull" class="button-screen-item buttons--copy js-btn-pull" type="submit">{+START,INCLUDE,ICON}NAME=buttons/copy{+END} Pull</button>
 
 						<button style="float: right" class="button-screen-item buttons--choose js-git-remote-select-all" type="button">{+START,INCLUDE,ICON}NAME=buttons/choose{+END} Select all</button>
 						<button style="float: right" class="button-screen-item buttons--choose js-git-remote-select-none" type="button">{+START,INCLUDE,ICON}NAME=buttons/choose{+END} Select none</button>
