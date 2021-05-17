@@ -50,7 +50,7 @@
 			</ul>
 		</div>
 
-		{$TRUNCATE_LEFT,{$PREG_REPLACE,<img [^>]*>,,{BODY}},600,0,1,1,0.1}
+		{BODY}
 
 		{+START,IF,{$NEQ,{NEWS},1}}
 			<div class="pagination">
