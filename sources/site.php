@@ -176,6 +176,10 @@ function inform_non_canonical_parameter(string $param, bool $block_page_from_sta
  */
 function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
+    if ((is_object($message) ? $message->evaluate() : $message) == '') {
+        return ''; // Empty message
+    }
+
     if ((error_reporting() == 0) && ($type == 'warn')) {
         return ''; // Suppressing errors
     }
