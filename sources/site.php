@@ -2085,8 +2085,10 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
     }
 
+    $no_title_yet = ($GLOBALS['DISPLAYED_TITLE'] === null);
+
     $filtered_title_to_use = null;
-    if ((!$is_panel) && ((!$being_included) || ($GLOBALS['DISPLAYED_TITLE'] === null))) {
+    if ((!$is_panel) && ((!$being_included) || ($no_title_yet))) {
         if (!cms_empty_safe($title_to_use)) {
             get_screen_title($title_to_use, false); // Little hack - this will force DISPLAYED_TITLE to get set.
             $filtered_title_to_use = strip_html($title_to_use);
@@ -2122,17 +2124,21 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         $warning_details = get_page_warning_details($zone, $codename, $edit_url);
     }
 
-    if ((!$is_panel) && ($title_to_use !== null) && (!$being_included)) {
+    if ((!$is_panel) && ($title_to_use !== null) && ((!$being_included) || ($no_title_yet))) {
         global $PT_PAIR_CACHE_CP;
         $PT_PAIR_CACHE_CP[$codename]['cc_page_title'] = ($title_to_use === null) ? do_lang_tempcode('NA_EM') : protect_from_escaping(escape_html($title_to_use));
         $PT_PAIR_CACHE_CP[$codename]['p_parent_page'] = $comcode_page_row['p_parent_page'];
         $comcode_breadcrumbs = comcode_breadcrumbs($codename, $zone, get_param_string('keep_page_root', ''), ($comcode_page_row['p_parent_page'] != '') && (has_privilege(get_member(), 'open_virtual_roots')) && (get_option('virtual_root_links') == '1'));
         breadcrumb_set_parents($comcode_breadcrumbs);
 
-        set_extra_request_metadata([
-            'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'), // We need to pass as we cannot assume we have a cache row in the database
-            'identifier' => $zone . ':' . $codename,
-        ], $comcode_page_row, 'comcode_page', $zone . ':' . $codename);
+        if ($being_included) {
+            $GLOBALS['METADATA']['title'] = '[semihtml]' . $title_to_use . '[/semihtml]';
+        } else {
+            set_extra_request_metadata([
+                'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'), // We need to pass as we cannot assume we have a cache row in the database
+                'identifier' => $zone . ':' . $codename,
+            ], $comcode_page_row, 'comcode_page', $zone . ':' . $codename);
+        }
     }
 
     global $SCREEN_TEMPLATE_CALLED;
