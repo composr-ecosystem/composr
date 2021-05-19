@@ -22,6 +22,12 @@ require_css('git_status');
 
 require_javascript('git_status');
 
+$git_live_branch = get_option('git_live_branch');
+$current_branch = find_branch();
+if (($git_live_branch != '') && ($current_branch != $git_live_branch)) {
+    warn_exit('This site is currently running out of the ' . $current_branch . ' Git branch. The live branch is ' . $git_live_branch . ', and for this reason content-management commits to Git are disabled.');
+}
+
 $type = get_param_string('type', 'browse');
 if ($type == 'browse') {
     git_status__browse();
