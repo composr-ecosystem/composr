@@ -2086,7 +2086,7 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
     }
 
     $filtered_title_to_use = null;
-    if ((!$is_panel) && (!$being_included)) {
+    if ((!$is_panel) && ((!$being_included) || ($GLOBALS['DISPLAYED_TITLE'] === null))) {
         if (!cms_empty_safe($title_to_use)) {
             get_screen_title($title_to_use, false); // Little hack - this will force DISPLAYED_TITLE to get set.
             $filtered_title_to_use = strip_html($title_to_use);
