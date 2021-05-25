@@ -438,4 +438,12 @@ function git_status__pull()
     $title->evaluate_echo();
 
     echo static_evaluate_tempcode(with_whitespace(escape_html(git_pull())));
+
+    require_code('caches3');
+    erase_cached_templates();
+    erase_cached_language();
+    erase_comcode_cache();
+    erase_block_cache(true);
+    erase_comcode_page_cache();
+    erase_persistent_cache();
 }
