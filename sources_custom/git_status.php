@@ -267,6 +267,9 @@ function git_exec($cmd)
 function _git_exec($cmd)
 {
     static $cache = [];
+    if ($cmd == 'fetch') {
+        $cache = [];
+    }
     if (array_key_exists($cmd, $cache)) {
         return $cache[$cmd];
     }
