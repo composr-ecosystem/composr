@@ -31,7 +31,7 @@ class Hook_check_unzip
     public function run()
     {
         $warning = array();
-        if ((!function_exists('zip_open')) && (!@file_exists('/usr/local/bin/unzip')) && (!@file_exists('/usr/bin/unzip'))) {
+        if ((!function_exists('zip_open')) && (!@is_file('/usr/local/bin/unzip')) && (!@is_file('/usr/bin/unzip'))) {
             $warning[] = do_lang_tempcode('NO_ZIP_ON_SERVER');
         }
         return $warning;

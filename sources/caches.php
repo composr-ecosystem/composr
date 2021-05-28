@@ -534,8 +534,12 @@ function erase_persistent_cache()
     erase_static_cache();
 
     require_code('files');
-    cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
-    cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+    if (is_writable_wrap(get_custom_file_base() . '/data_custom/failover_rewritemap.txt')) {
+        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+    }
+    if (is_writable_wrap(get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt')) {
+        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+    }
 
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {

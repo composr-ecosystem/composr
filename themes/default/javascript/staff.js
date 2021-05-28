@@ -374,7 +374,7 @@ function load_software_chat(event)
 	cancel_bubbling(event);
 	if (typeof event.preventDefault!='undefined') event.preventDefault();
 
-	var url='https://kiwiirc.com/client/irc.kiwiirc.com/?nick=';
+	var url='https://kiwiirc.com/client/irc.compo.sr/?nick=';
 	if (typeof window.cms_username!='undefined' && window.cms_username!='admin')
 	{
 		url+=window.encodeURIComponent(window.cms_username.replace(/[^a-zA-Z0-9\_\-\\\[\]\{\}\^`|]/g,''));

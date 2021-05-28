@@ -239,9 +239,10 @@ function _cms_tempnam($prefix = '')
     list($tmp_path, $problem_saving, $server_path, $local_path) = cms_get_temp_dir();
     if (php_function_allowed('tempnam')) {
         // Create a real temporary file
-        $tempnam = tempnam($tmp_path, 'tmpfile__' . $prefix);
+        //  We have to use "@" in case of "file created in the system's temporary directory" notice
+        $tempnam = @tempnam($tmp_path, 'tmpfile__' . $prefix);
         if ((($tempnam === false) || ($tempnam == ''/*Should not be blank, but seen in the wild*/)) && (!$problem_saving)) {
-            $tempnam = tempnam($local_path, 'tmpfile__' . $prefix); // Try saving in local path even if we didn't think there'd be a problem saving into the system path
+            $tempnam = @tempnam($local_path, 'tmpfile__' . $prefix); // Try saving in local path even if we didn't think there'd be a problem saving into the system path
         }
     } else {
         // A fake temporary file, as true ones have been disabled on PHP
@@ -615,7 +616,7 @@ function find_php_path($cgi = false)
         foreach ($filenames as $file) {
             if ((!$cgi) || (strpos($file, 'cgi') !== false)) {
                 $path = $dir . '/' . $file;
-                $_path = glob($path);
+                $_path = @glob($path);
                 if (!@empty($_path)) {
                     $php_path = $_path[0];
                     break 2;

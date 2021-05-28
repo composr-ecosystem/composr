@@ -1928,7 +1928,9 @@ function cns_member_choose_photo($param_name, $upload_name, $member_id = null)
     }
 
     // Find photo URL
+    set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, true); // Code to strip GPS
     $urls = get_url($param_name, $upload_name, file_exists(get_custom_file_base() . '/uploads/photos') ? 'uploads/photos' : 'uploads/cns_photos', 0, CMS_UPLOAD_IMAGE, true, 'thumb_' . $param_name, $upload_name . '2', false, true);
+    reset_images_cleanup_pipeline_settings();
     if (!(strlen($urls[0]) > 1)) {
         $urls[1] = '';
     }

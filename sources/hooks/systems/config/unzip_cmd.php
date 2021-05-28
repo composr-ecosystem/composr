@@ -54,10 +54,10 @@ class Hook_config_unzip_cmd
             return null;
         }
         $params = ' -o @_SRC_@ -x -d @_DST_@';
-        if (is_file('/usr/local/bin/unzip')) {
+        if (@is_file('/usr/local/bin/unzip')) {
             return '/usr/local/bin/unzip' . $params;
         }
-        if (is_file('/usr/bin/unzip')) {
+        if (@is_file('/usr/bin/unzip')) {
             return '/usr/bin/unzip' . $params;
         }
         return 'unzip' . $params;

@@ -1206,6 +1206,18 @@ class DatabaseConnector
                 return null;
             }
 
+            if ((get_db_type() == 'oracle') || (get_db_type() == 'access')) {
+                // These databases are not supporting batch syntax
+                // TODO: Improve logic in v11
+
+                foreach ($all_values as $v) {
+                    $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $v . ')';
+                    $this->_query($query, null, null, $fail_ok, $ret, null, '', $save_as_volatile);
+                }
+
+                return null;
+            }
+
             // So we can do batch inserts...
             $all_v = '';
             foreach ($all_values as $v) {

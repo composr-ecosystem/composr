@@ -1365,7 +1365,7 @@ class Module_cms_galleries extends Standard_crud_module
         $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
-        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
 
         $filename = '';
         $thumb_url = '';
@@ -1447,7 +1447,7 @@ class Module_cms_galleries extends Standard_crud_module
         $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
-        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
 
         if (!fractional_edit()) {
             $filename = '';

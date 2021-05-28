@@ -630,6 +630,7 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]search_do_days_fallback[/tt] -- set this to '0' if you don't want to re-search without a recency filter if no results were found
   - [tt]sitemap_orphans_to_pages[/tt] -- set this to '0' if you don't want orphaned pages to be put under the default Pages page grouping of the Sitemap
   - [tt]time_sensitive_rankings__<catalogue_name>[/tt] -- set this to a number for catalogue rating sorting to only consider this number of records. This is useful for a upvote/downvote system that is responsive to change in voting pattern. Requires the database to support window functions (MySQL 8+ does, Maria DB 10.2+ does).
+  - [tt]keep_gallery_gps[/tt] -- set this to '1' if you want galleries (and related to feature) to not strip GPS metadata from images (which is done by default for privacy reasons)
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup

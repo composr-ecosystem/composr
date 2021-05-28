@@ -217,6 +217,10 @@ function _handle_data_url_attachments(&$comcode, $type, $id, $connection)
                         cms_imagesave($image, $new_path) or intelligent_write_error($new_path);
                         imagedestroy($image);
 
+                        // Images cleanup pipeline
+                        require_code('images_cleanup_pipeline');
+                        handle_images_cleanup_pipeline($new_path, null, IMG_RECOMPRESS_LOSSLESS, null, null, true/*Code to strip GPS*/);
+
                         $db = $GLOBALS[((substr($type, 0, 4) == 'cns_') && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
                         $attachment_id = $db->query_insert('attachments', array(
                             'a_member_id' => get_member(),
@@ -398,7 +402,7 @@ function _handle_attachment_extraction(&$comcode, $key, $type, $id, $matches_ext
 
                 // Images cleanup pipeline
                 require_code('images_cleanup_pipeline');
-                handle_images_cleanup_pipeline($place);
+                handle_images_cleanup_pipeline($place, null, IMG_RECOMPRESS_LOSSLESS, null, null, true/*Code to strip GPS*/);
 
                 // Create new attachment from extracted file
                 $url = cms_rawurlrecode('uploads/attachments/' . rawurlencode($_file));
