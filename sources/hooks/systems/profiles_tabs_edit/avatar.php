@@ -74,7 +74,9 @@ class Hook_profiles_tabs_edit_avatar
                     }
                 } else { // Upload
                     // We have chosen an upload. Note that we will not be looking at alt_url at this point, even though it is specified below for canonical reasons
+                    set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, true); // Code to strip GPS
                     $urls = get_url('avatar_alt_url', 'avatar_file', file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', 0, CMS_UPLOAD_IMAGE, false, '', '', false, true);
+                    reset_images_cleanup_pipeline_settings();
                     if (((get_base_url() != get_forum_base_url()) || ((!empty($GLOBALS['SITE_INFO']['on_msn'])) && ($GLOBALS['SITE_INFO']['on_msn'] == '1'))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
                         $urls[0] = get_custom_base_url() . '/' . $urls[0];
                     }

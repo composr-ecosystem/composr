@@ -304,10 +304,14 @@ class Module_cms_iotds extends Standard_crud_module
      */
     public function add_actualisation()
     {
+        require_code('uploads');
+        $keep_gps = (get_value('keep_gallery_gps', '0') == '1');
+        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, !$keep_gps);
         require_code('themes2');
         $filename = '';
         $thumb_url = '';
         $url = post_param_image('image', 'uploads/iotds_addon', null, true, false, $filename, $thumb_url);
+        reset_images_cleanup_pipeline_settings();
 
         $title = post_param_string('title');
         $caption = post_param_string('caption');
@@ -364,10 +368,14 @@ class Module_cms_iotds extends Standard_crud_module
 
         check_edit_permission(($is_current == 1) ? 'high' : 'mid', $submitter);
 
+        require_code('uploads');
+        $keep_gps = (get_value('keep_gallery_gps', '0') == '1');
+        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, !$keep_gps);
         require_code('themes2');
         $filename = '';
         $thumb_url = '';
         $url = post_param_image('image', 'uploads/iotds_addon', null, true, true, $filename, $thumb_url);
+        reset_images_cleanup_pipeline_settings();
 
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);

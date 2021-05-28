@@ -42,10 +42,13 @@ class Hook_preview_iotd
 
         require_lang('iotds');
 
+        $keep_gps = (get_value('keep_gallery_gps', '0') == '1');
+        set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, !$keep_gps);
         $filename = '';
         $thumb_url = '';
         require_code('themes2');
         $url = post_param_image('image', 'uploads/iotds_addon', null, true, false, $filename, $thumb_url);
+        reset_images_cleanup_pipeline_settings();
 
         if ($url == '') {
             if (!is_null(post_param_integer('id', null))) {
