@@ -11,10 +11,10 @@
 	<li>Professional support (so you're not relying on volunteers)</li>
 </ul>
 
-<iframe style="width: 100%; height: 700px" src="https://kiwiirc.com/client/irc.kiwiirc.com/?nick={$USERNAME&*}#composrcms"></iframe>
+<iframe style="width: 100%; height: 700px" src="https://kiwiirc.com/client/irc.compo.sr/?nick={$USERNAME&*}#composrcms"></iframe>
 
 <p>
 	Our goal is to make it really easy for Composr users to help each other.<br /><br />
-	Want to help out by hanging out here longer-term? Set up an IRC client (such as <a title="HexChat {!LINK_NEW_WINDOW}" href="https://hexchat.github.io/screenshots.html" target="_blank">HexChat</a>) to automatically connect to the Freenode (<kbd>chat.freenode.net</kbd>) <kbd>#composrcms</kbd> channel.<br /><br />
+	Want to help out by hanging out here longer-term? Set up an IRC client (such as <a title="HexChat {!LINK_NEW_WINDOW}" href="https://hexchat.github.io/screenshots.html" target="_blank">HexChat</a>) to automatically connect to the <kbd>irc.compo.sr</kbd> <kbd>#composrcms</kbd> channel (we are hosted by Libera.Chat under-the-hood).<br /><br />
 	Questions only get answered if people like you are here to answer them and/or to set an example.
 </p>
