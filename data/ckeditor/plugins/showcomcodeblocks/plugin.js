@@ -11,6 +11,8 @@
 			cssBlock = cssInline = cssImg = cssLtr = cssRtl = cssWhenDisabled = '';
 
 			trailing = ',';
+			CKEDITOR.dtd.$block['tempcode'] = 1;
+			CKEDITOR.dtd['tempcode'] = CKEDITOR.dtd.div;
 			cssBlock += 'tempcode' + trailing;
 			cssLtr += '.cke_contents_ltr tempcode' + trailing;
 			cssRtl += '.cke_contents_rtl tempcode' + trailing;

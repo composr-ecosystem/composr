@@ -956,7 +956,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                             if ((!$in_code_tag) && (($next === '{') && (isset($comcode[$pos])) && (($comcode[$pos] === '$') || ($comcode[$pos] === '+') || ($comcode[$pos] === '!')))) {
                                 $is_symbol = ($comcode[$pos] === '$');
                                 $is_basic_symbol = $is_symbol && ((substr($comcode, $pos + 1, 3) == 'IMG') || (substr($comcode, $pos + 1, 8) == 'BASE_URL')); // Anyone may use, and must parse even in semi-parse mode
-                                $is_meta_symbol = $is_symbol && (substr($comcode, $pos + 1, 3) == 'SET');
+                                $is_meta_symbol = $is_symbol && (substr($comcode, $pos + 1, 3) == 'SET') && (substr($comcode, $pos + 1, 11) == 'REQUIRE_CSS') && (substr($comcode, $pos + 1, 18) == 'REQUIRE_JAVASCRIPT');
                                 $must_evaluate_context = (in_tag_stack($tag_stack, ['url', 'img', 'media']));
                                 $is_directive = ($comcode[$pos] === '+');
                                 $is_lang_string = ($comcode[$pos] === '!');
