@@ -1064,7 +1064,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                                 $p_len++;
                                             }
 
-                                            if (($is_basic_symbol) || ($must_evaluate_context)) {
+                                            if ((!$semiparse_mode) || ($is_basic_symbol) || ($must_evaluate_context)) {
                                                 $ret = new Tempcode();
                                                 $less_pos = $pos - 1;
                                                 $ret->parse_from($comcode, $less_pos, $p_len);
