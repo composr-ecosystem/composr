@@ -337,6 +337,19 @@ function _dedirectiveise(array $matches) : string
 }
 
 /**
+ * Extract underlying Tempcode symbol from an editor XML tag. preg_replace_callback callback.
+ *
+ * @param  array $matches Array of matches
+ * @return string Substituted text
+ *
+ * @ignore
+ */
+function _desymbolise(array $matches) : string
+{
+    return html_entity_decode($matches[1], ENT_QUOTES);
+}
+
+/**
  * Cleanup HTML coming out of the WYSIWYG editor, converting represented Comcode back to proper Comcode.
  *
  * @param  string $semihtml Semi-HTML
@@ -377,6 +390,9 @@ function remove_wysiwyg_comcode_markup(string &$semihtml)
         $semihtml = cms_preg_replace_callback_safe('#<tempcode( [^<>]*)' . '>\s*#', '_dedirectiveise', $semihtml);
         $semihtml = preg_replace('#</tempcode\s*>#', '{+END}', $semihtml);
     }
+
+    // Our symbols as meta tags
+    $semihtml = preg_replace_callback('#<meta name="cms-symbol" content="([^"]*)"\s*/?>#', '_desymbolise', $semihtml);
 }
 
 /**

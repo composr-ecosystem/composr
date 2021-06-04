@@ -56,6 +56,8 @@ var editorSettings = {
     language: $cms.userLang() ? $cms.userLang().toLowerCase() : 'en',
     emailProtection: false,
     resize_enabled: true,
+    resize_minWidth : 320,
+    resize_dir : 'both', /* Useful for testing responsive content */
     width: 'auto',
     height: ($cms.getPageName() === 'cms_comcode_pages') ? 250 : 500,
     toolbar: toolbar,

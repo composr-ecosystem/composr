@@ -376,6 +376,10 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
         $comcode = preg_replace('#=\xE2\x80\x9C(.*)\xE2\x80\x9D#U', '="$1"', $comcode);
     }
 
+    if ($semiparse_mode) {
+        $comcode = rtrim($comcode, "\n"); // Necessary as we don't want the text file blank line ending convention, or the blank line after a closing [/html] or [/semihtml] to be converted into <br />s
+    }
+
     $len = strlen($comcode);
 
     $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
@@ -950,15 +954,20 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
 
                             // Variable lookahead (symbols, directives, language string references)
                             if ((!$in_code_tag) && (($next === '{') && (isset($comcode[$pos])) && (($comcode[$pos] === '$') || ($comcode[$pos] === '+') || ($comcode[$pos] === '!')))) {
-                                $is_basic_symbol = (substr($comcode, $pos, 4) == '$IMG') || (substr($comcode, $pos, 9) == '$BASE_URL'); // Anyone may use, and must parse even in semi-parse mode
+                                $is_symbol = ($comcode[$pos] === '$');
+                                $is_basic_symbol = $is_symbol && ((substr($comcode, $pos + 1, 3) == 'IMG') || (substr($comcode, $pos + 1, 8) == 'BASE_URL')); // Anyone may use, and must parse even in semi-parse mode
+                                $is_meta_symbol = $is_symbol && (substr($comcode, $pos + 1, 3) == 'SET');
+                                $must_evaluate_context = (in_tag_stack($tag_stack, ['url', 'img', 'media']));
+                                $is_directive = ($comcode[$pos] === '+');
+                                $is_lang_string = ($comcode[$pos] === '!');
                                 if ($comcode_dangerous || $is_basic_symbol) {
-                                    if ((!$in_code_tag) && ((!$semiparse_mode) || ($is_basic_symbol) || ((!$html_errors) && ($comcode[$pos] === '+')) || (in_tag_stack($tag_stack, ['url', 'img', 'media'])))) {
+                                    if ((!$in_code_tag) && ((!$semiparse_mode) || ($is_basic_symbol) || ($must_evaluate_context) || (/*Special encoding syntax*/(!$html_errors) && (($is_directive) || ($is_meta_symbol))))) {
                                         if ($GLOBALS['XSS_DETECT']) {
                                             ocp_mark_as_escaped($continuation);
                                         }
                                         $tag_output->attach($continuation);
                                         $continuation = '';
-                                        if ($comcode[$pos] === '+') { // Directive
+                                        if ($is_directive) { // Directive
                                             $p_end = strpos($comcode, '{+END}', $pos); // For the end position of the whole enclosed area excluding the closing directive tag
                                             if ($p_end !== false) {
                                                 $matches = [];
@@ -1020,7 +1029,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
 
                                                 $pos = $p_end + strlen($p_closer);
                                             }
-                                        } elseif ($comcode[$pos] === '!') { // Language string reference
+                                        } elseif ($is_lang_string) { // Language string reference
                                             $p_len = $pos;
                                             $balance = 1;
                                             while (($p_len < $len) && ($balance != 0)) {
@@ -1054,15 +1063,22 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                                 }
                                                 $p_len++;
                                             }
-                                            $ret = new Tempcode();
-                                            $less_pos = $pos - 1;
-                                            $ret->parse_from($comcode, $less_pos, $p_len);
+
+                                            if (($is_basic_symbol) || ($must_evaluate_context)) {
+                                                $ret = new Tempcode();
+                                                $less_pos = $pos - 1;
+                                                $ret->parse_from($comcode, $less_pos, $p_len);
+
+                                                /*if (!$in_html && !$in_semihtml) {     Actually, no, we must explicitly escape symbols in Comcode (except when there's a pre-Tempcode-pass of that Comcode / inside tag attributes / inside non-textual areas)
+                                                    if (strpos(substr($comcode, $less_pos, $p_len), '*') === false) {
+                                                        $ret = escape_html_tempcode($ret);
+                                                    }
+                                                }*/
+                                            } else {
+                                                $ret = make_string_tempcode('<meta name="cms-symbol" content="' . escape_html(substr($comcode, $pos - 1, $p_len - $pos + 1)) . '" />' . "\n");
+                                            }
+
                                             $pos = $p_len;
-                                            /*if (!$in_html && !$in_semihtml) {     Actually, no, we must explicitly escape symbols in Comcode (except when there's a pre-Tempcode-pass of that Comcode / inside tag attributes / inside non-textual areas)
-                                                if (strpos(substr($comcode, $less_pos, $p_len), '*') === false) {
-                                                    $ret = escape_html_tempcode($ret);
-                                                }
-                                            }*/
                                         }
                                         $differented = true;
                                         if (($pos <= $len) || (!$lax)) {
@@ -1077,6 +1093,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                         }
                                     }
                                 } else {
+                                    // Tempcode comment
                                     if (($comcode[$pos] === '$') && ($pos < $len - 2) && ($comcode[$pos + 1] === ',') && (strpos($comcode, '}', $pos) !== false)) {
                                         $pos = strpos($comcode, '}', $pos) + 1;
                                         $differented = true;
