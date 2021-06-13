@@ -32,7 +32,7 @@
 						{+START,IF_PASSED,IMAGES}
 							formatResult: format_select_image,
 						{+END}
-						dropdownAutoWidth: true,
+						dropdownAutoWidth: window.parent==window, /*Otherwise can overflow*/
 						containerCssClass: 'wide_field'
 					});
 				}

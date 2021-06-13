@@ -34,7 +34,7 @@
 					if (typeof $("#{NAME#/}").select2!='undefined')
 					{
 						$("#{NAME#/}").select2({
-							dropdownAutoWidth: true,
+							dropdownAutoWidth: window.parent==window, /*Otherwise can overflow*/
 							containerCssClass: 'wide_field'
 						});
 					}
