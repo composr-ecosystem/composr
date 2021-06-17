@@ -193,8 +193,11 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
+            $edit_link = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])));
+            $num_forums = integer_format($GLOBALS['SITE_DB']->query_select_value('f_forums', 'COUNT(*)', ['f_forum_grouping_id' => $row['id']]));
 
-            $result_entries->attach(results_entry([$row['c_title'], ($row['c_expanded_by_default'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
+            $is_expanded = ($row['c_expanded_by_default'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
+            $result_entries->attach(results_entry([$row['c_title'], $is_expanded, $num_forums, $edit_link], true));
         }
 
         $search_url = null;
