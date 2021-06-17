@@ -47,7 +47,13 @@ function load_function_signatures()
 
     if (!empty($GLOBALS['FLAG__API'])) {
         // Load up function info
-        $functions_file_path = file_exists($COMPOSR_PATH . '/data_custom/functions.bin') ? ($COMPOSR_PATH . '/data_custom/functions.bin') : 'functions.bin';
+        $functions_file_path = $COMPOSR_PATH . '/data_custom/functions.bin';
+        if (!is_file($functions_file_path)) {
+            $functions_file_path = '../../data_custom/functions.bin';
+        }
+        if (!is_file($functions_file_path)) {
+            $functions_file_path = 'functions.bin';
+        }
         $functions_file = file_get_contents($functions_file_path);
         $FUNCTION_SIGNATURES = unserialize($functions_file);
     }
