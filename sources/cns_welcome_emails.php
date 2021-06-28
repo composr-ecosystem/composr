@@ -22,22 +22,56 @@
  * Generate what we need to send/preview a welcome e-mail.
  *
  * @param  array $mail Welcome-email row
- * @param  ?array $member Member row (null: current member)
+ * @param  ?array $member Member/subscriber row (null: generating a preview: current member/subscriber based around such)
  * @return array A tuple: subject, message, message is-HTML, recipient name
  */
 function cns_prepare_welcome_email($mail, $member = null)
 {
-    if ($member === null) {
-        $member = $GLOBALS['FORUM_DRIVER']->get_member_row(get_member());
-    }
-
     $newsletter_style = (($mail['w_newsletter'] !== null) && (addon_installed('newsletter')));
+
+    if ($member === null) {
+        $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row(get_member());
+        if ($newsletter_style) {
+            $member = array(
+                'id' => -1,
+                'email' => $member_row['m_email_address'],
+                'join_time' => $member_row['m_join_time'],
+                'code_confirm' => 0,
+                'the_password' => '',
+                'pass_salt' => '',
+                'language' => $member_row['m_language'],
+                'n_forename' => $member_row['m_username'],
+                'n_surname' => '',
+            );
+        } else {
+            $member = $member_row;
+        }
+    }
 
     require_lang('cns');
 
-    $subject = get_translated_text($mail['w_subject'], null, get_lang($member['id']));
+    // Load up member metadata
+    if ($newsletter_style) {
+        $forename = $member['n_forename'];
+        $surname = $member['n_surname'];
+        $name = trim($forename . ' ' . $surname);
+        require_lang('newsletter');
+        if ($name == '') {
+            $name = do_lang('NEWSLETTER_SUBSCRIBER_DEFAULT_NAME', get_site_name());
+        }
+        $email_address = $member['email'];
+        $lang = $member['language'];
+    } else {
+        $forename = '';
+        $surname = '';
+        $name = $GLOBALS['FORUM_DRIVER']->get_displayname($member['m_username']);
+        $email_address = $member['m_email_address'];
+        $lang = get_lang($member['id']);
+    }
 
-    $message = get_translated_text($mail['w_text'], null, get_lang($member['id']));
+    $subject = get_translated_text($mail['w_subject'], null, $lang);
+
+    $message = get_translated_text($mail['w_text'], null, $lang);
 
     // Special syntax for referring to specific date-times up to 100 hours into the future
     $matches = array();
@@ -50,32 +84,20 @@ function cns_prepare_welcome_email($mail, $member = null)
     $is_html = false;
     if (addon_installed('newsletter')) {
         require_lang('newsletter');
-        $_message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '8ffc0470c6e457cee14c413c10f7a90f', 'CONTENT' => $message, 'LANG' => get_lang($member['id'])), null, false, null, '.txt', 'text');
+        $_message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '8ffc0470c6e457cee14c413c10f7a90f', 'CONTENT' => $message, 'LANG' => $lang), null, false, null, '.txt', 'text');
         if (strpos($_message_wrapped->evaluate(), '<html') !== false) {
             $is_html = true;
             $message_parsed = comcode_to_tempcode($message, null, true);
-            $_message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '8ffc0470c6e457cee14c413c10f7a90g', 'CONTENT' => $message_parsed, 'LANG' => get_lang($member['id'])), null, false, null, '.txt', 'text');
+            $_message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '8ffc0470c6e457cee14c413c10f7a90g', 'CONTENT' => $message_parsed, 'LANG' => $lang), null, false, null, '.txt', 'text');
         }
-        $message = $_message_wrapped->evaluate(get_lang($member['id']));
-    }
-
-    // Load up member metadata
-    if ($newsletter_style) {
-        $forename = $member['n_forename'];
-        $surname = $member['n_surname'];
-        $name = trim($forename . ' ' . $surname);
-        require_lang('newsletter');
-        if ($name == '') {
-            $name = do_lang('NEWSLETTER_SUBSCRIBER_DEFAULT_NAME', get_site_name());
-        }
-    } else {
-        $forename = '';
-        $surname = '';
-        $name = $GLOBALS['FORUM_DRIVER']->get_displayname($member['m_username']);
+        $message = $_message_wrapped->evaluate($lang);
     }
 
     // Do newsletter-style variable substitution
     if (addon_installed('newsletter')) {
+        require_code('newsletter');
+        $extra_mappings = $member;
+
         if ($newsletter_style) {
             $sendid = 'n' . strval($member['id']);
             require_code('crypt');
@@ -83,22 +105,21 @@ function cns_prepare_welcome_email($mail, $member = null)
         } else {
             $sendid = 'w' . strval($member['id']);
             $hash = '';
+
+            if (get_forum_type() == 'cns') {
+                require_code('cns_members');
+                $extra_mappings += cns_get_custom_field_mappings($member['id']);
+            }
         }
 
-        require_code('newsletter');
-        $extra_mappings = $member;
-        if (get_forum_type() == 'cns') {
-            require_code('cns_members');
-            $extra_mappings += cns_get_custom_field_mappings($member['id']);
-        }
-        $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $member['m_email_address'], $sendid, $hash, @array_map('strval', $extra_mappings));
+        $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $email_address, $sendid, $hash, @array_map('strval', $extra_mappings));
     }
 
     // Process for Tempcode, if in HTML format (as Comcode processing will NOT happen in mail_wrap for HTML, and since do_template we substituted in our final variable values for Tempcode logic to do its work on)
     if ($is_html) {
         require_code('tempcode_compiler');
         $temp = template_to_tempcode($message);
-        $message = $temp->evaluate(get_lang($member['id']));
+        $message = $temp->evaluate($lang);
     }
 
     return array($subject, $message, $is_html, $name);
