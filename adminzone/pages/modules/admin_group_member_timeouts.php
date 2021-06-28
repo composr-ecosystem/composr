@@ -151,7 +151,7 @@ class Module_admin_group_member_timeouts
                 'USERNAME' => $username,
                 'MEMBER_ID' => strval($row['member_id']),
                 'GROUP_ID' => strval($row['group_id']),
-                'DATE_INPUT' => form_input_date(do_lang_tempcode('DATE'), new Tempcode(), 'gmt_time_' . strval($i), true, false, true, $row['timeout'], 10, null, null),
+                'DATE_INPUT' => form_input_date(do_lang_tempcode('DATE'), new Tempcode(), 'gmt_time_' . strval($i), true, false, true, $row['timeout'], 10),
             );
         }
 
@@ -167,7 +167,7 @@ class Module_admin_group_member_timeouts
             'TITLE' => $this->title,
             'TIMEOUTS' => $timeouts,
             'GROUPS' => $usergroups,
-            'DATE_INPUT' => form_input_date(do_lang_tempcode('DATE'), new Tempcode(), 'gmt_time_new', true, false, true, null, 10, null, null),
+            'DATE_INPUT' => form_input_date(do_lang_tempcode('DATE'), new Tempcode(), 'gmt_time_new', true, false, true, null, 10),
             'URL' => $url,
             'PAGINATION' => $pagination,
             'PING_URL' => $ping_url,

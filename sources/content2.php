@@ -173,14 +173,14 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
         $add_time_field = in_array('add_time', $fields_to_skip) ? null : $info['add_time_field'];
         if (!is_null($add_time_field)) {
             $add_time = is_null($content_row) ? null : $content_row[$add_time_field];
-            $fields->attach(form_input_date(do_lang_tempcode('ADD_TIME'), do_lang_tempcode('DESCRIPTION_META_ADD_TIME'), 'meta_add_time', !is_null($content_row), is_null($content_row), true, $add_time, 40, intval(date('Y')) - 20, null));
+            $fields->attach(form_input_date(do_lang_tempcode('ADD_TIME'), do_lang_tempcode('DESCRIPTION_META_ADD_TIME'), 'meta_add_time', !is_null($content_row), is_null($content_row), true, $add_time, 40, intval(date('Y')) - 20));
         }
 
         if (!is_null($content_id)) {
             $edit_time_field = in_array('edit_time', $fields_to_skip) ? null : $info['edit_time_field'];
             if (!is_null($edit_time_field)) {
                 $edit_time = is_null($content_row) ? null : (is_null($content_row[$edit_time_field]) ? time() : max(time(), $content_row[$edit_time_field]));
-                $fields->attach(form_input_date(do_lang_tempcode('EDIT_TIME'), do_lang_tempcode('DESCRIPTION_META_EDIT_TIME'), 'meta_edit_time', false, is_null($edit_time), true, $edit_time, 10, null, null));
+                $fields->attach(form_input_date(do_lang_tempcode('EDIT_TIME'), do_lang_tempcode('DESCRIPTION_META_EDIT_TIME'), 'meta_edit_time', false, is_null($edit_time), true, $edit_time, -10));
             }
         }
 

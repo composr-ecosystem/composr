@@ -800,7 +800,7 @@ class Module_admin_newsletter extends Standard_crud_module
         if (is_null($cutoff_time)) {
             $cutoff_time = time() - 60 * 60 * 24 * 365 * 3;
         }
-        $fields->attach(form_input_date(do_lang_tempcode('CUTOFF_DATE'), do_lang_tempcode('DESCRIPTION_CUTOFF_DATE'), 'cutoff', true, false, true, $cutoff_time, 3, intval(date('Y')) - 3, null));
+        $fields->attach(form_input_date(do_lang_tempcode('CUTOFF_DATE'), do_lang_tempcode('DESCRIPTION_CUTOFF_DATE'), 'cutoff', true, false, true, $cutoff_time, -3));
 
         $fields->attach(form_input_tick(do_lang_tempcode('EMBED_FULL_ARTICLES'), do_lang_tempcode('DESCRIPTION_EMBED_FULL_ARTICLES'), 'in_full', post_param_integer('in_full', 0) == 1));
 

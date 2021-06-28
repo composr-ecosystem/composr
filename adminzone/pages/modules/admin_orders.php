@@ -748,8 +748,8 @@ class Module_admin_orders
         $end_hour = $start_hour;
         $end_minute = $start_minute;
 
-        $fields->attach(form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'start_date', true, false, true, array($start_minute, $start_hour, $start_month, $start_day, $start_year)));
-        $fields->attach(form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'end_date', true, false, true, array($end_minute, $end_hour, $end_month, $end_day, $end_year)));
+        $fields->attach(form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'start_date', true, false, true, array($start_minute, $start_hour, $start_month, $start_day, $start_year), -10));
+        $fields->attach(form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'end_date', true, false, true, array($end_minute, $end_hour, $end_month, $end_day, $end_year), -10));
 
         return do_template('FORM_SCREEN', array(
             '_GUID' => 'e2e5097798c963f4977ba22b50ddf2f3',
