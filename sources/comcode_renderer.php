@@ -1164,9 +1164,10 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
             }
 
             push_output_state();
-            $temp = request_page($codename, false, $zone, null, true);
+            $page_missing = false;
+            $temp = request_page($codename, false, $zone, null, true, false, $page_missing);
             restore_output_state();
-            if ($temp->is_empty()) {
+            if ($page_missing) {
                 $temp_tpl = do_template('WARNING_BOX', [
                     '_GUID' => '1d617fd24b632640dddeeadd8432d7a9',
                     'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'include', hyperlink(build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $codename], get_module_zone('cms_comcode_pages')), $zone . ':' . $codename, false, true)),

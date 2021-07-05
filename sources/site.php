@@ -1409,9 +1409,10 @@ function write_static_cache_file(string $fast_cache_path, string $out_evaluated,
  * @param  ?ID_TEXT $page_type The type of page - for if you know it (null: don't know it)
  * @param  boolean $being_included Whether the page is being included from another
  * @param  boolean $redirect_check Whether to check for redirects (normally you would)
+ * @param  boolean $page_missing Whether the page is missing (returned by reference)
  * @return Tempcode The page
  */
-function request_page(string $codename, bool $required, ?string $zone = null, ?string $page_type = null, bool $being_included = false, bool $redirect_check = true) : object
+function request_page(string $codename, bool $required, ?string $zone = null, ?string $page_type = null, bool $being_included = false, bool $redirect_check = true, bool &$page_missing = false) : object
 {
     global $SITE_INFO;
 
@@ -1557,7 +1558,8 @@ function request_page(string $codename, bool $required, ?string $zone = null, ?s
     }
 
     $REQUEST_PAGE_NEST_LEVEL--;
-    return new Tempcode(); // should never get here
+    $page_missing = true;
+    return new Tempcode();
 }
 
 /**
