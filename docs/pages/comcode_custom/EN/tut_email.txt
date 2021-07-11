@@ -65,12 +65,14 @@ There are two separate issues for us to consider when it comes to Composr:
 1) Whether we will want (i) Composr's SMTP-connection code to run, or (ii) PHP's SMTP-connection/local-agent code.
 2) Which SMTP server PHP or Composr is connecting to. Neither Composr nor PHP include an actual SMTP server, so you're always going to be configuring one of them to connect to an actual SMTP server. The issue is whether that is your server's own SMTP server (assuming you have one) or whether it is another one (usually your hosting provider's). If you're on a Linux/UNIX server you have no choice but to use your server's own SMTP server if using PHP's SMTP-connection code because the local-agent is used rather than a configured SMTP server.
 
-It is usually best to rely on PHP's SMTP-connection code, so it can be managed on a server level. However there are a few situations where this is not workable:
+It is usually best to rely on PHP's SMTP-connection/local-agent code, so it can be managed on a server level. However there are a few situations where this is not workable:
 1) PHP doesn't support SMTP authentication, so if the only e-mail server available requires this, and you're on Windows (which uses SMTP not a local-agent to connect to the SMTP server), you'll need to use Composr's SMTP-connection code (which does support authentication).
-2) If you're on Linux and the server doesn't have an SMTP server on it.
+2) If you're on Linux and the server doesn't have an SMTP server on it (including no SMTP relay).
 3) If the PHP mail configuration is misconfigured or faulty and you can't repair it (see below).
 
 Composr's SMTP-connection code is configured from the Configuration module (Admin Zone > Setup > Configuration > Site options). If the SMTP server hostname is left blank (the default), Composr relies on PHP's SMTP-connection code.
+
+Note that Composr doesn't support SSL/TLS SMTP out-of-the-box due to the amount of fragile code this would involve. For this you need to install the [tt]better_mail[/tt] addon, which enables SSL/TLS for the common SSL/TLS ports. It is common now for SMTP servers to insist on SSL/TLS if SMTP authentication is used.
 
 [title="2"]Avoid getting spam-blocked[/title]
 
