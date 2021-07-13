@@ -64,7 +64,7 @@
 					{+END}{+END}
 
 					{$,Associated with the SKIP_NAVIGATION link defined further up}
-					<a name="maincontent"></a>
+					<a id="maincontent"></a>
 
 					{$,The main site, whatever 'page' is being loaded}
 					{MIDDLE}
