@@ -23,8 +23,8 @@ Header set X-Content-Type-Options "nosniff"
 <IfModule mod_expires.c>
 <FilesMatch "\.(css|js)$">
 ExpiresActive On
-ExpiresByType application/javascript "now plus 1 months"
-ExpiresByType text/css "now plus 1 months"
+ExpiresByType application/javascript "access plus 12 months"
+ExpiresByType text/css "access plus 12 months"
 </FilesMatch>
 </IfModule>
 

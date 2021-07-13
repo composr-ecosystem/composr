@@ -1,10 +1,10 @@
 <IfModule mod_expires.c>
 ExpiresActive On
-ExpiresByType image/gif "access plus 1 months"
-ExpiresByType image/jpg "access plus 1 months"
-ExpiresByType image/jpeg "access plus 1 months"
-ExpiresByType image/png "access plus 1 months"
-ExpiresByType image/vnd.microsoft.icon "access plus 1 months"
-ExpiresByType image/x-icon "access plus 1 months"
-ExpiresByType image/ico "access plus 1 months"
+ExpiresByType image/gif "access plus 12 months"
+ExpiresByType image/jpg "access plus 12 months"
+ExpiresByType image/jpeg "access plus 12 months"
+ExpiresByType image/png "access plus 12 months"
+ExpiresByType image/vnd.microsoft.icon "access plus 12 months"
+ExpiresByType image/x-icon "access plus 12 months"
+ExpiresByType image/ico "access plus 12 months"
 </IfModule>
