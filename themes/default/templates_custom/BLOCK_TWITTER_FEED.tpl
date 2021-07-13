@@ -52,7 +52,7 @@
 		<p class="webstandards-checker-off">
 			{+START,IF,{$IS_STAFF}}
 				{+START,IF_NON_EMPTY,{USER_SCREEN_NAME}}
-				   <strong>Twitter Name:</strong> <a href="https://www.twitter.com/{USER_SCREEN_NAME&*}" title="@{USER_SCREEN_NAME*} {!LINK_NEW_WINDOW}" target="_blank">{USER_SCREEN_NAME*}</a><br />
+				   <strong>Twitter Name:</strong> <a rel="noopener" href="https://www.twitter.com/{USER_SCREEN_NAME&*}" title="@{USER_SCREEN_NAME*} {!LINK_NEW_WINDOW}" target="_blank">{USER_SCREEN_NAME*}</a><br />
 				{+END}
 				<strong>Error:</strong> {TWITTER_ERROR`}<br />
 				You are seeing the block error message(s) because you are staff.<br />

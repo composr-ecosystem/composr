@@ -8,7 +8,7 @@
 	</div>
 
 	<div>
-		<a href="https://compo.sr/features.htm" class="btn btn-lg btn-outline-light">{LINK1_TEXT}</a>
-		<a href="https://compo.sr/forum/forumview.htm" class="btn btn-lg btn-light">{LINK2_TEXT}</a>
+		<a rel="noopener" href="https://compo.sr/features.htm" class="btn btn-lg btn-outline-light">{LINK1_TEXT}</a>
+		<a rel="noopener" href="https://compo.sr/forum/forumview.htm" class="btn btn-lg btn-light">{LINK2_TEXT}</a>
 	</div>
 </div>

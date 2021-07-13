@@ -1,1 +1,1 @@
-<a data-cms-confirm-click="{!SUBSCRIPTION_CANCEL_WARNING*,{!PAYMENT_GATEWAY_paypal}}" href="https://history.paypal.com/cgi-bin/webscr?cmd=_profile-recurring-payments&amp;encrypted_profile_id={PURCHASE_ID*}">{!SUBSCRIPTION_CANCEL}</a>
+<a rel="noopener" data-cms-confirm-click="{!SUBSCRIPTION_CANCEL_WARNING*,{!PAYMENT_GATEWAY_paypal}}" href="https://history.paypal.com/cgi-bin/webscr?cmd=_profile-recurring-payments&amp;encrypted_profile_id={PURCHASE_ID*}">{!SUBSCRIPTION_CANCEL}</a>
