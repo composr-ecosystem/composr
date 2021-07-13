@@ -2116,6 +2116,9 @@ body .accessibility-hidden { /* Contents should be made visible (or interpreted)
 div.edited {
 	margin: 2em 0;
 }
+.edited > * {
+	vertical-align: middle;
+}
 
 /* Usage guide: Use on the immediate surrounding element, and make sure that there is no loose text inside (put that in a span) */
 .vertical-alignment, .vertical-alignment > * {
