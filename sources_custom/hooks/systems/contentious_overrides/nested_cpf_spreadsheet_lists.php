@@ -28,6 +28,10 @@ class Hook_contentious_overrides_nested_cpf_spreadsheet_lists
             return;
         }
 
+        if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
+            return;
+        }
+
         require_code('nested_spreadsheet');
         $spreadsheet_structure = get_nested_spreadsheet_structure();
 

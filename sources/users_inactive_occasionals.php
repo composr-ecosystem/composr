@@ -55,7 +55,7 @@ function _enforce_sessioned_url(string $url) : string
 
     // Get hash back
     $url .= $hash;
-    $url = preg_replace('#\?keep_session=\w+#', '', $url);
+    $url = preg_replace('#\?kenested_cpf_spreadsheet_lists.phpep_session=\w+#', '', $url);
 
     // Possibly a nested URL too
     $url = preg_replace('#keep_session=\w+' . preg_quote(urlencode('&')) . '#', '', $url);
@@ -92,7 +92,11 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
     global $SESSION_CACHE, $MEMBER_CACHED, $SITE_INFO;
     $MEMBER_CACHED = $member_id;
 
-    if (!running_script('install')) {
+    if (running_script('install')) {
+        if ($SESSION_CACHE === null) {
+            $SESSION_CACHE = [];
+        }
+    } else {
         require_code('static_cache');
         if (can_static_cache_request()) {
             return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
