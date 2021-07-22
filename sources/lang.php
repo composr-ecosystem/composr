@@ -825,13 +825,15 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
                     } elseif (($plural_or_vowel_check) && (substr($out[$at - 2], 0, 2) === '1|')) {
                         $exploded = explode('|', $out[$at - 2]);
                         $_parameter = $parameter1->evaluate();
-                        $_parameter_denum = ((isset($_parameter[0])) && (is_numeric($_parameter[0]))) ? $_parameter[0] : $_parameter;
-                        $ret->attach((in_array(is_numeric($_parameter_denum) ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
+                        $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $_parameter) != 0);
+                        $_parameter_denum = $numeric ? str_replace(',', '', $_parameter) : $_parameter;
+                        $ret->attach((in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
                     } elseif (($plural_or_vowel_check) && (substr($out[$at - 2], 0, 2) === '2|')) {
                         $exploded = explode('|', $out[$at - 2]);
                         $_parameter = $parameter2->evaluate();
-                        $_parameter_denum = str_replace(',', '', $_parameter);
-                        $ret->attach((in_array(is_numeric($_parameter_denum) ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
+                        $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $_parameter) != 0);
+                        $_parameter_denum = $numeric ? str_replace(',', '', $_parameter) : $_parameter;
+                        $ret->attach((in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
                     }
                 }
                 $ret->attach($bit[0]);
@@ -857,8 +859,9 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
 
             $out = str_replace('{1}', $parameter1, $out);
             if ($plural_or_vowel_check) {
-                $_parameter_denum = str_replace(',', '', $parameter1);
-                $out = preg_replace('#\{1\|(.*)\|(.*)\}#U', (in_array(is_numeric($_parameter_denum) ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter1, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
+                $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $parameter1) != 0);
+                $_parameter_denum = $numeric ? str_replace(',', '', $parameter1) : $parameter1;
+                $out = preg_replace('#\{1\|(.*)\|(.*)\}#U', (in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter1, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
             }
             if (($XSS_DETECT) && (ocp_is_escaped($parameter1))) {
                 ocp_mark_as_escaped($out);
@@ -875,8 +878,9 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
             }
             $out = str_replace('{2}', $parameter2, $out);
             if ($plural_or_vowel_check) {
-                $_parameter_denum = str_replace(',', '', $parameter2);
-                $out = preg_replace('#\{2\|(.*)\|(.*)\}#U', (in_array(is_numeric($_parameter_denum) ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter2, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
+                $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $parameter2) != 0);
+                $_parameter_denum = $numeric ? str_replace(',', '', $parameter2) : $parameter2;
+                $out = preg_replace('#\{2\|(.*)\|(.*)\}#U', (in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter2, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
             }
             if (($XSS_DETECT) && (ocp_is_escaped($parameter2)) && ($escaped)) {
                 ocp_mark_as_escaped($out);
@@ -897,8 +901,9 @@ function _do_lang(string $codename, $parameter1 = null, $parameter2 = null, $par
                     }
                     $out = str_replace('{' . strval($i) . '}', $parameter, $out);
                     if ($plural_or_vowel_check) {
-                        $_parameter_denum = str_replace(',', '', $parameter);
-                        $out = preg_replace('#\{' . strval($i) . '\|(.*)\|(.*)\}#U', (in_array(is_numeric($_parameter_denum) ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
+                        $numeric = (preg_match('#^([\d,]+|' . implode('|', [do_lang('INTEGER_UNITS_billions', '[\d,]+'), do_lang('INTEGER_UNITS_millions', '[\d,]+'), do_lang('INTEGER_UNITS_thousands', '[\d,]+')]) . ')$#', $parameter) != 0);
+                        $_parameter_denum = $numeric ? str_replace(',', '', $parameter) : $parameter;
+                        $out = preg_replace('#\{' . strval($i) . '\|(.*)\|(.*)\}#U', (in_array($numeric ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($parameter, 0, 1)), $non_plural_non_vowel)) ? '\\1' : '\\2', $out);
                     }
                     if (($XSS_DETECT) && (ocp_is_escaped($parameter)) && ($escaped)) {
                         ocp_mark_as_escaped($out);
