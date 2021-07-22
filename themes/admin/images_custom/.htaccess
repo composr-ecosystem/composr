@@ -7,7 +7,7 @@ AddType text/plain php
 php_value engine off
 </IfModule>
 
-<IfModule mod_php8.c>
+<IfModule mod_php.c>
 php_value engine off
 </IfModule>
 
