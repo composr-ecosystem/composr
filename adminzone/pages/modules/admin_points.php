@@ -244,7 +244,7 @@ class Module_admin_points
                 'GET' => true,
             ]);
 
-            $result_entries->attach(results_entry([$date, integer_format($myrow['amount'], 0), $from, $to, $reason, $delete], true));
+            $result_entries->attach(results_entry([$date, integer_format($myrow['amount']), $from, $to, $reason, $delete], true));
         }
 
         $results_table = results_table(do_lang_tempcode('GIFT_TRANSACTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('GIFT_POINTS_LOG')));
@@ -276,7 +276,7 @@ class Module_admin_points
         if ($confirm == 0) {
             $_sender_id = (is_guest($sender_id)) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
             $_recipient_id = (is_guest($recipient_id)) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($recipient_id);
-            $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount, 0)), escape_html($_sender_id), escape_html($_recipient_id));
+            $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount)), escape_html($_sender_id), escape_html($_recipient_id));
             return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                 'TITLE' => $this->title,
@@ -314,7 +314,7 @@ class Module_admin_points
         $left = available_points($member_id);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        $text = do_lang_tempcode('MEMBER_HAS_BEEN_CHARGED', escape_html($username), escape_html(integer_format($amount, 0)), escape_html(integer_format($left, 0)));
+        $text = do_lang_tempcode('MEMBER_HAS_BEEN_CHARGED', escape_html($username), escape_html(integer_format($amount)), escape_html(integer_format($left)));
 
         // Show it worked / Refresh
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);

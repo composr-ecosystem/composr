@@ -52,7 +52,7 @@ foreach ($gifts as $gift) {
 
     $_gifts[] = [
         '_AMOUNT' => strval($amount),
-        'AMOUNT' => integer_format($amount, 0),
+        'AMOUNT' => integer_format($amount),
 
         'FROM_NAME' => $from_name,
         'FROM_ID' => strval($gift['gift_from']),
