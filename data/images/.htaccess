@@ -7,4 +7,6 @@ ExpiresByType image/png "access plus 12 months"
 ExpiresByType image/vnd.microsoft.icon "access plus 12 months"
 ExpiresByType image/x-icon "access plus 12 months"
 ExpiresByType image/ico "access plus 12 months"
+ExpiresByType image/svg+xml "access plus 12 months"
+ExpiresByType image/webp "access plus 12 months"
 </IfModule>

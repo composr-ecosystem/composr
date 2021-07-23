@@ -91,12 +91,11 @@ class standard_dir_files_test_set extends cms_test_case
             '61e312cb9d1db877826e8aa77c282b2a' => true, // _tests/simpletest/test/site/.htaccess
             'f30780cfeab05516183f1b42e174b700' => true, // _tests/simpletest/test/site/protected/.htaccess
             'de9b5b7778090cf4376839b6aebb9f45' => true, // adminzone/.htaccess
-            '91be988ebb00e9d7d12057fac2035236' => true, // data*/images/.htaccess
+            '205c253d00d3eac70ce61ba26612b27f' => true, // data*/images/.htaccess, uploads/.htaccess
             '8a55e7d3c6651736659f3bc5959c16dd' => true, // data_custom/.htaccess
             '362eb392e7da973c77733262cf1d0e90' => true, // sources/.htaccess
-            'd894eb069f1da57effa764c1967293af' => true, // themes/*/images*/.htaccess
+            'bb091e894176e79224ddf66e45558e53' => true, // themes/*/images*/.htaccess
             '5b7e3044b5aac9ba5955612da8b21e29' => true, // themes/*/templates_cached/.htaccess
-            '94da4eb1c3cbab22c84d4fd9734da2ad' => true, // uploads/.htaccess
             'af733954322951529e9b3b9c52362352' => true, // uploads/*/.htaccess
             '351535838b282a00a8ceb36fb37b72a1' => true, // uploads/incoming/.htaccess
             '35524c96fbfc2361a6dff117f3a19bc8' => true, // uploads/website_specific/compo.sr/.htaccess
