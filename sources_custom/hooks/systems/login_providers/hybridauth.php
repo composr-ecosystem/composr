@@ -34,6 +34,10 @@ class Hook_login_provider_hybridauth
             return $member_id;
         }
 
+        if (!function_exists('curl_init')) {
+            return $member_id;
+        }
+
         // Too early in bootstrapping
         if (!function_exists('require_lang')) {
             return $member_id;

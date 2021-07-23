@@ -30,6 +30,10 @@ class Hook_oembed_hybridauth_admin
             return null;
         }
 
+        if (!function_exists('curl_init')) {
+            return null;
+        }
+
         require_code('hybridauth_admin');
         require_lang('hybridauth');
 

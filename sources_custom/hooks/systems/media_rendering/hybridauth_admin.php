@@ -79,6 +79,10 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
             return MEDIA_RECOG_PRECEDENCE_NONE;
         }
 
+        if (!function_exists('curl_init')) {
+            return MEDIA_RECOG_PRECEDENCE_NONE;
+        }
+
         if (strpos($url, '://') === false) {
             return MEDIA_RECOG_PRECEDENCE_NONE;
         }

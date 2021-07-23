@@ -21,6 +21,10 @@ class Hook_oauth_screen_sup_hybridauth_admin
             return [];
         }
 
+        if (!function_exists('curl_init')) {
+            return [];
+        }
+
         $before_type_strictness = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
         $before_xss_detect = ini_get('ocproducts.xss_detect');

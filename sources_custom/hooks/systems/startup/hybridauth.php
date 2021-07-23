@@ -24,6 +24,10 @@ class Hook_startup_hybridauth
             return;
         }
 
+        if (!function_exists('curl_init')) {
+            return;
+        }
+
         require_code('hybridauth');
         initiate_hybridauth_session_state();
     }

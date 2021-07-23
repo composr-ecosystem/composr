@@ -31,6 +31,10 @@ class Hook_cron_hybridauth_admin
             return null;
         }
 
+        if (!function_exists('curl_init')) {
+            return null;
+        }
+
         return [
             'label' => 'Hybridauth token maintenance',
             'num_queued' => null,

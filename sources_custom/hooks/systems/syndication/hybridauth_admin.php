@@ -37,6 +37,10 @@ class Hook_syndication_hybridauth_admin
             return null;
         }
 
+        if (!function_exists('curl_init')) {
+            return null;
+        }
+
         $syndicate_content_to = $syndication_context['syndicate_content_to'];
         if (empty($syndicate_content_to)) {
             return;
