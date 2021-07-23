@@ -32,7 +32,7 @@ Masonry,,https://github.com/desandro/masonry,No,Yes,Re-sync regularly,9th Apr 20
 MediaElement.js,,https://github.com/mediaelement/mediaelement,Yes,Yes,Re-sync regularly,30th Mar 2020,4.2.16,IE11+,N/A,N/A,From 'build' directory. Files strewn around.
 modalwindow.js,,,No,Yes,No action,N/A,N/A,N/A,N/A,N/A,Original website dead
 Modernizr,,https://modernizr.com/,Yes,Yes,Re-sync regularly,30th Mar 2020,3.6.0,N/A,N/A,N/A,
-Osano Cookie Consent,,https://github.com/osano/cookieconsent,Yes,Yes,Re-sync regularly,29th Mar 2020,4,IE10+,N/A,N/A,From build directory
+Osano Cookie Consent,,https://github.com/osano/cookieconsent,Yes,Yes,Re-sync regularly,22nd Jul 2021,4,IE10+,N/A,N/A,From build directory
 PDF.js,,https://github.com/mozilla/pdf.js,Yes,No,Re-sync regularly,30th Mar 2020,2.4.456,IE11+,N/A,N/A,Disable print/download buttons each time in viewer.html. Don't include web/compressed.tracemonkey-pldi-09.pdf
 PHP,php,https://github.com/php,Yes,N/A,"Maintain our github fork, re-sync if our origin version is no longer meeting our minimum requirements",20th Oct 2020,8.0.0 RC2,N/A,N/A,N/A,
 php-mail-signature,,https://github.com/louisameline/php-mail-signature,Yes,Yes,Re-sync regularly,N/A,1.2,PHP 5.3+,N/A,N/A,"DKIM support. Lots of modifications, so must re-sync by hand from commits"
