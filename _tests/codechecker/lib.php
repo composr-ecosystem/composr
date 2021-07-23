@@ -51,6 +51,16 @@ function unixify_line_format($in)
     return str_replace("\r", "\n", $in);
 }
 
+function cms_strtolower_ascii($in)
+{
+    return strtolower($in);
+}
+
+function cms_mb_strtolower($in)
+{
+    return strtolower($in);
+}
+
 function object_factory($class, $failure_ok = false, $parameters = [])
 {
     return new $class(...$parameters);
