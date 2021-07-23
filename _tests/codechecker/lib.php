@@ -61,6 +61,11 @@ function cms_mb_strtolower($in)
     return strtolower($in);
 }
 
+function cms_preg_match_all_safe($in1, $in2, &$in3)
+{
+    return preg_match_all($in1, $in2, $in3);
+}
+
 function object_factory($class, $failure_ok = false, $parameters = [])
 {
     return new $class(...$parameters);
