@@ -4657,8 +4657,10 @@ function website_creation_time() : int
  */
 function is_maintained(string $code) : bool
 {
-    static $cache = [];
-    if (empty($cache)) {
+    static $cache = null;
+    if ($cache === null) {
+        $cache = [];
+
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get('data/maintenance_status.csv');
