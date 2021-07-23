@@ -2083,8 +2083,7 @@ body .accessibility-hidden { /* Contents should be made visible (or interpreted)
 
 /* Commonly used to indicate there is no content to display */
 .nothing-here, .more-here {
-	margin: 1.5em;
-	margin-left: 10px;
+	margin: 1.5em 0;
 }
 
 .nothing-here::before,
@@ -2886,6 +2885,9 @@ a.toggleable-tray-button { /* Override above for toggleable-tray-button */
 	font-weight: {$GET,font_weight_medium};
 	text-decoration: none;
 	/*color: inherit;*/
+}
+
+.toggleable-tray-button, .toggleable-tray-button + span {
 	cursor: pointer;
 }
 

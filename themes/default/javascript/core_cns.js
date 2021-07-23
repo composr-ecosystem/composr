@@ -33,19 +33,13 @@
 
                         // Give DOM some time to load, and protect against errors
                         window.setTimeout(function () {
+                            // Then let subtab specified in URL get called up
                             $cms.ui.findUrlTab();
                         }, 0);
                     });
                 };
             }
         });
-
-        if (this.tabs.length > 1) {
-            // we do not want it to scroll down
-            var oldHash = window.location.hash;
-            window.location.hash = '#';
-            $cms.ui.findUrlTab(oldHash);
-        }
     }
 
     $cms.templates.cnsGuestBar = function cnsGuestBar(params, container) {

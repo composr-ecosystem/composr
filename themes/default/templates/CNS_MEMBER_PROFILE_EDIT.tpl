@@ -33,7 +33,6 @@
 				{+START,LOOP,TABS}
 					{+START,IF,{$GT,{TABS},1}}
 					<div aria-labeledby="t-edit--{$LCASE,{TAB_CODE|*}}" role="tabpanel" id="g-edit--{$LCASE*,{TAB_CODE|}}" style="display: {$?,{TAB_FIRST},block,none}">
-						<a id="tab--edit--{$LCASE,{TAB_CODE|*}}"></a>
 					{+END}
 
 						{+START,IF_NON_EMPTY,{TAB_TEXT}}

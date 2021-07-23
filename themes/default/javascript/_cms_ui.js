@@ -133,15 +133,12 @@
         fromUrl = Boolean(fromUrl);
         automated = Boolean(automated);
 
-        if (!fromUrl) {
-            var tabMarker = $dom.$('#tab--' + tab.toLowerCase());
-            if (tabMarker) {
-                // For URL purposes, we will change URL to point to tab
-                // HOWEVER, we do not want to cause a scroll so we will be careful
-                tabMarker.id = '';
-                window.location.hash = '#tab--' + tab.toLowerCase();
-                tabMarker.id = 'tab--' + tab.toLowerCase();
-            }
+        if ((!fromUrl) && (window.location.hash != '#tab--' + tab)) {
+            // For URL purposes, we will change URL to point to tab,
+            // HOWEVER, we do not want to cause a scroll so we will be careful just in case this hash exists as an ID in the HTML.
+            // findUrlTab will navigate us near the scroll position of the real anchor (<id>-<tab>) and expand the tab for it first.
+
+            history.replaceState({}, '', '#tab--' + tab);
         }
 
         var tabs = [], i, element;
@@ -216,18 +213,33 @@
     $cms.ui.findUrlTab = function findUrlTab(hash) {
         hash = strVal(hash) || window.location.hash;
 
-        if (hash.replace(/^#!?/, '') !== '') {
+        if (hash.match(/^#tab--/, '') !== '') { // If there is a tab hash in the URL
             var tab = hash.replace(/^#/, '').replace(/^tab--/, '');
 
-            if ($dom.$id('g-' + tab)) {
-                $cms.ui.selectTab('g', tab);
-            } else if ((tab.indexOf('--') !== -1) && ($dom.$id('g-' + tab.substr(0, tab.indexOf('--'))))) {
-                var old = hash;
-                $cms.ui.selectTab('g', tab.substr(0, tab.indexOf('--')));
-                window.location.hash = old;
+            var tabMarker = $dom.$id('g-' + tab);
+            if (tabMarker) { // If the hash exists as a tab (even if it's a subtab)
+                $cms.ui.selectTab('g', tab, true);
+
+                if ((window.scrollY < 20) && (tab.indexOf('--') == -1)) {
+                    window.scrollTo(0, $dom.findPosY(tabMarker) - 40);
+                }
+            } else if ((tab.indexOf('--') !== -1) && ($dom.$id('g-' + tab.substr(0, tab.indexOf('--'))))) { // If the prefix of the hash exists as a tab
+                var tabLevel1 = tab.substr(0, tab.indexOf('--'));
+                $cms.ui.selectTab('g', tabLevel1, true); // Main tab has to call findUrlTab again when it's loaded so that the main branch above can be triggered
+
+                var tabLevel1Marker = $dom.$id('g-' + tabLevel1);
+                if (tabLevel1Marker) {
+                    if (window.scrollY < 20) {
+                        window.scrollTo(0, $dom.findPosY(tabLevel1Marker) - 40);
+                    }
+                }
             }
         }
     };
+
+    $dom.load.then(function () {
+        $cms.ui.findUrlTab();
+    });
 
     /**
      * Tooltips that can work on any element with rich HTML support
