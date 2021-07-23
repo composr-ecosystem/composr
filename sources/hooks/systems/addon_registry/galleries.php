@@ -1438,7 +1438,7 @@ class Hook_addon_registry_galleries
                     lang_code_to_default_content('title', 'DEFAULT_SLIDE_X', false, 2, null, integer_format($i + 1)),
                     'homepage_hero_slider',
                     $slider_insert_map,
-                    'data/images/homepage_hero_slider/' . $img . '.jpg',
+                    'data/images/homepage_hero_slider/' . $img . '.webp',
                     1,
                     0,
                     0,
