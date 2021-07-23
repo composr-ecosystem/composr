@@ -69,7 +69,9 @@ class Hook_commandr_command_give
                 return ['', '', do_lang('SUCCESS'), ''];
             }
 
-            give_points(intval($parameters[1]), $member_id, intval($parameters[3]), $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
+            $member_id_sender = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[3]);
+
+            give_points(intval($parameters[1]), $member_id, $member_id_sender, $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
 
             return ['', '', do_lang('SUCCESS'), ''];
         }
