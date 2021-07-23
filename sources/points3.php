@@ -129,7 +129,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
                 'VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : integer_format($viewer_gift_points_available, 0),
             ]);
         } else {
-            $give_template = do_lang_tempcode('PE_LACKING_GIFT_POINTS');
+            $give_template = do_lang_tempcode('PE_LACKING_GIFT_POINTS', (get_option('enable_gift_points') == '1') ? do_lang_tempcode('GIFT_POINTS_L') : do_lang_tempcode('POINTS_L'));
         }
         if (!$give_ok) {
             $give_template = new Tempcode();

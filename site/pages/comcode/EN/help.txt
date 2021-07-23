@@ -17,13 +17,13 @@ Every logged-in member can gain points as they contribute to our community, in w
  - E-mail addresses. You may be able to purchase forwarding and POP3 e-mail addresses
 
 Products that require manual setup will usually only be charged for upon activation, not at point of sale.{+END}
-The points system extends further than this though, as members have the ability to give each-other points via gift-points. Gift-points are given out to all our members at a rate of 1 per day for every day they are a member but are useless until they are given to people who you feel have done you or the community a good service. It's like a quota of "thank you"s that you can give out. For example, somebody might release some works to the community and then members might give them a whole load of points for it, giving them credit for their work.
+The points system extends further than this though, as members have the ability to give each-other points.{+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}} Members can only give each other points via gift points. Gift points are given out to all our members at a rate of 1 per day for every day they are a member but are useless until they are given to people who you feel have done you or the community a good service. It's like a quota of "thank you"s that you can give out.{+END} For example, somebody might release some works to the community and then members might give them a whole load of points for it, giving them credit for their work.
 To give points to a member you visit the points tab of their profile. The point gift will then show on that tab and will also count towards their point total (which they can use to buy things with).
-Occasionally upon giving a gift, you will be awarded points yourself, as a random award for your consideration.
+{+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}}Occasionally upon giving a gift, you will be awarded points yourself, as a random award for your consideration.{+END}
 
 Members of staff have the ability to give any number of points they like to people, including huge numbers, or even negative numbers. Please the staff and you could be awarded massively in points; abuse our systems and you could be penalised.
 
-Please have fun with the system and use your gift-points well.{+END}
+Please have fun with the system and use your points well.{+END}
 {+START,IF,{$AND,{$ADDON_INSTALLED,news},{$HAS_ACTUAL_PAGE_ACCESS,cms_news}}}[title="2"]News/Blogs[/title]
 
 {$ANCHOR,ADD_NEWS}[page="_SEARCH:cms_news:add" ignore_if_hidden="1"]The add news page[/page] allows you to add your news to {$SITE_NAME*}. For most members, this will put the news into a validation queue and inform the staff of the submission.

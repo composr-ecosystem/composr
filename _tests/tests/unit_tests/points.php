@@ -25,6 +25,7 @@ class points_test_set extends cms_test_case
     protected $negative_charge_member;
     protected $topic_id;
     protected $post_id;
+    protected $enable_gift_points;
 
     public function setUp()
     {
@@ -47,10 +48,12 @@ class points_test_set extends cms_test_case
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
 
+        $this->enable_gift_points = get_option('enable_gift_points');
+
         $this->establish_admin_session();
     }
 
-    public function testGivePointsAndReverse()
+    public function testGiveGiftPointsAndReverse()
     {
         if (!addon_installed('points')) {
             return;
@@ -58,6 +61,9 @@ class points_test_set extends cms_test_case
 
         $points_to_give = 10;
 
+        set_option('enable_gift_points', '1', 0);
+
+        init__points();
         $initial_points_used = get_gift_points_used(2);
         $initial_points_to_give = get_gift_points_to_give(2);
         $initial_points = available_points(3);
@@ -65,6 +71,7 @@ class points_test_set extends cms_test_case
         // Test user 2 giving 10 points to user 1
         $this->give_points_record = give_points($points_to_give, 3, 2, 'Points unit test', true, false);
 
+        init__points();
         $current_points_used = get_gift_points_used(2);
         $current_points_to_give = get_gift_points_to_give(2);
         $current_points = available_points(3);
@@ -77,8 +84,53 @@ class points_test_set extends cms_test_case
         // Now test reversal
         reverse_point_gift_transaction($this->give_points_record);
 
+        init__points();
         $reversed_points_used = get_gift_points_used(2);
         $reversed_points_to_give = get_gift_points_to_give(2);
+        $reversed_points = available_points(3);
+
+        $reversed_correct = (($reversed_points_used == $initial_points_used) && ($reversed_points_to_give == $initial_points_to_give) && ($reversed_points == $initial_points));
+
+        $this->assertTrue($used_points_correct, 'Used points did not increase as expected.');
+        $this->assertTrue($to_give_points_correct, 'Points to give did not decrease as expected.');
+        $this->assertTrue($points_correct, 'Points to spend did not increase as expected. It was at ' . strval($current_points) . ' when it should have been at ' . strval($initial_points + $points_to_give));
+        $this->assertTrue($reversed_correct, 'Points did not reverse as expected for reverse transaction.');
+    }
+
+    public function testGivePointsAndReverse()
+    {
+        if (!addon_installed('points')) {
+            return;
+        }
+
+        $points_to_give = 10;
+
+        set_option('enable_gift_points', '0', 0);
+
+        init__points();
+        $initial_points_used = points_used(2);
+        $initial_points_to_give = available_points(2);
+        $initial_points = available_points(3);
+
+        // Test user 2 giving 10 points to user 1
+        $this->give_points_record = give_points($points_to_give, 3, 2, 'Points unit test', true, false);
+
+        init__points();
+        $current_points_used = points_used(2);
+        $current_points_to_give = available_points(2);
+        $current_points = available_points(3);
+
+        // User 2 should have used +10 points and have -10 points to give. User 1 should have +10 points to spend.
+        $used_points_correct = ($current_points_used == ($initial_points_used + $points_to_give));
+        $to_give_points_correct = ($current_points_to_give == ($initial_points_to_give - $points_to_give));
+        $points_correct = ($current_points == ($initial_points + $points_to_give));
+
+        // Now test reversal
+        reverse_point_gift_transaction($this->give_points_record);
+
+        init__points();
+        $reversed_points_used = points_used(2);
+        $reversed_points_to_give = available_points(2);
         $reversed_points = available_points(3);
 
         $reversed_correct = (($reversed_points_used == $initial_points_used) && ($reversed_points_to_give == $initial_points_to_give) && ($reversed_points == $initial_points));
@@ -199,6 +251,8 @@ class points_test_set extends cms_test_case
         if (!addon_installed('points')) {
             return;
         }
+
+        set_option('enable_gift_points', $this->enable_gift_points, 0);
 
         parent::tearDown();
     }

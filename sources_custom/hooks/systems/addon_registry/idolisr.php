@@ -142,6 +142,7 @@ and
             'sources_custom/hooks/modules/members/idolisr.php',
             'sources_custom/miniblocks/main_stars.php',
             'sources_custom/miniblocks/side_recent_points.php',
+            'site/pages/modules_custom/points.php',
             'themes/default/templates_custom/POINTS_GIVE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_STARS.tpl',
             'themes/default/templates_custom/BLOCK_SIDE_RECENT_POINTS.tpl',

@@ -236,23 +236,25 @@ function member_personal_links_and_details(int $member_id) : array
                 'VALUE' => integer_format($total_points, 0),
             ]));
         }
-        if (get_option('points_show_personal_stats_gift_points_left') == '1') {
-            $gift_points_to_give = get_gift_points_to_give($member_id);
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
-                '_GUID' => '6241e5ssd45ddsdsdsa2618fd7fff',
-                'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_LEFT'),
-                'RAW_VALUE' => strval($gift_points_to_give),
-                'VALUE' => integer_format($gift_points_to_give, 0),
-            ]));
-        }
-        if (get_option('points_show_personal_stats_gift_points_used') == '1') {
-            $gift_points_used = get_gift_points_used($member_id);
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
-                '_GUID' => '6241eddsd4sdddssdsa2618fd7fff',
-                'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_USED'),
-                'RAW_VALUE' => strval($gift_points_used),
-                'VALUE' => integer_format($gift_points_used, 0),
-            ]));
+        if (get_option('enable_gift_points') == '1') {
+            if (get_option('points_show_personal_stats_gift_points_left') == '1') {
+                $gift_points_to_give = get_gift_points_to_give($member_id);
+                $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                    '_GUID' => '6241e5ssd45ddsdsdsa2618fd7fff',
+                    'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_LEFT'),
+                    'RAW_VALUE' => strval($gift_points_to_give),
+                    'VALUE' => integer_format($gift_points_to_give, 0),
+                ]));
+            }
+            if (get_option('points_show_personal_stats_gift_points_used') == '1') {
+                $gift_points_used = get_gift_points_used($member_id);
+                $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                    '_GUID' => '6241eddsd4sdddssdsa2618fd7fff',
+                    'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_USED'),
+                    'RAW_VALUE' => strval($gift_points_used),
+                    'VALUE' => integer_format($gift_points_used, 0),
+                ]));
+            }
         }
     }
 

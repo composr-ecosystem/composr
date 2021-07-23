@@ -31,27 +31,31 @@ There is a distinction between the point count for points available for spending
 [title="3"]A note about how points are calculated (somewhat advanced)[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-The number of points a member has is not stored in any place, so is not directly editable. Instead, a members points is dynamically calculated, according to various statistics. You may alter the number of points a member has by viewing their points profile and using either the 'charge' or 'give' features (both of which accept negative values if you are a member of staff). For example, you can charge a member points by charging them a positive number of points, or giving them a negative number (a negative gift would usually be used to reverse a gift that you thought should not have happened). Likewise, you can give a member points by giving them a positive number, or charging them a negative number of points (a negative charge would usually be used to provide a refund).
+The number of points a member has is not stored in any place, so is not directly editable. Instead, a members points is dynamically calculated, according to various statistics. You may alter the number of points a member has by viewing their points profile and using either the "give", "charge", or "refund" features (all of which accept negative values if you are a member of staff). For example, you could give positive points to a member as a reward, or you can give negative points to reverse a previous gift. You can "charge" points for a member's purchase or as discipline outside of the warnings system. And you can "refund" points that were previously charged.
 
 The reason points are calculated in this way is that the forum driver system means that Composr has no way of determining when a member makes a forum post (the forum does not tell Composr, as it is often a third-party piece of software).
 
 The main ramification of this is that if posts are deleted, the point count goes backwards for the members with deleted posts: we consider this a feature (deleting spam automatically will reverse the point count, at least on robust forums where post count is automatically adjusted upon moderation), and we consider it a bad idea to delete posts from a forum unless they should never have existed. We consider deleting posts the enemy of historical record and the reasons for doing it few, because text generally takes up a trivial amount of space, databases are designed to deal with inconceivable amounts of data, and the topics can be just as easily moved to a hidden archive forum if they are seen as 'getting in the way'.
 
-[title="2"]Gift points[/title]
+[title="2"]Giving points[/title]
 
 [surround]
 [media width="150" description="Gift transactions should be monitored so as to pick up on cheating (mutual giving for example)" float="right"]data_custom/images/docs/tut_points/points_admin_monitor.png[/media]
-[media width="150" description="Those who give may get rewarded by the system (this encourages an active community)" float="right"]data_custom/images/docs/tut_points/points_lucky.png[/media]
-[concept]Gift points[/concept] allow members to reward each other. Like money can be used to pay someone, so can gift points, based on whatever they value. This economical situation is very important, and essentially capitalism is embodied, such that people go hunting for work that is valued most highly in order to get high returns of points.
+[media width="150" description="Those who give may get randomly rewarded by the system if gift points is enabled (this encourages an active community)" float="right"]data_custom/images/docs/tut_points/points_lucky.png[/media]
+[concept]Point-giving[/concept] allows members to reward each other. Like money can be used to pay someone, so can points, based on whatever they value. This economical situation is very important, and essentially capitalism is embodied, such that people go hunting for work that is valued most highly in order to get high returns of points.
 
-Reasons for giving gift points include:
+Reasons for giving points include:
  - Pseudo-payment for a service provided
  - A prize for winning a competition
  - A sign of appreciation for produce a high quality product that benefits the community
 
-Gift points are not exactly like payment, because it doesn't detract from your own point count to give points, it detracts from your gift point count. Members have a quota of gift points, to allocate as they see fit: if they run out, it simply means that they can't give any more for a while.
+[title="3"]Gift points (advanced)[/title]
 
-Gift points are useless unless spent, so the only advantage to hoarding them is to give a large amount in some kind of special situation being awaited; once given, the gift point receiver has the total added to their actual point count. Obviously members could abuse this, by giving points to each other in some form of reciprocal arrangement ("you pat my back I'll pat yours"): this is why there is an admin screen to monitor all gift transactions for fraud (and selectively reverse transactions). You can reach this screen from the Admin Zone > Audit > Gift-point transactions.
+By default, members have a single point balance that they can use both to spend on things and to give to other members. However, website administrators who wish to separate points used for spending from points used for giving can use the "Enable gift points" option (under Admin Zone > Setup > Configuration > Points Options > Gift-point transactions).
+
+[concept]Gift points[/concept] (when enabled) are a separate point balance. Members can only give other members points from their gift points balance but not their main points. Gift points are themselves not spendable until given. Gifted points are then spendable points to the receiving member. This may incentivise users to give more points more frequently.
+
+For example, member A has 100 points and 25 gift points. Member A can spend their 100 points on purchases but cannot give any of those points to other members. Their 25 gift points cannot be spent on purchases but can be given to other members as gifts. If member A gives member B their 25 gift points, those points then become regular points for member B to spend.
 [/surround]
 
 [title="2"]Other economy tie-ins[/title]
@@ -63,7 +67,7 @@ Buildr is a very large addon for Composr, made by the developers in a semi-offic
 Buildr is essentially a game, where members may move in, interact with, and create, a limitless world of rooms, split across multiple themed 'realms'. It can be used to create puzzles, adventures, board games, simulations, and with imagination, many other things.
 
 Points are at the very core of Buildr, and are used in two ways:
-1) It costs points (according to a configurable price) to add content to Buildr. Of course, members may try and redeem these points by asking members to give gift points back to them, but this feature prevents abuse and limits the need for moderation.
+1) It costs points (according to a configurable price) to add content to Buildr. Of course, members may try and redeem these points by asking members to give points back to them, but this feature prevents abuse and limits the need for moderation.
 2) Members may add items to the system, and then sell these items to other members. An example of this being used, is for the controller of a realm used for a 'quest' to add a 'healthy' item into the system: those with more points have a higher chance of surviving to the end of the quest, as they can heal themselves.
 
 The Buildr system is very simple, yet via the small set of options available, presents amazing possibilities.
@@ -117,7 +121,7 @@ A common point of confusion is users thinking the leader-board shows who are the
 [concepts
  1_key="Points"          1_value="Points are accumulated by various means and illustrate rank and provide spending power (currency)"
  2_key="Rank"            2_value="Rank is determined by the total of points ever earned, and is a status symbol"
- 3_key="Gift points"     3_value="Gift points are automatically accumulated over time and exist only as gifts to give to other members, where they translate to real points"
+ 3_key="Gift points"     3_value="Gift points accumulate over time and exist only as gifts to give to other members, where they translate to real points. This is only applicable when the option is enabled. Otherwise, members can give each other regular points."
  4_key="Leader-board"    4_value="The point leader-board shows the top point holders, and is drawn up on a weekly basis"
  5_key="Buildr"          5_value="A Composr addon that provides a simple virtual world environment to interact in; points are the currency of Buildr"
 ]Concepts[/concepts]
