@@ -160,24 +160,30 @@
 		{+START,IF,{VIEW_PROFILES}}
 			{+START,IF_PASSED,CUSTOM_FIELDS_SECTIONS}
 				{+START,LOOP,CUSTOM_FIELDS_SECTIONS}
-					<h2>{_loop_key*}</h2>
+					{+START,SET,_CUSTOM_FIELDS_SECTION}
+						{+START,LOOP,CUSTOM_FIELDS_SECTION}
+							{+START,INCLUDE,CNS_MEMBER_PROFILE_FIELDS}{+END}
+						{+END}
+					{+END}
 
-					<div class="wide-table-wrap">
-						<table class="map-table wide-table cns-profile-fields cns-profile-about-section responsive-blocked-table">
-							{+START,IF,{$DESKTOP}}
-								<colgroup>
-									<col class="cns-profile-about-field-name-column" />
-									<col class="cns-profile-about-field-value-column" />
-								</colgroup>
-							{+END}
+					{+START,IF_NON_EMPTY,{$TRIM,{$GET,_CUSTOM_FIELDS_SECTION}}}
+						<h2>{_loop_key*}</h2>
 
-							<tbody>
-								{+START,LOOP,CUSTOM_FIELDS_SECTION}
-									{+START,INCLUDE,CNS_MEMBER_PROFILE_FIELDS}{+END}
+						<div class="wide-table-wrap">
+							<table class="map-table wide-table cns-profile-fields cns-profile-about-section responsive-blocked-table">
+								{+START,IF,{$DESKTOP}}
+									<colgroup>
+										<col class="cns-profile-about-field-name-column" />
+										<col class="cns-profile-about-field-value-column" />
+									</colgroup>
 								{+END}
-							</tbody>
-						</table>
-					</div>
+
+								<tbody>
+									{$_GET,_CUSTOM_FIELDS_SECTION}
+								</tbody>
+							</table>
+						</div>
+					{+END}
 				{+END}
 			{+END}
 		{+END}
