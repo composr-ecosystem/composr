@@ -203,7 +203,7 @@ class Minifier
      */
     protected function loop()
     {
-        while ($this->a !== false && !is_null($this->a) && $this->a !== '') {
+        while ($this->a !== false && $this->a !== null && $this->a !== '') {
             switch ($this->a) {
                 // new lines
                 case "\n":
@@ -234,8 +234,7 @@ class Minifier
                 default:
                     switch ($this->b) {
                         case "\n":
-                            $chars = '}])+-"\'';
-                            if (strpos($chars, $this->a) !== false) {
+                            if ($this->a == '}' || $this->a == ']' || $this->a == ')' || $this->a == '+' || $this->a == '-' || $this->a == '"' || $this->a == "'") {
                                 echo $this->a;
                                 $this->saveString();
                                 break;
@@ -269,9 +268,11 @@ class Minifier
             // do reg check of doom
             $this->b = $this->getReal();
 
-            $chars = '(,=:[!&|?';
-            if (($this->b == '/' && strpos($chars, $this->a) !== false)) {
-                $this->saveRegex();
+            if ($this->b == '/') {
+                $chars = '(,=:[!&|?';
+                if (strpos($chars, $this->a) !== false) {
+                    $this->saveRegex();
+                }
             }
         }
     }
@@ -303,21 +304,23 @@ class Minifier
             $char = $this->c;
             unset($this->c);
         } else {
-            // Otherwise we start pulling from the input.
-            $char = ($this->index < $this->len) ? $this->input[$this->index] : false;
+            $i = &$this->index;
 
             // If the next character doesn't exist return false.
-            if (isset($char) && $char === false) {
+            if ($i >= $this->len) {
                 return false;
             }
 
+            // Otherwise we start pulling from the input.
+            $char = $this->input[$i];
+
             // Otherwise increment the pointer and use this char.
-            $this->index++;
+            $i++;
         }
 
         // Normalize all whitespace except for the newline character into a
         // standard space.
-        if ($char !== "\n" && $char < "\x20") {
+        if ($char < "\x20" && $char !== "\n") {
             return ' ';
         }
 
