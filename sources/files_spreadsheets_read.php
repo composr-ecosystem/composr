@@ -299,9 +299,9 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
 
         $in_enclosure = false;
         $i = 0;
-        $len = cms_mb_strlen($line);
+        $len = strlen($line);
         while (true) {
-            $c = cms_mb_substr($line, $i, 1);
+            $c = substr($line, $i, 1);
             if ($in_enclosure) {
                 if ($i == $len - 1) {
                     $line_extension = cms_fgets($this->handle, $this->charset);
@@ -314,11 +314,11 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
                     }
 
                     $line .= $line_extension;
-                    $len += cms_mb_strlen($line_extension);
+                    $len += strlen($line_extension);
                 }
 
                 if ($c == '"') {
-                    $c_next = cms_mb_substr($line, $i + 1, 1);
+                    $c_next = substr($line, $i + 1, 1);
                     if ($c_next == '"') {
                         $i++; // Escaped "
                     } else {
