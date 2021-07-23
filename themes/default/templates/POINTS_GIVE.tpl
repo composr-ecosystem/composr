@@ -4,10 +4,10 @@
 		<p class="points-give-box-header">
 			<span>{!GIVE_TO,{$USERNAME*,{MEMBER},1}}</span>
 			{+START,IF_NON_EMPTY,{VIEWER_GIFT_POINTS_AVAILABLE}}
-				{!GIVE_TEXT,{VIEWER_GIFT_POINTS_AVAILABLE*}}
+				{!GIVE_TEXT,{VIEWER_GIFT_POINTS_AVAILABLE*},{$?,{$CONFIG_OPTION,enable_gift_points},{!GIFT_POINTS_L},{!POINTS_L}}}
 			{+END}
 			{+START,IF_EMPTY,{VIEWER_GIFT_POINTS_AVAILABLE}}
-				{!GIVE_TEXT_UNLIMITED}
+				{!GIVE_TEXT_UNLIMITED,{$?,{$CONFIG_OPTION,enable_gift_points},{!GIFT_POINTS_L},{!POINTS_L}}}
 			{+END}
 		</p>
 
@@ -15,28 +15,48 @@
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
-				<label class="accessibility-hidden" for="give-amount">{!AMOUNT}</label>
-				<input maxlength="8" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="give-amount" class="form-control input-integer-required" placeholder="{!AMOUNT}" type="text" name="amount" />
-
-				<label class="accessibility-hidden" for="give-reason">{!REASON}</label>
-				<input maxlength="255" size="26" id="give-reason" class="form-control input-line-required" placeholder="{!REASON}" type="text" name="reason" />
-
-				<label class="points-anon" for="give-anonymous">{!TICK_ANON}: <input type="checkbox" id="give-anonymous" name="anonymous" value="1" /></label>
-
-				<button id="give-points-submit" class="btn btn-primary btn-scri buttons--points" type="submit">{!GIVE_POINTS}</button>
-			</div>
+				<span class="give-fragment">
+					<label for="give-amount">
+						{!GIVE}
+					</label>
+						<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="give-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" />
+						{!POINTS_L}
+				</span>
+				<span class="give-fragment">
+					<label for="give-reason">
+						{!POINTS_GIVE_FOR}
+					</label>
+					<input maxlength="150" size="26" id="give-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" />
+				</span>
+				<!--LAST-FIELD-->
+				<p>
+					<button id="give-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
+					{+START,IF,{$HAS_PRIVILEGE,have_negative_gift_points}}
+						<span id="points-payee-span" style="display: none;">
+							<label for="trans_payee">
+								{!PAYEE}
+							</label>
+							<select id="trans_payee" class="form-control" name="trans_payee">
+								<option value="me">{$USERNAME*}</option>
+								<option value="website">{$SITE_NAME*}</option>
+							</select>
+						</span>
+					{+END}
+					<label class="points-anon" for="give-anonymous">{!TICK_ANON}: <input type="checkbox" id="give-anonymous" name="anonymous" value="1" /></label>
+				</p>
+		</div>
 		</form>
 	{+END}
 
 	{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_points}}
 		{$,Admin}
-		<p class="points-give-box-header">
+                <p class="points-give-box-header">
 			<span>{!MODIFY_POINTS}</span>
 			{+START,IF_NON_EMPTY,{VIEWER_GIFT_POINTS_AVAILABLE}}
-				{!GIVE_TEXT,{VIEWER_GIFT_POINTS_AVAILABLE*}}
+				{!GIVE_TEXT,{VIEWER_GIFT_POINTS_AVAILABLE*},{$?,{$CONFIG_OPTION,enable_gift_points},{!GIFT_POINTS_L},{!POINTS_L}}}
 			{+END}
 			{+START,IF_EMPTY,{VIEWER_GIFT_POINTS_AVAILABLE}}
-				{!GIVE_TEXT_UNLIMITED}
+				{!GIVE_TEXT_UNLIMITED,{$?,{$CONFIG_OPTION,enable_gift_points},{!GIFT_POINTS_L},{!POINTS_L}}}
 			{+END}
 		</p>
 
@@ -44,28 +64,41 @@
 			{$INSERT_FORM_POST_SECURITY}
 
 			<div>
-				<div class="points-give-shared-options">
-					<label class="accessibility-hidden" for="give-amount">{!AMOUNT}</label>
-					<input maxlength="10" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="give-amount" class="form-control input-integer-required" placeholder="{!AMOUNT}" type="text" name="amount" />
-
-					<label class="accessibility-hidden" for="give-reason">{!REASON}</label>
-					<input maxlength="255" size="18" id="give-reason" class="form-control input-line-required" placeholder="{!REASON}" type="text" name="reason" />
-
-					<button id="give-points-submit" class="btn btn-primary btn-scri buttons--points" type="submit">{!PROCEED_SHORT}</button>
-				</div>
-
-				<div class="points-give-choices">
-					<p class="points-give-choice-line first">
-						<label for="trans-type-gift"><strong>{!GIVE_POINTS}</strong> <input checked="checked" type="radio" id="trans-type-gift" name="trans_type" value="gift" /></label> <span class="arr">&rarr;</span>&nbsp;
-						<label class="sub-option points-anon" for="give-anonymous">{!TICK_ANON}: <input type="checkbox" id="give-anonymous" name="anonymous" value="1" /></label>
-					</p>
-
-					<p class="points-give-choice-line">
-						<strong>{!MODIFY_POINTS}</strong> <span class="arr">&rarr;</span>&nbsp;
-						<label class="sub-option" for="trans-type-charge">{!CHARGE} <input type="radio" id="trans-type-charge" name="trans_type" value="charge" /></label>
-						<label class="sub-option" for="trans-type-refund">{!REFUND} <input type="radio" id="trans-type-refund" name="trans_type" value="refund" /></label>
-					</p>
-				</div>
+				<span class="give-fragment">
+					<label for="trans_type" class="accessibility-hidden">
+						{!POINTS_CHOOSE_ACTION}
+					</label>
+					<select id="trans_type" class="form-control js-click-check-gift-options js-change-check-gift-options" name="trans_type">
+						<option value="">({!POINTS_CHOOSE_ACTION})</option>
+						<option value="gift">{!GIVE}</option>
+						<option value="charge">{!CHARGE}</option>
+						<option value="refund">{!REFUND}</option>
+					</select>
+					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="give-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" />
+					{!POINTS_L}
+				</span>
+				<span class="give-fragment">
+					<label for="give-reason">
+						{!POINTS_GIVE_FOR}
+						<input maxlength="150" size="26" id="give-reason" class="form-control input-line-required" placeholder="({!REASON})" type="text" name="reason" />
+					</label>
+				</span>
+				<!--LAST-FIELD-->
+				<p>
+					<button id="give-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
+					{+START,IF,{$HAS_PRIVILEGE,have_negative_gift_points}}
+						<span id="points-payee-span" style="display: none;">
+							<label for="trans_type">
+								{!PAYEE}
+							</label>
+							<select id="trans_payee" class="form-control" name="trans_payee">
+								<option value="me">{$USERNAME*}</option>
+								<option value="website">{$SITE_NAME*}</option>
+							</select>
+						</span>
+					{+END}
+					<span id="points-anon-span" style="display: none;"><label class="points-anon" for="give-anonymous">{!TICK_ANON}: <input type="checkbox" id="give-anonymous" name="anonymous" value="1" /></label></span>
+				</p>
 			</div>
 		</form>
 	{+END}

@@ -43,6 +43,9 @@
 	vertical-align: middle;
 	margin: 0;
 }
+.points-earned {
+	margin-bottom: 2em;
+}
 
 /*{+START,CSS_MODE,desktop}*/
 	.points-earned {
@@ -164,4 +167,14 @@ table.points-summary-table .answer {
 
 .leader-board-rank {
 	display: none;
+}
+
+.give-fragment {
+        display: inline-block;
+        font-size: 1em;
+        padding-bottom: 0.5em;
+}
+
+#points-payee-span {
+        padding-left: 2em;
 }

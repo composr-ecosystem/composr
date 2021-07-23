@@ -149,20 +149,22 @@ function point_info(int $member_id) : array
 
 /**
  * Get the number of gift points used by the given member.
+ * If gift points is disabled, this function provides a ceremonial figure rather than a mathematical figure.
  *
  * @param  MEMBER $member_id The member we want it for
  * @return integer The number of gift points used by the member
  */
 function get_gift_points_used(int $member_id) : int
 {
-    $_actual_used = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'SUM(amount)', ['gift_from' => $member_id]);
-    $actual_used = @intval($_actual_used); // Most reliable way
     $_used = point_info($member_id);
-    if (!isset($_used['gift_points_used'])) { // Some kind of DB error
+
+    if ((!isset($_used['gift_points_used'])) || (get_option('enable_gift_points') == '0')) { // Either DB error or gift points disabled
+        $_actual_used = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'SUM(amount)', ['gift_from' => $member_id]);
+        $actual_used = @intval($_actual_used); // Most reliable way
         return $actual_used;
     }
-    $claimed_used = $_used['gift_points_used'];
-    return ($claimed_used < 0) ? $claimed_used : $actual_used; // Still allows $claimed_used to be fiddled to negative give members extra gift points
+
+    return $_used['gift_points_used'];
 }
 
 /**
@@ -173,6 +175,11 @@ function get_gift_points_used(int $member_id) : int
  */
 function get_gift_points_to_give(int $member_id) : int
 {
+    // If gift points is disabled, return available points instead.
+    if (get_option('enable_gift_points') == '0') {
+        return available_points($member_id);
+    }
+
     $used = get_gift_points_used($member_id);
     if (get_forum_type() == 'cns') {
         require_lang('cns');

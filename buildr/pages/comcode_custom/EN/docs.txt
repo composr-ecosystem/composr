@@ -29,8 +29,8 @@ There are many ways to gain points for use in Buildr:
  - Submitting downloads.
  - Participating in the discussion forums.
  - Participating in the community chatroom.
- - Being an active member of the community such that people want to give you gift points.
- - Asking for people to give gifts points in discussion forums for your Buildr project (if you think your project is a 'good thing').
+ - Being an active member of the community such that people want to give you points.
+ - Asking for people to give points in discussion forums for your Buildr project (if you think your project is a 'good thing').
 
 [title="3"]The Co-ordinates Information[/title]
 

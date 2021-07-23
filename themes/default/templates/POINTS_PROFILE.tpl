@@ -9,10 +9,12 @@
 		{+END}
 	</div>
 
-	<div class="points-box box">
-		<p class="intro">{!COUNT_GIFT_POINTS_LEFT}:</p>
-		<p>{!POINTS_TO_GIVE,<span class="figure">{GIFT_POINTS_AVAILABLE*}</span>}</p>
-	</div>
+		{+START,IF,{$EQ,{$CONFIG_OPTION,enable_gift_points},1}}
+			<div class="points-box box">
+				<p class="intro">{!COUNT_GIFT_POINTS_LEFT}:</p>
+				<p>{!POINTS_TO_GIVE,<span class="figure">{GIFT_POINTS_AVAILABLE*}</span>}</p>
+			</div>
+		{+END}
 </div>
 
 <div class="points-earned">
@@ -45,11 +47,11 @@
 	</table>
 </div>
 
+<h2>{!POINTS_RECEIVED}</h2>
+
 {+START,IF_NON_EMPTY,{TO}}
 	<p>{!POINTS_IN_ADDITION,{$DISPLAYED_USERNAME*,{USERNAME}},{POINTS_GAINED_GIVEN*}}</p>
 {+END}
-
-<h2>{!POINTS_RECEIVED}</h2>
 
 {+START,IF_NON_EMPTY,{TO}}
 	{$SET,ajax_points_profile_to_wrapper,ajax-points-profile-to-wrapper-{$RAND%}}

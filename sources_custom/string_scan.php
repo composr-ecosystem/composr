@@ -8245,6 +8245,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MONOCHROME_ICONS
         GENERATING_SPRITE
         PREVIEWING_SPRITE
+        ENABLE_GIFT_POINTS
+        CONFIG_OPTION_enable_gift_points
     ')));
 
     $non_admin_files = [
@@ -11445,6 +11447,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNTRY_UM
         COUNTRY_VU
         COUNTRY_WF
+        GIVE
+        GIFT_POINTS_FOR
+        POINTS_L
+        GIFT_POINTS_L
+        POINTS_CHOOSE_ACTION
+        PAYEE
+        GIFTED_BY
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

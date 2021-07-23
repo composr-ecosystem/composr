@@ -20,5 +20,29 @@
 
             $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
+
+        $dom.on(container, 'click', '.js-click-check-gift-options', function (e, el) {
+            var anonymous = document.getElementById('points-anon-span');
+            var payee = document.getElementById('points-payee-span');
+            if (el.value === "gift") {
+                anonymous.style.display = "";
+                if (payee) payee.style.display = "";
+            } else {
+                anonymous.style.display = "none";
+                if (payee) payee.style.display = "none";
+            }
+        });
+
+        $dom.on(container, 'change', '.js-change-check-gift-options', function (e, el) {
+            var anonymous = document.getElementById('points-anon-span');
+            var payee = document.getElementById('points-payee-span');
+            if (el.value === "gift") {
+                anonymous.style.display = "";
+                if (payee) payee.style.display = "";
+            } else {
+                anonymous.style.display = "none";
+                if (payee) payee.style.display = "none";
+            }
+        });
     };
 }(window.$cms, window.$util, window.$dom));

@@ -72,7 +72,7 @@ Avatars size is restricted by the system according to your usergroup.
 
 [title="2"]Points[/title]
 
-Do not abuse the point system -- every gift point transaction must be justifiable to the staff, in both quantity and purpose.
+Do not abuse the point system -- every point transaction must be justifiable to the staff, in both quantity and purpose.
 
 [title="2"]Hacking[/title]
 

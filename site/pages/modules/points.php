@@ -356,11 +356,15 @@ class Module_points
         } else {
             if ($trans_type == 'gift') {
                 $anonymous = post_param_integer('anonymous', 0);
+                $payee = post_param_string('trans_payee', 'me');
+
                 $viewer_gift_points_available = get_gift_points_to_give($member_id_viewing);
                 //$viewer_gift_points_used = get_gift_points_used($member_id_viewing);
 
-                if (($viewer_gift_points_available < $amount) && (!has_privilege($member_id_viewing, 'have_negative_gift_points'))) { // Validate we have enough for this, and add to usage
-                    $message = do_lang_tempcode('PE_LACKING_GIFT_POINTS');
+                if ($payee == 'website' && (!has_privilege($member_id_viewing, 'have_negative_gift_points'))) { // Only those with have negative gift points may give on behalf of the website
+                    access_denied('I_ERROR');
+                } elseif (($viewer_gift_points_available < $amount) && (!has_privilege($member_id_viewing, 'have_negative_gift_points'))) { // Validate we have enough for this, and add to usage
+                    $message = do_lang_tempcode('PE_LACKING_GIFT_POINTS', (get_option('enable_gift_points') == '1') ? do_lang_tempcode('GIFT_POINTS_L') : do_lang_tempcode('POINTS_L'));
                 } elseif (($amount < 0) && (!has_privilege($member_id_viewing, 'give_negative_points'))) { // Trying to be negative
                     $message = do_lang_tempcode('PE_NEGATIVE_GIFT');
                 } elseif ($reason == '') { // Must give a reason
@@ -368,12 +372,21 @@ class Module_points
                 } else {
                     // Write transfer
                     require_code('points2');
-                    give_points($amount, $member_id_of, $member_id_viewing, $reason, $anonymous == 1);
 
-                    // Randomised gifts
+                    if ($payee == 'website') {
+                        // Include name of member who awarded the points if not anonymous
+                        if ($anonymous == 0) {
+                            $reason .= ' (' . do_lang('GIFTED_BY', $GLOBALS['FORUM_DRIVER']->get_username($member_id_viewing)) . ')';
+                        }
+                        system_gift_transfer($reason, $amount, $member_id_of, true);
+                    } else {
+                        give_points($amount, $member_id_of, $member_id_viewing, $reason, $anonymous == 1);
+                    }
+
+                    // Randomised gifts but only if gift points system is enabled
                     $gift_reward_chance = intval(get_option('gift_reward_chance'));
                     $gift_reward_amount = intval(get_option('gift_reward_amount'));
-                    if (mt_rand(0, 100) < $gift_reward_chance && floatval($gift_reward_chance) / 100.0 * $gift_reward_amount >= floatval($amount)) {
+                    if ((get_option('enable_gift_points') == '1') && (mt_rand(0, 100) < $gift_reward_chance) && ((floatval($gift_reward_chance) / 100.0 * $gift_reward_amount) >= floatval($amount))) {
                         system_gift_transfer(do_lang('_PR_LUCKY'), $gift_reward_amount, $member_id_viewing, $anonymous == 0 /*if original transaction anonymous we can't log this, otherwise could be worked out via some cross-checking*/);
 
                         $message = do_lang_tempcode('PR_LUCKY', escape_html(integer_format($gift_reward_amount)));

@@ -141,7 +141,7 @@ function cns_edit_group(int $group_id, ?string $name, ?int $is_default, ?int $is
     if ($max_sig_length_comcode !== null) {
         $map['g_max_sig_length_comcode'] = $max_sig_length_comcode;
     }
-    if (addon_installed('points')) {
+    if (addon_installed('points') && get_option('enable_gift_points') == '1') {
         if ($gift_points_base !== null) {
             $map['g_gift_points_base'] = $gift_points_base;
         }

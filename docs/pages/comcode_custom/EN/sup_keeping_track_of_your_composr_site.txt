@@ -29,7 +29,7 @@ There are also a range of other logs such as:
 [list]
 [*] eCommerce log
 [*] Quiz entries
-[*] Gift point transactions
+[*] Point transactions
 [*] Banner statistics
 [*] Site statistics
 [/list]

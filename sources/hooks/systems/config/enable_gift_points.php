@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_gift_reward_amount
+class Hook_config_enable_gift_points
 {
     /**
      * Gets the details relating to the config option.
@@ -31,15 +31,15 @@ class Hook_config_gift_reward_amount
     public function get_details() : ?array
     {
         return [
-            'human_name' => 'GIFT_REWARD_AMOUNT',
-            'type' => 'integer',
+            'human_name' => 'ENABLE_GIFT_POINTS',
+            'type' => 'tick',
             'category' => 'POINTS',
             'group' => 'GIFT_TRANSACTIONS',
-            'explanation' => 'CONFIG_OPTION_gift_reward_amount',
+            'explanation' => 'CONFIG_OPTION_enable_gift_points',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 3,
-            'required' => true,
+            'order_in_category_group' => 1,
+            'required' => false,
             'public' => false,
             'addon' => 'points',
         ];
@@ -56,6 +56,6 @@ class Hook_config_gift_reward_amount
             return null;
         }
 
-        return '25';
+        return '0';
     }
 }

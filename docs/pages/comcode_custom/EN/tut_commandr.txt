@@ -161,7 +161,7 @@ ban_member 4
 
 [title="3"]Giving points[/title]
 
-The [tt]give[/tt] command is useful to give points to a member. The command takes 3 parameters: Member ID/Username, Number of points, and the reason for the gift points. You can also send points anonymously using the [tt]-a[/tt] flag.
+The [tt]give[/tt] command is useful to give points to a member. The command takes 4 parameters: Recipient Member ID/Username, Number of points, The reason for the points, and optionally the Sending Member ID/Username. You can also send points anonymously using the [tt]-a[/tt] flag.
 
 For example:
 [code="Commandr"]

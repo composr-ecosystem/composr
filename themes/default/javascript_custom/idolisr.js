@@ -22,17 +22,33 @@
             $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
 
-        $dom.on(container, 'click', '.js-click-check-reason', function (e, el) {
-            var reason = document.getElementById('give-reason');
-            if ((reason.value.substr(reason.value.indexOf(': ')).length <= 3) && (el.selectedIndex !== 0)) {
-                reason.value = el.value + ': ';
+        $dom.on(container, 'click', '.js-click-check-gift-options', function (e, el) {
+            var anonymous = document.getElementById('points-anon-span');
+            var payee = document.getElementById('points-payee-span');
+            var role = document.getElementById('points-role-span');
+            if (el.value === "gift") {
+                anonymous.style.display = "";
+                role.style.display = "";
+                if (payee) payee.style.display = "";
+            } else {
+                anonymous.style.display = "none";
+                role.style.display = "none";
+                if (payee) payee.style.display = "none";
             }
         });
 
-        $dom.on(container, 'change', '.js-change-check-reason', function (e, el) {
-            var reason = document.getElementById('give-reason');
-            if ((reason.value.substr(reason.value.indexOf(': ')).length <= 3) && (el.selectedIndex !== 0)) {
-                reason.value = el.value + ': ';
+        $dom.on(container, 'change', '.js-change-check-gift-options', function (e, el) {
+            var anonymous = document.getElementById('points-anon-span');
+            var payee = document.getElementById('points-payee-span');
+            var role = document.getElementById('points-role-span');
+            if (el.value === "gift") {
+                anonymous.style.display = "";
+                role.style.display = "";
+                if (payee) payee.style.display = "";
+            } else {
+                anonymous.style.display = "none";
+                role.style.display = "none";
+                if (payee) payee.style.display = "none";
             }
         });
     };

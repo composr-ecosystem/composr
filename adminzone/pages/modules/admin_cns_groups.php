@@ -286,7 +286,7 @@ class Module_admin_cns_groups extends Standard_crud_module
         }
         $fields->attach(form_input_tick(do_lang_tempcode('SUPER_ADMIN'), $sa_descrip, 'is_super_admin', $is_super_admin == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('SUPER_MODERATOR'), do_lang_tempcode('DESCRIPTION_IS_SUPER_MODERATOR'), 'is_super_moderator', $is_super_moderator == 1));
-        if (addon_installed('points')) {
+        if (addon_installed('points') && get_option('enable_gift_points') == '1') {
             $fields->attach(form_input_integer(do_lang_tempcode('GIFT_POINTS_BASE'), do_lang_tempcode('DESCRIPTION_GIFT_POINTS_BASE'), 'gift_points_base', $gift_points_base, true));
             $fields->attach(form_input_integer(do_lang_tempcode('GIFT_POINTS_PER_DAY'), do_lang_tempcode('DESCRIPTION_GIFT_POINTS_PER_DAY'), 'gift_points_per_day', $gift_points_per_day, true));
         }

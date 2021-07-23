@@ -252,15 +252,17 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
                 'available_points' => available_points($member_id),
             ];
         }
-        if (($need === null) || (in_array('gift_points_to_give', $need))) {
-            $member_info += [
-                'gift_points_to_give' => get_gift_points_to_give($member_id),
-            ];
-        }
-        if (($need === null) || (in_array('gift_points_used', $need))) {
-            $member_info += [
-                'gift_points_used' => get_gift_points_used($member_id),
-            ];
+        if (get_option('enable_gift_points') == '1') {
+            if (($need === null) || (in_array('gift_points_to_give', $need))) {
+                $member_info += [
+                    'gift_points_to_give' => get_gift_points_to_give($member_id),
+                ];
+            }
+            if (($need === null) || (in_array('gift_points_used', $need))) {
+                $member_info += [
+                    'gift_points_used' => get_gift_points_used($member_id),
+                ];
+            }
         }
     }
 
