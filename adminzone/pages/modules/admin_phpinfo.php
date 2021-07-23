@@ -144,11 +144,13 @@ class Module_admin_phpinfo
         $out .= '<h2>Run-time details</h2>';
         $out .= '<p><strong>Your IP address</strong>: ' . escape_html(get_ip_address()) . '</p>';
         $suexec = is_suexec_like();
+        $username = null;
         if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
             // Linux or Mac OS
             $user = posix_getuid();
             $dets = posix_getpwuid($user);
-            $out .= '<p><strong>Running as user</strong>: ' . escape_html($dets['name']) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
+            $username = $dets['name'];
+            $out .= '<p><strong>Running as user</strong>: ' . escape_html($username) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
         } elseif (strpos(PHP_OS, 'WIN') !== false) {
             // Windows
             if (php_function_allowed('get_current_user')) {
@@ -207,8 +209,10 @@ class Module_admin_phpinfo
                     'ps -Af',
                     'top -n1',
                     'iostat',
-                    'iotop -n1 -b',
                 ];
+                if ($username === 'root') {
+                    $commands[] = 'iotop -n1 -b';
+                }
             }
 
             foreach ($commands as $command) {
