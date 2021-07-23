@@ -260,11 +260,11 @@ class Module_admin_errorlog
 
             $message = str_replace(get_file_base(), '', $stuff[$i][3]);
 
-            $result_entries->attach(results_entry([
+            $result_entries->attach(static_evaluate_tempcode(results_entry([
                 $stuff[$i][0] . ' ' . $stuff[$i][1],
                 $stuff[$i][2],
                 $message,
-            ], true));
+            ], true)));
         }
         $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '110px']);
 
