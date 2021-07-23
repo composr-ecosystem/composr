@@ -74,7 +74,7 @@ class Hook_content_meta_aware_topic extends Hook_CMA
             'title_field_dereference__resource_fs' => false,*/
             'description_field' => 't_description',
             'description_field_dereference' => false,
-            'description_field_supports_comcode' => null,
+            'description_field_supports_comcode' => true,
             'image_field' => 't_emoticon',
             'image_field_is_theme_image' => true,
             'alternate_icon_theme_image' => 'icons/menu/social/forum/forums',

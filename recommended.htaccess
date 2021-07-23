@@ -40,18 +40,21 @@ SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 #ExpiresActive On
 
 # We use timestamps in URLs to obviate this in CDN mode. Uncomment if you have Composr's CDN option configured and are using the CDN_FILTER directive.
-#ExpiresByType image/gif "access plus 1 month"
-#ExpiresByType image/png "access plus 1 month"
-#ExpiresByType image/jpeg "access plus 1 month"
-#ExpiresByType image/svg+xml "access plus 1 month"
-#ExpiresByType font/woff "access plus 1 month"
-#ExpiresByType application/x-icon "access plus 1 month"
+#ExpiresByType image/gif "access plus 12 months"
+#ExpiresByType image/jpg "access plus 12 months"
+#ExpiresByType image/jpeg "access plus 12 months"
+#ExpiresByType image/png "access plus 12 months"
+#ExpiresByType image/vnd.microsoft.icon "access plus 12 months"
+#ExpiresByType image/x-icon "access plus 12 months"
+#ExpiresByType image/ico "access plus 12 months"
+#ExpiresByType image/svg+xml "access plus 12 months"
+#ExpiresByType image/webp "access plus 12 months"
 
 # We use timestamps in URLs to obviate this
-#ExpiresByType text/css "access plus 1 month"
-#ExpiresByType text/javascript "access plus 1 month"
-#ExpiresByType application/x-javascript "access plus 1 month"
-#ExpiresByType application/javascript "access plus 1 month"
+#ExpiresByType text/css "access plus 12 months"
+#ExpiresByType text/javascript "access plus 12 months"
+#ExpiresByType application/x-javascript "access plus 12 months"
+#ExpiresByType application/javascript "access plus 12 months"
 #</IfModule>
 
 # Exotic file types we may want

@@ -1786,7 +1786,7 @@ function integer_format(int $val, ?int $dps = null) : string
     if ($dps !== null) {
         $units = ['INTEGER_UNITS_billions' => 1000000000, 'INTEGER_UNITS_millions' => 1000000, 'INTEGER_UNITS_thousands' => 1000];
         foreach ($units as $lang_string => $threshold) {
-            if ($val > $threshold) {
+            if ($val >= $threshold) {
                 return do_lang($lang_string, number_format(floatval($val) / floatval($threshold), $dps, $ldp, $lts));
             }
         }

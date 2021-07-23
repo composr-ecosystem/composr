@@ -162,14 +162,21 @@ class Module_admin_errorlog
         require_code('files');
         require_css('errorlog');
 
+        $maximum_size = 1024 * 512;
+        $max_google_pages = 6;
+        $default_max_per_page = 30;
+
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', $default_max_per_page);
+
         // Read in errors
         if (!GOOGLE_APPENGINE) {
             if (is_readable(get_custom_file_base() . '/data_custom/errorlog.php')) {
-                if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > 1024 * 1024) {
+                if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > $maximum_size) {
                     $myfile = fopen(get_custom_file_base() . '/data_custom/errorlog.php', 'rb');
                     flock($myfile, LOCK_SH);
-                    fseek($myfile, -1024 * 500, SEEK_END);
-                    $lines = explode("\n", fread($myfile, 1024 * 500));
+                    fseek($myfile, -$maximum_size, SEEK_END);
+                    $lines = explode("\n", fread($myfile, $maximum_size));
                     flock($myfile, LOCK_UN);
                     fclose($myfile);
                     unset($lines[0]);
@@ -203,7 +210,7 @@ class Module_admin_errorlog
             $options = [];
             $options['include_app_logs'] = true;
             $options['minimum_log_level'] = eval('return $log_service::LEVEL_WARNING;'); // = PHP notice
-            $options['batch_size'] = 300;
+            $options['batch_size'] = $max * $max_google_pages;
 
             $logs = $log_service->fetch($options);
             foreach ($logs as $log) {
@@ -231,8 +238,6 @@ class Module_admin_errorlog
         }
 
         // Put errors into table
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 50);
         $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
         $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
@@ -492,7 +497,7 @@ class Module_admin_errorlog
                 }
             }
 
-            $_result_entries[$label] = results_entry([
+            $_result_entries[$label] = static_evaluate_tempcode(results_entry([
                 $_label,
                 $queue,
                 ($minutes_between_runs == 0) ? make_string_tempcode('<em>(0)</em>') : display_time_period($minutes_between_runs * 60),
@@ -501,15 +506,13 @@ class Module_admin_errorlog
                 ($last_error == '') ? do_lang_tempcode('NONE_EM') : make_string_tempcode(escape_html($last_error)),
                 do_lang_tempcode($enabled ? 'YES' : 'NO'),
                 $actions,
-            ], true);
+            ], true));
         }
 
         cms_mb_ksort($_result_entries, SORT_NATURAL | SORT_FLAG_CASE);
 
         $result_entries = new Tempcode();
-        foreach ($_result_entries as $results_entry) {
-            $result_entries->attach($results_entry);
-        }
+        $result_entries->attach(implode("\n", $_result_entries));
 
         return results_table(do_lang_tempcode('CRON_SCRIPTS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
     }

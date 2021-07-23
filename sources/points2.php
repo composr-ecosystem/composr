@@ -141,14 +141,14 @@ function give_points(int $amount, int $recipient_id, int $sender_id, string $rea
         $url = $_url->evaluate();
         require_code('notifications');
         if ($anonymous) {
-            $message_raw = do_notification_lang('GIVEN_POINTS_FOR_ANON', comcode_escape(get_site_name()), comcode_escape(integer_format($amount, 0)), [comcode_escape($reason), comcode_escape($url)], get_lang($recipient_id));
-            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount, 0), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
+            $message_raw = do_notification_lang('GIVEN_POINTS_FOR_ANON', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url)], get_lang($recipient_id));
+            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
         } else {
-            $message_raw = do_notification_lang('GIVEN_POINTS_FOR', comcode_escape(get_site_name()), comcode_escape(integer_format($amount, 0)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_lang($recipient_id));
-            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount, 0), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], $sender_id, ['use_real_from' => true]);
+            $message_raw = do_notification_lang('GIVEN_POINTS_FOR', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_lang($recipient_id));
+            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], $sender_id, ['use_real_from' => true]);
         }
-        $message_raw = do_notification_lang('MEMBER_GIVEN_POINTS_FOR', comcode_escape($their_displayname), comcode_escape(integer_format($amount, 0)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_site_default_lang());
-        dispatch_notification('receive_points_staff', null, do_lang('MEMBER_GIVEN_POINTS', integer_format($amount, 0), null, null, get_site_default_lang()), $message_raw, null, $sender_id);
+        $message_raw = do_notification_lang('MEMBER_GIVEN_POINTS_FOR', comcode_escape($their_displayname), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_site_default_lang());
+        dispatch_notification('receive_points_staff', null, do_lang('MEMBER_GIVEN_POINTS', integer_format($amount), null, null, get_site_default_lang()), $message_raw, null, $sender_id);
     }
 
     global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
@@ -178,7 +178,7 @@ function give_points(int $amount, int $recipient_id, int $sender_id, string $rea
         require_code('users2');
         if (has_actual_page_access(get_modal_user(), 'points')) {
             require_code('syndication');
-            syndicate_described_activity((($recipient_id === null) || (is_guest($recipient_id))) ? 'points:_ACTIVITY_GIVE_POINTS' : 'points:ACTIVITY_GIVE_POINTS', $reason, integer_format($amount, 0), '', '_SEARCH:points:member:' . strval($recipient_id), '', '', 'points', 1, null, false, $recipient_id);
+            syndicate_described_activity((($recipient_id === null) || (is_guest($recipient_id))) ? 'points:_ACTIVITY_GIVE_POINTS' : 'points:ACTIVITY_GIVE_POINTS', $reason, integer_format($amount), '', '_SEARCH:points:member:' . strval($recipient_id), '', '', 'points', 1, null, false, $recipient_id);
         }
     }
 

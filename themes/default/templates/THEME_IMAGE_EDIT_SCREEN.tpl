@@ -39,7 +39,6 @@
 	</div></div>
 	<div class="tab-surround">
 		<div aria-labeledby="t-file" role="tabpanel" id="g-file" style="display: block">
-			<a id="tab--file"></a>
 	{+END}{+END}{+END}
 
 			{+START,IF_NON_EMPTY,{TEXT_EDIT_FILE}}
@@ -78,8 +77,6 @@
 		</div>
 
 		<div aria-labeledby="t-themewizard" role="tabpanel" id="g-themewizard" style="display: none">
-			<a id="tab--themewizard"></a>
-
 			<p>{!THEME_IMAGE_RECOLOUR_DESCRIPTION}</p>
 
 			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top">

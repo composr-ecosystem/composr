@@ -210,24 +210,24 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                     }
                 }
             } elseif (strpos(PHP_OS, 'Linux') !== false) {
-                $result = @explode("\n", shell_exec('iostat'));
-                array_shift($result);
+                $result = explode("\n", shell_exec('top -b -n 1'));
                 array_shift($result);
                 array_shift($result);
                 if (isset($result[0])) {
                     $matches = [];
-                    if (preg_match('#^\s*(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)#', $result[0], $matches) != 0) {
+                    if (preg_match('#^%Cpu\(s\):\s*(\d+\.\d+) us,\s*(\d+\.\d+) sy,\s*(\d+\.\d+) ni#', $result[0], $matches) != 0) {
                         $cpu = floatval($matches[1]) + floatval($matches[2]) + floatval($matches[3]);
                     }
                 }
 
                 if ($cpu === null) {
-                    $result = explode("\n", shell_exec('top -b -n 1'));
+                    $result = @explode("\n", shell_exec('iostat'));
+                    array_shift($result);
                     array_shift($result);
                     array_shift($result);
                     if (isset($result[0])) {
                         $matches = [];
-                        if (preg_match('#^%Cpu\(s\):\s*(\d+\.\d+) us,\s*(\d+\.\d+) sy,\s*(\d+\.\d+) ni#', $result[0], $matches) != 0) {
+                        if (preg_match('#^\s*(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)#', $result[0], $matches) != 0) {
                             $cpu = floatval($matches[1]) + floatval($matches[2]) + floatval($matches[3]);
                         }
                     }

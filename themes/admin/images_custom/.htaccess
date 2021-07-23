@@ -7,7 +7,7 @@ AddType text/plain php
 php_value engine off
 </IfModule>
 
-<IfModule mod_php8.c>
+<IfModule mod_php.c>
 php_value engine off
 </IfModule>
 
@@ -31,4 +31,5 @@ ExpiresByType image/vnd.microsoft.icon "access plus 12 months"
 ExpiresByType image/x-icon "access plus 12 months"
 ExpiresByType image/ico "access plus 12 months"
 ExpiresByType image/svg+xml "access plus 12 months"
+ExpiresByType image/webp "access plus 12 months"
 </IfModule>
