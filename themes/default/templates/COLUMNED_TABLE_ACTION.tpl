@@ -5,8 +5,8 @@
 	{+END}</a>
 {+END}
 {+START,IF_NON_PASSED_OR_FALSE,GET}
-	<form class="inline top-vertical-alignment" action="{URL*}" method="post" title="{ACTION_TITLE*}: {NAME*}{+START,IF_PASSED_AND_TRUE,NEW_WINDOW} {!LINK_NEW_WINDOW}{+END}"{+START,IF_PASSED_AND_TRUE,NEW_WINDOW} target="_blank"{+END}>
-		<button title="{ACTION_TITLE*}: {NAME*}" type="submit">
+	<form class="inline" action="{URL*}" method="post" title="{ACTION_TITLE*}: {NAME*}{+START,IF_PASSED_AND_TRUE,NEW_WINDOW} {!LINK_NEW_WINDOW}{+END}"{+START,IF_PASSED_AND_TRUE,NEW_WINDOW} target="_blank"{+END}>
+		<button class="btn-flat-image vertical-alignment" title="{ACTION_TITLE*}: {NAME*}" type="submit">
 			{+START,INCLUDE,ICON}
 				NAME={ICON}
 				ICON_SIZE=14

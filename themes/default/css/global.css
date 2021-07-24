@@ -5966,6 +5966,15 @@ input[type="button"].btn-block {
 	filter: invert(100%);
 }
 
+.btn-flat-image {
+	{$BETA_CSS_PROPERTY,appearance: none;}
+	border: 0;
+	margin: 0;
+	padding: 0;
+	background: none;
+	cursor: pointer;
+}
+
 .btn-row {
 	{$BETA_CSS_PROPERTY,display: flex;}
 	margin: -7px;
