@@ -178,7 +178,10 @@ function testset_do_header($title)
         <style>
 END;
     foreach (['_base', '_colours', 'global'] as $css) {
-        @print(cms_file_get_contents_safe(css_enforce($css, 'default'), FILE_READ_LOCK | FILE_READ_BOM));
+        $css_path = css_enforce($css, 'default');
+        if ($css_path != '') {
+            @print(cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_BOM));
+        }
     }
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('../themes/default/images/icons/admin/tool.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
