@@ -502,7 +502,7 @@
                         posy = $dom.findPosY(firstFieldWithError.parentNode, true);
                     }
                     if (posy !== 0) {
-                        $dom.smoothScroll(posy - 50, null, function () {
+                        $dom.smoothScroll(posy - 50, function () {
                             try {
                                 firstFieldWithError.focus();
                             } catch (e) {} // Can have exception giving focus on IE for invisible fields

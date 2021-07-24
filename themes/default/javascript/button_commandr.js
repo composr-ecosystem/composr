@@ -106,7 +106,7 @@
                     img.classList.remove('footer-button-loading');
                 }
 
-                $dom.smoothScroll(0, null, function () {
+                $dom.smoothScroll(0, function () {
                     document.getElementById('commandr-command').focus();
                 });
 

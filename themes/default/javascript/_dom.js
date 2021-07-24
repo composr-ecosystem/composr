@@ -2401,35 +2401,36 @@
      * Smoothly scroll to another position on the page
      * @memberof $dom
      * @param { Element|number} destY
-     * @param [expectedScrollY]
      * @param [callback]
+     * @param [previousTargetScrollY] - Internal only
      * @param [_recursing] - Internal only
      */
-    $dom.smoothScroll = function smoothScroll(destY, expectedScrollY, callback, _recursing) {
+    $dom.smoothScroll = function smoothScroll(destY, callback, previousTargetScrollY, _recursing) {
         if ($util.isEl(destY)) {
             destY = $dom.findPosY(destY, true);
         } else if (typeof destY === 'string') {
             destY = $dom.findPosY($dom.$id(destY), true);
         }
 
-        if (!_recursing && document.querySelector('.header.is-sticky') && destY != 0) {
-            destY -= document.querySelector('.header.is-sticky').offsetHeight;
+        if (!_recursing && document.querySelector('.header.is-sticky')) {
+            var stickyHeaderHeight = document.querySelector('.header.is-sticky').offsetHeight;
+            if (destY < stickyHeaderHeight) {
+                destY -= stickyHeaderHeight;
+            }
         }
 
         if (destY < 0) {
             destY = 0;
         }
 
-        if (!$cms.configOption('enable_animations')) {
+        var currentScrollY = window.scrollY;
+
+        if ((!$cms.configOption('enable_animations')) || (destY - currentScrollY > 2000)) {
+            // Termination step: Animations not enabled, so just do simplest scroll
+
             try {
                 window.scrollTo(0, destY);
             } catch (ignore) {}
-            return;
-        }
-
-        var scrollY = window.scrollY;
-        if ((expectedScrollY != null) && (Number(expectedScrollY) !== scrollY)) {
-            // We must terminate early, as the user has scrolled during our animation and we do not want to interfere with their action -- or because our last scroll failed, due to us being on the last scroll screen already
 
             if (callback) {
                 callback();
@@ -2438,10 +2439,26 @@
             return;
         }
 
-        var direction = (destY > scrollY) ? 1 : -1;
+        if (_recursing) {
+            if (Math.abs(currentScrollY - previousTargetScrollY) > 2) {
+                // Termination step: No scroll happened, maybe outside scrollable bounds like too far to bottom of page, or maybe interrupted by doing their own scrolling
 
-        if (((direction == 1) && (scrollY >= destY)) || ((direction == -1) && (scrollY <= destY)) || (destY - scrollY > 2000)) {
-            // Termination step
+                //$util.log('Terminated smooth scroll due to unexpected scroll position (' + currentScrollY + ' vs ' + previousTargetScrollY + ')');
+
+                if (callback) {
+                    callback();
+                }
+
+                return;
+            }
+        }
+
+        var direction = (destY > currentScrollY) ? 1 : -1;
+
+        if (((direction == 1) && (currentScrollY >= destY)) || ((direction == -1) && (currentScrollY <= destY))) {
+            // Termination step: SUCCESS!
+
+            //$util.log('Terminated smooth scroll due to reaching target of ' + destY + ' (currently at ' + currentScrollY + ')');
 
             try {
                 window.scrollTo(0, destY);
@@ -2454,24 +2471,36 @@
             return;
         }
 
-        var pixels = direction * 5;
-        if ((direction == 1) && (scrollY + pixels > destY)) {
-            pixels = destY - pixels;
-        } else if ((direction == -1) && (scrollY + pixels > destY)) {
-            pixels = pixels - destY;
+        var scrollJumpAmount = 5;
+
+        var scrollPixels = direction * scrollJumpAmount;
+        var targetScrollY = currentScrollY + scrollPixels;
+        if (((direction == 1) && (targetScrollY > destY)) || ((direction == -1) && (targetScrollY < destY))) {
+            targetScrollY = destY;
         }
 
         try {
-            window.scrollBy(0, pixels);
+            window.scrollTo(0, targetScrollY);
         } catch (e) {
-            return; // May be stopped by pop-up blocker
+            // Termination step: May be stopped by pop-up blocker
+
+            $util.log('Terminated smooth scroll due to pop-up blocker');
+
+            try {
+                window.scrollTo(0, destY);
+            } catch (ignore) {}
+
+            if (callback) {
+                callback();
+            }
+
+            return;
         }
 
-        window.setTimeout(function() {
-            requestAnimationFrame(function () {
-                $dom.smoothScroll(destY, window.scrollY, callback, true);
-            });
-        }, 10);
+        // Runs at about 60 fps
+        requestAnimationFrame(function () {
+            $dom.smoothScroll(destY, callback, /*previousTargetScrollY=*/targetScrollY, true);
+        });
     };
 
     /**
