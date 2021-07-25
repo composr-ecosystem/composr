@@ -1,9 +1,9 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2021
 
- See text/EN/licence.txt for full licencing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -25,6 +25,10 @@ class Hook_config_git_live_branch
      */
     public function get_details()
     {
+        if (!addon_installed('git_status')) {
+            return null;
+        }
+
         return array(
             'human_name' => 'GIT_LIVE_BRANCH',
             'type' => 'line',
@@ -34,7 +38,8 @@ class Hook_config_git_live_branch
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 1,
-
+            'required' => true,
+            'public' => false,
             'addon' => 'git_status',
         );
     }

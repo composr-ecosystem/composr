@@ -53,6 +53,11 @@ function init__webstandards()
         define('DOCTYPE_XHTML5', '<!DOCTYPE html>');
     }
 
+    global $LINENO, $POS, $OUT;
+    $LINENO = 0;
+    $POS = 0;
+    $OUT = '';
+
     global $WEBSTANDARDS_CHECKER_OFF, $WELL_FORMED_ONLY, $WEBSTANDARDS_JAVASCRIPT, $WEBSTANDARDS_CSS, $WEBSTANDARDS_WCAG, $WEBSTANDARDS_COMPAT, $WEBSTANDARDS_EXT_FILES, $WEBSTANDARDS_MANUAL, $WEBSTANDARDS_CSP;
     $WEBSTANDARDS_JAVASCRIPT = true;
     $WEBSTANDARDS_CSS = true;
@@ -323,7 +328,7 @@ function init__webstandards()
         'white-space' => '(normal|pre|nowrap|pre-wrap|pre-line)',
         'width' => $enforce_auto_or_length,
         'word-spacing' => $enforce_normal_or_length,
-        'z-index' => '(auto|(\d+))',
+        'z-index' => '(auto|(-?\d+))',
 
         /* Columns */
         'columns' => '((auto|' . $enforce_inumber_non_zero . ')|' . $enforce_auto_or_length . '( ' . $enforce_auto_or_length . ')*)',
@@ -1695,7 +1700,11 @@ function _xhtml_error(string $error, string $param_a = '', string $param_b = '',
     if ($rel_pos == 0) {
         $out['pos'] = $POS - $LINESTART;
     } else {
-        $out['pos'] = $POS + $rel_pos - strrpos(substr($OUT, 0, $POS + $rel_pos), "\n");
+        $last_linebreak = strrpos(substr($OUT, 0, $POS + $rel_pos), "\n");
+        if ($last_linebreak === false) {
+            $last_linebreak = 0;
+        }
+        $out['pos'] = $POS + $rel_pos - $last_linebreak;
     }
     $out['global_pos'] = $POS + $rel_pos;
     if (function_exists('do_lang')) {

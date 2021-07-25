@@ -51,7 +51,7 @@ Reasons for giving points include:
 
 [title="3"]Gift points (advanced)[/title]
 
-By default, members have a single point balance that they can use both to spend on things and to give to other members. However, website administrators who wish to separate points used for spending from points used for giving can use the "Enable gift points" option (under Admin Zone > Setup > Configuration > Points Options > Gift-point transactions).
+By default, members have a single point balance that they can use both to spend on things and to give to other members. However, website administrators who wish to separate points used for spending from points used for giving can use the "Enable gift points" configuration option (under Admin Zone > Setup > Configuration > Points options > Gift-point transactions).
 
 [concept]Gift points[/concept] (when enabled) are a separate point balance. Members can only give other members points from their gift points balance but not their main points. Gift points are themselves not spendable until given. Gifted points are then spendable points to the receiving member. This may incentivise users to give more points more frequently.
 

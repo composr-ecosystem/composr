@@ -271,28 +271,28 @@ class LangFilter_EN extends LangFilter
             // NB: Below you will see there are exceptions, typically when the base word already naturally ends with "se" on the end, it uses "s" not "z"
 
             if (strpos($value, 'sa') !== false) {
-				if (strpos($value, 'sation') !== false) {
-					$value = str_replace('sation', 'zation', $value);
-					$value = str_replace('converzation', 'conversation', $value); // Exception, put this back
-					$value = str_replace('Converzation', 'Conversation', $value); // Exception, put this back
-				}
+                if (strpos($value, 'sation') !== false) {
+                    $value = str_replace('sation', 'zation', $value);
+                    $value = str_replace('converzation', 'conversation', $value); // Exception, put this back
+                    $value = str_replace('Converzation', 'Conversation', $value); // Exception, put this back
+                }
 
-				if (strpos($value, 'sable') !== false) {
-					$value = str_replace('sable', 'zable', $value);
-					$value = str_replace('dizable', 'disable', $value); // Exception, put this back
-					$value = str_replace('Dizable', 'Disable', $value); // Exception, put this back
-					$value = str_replace('advizable', 'advisable', $value); // Exception, put this back
-					$value = str_replace('Advizable', 'Advisable', $value); // Exception, put this back
-					$value = str_replace('purchazable', 'purchasable', $value); // Exception, put this back
-					$value = str_replace('Purchazable', 'Purchasable', $value); // Exception, put this back
-					$value = str_replace('uzable', 'usable', $value); // Exception, put this back
-				}
+                if (strpos($value, 'sable') !== false) {
+                    $value = str_replace('sable', 'zable', $value);
+                    $value = str_replace('dizable', 'disable', $value); // Exception, put this back
+                    $value = str_replace('Dizable', 'Disable', $value); // Exception, put this back
+                    $value = str_replace('advizable', 'advisable', $value); // Exception, put this back
+                    $value = str_replace('Advizable', 'Advisable', $value); // Exception, put this back
+                    $value = str_replace('purchazable', 'purchasable', $value); // Exception, put this back
+                    $value = str_replace('Purchazable', 'Purchasable', $value); // Exception, put this back
+                    $value = str_replace('uzable', 'usable', $value); // Exception, put this back
+                }
 
-				if (strpos($value, 'sational') !== false) {
-					$value = str_replace('sational', 'zational', $value);
-					$value = str_replace('senzational', 'sensational', $value); // Exception, put this back
-				}
-			}
+                if (strpos($value, 'sational') !== false) {
+                    $value = str_replace('sational', 'zational', $value);
+                    $value = str_replace('senzational', 'sensational', $value); // Exception, put this back
+                }
+            }
 
             $remapping = $this->make_uncle_sam_happy;
         } else {

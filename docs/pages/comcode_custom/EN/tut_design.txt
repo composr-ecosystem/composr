@@ -214,12 +214,11 @@ If in doubt, you could survey what is important, but chances are you won't get a
  - http://findicons.com/
  - http://www.freeimages.com/
  - http://www.welie.com/patterns/
- - http://www.designyourway.net/drb/web-designers-should-focus-more-on-typography/
+ - https://www.designyourway.net/blog/typography/typography-design/
  - https://www.creativebloq.com/netmag/6-questions-every-homepage-should-answer-101413151
  - http://www.userfocus.co.uk/resources/guidelines.html
  - http://www.webdesignerdepot.com/2013/11/4-essential-ux-rules-taught-by-eye-tracking-research/
  - https://web.archive.org/web/20190322094047/http://archived.getfinch.com/2011/03/ux-is-mostly-desirability/
- - http://www.designyourway.net/drb/small-design-and-usability-details-matter-a-lot-more-than-you-think/
  - https://econsultancy.com/blog/62892-the-a-z-of-ux-design-principles-from-the-big-tech-firms-experts
  - http://www.uxaxioms.com/
  - http://thedesignblitz.com/web-design-mistakes-to-avoid/

@@ -392,7 +392,7 @@ function remove_wysiwyg_comcode_markup(string &$semihtml)
     }
 
     // Our symbols as meta tags
-    $semihtml = preg_replace_callback('#<meta name="cms-symbol" content="([^"]*)"\s*/?>#', '_desymbolise', $semihtml);
+    $semihtml = preg_replace_callback('#<meta name="cms-symbol" content="([^"]*)"\s*/?' . '>#', '_desymbolise', $semihtml);
 }
 
 /**

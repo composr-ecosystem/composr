@@ -145,6 +145,11 @@ class standard_dir_files_test_set extends cms_test_case
 
         if ($contents_count > 0) {
             if (
+                // LEGACY
+                ($dir_stub != 'uploads/iotds_addon') &&
+                ($dir_stub != 'uploads/iotds_addon_thumbs') &&
+                ($dir_stub != 'uploads/cns_photos_thumbs') &&
+
                 (preg_match('#^data/ckeditor(/|$)#', $dir_stub) == 0) && // We do not bother for CKEditor, it is none interesting and they do not ship these files themselves - and we want upgrading to be easy
                 (preg_match('#^uploads/website_specific/test(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 test XML DB
                 (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir

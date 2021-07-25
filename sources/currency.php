@@ -98,7 +98,7 @@ function get_currency() : string
  * @param  mixed $amount The starting amount (integer or float)
  * @param  ?ID_TEXT $from_currency The start currency code (null: site currency)
  * @param  integer $display_method A CURRENCY_DISPLAY_* constant
- * @return mixed The new amount with the specified display method (CURRENCY_DISPLAY_RAW is a float, otherwise a string)
+ * @return ?mixed The new amount with the specified display method (CURRENCY_DISPLAY_RAW is a float, otherwise a string) (null: error)
  */
 function currency_convert_wrap($amount, ?string $from_currency = null, int $display_method = 6)
 {
@@ -120,7 +120,7 @@ function currency_convert_wrap($amount, ?string $from_currency = null, int $disp
  * @param  integer $display_method A CURRENCY_DISPLAY_* constant
  * @param  ?ID_TEXT $force_via Force conversion via this API (null: no restriction)
  * @set conv_api
- * @return mixed The new amount with the specified display method (CURRENCY_DISPLAY_RAW is a float, otherwise a string)
+ * @return ?mixed The new amount with the specified display method (CURRENCY_DISPLAY_RAW is a float, otherwise a string) (null: error)
  */
 function currency_convert($amount, ?string $from_currency = null, ?string $to_currency = null, int $display_method = 0, ?string $force_via = null)
 {

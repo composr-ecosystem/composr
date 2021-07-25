@@ -5967,7 +5967,7 @@ input[type="button"].btn-block {
 }
 
 .btn-flat-image {
-	{$BETA_CSS_PROPERTY,appearance: none;}
+	appearance: none;
 	border: 0;
 	margin: 0;
 	padding: 0;

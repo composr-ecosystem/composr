@@ -366,6 +366,7 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'first',
             'cms-modal-container',
             'comcode-fake-table',
             'fake-table',

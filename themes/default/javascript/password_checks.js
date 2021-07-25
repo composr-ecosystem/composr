@@ -1,4 +1,10 @@
-var passwordPrompt = '{+START,IF_PASSED,PASSWORD_PROMPT}{PASSWORD_PROMPT;/}{+END}{+START,IF_NON_PASSED,PASSWORD_PROMPT}{!installer:CONFIRM_MASTER_PASSWORD}{+END}';
+/*{+START,IF_PASSED,PASSWORD_PROMPT}*/
+var passwordPrompt = '{PASSWORD_PROMPT;/}';
+/*{+END}*/
+/*{+START,IF_NON_PASSED,PASSWORD_PROMPT}*/
+var passwordPrompt = '{!installer:CONFIRM_MASTER_PASSWORD}';
+/*{+END}*/
+
 /**
  * NOTE: This function also has a similar copy in themes/default/javascript/installer.js so update that as well when modifying here.
  * @param form
@@ -10,13 +16,13 @@ function checkPasswords(form) {
     }
 
     if (form.elements['cns_admin_password_confirm'] != null) {
-        if (!checkPassword(form, 'cns_admin_password', '{!installer:ADMIN_USERS_PASSWORD;^/}')) {
+        if (!checkPassword(form, 'cns_admin_password', '{!ADMIN_USERS_PASSWORD;^/}')) {
             return false;
         }
     }
 
     if (form.elements['master_password_confirm'] != null) {
-        if (!checkPassword(form, 'master_password', '{!installer:MASTER_PASSWORD;^/}')) {
+        if (!checkPassword(form, 'master_password', '{!MASTER_PASSWORD;^/}')) {
             return false;
         }
     }
@@ -30,14 +36,14 @@ function checkPasswords(form) {
     function checkPassword(form, fieldName, fieldLabel) {
         // Check matches with confirm field
         if (form.elements[fieldName + '_confirm'].value !== form.elements[fieldName].value) {
-            window.alert('{!installer:PASSWORDS_DO_NOT_MATCH;^/}'.replace('\{1\}', fieldLabel));
+            window.alert('{!PASSWORDS_DO_NOT_MATCH;^/}'.replace('\{1\}', fieldLabel));
             return false;
         }
 
         // Check does not match database password
         if (form.elements['db_site_password'] != null) {
             if ((form.elements[fieldName].value !== '') && (form.elements[fieldName].value === form.elements['db_site_password'].value)) {
-                window.alert('{!installer:PASSWORDS_DO_NOT_REUSE;^/}'.replace('\{1\}', fieldLabel));
+                window.alert('{!PASSWORDS_DO_NOT_REUSE;^/}'.replace('\{1\}', fieldLabel));
                 return false;
             }
         }
@@ -61,7 +67,7 @@ function checkPasswords(form) {
         }
 
         if (!isSecurePassword) {
-            return window.confirm('{!installer:PASSWORD_INSECURE;^/}'.replace('\{1\}', fieldLabel)) && window.confirm('{!CONFIRM_REALLY;^/} {!installer:PASSWORD_INSECURE;^/}'.replace('\{1\}', fieldLabel));
+            return window.confirm('{!PASSWORD_INSECURE;^/}'.replace('\{1\}', fieldLabel)) && window.confirm('{!CONFIRM_REALLY;^/} {!PASSWORD_INSECURE;^/}'.replace('\{1\}', fieldLabel));
         }
 
         return true;

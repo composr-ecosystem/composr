@@ -539,6 +539,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_GIVE_HELP_PARAM_0
         CMD_GIVE_HELP_PARAM_1
         CMD_GIVE_HELP_PARAM_2
+        CMD_GIVE_HELP_PARAM_3
         CMD_GREP_HELP
         CMD_GREP_HELP_PARAM_0
         CMD_GREP_HELP_PARAM_1
@@ -6593,6 +6594,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NUM_QUEUE
         NUM_READERS
         READERS
+        READER
         NUM_WINNERS
         OBSCENITY_WARNING
         OEMBED_HTML_SAFELIST
@@ -8585,6 +8587,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_SOUND_ENABLED
         MAILING_LIST_STYLE
         SOUND_ENABLED
+        POINTS_GIVE_FOR
         ATTACHMENT
         ATTACHMENTS
         ATTACHMENTS_OF
@@ -11448,7 +11451,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNTRY_VU
         COUNTRY_WF
         GIVE
-        GIFT_POINTS_FOR
         POINTS_L
         GIFT_POINTS_L
         POINTS_CHOOSE_ACTION

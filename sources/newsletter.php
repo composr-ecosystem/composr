@@ -248,7 +248,7 @@ function newsletter_prepare(string $message_raw, string &$subject, ?string $lang
     // Step 4: Apply variable substitution to wrapper
     $message_wrapped = newsletter_variable_substitution($message_wrapped, $subject, $lang, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings);
 
-    // NB: Any Comcode formatting is done within the mailer, or not done at all if newsletter_is_html(), or for content-autogeneration && newsletter_is_html() done as a step 0 before further hand-editing
+    // NB: Any Comcode formatting is done within the mailer, or not done at all if newsletter_is_html(), or for content-auto-generation && newsletter_is_html() done as a step 0 before further hand-editing
 
     return $message_wrapped->evaluate($lang);
 }

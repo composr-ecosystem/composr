@@ -50,7 +50,7 @@
 
 	{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_points}}
 		{$,Admin}
-                <p class="points-give-box-header">
+		<p class="points-give-box-header">
 			<span>{!MODIFY_POINTS}</span>
 			{+START,IF_NON_EMPTY,{VIEWER_GIFT_POINTS_AVAILABLE}}
 				{!GIVE_TEXT,{VIEWER_GIFT_POINTS_AVAILABLE*},{$?,{$CONFIG_OPTION,enable_gift_points},{!GIFT_POINTS_L},{!POINTS_L}}}

@@ -35,7 +35,7 @@ class _api_geocoding_test_set extends cms_test_case
             return;
         }
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id'); // Debugging note: Should be about 253k rows in this table
         $has_geolocation_data = ($test !== null);
         if (!$has_geolocation_data) {
             require_code('tasks');
@@ -44,7 +44,8 @@ class _api_geocoding_test_set extends cms_test_case
         }
 
         require_code('locations');
-        $this->assertTrue(geolocate_ip('217.160.72.6') == 'DE');
+        $country = geolocate_ip('217.160.72.6');
+        $this->assertTrue(geolocate_ip('217.160.72.6') == 'DE', 'Expected DE got ' . (($country === null) ? '(unknown)' : $country));
     }
 
     public function testGeocode()

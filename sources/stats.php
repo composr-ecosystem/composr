@@ -1427,12 +1427,12 @@ function get_alexa_rank(?string $url = null) : array
     }
 
     $matches = [];
-    if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $matches) != 0) {
+    if (preg_match('#Rank <span class="small data textbig marginleft10"><span class="hash">\#</span>([\d,]+)#s', $result, $matches) != 0) {
         $rank = intval(str_replace(',', '', $matches[1]));
     } else {
         $rank = null;
     }
-    if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $matches) != 0) {
+    if (preg_match('#Sites Linking In: <a href="/siteinfo/yahoo.com" target="_blank" class="small data">([\d,]+)#s', $result, $matches) != 0) {
         $links = intval(str_replace(',', '', $matches[1]));
     } else {
         $links = null;

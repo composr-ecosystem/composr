@@ -82,7 +82,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK);
 
                 $matches = [];
-                $num_matches = preg_match_all('#Admin Zone > Setup > Configuration > (\w[\w /]+\w)( > (\w[\w /]+\w))?#', $c, $matches);
+                $num_matches = preg_match_all('#Admin Zone > Setup > Configuration > (\w[\w /]+\w)( > (\w[\w /\-:]+\w))?#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $category = $matches[1][$i];
 

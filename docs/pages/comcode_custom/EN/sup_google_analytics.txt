@@ -401,7 +401,7 @@ In the interest of providing other options, here are some good alternative resou
  - Split testing tools:
   - [url="Visual Website Optimizer"]https://vwo.com/[/url]
   - [url="Optimizely"]https://www.optimizely.com/[/url]
-  - [url="http://blog.crazyegg.com/2014/06/25/best-testing-software/"]Comparison article[/url]
+  - [url="https://www.crazyegg.com/blog/best-testing-software/"]Comparison article[/url]
 
 [concepts
  1_key="Analytics Event"			1_value="An in-page user action that is explicitly triggered via tracking code."

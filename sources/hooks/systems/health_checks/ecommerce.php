@@ -78,9 +78,9 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
         }
 
         require_code('currency');
-        $test = currency_convert(100.00, 'MMK', 'GBP', 0, 'conv_api');
-        $this->assertTrue($test > 0.00, 'Expected GBP value to be more than 0.00, got ' . float_format($test, 2));
-        $this->assertTrue($test < 110.00, 'Expected GBP value to be less than 110.00, got ' . float_format($test, 2)); // GBP is worth *much* more
+        $test = currency_convert(100.00, 'MMK', 'GBP', CURRENCY_DISPLAY_RAW, 'conv_api');
+        $this->assertTrue($test !== null && $test > 0.00, 'Expected GBP value to be more than 0.00, got ' . (($test === null) ? '(no result)' : float_format($test, 2)));
+        $this->assertTrue($test !== null && $test < 110.00, 'Expected GBP value to be less than 110.00, got ' . (($test === null) ? '(no result)' : float_format($test, 2))); // GBP is worth *much* more
     }
 
     /**

@@ -608,6 +608,11 @@ function init__global2()
  */
 function fixup_bad_php_env_vars()
 {
+    static $real_get = null;
+    if ($real_get === null) {
+        $real_get = $_GET;
+    }
+
     // We can trust these to be there
     $script_filename = $_SERVER['SCRIPT_FILENAME']; // If was not here, was added by our front-end controller script
 
@@ -672,14 +677,14 @@ function fixup_bad_php_env_vars()
         if (isset($_SERVER['REDIRECT_URL'])) {
             $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_URL'];
             if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
-                if (!empty($_GET)) {
-                    $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($_GET)); // Messy as rewrite URL-embedded parameters will be doubled, but if you've got a broken server don't push it to do rewrites
+                if (!empty($real_get)) {
+                    $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($real_get)); // Messy as rewrite URL-embedded parameters will be doubled, but if you've got a broken server don't push it to do rewrites
                 }
             }
         } else {
             $_SERVER['REQUEST_URI'] = $php_self; // Same as PHP_SELF, but...
-            if (!empty($_GET)) { // add in query string data if we have it
-                $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($_GET));
+            if (!empty($real_get)) { // add in query string data if we have it
+                $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($real_get));
             }
 
             // ^ NB: May be slight deviation. Default directory index files not considered, i.e. index.php may have been omitted in URL
@@ -687,7 +692,7 @@ function fixup_bad_php_env_vars()
     }
 
     if (@cms_empty_safe($_SERVER['QUERY_STRING'])) {
-        $_SERVER['QUERY_STRING'] = str_replace('/', '%2F', http_build_query($_GET));
+        $_SERVER['QUERY_STRING'] = str_replace('/', '%2F', http_build_query($real_get));
     }
 
     if (@cms_empty_safe($_SERVER['PHP_AUTH_USER'])) {

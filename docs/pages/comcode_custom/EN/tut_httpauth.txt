@@ -94,7 +94,7 @@ One further note about the Welcome Zone: If you use the shoutbox or poll blocks,
 
 [title="2"]See also[/title]
 
- - [url="Apache manual section"]http://httpd.apache.org/docs/1.3/howto/auth.html[/url]
+ - [url="Apache manual section"]https://httpd.apache.org/docs/2.4/howto/auth.html[/url]
  - [url="Linux Command line tutorial"]https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-14-04[/url]
  - [url="HTPasswd Generator"]https://www.web2generators.com/apache-tools/htpasswd-generator[/url]
  - [page="_SEARCH:tut_ldap"]Integrating Composr into a corporate network via LDAP[/page]

@@ -1117,7 +1117,7 @@ You will find a number of options in Admin Zone > Setup > Configuration > Access
 
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - http://spyrestudios.com/website-accessibility-tools/
- - https://achecker.ca/checker/index.php
+ - https://achecker.us/checker/index.php
  - [page="_SEARCH:atag"]Authoring Tool Accessibility Guidelines 2.0 - Composr version 10.0 compliance[/page]
  - [url="WAI specification"]http://www.w3.org/TR/WAI-WEBCONTENT/[/url]
  - [url="Popular accessibility validator"]http://wave.webaim.org/[/url]
