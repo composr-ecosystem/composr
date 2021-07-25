@@ -249,7 +249,7 @@ class LangFilter_EN extends LangFilter
             // More spreadsheet formats
             if (is_file(get_file_base() . '/sources_custom/files_spreadsheets_read.php')) {
                 $remapping['[abbr="comma-separated Values"]CSV[/abbr] spreadsheet'] = 'spreadsheet';
-                $remapping['CSV spreadsheet'] = 'spreadsheet';
+                $remapping['csv spreadsheet'] = 'spreadsheet';
             }
 
             $this->the_sun_never_sets_on_the_british_empire += $remapping;
@@ -270,27 +270,29 @@ class LangFilter_EN extends LangFilter
         if ($is_american) {
             // NB: Below you will see there are exceptions, typically when the base word already naturally ends with "se" on the end, it uses "s" not "z"
 
-            if (strpos($value, 'sation') !== false) {
-                $value = str_replace('sation', 'zation', $value);
-                $value = str_replace('converzation', 'conversation', $value); // Exception, put this back
-                $value = str_replace('Converzation', 'Conversation', $value); // Exception, put this back
-            }
+            if (strpos($value, 'sa') !== false) {
+				if (strpos($value, 'sation') !== false) {
+					$value = str_replace('sation', 'zation', $value);
+					$value = str_replace('converzation', 'conversation', $value); // Exception, put this back
+					$value = str_replace('Converzation', 'Conversation', $value); // Exception, put this back
+				}
 
-            if (strpos($value, 'sable') !== false) {
-                $value = str_replace('sable', 'zable', $value);
-                $value = str_replace('dizable', 'disable', $value); // Exception, put this back
-                $value = str_replace('Dizable', 'Disable', $value); // Exception, put this back
-                $value = str_replace('advizable', 'advisable', $value); // Exception, put this back
-                $value = str_replace('Advizable', 'Advisable', $value); // Exception, put this back
-                $value = str_replace('purchazable', 'purchasable', $value); // Exception, put this back
-                $value = str_replace('Purchazable', 'Purchasable', $value); // Exception, put this back
-                $value = str_replace('uzable', 'usable', $value); // Exception, put this back
-            }
+				if (strpos($value, 'sable') !== false) {
+					$value = str_replace('sable', 'zable', $value);
+					$value = str_replace('dizable', 'disable', $value); // Exception, put this back
+					$value = str_replace('Dizable', 'Disable', $value); // Exception, put this back
+					$value = str_replace('advizable', 'advisable', $value); // Exception, put this back
+					$value = str_replace('Advizable', 'Advisable', $value); // Exception, put this back
+					$value = str_replace('purchazable', 'purchasable', $value); // Exception, put this back
+					$value = str_replace('Purchazable', 'Purchasable', $value); // Exception, put this back
+					$value = str_replace('uzable', 'usable', $value); // Exception, put this back
+				}
 
-            if (strpos($value, 'sational') !== false) {
-                $value = str_replace('sational', 'zational', $value);
-                $value = str_replace('senzational', 'sensational', $value); // Exception, put this back
-            }
+				if (strpos($value, 'sational') !== false) {
+					$value = str_replace('sational', 'zational', $value);
+					$value = str_replace('senzational', 'sensational', $value); // Exception, put this back
+				}
+			}
 
             $remapping = $this->make_uncle_sam_happy;
         } else {
@@ -303,7 +305,7 @@ class LangFilter_EN extends LangFilter
         }
 
         // Better labelling for eCommerce config
-        if ((addon_installed('ecommerce')) && (function_exists('get_option')) && (($key === null) || (strpos($key, 'ECOM_CAT') === false/*gets saved into database*/))) {
+        if ((addon_installed('ecommerce')) && (function_exists('get_option')) && (($key === null) || ($key[0] == 'E') && (preg_match('#^ECOM_CAT#', $key) != 0/*gets saved into database*/))) {
             $remapping['the configured weight units'] = 'the configured weight units (currently ' . get_option('shipping_weight_units') . ')';
             $remapping['the configured length units'] = 'the configured length units (currently ' . get_option('shipping_distance_units') . ')';
             $remapping['for each unit weight of product'] = 'for each unit weight of product (currently ' . get_option('shipping_weight_units') . ')';
@@ -313,7 +315,7 @@ class LangFilter_EN extends LangFilter
         // Process remappings
         $lc_value = cms_strtolower_ascii($value);
         foreach ($remapping as $authentic => $perverted) {
-            if (strpos($lc_value, $authentic) !== false) {
+            if (stripos($lc_value, $authentic) !== false) {
                 $value = preg_replace(
                     '#(^|\s|\(|"|\')' . preg_quote($authentic, '#') . '#',
                     '$1' . $perverted,
