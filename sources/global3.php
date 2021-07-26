@@ -1320,7 +1320,7 @@ function cms_mb_strtoupper(string $in) : string
  */
 function cms_mb_strcmp(string $str1, string $str2) : int
 {
-    if (function_exists('collator_create')) {
+    if ((function_exists('collator_create')) && (function_exists('do_lang'))) {
         $collator = cms_collator_create();
         if ($collator !== null) {
             collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::OFF);

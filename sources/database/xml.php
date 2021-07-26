@@ -708,7 +708,7 @@ class Database_Static_xml extends DatabaseDriver
                 ],
                 [
                     'm_name' => 'i_fields',
-                    'm_type' => '*ID_TEXT',
+                    'm_type' => '*LONG_TEXT',
                 ],
             ];
         } else {

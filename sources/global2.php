@@ -1085,7 +1085,7 @@ function has_low_memory() : bool
  */
 function disable_php_memory_limit()
 {
-    if (get_value('memory_limit_simulate_hard') === '1') {
+    if ((function_exists('get_value')) && (get_value('memory_limit_simulate_hard') === '1')) {
         return;
     }
 
