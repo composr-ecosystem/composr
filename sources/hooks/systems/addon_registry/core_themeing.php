@@ -178,7 +178,7 @@ class Hook_addon_registry_core_themeing
             'templates/THEME_IMAGE_EDIT_SCREEN.tpl' => 'administrative__theme_image_edit_screen',
             'templates/THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL.tpl' => 'administrative__theme_template_editor_template_detail',
             'templates/THEME_TEMPLATE_EDITOR_SCREEN.tpl' => 'administrative__theme_template_editor_screen',
-            'templates/THEME_TEMPLATE_EDITOR_TAB_REVISIONS.tpl' => 'administrative__theme_template_editor_screen',
+            'templates/THEME_TEMPLATE_EDITOR_TAB_REVISIONS.tpl' => 'administrative__theme_template_editor_tab',
             'templates/THEME_TEMPLATE_EDITOR_TAB.tpl' => 'administrative__theme_template_editor_tab',
             'templates/THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN.tpl' => 'administrative__theme_template_editor_tab',
             'templates/THEME_TEMPLATE_EDITOR_RESTORE_REVISION.tpl' => 'administrative__theme_template_editor_restore_revision',
