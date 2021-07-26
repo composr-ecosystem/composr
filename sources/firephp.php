@@ -1716,6 +1716,10 @@ class FirePHP {
      */
     protected function is_utf8($str)
     {
+		if (!is_string($str)) { // Added by ChrisG for type strictness
+			return false;
+		}
+
         if (function_exists('mb_detect_encoding')) {
             return (
                 mb_detect_encoding($str, 'UTF-8', true) == 'UTF-8' &&

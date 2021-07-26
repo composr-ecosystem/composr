@@ -77,7 +77,7 @@ class _special_links_test_set extends cms_test_case
             //'https://serps.com/tools/' => true,   Unreliable
             'https://validator.w3.org/' => true,
             'https://jigsaw.w3.org/css-validator/' => true,
-            'https://achecker.ca/checker/index.php' => true,
+            'https://achecker.us/checker/index.php' => true,
             'https://www.bing.com/webmasters/help/url-inspection-55a30305' => true,
             'https://search.google.com/structured-data/testing-tool/' => true,
             'https://webmaster.yandex.com/tools/microtest/' => false,

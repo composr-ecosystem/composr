@@ -1407,18 +1407,21 @@ class CMSStatsDatePivot extends CMSStatsFilter
  * Function to find Alexa details of the site.
  *
  * @param  ?string $url The URL of the site which you want to find out information on.) (null: base URL)
+ * @param  boolean $support_caching Whether to support caching
  * @return array Returns a pair with the rank, and the amount of links
  */
-function get_alexa_rank(?string $url = null) : array
+function get_alexa_rank(?string $url = null, $support_caching = true) : array
 {
     if ($url === null) {
         $url = get_base_url() . '/';
     }
 
-    $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24, true);
-    if ($test !== null) {
-        return unserialize($test);
-    }
+	if ($support_caching) {
+		$test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24, true);
+		if ($test !== null) {
+			return unserialize($test);
+		}
+	}
 
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
     $result = http_get_contents($_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0]);

@@ -109,6 +109,10 @@ class character_sets_test_set extends cms_test_case
 
         // Test HTTP downloader
         $_a = http_get_contents($url_a, ['convert_to_internal_encoding' => true]);
+        if ($this->debug) {
+            @var_dump($a);
+            @var_dump($_a);
+        }
         $this->assertTrue($a == $_a);
     }
 }

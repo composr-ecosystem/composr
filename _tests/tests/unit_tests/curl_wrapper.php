@@ -25,6 +25,11 @@ class curl_wrapper_test_set extends cms_test_case
             return;
         }
 
+        if (!function_exists('mb_strtoupper')) {
+            $this->assertTrue(false, 'mbstring needed');
+            return;
+        }
+
         require_code('curl');
         $ob = new Alexsoft\Curl();
         $result = $ob->get('https://www.example.com');

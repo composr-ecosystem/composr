@@ -213,8 +213,10 @@ class _filter_xml_test_set extends cms_test_case
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
-        $row = $rows[0];
-        $this->assertTrue(get_translated_text($row['title']) == 'Example' . $rnd);
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            $this->assertTrue(get_translated_text($row['title']) == 'Example' . $rnd);
+        }
     }
 
     public function testSentenceCase()
@@ -254,8 +256,10 @@ class _filter_xml_test_set extends cms_test_case
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC'/*, 1*/);
-        $row = $rows[0];
-        $this->assertTrue(get_translated_text($row['title']) == 'This is a test');
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            $this->assertTrue(get_translated_text($row['title']) == 'This is a test');
+        }
     }
 
     public function testTitleCase()
@@ -295,8 +299,10 @@ class _filter_xml_test_set extends cms_test_case
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
-        $row = $rows[0];
-        $this->assertTrue(get_translated_text($row['title']) == 'This Is A Test');
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            $this->assertTrue(get_translated_text($row['title']) == 'This Is A Test');
+        }
     }
 
     public function testAppend()
@@ -337,8 +343,10 @@ class _filter_xml_test_set extends cms_test_case
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
-        $row = $rows[0];
-        $this->assertTrue(get_translated_text($row['title']) == 'foobarEXAMPLEfoobar');
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            $this->assertTrue(get_translated_text($row['title']) == 'foobarEXAMPLEfoobar');
+        }
     }
 
     public function testReplace()
@@ -378,8 +386,10 @@ class _filter_xml_test_set extends cms_test_case
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
-        $row = $rows[0];
-        $this->assertTrue(get_translated_text($row['title']) == 'foobar');
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            $this->assertTrue(get_translated_text($row['title']) == 'foobar');
+        }
     }
 
     public function testDeepClean()
@@ -419,9 +429,11 @@ class _filter_xml_test_set extends cms_test_case
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
-        $row = $rows[0];
-        $_title = get_translated_text($row['title']);
-        $this->assertTrue($_title == 'blah', 'Got ' . $_title);
+        if (array_key_exists(0, $rows)) {
+            $row = $rows[0];
+            $_title = get_translated_text($row['title']);
+            $this->assertTrue($_title == 'blah', 'Got ' . $_title);
+        }
     }
 
     public function testDefaultFields()

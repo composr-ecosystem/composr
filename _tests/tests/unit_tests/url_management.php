@@ -77,51 +77,67 @@ class url_management_test_set extends cms_test_case
         set_option('url_scheme', 'RAW');
         set_option('url_scheme_omit_default_zone_pages', '0');
 
+        $zone_prefix = (get_option('single_public_zone') == '1') ? '' : 'site/';
+
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'site/index.php?page=examplepage&type=exampletype&id=exampleid&foo=bar', 'Got: ' . $got);
+        $expected = $zone_prefix . 'index.php?page=examplepage&type=exampletype&id=exampleid&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'index.php?page=examplepage&type=exampletype&id=exampleid&foo=bar', 'Got: ' . $got);
+        $expected = 'index.php?page=examplepage&type=exampletype&id=exampleid&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'index.php?page=examplepage&id=exampleid&foo=bar', 'Got: ' . $got);
+        $expected = 'index.php?page=examplepage&id=exampleid&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'index.php?page=examplepage&foo=bar', 'Got: ' . $got);
+        $expected = 'index.php?page=examplepage&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'index.php?page=examplepage', 'Got: ' . $got);
+        $expected = 'index.php?page=examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME, 'Got: ' . $got);
+        $expected = 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME;
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME, 'Got: ' . $got);
+        $expected = 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME;
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME . '&foo=bar', 'Got: ' . $got);
+        $expected = 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME . '&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         set_option('url_scheme_omit_default_zone_pages', '1');
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'site/index.php?page=examplepage', 'Got: ' . $got);
+        $expected = $zone_prefix . 'index.php?page=examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'index.php?page=examplepage', 'Got: ' . $got);
+        $expected = 'index.php?page=examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/true, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME . '&type=exampletype', 'Got: ' . $got);
+        $expected = 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME . '&type=exampletype';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME . '&foo=bar', 'Got: ' . $got);
+        $expected = 'index.php?page=' . DEFAULT_ZONE_PAGE_NAME . '&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         // --
 
@@ -131,50 +147,64 @@ class url_management_test_set extends cms_test_case
         set_option('url_scheme_omit_default_zone_pages', '0');
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'site/pg/examplepage/exampletype/exampleid?foo=bar', 'Got: ' . $got);
+        $expected = $zone_prefix . 'pg/examplepage/exampletype/exampleid?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'pg/examplepage/exampletype/exampleid?foo=bar', 'Got: ' . $got);
+        $expected = 'pg/examplepage/exampletype/exampleid?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'pg/examplepage/browse/exampleid?foo=bar', 'Got: ' . $got);
+        $expected = 'pg/examplepage/browse/exampleid?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'pg/examplepage?foo=bar', 'Got: ' . $got);
+        $expected = 'pg/examplepage?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'pg/examplepage', 'Got: ' . $got);
+        $expected = 'pg/examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'pg/' . DEFAULT_ZONE_PAGE_NAME, 'Got: ' . $got);
+        $expected = 'pg/' . DEFAULT_ZONE_PAGE_NAME;
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'pg/' . DEFAULT_ZONE_PAGE_NAME, 'Got: ' . $got);
+        $expected = 'pg/' . DEFAULT_ZONE_PAGE_NAME;
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'pg/' . DEFAULT_ZONE_PAGE_NAME . '?foo=bar', 'Got: ' . $got);
+        $expected = 'pg/' . DEFAULT_ZONE_PAGE_NAME . '?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme_omit_default_zone_pages', '1');
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'site/pg/examplepage', 'Got: ' . $got);
+        $expected = $zone_prefix . 'pg/examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'pg/examplepage', 'Got: ' . $got);
+        $expected = 'pg/examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/true, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'pg/' . DEFAULT_ZONE_PAGE_NAME . '/exampletype', 'Got: ' . $got);
+        $expected = 'pg/' . DEFAULT_ZONE_PAGE_NAME . '/exampletype';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'pg/home?foo=bar', 'Got: ' . $got);
+        $expected = 'pg/home?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         // --
 
@@ -184,50 +214,64 @@ class url_management_test_set extends cms_test_case
         set_option('url_scheme_omit_default_zone_pages', '0');
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'site/examplepage/exampletype/exampleid.htm?foo=bar', 'Got: ' . $got);
+        $expected = $zone_prefix . 'examplepage/exampletype/exampleid.htm?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'examplepage/exampletype/exampleid.htm?foo=bar', 'Got: ' . $got);
+        $expected = 'examplepage/exampletype/exampleid.htm?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'examplepage/browse/exampleid.htm?foo=bar', 'Got: ' . $got);
+        $expected = 'examplepage/browse/exampleid.htm?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'examplepage.htm?foo=bar', 'Got: ' . $got);
+        $expected = 'examplepage.htm?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'examplepage.htm', 'Got: ' . $got);
+        $expected = 'examplepage.htm';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '.htm', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '.htm';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '.htm', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '.htm';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '.htm?foo=bar', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '.htm?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         set_option('url_scheme_omit_default_zone_pages', '1');
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'site/examplepage.htm', 'Got: ' . $got);
+        $expected = $zone_prefix . 'examplepage.htm';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'examplepage.htm', 'Got: ' . $got);
+        $expected = 'examplepage.htm';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/true, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '/exampletype.htm', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '/exampletype.htm';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '.htm?foo=bar', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '.htm?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         // --
 
@@ -237,50 +281,64 @@ class url_management_test_set extends cms_test_case
         set_option('url_scheme_omit_default_zone_pages', '0');
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'site/examplepage/exampletype/exampleid?foo=bar', 'Got: ' . $got);
+        $expected = $zone_prefix . 'examplepage/exampletype/exampleid?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'examplepage/exampletype/exampleid?foo=bar', 'Got: ' . $got);
+        $expected = 'examplepage/exampletype/exampleid?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'examplepage/browse/exampleid?foo=bar', 'Got: ' . $got);
+        $expected = 'examplepage/browse/exampleid?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'examplepage?foo=bar', 'Got: ' . $got);
+        $expected = 'examplepage?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'examplepage', 'Got: ' . $got);
+        $expected = 'examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME, 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME;
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME, 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME;
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '?foo=bar', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         set_option('url_scheme_omit_default_zone_pages', '1');
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'site/examplepage', 'Got: ' . $got);
+        $expected = $zone_prefix . 'examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', 'examplepage', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == 'examplepage', 'Got: ' . $got);
+        $expected = 'examplepage';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', '', /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == '', 'Got: ' . $got);
+        $expected = '';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/true, /*$has_id*/false, /*$has_arb_params*/false);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '/exampletype', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '/exampletype';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         $got = $this->url_builder('', null, /*$has_type*/false, /*$has_id*/false, /*$has_arb_params*/true);
-        $this->assertTrue($got == DEFAULT_ZONE_PAGE_NAME . '?foo=bar', 'Got: ' . $got);
+        $expected = DEFAULT_ZONE_PAGE_NAME . '?foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
 
         // --
 
@@ -290,7 +348,8 @@ class url_management_test_set extends cms_test_case
         set_option('url_scheme', 'HTM');
 
         $got = $this->url_builder('site', 'examplepage', /*$has_type*/true, /*$has_id*/true, /*$has_arb_params*/true);
-        $this->assertTrue($got == 'site/index.php?page=examplepage&type=exampletype&id=exampleid&foo=bar', 'Got: ' . $got);
+        $expected = $zone_prefix . 'index.php?page=examplepage&type=exampletype&id=exampleid&foo=bar';
+        $this->assertTrue($got == $expected, 'Got: ' . $got . ' ; Expected: ' . $expected);
     }
 
     protected function url_builder($zone, $page, $has_type, $has_id, $has_arb_params)

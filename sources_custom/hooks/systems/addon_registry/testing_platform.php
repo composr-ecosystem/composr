@@ -478,7 +478,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/codechecker/codechecker.app/Contents/Info.plist',
             '_tests/codechecker/codechecker.app/Contents/MacOS/codechecker',
             '_tests/codechecker/codechecker.bat',
-            '_tests/codechecker/codechecker.ini',
             '_tests/codechecker/codechecker.php',
             '_tests/codechecker/codechecker.sh',
             '_tests/codechecker/index.html',

@@ -1325,17 +1325,29 @@ function cms_mb_strcmp(string $str1, string $str2) : int
         if ($collator !== null) {
             collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::OFF);
 
-            $ret = collator_compare($collator, $str1, $str2);
+            $cmp = collator_compare($collator, $str1, $str2);
 
-            return $ret;
+            if ($cmp <= -1) {
+                return -1;
+            }
+            if ($cmp >= 1) {
+                return 1;
+            }
+            return 0;
         }
     }
 
     // Ideally we'd use strcoll, but that's case-sensitive and also doesn't work on Windows for Unicode, and also relies on unstable collations
 
-    $ret = strcmp($str1, $str2);
+    $cmp = strcmp($str1, $str2);
 
-    return $ret;
+    if ($cmp <= -1) {
+        return -1;
+    }
+    if ($cmp >= 1) {
+        return 1;
+    }
+    return 0;
 }
 
 /**

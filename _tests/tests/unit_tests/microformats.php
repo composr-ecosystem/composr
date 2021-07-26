@@ -37,6 +37,11 @@ class microformats_test_set extends cms_test_case
             return;
         }
 
+        if (!function_exists('mb_convert_encoding')) {
+            $this->assertTrue(false, 'PHP mbstring extension needed');
+            return;
+        }
+
         $tpl = render_screen_preview('calendar', 'tpl_preview__calendar_event_screen', 'CALENDAR_EVENT_SCREEN.tpl');
         $result = $this->do_validation($tpl->evaluate());
         $this->assertTrue($result['items'][0]['type'][0] == 'h-event');
@@ -54,6 +59,11 @@ class microformats_test_set extends cms_test_case
             return;
         }
 
+        if (!function_exists('mb_convert_encoding')) {
+            $this->assertTrue(false, 'PHP mbstring extension needed');
+            return;
+        }
+
         $tpl = render_screen_preview('calendar', 'tpl_preview__block_side_calendar_listing', 'CALENDAR_EVENT_SCREEN.tpl');
         $result = $this->do_validation($tpl->evaluate());
         $this->assertTrue($result['items'][0]['type'][0] == 'h-event');
@@ -65,6 +75,11 @@ class microformats_test_set extends cms_test_case
     public function testHCard()
     {
         if (($this->only !== null) && ($this->only != 'testHCard')) {
+            return;
+        }
+
+        if (!function_exists('mb_convert_encoding')) {
+            $this->assertTrue(false, 'PHP mbstring extension needed');
             return;
         }
 

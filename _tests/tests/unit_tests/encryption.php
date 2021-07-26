@@ -22,6 +22,11 @@ class encryption_test_set extends cms_test_case
     {
         require_code('encryption');
 
+        if (!is_encryption_available()) {
+            $this->assertTrue(false, 'openssl needed');
+            return;
+        }
+
         set_option('encryption_key', get_file_base() . '/_tests/assets/encryption/public.pem');
         set_option('decryption_key', get_file_base() . '/_tests/assets/encryption/private.pem');
 
