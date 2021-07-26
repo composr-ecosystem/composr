@@ -106,7 +106,7 @@ Set up oAuth for Google Search Console at Admin Zone > Setup > Setup API Access.
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

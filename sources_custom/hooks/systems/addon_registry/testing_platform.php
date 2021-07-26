@@ -144,7 +144,7 @@ We hope other users will appreciate your efforts and give you some gift points t
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

@@ -106,7 +106,7 @@ Note that this addon only affects galleries at the moment, and it requires the "
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

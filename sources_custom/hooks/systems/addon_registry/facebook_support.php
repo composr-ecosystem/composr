@@ -122,7 +122,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

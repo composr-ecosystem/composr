@@ -108,7 +108,7 @@ You will still need to assign "Avoid broad input filtering security layer" privi
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

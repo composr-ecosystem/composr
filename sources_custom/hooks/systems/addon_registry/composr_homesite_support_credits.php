@@ -104,7 +104,7 @@ class Hook_addon_registry_composr_homesite_support_credits
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

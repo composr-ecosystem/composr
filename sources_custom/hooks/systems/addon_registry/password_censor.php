@@ -105,7 +105,7 @@ This is a system scheduler script that regularly censors anything looking like a
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

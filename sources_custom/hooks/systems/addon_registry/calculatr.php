@@ -105,7 +105,7 @@ This is coded as a "mini block", and serves as a good example of how you can use
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

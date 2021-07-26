@@ -118,7 +118,7 @@ Sample spreadsheet files for all the other blocks are provided under [tt]uploads
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

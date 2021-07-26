@@ -122,7 +122,7 @@ You can add more banners through this section, just make sure they are 120px &ti
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

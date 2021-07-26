@@ -108,7 +108,7 @@ The above example creates a flip between text A and text B, taking 400ms. This i
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

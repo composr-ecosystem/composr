@@ -104,7 +104,7 @@ You may wish to deny access to the usergroup and member directories when using t
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

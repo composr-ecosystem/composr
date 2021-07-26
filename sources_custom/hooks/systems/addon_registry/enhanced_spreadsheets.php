@@ -106,7 +106,7 @@ Note the old-style Excel format ([tt].xls[/tt]) is intentionally not supported b
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

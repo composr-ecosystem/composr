@@ -108,7 +108,7 @@ If you would like to show the message as a Composr warning (at the top of the sc
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

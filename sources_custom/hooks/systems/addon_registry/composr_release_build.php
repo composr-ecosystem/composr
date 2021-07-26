@@ -109,7 +109,7 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

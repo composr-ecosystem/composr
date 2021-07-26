@@ -124,7 +124,7 @@ This addon does not itself handle the transaction to purchase what is being adve
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

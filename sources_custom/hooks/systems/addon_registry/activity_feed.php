@@ -118,7 +118,7 @@ The blocks provided are [tt]main_activity_feed[/tt] and the status entry box is 
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

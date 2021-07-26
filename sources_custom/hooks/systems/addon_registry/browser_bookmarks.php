@@ -109,7 +109,7 @@ Ever wished it was quicker to navigate around your site? If you\'re anything lik
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

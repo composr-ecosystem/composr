@@ -109,7 +109,7 @@ Based off of [url="https://github.com/GeSHi/geshi-1.0"]GeSHI 1.0[/url]. GeSHI 1.
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

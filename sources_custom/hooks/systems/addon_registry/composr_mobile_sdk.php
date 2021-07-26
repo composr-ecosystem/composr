@@ -106,7 +106,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

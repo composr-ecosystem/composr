@@ -111,7 +111,7 @@ This addon does not contain the compo.sr install code and the overall site and t
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {

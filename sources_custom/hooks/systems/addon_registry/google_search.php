@@ -114,7 +114,7 @@ Note that it is a requirement that your [tt]_google_search[/tt] page is in a zon
     /**
      * Get a mapping of dependency types.
      *
-     * @return array File permissions to set
+     * @return array A structure specifying dependency information
      */
     public function get_dependencies() : array
     {
