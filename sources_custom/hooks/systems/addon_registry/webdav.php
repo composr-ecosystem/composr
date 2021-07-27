@@ -112,6 +112,7 @@ class Hook_addon_registry_webdav
             'requires' => [
                 'commandr',
                 'PHP 7.1',
+                'PHP mbstring extension',
             ],
             'recommends' => [],
             'conflicts_with' => [],

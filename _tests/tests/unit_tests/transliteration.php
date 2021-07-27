@@ -28,17 +28,17 @@ class transliteration_test_set extends cms_test_case
         require_code('character_sets');
 
         $expect = [
-            ['foo', 'foo'],
-            ["gl\u{00FC}ckliche", 'gluckliche'],
-            ["caf\u{00E9}", 'cafe'],
-            ["\u{6E90}\u{660C}\u{9686}\u{5496}\u{5561}\u{5E97}", 'yuan chang long ka fei dian'],
+            ['foo', ['foo']],
+            ["gl\u{00FC}ckliche", ['gluckliche']],
+            ["caf\u{00E9}", ['cafe']],
+            ["\u{6E90}\u{660C}\u{9686}\u{5496}\u{5561}\u{5E97}", ['yuan chang long ka fei dian', 'yuan-chang-long-ka-pei-dian']],
         ];
 
         foreach ($expect as $_) {
             list($from, $to) = $_;
 
             $got = transliterate_string($from);
-            $this->assertTrue($got == $to, 'Failed to get ' . $to . ', got ' . $got);
+            $this->assertTrue(in_array($got, $to), 'Failed to get one of ' . json_encode($to) . ', got ' . $got);
         }
     }
 }

@@ -42,11 +42,15 @@ function csrf_filter_active() : bool
 /**
  * Generate and save a CSRF-token.
  *
+ * @boolean $force_fresh Force a new token to be generated
  * @return ID_TEXT Generated token
  */
-function generate_csrf_token() : string
+function generate_csrf_token(bool $force_fresh = false) : string
 {
     static $token = null; // So we only have one per screen (otherwise we can get huge numbers in our table)
+    if ($force_fresh) {
+        $token = null;
+    }
 
     if ($token === null) {
         require_code('crypt');

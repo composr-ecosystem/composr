@@ -96,6 +96,14 @@ RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
 RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
 RewriteRule ^(themes/default/images/loading\.gif)$ $themes/default/images/loading.gif.png [L,QSA]
 
+# crossdomain.xml is actually Composr-driven
+RewriteRule ^crossdomain\.xml data/crossdomain.php
+
+# WebDAV implementation (requires the non-bundled WebDAV addon)
+RewriteRule ^webdav(/.*|$) data_custom/webdav.php
+RewriteCond %{HTTP_HOST} ^webdav\..*
+RewriteRule ^(.*)$ data_custom/webdav.php
+
 # Anything that would point to a real file should actually be allowed to do so. If you have a "RewriteBase /subdir" command, you may need to change to "%{DOCUMENT_ROOT}/subdir/$1".
 RewriteCond $1 ^\d+.shtml [OR]
 RewriteCond $1 \.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bin|bmp|br|bz2|css|csv|cur|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|php|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|yaml|yml|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|woff2|xls|xlsx|xml|xsd|xsl|zip) [OR]
@@ -106,14 +114,6 @@ RewriteCond $1 -f [OR]
 RewriteCond $1 -l [OR]
 RewriteCond $1 -d
 RewriteRule ^(.*) - [L]
-
-# crossdomain.xml is actually Composr-driven
-RewriteRule ^crossdomain\.xml data/crossdomain.php
-
-# WebDAV implementation (requires the non-bundled WebDAV addon)
-RewriteRule ^webdav(/.*|$) data_custom/webdav.php
-RewriteCond %{HTTP_HOST} ^webdav\..*
-RewriteRule ^(.*)$ data_custom/webdav.php
 
 #FAILOVER STARTS
 ### LEAVE THIS ALONE, AUTOMATICALLY MAINTAINED ###
