@@ -260,14 +260,18 @@ class _images_test_set extends cms_test_case
         */
 
         // Edge Case: EXIF rotation test via dimension test and pixel color test
-        if ($this->isRunningTest('36')) {
-            $this->assertTrue($this->runEXIFTest(get_file_base() . '/_tests/assets/images/exifrotated.jpg', 4896, 6528, 4896, 6528, 4850, 250, 205, 164, 85, 0, $additional_information), 'exifrotated.jpg EXIF rotation test (size and color). Doubled the original size. ' . $additional_information);
-        }
-        if ($this->isRunningTest('37')) {
-            $this->assertTrue($this->runEXIFTest(get_file_base() . '/_tests/assets/images/exifrotated.jpg', 2448, 3264, 2448, 3264, 2425, 175, 205, 164, 85, 0, $additional_information), 'ExifRotated.jpg EXIF rotation test (size and color). Kept the original size. ' . $additional_information);
-        }
-        if ($this->isRunningTest('38')) {
-            $this->assertTrue($this->runEXIFTest(get_file_base() . '/_tests/assets/images/exifrotated.jpg', 1224, 1632, 1224, 1632, 1212, 62, 206, 165, 86, 0, $additional_information), 'xxifrotated.jpg EXIF rotation test (size and color). Halved the original size. ' . $additional_information);
+        if (function_exists('exif_read_data')) {
+            if ($this->isRunningTest('36')) {
+                $this->assertTrue($this->runEXIFTest(get_file_base() . '/_tests/assets/images/exifrotated.jpg', 4896, 6528, 4896, 6528, 4850, 250, 205, 164, 85, 0, $additional_information), 'exifrotated.jpg EXIF rotation test (size and color). Doubled the original size. ' . $additional_information);
+            }
+            if ($this->isRunningTest('37')) {
+                $this->assertTrue($this->runEXIFTest(get_file_base() . '/_tests/assets/images/exifrotated.jpg', 2448, 3264, 2448, 3264, 2425, 175, 205, 164, 85, 0, $additional_information), 'ExifRotated.jpg EXIF rotation test (size and color). Kept the original size. ' . $additional_information);
+            }
+            if ($this->isRunningTest('38')) {
+                $this->assertTrue($this->runEXIFTest(get_file_base() . '/_tests/assets/images/exifrotated.jpg', 1224, 1632, 1224, 1632, 1212, 62, 206, 165, 86, 0, $additional_information), 'xxifrotated.jpg EXIF rotation test (size and color). Halved the original size. ' . $additional_information);
+            }
+        } else {
+            $this->assertTrue(false, 'Skipping rotation tests as PHP does not have EXIF');
         }
 
         // Edge case: SVG image content tests
