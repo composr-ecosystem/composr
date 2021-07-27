@@ -35,9 +35,9 @@ class Block_main_leader_board
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 3;
+        $info['version'] = 4;
         $info['locked'] = false;
-        $info['parameters'] = ['zone'];
+        $info['parameters'] = ['zone', 'leaderboard'];
         $info['update_require_upgrade'] = true;
         return $info;
     }
@@ -65,6 +65,7 @@ PHP;
     public function uninstall()
     {
         $GLOBALS['SITE_DB']->drop_table_if_exists('leader_board');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_boards');
     }
 
     /**
@@ -76,11 +77,40 @@ PHP;
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
+            $GLOBALS['SITE_DB']->create_table('leader_boards', [
+                'lb_title' => 'SHORT_TEXT',
+                'lb_member_count' => 'INTEGER',
+                'lb_timeframe' => 'SHORT_TEXT',
+                'lb_rolling' => 'BINARY',
+                'lb_include_staff' => 'BINARY',
+                'lb_usergroup' => '?GROUP',
+            ]);
+
             $GLOBALS['SITE_DB']->create_table('leader_board', [
                 'lb_member' => '*MEMBER',
                 'lb_points' => 'INTEGER',
+                'lb_rank' => 'INTEGER',
+                'lb_leaderboard_id' => '*AUTO_LINK',
                 'date_and_time' => '*TIME',
             ]);
+        } else if ($upgrade_from < 4) { // LEGACY
+            $GLOBALS['SITE_DB']->create_table('leader_boards', [
+                'lb_title' => 'SHORT_TEXT',
+                'lb_member_count' => 'INTEGER',
+                'lb_timeframe' => 'SHORT_TEXT',
+                'lb_rolling' => 'BINARY',
+                'lb_include_staff' => 'BINARY',
+                'lb_usergroup' => '?GROUP',
+            ]);
+
+            // Assign a default leaderboard for legacy leaderboard versions
+            $default_row = $GLOBALS['SITE_DB']->query_insert('leader_boards', [
+                'lb_member_count' => 300,
+                'lb_timeframe' => 'week'
+            ], true);
+
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_rank', 'INTEGER');
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leaderboard_id', 'AUTO_LINK', $default_row);
         }
     }
 
@@ -92,6 +122,7 @@ PHP;
      */
     public function run(array $map) : object
     {
+        // TODO
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('points', $error_msg)) {
             return $error_msg;
@@ -104,6 +135,7 @@ PHP;
         require_css('points');
 
         require_code('leader_board');
+
         $rows = calculate_latest_leader_board();
 
         $out = new Tempcode();

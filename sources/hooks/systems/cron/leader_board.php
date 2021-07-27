@@ -32,7 +32,7 @@ class Hook_cron_leader_board
      */
     public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
-        if (!addon_installed('points')) {
+        if (!addon_installed('leader_board') || !addon_installed('points')) {
             return null;
         }
 
@@ -52,6 +52,6 @@ class Hook_cron_leader_board
     {
         require_code('points');
         require_code('leader_board');
-        calculate_latest_leader_board(false);
+        calculate_all_leader_boards();
     }
 }

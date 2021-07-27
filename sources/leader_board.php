@@ -31,48 +31,95 @@ function has_leader_board_since(int $cutoff) : bool
 }
 
 /**
- * Calculate the leader-board.
+ * Check all leader-boards and generate a new result set when applicable.
+ */
+function calculate_all_leader_boards()
+{
+    $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'leader_boards');
+    foreach ($rows as $row) {
+        calculate_leader_board($row, false);
+    }
+}
+
+/**
+ * Calculate the leader-boards.
  *
- * @param  boolean $retrieve Whether to retrieve results too (no retrieve -> faster call)
+ * @param  array $row The leader-board row to calculate
  * @return ?array A map of member-IDs to points, sorted by leader-board status (null: not retrieving)
  */
-function calculate_latest_leader_board(bool $retrieve = true) : ?array
+function calculate_leader_board(array $row) : ?array
 {
-    // Already has?
-    $cutoff = time() - 60 * 60 * 24 * 7;
-    if (has_leader_board_since($cutoff)) {
-        if (!$retrieve) {
-            return null;
-        }
+    // Calculate cutoff time based on site timezone
+    $old_timezone = @date_default_timezone_get();
+    date_default_timezone_set(get_site_timezone());
+    $cutoff_string = '-1 week';
+    $cutoff = time() - (60 * 60 * 24 * 7);
+    $start = time();
+    switch ($row['lb_timeframe']) {
+        case 'week':
+            $cutoff_string = '-1 week';
+            $cutoff = strtotime($cutoff_string); // Default to one week ago
+            if ($row['lb_rolling'] === '0') { // Do not roll; cut off at the start of the week instead
+                if (get_option('ssw') === '0') { // Week starts Monday
+                    $cutoff = strtotime('last monday');
+                } else { // Week starts Sunday
+                    $cutoff = strtotime('last sunday');
+                }
+            }
+            break;
+        case 'month':
+            $cutoff_string = '-1 month';
+            $cutoff = strtotime($cutoff_string); // Default to 1 month ago from now
+            if ($row['lb_rolling'] === '0') { // Do not roll; cut off at the start of the week instead
+                $cutoff = strtotime("first day of this month");
+            }
+            break;
+        case 'year':
+            $cutoff_string = '-1 year';
+            $cutoff = strtotime($cutoff_string); // Default to 1 month ago from now
+            if ($row['lb_rolling'] === '0') { // Do not roll; cut off at the start of the week instead
+                $cutoff = strtotime("January 1");
+            }
+            break;
+    }
+    if ($cutoff > time()) { // Sometimes if today matches the condition, then the timestamp will be in the future; roll back to midnight
+        $cutoff = strtotime('midnight');
+    }
+    $start = strtotime($cutoff_string, $cutoff);
+    date_default_timezone_set($old_timezone);
 
-        $rows = $GLOBALS['SITE_DB']->query('SELECT lb_member,lb_points FROM ' . get_table_prefix() . 'leader_board WHERE date_and_time>=' . strval($cutoff));
-        $rows = collapse_2d_complexity('lb_member', 'lb_points', $rows);
-        arsort($rows);
-        return $rows;
+    if (has_leader_board_since($cutoff)) {
+        return null; // Nothing to do; too soon to generate a new leader board
     }
 
     // Calculate
 
-    $limit = intval(get_option('leader_board_size')); // The number to show on the leader-board
-    $show_staff = (get_option('leader_board_show_staff') == '1'); // Whether to include staff
+    $limit = $row['lb_member_count']; // The number to show on the leader-board
+    $show_staff = $row['lb_include_staff']; // Whether to include staff
 
-    // FUDGE #2737
-    $limit_hack = max(300, $limit); // We'll query more top posters than we'll display, so that we workaround the issue that our initial efficient querying by top post count is not the same as querying by top point count (we'll hope that they align close enough for nobody to notice!)
-    $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters($limit_hack);
     $points = [];
 
-    foreach ($all_members as $member) {
-        $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+    $rows = [];
+    $current_id = 1;
+    do {
+        $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 100);
+        foreach ($rows as $member) {
+            $current_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+            if (is_guest($current_id)) {
+                continue; // Should not happen, but some forum drivers might suck ;)
+            }
+            if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($current_id))) {
+                continue;
+            }
 
-        if (is_guest($id)) {
-            continue; // Should not happen, but some forum drivers might suck ;)
-        }
-        if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($id))) {
-            continue;
-        }
+            // TODO left off here
+            $points_then = total_points($current_id, $start, false);
+            $points_now = total_points($current_id, $cutoff, false);
+            $points_earned = $points_now - $points_then;
 
-        $points[$id] = total_points($id);
-    }
+            $points[$current_id] = $points_earned;
+        }
+    } while (count($rows) > 0);
 
     arsort($points);
 
