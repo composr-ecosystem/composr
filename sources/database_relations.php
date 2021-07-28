@@ -614,7 +614,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
     require_code('database/' . filter_naughty_harsh($intended_db_type));
     $db_static = object_factory('Database_Static_' . filter_naughty_harsh($intended_db_type), false, [get_table_prefix()]);
 
-    if (!$GLOBALS['DB_STATIC_OBJECT']->supports_drop_table_if_exists($db->connection_write)) {
+    if (!$GLOBALS['DB_STATIC_OBJECT']->has_drop_table_if_exists($db->connection_write)) {
         $include_drops = false; // "DROP IF EXISTS" only supported on some DBs.
     }
 
@@ -657,7 +657,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
                 }
             }
         }
-        $queries = $db_static->create_table($db->get_table_prefix() . $table_name, $fields, $table_name, $db->connection_write, null);
+        $queries = $db_static->create_table($db->get_table_prefix() . $table_name, $fields, $db->connection_write, $table_name, $save_bytes);
         foreach ($queries as $i => $sql) {
             if ($i != 0) {
                 fwrite($out_file, "\n");
@@ -666,11 +666,47 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
             fwrite($out_file, $sql . ";\n");
         }
 
+        // Indexes
+        $indexes = $db->query_select('db_meta_indices', ['*'], ['i_table' => $table_name]);
+        foreach ($indexes as $i => $index) {
+            if ($i != 0) {
+                fwrite($out_file, "\n");
+            }
+
+            $index_name = $index['i_name'];
+
+            if ($index_name[0] == '#') {
+                $_index_name = substr($index_name, 1);
+                $is_full_text = true;
+            } else {
+                $_index_name = $index_name;
+                $is_full_text = false;
+            }
+
+            $fields = [];
+            foreach (explode(',', $index['i_fields']) as $field_name) {
+                $db_type = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $field_name]);
+                $fields[$field_name] = $db_type;
+            }
+
+            $_fields = _helper_generate_index_fields($table_name, $fields, $is_full_text);
+
+            if ($_fields !== null) {
+                $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
+
+                $queries = $db_static->create_index($db->get_table_prefix() . $table_name, $index_name, $_fields, $db->connection_write, $table_name, $unique_key_fields, $db);
+                foreach ($queries as $sql) {
+                    fwrite($out_file, $sql . ";\n");
+                }
+            }
+        }
+
         // Data
         $start = 0;
         do {
             $data = $db->query_select($table_name, ['*'], [], '', 100, $start, false, []);
-            foreach ($data as $map) {
+            $values_buildup = '';
+            foreach ($data as $row_counter => $map) {
                 $keys = '';
                 $all_values = [];
 
@@ -709,8 +745,14 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
                     }
                 }
 
-                $sql = 'INSERT INTO ' . $db->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES (' . $all_values[0] . ')';
-                fwrite($out_file, $sql . ";\n");
+                if ((!$this->static_ob->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
+                    $sql = 'INSERT INTO ' . $conn->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES ' . $values_buildup . '(' . $all_values[0] . ')';
+                    fwrite($out_file, $sql . ";\n");
+
+                    $values_buildup = '';
+                } else {
+                    $values_buildup .= '(' . $all_values[0] . '),' . "\n";
+                }
             }
 
             if (!empty($data)) {
@@ -721,41 +763,6 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
         // Divider, if we put out some data
         if ($start > 0) {
             fwrite($out_file, "\n");
-        }
-
-        // Indexes
-        $indexes = $db->query_select('db_meta_indices', ['*'], ['i_table' => $table_name]);
-        foreach ($indexes as $i => $index) {
-            if ($i != 0) {
-                fwrite($out_file, "\n");
-            }
-
-            $index_name = $index['i_name'];
-
-            if ($index_name[0] == '#') {
-                $_index_name = substr($index_name, 1);
-                $is_full_text = true;
-            } else {
-                $_index_name = $index_name;
-                $is_full_text = false;
-            }
-
-            $fields = [];
-            foreach (explode(',', $index['i_fields']) as $field_name) {
-                $db_type = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $field_name]);
-                $fields[$field_name] = $db_type;
-            }
-
-            $_fields = _helper_generate_index_fields($table_name, $fields, $is_full_text);
-
-            if ($_fields !== null) {
-                $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
-
-                $queries = $db_static->create_index($db->get_table_prefix() . $table_name, $index_name, $_fields, $db->connection_write, $table_name, $unique_key_fields, $db);
-                foreach ($queries as $sql) {
-                    fwrite($out_file, $sql . ";\n");
-                }
-            }
         }
 
         pop_db_scope_check();

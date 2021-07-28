@@ -918,6 +918,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/_api_translation.php',
             '_tests/tests/unit_tests/transliteration.php',
             '_tests/tests/unit_tests/encryption.php',
+            '_tests/tests/unit_tests/simulated_wildcard_match.php',
             '_tests/tests/unit_tests/tutorial_image_consistency.php',
             '_tests/tests/unit_tests/tutorial_nav_paths.php',
             '_tests/tests/unit_tests/_tutorial_quality.php',

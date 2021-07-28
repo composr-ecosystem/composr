@@ -2008,7 +2008,9 @@ function cns_member_choose_photo(string $param_name, string $upload_name, ?int $
     }
 
     // Find photo URL
+    set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, true); // Code to strip GPS
     $urls = get_url($param_name, $upload_name, file_exists(get_custom_file_base() . '/uploads/photos') ? 'uploads/photos' : 'uploads/cns_photos', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, true, '', '', false, true);
+    reset_images_cleanup_pipeline_settings();
     if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
         $urls[0] = get_base_url() . '/' . $urls[0];
     }

@@ -1805,7 +1805,7 @@ function fix_entities(string $in) : string
                     $out .= 'amp;';
                 } else {
                     $lump = substr($lump, 0, $pos);
-                    if (!(($lump[0] == '#') && ((is_numeric(substr($lump, 1))) || (($lump[1] == 'x') && (is_hex(substr($lump, 2))))))) {
+                    if (!((isset($lump[0])) && ($lump[0] == '#') && ((is_numeric(substr($lump, 1))) || ((isset($lump[1])) && ($lump[1] == 'x') && (is_hex(substr($lump, 2))))))) {
                         if (!isset($ENTITIES[$lump])) {
                             $out .= 'amp;';
                         }

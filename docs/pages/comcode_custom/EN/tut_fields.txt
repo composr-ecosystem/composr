@@ -570,6 +570,8 @@ The first image-like field will be injected into screen metadata (i.e. will come
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]is_metadata[/tt] (set to '1' if the field should take precedence for metadata over earlier picture fields [and innate images], and '0' if it should never be the metadata field)
+
+[tt]keep_gps=on|off[/tt] (whether to keep GPS metadata in images, which is stripped by default for privacy reasons; default is off)
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__picture.png[/media]
@@ -596,6 +598,8 @@ The first image-like field will be injected into screen metadata (i.e. will come
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]is_metadata[/tt] (set to '1' if the field should take precedence for metadata over earlier picture fields [and innate images], and '0' if it should never be the metadata field)
+
+[tt]keep_gps=on|off[/tt] (whether to keep GPS metadata in images, which is stripped by default for privacy reasons; default is off)
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__picture_multi.png[/media]

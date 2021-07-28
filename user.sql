@@ -6,7 +6,8 @@ CREATE PROCEDURE add_user()
 BEGIN
 DECLARE EXIT HANDLER FOR 1044 BEGIN END;
 DECLARE EXIT HANDLER FOR 1410 BEGIN END;
-GRANT ALL PRIVILEGES ON PlaceHolderForDb.* to 'PlaceHolderForUser'@'localhost' IDENTIFIED BY 'PlaceHolderForPassword';
+CREATE USER 'PlaceHolderForUser'@'localhost' IDENTIFIED BY 'PlaceHolderForPassword';
+GRANT ALL PRIVILEGES ON PlaceHolderForDb.* TO 'PlaceHolderForUser'@'localhost';
 FLUSH PRIVILEGES;
 END ;
 

@@ -1130,8 +1130,8 @@ class Module_chat
         $fields = new Tempcode();
         require_code('form_templates');
         $fields->attach(form_input_list(do_lang_tempcode('CHATROOM_NAME'), do_lang_tempcode('CHAT_DOWNLOAD_LOGS_CHATROOM_NAME'), 'room_name', $select));
-        $fields->attach(form_input_date(do_lang_tempcode('CHAT_DOWNLOAD_LOGS_START_DATE'), do_lang_tempcode('CHAT_DOWNLOAD_LOGS_START_DATE_DESCRIPTION'), 'start', true, false, true, time() - 4 * 60 * 60, 26));
-        $fields->attach(form_input_date(do_lang_tempcode('CHAT_DOWNLOAD_LOGS_FINISH_DATE'), do_lang_tempcode('CHAT_DOWNLOAD_LOGS_FINISH_DATE_DESCRIPTION'), 'finish', true, false, true, time(), 26));
+        $fields->attach(form_input_date(do_lang_tempcode('CHAT_DOWNLOAD_LOGS_START_DATE'), do_lang_tempcode('CHAT_DOWNLOAD_LOGS_START_DATE_DESCRIPTION'), 'start', true, false, true, time() - 4 * 60 * 60, -26));
+        $fields->attach(form_input_date(do_lang_tempcode('CHAT_DOWNLOAD_LOGS_FINISH_DATE'), do_lang_tempcode('CHAT_DOWNLOAD_LOGS_FINISH_DATE_DESCRIPTION'), 'finish', true, false, true, time(), -26));
 
         $posting_name = do_lang_tempcode('CHAT_DOWNLOAD_LOGS');
         $posting_url = build_url(['page' => '_SELF', 'type' => '_download_logs'], '_SELF', [], false, true);

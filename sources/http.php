@@ -113,6 +113,16 @@ function get_webpage_meta_details(string $url) : array
     ];
 
     if (url_is_local($url)) {
+        $matches = [];
+        if (preg_match('#^uploads/.*\.(\w+)$#', $url, $matches) != 0) {
+            if (!in_array($matches[1], ['bin', 'dat'/*LEGACY*/, 'htm', 'html'])) {
+                require_code('mime_types');
+                $meta_details['t_mime_type'] = get_mime_type($matches[1], true);
+                $cache[$url] = $meta_details;
+                return $meta_details;
+            }
+        }
+
         $url = get_custom_base_url() . '/' . $url;
     }
 

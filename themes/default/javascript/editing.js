@@ -952,13 +952,10 @@
             return '';
         }
 
-        /*
-        TODO: Salman, fix me for v11
         var element = mySelection.getSelectedElement();
         if (element) {
-            return get_outer_html(element.$);
+            return element.$.outerHTML;
         }
-        */
 
         var selectedText = '';
         if (mySelection.getNative()) {

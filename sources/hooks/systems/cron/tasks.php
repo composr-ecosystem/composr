@@ -82,26 +82,29 @@ class Hook_cron_tasks
      */
     public function run(?int $last_run)
     {
-        require_code('tasks');
-
         $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], ['t_locked' => 0]);
-        foreach ($task_rows as $task_row) {
-            $GLOBALS['SITE_DB']->query_update(
-                'task_queue',
-                [
-                    't_locked' => 1,
-                ],
-                [
-                    'id' => $task_row['id'],
-                ],
-                '',
-                1
-            );
+        if (!empty($task_rows)) {
+            require_code('tasks');
+            require_code('notifications'); // Needed as a task may require the notification object, and any class that has a deserialised reference needs to be loaded first to avoid being an 'incomplete object'
 
-            require_code('files');
-            //$url = find_script('tasks') . '?id=' . strval($task_row['id']) . '&secure_ref=' . urlencode($task_row['t_secure_ref']);
-            //http_get_contents($url);
-            execute_task_background($task_row);
+            foreach ($task_rows as $task_row) {
+                $GLOBALS['SITE_DB']->query_update(
+                    'task_queue',
+                    [
+                        't_locked' => 1,
+                    ],
+                    [
+                        'id' => $task_row['id'],
+                    ],
+                    '',
+                    1
+                );
+
+                require_code('files');
+                //$url = find_script('tasks') . '?id=' . strval($task_row['id']) . '&secure_ref=' . urlencode($task_row['t_secure_ref']);
+                //http_get_contents($url);
+                execute_task_background($task_row);
+            }
         }
     }
 }

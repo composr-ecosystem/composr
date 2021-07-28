@@ -67,7 +67,7 @@
 <meta property="og:url" content="{$CANONICAL_URL*}" />
 <meta property="og:site_name" content="{$SITE_NAME*}" />
 {+START,COMMENT,Commented out by default to save bandwidth}
-	Only do this if you have a real uid, not a page id... {+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_uid,1}}<meta property="fb:admins" content="{$CONFIG_OPTION*,facebook_uid}" />{+END}
+	Only do this if you have a real uid, not a page id... {+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_uid,1}}<meta property="fb:admins" content="{$CONFIG_OPTION*,facebook_uid,1}" />{+END}
 {+END}
 {+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_appid}}<meta property="fb:app_id" content="{$CONFIG_OPTION*,facebook_appid,1}" />{+END}
 {+START,IF_NON_EMPTY,{$METADATA,meta_description}}<meta property="og:description" name="description" content="{+START,IF,{$NEQ,{$METADATA,meta_description},{!NA},???}}{$TRIM,{$METADATA*,meta_description}}{+END}" />{+END}

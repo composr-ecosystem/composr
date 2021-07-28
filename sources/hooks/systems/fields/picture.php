@@ -229,7 +229,14 @@ class Hook_fields_picture
         $tmp_name = 'field_' . strval($id);
         if (!fractional_edit()) {
             require_code('uploads');
+
+            $keep_gps = (option_value_from_field_array($field, 'keep_gps', 'off') == 'on');
+            set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, !$keep_gps);
+
             $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, OBFUSCATE_LEAVE_SUFFIX, CMS_UPLOAD_IMAGE);
+
+            reset_images_cleanup_pipeline_settings();
+
             $value = $temp[0];
             if (($editing) && ($value == '') && (post_param_integer($tmp_name . '_unlink', 0) != 1)) {
                 return ($old_value === null) ? '' : $old_value['cv_value'];

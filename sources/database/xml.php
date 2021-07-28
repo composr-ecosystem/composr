@@ -454,7 +454,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_drop_table_if_exists() : bool
+    public function has_drop_table_if_exists() : bool
     {
         return true;
     }
@@ -464,7 +464,7 @@ class Database_Static_xml extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table() : bool
+    public function has_truncate_table() : bool
     {
         return true;
     }

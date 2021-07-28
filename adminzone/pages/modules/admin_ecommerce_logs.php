@@ -380,7 +380,7 @@ class Module_admin_ecommerce_logs
 
         list($details) = find_product_details($type_code);
         if ($details['type'] == PRODUCT_SUBSCRIPTION) {
-            $fields->attach(form_input_date(do_lang_tempcode('EXPIRY_DATE'), do_lang_tempcode('DESCRIPTION_CUSTOM_EXPIRY_DATE'), 'cexpiry', false, false, false));
+            $fields->attach(form_input_date(do_lang_tempcode('EXPIRY_DATE'), do_lang_tempcode('DESCRIPTION_CUSTOM_EXPIRY_DATE'), 'cexpiry', false, false, false, null, 100));
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f4e52dff9353fb767afbe0be9808591c', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
@@ -830,8 +830,8 @@ class Module_admin_ecommerce_logs
 
         $fields = new Tempcode();
         $month_start = [0, 0, intval(date('m')), 1, intval(date('Y'))];
-        $fields->attach(form_input_date(do_lang_tempcode('FROM'), '', 'from', true, false, false, $month_start, 10, intval(date('Y')) - 9));
-        $fields->attach(form_input_date(do_lang_tempcode('TO'), '', 'to', true, false, false, time(), 10, intval(date('Y')) - 9));
+        $fields->attach(form_input_date(do_lang_tempcode('FROM'), '', 'from', true, false, false, $month_start, -10));
+        $fields->attach(form_input_date(do_lang_tempcode('TO'), '', 'to', true, false, false, time(), -10));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '92888622a3ed6b7edbd4d1e5e2b35986',

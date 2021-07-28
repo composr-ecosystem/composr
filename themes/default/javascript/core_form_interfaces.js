@@ -667,14 +667,12 @@
     };
 
     $cms.templates.formScreenInputList = function formScreenInputList(params, selectEl) {
-        var select2Options;
-
         if (params.inlineList) {
             return;
         }
 
-        select2Options = {
-            dropdownAutoWidth: true,
+        var select2Options = {
+            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
             formatResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage
         };
 
@@ -704,6 +702,40 @@
             }
 
             return $cms.filter.html(opt.text);
+        }
+    };
+
+    $cms.templates.formScreenInputMultiList = function formScreenInputMultiList(params, selectEl) {
+        var select2Options = {
+            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            containerCssClass: 'form-control-wide'
+        };
+
+        if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.size == 5)/*only for short UIs*/) {
+            selectEl.classList.remove('form-control');
+            window.jQuery(selectEl).select2(select2Options);
+        }
+
+        $dom.on(selectEl, 'keypress', '.js-keypress-input-ensure-next-field', function (e, input) {
+            $coreFormInterfaces.ensureNextField2(e, input);
+        });
+    };
+
+    $cms.templates.formScreenInputHugeList_input = function (params, selectEl) {
+        var select2Options = {
+            dropdownAutoWidth: window.parent == window, /*Otherwise can overflow*/
+            containerCssClass: 'form-control-wide'
+        };
+
+        if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.size <= 1)) {
+            selectEl.classList.remove('form-control');
+            window.jQuery(selectEl).select2(select2Options);
+        }
+
+        var el = $dom.$('#form-table-field-input--' + params.randomisedId);
+
+        if (!params.inlineList && el) {
+            $cms.form.setUpChangeMonitor(el.parentElement);
         }
     };
 
@@ -775,14 +807,6 @@
             $dom.on(textArea, 'change keyup', function () {
                 $cms.manageScrollHeight(textArea);
             });
-        }
-    };
-
-    $cms.templates.formScreenInputHugeList_input = function (params) {
-        var el = $dom.$('#form-table-field-input--' + params.randomisedId);
-
-        if (!params.inlineList && el) {
-            $cms.form.setUpChangeMonitor(el.parentElement);
         }
     };
 
@@ -1155,16 +1179,6 @@
                 }
             }
         }
-    };
-
-    $cms.templates.formScreenInputMultiList = function formScreenInputMultiList(params, container) {
-        $dom.on(container, 'keypress', '.js-keypress-input-ensure-next-field', function (e, input) {
-            $coreFormInterfaces.ensureNextField2(e, input);
-        });
-
-        $dom.on(container, 'keyup', function () {
-            //TODO
-        });
     };
 
     $cms.templates.formScreenInputTextMulti = function formScreenInputTextMulti(params, container) {

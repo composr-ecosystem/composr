@@ -737,7 +737,7 @@ abstract class DatabaseDriver
      */
     public function drop_table_if_exists(string $table, $connection) : array
     {
-        if ($this->supports_drop_table_if_exists()) {
+        if ($this->has_drop_table_if_exists()) {
             return ['DROP TABLE IF EXISTS ' . $table];
         }
 
@@ -749,7 +749,7 @@ abstract class DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_drop_table_if_exists() : bool
+    public function has_drop_table_if_exists() : bool
     {
         return false;
     }
@@ -759,7 +759,7 @@ abstract class DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table() : bool
+    public function has_truncate_table() : bool
     {
         return false;
     }
@@ -807,6 +807,16 @@ abstract class DatabaseDriver
     public function get_minimum_search_length($connection) : int
     {
         return 4;
+    }
+
+    /**
+     * Find whether batch inserts are supported.
+     *
+     * @return boolean Whether they are
+     */
+    public function has_batch_inserts() : bool
+    {
+        return true;
     }
 
     /**
@@ -2314,6 +2324,15 @@ class DatabaseConnector
         } elseif (empty($all_values)) {
             return null;
         } else {
+            if (!$this->static_ob->has_batch_inserts()) {
+                foreach ($all_values as $v) {
+                    $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $v . ')';
+                    $this->_query($query, null, 0, $fail_ok, $ret, null, '', $save_as_volatile);
+                }
+
+                return null;
+            }
+
             // So we can do batch inserts...
             $all_v = '';
             foreach ($all_values as $v) {
@@ -2418,7 +2437,7 @@ class DatabaseConnector
     public function query_delete(string $table, array $where_map = [], string $end = '', ?int $max = null, int $start = 0, bool $fail_ok = false)
     {
         if (empty($where_map)) {
-            if (($end === '') && ($max === null) && ($start == 0) && ($this->static_ob->supports_truncate_table($GLOBALS['SITE_DB']->connection_read))) {
+            if (($end === '') && ($max === null) && ($start == 0) && ($this->static_ob->has_truncate_table($GLOBALS['SITE_DB']->connection_read))) {
                 $this->_query('TRUNCATE ' . $this->table_prefix . $table, null, 0, $fail_ok);
             } else {
                 $this->_query('DELETE FROM ' . $this->table_prefix . $table . ' ' . $end, $max, $start, $fail_ok);

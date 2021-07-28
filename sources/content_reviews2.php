@@ -124,7 +124,7 @@ function content_review_get_fields(string $content_type, ?string $content_id = n
             $next_review_time = null; // Stop edits resetting the reviewed status and leaving the old date there
         }
 
-        $fields->attach(form_input_date(do_lang_tempcode('NEXT_REVIEW_DATE'), do_lang_tempcode('DESCRIPTION_NEXT_REVIEW_DATE'), 'next_review_time', false, ($next_review_time === null), false, $next_review_time));
+        $fields->attach(form_input_date(do_lang_tempcode('NEXT_REVIEW_DATE'), do_lang_tempcode('DESCRIPTION_NEXT_REVIEW_DATE'), 'next_review_time', false, ($next_review_time === null), false, $next_review_time, 10));
 
         // Specification of auto-action to perform
 

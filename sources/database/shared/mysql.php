@@ -523,7 +523,7 @@ abstract class Database_super_mysql extends DatabaseDriver
 
         $query .= ' ' . $type_key . '=' . $table_type;
 
-        return [$query];
+        return [$this->fix_mysql8_query($query)];
     }
 
     /**
@@ -531,7 +531,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_drop_table_if_exists() : bool
+    public function has_drop_table_if_exists() : bool
     {
         return true;
     }
@@ -611,7 +611,7 @@ abstract class Database_super_mysql extends DatabaseDriver
         } else {
             $type = 'INDEX';
         }
-        return ['ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')'];
+        return [$this->fix_mysql8_query('ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')')];
     }
 
     /**
@@ -619,7 +619,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table() : bool
+    public function has_truncate_table() : bool
     {
         return true;
     }

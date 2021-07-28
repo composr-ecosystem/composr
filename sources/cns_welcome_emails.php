@@ -22,29 +22,33 @@
  * Generate what we need to send/preview a welcome e-mail.
  *
  * @param  array $mail Welcome-email row
- * @param  ?array $member Member row (null: current member)
+ * @param  ?array $member Member/subscriber row (null: generating a preview: current member/subscriber based around such)
  * @return array A tuple: subject, message, message is-HTML, recipient name
  */
 function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
 {
-    if ($member === null) {
-        $member = $GLOBALS['FORUM_DRIVER']->get_member_row(get_member());
-    }
-
     $newsletter_style = (($mail['w_newsletter'] !== null) && (addon_installed('newsletter')));
 
-    require_lang('cns');
-
-    $subject = get_translated_text($mail['w_subject'], null, get_lang($member['id']));
-
-    $message_raw = get_translated_text($mail['w_text'], null, get_lang($member['id']));
-
-    // Special syntax for referring to specific date-times up to 100 hours into the future
-    $matches = [];
-    $num_matches = preg_match_all('#\{\{(\d+)\}\}#', $message_raw, $matches);
-    for ($i = 0; $i < $num_matches; $i++) {
-        $message_raw = str_replace('{{' . strval($i) . '}}', get_timezoned_date(time() + $matches[1][$i] * 60 * 60 * 24), $message_raw);
+    if ($member === null) {
+        $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row(get_member());
+        if ($newsletter_style) {
+            $member = [
+                'id' => -1,
+                'email' => $member_row['m_email_address'],
+                'join_time' => $member_row['m_join_time'],
+                'code_confirm' => 0,
+                'the_password' => '',
+                'pass_salt' => '',
+                'language' => $member_row['m_language'],
+                'n_forename' => $member_row['m_username'],
+                'n_surname' => '',
+            ];
+        } else {
+            $member = $member_row;
+        }
     }
+
+    require_lang('cns');
 
     // Load up metadata
     if ($newsletter_style) {
@@ -58,8 +62,7 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
         $email_address = $member['email'];
         $lang = $member['language'];
 
-        $send_id = 'n' . strval($member['id']);
-
+        $sendid = 'n' . strval($member['id']);
         require_code('crypt');
         $hash = ratchet_hash($member['the_password'], 'xunsub');
     } else {
@@ -69,17 +72,26 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
         $email_address = $member['m_email_address'];
         $lang = get_lang($member['id']);
 
-        $send_id = 'm' . strval($member['id']);
-
+        $sendid = 'w' . strval($member['id']);
         $hash = '';
+    }
+
+    $subject = get_translated_text($mail['w_subject'], null, $lang);
+
+    $message_raw = get_translated_text($mail['w_text'], null, get_lang($member['id']));
+
+    // Special syntax for referring to specific date-times up to 100 hours into the future
+    $matches = [];
+    $num_matches = preg_match_all('#\{\{(\d+)\}\}#', $message_raw, $matches);
+    for ($i = 0; $i < $num_matches; $i++) {
+        $message_raw = str_replace('{{' . strval($i) . '}}', get_timezoned_date(time() + $matches[1][$i] * 60 * 60 * 24), $message_raw);
     }
 
     // Process with all the newsletter magic, if available
     if (addon_installed('newsletter')) {
         require_code('newsletter');
-        require_lang('newsletter');
-
         $extra_mappings = $member;
+
         if (get_forum_type() == 'cns') {
             require_code('cns_members');
             $extra_mappings += cns_get_custom_field_mappings($member['id']);

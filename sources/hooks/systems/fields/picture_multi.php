@@ -254,6 +254,9 @@ class Hook_fields_picture_multi
                 }
             }
 
+            $keep_gps = (option_value_from_field_array($field, 'keep_gps', 'off') == 'on');
+            set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, !$keep_gps);
+
             $i = 1;
             do {
                 $tmp_name = 'field_' . strval($id) . '_' . strval($i);
@@ -268,6 +271,8 @@ class Hook_fields_picture_multi
 
                 $i++;
             } while (array_key_exists($tmp_name, $_FILES));
+
+            reset_images_cleanup_pipeline_settings();
         } else {
             return STRING_MAGIC_NULL;
         }

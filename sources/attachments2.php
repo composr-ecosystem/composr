@@ -206,6 +206,10 @@ function _handle_data_url_attachments(string &$comcode, string $type, string $id
                     cms_imagesave($image, $new_path) or intelligent_write_error($new_path);
                     imagedestroy($image);
 
+                    // Images cleanup pipeline
+                    require_code('images_cleanup_pipeline');
+                    handle_images_cleanup_pipeline($new_path, null, IMG_RECOMPRESS_LOSSLESS, null, null, true/*Code to strip GPS*/);
+
                     fix_permissions($new_path);
                     sync_file($new_path);
 

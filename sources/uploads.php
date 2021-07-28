@@ -48,10 +48,11 @@ function init__uploads()
  */
 function reset_images_cleanup_pipeline_settings()
 {
-    global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS;
+    global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS;
     $ICPS__RECOMPRESS_MODE = IMG_RECOMPRESS_LOSSLESS;
     $ICPS__MAXIMUM_DIMENSION = null;
     $ICPS__WATERMARKS = null;
+    $ICPS__STRIP_GPS = true;
 }
 
 /**
@@ -60,13 +61,15 @@ function reset_images_cleanup_pipeline_settings()
  * @param  integer $recompress_mode How to recompress, an IMG_RECOMPRESS_* constant
  * @param  ?integer $maximum_dimension The size of the bounding box (null: none)
  * @param  ?array $watermarks Watermark corners (top-left, top-right, bottom-left, bottom-right) (null: none)
+ * @param  boolean $strip_gps Whether to strip GPS metadata
  */
-function set_images_cleanup_pipeline_settings(int $recompress_mode = 0, ?int $maximum_dimension = null, ?array $watermarks = null)
+function set_images_cleanup_pipeline_settings(int $recompress_mode = 0, ?int $maximum_dimension = null, ?array $watermarks = null, bool $strip_gps = true)
 {
-    global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS;
+    global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS;
     $ICPS__RECOMPRESS_MODE = $recompress_mode;
     $ICPS__MAXIMUM_DIMENSION = $maximum_dimension;
     $ICPS__WATERMARKS = $watermarks;
+    $ICPS__STRIP_GPS = $strip_gps;
 }
 
 /**
@@ -644,8 +647,8 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
     // Images cleanup pipeline
     if ((($enforce_type & CMS_UPLOAD_IMAGE) != 0) && ($enforce_type != CMS_UPLOAD_ANYTHING)) {
         if (($is_uploaded) && ($out[0] != '') && (url_is_local($out[0]))) {
-            global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS;
-            handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($out[0]), $out[2], $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS);
+            global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS;
+            handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($out[0]), $out[2], $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS);
         }
     }
 

@@ -1267,7 +1267,7 @@
 
         /* Software Chat */
         loadSoftwareChat: function () {
-            var url = 'https://kiwiirc.com/client/irc.kiwiirc.com/?nick=';
+            var url = 'https://kiwiirc.com/client/irc.compo.sr/?nick=';
             if ($cms.getUsername() !== 'admin') {
                 url += encodeURIComponent($cms.getUsername().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
             } else {

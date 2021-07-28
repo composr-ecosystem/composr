@@ -487,9 +487,9 @@ END;
                     return;
                 }
             } else { // Via FTP
-                $path2 = tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? (get_custom_file_base() . '/temp/') : '/tmp/'), 'cmsce');
+                $path2 = @tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? (get_custom_file_base() . '/temp/') : '/tmp/'), 'cmsce');
                 if ($path2 === false) {
-                    $path2 = tempnam(get_custom_file_base() . '/temp/', 'cmsce');
+                    $path2 = @tempnam(get_custom_file_base() . '/temp/', 'cmsce');
                 }
 
                 $h = fopen($path2, 'wb');
@@ -665,9 +665,9 @@ function ce_cms_tempnam(string $prefix = '')
     $server_path = '/tmp/';
     $tmp_path = $problem_saving ? $local_path : $server_path;
     if ((function_exists('tempnam')) && (strpos(ini_get('disable_functions'), 'tempnam') === false)) {
-        $tempnam = tempnam($tmp_path, 'tmpfile__' . $prefix);
+        $tempnam = @tempnam($tmp_path, 'tmpfile__' . $prefix);
         if (($tempnam === false) && (!$problem_saving)) {
-            $tempnam = tempnam($local_path, $prefix);
+            $tempnam = @tempnam($local_path, $prefix);
         }
     } else {
         $tempnam = $prefix . strval(mt_rand(0, mt_getrandmax()));

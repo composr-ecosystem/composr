@@ -601,7 +601,9 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         $delete_fields = new Tempcode();
         if (intval($id) != db_get_first_id()) {
-            $delete_fields->attach(form_input_tree_list(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_TOPIC_MOVE_TARGET'), 'target_forum', null, 'choose_forum', [], true, $id));
+            $default_delete_forum_id = ($r['f_parent_forum'] === null) ? null : strval($r['f_parent_forum']);
+            $default_delete_forum_label = ($r['f_parent_forum'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $r['f_parent_forum']]);
+            $delete_fields->attach(form_input_tree_list(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_TOPIC_MOVE_TARGET'), 'target_forum', null, 'choose_forum', [], true, $default_delete_forum_id, false, null, false, $default_delete_forum_label));
             $delete_fields->attach(form_input_tick(do_lang_tempcode('DELETE_TOPICS'), do_lang_tempcode('DESCRIPTION_DELETE_TOPICS'), 'delete_topics', false));
         }
 

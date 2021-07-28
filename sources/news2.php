@@ -382,14 +382,14 @@ function add_news(string $title, string $news, ?string $author = null, int $vali
         seo_meta_set_for_explicit('news', strval($id), $meta_keywords, $meta_description);
     }
 
-    if ($validated == 1) {
-        delete_cache_entry('main_news');
-        delete_cache_entry('main_image_fader_news');
-        delete_cache_entry('side_news');
-        delete_cache_entry('side_news_archive');
-        delete_cache_entry('bottom_news');
-        delete_cache_entry('side_news_categories');
+    delete_cache_entry('main_news');
+    delete_cache_entry('main_image_fader_news');
+    delete_cache_entry('side_news');
+    delete_cache_entry('side_news_archive');
+    delete_cache_entry('bottom_news');
+    delete_cache_entry('side_news_categories');
 
+    if ($validated == 1) {
         dispatch_news_notification($id, $title, $main_news_category_id);
     }
 

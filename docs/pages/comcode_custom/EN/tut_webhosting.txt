@@ -122,7 +122,7 @@ If running IIS:
  - You may not have disabled default Feature Delegation for anything the bundled [tt]web.config[/tt] file changes (unless you manually change your main IIS configuration and edit the [tt]web.config[/tt] as required to match)
  - You must have the URL Rewrite module installed. This is not just needed for URL Schemes and URL Redirects, but also for basic security.
  - It is possible you may need to configure IIS for additional mime-types, depending on what you are trying to do. Unlike Apache, IIS will not (by default) serve file types it is not configured to know a mime-type for.
- 
+
 &dagger; By suEXEC-style web server we mean either:
 [list="a"]
 [*] an environment where the web server user has recursive write access over the web directories (most Windows servers)

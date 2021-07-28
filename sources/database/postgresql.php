@@ -328,7 +328,7 @@ class Database_Static_postgresql extends DatabaseDriver
      *
      * @return boolean Whether it is
      */
-    public function supports_truncate_table() : bool
+    public function has_truncate_table() : bool
     {
         return true;
     }

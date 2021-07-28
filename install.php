@@ -19,6 +19,8 @@
  * @package    installer
  */
 
+ignore_user_abort(false);
+
 $functions = ['fopen'];
 foreach ($functions as $function) {
     if (preg_match('#[^,\s]' . $function . '[$,\s]#', ini_get('disable_functions')) != 0) {
