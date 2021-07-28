@@ -861,7 +861,7 @@ abstract class HttpDownloader
      */
     protected function detect_character_encoding()
     {
-        if (($this->charset === null) && ($this->data !== null) && ($this->data !== false)) {
+        if ((($this->charset === null) || (/*Fudge for if AddDefaultCharset is set*/($this->download_mime_type === 'text/plain') && ($this->download_url !== null) && (substr($this->download_url, -4) == '.txt'))) && ($this->data !== null) && ($this->data !== false)) {
             $matches = [];
             if (preg_match('#^\s*<' . '?xml[^<>]*\s+encoding="([^"]+)"#', $this->data, $matches) != 0) {
                 $this->charset = trim($matches[1]);
