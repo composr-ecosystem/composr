@@ -3696,9 +3696,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_ldap_member_search_qualifier
         CONFIG_OPTION_ldap_none_bind_logins
         CONFIG_OPTION_ldap_version
-        CONFIG_OPTION_leader_board_show_staff
-        CONFIG_OPTION_leader_board_size
-        CONFIG_OPTION_leader_board_start_date
         CONFIG_OPTION_likes
         CONFIG_OPTION_log_php_errors
         CONFIG_OPTION_logo_map
@@ -5985,9 +5982,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LDAP_SYNC_GROUPS_DELETE
         LDAP_SYNC_MEMBERS_DELETE
         LDAP_VERSION
-        LEADER_BOARD_SHOW_STAFF
-        LEADER_BOARD_SIZE
-        LEADER_BOARD_START_DATE
         LEAVE
         LEAVE_PERIODIC_NEWSLETTER
         LEAVE_TRACKBACK
@@ -9679,7 +9673,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LAST_VISIT
         LAST_VISIT_TIME
         LATITUDE
-        LEADER_BOARD_ABOUT
+        LEADER_BOARD_ABOUT_holders
+        LEADER_BOARD_ABOUT_earners
         LEADER_BOARD_PAGE_TEXT
         LEFT_CHATROOM
         LESS

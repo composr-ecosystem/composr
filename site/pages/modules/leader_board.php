@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    leader_board
  */
 
 /**
@@ -35,9 +35,56 @@ class Module_leader_board
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 2;
-        $info['locked'] = false;
+        $info['version'] = 4;
+        $info['locked'] = true;
         return $info;
+    }
+
+        /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_board');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_boards');
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        if ($upgrade_from === null) {
+            $GLOBALS['SITE_DB']->create_table('leader_board', [
+                'lb_member' => '*MEMBER',
+                'lb_points' => 'INTEGER',
+                'lb_rank' => 'INTEGER',
+                'lb_leader_board_id' => '*AUTO_LINK',
+                'lb_date_and_time' => '*TIME',
+            ]);
+        }
+
+        if (($upgrade_from === null) || $upgrade_from < 4) {
+            $GLOBALS['SITE_DB']->create_table('leader_boards', [
+                'id' => '*AUTO',
+                'lb_title' => 'SHORT_TEXT',
+                'lb_creation_date_and_time' => 'TIME',
+                'lb_type' => 'SHORT_TEXT',
+                'lb_member_count' => 'INTEGER',
+                'lb_timeframe' => 'SHORT_TEXT',
+                'lb_rolling' => 'BINARY',
+                'lb_include_staff' => 'BINARY',
+                'lb_usergroup' => '?GROUP',
+            ]);
+        }
+        if ($upgrade_from < 4) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_rank', 'INTEGER');
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leaderboard_id', 'AUTO_LINK', $default_row); // Legacy leader-board
+            $GLOBALS['SITE_DB']->alter_table_field('leader_board', 'date_and_time', '*TIME', 'lb_date_and_time');
+        }
     }
 
     /**
@@ -51,7 +98,7 @@ class Module_leader_board
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('points')) {
+        if (!addon_installed('leader_board') || !addon_installed('points')) {
             return null;
         }
 
@@ -73,6 +120,9 @@ class Module_leader_board
     public function pre_run() : ?object
     {
         $error_msg = new Tempcode();
+        if (!addon_installed__messaged('leader_board', $error_msg)) {
+            return $error_msg;
+        }
         if (!addon_installed__messaged('points', $error_msg)) {
             return $error_msg;
         }
@@ -93,51 +143,56 @@ class Module_leader_board
      */
     public function run() : object
     {
+        // TODO
+
         require_code('points');
         require_css('points');
 
-        $start_date = intval(get_option('leader_board_start_date'));
-
+        $id = get_param_integer('id');
+        $date = get_param_integer('lb_date_and_time', null);
         $start = get_param_integer('lb_start', 0);
         $max = get_param_integer('lb_max', 52);
 
-        // Ensure the leader-board is getting calculated...
         require_code('leader_board');
-        calculate_latest_leader_board(false);
 
-        // Are there any rank images going to display?
-        $or_list = '1=1';
-        $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
-        $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
-        foreach (array_merge($admin_groups, $moderator_groups) as $group_id) {
-            $or_list .= ' AND id<>' . strval($group_id);
-        }
-        $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE ' . $or_list . ' AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
-
-        // Continue on to displaying the leader-board...
-
-        // Are there any rank images going to display?
-        $or_list = '1=1';
-        $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
-        $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
-        foreach (array_merge($admin_groups, $moderator_groups) as $group_id) {
-            $or_list .= ' AND id<>' . strval($group_id);
-        }
-        $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE ' . $or_list . ' AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
-
-        $weeks = $GLOBALS['SITE_DB']->query('SELECT DISTINCT date_and_time FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'leader_board WHERE date_and_time>=' . strval($start_date) . ' ORDER BY date_and_time DESC', $max, $start);
-        if (empty($weeks)) {
+        // Get leader-board
+        $board = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => $id], '', 1);
+        if (empty($board)) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        $num_weeks = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT date_and_time) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'leader_board WHERE date_and_time>=' . strval($start_date));
+        // Are there any rank images going to display?
+        $or_list = '1=1';
+        $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
+        $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
+        foreach (array_merge($admin_groups, $moderator_groups) as $group_id) {
+            $or_list .= ' AND id<>' . strval($group_id);
+        }
+        $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
 
-        $first_week = $weeks[count($weeks) - 1]['date_and_time'];
-        $weeks = collapse_1d_complexity('date_and_time', $weeks);
+        // Continue on to displaying the leader-board...
+        $query = 'SELECT DISTINCT lb_date_and_time FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'leader_board WHERE lb_leader_board_id=' . strval($id);
+        if ($date !== null) {
+            $query .= ' AND lb_date_and_time>=' . strval($date);
+        }
+        $sets = $GLOBALS['SITE_DB']->query($query . ' ORDER BY lb_date_and_time DESC', $max, $start);
+        if (empty($sets)) {
+            warn_exit(do_lang_tempcode('NO_ENTRIES'));
+        }
+
+        $query = 'SELECT COUNT(DISTINCT lb_date_and_time) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'leader_board WHERE lb_leader_board_id=' . strval($id);
+        if ($date !== null) {
+            $query .= ' AND lb_date_and_time>=' . strval($date);
+        }
+        $num_sets = $GLOBALS['SITE_DB']->query_value_if_there($query);
+
+        $first_set = $sets[count($sets) - 1]['lb_date_and_time'];
+        $sets = collapse_1d_complexity('lb_date_and_time', $sets);
+
         $out = new Tempcode();
-        foreach ($weeks as $week) {
-            $rows = collapse_2d_complexity('lb_member', 'lb_points', $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_member', 'lb_points'], ['date_and_time' => $week], 'ORDER BY lb_points DESC'));
-            $week_tpl = new Tempcode();
+        foreach ($sets as $set) {
+            $rows = collapse_2d_complexity('lb_member', 'lb_points', get_leader_board($id, $set));
+            $set_tpl = new Tempcode();
             foreach ($rows as $member_id => $points) {
                 $points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
 
@@ -145,7 +200,7 @@ class Module_leader_board
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-                $week_tpl->attach(do_template('POINTS_LEADER_BOARD_ROW', [
+                $set_tpl->attach(do_template('POINTS_LEADER_BOARD_ROW', [
                     '_GUID' => '6d323b4b5abea0e82a14cb4745c4af4f',
                     'POINTS_URL' => $points_url,
                     'PROFILE_URL' => $profile_url,
@@ -156,19 +211,30 @@ class Module_leader_board
                     'HAS_RANK_IMAGES' => $has_rank_images,
                 ]));
             }
-            $nice_week = intval(($week - $first_week) / (7 * 24 * 60 * 60) + 1);
-            $out->attach(do_template('POINTS_LEADER_BOARD_WEEK', [
+            $nice_set = get_timezoned_date($set, false);
+            $nice_start = get_timezoned_date(strtotime('-1 ' . $board[0]['lb_timeframe'], $set), false);
+
+            $about = $board[0]['lb_type'] == 'earners' ? do_lang_tempcode('LEADER_BOARD_ABOUT_earners', count($sets), $nice_start, $nice_set) : do_lang_tempcode('LEADER_BOARD_ABOUT_holders', count($sets), $nice_set);
+
+            $out->attach(do_template('POINTS_LEADER_BOARD_SET', [
                 '_GUID' => '3a0f71bf20f9098e5711e85cf25f6549',
-                '_WEEK' => strval($nice_week),
-                'WEEK' => integer_format($nice_week),
-                'ROWS' => $week_tpl,
+                '_SET' => integer_format(array_search($set, $sets)),
+                'SET' => strval($nice_set),
+                'ABOUT' => strval($about),
+                'ROWS' => $set_tpl,
             ]));
         }
 
         require_code('templates_pagination');
-        $pagination = pagination(do_lang_tempcode('POINT_LEADER_BOARD'), $start, 'lb_start', $max, 'lb_max', $num_weeks);
+        $pagination = pagination(do_lang_tempcode('POINT_LEADER_BOARD'), $start, 'lb_start', $max, 'lb_max', $num_sets);
 
-        $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', ['_GUID' => 'bab5f7b661435b83800532d3eebd0d54', 'TITLE' => $this->title, 'WEEKS' => $out, 'PAGINATION' => $pagination]);
+        $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', [
+            '_GUID' => 'bab5f7b661435b83800532d3eebd0d54',
+            'TITLE' => $this->title,
+            'LEADER_BOARD_TYPE' => do_lang_tempcode('LEADER_BOARD_' . $board[0]['lb_type']),
+            'LEADER_BOARD_TITLE' => $board[0]['lb_title'],
+            'SETS' => $out,
+            'PAGINATION' => $pagination]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

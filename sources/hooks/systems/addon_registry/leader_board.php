@@ -17,7 +17,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    leader_board
  */
 
 /**
@@ -75,7 +75,7 @@ class Hook_addon_registry_leader_board
     public function get_applicable_tutorials(): array
     {
         return [
-            'tut_leader_board', // TODO
+            'tut_points',
         ];
     }
 
@@ -111,21 +111,22 @@ class Hook_addon_registry_leader_board
     public function get_file_list(): array
     {
         return [
+            'sources/hooks/systems/privacy/leader_board.php',
             'themes/default/images/icons/menu/social/leader_board.svg',
+            'themes/default/images/icons/menu/adminzone/setup/leader_board.svg',
             'themes/default/images/icons_monochrome/menu/social/leader_board.svg',
-            'sources/hooks/systems/config/leader_board_start_date.php',
-            'sources/hooks/systems/config/leader_board_show_staff.php',
-            'sources/hooks/systems/config/leader_board_size.php',
+            'themes/default/images/icons_monochrome/menu/adminzone/setup/leader_board.svg',
             'sources/hooks/modules/admin_setupwizard/leader_board.php',
             'themes/default/templates/POINTS_LEADER_BOARD.tpl',
             'themes/default/templates/POINTS_LEADER_BOARD_SCREEN.tpl',
             'themes/default/templates/POINTS_LEADER_BOARD_ROW.tpl',
-            'themes/default/templates/POINTS_LEADER_BOARD_WEEK.tpl',
-            'admin/pages/modules/admin_leader_board.php',
+            'themes/default/templates/POINTS_LEADER_BOARD_SET.tpl',
+            'adminzone/pages/modules/admin_leader_board.php',
             'site/pages/modules/leader_board.php',
             'sources/blocks/main_leader_board.php',
             'sources/hooks/systems/cron/leader_board.php',
             'sources/leader_board.php',
+            'sources/leader_board2.php',
             'lang/EN/leader_board.ini',
         ];
     }
@@ -140,13 +141,101 @@ class Hook_addon_registry_leader_board
         return [
             'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board',
             'templates/POINTS_LEADER_BOARD.tpl' => 'points_leader_board',
-            'templates/POINTS_LEADER_BOARD_WEEK.tpl' => 'points_leader_board_screen',
+            'templates/POINTS_LEADER_BOARD_SET.tpl' => 'points_leader_board_screen',
             'templates/POINTS_LEADER_BOARD_SCREEN.tpl' => 'points_leader_board_screen',
-                // TODO
         ];
     }
 
-    // TODO
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content() : array
+    {
+        require_lang('leader_board');
+
+        $map = [
+            'lb_title' => do_lang('DEFAULT'),
+            'lb_type' => 'holders',
+            'lb_member_count' => 10,
+            'lb_timeframe' => 'week',
+            'lb_rolling' => 1,
+            'lb_include_staff' => 0,
+            'lb_usergroup' => null
+        ];
+        $installed_holders = ($GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'id', $map) !== null);
+
+        $map['lb_type'] = 'earners';
+        $installed_earners = ($GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'id', $map) !== null);
+
+        return [
+            'weekly_10_holders' => [
+                'title' => do_lang_tempcode('LEADER_BOARD_PREREFINED_WEEKLY_10_HOLDERS'),
+                'description' => do_lang_tempcode('DESCRIPTION_LEADER_BOARD_PREREFINED_WEEKLY_10_HOLDERS'),
+                'installed' => $installed_holders,
+            ],
+            'weekly_10_earners' => [
+                'title' => do_lang_tempcode('LEADER_BOARD_PREREFINED_WEEKLY_10_EARNERS'),
+                'description' => do_lang_tempcode('DESCRIPTION_LEADER_BOARD_PREREFINED_WEEKLY_10_EARNERS'),
+                'installed' => $installed_earners,
+            ],
+        ];
+    }
+
+     /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content(?array $content = null)
+    {
+        if ((($content === null) || (in_array('weekly_10_holders', $content))) && (!has_predefined_content('leader_board', 'weekly_10_holders'))) {
+            require_code('leader_board2');
+            add_leader_board(do_lang('DEFAULT'), 'holders', 10, 'week', 1, 0, null);
+        }
+        if ((($content === null) || (in_array('weekly_10_earners', $content))) && (!has_predefined_content('leader_board', 'weekly_10_earners'))) {
+            require_code('leader_board2');
+            add_leader_board(do_lang('DEFAULT'), 'earners', 10, 'week', 1, 0, null);
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content(?array $content = null)
+    {
+        if ((($content === null) || (in_array('weekly_10_holders', $content))) && (has_predefined_content('leader_board', 'weekly_10_holders'))) {
+            $map = [
+                'lb_title' => do_lang('DEFAULT'),
+                'lb_type' => 'holders',
+                'lb_member_count' => 10,
+                'lb_timeframe' => 'week',
+                'lb_rolling' => 1,
+                'lb_include_staff' => 0,
+                'lb_usergroup' => null
+            ];
+            require_code('leader_board2');
+            $id = $GLOBALS['SITE_DB']->query_select_value('leader_boards', 'id', $map);
+            delete_leader_board($id);
+        }
+        if ((($content === null) || (in_array('weekly_10_earners', $content))) && (has_predefined_content('leader_board', 'weekly_10_earners'))) {
+            $map = [
+                'lb_title' => do_lang('DEFAULT'),
+                'lb_type' => 'earners',
+                'lb_member_count' => 10,
+                'lb_timeframe' => 'week',
+                'lb_rolling' => 1,
+                'lb_include_staff' => 0,
+                'lb_usergroup' => null
+            ];
+            require_code('leader_board2');
+            $id = $GLOBALS['SITE_DB']->query_select_value('leader_boards', 'id', $map);
+            delete_leader_board($id);
+        }
+    }
 
     /**
      * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
@@ -171,9 +260,12 @@ class Hook_addon_registry_leader_board
         }
 
         return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
+                        '_GUID' => 'c875cce925e73f46408acc0a153a2902',
             'URL' => placeholder_url(),
             '_LIMIT' => placeholder_number(),
             'LIMIT' => placeholder_number(),
+            'TITLE' => lorem_title(),
+            'ABOUT' => lorem_phrase(),
             'ROWS' => $out,
                 ]), null, '', true);
     }
@@ -189,9 +281,9 @@ class Hook_addon_registry_leader_board
     {
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $week_tpl = new Tempcode();
+            $set_tpl = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
-                $week_tpl->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
+                $set_tpl->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
                     'ID' => placeholder_id(),
                     'POINTS_URL' => placeholder_url(),
                     'PROFILE_URL' => placeholder_url(),
@@ -201,17 +293,24 @@ class Hook_addon_registry_leader_board
                     'HAS_RANK_IMAGES' => true,
                 ]));
             }
-            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_WEEK', [
+            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_SET', [
                 '_WEEK' => placeholder_number(),
-                'WEEK' => placeholder_number(),
-                'ROWS' => $week_tpl,
+                'WEEK' => placeholder_date(),
+                'ROWS' => $set_tpl,
             ]));
         }
 
+        $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', [
+            'TITLE' => lorem_title(),
+            'LEADER_BOARD_TYPE' => do_lang_tempcode('LEADER_BOARD_holders'),
+            'LEADER_BOARD_TITLE' => lorem_title(),
+            'SETS' => $out]);
+
         return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
             'TITLE' => lorem_title(),
-            'WEEKS' => $out,
-                ]), null, '', true);
+            'LEADER_BOARD_TYPE' => do_lang_tempcode('LEADER_BOARD_holders'),
+            'LEADER_BOARD_TITLE' => lorem_title(),
+            'SETS' => $out]), null, '', true);
     }
 
 }

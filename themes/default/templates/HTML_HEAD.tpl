@@ -49,7 +49,6 @@
 	{+START,IF_NON_EMPTY,{$METADATA,numcomments}}<meta name="CMSCORE.NumComments" content="{$METADATA*,numcomments}" />{+END}
 	{+START,IF_NON_EMPTY,{$METADATA,site_newestmember}}<meta name="CMSCORE.Site_NewestMember" content="{$METADATA*,site_newestmember}" />{+END}
 	{+START,IF_NON_EMPTY,{$METADATA,site_nummembers}}<meta name="CMSCORE.Site_NumMembers" content="{$METADATA*,site_nummembers}" />{+END}
-	{+START,IF_NON_EMPTY,{$METADATA,site_bestmember}}<meta name="CMSCORE.Site_BestMember" content="{$METADATA*,site_bestmember}" />{+END}
 	{+START,IF_NON_EMPTY,{$METADATA,forum_numtopics}}<meta name="CMSCORE.Forum_NumTopics" content="{$METADATA*,forum_numtopics}" />{+END}
 	{+START,IF_NON_EMPTY,{$METADATA,forum_numposts}}<meta name="CMSCORE.Forum_NumPosts" content="{$METADATA*,forum_numposts}" />{+END}
 	<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" /><link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />

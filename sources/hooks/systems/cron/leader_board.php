@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    leader_board
  */
 
 /**
@@ -39,7 +39,7 @@ class Hook_cron_leader_board
         return [
             'label' => 'Leader-board generation',
             'num_queued' => null,
-            'minutes_between_runs' => 60,
+            'minutes_between_runs' => (60 * 24),
         ];
     }
 

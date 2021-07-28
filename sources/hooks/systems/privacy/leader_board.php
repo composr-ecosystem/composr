@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_privacy_points extends Hook_privacy_base
+class Hook_privacy_leader_board extends Hook_privacy_base
 {
     /**
      * Find privacy details.
@@ -30,7 +30,7 @@ class Hook_privacy_points extends Hook_privacy_base
      */
     public function info() : ?array
     {
-        if (!addon_installed('points')) {
+        if (!addon_installed('points') || !addon_installed('leader_board')) {
             return null;
         }
 
@@ -45,28 +45,16 @@ class Hook_privacy_points extends Hook_privacy_base
             ],
 
             'database_records' => [
-                'chargelog' => [
-                    'timestamp_field' => 'date_and_time',
+                'leader_board' => [
+                    'timestamp_field' => 'lb_date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['member_id'],
+                    'member_id_fields' => ['lb_member'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
-                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
-                ],
-                'gifts' => [
-                    'timestamp_field' => 'date_and_time',
-                    'retention_days' => null,
-                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
-                    'member_id_fields' => ['gift_from', 'gift_to'],
-                    'ip_address_fields' => [],
-                    'email_fields' => [],
-                    'additional_anonymise_fields' => [],
-                    'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],

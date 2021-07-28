@@ -36,6 +36,10 @@ class Hook_points_visiting
         $points_gained_visiting = isset($point_info['points_gained_visiting']) ? $point_info['points_gained_visiting'] : 0;
         $points_visiting = intval(get_option('points_per_daily_visit'));
 
+        if ($timestamp !== null) {
+            $points_gained_visiting -= min($points_gained_visiting, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'daily_visits WHERE d_date_and_time>' . strval($timestamp) . ' AND d_member_id=' . strval($member_id)));
+        }
+
         return $points_gained_visiting;
     }
 

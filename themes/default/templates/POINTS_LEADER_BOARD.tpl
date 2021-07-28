@@ -1,7 +1,7 @@
 <section class="box box---points-leader-board"><div class="box-inner">
-	<h3>{!POINT_LEADER_BOARD}</h3>
+	<h3>{!LEADER_BOARD_SET,{TITLE*}}</h3>
 
-	<p>{!LEADER_BOARD_ABOUT,{LIMIT*}}</p>
+	<p>{ABOUT*}</p>
 
 	<div class="wide-table-wrap"><table class="map-table autosized-table leader-board-table results-table wide-table">
 		<tbody>

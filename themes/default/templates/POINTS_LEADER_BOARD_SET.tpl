@@ -1,5 +1,7 @@
 <section class="box box---points-leader-board-week"><div class="box-inner">
-	<h3>{!WEEK,{WEEK*}}</h3>
+	<h3>{!LEADER_BOARD_SET,{SET*}}</h3>
+
+        <p>{ABOUT*}</p>
 
 	<div class="wide-table-wrap"><table class="map-table leader-board-table results-table wide-table autosized-table">
 		<tbody>

@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    awards
+ * @package    leader_board
  */
 
 require_code('crud_module');
@@ -27,7 +27,7 @@ class Module_admin_leader_board extends Standard_crud_module
 {
     protected $lang_type = 'LEADER_BOARD';
     protected $select_name = 'TITLE';
-    protected $archive_entry_point = '_SEARCH:leaderboards';
+    protected $archive_entry_point = '_SEARCH:leader_board';
     protected $archive_label = 'VIEW_PAST_LEADER_BOARDS';
     protected $permission_module = 'leader_board'; // TODO
     protected $menu_label = 'LEADER_BOARDS';
@@ -50,7 +50,7 @@ class Module_admin_leader_board extends Standard_crud_module
         $info['hack_version'] = null;
         $info['update_require_upgrade'] = true;
         $info['version'] = 4;
-        $info['locked'] = true;
+        $info['locked'] = false;
         return $info;
     }
 
@@ -70,7 +70,7 @@ class Module_admin_leader_board extends Standard_crud_module
         }
 
         $ret = [
-            'browse' => ['MANAGE_LEADER_BOARDS', 'menu/adminzone/setup/leader_boards'],
+            'browse' => ['MANAGE_LEADER_BOARDS', 'menu/adminzone/setup/leader_board'],
         ];
 
         $ret += parent::get_entry_points();
@@ -111,7 +111,7 @@ class Module_admin_leader_board extends Standard_crud_module
 
         require_lang('leader_board');
 
-        set_helper_panel_tutorial('tut_leader_board');
+        set_helper_panel_tutorial('tut_points');
 
         if ($type == 'predefined_content') {
         }
@@ -215,10 +215,15 @@ class Module_admin_leader_board extends Standard_crud_module
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $fr = [];
-            $fr[] = protect_from_escaping(hyperlink(build_url(['page' => 'leader_boards', 'type' => 'leader_board', 'id' => $row['id']], get_module_zone('leader_board')), $row['lb_title'], false, true));
+            $fr[] = protect_from_escaping(hyperlink(build_url(['page' => 'leader_board', 'type' => 'browse', 'id' => $row['id']], get_module_zone('leader_board')), $row['lb_title'], false, true));
             $fr[] = integer_format($row['lb_member_count']);
-            $fr[] = integer_format($row['lb_timeframe']);
-            $fr[] = $row['lb_usergroup']; // TODO
+            $fr[] = do_lang('LEADER_BOARD_TIME_FRAME_' . $row['lb_timeframe']);
+            if (get_forum_type() == 'cns' && $row['lb_usergroup'] !== null) {
+                require_code('cns_groups');
+                $fr[] = cns_get_group_name($row['lb_usergroup']);
+            } else {
+                $fr[] = '';
+            }
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])));
 
             $result_entries->attach(results_entry($fr, true));
@@ -242,6 +247,7 @@ class Module_admin_leader_board extends Standard_crud_module
      *
      * @param  ?AUTO_LINK $id The ID of the award (null: not added yet)
      * @param  SHORT_TEXT $title The title
+     * @param  SHORT_TEXT $board_type the type of leader-board
      * @param  LONG_TEXT $description The description
      * @param  integer $points How many points are given to the awardee
      * @param  ID_TEXT $content_type The content type the award type is for
@@ -249,47 +255,43 @@ class Module_admin_leader_board extends Standard_crud_module
      * @param  integer $update_time_hours The approximate time in hours between awards (e.g. 168 for a week)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $title = '', string $description = '', int $points = 0, string $content_type = 'download', ?int $show_awardee = null, int $update_time_hours = 168) : array
+    public function get_form_fields(?int $id = null, ?string $title = null, ?string $board_type = 'holders', ?int $member_count = 10, ?string $timeframe = 'week', ?int $rolling = 0, ?int $usergroup = null, ?int $include_staff = 0) : array
     {
-        // TODO
-        if ($show_awardee === null) {
-            $val = $GLOBALS['SITE_DB']->query_select_value('award_types', 'AVG(a_show_awardee)');
-            $show_awardee = ($val === null) ? 1 : @intval(round($val));
-        }
 
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
-        $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true));
-        if (addon_installed('points')) {
-            $fields->attach(form_input_integer(do_lang_tempcode('POINTS'), do_lang_tempcode('DESCRIPTION_AWARD_POINTS'), 'points', $points, true));
-        }
-        $list = new Tempcode();
-        $_hooks = [];
-        $hooks = find_all_hooks('systems', 'content_meta_aware');
-        foreach (array_keys($hooks) as $hook) {
-            require_code('content');
-            $hook_object = get_content_object($hook);
-            if ($hook_object === null) {
-                continue;
-            }
-            $hook_info = $hook_object->info();
-            if ($hook_info !== null) {
-                $_hooks[$hook] = do_lang_tempcode($hook_info['content_type_label']);
-            }
-        }
-        asort($_hooks);
-        foreach ($_hooks as $hook => $hook_title) {
-            $list->attach(form_input_list_entry($hook, $hook == $content_type, $hook_title));
-        }
-        if ($list->is_empty()) {
-            inform_exit(do_lang_tempcode('NO_CATEGORIES'));
-        }
-        $fields->attach(form_input_list(do_lang_tempcode('CONTENT_TYPE'), do_lang_tempcode('DESCRIPTION_CONTENT_TYPE'), 'content_type', $list));
-        $fields->attach(form_input_tick(do_lang_tempcode('SHOW_AWARDEE'), do_lang_tempcode('DESCRIPTION_SHOW_AWARDEE'), 'show_awardee', $show_awardee == 1));
-        $fields->attach(form_input_integer(do_lang_tempcode('AWARD_UPDATE_TIME_HOURS'), do_lang_tempcode('DESCRIPTION_AWARD_UPDATE_TIME_HOURS'), 'update_time_hours', $update_time_hours, true));
 
-        // Permissions
-        $fields->attach($this->get_permission_fields(($id === null) ? null : strval($id), do_lang_tempcode('AWARD_PERMISSION_HELP'), false/*We want permissions off by default so we do not say new category ($id === null)*/, do_lang_tempcode('GIVE_AWARD')));
+        // Only allow editing leader-board type if there are no results generated so far
+        if ($id === null) {
+            $can_edit_type = true;
+        } else {
+            $results = get_leader_board($id);
+            $can_edit_type = (empty($results));
+        }
+        $radios = new Tempcode();
+        $radios->attach(form_input_radio_entry('leader_board_type', 'holders', $board_type == 'holders', do_lang_tempcode('LEADER_BOARD_TYPE_TOTAL_POINTS'), null, '', !$can_edit_type));
+        $radios->attach(form_input_radio_entry('leader_board_type', 'earners', $board_type == 'earners', do_lang_tempcode('LEADER_BOARD_TYPE_POINTS_EARNED'), null, '', !$can_edit_type));
+        $fields->attach(form_input_radio(do_lang_tempcode('LEADER_BOARD_TYPE'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_TYPE'), 'leader_board_type', $radios, true));
+
+        $fields->attach(form_input_integer(do_lang_tempcode('MEMBERS'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_MEMBERS'), 'member_count', $member_count, true));
+
+        $timeframes = new Tempcode();
+        $timeframes->attach(form_input_list_entry('week', $timeframe == 'week', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_week')));
+        $timeframes->attach(form_input_list_entry('month', $timeframe == 'month', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_month')));
+        $timeframes->attach(form_input_list_entry('year', $timeframe == 'year', do_lang_tempcode('LEADER_BOARD_TIME_FRAME_year')));
+
+        $fields->attach(form_input_list(do_lang_tempcode('LEADER_BOARD_TIME_FRAME'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_TIME_FRAME'), 'timeframe', $timeframes));
+        $fields->attach(form_input_tick(do_lang_tempcode('LEADER_BOARD_ROLLING'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_ROLLING'), 'rolling', $rolling == 1));
+
+        if (get_forum_type() == 'cns') {
+            require_code('cns_groups');
+            $usergroups = new Tempcode();
+            $usergroups->attach(form_input_list_entry('', $usergroup === null, do_lang_tempcode('NA_EM')));
+            $usergroups->attach(cns_create_selection_list_usergroups($usergroup));
+            $fields->attach(form_input_list(do_lang_tempcode('USERGROUP'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_USERGROUP'), 'usergroup', $usergroups, null, false, false));
+        }
+
+        $fields->attach(form_input_tick(do_lang_tempcode('LEADER_BOARD_SHOW_STAFF'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_SHOW_STAFF'), 'include_staff', $include_staff == 1));
 
         return [$fields, new Tempcode()];
     }
@@ -304,7 +306,7 @@ class Module_admin_leader_board extends Standard_crud_module
         $_m = $GLOBALS['SITE_DB']->query_select('leader_boards', ['id', 'lb_title']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
-            $entries->attach(form_input_list_entry(strval($m['id']), false, $m['a_title']));
+            $entries->attach(form_input_list_entry(strval($m['id']), false, $m['lb_title']));
         }
 
         return $entries;
@@ -324,7 +326,7 @@ class Module_admin_leader_board extends Standard_crud_module
         }
         $r = $m[0];
 
-        $fields = $this->get_form_fields(intval($id), $r['lb_title'], $r['lb_member_count'], $r['lb_timeframe'], $r['lb_usergroup']);
+        $fields = $this->get_form_fields(intval($id), $r['lb_title'], $r['lb_type'], $r['lb_member_count'], $r['lb_timeframe'], $r['lb_rolling'], $r['lb_usergroup'], $r['lb_include_staff']);
 
         return $fields;
     }
@@ -336,8 +338,9 @@ class Module_admin_leader_board extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
-        // TODO
-        $id = add_award_type(post_param_string('title'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_string('usergroup'));
+        require_code('leader_board2');
+
+        $id = add_leader_board(post_param_string('title'), post_param_string('leader_board_type'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), post_param_integer('usergroup', null));
 
         $this->set_permissions(strval($id));
 
@@ -352,8 +355,9 @@ class Module_admin_leader_board extends Standard_crud_module
      */
     public function edit_actualisation(string $id) : ?object
     {
-        // TODO
-        edit_award_type(intval($id), post_param_string('title'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_string('usergroup'));
+        require_code('leader_board2');
+
+        edit_leader_board(intval($id), post_param_string('title'), post_param_string('leader_board_type', null), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), post_param_integer('usergroup', null));
 
         $this->set_permissions($id);
 
@@ -367,8 +371,9 @@ class Module_admin_leader_board extends Standard_crud_module
      */
     public function delete_actualisation(string $id)
     {
-        // TODO
-        delete_award_type(intval($id));
+        require_code('leader_board2');
+
+        delete_leader_board(intval($id));
     }
 
     /**

@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    leader_board
  */
 
 /**
@@ -35,9 +35,9 @@ class Block_main_leader_board
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 4;
+        $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = ['zone', 'leaderboard'];
+        $info['parameters'] = ['zone', 'id', 'timestamp'];
         $info['update_require_upgrade'] = true;
         return $info;
     }
@@ -60,61 +60,6 @@ PHP;
     }
 
     /**
-     * Uninstall the block.
-     */
-    public function uninstall()
-    {
-        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_board');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_boards');
-    }
-
-    /**
-     * Install the block.
-     *
-     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
-     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
-     */
-    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
-    {
-        if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('leader_boards', [
-                'lb_title' => 'SHORT_TEXT',
-                'lb_member_count' => 'INTEGER',
-                'lb_timeframe' => 'SHORT_TEXT',
-                'lb_rolling' => 'BINARY',
-                'lb_include_staff' => 'BINARY',
-                'lb_usergroup' => '?GROUP',
-            ]);
-
-            $GLOBALS['SITE_DB']->create_table('leader_board', [
-                'lb_member' => '*MEMBER',
-                'lb_points' => 'INTEGER',
-                'lb_rank' => 'INTEGER',
-                'lb_leaderboard_id' => '*AUTO_LINK',
-                'date_and_time' => '*TIME',
-            ]);
-        } else if ($upgrade_from < 4) { // LEGACY
-            $GLOBALS['SITE_DB']->create_table('leader_boards', [
-                'lb_title' => 'SHORT_TEXT',
-                'lb_member_count' => 'INTEGER',
-                'lb_timeframe' => 'SHORT_TEXT',
-                'lb_rolling' => 'BINARY',
-                'lb_include_staff' => 'BINARY',
-                'lb_usergroup' => '?GROUP',
-            ]);
-
-            // Assign a default leaderboard for legacy leaderboard versions
-            $default_row = $GLOBALS['SITE_DB']->query_insert('leader_boards', [
-                'lb_member_count' => 300,
-                'lb_timeframe' => 'week'
-            ], true);
-
-            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_rank', 'INTEGER');
-            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leaderboard_id', 'AUTO_LINK', $default_row);
-        }
-    }
-
-    /**
      * Execute the block.
      *
      * @param  array $map A map of parameters
@@ -122,21 +67,40 @@ PHP;
      */
     public function run(array $map) : object
     {
-        // TODO
+        require_lang('leader_board');
+        require_code('leader_board');
+
         $error_msg = new Tempcode();
+        if (!addon_installed__messaged('leader_board', $error_msg)) {
+            return $error_msg;
+        }
         if (!addon_installed__messaged('points', $error_msg)) {
             return $error_msg;
+        }
+
+        if (!array_key_exists('id', $map)) {
+            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('LEADER_BOARD_MISSING_ID')]);
+        }
+
+        $board = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => $map['id']], '', 1);
+        if (empty($board)) {
+            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('LEADER_BOARD_MISSING_BOARD')]);
         }
 
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('leader_board');
 
         require_lang('leader_board');
-        require_code('points');
-        require_css('points');
-
         require_code('leader_board');
 
-        $rows = calculate_latest_leader_board();
+        $rows = get_leader_board($map['id'], array_key_exists('timestamp', $map) ? $map['timestamp'] : null);
+        if (empty($rows)) {
+            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('NO_RESULTS')]);
+        }
+
+        $date = get_timezoned_date($rows[0]['lb_date_and_time'], false);
+        $start_date = get_timezoned_date(strtotime('-1 ' . $board[0]['lb_timeframe'], $rows[0]['lb_date_and_time']), false);
+
+        $rows = collapse_2d_complexity('lb_member', 'lb_points', $rows);
 
         $out = new Tempcode();
         $i = 0;
@@ -155,10 +119,7 @@ PHP;
 
             $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
 
-            $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
-            if ($username === null) {
-                continue; // Deleted member now
-            }
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_DELETED);
 
             $out->attach(do_template('POINTS_LEADER_BOARD_ROW', [
                 '_GUID' => '68caa55091aade84bc7ca760e6655a45',
@@ -174,15 +135,15 @@ PHP;
             $i++;
         }
 
-        $url = build_url(['page' => 'leader_board'], $zone);
+        $about = $board[0]['lb_type'] == 'earners' ? do_lang_tempcode('LEADER_BOARD_ABOUT_earners', count($rows), $start_date, $date) : do_lang_tempcode('LEADER_BOARD_ABOUT_holders', count($rows), $date);
 
-        $limit = intval(get_option('leader_board_size'));
+        $url = build_url(['page' => 'leader_board', 'id' => $map['id']], $zone);
 
         return do_template('POINTS_LEADER_BOARD', [
             '_GUID' => 'c875cce925e73f46408acc0a153a2902',
             'URL' => $url,
-            '_LIMIT' => strval($limit),
-            'LIMIT' => integer_format($limit),
+            'TITLE' => strval($board[0]['lb_title']),
+            'ABOUT' => strval($about),
             'ROWS' => $out,
         ]);
     }
