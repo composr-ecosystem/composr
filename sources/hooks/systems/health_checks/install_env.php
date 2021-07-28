@@ -320,7 +320,20 @@ class Hook_health_check_install_env extends Hook_Health_Check
                 $this->stateCheckSkipped('Not running MySQL (or MariaDB)');
             }
         } else {
-            $this->stateCheckSkipped('Not running MySQL (or MariaDB) / No active database connection');
+            // Probably running from the installer, let's see if we can detect MySQL client via command line (we'll assume user is a MySQL user as that is the default)
+            if (php_function_allowed('shell_exec')) {
+                $_version = shell_exec('mysql -V');
+                $matches = [];
+                if (preg_match('#Distrib ([^\s]*)#', $_version, $matches) != 0) {
+                    $version = $matches[1];
+                } elseif (preg_match('#Ver ([^\s]*)#', $_version, $matches) != 0) {
+                    $version = $matches[1];
+                }
+            }
+
+            if ($version === null) {
+                $this->stateCheckSkipped('Not running MySQL (or MariaDB) / No active database connection');
+            }
         }
 
         if ($version !== null) {
@@ -328,7 +341,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
                 $mariadb_too_old = version_compare($version, $minimum_version, '<');
                 $this->assertTrue(!$mariadb_too_old, do_lang('MARIADB_TOO_OLD', $minimum_version, $version));
 
-                $max_tested_mariadb_version = '10.4'; // LEGACY needs maintaining
+                $max_tested_mariadb_version = '10.5'; // LEGACY needs maintaining
                 if (!is_maintained('mariadb')) {
                     $mariadb_too_new = version_compare($version, $max_tested_mariadb_version . '.1000', '>');
                     $this->assertTrue(
