@@ -27,6 +27,11 @@ class webdav_test_set extends cms_test_case
             return;
         }
 
+        if (!function_exists('mb_strtoupper')) {
+            $this->assertTrue(false, 'mbstring needed');
+            return;
+        }
+
         $session_id = $this->establish_admin_callback_session();
         $guest_cookies = [get_session_cookie() => uniqid('', true)];
         $cookies = [get_session_cookie() => $session_id];
@@ -61,6 +66,7 @@ class webdav_test_set extends cms_test_case
             'post_params' => $file_data,
             'trigger_error' => false,
             'cookies' => $cookies,
+            //'ignore_http_status' => true,
         ]);
         if ($this->debug) {
             var_dump($result->message);

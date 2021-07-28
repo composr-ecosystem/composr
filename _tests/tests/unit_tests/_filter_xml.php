@@ -58,7 +58,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -97,7 +97,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -131,7 +131,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -165,7 +165,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -200,7 +200,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -243,7 +243,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -286,7 +286,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -330,7 +330,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -373,7 +373,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -416,7 +416,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -460,7 +460,7 @@ class _filter_xml_test_set extends cms_test_case
             'validated' => '1',
             'post' => 'Test Test Test Test Test',
             'news' => 'Test Test Test Test Test',
-            'csrf_token' => generate_csrf_token(),
+            'csrf_token' => generate_csrf_token(true),
             'confirm_double_post' => '1',
         ];
 
@@ -506,7 +506,7 @@ class _filter_xml_test_set extends cms_test_case
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
-                'csrf_token' => generate_csrf_token(),
+                'csrf_token' => generate_csrf_token(true),
                 'confirm_double_post' => '1',
             ];
 
@@ -549,7 +549,7 @@ class _filter_xml_test_set extends cms_test_case
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
-                'csrf_token' => generate_csrf_token(),
+                'csrf_token' => generate_csrf_token(true),
                 'confirm_double_post' => '1',
             ];
 
@@ -592,7 +592,7 @@ class _filter_xml_test_set extends cms_test_case
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
-                'csrf_token' => generate_csrf_token(),
+                'csrf_token' => generate_csrf_token(true),
                 'confirm_double_post' => '1',
             ];
 
@@ -636,7 +636,7 @@ class _filter_xml_test_set extends cms_test_case
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
-                'csrf_token' => generate_csrf_token(),
+                'csrf_token' => generate_csrf_token(true),
                 'confirm_double_post' => '1',
             ];
 
@@ -679,7 +679,7 @@ class _filter_xml_test_set extends cms_test_case
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
-                'csrf_token' => generate_csrf_token(),
+                'csrf_token' => generate_csrf_token(true),
                 'confirm_double_post' => '1',
             ];
 
@@ -722,7 +722,7 @@ class _filter_xml_test_set extends cms_test_case
                 'validated' => '1',
                 'post' => 'Test Test Test Test Test',
                 'news' => 'Test Test Test Test Test',
-                'csrf_token' => generate_csrf_token(),
+                'csrf_token' => generate_csrf_token(true),
                 'confirm_double_post' => '1',
             ];
 

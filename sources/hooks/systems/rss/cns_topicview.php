@@ -65,7 +65,7 @@ class Hook_rss_cns_topicview
             }
             $category = $categories[$row['p_topic_id']]['t_cache_first_title'];
             if ((($row['p_cache_forum_id'] !== null) || ($categories[$row['p_topic_id']]['t_pt_from'] == get_member()) || ($categories[$row['p_topic_id']]['t_pt_to'] == get_member())) && ((($row['p_intended_solely_for'] === null) || ($row['p_intended_solely_for'] == get_member()))) && (has_category_access(get_member(), 'forums', strval($row['p_cache_forum_id'])))) {
-                $id = strval($row['p_topic_id']);
+                $id = strval($row['id']);
                 $author = $row['p_poster_name_if_guest'];
 
                 $news_date = date($date_string, $row['p_time']);
@@ -79,7 +79,7 @@ class Hook_rss_cns_topicview
                 $summary = xmlentities($_summary->evaluate());
                 $news = '';
 
-                $category_raw = $id;
+                $category_raw = strval($row['p_topic_id']);
 
                 $view_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $row['id']], get_module_zone('forumview'), [], false, false, true);
 

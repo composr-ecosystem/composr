@@ -78,7 +78,7 @@ function make_installers($skip_file_grab = false)
         $out .= populate_build_files_list();
         $out .= '</ul>';
 
-        requires_code('themes3');
+        require_code('themes3');
         generate_svg_sprite('default', false, false);
         generate_svg_sprite('default', true, false);
 
@@ -804,7 +804,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             if ($path == 'sources/cns_install.php') {
                 $privilege_regexp = '#\'(\w+)\'#';
             } elseif ($path == 'sources/permissions3.php') {
-                $privilege_regexp = '#\[\'\w+\',\s*\'(\w+)\'\\#';
+                $privilege_regexp = '#\[\'\w+\',\s*\'(\w+)\'\]#';
             } else {
                 $privilege_regexp = '#add_privilege\(\'\w+\',\s*\'(\w+)\'#';
             }
