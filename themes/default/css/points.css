@@ -104,26 +104,6 @@ table.points-summary-table .answer {
 	padding-left: 0;
 }
 
-/* Leaderboard */
-
-.box---points-leader-board-week {
-	width: 30em; /* Stop the wide table within being too big */
-}
-
-.box---points-leader-board-week .leader-board-table th {
-	width: 10em;
-}
-
-.leader-board-table th, .leader-board-table td {
-	vertical-align: middle;
-	text-align: left;
-}
-/*{+START,CSS_MODE,mobile}*/
-	.global-side-panel .leader-board-table th, .global-side-panel .leader-board-table td {
-		width: 50%;
-	}
-/*{+END}*/
-
 .leader-board-rank {
 	display: none;
 }

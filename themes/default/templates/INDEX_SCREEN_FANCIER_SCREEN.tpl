@@ -12,9 +12,11 @@
 			{+START,IF_PASSED_AND_TRUE,ARRAY}
 				{+START,LOOP,CONTENT}
 					{+START,IF_NON_EMPTY,{_loop_var}}
-						<h2>{_loop_key*}</h2>
+						{+START,IF_NON_EMPTY,{_loop_key}}
+							<h2>{_loop_key*}</h2>
+						{+END}
 
-						<div class="not-too-tall">
+						<div{+START,IF,{$EQ,(CONTENT),1}} class="not-too-tall"{+END}>
 							{_loop_var}
 						</div>
 					{+END}

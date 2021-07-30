@@ -36,10 +36,18 @@ class Hook_cron_leader_board
             return null;
         }
 
+        require_code('leader_board');
+
+        if ($calculate_num_queued) {
+            $num_queued = get_leader_board_calculation_count();
+        } else {
+            $num_queued = null;
+        }
+
         return [
             'label' => 'Leader-board generation',
-            'num_queued' => null,
-            'minutes_between_runs' => (60 * 24),
+            'num_queued' => $num_queued,
+            'minutes_between_runs' => 15,
         ];
     }
 

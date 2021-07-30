@@ -35,11 +35,84 @@ class Block_main_leader_board
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 3;
+        $info['version'] = 4;
         $info['locked'] = false;
-        $info['parameters'] = ['zone', 'id', 'timestamp'];
+        $info['parameters'] = ['zone', 'param', 'timestamp'];
         $info['update_require_upgrade'] = true;
         return $info;
+    }
+
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_board');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('leader_boards');
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        if ($upgrade_from === null) {
+            $GLOBALS['SITE_DB']->create_table('leader_board', [
+                'lb_member' => '*MEMBER',
+                'lb_points' => 'INTEGER',
+                'lb_rank' => 'INTEGER',
+                'lb_leader_board_id' => '*AUTO_LINK',
+                'lb_date_and_time' => '*TIME',
+            ]);
+        }
+
+        if (($upgrade_from === null) || $upgrade_from < 4) {
+            $GLOBALS['SITE_DB']->create_table('leader_boards', [
+                'id' => '*AUTO',
+                'lb_title' => 'SHORT_TEXT',
+                'lb_creation_date_and_time' => 'TIME',
+                'lb_type' => 'SHORT_TEXT',
+                'lb_member_count' => 'INTEGER',
+                'lb_timeframe' => 'SHORT_TEXT',
+                'lb_rolling' => 'BINARY',
+                'lb_include_staff' => 'BINARY',
+                'lb_usergroup' => '?GROUP',
+            ]);
+        }
+        if (($upgrade_from !== null) && $upgrade_from < 4) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_rank', 'INTEGER');
+
+            // Create legacy leader-board and a new field will reference it
+            require_lang('leader_board');
+            require_code('leader_board2');
+            $new_leader_board = add_leader_board(do_lang('POINT_LEADER_BOARD'), 'holders', 10, 'week', 1, 0, null);
+            $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leaderboard_id', 'AUTO_LINK', $new_leader_board);
+
+            // Calculate rankings for legacy result sets
+            $dates = $GLOBALS['SITE_DB']->query('SELECT DISTINCT (lb_date_and_time) FROM ' . get_table_prefix() . 'leader_board');
+            foreach ($dates as $date) {
+                $rows = $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_date_and_time' => $date['lb_date_and_time']]);
+
+                usort($rows, function (array $a, array $b) : int {
+                    if ($a['lb_points'] == $b['lb_points']) {
+                        return mt_rand(-1, 1); // Randomize members with equal points earned
+                    }
+                    return ($a['lb_points'] > $b['lb_points']) ? -1 : 1;
+                });
+
+                $i = 0;
+                foreach ($rows as $row) {
+                    $i++;
+                    $GLOBALS['SITE_DB']->query_update('leader_board', ['lb_rank' => $i], ['lb_member' => $row['lb_member'], 'lb_date_and_time' => $date['lb_date_and_time']], '', 1);
+                }
+            }
+
+            // Consistency re-naming
+            $GLOBALS['SITE_DB']->alter_table_field('leader_board', 'date_and_time', '*TIME', 'lb_date_and_time');
+        }
     }
 
     /**
@@ -53,6 +126,8 @@ class Block_main_leader_board
         $info['cache_on'] = <<<'PHP'
         [
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('leader_board'),
+            array_key_exists('param', $map) ? $map['param'] : null,
+            array_key_exists('timestamp', $map) ? $map['timestamp'] : null,
         ]
 PHP;
         $info['ttl'] = 60 * 15; // 15 minutes
@@ -67,9 +142,6 @@ PHP;
      */
     public function run(array $map) : object
     {
-        require_lang('leader_board');
-        require_code('leader_board');
-
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('leader_board', $error_msg)) {
             return $error_msg;
@@ -78,27 +150,38 @@ PHP;
             return $error_msg;
         }
 
-        if (!array_key_exists('id', $map)) {
-            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('LEADER_BOARD_MISSING_ID')]);
+        if (!cron_installed()) {
+            return do_template('RED_ALERT', ['_GUID' => 'sfkshkjfh34htiuk3ht3', 'TEXT' => do_lang_tempcode('CRON_NEEDED_TO_WORK', escape_html(get_tutorial_url('tut_configuration')))]);
         }
-
-        $board = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => $map['id']], '', 1);
-        if (empty($board)) {
-            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('LEADER_BOARD_MISSING_BOARD')]);
-        }
-
-        $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('leader_board');
 
         require_lang('leader_board');
         require_code('leader_board');
+        require_css('leader_board');
 
-        $rows = get_leader_board($map['id'], array_key_exists('timestamp', $map) ? $map['timestamp'] : null);
-        if (empty($rows)) {
-            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('NO_RESULTS')]);
+        if (!array_key_exists('param', $map)) {
+            $boards = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id', 1);
+        } else {
+            $boards = $GLOBALS['FORUM_DB']->query_select('leader_boards', ['*'], ['id' => intval($map['param'])], '', 1);
         }
 
-        $date = get_timezoned_date($rows[0]['lb_date_and_time'], false);
-        $start_date = get_timezoned_date(strtotime('-1 ' . $board[0]['lb_timeframe'], $rows[0]['lb_date_and_time']), false);
+        if (empty($boards)) {
+            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'leader_board')]);
+        }
+
+        $board = $boards[0];
+        $leader_board_id = $board['id'];
+
+        $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('leader_board');
+
+        $rows = get_leader_board($leader_board_id, array_key_exists('timestamp', $map) ? intval($map['timestamp']) : null);
+        if (empty($rows)) {
+            return do_template('RED_ALERT', ['_GUID' => 'cv34fj3f34jof3joitj059tj940t', 'TEXT' => do_lang_tempcode('LEADER_BOARD_NOT_GENERATED', escape_html($board['lb_title']))]);
+        }
+
+        $date = $rows[0]['lb_date_and_time'];
+        $nice_date = get_timezoned_date($date, false);
+        $start_date = strtotime('-1 ' . $board['lb_timeframe'], $date);
+        $nice_start_date = get_timezoned_date($start_date, false);
 
         $rows = collapse_2d_complexity('lb_member', 'lb_points', $rows);
 
@@ -122,7 +205,7 @@ PHP;
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_DELETED);
 
             $out->attach(do_template('POINTS_LEADER_BOARD_ROW', [
-                '_GUID' => '68caa55091aade84bc7ca760e6655a45',
+                '_GUID' => '3gfy3u54t45287tg1odf8y82dcf98ruf3gt8645t92845',
                 'ID' => strval($member_id),
                 'POINTS_URL' => $points_url,
                 'PROFILE_URL' => $profile_url,
@@ -135,16 +218,22 @@ PHP;
             $i++;
         }
 
-        $about = $board[0]['lb_type'] == 'earners' ? do_lang_tempcode('LEADER_BOARD_ABOUT_earners', count($rows), $start_date, $date) : do_lang_tempcode('LEADER_BOARD_ABOUT_holders', count($rows), $date);
+        $about = ($board['lb_type'] == 'earners') ? do_lang_tempcode('LEADER_BOARD_ABOUT_earners', integer_format(count($rows)), escape_html($nice_start_date), escape_html($nice_date)) : do_lang_tempcode('LEADER_BOARD_ABOUT_holders', integer_format(count($rows)), escape_html($nice_date));
 
-        $url = build_url(['page' => 'leader_board', 'id' => $map['id']], $zone);
+        $url = build_url(['page' => 'leader_board', 'id' => $leader_board_id], $zone);
 
-        return do_template('POINTS_LEADER_BOARD', [
-            '_GUID' => 'c875cce925e73f46408acc0a153a2902',
+        return do_template('POINTS_LEADER_BOARD_SET', [
+            '_GUID' => 'g354u7itg47i8gt743tgbqu5376yoty839udc13984',
+            '_SET_NUMBER' => strval(count($rows)),
+            '_TYPE' => strval($board['lb_type']),
+            '_COUNT' => strval(count($rows)),
+            '_DATE' => strval($date),
+            '_START_DATE' => strval($start_date),
             'URL' => $url,
-            'TITLE' => strval($board[0]['lb_title']),
+            'TITLE' => strval($board['lb_title']),
             'ABOUT' => strval($about),
             'ROWS' => $out,
+            'IS_BLOCK' => true
         ]);
     }
 }

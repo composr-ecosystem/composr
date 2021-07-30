@@ -52,7 +52,7 @@ class Hook_import_cms_merge
             'banners',
             'calendar',
             'catalogues', // including rating, trackbacks, seo
-            'points_gifts_and_charges', // including leader board
+            'points_gifts_and_charges', // including daily visits
             'chat_rooms',
             'config',
             'custom_comcode',
@@ -94,6 +94,7 @@ class Hook_import_cms_merge
             'ecommerce',
             'cns_welcome_emails',
             'quizzes',
+            'leader_boards',
         ];
         $info['dependencies'] = [
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
@@ -136,6 +137,7 @@ class Hook_import_cms_merge
            'cns_welcome_emails' => ['cns_members'],
            'quizzes' => ['cns_members', 'catalogues'],
            'aggregate_type_instances' => [],
+           'leader_boards' => ['cns_members', 'cns_groups'],
         ];
 
         $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
@@ -1012,19 +1014,26 @@ class Hook_import_cms_merge
             $map += insert_lang_comcode('reason', $this->get_lang_string($db, $row['reason']), 4);
             $GLOBALS['SITE_DB']->query_insert('gifts', $map);
         }
-        $rows = $db->query_select('leader_board', ['*'], [], '', null, 0, true);
-        if ($rows === null) {
-            $rows = [];
-        }
-        $this->_fix_comcode_ownership($rows);
-        foreach ($rows as $row) {
-            $member_id = $on_same_msn ? $row['lb_member'] : import_id_remap_get('member', strval($row['lb_member']), true);
-            if ($member_id === null) {
-                continue;
+
+        // Daily visits
+        $max = 300;
+        $start = 0;
+        do {
+            $rows = $db->query_select('daily_visits', ['*'], [], '', $max, $start, true);
+            if ($rows === null) {
+                $rows = [];
             }
-            $GLOBALS['SITE_DB']->query_delete('leader_board', ['lb_member' => $member_id, 'lb_points' => $row['lb_points'], 'date_and_time' => $row['date_and_time']], '', 1);
-            $GLOBALS['SITE_DB']->query_insert('leader_board', ['lb_member' => $member_id, 'lb_points' => $row['lb_points'], 'date_and_time' => $row['date_and_time']]);
-        }
+            foreach ($rows as $row) {
+                $member_id = $on_same_msn ? $row['d_member'] : import_id_remap_get('member', strval($row['d_member']), true);
+                if ($member_id === null) {
+                    continue;
+                }
+                $GLOBALS['SITE_DB']->query_delete('daily_visits', ['d_member' => $row['d_member'], 'd_date_and_time' => $row['d_date_and_time']], '', 1);
+                $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member' => $row['d_member'], 'd_date_and_time' => $row['d_date_and_time']]);
+            }
+
+            $start += $max;
+        } while (!empty($rows));
     }
 
     /**
@@ -3512,6 +3521,73 @@ class Hook_import_cms_merge
                 $GLOBALS['FORUM_DB']->query_insert('f_emoticons', $row);
             }
         }
+    }
+
+    /**
+     * Standard import function.
+     *
+     * @param  object $db The database connector to import from
+     * @param  string $table_prefix The table prefix the target prefix is using
+     * @param  PATH $file_base The base directory we are importing from
+     */
+    public function import_leader_boards(object $db, string $table_prefix, string $file_base)
+    {
+        require_code('leader_board2');
+
+        $on_same_msn = $this->on_same_msn($file_base);
+
+        // Leader-boards
+        $rows = $db->query_select('leader_boards', ['*'], [], '', null, 0, true);
+        if ($rows === null || $on_same_msn) {
+            $rows = [];
+        }
+        $this->_fix_comcode_ownership($rows);
+        foreach ($rows as $row) {
+            if (import_check_if_imported('leader_boards', strval($row['id']))) {
+                continue;
+            }
+
+            $map = [
+                'lb_title' => $row['lb_title'],
+                'lb_type' => $row['lb_type'],
+                'lb_member_count' => $row['lb_member_count'],
+                'lb_timeframe' => $row['lb_timeframe'],
+                'lb_rolling' => $row['lb_rolling'],
+                'lb_include_staff' => $row['lb_include_staff'],
+                'lb_usergroup' => $row['lb_usergroup']
+            ];
+
+            if ($row['lb_usergroup'] === null) {
+                $usergroup_id = null;
+            } else {
+                $usergroup_id = $on_same_msn ? $row['lb_member'] : import_id_remap_get('group', strval($row['lb_usergroup']), true);
+            }
+
+            add_leader_board($row['lb_title'], $row['lb_type'], $row['lb_member_count'], $row['lb_timeframe'], $row['lb_rolling'], $row['lb_include_staff'], $usergroup_id);
+
+            import_id_remap_put('leader_board', strval($row['id']), 0);
+        }
+
+        // Result sets
+        $max = 300;
+        $start = 0;
+        do {
+            $rows = $db->query_select('leader_board', ['*'], [], '', $max, $start, true);
+            if ($rows === null) {
+                $rows = [];
+            }
+            $this->_fix_comcode_ownership($rows);
+            foreach ($rows as $row) {
+                $member_id = $on_same_msn ? $row['lb_member'] : import_id_remap_get('member', strval($row['lb_member']), true);
+                if ($member_id === null) {
+                    continue;
+                }
+                $GLOBALS['SITE_DB']->query_delete('leader_board', ['lb_member' => $member_id, 'lb_points' => $row['lb_points'], 'lb_date_and_time' => $row['date_and_time'], 'lb_rank' => $row['lb_rank'], 'lb_leader_board_id' => $row['lb_leader_board_id']], '', 1);
+                $GLOBALS['SITE_DB']->query_insert('leader_board', ['lb_member' => $member_id, 'lb_points' => $row['lb_points'], 'lb_date_and_time' => $row['date_and_time'], 'lb_rank' => $row['lb_rank'], 'lb_leader_board_id' => $row['lb_leader_board_id']]);
+            }
+
+            $start += $max;
+        } while (!empty($rows));
     }
 
     /**

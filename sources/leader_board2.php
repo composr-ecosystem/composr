@@ -21,14 +21,14 @@
 /**
  * Create a new leader-board.
  *
- * @param SHORT_TEXT $title The leader-board title
- * @param SHORT_TEXT $leader_board_type The type of leader-board
- * @param INTEGER $member_count The number of top members to use for this leader-board
- * @param SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
- * @param BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
- * @param BINARY $include_staff Whether or not to include staff in the leader-board
- * @param INTEGER|null $usergroup Only allow members from this usergroup to be included in the leader-board (null: do not apply a usergroup restriction)
- * @return INTEGER The id of the new leader-board
+ * @param  SHORT_TEXT $title The leader-board title
+ * @param  SHORT_TEXT $leader_board_type The type of leader-board
+ * @param  integer $member_count The number of top members to use for this leader-board
+ * @param  SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
+ * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
+ * @param  BINARY $include_staff Whether or not to include staff in the leader-board
+ * @param  ?GROUP $usergroup Only allow members from this usergroup to be included in the leader-board (null: do not apply a usergroup restriction)
+ * @return AUTO_LINK The ID of the new leader-board
  */
 function add_leader_board(string $title, string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?int $usergroup) : int
 {
@@ -42,31 +42,43 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
         warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
     }
 
-    return $GLOBALS['SITE_DB']->query_insert('leader_boards', [
+    // leader-board type must be valid
+    if (!in_array($leader_board_type, ['holders', 'earners'])) {
+        warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+    }
+
+    require_code('global4');
+    prevent_double_submit('ADD_LEADER_BOARD', null, $title);
+
+    $id = $GLOBALS['SITE_DB']->query_insert('leader_boards', [
         'lb_title' => $title,
         'lb_type' => $leader_board_type,
         'lb_creation_date_and_time' => time(),
         'lb_member_count' => $member_count,
         'lb_timeframe' => $timeframe,
-        'lb_rolling' => $rolling != 0 ? 1 : 0,
-        'lb_include_staff' => $include_staff != 0 ? 1 : 0,
+        'lb_rolling' => $rolling,
+        'lb_include_staff' => $include_staff,
         'lb_usergroup' => $usergroup
     ], true);
+
+    log_it('ADD_LEADER_BOARD', strval($id), strval($title));
+
+    return $id;
 }
 
 /**
  * Edit a leader-board.
  *
- * @param INTEGER $id The id of the leader-board to edit
- * @param SHORT_TEXT $title The leader-board title
- * @param SHORT_TEXT|null $leader_board_type The type of leader-board (null: do not change)
- * @param INTEGER $member_count The number of top members to use for this leader-board
- * @param SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
- * @param BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
- * @param BINARY $include_staff Whether or not to include staff in the leader-board
- * @param INTEGER|null $usergroup Only allow members from this usergroup to be included in the leader-board (null: do not apply a usergroup restriction)
+ * @param  AUTO_LINK $id The ID of the leader-board to edit
+ * @param  SHORT_TEXT $title The leader-board title
+ * @param  ?SHORT_TEXT $leader_board_type The type of leader-board (null: do not change)
+ * @param  integer $member_count The number of top members to use for this leader-board
+ * @param  SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
+ * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
+ * @param  BINARY $include_staff Whether or not to include staff in the leader-board
+ * @param  ?GROUP $usergroup Only allow members from this usergroup to be included in the leader-board (null: do not apply a usergroup restriction)
  */
-function edit_leader_board(int $id, string $title, ?string $leader_board_type = null, int $member_count, string $timeframe, int $rolling, int $include_staff, ?int $usergroup)
+function edit_leader_board(int $id, string $title, ?string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?int $usergroup)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'lb_title', ['id' => $id]);
     if ($_title === null) {
@@ -85,24 +97,25 @@ function edit_leader_board(int $id, string $title, ?string $leader_board_type = 
 
     $map = [
         'lb_title' => $title,
-        'lb_creation_date_and_time' => time(),
         'lb_member_count' => $member_count,
         'lb_timeframe' => $timeframe,
-        'lb_rolling' => $rolling != 0 ? 1 : 0,
-        'lb_include_staff' => $include_staff != 0 ? 1 : 0,
+        'lb_rolling' => $rolling,
+        'lb_include_staff' => $include_staff,
         'lb_usergroup' => $usergroup
     ];
     if ($leader_board_type !== null) {
         $map['lb_type'] = $leader_board_type;
     }
 
-    $GLOBALS['SITE_DB']->query_update('leader_boards', $map, ['id' => $id]);
+    $GLOBALS['SITE_DB']->query_update('leader_boards', $map, ['id' => $id], '', 1);
+
+    log_it('EDIT_LEADER_BOARD', strval($id), strval($title));
 }
 
 /**
  * Delete a leader-board and its result sets.
  *
- * @param INTEGER $id The id of the leader-board to delete
+ * @param  AUTO_LINK $id The ID of the leader-board to delete
  */
 function delete_leader_board(int $id)
 {
@@ -113,4 +126,6 @@ function delete_leader_board(int $id)
 
     $GLOBALS['SITE_DB']->query_delete('leader_boards', ['id' => $id], '', 1);
     $GLOBALS['SITE_DB']->query_delete('leader_board', ['lb_leader_board_id' => $id]);
+
+    log_it('DELETE_LEADER_BOARD', strval($id), strval($_title));
 }

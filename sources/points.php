@@ -49,10 +49,10 @@ function get_product_price_points(string $item) : int
  *
  * @param  MEMBER $member_id The member
  * @param  ?TIME $timestamp Time to get for (null: now)
- * @param  ?BOOL $cache Whether to retrieve from and store the results in the cache
+ * @param  boolean $cache Whether to retrieve from and store the results in the run-time cache
  * @return integer The number of points the member has
  */
-function total_points(int $member_id, ?int $timestamp = null, ?bool $cache = true) : int
+function total_points(int $member_id, ?int $timestamp = null, bool $cache = true) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
@@ -123,10 +123,10 @@ function available_points(int $member_id) : int
  * Get all sorts of information about a specified member's point account.
  *
  * @param  MEMBER $member_id The member the point info is of
- * @param  ?BOOL $cache Whether to retrieve from and store the results in the cache
+ * @param  boolean $cache Whether to retrieve from and store the results in a run-time cache
  * @return array The map containing the members point info (fields as enumerated in description)
  */
-function point_info(int $member_id, ?bool $cache = true) : array
+function point_info(int $member_id, bool $cache = true) : array
 {
     require_code('lang');
     require_lang('points');
@@ -143,20 +143,16 @@ function point_info(int $member_id, ?bool $cache = true) : array
         $values = [];
     }
 
+    $ret = [];
     if ($cache) {
         $POINT_INFO_CACHE[$member_id] = [];
-        foreach ($values as $key => $val) {
-            if (!isset($val->codename/*faster than is_object*/)) {
-                $POINT_INFO_CACHE[$member_id][$key] = @intval($val);
-            }
-        }
-        return $POINT_INFO_CACHE[$member_id];
     }
-
-    $ret = [];
     foreach ($values as $key => $val) {
         if (!isset($val->codename/*faster than is_object*/)) {
             $ret[$member_id][$key] = @intval($val);
+            if ($cache) {
+                $POINT_INFO_CACHE[$member_id][$key] = @intval($val);
+            }
         }
     }
     return $ret[$member_id];

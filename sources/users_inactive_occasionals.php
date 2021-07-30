@@ -211,7 +211,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
             require_code('tempcode');
             if (date('d/m/Y', tz_time($test, get_site_timezone())) != date('d/m/Y', tz_time(time(), get_site_timezone()))) {
                 // New daily visit; log it
-                $GLOBALS['FORUM_DRIVER']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => time()]);
+                $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => time()]);
                 if (addon_installed('points')) {
                     // Award points
                     require_code('points');

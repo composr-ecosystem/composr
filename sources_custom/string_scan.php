@@ -8243,6 +8243,33 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PREVIEWING_SPRITE
         ENABLE_GIFT_POINTS
         CONFIG_OPTION_enable_gift_points
+        MANAGE_LEADER_BOARDS
+        ADD_LEADER_BOARD
+        EDIT_LEADER_BOARD
+        EDIT_THIS_LEADER_BOARD
+        DELETE_LEADER_BOARD
+        LEADER_BOARD_ALLOCATEHELP
+        DOC_LEADER_BOARDS
+        LEADER_BOARD_TIME_FRAME
+        DESCRIPTION_LEADER_BOARD_TIME_FRAME
+        LEADER_BOARD_SHOW_STAFF
+        DESCRIPTION_LEADER_BOARD_SHOW_STAFF
+        DESCRIPTION_LEADER_BOARD_USERGROUP
+        DESCRIPTION_LEADER_BOARD_SIZE
+        LEADER_BOARD_PREREFINED_WEEKLY_10_HOLDERS
+        DESCRIPTION_LEADER_BOARD_PREREFINED_WEEKLY_10_HOLDERS
+        LEADER_BOARD_PREREFINED_WEEKLY_10_EARNERS
+        DESCRIPTION_LEADER_BOARD_PREREFINED_WEEKLY_10_EARNERS
+        LEADER_BOARD_TYPE
+        DESCRIPTION_LEADER_BOARD_TYPE
+        LEADER_BOARD_TYPE_holders
+        LEADER_BOARD_TYPE_earners
+        LEADER_BOARD_SET
+        LEADER_BOARD_ROLLING
+        DESCRIPTION_LEADER_BOARD_ROLLING
+        LEADER_BOARD_ROLLING_0
+        LEADER_BOARD_ROLLING_1
+        MODULE_TRANS_NAME_admin_leader_board
     ')));
 
     $non_admin_files = [
@@ -8909,6 +8936,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CUSTOM_PROFILE_FIELD
         CUSTOM_UPLOAD
         DAILY
+        LEADER_BOARD_NOT_GENERATED
         DATE
         DATE_IN_PAST
         DATE_OF_BIRTH
@@ -11451,6 +11479,17 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POINTS_CHOOSE_ACTION
         PAYEE
         GIFTED_BY
+        LEADER_BOARDS
+        LEADER_BOARD_TIME_FRAME_week
+        LEADER_BOARD_TIME_FRAME_month
+        LEADER_BOARD_TIME_FRAME_year
+        LEADER_BOARD_TYPE_SHORT_holders
+        LEADER_BOARD_TYPE_SHORT_earners
+        BLOCK_main_leader_board_PARAM_param
+        BLOCK_main_leader_board_PARAM_param_TITLE
+        BLOCK_main_leader_board_PARAM_timestamp
+        BLOCK_main_leader_board_PARAM_timestamp_TITLE
+        LEADER_BOARD_SIZE
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

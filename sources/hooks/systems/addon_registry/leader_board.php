@@ -64,7 +64,7 @@ class Hook_addon_registry_leader_board
      */
     public function get_description(): string
     {
-        return 'Allow website administrators to display leader-board blocks for members earning the most points.';
+        return 'Allow website administrators to display leader-boards of members earning the most points.';
     }
 
     /**
@@ -111,20 +111,24 @@ class Hook_addon_registry_leader_board
     public function get_file_list(): array
     {
         return [
+            'sources/hooks/systems/addon_registry/leader_board.php',
             'sources/hooks/systems/privacy/leader_board.php',
-            'themes/default/images/icons/menu/social/leader_board.svg',
-            'themes/default/images/icons/menu/adminzone/setup/leader_board.svg',
-            'themes/default/images/icons_monochrome/menu/social/leader_board.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/setup/leader_board.svg',
+            'sources/hooks/systems/page_groupings/leader_board.php',
+            'sources/hooks/systems/resource_meta_aware/leader_board.php',
+            'sources/hooks/systems/actionlog/leader_board.php',
+            'sources/hooks/systems/block_ui_renderers/leader_board.php',
             'sources/hooks/modules/admin_setupwizard/leader_board.php',
-            'themes/default/templates/POINTS_LEADER_BOARD.tpl',
+            'themes/default/images/icons/menu/social/leader_board.svg',
+            'themes/default/images/icons_monochrome/menu/social/leader_board.svg',
             'themes/default/templates/POINTS_LEADER_BOARD_SCREEN.tpl',
             'themes/default/templates/POINTS_LEADER_BOARD_ROW.tpl',
             'themes/default/templates/POINTS_LEADER_BOARD_SET.tpl',
+            'themes/default/css/leader_board.css',
             'adminzone/pages/modules/admin_leader_board.php',
             'site/pages/modules/leader_board.php',
             'sources/blocks/main_leader_board.php',
             'sources/hooks/systems/cron/leader_board.php',
+            'sources/hooks/modules/admin_import_types/leader_board.php',
             'sources/leader_board.php',
             'sources/leader_board2.php',
             'lang/EN/leader_board.ini',
@@ -139,8 +143,7 @@ class Hook_addon_registry_leader_board
     public function tpl_previews(): array
     {
         return [
-            'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board',
-            'templates/POINTS_LEADER_BOARD.tpl' => 'points_leader_board',
+            'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board_screen',
             'templates/POINTS_LEADER_BOARD_SET.tpl' => 'points_leader_board_screen',
             'templates/POINTS_LEADER_BOARD_SCREEN.tpl' => 'points_leader_board_screen',
         ];
@@ -192,11 +195,11 @@ class Hook_addon_registry_leader_board
     {
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (!has_predefined_content('leader_board', 'weekly_10_holders'))) {
             require_code('leader_board2');
-            add_leader_board(do_lang('DEFAULT'), 'holders', 10, 'week', 1, 0, null);
+            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, null);
         }
         if ((($content === null) || (in_array('weekly_10_earners', $content))) && (!has_predefined_content('leader_board', 'weekly_10_earners'))) {
             require_code('leader_board2');
-            add_leader_board(do_lang('DEFAULT'), 'earners', 10, 'week', 1, 0, null);
+            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, null);
         }
     }
 
@@ -209,7 +212,7 @@ class Hook_addon_registry_leader_board
     {
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (has_predefined_content('leader_board', 'weekly_10_holders'))) {
             $map = [
-                'lb_title' => do_lang('DEFAULT'),
+                'lb_title' => lorem_phrase() . '-holders',
                 'lb_type' => 'holders',
                 'lb_member_count' => 10,
                 'lb_timeframe' => 'week',
@@ -223,7 +226,7 @@ class Hook_addon_registry_leader_board
         }
         if ((($content === null) || (in_array('weekly_10_earners', $content))) && (has_predefined_content('leader_board', 'weekly_10_earners'))) {
             $map = [
-                'lb_title' => do_lang('DEFAULT'),
+                'lb_title' => lorem_phrase() . '-earners',
                 'lb_type' => 'earners',
                 'lb_member_count' => 10,
                 'lb_timeframe' => 'week',
@@ -244,41 +247,10 @@ class Hook_addon_registry_leader_board
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__points_leader_board(): object
-    {
-        $out = new Tempcode();
-        foreach (placeholder_array() as $k => $v) {
-            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
-                'ID' => placeholder_id(),
-                'POINTS_URL' => placeholder_url(),
-                'PROFILE_URL' => placeholder_url(),
-                '_POINTS' => placeholder_number(),
-                'POINTS' => placeholder_number(),
-                'USERNAME' => lorem_phrase(),
-                'HAS_RANK_IMAGES' => true,
-            ]));
-        }
-
-        return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
-                        '_GUID' => 'c875cce925e73f46408acc0a153a2902',
-            'URL' => placeholder_url(),
-            '_LIMIT' => placeholder_number(),
-            'LIMIT' => placeholder_number(),
-            'TITLE' => lorem_title(),
-            'ABOUT' => lorem_phrase(),
-            'ROWS' => $out,
-                ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
     public function tpl_preview__points_leader_board_screen(): object
     {
+        require_lang('leader_board');
+
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $set_tpl = new Tempcode();
@@ -293,24 +265,32 @@ class Hook_addon_registry_leader_board
                     'HAS_RANK_IMAGES' => true,
                 ]));
             }
+
+            $about = do_lang_tempcode('LEADER_BOARD_ABOUT_earners', placeholder_number(), placeholder_date(), placeholder_date());
+
             $out->attach(do_lorem_template('POINTS_LEADER_BOARD_SET', [
-                '_WEEK' => placeholder_number(),
-                'WEEK' => placeholder_date(),
+                '_SET_NUMBER' => placeholder_number(),
+                '_TYPE' => 'holders',
+                '_COUNT' => placeholder_number(),
+                '_DATE' => placeholder_date_raw(),
+                '_START_DATE' => placeholder_date_raw(),
+                'URL' => placeholder_url(),
+                'TITLE' => lorem_phrase(),
+                'ABOUT' => $about,
                 'ROWS' => $set_tpl,
+                'IS_BLOCK' => true
             ]));
         }
 
-        $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', [
-            'TITLE' => lorem_title(),
-            'LEADER_BOARD_TYPE' => do_lang_tempcode('LEADER_BOARD_holders'),
-            'LEADER_BOARD_TITLE' => lorem_title(),
-            'SETS' => $out]);
-
         return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
-            'TITLE' => lorem_title(),
-            'LEADER_BOARD_TYPE' => do_lang_tempcode('LEADER_BOARD_holders'),
-            'LEADER_BOARD_TITLE' => lorem_title(),
-            'SETS' => $out]), null, '', true);
+            '_ID' => placeholder_id(),
+            '_TYPE' => lorem_phrase(),
+            '_COUNT' => placeholder_number(),
+            'TITLE' => lorem_phrase(),
+            'LEADER_BOARD_TYPE' => do_lang_tempcode('LEADER_BOARD_TYPE_holders'),
+            'LEADER_BOARD_TITLE' => lorem_phrase(),
+            'SETS' => $out
+        ]), null, '', true);
     }
 
 }

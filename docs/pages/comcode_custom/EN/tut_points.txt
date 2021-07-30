@@ -104,25 +104,23 @@ Note that rank changes are triggered by actions. Someone will not go up in rank 
 [title="2"]The leader-board[/title]
 
 [surround]
-[media width="150" description="The points leader-board" float="right"]data_custom/images/docs/tut_points/points_leader_board.png[/media]
 [media width="150" description="Options for a points leader-board" float="right"]data_custom/images/docs/tut_points/points_leader_board_config.png[/media]
-The leader-board is a block, and corresponding archive viewing module, for the displaying of the top point holders. Like rank, this is another incentive for members to earn points.
+[media width="150" description="The points leader-board" float="right"]data_custom/images/docs/tut_points/points_leader_board.png[/media]
+The leader-board is a block, and corresponding archive viewing module, for the displaying of top point holders. Like rank, this is another incentive for members to earn points.
 
-You can create multiple different leader-boards with different options from the module. The module is the [tt]leader_board[/tt] module ([tt]site:leader_board[/tt] page-link, Social > Leader-board on the default menus).
+The module is the [tt]leader_board[/tt] module ([tt]site:leader_board[/tt] page-link, Social > Leader-board on the default menus).
 
-Some of the options you can set include the following:
+You can create multiple different leader-boards with different options. Some of these options you can set include the following:
  - Number of members to rank on the leader-board
  - Frequency (weekly, monthly, or yearly)
  - Type of leader-board (rank according to total points, or rank according to points earned since the previous frequency)
  - Whether or not to include staff
  - Filter to a specific usergroup
- - Whether generation is relative to when the leader-board was created ("rolling") or at the start of a frequency (eg. start of the week / month / year)
+ - The "Cycle basis": whether generation is relative to when the leader-board was created or at the start of a frequency (eg. start of the week / month / year)
 
 Please be aware when you change the options of a leader-board, it only affects future results; it does not re-calculate past results.
 
-Please also be aware that the leader-board is not entirely accurate; the reason for this is that, as explained earlier, point count is not actually stored. The leader-board has to regularly calculate top members and their points through a cron hook, task queue, or page load.
-
-If you wish to totally reset a leader-board, you can delete it from the module and create a new one. Make sure you update the relevant blocks as well.
+The leader-board uses the system scheduler to generated its results.
 [/surround]
 
 [concepts
@@ -139,4 +137,4 @@ If you wish to totally reset a leader-board, you can delete it from the module a
  - [page="_SEARCH:tut_downloads"]Providing downloads[/page]
  - [page="_SEARCH:tut_ecommerce"]eCommerce[/page]
 
-{$SET,tutorial_tags,Fun and Games,buildr,ecommerce,community_billboard,points,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The points system allows members to earn and spend points, creating a great dynamic. Find out how it works.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Fun and Games,buildr,ecommerce,community_billboard,points,leader_board,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The points system allows members to earn and spend points, creating a great dynamic. Find out how it works.}[block]main_tutorial_rating[/block]

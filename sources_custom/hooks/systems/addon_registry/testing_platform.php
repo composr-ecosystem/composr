@@ -953,6 +953,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/zip.php',
             '_tests/tests/unit_tests/string_functions.php',
             '_tests/tests/unit_tests/lang_missing_parameters.php',
+            '_tests/tests/unit_tests/leader_board.php',
 
             'data_custom/search_test.php',
         ];
