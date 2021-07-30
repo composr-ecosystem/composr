@@ -1573,7 +1573,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 #main-website-inner.faded>header, #main-website-inner.faded>div {
 	opacity: 0.3;
 	transition: opacity 0.5s ease-in-out;
-	filter: blur(2px);
+	filter: sepia();
 }
 
 .main-website-faux {
