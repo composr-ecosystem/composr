@@ -15,94 +15,284 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    leader_board
  */
 
 /**
  * See if a leader-board has been calculated since a particular cut-off time.
  *
- * @param  TIME $cutoff Cut-off time
+ * @param  array $row The leader-board row to check
+ * @param  TIME $start The start time of the result set
  * @return boolean Whether it has
  */
-function has_leader_board_since(int $cutoff) : bool
+function has_leader_board_since(array $row, int $start) : bool
 {
-    $test = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'leader_board WHERE date_and_time>=' . strval($cutoff));
+    $test = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'leader_board WHERE id=' . strval($row['id']) . ' AND lb_date_and_time>=' . strval($start));
     return ($test > 0);
 }
 
 /**
- * Calculate the leader-board.
+ * Get the timestamp of the most recent leader-board result set.
  *
- * @param  boolean $retrieve Whether to retrieve results too (no retrieve -> faster call)
- * @return ?array A map of member-IDs to points, sorted by leader-board status (null: not retrieving)
+ * @param  AUTO_LINK $id ID of the leader-board
+ * @return ?TIME The timestamp of the most recent result set (null: no result sets generated)
  */
-function calculate_latest_leader_board(bool $retrieve = true) : ?array
+function most_recent_leader_board(int $id) : ?int
 {
-    // Already has?
-    $cutoff = time() - 60 * 60 * 24 * 7;
-    if (has_leader_board_since($cutoff)) {
-        if (!$retrieve) {
-            return null;
-        }
+    return $GLOBALS['SITE_DB']->query_select_value_if_there('leader_board', 'MAX(lb_date_and_time)', ['lb_leader_board_id' => $id]);
+}
 
-        $rows = $GLOBALS['SITE_DB']->query('SELECT lb_member,lb_points FROM ' . get_table_prefix() . 'leader_board WHERE date_and_time>=' . strval($cutoff));
-        $rows = collapse_2d_complexity('lb_member', 'lb_points', $rows);
-        arsort($rows);
-        return $rows;
+/**
+ * Determine how many leader-boards are pending generation of a new result set.
+ *
+ * @return integer Number of leader-boards pending generation
+ */
+function get_leader_board_calculation_count() : int
+{
+    $count = 0;
+
+    $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], '');
+    foreach ($rows as $row) {
+        list($start, $end) = _get_next_leader_board_timeframe($row);
+        if ($start !== null && $end !== null) {
+            $count++;
+        }
     }
 
-    // Calculate
+    return $count;
+}
 
-    $limit = intval(get_option('leader_board_size')); // The number to show on the leader-board
-    $show_staff = (get_option('leader_board_show_staff') == '1'); // Whether to include staff
+/**
+ * Check all leader-boards and generate new result sets when applicable.
+ *
+ * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
+ * @param  ?TIME $forced_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
+ * @return array Map of leader_board IDs to their new result set timestamp
+ */
+function calculate_all_leader_boards(?int $forced_time = null, ?int $forced_start = null) : array
+{
+    $leader_boards = [];
 
-    // FUDGE #2737
-    $limit_hack = max(300, $limit); // We'll query more top posters than we'll display, so that we workaround the issue that our initial efficient querying by top post count is not the same as querying by top point count (we'll hope that they align close enough for nobody to notice!)
-    $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters($limit_hack);
+    $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id');
+    foreach ($rows as $row) {
+        $timestamp = calculate_leader_board($row, $forced_time, $forced_start);
+        $leader_boards[$row['id']] = $timestamp;
+    }
+
+    return $leader_boards;
+}
+
+/**
+ * Calculate a leader-board.
+ *
+ * @param  array $row The leader-board row to calculate
+ * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
+ * @param  ?TIME $forced_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
+ * @return ?TIME The timestamp of the result set (null: a new result set was not generated)
+ */
+function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forced_start = null) : ?int
+{
+    require_code('points');
+
+    // Calculate our result set times
+    list($start, $end) = _get_next_leader_board_timeframe($row, $forced_time, $forced_start);
+    if ($start === null || $end === null) {
+        return null;
+    }
+
+    // Calculate a new result set
+    $limit = $row['lb_member_count']; // The number to show on the leader-board
+    $show_staff = ($row['lb_include_staff'] == 1); // Whether to include staff
+    $usergroup = $row['lb_usergroup']; // Only include members from a usergroup
+
     $points = [];
 
-    foreach ($all_members as $member) {
-        $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
-
-        if (is_guest($id)) {
-            continue; // Should not happen, but some forum drivers might suck ;)
-        }
-        if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($id))) {
-            continue;
-        }
-
-        $points[$id] = total_points($id);
-    }
-
-    arsort($points);
-
+    // Process in sets of 100 members at a time
     $rows = [];
+    $current_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+    do {
+        $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 100);
+        foreach ($rows as $member) {
+            $current_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+            if (is_guest($current_id)) {
+                continue; // Should not happen, but some forum drivers might suck ;)
+            }
+            if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($current_id))) {
+                continue;
+            }
+            if ((get_forum_type() == 'cns') && ($usergroup !== null) && !in_array($usergroup, $GLOBALS['FORUM_DRIVER']->get_members_groups($current_id))) {
+                continue;
+            }
 
+            // Calculate points
+            if ($row['lb_type'] == 'holders') { // Leader-board ranks according to total cumulative point balance
+                $points_now = total_points($current_id, $end, false);
+                $points[] = ['member_id' => $current_id, 'points' => $points_now];
+            } elseif ($row['lb_type'] == 'earners') { // Leader-board ranks according to number of points earned during result timespan
+                $points_then = total_points($current_id, $start, false);
+                $points_now = total_points($current_id, $end, false);
+                $points_earned = $points_now - $points_then;
+                $points[] = ['member_id' => $current_id, 'points' => $points_earned];
+            }
+        }
+
+        // Sort the array according to points (highest to lowest)
+        usort($points, function (array $a, array $b) : int {
+            if ($a['points'] == $b['points']) {
+                return mt_rand(-1, 1); // Randomize members with equal points earned
+            }
+            return ($a['points'] > $b['points']) ? -1 : 1;
+        });
+
+        // Remove members from the bottom that we know will not make the leader-board
+        if (count($points) > $limit) {
+            $remove_count = count($points) - $limit;
+            while ($remove_count > 0) {
+                $remove_count--;
+                array_pop($points);
+            }
+        }
+
+    } while (!empty($rows));
+
+    // Construct the leader-board results
     $i = 0;
-    $time = time();
-    foreach ($points as $id => $num_points) {
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_NULL);
-        if ($username === null) {
-            continue;
-        }
-
-        if ($i == 0) {
-            set_value('site_bestmember', $username);
-        }
-
+    foreach ($points as $v) {
         if ($i >= $limit) {
-            break;
+            break; // This should not happen because $points is pre-filtered in the do...while loop
         }
 
-        $row = ['lb_member' => $id, 'lb_points' => $num_points, 'date_and_time' => $time];
-        $GLOBALS['SITE_DB']->query_insert('leader_board', $row, false, true); // Allow failure due to race conditions
+        $result_row = [
+            'lb_member' => $v['member_id'],
+            'lb_points' => $v['points'],
+            'lb_rank' => $i + 1,
+            'lb_leader_board_id' => $row['id'],
+            'lb_date_and_time' => $end,
+        ];
+        $GLOBALS['SITE_DB']->query_insert('leader_board', $result_row);
 
         $i++;
     }
 
-    if (!$retrieve) {
-        return null;
+    return $end;
+}
+
+/**
+ * Get a result set for a given leader-board.
+ *
+ * @param  AUTO_LINK $id The ID of the leader-board
+ * @param  ?TIME $timestamp The timestamp of the result set to fetch (null: fetch the latest result set)
+ * @return array The result set, or empty if not found
+ */
+function get_leader_board(int $id, ?int $timestamp = null) : array
+{
+    if ($timestamp === null) {
+        $timestamp = most_recent_leader_board($id);
+        if ($timestamp === null) { // If timestamp is still null, we probably do not have any result sets, so return empty array.
+            return [];
+        }
     }
 
-    return $rows;
+    // Get result set ordered by rank
+    return $GLOBALS['SITE_DB']->query_select('leader_board', ['*'], ['lb_leader_board_id' => $id, 'lb_date_and_time' => $timestamp], 'ORDER BY lb_rank');
+}
+
+/**
+ * Determine the start and end times for the next result set that needs generating for a leader-board.
+ *
+ * @param  array $row The leader-board row
+ * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
+ * @param  ?TIME $forced_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
+ * @return array A ?TIME duple containing start and end; both will be null if this leader-board should not generate a result set at this time
+ */
+function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, ?int $forced_start = null) : array
+{
+    // Set PHP to site timezone temporarily
+    $old_timezone = @date_default_timezone_get();
+    date_default_timezone_set(get_site_timezone());
+
+    // Determine the timestamp of the most recent result set. If there are no result sets, we start at the timestamp the leader-board was created.
+    if ($forced_start !== null) {
+        $recent = $forced_start;
+    } else {
+        $recent = most_recent_leader_board($row['id']);
+        if ($recent === null) {
+            $recent = $row['lb_creation_date_and_time'];
+        }
+    }
+
+    $now = ($forced_time !== null) ? $forced_time : time();
+    $start = null;
+    $end = $now;
+
+    $rolling = ($row['lb_rolling'] == 1);
+
+    // Calculate the expected start and end time for our result set
+    switch ($row['lb_timeframe']) {
+        case 'week':
+            if ($rolling) {
+                $start = $recent;
+            } else {
+                $ssw = (get_option('ssw') == '1');
+
+                if ($ssw) {
+                    // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+                    if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
+                        $start = strtotime("last sunday -1 week", $now);
+                    } else {
+                        $start = strtotime('sunday', $recent);
+                    }
+                } else {
+                    // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+                    if (($now - $recent) >= (60 * 60 * 24 * 7 * 2)) {
+                        $start = strtotime("last monday -1 week", $now);
+                    } else {
+                        $start = strtotime('monday', $recent);
+                    }
+                }
+            }
+            $end = strtotime("+1 week", $start);
+            break;
+
+        case 'month':
+            if ($rolling) {
+                $start = $recent;
+            } else {
+                // Do not generate leader-boards from 2 or more weeks ago; just skip to the current week
+                if ((intval(date('Y', $now)) * 12 + intval(date('m', $now))) - (intval(date('Y', $recent)) * 12 + intval(date('m', $recent))) >= 2) {
+                    $start = strtotime("first day of this month -1 month", $now);
+                } else {
+                    $start = strtotime("first day of this month", $recent);
+                }
+            }
+            $end = strtotime("+1 month", $start);
+            break;
+
+        case 'year':
+            if ($rolling) {
+                $start = $recent;
+            } else {
+                // Do not generate leader-boards from 2 or more years ago; just generate the most recent one
+                if (intval(date('Y', $now)) - intval(date('Y', $recent)) >= 2) {
+                    $start = strtotime("January 1 -1 year", $now);
+                } else {
+                    $start = strtotime("January 1", $recent);
+                }
+            }
+            $end = strtotime("+1 year", $start);
+            break;
+
+        default:
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    // Do not generate if it is too soon AND we have at least one result set
+    if ($now < $end && !most_recent_leader_board($row['id'])) {
+        return [null, null];
+    }
+
+    // Re-set PHP timezone back to its previous setting
+    date_default_timezone_set($old_timezone);
+
+    return [$start, $end];
 }

@@ -91,6 +91,7 @@ class Module_admin_version
         $GLOBALS['SITE_DB']->drop_table_if_exists('translation_cache');
         $GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality');
         $GLOBALS['SITE_DB']->drop_table_if_exists('cpages_fulltext_index');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('daily_visits');
 
         /* We don't want to get rid of on-disk data when reinstalling
         $zones = find_all_zones(true);
@@ -1185,6 +1186,12 @@ class Module_admin_version
             ]);
 
             $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
+
+            $GLOBALS['SITE_DB']->create_table('daily_visits', [
+                'id' => '*AUTO',
+                'd_member_id' => '*MEMBER',
+                'd_date_and_time' => 'TIME',
+            ]);
         }
     }
 

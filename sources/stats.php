@@ -23,7 +23,7 @@
  *
  * @return array Page-links (each is a tuple)
  */
-function find_hook_stats_page_links() : array
+function find_hook_stats_page_links(): array
 {
     static $ret = null;
 
@@ -94,7 +94,7 @@ function tracked_redirect_script()
  * @param  ?integer $pivot_filter Filter only to this pivot (null: no filter)
  * @return array List of details tuples
  */
-function gather_kpis(?int $pivot_filter = null) : array
+function gather_kpis(?int $pivot_filter = null): array
 {
     $where = [];
     if ($pivot_filter !== null) {
@@ -160,7 +160,7 @@ function gather_kpis(?int $pivot_filter = null) : array
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return ?array Graph data in standard map format (null: unknown)
  */
-function stats_generate_data(string $graph_name, array $filters = [], $pivot = null, ?object &$hook_ob = null, ?array &$graph_details = null, bool $for_kpi = false) : ?array
+function stats_generate_data(string $graph_name, array $filters = [], $pivot = null, ?object &$hook_ob = null, ?array &$graph_details = null, bool $for_kpi = false): ?array
 {
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
@@ -188,7 +188,7 @@ function stats_generate_data(string $graph_name, array $filters = [], $pivot = n
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return Tempcode Graph
  */
-function stats_generate_graph(string $graph_name, array $filters = [], $pivot = null, ?object &$hook_ob = null, ?array &$graph_details = null, ?array &$graph_final_details = null, bool $for_kpi = false) : object
+function stats_generate_graph(string $graph_name, array $filters = [], $pivot = null, ?object &$hook_ob = null, ?array &$graph_details = null, ?array &$graph_final_details = null, bool $for_kpi = false): object
 {
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
@@ -303,7 +303,7 @@ function stats_generate_graph(string $graph_name, array $filters = [], $pivot = 
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return Tempcode Graph filter form
  */
-function stats_generate_graph_form(string $graph_name, ?object &$hook_ob = null, ?array &$graph_details = null, array $filters = [], $pivot = null, bool $for_kpi = false) : object
+function stats_generate_graph_form(string $graph_name, ?object &$hook_ob = null, ?array &$graph_details = null, array $filters = [], $pivot = null, bool $for_kpi = false): object
 {
     $_fields = stats_generate_graph_form_fields($graph_name, $hook_ob, $graph_details, $filters, $pivot, $for_kpi);
     if ($_fields === null) {
@@ -336,7 +336,7 @@ function stats_generate_graph_form(string $graph_name, ?object &$hook_ob = null,
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return ?array A pair: Graph filter fields, Hidden fields (null: could not generate anything)
  */
-function stats_generate_graph_form_fields(string $graph_name, ?object &$hook_ob = null, ?array &$graph_details = null, array $filters = [], $pivot = null, bool $for_kpi = false) : ?array
+function stats_generate_graph_form_fields(string $graph_name, ?object &$hook_ob = null, ?array &$graph_details = null, array $filters = [], $pivot = null, bool $for_kpi = false): ?array
 {
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
@@ -390,7 +390,7 @@ function stats_generate_graph_form_fields(string $graph_name, ?object &$hook_ob 
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return Tempcode Graph
  */
-function stats_generate_results_table(string $graph_name, array $filters = [], $pivot = null, ?object &$hook_ob = null, ?array &$graph_details = null, ?array &$graph_final_details = null, bool $for_kpi = false) : object
+function stats_generate_results_table(string $graph_name, array $filters = [], $pivot = null, ?object &$hook_ob = null, ?array &$graph_details = null, ?array &$graph_final_details = null, bool $for_kpi = false): object
 {
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
@@ -487,7 +487,7 @@ function stats_generate_results_table(string $graph_name, array $filters = [], $
  * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
  * @return object Writer object
  */
-function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$filename = null, array $filters = [], $pivot = null, ?object $hook_ob = null, ?array $graph_details = null) : object
+function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$filename = null, array $filters = [], $pivot = null, ?object $hook_ob = null, ?array $graph_details = null): object
 {
     if (($hook_ob === null) || ($graph_details === null)) {
         list($hook_ob, $graph_details) = stats_find_graph_details($spreadsheet_graph_name);
@@ -522,7 +522,7 @@ function stats_generate_spreadsheet(string $spreadsheet_graph_name, ?string &$fi
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return array A pair: filters, pivot
  */
-function _stats_get_graph_context(array $graph_details, array $filters = [], $pivot = null, bool $for_kpi = false) : array
+function _stats_get_graph_context(array $graph_details, array $filters = [], $pivot = null, bool $for_kpi = false): array
 {
     if (($pivot === null) && ($graph_details['pivot'] !== null)) {
         $pivot = $graph_details['pivot']->read_value($for_kpi);
@@ -543,7 +543,7 @@ function _stats_get_graph_context(array $graph_details, array $filters = [], $pi
  *
  * @return array The categories (each is a map)
  */
-function stats_find_graph_categories() : array
+function stats_find_graph_categories(): array
 {
     $categories = [];
     $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
@@ -563,7 +563,7 @@ function stats_find_graph_categories() : array
  * @param  ?string $category_name The category name (null: all categories)
  * @return array Map between graph name and pair of graph object and graph details
  */
-function stats_find_graphs_in_category(?string $category_name = null) : array
+function stats_find_graphs_in_category(?string $category_name = null): array
 {
     $graphs = [];
 
@@ -589,7 +589,7 @@ function stats_find_graphs_in_category(?string $category_name = null) : array
  * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return ?array A pair: graph object and graph details (null: could not find graph)
  */
-function stats_find_graph_details(string $graph_name, bool $for_kpi = false) : ?array
+function stats_find_graph_details(string $graph_name, bool $for_kpi = false): ?array
 {
     $graphs = [];
 
@@ -612,7 +612,7 @@ function stats_find_graph_details(string $graph_name, bool $for_kpi = false) : ?
  * @param  TIME $timestamp Timestamp
  * @return integer Month number
  */
-function get_stats_month_for_timestamp(int $timestamp) : int
+function get_stats_month_for_timestamp(int $timestamp): int
 {
     list($year, $month) = array_map('intval', explode('-', cms_strftime('%Y-%m', $timestamp)));
     return ($year - 1970) * 12 + ($month - 1);
@@ -630,7 +630,7 @@ abstract class CMSStatsHookBase
      *
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function category_info() : ?array
+    public function category_info(): ?array
     {
         return [];
     }
@@ -641,7 +641,7 @@ abstract class CMSStatsHookBase
      * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    abstract public function info(bool $for_kpi = false) : ?array;
+    abstract public function info(bool $for_kpi = false): ?array;
 }
 
 /**
@@ -663,7 +663,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      *
      * @return array Codes
      */
-    protected function find_all_feedback_type_codes() : array
+    protected function find_all_feedback_type_codes(): array
     {
         require_code('content');
 
@@ -686,7 +686,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      *
      * @return array Content types
      */
-    protected function find_all_content_types() : array
+    protected function find_all_content_types(): array
     {
         require_code('content');
 
@@ -711,7 +711,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * @param  integer $value Value
      * @return ?string Bracket (null: none)
      */
-    protected function find_value_bracket(array $brackets, int $value) : ?string
+    protected function find_value_bracket(array $brackets, int $value): ?string
     {
         $bracket = null;
         foreach ($brackets as $_bracket) {
@@ -747,7 +747,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * @param  boolean $include_of_types Whether to include non-series pivots
      * @return array List of standardised date pivot names
      */
-    protected function get_date_pivots(bool $include_of_types = true) : array
+    protected function get_date_pivots(bool $include_of_types = true): array
     {
         require_lang('dates');
 
@@ -799,7 +799,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * @param  array $filters Map of filters (including pivot if applicable)
      * @return array Final data in standardised map format
      */
-    abstract public function generate_final_data(string $bucket, string $pivot, array $filters) : array;
+    abstract public function generate_final_data(string $bucket, string $pivot, array $filters): array;
 
 
     /**
@@ -840,7 +840,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * @param  integer $end_month End month (counting from 1970)
      * @return array All pivot values mapping to 0
      */
-    protected function fill_data_by_date_pivots(string $pivot, int $start_month, int $end_month) : array
+    protected function fill_data_by_date_pivots(string $pivot, int $start_month, int $end_month): array
     {
         $pivot_value = mixed();
 
@@ -926,7 +926,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * @param  mixed $pivot_value Pivot value
      * @return string Nice looking pivot value
      */
-    protected function make_date_pivot_value_nice(string $pivot, $pivot_value) : string
+    protected function make_date_pivot_value_nice(string $pivot, $pivot_value): string
     {
         require_lang('dates');
 
@@ -990,7 +990,7 @@ abstract class CMSStatsBlob extends CMSStatsHookBase
      * @param  array $filters Filter settings to take precedence
      * @return Tempcode Graph
      */
-    abstract public function generate(string $graph_name, array $filters) : object;
+    abstract public function generate(string $graph_name, array $filters): object;
 }
 
 /**
@@ -1006,7 +1006,7 @@ abstract class CMSStatsRedirect extends CMSStatsHookBase
      * @param  string $bucket_name The bucket name
      * @return URLPATH Redirect URL
      */
-    abstract public function get_redirect_url(string $bucket_name) : string;
+    abstract public function get_redirect_url(string $bucket_name): string;
 }
 
 /**
@@ -1014,7 +1014,7 @@ abstract class CMSStatsRedirect extends CMSStatsHookBase
  *
  * @return array A pair: min month, max month
  */
-function find_known_stats_date_month_bounds() : array
+function find_known_stats_date_month_bounds(): array
 {
     static $min_month = null, $max_month = null;
     if ($min_month === null) {
@@ -1049,7 +1049,7 @@ abstract class CMSStatsFilter
      * @param  Tempcode $hidden The hidden field
      * @return Tempcode The input field
      */
-    abstract public function ui_component(object &$hidden) : object;
+    abstract public function ui_component(object &$hidden): object;
 
 
     /**
@@ -1101,7 +1101,7 @@ class CMSStatsTextFilter extends CMSStatsFilter
      * @param  Tempcode $hidden The hidden field
      * @return Tempcode The input field
      */
-    public function ui_component(object &$hidden) : object
+    public function ui_component(object &$hidden): object
     {
         require_code('form_templates');
         return form_input_line(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $this->read_value(), $this->default != '');
@@ -1135,7 +1135,7 @@ class CMSStatsTickFilter extends CMSStatsFilter
      * @param  Tempcode $hidden The hidden field
      * @return Tempcode The input field
      */
-    public function ui_component(object &$hidden) : object
+    public function ui_component(object &$hidden): object
     {
         $hidden->attach(form_input_hidden($this->filter_name, '0'));
 
@@ -1185,7 +1185,7 @@ class CMSStatsListFilter extends CMSStatsFilter
      * @param  Tempcode $hidden The hidden field
      * @return Tempcode The input field
      */
-    public function ui_component(object &$hidden) : object
+    public function ui_component(object &$hidden): object
     {
         require_code('form_templates');
         $list = new Tempcode();
@@ -1238,7 +1238,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
      * @param  Tempcode $hidden The hidden field
      * @return Tempcode The input field
      */
-    public function ui_component(object &$hidden) : object
+    public function ui_component(object &$hidden): object
     {
         require_code('form_templates');
 
@@ -1392,7 +1392,7 @@ class CMSStatsDatePivot extends CMSStatsFilter
      * @param  Tempcode $hidden The hidden field
      * @return Tempcode The input field
      */
-    public function ui_component(object &$hidden) : object
+    public function ui_component(object &$hidden): object
     {
         require_code('form_templates');
         $list = new Tempcode();
@@ -1410,7 +1410,7 @@ class CMSStatsDatePivot extends CMSStatsFilter
  * @param  boolean $support_caching Whether to support caching
  * @return array Returns a pair with the rank, and the amount of links
  */
-function get_alexa_rank(?string $url = null, bool $support_caching = true) : array
+function get_alexa_rank(?string $url = null, bool $support_caching = true): array
 {
     if ($url === null) {
         $url = get_base_url() . '/';
@@ -1461,7 +1461,7 @@ function get_alexa_rank(?string $url = null, bool $support_caching = true) : arr
  *
  * @return boolean Whether it is
  */
-function has_geolocation_data() : bool
+function has_geolocation_data(): bool
 {
     return ($GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'begin_num') !== null);
 }
@@ -1642,7 +1642,7 @@ function send_kpi_notifications()
     if (!empty($kpis)) {
         $kpis_for_tpl = [];
         foreach ($kpis as $kpi) {
-            list($kpi_row, , , , , , $edit_url, , $target, $current, $hits_target) = $kpi;
+            list($kpi_row,,,,,, $edit_url,, $target, $current, $hits_target) = $kpi;
             $graph_name = $kpi_row['k_graph_name'];
             $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
             $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);

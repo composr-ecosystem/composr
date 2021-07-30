@@ -104,25 +104,30 @@ Note that rank changes are triggered by actions. Someone will not go up in rank 
 [title="2"]The leader-board[/title]
 
 [surround]
+[media width="150" description="Options for a points leader-board" float="right"]data_custom/images/docs/tut_points/points_leader_board_config.png[/media]
 [media width="150" description="The points leader-board" float="right"]data_custom/images/docs/tut_points/points_leader_board.png[/media]
-The leader-board is a block, and corresponding archive viewing module, for the displaying of the top point holders for each week. Like rank, this is another incentive for members to earn points.
+The leader-board is a block, and corresponding archive viewing module, for the displaying of top point holders. Like rank, this is another incentive for members to earn points.
 
 The module is the [tt]leader_board[/tt] module ([tt]site:leader_board[/tt] page-link, Social > Leader-board on the default menus).
 
-Please be aware that the leader-board is not entirely accurate, as it actually only calculates the point count of top post count holders, and orders according to this; the reason for this is that, as explained earlier, point count is not actually stored, and calculating it for all members simultaneously would not be efficient. This is unlikely to be noticed, however, because more post count holders are chosen for point calculation than point holders shown, hence a buffer zone exists to reduce the chance of error.
+You can create multiple different leader-boards with different options. Some of these options you can set include the following:
+ - Number of members to rank on the leader-board
+ - Frequency (weekly, monthly, or yearly)
+ - Type of leader-board (rank according to total points, or rank according to points earned since the previous frequency)
+ - Whether or not to include staff
+ - Filter to a specific usergroup
+ - The "Cycle basis": whether generation is relative to when the leader-board was created or at the start of a frequency (eg. start of the week / month / year)
 
-The leader-board is updated and archived weekly, regardless of whether you have the block cache enabled or not.
+Please be aware when you change the options of a leader-board, it only affects future results; it does not re-calculate past results.
 
-If you wish to totally reset the leader-board, manually empty the contents of the [tt]leader_board[/tt] database table.
-
-A common point of confusion is users thinking the leader-board shows who are the leaders only over points earned in the particular week. This is not the case, it calculates it based on total points ever, and the weekly updates are to capture snapshots. There is an open tracker issue regarding us also implementing the ability to show activity just for one particular week, but it is technically complex to achieve (it requires a major upheaval) so would need financing via feature sponsorship.
+The leader-board uses the system scheduler to generated its results.
 [/surround]
 
 [concepts
  1_key="Points"          1_value="Points are accumulated by various means and illustrate rank and provide spending power (currency)"
  2_key="Rank"            2_value="Rank is determined by the total of points ever earned, and is a status symbol"
  3_key="Gift points"     3_value="Gift points accumulate over time and exist only as gifts to give to other members, where they translate to real points. This is only applicable when the option is enabled. Otherwise, members can give each other regular points."
- 4_key="Leader-board"    4_value="The point leader-board shows the top point holders, and is drawn up on a weekly basis"
+ 4_key="Leader-board"    4_value="The point leader-board shows top members by points using configurable options and is re-calculated on a specified frequency"
  5_key="Buildr"          5_value="A Composr addon that provides a simple virtual world environment to interact in; points are the currency of Buildr"
 ]Concepts[/concepts]
 
@@ -132,4 +137,4 @@ A common point of confusion is users thinking the leader-board shows who are the
  - [page="_SEARCH:tut_downloads"]Providing downloads[/page]
  - [page="_SEARCH:tut_ecommerce"]eCommerce[/page]
 
-{$SET,tutorial_tags,Fun and Games,buildr,ecommerce,community_billboard,points,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The points system allows members to earn and spend points, creating a great dynamic. Find out how it works.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Fun and Games,buildr,ecommerce,community_billboard,points,leader_board,Social,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The points system allows members to earn and spend points, creating a great dynamic. Find out how it works.}[block]main_tutorial_rating[/block]

@@ -1002,6 +1002,7 @@ class Hook_addon_registry_core_form_interfaces
             'NAME' => $name,
             'VALUE' => '1',
             'TEXT' => lorem_phrase(),
+            'DISABLED' => false,
         ]));
         $radios->attach(do_lorem_template('FORM_SCREEN_INPUT_RADIO_LIST_ENTRY', [
             'DESCRIPTION' => lorem_sentence(),
@@ -1010,6 +1011,7 @@ class Hook_addon_registry_core_form_interfaces
             'NAME' => $name,
             'VALUE' => '2',
             'TEXT' => lorem_phrase(),
+            'DISABLED' => false,
         ]));
         $radios->attach(do_lorem_template('FORM_SCREEN_INPUT_RADIO_LIST_ENTRY', [
             'DESCRIPTION' => lorem_sentence(),
@@ -1018,6 +1020,7 @@ class Hook_addon_registry_core_form_interfaces
             'NAME' => $name,
             'VALUE' => '3',
             'TEXT' => lorem_phrase(),
+            'DISABLED' => false,
         ]));
 
         $name = placeholder_random_id();
@@ -1450,6 +1453,7 @@ class Hook_addon_registry_core_form_interfaces
             'NAME' => $name,
             'VALUE' => lorem_word(),
             'TEXT' => lorem_phrase(),
+            'DISABLED' => false,
         ]);
         $radios->attach(do_lorem_template('FORM_SCREEN_INPUT_RADIO_LIST_COMBO_ENTRY', [
             'TABINDEX' => placeholder_number(),

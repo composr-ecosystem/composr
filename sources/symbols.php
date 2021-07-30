@@ -1700,13 +1700,6 @@ function ecv_METADATA(string $lang, array $escaped, array $param) : string
                     $value = strval($GLOBALS['FORUM_DRIVER']->get_num_members());
                 }
                 break;
-            case 'site_bestmember':
-                // Getting
-                $value = get_value('site_bestmember');
-                if ($value === null) {
-                    $value = '';
-                }
-                break;
             case 'forum_numtopics':
                 // Getting
                 if ($GLOBALS['FORUM_DRIVER'] !== null) {

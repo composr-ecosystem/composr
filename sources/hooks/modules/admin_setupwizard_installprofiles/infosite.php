@@ -44,7 +44,8 @@ class Hook_admin_setupwizard_installprofiles_infosite
     {
         return [
             ['news', 'newsletter', 'syndication_blocks', 'quizzes', 'recommend', 'polls'],
-            []];
+            []
+        ];
     }
 
     /**

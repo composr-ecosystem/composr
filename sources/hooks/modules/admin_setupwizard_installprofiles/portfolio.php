@@ -49,7 +49,8 @@ class Hook_admin_setupwizard_installprofiles_portfolio
     {
         return [
             ['galleries', 'random_quotes', 'polls', 'news'],
-            []];
+            []
+        ];
     }
 
     /**

@@ -517,7 +517,6 @@ function cleanup()
         delete_value('users_online');
         delete_value('last_space_check');
         delete_value('last_commandr_command');
-        delete_value('site_bestmember');
 
         $hooks = find_all_hooks('systems', 'disposable_values');
         foreach (array_keys($hooks) as $hook) {

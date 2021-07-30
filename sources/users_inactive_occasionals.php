@@ -198,22 +198,27 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         set_session_id($new_session, is_guest($member_id));
     }
 
-    // New sessions=Login points
-    if (($member_id !== null) && (!is_guest($member_id)) && (addon_installed('points')) && (addon_installed('stats'))) {
+    // Check if this is a new daily session for this member. If so, we will log it and perhaps add some points
+    if (($member_id !== null) && (!is_guest($member_id))) {
         // See if this is the first visit today
         global $SESSION_CACHE;
         $test = isset($prior_session_row['last_activity']) ? $prior_session_row['last_activity'] : null;
         if ($test === null) {
-            $test = $GLOBALS['SITE_DB']->query_select_value('stats', 'MAX(date_and_time)', ['member_id' => $member_id]);
+            $test = $GLOBALS['SITE_DB']->query_select_value('daily_visits', 'MAX(d_date_and_time)', ['d_member_id' => $member_id]);
         }
         if ($test !== null) {
             require_code('temporal');
             require_code('tempcode');
             if (date('d/m/Y', tz_time($test, get_site_timezone())) != date('d/m/Y', tz_time(time(), get_site_timezone()))) {
-                require_code('points');
-                $_before = point_info($member_id);
-                if (array_key_exists('points_gained_visiting', $_before)) {
-                    $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_visiting', strval($_before['points_gained_visiting'] + 1));
+                // New daily visit; log it
+                $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => time()]);
+                if (addon_installed('points')) {
+                    // Award points
+                    require_code('points');
+                    $_before = point_info($member_id);
+                    if (array_key_exists('points_gained_visiting', $_before)) {
+                        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_visiting', strval($_before['points_gained_visiting'] + 1));
+                    }
                 }
             }
         }
