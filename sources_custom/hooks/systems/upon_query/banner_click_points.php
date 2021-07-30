@@ -20,17 +20,6 @@ class Hook_upon_query_banner_click_points
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('banner_click_points')) {
-            return;
-        }
-
-        if (!addon_installed('banners')) {
-            return;
-        }
-        if (!addon_installed('points')) {
-            return;
-        }
-
         if ($query[0] == 'S') {
             return;
         }
@@ -40,6 +29,17 @@ class Hook_upon_query_banner_click_points
         }
 
         if (strpos($query, 'INTO ' . get_table_prefix() . 'banner_clicks') !== false) {
+            if (!addon_installed('banner_click_points')) {
+                return;
+            }
+
+            if (!addon_installed('banners')) {
+                return;
+            }
+            if (!addon_installed('points')) {
+                return;
+            }
+
             load_user_stuff();
             $GLOBALS['FORUM_DRIVER']->forum_layer_initialise();
 

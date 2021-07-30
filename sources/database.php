@@ -1304,6 +1304,7 @@ class DatabaseConnector
     public $table_prefix;
     public $connection_read;
     public $connection_write;
+    public $connection_unique_identifier;
 
     public $text_lookup_original_cache;
     public $text_lookup_cache;
@@ -1343,6 +1344,7 @@ class DatabaseConnector
             $this->connection_read = [get_use_persistent(), $db_name, $servers[mt_rand($min, count($servers) - 1)], $db_user, $db_password, $fail_ok];
         }
         $this->table_prefix = $table_prefix;
+        $this->connection_unique_identifier = serialize([$db_name, $db_host, $db_user, $db_password, $table_prefix]);
 
         if ($static !== null) {
             $this->static_ob = $static;
@@ -2493,10 +2495,12 @@ class DatabaseConnector
 
         if (strpos(get_db_type(), 'mysql') !== false) {
             // Just works with MySQL (too complex to do for all SQL's http://forums.whirlpool.net.au/forum-replies-archive.cfm/523219.html)...
-
             $prefix = $this->get_table_prefix();
-            $rows = $this->query('SHOW TABLES');
-            foreach ($rows as $row) {
+            static $cached_show_tables = [];
+            if (!array_key_exists($this->connection_unique_identifier, $cached_show_tables)) {
+                $cached_show_tables[$this->connection_unique_identifier] = $this->query('SHOW TABLES LIKE \'' . db_encode_like($this->get_table_prefix() . '%') . '\'');
+            }
+            foreach ($cached_show_tables[$this->connection_unique_identifier] as $row) {
                 foreach ($row as $field) {
                     if (substr($field, 0, strlen($prefix)) == $prefix) {
                         $_table_name = substr($field, strlen($prefix));
@@ -2510,8 +2514,11 @@ class DatabaseConnector
             }
         }
 
-        $rows = $this->query_select('db_meta', ['DISTINCT m_table']);
-        foreach ($rows as $row) {
+        static $cached_meta_tables = [];
+        if (!array_key_exists($this->connection_unique_identifier, $cached_meta_tables)) {
+            $cached_meta_tables[$this->connection_unique_identifier] = $this->query_select('db_meta', ['DISTINCT m_table']);
+        }
+        foreach ($cached_meta_tables[$this->connection_unique_identifier] as $row) {
             $this->table_exists_cache[$row['m_table']] = true;
         }
 

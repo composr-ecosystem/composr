@@ -469,7 +469,7 @@ class Module_admin_errorlog
                 $keep = symbol_tempcode('KEEP');
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
-                    'URL' => find_script('cron_bridge') . '?limit_hook=' . urlencode($hook) . '&manual_run=1' . $keep->evaluate(),
+                    'URL' => find_script('cron_bridge') . '?limit_hooks=' . urlencode($hook) . '&manual_run=1' . $keep->evaluate(),
                     'NAME' => $label,
                     'ACTION_TITLE' => do_lang_tempcode('EXECUTE_SCRIPT'),
                     'ICON' => 'admin/sync',
@@ -497,7 +497,7 @@ class Module_admin_errorlog
                 }
             }
 
-            $_result_entries[$label] = static_evaluate_tempcode(results_entry([
+            $_result_entries[$label] = [
                 $_label,
                 $queue,
                 ($minutes_between_runs == 0) ? make_string_tempcode('<em>(0)</em>') : display_time_period($minutes_between_runs * 60),
@@ -506,13 +506,15 @@ class Module_admin_errorlog
                 ($last_error == '') ? do_lang_tempcode('NONE_EM') : make_string_tempcode(escape_html($last_error)),
                 do_lang_tempcode($enabled ? 'YES' : 'NO'),
                 $actions,
-            ], true));
+            ];
         }
 
         cms_mb_ksort($_result_entries, SORT_NATURAL | SORT_FLAG_CASE);
 
         $result_entries = new Tempcode();
-        $result_entries->attach(implode("\n", $_result_entries));
+        foreach ($_result_entries as $label => $details) {
+            $result_entries->attach(results_entry($details, true));
+        }
 
         return results_table(do_lang_tempcode('CRON_SCRIPTS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
     }

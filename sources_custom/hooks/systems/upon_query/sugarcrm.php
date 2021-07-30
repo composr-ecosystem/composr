@@ -20,10 +20,6 @@ class Hook_upon_query_sugarcrm
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('sugarcrm')) {
-            return;
-        }
-
         if (!function_exists('curl_init')) {
             return;
         }
@@ -52,6 +48,10 @@ class Hook_upon_query_sugarcrm
 
         $matches = [];
         if (preg_match('#^INSERT INTO ' . $prefix . 'f_member_custom_fields .*\((\d+),#U', $query, $matches) != 0) {
+            if (!addon_installed('sugarcrm')) {
+                return;
+            }
+
             require_code('sugarcrm');
 
             if (!sugarcrm_configured()) {
