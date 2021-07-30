@@ -499,6 +499,7 @@ class Module_admin_setupwizard
             'cns_signatures',
             'cns_warnings',
             'points',
+            'leader_board',
             'polls',
             'quizzes',
             'random_quotes',

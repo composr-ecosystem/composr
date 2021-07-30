@@ -52,15 +52,6 @@
 <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="https://compo.sr/cmscore.rdf#site_bestmember">
-<rdfs:label xml:lang="en-US">Site_BestMember</rdfs:label>
-<cmscore:description xml:lang="en-US">The best member on the website.</cmscore:description>
-<rdfs:isDefinedBy rdf:resource="https://compo.sr/cmscore.rdf"/>
-<cmscore:issued>2009-01-19</cmscore:issued>
-<cmscore:modified>2009-01-19</cmscore:modified>
-<rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-</rdf:Description>
-
 <rdf:Description rdf:about="https://compo.sr/cmscore.rdf#forum_numtopics">
 <rdfs:label xml:lang="en-US">Forum_NumTopics</rdfs:label>
 <cmscore:description xml:lang="en-US">The number of topics on the website's forum.</cmscore:description>

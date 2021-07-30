@@ -582,24 +582,27 @@ class Forum_driver_none extends Forum_driver_base
     }
 
     /**
-     * This is the opposite of the get_next_member function.
+     * Get rows of members before the given one.
+     * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
-     * @param  MEMBER $member The member ID to decrement
-     * @return ?MEMBER The previous member ID (null: no previous member)
+     * @param  MEMBER $member The member ID to paginate back from
+     * @param  integer $total Number of members to retrieve
+     * @return array Member rows
      */
-    public function get_previous_member(int $member) : ?int
+    public function get_previous_members(int $member, int $total = 1) : array
     {
         return null; // Guest doesn't count
     }
 
     /**
-     * Get the member ID of the next member after the given one, or null.
+     * Get rows of members after the given one.
      * It cannot be assumed there are no gaps in member IDs, as members may be deleted.
      *
      * @param  MEMBER $member The member ID to increment
-     * @return ?MEMBER The next member ID (null: no next member)
+     * @param  integer $total Number of members to retrieve
+     * @return array Member rows
      */
-    public function get_next_member(int $member) : ?int
+    public function get_next_members(int $member, int $total = 1) : array
     {
         if ($member < 1) {
             return 1;

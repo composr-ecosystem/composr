@@ -49,7 +49,8 @@ class Hook_admin_setupwizard_installprofiles_blog
     {
         return [
             ['news', 'newsletter'],
-            []];
+            []
+        ];
     }
 
     /**

@@ -40,7 +40,6 @@ class Hook_page_groupings_points
             ['audit', 'menu/adminzone/audit/points_log', ['admin_points', ['type' => 'browse'], get_module_zone('admin_points')], do_lang_tempcode('points:GIFT_TRANSACTIONS'), 'points:DOC_POINTS'],
             ['audit', 'menu/social/points', ['admin_points', ['type' => 'export'], get_module_zone('admin_points')], do_lang_tempcode('points:EXPORT_POINTS'), 'points:DOC_EXPORT_POINTS'],
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['social', 'menu/social/points', ['points', [], get_module_zone('points')], do_lang_tempcode('points:VIEW_POINTS')],
-            ['social', 'menu/social/leader_board', ['leader_board', [], get_module_zone('leader_board')], do_lang_tempcode('leader_board:POINT_LEADER_BOARD')],
         ];
     }
 }

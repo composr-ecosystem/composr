@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    leader_board
  */
 
 /**
@@ -32,14 +32,22 @@ class Hook_cron_leader_board
      */
     public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
-        if (!addon_installed('points')) {
+        if (!addon_installed('leader_board') || !addon_installed('points')) {
             return null;
+        }
+
+        require_code('leader_board');
+
+        if ($calculate_num_queued) {
+            $num_queued = get_leader_board_calculation_count();
+        } else {
+            $num_queued = null;
         }
 
         return [
             'label' => 'Leader-board generation',
-            'num_queued' => null,
-            'minutes_between_runs' => 60,
+            'num_queued' => $num_queued,
+            'minutes_between_runs' => 15,
         ];
     }
 
@@ -52,6 +60,6 @@ class Hook_cron_leader_board
     {
         require_code('points');
         require_code('leader_board');
-        calculate_latest_leader_board(false);
+        calculate_all_leader_boards();
     }
 }

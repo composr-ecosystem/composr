@@ -49,23 +49,26 @@ function get_product_price_points(string $item) : int
  *
  * @param  MEMBER $member_id The member
  * @param  ?TIME $timestamp Time to get for (null: now)
+ * @param  boolean $cache Whether to retrieve from and store the results in the run-time cache
  * @return integer The number of points the member has
  */
-function total_points(int $member_id, ?int $timestamp = null) : int
+function total_points(int $member_id, ?int $timestamp = null, bool $cache = true) : int
 {
     if (!has_privilege($member_id, 'use_points')) {
         return 0;
     }
 
-    global $TOTAL_POINTS_CACHE;
+    if ($cache) {
+        global $TOTAL_POINTS_CACHE;
 
-    if ($timestamp === null) {
-        if (isset($TOTAL_POINTS_CACHE[$member_id])) {
-            return $TOTAL_POINTS_CACHE[$member_id];
+        if ($timestamp === null) {
+            if (isset($TOTAL_POINTS_CACHE[$member_id])) {
+                return $TOTAL_POINTS_CACHE[$member_id];
+            }
         }
     }
 
-    $point_info = point_info($member_id);
+    $point_info = point_info($member_id, $cache);
     $points = 0;
 
     // Run points hooks
@@ -74,7 +77,7 @@ function total_points(int $member_id, ?int $timestamp = null) : int
         $points += $hook_ob->total_points($member_id, $timestamp, $point_info);
     }
 
-    if ($timestamp === null) {
+    if ($timestamp === null && $cache) {
         $TOTAL_POINTS_CACHE[$member_id] = $points;
     }
 
@@ -120,16 +123,19 @@ function available_points(int $member_id) : int
  * Get all sorts of information about a specified member's point account.
  *
  * @param  MEMBER $member_id The member the point info is of
+ * @param  boolean $cache Whether to retrieve from and store the results in a run-time cache
  * @return array The map containing the members point info (fields as enumerated in description)
  */
-function point_info(int $member_id) : array
+function point_info(int $member_id, bool $cache = true) : array
 {
     require_code('lang');
     require_lang('points');
 
-    global $POINT_INFO_CACHE;
-    if (isset($POINT_INFO_CACHE[$member_id])) {
-        return $POINT_INFO_CACHE[$member_id];
+    if ($cache) {
+        global $POINT_INFO_CACHE;
+        if (isset($POINT_INFO_CACHE[$member_id])) {
+            return $POINT_INFO_CACHE[$member_id];
+        }
     }
 
     $values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
@@ -137,14 +143,19 @@ function point_info(int $member_id) : array
         $values = [];
     }
 
-    $POINT_INFO_CACHE[$member_id] = [];
+    $ret = [];
+    if ($cache) {
+        $POINT_INFO_CACHE[$member_id] = [];
+    }
     foreach ($values as $key => $val) {
         if (!isset($val->codename/*faster than is_object*/)) {
-            $POINT_INFO_CACHE[$member_id][$key] = @intval($val);
+            $ret[$member_id][$key] = @intval($val);
+            if ($cache) {
+                $POINT_INFO_CACHE[$member_id][$key] = @intval($val);
+            }
         }
     }
-
-    return $POINT_INFO_CACHE[$member_id];
+    return $ret[$member_id];
 }
 
 /**

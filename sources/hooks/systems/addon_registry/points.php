@@ -111,18 +111,13 @@ class Hook_addon_registry_points
             'sources/hooks/systems/privacy/points.php',
             'themes/default/images/icons/menu/social/points.svg',
             'themes/default/images/icons/menu/adminzone/audit/points_log.svg',
-            'themes/default/images/icons/menu/social/leader_board.svg',
             'themes/default/images/icons/buttons/points.svg',
             'themes/default/images/icons_monochrome/menu/social/points.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/points_log.svg',
-            'themes/default/images/icons_monochrome/menu/social/leader_board.svg',
             'themes/default/images/icons_monochrome/buttons/points.svg',
             'themes/default/templates/POINTS_PROFILE.tpl',
             'sources/hooks/systems/notifications/received_points.php',
             'sources/hooks/systems/notifications/receive_points_staff.php',
-            'sources/hooks/systems/config/leader_board_start_date.php',
-            'sources/hooks/systems/config/leader_board_show_staff.php',
-            'sources/hooks/systems/config/leader_board_size.php',
             'sources/hooks/systems/config/points_joining.php',
             'sources/hooks/systems/config/points_per_daily_visit.php',
             'sources/hooks/systems/config/points_per_day.php',
@@ -135,7 +130,6 @@ class Hook_addon_registry_points
             'sources/hooks/systems/config/points_voting.php',
             'sources/hooks/systems/realtime_rain/points.php',
             'sources/hooks/systems/config_categories/points.php',
-            'sources/hooks/modules/admin_setupwizard/leader_board.php',
             'sources/hooks/systems/addon_registry/points.php',
             'sources/hooks/modules/admin_import_types/points.php',
             'sources/hooks/systems/profiles_tabs/points.php',
@@ -144,10 +138,6 @@ class Hook_addon_registry_points
             'themes/default/templates/POINTS_SCREEN.tpl',
             'themes/default/templates/POINTS_SEARCH_SCREEN.tpl',
             'themes/default/templates/POINTS_SEARCH_RESULT.tpl',
-            'themes/default/templates/POINTS_LEADER_BOARD.tpl',
-            'themes/default/templates/POINTS_LEADER_BOARD_SCREEN.tpl',
-            'themes/default/templates/POINTS_LEADER_BOARD_ROW.tpl',
-            'themes/default/templates/POINTS_LEADER_BOARD_WEEK.tpl',
             'adminzone/pages/modules/admin_points.php',
             'themes/default/css/points.css',
             'lang/EN/points.ini',
@@ -158,11 +148,6 @@ class Hook_addon_registry_points
             'sources/points.php',
             'sources/points2.php',
             'sources/hooks/systems/commandr_commands/give.php',
-            'site/pages/modules/leader_board.php',
-            'sources/blocks/main_leader_board.php',
-            'sources/hooks/systems/cron/leader_board.php',
-            'sources/leader_board.php',
-            'lang/EN/leader_board.ini',
             'sources/hooks/systems/config/points_per_currency_unit.php',
             'sources/hooks/systems/config/point_logs_per_page.php',
             'sources/hooks/systems/config/points_if_liked.php',
@@ -194,82 +179,12 @@ class Hook_addon_registry_points
     public function tpl_previews() : array
     {
         return [
-            'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board',
-            'templates/POINTS_LEADER_BOARD.tpl' => 'points_leader_board',
-            'templates/POINTS_LEADER_BOARD_WEEK.tpl' => 'points_leader_board_screen',
-            'templates/POINTS_LEADER_BOARD_SCREEN.tpl' => 'points_leader_board_screen',
             'templates/POINTS_SEARCH_RESULT.tpl' => 'points_search_screen',
             'templates/POINTS_SEARCH_SCREEN.tpl' => 'points_search_screen',
             'templates/POINTS_GIVE.tpl' => 'points_screen',
             'templates/POINTS_PROFILE.tpl' => 'points_screen',
             'templates/POINTS_SCREEN.tpl' => 'points_screen',
         ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__points_leader_board() : object
-    {
-        $out = new Tempcode();
-        foreach (placeholder_array() as $k => $v) {
-            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
-                'ID' => placeholder_id(),
-                'POINTS_URL' => placeholder_url(),
-                'PROFILE_URL' => placeholder_url(),
-                '_POINTS' => placeholder_number(),
-                'POINTS' => placeholder_number(),
-                'USERNAME' => lorem_phrase(),
-                'HAS_RANK_IMAGES' => true,
-            ]));
-        }
-
-        return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
-            'URL' => placeholder_url(),
-            '_LIMIT' => placeholder_number(),
-            'LIMIT' => placeholder_number(),
-            'ROWS' => $out,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__points_leader_board_screen() : object
-    {
-        $out = new Tempcode();
-        foreach (placeholder_array() as $k => $v) {
-            $week_tpl = new Tempcode();
-            foreach (placeholder_array() as $_k => $_v) {
-                $week_tpl->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
-                    'ID' => placeholder_id(),
-                    'POINTS_URL' => placeholder_url(),
-                    'PROFILE_URL' => placeholder_url(),
-                    '_POINTS' => placeholder_number(),
-                    'POINTS' => placeholder_number(),
-                    'USERNAME' => lorem_phrase(),
-                    'HAS_RANK_IMAGES' => true,
-                ]));
-            }
-            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_WEEK', [
-                '_WEEK' => placeholder_number(),
-                'WEEK' => placeholder_number(),
-                'ROWS' => $week_tpl,
-            ]));
-        }
-
-        return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
-            'TITLE' => lorem_title(),
-            'WEEKS' => $out,
-        ]), null, '', true);
     }
 
     /**

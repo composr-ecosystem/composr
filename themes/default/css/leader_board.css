@@ -1,0 +1,19 @@
+/* Leaderboard */
+
+.box---points-leader-board-page {
+	width: 35em; /* Stop the wide table within being too big */
+}
+
+.box---points-leader-board-page .leader-board-table th {
+	width: 10em;
+}
+
+.leader-board-table th, .leader-board-table td {
+	vertical-align: middle;
+	text-align: left;
+}
+/*{+START,CSS_MODE,mobile}*/
+	.global-side-panel .leader-board-table th, .global-side-panel .leader-board-table td {
+		width: 50%;
+	}
+/*{+END}*/

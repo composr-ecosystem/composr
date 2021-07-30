@@ -2075,9 +2075,10 @@ function form_input_radio($pretty_name, $description, string $name, object $cont
  * @param  mixed $text The text associated with this choice (blank: just use value for text)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  mixed $description An additional long description (blank: no description)
+ * @param  boolean $disabled Whether this radio button is disabled and cannot be selected
  * @return Tempcode The input field
  */
-function form_input_radio_entry(string $name, string $value, bool $selected = false, $text = '', ?int $tabindex = null, $description = '') : object
+function form_input_radio_entry(string $name, string $value, bool $selected = false, $text = '', ?int $tabindex = null, $description = '', bool $disabled = false) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2095,6 +2096,7 @@ function form_input_radio_entry(string $name, string $value, bool $selected = fa
         'NAME' => $name,
         'VALUE' => $value,
         'TEXT' => $text,
+        'DISABLED' => $disabled
     ]);
 }
 

@@ -107,8 +107,6 @@ class Module_points
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('chargelog', 'user_id', 'MEMBER', 'member_id');
-
-            rename_config_option('leaderboard_start_date', 'leader_board_start_date');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 8)) {
