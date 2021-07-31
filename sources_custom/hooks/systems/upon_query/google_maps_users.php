@@ -20,15 +20,15 @@ class Hook_upon_query_google_maps_users
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('user_mappr')) {
-            return;
-        }
-
         if ($query[0] == 'S') {
             return;
         }
 
         if ((strpos($query, 'f_member_custom_fields') !== false) && ((strpos($query, 'INSERT INTO ') !== false) || (strpos($query, 'UPDATE ') !== false))) {
+            if (!addon_installed('user_mappr')) {
+                return;
+            }
+
             if (function_exists('delete_cache_entry')) {
                 delete_cache_entry('main_google_map_users');
             }

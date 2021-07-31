@@ -20,14 +20,6 @@ class Hook_upon_query_user_sync
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('user_sync')) {
-            return;
-        }
-
-        if (!addon_installed('commandr')) {
-            return;
-        }
-
         if (get_forum_type() != 'cns') {
             return null;
         }
@@ -60,6 +52,14 @@ class Hook_upon_query_user_sync
                 (preg_match('#^UPDATE ' . $prefix . 'f_members .*WHERE \(?id=(\d+)\)?#', $query, $matches) != 0) ||
                 (preg_match('#^UPDATE ' . $prefix . 'f_member_custom_fields .*WHERE \(?mf_member_id=(\d+)\)?#', $query, $matches) != 0)
             ) {
+                if (!addon_installed('user_sync')) {
+                    return;
+                }
+
+                if (!addon_installed('commandr')) {
+                    return;
+                }
+
                 require_code('user_sync');
                 user_sync__outbound_edit(intval($matches[1]));
                 return;
@@ -67,24 +67,44 @@ class Hook_upon_query_user_sync
 
             $matches = [];
             if ((preg_match('#^DELETE FROM ' . $prefix . 'f_members WHERE \(?id=(\d+)\)?#', $query, $matches) != 0)) {
+                if (!addon_installed('user_sync')) {
+                    return;
+                }
+
+                if (!addon_installed('commandr')) {
+                    return;
+                }
+
                 require_code('user_sync');
                 user_sync__outbound_delete(intval($matches[1]));
                 return;
             }
 
             $matches = [];
-            if (
-            (preg_match('#^INSERT INTO ' . $prefix . 'f_members #', $query, $matches) != 0)
-            ) {
+            if ((preg_match('#^INSERT INTO ' . $prefix . 'f_members #', $query, $matches) != 0)) {
+                if (!addon_installed('user_sync')) {
+                    return;
+                }
+
+                if (!addon_installed('commandr')) {
+                    return;
+                }
+
                 require_code('user_sync');
                 user_sync__outbound($ret);
                 return;
             }
 
             $matches = [];
-            if (
-            (preg_match('#^INSERT INTO ' . $prefix . 'f_member_custom_fields .*\((\d+),#U', $query, $matches) != 0)
-            ) {
+            if ((preg_match('#^INSERT INTO ' . $prefix . 'f_member_custom_fields .*\((\d+),#U', $query, $matches) != 0)) {
+                if (!addon_installed('user_sync')) {
+                    return;
+                }
+
+                if (!addon_installed('commandr')) {
+                    return;
+                }
+
                 require_code('user_sync');
                 user_sync__outbound(intval($matches[1]));
                 return;

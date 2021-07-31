@@ -72,10 +72,6 @@ class Hook_upon_query_user_export
 
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('user_simple_spreadsheet_sync')) {
-            return;
-        }
-
         if ($query[0] == 'S') {
             return;
         }
@@ -103,6 +99,10 @@ class Hook_upon_query_user_export
             (preg_match('#^UPDATE ' . $prefix . 'f_members .*WHERE \(?id=(\d+)\)?#', $query, $matches) != 0) ||
             (preg_match('#^UPDATE ' . $prefix . 'f_member_custom_fields .*WHERE \(?mf_member_id=(\d+)\)?#', $query, $matches) != 0)
         ) {
+            if (!addon_installed('user_simple_spreadsheet_sync')) {
+                return;
+            }
+
             if (strpos($query, 'm_email_address') !== false) {
                 $member_id = intval($matches[1]);
 

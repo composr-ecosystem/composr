@@ -20,18 +20,6 @@ class Hook_upon_query_add_mentor
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('mentorr')) {
-            return;
-        }
-
-        if (!addon_installed('chat')) {
-            return;
-        }
-
-        if (get_forum_type() != 'cns') {
-            return;
-        }
-
         if ($query[0] == 'S') {
             return;
         }
@@ -43,6 +31,10 @@ class Hook_upon_query_add_mentor
             return;
         }
 
+        if (get_forum_type() != 'cns') {
+            return;
+        }
+
         //if ((strpos($query, $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members') !== false) && (strpos($query, 'BY RAND') == false)) // to test without registration
 
         if (get_mass_import_mode()) {
@@ -50,6 +42,14 @@ class Hook_upon_query_add_mentor
         }
 
         if (strpos($query, 'INTO ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members') !== false) {
+            if (!addon_installed('mentorr')) {
+                return;
+            }
+
+            if (!addon_installed('chat')) {
+                return;
+            }
+
             load_user_stuff();
             $GLOBALS['FORUM_DRIVER']->forum_layer_initialise();
 

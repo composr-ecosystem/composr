@@ -20,19 +20,11 @@ class Hook_upon_query_insults
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('bantr')) {
-            return;
-        }
-
-        if (!addon_installed('points')) {
+        if ($query[0] == 'S') {
             return;
         }
 
         if (get_forum_type() != 'cns') {
-            return;
-        }
-
-        if ($query[0] == 'S') {
             return;
         }
 
@@ -53,6 +45,14 @@ class Hook_upon_query_insults
         //if ((strpos($query, $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members') !== false) && (strpos($query, 'BY RAND') == false)) // to test without registration
 
         if (strpos($query, 'INTO ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts ') !== false) {
+            if (!addon_installed('bantr')) {
+                return;
+            }
+
+            if (!addon_installed('points')) {
+                return;
+            }
+
             require_code('permissions');
 
             load_user_stuff();

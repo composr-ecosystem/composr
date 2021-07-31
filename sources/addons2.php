@@ -384,7 +384,7 @@ function find_installed_addons(bool $just_non_bundled = false, bool $get_info = 
     }
 
     // Find installed addons- database registration method
-    $_rows = $GLOBALS['SITE_DB']->query_select('addons', ['*']);
+    $_rows = $GLOBALS['SITE_DB']->query_select('addons', ['addon_name']);
     foreach ($_rows as $row) {
         $addon_name = $row['addon_name'];
 

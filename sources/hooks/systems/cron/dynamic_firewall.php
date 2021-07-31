@@ -59,7 +59,7 @@ class Hook_cron_dynamic_firewall
 
             if (!empty($new_contents)) {
                 require_code('files');
-                cms_file_put_contents_safe($rules_path, $new_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                cms_file_put_contents_safe($rules_path, $new_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
             }
         }
     }
