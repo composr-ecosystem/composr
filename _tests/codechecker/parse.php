@@ -762,8 +762,10 @@ function _parse_command($needs_brace = false, &$is_braced = null)
             break;
 
         default:
-            if ($needs_brace) {
-                parser_warning('PSR-2 asks us to use braces for all control structures');
+            if ($needs_brace !== false) {
+                if (($needs_brace === true) || ($next != 'IF')/*If not merely an ELSE IF*/) {
+                    parser_warning('PSR-2 asks us to use braces for all control structures');
+                }
             }
 
             $_is_braced = null;
@@ -1330,7 +1332,7 @@ function _parse_if_rest(&$is_braced = null)
     switch ($next) {
         case 'ELSE':
             pparse__parser_next();
-            $command = _parse_command(true, $is_braced);
+            $command = _parse_command(null, $is_braced);
             $if_rest = $command;
             break;
 

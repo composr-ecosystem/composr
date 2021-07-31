@@ -102,8 +102,8 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
 
         $id = add_leader_board($title, $leader_board_type, $member_count, $timeframe, $rolling, $include_staff, null);
 
-        if (isset($properties['lb_group'])) {
-            table_from_portable_rows('leader_boards_groups', $properties['lb_group'], ['lb_leader_board_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        if (isset($properties['groups'])) {
+            table_from_portable_rows('leader_boards_groups', $properties['groups'], ['lb_leader_board_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
@@ -137,7 +137,7 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
             'timeframe' => $row['lb_timeframe'],
             'rolling' => $row['lb_rolling'],
             'include_staff' => $row['lb_include_staff'],
-            'lb_group' => $groups,
+            'groups' => $groups,
         ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
@@ -168,8 +168,8 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
 
         edit_leader_board(intval($resource_id), $title, $leader_board_type, $member_count, $timeframe, $rolling, $include_staff, null);
 
-        if (isset($properties['lb_group'])) {
-            table_from_portable_rows('leader_boards_groups', $properties['lb_group'], ['lb_leader_board_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        if (isset($properties['groups'])) {
+            table_from_portable_rows('leader_boards_groups', $properties['groups'], ['lb_leader_board_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);

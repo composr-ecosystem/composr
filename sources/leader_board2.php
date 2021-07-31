@@ -64,7 +64,7 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
     // Insert usergroup references
     if ($usergroups !== null && !empty($usergroups)) {
         foreach ($usergroups as $group) {
-            if ($group == '' || $group === null) {
+            if ($group === null) {
                 continue; // skip empty or null groups
             }
             $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
@@ -127,7 +127,7 @@ function edit_leader_board(int $id, string $title, ?string $leader_board_type, i
         $GLOBALS['SITE_DB']->query_delete('leader_boards_groups', ['lb_leader_board_id' => $id]);
         if (!empty($usergroups)) {
             foreach ($usergroups as $group) {
-                if ($group == '' || $group === null) {
+                if ($group === null) {
                     continue; // skip empty or null groups
                 }
                 $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [

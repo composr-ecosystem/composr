@@ -97,7 +97,7 @@ class Block_main_leader_board
             $GLOBALS['SITE_DB']->add_table_field('leader_board', 'lb_leader_board_id', 'AUTO_LINK', $new_leader_board);
 
             // Calculate rankings for legacy result sets
-            $dates = $GLOBALS['SITE_DB']->query('SELECT DISTINCT (lb_date_and_time) FROM ' . get_table_prefix() . 'leader_board');
+            $dates = $GLOBALS['SITE_DB']->query('SELECT DISTINCT date_and_time FROM ' . get_table_prefix() . 'leader_board');
             foreach ($dates as $date) {
                 $rows = $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_date_and_time' => $date['lb_date_and_time']]);
 
@@ -230,13 +230,13 @@ PHP;
         return do_template('POINTS_LEADER_BOARD_SET', [
             '_GUID' => 'g354u7itg47i8gt743tgbqu5376yoty839udc13984',
             '_SET_NUMBER' => strval(count($rows)),
-            '_TYPE' => strval($board['lb_type']),
+            '_TYPE' => $board['lb_type'],
             '_COUNT' => strval(count($rows)),
-            '_DATE' => strval($date),
-            '_START_DATE' => strval($start_date),
+            '_DATE' => $date,
+            '_START_DATE' => $start_date,
             'URL' => $url,
-            'TITLE' => strval($board['lb_title']),
-            'ABOUT' => strval($about),
+            'TITLE' => $board['lb_title'],
+            'ABOUT' => $about,
             'ROWS' => $out,
             'IS_BLOCK' => true
         ]);

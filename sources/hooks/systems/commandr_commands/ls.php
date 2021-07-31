@@ -46,7 +46,7 @@ class Hook_commandr_command_ls
                 }
             }
 
-            if (strpos(end($dir), '*') !== false) {
+            if ((!empty($dir)) && (strpos(end($dir), '*') !== false)) {
                 // Very limited ad-hoc wildcard support
                 $file_expression = str_replace('*', '%', array_pop($dir));
                 $listing_all = $commandr_fs->listing($dir);

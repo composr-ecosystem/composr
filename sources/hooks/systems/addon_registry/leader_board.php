@@ -132,6 +132,7 @@ class Hook_addon_registry_leader_board
             'sources/leader_board.php',
             'sources/leader_board2.php',
             'lang/EN/leader_board.ini',
+            'sources/hooks/systems/commandr_fs/leader_board.php',
         ];
     }
 
