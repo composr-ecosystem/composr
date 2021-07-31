@@ -27,10 +27,10 @@
  * @param  SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
  * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
- * @param  ?GROUP $usergroup Only allow members from this usergroup to be included in the leader-board (null: do not apply a usergroup restriction)
+ * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do nothing) (empty array: no usergroup filtering)
  * @return AUTO_LINK The ID of the new leader-board
  */
-function add_leader_board(string $title, string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?int $usergroup) : int
+function add_leader_board(string $title, string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = []) : int
 {
     // Cannot have less than one member
     if ($member_count < 1) {
@@ -50,6 +50,7 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
     require_code('global4');
     prevent_double_submit('ADD_LEADER_BOARD', null, $title);
 
+    // Insert the leader-board
     $id = $GLOBALS['SITE_DB']->query_insert('leader_boards', [
         'lb_title' => $title,
         'lb_type' => $leader_board_type,
@@ -58,8 +59,20 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
         'lb_timeframe' => $timeframe,
         'lb_rolling' => $rolling,
         'lb_include_staff' => $include_staff,
-        'lb_usergroup' => $usergroup
     ], true);
+
+    // Insert usergroup references
+    if ($usergroups !== null && !empty($usergroups)) {
+        foreach ($usergroups as $group) {
+            if ($group == '' || $group === null) {
+                continue; // skip empty or null groups
+            }
+            $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
+                'lb_leader_board_id' => $id,
+                'lb_group' => intval($group), // Might be a string from post parameters
+            ]);
+        }
+    }
 
     log_it('ADD_LEADER_BOARD', strval($id), strval($title));
 
@@ -76,9 +89,9 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
  * @param  SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
  * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
- * @param  ?GROUP $usergroup Only allow members from this usergroup to be included in the leader-board (null: do not apply a usergroup restriction)
+ * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do not edit existing usergroups) (empty array: no usergroup filtering)
  */
-function edit_leader_board(int $id, string $title, ?string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?int $usergroup)
+function edit_leader_board(int $id, string $title, ?string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'lb_title', ['id' => $id]);
     if ($_title === null) {
@@ -101,13 +114,29 @@ function edit_leader_board(int $id, string $title, ?string $leader_board_type, i
         'lb_timeframe' => $timeframe,
         'lb_rolling' => $rolling,
         'lb_include_staff' => $include_staff,
-        'lb_usergroup' => $usergroup
     ];
     if ($leader_board_type !== null) {
         $map['lb_type'] = $leader_board_type;
     }
 
+    // Update leader-board
     $GLOBALS['SITE_DB']->query_update('leader_boards', $map, ['id' => $id], '', 1);
+
+    // Update usergroup references by deleting old ones then inserting new ones
+    if ($usergroups !== null) {
+        $GLOBALS['SITE_DB']->query_delete('leader_boards_groups', ['lb_leader_board_id' => $id]);
+        if (!empty($usergroups)) {
+            foreach ($usergroups as $group) {
+                if ($group == '' || $group === null) {
+                    continue; // skip empty or null groups
+                }
+                $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
+                    'lb_leader_board_id' => $id,
+                    'lb_group' => intval($group), // Might be a string from post parameters
+                ]);
+            }
+        }
+    }
 
     log_it('EDIT_LEADER_BOARD', strval($id), strval($title));
 }
@@ -125,6 +154,7 @@ function delete_leader_board(int $id)
     }
 
     $GLOBALS['SITE_DB']->query_delete('leader_boards', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('leader_boards_groups', ['lb_leader_board_id' => $id]);
     $GLOBALS['SITE_DB']->query_delete('leader_board', ['lb_leader_board_id' => $id]);
 
     log_it('DELETE_LEADER_BOARD', strval($id), strval($_title));

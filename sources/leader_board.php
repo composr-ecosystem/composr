@@ -100,10 +100,12 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         return null;
     }
 
-    // Calculate a new result set
     $limit = $row['lb_member_count']; // The number to show on the leader-board
     $show_staff = ($row['lb_include_staff'] == 1); // Whether to include staff
-    $usergroup = $row['lb_usergroup']; // Only include members from a usergroup
+
+    // Determine user groups to filter
+    $usergroups = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => $row['id']]);
+    $usergroups = collapse_1d_complexity('lb_group', $usergroups);
 
     $points = [];
 
@@ -114,13 +116,18 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 100);
         foreach ($rows as $member) {
             $current_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
+
             if (is_guest($current_id)) {
                 continue; // Should not happen, but some forum drivers might suck ;)
             }
+
+            // Skip if staff and not including staff
             if ((!$show_staff) && ($GLOBALS['FORUM_DRIVER']->is_staff($current_id))) {
                 continue;
             }
-            if ((get_forum_type() == 'cns') && ($usergroup !== null) && !in_array($usergroup, $GLOBALS['FORUM_DRIVER']->get_members_groups($current_id))) {
+
+            // Skip if usergroups are defined and member is not in any of the defined usergroups
+            if ((get_forum_type() == 'cns') && (!empty($usergroups)) && (count(array_intersect($usergroups, $GLOBALS['FORUM_DRIVER']->get_members_groups($current_id))) == 0)) {
                 continue;
             }
 

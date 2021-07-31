@@ -192,7 +192,6 @@ class Module_admin_leader_board extends Standard_crud_module
         $hr[] = do_lang_tempcode('LEADER_BOARD_TYPE');
         $hr[] = do_lang_tempcode('LEADER_BOARD_SIZE');
         $hr[] = do_lang_tempcode('LEADER_BOARD_TIME_FRAME');
-        $hr[] = do_lang_tempcode('USERGROUP');
         $hr[] = do_lang_tempcode('ACTIONS');
 
         $current_ordering = get_param_string('sort', 'lb_title ASC', INPUT_FILTER_GET_COMPLEX);
@@ -220,12 +219,6 @@ class Module_admin_leader_board extends Standard_crud_module
             $fr[] = do_lang('LEADER_BOARD_TYPE_' . $row['lb_type']);
             $fr[] = integer_format($row['lb_member_count']);
             $fr[] = do_lang('LEADER_BOARD_TIME_FRAME_' . $row['lb_timeframe']);
-            if (get_forum_type() == 'cns' && $row['lb_usergroup'] !== null) {
-                require_code('cns_groups');
-                $fr[] = cns_get_group_name($row['lb_usergroup']);
-            } else {
-                $fr[] = do_lang_tempcode('NA_EM');
-            }
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])));
 
             $result_entries->attach(results_entry($fr, true));
@@ -254,10 +247,10 @@ class Module_admin_leader_board extends Standard_crud_module
      * @param  SHORT_TEXT $timeframe The frequency of this leader-board
      * @param  BINARY $rolling Whether or not this leader-board generation time is rolling
      * @param  BINARY $include_staff Whether to include staff in the leader-board
-     * @param  ?GROUP $usergroup Filter this leader-board by the provided usergroup (null: do not filter)
+     * @param  array $usergroups Only allow members in one or more defined usergroup IDs to be included in the leader-board (empty: allow all usergroups)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $title = '', string $board_type = 'holders', int $member_count = 10, string $timeframe = 'week', int $rolling = 0, int $include_staff = 0, ?int $usergroup = null) : array
+    public function get_form_fields(?int $id = null, string $title = '', string $board_type = 'holders', int $member_count = 10, string $timeframe = 'week', int $rolling = 0, int $include_staff = 0, array $usergroups = []) : array
     {
         require_code('leader_board');
 
@@ -290,11 +283,10 @@ class Module_admin_leader_board extends Standard_crud_module
         $fields->attach(form_input_radio(do_lang_tempcode('LEADER_BOARD_ROLLING'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_ROLLING'), 'rolling', $radios2, true));
 
         if (get_forum_type() == 'cns') {
-            require_code('cns_groups');
-            $usergroups = new Tempcode();
-            $usergroups->attach(form_input_list_entry('', $usergroup === null, do_lang_tempcode('NA_EM')));
-            $usergroups->attach(cns_create_selection_list_usergroups($usergroup));
-            $fields->attach(form_input_list(do_lang_tempcode('USERGROUP'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_USERGROUP'), 'usergroup', $usergroups, null, false, false));
+            $usergroups_select = new Tempcode();
+            $usergroups_select->attach(form_input_list_entry('', $usergroups == [], do_lang_tempcode('NA_EM')));
+            $usergroups_select->attach(cns_create_multi_list_usergroups($usergroups, false));
+            $fields->attach(form_input_multi_list(do_lang_tempcode('USERGROUPS'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_USERGROUPS'), 'usergroups', $usergroups_select));
         }
 
         $fields->attach(form_input_tick(do_lang_tempcode('LEADER_BOARD_SHOW_STAFF'), do_lang_tempcode('DESCRIPTION_LEADER_BOARD_SHOW_STAFF'), 'include_staff', $include_staff == 1));
@@ -332,7 +324,10 @@ class Module_admin_leader_board extends Standard_crud_module
         }
         $r = $m[0];
 
-        $fields = $this->get_form_fields(intval($id), $r['lb_title'], $r['lb_type'], $r['lb_member_count'], $r['lb_timeframe'], $r['lb_rolling'], $r['lb_include_staff'], $r['lb_usergroup']);
+        $g = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => intval($id)]);
+        $g = collapse_1d_complexity('lb_group', $g);
+
+        $fields = $this->get_form_fields(intval($id), $r['lb_title'], $r['lb_type'], $r['lb_member_count'], $r['lb_timeframe'], $r['lb_rolling'], $r['lb_include_staff'], $g);
 
         return $fields;
     }
@@ -346,7 +341,13 @@ class Module_admin_leader_board extends Standard_crud_module
     {
         require_code('leader_board2');
 
-        $id = add_leader_board(post_param_string('title'), post_param_string('leader_board_type'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), post_param_integer('usergroup', null));
+        if (array_key_exists('usergroups', $_POST)) {
+            $usergroups = $_POST['usergroups'];
+        } else {
+            $usergroups = [];
+        }
+
+        $id = add_leader_board(post_param_string('title'), post_param_string('leader_board_type'), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), $usergroups);
 
         return [strval($id), null];
     }
@@ -361,7 +362,13 @@ class Module_admin_leader_board extends Standard_crud_module
     {
         require_code('leader_board2');
 
-        edit_leader_board(intval($id), post_param_string('title'), post_param_string('leader_board_type', null), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), post_param_integer('usergroup', null));
+        if (array_key_exists('usergroups', $_POST)) {
+            $usergroups = $_POST['usergroups'];
+        } else {
+            $usergroups = [];
+        }
+
+        edit_leader_board(intval($id), post_param_string('title'), post_param_string('leader_board_type', null), post_param_integer('member_count'), post_param_string('timeframe'), post_param_integer('rolling', 0), post_param_integer('include_staff', 0), $usergroups);
 
         return null;
     }

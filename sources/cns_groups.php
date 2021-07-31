@@ -98,6 +98,29 @@ function cns_create_selection_list_usergroups(?int $it = null, bool $allow_guest
 }
 
 /**
+ * Get a nice list for multi-selection from the usergroups. Suitable for admin use only (does not check hidden status).
+ *
+ * @param  array $it Array of AUTO_LINK groups to select by default
+ * @param  boolean $allow_guest_group Allow the guest usergroup to be in the list
+ * @return Tempcode The list
+ */
+function cns_create_multi_list_usergroups(array $it = [], bool $allow_guest_group = true) : object
+{
+    $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
+    $_m = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_order'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+    $entries = new Tempcode();
+    foreach ($_m as $m) {
+        if (!$allow_guest_group && $m['id'] == db_get_first_id()) {
+            continue;
+        }
+
+        $entries->attach(form_input_list_entry(strval($m['id']), in_array($m['id'], $it), get_translated_text($m['g_name'], $GLOBALS['FORUM_DB'])));
+    }
+
+    return $entries;
+}
+
+/**
  * Find the first default group.
  *
  * @return GROUP The first default group

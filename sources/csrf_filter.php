@@ -42,7 +42,7 @@ function csrf_filter_active() : bool
 /**
  * Generate and save a CSRF-token.
  *
- * @boolean $force_fresh Force a new token to be generated
+ * @param  boolean $force_fresh Force a new token to be generated
  * @return ID_TEXT Generated token
  */
 function generate_csrf_token(bool $force_fresh = false) : string

@@ -112,15 +112,15 @@ The module is the [tt]leader_board[/tt] module ([tt]site:leader_board[/tt] page-
 
 You can create multiple different leader-boards with different options. Some of these options you can set include the following:
  - Number of members to rank on the leader-board
- - Frequency (weekly, monthly, or yearly)
- - Type of leader-board (rank according to total points, or rank according to points earned since the previous frequency)
+ - Time frame (weekly, monthly, or yearly)
+ - Type of leader-board (rank according to total points, or rank according to points earned since the previous time frame)
  - Whether or not to include staff
- - Filter to a specific usergroup
- - The "Cycle basis": whether generation is relative to when the leader-board was created or at the start of a frequency (eg. start of the week / month / year)
+ - Filter to one or more usergroups
+ - The "Cycle basis": whether generation is relative to when the leader-board was created or at the start of a time frame (eg. start of the week / month / year)
 
 Please be aware when you change the options of a leader-board, it only affects future results; it does not re-calculate past results.
 
-The leader-board uses the system scheduler to generated its results.
+The leader-board uses the system scheduler to generate its results. To generate a leader-board, Composr has to first go through all the members to calculate how many points they have. Points are calculated on-the-fly, and its intensive to do this for very large numbers of members. If you are concerned about the leader-board using a lot of server resources when it generates, you could consider limiting it to certain higher usergroups in a rank ladder. This way, effectively only members above a certain point threshold would be considered.
 [/surround]
 
 [concepts

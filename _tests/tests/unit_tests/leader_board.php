@@ -30,7 +30,7 @@ class leader_board_test_set extends cms_test_case
             return;
         }
 
-        $this->test_id = db_get_first_id() + 1;
+        $this->test_id = db_get_first_id();
         $this->leaderboards = [];
 
         require_code('leader_board');
@@ -43,7 +43,7 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-board
-        $this->leaderboards['rank'] = add_leader_board("Test rank", 'holders', 100, 'week', 1, 1, null);
+        $this->leaderboards['rank'] = add_leader_board("Test rank", 'holders', 100, 'week', 1, 1, []);
         $this->assertTrue(is_integer($this->leaderboards['rank']), 'Failed to create rank leader-board');
 
         // Set up time
@@ -89,11 +89,11 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-boards
-        $this->leaderboards['week_r'] = add_leader_board("Test week_r", 'holders', 10, 'week', 1, 0, null);
+        $this->leaderboards['week_r'] = add_leader_board("Test week_r", 'holders', 10, 'week', 1, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['week_r']), 'Failed to create week_r leader-board');
-        $this->leaderboards['month_r'] = add_leader_board("Test month_r", 'holders', 10, 'month', 1, 0, null);
+        $this->leaderboards['month_r'] = add_leader_board("Test month_r", 'holders', 10, 'month', 1, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['month_r']), 'Failed to create month_r leader-board');
-        $this->leaderboards['year_r'] = add_leader_board("Test year_r", 'holders', 10, 'year', 1, 0, null);
+        $this->leaderboards['year_r'] = add_leader_board("Test year_r", 'holders', 10, 'year', 1, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['year_r']), 'Failed to create year_r leader-board');
 
         // Test 2: First, test to see that none of the leader-boards regenerate if the current time is the same as the most recent result set
@@ -177,11 +177,11 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Test 1: Set up leader-boards
-        $this->leaderboards['week'] = add_leader_board("Test week", 'earners', 10, 'week', 0, 0, null);
+        $this->leaderboards['week'] = add_leader_board("Test week", 'earners', 10, 'week', 0, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['week']), 'Failed to create week_r leader-board');
-        $this->leaderboards['month'] = add_leader_board("Test month", 'earners', 10, 'month', 0, 0, null);
+        $this->leaderboards['month'] = add_leader_board("Test month", 'earners', 10, 'month', 0, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['month']), 'Failed to create month_r leader-board');
-        $this->leaderboards['year'] = add_leader_board("Test year", 'earners', 10, 'year', 0, 0, null);
+        $this->leaderboards['year'] = add_leader_board("Test year", 'earners', 10, 'year', 0, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['year']), 'Failed to create year_r leader-board');
 
         // Test 2A: First, test to see that none of the leader-boards regenerate if the current time is the same as the most recent result set (Sunday)
@@ -295,7 +295,7 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-boards
-        $this->leaderboards['one_member'] = add_leader_board("Test one_member", 'holders', 1, 'month', 0, 0, null);
+        $this->leaderboards['one_member'] = add_leader_board("Test one_member", 'holders', 1, 'month', 0, 0, []);
         $this->assertTrue(is_integer($this->leaderboards['one_member']), 'Failed to create one_member leader-board');
 
         // The generated leader-board should only contain one member in the results
@@ -328,9 +328,9 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Set up leader-boards
-        $this->leaderboards['include_staff'] = add_leader_board("Test include_staff", 'holders', 10, 'month', 0, 1, $groups[0]);
+        $this->leaderboards['include_staff'] = add_leader_board("Test include_staff", 'holders', 10, 'month', 0, 1, [$groups[0]]);
         $this->assertTrue(is_integer($this->leaderboards['include_staff']), 'Failed to create include_staff leader-board');
-        $this->leaderboards['no_staff'] = add_leader_board("Test no_staff", 'holders', 10, 'month', 0, 0, $groups[0]);
+        $this->leaderboards['no_staff'] = add_leader_board("Test no_staff", 'holders', 10, 'month', 0, 0, [$groups[0]]);
         $this->assertTrue(is_integer($this->leaderboards['no_staff']), 'Failed to create no_staff leader-board');
 
         // Set up time
@@ -366,39 +366,69 @@ class leader_board_test_set extends cms_test_case
 
         // Test using the primary usergroup of the first member; we know there will always be at least one member in the leader-board by doing so
         $current_id = $this->test_id;
-        $members = $GLOBALS['FORUM_DRIVER']->get_next_members(db_get_first_id(), 1);
-        if (empty($members)) {
-            $this->assertTrue(false, 'testLeaderBoardUsergroup(): Unable to locate a member.');
-            return;
-        }
-        $group = $GLOBALS['FORUM_DRIVER']->mrow_group($members[0]);
+        $groups = [];
+        do {
+            $members = $GLOBALS['FORUM_DRIVER']->get_next_members($current_id, 1);
+            if (empty($members)) {
+                $this->assertTrue(false, 'testLeaderBoardUsergroup(): Needs 2 members with unique primary groups to work.');
+                return;
+            }
+            $group = $GLOBALS['FORUM_DRIVER']->mrow_group($members[0]);
+            if (!in_array($group, $groups)) {
+                $groups[] = $group;
+            }
+            $current_id = $GLOBALS['FORUM_DRIVER']->mrow_id($members[0]);
+        } while (count($groups) < 2);
 
         // Set up leader-boards
-        $this->leaderboards['usergroup'] = add_leader_board("Test usergroup", 'holders', 100, 'month', 0, 1, $group);
-        $this->assertTrue(is_integer($this->leaderboards['usergroup']), 'Failed to create usergroup leader-board');
+        $this->leaderboards['single_usergroup'] = add_leader_board("Test single_usergroup", 'holders', 100, 'month', 0, 1, [$groups[0]]);
+        $this->assertTrue(is_integer($this->leaderboards['single_usergroup']), 'Failed to create single_usergroup leader-board');
+        $this->leaderboards['multiple_usergroups'] = add_leader_board("Test multiple_usergroups", 'holders', 100, 'month', 0, 1, $groups);
+        $this->assertTrue(is_integer($this->leaderboards['multiple_usergroups']), 'Failed to create multiple_usergroups leader-board');
 
         // Set up time
         $forced_start = strtotime("first day of this month");
         $forced_time = strtotime("+1 month", $forced_start);
 
-        // Test to make sure all members in the result set are in the tested usergroup
-        $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['usergroup']], '', 1);
+        // Test 1: Test to make sure all members in the result set are in the tested usergroup for single_usergroup
+        $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['single_usergroup']], '', 1);
         $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
         if ($process === null) {
-            $this->assertTrue(false, 'usergroup: The leader-board did not generate a new result set when it should have in testLeaderBoardUsergroup().');
+            $this->assertTrue(false, 'single_usergroup: The leader-board did not generate a new result set when it should have in testLeaderBoardUsergroup() test 1.');
         } else {
-            $results = get_leader_board($this->leaderboards['usergroup'], $process);
+            $results = get_leader_board($this->leaderboards['single_usergroup'], $process);
             $passed = true;
             if (empty($results)) {
-                $this->assertTrue(false, 'usergroup: We expected at least one member in the result set, but we got none, in testLeaderBoardUsergroup().');
+                $this->assertTrue(false, 'single_usergroup: We expected at least one member in the result set, but we got none, in testLeaderBoardUsergroup() test 1.');
             } else {
                 foreach ($results as $result) {
-                    $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($result['lb_member']);
-                    if (!in_array($group, $groups)) {
+                    $mgroups = $GLOBALS['FORUM_DRIVER']->get_members_groups($result['lb_member']);
+                    if (!in_array($groups[0], $mgroups)) {
                         $passed = false;
                     }
                 }
-                $this->assertTrue($passed, 'usergroup: We expected all members of the result set to be in usergroup ID ' . $group . ', but that was not the case, in testLeaderBoardUsergroup().');
+                $this->assertTrue($passed, 'single_usergroup: We expected all members of the result set to be in usergroup ID ' . $group . ', but that was not the case, in testLeaderBoardUsergroup() test 1.');
+            }
+        }
+
+        // Test 2: Test to make sure all members in the result set are in one of the tested usergroups for multiple_usergroups
+        $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['multiple_usergroups']], '', 1);
+        $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+        if ($process === null) {
+            $this->assertTrue(false, 'multiple_usergroups: The leader-board did not generate a new result set when it should have in testLeaderBoardUsergroup() test 2.');
+        } else {
+            $results = get_leader_board($this->leaderboards['multiple_usergroups'], $process);
+            $passed = true;
+            if (empty($results)) {
+                $this->assertTrue(false, 'multiple_usergroups: We expected at least one member in the result set, but we got none, in testLeaderBoardUsergroup() test 2.');
+            } else {
+                foreach ($results as $result) {
+                    $mgroups = $GLOBALS['FORUM_DRIVER']->get_members_groups($result['lb_member']);
+                    if (count(array_intersect($groups, $mgroups)) == 0) {
+                        $passed = false;
+                    }
+                }
+                $this->assertTrue($passed, 'multiple_usergroups: We expected all members of the result set to be in one of the 2 tested usergroups, but that was not the case, in testLeaderBoardUsergroup() test 2.');
             }
         }
     }
@@ -413,10 +443,10 @@ class leader_board_test_set extends cms_test_case
         require_code('points2');
 
         // Set up leader-boards (make these rolling for easier calculation)
-        $this->leaderboards['holders'] = add_leader_board("Test holders", 'holders', 10, 'week', 1, 1, null);
+        $this->leaderboards['holders'] = add_leader_board("Test holders", 'holders', 10, 'week', 1, 1, []);
         $this->assertTrue(is_integer($this->leaderboards['holders']), 'Failed to create holders leader-board');
 
-        $this->leaderboards['earners'] = add_leader_board("Test earners", 'earners', 10, 'week', 1, 1, null);
+        $this->leaderboards['earners'] = add_leader_board("Test earners", 'earners', 10, 'week', 1, 1, []);
         $this->assertTrue(is_integer($this->leaderboards['earners']), 'Failed to create earners leader-board');
 
         // Set up time

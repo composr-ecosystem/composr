@@ -3536,7 +3536,7 @@ class Hook_import_cms_merge
 
         $on_same_msn = $this->on_same_msn($file_base);
 
-        // Leader-boards
+        // Leader-boards and usergroup maps
         $rows = $db->query_select('leader_boards', ['*'], [], '', null, 0, true);
         if ($rows === null || $on_same_msn) {
             $rows = [];
@@ -3554,16 +3554,23 @@ class Hook_import_cms_merge
                 'lb_timeframe' => $row['lb_timeframe'],
                 'lb_rolling' => $row['lb_rolling'],
                 'lb_include_staff' => $row['lb_include_staff'],
-                'lb_usergroup' => $row['lb_usergroup']
             ];
 
-            if ($row['lb_usergroup'] === null) {
-                $usergroup_id = null;
-            } else {
-                $usergroup_id = $on_same_msn ? $row['lb_member'] : import_id_remap_get('group', strval($row['lb_usergroup']), true);
+            // Prepare usergroups
+            $groups = $db->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => $row['id']], '', null, 0, true);
+            if ($groups === null || $on_same_msn) {
+                $groups = [];
+            }
+            $groups = collapse_1d_complexity('lb_group', $groups);
+
+            // Re-map group IDs
+            foreach ($groups as $key => $group) {
+                if ($group !== null && $group !== '') {
+                    $groups[$key] = $on_same_msn ? $group : import_id_remap_get('group', strval($group), true);
+                }
             }
 
-            add_leader_board($row['lb_title'], $row['lb_type'], $row['lb_member_count'], $row['lb_timeframe'], $row['lb_rolling'], $row['lb_include_staff'], $usergroup_id);
+            add_leader_board($row['lb_title'], $row['lb_type'], $row['lb_member_count'], $row['lb_timeframe'], $row['lb_rolling'], $row['lb_include_staff'], $groups);
 
             import_id_remap_put('leader_board', strval($row['id']), 0);
         }

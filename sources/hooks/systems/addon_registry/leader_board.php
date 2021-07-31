@@ -165,7 +165,6 @@ class Hook_addon_registry_leader_board
             'lb_timeframe' => 'week',
             'lb_rolling' => 1,
             'lb_include_staff' => 0,
-            'lb_usergroup' => null
         ];
         $installed_holders = ($GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'id', $map) !== null);
 
@@ -195,11 +194,11 @@ class Hook_addon_registry_leader_board
     {
         if ((($content === null) || (in_array('weekly_10_holders', $content))) && (!has_predefined_content('leader_board', 'weekly_10_holders'))) {
             require_code('leader_board2');
-            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, null);
+            add_leader_board(lorem_phrase() . '-holders', 'holders', 10, 'week', 1, 0, []);
         }
         if ((($content === null) || (in_array('weekly_10_earners', $content))) && (!has_predefined_content('leader_board', 'weekly_10_earners'))) {
             require_code('leader_board2');
-            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, null);
+            add_leader_board(lorem_phrase() . '-earners', 'earners', 10, 'week', 1, 0, []);
         }
     }
 
@@ -218,7 +217,6 @@ class Hook_addon_registry_leader_board
                 'lb_timeframe' => 'week',
                 'lb_rolling' => 1,
                 'lb_include_staff' => 0,
-                'lb_usergroup' => null
             ];
             require_code('leader_board2');
             $id = $GLOBALS['SITE_DB']->query_select_value('leader_boards', 'id', $map);
@@ -232,7 +230,6 @@ class Hook_addon_registry_leader_board
                 'lb_timeframe' => 'week',
                 'lb_rolling' => 1,
                 'lb_include_staff' => 0,
-                'lb_usergroup' => null
             ];
             require_code('leader_board2');
             $id = $GLOBALS['SITE_DB']->query_select_value('leader_boards', 'id', $map);
