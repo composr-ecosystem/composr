@@ -62,8 +62,8 @@ class newsletters_test_set extends cms_test_case
 
         // HTML
         $got = preg_replace('# href="[^"]*"#', ' href=""', comcode_to_tempcode($message_wrapped, null, true));
-        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can <a class=\"user-link\" href=\"\" rel=\"external\" target=\"_blank\" title=\"xxx (this link will open in a new window)\">unsubscribe</a> from this newsletter</span><br /><br />";
-        $this->assertTrue($got == $expected, 'Got: ' . $got . '; Expected: ' . $expected);
+        $expected = "#^abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can <a class=\"user-link\" href=\"\" (rel=\"external\" target=\"_blank\"|target=\"_top\")( title=\"xxx \(this link will open in a new window\)\")?>unsubscribe</a> from this newsletter</span><br /><br />$#";
+        $this->assertTrue(preg_match($expected, $got) != 0, 'Got: ' . $got . '; Expected: ' . $expected);
     }
 
     public function tearDown()

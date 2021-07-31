@@ -70,7 +70,7 @@ class Module_admin_leader_board extends Standard_crud_module
         }
 
         $ret = [
-            'browse' => ['MANAGE_LEADER_BOARDS', 'menu/adminzone/setup/leader_board'],
+            'browse' => ['MANAGE_LEADER_BOARDS', 'menu/social/leader_board'],
         ];
 
         $ret += parent::get_entry_points();

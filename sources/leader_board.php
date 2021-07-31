@@ -103,7 +103,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
     $limit = $row['lb_member_count']; // The number to show on the leader-board
     $show_staff = ($row['lb_include_staff'] == 1); // Whether to include staff
 
-    // Determine user groups to filter
+    // Determine usergroups to filter
     $usergroups = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => $row['id']]);
     $usergroups = collapse_1d_complexity('lb_group', $usergroups);
 
@@ -135,7 +135,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
             if ($row['lb_type'] == 'holders') { // Leader-board ranks according to total cumulative point balance
                 $points_now = total_points($current_id, $end, false);
                 $points[] = ['member_id' => $current_id, 'points' => $points_now];
-            } elseif ($row['lb_type'] == 'earners') { // Leader-board ranks according to number of points earned during result timespan
+            } elseif ($row['lb_type'] == 'earners') { // Leader-board ranks according to number of points earned during result time span
                 $points_then = total_points($current_id, $start, false);
                 $points_now = total_points($current_id, $end, false);
                 $points_earned = $points_now - $points_then;
