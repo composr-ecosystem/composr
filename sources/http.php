@@ -370,6 +370,7 @@ abstract class HttpDownloader
     public $filename = null; // ?ID_TEXT. The filename returned from the last HTTP lookup.
     public $charset = null; // ?ID_TEXT. The character set returned from the last HTTP lookup.
     public $headers = []; // Any HTTP headers collected.
+    public $generation_time = 0; // How long the request took
     public $implementation_used = null; // For debugging.
 
     /**
@@ -588,11 +589,15 @@ abstract class HttpDownloader
 
         // Call downloader method...
 
+        $start_time = time();
+
         global $DOWNLOAD_LEVEL;
         $DOWNLOAD_LEVEL++;
         $this->data = $this->_run($url, $options);
         $DOWNLOAD_LEVEL--;
         $this->detect_character_encoding();
+
+        $this->generation_time = time() - $start_time;
 
         // Post-processing...
 
@@ -1409,7 +1414,7 @@ class HttpDownloaderSockets extends HttpDownloader
             $line = '';
             while (($chunked) || (!@feof($mysock))) { // @'d because socket might have died. If so fread will will return false and hence we'll break
                 if ((function_exists('stream_select')) && (!empty($_frh)) && (!@stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)))) {
-                    if (($input === '') && ($time_init + $this->timeout < time())) {
+                    if (($input === '') && ($time_init + $this->timeout <= time())) {
                         if ((!$chunked) || ($buffer_unprocessed == '')) {
                             $line = false; // Manual timeout
                             if ($this->trigger_error) {
@@ -1426,6 +1431,7 @@ class HttpDownloaderSockets extends HttpDownloader
                 }
 
                 $line = @fread($mysock, 32000);
+
                 if (($input === '') && ($time_init + $this->timeout < time())) {
                     $line = false; // Manual timeout
                 }

@@ -65,7 +65,7 @@ class __static_caching_test_set extends cms_test_case
 
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
-        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_inclusion_list']='.*';\n\$SITE_INFO['failover_mode'] = 'auto_off';\n\$SITE_INFO['failover_check_urls'] = '" . $test_url . "';\n\$SITE_INFO['failover_cache_miss_message'] = 'FAILOVER_CACHE_MISS';\n\$SITE_INFO['failover_email_contact'] = 'test@example.com';\$SITE_INFO['base_url'] = '" . addslashes(get_base_url()) . "';\n");
+        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_inclusion_list']='.*';\n\$SITE_INFO['failover_mode'] = 'auto_off';\n\$SITE_INFO['failover_check_urls'] = '" . $test_url . "';\n\$SITE_INFO['failover_cache_miss_message'] = 'FAILOVER_CACHE_MISS';\n\$SITE_INFO['failover_email_contact'] = '';\$SITE_INFO['base_url'] = '" . addslashes(get_base_url()) . "';\n");
         fix_permissions($config_file_path);
 
         // This will empty the static cache, meaning when it is re-primed it actually will do so for fail-over (now that's enabled) priming rather than just outputting from the cache made in testStaticCacheWorks
@@ -77,11 +77,12 @@ class __static_caching_test_set extends cms_test_case
         $this->assertTrue($result !== null, 'Failed to prime cache');
 
         $detect_url = find_script('failover_script');
-        $result = http_get_contents($detect_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should trigger failover, due to our $test_url being a broken URL
-        $this->assertTrue($result !== null, 'Failed to call failover script');
+        $result_ob = cms_http_request($detect_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0, 'ignore_http_status' => true]); // Should trigger failover, due to our $test_url being a broken URL
+        $this->assertTrue($result_ob->message === '200', 'Failed to call failover script');
 
         clearstatcache();
-        $this->assertTrue(strpos(cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK), "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not');
+        $ccc = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
+        $this->assertTrue(strpos($ccc, "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not...' . $ccc);
 
         $result = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should be failed over, but cached
         $this->assertTrue(strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');

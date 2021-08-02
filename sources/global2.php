@@ -334,10 +334,12 @@ function init__global2()
     define('STATIC_CACHE__FAILOVER_MODE', 4);
     $force_failover = get_param_integer('keep_failover', null);
     if (((isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] == 'on' || $SITE_INFO['failover_mode'] == 'auto_on') && ($force_failover !== 0)) || ($force_failover === 1)) {
-        // Forced static cache, due to failover mode
-        $bot_type = get_bot_type();
-        require_code('static_cache');
-        static_cache((($bot_type !== null) ? STATIC_CACHE__FAST_SPIDER : 0) | STATIC_CACHE__FAILOVER_MODE);
+        if (!running_script('execute_temp')) {
+            // Forced static cache, due to failover mode
+            $bot_type = get_bot_type();
+            require_code('static_cache');
+            static_cache((($bot_type !== null) ? STATIC_CACHE__FAST_SPIDER : 0) | STATIC_CACHE__FAILOVER_MODE);
+        }
     }
     $static_cache_mode = null;
     if (web_client_may_use_static_cache(true, $static_cache_mode)) {

@@ -890,8 +890,10 @@ class Forum_driver_cns extends Forum_driver_base
             $out[$x['id']] = $x;
         }
 
+        global $BOOTSTRAPPING;
+
         // Now implicit usergroup hooks
-        if ($start == 0) {
+        if (($start == 0) && (!$BOOTSTRAPPING)) {
             $hooks = find_all_hook_obs('systems', 'cns_implicit_usergroups', 'Hook_implicit_usergroups_');
             foreach ($hooks as $ob) {
                 $group_ids = $ob->get_bound_group_ids();
