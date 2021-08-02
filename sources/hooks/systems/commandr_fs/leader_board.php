@@ -93,20 +93,22 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
 
         require_code('leader_board2');
 
-        $title = $this->_default_property_str($properties, 'title');
         $board_type = $this->_default_property_str($properties, 'type');
         if ($board_type == '') {
-            $board_type = 'month';
+            $board_type = 'holders';
         }
         $member_count = $this->_default_property_int($properties, 'member_count');
         if ($member_count == 0) {
             $member_count = 10;
         }
         $timeframe = $this->_default_property_str($properties, 'timeframe');
+        if ($timeframe == '') {
+            $timeframe = 'month';
+        }
         $rolling = $this->_default_property_int($properties, 'rolling');
         $include_staff = $this->_default_property_int($properties, 'include_staff');
 
-        $id = add_leader_board($title, $board_type, $member_count, $timeframe, $rolling, $include_staff, null);
+        $id = add_leader_board($label, $board_type, $member_count, $timeframe, $rolling, $include_staff, null);
 
         if (isset($properties['groups'])) {
             table_from_portable_rows('leader_boards_groups', $properties['groups'], ['lb_leader_board_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
@@ -165,20 +167,22 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
 
         require_code('leader_board2');
 
-        $title = $this->_default_property_str($properties, 'title');
         $board_type = $this->_default_property_str($properties, 'type');
         if ($board_type == '') {
-            $board_type = 'month';
+            $board_type = 'holders';
         }
         $member_count = $this->_default_property_int($properties, 'member_count');
         if ($member_count == 0) {
             $member_count = 10;
         }
         $timeframe = $this->_default_property_str($properties, 'timeframe');
+        if ($timeframe == '') {
+            $timeframe = 'month';
+        }
         $rolling = $this->_default_property_int($properties, 'rolling');
         $include_staff = $this->_default_property_int($properties, 'include_staff');
 
-        edit_leader_board(intval($resource_id), $title, $board_type, $member_count, $timeframe, $rolling, $include_staff, null);
+        edit_leader_board(intval($resource_id), $label, $board_type, $member_count, $timeframe, $rolling, $include_staff, null);
 
         if (isset($properties['groups'])) {
             table_from_portable_rows('leader_boards_groups', $properties['groups'], ['lb_leader_board_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
