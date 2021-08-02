@@ -38,6 +38,10 @@ class leader_board_test_set extends cms_test_case
     }
 
     public function testLeaderBoardRanks() {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardRanks')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -47,11 +51,11 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['rank']), 'Failed to create rank leader-board');
 
         // Set up time
-        $forced_start = strtotime("-1 week");
+        $forced_period_start = strtotime("-1 week");
 
         // Ensure leader-board ranks are in the correct order according to points
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['rank']], '', 1);
-        $process = calculate_leader_board($rows[0], time(), $forced_start);
+        $process = calculate_leader_board($rows[0], time(), $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'rank: The leader-board did not generate a new result set when it should have in testLeaderBoardRanks().');
         } else {
@@ -84,6 +88,10 @@ class leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardFrequencyRolling()
     {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardFrequencyRolling')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -97,40 +105,40 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['year_r']), 'Failed to create year_r leader-board');
 
         // Test 2: First, test to see that none of the leader-boards regenerate if the current time is the same as the most recent result set
-        $forced_start = strtotime("January 1");
-        $forced_time = $forced_start;
+        $forced_period_start = strtotime("January 1");
+        $forced_time = $forced_period_start;
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyRolling() test 2.');
         }
 
         // Test 3: Next, test 6 days after the most recent result set. Again, nothing should re-generate.
-        $forced_start = strtotime("January 1");
-        $forced_time = strtotime("+6 days", $forced_start);
+        $forced_period_start = strtotime("January 1");
+        $forced_time = strtotime("+6 days", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyRolling() test 3.');
         }
 
         // Test 4: Test one week after the most recent result set. Only the week leader-board should re-generate.
-        $forced_start = strtotime("January 8");
-        $forced_time = strtotime("+1 week", $forced_start);
+        $forced_period_start = strtotime("January 8");
+        $forced_time = strtotime("+1 week", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             if ($key == 'week_r') {
                 $this->assertTrue($process !== null, $key . ': The leader-board did not generate a new result set when it should have in testLeaderBoardFrequencyRolling() test 4.');
@@ -140,14 +148,14 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Test 5: Test one month after the most recent result set. The week and month leader-boards should re-generate
-        $forced_start = strtotime("January 15");
-        $forced_time = strtotime("+1 month", $forced_start);
+        $forced_period_start = strtotime("January 15");
+        $forced_time = strtotime("+1 month", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             if ($key == 'week_r' || $key == 'month_r') {
                 $this->assertTrue($process !== null, $key . ': The leader-board did not generate a new result set when it should have in testLeaderBoardFrequencyRolling() test 5.');
@@ -157,14 +165,14 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Test 6: Finally, test one year after the result set. All leader-boards should re-generate.
-        $forced_start = strtotime("February 15");
-        $forced_time = strtotime("+1 year", $forced_start);
+        $forced_period_start = strtotime("February 15");
+        $forced_time = strtotime("+1 year", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process !== null, $key . ': The leader-board did not generate a new result set when it should have in testLeaderBoardFrequencyRolling() test 6.');
         }
@@ -172,6 +180,10 @@ class leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardFrequencyNonRolling()
     {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardFrequencyNonRolling')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -185,70 +197,70 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['year']), 'Failed to create year_r leader-board');
 
         // Test 2A: First, test to see that none of the leader-boards regenerate if the current time is the same as the most recent result set (Sunday)
-        $forced_start = strtotime("January 1");
-        $forced_start = strtotime("sunday", $forced_start);
-        $forced_time = $forced_start;
+        $forced_period_start = strtotime("January 1");
+        $forced_period_start = strtotime("sunday", $forced_period_start);
+        $forced_time = $forced_period_start;
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyNonRolling() test 2A.');
         }
 
         // Test 2B: Same test but with Monday to test both cases of start of week for week leader-boards.
-        $forced_start = strtotime("January 1");
-        $forced_start = strtotime("monday", $forced_start);
-        $forced_time = $forced_start;
+        $forced_period_start = strtotime("January 1");
+        $forced_period_start = strtotime("monday", $forced_period_start);
+        $forced_time = $forced_period_start;
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyNonRolling() test 2B.');
         }
 
         // Test 3: Next, if the result sets started on Tuesday and it is currently Saturday, make sure nothing re-generates again.
-        $forced_start = strtotime("May 15");
-        $forced_start = strtotime("tuesday", $forced_start);
-        $forced_time = strtotime("saturday", $forced_start);
+        $forced_period_start = strtotime("May 15");
+        $forced_period_start = strtotime("tuesday", $forced_period_start);
+        $forced_time = strtotime("saturday", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyNonRolling() test 3.');
         }
 
         // Test 4: If the recent result set was friday and it is now monday, still nothing should generate.
-        $forced_start = strtotime("May 15");
-        $forced_start = strtotime("friday", $forced_start);
-        $forced_time = strtotime("monday", $forced_start);
+        $forced_period_start = strtotime("May 15");
+        $forced_period_start = strtotime("friday", $forced_period_start);
+        $forced_time = strtotime("monday", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyNonRolling() test 4.');
         }
 
         // Test 5: If the recent result set was Sunday and it is now Monday (a week later), week should re-generate but nothing else.
-        $forced_start = strtotime("sunday");
-        $forced_time = strtotime("monday +1 week", $forced_start);
+        $forced_period_start = strtotime("sunday");
+        $forced_time = strtotime("monday +1 week", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             if ($key == 'week') {
                 $this->assertTrue($process !== null, $key . ': The leader-board did not generate a new result set when it should have in testLeaderBoardFrequencyNonRolling() test 5.');
@@ -258,14 +270,14 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Test 6: If the recent result set was January 15 and it is now February 1, week and month should re-generate.
-        $forced_start = strtotime("January 15");
-        $forced_time = strtotime("February 1", $forced_start);
+        $forced_period_start = strtotime("January 15");
+        $forced_time = strtotime("February 1", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             if ($key == 'week' || $key == 'month') {
                 $this->assertTrue($process !== null, $key . ': The leader-board did not generate a new result set when it should have in testLeaderBoardFrequencyNonRolling() test 6.');
@@ -275,14 +287,14 @@ class leader_board_test_set extends cms_test_case
         }
 
         // Test 7: If the most recent result set is December 12 and it is now January 2, everything should re-generate
-        $forced_start = strtotime("December 12");
-        $forced_time = strtotime("January 2 +1 year", $forced_start);
+        $forced_period_start = strtotime("December 12");
+        $forced_time = strtotime("January 2 +1 year", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);
             if (!isset($rows[0]) || empty($rows[0])) {
                 $this->assertTrue(false, $key . ': The leader-board was not found in the database (id ' . strval($value) . '). This is unexpected.');
             }
-            $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+            $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
 
             $this->assertTrue($process !== null, $key . ': The leader-board did not generate a new result set when it should have in testLeaderBoardFrequencyNonRolling() test 7.');
         }
@@ -290,6 +302,10 @@ class leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardOneMember()
     {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardOneMember')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -299,10 +315,10 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['one_member']), 'Failed to create one_member leader-board');
 
         // The generated leader-board should only contain one member in the results
-        $forced_start = strtotime("first day of this month");
-        $forced_time = strtotime("+1 month", $forced_start);
+        $forced_period_start = strtotime("first day of this month");
+        $forced_time = strtotime("+1 month", $forced_period_start);
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['one_member']], '', 1);
-        $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+        $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'one_member: The leader-board did not generate a new result set when it should have in testLeaderBoardOneMember().');
         } else {
@@ -317,6 +333,10 @@ class leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardIncludeStaff()
     {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardIncludeStaff')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -334,12 +354,12 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['no_staff']), 'Failed to create no_staff leader-board');
 
         // Set up time
-        $forced_start = strtotime("first day of this month");
-        $forced_time = strtotime("+1 month", $forced_start);
+        $forced_period_start = strtotime("first day of this month");
+        $forced_time = strtotime("+1 month", $forced_period_start);
 
         // Test 1: First, test for staff
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['include_staff']], '', 1);
-        $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+        $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'include_staff: The leader-board did not generate a new result set when it should have in testLeaderBoardIncludeStaff() test 1.');
         } else {
@@ -349,7 +369,7 @@ class leader_board_test_set extends cms_test_case
 
         // Test 2: test for no staff
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['no_staff']], '', 1);
-        $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+        $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'no_staff: The leader-board did not generate a new result set when it should have in testLeaderBoardIncludeStaff() test 2.');
         } else {
@@ -360,6 +380,10 @@ class leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardUsergroup()
     {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardUsergroup')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -387,12 +411,12 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['multiple_usergroups']), 'Failed to create multiple_usergroups leader-board');
 
         // Set up time
-        $forced_start = strtotime("first day of this month");
-        $forced_time = strtotime("+1 month", $forced_start);
+        $forced_period_start = strtotime("first day of this month");
+        $forced_time = strtotime("+1 month", $forced_period_start);
 
         // Test 1: Test to make sure all members in the result set are in the tested usergroup for single_usergroup
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['single_usergroup']], '', 1);
-        $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+        $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'single_usergroup: The leader-board did not generate a new result set when it should have in testLeaderBoardUsergroup() test 1.');
         } else {
@@ -413,7 +437,7 @@ class leader_board_test_set extends cms_test_case
 
         // Test 2: Test to make sure all members in the result set are in one of the tested usergroups for multiple_usergroups
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['multiple_usergroups']], '', 1);
-        $process = calculate_leader_board($rows[0], $forced_time, $forced_start);
+        $process = calculate_leader_board($rows[0], $forced_time, $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'multiple_usergroups: The leader-board did not generate a new result set when it should have in testLeaderBoardUsergroup() test 2.');
         } else {
@@ -435,6 +459,10 @@ class leader_board_test_set extends cms_test_case
 
     public function testLeaderBoardHoldersEarners()
     {
+        if (($this->only !== null) && ($this->only !== 'testLeaderBoardHoldersEarners')) {
+            return;
+        }
+
         if (!addon_installed('points') || !addon_installed('leader_board')) {
             return;
         }
@@ -450,7 +478,7 @@ class leader_board_test_set extends cms_test_case
         $this->assertTrue(is_integer($this->leaderboards['earners']), 'Failed to create earners leader-board');
 
         // Set up time
-        $forced_start = strtotime("-1 week");
+        $forced_period_start = strtotime("-1 week");
 
         // Determine our test member
         $members = $GLOBALS['FORUM_DRIVER']->get_next_members(db_get_first_id(), 1);
@@ -458,7 +486,7 @@ class leader_board_test_set extends cms_test_case
 
         // Determine our current points for the test_id member
         $current_points = total_points($member, null, false);
-        $past_points = total_points($member, $forced_start, false);
+        $past_points = total_points($member, $forced_period_start, false);
         $earned_points = ($current_points - $past_points);
 
         // Process a dummy point transaction; amount should be absurdly high to ensure member is at the top of the results in our test
@@ -467,7 +495,7 @@ class leader_board_test_set extends cms_test_case
 
         // Test 1: Holders leader-board result for this member should equal $current_points + $points_to_give
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['holders']], '', 1);
-        $process = calculate_leader_board($rows[0], time(), $forced_start);
+        $process = calculate_leader_board($rows[0], time(), $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'holders: The leader-board did not generate a new result set when it should have in testLeaderBoardHoldersEarners() test 1.');
         } else {
@@ -490,7 +518,7 @@ class leader_board_test_set extends cms_test_case
 
         // Test 2: Earners leader-board result for this member should equal $points_to_give + $earned_points
         $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $this->leaderboards['earners']], '', 1);
-        $process = calculate_leader_board($rows[0], time(), $forced_start);
+        $process = calculate_leader_board($rows[0], time(), $forced_period_start);
         if ($process === null) {
             $this->assertTrue(false, 'earners: The leader-board did not generate a new result set when it should have in testLeaderBoardHoldersEarners() test 2.');
         } else {
