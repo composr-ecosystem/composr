@@ -240,7 +240,7 @@ function get_member(bool $quick_only = false) : int
         }
     }
 
-    if (($member_id === null) && (get_session_id() == '') && (get_param_integer('keep_force_htaccess', 0) == 0)) {
+    if (($member_id === null) && (get_param_integer('keep_force_htaccess', 0) == 0)) {
         // Try by cookie (will defer to forum driver to authorise against detected cookie)
         require_code('users_inactive_occasionals');
         $member_id = try_cookie_login();
