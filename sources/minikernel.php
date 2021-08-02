@@ -1279,3 +1279,186 @@ function get_session_cookie()
     }
     return $SITE_INFO['session_cookie'];
 }
+
+/**
+ * Find whether an IP address is valid.
+ *
+ * @param  IP $ip IP address to check
+ * @param  boolean $allow_wildcards Allow wildcards
+ * @return boolean Whether the IP address is valid
+ */
+function is_valid_ip(string $ip, bool $allow_wildcards = false) : bool
+{
+    $parts = [];
+
+    if (strpos($ip, '.') !== false) {
+        // ipv4
+
+        if ($allow_wildcards) {
+            if (preg_match('#^(\d+|\*)\.(\d+|\*)\.(\d+|\*)\.(\d+|\*)$#D', $ip, $parts) == 0) {
+                return false;
+            }
+
+            for ($i = 1; $i <= 4; $i++) {
+                if ($parts[$i] == '*') {
+                    for ($j = $i + 1; $j <= 4; $j++) {
+                        if ($parts[$j] != '*') {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (preg_match('#^(\d+)\.(\d+)\.(\d+)\.(\d+)$#D', $ip, $parts) == 0) {
+                return false;
+            }
+        }
+
+        for ($i = 1; $i <= 4; $i++) {
+            if ((is_numeric($parts[$i])) && (intval($parts[$i]) > 255)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    if (strpos($ip, ':') !== false) {
+        // ipv6
+
+        if (substr_count($ip, '::') > 1) {
+            return false;
+        }
+
+        $parts = explode(':', $ip);
+
+        if (count($parts) > 8) {
+            return false;
+        }
+
+        if ((count($parts) < 8) && (strpos($ip, '::') === false)) {
+            return false;
+        }
+
+        foreach ($parts as $i => $part) {
+            if ($allow_wildcards) {
+                if (preg_match('#^(\*|[\dA-F]{0,4})$#iD', $part) == 0) {
+                    return false;
+                }
+
+                if ($part == '*') {
+                    for ($j = $i + 1; $j < count($parts); $j++) {
+                        if ($parts[$j] != '*') {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                if (preg_match('#^[\dA-F]{0,4}$#iD', $part) == 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Normalise/fix a provided IP address, including wildcarding part of it if requested.
+ *
+ * @param  IP $ip The IP address to normalise
+ * @param  ?integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled. (null: wildcards not allowed)
+ * @return IP The normalised IP address
+ */
+function normalise_ip_address(string $ip, ?int $amount = null) : string
+{
+    if ($ip == '') {
+        return '';
+    }
+
+    $raw_ip = $ip;
+
+    static $ip_cache = [];
+    if (isset($ip_cache[$raw_ip][$amount])) {
+        return $ip_cache[$raw_ip][$amount];
+    }
+
+    // Bizarro-filter (found "in the wild")
+    $pos = strpos($ip, ',');
+    if ($pos !== false) {
+        $ip = substr($ip, 0, $pos);
+    }
+
+    // Normalise
+    if (strpos($ip, '.') === false) { // IPv6
+        // Strip ipv6 scope ID
+        if (strpos($ip, '%') !== false) {
+            $ip = preg_replace('#%.*$#', '', $ip);
+        }
+
+        if ($amount !== null) {
+            $amount += (8 - $amount);
+        }
+
+        if (substr_count($ip, ':') < 7) {
+            $ip = str_replace('::', str_repeat(':', (7 - substr_count($ip, ':')) + 2), $ip);
+        }
+        $parts = explode(':', $ip);
+        for ($i = 0; $i < (($amount === null) ? 8 : $amount); $i++) {
+            if (isset($parts[$i])) {
+                if ($parts[$i] != '*') {
+                    $parts[$i] = strtoupper(str_pad($parts[$i], 4, '0', STR_PAD_LEFT));
+                }
+            } else {
+                $parts[$i] = '0000';
+            }
+        }
+        if ($amount !== null) {
+            for ($i = $amount; $i < 8; $i++) {
+                $parts[$i] = '*';
+            }
+        }
+        $ip = implode(':', $parts);
+        $ip_cache[$raw_ip][$amount] = $ip;
+    } else { // IPv4
+        $parts = explode('.', $ip);
+        for ($i = 0; $i < (($amount === null) ? 4 : $amount); $i++) {
+            if (!array_key_exists($i, $parts)) {
+                $parts[$i] = '0';
+            }
+        }
+        if ($amount !== null) {
+            for ($i = $amount; $i < 4; $i++) {
+                $parts[$i] = '*';
+            }
+        }
+        $ip = implode('.', $parts);
+        $ip_cache[$raw_ip][$amount] = $ip;
+    }
+
+    if (!is_valid_ip($ip_cache[$raw_ip][$amount], $amount !== null)) {
+        // If still not valid after normalisation
+        $ip_cache[$raw_ip][$amount] = '';
+        return '';
+    }
+
+    return $ip_cache[$raw_ip][$amount];
+}
+
+/**
+ * Get possible IP addresses of a localhost machine.
+ * Also see get_server_ips().
+ *
+ * @return array IP addresses
+ */
+function get_localhost_ips() : array
+{
+    return [
+        '0000:0000:0000:0000:0000:0000:0000:0001',
+        '::1',
+        '127.0.0.1',
+    ];
+}
