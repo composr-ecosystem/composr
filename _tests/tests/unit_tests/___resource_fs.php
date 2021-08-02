@@ -141,7 +141,7 @@ class ___resource_fs_test_set extends cms_test_case
                 $this->assertTrue(empty($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))))); // Search for a unique random ID should find nothing
             }
 
-            $listing = $this->_recursive_listing($ob, [], ['var', $commandr_fs_hook], $commandr_fs);
+            $listing = $this->_recursive_listing($ob, [], 'var', $commandr_fs);
 
             $count = $count_folders + $count_files;
 

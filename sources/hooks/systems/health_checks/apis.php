@@ -126,9 +126,9 @@ class Hook_health_check_apis extends Hook_Health_Check
                 $errormsg = null;
                 $result = geocode('Berlin, DE', $errormsg, $service);
                 if ($errormsg !== null) {
-                    $this->assertTrue(false, $service . ' error: ' . $errormsg->evaluate());
+                    $this->assertTrue(false, $service . ' error doing forward geocoding: ' . $errormsg->evaluate());
                 } else {
-                    $this->assertTrue(($result !== null) && ($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0), 'Wrong coordinate on ' . $service);
+                    $this->assertTrue(($result !== null) && ($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0), $service . ' returned wrong coordinate');
                 }
             }
         }
@@ -142,23 +142,23 @@ class Hook_health_check_apis extends Hook_Health_Check
                 $errormsg = null;
                 $address = reverse_geocode(52.516667, 13.388889, $errormsg, $service);
                 if ($errormsg !== null) {
-                    $this->assertTrue(false, $service . ' error: ' . $errormsg->evaluate());
+                    $this->assertTrue(false, $service . ' error doing reverse geocoding of Berlin: ' . $errormsg->evaluate());
                 } else {
-                    $this->assertTrue($address !== null, 'Failure on ' . $service);
+                    $this->assertTrue($address !== null, $service . ' failed to do reverse geocoding of Berlin');
                     if ($address !== null) {
-                        $this->assertTrue($address[2] == 'Berlin', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected Berlin');
-                        $this->assertTrue($address[6] == 'DE', 'Wrong country on ' . $service . ', got ' . $address[6] . ', expected DE');
+                        $this->assertTrue($address[2] == 'Berlin', $service . ' returned wrong city' . ', got ' . $address[2] . ', expected Berlin');
+                        $this->assertTrue($address[6] == 'DE', $service . ' returned wrong country' . ', got ' . $address[6] . ', expected DE');
                     }
                 }
 
                 $errormsg = null;
                 $address = reverse_geocode(64.133333, -21.933333, $errormsg, $service);
                 if ($errormsg !== null) {
-                    $this->assertTrue(false, $service . ' error: ' . $errormsg->evaluate());
+                    $this->assertTrue(false, $service . ' error doing reverse geocoding of Raycevick: ' . $errormsg->evaluate());
                 } else {
-                    $this->assertTrue($address !== null, 'Failure on ' . $service);
+                    $this->assertTrue($address !== null, $service . ' failed to do reverse geocoding of Raycevick');
                     if ($address !== null) {
-                        $this->assertTrue(substr($address[2], 0, 3) == 'Rey', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected ~Raycevick'); // Only check first chars due to charset issues
+                        $this->assertTrue(substr($address[2], 0, 3) == 'Rey', $service . ' returned wrong city' . ', got ' . $address[2] . ', expected ~Raycevick'); // Only check first chars due to charset issues
                     }
                 }
             }

@@ -78,9 +78,9 @@ class Hook_resource_meta_aware_leader_board extends Hook_CMA
             'order_field' => null,
             'submitter_field' => null,
             'author_field' => null,
-            'add_time_field' => 'lb_date_and_time',
+            'add_time_field' => 'lb_creation_date_and_time',
             'edit_time_field' => null,
-            'date_field' => 'lb_date_and_time',
+            'date_field' => 'lb_creation_date_and_time',
             'validated_field' => null,
 
             'seo_type_code' => null,
@@ -100,7 +100,7 @@ class Hook_resource_meta_aware_leader_board extends Hook_CMA
             'cms_page' => 'admin_leader_board',
             'module' => 'leader_board',
 
-            'commandr_filesystem_hook' => null,
+            'commandr_filesystem_hook' => 'leader_board',
             'commandr_filesystem__is_folder' => false,
 
             'support_revisions' => false,

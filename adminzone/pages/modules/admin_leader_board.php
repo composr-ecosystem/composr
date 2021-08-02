@@ -70,7 +70,7 @@ class Module_admin_leader_board extends Standard_crud_module
         }
 
         $ret = [
-            'browse' => ['MANAGE_LEADER_BOARDS', 'menu/adminzone/setup/leader_board'],
+            'browse' => ['MANAGE_LEADER_BOARDS', 'menu/social/leader_board'],
         ];
 
         $ret += parent::get_entry_points();
@@ -243,8 +243,10 @@ class Module_admin_leader_board extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of the leader-board (null: not added yet)
      * @param  SHORT_TEXT $title A title for this leader-board
      * @param  SHORT_TEXT $board_type The type of leader-board
+     * @set holders earners
      * @param  integer $member_count The size of the leader-board
      * @param  SHORT_TEXT $timeframe The frequency of this leader-board
+     * @set week month year
      * @param  BINARY $rolling Whether or not this leader-board generation time is rolling
      * @param  BINARY $include_staff Whether to include staff in the leader-board
      * @param  array $usergroups Only allow members in one or more defined usergroup IDs to be included in the leader-board (empty: allow all usergroups)

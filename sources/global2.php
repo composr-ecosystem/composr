@@ -2088,9 +2088,9 @@ function simulated_wildcard_match(string $target, string $expression, bool $full
         if ($escape_flag) {
             $c = preg_quote($c, '#');
         } else {
-            if ($c == '%') {
+            if ($c == '%' || $c == '*') {
                 $c = '.*';
-            } elseif ($c == '_') {
+            } elseif ($c == '_' || $c == '?') {
                 $c = '.';
             } elseif ($c == '\\') {
                 $escape_flag = true;

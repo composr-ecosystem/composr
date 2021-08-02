@@ -267,7 +267,7 @@ class file_type_safelisting_test_set extends cms_test_case
 
         $file_types = [];
         $matches = [];
-        preg_match('#RewriteCond \$1 \\\\\.\((.*)\) \[OR\]#', $c, $matches);
+        preg_match('#RewriteCond \$1 \\\\\.\((.*)\)\(\$\|\\\\\?\) \[OR\]#', $c, $matches);
         $file_types = explode('|', $matches[1]);
         $file_types = array_diff($file_types, ['swf']); // We don't do mime-typing but do allow download
         sort($file_types);

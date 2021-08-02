@@ -1127,25 +1127,25 @@ function require_javascript($css)
  * Do a wildcard match by converting to a regular expression.
  * Supports the '%' and '_' wildcards and '\' escaping of them (as per most SQL implementations of LIKE).
  *
- * @param  string $context The haystack
- * @param  string $word The needle (a wildcard expression)
+ * @param  string $target The haystack
+ * @param  string $expression The needle (a wildcard expression)
  * @param  boolean $full_cover Whether full-coverage is required
  * @param  boolean $case_sensitive Whether it is case sensitive
  * @return boolean Whether we have a match
  */
-function simulated_wildcard_match($context, $word, $full_cover = false, $case_sensitive = false)
+function simulated_wildcard_match($target, $expression, $full_cover = false, $case_sensitive = false)
 {
     $rexp = '';
-    $len = strlen($word);
+    $len = strlen($expression);
     $escape_flag = false;
     for ($i = 0; $i < $len; $i++) {
-        $c = $word[$i];
+        $c = $expression[$i];
         if ($escape_flag) {
             $c = preg_quote($c, '#');
         } else {
-            if ($c == '%') {
+            if ($c == '%' || $c == '*') {
                 $c = '.*';
-            } elseif ($c == '_') {
+            } elseif ($c == '_' || $c == '?') {
                 $c = '.';
             } elseif ($c == '\\') {
                 $escape_flag = true;
@@ -1166,7 +1166,7 @@ function simulated_wildcard_match($context, $word, $full_cover = false, $case_se
         $_rexp .= 'i';
     }
 
-    return preg_match($_rexp, $context) != 0;
+    return preg_match($_rexp, $target) != 0;
 }
 
 /**

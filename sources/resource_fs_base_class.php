@@ -1838,7 +1838,7 @@ abstract class Resource_fs_base
     public function file_load_json(string $filename, string $path)
     {
         $properties = $this->file_load($filename, $path);
-        if ($properties === false) {
+        if ($properties === null) {
             return false;
         }
         return json_encode($properties);
@@ -1854,7 +1854,7 @@ abstract class Resource_fs_base
     public function folder_load_json(string $filename, string $path)
     {
         $properties = $this->folder_load($filename, $path);
-        if ($properties === false) {
+        if ($properties === null) {
             return false;
         }
         return json_encode($properties);
@@ -1871,7 +1871,7 @@ abstract class Resource_fs_base
     public function file_save_json(string $filename, string $path, string $data)
     {
         $properties = ($data == '') ? [] : @json_decode($data, true);
-        if ($properties === false) {
+        if ($properties === null) {
             return false;
         }
         return $this->file_save($filename, $path, $properties);
@@ -1931,7 +1931,7 @@ abstract class Resource_fs_base
     public function folder_save_json(string $filename, string $path, string $data)
     {
         $properties = @json_decode($data, true);
-        if ($properties === false) {
+        if ($properties === null) {
             return false;
         }
         return $this->folder_save($filename, $path, $properties);

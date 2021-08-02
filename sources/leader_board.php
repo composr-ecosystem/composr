@@ -66,16 +66,16 @@ function get_leader_board_calculation_count() : int
  * Check all leader-boards and generate new result sets when applicable.
  *
  * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
- * @param  ?TIME $forced_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
+ * @param  ?TIME $forced_period_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
  * @return array Map of leader_board IDs to their new result set timestamp
  */
-function calculate_all_leader_boards(?int $forced_time = null, ?int $forced_start = null) : array
+function calculate_all_leader_boards(?int $forced_time = null, ?int $forced_period_start = null) : array
 {
     $leader_boards = [];
 
     $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], [], 'ORDER BY id');
     foreach ($rows as $row) {
-        $timestamp = calculate_leader_board($row, $forced_time, $forced_start);
+        $timestamp = calculate_leader_board($row, $forced_time, $forced_period_start);
         $leader_boards[$row['id']] = $timestamp;
     }
 
@@ -87,15 +87,15 @@ function calculate_all_leader_boards(?int $forced_time = null, ?int $forced_star
  *
  * @param  array $row The leader-board row to calculate
  * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
- * @param  ?TIME $forced_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
+ * @param  ?TIME $forced_period_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
  * @return ?TIME The timestamp of the result set (null: a new result set was not generated)
  */
-function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forced_start = null) : ?int
+function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forced_period_start = null) : ?int
 {
     require_code('points');
 
     // Calculate our result set times
-    list($start, $end) = _get_next_leader_board_timeframe($row, $forced_time, $forced_start);
+    list($start, $end) = _get_next_leader_board_timeframe($row, $forced_time, $forced_period_start);
     if ($start === null || $end === null) {
         return null;
     }
@@ -103,7 +103,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
     $limit = $row['lb_member_count']; // The number to show on the leader-board
     $show_staff = ($row['lb_include_staff'] == 1); // Whether to include staff
 
-    // Determine user groups to filter
+    // Determine usergroups to filter
     $usergroups = $GLOBALS['SITE_DB']->query_select('leader_boards_groups', ['*'], ['lb_leader_board_id' => $row['id']]);
     $usergroups = collapse_1d_complexity('lb_group', $usergroups);
 
@@ -135,7 +135,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
             if ($row['lb_type'] == 'holders') { // Leader-board ranks according to total cumulative point balance
                 $points_now = total_points($current_id, $end, false);
                 $points[] = ['member_id' => $current_id, 'points' => $points_now];
-            } elseif ($row['lb_type'] == 'earners') { // Leader-board ranks according to number of points earned during result timespan
+            } elseif ($row['lb_type'] == 'earners') { // Leader-board ranks according to number of points earned during result time span
                 $points_then = total_points($current_id, $start, false);
                 $points_now = total_points($current_id, $end, false);
                 $points_earned = $points_now - $points_then;
@@ -209,18 +209,18 @@ function get_leader_board(int $id, ?int $timestamp = null) : array
  *
  * @param  array $row The leader-board row
  * @param  ?TIME $forced_time Pretend the current time is the provided time stamp (null: use the current time in the site's timezone)
- * @param  ?TIME $forced_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
+ * @param  ?TIME $forced_period_start Pretend the most recent result set was generated on the provided timestamp (null: use the actual most recent timestamp)
  * @return array A ?TIME duple containing start and end; both will be null if this leader-board should not generate a result set at this time
  */
-function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, ?int $forced_start = null) : array
+function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, ?int $forced_period_start = null) : array
 {
     // Set PHP to site timezone temporarily
     $old_timezone = @date_default_timezone_get();
     date_default_timezone_set(get_site_timezone());
 
     // Determine the timestamp of the most recent result set. If there are no result sets, we start at the timestamp the leader-board was created.
-    if ($forced_start !== null) {
-        $recent = $forced_start;
+    if ($forced_period_start !== null) {
+        $recent = $forced_period_start;
     } else {
         $recent = most_recent_leader_board($row['id']);
         if ($recent === null) {
@@ -294,7 +294,7 @@ function _get_next_leader_board_timeframe(array $row, ?int $forced_time = null, 
     }
 
     // Do not generate if it is too soon AND we have at least one result set
-    if ($now < $end && !most_recent_leader_board($row['id'])) {
+    if (($now < $end) && (($forced_period_start !== null) || (most_recent_leader_board($row['id']) !== null))) {
         return [null, null];
     }
 

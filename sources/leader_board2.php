@@ -22,15 +22,17 @@
  * Create a new leader-board.
  *
  * @param  SHORT_TEXT $title The leader-board title
- * @param  SHORT_TEXT $leader_board_type The type of leader-board
+ * @param  SHORT_TEXT $board_type The type of leader-board
+ * @set holders earners
  * @param  integer $member_count The number of top members to use for this leader-board
  * @param  SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
+ * @set week month year
  * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
  * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do nothing) (empty array: no usergroup filtering)
  * @return AUTO_LINK The ID of the new leader-board
  */
-function add_leader_board(string $title, string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = []) : int
+function add_leader_board(string $title, string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups = []) : int
 {
     // Cannot have less than one member
     if ($member_count < 1) {
@@ -43,7 +45,7 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
     }
 
     // leader-board type must be valid
-    if (!in_array($leader_board_type, ['holders', 'earners'])) {
+    if (!in_array($board_type, ['holders', 'earners'])) {
         warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
     }
 
@@ -53,7 +55,7 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
     // Insert the leader-board
     $id = $GLOBALS['SITE_DB']->query_insert('leader_boards', [
         'lb_title' => $title,
-        'lb_type' => $leader_board_type,
+        'lb_type' => $board_type,
         'lb_creation_date_and_time' => time(),
         'lb_member_count' => $member_count,
         'lb_timeframe' => $timeframe,
@@ -64,7 +66,7 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
     // Insert usergroup references
     if ($usergroups !== null && !empty($usergroups)) {
         foreach ($usergroups as $group) {
-            if ($group == '' || $group === null) {
+            if ($group === null) {
                 continue; // skip empty or null groups
             }
             $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
@@ -84,14 +86,16 @@ function add_leader_board(string $title, string $leader_board_type, int $member_
  *
  * @param  AUTO_LINK $id The ID of the leader-board to edit
  * @param  SHORT_TEXT $title The leader-board title
- * @param  ?SHORT_TEXT $leader_board_type The type of leader-board (null: do not change)
+ * @param  ?SHORT_TEXT $board_type The type of leader-board (null: do not change)
+ * @set holders earners
  * @param  integer $member_count The number of top members to use for this leader-board
  * @param  SHORT_TEXT $timeframe The frequency which to re-calculate the leader-board
+ * @set week month year
  * @param  BINARY $rolling Whether or not re-calculation should be relative to the creation time of the leader-board
  * @param  BINARY $include_staff Whether or not to include staff in the leader-board
  * @param  ?array $usergroups Only allow members in one or more of the defined usergroup IDs to be in the leader-board (null: do not edit existing usergroups) (empty array: no usergroup filtering)
  */
-function edit_leader_board(int $id, string $title, ?string $leader_board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups)
+function edit_leader_board(int $id, string $title, ?string $board_type, int $member_count, string $timeframe, int $rolling, int $include_staff, ?array $usergroups)
 {
     $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('leader_boards', 'lb_title', ['id' => $id]);
     if ($_title === null) {
@@ -115,8 +119,8 @@ function edit_leader_board(int $id, string $title, ?string $leader_board_type, i
         'lb_rolling' => $rolling,
         'lb_include_staff' => $include_staff,
     ];
-    if ($leader_board_type !== null) {
-        $map['lb_type'] = $leader_board_type;
+    if ($board_type !== null) {
+        $map['lb_type'] = $board_type;
     }
 
     // Update leader-board
@@ -127,7 +131,7 @@ function edit_leader_board(int $id, string $title, ?string $leader_board_type, i
         $GLOBALS['SITE_DB']->query_delete('leader_boards_groups', ['lb_leader_board_id' => $id]);
         if (!empty($usergroups)) {
             foreach ($usergroups as $group) {
-                if ($group == '' || $group === null) {
+                if ($group === null) {
                     continue; // skip empty or null groups
                 }
                 $GLOBALS['SITE_DB']->query_insert('leader_boards_groups', [
