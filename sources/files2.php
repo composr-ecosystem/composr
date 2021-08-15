@@ -2243,6 +2243,16 @@ function get_webpage_meta_details($url)
     );
 
     if (url_is_local($url)) {
+        $matches = array();
+        if (preg_match('#^uploads/.*\.(\w+)$#', $url, $matches) != 0) {
+            if (!in_array($matches[1], array('bin', 'dat', 'htm', 'html'))) {
+                require_code('mime_types');
+                $meta_details['t_mime_type'] = get_mime_type($matches[1], true);
+                $cache[$url] = $meta_details;
+                return $meta_details;
+            }
+        }
+
         $url = get_custom_base_url() . '/' . $url;
     }
 

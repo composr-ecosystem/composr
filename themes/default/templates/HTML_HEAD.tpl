@@ -73,9 +73,9 @@
 {+START,IF,{$EQ,{$METADATA,type},News article}}{$,Valid types only}<meta property="og:type" content="{$REPLACE*,News article,article,{$METADATA,type}}" />{+END}
 <meta property="og:url" content="{$CANONICAL_URL*}" /><meta property="og:site_name" content="{$SITE_NAME*}" />
 {+START,COMMENT,Commented out by default to save bandwidth}
-	Only do this if you have a real uid, not a page id... {+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_uid,1}}<meta property="fb:admins" content="{$CONFIG_OPTION*,facebook_uid}" />{+END}
+	Only do this if you have a real uid, not a page id... {+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_uid,1}}<meta property="fb:admins" content="{$CONFIG_OPTION*,facebook_uid,1}" />{+END}
 {+END}
-{+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_appid}}<meta property="fb:app_id" content="{$CONFIG_OPTION*,facebook_appid,1}" />{+END}
+{+START,IF_NON_EMPTY,{$CONFIG_OPTION*,facebook_appid,1}}<meta property="fb:app_id" content="{$CONFIG_OPTION*,facebook_appid,1}" />{+END}
 {+START,IF_NON_EMPTY,{$METADATA,meta_description}}<meta property="og:description" content="{$TRIM,{$METADATA*,meta_description}}" />{+END}
 {+START,IF_NON_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$METADATA*,image}" /><meta property="og:image:width" content="{$IMG_WIDTH*,{$METADATA,image}}" /><meta property="og:image:height" content="{$IMG_HEIGHT*,{$METADATA,image}}" />{$,NB: You may also want to define a image_src link tag for some social sites}{+END}{+START,IF_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$IMG*,logo/standalone_logo}" /><meta property="og:image:width" content="{$IMG_WIDTH*,logo/standalone_logo}" /><meta property="og:image:height" content="{$IMG_HEIGHT*,logo/standalone_logo}" />{+END}
 {+START,IF_NON_EMPTY,{$METADATA,video}}<meta property="og:video" content="{$METADATA*,video}" /><meta property="og:video:width" content="{$METADATA*,video:width}" /><meta property="og:video:height" content="{$METADATA*,video:height}" /><meta property="og:video:type" content="{$METADATA*,video:type}" />{+END}
