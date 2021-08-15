@@ -33,6 +33,7 @@ function init__images_cleanup_pipeline()
         define('IMG_OP__RECOMPRESS_LOSSLESS', 8);
         define('IMG_OP__RECOMPRESS_LOSSY', 16);
         define('IMG_OP__WATERMARK', 32);
+        define('IMG_OP__STRIP_GPS', 64);
 
         define('IMG_RECOMPRESS_NONE', 0);
         define('IMG_RECOMPRESS_LOSSLESS', 1);
@@ -52,8 +53,9 @@ function init__images_cleanup_pipeline()
  * @param  integer $recompress_mode How to recompress, an IMG_RECOMPRESS_* constant
  * @param  ?integer $maximum_dimension The size of the bounding box (null: none)
  * @param  ?array $watermarks Watermark corners (top-left, top-right, bottom-left, bottom-right) (null: none)
+ * @param  boolean $strip_gps Whether to strip GPS metadata
  */
-function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mode = 1, $maximum_dimension = null, $watermarks = null)
+function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mode = 1, $maximum_dimension = null, $watermarks = null, $strip_gps = true)
 {
     disable_php_memory_limit();
     if (!check_memory_limit_for($path, false)) {
@@ -76,6 +78,10 @@ function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mod
     $ext = get_file_extension($filename);
 
     $ops = IMG_OP__NONE;
+
+    if ($strip_gps) {
+        $ops = $ops | IMG_OP__STRIP_GPS;
+    }
 
     if (($ext == 'jpg') || ($ext == 'jpeg')) {
         if (get_option('repair_images') == '1') {
@@ -176,6 +182,17 @@ function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mod
         $made_change |= $result[1];
     }
 
+    $preserve_exif = true;
+    if (($ops & IMG_OP__STRIP_GPS) != 0) {
+        require_code('exif');
+        $exif = get_exif_data($path, $filename);
+        if ((!empty($exif['Latitude'])) || (!empty($exif['Longitude']))) {
+            $made_change = true; // Just re-saving will strip EXIF...
+            $preserve_exif = false; // ... and then we say to not put it back
+            // Ideally we would ONLY strip the GPS, but we don't have a full EXIF parser/compiler, and this would be a lot of potentially fragile/insecure code for not much gain
+        }
+    }
+
     // Save
     if ($made_change) {
         $tmp_path = cms_tempnam();
@@ -183,7 +200,7 @@ function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mod
         $test = cms_imagesave($image, $tmp_path, $ext, ($ops & IMG_OP__RECOMPRESS_LOSSY) != 0);
 
         if ($test) {
-            if (($ext == 'jpg') || ($ext == 'jpeg')) {
+            if (($preserve_exif) && (($ext == 'jpg') || ($ext == 'jpeg'))) {
                 copy_exif_data($path, $tmp_path, $reorientated);
             }
 

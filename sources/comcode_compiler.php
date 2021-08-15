@@ -437,7 +437,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
         '<h6>',
         '</h6>',
         '<img( alt="[^"<>]*")?( border="[^"<>]*")?( class="vertical_alignment")? src="[^"<>]*"( style="vertical-align: (top|middle|bottom|baseline)")?( title="[^"<>]*")?\s*/?' . '>',
-        '<a( class="[^"<>]*")? href="[^"<>]*"( rel="[^"<>]*")?( target="[^"<>]*")?( title="[^"<>]*")?' . '>',
+        '<a( class="[^"<>]*")? href="[^"<>]*"( rel="[^"<>]*")?( target="[^"<>]*")?( title="[^"<>]*")?( rel="[^"<>]*")?' . '>', // NB: Rel can be tacked on end by another part of Composr
         '</a>',
         '<span>',
         '<span style="color:\s*\#[A-Fa-f0-9]+;?">',
@@ -2292,6 +2292,12 @@ function filter_html_inclusion_list_at_tag_start($comcode, &$pos, &$continuation
                         if ($seq_ok) {
                             $continuation .= '<' . $tag . '>';
                         }
+                    }
+
+                    if ($seq_ok) {
+                        // These are allowed through as a special case
+                        $continuation = str_replace('{$BASE_URL}', get_base_url(), $continuation);
+                        $continuation = str_replace('{$BASE_URL*}', escape_html(get_base_url()), $continuation);
                     }
                 }
             }

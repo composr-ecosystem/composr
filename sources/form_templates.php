@@ -2064,9 +2064,9 @@ function form_input_theme_image($pretty_name, $description, $name, $ids, $select
  * @param  boolean $required Whether this is a required field
  * @param  boolean $null_default Whether this field is empty by default
  * @param  boolean $do_time Whether to input time for this field also
- * @param  ?mixed $default_time The default timestamp to use (either TIME or array of time components) (null: now) [ignored if $null_default is set]
- * @param  integer $total_years_to_show The number of years to allow selection from (all into the future, as this field type is not meant for inputting past dates)
- * @param  ?integer $year_start The year to start from (null: this year)
+ * @param  ?mixed $default_time The default timestamp to use (either TIME or array of time components) (null: none) [ignored if $null_default is set]
+ * @param  ?integer $total_years_to_show The number of years to allow selection from (pass a negative number for selection of past years instead of future years) (null: no limit)
+ * @param  ?integer $year_start The year to start counting $total_years_to_show from (null: if $total_years_to_show<0 then this year minus $total_years_to_show else if $total_years_to_show is not null then the current year else no restriction)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @return Tempcode The input field
  */
@@ -2087,9 +2087,9 @@ function form_input_date__scheduler($pretty_name, $description, $name, $required
  * @param  boolean $required Whether this is not a required field
  * @param  boolean $null_default Whether this field is empty by default
  * @param  boolean $do_time Whether to input time for this field also
- * @param  ?mixed $default_time The default timestamp to use (either TIME or array of time components) (null: now) [ignored if $null_default is set]
+ * @param  ?mixed $default_time The default timestamp to use (either TIME or array of time components) (null: none) [ignored if $null_default is set]
  * @param  ?integer $total_years_to_show The number of years to allow selection from (pass a negative number for selection of past years instead of future years) (null: no limit)
- * @param  ?integer $year_start The year to start from (null: this year)
+ * @param  ?integer $year_start The year to start counting $total_years_to_show from (null: if $total_years_to_show<0 then this year minus $total_years_to_show else if $total_years_to_show is not null then the current year else no restriction)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  boolean $do_date Whether to input date for this field (if false, will just do time)
  * @param  ?ID_TEXT $timezone Timezone to input in (null: current user's timezone)
@@ -2109,9 +2109,9 @@ function form_input_date($pretty_name, $description, $name, $required, $null_def
  * @param  boolean $required Whether this is a required field
  * @param  boolean $null_default Whether this field is empty by default
  * @param  boolean $do_time Whether to input time for this field also
- * @param  ?mixed $default_time The default timestamp to use (either TIME or array of time components) (null: now) [ignored if $null_default is set]
+ * @param  ?mixed $default_time The default timestamp to use (either TIME or array of time components) (null: none) [ignored if $null_default is set]
  * @param  ?integer $total_years_to_show The number of years to allow selection from (pass a negative number for selection of past years instead of future years) (null: no limit)
- * @param  ?integer $year_start The year to start from (null: this year)
+ * @param  ?integer $year_start The year to start counting $total_years_to_show from (null: if $total_years_to_show<0 then this year minus $total_years_to_show else if $total_years_to_show is not null then the current year else no restriction)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  boolean $do_date Whether to input date for this field (if false, will just do time)
  * @param  ?ID_TEXT $timezone Timezone to input in (null: current user's timezone)
@@ -2167,9 +2167,12 @@ function _form_input_date($name, $required, $null_default, $do_time, $default_ti
         $default_year = is_null($default_time) ? null : intval(date('Y', $default_time));
     }
 
-    if ($total_years_to_show < 0) {
-        // Assumes $year_start = null; if it is not, weird parameters were passed
-        $year_start = intval(date('Y')) + $total_years_to_show;
+    if (($total_years_to_show !== null) && ($year_start === null)) {
+        if ($total_years_to_show < 0) {
+            $year_start = intval(date('Y')) + $total_years_to_show;
+        } else {
+            $year_start = intval(date('Y'));
+        }
     }
     // Fix if out of range
     if ((!is_null($year_start)) && (!is_null($default_year)) && ($default_year < $year_start)) {

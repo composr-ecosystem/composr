@@ -74,7 +74,7 @@ class Hook_config_imagemagick_path
         foreach ($search_dirs as $dir) {
             foreach ($filenames as $file) {
                 $path = $dir . '/' . $file;
-                $_path = glob($path);
+                $_path = @glob($path);
                 if (!@empty($_path)) {
                     if (($file != 'magick') || (@strpos(file_get_contents($_path[0]), 'Magick') !== false)) {
                         return $_path[0];

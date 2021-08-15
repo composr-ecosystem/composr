@@ -503,9 +503,9 @@ END;
                 flock($myfile, LOCK_UN);
                 fclose($myfile);
             } else { // Via FTP
-                $path2 = tempnam((((str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) == '1') || ((@strval(ini_get('open_basedir')) != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0))) ? get_custom_file_base() . '/safe_mode_temp/' : '/tmp/'), 'cmsce');
+                $path2 = @tempnam((((str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) == '1') || ((@strval(ini_get('open_basedir')) != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0))) ? get_custom_file_base() . '/safe_mode_temp/' : '/tmp/'), 'cmsce');
                 if ($path2 === false) {
-                    $path2 = tempnam(get_custom_file_base() . '/safe_mode_temp/', 'cmsce');
+                    $path2 = @tempnam(get_custom_file_base() . '/safe_mode_temp/', 'cmsce');
                 }
 
                 $h = fopen($path2, 'wt');
@@ -695,9 +695,9 @@ function ce_cms_tempnam($prefix = '')
     $server_path = '/tmp/';
     $tmp_path = $problem_saving ? $local_path : $server_path;
     if ((function_exists('tempnam')) && (strpos(@ini_get('disable_functions'), 'tempnam') === false)) {
-        $tempnam = tempnam($tmp_path, 'tmpfile__' . $prefix);
+        $tempnam = @tempnam($tmp_path, 'tmpfile__' . $prefix);
         if (($tempnam === false) && (!$problem_saving)) {
-            $tempnam = tempnam($local_path, $prefix);
+            $tempnam = @tempnam($local_path, $prefix);
         }
     } else {
         $tempnam = $prefix . strval(mt_rand(0, mt_getrandmax()));

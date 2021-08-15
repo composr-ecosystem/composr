@@ -2120,7 +2120,9 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     if (((empty($attributes['type'])) || ($attributes['type'] == 'image_websafe')) && (array_key_exists('file' . $_id, $_FILES)) && (is_saveable_image($_FILES['file' . $_id]['name']))) {
                         $enforce_type = CMS_UPLOAD_IMAGE; // Images cleanup pipeline
                     }
+                    set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, null, null, true); // Code to strip GPS
                     $urls = get_url('', 'file' . $_id, 'uploads/attachments', 2, $enforce_type, ((!array_key_exists('thumb', $attributes)) || ($attributes['thumb'] != '0')) && ($attributes['thumb_url'] == ''), '', '', true, true, true, true, $source_member);
+                    reset_images_cleanup_pipeline_settings();
                     if ($urls[0] == '') {
                         return new Tempcode();
                     }//warn_exit(do_lang_tempcode('ERROR_UPLOADING'));  Can't do this, because this might not be post-calculated if something went wrong once
