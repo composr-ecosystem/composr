@@ -339,15 +339,8 @@ function phase_2()
     ';
 
     if ((!$is_bleeding_edge) && (!$is_old_tree)) {
-        require_code('make_release');
-        $builds_path = get_builds_path();
-        $webpi = $builds_path . '/builds/' . $version_dotted . '/composr-' . $version_dotted . '-webpi.zip';
-        $ms_filesize = number_format(filesize($webpi)) . ' bytes';
-        $ms_sha1 = sha1_file($webpi);
-
         echo '
             <li><strong>Installatron</strong>: Go into <a target="_blank" href="http://installatron.com/editor">Installatron</a>, login with the privileged management account, and setup a new release with the new version number (Main tab), update the URL (Version Info tab, use "Installatron installer (direct download)") and scroll down and click "Save all changes", and Publish (Publisher tab).</li>
-            <li><strong>Microsoft Web Platform</strong>: <a target="_blank" href="https://webgallery.microsoft.com/portal">Submit the new MS Web App Gallery file to Microsoft</a> using the privileged management account (chris@compo.sr). Change the \'Version\', the \'Release Date\', the \'Package Location URL\' (use "Microsoft installer (direct download)"), and set the shasum to <kbd>' . escape_html($ms_sha1) . '</kbd>. After submitting automatic checks will run and you have to click Publish again.</li>
             <li><strong>Other integrations</strong>: E-mail <a href="mailto:?bcc=punit@softaculous.com,brijesh@softaculous.com&amp;subject=New Composr release&amp;body=Hi, this is an automated notification that a new release of Composr has been released - regards, the Composr team.">integration partners</a></li>
             <li>Update <a target="_blank" href="https://en.wikipedia.org/w/index.php?title=Composr_CMS&action=edit">listing on Wikipedia</a> ("latest release version" and "latest release date")</li>
         ';

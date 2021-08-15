@@ -83,10 +83,6 @@ if (!in_array(git_repos(), ['master', 'main'])) {
     $extra_files_to_delete[] = 'install_ok';
     $extra_files_to_delete[] = 'install.php';
     $extra_files_to_delete[] = 'install.sql';
-    $extra_files_to_delete[] = 'install1.sql';
-    $extra_files_to_delete[] = 'install2.sql';
-    $extra_files_to_delete[] = 'install3.sql';
-    $extra_files_to_delete[] = 'install4.sql';
     if (git_repos() != 'composr_homesite') {
         $extra_files_to_delete[] = 'data_custom/images/addon_screenshots';
     }

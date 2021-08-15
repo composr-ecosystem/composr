@@ -94,8 +94,6 @@ class basic_code_formatting_test_set extends cms_test_case
             }
             $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'data_custom/sitemaps/news_sitemap.xml',
-                'manifest.xml',
-                'parameters.xml',
                 'site/pages/comcode/EN/userguide_comcode.txt',
                 '_tests/tests/unit_tests/tempcode.php',
                 '_tests/tests/unit_tests/xss.php',

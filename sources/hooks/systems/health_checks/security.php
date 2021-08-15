@@ -517,7 +517,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = $this->getBaseDirectoriesFiles(['tar', 'gz', 'zip', 'sql']);
 
         foreach ($files as $file) {
-            if ((preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) && (!in_array($file, ['install4.sql', 'user.sql', 'postinstall.sql', 'install1.sql', 'install.sql', 'install3.sql', 'install2.sql']))) {
+            if ((preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) && (!in_array($file, ['install.sql']))) {
                 $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed backup: [tt]' . $file . '[/tt]');
             }

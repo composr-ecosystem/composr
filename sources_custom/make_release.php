@@ -96,7 +96,6 @@ function make_installers($skip_file_grab = false)
     $bundled = $builds_path . '/builds/' . $version_dotted . '/composr-' . $version_dotted . '.tar';
     $quick_zip = $builds_path . '/builds/' . $version_dotted . '/composr_quick_installer-' . $version_dotted . '.zip';
     $manual_zip = $builds_path . '/builds/' . $version_dotted . '/composr_manualextraction_installer-' . $version_dotted . '.zip';
-    $mszip = $builds_path . '/builds/' . $version_dotted . '/composr-' . $version_dotted . '-webpi.zip'; // Aka msappgallery, related to webmatrix
     $aps_zip = $builds_path . '/builds/' . $version_dotted . '/composr-' . $version_dotted . '.app.zip'; // APS package
     $omni_upgrader = $builds_path . '/builds/' . $version_dotted . '/composr_upgrader-' . $version_dotted . '.cms';
 
@@ -104,7 +103,6 @@ function make_installers($skip_file_grab = false)
     $make_quick = (get_param_integer('skip_quick', 0) == 0);
     $make_manual = (get_param_integer('skip_manual', 0) == 0);
     $make_bundled = (get_param_integer('skip_bundled', 0) == 0);
-    $make_mszip = (get_param_integer('skip_mszip', 0) == 0);
     $make_aps = false; // We don't use it right now and need to speed this all up (get_param_integer('skip_aps', 0) == 0);
     $make_omni_upgrader = (post_param_integer('make_omni_upgrader', 0) == 1);
 
@@ -307,61 +305,6 @@ function make_installers($skip_file_grab = false)
         chdir(get_file_base());
     }
 
-    // Build Microsoft version
-    if ($make_mszip) {
-        @unlink($mszip);
-        if (file_exists($builds_path . '/builds/build/composr/')) {
-            deldir_contents($builds_path . '/builds/build/composr/');
-        }
-
-        // Move files out temporarily
-        rename($builds_path . '/builds/build/' . $version_branch . '/_config.php', $builds_path . '/builds/build/_config.php');
-        rename($builds_path . '/builds/build/' . $version_branch . '/install.php', $builds_path . '/builds/build/install.php');
-
-        // Put temporary files in main folder
-        copy(get_file_base() . '/_config.php.template', $builds_path . '/builds/build/' . $version_branch . '/_config.php.template');
-        fix_permissions($builds_path . '/builds/build/' . $version_branch . '/_config.php.template');
-
-        // Copy some stuff we need
-        for ($i = 1; $i <= 4; $i++) {
-            copy(get_file_base() . '/install' . strval($i) . '.sql', $builds_path . '/builds/build/install' . strval($i) . '.sql');
-            fix_permissions($builds_path . '/builds/build/install' . strval($i) . '.sql');
-        }
-        copy(get_file_base() . '/user.sql', $builds_path . '/builds/build/user.sql');
-        fix_permissions($builds_path . '/builds/build/user.sql');
-        copy(get_file_base() . '/postinstall.sql', $builds_path . '/builds/build/postinstall.sql');
-        fix_permissions($builds_path . '/builds/build/postinstall.sql');
-        copy(get_file_base() . '/manifest.xml', $builds_path . '/builds/build/manifest.xml');
-        fix_permissions($builds_path . '/builds/build/manifest.xml');
-        copy(get_file_base() . '/parameters.xml', $builds_path . '/builds/build/parameters.xml');
-        fix_permissions($builds_path . '/builds/build/parameters.xml');
-
-        // Temporary renaming
-        rename($builds_path . '/builds/build/' . $version_branch, $builds_path . '/builds/build/composr');
-
-        // Do the main work
-        chdir($builds_path . '/builds/build');
-        $cmd = 'zip -r -9 -v ' . cms_escapeshellarg($mszip) . ' composr manifest.xml parameters.xml install1.sql install2.sql install3.sql install4.sql user.sql postinstall.sql';
-        $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
-        if (!is_string($cmd_result)) {
-            fatal_exit('Failed to run: ' . $cmd);
-        }
-        $output2 = $cmd . ':' . "\n" . $cmd_result;
-        $out .= do_build_archive_output($mszip, $output2);
-
-        // Undo temporary renaming
-        rename($builds_path . '/builds/build/composr', $builds_path . '/builds/build/' . $version_branch);
-
-        // Move back files moved out temporarily
-        rename($builds_path . '/builds/build/_config.php', $builds_path . '/builds/build/' . $version_branch . '/_config.php');
-        rename($builds_path . '/builds/build/install.php', $builds_path . '/builds/build/' . $version_branch . '/install.php');
-
-        // Remove temporary files from main folder
-        unlink($builds_path . '/builds/build/' . $version_branch . '/_config.php.template');
-
-        chdir(get_file_base());
-    }
-
     // Build APS package
     if ($make_aps) {
         @unlink($aps_zip);
@@ -481,9 +424,6 @@ function make_installers($skip_file_grab = false)
     }
     if ($make_manual) {
         $details .= '<li>' . $manual_zip . ' file size: ' . clean_file_size(filesize($manual_zip)) . '</li>';
-    }
-    if ($make_mszip) {
-        $details .= '<li>' . $mszip . ' file size: ' . clean_file_size(filesize($mszip)) . '</li>';
     }
     if ($make_bundled) {
         $details .= '<li>' . $bundled . '.gz file size: ' . clean_file_size(filesize($bundled . '.gz')) . '</li>';

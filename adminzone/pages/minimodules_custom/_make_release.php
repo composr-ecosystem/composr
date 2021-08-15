@@ -139,15 +139,6 @@ $all_downloads_to_add = [
 
     [
         'name' => "Composr {$version_pretty}",
-        'description' => "This is a Microsoft Web Platform Installer package of Composr. We will update this routinely when we release new versions, and update Microsoft with the the details.\n\nIt can be manually installed into IIS running the Web Deploy Tool, but it should soon be featured in the Web App Gallery directly. Therefore accessing this archive directly is probably of no direct use to you. If you do want to install on IIS manually, the regular Composr installers can do it fine.",
-        'filename' => 'composr-' . $version_dotted . '-webpi.zip',
-        'additional_details' => '',
-        'category_id' => $microsoft_category_id,
-        'internal_name' => 'Microsoft installer',
-    ],
-
-    [
-        'name' => "Composr {$version_pretty}",
         'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\n\nIt can be manually installed into Plesk using the Application Vault interface available to administrators.",
         'filename' => 'composr-' . $version_dotted . '.app.zip',
         'additional_details' => '',

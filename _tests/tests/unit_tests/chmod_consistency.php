@@ -37,41 +37,6 @@ class chmod_consistency_test_set extends cms_test_case
             ],
 
             [
-                'parameters.xml',
-                false, // Windows-slashes
-                false, // Wildcard-support
-                false, // Existing run-time files also
-
-                '" description="Sets the ACL on the right file" defaultValue="{Application Path}/',
-                '" tags="Hidden">',
-            ],
-
-            [
-                'parameters.xml',
-                false, // Windows-slashes
-                false, // Wildcard-support
-                false, // Existing run-time files also
-
-                '<parameterEntry type="ProviderPath" scope="setAcl" match="composr/',
-                '" />',
-            ],
-
-            [
-                'manifest.xml',
-                false, // Windows-slashes
-                false, // Wildcard-support
-                false, // Existing run-time files also
-
-                // Directory
-                '<setAcl path="composr/',
-                '" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />',
-
-                // Files
-                '<setAcl path="composr/',
-                '" setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />',
-            ],
-
-            [
                 'aps/APP-META.xml',
                 false, // Windows-slashes
                 false, // Wildcard-support
@@ -104,20 +69,6 @@ class chmod_consistency_test_set extends cms_test_case
                 }
 
                 $c_stripped = $c;
-
-                // Special checks
-                switch ($place) {
-                    case 'parameters.xml':
-                        $matches = [];
-                        $found = [];
-                        $num_matches = preg_match_all('#SetAclParameter(\d+)#', cms_file_get_contents_safe($place_path, FILE_READ_LOCK | FILE_READ_BOM), $matches);
-                        for ($i = 0; $i < $num_matches; $i++) {
-                            $x = $matches[1][$i];
-                            $this->assertTrue(!in_array($x, $found), 'Multiple defined parameters.xml parameters: ' . $matches[0][$i]);
-                            $found[] = $x;
-                        }
-                        break;
-                }
 
                 $slash = $windows_slashes ? '\\' : '/';
                 $chmod_array = get_chmod_array($runtime_too, false);
