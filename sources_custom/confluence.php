@@ -160,6 +160,9 @@ function confluence_get_mappings()
 
     global $CONFLUENCE_SPACE;
     $pages = confluence_query('content?spaceKey=' . $CONFLUENCE_SPACE . '&limit=1000000&expand=ancestors');
+    if (empty($pages['results'])) {
+        return $mappings; // Observed response if Confluence has some glitch
+    }
     foreach ($pages['results'] as $page) {
         $id = $page['id'];
         $title = $page['title'];
