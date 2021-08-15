@@ -17,7 +17,7 @@
 
 	<div class="message_main">
 		<div class="box box___messaging_message_screen"><div class="box_inner">
-			<h2>{MESSAGE_TITLE} <span class="associated_details">({!BY_SIMPLE,{BY*}})</span></h2>
+			<h2>{MESSAGE_TITLE*} <span class="associated_details">({!BY_SIMPLE,{BY*}})</span></h2>
 
 			{MESSAGE}
 		</div></div>
