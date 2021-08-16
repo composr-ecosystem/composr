@@ -450,7 +450,6 @@ function phase_2()
                 <li>Add <a target="_blank" href="http://cmsreport.com/submit-story">news on CMS Report</a></li>
                 <li>Add <a target="_blank" href="http://cmscritic.com/">news on CMS Critic</a> (may mean emailing the story in)</li>
                 <li>Update <a target="_blank" href="http://www.cmsmatrix.org/">listing on CMS Matrix</a></li>
-                <li>Add news on the <a target="_blank" href="http://members.opensourcecms.com/login.php">Open Source CMS site</a></li>
             </ul></li>
 
             <li>Newsletter (<em>Optional</em>): Send <a target="_blank" href="https://compo.sr/adminzone/admin-newsletter.htm">newsletter</a></li>
