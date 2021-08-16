@@ -24,13 +24,14 @@
 class Hook_attachments_comcode_page
 {
     /**
-     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for the current member.
+     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for a member.
      *
      * @param  ID_TEXT $id The ID
      * @param  object $connection The database connection to check on
+     * @param  MEMBER $member_id The member to check for
      * @return boolean Whether there is permission
      */
-    public function run($id, $connection)
+    public function run($id, $connection, $member_id)
     {
         if (is_forum_db($connection)) {
             return false;
@@ -40,6 +41,6 @@ class Hook_attachments_comcode_page
         if (count($parts) != 2) {
             return false;
         }
-        return (has_actual_page_access(get_member(), $parts[1], $parts[0]));
+        return (has_actual_page_access($member_id, $parts[1], $parts[0]));
     }
 }

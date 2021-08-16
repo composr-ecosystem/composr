@@ -24,13 +24,14 @@
 class Hook_attachments_wiki_post
 {
     /**
-     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for the current member.
+     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for a member.
      *
      * @param  ID_TEXT $id The ID
      * @param  object $connection The database connection to check on
+     * @param  MEMBER $member_id The member to check for
      * @return boolean Whether there is permission
      */
-    public function run($id, $connection)
+    public function run($id, $connection, $member_id)
     {
         if (is_forum_db($connection)) {
             return false;
@@ -40,6 +41,6 @@ class Hook_attachments_wiki_post
         if (is_null($cat_id)) {
             return false;
         }
-        return (has_category_access(get_member(), 'wiki_page', strval($cat_id)));
+        return (has_category_access($member_id, 'wiki_page', strval($cat_id)));
     }
 }
