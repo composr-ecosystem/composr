@@ -18,17 +18,6 @@ Please note that because this is a demo system, your demo will only last a few d
 
 [title="2"]Instant (shared) demos[/title]
 
-[title="3"]OpenSourceCMS[/title]
-
-If you'd prefer to avoid entering the details required to set up your own demo you can also use the [url="OpenSourceCMS demo"]http://www.opensourcecms.com/demo/1/194/Composr[/url].
-Log in with the username [tt]admin[/tt] and the password [tt]demo123[/tt] &dagger;.
-
-If you ever receive an error about a missing page or file, it is probably because the demo is in the process of automatically being reset. Wait a moment and try again.
-
-[font size="0.85"]&dagger; This password is subject to change outside our control -- if you can't log in, check the [url="Main OpenSourceCMS site"]http://php.opensourcecms.com/scripts/details.php?scriptid=210&name=Composr[/url] for the password.[/font]
-
-[title="3"]Official shared demo[/title]
-
 We have a [url="http://shareddemo.composr.info/"]second shared demo[/url], populated with example content.
 
 Log in with the username [tt]admin[/tt] and the password [tt]demo123[/tt].

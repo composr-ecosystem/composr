@@ -102,8 +102,6 @@
 				</h3>
 
 				<div class="niceBoxInner">
-					<p class="niceBoxBreak"><strong><a onclick="var t=this; window.fauxmodal_confirm('Do not copy and paste reviews and do not use false names.',function(result) { if (result) { click_link(t); } }); return false;" href="http://php.opensourcecms.com/scripts/details.php?scriptid=210">Rate/review us on OpenSourceCMS</a></strong></p>
-
 					<p class="niceBoxBreak"><strong><a href="http://www.cmsmatrix.org/matrix/cms-matrix/composr-cms">Rate us on CMS Matrix</a></strong></p>
 
 					<p class="niceBoxBreak"><strong><a onclick="var t=this; window.fauxmodal_confirm('Do not copy and paste reviews and do not use false names.',function(result) { if (result) { click_link(t); } }); return false;" href="https://alternativeto.net/software/composr/>Rate/review us on alternativeTo</a></strong></p>
