@@ -27,6 +27,12 @@ function handle_active_logout()
     non_overridden__handle_active_logout();
 
     if ($compat == 'facebook') {
+        require_code('facebook_connect');
+        global $FACEBOOK_CONNECT;
+        if ($FACEBOOK_CONNECT !== null) {
+            $FACEBOOK_CONNECT->destroySession();
+        }
+
         $GLOBALS['FACEBOOK_LOGOUT'] = true;
         $GLOBALS['BOOTSTRAPPING'] = false; // We know we've set up enough to be able to do a clean inform_exit screen
 
