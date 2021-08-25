@@ -92,8 +92,13 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # Rewrite .gif animations for browsers that support APNG (LEGACY; when possible we want to get rid of the gifs, but IE11 does not yet support)
 RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
+RewriteCond %{REQUEST_FILENAME}.png -f
 RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
+RewriteCond %{REQUEST_FILENAME}.png -f
 RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
+RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
+RewriteCond %{REQUEST_FILENAME}.png -f
 RewriteRule ^(themes/default/images/loading\.gif)$ $themes/default/images/loading.gif.png [L,QSA]
 
 # crossdomain.xml is actually Composr-driven
