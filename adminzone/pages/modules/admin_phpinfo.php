@@ -173,6 +173,28 @@ class Module_admin_phpinfo
         if (strpos(get_db_type(), 'mysql') !== false) {
             $mysql_version = $GLOBALS['SITE_DB']->query_value_if_there('SELECT version()');
             $out .= '<p><strong>MySQL version</strong>: ' . $mysql_version . '</p>';
+
+            $queries = $GLOBALS['SITE_DB']->query('SHOW FULL PROCESSLIST');
+            if (empty($queries)) {
+                $out .= '<p><strong>MySQL executing queries</strong>: <em>none</em></p>';
+            } else {
+                $out .= '<p><strong>MySQL executing queries</strong>...</p><table class="wide-table results-table">';
+                foreach ($queries as $i => $query) {
+                    if ($i == 0) {
+                        $out .= '<thead><tr>';
+                        foreach (array_keys($query) as $key) {
+                            $out .= '<th>' . escape_html($key) . '</th>';
+                        }
+                        $out .= '</tr></thead><tbody>';
+                    }
+                    $out .= '<tr>';
+                    foreach ($query as $val) {
+                        $out .= '<td>' . escape_html($val) . '</td>';
+                    }
+                    $out .= '</tr>';
+                }
+                $out .= '</tbody></table>';
+            }
         }
 
         if (function_exists('pg_version') && get_db_type() == 'postgresql') {
@@ -206,7 +228,7 @@ class Module_admin_phpinfo
                     'cat /proc/diskstats',
                     'cat /proc/meminfo',
                     'uptime',
-                    'ps -Af',
+                    'ps -eo uid,pid,ppid,cmd,%mem,%cpu,time --sort=-%mem',
                     'top -n1',
                     'iostat',
                 ];
