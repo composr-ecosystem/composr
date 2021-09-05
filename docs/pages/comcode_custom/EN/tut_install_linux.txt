@@ -104,12 +104,12 @@ Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need
 You may need to setup the [url="EPEL repository"]https://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/[/url] first.
 
 [code="Bash"]
-yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apc php-pdo curl \
+yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apcu php-pdo curl \
 enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspell \
 php-xml php-intl php-json openssl mysql-server mysql \
 sendmail nano wget lynx hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
-screen zip unzip bzip2 gzip tar whois dnsutils bind-utils \
-lsof mlocate certbot python-certbot-apache dnf-automatic poppler-utils
+screen zip unzip bzip2 gzip tar whois bind-utils \
+lsof mlocate certbot python3-certbot-apache dnf-automatic poppler-utils
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:
