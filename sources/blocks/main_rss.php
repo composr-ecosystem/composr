@@ -90,9 +90,12 @@ class Block_main_rss
                 continue;
             }
 
-            $rss = new CMS_RSS($url);
+            $rss = new CMS_RSS($url, false, 6.0 / floatval(count($urls)));
             if ($rss->error !== null) {
                 $error = $rss->error;
+                if ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
+                    attach_message($url . ': ' . $error, 'warn', false, true);
+                }
                 continue;
             }
             $rss_feeds[] = $rss;

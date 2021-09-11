@@ -58,8 +58,9 @@ class CMS_RSS
      *
      * @param  URLPATH $url The URL to the RSS we will be reading
      * @param  boolean $is_filesystem_path Whether the 'url' is actually a filesystem path
+     * @param  float $timeout HTTP timeout
      */
-    public function __construct(string $url, bool $is_filesystem_path = false)
+    public function __construct(string $url, bool $is_filesystem_path = false, float $timeout = 6.0)
     {
         require_lang('rss');
         require_code('xml');
@@ -94,7 +95,7 @@ class CMS_RSS
             $charset = '';
             $http_message = '';
         } else {
-            $http_response = cms_http_request($url, ['trigger_error' => false]);
+            $http_response = cms_http_request($url, ['trigger_error' => false, 'timeout' => $timeout]);
             $data = $http_response->data;
             $charset = $http_response->charset;
             $http_message = $http_response->message;
