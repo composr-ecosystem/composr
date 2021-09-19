@@ -13,14 +13,16 @@
 		</div>
 	{+END}
 
-	{+START,IF_NON_EMPTY,{SKILLS}}
-		<div class="box box---author-screen-skills">
-			<div class="box-inner">
-				<h2>{!SKILLS}</h2>
+	{+START,IF,{$NOT,{$VALUE_OPTION,hide_author_skills}}}
+		{+START,IF_NON_EMPTY,{SKILLS}}
+			<div class="box box---author-screen-skills">
+				<div class="box-inner">
+					<h2>{!SKILLS}</h2>
 
-				{SKILLS}
+					{SKILLS}
+				</div>
 			</div>
-		</div>
+		{+END}
 	{+END}
 
 	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,author,{AUTHOR}}}

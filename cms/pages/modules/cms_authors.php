@@ -250,7 +250,9 @@ class Module_cms_authors
             $fields->attach(form_input_line(do_lang_tempcode('AUTHOR'), do_lang_tempcode('DESCRIPTION_NAME'), 'author', $author, true));
         }
         $fields->attach(form_input_line(do_lang_tempcode('AUTHOR_URL'), do_lang_tempcode('DESCRIPTION_AUTHOR_URL'), 'url', $url, false));
-        $fields->attach(form_input_line_comcode(do_lang_tempcode('SKILLS'), do_lang_tempcode('DESCRIPTION_SKILLS'), 'skills', $skills, false));
+        if (get_value('hide_author_skills') !== '1') {
+            $fields->attach(form_input_line_comcode(do_lang_tempcode('SKILLS'), do_lang_tempcode('DESCRIPTION_SKILLS'), 'skills', $skills, false));
+        }
 
         $specialisation2 = new Tempcode();
 
@@ -339,7 +341,7 @@ class Module_cms_authors
 
             $metadata = actual_metadata_get_fields('author', null);
 
-            add_author($author, $url, $member_id, post_param_string('post'), post_param_string('skills'), post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
+            add_author($author, $url, $member_id, post_param_string('post'), post_param_string('skills', ''), post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
 
             set_url_moniker('author', $author);
 
