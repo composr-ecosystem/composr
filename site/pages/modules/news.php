@@ -719,6 +719,22 @@ class Module_news
             $next_article_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id + 1], get_module_zone('news'));
         }
 
+        $author_entry_url = '';
+        $author_entry_member_id = null;
+        $author_entry_description = new Tempcode();
+        $author_entry_skills = new Tempcode();
+        if (addon_installed('authors')) {
+            $author_rows = $GLOBALS['SITE_DB']->query_select('authors', ['*'], ['author' => $author], '', 1);
+            if (array_key_exists(0, $author_rows)) {
+                $author_row = $author_rows[0];
+
+                $author_entry_url = $author_row['url'];
+                $author_entry_member_id = strval($author_row['member_id']);
+                $author_entry_description = get_translated_tempcode('authors', $author_row, 'description');
+                $author_entry_skills = get_translated_tempcode('authors', $author_row, 'skills');
+            }
+        }
+
         // Render
         return do_template('NEWS_ENTRY_SCREEN', [
             '_GUID' => '7686b23934e22c493d4ac10ba6c475c4',
@@ -743,6 +759,10 @@ class Module_news
             'DATE' => $date,
             'AUTHOR' => $author,
             'AUTHOR_URL' => $author_url,
+            'AUTHOR_ENTRY_URL' => $author_entry_url,
+            'AUTHOR_ENTRY_MEMBER_ID' => $author_entry_member_id,
+            'AUTHOR_ENTRY_DESCRIPTION' => $author_entry_description,
+            'AUTHOR_ENTRY_SKILLS' => $author_entry_skills,
             'NEWS_FULL' => $news_full,
             'NEWS_FULL_PLAIN' => $news_full_plain,
             'EDIT_URL' => $edit_url,
