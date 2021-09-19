@@ -399,7 +399,7 @@ function is_image(string $name, int $criteria, bool $as_admin = false, bool $mim
         return false; // Temporary file that some OS's make
     }
 
-    $ext = get_file_extension($name);
+    $ext = get_file_extension(preg_replace('#\?\d+$#', '', $name));
 
     // Raster/vector check
     $is_vector = ($ext == 'svg');
