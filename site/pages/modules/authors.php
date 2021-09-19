@@ -272,7 +272,11 @@ class Module_authors
             if ($count > 50) {
                 $downloads_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
-                $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['author' => $author, 'validated' => 1], 'ORDER BY add_date');
+                $downloads_where = ['author' => $author];
+                if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                    $downloads_where['validated'] = 1;
+                }
+                $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], $downloads_where, 'ORDER BY add_date');
                 foreach ($rows as $myrow) {
                     if (addon_installed('content_privacy')) {
                         require_code('content_privacy');
@@ -299,7 +303,11 @@ class Module_authors
             if ($count > 50) {
                 $news_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
-                $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['author' => $author, 'validated' => 1], 'ORDER BY date_and_time');
+                $news_where = ['author' => $author];
+                if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                    $news_where['validated'] = 1;
+                }
+                $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], $news_where, 'ORDER BY date_and_time');
                 foreach ($rows as $i => $row) {
                     if (addon_installed('content_privacy')) {
                         require_code('content_privacy');
