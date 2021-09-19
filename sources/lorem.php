@@ -902,8 +902,16 @@ function render_screen_preview($template, $hook, $function)
         $text = false;
     }
 
+    if (!method_exists($ob, $function)) {
+        fatal_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+
     // Render preview
     $previews = call_user_func(array($ob, $function));
+
+    if (!array_key_exists(0, $previews)) {
+        warn_exit(do_lang_tempcode('NO_ENTRIES'));
+    }
 
     if ($text) {
         $previews[0] = with_whitespace($previews[0]);
