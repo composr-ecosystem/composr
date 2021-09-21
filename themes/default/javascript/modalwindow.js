@@ -250,8 +250,8 @@ function open_link_as_overlay(ob,width,height,target)
 
 	function _get_max_lightbox_img_dims(modal,has_full_button)
 	{
-		var max_width=modal.top_window.get_window_width()-20;
-		var max_height=modal.top_window.get_window_height()-60;
+		var max_width=modal.top_window.get_window_width()-modal.WINDOW_SIDE_GAP*2-modal.BOX_EAST_PERIPHERARY-modal.BOX_WEST_PERIPHERARY-modal.BOX_PADDING*2;
+		var max_height=modal.top_window.get_window_height()-modal.WINDOW_TOP_GAP-modal.BOX_NORTH_PERIPHERARY-modal.BOX_SOUTH_PERIPHERARY-modal.BOX_PADDING*2;
 		if (has_full_button) max_height-=120;
 		return [max_width,max_height];
 	}
@@ -468,6 +468,7 @@ function ModalWindow()
 		BOX_WEST_PERIPHERARY: 4,
 		BOX_NORTH_PERIPHERARY: 4,
 		BOX_SOUTH_PERIPHERARY: 4,
+		BOX_PADDING: 20,
 		VCENTRE_FRACTION_SHIFT: 0.5, // Fraction of remaining top gap also removed (as overlays look better slightly higher than vertical centre)
 		LOADING_SCREEN_HEIGHT: 100,
 
@@ -656,6 +657,7 @@ function ModalWindow()
 			// Save into HTML
 			this.box_wrapper.childNodes[0].style.top=box_pos_top;
 			this.box_wrapper.childNodes[0].style.left=box_pos_left;
+			this.box_wrapper.childNodes[0].style.padding=this.BOX_PADDING+'px';
 
 			var do_scroll=false;
 
