@@ -52,6 +52,8 @@ function cms_getimagesize_url(string $url, bool $only_if_local = false)
         $url = get_custom_base_url() . '/' . $url;
     }
 
+    $url = preg_replace('#\?\d+$#', '', $url);
+
     $base_url = get_base_url();
     $custom_base_url = get_custom_base_url();
 
