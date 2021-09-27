@@ -2541,6 +2541,11 @@ function ecv_HEADER_TEXT(string $lang, array $escaped, array $param) : string
  */
 function ecv_CANONICAL_URL(string $lang, array $escaped, array $param) : string
 {
+    if (!empty($param[0])) {
+        // Used to set, which is done in pre-processing
+        return '';
+    }
+
     $value = get_canonical_url();
 
     if (!empty($escaped)) {

@@ -298,6 +298,7 @@ function build_closure_tempcode(int $type, string $name, array $parameters, arra
             case 'CATALOGUE_ENTRY_FOR':
             case 'METADATA':
             case 'METADATA_IMAGE_EXTRACT':
+            case 'CANONICAL_URL':
                 break;
 
             default:
@@ -1662,6 +1663,14 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 ecv_METADATA_IMAGE_EXTRACT(user_lang(), [], $param);
             }
             return;
+
+        case 'CANONICAL_URL':
+            $param = $seq_part[3];
+            if (!empty($param[0])) {
+                global $CANONICAL_URL;
+                $CANONICAL_URL = $param[0]->evaluate();
+            }
+            return;
     }
 }
 
@@ -1713,6 +1722,7 @@ class Tempcode
                             case 'LOAD_PAGE':
                             case 'LOAD_PANEL':
                             case 'METADATA':
+                            case 'CANONICAL_URL':
                                 $pp_bits[] = [[], TC_SYMBOL, $seq_part[3], $seq_part[1]];
                                 break;
                         }

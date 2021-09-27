@@ -464,6 +464,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                                 case '"CATALOGUE_ENTRY_FOR"':
                                 case '"METADATA"':
                                 case '"METADATA_IMAGE_EXTRACT"':
+                                case '"CANONICAL_URL"':
                                     foreach ($stack as $level_test) { // Make sure if it's a LOOP then we evaluate the parameters early, as these have extra bindings we don't know about
                                         if (($level_test[3] === PARSE_DIRECTIVE) && (isset($level_test[5][1], $level_test[5][1][0])) && ($level_test[5][1][0] === '"LOOP"')) { // For a loop, we need to do full evaluation of symbol parameters as it may be bound to a loop variable
                                             $eval_openers = tc_eval_opener_params($_opener_params);
