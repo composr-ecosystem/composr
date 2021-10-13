@@ -1519,7 +1519,7 @@ td>.box, .right .box:first-child:last-child, .left .box:first-child:last-child {
 	/* .box_inner set us in the wrong position, so fiddle around a bit to move us back to be flush */
 	margin: -5px 0 5px -5px;
 	padding: 0.4em 0.8em 0.4em 0.3em;
-	width: 100%;
+	width: calc(100% - 0.8em - 0.3em + 10px);
 }
 .box_inner>h2>.right .button_screen {
 	vertical-align: top;
