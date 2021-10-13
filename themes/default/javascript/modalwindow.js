@@ -657,7 +657,9 @@ function ModalWindow()
 			// Save into HTML
 			this.box_wrapper.childNodes[0].style.top=box_pos_top;
 			this.box_wrapper.childNodes[0].style.left=box_pos_left;
-			this.box_wrapper.childNodes[0].style.padding=this.BOX_PADDING+'px';
+			if (this.title=='') {
+				this.box_wrapper.childNodes[0].style.padding=this.BOX_PADDING+'px';
+			}
 
 			var do_scroll=false;
 
