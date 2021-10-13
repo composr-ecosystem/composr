@@ -429,6 +429,10 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
             $mime_type = get_mime_type(get_file_extension($filename), has_privilege($as, 'comcode_dangerous'));
 
             if ((strpos($path, '://') === false) && (substr($path, 0, 5) != 'gs://')) {
+                if (!is_file($path)) {
+                    continue;
+                }
+
                 require_code('files2');
                 $real_attachment = array(
                     'mime' => $mime_type,
