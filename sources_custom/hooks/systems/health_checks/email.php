@@ -62,13 +62,27 @@ class Hx_health_check_email extends Hook_health_check_email
             ->setUsername($username)
             ->setPassword($password);
         if (($port == 419) || ($port == 465) || ($port == 587)) {
+            $attempts = 3;
             $transport->setEncryption('tls');
+        } else {
+            $attempts = 1;
         }
 
-        try {
-            $transport->start();
-        } catch (Swift_SwiftException $e) {
-            $error = $e->getMessage();
+        $mailer = new Swift_Mailer($transport);
+
+        $logger = new Swift_Plugins_Loggers_ArrayLogger();
+        $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+
+        for ($i = 0; $i < $attempts; $i++) {
+            try {
+                $transport->start();
+
+                $error = null;
+                break;
+            }
+            catch (Swift_SwiftException $e) {
+                $error = $e->getMessage();
+            }
         }
 
         $this->assertTrue($error === null, 'SMTP login failed with ' . (($error === null) ? 'N/A' : $error));
