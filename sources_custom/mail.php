@@ -489,9 +489,22 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
         $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $host) === '1'));
 
         $transport->setEncryption('tls');
-        $transport->setStreamOptions(array(
-            'ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false,)
-        ));
+
+        if ($disabled_ssl_verify) {
+            $transport->setStreamOptions(array(
+                'ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false,)
+            ));
+        }
+
+        // Try to connect the transport 3 times, in case there are any stalls across the round-trips / TLS auth
+        for ($i = 0; $i < 3; $i++) {
+            try {
+                $transport->start();
+                break;
+            }
+            catch (Swift_SwiftException $e) {
+            }
+        }
     }
 
     // Create the Mailer using your created Transport
