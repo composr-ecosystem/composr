@@ -871,6 +871,10 @@ function render_screen_preview($template, $hook, $function)
         }
     }
 
+    if ((!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $hook . '.php')) && (!is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $hook . '.php'))) {
+        fatal_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+
     require_code('hooks/systems/addon_registry/' . $hook);
     $ob = object_factory('Hook_addon_registry_' . $hook);
 
