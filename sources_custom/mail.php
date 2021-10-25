@@ -490,11 +490,15 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
 
         $transport->setEncryption('tls');
 
-        if ($disabled_ssl_verify) {
-            $transport->setStreamOptions(array(
-                'ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false,)
-            ));
-        }
+        $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';
+        $ssl_options = array(
+            'verify_peer' => !$disabled_ssl_verify,
+            'verify_peer_name' => !$disabled_ssl_verify,
+            'cafile' => $crt_path,
+            'SNI_enabled' => true,
+        );
+        $transport->setStreamOptions(array('ssl' => $ssl_options));
+
 
         // Try to connect the transport 3 times, in case there are any stalls across the round-trips / TLS auth
         for ($i = 0; $i < 3; $i++) {
