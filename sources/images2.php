@@ -271,11 +271,16 @@ function _convert_image($from, $to, $width, $height, $box_width = -1, $exit_on_e
         // with or without transparency.
 
         // Grab the dimensions we would get if we didn't crop or scale
-        $wrong_x = intval(round(floatval($sx) / $thumb_options['scale']));
-        $wrong_y = intval(round(floatval($sy) / $thumb_options['scale']));
+        if ($thumb_options['scale'] > 1.0) {
+            $wrong_x = intval(round(floatval($sx) / $thumb_options['scale']));
+            $wrong_y = intval(round(floatval($sy) / $thumb_options['scale']));
+        } else {
+            $wrong_x = $sx;
+            $wrong_y = $sy;
+        }
 
         // Handle cropping here
-        if ($thumb_options['type'] == 'crop') {
+        if (($thumb_options['type'] == 'crop') && ((!$only_make_smaller) || ($sx > $width) || ($sy > $height))) {
             // See which direction we're cropping in
             if (intval(round(floatval($sx) / $thumb_options['scale'])) != $width) {
                 $crop_direction = 'x';
@@ -314,8 +319,8 @@ function _convert_image($from, $to, $width, $height, $box_width = -1, $exit_on_e
             $sx = intval(($width * $thumb_options['scale']));
             $sy = intval(($height * $thumb_options['scale']));
 
-            $copy_width = intval(($width * $thumb_options['scale_to']));
-            $copy_height = intval(($height * $thumb_options['scale_to']));
+            $copy_width = $sx;
+            $copy_height = $sy;
 
             // We start at the origin of our output
             $dest_x = 0;
