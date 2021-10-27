@@ -89,18 +89,63 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         $worked = true;
         $error = null;
 
-        // Create the Transport
-        $transport = (new Swift_SmtpTransport($this->smtp_sockets_host, $this->smtp_sockets_port))
-            ->setUsername($this->smtp_sockets_username)
-            ->setPassword($this->smtp_sockets_password);
-        if (($this->smtp_sockets_port == 419) || ($this->smtp_sockets_port == 465) || ($this->smtp_sockets_port == 587)) {
-            $transport->setEncryption('tls');
-        }
-
         // Create the Mailer using your created Transport
         static $mailer = null;
         if ($mailer === null) {
+            // Create the Transport
+            $transport = (new Swift_SmtpTransport($this->smtp_sockets_host, $this->smtp_sockets_port))
+                ->setUsername($this->smtp_sockets_username)
+                ->setPassword($this->smtp_sockets_password);
+
+            $encryption = get_value('mail_encryption');
+            if ($encryption === null) {
+                if ($port == 25) {
+                    $encryption = 'tcp'; // No encryption
+                } elseif ($port == 465) {
+                    $encryption = 'ssl';
+                } elseif ($port == 587)  {
+                    $encryption = 'tls';
+                }
+            }
+
+            $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $host) === '1'));
+
+            $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';
+            $ssl_options = array(
+                'verify_peer' => !$disabled_ssl_verify,
+                'verify_peer_name' => !$disabled_ssl_verify,
+                'cafile' => $crt_path,
+                'SNI_enabled' => true,
+            );
+
+            $transport->setEncryption($encryption);
+            $transport->setStreamOptions(array('ssl' => $ssl_options));
+
             $mailer = new Swift_Mailer($transport);
+
+            $logger = new Swift_Plugins_Loggers_ArrayLogger();
+            $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+
+            $attempts = 3;
+
+            for ($i = 0; $i < $attempts; $i++) {
+                try {
+                    $transport->start();
+
+                    $worked = true;
+                    $error = null;
+
+                    break;
+                }
+                catch (Swift_SwiftException $e) {
+                    $worked = false;
+                    $error = $e->getMessage();
+                }
+            }
+
+            if ($error !== null) {
+                return [$worked, $error];
+            }
         }
 
         // Create a message and basic address it

@@ -61,29 +61,37 @@ class Hx_health_check_email extends Hook_health_check_email
         $transport = (new Swift_SmtpTransport($host, $port))
             ->setUsername($username)
             ->setPassword($password);
-        if (($port == 419) || ($port == 465) || ($port == 587)) {
-            $attempts = 3;
 
-            $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $host) === '1'));
-
-            $transport->setEncryption('tls');
-
-            $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';
-            $ssl_options = array(
-                'verify_peer' => !$disabled_ssl_verify,
-                'verify_peer_name' => !$disabled_ssl_verify,
-                'cafile' => $crt_path,
-                'SNI_enabled' => true,
-            );
-            $transport->setStreamOptions(array('ssl' => $ssl_options));
-        } else {
-            $attempts = 1;
+        $encryption = get_value('mail_encryption');
+        if ($encryption === null) {
+            if ($port == 25) {
+                $encryption = 'tcp'; // No encryption
+            } elseif ($port == 465) {
+                $encryption = 'ssl';
+            } elseif ($port == 587)  {
+                $encryption = 'tls';
+            }
         }
+
+        $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $host) === '1'));
+
+        $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';
+        $ssl_options = array(
+            'verify_peer' => !$disabled_ssl_verify,
+            'verify_peer_name' => !$disabled_ssl_verify,
+            'cafile' => $crt_path,
+            'SNI_enabled' => true,
+        );
+
+        $transport->setEncryption($encryption);
+        $transport->setStreamOptions(array('ssl' => $ssl_options));
 
         $mailer = new Swift_Mailer($transport);
 
         $logger = new Swift_Plugins_Loggers_ArrayLogger();
         $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+
+        $attempts = 3;
 
         for ($i = 0; $i < $attempts; $i++) {
             try {
