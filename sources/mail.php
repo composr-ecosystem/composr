@@ -702,13 +702,15 @@ abstract class Mail_dispatcher_base
         }
 
         // Handle queue
-        if (!$this->coming_out_of_queue) {
+        if ($this->coming_out_of_queue) {
+            $queue_id = null;
+        } else {
             if (!$this->in_html) {
                 inject_web_resources_context_to_comcode($message_raw);
             }
 
             $through_queue = $this->is_through_queue();
-            $this->log_message($through_queue, $subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+            $queue_id = $this->log_message($through_queue, $subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
             if ($through_queue) {
                 $this->log('QUEUED', 'Entered queue');
 
@@ -740,15 +742,22 @@ abstract class Mail_dispatcher_base
         list($_to_emails, $_to_names, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain) = $this->build_mail_components($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme);
         list($worked, $error) = $this->_dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain);
 
-        // Attachment cleanup
-        foreach ($this->real_attachments as $r) {
-            if ($r['temp']) {
-                @unlink($r['path']);
-            }
+        // Needs to be marked as queued, as it never sent
+        if ((!$worked) && ($queue_id !== null)) {
+            $GLOBALS['SITE_DB']->query_update('logged_mail_messages', array('m_queued' => 1), array('id' => $queue_id), '', 1);
         }
-        foreach ($this->cid_attachments as $r) {
-            if ($r['temp']) {
-                @unlink($r['path']);
+
+        if ($worked) {
+            // Attachment cleanup
+            foreach ($this->real_attachments as $r) {
+                if ($r['temp']) {
+                    @unlink($r['path']);
+                }
+            }
+            foreach ($this->cid_attachments as $r) {
+                if ($r['temp']) {
+                    @unlink($r['path']);
+                }
             }
         }
 
@@ -1304,8 +1313,9 @@ abstract class Mail_dispatcher_base
      * @param  array $to_names The recipient names [array of strings]
      * @param  EMAIL $from_email The from address (blank: site staff address)
      * @param  string $from_name The from name (blank: site name)
+     * @return AUTO_LINK The queue ID
      */
-    protected function log_message(bool $queued, string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name)
+    protected function log_message(bool $queued, string $subject_line, string $message_raw, array $to_emails, array $to_names, string $from_email, string $from_name) : int
     {
         if (mt_rand(0, 100) == 1) {
             cms_register_shutdown_function_safe(function () {
@@ -1315,7 +1325,7 @@ abstract class Mail_dispatcher_base
             });
         }
 
-        $GLOBALS['SITE_DB']->query_insert('logged_mail_messages', [
+        return $GLOBALS['SITE_DB']->query_insert('logged_mail_messages', [
             'm_subject' => cms_mb_substr($subject_line, 0, 255),
             'm_message' => $message_raw,
             'm_to_email' => serialize($to_emails),
@@ -1338,7 +1348,7 @@ abstract class Mail_dispatcher_base
             'm_template' => $this->mail_template,
             'm_sender_email' => ($this->sender_email === null) ? '' : $this->sender_email,
             'm_plain_subject' => $this->plain_subject ? 1 : 0,
-        ], false, !$queued); // No errors if we don't NEED this to work
+        ], true, !$queued); // No errors if we don't NEED this to work
     }
 
     /**
@@ -1370,7 +1380,7 @@ abstract class Mail_dispatcher_base
             return false;
         }
 
-        if (@$GLOBALS['SITE_INFO']['no_email_output'] === '1') {
+        if ((isset($GLOBALS['SITE_INFO']['no_email_output'])) && ($GLOBALS['SITE_INFO']['no_email_output'] === '1')) {
             $this->log('DISABLED', 'no_email_output==1');
 
             return false;
