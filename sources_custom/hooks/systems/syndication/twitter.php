@@ -134,17 +134,15 @@ class Hook_syndication_twitter
 
         // Shorten message for Twitter purposes
         $chopped_message = strip_html($message->evaluate());
-        $max_length = 255;
-        $shortened_link = mixed();
+        $max_length = 255; // Originally 140, could be 280, but 255 seems more reasonable. IDEA: Make configurable
         if ($link != '') {
-            $shortened_link = http_download_file('http://is.gd/api.php?longurl=' . urlencode($link));
-            $max_length -= strlen($shortened_link) + 1;
+            $max_length -= max(strlen($link), 23) + 1; // 23 is documented length of a link from Twitter URL shortener
         }
         if (cms_mb_strlen($chopped_message) > $max_length) {
             $chopped_message = substr($chopped_message, 0, $max_length - 3) . '...';
         }
         if ($link != '') {
-            $chopped_message .= ' ' . $shortened_link;
+            $chopped_message .= ' ' . $link;
         }
         require_code('character_sets');
         $chopped_message = convert_to_internal_encoding($chopped_message, get_charset(), 'utf-8');
