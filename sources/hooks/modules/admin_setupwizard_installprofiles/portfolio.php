@@ -48,8 +48,10 @@ class Hook_admin_setupwizard_installprofiles_portfolio
     public function get_addon_list() : array
     {
         return [
-            ['galleries', 'random_quotes', 'polls', 'news'],
-            []
+            ['random_quotes', 'polls', 'news'],
+            [],
+            [],
+            ['galleries'],
         ];
     }
 

@@ -289,8 +289,15 @@ class Module_admin_sitemap
             $post_url = build_url(['page' => '_SELF', 'type' => get_param_string('type')], '_SELF', [], true);
             $hidden = build_keep_form_fields('', true);
 
-            $from = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => get_param_string('zone')]);
-            $to = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => get_param_string('destination_zone')]);
+            $from = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_title', ['zone_name' => get_param_string('zone')]);
+            if ($from === null) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'zone'));
+            }
+
+            $to = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_title', ['zone_name' => get_param_string('destination_zone')]);
+            if ($to === null) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'zone'));
+            }
 
             return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'c6e872cc62bdc7cf1c5157fbfdb2dfd6',

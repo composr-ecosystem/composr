@@ -140,7 +140,6 @@ pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP
 openweathermap,OpenWeatherMap,ocProducts,,,Yes,_api_weather automated test.
 composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
 alexa,Alexa Traffic Stats,ocProducts,ocProducts,,No,seo_tracking automated test
-url_shortener,is.gd URL shortener,ocProducts,ocProducts,,No,url_shortener automated test
 sugarcrm,Sugar CRM integration,,,,Yes,SugarCRM Health Check
 cloudinary,Cloudinary integration,,,,Yes,_api_cloudinary automated test
 aws_ses,AWS SES notifications,,,,Yes,aws_ses automated test

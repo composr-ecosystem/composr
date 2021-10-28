@@ -343,6 +343,7 @@
         this.BOX_WEST_PERIPHERARY = 4;
         this.BOX_NORTH_PERIPHERARY = 4;
         this.BOX_SOUTH_PERIPHERARY = 4;
+        this.BOX_PADDING = 20;
         this.VCENTRE_FRACTION_SHIFT = 0.5; // Fraction of remaining top gap also removed (as overlays look better slightly higher than vertical centre)
         this.LOADING_SCREEN_HEIGHT = 100;
 
@@ -883,6 +884,7 @@
             // Save into HTML
             this.overlayEl.style.top = boxPosTop + 'px';
             this.overlayEl.style.left = boxPosLeft + 'px';
+            this.overlayEl.style.padding = this.BOX_PADDING + 'px';
 
             var doScroll = false;
 

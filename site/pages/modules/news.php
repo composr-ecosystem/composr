@@ -730,7 +730,7 @@ class Module_news
 
                 $author_entry_url = $author_row['url'];
                 $author_entry_member_id = strval($author_row['member_id']);
-                $author_entry_description = get_translated_tempcode('authors', $author_row, 'description');
+                $author_entry_description = get_translated_tempcode('authors', $author_row, 'the_description');
                 $author_entry_skills = get_translated_tempcode('authors', $author_row, 'skills');
             }
         }

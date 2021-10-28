@@ -79,7 +79,7 @@ class _special_links_test_set extends cms_test_case
             'https://jigsaw.w3.org/css-validator/' => true,
             'https://achecker.us/checker/index.php' => true,
             'https://www.bing.com/webmasters/help/url-inspection-55a30305' => true,
-            'https://search.google.com/structured-data/testing-tool/' => true,
+            'https://developers.google.com/search/docs/advanced/structured-data' => true,
             'https://webmaster.yandex.com/tools/microtest/' => false,
             'https://developers.facebook.com/tools/debug/' => true,
             'https://www.woorank.com/' => true,

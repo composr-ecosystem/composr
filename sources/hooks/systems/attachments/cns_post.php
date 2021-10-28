@@ -24,13 +24,14 @@
 class Hook_attachments_cns_post
 {
     /**
-     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for the current member.
+     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for a member.
      *
      * @param  ID_TEXT $id The ID
      * @param  object $db The database connector to check on
+     * @param  MEMBER $member_id The member to check for
      * @return boolean Whether there is permission
      */
-    public function run(string $id, object $db) : bool
+    public function run(string $id, object $db, int $member_id) : bool
     {
         if (!addon_installed('cns_forum')) {
             return false;
@@ -51,7 +52,7 @@ class Hook_attachments_cns_post
         $forum_id_parent_parent = ($forum_id_parent === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $forum_id_parent]);
         $poster = $info[0]['p_poster'];
         $intended_solely_for = $info[0]['p_intended_solely_for'];
-        if (($intended_solely_for !== null) && ($poster != get_member()) && ($intended_solely_for != get_member())) {
+        if (($intended_solely_for !== null) && ($poster != $member_id) && ($intended_solely_for != $member_id)) {
             return false;
         }
         if (cns_may_access_topic($info[0]['p_topic_id'])) {
@@ -66,13 +67,13 @@ class Hook_attachments_cns_post
             }
             if (($forum2 === $forum_id) || ($forum2 === $forum_id_parent) || ($forum2 === $forum_id_parent_parent)) {
                 $title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $info[0]['p_topic_id']]);
-                if (substr($title, 0, strlen(strval(get_member())) + 1) == strval(get_member()) . '_') {
+                if (substr($title, 0, strlen(strval($member_id)) + 1) == strval($member_id) . '_') {
                     return true;
                 }
                 require_lang('tickets');
 
                 $description = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_description', ['id' => $info[0]['p_topic_id']]);
-                if (substr($description, 0, strlen(do_lang('SUPPORT_TICKET') . ': #' . strval(get_member())) + 1) == do_lang('SUPPORT_TICKET') . ': #' . strval(get_member()) . '_') {
+                if (substr($description, 0, strlen(do_lang('SUPPORT_TICKET') . ': #' . strval($member_id)) + 1) == do_lang('SUPPORT_TICKET') . ': #' . strval($member_id) . '_') {
                     return true;
                 }
             }

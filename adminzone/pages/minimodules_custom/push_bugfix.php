@@ -726,6 +726,11 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 
     $git_commit_command_data = '';
 
+    // Current status
+    $cmd = $GIT_PATH . ' status';
+    $git_status_data = shell_exec($cmd . ' 2>&1');
+    $is_unpushed_prior = (strpos($git_status_data, 'Your branch is ahead') !== false);
+
     // Add
     $cmd = $GIT_PATH . ' add';
     foreach ($files as $path) {
@@ -743,9 +748,11 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 
     $matches = [];
     if (preg_match('# ([\da-z]+)\]#', $git_commit_command_data, $matches) != 0) {
-        // Success, do a push too
-        $cmd = $GIT_PATH . ' push';
-        $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
+        if (!$is_unpushed_prior) {
+            // Success, do a push too
+            $cmd = $GIT_PATH . ' push';
+            $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
+        }
 
         return $matches[1];
     }

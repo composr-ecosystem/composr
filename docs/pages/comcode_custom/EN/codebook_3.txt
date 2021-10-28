@@ -550,7 +550,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]windows_auth_is_enabled[/tt] -- set to '1' to enable Integrated Windows Kerberos Authentication for automatic desktop client logins
   - [tt]postgres_fulltext_language[/tt] -- set to a PostgreSQL full-text configuration name for defining how to tokenise text (only set if you don't want 'english'). Existing indices would need hand-editing to the new value too.
   - [tt]disable_fulltext_sqlserver[/tt] -- set this to '1' if you are using Microsoft SQL Server and want to disable full-text search support. You may do this if you don't like the limitations of SQL Server full-text search (per-table searching, not per-field searching).
-  - [tt]mail_encryption[/tt] -- sets SMTP encryption for the [tt]bettermail[/tt] addon only. Set this to [tt]tcp[/tt] (no SMTP encryption), [tt]ssl[/tt] (implicit SSL/TLS SMTP encryption), or [tt]tls[/tt] (explicit START-TLS SMTP encryption)
  - Unofficial functionality that may or may not work correctly:
   - [tt]unofficial_ecommerce[/tt] -- set to '1' if your forum driver contains usergroup manipulation functions (we don't support this, but wanted to be able to allow those willing to extend forum drivers to use our full eCommerce framework)
  - Workarounds for difficult server configurations:

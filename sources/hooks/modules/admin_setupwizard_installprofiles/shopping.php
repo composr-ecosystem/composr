@@ -48,8 +48,10 @@ class Hook_admin_setupwizard_installprofiles_shopping
     public function get_addon_list() : array
     {
         return [
-            ['ecommerce', 'shopping', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'],
+            ['ecommerce', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'],
             [],
+            [],
+            ['shopping'],
         ];
     }
 

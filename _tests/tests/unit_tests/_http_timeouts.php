@@ -41,21 +41,22 @@ class _http_timeouts_test_set extends cms_test_case
         $timeout = 3.0;
 
         // Test timeout not being hit for large file
-        $url = 'http://ocportal.com/old/uploads/website_specific/ocportal.com/video_tutorials/designer_themes__theme_wizard.mp4';
+        $url = 'https://compo.sr/docs/php-5.2.4-ocproducts.zip';
+        $expected_size = 28941943;
         if (($this->only === null) || ($this->only == 'big_curl')) {
             $r1 = $this->_testCurl($url, $timeout);
             $this->assertTrue($r1[0]);
-            $this->assertTrue($r1[1] == 27078913, 'Wrong download size @ ' . strval($r1[1]));
+            $this->assertTrue($r1[1] == $expected_size, 'Wrong download size @ ' . strval($r1[1]));
         }
         if (($this->only === null) || ($this->only == 'big_wrapper')) {
             $r2 = $this->_testURLWrappers($url, $timeout);
             $this->assertTrue($r2[0]);
-            $this->assertTrue($r2[1] == 27078913, 'Wrong download size @ ' . strval($r2[1]));
+            $this->assertTrue($r2[1] == $expected_size, 'Wrong download size @ ' . strval($r2[1]));
         }
         if ((($this->only === null) || ($this->only == 'big_socket')) && (strpos($url, 'https://') === false)) {
             $r3 = $this->_testFSockOpen($url, $timeout);
             $this->assertTrue($r3[0]);
-            $this->assertTrue($r3[1] >= 27078913, 'Wrong download size @ ' . strval($r3[1]));
+            $this->assertTrue($r3[1] >= $expected_size, 'Wrong download size @ ' . strval($r3[1]));
         }
 
         // Test timeout being hit for something that really is timing out

@@ -86,7 +86,14 @@ class Hook_addon_registry_better_mail
      */
     public function get_description() : string
     {
-        return 'Replaces Composr\'s built-in mailer with one based around Swift Mailer. This may help workaround problems with buggy/complex SMTP servers, or ones that require SSL (e.g. gmail). If you\'re not have mail problems there\'s no point using this.';
+        return 'Replaces Composr\'s built-in mailer with one based around Swift Mailer. This may help workaround problems with buggy/complex SMTP servers, or ones that require SSL (e.g. gmail). If you\'re not have mail problems there\'s no point using this.
+
+There is a new hidden option, [tt]mail_encryption[/tt] to set SMTP encryption. Set this to [tt]tcp[/tt] (no SMTP encryption), [tt]ssl[/tt] (implicit SSL/TLS SMTP encryption), or [tt]tls[/tt] (explicit START-TLS SMTP encryption).
+e.g. Type the following into Commandr:
+[code]
+:set_value(\'mail_encryption\', \'tls\');
+[/code]
+';
     }
 
     /**

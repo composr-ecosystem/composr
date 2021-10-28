@@ -1137,20 +1137,3 @@ function mark_if_url_exists(string $url, bool $exists = true, string $message = 
         ]
     );
 }
-
-/**
- * Shorten a URL.
- *
- * @param  URLPATH $url The full URL
- * @return URLPATH Shortened URL
- */
-function shorten_url(string $url) : string
-{
-    $shortened = cms_http_request('https://is.gd/api.php?longurl=' . urlencode($url), ['trigger_error' => false, 'convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
-    if ($shortened->data === null) {
-        require_code('failure');
-        cms_error_log('is.gd: ' . $shortened->message . ', ' . $url, 'error_occurred_api');
-        return $url;
-    }
-    return $shortened->data;
-}

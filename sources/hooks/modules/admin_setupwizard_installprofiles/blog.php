@@ -48,8 +48,10 @@ class Hook_admin_setupwizard_installprofiles_blog
     public function get_addon_list() : array
     {
         return [
-            ['news', 'newsletter'],
-            []
+            ['newsletter'],
+            [],
+            [],
+            ['news'],
         ];
     }
 

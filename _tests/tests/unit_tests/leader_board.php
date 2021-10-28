@@ -252,8 +252,8 @@ class leader_board_test_set extends cms_test_case
             $this->assertTrue($process === null, $key . ': The leader-board generated a new result set when it should not have in testLeaderBoardFrequencyNonRolling() test 4.');
         }
 
-        // Test 5: If the recent result set was Sunday and it is now Monday (a week later), week should re-generate but nothing else.
-        $forced_period_start = strtotime("sunday");
+        // Test 5: If the recent result set was first Sunday on a month and it is now subsequent Monday (over a week later), week should re-generate but nothing else.
+        $forced_period_start = strtotime("october 17 2021");
         $forced_time = strtotime("monday +1 week", $forced_period_start);
         foreach ($this->leaderboards as $key => $value) {
             $rows = $GLOBALS['SITE_DB']->query_select('leader_boards', ['*'], ['id' => $value], '', 1);

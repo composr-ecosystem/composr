@@ -770,7 +770,7 @@ function process_url_monikers(bool $redirect_if_non_canonical = true, bool $env_
         if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
             $page_place_r = $page_place;
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
-            if ((substr($page_place[0], 0, 7) != 'COMCODE') || ($type === null)) {
+            if (($page_place !== false) && (substr($page_place[0], 0, 7) != 'COMCODE') || ($type === null)) {
                 // We're viewing the Comcode page behind this redirect, or it's not a Comcode page so nothing is underneath it
                 $page = $page_place_r[1]['r_to_page'];
                 $zone = $page_place_r[1]['r_to_zone'];

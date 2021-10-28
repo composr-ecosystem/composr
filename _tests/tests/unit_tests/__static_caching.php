@@ -61,7 +61,7 @@ class __static_caching_test_set extends cms_test_case
         $url = build_url(['page' => ''], '');
         $url2 = build_url(['page' => 'xxx-does-not-exist' . uniqid('', true)], '');
 
-        $test_url = get_base_url() . '/does-not-exist.abc';
+        $test_url = get_base_url() . '/does-not-exist.bin';
 
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);

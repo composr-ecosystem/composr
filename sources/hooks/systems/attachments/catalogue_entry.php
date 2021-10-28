@@ -24,13 +24,14 @@
 class Hook_attachments_catalogue_entry
 {
     /**
-     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for the current member.
+     * Run function for attachment hooks. They see if permission to an attachment of an ID relating to this content is present for a member.
      *
      * @param  ID_TEXT $id The ID
      * @param  object $db The database connector to check on
+     * @param  MEMBER $member_id The member to check for
      * @return boolean Whether there is permission
      */
-    public function run(string $id, object $db) : bool
+    public function run(string $id, object $db, int $member_id) : bool
     {
         if (!addon_installed('catalogues')) {
             return false;
@@ -48,10 +49,10 @@ class Hook_attachments_catalogue_entry
             return false;
         }
 
-        if (!has_category_access(get_member(), 'catalogues_catalogue', $info[0]['c_name'])) {
+        if (!has_category_access($member_id, 'catalogues_catalogue', $info[0]['c_name'])) {
             return false;
         }
 
-        return (get_value('disable_cat_cat_perms') === '1') || (has_category_access(get_member(), 'catalogues_category', strval($info[0]['cc_id'])));
+        return (get_value('disable_cat_cat_perms') === '1') || (has_category_access($member_id, 'catalogues_category', strval($info[0]['cc_id'])));
     }
 }

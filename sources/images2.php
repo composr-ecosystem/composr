@@ -446,10 +446,16 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
         // We keep this separate to the above code because the algorithm is more complex.
         // For documentation of the $thumb_options see the tut_tempcode.txt's description of the {$THUMBNAIL,...} symbol.
         // Grab the dimensions we would get if we didn't crop or scale
-        $wrong_x = intval(round(floatval($sx) / $thumb_options['scale_to']));
-        $wrong_y = intval(round(floatval($sy) / $thumb_options['scale_to']));
+        if ($thumb_options['scale'] > 1.0) {
+            $wrong_x = intval(round(floatval($sx) / $thumb_options['scale_to']));
+            $wrong_y = intval(round(floatval($sy) / $thumb_options['scale_to']));
+        } else {
+            $wrong_x = $sx;
+            $wrong_y = $sy;
+        }
 
-        if ($thumb_options['type'] == 'crop') { // Handle cropping here
+        // Handle cropping here
+        if (($thumb_options['type'] == 'crop') && ((!$only_make_smaller) || ($sx > $width) || ($sy > $height))) {
             // See which direction we're cropping in
             if (intval(round(floatval($sx) / $thumb_options['scale_to'])) != $width) {
                 $crop_direction = 'x';
@@ -480,9 +486,6 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
             $source_y = ($crop_direction == 'y') ? $displacement : 0;
 
             // Now we set the width and height of our window, which will be scaled versions of the width and height of the output
-            $copy_width = intval(($width * $thumb_options['scale_to']));
-            $copy_height = intval(($height * $thumb_options['scale_to']));
-
             $copy_width = intval(($width * $thumb_options['scale_to']));
             $copy_height = intval(($height * $thumb_options['scale_to']));
 

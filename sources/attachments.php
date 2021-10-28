@@ -148,7 +148,7 @@ function has_attachment_access(int $member_id, int $id, ?object $db = null) : bo
             require_code('hooks/systems/attachments/' . filter_naughty_harsh($type));
             $object = object_factory('Hook_attachments_' . filter_naughty_harsh($type));
 
-            if ($object->run($ref_id, $db)) {
+            if ($object->run($ref_id, $db, $member_id)) {
                 return true;
             }
         }

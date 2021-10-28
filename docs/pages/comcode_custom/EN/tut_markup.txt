@@ -82,7 +82,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Web</em></th>
 		</tr>
 		<tr>
-			<td>[abbr="HyperText Transfer Protocol"][url="http://tools.ietf.org/html/rfc2616"]HTTP[/url][/abbr] with some [url="common extensions"]https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers[/url]</td>
+			<td>[abbr="HyperText Transfer Protocol"][url="https://datatracker.ietf.org/doc/html/rfc2616"]HTTP[/url][/abbr] with some [url="common extensions"]https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers[/url]</td>
 			<td>This is the protocol for transmitting web data. We also use [url="https://indieweb.org/meta_http-equiv_status"]meta http-equiv status[/url].</td>
 			<td>You won't need much awareness that web [abbr="Uniform Resource Locator"]URL[/abbr]s come from the HTTP standard, as do cookies, as does HTTP authentication (not used on many sites, but sometimes useful).</td>
 		</tr>
@@ -160,12 +160,12 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Data &amp; Feeds</em></th>
 		</tr>
 		<tr>
-			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="http://tools.ietf.org/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://www.opml.org/spec1.html"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://support.google.com/news/publisher/answer/74288?hl=en"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
+			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="https://datatracker.ietf.org/doc/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://opml.org/spec2.opml"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://support.google.com/news/publisher/answer/74288?hl=en"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
 			<td>XML is a standard for structuring data, used for many web formats that Composr supports, as well as a few configurable parts of Composr. RSS, Atom and OPML are feed technology, to export Composr news. XSLT is a technology we use to make RSS, Atom and OPML display in a web browser.</td>
 			<td>You won't need much awareness of XML unless doing particular advanced configuration.</td>
 		</tr>
 		<tr>
-			<td>File formats like [url="http://tools.ietf.org/html/rfc5545"]iCalendar 2.0[/url], JPEG, PNG, ZIP, Tar, Gzip</td>
+			<td>File formats like [url="https://datatracker.ietf.org/doc/html/rfc5545"]iCalendar 2.0[/url], JPEG, PNG, ZIP, Tar, Gzip</td>
 			<td>These are used in specific areas of Composr, for reading and writing special file types. PNG is an image file format. PNG is used in favour to GIF, as it supports images more than 256 colours, 'alpha transparency' (blended transparency that is not tied to background colour) and is not encumbered by software patents.</td>
 			<td>The ability to use image editors, and choose appropriate image file types, is definitely useful.</td>
 		</tr>
@@ -175,7 +175,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>Being able to import and export appropriately-structured CSV spreadsheet files is also useful.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Lightweight Directory Access Protocol"][url="http://tools.ietf.org/html/rfc4510"]LDAP 3[/url][/abbr]</td>
+			<td>[abbr="Lightweight Directory Access Protocol"][url="https://datatracker.ietf.org/doc/html/rfc4510"]LDAP 3[/url][/abbr]</td>
 			<td>This is the standard for having shared logins on a computer network, which Composr can use.</td>
 			<td>This is only relevant if you are setting up a corporate Intranet.</td>
 		</tr>
@@ -1302,7 +1302,7 @@ Some cool effects:
 [title="2"]Structured Data testing[/title]
 
  - https://www.bing.com/webmasters/help/url-inspection-55a30305
- - https://search.google.com/structured-data/testing-tool/
+ - https://developers.google.com/search/docs/advanced/structured-data
  - https://webmaster.yandex.com/tools/microtest/
 
 [title="2"]Miscellaneous[/title]

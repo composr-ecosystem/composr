@@ -90,7 +90,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         $this->stateCheckManual('Check [url="CSS validation"]https://jigsaw.w3.org/css-validator/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
         $this->stateCheckManual('Check [url="WCAG validation"]https://achecker.us/checker/index.php[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
 
-        $this->stateCheckManual('Check schema.org/microformats validation on either [url="Google"]https://search.google.com/structured-data/testing-tool/[/url] or [url="Bing"]https://www.bing.com/webmasters/help/url-inspection-55a30305[/url] or [url="Yandex"]https://webmaster.yandex.com/tools/microtest/[/url], on any key pages you want to be semantic');
+        $this->stateCheckManual('Check schema.org/microformats validation on either [url="Google"]https://developers.google.com/search/docs/advanced/structured-data[/url] or [url="Bing"]https://www.bing.com/webmasters/help/url-inspection-55a30305[/url] or [url="Yandex"]https://webmaster.yandex.com/tools/microtest/[/url], on any key pages you want to be semantic');
 
         $this->stateCheckManual('Do a [url="general check"]https://www.woorank.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
         $this->stateCheckManual('Do a [url="general check"]https://website.grader.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');

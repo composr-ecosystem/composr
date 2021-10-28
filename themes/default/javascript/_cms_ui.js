@@ -311,13 +311,15 @@
                 $cms.ui.repositionTooltip(el, event, bottom, false, null, forceWidth, win);
             });
         } else {
-            $dom.on(window, 'click.cmsTooltip' + $util.uid(el), function (e) {
-                var tooltipEl = document.getElementById(el.tooltipId);
+            window.setTimeout(function() { // Stop mobile calling handler twice in some situations
+                $dom.on(window, 'click.cmsTooltip' + $util.uid(el), function (e) {
+                    var tooltipEl = document.getElementById(el.tooltipId);
 
-                if ((tooltipEl != null) && $dom.isDisplayed(tooltipEl) && !tooltipEl.contains(e.target)) {
-                    $cms.ui.deactivateTooltip(el);
-                }
-            });
+                    if ((tooltipEl != null) && $dom.isDisplayed(tooltipEl) && !tooltipEl.contains(e.target)) {
+                        $cms.ui.deactivateTooltip(el);
+                    }
+                });
+            },500);
         }
 
         el.isOver = true;
@@ -1159,8 +1161,8 @@
             }
 
             function _getMaxLightboxImgDims(modal, hasFullButton) {
-                var maxWidth = modal.topWindow.$dom.getWindowWidth() - 20,
-                    maxHeight = modal.topWindow.$dom.getWindowHeight() - 60;
+                var maxWidth = modal.topWindow.$dom.getWindowWidth() - modal.WINDOW_SIDE_GAP * 2 - modal.BOX_EAST_PERIPHERARY - modal.BOX_WEST_PERIPHERARY - modal.BOX_PADDING * 2,
+                    maxHeight = modal.topWindow.$dom.getWindowHeight() - modal.WINDOW_TOP_GAP - modal.BOX_NORTH_PERIPHERARY - modal.BOX_SOUTH_PERIPHERARY - modal.BOX_PADDING * 2;
 
                 if (hasFullButton) {
                     maxHeight -= 120;

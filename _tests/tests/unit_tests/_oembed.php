@@ -28,7 +28,7 @@ class _oembed_test_set extends cms_test_case
             'https://www.flickr.com/photos/rustumlongpig/7168441953/in/photolist-bVs93M-76hEZ5-9k5TDH-7Mho7j-auaThL-21Kwz5k-e2dQPt-95ZsSS-7CaVss-adyb9W-cDUY87-4DmcLP-8t3qxh-nGpsmz-cyCMtL-brsL2j-61mdVx-acjjsR-aoBGSC-opyRb8-acUVnL-tXUqaM-gzXeG-5qU7mj-wbCGS-6hGPs3-8w3yy5-9ata57-qibN8N-c72zAW-7ada8L-3LxAzh-DJfuwT-4DVwX9-bneCT-4DVxsY-aoTLwD-6gxHP-obXG69-8rugxw-doaVy1-3LxCmd-4Kz14i-8DkL9d-6NDjdS-StTQEG-3LxzV5-qAyAB-caBL63-64c6ut' => 'http://www.flickr.com/services/oembed?format={format}',
             'https://soundcloud.com/1lonr/time?in=1lonr/sets/land-of-nothing-real-1' => 'http://soundcloud.com/oembed?format={format}',
             'https://twitter.com/socpub/status/971009263702167553' => 'https://api.twitter.com/1/statuses/oembed.{format}',
-            'https://kaylinamari.tumblr.com/post/171185297937' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
+            'https://heartsnmagic.tumblr.com/post/663998783597772800' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
             'http://edition.cnn.com/2009/HEALTH/04/06/hm.caffeine.withdrawal/index.html' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
             'https://www.google.co.uk/maps/@51.6921416,0.4606626,7z?hl=en' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
             'https://www.google.com/maps/@51.6921416,0.4606626,7z?hl=en' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',

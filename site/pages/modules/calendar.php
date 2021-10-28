@@ -345,7 +345,7 @@ class Module_calendar
             $filter = $this->get_filter();
 
             // Read row
-            $rows = $GLOBALS['SITE_DB']->query_select('calendar_events e LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_types t ON t.id=e.e_type', ['*'], ['e.id' => $id], '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('calendar_events e LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_types t ON t.id=e.e_type', ['e.*', 't.t_title', 't.t_logo'], ['e.id' => $id], '', 1);
             if (!array_key_exists(0, $rows)) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'event'));
             }

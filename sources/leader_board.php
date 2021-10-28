@@ -146,7 +146,7 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
         // Sort the array according to points (highest to lowest)
         usort($points, function (array $a, array $b) : int {
             if ($a['points'] == $b['points']) {
-                return mt_rand(-1, 1); // Randomize members with equal points earned
+                return mt_rand(-1, 1); // Randomise members with equal points earned
             }
             return ($a['points'] > $b['points']) ? -1 : 1;
         });

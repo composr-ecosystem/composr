@@ -39,7 +39,7 @@ class xss_test_set extends cms_test_case
         // This won't check everything, but will make sure we don't accidentally regress our overall checking
         // To do a better check, find a manual XSS test blob, and try pasting it into a news post (using html tags) to preview -- and ensure no JS alerts come up
 
-        $comcode = '[html]<iframe></iframe><Iframe></iframe>test<test>test</test><script></script><span onclick=""></span><span onClick=""></span><span on' . chr(0) . 'click=""></span><a href="&#115;cript:">x</a><a href="&#0115;cript:">x</a><a href="&#x73;cript:">x</a><a href="&#x73cript:">x</a><a href="j	a	v	a	s	c	r	i	p	t	:">x</a>[/html]';
+        $comcode = '[html]<iframe></iframe><Iframe></iframe>test<test>test</test><script></script><span/onclick=""></span><span onClick=""></span><span on' . chr(0) . 'click=""></span><a href="&#115;cript:">x</a><a href="&#0115;cript:">x</a><a href="&#x73;cript:">x</a><a href="&#x73cript:">x</a><a href="j	a	v	a	s	c	r	i	p	t	:">x</a>[/html]';
 
         $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
         $guest_group_id = $guest_id; // Assumption

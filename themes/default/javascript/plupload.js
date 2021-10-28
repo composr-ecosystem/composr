@@ -5312,7 +5312,7 @@ define("moxie/xhr/XMLHttpRequest", [
 				if (!_headers[header]) {
 					_headers[header] = value;
 				} else {
-					// http://tools.ietf.org/html/rfc2616#section-4.2 (last paragraph)
+					// https://datatracker.ietf.org/doc/html/rfc2616#section-4.2 (last paragraph)
 					_headers[header] += ', ' + value;
 				}
 				return true;

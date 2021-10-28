@@ -930,7 +930,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/ip_addresses.php',
             '_tests/tests/unit_tests/type_sanitisation.php',
             '_tests/tests/unit_tests/ua_detection.php',
-            '_tests/tests/unit_tests/url_shortener.php',
             '_tests/tests/unit_tests/unpack.php',
             '_tests/tests/unit_tests/upload_directory.php',
             '_tests/tests/unit_tests/url_management.php',

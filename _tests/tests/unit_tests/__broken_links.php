@@ -39,8 +39,10 @@ class __broken_links_test_set extends cms_test_case
 
         $urls = $GLOBALS['SITE_DB']->query_select('staff_links', ['link']);
         foreach ($urls as $url) {
-            $this->check_link($url['link'], 'staff_links');
+            $this->record_link($url['link'], 'staff_links');
         }
+
+        $this->check_recorded_links();
     }
 
     public function testStaffChecklist()
@@ -51,6 +53,8 @@ class __broken_links_test_set extends cms_test_case
 
         $tempcode = do_block('main_staff_checklist');
         $this->scan_html($tempcode->evaluate(), 'main_staff_checklist');
+
+        $this->check_recorded_links();
     }
 
     public function testTutorials()
@@ -73,6 +77,8 @@ class __broken_links_test_set extends cms_test_case
             $tempcode = request_page($tutorial, true, 'docs');
             $this->scan_html($tempcode->evaluate(), $tutorial);
         }
+
+        $this->check_recorded_links();
     }
 
     public function testTutorialDatabase()
@@ -88,8 +94,10 @@ class __broken_links_test_set extends cms_test_case
 
         $urls = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['t_url']);
         foreach ($urls as $url) {
-            $this->check_link($url['t_url'], 'tutorials_external');
+            $this->record_link($url['t_url'], 'tutorials_external');
         }
+
+        $this->check_recorded_links();
     }
 
     public function testFeatureTray()
@@ -105,6 +113,8 @@ class __broken_links_test_set extends cms_test_case
 
         $tempcode = do_block('composr_homesite_featuretray');
         $this->scan_html($tempcode->evaluate(), 'composr_homesite_featuretray');
+
+        $this->check_recorded_links();
     }
 
     public function testLangFiles()
@@ -128,6 +138,8 @@ class __broken_links_test_set extends cms_test_case
                 $this->scan_html($value, $lang_file);
             }
         }
+
+        $this->check_recorded_links();
     }
 
     public function testTemplates()
@@ -144,6 +156,8 @@ class __broken_links_test_set extends cms_test_case
                 $this->scan_html($c, $file);
             }
         }
+
+        $this->check_recorded_links();
     }
 
     protected function scan_html($html, $context)
@@ -151,8 +165,26 @@ class __broken_links_test_set extends cms_test_case
         $matches = [];
         $num_matches = preg_match_all('#\shref=["\']([^"\']+)["\']#', $html, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
-            $this->check_link(html_entity_decode($matches[1][$i], ENT_QUOTES), $context);
+            $this->record_link(html_entity_decode($matches[1][$i], ENT_QUOTES), $context);
         }
+    }
+
+    protected $recorded_links = [];
+
+    protected function record_link($url, $context)
+    {
+        $this->recorded_links[] = [$url, $context];
+    }
+
+    protected function check_recorded_links()
+    {
+        shuffle($this->recorded_links); // This allows running multiple instances of the test in parallel
+
+        foreach ($this->recorded_links as $recorded_link) {
+            list($url, $context) = $recorded_link;
+            $this->check_link($url, $context);
+        }
+        $this->recorded_links = [];
     }
 
     protected function check_link($url, $context)

@@ -103,7 +103,7 @@ class Block_main_leader_board
 
                 usort($rows, function (array $a, array $b) : int {
                     if ($a['lb_points'] == $b['lb_points']) {
-                        return mt_rand(-1, 1); // Randomize members with equal points earned
+                        return mt_rand(-1, 1); // Randomise members with equal points earned
                     }
                     return ($a['lb_points'] > $b['lb_points']) ? -1 : 1;
                 });
