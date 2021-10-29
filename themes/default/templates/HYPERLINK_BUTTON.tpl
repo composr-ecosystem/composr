@@ -5,6 +5,6 @@
 	{+END}
 
 	<div class="inline">
-		<button {+START,IF_PASSED,ACCESSKEY} accesskey="{ACCESSKEY*}"{+END} class="button-hyperlink"{+START,IF_PASSED_AND_TRUE,NEW_WINDOW} title="{+START,IF_NON_EMPTY,{TITLE}}{$STRIP_TAGS*,{TITLE},1} {+END}{!NEW_WINDOW}"{+END} type="submit">{CAPTION}</button>
+		<button {+START,IF_PASSED,ACCESSKEY} accesskey="{ACCESSKEY*}"{+END} class="button-hyperlink"{+START,IF_PASSED_AND_TRUE,NEW_WINDOW} title="{+START,IF_NON_EMPTY,{TITLE}}{$STRIP_TAGS,{TITLE}} {+END}{!NEW_WINDOW}"{+END} type="submit">{CAPTION}</button>
 	</div>
 </form>

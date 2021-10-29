@@ -2059,20 +2059,10 @@ function ecv_STRIP_TAGS(string $lang, array $escaped, array $param) : string
     $value = '';
 
     if (isset($param[0])) {
-        if (!empty($param[1])) {
-            $value = strip_tags(str_replace('))', ')', str_replace('((', '(', str_replace('<em>', '(', str_replace('</em>', ')', $param[0])))));
+        if (strpos($param[0], '<') === false) { // optimisation
+            $value = $param[0];
         } else {
-            if (strpos($param[0], '<') === false) { // optimisation
-                $value = $param[0];
-            } else {
-                $value = cms_strip_tags($param[0], isset($param[2]) ? $param[2] : '');
-            }
-        }
-        if (!empty($param[1])) {
-            $value = @html_entity_decode($value, ENT_QUOTES);
-        }
-        if (empty($param[2])) {
-            $value = trim(cms_preg_replace_safe('#(\s|&nbsp;)+#', ' ', $value));
+            $value = cms_strip_tags($param[0], isset($param[1]) ? $param[1] : '', !empty($param[2]));
         }
     }
 
