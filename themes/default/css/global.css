@@ -1674,7 +1674,6 @@ a.toggleable_tray_button { /* Override above for toggleable_tray_button */
 	font-weight: bold;
 	vertical-align: middle;
 	margin: 0; /* Outside .box_inner so remove the margin added above */
-	padding: 0.3em 0; /* Centered so needs no horizontal padding, which would also mess with our 100% width */
 }
 
 .toggleable_tray_button {
