@@ -2062,7 +2062,8 @@ function ecv_STRIP_TAGS(string $lang, array $escaped, array $param) : string
         if (strpos($param[0], '<') === false) { // optimisation
             $value = $param[0];
         } else {
-            $value = cms_strip_tags($param[0], isset($param[1]) ? $param[1] : '', !empty($param[2]));
+            $value = cms_strip_tags($param[0], isset($param[1]) ? $param[1] : '', empty($param[2]));
+            $value = str_replace('"', '&quot;', $value); // So can be used inside HTML attributes
         }
     }
 
