@@ -1033,7 +1033,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                                     $ret->attach(static_evaluate_tempcode(comcode_lang_string($temp_lang_string))); // Recreate as a Comcode language string
                                                 }
                                             }
-                                        } else {
+                                        } else { // Probably a symbol
                                             $p_len = $pos;
                                             $balance = 1;
                                             while (($p_len < $len) && ($balance != 0)) {
@@ -1046,7 +1046,11 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                             }
                                             $ret = new Tempcode();
                                             $less_pos = $pos - 1;
-                                            $ret->parse_from($comcode, $less_pos, $p_len);
+                                            $_variable_comcode = substr($comcode, $less_pos, $p_len - $less_pos);
+                                            if ($in_semihtml) {
+                                                $_variable_comcode = html_entity_decode($_variable_comcode, ENT_QUOTES, get_charset());
+                                            }
+                                            $ret->parse_from($_variable_comcode, 0, strlen($_variable_comcode), true);
                                             $pos = $p_len;
 
                                             /*if (!$in_html && !$in_semihtml) {     Actually, no, we must explicitly escape symbols in Comcode (except when there's a pre-Tempcode-pass of that Comcode / inside tag attributes / inside non-textual areas)

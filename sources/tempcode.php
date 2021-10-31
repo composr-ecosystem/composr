@@ -1463,7 +1463,7 @@ class Tempcode
      * @param  integer $pos Start position of input string
      * @param  integer $len End position of input string
      */
-    public function parse_from(&$code, &$pos, &$len)
+    public function parse_from($code, $pos, $len)
     {
         $this->cached_output = null;
         require_code('tempcode_compiler');
