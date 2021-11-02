@@ -738,8 +738,8 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>Find if this is a virtualised page load, via something like the <kbd>main_include_module</kbd> block</td>
 		</tr>
 		<tr style="background: #FFDDDD">
-			<td>{$_POST,title}</td>
-			<td>Extract the requested script POST parameter</td>
+			<td>{$KEEP_POST}</td>
+			<td>Create hidden form inputs to relay POST data from the current POST environment to where a form is pointing to</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$_POSTED}</td>
