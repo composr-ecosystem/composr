@@ -619,7 +619,13 @@ function parse_translated_text(string $table, array &$row, string $field_name, ?
         }
     } else {
         $map = _lang_remap($field_name, $entry, $row[$field_name], $db, true, null, $row[$field_name . '__source_user'], $as_admin, true);
-        $db->query_update($table, $map, $row, '', 1);
+        $row_simplified = [];
+        foreach ($row as $key => $val) {
+            if ((preg_match('#__(text_parsed|source_user)$#', $key) == 0) && ($key != $field_name)) {
+                $row_simplified[$key] = $val;
+            }
+        }
+        $db->query_update($table, $map, $row_simplified, '', 1);
         $row = $map + $row;
 
         if ($SEARCH_QUERY_TERMS !== null) {
