@@ -1476,6 +1476,10 @@ function _look_for_match_key_message(string $natural_text, bool $only_if_zone = 
             $message_raw = get_translated_text($match_key['k_message']);
             $message = get_translated_tempcode('match_key_messages', $match_key, 'k_message');
 
+            if ($message->evaluate() == '') {
+                continue;
+            }
+
             // Maybe it is actually a redirect
             if ((strpos($message_raw, "\n") === false) && (strpos($message_raw, ' ') === false)) {
                 if (preg_match('#^https?://#', $message_raw) != 0) { // Looks like a URL
