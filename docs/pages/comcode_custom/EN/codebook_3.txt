@@ -626,6 +626,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]edit_with_my_comcode_perms[/tt] -- set this to '1' if content you edit should display with your Comcode permissions. Only enable this if you trust yourself to spot XSS attacks.
   - [tt]site_location[/tt] -- a real-world address for where your website is, sometimes used in metadata.
   - [tt]google_news_urls[/tt] -- set this to '1' if news URLs should contain a Google-News-friendly entry ID.
+  - [tt]news_categories_blocked[/tt] -- set this to a comma-separated list of news category IDs if you do not want those to be selectable; useful for keeping legacy news categories out of the UI for the current editing team.
   - [tt]enable_delayed_inserts[/tt] -- set this to '1' to enable MySQL delayed inserts. Delayed inserts can cause a very small performance improvement if log calculations happen quite regularly; however they only work on MyISAM tables and are deprecated as of MySQL 5.6
   - [tt]disable_cannot_access_url_messages[/tt] -- set this to '1' to turn off attached messages about broken URLs that Composr tries to process
   - [tt]force_spell_checker[/tt] -- set to 'pspell' or 'enchant' to force that particular spell-checker, rather than auto-detecting

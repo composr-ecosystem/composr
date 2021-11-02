@@ -305,6 +305,9 @@ function create_selection_list_news_categories($it = null, bool $show_all_person
         $query_cache[$where] = [$count, $_cats];
     }
 
+    $_blocked = get_value('news_categories_blocked');
+    $blocked = empty($_blocked) ? [] : array_map('intval', explode(',', $_blocked));
+
     $categories_non_blogs = new Tempcode();
     $categories_blogs = new Tempcode();
     $add_cat = true;
@@ -314,6 +317,10 @@ function create_selection_list_news_categories($it = null, bool $show_all_person
     foreach ($_cats as $cat) {
         if ($cat['nc_owner'] == get_member()) {
             $add_cat = false;
+        }
+
+        if (($it !== $cat['n_id']) && (in_array($cat['n_id'], $blocked))) {
+            continue;
         }
 
         if (!has_category_access(get_member(), 'news', strval($cat['n_id']))) {
