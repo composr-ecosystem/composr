@@ -11,7 +11,7 @@ if (boolVal('{$VALUE_OPTION;,commercial_spellchecker}')) {
 }
 toolbar.push(toolbarEditActions);
 toolbar.push(['Undo', 'Redo', precisionEditing ? '-' : null, precisionEditing ? 'Find' : null, precisionEditing ? 'Replace' : null, ((document.body.spellcheck !== undefined) ? 'spellchecktoggle' : null), '-', precisionEditing ? 'SelectAll' : null, 'RemoveFormat']);
-toolbar.push(['Link', 'Unlink', (precisionEditing ? 'composr_page' : null)]);
+toolbar.push(['Link', 'Unlink', 'Anchor', (precisionEditing ? 'composr_page' : null)]);
 toolbar.push(precisionEditing ? '/' : '-');
 var formatting = ['Bold', 'Italic', 'Strike', '-', precisionEditing ? 'Subscript' : null, (precisionEditing ? 'Superscript' : null)];
 toolbar.push(formatting);
