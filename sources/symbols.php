@@ -2285,7 +2285,7 @@ function ecv_COMMA_LIST_GET(string $lang, array $escaped, array $param) : string
 
     if (isset($param[1])) {
         require_code('blocks');
-        $values = block_params_str_to_arr($param[0]);
+        $values = block_params_str_to_arr($param[0], !empty($param[2]));
         $value = isset($values[$param[1]]) ? $values[$param[1]] : '';
     }
 
