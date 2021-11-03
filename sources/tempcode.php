@@ -45,6 +45,7 @@ function init__tempcode()
         define('CSS_ESCAPED', 13); // To stop CSS injection
         define('UL2_ESCAPED', 14); // rawurlencode
         define('PURE_STRING', 16); // Used to indicating we just put something directly into the output. Works with __toString or normal strings. Does no escaping.
+        define('NO_OUTPUT', 17); // Process but do not output
 
         define('TC_SYMBOL', 0);
         define('TC_KNOWN', 1); // Either Tempcode or string
@@ -656,6 +657,8 @@ function apply_tempcode_escaping(array $escaped, string &$value) : string
             $value = preg_replace('#[^\w\#\.\-\%]#', '_', $value);
         } elseif ($escape === NAUGHTY_ESCAPED) {
             $value = filter_naughty_harsh($value, true);
+        } elseif ($escape === NO_OUTPUT) {
+            $value = '';
         }
     }
     if (($GLOBALS['XSS_DETECT']) && (!empty($escaped))) {
@@ -709,6 +712,8 @@ function apply_tempcode_escaping_inline(array $escaped, string $value) : string
             $value = preg_replace('#[^\w\#\.\-\%]#', '_', $value);
         } elseif ($escape === NAUGHTY_ESCAPED) {
             $value = filter_naughty_harsh($value, true);
+        } elseif ($escape === NO_OUTPUT) {
+            $value = '';
         }
     }
     if (($GLOBALS['XSS_DETECT']) && (!empty($escaped))) {

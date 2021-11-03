@@ -277,7 +277,7 @@ function compile_template(string $data, string $template_name, string $theme, st
     require_code('lang');
     require_code('urls');
     $cl = fallback_lang();
-    $bits = array_values(preg_split('#(?<!\\\\)(\{(?![A-Z][a-z])(?=[\dA-Z\$\+\!_]+[\.`%\*=\;\#\-~\^\|\'!&/@+]*))|((?<!\\\\),)|((?<!\\\\)\})#', $data, -1, PREG_SPLIT_DELIM_CAPTURE));  // One error e-mail showed on a server it had weird indexes, somehow. Hence the array_values call to reindex it
+    $bits = array_values(preg_split('#(?<!\\\\)(\{(?![A-Z][a-z])(?=[\dA-Z\$\+\!_]+[\.`%\*=\;\#\-~\^\|\'!&/@+>]*))|((?<!\\\\),)|((?<!\\\\)\})#', $data, -1, PREG_SPLIT_DELIM_CAPTURE));  // One error e-mail showed on a server it had weird indexes, somehow. Hence the array_values call to reindex it
     $count = count($bits);
     $stack = [];
     $current_level_mode = PARSE_NO_MANS_LAND;
@@ -368,7 +368,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                 }
 
                 // Handle the level we just closed
-                $_escaped = str_split(preg_replace('#[^:\.`%\*=\;\#\-~\^\|\'&/@+]:?#', '', $_first_param)); // :? is so that the ":" in language string codenames does not get considered an escape
+                $_escaped = str_split(preg_replace('#[^:\.`%\*=\;\#\-~\^\|\'&/@+>]:?#', '', $_first_param)); // :? is so that the ":" in language string codenames does not get considered an escape
                 $escaped = [];
                 $no_preprocess = false;
                 foreach ($_escaped as $e) {
@@ -419,6 +419,9 @@ function compile_template(string $data, string $template_name, string $theme, st
                         case '+':
                             $escaped[] = PURE_STRING; // A performance marker
                             break;
+                        case '>':
+                            $escaped[] = NO_OUTPUT; // Process but do not output
+                            break;
 
                         // This is used as a hint to not preprocess
                         case '-':
@@ -444,7 +447,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                     $_opener_params .= implode('.', $oparam);
                 }
 
-                $first_param = preg_replace('#[`%*=;\#\-~\^|\'!&./@+]+(")?$#', '$1', $_first_param);
+                $first_param = preg_replace('#[`%*=;\#\-~\^|\'!&./@+>]+(")?$#', '$1', $_first_param);
                 switch ($past_level_mode) {
                     case PARSE_SYMBOL:
                         if (!$no_preprocess) {
