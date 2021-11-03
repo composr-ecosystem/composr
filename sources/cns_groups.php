@@ -159,7 +159,7 @@ function cns_get_all_default_groups(bool $include_primary = false, bool $include
         }
 
         if (empty($groups)) {
-            $groups[] = db_get_first_id() + 7; // HACKHACK: It should never be in the situation, as there is no g_is_default row, so we use a hard-coded group
+            $groups[] = db_get_first_id() + 7; // FUDGE: It should never be in the situation, as there is no g_is_default row, so we use a hard-coded group
         }
     }
 
