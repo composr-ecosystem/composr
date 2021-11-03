@@ -222,7 +222,7 @@ function static_cache(int $mode)
         $is_mobile = is_mobile();
     } else {
         // The set of browsers
-        $browsers = [
+        $mobile_agents = [
             // Implication by technology claims
             'WML',
             'WAP',
@@ -232,7 +232,6 @@ function static_cache(int $mode)
             // Generics
             'Mobile',
             'Smartphone',
-            'WebTV',
 
             // Well known/important browsers/brands
             'Mobile Safari', // Usually Android
@@ -244,7 +243,14 @@ function static_cache(int $mode)
             'Windows Phone',
             'nook browser', // Barnes and Noble
         ];
-        $is_mobile = (preg_match('#' . implode('|', $browsers) . '#', $_SERVER['HTTP_USER_AGENT']) != 0);
+        $tablets = [
+            'iPad',
+            'tablet',
+            'kindle',
+            'silk',
+        ];
+        $is_tablet = (preg_match('/(' . implode('|', $tablets) . ')/i', $user_agent) != 0) || (strpos($user_agent, 'Android') !== false) && (strpos($user_agent, 'Mobile') === false);
+        $is_mobile = (preg_match('/(' . implode('|', $mobile_agents) . ')/i', $user_agent) != 0) && (!$is_tablet);
     }
 
     // Work out cache path (potentially will search a few places, based on priority)

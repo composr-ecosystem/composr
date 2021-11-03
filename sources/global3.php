@@ -3277,73 +3277,78 @@ function browser_matches(string $code, ?string $comcode = null) : bool
 
 /**
  * Look at the user's browser, and decide if they are viewing on a mobile device or not.
+ * A mobile device can generally be considered a touchscreen device with a screen smaller than a desktop/laptop.
+ * There is no perfect delineation.
  *
  * @param  ?string $user_agent The user agent (null: get from environment, current user's browser)
+ * @param  boolean $include_tablets Whether to include tablets (which generally would be served the desktop version of a website)
  * @param  boolean $truth Whether to always tell the truth (even if the current page does not have mobile support)
  * @return boolean Whether the user is using a mobile device
  */
-function is_mobile(?string $user_agent = null, bool $truth = false) : bool
+function is_mobile(?string $user_agent = null, bool $include_tablets = false, bool $truth = false) : bool
 {
-    $user_agent_given = ($user_agent !== null);
+    static $is_mobile_cache = [];
 
-    static $is_mobile_cache = null;
-    static $is_mobile_truth_cache = null;
-
-    if (!$user_agent_given) {
-        if (($truth ? $is_mobile_truth_cache : $is_mobile_cache) !== null) {
-            return $truth ? $is_mobile_truth_cache : $is_mobile_cache;
-        }
+    if (isset($is_mobile_cache[$user_agent][$include_tablets][$truth])) {
+        return $is_mobile_cache[$user_agent][$include_tablets][$truth];
     }
 
     if ((!function_exists('get_option')) || (get_theme_option('mobile_support') == '0')) {
         if (function_exists('get_option')) {
-            $is_mobile_cache = false;
-            $is_mobile_truth_cache = false;
+            $is_mobile_cache[null][false][false] = false;
+            $is_mobile_cache[null][false][true] = false;
+            $is_mobile_cache[null][true][false] = false;
+            $is_mobile_cache[null][true][true] = false;
+            $is_mobile_cache[$user_agent][false][false] = false;
+            $is_mobile_cache[$user_agent][false][true] = false;
+            $is_mobile_cache[$user_agent][true][false] = false;
+            $is_mobile_cache[$user_agent][true][true] = false;
         }
         return false;
     }
 
     if ($user_agent === null) {
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $user_agent_given = false;
+    } else {
+        $user_agent_given = true;
     }
 
+    // If we are listing mobile pages, check to see if the current page was not listed
     global $SITE_INFO;
     if (((!isset($SITE_INFO['assume_full_mobile_support'])) || ($SITE_INFO['assume_full_mobile_support'] != '1')) && (isset($GLOBALS['FORUM_DRIVER'])) && (!$truth) && (running_script('index')) && (($theme = $GLOBALS['FORUM_DRIVER']->get_theme()) != 'default')) {
         $mobile_pages = get_theme_option('mobile_pages');
         if ($mobile_pages != '') {
             $page = get_param_string('page', ''); // We intentionally do not use get_page_name, as that requires URL Monikers to work, which are not available early in boot (as needed by static cache)
 
-            if (substr($mobile_pages, 0, 1) == '#' && substr($mobile_pages, -1) == '#') {
-                if (preg_match($mobile_pages, get_zone_name() . ':' . $page) == 0) {
-                    $is_mobile_cache = false;
-                    return false;
-                }
-            } else {
-                if (preg_match('#(^|,)\s*' . str_replace('#', '\#', preg_quote($page)) . '\s*(,|$)#', $mobile_pages) == 0 && preg_match('#(^|,)\s*' . str_replace('#', '\#', preg_quote(get_zone_name() . ':' . $page)) . '\s*(,|$)#', $mobile_pages) == 0) {
-                    $is_mobile_cache = false;
-                    return false;
-                }
+            if (
+                (substr($mobile_pages, 0, 1) == '#' && substr($mobile_pages, -1) == '#' && preg_match($mobile_pages, get_zone_name() . ':' . $page) == 0) ||
+                ((substr($mobile_pages, 0, 1) != '#' || substr($mobile_pages, -1) != '#') && preg_match('#(^|,)\s*' . str_replace('#', '\#', preg_quote($page)) . '\s*(,|$)#', $mobile_pages) == 0 && preg_match('#(^|,)\s*' . str_replace('#', '\#', preg_quote(get_zone_name() . ':' . $page)) . '\s*(,|$)#', $mobile_pages) == 0)
+            ) {
+                $is_mobile_cache[null][false][false] = false;
+                $is_mobile_cache[null][true][false] = false;
+                $is_mobile_cache[$user_agent][false][false] = false;
+                $is_mobile_cache[$user_agent][true][false] = false;
+                return false;
             }
         }
     }
 
+    // If specified by URL
     if (!$user_agent_given && !$truth) {
         $val = get_param_integer('keep_mobile', null);
         if ($val !== null) {
             $result = ($val == 1);
             if (isset($GLOBALS['FORUM_DRIVER'])) {
-                if ($truth) {
-                    $is_mobile_truth_cache = $result;
-                } else {
-                    $is_mobile_cache = $result;
-                }
+                $is_mobile_cache[null][false][false] = $result;
+                $is_mobile_cache[null][true][false] = $result;
             }
             return $result;
         }
     }
 
     // The set of browsers (also change in static_cache.php)
-    $browsers = [
+    $mobile_agents = [
         // Implication by technology claims
         'WML',
         'WAP',
@@ -3353,7 +3358,6 @@ function is_mobile(?string $user_agent = null, bool $truth = false) : bool
         // Generics
         'Mobile',
         'Smartphone',
-        'WebTV',
 
         // Well known/important browsers/brands
         'Mobile Safari', // Usually Android
@@ -3366,9 +3370,11 @@ function is_mobile(?string $user_agent = null, bool $truth = false) : bool
         'Windows Phone',
         'nook browser', // Barnes and Noble
     ];
-
-    $exceptions = [
+    $tablets = [
         'iPad',
+        'tablet',
+        'kindle',
+        'silk',
     ];
 
     if (((!isset($SITE_INFO['no_extra_mobiles'])) || ($SITE_INFO['no_extra_mobiles'] != '1')) && (is_file(get_file_base() . '/text_custom/mobile_devices.txt'))) {
@@ -3376,23 +3382,18 @@ function is_mobile(?string $user_agent = null, bool $truth = false) : bool
         $mobile_devices = cms_parse_ini_file_fast((get_file_base() . '/text_custom/mobile_devices.txt'));
         foreach ($mobile_devices as $key => $val) {
             if ($val == 1) {
-                $browsers[] = $key;
+                $mobile_agents[] = $key;
             } else {
-                $exceptions[] = $key;
+                $tablets[] = $key;
             }
         }
     }
 
-    // The test
-    $result = (preg_match('/(' . implode('|', $browsers) . ')/i', $user_agent) != 0) && (preg_match('/(' . implode('|', $exceptions) . ')/i', $user_agent) == 0);
-    if (!$user_agent_given) {
-        if (isset($GLOBALS['FORUM_DRIVER'])) {
-            if ($truth) {
-                $is_mobile_truth_cache = $result;
-            } else {
-                $is_mobile_cache = $result;
-            }
-        }
+    // The regular test
+    $is_tablet = (preg_match('/(' . implode('|', $tablets) . ')/i', $user_agent) != 0) || (strpos($user_agent, 'Android') !== false) && (strpos($user_agent, 'Mobile') === false);
+    $result = (preg_match('/(' . implode('|', $mobile_agents) . ')/i', $user_agent) != 0) && (($include_tablets) || (!$is_tablet));
+    if (isset($GLOBALS['FORUM_DRIVER'])) {
+        $is_mobile_cache[$user_agent][$include_tablets][$truth] = $result;
     }
 
     return $result;

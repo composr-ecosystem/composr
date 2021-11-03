@@ -49,8 +49,8 @@
 		<section class="box box---preview-script global-middle-faux"><div class="box-inner">
 			<h2>{!PREVIEW}</h2>
 
-			<div class="preview-box{+START,IF,{$AND,{$NOT,{$MOBILE,1}},{$MOBILE}}} mobile{+END}">
-				<div id="preview-box-inner" class="preview-box-inner {+START,IF,{HAS_DEVICE_PREVIEW_MODES}}{+START,IF,{$AND,{$NOT,{$MOBILE,1}},{$MOBILE}}}js-preview-box-scroll{+END}{+END}">
+			<div class="preview-box{+START,IF,{$AND,{$NOT,{$MOBILE,0,1}},{$MOBILE}}} mobile{+END}">
+				<div id="preview-box-inner" class="preview-box-inner {+START,IF,{HAS_DEVICE_PREVIEW_MODES}}{+START,IF,{$AND,{$NOT,{$MOBILE,0,1}},{$MOBILE}}}js-preview-box-scroll{+END}{+END}">
 					{$TRIM,{OUTPUT}}
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 
 					{HIDDEN}
 
-					{+START,IF,{$NOT,{$MOBILE,1}}}
+					{+START,IF,{$NOT,{$MOBILE,0,1}}}
 						{+START,IF,{$THEME_OPTION,mobile_support}}
 							<p>
 								<label for="mobile_version">{!MOBILE_VERSION}: <input type="checkbox" id="mobile_version" name="_mobile_version" data-click-pd="1" class="js-click-preview-mobile-button"{+START,IF,{$MOBILE}} checked="checked"{+END} /></label>

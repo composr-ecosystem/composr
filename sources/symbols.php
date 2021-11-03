@@ -5686,7 +5686,7 @@ function ecv_EXTEND_URL(string $lang, array $escaped, array $param) : string
  */
 function ecv_MOBILE(string $lang, array $escaped, array $param) : string
 {
-    $value = is_mobile(null, !empty($param[0])) ? '1' : '0';
+    $value = is_mobile(null, !empty($param[0]), !empty($param[1])) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
@@ -5706,7 +5706,7 @@ function ecv_MOBILE(string $lang, array $escaped, array $param) : string
  */
 function ecv_DESKTOP(string $lang, array $escaped, array $param) : string
 {
-    $value = !is_mobile(null, !empty($param[0])) ? '1' : '0';
+    $value = !is_mobile(null, !empty($param[0]), !empty($param[1])) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);

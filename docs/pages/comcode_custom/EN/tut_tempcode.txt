@@ -762,8 +762,8 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>HTML code for metadata-linkage to translations</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$MOBILE}</td>
-			<td>Whether a Smartphone (for example) is being used. Composr is designed to be pretty good at detecting this, but if you need to specify additional user agent strings you can make a <kbd>text_custom/mobile_devices.txt</kbd> file with <kbd>mobileuseragentsubstring=0|1</kbd> lines in it (e.g. <kbd>iphone=1</kbd> for iPhone to be detected as mobile, and <kbd>ipad=0</kbd> for iPad to not be detected as mobile). If you want to detect smartphones in CSS we have a separate <kbd>CSS_MODE</kbd> directive</td>
+			<td>{$MOBILE,0}</td>
+			<td>Whether a mobile device is being used. The first parameter should be 1 if you are considering tablets mobile devices. Composr is designed to be pretty good at detecting this, but if you need to specify additional user agent strings you can make a <kbd>text_custom/mobile_devices.txt</kbd> file with <kbd>mobileuseragentsubstring=0|1</kbd> lines in it (e.g. <kbd>iphone=1</kbd> for iPhone to be detected as mobile, and <kbd>ipad=0</kbd> for iPad to be detected as a tablet). If you want to detect smartphones in CSS we have a separate <kbd>CSS_MODE</kbd> directive</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$DESKTOP}</td>
