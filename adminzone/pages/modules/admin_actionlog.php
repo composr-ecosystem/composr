@@ -168,7 +168,7 @@ class Module_admin_actionlog
             list($username, $action_count) = $user_actions;
             $member_choice_list->attach(form_input_list_entry(strval($id), false, do_lang(($action_count == 1) ? 'ACTIONLOG_USERCOUNT_UNI' : 'ACTIONLOG_USERCOUNT', $username, integer_format($action_count, 0))));
         }
-        $fields->attach(form_input_list(do_lang_tempcode('USERNAME'), '', 'id', $member_choice_list, null, true));
+        $fields->attach(form_input_list(do_lang_tempcode('BY'), '', 'id', $member_choice_list, null, true));
 
         // Possible selections for action type filter
         $_action_type_list = [];
@@ -243,7 +243,7 @@ class Module_admin_actionlog
 
         require_code('templates_results_table');
         $field_titles = [
-            do_lang_tempcode('USERNAME'),
+            do_lang_tempcode('BY'),
             do_lang_tempcode('DATE_TIME'),
             do_lang_tempcode('ACTION'),
             do_lang_tempcode('DETAILS'),
@@ -449,7 +449,7 @@ class Module_admin_actionlog
         }
 
         $fields = [
-            'USERNAME' => $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['member_id'], '', false),
+            'BY' => $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['member_id'], '', false),
             'DATE_TIME' => get_timezoned_date_time($row['date_and_time']),
             'ACTION' => $type_str,
             'PARAMETER_A' => ($row['param_a'] === null) ? '' : $row['param_a'],
