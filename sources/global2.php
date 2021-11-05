@@ -351,6 +351,10 @@ function init__global2()
     // More critical things
     require_code('caches');
     require_code('database'); // There's nothing without the database
+    if (cloud_mode() != '') {
+        require_code('cloud');
+        enable_cloud_fs();
+    }
     require_code('config'); // Config is needed for much active stuff
     if ((!isset($SITE_INFO['known_suexec'])) || ($SITE_INFO['known_suexec'] == '0')) {
         if (ip_banned(get_ip_address())) {
@@ -390,7 +394,7 @@ function init__global2()
         static_cache($static_cache_mode);
     }
 
-    if (get_param_integer('keep_debug_fs', 0) != 0) {
+    if ((cloud_mode() == '') && (get_param_integer('keep_debug_fs', 0) != 0)) {
         require_code('debug_fs');
         enable_debug_fs();
     }
@@ -715,6 +719,23 @@ function fixup_bad_php_env_vars()
             $_SERVER['PHP_AUTH_USER'] = $_SERVER['REMOTE_USER'];
         }
     }
+}
+
+/**
+ * Find the cloud mode we are running as.
+ *
+ * @return string Cloud mode
+ * @set "" primary replica
+ */
+function cloud_mode()
+{
+    if (empty($SITE_INFO['cloud_mode'])) {
+        return '';
+    }
+    if ($SITE_INFO['cloud_mode'] == 'primary') {
+        return 'primary';
+    }
+    return 'replica';
 }
 
 /**

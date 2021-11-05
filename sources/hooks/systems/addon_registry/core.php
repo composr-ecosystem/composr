@@ -1468,6 +1468,7 @@ class Hook_addon_registry_core
             'themes/default/images/icons_monochrome/admin/edit.svg',
             'sources/hooks/systems/startup/index.html',
             'sources_custom/hooks/systems/startup/index.html',
+            'sources/cloud.php',
             'data/confirm_session.php',
             'data/cron_bridge.php',
             'data/cron_bridge.sh',

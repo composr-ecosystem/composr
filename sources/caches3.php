@@ -193,8 +193,10 @@ function erase_comcode_cache()
 
 /**
  * Erase the language cache.
+ *
+ * @param  boolean $local_only Only clear the local file caching
  */
-function erase_cached_language()
+function erase_cached_language(bool $local_only = false)
 {
     static $done_once = false;
     global $ALLOW_DOUBLE_DECACHE;
@@ -254,11 +256,17 @@ function erase_cached_language()
     $LANGS_REQUESTED = $langs_requested_copy;
     require_all_open_lang_files();
 
+    cms_profile_end_for('erase_cached_language');
+
+    if ($local_only) {
+        return;
+    }
+
     if (class_exists('Self_learning_cache')) {
         Self_learning_cache::erase_smart_cache();
     }
 
-    cms_profile_end_for('erase_cached_language');
+    cloud_propagate_op('erase_cached_language');
 }
 
 /**
@@ -268,8 +276,9 @@ function erase_cached_language()
  * @param  ?array $only_templates Only erase specific templates with the following filename, excluding suffix(es) (null: erase all)
  * @param  ?string $raw_file_regexp The original template must contain a match for this regular expression (null: no restriction)
  * @param  boolean $rebuild_some_deleted_files Whether to rebuild some files that are deleted (be very careful about this, it is high-intensity, and may break due to in-memory caches still existing)
+ * @param  boolean $local_only Only clear the local file caching
  */
-function erase_cached_templates(bool $preserve_some = false, ?array $only_templates = null, ?string $raw_file_regexp = null, bool $rebuild_some_deleted_files = false)
+function erase_cached_templates(bool $preserve_some = false, ?array $only_templates = null, ?string $raw_file_regexp = null, bool $rebuild_some_deleted_files = false, bool $local_only = false)
 {
     if ($only_templates === []) {
         return; // Optimisation
@@ -482,11 +491,17 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
         delete_values($values);
     }
 
+    cms_profile_end_for('erase_cached_templates');
+
+    if ($local_only) {
+        return;
+    }
+
     if ((class_exists('Self_learning_cache')) && ($raw_file_regexp === null) && ($only_templates === [])) {
         Self_learning_cache::erase_smart_cache();
     }
 
-    cms_profile_end_for('erase_cached_templates');
+    cloud_propagate_op('erase_cached_templates');
 
     // Rebuild ones needed for this session
     if ((!$preserve_some) && (!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!running_script('upgrader'))) {

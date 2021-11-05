@@ -234,6 +234,9 @@ function do_access(string $given_password)
 
         'gae_application' => '<em>Google App Engine:</em> Application name',
         'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name',
+
+        'cloud_mode' => '<em>Cloud:</em> The cloud mode, either blank (not on cloud), "primary" (where most Cron hooks run from), or "replica".',
+        'nas_directory' => '<em>Cloud:</em> <abbr title="Network Attached Storage">NAS</abbr> path (either absolute or relative).',
     ];
 
     global $SITE_INFO;

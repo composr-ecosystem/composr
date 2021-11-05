@@ -374,37 +374,48 @@ class Self_learning_cache
 
     /**
      * Called by various other erase_* functions that know the smart cache may be involved.
+     *
+     * @param  boolean $local_only Only clear the local file caching
      */
-    public static function erase_smart_cache()
+    public static function erase_smart_cache(bool $local_only = false)
     {
-        if (!Self_learning_cache::is_on()) {
+        $on = Self_learning_cache::is_on();
+
+        if ($on) {
+            static $done_once = false;
+            global $ALLOW_DOUBLE_DECACHE;
+            if (!$ALLOW_DOUBLE_DECACHE) {
+                if ($done_once) {
+                    return;
+                }
+            }
+            $done_once = true;
+
+            $dh = @opendir(get_custom_file_base() . '/caches/self_learning');
+            if ($dh !== false) {
+                while (($f = readdir($dh)) !== false) {
+                    if (substr($f, -4) == '.gcd') {
+                        @unlink(get_custom_file_base() . '/caches/self_learning/' . $f);
+                    }
+                }
+                closedir($dh);
+            }
+
+            global $SMART_CACHE;
+            if ($SMART_CACHE !== null) {
+                $SMART_CACHE->invalidate();
+            }
+        }
+
+
+        if ($local_only) {
             return;
         }
 
-        static $done_once = false;
-        global $ALLOW_DOUBLE_DECACHE;
-        if (!$ALLOW_DOUBLE_DECACHE) {
-            if ($done_once) {
-                return;
-            }
-        }
-        $done_once = true;
+        cloud_propagate_op('Self_learning_cache::erase_smart_cache');
 
-        $dh = @opendir(get_custom_file_base() . '/caches/self_learning');
-        if ($dh !== false) {
-            while (($f = readdir($dh)) !== false) {
-                if (substr($f, -4) == '.gcd') {
-                    @unlink(get_custom_file_base() . '/caches/self_learning/' . $f);
-                }
-            }
-            closedir($dh);
-        }
-
-        erase_persistent_cache();
-
-        global $SMART_CACHE;
-        if ($SMART_CACHE !== null) {
-            $SMART_CACHE->invalidate();
+        if ($on) {
+            erase_persistent_cache();
         }
     }
 }
@@ -496,8 +507,10 @@ function persistent_cache_delete($key, bool $substring = false)
 
 /**
  * Remove all data from the persistent cache and static cache.
+ *
+ * @param  boolean $local_only Only clear the local file caching
  */
-function erase_persistent_cache()
+function erase_persistent_cache(bool $local_only = false)
 {
     static $done_once = false;
     global $ALLOW_DOUBLE_DECACHE;
@@ -533,6 +546,10 @@ function erase_persistent_cache()
         closedir($d);
     }
 
+    if ($local_only) {
+        return;
+    }
+
     erase_static_cache();
 
     require_code('files');
@@ -548,12 +565,16 @@ function erase_persistent_cache()
         return;
     }
     $PERSISTENT_CACHE->flush();
+
+    cloud_propagate_op('erase_persistent_cache');
 }
 
 /**
  * Remove all data from the static cache.
+ *
+ * @param  boolean $local_only Only clear the local file caching
  */
-function erase_static_cache()
+function erase_static_cache(bool $local_only = false)
 {
     $path = get_custom_file_base() . '/caches/static';
     if (!file_exists($path)) {
@@ -567,6 +588,12 @@ function erase_static_cache()
         }
     }
     closedir($d);
+
+    if ($local_only) {
+        return;
+    }
+
+    cloud_propagate_op('erase_static_cache');
 }
 
 /**
@@ -948,4 +975,21 @@ function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : arr
         $rets[] = $ret;
     }
     return $rets;
+}
+
+/**
+ * Propagate an operation to the cloud.
+ * Currently this is only for decache operations, but it may expand in the future.
+ *
+ * @param  string $type Operation type
+ */
+function cloud_propagate_op($type)
+{
+    if ((cloud_mode() != '') && ($GLOBALS['SITE_DB']->table_exists('cloud_propagation_ops'))) {
+        $GLOBALS['SITE_DB']->query_insert('cloud_propagation_ops', [
+            'op_type' => $type,
+            'op_timestamp' => time(),
+            'op_originating_host' => gethostname(),
+        ]);
+    }
 }

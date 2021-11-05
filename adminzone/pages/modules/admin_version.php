@@ -92,6 +92,8 @@ class Module_admin_version
         $GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality');
         $GLOBALS['SITE_DB']->drop_table_if_exists('cpages_fulltext_index');
         $GLOBALS['SITE_DB']->drop_table_if_exists('daily_visits');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('propagation_dirs');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('propagation_files');
 
         /* We don't want to get rid of on-disk data when reinstalling
         $zones = find_all_zones(true);
@@ -1192,6 +1194,48 @@ class Module_admin_version
                 'd_member_id' => '*MEMBER',
                 'd_date_and_time' => 'TIME',
             ]);
+
+            $GLOBALS['SITE_DB']->create_table('cpages_fulltext_index', [
+                'i_zone_name' => '*ID_TEXT',
+                'i_page_name' => '*ID_TEXT',
+
+                'i_lang' => '*LANGUAGE_NAME',
+                'i_ngram' => '*INTEGER',
+                'i_ac' => '*INTEGER',
+
+                'i_occurrence_rate' => 'REAL',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_table('cloud_propagation_dirs', [
+                'id' => '*AUTO',
+                'op_type' => 'SHORT_TEXT', // create|touch|move|delete
+                'op_timestamp' => 'TIME',
+                'dir_path' => 'PATH',
+                'dir_perms' => '?INTEGER',
+                'op_data' => 'LONG_TEXT', // a new directory path for a move operation
+                'op_originating_host' => 'ID_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'dupe_delete', ['op_type', 'dir_path']);
+
+            $GLOBALS['SITE_DB']->create_table('cloud_propagation_files', [
+                'id' => '*AUTO',
+                'op_type' => 'SHORT_TEXT', // create|touch|move|delete
+                'op_timestamp' => 'TIME',
+                'file_path' => 'PATH',
+                'file_mtime' => '?INTEGER',
+                'file_perms' => '?INTEGER',
+                'op_data' => 'LONG_TEXT', // base64 encoded file contents, or a new file path for a move operation
+                'op_originating_host' => 'ID_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'dupe_delete', ['op_type', 'file_path']);
+
+            $GLOBALS['SITE_DB']->create_table('cloud_propagation_ops', [
+                'id' => '*AUTO',
+                'op_type' => 'SHORT_TEXT', // erase_persistent_cache|erase_static_cache|erase_cached_language|erase_cached_templates|Self_learning_cache::erase_smart_cache
+                'op_timestamp' => 'TIME',
+                'op_originating_host' => 'ID_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_ops', 'dupe_delete', ['op_type']);
         }
     }
 
