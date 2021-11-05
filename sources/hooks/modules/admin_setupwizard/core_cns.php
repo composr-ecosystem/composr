@@ -51,7 +51,7 @@ class Hook_sw_core_cns
             $settings['have_default_full_emoticon_set'] = (count($test) != 0) ? '1' : '0';
 
             $have_default_cpf_set = false;
-            $fields_l = array('im_jabber', 'im_skype', 'interests', 'location', 'occupation', 'sn_google', 'sn_facebook', 'sn_twitter');
+            $fields_l = array('im_jabber', 'im_skype', 'interests', 'location', 'occupation'/*, 'sn_google'*/, 'sn_facebook', 'sn_twitter');
             foreach ($fields_l as $field) {
                 $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => do_lang('DEFAULT_CPF_' . $field . '_NAME')));
                 if (!is_null($test)) {
