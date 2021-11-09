@@ -472,7 +472,7 @@ Useful Composr logs include:
  - Tasks log, if enabled (enable it via creating an empty writable [tt]data_custom/tasks.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Permission checks, if enabled (useful for debugging why accessing is failing) (enable it via creating an empty writable [tt]data_custom/permission_checks.log[/tt] file; can view from Admin Zone > Audit > Low-level logging); covered in the [page="_SARCH:tut_permissions"]Access control and privileges[/page] tutorial
  - Queries running (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/queries.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
- - Disk profiling (debugging performance), if enabled (enable it via creating an empty writable [tt]data_custom/debug_fs.log[/tt] file and using the [tt]keep_debug_fs[/tt] parameter; can view from Admin Zone > Audit > Low-level logging)
+ - Disk profiling (debugging performance), if enabled.
  - Profiling (debugging performance), if enabled (enable it via creating an empty writable [tt]data_custom/profiling*.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Resource-fs operations (debugging and audit), if enabled (enable it via creating an empty writable [tt]data_custom/resource_fs.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Mail integration (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/mail_integration.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
@@ -768,7 +768,7 @@ The 'keep' parameters available are:
  - [tt]keep_notifications[/tt] -- set this to '0' to suppress sending of notifications (only works if logged in as an administrator)
  - [tt]keep_quick_hybrid[/tt] -- set this to '1' in a quick installer to let the installer read code files from disk while installing if they are there; this allows hot-fixing/hot-debugging of installation bugs
  - [tt]keep_translate_sort[/tt] -- set this to 'recent' to make the content translation interface show recent strings first; useful during debugging
- - [tt]keep_debug_fs[/tt] -- set this to '1', while in the installer, or logged in as an admin, for disk I/O to be slowed and file system case sensitivity to be checked. Or, to a higher number of milliseconds if you want to introduce fake I/O latency. It is for developer filesystem testing.
+ - [tt]keep_debug_fs[/tt] -- set this to '1' for disk I/O to be slowed and file system case sensitivity to be checked. This works in the installer or on the installed site so long as the [tt]$SITE_INFO['debug_fs'] = '1';[/tt] setting is also set in [tt]_config.php[/tt]. Or, to a higher number of milliseconds if you want to introduce fake I/O latency. It is for developer filesystem testing. It is not compatible with any use of system commands, so certain very particular parts of the system that rely on this will not function.
  - [tt]keep_manual_import_config[/tt] -- set this to '1' in the import module to disable automatic detection of the import target's database settings from its filesystem config file (if you don't have it, for example)
  - [tt]keep_composr_fast_custom_index[/tt] -- set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own full-text search, 1 for the Composr fast custom index
  - [tt]keep_check_backdoor_ip_dns[/tt] -- set this to '1' to check against hostnames in the [tt]backdoor_ip[/tt] setting

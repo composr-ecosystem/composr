@@ -394,7 +394,7 @@ function init__global2()
         static_cache($static_cache_mode);
     }
 
-    if ((cloud_mode() == '') && (get_param_integer('keep_debug_fs', 0) != 0)) {
+    if ((cloud_mode() == '') && (get_param_integer('keep_debug_fs', 0) != 0) && (isset($SITE_INFO['debug_fs'])) && ($SITE_INFO['debug_fs'] == '1')) {
         require_code('debug_fs');
         enable_debug_fs();
     }

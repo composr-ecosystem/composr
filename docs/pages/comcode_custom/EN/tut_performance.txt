@@ -1113,8 +1113,13 @@ SELECT the_page,SUM(milliseconds),SUM(milliseconds)/((SELECT config_value FROM o
 
 [title="4"]Filesystem[/title]
 
-If you create a [tt]data_custom/debug_fs.log[/tt] file then all disk activity will be written to it if you load the site with [tt]keep_debug_fs=1[/tt].
+All disk activity can be logged if you:
+1) create a [tt]data_custom/debug_fs.log[/tt] file
+2) put [tt]$SITE_INFO['debug_fs'] = '1';[/tt] in [tt]_config.php[/tt]
+3) load the site with [tt]keep_debug_fs=1[/tt].
 
+You can view the log from Admin Zone > Audit > Low-level logging.
+ 
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_moving"]Moving sites[/page]
