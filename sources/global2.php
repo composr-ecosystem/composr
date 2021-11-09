@@ -352,7 +352,7 @@ function init__global2()
     require_code('caches');
     require_code('database'); // There's nothing without the database
     if (cloud_mode() != '') {
-        require_code('cloud');
+        require_code('cloud_fs');
         enable_cloud_fs();
     }
     require_code('config'); // Config is needed for much active stuff

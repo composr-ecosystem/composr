@@ -24,7 +24,7 @@
  *
  * @ignore
  */
-function init__cloud()
+function init__cloud_fs()
 {
     define('CMS_CLOUD__LOCAL', 1); // Unchanging file hosted on each machine (may be changed by Git of course).
     define('CMS_CLOUD__PROPAGATED', 2); // Copied to all machines via a sync queue (the propagation_dirs & propagation_files tables). Fast local access, but a delay propagating and more local disk space use.
