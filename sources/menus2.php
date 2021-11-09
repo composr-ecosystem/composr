@@ -256,6 +256,7 @@ function add_menu_item($menu_id, $order, $parent, $caption, $url, $check_permiss
     $id = $GLOBALS['SITE_DB']->query_insert('menu_items', $map, true);
 
     if ($menu_id != '_preview') {
+        require_lang('menus');
         log_it('ADD_MENU_ITEM', strval($id), $caption);
 
         if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -304,6 +305,7 @@ function edit_menu_item($id, $menu_id, $order, $parent, $caption, $url, $check_p
     $map += lang_remap_comcode('i_caption_long', $_caption_long, $caption_long);
     $GLOBALS['SITE_DB']->query_update('menu_items', $map, array('id' => $id), '', 1);
 
+    require_lang('menus');
     log_it('EDIT_MENU_ITEM', strval($id), $caption);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -333,6 +335,7 @@ function delete_menu_item($id)
     delete_lang($_caption_long);
 
     if ($menu_id != '_preview') {
+        require_lang('menus');
         log_it('DELETE_MENU_ITEM', strval($id), $caption);
 
         if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {

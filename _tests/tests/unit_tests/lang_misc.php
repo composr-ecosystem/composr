@@ -115,37 +115,57 @@ class lang_misc_test_set extends cms_test_case
     {
         $matches = array();
 
-        $num_matches = preg_match_all('#do\_lang\_tempcode\(\'([^\']*)\'[\),]#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'do_lang_tempcode', $file);
-            $this->check_includes($c, $str, $file);
+        if ((empty($_GET['only'])) || ($_GET['only'] == 'do_lang_tempcode')) {
+            $num_matches = preg_match_all('#do\_lang\_tempcode\(\'([^\']*)\'[\),]#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'do_lang_tempcode', $file);
+                $this->check_includes($c, $str, $file);
+            }
         }
 
-        $num_matches = preg_match_all('#do\_lang\(\'([^\']*)\'[\),]#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'do_lang', $file);
-            $this->check_includes($c, $str, $file);
+        if ((empty($_GET['only'])) || ($_GET['only'] == 'do_lang')) {
+            $num_matches = preg_match_all('#do\_lang\(\'([^\']*)\'[\),]#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'do_lang', $file);
+                $this->check_includes($c, $str, $file);
+            }
         }
 
-        $num_matches = preg_match_all('#do\_notification\_lang\(\'([^\']*)\'[\),]#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'do_lang', $file);
-            $this->check_includes($c, $str, $file);
+        if ((empty($_GET['only'])) || ($_GET['only'] == 'log_it')) {
+            $num_matches = preg_match_all('#log\_it\(\'([^\']*)\'[\),]#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'log_it', $file);
+                $this->check_includes($c, $str, $file);
+            }
         }
 
-        $num_matches = preg_match_all('#get_screen_title\(\'([^\']*)\'\)#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'get_screen_title', $file);
+        if ((empty($_GET['only'])) || ($_GET['only'] == 'do_notification_lang')) {
+            $num_matches = preg_match_all('#do\_notification\_lang\(\'([^\']*)\'[\),]#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'do_notification_lang', $file);
+                $this->check_includes($c, $str, $file);
+            }
         }
 
-        $num_matches = preg_match_all('#[^\\\\]\{\!([\w:]+)[^\}]*\}#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'Tempcode', $file);
+        if ((empty($_GET['only'])) || ($_GET['only'] == 'get_screen_title')) {
+            $num_matches = preg_match_all('#get_screen_title\(\'([^\']*)\'\)#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'get_screen_title', $file);
+                $this->check_includes($c, $str, $file);
+            }
+        }
+
+        if ((empty($_GET['only'])) || ($_GET['only'] == 'Tempcode')) {
+            $num_matches = preg_match_all('#[^\\\\]\{\!([\w:]+)[^\}]*\}#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'Tempcode', $file);
+            }
         }
     }
 

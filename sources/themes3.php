@@ -81,6 +81,7 @@ function actual_delete_theme_image($id, $theme = null, $lang = null)
         cleanup_after_theme_image_file_removal($old_url);
     }
 
+    require_lang('themes');
     log_it('DELETE_THEME_IMAGE', $id);
 }
 
@@ -224,6 +225,8 @@ function actual_rename_theme($theme, $to)
         $GLOBALS['FORUM_DB']->query_update('f_members', array('m_theme' => $to), array('m_theme' => $theme));
     }
     $GLOBALS['SITE_DB']->query_update('zones', array('zone_theme' => $to), array('zone_theme' => $theme));
+
+    require_lang('themes');
     log_it('RENAME_THEME', $theme, $to);
 }
 
@@ -276,6 +279,7 @@ function actual_copy_theme($theme, $to)
 
     Self_learning_cache::erase_smart_cache();
 
+    require_lang('themes');
     log_it('COPY_THEME', $theme, $to);
 }
 
@@ -300,5 +304,7 @@ function actual_delete_theme($theme)
     afm_delete_directory('themes/' . $theme, true);
 
     $GLOBALS['SITE_DB']->query_delete('theme_images', array('theme' => $theme));
+
+    require_lang('themes');
     log_it('DELETE_THEME', $theme);
 }
