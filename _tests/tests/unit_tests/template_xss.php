@@ -30,10 +30,7 @@ class template_xss_test_set extends cms_test_case
     {
         $templates = array();
 
-        $paths = array(
-            get_file_base() . '/themes/default/templates',
-            get_file_base() . '/themes/default/templates_custom',
-        );
+        $paths = array();
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             $paths = array_merge($paths, array(
@@ -107,10 +104,7 @@ class template_xss_test_set extends cms_test_case
     {
         $templates = array();
 
-        $paths = array(
-            get_file_base() . '/themes/default/templates',
-            get_file_base() . '/themes/default/templates_custom',
-        );
+        $paths = array();
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             $paths = array_merge($paths, array(

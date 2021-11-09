@@ -17,13 +17,13 @@
 
 					{+START,IF,{VOTED}}
 						<p class="tracker_issue_voting_status tracker_issue_not_voted" onclick="this.className='tracker_issue_voting_status tracker_issue_voted';">
-							<a target="_blank" href="{UNVOTE_URL*}"><img src="{$IMG*,tracker/minus}" /> <span>{!FEATURES_UNVOTE}</span></a>
+							<a target="_blank" href="{UNVOTE_URL*}" title="{!FEATURES_UNVOTE} {!LINK_NEW_WINDOW}"><img src="{$IMG*,tracker/minus}" /> <span>{!FEATURES_UNVOTE}</span></a>
 						</p>
 					{+END}
 
 					{+START,IF,{$NOT,{VOTED}}}
 						<p class="tracker_issue_voting_status tracker_issue_voted">
-							<a target="_blank" href="{VOTE_URL*}"><img src="{$IMG*,tracker/plus}" /> <span>{!FEATURES_VOTE}</span></a>
+							<a target="_blank" href="{VOTE_URL*}" title="{!FEATURES_VOTE} {!LINK_NEW_WINDOW}"><img src="{$IMG*,tracker/plus}" /> <span>{!FEATURES_VOTE}</span></a>
 						</p>
 					{+END}
 
