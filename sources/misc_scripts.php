@@ -415,15 +415,20 @@ function cron_bridge_script(string $caller)
     // Hook details
     $cron_hooks = find_all_hook_obs('systems', 'cron', 'Hook_cron_');
     ksort($cron_hooks);
-    if (array_key_exists('tasks', $cron_hooks)) {
+
+    // Set precedence (FUDGE: This would be better coded in formally)
+    if (array_key_exists('tasks', $cron_hooks)) { // 2nd
         $cron_hooks = ['tasks' => $cron_hooks['tasks']] + $cron_hooks;
     }
-    if (array_key_exists('mail_queue', $cron_hooks)) {
+    if (array_key_exists('cloud_propagation', $cron_hooks)) { // 1st (other hooks may need the files)
+        $cron_hooks = ['cloud_propagation' => $cron_hooks['cloud_propagation']] + $cron_hooks;
+    }
+    if (array_key_exists('mail_queue', $cron_hooks)) { // 2nd to last
         $x = $cron_hooks['mail_queue'];
         unset($cron_hooks['mail_queue']);
         $cron_hooks = $cron_hooks + ['mail_queue' => $x];
     }
-    if (array_key_exists('newsletter_drip_send', $cron_hooks)) {
+    if (array_key_exists('newsletter_drip_send', $cron_hooks)) { // Last
         $x = $cron_hooks['newsletter_drip_send'];
         unset($cron_hooks['newsletter_drip_send']);
         $cron_hooks = $cron_hooks + ['newsletter_drip_send' => $x];

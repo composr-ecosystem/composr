@@ -234,7 +234,7 @@ function make_installers($skip_file_grab = false)
 
         // Do the main work
         chdir($builds_path . '/builds/build/' . $version_branch);
-        $cmd = 'zip -r -9 ' . cms_escapeshellarg($manual_zip) . ' *';
+        $cmd = 'zip -r -9 ' . cms_escapeshellarg(make_cms_path_native($manual_zip)) . ' *';
         $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
         if (!is_string($cmd_result)) {
             fatal_exit('Failed to run: ' . $cmd);
@@ -260,9 +260,9 @@ function make_installers($skip_file_grab = false)
 
         chdir($builds_path . '/builds/build/' . $version_branch);
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-            $cmd = 'tar --force-local -cvf ' . cms_escapeshellarg($bundled) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
+            $cmd = 'tar --force-local -cvf ' . cms_escapeshellarg(make_cms_path_native($bundled)) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
-            $cmd = 'tar -cvf ' . cms_escapeshellarg($bundled) . ' *';
+            $cmd = 'tar -cvf ' . cms_escapeshellarg(make_cms_path_native($bundled)) . ' *';
         }
         $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
         if (!is_string($cmd_result)) {
@@ -273,9 +273,9 @@ function make_installers($skip_file_grab = false)
 
         chdir(get_file_base() . '/data_custom/builds');
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-            $cmd = 'tar --force-local -rvf ' . cms_escapeshellarg($bundled) . ' readme.txt'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
+            $cmd = 'tar --force-local -rvf ' . cms_escapeshellarg(make_cms_path_native($bundled)) . ' readme.txt'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
-            $cmd = 'tar -rvf ' . cms_escapeshellarg($bundled) . ' readme.txt';
+            $cmd = 'tar -rvf ' . cms_escapeshellarg(make_cms_path_native($bundled)) . ' readme.txt';
         }
         $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
         if (!is_string($cmd_result)) {
@@ -285,7 +285,7 @@ function make_installers($skip_file_grab = false)
         //$out .= do_build_archive_output($v, $output2);  Don't mention, as will get auto-deleted after gzipping anyway
 
         chdir($builds_path . '/builds/build/' . $version_branch);
-        $cmd = 'gzip -n ' . cms_escapeshellarg($bundled);
+        $cmd = 'gzip -n ' . cms_escapeshellarg(make_cms_path_native($bundled));
         $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
         if (!is_string($cmd_result)) {
             if (is_file($bundled . '.gz')) {
@@ -377,7 +377,7 @@ function make_installers($skip_file_grab = false)
 
         // Do the main work
         chdir($builds_path . '/builds/aps');
-        $cmd = 'zip -r -9 -v ' . cms_escapeshellarg($aps_zip) . ' htdocs images scripts test APP-LIST.xml APP-META.xml';
+        $cmd = 'zip -r -9 -v ' . cms_escapeshellarg(make_cms_path_native($aps_zip)) . ' htdocs images scripts test APP-LIST.xml APP-META.xml';
         $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
         if (!is_string($cmd_result)) {
             fatal_exit('Failed to run: ' . $cmd);
@@ -401,9 +401,9 @@ function make_installers($skip_file_grab = false)
         // Do the main work
         chdir($builds_path . '/builds/build/' . $version_branch);
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
-            $cmd = 'tar --force-local --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg($omni_upgrader) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
+            $cmd = 'tar --force-local --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg(make_cms_path_native($omni_upgrader)) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
-            $cmd = 'tar --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg($omni_upgrader) . ' *';
+            $cmd = 'tar --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg(make_cms_path_native($omni_upgrader)) . ' *';
         }
         $cmd_result = _shell_exec_bin($cmd . ' 2>&1');
         if (!is_string($cmd_result)) {

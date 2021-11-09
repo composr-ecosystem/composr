@@ -747,7 +747,7 @@ function _fix_corrupt_png_alpha(&$image, string $path)
         if ($imagemagick != '') {
             if ((php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
                 $tempnam = cms_tempnam();
-                shell_exec($imagemagick . ' -depth 32 ' . escapeshellarg($path) . ' PNG32:' . $tempnam);
+                shell_exec($imagemagick . ' -depth 32 ' . escapeshellarg(make_cms_path_native($path)) . ' PNG32:' . $tempnam);
                 if ((is_file($tempnam)) && (filesize($tempnam) > 0)) {
                     $image = @imagecreatefrompng($tempnam);
                     @unlink($tempnam);

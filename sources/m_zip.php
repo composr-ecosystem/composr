@@ -197,7 +197,7 @@ function m_zip_open(string $zip_file)
     mkdir($zip_dir, 0777);
 
     $unzip_cmd = UNZIP_CMD;
-    $unzip_cmd = str_replace('@_SRC_@', cms_escapeshellarg($zip_file), $unzip_cmd);
+    $unzip_cmd = str_replace('@_SRC_@', cms_escapeshellarg(make_cms_path_native($zip_file)), $unzip_cmd);
     $unzip_cmd = str_replace('@_DST_@', cms_escapeshellarg($zip_dir), $unzip_cmd);
 
     $bits = explode(' ', UNZIP_CMD);

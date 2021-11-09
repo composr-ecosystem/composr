@@ -739,6 +739,22 @@ function cloud_mode()
 }
 
 /**
+ * Resolve a path to the correct local path.
+ *
+ * @param  string $path Absolute path
+ * @return string The native path
+ */
+function make_cms_path_native(string $path) : bool
+{
+    if (function_exists('_make_cms_path_native')) {
+        list(, $path_absolute) = _make_cms_path_native($path);
+        return $path_absolute;
+    }
+    return $path;
+}
+
+
+/**
  * Find if the current web client can use the static cache.
  * This doesn't do checks to see if the whole web request is cachable (see can_static_cache_request), just the web client.
  *

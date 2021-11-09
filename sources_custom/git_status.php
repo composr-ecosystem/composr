@@ -47,7 +47,7 @@ function git_status_to_str($git_status)
 
 function get_git_file_base()
 {
-    return get_file_base();
+    return get_file_base(true);
 }
 
 function find_branch()

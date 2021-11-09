@@ -30,6 +30,9 @@ function init__cloud()
     define('CMS_CLOUD__PROPAGATED', 2); // Copied to all machines via a sync queue (the propagation_dirs & propagation_files tables). Fast local access, but a delay propagating and more local disk space use.
     define('CMS_CLOUD__REMOTE', 3); // Hosted on e.g. a NAS, via a NFS share. Slower access, but always in sync and better for large amounts of data.
 
+    define('FILE_BASE__SHARED', 'cmsCloudShared');
+    define('FILE_BASE__CUSTOM', 'cmsCloudCustom');
+
     // Regexps specifying where normal Composr file paths will be routed to.
     // Should be in precedence order (for performance reasons).
     // Nothing used in early boot (pre-database connection) should use CMS_CLOUD__REMOTE.
@@ -43,6 +46,7 @@ function init__cloud()
         '#^data_custom/sitemaps(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^data_custom/spelling(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^data_custom/xml_config(/.*)?$#' => CMS_CLOUD__PROPAGATED,
+        '#^temp(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^exports(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^imports(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^lang_custom(/.*)?$#' => CMS_CLOUD__PROPAGATED,
@@ -68,11 +72,150 @@ function init__cloud()
  */
 function enable_cloud_fs()
 {
-    stream_wrapper_register('cloudfs', 'CloudFsStreamWrapper');
+    stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
+    stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
 
-    global $FILE_BASE, $FILE_BASE_LOCAL;
-    $FILE_BASE_LOCAL = $FILE_BASE;
-    $FILE_BASE = 'cmsCloud://';
+    global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
+    $FILE_BASE_LOCAL = get_file_base(true);
+    $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
+    $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
+    $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
+}
+
+/**
+ * Resolve a path to the correct local path and find the storage type.
+ *
+ * @param  string $path Path
+ * @return array A tuple: The storage type relative path (if storage type is CMS_CLOUD__LOCAL then it will be null), The absolute path, The storage type (a CMS_CLOUD__* constant), The file base (if storage type is CMS_CLOUD__LOCAL then it will be null), The file base constant (a FILE_BASE__* constant) (if storage type is CMS_CLOUD__LOCAL then it will be null)
+ */
+function _make_cms_path_native(string $path) : bool
+{
+    global $CMS_CLOUD_BINDINGS, $SITE_INFO;
+
+    if (substr($path, 0, strlen(FILE_BASE__SHARED . '://')) == FILE_BASE__SHARED . '://') {
+        $file_base = get_file_base(true);
+        $file_base_constant = FILE_BASE__SHARED;
+        $path_relative = substr($path, strlen(FILE_BASE__SHARED . '://'));
+    } elseif (substr($path, 0, strlen(FILE_BASE__CUSTOM . '://')) == FILE_BASE__CUSTOM . '://') {
+        $file_base = get_custom_file_base(true);
+        $file_base_constant = FILE_BASE__CUSTOM;
+        $path_relative = substr($path, strlen(FILE_BASE__CUSTOM . '://'));
+    } else {
+        return [null, $path, CMS_CLOUD__LOCAL, null, null];
+    }
+
+    $root = (($path == '') || ($path == '/'));
+
+    $storage_type = CMS_CLOUD__LOCAL;
+    if (!$root) {
+        foreach ($CMS_CLOUD_BINDINGS as $regexp => $_storage_type) {
+            if (preg_match($regexp, $path) != 0) {
+                $storage_type = $_storage_type;
+                break;
+            }
+        }
+    }
+
+    switch ($storage_type) {
+        case CMS_CLOUD__PROPAGATED:
+        case CMS_CLOUD__LOCAL:
+            if ($root) {
+                $path_absolute = $file_base;
+            } else {
+                $path_absolute = $file_base . '/' . $path;
+            }
+            break;
+
+        case CMS_CLOUD__REMOTE:
+            $nas_directory = $SITE_INFO['nas_directory'];
+            if (substr($nas_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($nas_directory, 1, 2) == ':/')) {
+                $path_absolute = $nas_directory . '/' . $path;
+            } else {
+                $path_absolute = $file_base . '/' . $nas_directory . '/' . $path;
+            }
+            break;
+    }
+
+    return [$path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant];
+}
+
+/**
+ * Detail a file for propagation across all servers.
+ *
+ * @param  string $file_base_constant A FILE_BASE__* constant
+ * @param  string $op_type Operation type
+ * @set create touch move delete
+ * @param  PATH $path The base-relative path
+ * @param  ?integer $perms The Unix file permissions (null: N/A)
+ * @param  string $data The property value
+ */
+function inject_propagation_dir(string $file_base_constant, string $op_type, string $path_relative, int? $perms = null, string $data = '')
+{
+    // Clean up any contradictions/prior-bloat first
+    if ($op_type != 'move') {
+        $GLOBALS['SITE_DB']->query_delete('cloud_propagation_dirs', [
+            'op_type' => $op_type,
+            'dir_file_base_constant' => $file_base_constant,
+            'dir_path' => $path_relative,
+        ]);
+    }
+
+    $GLOBALS['SITE_DB']->query_insert('cloud_propagation_dirs', [
+        'op_type' => $op_type,
+        'op_timestamp' => time(),
+        'dir_file_base_constant' => $file_base_constant,
+        'dir_path' => $path_relative,
+        'dir_perms' => $perms,
+        'op_data' => $data,
+        'op_originating_host' => gethostname(),
+    ]);
+}
+
+/**
+ * Ping a file as having been changed, so the cloud can be updated.
+ * This would be called if an operation happened outside of PHP (i.e. on native paths).
+ *
+ * @param  PATH $path The absolute path
+ * @param  string $file_base_constant A FILE_BASE_* constant
+ */
+function cloudfs_ping_file_changed(string $path, int $file_base_constant)
+{
+    $_path = substr($path, strlen($file_base));
+    inject_propagation_file($file_base_constant, 'create', $_path, time(), fileperms($path), base64_encode(file_get_contents($path)));
+}
+
+/**
+ * Detail a file for propagation across all servers.
+ *
+ * @param  string $file_base_constant A FILE_BASE__* constant
+ * @param  string $op_type Operation type
+ * @set create touch move delete
+ * @param  PATH $path The base-relative path
+ * @param  ?TIME $mtime The modification time (null: N/A)
+ * @param  ?integer $perms The Unix file permissions (null: N/A)
+ * @param  string $data The base64-encoded file contents / property value
+ */
+function inject_propagation_file(string $file_base_constant, string $op_type, string $path_relative, int? $mtime = null, int? $perms = null, string $data = '')
+{
+    // Clean up any contradictions/prior-bloat first
+    if ($op_type != 'move') {
+        $GLOBALS['SITE_DB']->query_delete('cloud_propagation_files', [
+            'op_type' => $op_type,
+            'file_file_base_constant' => $file_base_constant,
+            'dir_path' => $path_relative,
+        ]);
+    }
+
+    $GLOBALS['SITE_DB']->query_insert('cloud_propagation_files', [
+        'op_type' => $op_type,
+        'op_timestamp' => time(),
+        'file_file_base_constant' => $file_base_constant,
+        'file_path' => $path_relative,
+        'file_mtime' => $mtime,
+        'file_perms' => $perms,
+        'op_data' => $data,
+        'op_originating_host' => gethostname(),
+    ]);
 }
 
 /**
@@ -100,114 +243,6 @@ class CloudFsStreamWrapper
     {
     }
 
-    /**
-     * Resolve a path to the correct local path and find the storage type.
-     *
-     * @param  string $path Path
-     * @return boolean The storage type, a CMS_CLOUD__* constant
-     */
-    protected function resolve_storage(string &$path) : bool
-    {
-        global $CMS_CLOUD_BINDINGS, $FILE_BASE_LOCAL, $SITE_INFO;
-
-        //$path = preg_replace('#^.*://#U', $path); The more-correct way, but too slow
-        $path = substr($path, 10); // Strips "cloudfs://"
-
-        $root = (($path == '') || ($path == '/'));
-
-        $storage_type = CMS_CLOUD__LOCAL;
-        if (!$root) {
-            foreach ($CMS_CLOUD_BINDINGS as $regexp => $_storage_type) {
-                if (preg_match($regexp, $path) != 0) {
-                    $storage_type = $_storage_type;
-                    break;
-                }
-            }
-        }
-
-        switch ($storage_type) {
-            case CMS_CLOUD__PROPAGATED:
-            case CMS_CLOUD__LOCAL:
-                if ($root) {
-                    $path = $FILE_BASE_LOCAL;
-                } else {
-                    $path = $FILE_BASE_LOCAL . '/' . $path;
-                }
-                break;
-
-            case CMS_CLOUD__REMOTE:
-                $nas_directory = $SITE_INFO['nas_directory'];
-                if (substr($nas_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($nas_directory, 1, 2) == ':/')) {
-                    $path = $nas_directory . '/' . $path;
-                } else {
-                    $path = $FILE_BASE_LOCAL . '/' . $nas_directory . '/' . $path;
-                }
-                break;
-        }
-
-        return $storage_type;
-    }
-
-    /**
-     * Detail a file for propagation across all servers.
-     *
-     * @param  string $op_type Operation type
-     * @set create touch move delete
-     * @param  PATH $path The path
-     * @param  ?integer $perms The Unix file permissions (null: N/A)
-     * @param  string $data The property value
-     */
-    protected function inject_propagation_dir($op_type, $path, $perms = null, $data = '')
-    {
-        // Clean up any contradictions/prior-bloat first
-        if ($op_type != 'move') {
-            $GLOBALS['SITE_DB']->query_delete('cloud_propagation_dirs', [
-                'op_type' => $op_type,
-                'dir_path' => $path,
-            ]);
-        }
-
-        $GLOBALS['SITE_DB']->query_insert('cloud_propagation_dirs', [
-            'op_type' => $op_type,
-            'op_timestamp' => time(),
-            'dir_path' => $path,
-            'dir_perms' => $perms,
-            'op_data' => $data,
-            'op_originating_host' => gethostname(),
-        ]);
-    }
-
-    /**
-     * Detail a file for propagation across all servers.
-     *
-     * @param  string $op_type Operation type
-     * @set create touch move delete
-     * @param  PATH $path The path
-     * @param  ?TIME $mtime The modification time (null: N/A)
-     * @param  ?integer $perms The Unix file permissions (null: N/A)
-     * @param  string $data The base64-encoded file contents / property value
-     */
-    protected function inject_propagation_file($op_type, $path, $mtime = null, $perms = null, $data = '')
-    {
-        // Clean up any contradictions/prior-bloat first
-        if ($op_type != 'move') {
-            $GLOBALS['SITE_DB']->query_delete('cloud_propagation_files', [
-                'op_type' => $op_type,
-                'dir_path' => $path,
-            ]);
-        }
-
-        $GLOBALS['SITE_DB']->query_insert('cloud_propagation_files', [
-            'op_type' => $op_type,
-            'op_timestamp' => time(),
-            'file_path' => $path,
-            'file_mtime' => $mtime,
-            'file_perms' => $perms,
-            'op_data' => $data,
-            'op_originating_host' => gethostname(),
-        ]);
-    }
-
     /* Directory operations */
 
     protected $directory_handle = false;
@@ -221,11 +256,9 @@ class CloudFsStreamWrapper
      */
     public function dir_opendir(string $path, bool $options) : bool
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        $this->resolve_storage($path);
-
-        $this->directory_handle = opendir($FILE_BASE_LOCAL . '/' . $path, $this->context);
+        $this->directory_handle = opendir($path_absolute, $this->context);
         return ($this->directory_handle !== false);
     }
 
@@ -284,14 +317,12 @@ class CloudFsStreamWrapper
      */
     public function mkdir(string $path, int $mode, int $options) : bool
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        $storage_type = $this->resolve_storage($path);
-
-        $ret = mkdir($FILE_BASE_LOCAL . '/' . $path, $mode, ($options & STREAM_MKDIR_RECURSIVE) != 0, $this->context);
+        $ret = mkdir($path_absolute, $mode, ($options & STREAM_MKDIR_RECURSIVE) != 0, $this->context);
 
         if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            $this->inject_propagation_dir('create', $path, $mode);
+            inject_propagation_dir($file_base_constant, 'create', $path_relative, $mode);
         }
 
         return $ret;
@@ -306,14 +337,12 @@ class CloudFsStreamWrapper
      */
     public function rmdir(string $path, bool $options) : bool
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        $storage_type = $this->resolve_storage($path);
-
-        $ret = rmdir($FILE_BASE_LOCAL . '/' . $path, $this->context);
+        $ret = rmdir($path_absolute, $this->context);
 
         if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            $this->inject_propagation_dir('delete', $path);
+            inject_propagation_dir($file_base_constant, 'delete', $path_relative);
         }
 
         return $ret;
@@ -329,14 +358,12 @@ class CloudFsStreamWrapper
      */
     public function unlink(string $path) : bool
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        $storage_type = $this->resolve_storage($path);
-
-        $ret = unlink($FILE_BASE_LOCAL . '/' . $path, $this->context);
+        $ret = unlink($path_absolute, $this->context);
 
         if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            $this->inject_propagation_file('delete', $path);
+            inject_propagation_file($file_base_constant, 'delete', $path_relative);
         }
 
         return $ret;
@@ -351,16 +378,18 @@ class CloudFsStreamWrapper
      */
     public function url_stat(string $path, bool $flags)
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        $this->resolve_storage($path);
-
-        return stat($FILE_BASE_LOCAL . '/' . $path);
+        return stat($path_absolute);
     }
 
-    protected $file_path = null;
+    protected string? $file_path_relative = null;
+    protected string? $file_path_absolute = null;
+    protected string? $file_storage_type = null;
+    protected string? $file_file_base = null;
+    protected string? $file_file_base_constant = null;
+    protected bool? $file_is_new = null;
     protected $file_handle = false;
-    protected $file_is_new = null;
 
     /**
      * Opens file or URL. {{creates-file}}
@@ -373,13 +402,15 @@ class CloudFsStreamWrapper
      */
     public function stream_open(string $path, string $mode, int $options, string &$opened_path) : bool
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        $this->resolve_storage($path);
-
-        $this->file_path = $path;
-        $this->file_is_new = !is_file($path);
-        $this->file_handle = fopen($FILE_BASE_LOCAL . '/' . $path, $mode, false, $this->context);
+        $this->file_path_relative = $path_relative;
+        $this->file_path_absolute = $path_absolute;
+        $this->file_storage_type = $storage_type;
+        $this->file_file_base = $file_base;
+        $this->file_file_base_constant = $file_base_constant;
+        $this->file_is_new = !is_file($path_absolute);
+        $this->file_handle = fopen($path_absolute, $mode, false, $this->context);
 
         return ($this->file_handle !== false);
     }
@@ -540,13 +571,11 @@ class CloudFsStreamWrapper
             return false;
         }
 
-        global $FILE_BASE_LOCAL;
-
         $ret = fclose($this->file_handle);
         $this->file_handle = false;
 
         if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            $this->inject_propagation_file('create', $this->file_path, time(), fileperms($FILE_BASE_LOCAL . '/' . $this->file_path), base64_encode(file_get_contents($FILE_BASE_LOCAL . '/' . $this->file_path)));
+            inject_propagation_file($file_base_constant, 'create', $this->file_path_relative, time(), fileperms($this->file_path_absolute), base64_encode(file_get_contents($this->file_path_absolute)));
         }
 
         return $ret;
@@ -563,31 +592,30 @@ class CloudFsStreamWrapper
      */
     public function rename(string $path_from, string $path_to) : bool
     {
-        global $FILE_BASE_LOCAL;
+        list($path_relative_from, $path_absolute_from, $storage_type_from, $file_base_from, $file_base_constant_from) = _make_cms_path_native($path);
+        list($path_relative_to, $path_absolute_to, $storage_type_to, $file_base_to, $file_base_constant_to) = _make_cms_path_native($path);
 
-        $storage_type_from = $this->resolve_storage($path_from);
-        $storage_type_to = $this->resolve_storage($path_to);
-
-        $ret = rename($FILE_BASE_LOCAL . '/' . $path_from, $FILE_BASE_LOCAL . '/' . $path_to);
+        $ret = rename($path_absolute_from, $path_absolute_to);
 
         if ($ret) {
             if (($storage_type_from == CMS_CLOUD__PROPAGATED) && ($storage_type_to == CMS_CLOUD__PROPAGATED)) {
                 if (is_dir($path_to)) {
-                    $this->inject_propagation_dir('move', $path_from, null, $path_to);
+                    inject_propagation_dir($file_base_constant, 'move', $path_relative_from, null, $path_relative_to);
                 } else {
-                    $this->inject_propagation_file('move', $path_from, null, $path_to);
+                    inject_propagation_file($file_base_constant, 'move', $path_relative_from, null, $path_relative_to);
                 }
             } elseif (($storage_type_from == CMS_CLOUD__PROPAGATED) && ($storage_type_to != CMS_CLOUD__PROPAGATED)) {
+                // Will now be already there (would need to come in via Git if $storage_type_to == CMS_CLOUD__LOCAL), so we just delete where it's from
                 if (is_dir($path_to)) {
-                    $this->inject_propagation_dir('create', $path_to, fileperms($FILE_BASE_LOCAL . '/' . $path_to));
+                    inject_propagation_dir($file_base_constant, 'delete', $path_relative_from);
                 } else {
-                    $this->inject_propagation_file('create', $path_to, filemtime($FILE_BASE_LOCAL . '/' . $path_to), fileperms($FILE_BASE_LOCAL . '/' . $path_to), base64_encode(file_get_contents($FILE_BASE_LOCAL . '/' . $path_to)));
+                    inject_propagation_file($file_base_constant, 'delete', $path_relative_from);
                 }
             } elseif (($storage_type_from != CMS_CLOUD__PROPAGATED) && ($storage_type_to == CMS_CLOUD__PROPAGATED)) {
                 if (is_dir($path_to)) {
-                    $this->inject_propagation_dir('delete', $path_from);
+                    inject_propagation_dir($file_base_constant, 'create', $path_relative_to, fileperms($path_absolute_to));
                 } else {
-                    $this->inject_propagation_file('delete', $path_to);
+                    inject_propagation_file($file_base_constant, 'create', $path_relative_to, filemtime($path_absolute_to), fileperms($path_absolute_to), base64_encode(file_get_contents($path_absolute_to)));
                 }
             }
         }
@@ -605,40 +633,38 @@ class CloudFsStreamWrapper
      */
     public function stream_metadata(string $path, int $option, $value) : bool
     {
-        global $FILE_BASE_LOCAL;
-
-        $storage_type = $this->resolve_storage($path);
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
         $ret = false;
         switch ($option) {
             case STREAM_META_TOUCH:
-                $ret = touch($FILE_BASE_LOCAL . '/' . $path, $value);
+                $ret = touch($path_absolute, $value);
                 return $ret;
 
             case STREAM_META_OWNER_NAME:
             case STREAM_META_OWNER:
                 if (php_function_allowed('chown')) {
-                    $ret = chown($FILE_BASE_LOCAL . '/' . $path, $value);
+                    $ret = chown($path_absolute, $value);
                 }
                 break;
 
             case STREAM_META_GROUP_NAME:
             case STREAM_META_GROUP:
                 if (php_function_allowed('chgrp')) {
-                    $ret = chgrp($FILE_BASE_LOCAL . '/' . $path, $value);
+                    $ret = chgrp($path_absolute, $value);
                 }
                 break;
 
             case STREAM_META_ACCESS:
-                $ret = chmod($FILE_BASE_LOCAL . '/' . $path, $value);
+                $ret = chmod($path_absolute, $value);
                 break;
         }
 
         if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            if (is_dir($FILE_BASE_LOCAL . '/' . $path)) {
-                $this->inject_propagation_dir('touch', $path, fileperms($FILE_BASE_LOCAL . '/' . $path));
+            if (is_dir(get_file_base(true) . '/' . $path)) {
+                inject_propagation_dir($file_base_constant, 'touch', $path_relative, fileperms($path_absolute));
             } else {
-                $this->inject_propagation_file('touch', $path, filemtime($FILE_BASE_LOCAL . '/' . $path), fileperms($FILE_BASE_LOCAL . '/' . $path));
+                inject_propagation_file($file_base_constant, 'touch', $path_relative, filemtime($path_absolute), fileperms($path_absolute));
             }
         }
 

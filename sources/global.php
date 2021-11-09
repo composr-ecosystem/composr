@@ -569,33 +569,50 @@ function cms_flush_safe()
 /**
  * Get the file base for your installation of Composr.
  *
+ * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem
  * @return PATH The file base, without a trailing slash
  */
-function get_file_base() : string
+function get_file_base(bool $true_local = false) : string
 {
-    global $FILE_BASE;
+    global $FILE_BASE, $FILE_BASE_LOCAL;
+    if (($true_local) && (!empty($FILE_BASE_LOCAL))) {
+        return $FILE_BASE_LOCAL;
+    }
     return $FILE_BASE;
 }
 
 /**
  * Get the file base for your installation of Composr.  For a shared install, or a GAE-install, this is different to the file-base.
  *
+ * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem
  * @return PATH The file base, without a trailing slash
  */
-function get_custom_file_base() : string
+function get_custom_file_base(bool $true_local = false) : string
 {
-    global $FILE_BASE, $SITE_INFO;
-    if (!empty($SITE_INFO['custom_file_base'])) {
-        return $SITE_INFO['custom_file_base'];
+    global $FILE_BASE, $SITE_INFO, $CUSTOM_FILE_BASE, $CUSTOM_FILE_BASE_LOCAL;
+
+    if (($true_local) && (!empty($CUSTOM_FILE_BASE_LOCAL))) {
+        return $CUSTOM_FILE_BASE_LOCAL;
     }
-    if (!empty($SITE_INFO['custom_file_base_stub'])) {
+
+    if (!empty($CUSTOM_FILE_BASE)) {
+        return $CUSTOM_FILE_BASE;
+    }
+
+    if (!empty($SITE_INFO['custom_file_base'])) {
+        $CUSTOM_FILE_BASE = $SITE_INFO['custom_file_base'];
+    } elseif (!empty($SITE_INFO['custom_file_base_stub'])) {
         require_code('shared_installs');
         $u = current_share_user();
         if ($u !== null) {
-            return $SITE_INFO['custom_file_base_stub'] . '/' . $u;
+            $CUSTOM_FILE_BASE = $SITE_INFO['custom_file_base_stub'] . '/' . $u;
+        } else {
+            $CUSTOM_FILE_BASE = $FILE_BASE;
         }
+    } else {
+        $CUSTOM_FILE_BASE = $FILE_BASE;
     }
-    return $FILE_BASE;
+    return $CUSTOM_FILE_BASE;
 }
 
 /**

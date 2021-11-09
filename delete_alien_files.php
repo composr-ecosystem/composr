@@ -96,11 +96,11 @@ if (git_repos() == 'composr_homesite') {
 }
 
 foreach ($extra_files_to_delete as $file) {
-    if (file_exists(get_file_base() . '/' . $file)) {
-        if (is_dir(get_file_base() . '/' . $file)) {
-            echo 'rm -rf ' . cms_escapeshellarg($file) . "\n";
+    if (file_exists(get_file_base(true) . '/' . $file)) {
+        if (is_dir(get_file_base(true) . '/' . $file)) {
+            echo 'rm -rf ' . cms_escapeshellarg(get_file_base(true) . '/' . $file) . "\n";
         } else {
-            echo 'rm -f ' . cms_escapeshellarg($file) . "\n";
+            echo 'rm -f ' . cms_escapeshellarg(get_file_base(true) . '/' . $file) . "\n";
         }
     }
 }
@@ -120,8 +120,8 @@ if (empty($intersection)) {
         $files = $ob->get_file_list();
         foreach ($files as $path) {
             if (((!in_array($hook, $installed_addons)) || (in_array($hook, $addons_definitely_not_wanted))) && (!force_keep($path, $files_to_always_keep))) {
-                if (file_exists(get_file_base() . '/' . $path)) {
-                    echo 'rm -f ' . cms_escapeshellarg($path) . "\n";
+                if (file_exists(get_file_base(true) . '/' . $path)) {
+                    echo 'rm -f ' . cms_escapeshellarg(get_file_base(true) . '/' . $path) . "\n";
                 }
             }
             unset($GFILE_ARRAY[$path]);
@@ -132,12 +132,12 @@ if (empty($intersection)) {
 // Alien files (non-ignored files not within one of the known addons)
 foreach (array_keys($GFILE_ARRAY) as $path) {
     if (!force_keep($path, $files_to_always_keep)) {
-        echo 'rm -f ' . cms_escapeshellarg($path) . "\n";
+        echo 'rm -f ' . cms_escapeshellarg(get_file_base(true) . '/' . $path) . "\n";
     }
 }
 
 // Empty dirs
-$directories = get_directory_contents(get_file_base(), get_file_base(), null, true, false);
+$directories = get_directory_contents(get_file_base(true), get_file_base(true), null, true, false);
 $cnt = 0;
 foreach ($directories as $directory) {
     $_files = get_directory_contents($directory, '', null, false, true);

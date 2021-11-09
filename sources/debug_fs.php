@@ -56,8 +56,16 @@ function enable_debug_fs()
         $DEBUG_FS__LATENCY = $kdfs * 1000;
     }
 
-    global $FILE_BASE;
-    $FILE_BASE = 'debugfs://' . $FILE_BASE;
+    global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
+    $FILE_BASE_LOCAL = get_file_base(true);
+    $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
+
+    if ($FILE_BASE_LOCAL != $CUSTOM_FILE_BASE_LOCAL) {
+        return; // Unsupported
+    }
+
+    $FILE_BASE = 'debugfs://';
+    $CUSTOM_FILE_BASE = 'debugfs://';
 
     @stream_wrapper_unregister('debugfs');
     stream_wrapper_register('debugfs', 'DebugFsStreamWrapper');

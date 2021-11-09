@@ -49,7 +49,7 @@ class Hook_cron_cloud_propagation
             $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_files WHERE ' . $where;
             $num_queued += $GLOBALS['SITE_DB']->query_value_if_there($sql);
 
-            $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_ops WHERE ' . $where;
+            $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_rpc WHERE ' . $where;
             $num_queued += $GLOBALS['SITE_DB']->query_value_if_there($sql);
         } else {
             $num_queued = null;
@@ -75,38 +75,44 @@ class Hook_cron_cloud_propagation
 
         $last_synched = intval(get_long_value('cloud_propagation_to__' . gethostname(), '-1'));
 
-        global $FILE_BASE_LOCAL;
-
         $where = 'id>=' . strval($last_synched) . ' AND ' . db_string_not_equal_to('op_originating_host', gethostname());
 
-        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where;
+        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where . ' ORDER BY id';
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
         }
         foreach ($ops as $op) {
+            if ($op['dir_file_base_constant'] == FILE_BASE__SHARED) {
+                $file_base = get_file_base(true);
+            } else {
+                $file_base = get_custom_file_base(true);
+            }
+
             switch ($op['op_type']) {
                 case 'create':
-                    $result = @mkdir($FILE_BASE_LOCAL . '/' . $op['dir_path'], $op['dir_perms']);
-                    fix_permissions($FILE_BASE_LOCAL . '/' . $op['dir_path'], $op['dir_perms']);
+                    $result = @mkdir($file_base . '/' . $op['dir_path'], $op['dir_perms']);
+                    fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
                     if (!$result) {
                         @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
 
                 case 'touch':
-                    fix_permissions($FILE_BASE_LOCAL . '/' . $op['dir_path'], $op['dir_perms']);
+                    if ($op['dir_perms'] !== null) {
+                        fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
+                    }
                     break;
 
                 case 'move':
-                    $result = @rename($FILE_BASE_LOCAL . '/' . $op['dir_path'], $FILE_BASE_LOCAL . '/' . $op['op_data']);
+                    $result = @rename($file_base . '/' . $op['dir_path'], $file_base . '/' . $op['op_data']);
                     if (!$result) {
                         @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
 
                 case 'delete':
-                    $result = @rmdir($FILE_BASE_LOCAL . '/' . $op['dir_path']);
+                    $result = @rmdir($file_base . '/' . $op['dir_path']);
                     if (!$result) {
                         @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
@@ -114,39 +120,84 @@ class Hook_cron_cloud_propagation
             }
         }
 
-        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_files WHERE ' . $where;
+        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_files WHERE ' . $where . ' ORDER BY id';
+        $ops = $GLOBALS['SITE_DB']->query($sql, $max);
+        if (!empty($ops)) {
+            disable_php_memory_limit();
+        }
+        foreach ($ops as $op) {
+            if ($op['file_file_base_constant'] == FILE_BASE__SHARED) {
+                $file_base = get_file_base(true);
+            } else {
+                $file_base = get_custom_file_base(true);
+            }
+
+            switch ($op['op_type']) {
+                case 'create':
+                    $result = cms_file_put_contents_safe($file_base . '/' . $op['file_path'], base64_decode($op['op_data']), FILE_WRITE_FAILURE_SILENT);
+                    if ($result) {
+                        fix_permissions($file_base . '/' . $op['file_path'], $op['file_perms']);
+                        @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
+                    } else {
+                        unset($op['op_data']);
+                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                    }
+                    break;
+
+                case 'touch':
+                    if ($op['file_perms'] !== null) {
+                        fix_permissions($file_base . '/' . $op['file_path'], $op['file_perms']);
+                    }
+                    if ($op['file_mtime'] !== null) {
+                        @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
+                    }
+                    break;
+
+                case 'move':
+                    $result = @rename($file_base . '/' . $op['file_path'], $file_base . '/' . $op['op_data']);
+                    if (!$result) {
+                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                    }
+                    break;
+
+                case 'delete':
+                    $result = @unlink($file_base . '/' . $op['file_path']);
+                    if (!$result) {
+                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                    }
+                    break;
+            }
+        }
+
+        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_rpc WHERE ' . $where . ' ORDER BY id';
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
         }
         foreach ($ops as $op) {
             switch ($op['op_type']) {
-                case 'create':
-                    cms_file_put_contents_safe($FILE_BASE_LOCAL . '/' . $op['file_path'], base64_decode($op['op_data']));
-                    TODO
+                case 'erase_persistent_cache':
+                    erase_persistent_cache(true);
                     break;
 
-                case 'touch':
-                    TODO
+                case 'erase_static_cache':
+                    erase_static_cache(true);
                     break;
 
-                case 'move':
-                    TODO
+                case 'erase_cached_language':
+                    require_code('caches3');
+                    erase_cached_language(true);
                     break;
 
-                case 'delete':
-                    TODO
+                case 'erase_cached_templates':
+                    require_code('caches3');
+                    erase_cached_templates(false, null, null, false, true);
+                    break;
+
+                case 'Self_learning_cache::erase_smart_cache':
+                    Self_learning_cache::erase_smart_cache(true);
                     break;
             }
-        }
-
-        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_ops WHERE ' . $where;
-        $ops = $GLOBALS['SITE_DB']->query($sql, $max);
-        if (!empty($ops)) {
-            disable_php_memory_limit();
-        }
-        foreach ($ops as $op) {
-            TODO
         }
 
         set_long_value('cloud_propagation_to__' . gethostname(), strval(time()));

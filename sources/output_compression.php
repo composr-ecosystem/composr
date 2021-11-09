@@ -184,7 +184,7 @@ function cms_brotli_compress(string $in, int $level)
         $tmp_name = cms_tempnam('brotli');
         $tmp_name_out = cms_tempnam('brotli_out');
         file_put_contents($tmp_name, $in);
-        $result = shell_exec('brotli -q ' . strval($level) . ' -f -o ' . escapeshellarg($tmp_name_out) . ' ' . escapeshellarg($tmp_name) . ' 2>&1');
+        $result = shell_exec('brotli -q ' . strval($level) . ' -f -o ' . cms_escapeshellarg($tmp_name_out) . ' ' . cms_escapeshellarg($tmp_name) . ' 2>&1');
         $out = file_get_contents($tmp_name_out);
         @unlink($tmp_name);
         @unlink($tmp_name_out);
@@ -212,7 +212,7 @@ function cms_brotli_uncompress(string $in)
         $tmp_name = cms_tempnam('brotli');
         $tmp_name_out = cms_tempnam('brotli_out');
         file_put_contents($tmp_name, $in);
-        shell_exec('brotli -d -f -o ' . escapeshellarg($tmp_name_out) . ' ' . escapeshellarg($tmp_name));
+        shell_exec('brotli -d -f -o ' . cms_escapeshellarg($tmp_name_out) . ' ' . cms_escapeshellarg($tmp_name));
         $out = file_get_contents($tmp_name_out);
         @unlink($tmp_name);
         @unlink($tmp_name_out);
@@ -304,7 +304,7 @@ function cms_gzencode(string $in, int $level)
         $tmp_name = cms_tempnam('gzip');
         $tmp_name_out = cms_tempnam('gzip_out');
         file_put_contents($tmp_name, $in);
-        $result = shell_exec('gzip -' . strval($level) . ' -f -o ' . escapeshellarg($tmp_name_out) . ' ' . escapeshellarg($tmp_name) . ' 2>&1');
+        $result = shell_exec('gzip -' . strval($level) . ' -f -o ' . cms_escapeshellarg($tmp_name_out) . ' ' . cms_escapeshellarg($tmp_name) . ' 2>&1');
         $out = file_get_contents($tmp_name_out);
         @unlink($tmp_name);
         @unlink($tmp_name_out);
@@ -332,7 +332,7 @@ function cms_gzdecode(string $in)
         $tmp_name = cms_tempnam('gzip');
         $tmp_name_out = cms_tempnam('gzip_out');
         file_put_contents($tmp_name, $in);
-        shell_exec('gzip -d -f -o ' . escapeshellarg($tmp_name) . ' ' . escapeshellarg($tmp_name_out));
+        shell_exec('gzip -d -f -o ' . cms_escapeshellarg($tmp_name) . ' ' . cms_escapeshellarg($tmp_name_out));
         $out = file_get_contents($tmp_name_out);
         @unlink($tmp_name);
         @unlink($tmp_name_out);

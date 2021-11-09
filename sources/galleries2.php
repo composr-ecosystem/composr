@@ -342,12 +342,13 @@ function video_get_default_thumb_url(string $url = '', string $thumb_url = '', ?
                 list($output_path, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($filename), true);
 
                 $at = '00:00:01';
-                $shell_command = '"' . $ffmpeg_path . 'ffmpeg" -i ' . cms_escapeshellarg($path) . ' -an -ss ' . $at . ' -r 1 -vframes 1 -y ' . cms_escapeshellarg($output_path);
+                $shell_command = '"' . $ffmpeg_path . 'ffmpeg" -i ' . cms_escapeshellarg(make_cms_path_native($path)) . ' -an -ss ' . $at . ' -r 1 -vframes 1 -y ' . cms_escapeshellarg($output_path);
 
                 $shell_commands = [$shell_command, $shell_command . ' -map 0.0:0.0', $shell_command . ' -map 0.1:0.0'];
                 foreach ($shell_commands as $shell_command) {
                     shell_exec($shell_command);
-                    if (@filesize($output_path)) {
+                    if (@filesize($output_path) != 0) {
+                        cloudfs_ping_file_changed($output_path, FILE_BASE__CUSTOM);
                         break;
                     }
                 }

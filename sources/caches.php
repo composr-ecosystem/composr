@@ -412,7 +412,7 @@ class Self_learning_cache
             return;
         }
 
-        cloud_propagate_op('Self_learning_cache::erase_smart_cache');
+        cloud_rpc('Self_learning_cache::erase_smart_cache');
 
         if ($on) {
             erase_persistent_cache();
@@ -566,7 +566,7 @@ function erase_persistent_cache(bool $local_only = false)
     }
     $PERSISTENT_CACHE->flush();
 
-    cloud_propagate_op('erase_persistent_cache');
+    cloud_rpc('erase_persistent_cache');
 }
 
 /**
@@ -593,7 +593,7 @@ function erase_static_cache(bool $local_only = false)
         return;
     }
 
-    cloud_propagate_op('erase_static_cache');
+    cloud_rpc('erase_static_cache');
 }
 
 /**
@@ -983,10 +983,10 @@ function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : arr
  *
  * @param  string $type Operation type
  */
-function cloud_propagate_op($type)
+function cloud_rpc($type)
 {
-    if ((cloud_mode() != '') && ($GLOBALS['SITE_DB']->table_exists('cloud_propagation_ops'))) {
-        $GLOBALS['SITE_DB']->query_insert('cloud_propagation_ops', [
+    if ((cloud_mode() != '') && ($GLOBALS['SITE_DB']->table_exists('cloud_propagation_rpc'))) {
+        $GLOBALS['SITE_DB']->query_insert('cloud_propagation_rpc', [
             'op_type' => $type,
             'op_timestamp' => time(),
             'op_originating_host' => gethostname(),

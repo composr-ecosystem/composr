@@ -1210,6 +1210,7 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'op_type' => 'SHORT_TEXT', // create|touch|move|delete
                 'op_timestamp' => 'TIME',
+                'dir_file_base_constant' => 'ID_TEXT',
                 'dir_path' => 'PATH',
                 'dir_perms' => '?INTEGER',
                 'op_data' => 'LONG_TEXT', // a new directory path for a move operation
@@ -1221,6 +1222,7 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'op_type' => 'SHORT_TEXT', // create|touch|move|delete
                 'op_timestamp' => 'TIME',
+                'file_file_base_constant' => 'ID_TEXT',
                 'file_path' => 'PATH',
                 'file_mtime' => '?INTEGER',
                 'file_perms' => '?INTEGER',
@@ -1229,13 +1231,13 @@ class Module_admin_version
             ]);
             $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'dupe_delete', ['op_type', 'file_path']);
 
-            $GLOBALS['SITE_DB']->create_table('cloud_propagation_ops', [
+            $GLOBALS['SITE_DB']->create_table('cloud_propagation_rpc', [
                 'id' => '*AUTO',
                 'op_type' => 'SHORT_TEXT', // erase_persistent_cache|erase_static_cache|erase_cached_language|erase_cached_templates|Self_learning_cache::erase_smart_cache
                 'op_timestamp' => 'TIME',
                 'op_originating_host' => 'ID_TEXT',
             ]);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_ops', 'dupe_delete', ['op_type']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_rpc', 'dupe_delete', ['op_type']);
         }
     }
 

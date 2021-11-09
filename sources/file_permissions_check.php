@@ -98,7 +98,7 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
     $subdir = '';
 
     if (function_exists('get_file_base')) {
-        $stub = get_file_base() . (($subdir == '') ? '' : '/');
+        $stub = get_file_base(true) . (($subdir == '') ? '' : '/');
     } else {
         $stub = dirname(__DIR__) . (($subdir == '') ? '' : '/');
     }
@@ -113,8 +113,8 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
     $messages = array_merge($messages, $_messages);
     $commands = array_merge($commands, $_commands);
 
-    if ((function_exists('get_file_base')) && (get_file_base() != get_custom_file_base())) {
-        list($_messages, $_commands) = $ob->process_directory(get_custom_file_base() . (($subdir == '') ? '' : '/') . $subdir, $subdir, null, true, $_paths, $found_any_issue);
+    if ((function_exists('get_file_base')) && (get_file_base(true) != get_custom_file_base(true))) {
+        list($_messages, $_commands) = $ob->process_directory(get_custom_file_base(true) . (($subdir == '') ? '' : '/') . $subdir, $subdir, null, true, $_paths, $found_any_issue);
         $messages = array_merge($messages, $_messages);
         $commands = array_merge($commands, $_commands);
     }
