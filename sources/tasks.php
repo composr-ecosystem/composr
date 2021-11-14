@@ -102,13 +102,11 @@ function execute_task_background(array $task_row)
     }
     require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
     $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
-    task_log_open();
     task_log(null, 'Starting task ' . $hook);
     $mim_before = get_mass_import_mode();
     $result = call_user_func_array([$ob, 'run'], $args);
     set_mass_import_mode($mim_before);
     task_log(null, 'Finished task ' . $hook);
-    task_log_close();
 
     // Send notification
     if ($task_row['t_send_notification'] == 1) {
@@ -237,7 +235,6 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         // Run task
         require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
         $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
-        task_log_open();
         task_log(null, 'Starting task ' . $hook);
         $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
@@ -246,7 +243,6 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
         }
         task_log(null, 'Finished task ' . $hook);
-        task_log_close();
         cms_set_time_limit($old_limit);
         if ($result === null) {
             if ($title === null) {
@@ -348,20 +344,6 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
 }
 
 /**
- * Open task log.
- */
-function task_log_open()
-{
-    global $TASK_LOG_FILE;
-    $log_path = get_custom_file_base() . '/data_custom/tasks.log';
-    if (!is_file($log_path)) {
-        return;
-    }
-    require_code('files');
-    $TASK_LOG_FILE = cms_fopen_text_write($log_path, true, 'ab');
-}
-
-/**
  * Do task logging.
  *
  * @param  ?object $object Task object that the logging comes from (null: N/A)
@@ -371,11 +353,6 @@ function task_log_open()
  */
 function task_log(?object $object, string $message, ?int $i = null, ?int $total = null)
 {
-    global $TASK_LOG_FILE;
-    if ($TASK_LOG_FILE === null) {
-        return;
-    }
-
     static $last_call = null;
     if ($i !== null) {
         if (($last_call !== null) && ($last_call > time() - 5)) {
@@ -385,11 +362,10 @@ function task_log(?object $object, string $message, ?int $i = null, ?int $total 
     }
 
     $line = '';
-    $line .= loggable_date();
     if ($object !== null) {
-        $line .= ' [' . get_class($object) . ']';
+        $line .= '[' . get_class($object) . '] ';
     }
-    $line .= ': ' . $message;
+    $line .= $message;
     if ($i !== null) {
         $line .= ' (';
         $line .= integer_format($i);
@@ -401,17 +377,5 @@ function task_log(?object $object, string $message, ?int $i = null, ?int $total 
     }
     $line .= "\n";
 
-    fwrite($TASK_LOG_FILE, $line);
-}
-
-/**
- * Close task log.
- */
-function task_log_close()
-{
-    global $TASK_LOG_FILE;
-    if ($TASK_LOG_FILE === null) {
-        return;
-    }
-    fclose($TASK_LOG_FILE);
+    CMSLoggers::tasks()->info($line);
 }

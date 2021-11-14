@@ -1381,16 +1381,7 @@ function handle_ipn_transaction_script(bool $silent_fail = false, bool $send_not
 
     @header('X-Robots-Tag: noindex');
 
-    if ((file_exists(get_custom_file_base() . '/data_custom/ecommerce.log')) && (cms_is_writable(get_custom_file_base() . '/data_custom/ecommerce.log'))) {
-        require_code('files');
-        $myfile = cms_fopen_text_write(get_custom_file_base() . '/data_custom/ecommerce.log', true, 'ab');
-        fwrite($myfile, loggable_date() . "\n");
-        fwrite($myfile, serialize($_POST) . "\n");
-        fwrite($myfile, serialize($_GET) . "\n");
-        fwrite($myfile, "\n\n");
-        flock($myfile, LOCK_UN);
-        fclose($myfile);
-    }
+    CMSLoggers::ecommerce()->info('Transaction', [serialize($_POST), serialize($_GET)]);
 
     $payment_gateway = get_param_string('from', get_option('payment_gateway'));
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));

@@ -532,7 +532,8 @@ class Hook_health_check_email extends Hook_Health_Check
         if ($error !== null) {
             if (running_script('cron_bridge')) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('Mailer error: ' . $error); // We log this, as Health Check is not going to be able to send an e-mail
+                    require_code('failure');
+                    cms_error_log('Composr: Mailer error, ' . $error, null); // We log this, as Health Check is not going to be able to send an e-mail
                 }
             }
         }

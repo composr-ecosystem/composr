@@ -85,7 +85,7 @@ function mass_set_page_access(array $no_guest_permissions, array $only_admin_per
 }
 
 /**
- * Log permission checks to the permission_checks.log file.
+ * Log permission checks to the permission_checks log file.
  *
  * @param  MEMBER $member_id The user checking against
  * @param  ID_TEXT $op The function that was called to check a permission
@@ -96,8 +96,6 @@ function mass_set_page_access(array $no_guest_permissions, array $only_admin_per
  */
 function _handle_permission_check_logging(int $member_id, string $op, array $params, bool $result)
 {
-    global $PERMISSION_CHECK_LOGGER;
-
     if ($op == 'has_privilege') {
         require_all_lang();
         $params[0] = $params[0] . ' ("' . do_lang('PRIVILEGE_' . $params[0]) . '")';
@@ -116,17 +114,14 @@ function _handle_permission_check_logging(int $member_id, string $op, array $par
     }
 
     $show_all = (get_value('permission_log_success_too') === '1');
-    if (($PERMISSION_CHECK_LOGGER !== false) && (($show_all) || (!$result))) {
-        fwrite($PERMISSION_CHECK_LOGGER, "\t" . ($show_all ? '' : '! ') . $str);
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        if ($member_id != get_member()) {
-            fwrite($PERMISSION_CHECK_LOGGER, ' -- ' . $username);
-        }
+    if (($show_all) || (!$result)) {
+        $message = ($show_all ? '' : '! ') . $str . ' check against member #' . strval($member_id) . ' while running under ' . $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+
         if ($show_all) {
-            fwrite($PERMISSION_CHECK_LOGGER, ' --> ' . ($result ? do_lang('YES') : do_lang('NO')) . "\n");
+            $message .= ' --> ' . ($result ? do_lang('YES') : do_lang('NO'));
         }
-        fwrite($PERMISSION_CHECK_LOGGER, "\n");
-        sync_file(get_custom_file_base() . '/data_custom/permission_checks.log');
+
+        CMSLoggers::permission_checks()->info($message);
     }
 
     if ((function_exists('fb_wrap')) && (get_param_integer('keep_firephp', 0) == 1) && (!headers_sent())) {

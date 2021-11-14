@@ -51,7 +51,7 @@ class Hook_config_days_to_keep__cron_log
      */
     public function get_default() : ?string
     {
-        if (!is_file(get_custom_file_base() . '/data_custom/cron.log')) {
+        if (!CMSLoggers::cron()->is_active()) {
             return null;
         }
         return '365';

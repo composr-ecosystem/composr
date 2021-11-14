@@ -48,9 +48,7 @@ function incoming_uploads_script()
         } else {
             header('HTTP/1.1 500 File Upload Error');
 
-            /*if (php_function_allowed('error_log')) {  Client error, should not end up in server log
-                error_log('Composr: ' . do_lang('ERROR_UPLOADING_' . strval($_FILES['file']['error'])), 0);
-            }*/
+            //require_code('failure'); cms_error_log('Composr: ' . do_lang('ERROR_UPLOADING_' . strval($_FILES['file']['error'])), null);  Client error, should not end up in server log
 
             header('Content-Type: text/plain; charset=' . get_charset());
             require_code('uploads');

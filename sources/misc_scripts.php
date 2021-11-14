@@ -399,17 +399,9 @@ function cron_bridge_script(string $caller)
     }
 
     // Starting logging
-    $_log_file = get_custom_file_base() . '/data_custom/cron.log';
-    $log_file = null;
-    $log_message = loggable_date() . '  (CRON STARTING)' . "\n";
+    $log_message = CMSLoggers::cron()->info('CRON STARTING');
     if ($verbose) {
         echo $log_message;
-    }
-    if (is_file($_log_file)) {
-        require_code('files');
-        $log_file = cms_fopen_text_write($_log_file, true, 'ab');
-        fwrite($log_file, $log_message);
-        flock($log_file, LOCK_UN);
     }
 
     // Hook details
@@ -481,6 +473,11 @@ function cron_bridge_script(string $caller)
                 $cron_hooks_info[$hook] = $info;
             }
 
+            // Not running because we are a cloud host?
+            if ((cloud_mode() != '') && ((!isset($info['cloud_all'])) || (!$info['cloud_all']))) {
+                continue;
+            }
+
             // Is it time to run it?
             if (($limit_hooks === null) || ($limit_hooks !== [$hook])) { // Only if not directly requested
                 if (($last_run !== null) && ($last_run + $info['minutes_between_runs'] * 60 > time())) {
@@ -495,15 +492,9 @@ function cron_bridge_script(string $caller)
             // Run, with basic locking support
             if ((get_value_newer_than('cron_currently_running__' . $hook, time() - 60 * 60 * 5/*huge 5 hour timeout in case a particular hook is badly broken and we do not want frequent trip ups*/, true) !== '1') || ($force)) {
                 // Update log to say starting
-                $log_message = loggable_date() . '  STARTING ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                $log_message = CMSLoggers::cron()->info('STARTING ' . $hook . ' (' . $info['label'] . ')');
                 if ($verbose) {
                     echo $log_message;
-                }
-                if ($log_file !== null) {
-                    flock($log_file, LOCK_EX);
-                    fseek($log_file, 0, SEEK_END);
-                    fwrite($log_file, $log_message);
-                    flock($log_file, LOCK_UN);
                 }
 
                 // Lock
@@ -562,27 +553,15 @@ function cron_bridge_script(string $caller)
                 delete_value('cron_currently_running__' . $hook, true);
 
                 // Update log to say finished
-                $log_message = loggable_date() . '  FINISHED ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                $log_message = CMSLoggers::cron()->info('FINISHED ' . $hook . ' (' . $info['label'] . ')');
                 if ($verbose) {
                     echo $log_message;
-                }
-                if ($log_file !== null) {
-                    flock($log_file, LOCK_EX);
-                    fseek($log_file, 0, SEEK_END);
-                    fwrite($log_file, $log_message);
-                    flock($log_file, LOCK_UN);
                 }
             } else {
                 // Update log to say locked
-                $log_message = loggable_date() . '  WAS LOCKED ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                $log_message = CMSLoggers::cron()->info('WAS LOCKED ' . $hook . ' (' . $info['label'] . ')');
                 if ($verbose) {
                     echo $log_message;
-                }
-                if ($log_file !== null) {
-                    flock($log_file, LOCK_EX);
-                    fseek($log_file, 0, SEEK_END);
-                    fwrite($log_file, $log_message);
-                    flock($log_file, LOCK_UN);
                 }
             }
         }
@@ -594,18 +573,12 @@ function cron_bridge_script(string $caller)
             $loop_ending = (time() - $_SERVER['REQUEST_TIME'] >= $loop_max_seconds);
 
             if ($loop_ending) {
-                $log_message = loggable_date() . '  REACHED END OF LOOPING' . "\n";
+                $log_message = CMSLoggers::cron()->info('REACHED END OF LOOPING');
             } else {
-                $log_message = loggable_date() . '  PAUSED FOR ' . integer_format($loop_wait_seconds) . ' SECONDS BEFORE LOOPING' . "\n";
+                $log_message = CMSLoggers::cron()->info('PAUSED FOR ' . integer_format($loop_wait_seconds) . ' SECONDS BEFORE LOOPING');
             }
             if ($verbose) {
                 echo $log_message;
-            }
-            if ($log_file !== null) {
-                flock($log_file, LOCK_EX);
-                fseek($log_file, 0, SEEK_END);
-                fwrite($log_file, $log_message);
-                flock($log_file, LOCK_UN);
             }
 
             if ($loop_ending) {
@@ -618,15 +591,9 @@ function cron_bridge_script(string $caller)
                 } elseif (php_function_allowed('usleep')) {
                     usleep($loop_wait_seconds * 1000000);
                 } else {
-                    $log_message = loggable_date() . '  PHP sleep and usleep functions are missing so loop_wait_seconds will be ignored' . "\n";
+                    $log_message = CMSLoggers::cron()->info('PHP sleep and usleep functions are missing so loop_wait_seconds will be ignored');
                     if ($verbose) {
                         echo $log_message;
-                    }
-                    if ($log_file !== null) {
-                        flock($log_file, LOCK_EX);
-                        fseek($log_file, 0, SEEK_END);
-                        fwrite($log_file, $log_message);
-                        flock($log_file, LOCK_UN);
                     }
                 }
             }
@@ -634,15 +601,9 @@ function cron_bridge_script(string $caller)
             $kill_cron_looping = get_value('kill_cron_looping', '0', true);
             clearstatcache(false, get_file_base() . '/sources/version.php');
             if (($kill_cron_looping == '1') || (filemtime(get_file_base() . '/sources/version.php') > $_SERVER['REQUEST_TIME'])) {
-                $log_message = loggable_date() . '  LOOPING KILL SIGNAL DETECTED' . "\n";
+                $log_message = CMSLoggers::cron()->info('LOOPING KILL SIGNAL DETECTED');
                 if ($verbose) {
                     echo $log_message;
-                }
-                if ($log_file !== null) {
-                    flock($log_file, LOCK_EX);
-                    fseek($log_file, 0, SEEK_END);
-                    fwrite($log_file, $log_message);
-                    flock($log_file, LOCK_UN);
                 }
 
                 // Composr has sent itself a signal that it needs to stop looping over Cron
@@ -658,17 +619,9 @@ function cron_bridge_script(string $caller)
     }
 
     // Ending logging
-    $log_message = loggable_date() . '  (CRON ENDING)' . "\n";
+    $log_message = CMSLoggers::cron()->info('CRON ENDING');
     if ($verbose) {
         echo $log_message;
-    }
-    if ($log_file !== null) {
-        flock($log_file, LOCK_EX);
-        fseek($log_file, 0, SEEK_END);
-        fwrite($log_file, $log_message);
-        flock($log_file, LOCK_UN);
-
-        fclose($log_file);
     }
 
     if (!headers_sent()) {

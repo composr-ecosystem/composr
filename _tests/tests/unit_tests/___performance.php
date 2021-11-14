@@ -20,9 +20,6 @@
  */
 class ___performance_test_set extends cms_test_case
 {
-    protected $log_file;
-    protected $log_warnings_file;
-
     protected $page_links = [];
     protected $page_links_warnings = [];
 
@@ -53,10 +50,6 @@ class ___performance_test_set extends cms_test_case
         parent::setUp();
 
         $this->establish_admin_session();
-
-        require_code('files');
-        $this->log_file = cms_fopen_text_write(get_custom_file_base() . '/data_custom/performance.log', true);
-        $this->log_warnings_file = cms_fopen_text_write(get_custom_file_base() . '/data_custom/performance_warnings.log', true);
     }
 
     public function testSitemapNodes()
@@ -114,9 +107,9 @@ class ___performance_test_set extends cms_test_case
         $this->assertTrue(!$slow, 'Too slow on ' . $page_link . ' (' . float_format($time) . ' seconds)');
 
         $message = $page_link . ' (' . $url . '): ' . float_format($time) . ' seconds';
-        fwrite($this->log_file, $message . "\n");
+        CMSLoggers::performance()->info($message);
         if ($slow) {
-            fwrite($this->log_warnings_file, $message . "\n");
+            CMSLoggers::performance_warnings()->info($message);
         }
 
         cms_set_time_limit($old_limit);
@@ -124,11 +117,6 @@ class ___performance_test_set extends cms_test_case
 
     public function tearDown()
     {
-        flock($this->log_file, LOCK_UN);
-        flock($this->log_warnings_file, LOCK_UN);
-        fclose($this->log_file);
-        fclose($this->log_warnings_file);
-
         parent::tearDown();
     }
 }

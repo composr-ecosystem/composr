@@ -26,9 +26,6 @@ function init__webdav()
 {
     global $COMMANDR_FS_LISTING_CACHE;
     $COMMANDR_FS_LISTING_CACHE = [];
-
-    global $WEBDAV_LOG_FILE;
-    $WEBDAV_LOG_FILE = null;
 }
 
 /**
@@ -52,15 +49,9 @@ function webdav_script()
 
     require_code('webdav_commandr_fs');
 
-    // Optional logging (create this file and give write access to it)
-    $log_path = get_custom_file_base() . '/data_custom/modules/webdav/tmp/debug.log';
-    global $WEBDAV_LOG_FILE;
-    if (is_file($log_path)) {
-        $WEBDAV_LOG_FILE = fopen($log_path, 'ab');
-        $log_message = 'Request... ' . $_SERVER['REQUEST_METHOD'] . ': ' . $_SERVER['REQUEST_URI'];
-        //$log_message.="\n".file_get_contents('php://input'); // Only enable when debugging, as breaks PUT requests (see http://stackoverflow.com/questions/3107624/why-can-php-input-be-read-more-than-once-despite-the-documentation-saying-othe)
-        webdav_log($log_message);
-    }
+    $log_message = 'Request... ' . $_SERVER['REQUEST_METHOD'] . ': ' . $_SERVER['REQUEST_URI'];
+    //$log_message.="\n".file_get_contents('php://input'); // Only enable when debugging, as breaks PUT requests (see http://stackoverflow.com/questions/3107624/why-can-php-input-be-read-more-than-once-despite-the-documentation-saying-othe)
+    CMSLoggers::webdav()->info($log_message);
 
     // Initialise...
 
@@ -97,23 +88,4 @@ function webdav_script()
     $server->addPlugin($plugin);
 
     $server->exec();
-
-    // Close off log
-    if ($WEBDAV_LOG_FILE !== null) {
-        fclose($WEBDAV_LOG_FILE);
-        $WEBDAV_LOG_FILE = null;
-    }
-}
-
-/**
- * Log something to the WebDAV log.
- *
- * @param  string $str String to log
- */
-function webdav_log(string $str)
-{
-    global $WEBDAV_LOG_FILE;
-    if ($WEBDAV_LOG_FILE !== null) {
-        fwrite($WEBDAV_LOG_FILE, $str . "\n\n");
-    }
 }

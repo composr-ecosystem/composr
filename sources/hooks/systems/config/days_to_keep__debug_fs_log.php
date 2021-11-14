@@ -51,7 +51,7 @@ class Hook_config_days_to_keep__debug_fs_log
      */
     public function get_default() : ?string
     {
-        if (!is_file(get_custom_file_base() . '/data_custom/debug_fs.log')) {
+        if (!CMSLoggers::debug_fs()->is_active()) {
             return null;
         }
         return '365';

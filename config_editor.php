@@ -238,6 +238,7 @@ function do_access(string $given_password)
 
         'cloud_mode' => '<em>Cloud:</em> The cloud mode, either blank (not on cloud), "primary" (where most Cron hooks run from), or "replica".',
         'nas_directory' => '<em>Cloud:</em> <abbr title="Network Attached Storage">NAS</abbr> path (either absolute or relative).',
+        'errorlog' => '<em>Cloud:</em> Where to log errors to the. May be set to either <kbd>syslog</kbd> or <kbd>weblogs</kbd>. Setting a value here will prevent viewing of errors within Composr and is generally used by network administrators in a cloud deployment.',
     ];
 
     global $SITE_INFO;

@@ -230,12 +230,11 @@ function improperly_filled_in_post(string $name)
  * @param  PATH $errstr The error message
  * @param  string $errfile The file the error occurred in
  * @param  integer $errline The line the error occurred on
- * @param  integer $syslog_type The syslog type (used by GAE logging)
  * @param  string $handling_method How to handle the error
  * @set LOG ATTACH FATAL
  * @ignore
  */
-function _composr_error_handler(string $type, int $errno, string $errstr, string $errfile, int $errline, int $syslog_type, string $handling_method)
+function _composr_error_handler(string $type, int $errno, string $errstr, string $errfile, int $errline, string $handling_method)
 {
     $fatal = (!peek_suppress_error_death()) && ($handling_method == 'FATAL');
 
@@ -270,11 +269,8 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
 
     if ($may_log_error) {
         // Put into error log
-        if ((function_exists('syslog')) && (GOOGLE_APPENGINE)) {
-            syslog($syslog_type, $php_error_label);
-        }
         if (php_function_allowed('error_log')) {
-            @error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, 0);
+            cms_error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, null);
         }
 
         // Send error e-mail
@@ -450,11 +446,8 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
         $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
 
         if ($may_log_error) {
-            if ((function_exists('syslog')) && (GOOGLE_APPENGINE)) {
-                syslog(LOG_ERR, $php_error_label);
-            }
             if (php_function_allowed('error_log')) {
-                @error_log('Composr: ' . $php_error_label, 0);
+                cms_error_log('Composr: ' . $php_error_label, null);
             }
 
             $trace = get_html_trace();
@@ -1105,18 +1098,22 @@ function get_webservice_result($error_message) : ?string
 }
 
 /**
- * Log an error message and send a notification about it (to site staff but not to ocProducts).
- * Generally used when a web API fails.
+ * Log an error message and optionally send a notification about it (to site staff but not to ocProducts).
  *
  * @param  string $errormsg A error message
- * @param  ID_TEXT $notification_type The notification type
+ * @param  ?ID_TEXT $notification_type The notification type (null: no notification)
  */
-function cms_error_log(string $errormsg, string $notification_type = 'error_occurred')
+function cms_error_log(string $errormsg, ?string $notification_type = 'error_occurred')
 {
     if (php_function_allowed('error_log')) {
-        @error_log($errormsg);
+        $details = CMSLoggers::collate_log_details($errormsg);
+        $line = CMSLoggers::generate_simple_line($details);
+
+        @error_log($line);
     }
-    relay_error_notification(escape_html($errormsg), false, $notification_type);
+    if ($notification_type !== null) {
+        relay_error_notification(escape_html($errormsg), false, $notification_type);
+    }
 }
 
 /**

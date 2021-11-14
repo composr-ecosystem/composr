@@ -41,23 +41,36 @@ class log_refs_test_set extends cms_test_case
             $defined_logs = array_merge($defined_logs, array_keys($hook_ob->enumerate_logs()));
         }
 
+        $exceptions = [
+            // For development
+            'performance.log',
+            'performance_warnings.log',
+            'template_previews.log',
+
+            // For non-bundled addons
+            'sugarcrm.log',
+            'tapatalk.log',
+        ];
+
         $matches = [];
         $logs_in_code = [];
-        $num_matches = preg_match_all('#data_custom/\w+\.log#', $all_code, $matches);
+        $num_matches = preg_match_all('#data_custom/(\w+)\.log#', $all_code, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
-            $log = $matches[0][$i];
+            $log = 'data_custom/' . $matches[1][$i] . '.log';
 
             // Exceptions
-            if (in_array(basename($log), [
-                // For development
-                'performance.log',
-                'performance_warnings.log',
-                'template_previews.log',
+            if (in_array(basename($log), $exceptions)) {
+                continue;
+            }
 
-                // For non-bundled addons
-                'sugarcrm.log',
-                'tapatalk.log',
-            ])) {
+            $logs_in_code[] = $log;
+        }
+        $num_matches = preg_match_all('#CMSLoggers::(\w+)\(\)#', $all_code, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $log = 'data_custom/' . $matches[1][$i] . '.log';
+
+            // Exceptions
+            if (in_array(basename($log), $exceptions)) {
                 continue;
             }
 

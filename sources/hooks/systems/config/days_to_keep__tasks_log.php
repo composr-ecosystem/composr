@@ -51,7 +51,7 @@ class Hook_config_days_to_keep__tasks_log
      */
     public function get_default() : ?string
     {
-        if (!is_file(get_custom_file_base() . '/data_custom/tasks.log')) {
+        if (!CMSLoggers::tasks()->is_active()) {
             return null;
         }
         return '365';

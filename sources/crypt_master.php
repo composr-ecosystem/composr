@@ -115,16 +115,30 @@ function _master_password_check__result(bool $result)
     if (function_exists('syslog')) {
         if ($result) {
             @syslog(LOG_NOTICE, 'Successfully logged into ' . $msg);
-        } else {
-            @syslog(LOG_WARNING, 'Incorrect master password given while logging into ' . $msg);
         }
     }
 
     if (function_exists('error_log')) {
-        global $FILE_BASE;
-        @ini_set('error_log', $FILE_BASE . '/data_custom/errorlog.php');
+        global $FILE_BASE, $SITE_INFO;
+        if ((!empty($SITE_INFO['errorlog'])) && ($SITE_INFO['errorlog'] == 'syslog')) {
+            if (!empty($SITE_INFO['base_url'])) {
+                $host = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+            } elseif (!empty($_SERVER['HTTP_HOST'])) {
+                $host = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+            } else {
+                $host = gethostname();
+            }
+
+            @ini_set('error_log', 'syslog');
+            @ini_set('syslog.ident', $host . '-errorlog');
+        } elseif ((!empty($SITE_INFO['errorlog'])) && ($SITE_INFO['errorlog'] == 'weblogs')) {
+            @ini_set('error_log', '');
+        } else {
+            $error_log_path = $FILE_BASE . '/data_custom/errorlog.php';
+            @ini_set('error_log', $error_log_path);
+        }
         if (!$result) {
-            @error_log('Incorrect master password given while logging into ' . $msg);
+            @error_log('Incorrect master password given while logging into ' . $msg . ' by ' . $_SERVER['REMOTE_ADDR']);
         }
     }
 }

@@ -86,38 +86,19 @@ if (!empty($request_method_name) && isset($SERVER_DEFINE[$request_method_name]))
 
 if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
     // Request
-    $log_file = fopen(TAPATALK_LOG, 'ab');
-    flock($log_file, LOCK_EX);
-    fseek($log_file, 0, SEEK_END);
-    fwrite($log_file, TAPATALK_REQUEST_ID . ' -- ' . loggable_date() . " *REQUEST*:\n");
-    fwrite($log_file, 'GET: ' . serialize($_GET) . "\n");
-    fwrite($log_file, 'COOKIE: ' . serialize($_COOKIE) . "\n");
     if (empty($_POST)) {
         $post_data = @file_get_contents('php://input');
-        fwrite($log_file, 'POST: ' . $post_data . "\n");
     } else {
-        fwrite($log_file, 'POST: ' . serialize($_POST) . "\n");
+        $post_data = $_POST;
     }
-    fwrite($log_file, 'FILES: ' . serialize($_FILES) . "\n");
-    fwrite($log_file, 'USERNAME: ' . $GLOBALS['FORUM_DRIVER']->get_username(get_member()) . "\n");
-    fwrite($log_file, "\n\n");
-    flock($log_file, LOCK_UN);
-    fclose($log_file);
+    CMSLoggers::tapatalk()->info('REQUEST', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'get' => $_GET, 'cookie' => $_COOKIE, 'post' => $post_data, 'files' => $_FILES]);
 
     // Response
     ob_start();
     ob_start();
     function _do_response_logging()
     {
-        $log_file = fopen(TAPATALK_LOG, 'ab');
-        flock($log_file, LOCK_EX);
-        fseek($log_file, 0, SEEK_END);
-        fwrite($log_file, TAPATALK_REQUEST_ID . ' -- ' . loggable_date() . " *RESPONSE*:\n");
-        fwrite($log_file, 'HEADERS: ' . serialize(headers_list()) . "\n");
-        fwrite($log_file, ob_get_contents() . "\n");
-        fwrite($log_file, "\n\n");
-        flock($log_file, LOCK_UN);
-        fclose($log_file);
+        CMSLoggers::tapatalk()->info('RESPONSE', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'headers' => headers_list(), 'data' => ob_get_contents()]);
 
         @ob_end_flush();
     }

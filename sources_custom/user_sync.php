@@ -344,8 +344,6 @@ function user_sync__inbound($since = null)
 
     // Customised end code
     get_user_sync__finish($dbh, $since);
-
-    resource_fs_logging__end();
 }
 
 function user_sync_handle_field_remap($field_name, $remap_scheme, $remote_data, $dbh, $member_id)

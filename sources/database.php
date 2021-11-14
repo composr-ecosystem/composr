@@ -30,7 +30,7 @@ function init__database()
     global $HAS_MULTI_LANG_CONTENT;
     $HAS_MULTI_LANG_CONTENT = null;
 
-    global $QUERY_LIST, $QUERY_COUNT, $QUERY_LIMITING, $DB_SCOPE_CHECK, $QUERY_FILE_LOG, $SITE_INFO, $DB_STATIC_OBJECT;
+    global $QUERY_LIST, $QUERY_COUNT, $QUERY_LIMITING, $DB_SCOPE_CHECK, $SITE_INFO, $DB_STATIC_OBJECT;
     $QUERY_LIST = [];
     $QUERY_COUNT = 0;
     $QUERY_LIMITING = [[true, 0]];
@@ -38,12 +38,6 @@ function init__database()
         define('DEV_MODE_QUERY_LIMIT', 4000);
     }
     $DB_SCOPE_CHECK = [true];
-    if (((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) && (is_file(get_custom_file_base() . '/data_custom/queries.log'))) {
-        require_code('files');
-        $QUERY_FILE_LOG = cms_fopen_text_write(get_custom_file_base() . '/data_custom/queries.log', false, 'ab');
-    } else {
-        $QUERY_FILE_LOG = null;
-    }
 
     require_code('database/' . get_db_type());
     /** The connection to the database driver.
@@ -1042,11 +1036,9 @@ abstract class DatabaseDriver
         require_code('urls');
         $text_eval = is_object($message) ? $message->evaluate() : $message;
         $php_error_label = $text_eval . ' @ ' . get_self_url_easy(true);
-        if ((function_exists('syslog')) && (GOOGLE_APPENGINE)) {
-            syslog(LOG_ERR, $php_error_label);
-        }
         if (php_function_allowed('error_log')) {
-            @error_log('Database: ' . $php_error_label, 0);
+            require_code('failure');
+            cms_error_log('Database: ' . $php_error_label, null);
         }
 
         $restricted = false;
@@ -1862,13 +1854,10 @@ class DatabaseConnector
      */
     public function _query(string $query, ?int $max = null, int $start = 0, bool $fail_ok = false, bool $get_insert_id = false, ?array $lang_fields = null, string $field_prefix = '', bool $save_as_volatile = false)
     {
-        global $QUERY_COUNT, $QUERY_LOG, $QUERY_LIST, $DEV_MODE, $IN_MINIKERNEL_VERSION, $QUERY_FILE_LOG, $UPON_QUERY_HOOKS_CACHE;
+        global $QUERY_COUNT, $QUERY_LOG, $QUERY_LIST, $DEV_MODE, $IN_MINIKERNEL_VERSION, $UPON_QUERY_HOOKS_CACHE;
 
         if ($QUERY_FILE_LOG !== null) {
-            flock($QUERY_FILE_LOG, LOCK_EX);
-            fseek($QUERY_FILE_LOG, 0, SEEK_END);
-            fwrite($QUERY_FILE_LOG, loggable_date() . ' -- ' . $query . ';' . "\n\n");
-            flock($QUERY_FILE_LOG, LOCK_UN);
+            CMSLoggers::query()->info($query . ';');
         }
 
         if ($DEV_MODE) {
@@ -1902,7 +1891,8 @@ class DatabaseConnector
             push_query_limiting(false);
 
             if (php_function_allowed('error_log')) {
-                @error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), 0);
+                require_code('failure');
+                cms_error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), null);
             }
 
             if ($DEV_MODE) {

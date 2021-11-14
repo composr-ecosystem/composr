@@ -933,18 +933,7 @@ class classTTConnection
             return true;
         }
 
-        if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG)))
-        {
-            // Request
-            $log_file=fopen(TAPATALK_LOG,'at');
-            flock($log_file,LOCK_EX);
-            fseek($log_file,0,SEEK_END);
-            fwrite($log_file,TAPATALK_REQUEST_ID.' -- '.loggable_date()." *VERIFY*:\n");
-            fwrite($log_file,var_export($response,true));
-            fwrite($log_file,"\n\n");
-            flock($log_file,LOCK_UN);
-            fclose($log_file);
-        }
+        CMSLoggers::tapatalk()->info('VERIFY', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'response' => $response]);
 
         return false;
     }

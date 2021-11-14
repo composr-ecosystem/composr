@@ -50,7 +50,7 @@ class Hook_config_days_to_keep__sugarcrm_log
             return null;
         }
 
-        if (!is_file(get_custom_file_base() . '/data_custom/sugarcrm.log')) {
+        if (!CMSLoggers::sugarcrm()->is_active()) {
             return null;
         }
         return '365';

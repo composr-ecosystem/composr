@@ -39,8 +39,8 @@ function init__cloud_fs()
     // Override cloud.php and this data to change the configuration. Addons can add to this global themselves if needed.
     global $CMS_CLOUD_BINDINGS;
     $CMS_CLOUD_BINDINGS = [
-        '#^data_custom/errorlog\.php$#' => CMS_CLOUD__REMOTE,
-        '#^data_custom/[^/]*\.log$#' => CMS_CLOUD__REMOTE,
+        '#^data_custom/errorlog\.php$#' => CMS_CLOUD__LOCAL,
+        '#^data_custom/[^/]*\.log$#' => CMS_CLOUD__LOCAL,
         '#^data_custom/modules/admin_backup(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^data_custom/modules/user_export(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^data_custom/sitemaps(/.*)?$#' => CMS_CLOUD__REMOTE,

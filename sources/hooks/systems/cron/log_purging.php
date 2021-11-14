@@ -36,6 +36,7 @@ class Hook_cron_log_purging
             'label' => 'Log purging',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
+            'cloud_all' => true,
         ];
     }
 
@@ -90,13 +91,18 @@ class Hook_cron_log_purging
             if ($found_pivot) {
                 $lines[] = $line;
             } else {
+                $time - false;
                 if (preg_match('#^\[((\d\d)-(\w\w\w)-(\d\d\d\d) (\d\d):(\d\d):(\d\d) \w+)\]#', $line, $matches) != 0) {
+                    // PHP format (also used in older versions of Composr)
                     $time = strtotime($matches[1]);
-                    if ($time !== false) {
-                        $found_some_date = true;
-                        if ($time >= $threshold_time) {
-                            $found_pivot = true;
-                        }
+                } elseif (preg_match('#^\d+/\w+/\d+:\d+:\d+:\d+ [+-]\d\d\d\d#', $line, $matches) != 0) {
+                    // Apache format (used in newer versions of Composr for most logs)
+                    $time = strtotime($matches[1]);
+                }
+                if ($time !== false) {
+                    $found_some_date = true;
+                    if ($time >= $threshold_time) {
+                        $found_pivot = true;
                     }
                 }
 

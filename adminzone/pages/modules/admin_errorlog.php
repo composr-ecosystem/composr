@@ -162,111 +162,12 @@ class Module_admin_errorlog
         require_code('files');
         require_css('errorlog');
 
-        $maximum_size = 1024 * 512;
-        $max_google_pages = 6;
-        $default_max_per_page = 30;
-
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', $default_max_per_page);
-
-        // Read in errors
-        if (!GOOGLE_APPENGINE) {
-            if (is_readable(get_custom_file_base() . '/data_custom/errorlog.php')) {
-                if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > $maximum_size) {
-                    $myfile = fopen(get_custom_file_base() . '/data_custom/errorlog.php', 'rb');
-                    flock($myfile, LOCK_SH);
-                    fseek($myfile, -$maximum_size, SEEK_END);
-                    $lines = explode("\n", fread($myfile, $maximum_size));
-                    flock($myfile, LOCK_UN);
-                    fclose($myfile);
-                    unset($lines[0]);
-                    $lines[] = '...';
-                } else {
-                    $lines = cms_file_safe(get_custom_file_base() . '/data_custom/errorlog.php');
-                }
-            } else {
-                $lines = [];
-            }
-            $stuff = [];
-            foreach ($lines as $line) {
-                $_line = trim($line);
-
-                if (($_line != '') && (strpos($_line, '<?php') === false)) {
-                    $matches = [];
-                    if (preg_match('#^\[(.+?) (.+?)\] (.{1,20}):  ?(.*)#', $_line, $matches) != 0) {
-                        $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4]];
-                    } elseif (preg_match('#^\[(.+?) (.+?)\] (.*)#', $_line, $matches) != 0) {
-                        $stuff[] = [$matches[1], $matches[2], 'N/A', $matches[3]];
-                    }
-                }
-            }
+        global $SITE_INFO;
+        if (empty($SITE_INFO['errorlog'])) {
+            $errors = $this->get_php_errorlog();
         } else {
-            $stuff = [];
-
-            require_once('google/appengine/api/log/LogService.php');
-
-            $_log_service = 'google\appengine\api\log\LogService';
-            $log_service = new $_log_service();
-            $options = [];
-            $options['include_app_logs'] = true;
-            $options['minimum_log_level'] = eval('return $log_service::LEVEL_WARNING;'); // = PHP notice
-            $options['batch_size'] = $max * $max_google_pages;
-
-            $logs = $log_service->fetch($options);
-            foreach ($logs as $log) {
-                $app_logs = $log->getAppLogs();
-                foreach ($app_logs as $app_log) {
-                    $message = $app_log->getMessage();
-
-                    $level = $app_log->getLevel();
-                    $_level = '';
-                    if ($level == eval('return $log_service::LEVEL_WARNING;')) {
-                        $_level = 'notice';
-                    } elseif ($level == eval('return $log_service::LEVEL_ERROR;')) {
-                        $_level = 'warning';
-                    } elseif ($level == eval('return $log_service::LEVEL_CRITICAL;')) {
-                        $_level = 'error';
-                    } else {
-                        continue;
-                    }
-
-                    $time = intval($app_log->getTimeUsec() / 1000000.0);
-
-                    $stuff[] = [date('D-M-Y', $time), date('H:i:s', $time), $_level, $message];
-                }
-            }
+            $errors = paragraph(do_lang_tempcode('ERRORLOG_CONFIGURED_ELSEWHERE', escape_html($SITE_INFO['errorlog'])));
         }
-
-        // Put errors into table
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
-        $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-        if ($sort_order == 'DESC') {
-            $stuff = array_reverse($stuff);
-        }
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('MESSAGE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $result_entries = new Tempcode();
-        for ($i = $start; $i < $start + $max; $i++) {
-            if (!array_key_exists($i, $stuff)) {
-                break;
-            }
-
-            $message = str_replace(get_file_base(), '', $stuff[$i][3]);
-
-            $result_entries->attach(static_evaluate_tempcode(results_entry([
-                $stuff[$i][0] . ' ' . $stuff[$i][1],
-                $stuff[$i][2],
-                $message,
-            ], true)));
-        }
-        $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '110px']);
 
         // Read in end of any other log files we find
         require_all_lang();
@@ -394,6 +295,121 @@ class Module_admin_errorlog
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
+    }
+
+    /**
+     * Generate the PHP error log viewer.
+     *
+     * @return Tempcode The viewer
+     */
+    protected function get_php_errorlog() : object
+    {
+        $maximum_size = 1024 * 512;
+        $max_google_pages = 6;
+        $default_max_per_page = 30;
+
+        $start = get_param_integer('start', 0);
+        $max = get_param_integer('max', $default_max_per_page);
+
+        // Read in errors
+        if (!GOOGLE_APPENGINE) {
+            if (is_readable(get_custom_file_base() . '/data_custom/errorlog.php')) {
+                if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > $maximum_size) {
+                    $myfile = fopen(get_custom_file_base() . '/data_custom/errorlog.php', 'rb');
+                    flock($myfile, LOCK_SH);
+                    fseek($myfile, -$maximum_size, SEEK_END);
+                    $lines = explode("\n", fread($myfile, $maximum_size));
+                    flock($myfile, LOCK_UN);
+                    fclose($myfile);
+                    unset($lines[0]);
+                    $lines[] = '...';
+                } else {
+                    $lines = cms_file_safe(get_custom_file_base() . '/data_custom/errorlog.php');
+                }
+            } else {
+                $lines = [];
+            }
+            $stuff = [];
+            foreach ($lines as $line) {
+                $_line = trim($line);
+
+                if (($_line != '') && (strpos($_line, '<?php') === false)) {
+                    $matches = [];
+                    if (preg_match('#^\[(.+?) (.+?)\] (.{1,20}):  ?(.*)#', $_line, $matches) != 0) {
+                        $stuff[] = [$matches[1], $matches[2], $matches[3], $matches[4]];
+                    } elseif (preg_match('#^\[(.+?) (.+?)\] (.*)#', $_line, $matches) != 0) {
+                        $stuff[] = [$matches[1], $matches[2], 'N/A', $matches[3]];
+                    }
+                }
+            }
+        } else {
+            $stuff = [];
+
+            require_once('google/appengine/api/log/LogService.php');
+
+            $_log_service = 'google\appengine\api\log\LogService';
+            $log_service = new $_log_service();
+            $options = [];
+            $options['include_app_logs'] = true;
+            $options['minimum_log_level'] = eval('return $log_service::LEVEL_WARNING;'); // = PHP notice
+            $options['batch_size'] = $max * $max_google_pages;
+
+            $logs = $log_service->fetch($options);
+            foreach ($logs as $log) {
+                $app_logs = $log->getAppLogs();
+                foreach ($app_logs as $app_log) {
+                    $message = $app_log->getMessage();
+
+                    $level = $app_log->getLevel();
+                    $_level = '';
+                    if ($level == eval('return $log_service::LEVEL_WARNING;')) {
+                        $_level = 'notice';
+                    } elseif ($level == eval('return $log_service::LEVEL_ERROR;')) {
+                        $_level = 'warning';
+                    } elseif ($level == eval('return $log_service::LEVEL_CRITICAL;')) {
+                        $_level = 'error';
+                    } else {
+                        continue;
+                    }
+
+                    $time = intval($app_log->getTimeUsec() / 1000000.0);
+
+                    $stuff[] = [date('D-M-Y', $time), date('H:i:s', $time), $_level, $message];
+                }
+            }
+        }
+
+        // Put errors into table
+        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
+        $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+        if ($sort_order == 'DESC') {
+            $stuff = array_reverse($stuff);
+        }
+        require_code('templates_results_table');
+        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('MESSAGE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $result_entries = new Tempcode();
+        for ($i = $start; $i < $start + $max; $i++) {
+            if (!array_key_exists($i, $stuff)) {
+                break;
+            }
+
+            $message = str_replace(get_file_base(), '', $stuff[$i][3]);
+
+            $result_entries->attach(static_evaluate_tempcode(results_entry([
+                $stuff[$i][0] . ' ' . $stuff[$i][1],
+                $stuff[$i][2],
+                $message,
+            ], true)));
+        }
+        $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '110px']);
+        return $errors;
     }
 
     /**

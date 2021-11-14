@@ -225,7 +225,7 @@ class __extra_logging_test_set extends cms_test_case
 
         clearstatcache();
         $size_before = filesize($path);
-        error_log('Testing');
+        @error_log('Testing');
         clearstatcache();
         $size_after = filesize($path);
         $this->assertTrue($size_after > $size_before);

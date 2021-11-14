@@ -23,7 +23,6 @@ function initialise_mobiquo()
         return;
     }
 
-    define('TAPATALK_LOG', dirname(__DIR__, 2) . '/data_custom/tapatalk.log'); // Make this file (writeable) if you want automatic logging
     define('TAPATALK_REQUEST_ID', md5(uniqid('', true)));
 
     $already_initialised = true;

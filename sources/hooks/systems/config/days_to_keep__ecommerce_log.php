@@ -55,7 +55,7 @@ class Hook_config_days_to_keep__ecommerce_log
             return null;
         }
 
-        if (!is_file(get_custom_file_base() . '/data_custom/ecommerce.log')) {
+        if (!CMSLoggers::ecommerce()->is_active()) {
             return null;
         }
         return '365';

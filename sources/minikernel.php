@@ -1462,3 +1462,47 @@ function get_localhost_ips() : array
         '127.0.0.1',
     ];
 }
+
+/**
+ * Null-op version of CMSLoggers.
+ *
+ * @package core
+ */
+static class CMSLoggers
+{
+    /**
+     * Get a logger.
+     *
+     * @param string $name Logger name
+     * @return object Logger
+     */
+    public static function __callStatic($name)
+    {
+        return new CMSLogger();
+    }
+}
+
+/**
+ * Null-op version of CMSLogger.
+ *
+ * @package core
+ */
+class CMSLogger
+{
+    /**
+     * Always disabled.
+     *
+     * @return boolean Whether it is active
+     */
+    public function is_active()
+    {
+        return false;
+    }
+
+    /**
+     * Eat up calls.
+     */
+    public function __call(...$args)
+    {
+    }
+}

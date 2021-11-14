@@ -31,14 +31,6 @@ function init__debug_fs()
         define('DEBUG_FS__SLOW', 1);
         define('DEBUG_FS__CASE_SENSITIVE', 2);
     }
-
-    global $DEBUG_FS__LOG_FILE;
-    $DEBUG_FS__LOG_FILE = null;
-    if (is_file(get_file_base() . '/data_custom/debug_fs.log')) {
-        require_code('files');
-        $DEBUG_FS__LOG_FILE = cms_fopen_text_write(get_file_base() . '/data_custom/debug_fs.log', false, 'ab');
-        register_shutdown_function('close_debug_fs');
-    }
 }
 
 /**
@@ -69,18 +61,6 @@ function enable_debug_fs()
 
     @stream_wrapper_unregister('debugfs');
     stream_wrapper_register('debugfs', 'DebugFsStreamWrapper');
-}
-
-/**
- * Close down the debug file system log.
- */
-function close_debug_fs()
-{
-    global $DEBUG_FS__LOG_FILE;
-    if ($DEBUG_FS__LOG_FILE !== null) {
-        fclose($DEBUG_FS__LOG_FILE);
-        $DEBUG_FS__LOG_FILE = null;
-    }
 }
 
 /**
@@ -179,18 +159,16 @@ class DebugFsStreamWrapper
     {
         global $DEBUG_FS__LOG_FILE;
         if ($DEBUG_FS__LOG_FILE !== null) {
-            $line = loggable_date() . ' -- ' . $_SERVER['REQUEST_URI'];
-            $line .= ' - ' . $function;
+            $line = '';
+            $line .= $function;
             if ($path !== null) {
                 $line .= ' - ' . $path;
             }
             if ($slowdown) {
                 $line .= ' - ADDS LATENCY';
             }
-            flock($DEBUG_FS__LOG_FILE, LOCK_EX);
-            fseek($DEBUG_FS__LOG_FILE, 0, SEEK_END);
-            fwrite($DEBUG_FS__LOG_FILE, $line . "\n");
-            flock($DEBUG_FS__LOG_FILE, LOCK_UN);
+
+            CMSLoggers::debug_fs()->info($line);
         }
 
         if ($slowdown) {

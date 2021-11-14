@@ -44,7 +44,7 @@ function init__permissions()
  */
 function clear_permissions_runtime_cache()
 {
-    global $PRIVILEGE_CACHE, $GROUP_PRIVILEGE_CACHE, $ZONE_ACCESS_CACHE, $PAGE_ACCESS_CACHE, $PAGE_ACCESS_CACHE_MATCH_KEYS, $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE, $SUBMIT_PERMISSION_CACHE, $PERMISSION_CHECK_LOGGER, $PERMISSIONS_ALREADY_LOGGED;
+    global $PRIVILEGE_CACHE, $GROUP_PRIVILEGE_CACHE, $ZONE_ACCESS_CACHE, $PAGE_ACCESS_CACHE, $PAGE_ACCESS_CACHE_MATCH_KEYS, $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE, $SUBMIT_PERMISSION_CACHE, $PERMISSIONS_ALREADY_LOGGED;
 
     $PRIVILEGE_CACHE = [];
 
@@ -60,7 +60,6 @@ function clear_permissions_runtime_cache()
 
     $SUBMIT_PERMISSION_CACHE = [];
 
-    $PERMISSION_CHECK_LOGGER = null;
     $PERMISSIONS_ALREADY_LOGGED = [];
 }
 
@@ -74,43 +73,29 @@ function clear_permissions_runtime_cache()
  */
 function handle_permission_check_logging(int $member_id, string $op, array $params, bool $result)
 {
-    global $PERMISSION_CHECK_LOGGER, $PERMISSIONS_ALREADY_LOGGED, $SITE_INFO;
-    if ($PERMISSION_CHECK_LOGGER === null) {
-        $file_path = get_custom_file_base() . '/data_custom/permission_checks.log';
-        if (((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) && (is_file($file_path)) && (cms_is_writable($file_path))) {
-            require_code('files');
-            $PERMISSION_CHECK_LOGGER = cms_fopen_text_write($file_path, false, 'ab');
-            if (!function_exists('get_self_url')) {
-                require_code('tempcode');
-                require_code('urls');
-            }
-            $self_url = get_self_url(true);
-            if (!is_string($self_url)) {
-                $self_url = get_self_url_easy(true); // A weirdness can happen here. If some kind of fatal error happens then output buffers can malfunction making it impossible to use Tempcode as above. So we fall back to this. (This function may be called in a fatal error).
-            }
-            flock($PERMISSION_CHECK_LOGGER, LOCK_EX);
-            fseek($PERMISSION_CHECK_LOGGER, 0, SEEK_END);
-            fwrite($PERMISSION_CHECK_LOGGER, "\n\n" . loggable_date() . ' -- ' . $self_url . ' -- ' . $GLOBALS['FORUM_DRIVER']->get_username(get_member()) . "\n");
-            flock($PERMISSION_CHECK_LOGGER, LOCK_UN);
-        } else {
-            $PERMISSION_CHECK_LOGGER = false;
-        }
-    }
+    // Optimisation, early return
     static $fbe = null;
     if ($fbe === null) {
         $fbe = function_exists('fb');
     }
-    if (($PERMISSION_CHECK_LOGGER === false) && ((!$fbe) || (get_param_integer('keep_firephp', 0) == 0))) {
+    if ((!CMSLoggers::permission_checks()->is_active()) && ((!$fbe) || (get_param_integer('keep_firephp', 0) == 0))) {
         return;
     }
+
+    // Only log each once
+    global $PERMISSIONS_ALREADY_LOGGED;
     $sz = serialize([$member_id, $op, $params]);
     if (array_key_exists($sz, $PERMISSIONS_ALREADY_LOGGED)) {
         return;
     }
     $PERMISSIONS_ALREADY_LOGGED[$sz] = true;
+
+    // We will only log fails
     if ($result) {
         return;
     }
+
+    // As we usually don't need this code, it is moved into permissions2
     require_code('permissions2');
     _handle_permission_check_logging($member_id, $op, $params, $result);
 }

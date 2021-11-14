@@ -40,9 +40,6 @@ function init__health_check()
 
     require_lang('health_check');
 
-    global $HEALTH_CHECK_LOG_FILE;
-    $HEALTH_CHECK_LOG_FILE = null;
-
     global $HEALTH_CHECK_PAGE_RESPONSE_CACHE, $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE, $HEALTH_CHECK_PAGE_URLS_CACHE;
     $HEALTH_CHECK_PAGE_RESPONSE_CACHE = [];
     $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE = [];
@@ -189,13 +186,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
         }
     }
 
-    $_log_file = get_custom_file_base() . '/data_custom/health_check.log';
-    global $HEALTH_CHECK_LOG_FILE;
-    if (is_file($_log_file)) {
-        $HEALTH_CHECK_LOG_FILE = fopen($_log_file, 'at');
-
-        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING)' . "\n");
-    }
+    CMSLoggers::health_check()->info('(HEALTH CHECK STARTING)');
 
     $categories = [];
 
@@ -275,11 +266,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
     }
     cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
-    if ($HEALTH_CHECK_LOG_FILE !== null) {
-        fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK ENDING)' . "\n");
-
-        fclose($HEALTH_CHECK_LOG_FILE);
-    }
+    CMSLoggers::health_check()->info('(HEALTH CHECK ENDING)');
 
     return $categories;
 }
@@ -321,14 +308,9 @@ abstract class Hook_Health_Check
         $this->current_section_label = $section_label;
 
         if ($check_context != CHECK_CONTEXT__PROBING_FOR_SECTIONS) {
-            global $HEALTH_CHECK_LOG_FILE;
-            if ($HEALTH_CHECK_LOG_FILE !== null) {
-                fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n");
-            }
+            CMSLoggers::health_check()->info('STARTING ' . $this->category_label . ' \\ ' . $section_label);
             call_user_func([$this, $method], $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-            if ($HEALTH_CHECK_LOG_FILE !== null) {
-                fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . "\n");
-            }
+            CMSLoggers::health_check()->info('FINISHED ' . $this->category_label . ' \\ ' . $section_label);
         } else {
             if (strpos($section_label, ',') !== false) {
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // We cannot have commas in section labels because we store label sets in comma-separated lists

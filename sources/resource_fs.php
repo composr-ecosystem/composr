@@ -78,12 +78,7 @@ function init__resource_fs()
  */
 function resource_fs_logging__start(string $level = 'notice')
 {
-    global $RESOURCE_FS_LOGGER, $RESOURCE_FS_LOGGER_LEVEL;
-    if ($RESOURCE_FS_LOGGER !== null) {
-        fclose($RESOURCE_FS_LOGGER);
-    }
-    require_code('files');
-    $RESOURCE_FS_LOGGER = cms_fopen_text_write(get_custom_file_base() . '/data_custom/resource_fs.log', true, 'ab');
+    global $RESOURCE_FS_LOGGER_LEVEL;
     $RESOURCE_FS_LOGGER_LEVEL = $level;
 }
 
@@ -96,39 +91,23 @@ function resource_fs_logging__start(string $level = 'notice')
  */
 function resource_fs_logging(string $message, string $type = 'warn')
 {
-    global $RESOURCE_FS_LOGGER, $RESOURCE_FS_LOGGER_LEVEL;
-    if ($RESOURCE_FS_LOGGER !== null) {
-        if (($type == 'inform') && ($RESOURCE_FS_LOGGER_LEVEL != 'inform')) {
-            return;
-        }
-        if (($type == 'notice') && ($RESOURCE_FS_LOGGER_LEVEL != 'inform') && ($RESOURCE_FS_LOGGER_LEVEL != 'notice')) {
-            return;
-        }
-        if (($type == 'warn') && ($RESOURCE_FS_LOGGER_LEVEL != 'inform') && ($RESOURCE_FS_LOGGER_LEVEL != 'notice') && ($RESOURCE_FS_LOGGER_LEVEL != 'warn')) {
-            return;
-        }
+    global $RESOURCE_FS_LOGGER_LEVEL;
 
-        $message = loggable_date() . ' -- ' . $type . ' --  ' . $message . "\n";
-        fwrite($RESOURCE_FS_LOGGER, $message);
-        if (running_script('execute_temp')) {
-            print($message);
-        }
+    if (($type == 'inform') && ($RESOURCE_FS_LOGGER_LEVEL != 'inform')) {
+        return;
     }
-}
+    if (($type == 'notice') && ($RESOURCE_FS_LOGGER_LEVEL != 'inform') && ($RESOURCE_FS_LOGGER_LEVEL != 'notice')) {
+        return;
+    }
+    if (($type == 'warn') && ($RESOURCE_FS_LOGGER_LEVEL != 'inform') && ($RESOURCE_FS_LOGGER_LEVEL != 'notice') && ($RESOURCE_FS_LOGGER_LEVEL != 'warn')) {
+        return;
+    }
 
-/**
- * Disengage logging.
- */
-function resource_fs_logging__end()
-{
-    global $RESOURCE_FS_LOGGER;
-    if ($RESOURCE_FS_LOGGER !== null) {
-        flock($RESOURCE_FS_LOGGER, LOCK_UN);
-        fclose($RESOURCE_FS_LOGGER);
+    CMSLoggers::resource_fs()->log($type, $message);
+
+    if (running_script('execute_temp')) {
+        print($message);
     }
-    $RESOURCE_FS_LOGGER = null;
-    sync_file(get_custom_file_base() . '/data_custom/resource_fs.log');
-    fix_permissions(get_custom_file_base() . '/data_custom/resource_fs.log');
 }
 
 /**

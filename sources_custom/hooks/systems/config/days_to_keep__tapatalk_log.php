@@ -50,7 +50,7 @@ class Hook_config_days_to_keep__tapatalk_log
             return null;
         }
 
-        if (!is_file(get_custom_file_base() . '/data_custom/tapatalk.log')) {
+        if (!CMSLoggers::tapatalk()->is_active()) {
             return null;
         }
         return '365';

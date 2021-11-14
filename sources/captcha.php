@@ -411,7 +411,8 @@ function generate_captcha()
     $session = get_session_id();
     if ($session == '') {
         if (php_function_allowed('error_log')) {
-            error_log('CAPTCHA generated against blank session - static caching is misconfigured');
+            require_code('failure');
+            cms_error_log('Composr: CAPTCHA generated against blank session - static caching is misconfigured', null);
         }
     }
 

@@ -1217,6 +1217,7 @@ class Module_admin_version
                 'op_originating_host' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'dupe_delete', ['op_type', 'dir_path']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'order', ['op_timestamp', 'id']);
 
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_files', [
                 'id' => '*AUTO',
@@ -1230,6 +1231,7 @@ class Module_admin_version
                 'op_originating_host' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'dupe_delete', ['op_type', 'file_path']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'order', ['op_timestamp', 'id']);
 
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_rpc', [
                 'id' => '*AUTO',
@@ -1238,6 +1240,16 @@ class Module_admin_version
                 'op_originating_host' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('cloud_propagation_rpc', 'dupe_delete', ['op_type']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_rpc', 'order', ['op_timestamp', 'id']);
+
+            $GLOBALS['SITE_DB']->create_table('cloud_propagation_logging', [
+                'id' => '*AUTO',
+                'log_name' => 'ID_TEXT',
+                'log_line' => 'LONG_TEXT',
+                'op_timestamp' => 'TIME',
+                'op_originating_host' => 'ID_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_logging', 'order', ['op_timestamp', 'id']);
         }
     }
 

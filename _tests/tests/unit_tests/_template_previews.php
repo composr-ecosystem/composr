@@ -28,14 +28,6 @@ class _template_previews_test_set extends cms_test_case
     {
         parent::setUp();
 
-        $log_path = get_custom_file_base() . '/data_custom/template_previews.log';
-        global $PREVIEWS_LOG;
-        if (is_file($log_path)) {
-            $PREVIEWS_LOG = fopen($log_path, 'at');
-        } else {
-            $PREVIEWS_LOG = null;
-        }
-
         $a = scandir(get_file_base() . '/_tests/screens_tested');
         if (function_exists('sleep')) {
             sleep(3);
@@ -471,14 +463,14 @@ class _template_previews_test_set extends cms_test_case
         // Useful for debugging crashes
         global $PREVIEWS_LOG;
         if ($PREVIEWS_LOG !== null) {
-            fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - BEFORE:' . $called_form . ':' . $function . "\n");
+            CMSLoggers::template_previews()->info('RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - BEFORE:' . $called_form . ':' . $function);
         }
 
         $ret = render_screen_preview($hook, $function, $template, $full_screen);
 
         // Useful for debugging crashes
         if ($PREVIEWS_LOG !== null) {
-            fwrite($PREVIEWS_LOG, date('Y-m-d H:i:s') . ' - RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - AFTER:' . $called_form . ':' . $function . "\n");
+            CMSLoggers::template_previews()->info('RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - AFTER:' . $called_form . ':' . $function);
         }
         return $ret;
     }
@@ -497,12 +489,6 @@ class _template_previews_test_set extends cms_test_case
 
     public function tearDown()
     {
-        global $PREVIEWS_LOG;
-        if ($PREVIEWS_LOG !== null) {
-            fclose($PREVIEWS_LOG);
-            $PREVIEWS_LOG = null;
-        }
-
         parent::tearDown();
     }
 }

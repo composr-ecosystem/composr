@@ -88,17 +88,7 @@ class MobiquoServerPOST extends MobiquoServer
             }
             $response = mobiquo_response_false($msg);
 
-            if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
-                // Request
-                $log_file = fopen(TAPATALK_LOG, 'ab');
-                flock($log_file, LOCK_EX);
-                fseek($log_file, 0, SEEK_END);
-                fwrite($log_file, TAPATALK_REQUEST_ID . ' -- ' . loggable_date() . " *TRACE*:\n");
-                fwrite($log_file, var_export($e->getTrace(), true));
-                fwrite($log_file, "\n\n");
-                flock($log_file, LOCK_UN);
-                fclose($log_file);
-            }
+            CMSLoggers::tapatalk()->info('TRACE', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'trace' => $e->getTrace()]);
         }
         $this->output_response($response);
     }

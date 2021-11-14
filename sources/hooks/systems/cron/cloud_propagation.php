@@ -51,6 +51,9 @@ class Hook_cron_cloud_propagation
 
             $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_rpc WHERE ' . $where;
             $num_queued += $GLOBALS['SITE_DB']->query_value_if_there($sql);
+
+            $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_logging WHERE ' . $where;
+            $num_queued += $GLOBALS['SITE_DB']->query_value_if_there($sql);
         } else {
             $num_queued = null;
         }
@@ -59,6 +62,7 @@ class Hook_cron_cloud_propagation
             'label' => 'Propagate file changes from elsewhere on the Cloud',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 0,
+            'cloud_all' => true,
         ];
     }
 
@@ -71,13 +75,13 @@ class Hook_cron_cloud_propagation
     {
         $time = time();
 
-        $max = 50;
+        $max = null; // We want to do all at once, otherwise co-dependent things may not happen
 
         $last_synched = intval(get_long_value('cloud_propagation_to__' . gethostname(), '-1'));
 
         $where = 'id>=' . strval($last_synched) . ' AND ' . db_string_not_equal_to('op_originating_host', gethostname());
 
-        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where . ' ORDER BY id';
+        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where . ' ORDER BY op_timestamp,id';
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
@@ -94,7 +98,8 @@ class Hook_cron_cloud_propagation
                     $result = @mkdir($file_base . '/' . $op['dir_path'], $op['dir_perms']);
                     fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
                     if (!$result) {
-                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        require_code('failure');
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
 
@@ -107,20 +112,22 @@ class Hook_cron_cloud_propagation
                 case 'move':
                     $result = @rename($file_base . '/' . $op['dir_path'], $file_base . '/' . $op['op_data']);
                     if (!$result) {
-                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        require_code('failure');
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
 
                 case 'delete':
                     $result = @rmdir($file_base . '/' . $op['dir_path']);
                     if (!$result) {
-                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        require_code('failure');
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
             }
         }
 
-        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_files WHERE ' . $where . ' ORDER BY id';
+        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_files WHERE ' . $where . ' ORDER BY op_timestamp,id';
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
@@ -140,7 +147,8 @@ class Hook_cron_cloud_propagation
                         @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
                     } else {
                         unset($op['op_data']);
-                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        require_code('failure');
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
 
@@ -156,20 +164,22 @@ class Hook_cron_cloud_propagation
                 case 'move':
                     $result = @rename($file_base . '/' . $op['file_path'], $file_base . '/' . $op['op_data']);
                     if (!$result) {
-                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        require_code('failure');
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
 
                 case 'delete':
                     $result = @unlink($file_base . '/' . $op['file_path']);
                     if (!$result) {
-                        @error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        require_code('failure');
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
                     }
                     break;
             }
         }
 
-        $sql = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_rpc WHERE ' . $where . ' ORDER BY id';
+        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_rpc WHERE ' . $where . ' ORDER BY op_timestamp,id';
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
@@ -198,6 +208,40 @@ class Hook_cron_cloud_propagation
                     Self_learning_cache::erase_smart_cache(true);
                     break;
             }
+        }
+
+        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_logging WHERE ' . $where . ' ORDER BY op_timestamp,id';
+        $lines = $GLOBALS['SITE_DB']->query($sql, $max);
+        if (!empty($lines)) {
+            disable_php_memory_limit();
+
+            $log_file = null;
+            foreach ($lines as $i => $line) {
+                if ($log_file === null) {
+                    $path = get_custom_file_base() . '/data_custom/' . $line['log_name'] . '.log';
+
+                    if ((!is_file($path)) || (!cms_is_writable($path))) {
+                        continue;
+                    }
+
+                    $log_file = cms_fopen_text_write($path, false, 'a+b');
+                }
+
+                fseek($log_file, 0, SEEK_END);
+
+                flock($log_file, LOCK_EX);
+                fwrite($log_file, $line['log_line'] . "\n");
+                flock($log_file, LOCK_UN);
+
+                if ((!isset($lines[$i + 1])) || ($lines[$i + 1]['log_name'] != $line['log_name'])) {
+                    fclose($log_file);
+                    $log_file = null;
+                }
+            }
+
+            // Cleanup very old stuff (as unlike the other tables we cannot keep the table size down by deduplication alone)
+            $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_logging WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * 24);
+            $lines = $GLOBALS['SITE_DB']->query($sql, $max);
         }
 
         set_long_value('cloud_propagation_to__' . gethostname(), strval(time()));
