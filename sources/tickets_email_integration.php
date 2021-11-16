@@ -105,7 +105,7 @@ class TicketsEmailIntegration extends EmailIntegration
      */
     public function incoming_scan()
     {
-        $this->log_message('Starting overall incoming e-mail scan process (support tickets)');
+        CMSLoggers::mail_integration()->info('Starting overall incoming e-mail scan process (support tickets)');
 
         $type = get_option('ticket_mail_server_type');
         $host = get_option('ticket_mail_server_host');
@@ -116,7 +116,7 @@ class TicketsEmailIntegration extends EmailIntegration
 
         $this->_incoming_scan($type, $host, $port, $folder, $username, $password);
 
-        $this->log_message('Finished overall incoming e-mail scan process (support tickets)');
+        CMSLoggers::mail_integration()->info('Finished overall incoming e-mail scan process (support tickets)');
     }
 
     /**
@@ -156,7 +156,7 @@ class TicketsEmailIntegration extends EmailIntegration
         for ($i = 0; $i < $num_matches; $i++) {
             $tag = $matches[1][$i];
 
-            $this->log_message('Detected tag ' . $tag);
+            CMSLoggers::mail_integration()->info('Detected tag ' . $tag);
 
             $tags[] = $tag;
 
@@ -169,11 +169,11 @@ class TicketsEmailIntegration extends EmailIntegration
             $member_id = $this->handle_missing_member($from_email, $email_bounce_to, get_option('ticket_mail_nonmatch_policy'), $subject, $_body_text, $_body_html);
         }
         if ($member_id === null) {
-            $this->log_message('Could not bind to a member');
+            CMSLoggers::mail_integration()->info('Could not bind to a member');
 
             return;
         } else {
-            $this->log_message('Bound to member #' . strval($member_id));
+            CMSLoggers::mail_integration()->info('Bound to member #' . strval($member_id));
         }
 
         if ($_body_html === null) {
@@ -191,7 +191,7 @@ class TicketsEmailIntegration extends EmailIntegration
             'member_id' => $member_id,
         ]);
 
-        $this->log_message('Recording ' . $from_email . ' as a valid posted for member #' . strval($member_id));
+        CMSLoggers::mail_integration()->info('Recording ' . $from_email . ' as a valid posted for member #' . strval($member_id));
 
         // Check there can be no forgery vulnerability
         $member_id_comcode = $this->degrade_member_id_for_comcode($member_id);
@@ -232,7 +232,7 @@ class TicketsEmailIntegration extends EmailIntegration
             // Send e-mail (to staff)
             send_ticket_email($new_ticket_id, $subject, $body, $ticket_url, $from_email, $ticket_type_id, $member_id, true);
 
-            $this->log_message('Created new ticket, ' . $new_ticket_id);
+            CMSLoggers::mail_integration()->info('Created new ticket, ' . $new_ticket_id);
         } else {
             // Reply to the ticket...
 
@@ -251,11 +251,11 @@ class TicketsEmailIntegration extends EmailIntegration
             // Send e-mail (to staff & to confirm receipt to $member_id)
             send_ticket_email($existing_ticket_id, $__title, $body, $ticket_url, $from_email, null, $member_id, true);
 
-            $this->log_message('Posted in ticket, ' . $existing_ticket_id);
+            CMSLoggers::mail_integration()->info('Posted in ticket, ' . $existing_ticket_id);
         }
 
         if (!empty($attachment_errors)) {
-            $this->log_message('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
+            CMSLoggers::mail_integration()->info('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
 
             $this->send_bounce_email__attachment_errors($subject, $body, $from_email, $email_bounce_to, $attachment_errors, $ticket_url);
         }

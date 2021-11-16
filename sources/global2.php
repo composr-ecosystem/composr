@@ -66,6 +66,8 @@ function init__global2()
 
     fixup_bad_php_env_vars();
 
+    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
+
     cms_ini_set('log_errors', '1');
     if ((GOOGLE_APPENGINE) && (!appengine_is_live())) {
         @mkdir(get_custom_file_base() . '/data_custom', 0755);
@@ -85,8 +87,6 @@ function init__global2()
             }
         }
     }
-
-    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
 
     $INVALIDATED_FAST_SPIDER_CACHE = false;
 
@@ -734,7 +734,7 @@ function fixup_bad_php_env_vars()
  * @return string Cloud mode
  * @set "" primary replica
  */
-function cloud_mode()
+function cloud_mode() : string
 {
     if (empty($SITE_INFO['cloud_mode'])) {
         return '';
@@ -751,7 +751,7 @@ function cloud_mode()
  * @param  string $path Absolute path
  * @return string The native path
  */
-function make_cms_path_native(string $path) : bool
+function make_cms_path_native(string $path) : string
 {
     if (function_exists('_make_cms_path_native')) {
         list(, $path_absolute) = _make_cms_path_native($path);
@@ -2425,7 +2425,7 @@ function cms_empty_safe($var) : bool
 /**
  * Get the date/time string as we log it. Designed to be consistent with how PHP puts dates into the error-log.
  *
- * @param  bool Whether to use a PHP-style date (as opposed to as close to Apache-style as possible)
+ * @param  boolean $php_style Whether to use a PHP-style date (as opposed to as close to Apache-style as possible)
  * @return string Date/time string
  */
 function loggable_date(bool $php_style = false) : string
@@ -2452,6 +2452,7 @@ function loggable_date(bool $php_style = false) : string
 
     if ($timezone == '') {
         // Best we can do is use what PHP's date.timezone setting is in php.ini
+        global $SERVER_TIMEZONE_CACHE;
         if ($SERVER_TIMEZONE_CACHE != 'UTC') {
             date_default_timezone_set($SERVER_TIMEZONE_CACHE);
         }
@@ -2473,35 +2474,36 @@ function loggable_date(bool $php_style = false) : string
  *
  * @package core
  */
-static class CMSLoggers
+class CMSLoggers
 {
-    protected array $loggers = [];
+    protected static $loggers = [];
 
     /**
-     * Get a logger.
+     * Gets a logger, via intercepting function calls with same name as loggers. Compact syntax!
      *
-     * @param string $name Logger name
+     * @param  string $name Logger name
+     * @param  array $arguments Arguments (will be empty list)
      * @return object Logger
      */
-    public static function __callStatic($name)
+    public static function __callStatic(string $name, array $arguments) : object
     {
-        if (!isset($this->loggers[$name])) {
-            $this->loggers[$name] = new CMSLogger($name);
+        if (!isset(self::$loggers[$name])) {
+            self::$loggers[$name] = new CMSLogger($name);
         }
 
-        return $this->loggers[$name];
+        return self::$loggers[$name];
     }
 
     /**
      * Collate log details.
      *
-     * @param string $message Log message
-     * @param ?string $date Date (null: not set)
-     * @param ?string $level Log level (null: not set)
-     * @param array $context A map of extra context
+     * @param  string $message Log message
+     * @param  ?string $date Date (null: not set)
+     * @param  ?string $level Log level (null: not set)
+     * @param  array $context A map of extra context
      * @return array The log details
      */
-    public static function collate_log_details(string $message, ?string $date = null, ?string $level = null, array $context = array()) : string
+    public static function collate_log_details(string $message, ?string $date = null, ?string $level = null, array $context = array()) : array
     {
         $details = [];
 
@@ -2521,16 +2523,20 @@ static class CMSLoggers
 
         $details['request_uri'] = $_SERVER['REQUEST_URI'];
 
-        if (function_exists('get_session_id')) {
-            $details['session_id'] = get_session_id();
-        } else {
-            $details['session_id'] = '';
-        }
+        global $BOOTSTRAPPING;
 
-        if (function_exists('get_member')) {
-            $details['member_id'] = strval(get_member());
-        } else {
-            $details['member_id'] = '';
+        if (!$BOOTSTRAPPING) {
+            if (function_exists('get_session_id')) {
+                $details['session_id'] = get_session_id();
+            } else {
+                $details['session_id'] = '';
+            }
+
+            if (function_exists('get_member')) {
+                $details['member_id'] = strval(get_member());
+            } else {
+                $details['member_id'] = '';
+            }
         }
 
         if (function_exists('get_ip_address')) {
@@ -2568,7 +2574,7 @@ static class CMSLoggers
     /**
      * Generate simple (traditional) logging line from collate_log_details output.
      *
-     * @param array $details collate_log_details output
+     * @param  array $details collate_log_details output
      * @return string The log line
      */
     public static function generate_simple_line(array $details) : string
@@ -2601,18 +2607,20 @@ static class CMSLoggers
 class CMSLogger
 {
     protected $log_file = null;
-    protected string $name;
-    protected string $path;
-    protected bool $active = null;
+    protected $name;
+    protected $path;
+    protected $active = null;
 
-    protected bool $target__file = null;
-    protected bool $target__cloud = null;
-    protected bool $target__syslog = null;
+    protected $target__file = null;
+    protected $target__cloud = null;
+    protected $target__syslog = null;
 
     /**
      * Construct a logger to a specific log file.
+     *
+     * @param  string $name Log name
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
         if ($name == 'errorlog') {
@@ -2627,11 +2635,11 @@ class CMSLogger
      *
      * Example: Application component unavailable, unexpected exception.
      *
-     * @param string $message Log message
-     * @param array $context A map of extra context
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function critical(string $message, array $context = array())
+    public function critical(string $message, array $context = array()) : string
     {
         return $this->log('critical', $message, $context);
     }
@@ -2639,14 +2647,13 @@ class CMSLogger
     /**
      * Log a message (Exceptional occurrences that are not errors).
      *
-     * Example: Use of deprecated APIs, poor use of an API, undesirable things
-     * that are not necessarily wrong.
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
      *
-     * @param string $message Log message
-     * @param array $context A map of extra context
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function warning(string $message, array $context = array())
+    public function warning(string $message, array $context = array()) : string
     {
         return $this->log('warning', $message, $context);
     }
@@ -2656,11 +2663,11 @@ class CMSLogger
      *
      * Example: User logs in, SQL logs.
      *
-     * @param string $message Log message
-     * @param array $context A map of extra context
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function info(string $message, array $context = array())
+    public function info(string $message, array $context = array()) : string
     {
         return $this->log('info', $message, $context);
     }
@@ -2670,13 +2677,13 @@ class CMSLogger
      *
      * @return boolean Whether it is active
      */
-    public function is_active()
+    public function is_active() : bool
     {
         if ($this->active === null) {
             $this->active = true;
 
             global $SITE_INFO;
-            if (((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) {
+            if ((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) {
                 $this->active = false; // Explicitly disabled
             } else {
                 require_code('files');
@@ -2692,16 +2699,20 @@ class CMSLogger
     /**
      * Log a message with an arbitrary level.
      *
-     * @param mixed $level Log level
-     * @param string $message Log message
-     * @param array $context A map of extra context
+     * @param  string $level Log level
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    protected function log(string $level, string $message, array $context = array())
+    protected function log(string $level, string $message, array $context = array()) : string
     {
+        $details = CMSLoggers::collate_log_details($message, loggable_date(), $level, $context);
+
+        $line_file = implode("\t", $details);
+
         if ($this->log_file === null) {
             if (!$this->is_active()) {
-                return;
+                return $line_file;
             }
 
             $this->log_file = cms_fopen_text_write($this->path, false, 'a+b');
@@ -2718,10 +2729,6 @@ class CMSLogger
         } else {
             $new_file = false;
         }
-
-        $details = CMSLoggers::collate_log_details($message, loggable_date(), $level, $context);
-
-        $line_file = implode("\t", $details);
 
         if ($this->target__file) {
             fseek($this->log_file, 0, SEEK_END);

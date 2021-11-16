@@ -1471,12 +1471,13 @@ function get_localhost_ips() : array
 static class CMSLoggers
 {
     /**
-     * Get a logger.
+     * Gets a logger, via intercepting function calls with same name as loggers. Compact syntax!
      *
      * @param string $name Logger name
+     * @param  array $arguments Arguments (will be empty list)
      * @return object Logger
      */
-    public static function __callStatic($name)
+    public static function __callStatic(string $name, array $arguments) : object
     {
         return new CMSLogger();
     }
@@ -1494,7 +1495,7 @@ class CMSLogger
      *
      * @return boolean Whether it is active
      */
-    public function is_active()
+    public function is_active() : bool
     {
         return false;
     }

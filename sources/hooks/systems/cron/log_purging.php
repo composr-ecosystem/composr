@@ -91,7 +91,7 @@ class Hook_cron_log_purging
             if ($found_pivot) {
                 $lines[] = $line;
             } else {
-                $time - false;
+                $time = false;
                 if (preg_match('#^\[((\d\d)-(\w\w\w)-(\d\d\d\d) (\d\d):(\d\d):(\d\d) \w+)\]#', $line, $matches) != 0) {
                     // PHP format (also used in older versions of Composr)
                     $time = strtotime($matches[1]);

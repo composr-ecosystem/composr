@@ -72,14 +72,16 @@ function init__cloud_fs()
  */
 function enable_cloud_fs()
 {
-    stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
-    stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
+    if (function_exists('stream_wrapper_register')) {
+        stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
+        stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
 
-    global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
-    $FILE_BASE_LOCAL = get_file_base(true);
-    $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
-    $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
-    $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
+        global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
+        $FILE_BASE_LOCAL = get_file_base(true);
+        $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
+        $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
+        $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
+    }
 }
 
 /**
@@ -88,7 +90,7 @@ function enable_cloud_fs()
  * @param  string $path Path
  * @return array A tuple: The storage type relative path (if storage type is CMS_CLOUD__LOCAL then it will be null), The absolute path, The storage type (a CMS_CLOUD__* constant), The file base (if storage type is CMS_CLOUD__LOCAL then it will be null), The file base constant (a FILE_BASE__* constant) (if storage type is CMS_CLOUD__LOCAL then it will be null)
  */
-function _make_cms_path_native(string $path) : bool
+function _make_cms_path_native(string $path) : array
 {
     global $CMS_CLOUD_BINDINGS, $SITE_INFO;
 
@@ -128,7 +130,7 @@ function _make_cms_path_native(string $path) : bool
 
         case CMS_CLOUD__REMOTE:
             $nas_directory = $SITE_INFO['nas_directory'];
-            if (substr($nas_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($nas_directory, 1, 2) == ':/')) {
+            if ((substr($nas_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($nas_directory, 1, 2) == ':/'))) {
                 $path_absolute = $nas_directory . '/' . $path;
             } else {
                 $path_absolute = $file_base . '/' . $nas_directory . '/' . $path;
@@ -145,11 +147,11 @@ function _make_cms_path_native(string $path) : bool
  * @param  string $file_base_constant A FILE_BASE__* constant
  * @param  string $op_type Operation type
  * @set create touch move delete
- * @param  PATH $path The base-relative path
+ * @param  PATH $path_relative The base-relative path
  * @param  ?integer $perms The Unix file permissions (null: N/A)
  * @param  string $data The property value
  */
-function inject_propagation_dir(string $file_base_constant, string $op_type, string $path_relative, int? $perms = null, string $data = '')
+function inject_propagation_dir(string $file_base_constant, string $op_type, string $path_relative, ?int $perms = null, string $data = '')
 {
     // Clean up any contradictions/prior-bloat first
     if ($op_type != 'move') {
@@ -178,7 +180,7 @@ function inject_propagation_dir(string $file_base_constant, string $op_type, str
  * @param  PATH $path The absolute path
  * @param  string $file_base_constant A FILE_BASE_* constant
  */
-function cloudfs_ping_file_changed(string $path, int $file_base_constant)
+function cloudfs_ping_file_changed(string $path, string $file_base_constant)
 {
     $_path = substr($path, strlen($file_base));
     inject_propagation_file($file_base_constant, 'create', $_path, time(), fileperms($path), base64_encode(file_get_contents($path)));
@@ -190,12 +192,12 @@ function cloudfs_ping_file_changed(string $path, int $file_base_constant)
  * @param  string $file_base_constant A FILE_BASE__* constant
  * @param  string $op_type Operation type
  * @set create touch move delete
- * @param  PATH $path The base-relative path
+ * @param  PATH $path_relative The base-relative path
  * @param  ?TIME $mtime The modification time (null: N/A)
  * @param  ?integer $perms The Unix file permissions (null: N/A)
  * @param  string $data The base64-encoded file contents / property value
  */
-function inject_propagation_file(string $file_base_constant, string $op_type, string $path_relative, int? $mtime = null, int? $perms = null, string $data = '')
+function inject_propagation_file(string $file_base_constant, string $op_type, string $path_relative, ?int $mtime = null, ?int $perms = null, string $data = '')
 {
     // Clean up any contradictions/prior-bloat first
     if ($op_type != 'move') {
@@ -383,12 +385,12 @@ class CloudFsStreamWrapper
         return stat($path_absolute);
     }
 
-    protected string? $file_path_relative = null;
-    protected string? $file_path_absolute = null;
-    protected string? $file_storage_type = null;
-    protected string? $file_file_base = null;
-    protected string? $file_file_base_constant = null;
-    protected bool? $file_is_new = null;
+    protected $file_path_relative = null;
+    protected $file_path_absolute = null;
+    protected $file_storage_type = null;
+    protected $file_file_base = null;
+    protected $file_file_base_constant = null;
+    protected $file_is_new = null;
     protected $file_handle = false;
 
     /**

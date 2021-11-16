@@ -37,7 +37,7 @@ class Hook_cron_cloud_propagation
         }
 
         if ($calculate_num_queued) {
-            $last_synched = intval(get_long_value('cloud_propagation_to__' . gethostname(), '-1'));
+            $last_synched = intval(get_value('cloud_propagation_to__' . gethostname(), '-1', true));
 
             $num_queued = 0;
 
@@ -77,7 +77,7 @@ class Hook_cron_cloud_propagation
 
         $max = null; // We want to do all at once, otherwise co-dependent things may not happen
 
-        $last_synched = intval(get_long_value('cloud_propagation_to__' . gethostname(), '-1'));
+        $last_synched = intval(get_value('cloud_propagation_to__' . gethostname(), '-1', true));
 
         $where = 'id>=' . strval($last_synched) . ' AND ' . db_string_not_equal_to('op_originating_host', gethostname());
 
@@ -244,6 +244,6 @@ class Hook_cron_cloud_propagation
             $lines = $GLOBALS['SITE_DB']->query($sql, $max);
         }
 
-        set_long_value('cloud_propagation_to__' . gethostname(), strval(time()));
+        set_value('cloud_propagation_to__' . gethostname(), strval(time()), true);
     }
 }
