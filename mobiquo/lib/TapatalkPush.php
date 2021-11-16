@@ -328,7 +328,7 @@ class TapatalkPush extends TapatalkBasePush
             return null;
         }
 
-        CMSLoggers::tapatalk()->info('PUSH', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'arr' => $arr]);
+        CMSLoggers::tapatalk()->inform('PUSH', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'arr' => $arr]);
 
         return $arr;
     }

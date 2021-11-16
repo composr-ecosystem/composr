@@ -58,7 +58,7 @@ abstract class EmailIntegration
             return;
         }
 
-        CMSLoggers::mail_integration()->info('Sending outgoing e-mail to ' . $to_email . ' (' . $subject . ')');
+        CMSLoggers::mail_integration()->inform('Sending outgoing e-mail to ' . $to_email . ' (' . $subject . ')');
 
         $sender_email = $this->get_sender_email(); // Typically 'website_email' option
 
@@ -139,12 +139,12 @@ abstract class EmailIntegration
             $password = get_option('mail_password');
         }
 
-        CMSLoggers::mail_integration()->info('Starting an incoming e-mail scan on ' . $host . ' (' . $username . ')');
+        CMSLoggers::mail_integration()->inform('Starting an incoming e-mail scan on ' . $host . ' (' . $username . ')');
 
         $server_spec = _imap_server_spec($host, $port, $type);
         $mbox = @imap_open($server_spec . $folder, $username, $password, CL_EXPUNGE);
         if ($mbox !== false) {
-            CMSLoggers::mail_integration()->info('Successfully opened server connection');
+            CMSLoggers::mail_integration()->inform('Successfully opened server connection');
 
             $reprocess = (get_param_integer('test', 0) == 1 && $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()));
             $list = imap_search($mbox, $reprocess ? '' : 'UNSEEN');
@@ -159,7 +159,7 @@ abstract class EmailIntegration
                 $subject = $header->subject;
                 $this->strip_system_code($subject, self::STRIP_SUBJECT);
 
-                CMSLoggers::mail_integration()->info('Found an unread e-mail, ' . $subject);
+                CMSLoggers::mail_integration()->inform('Found an unread e-mail, ' . $subject);
 
                 // Find overall character set
                 $input_charset = 'ISO-8859-1';
@@ -175,7 +175,7 @@ abstract class EmailIntegration
                 $_body_html = $this->_imap_get_part($mbox, $l, 'TEXT/HTML', $attachments, $attachment_size_total, $input_charset);
                 imap_clearflag_full($mbox, $l, '\\Seen'); // Clear this, as otherwise it is a real pain to debug (have to keep manually marking unread)
                 if (($_body_text === null) && ($_body_html === null)) {
-                    CMSLoggers::mail_integration()->info('Could not find a plain text or HTML body');
+                    CMSLoggers::mail_integration()->inform('Could not find a plain text or HTML body');
                     imap_setflag_full($mbox, $l, '\\Seen');
                     continue;
                 }
@@ -205,7 +205,7 @@ abstract class EmailIntegration
 
                 // Continue to real processing
                 if (!$this->is_non_human_email($subject, $_body_text, $_body_html, $full_header, $from_email)) {
-                    CMSLoggers::mail_integration()->info('E-mail is being processed (From e-mail=' . $from_email . ', From name=' . $from_name . ', From subject=' . $subject . ')');
+                    CMSLoggers::mail_integration()->inform('E-mail is being processed (From e-mail=' . $from_email . ', From name=' . $from_name . ', From subject=' . $subject . ')');
 
                     $this->process_incoming_message(
                         $from_email,
@@ -216,7 +216,7 @@ abstract class EmailIntegration
                         $attachments
                     );
                 } else {
-                    CMSLoggers::mail_integration()->info('E-mail was considered non-human');
+                    CMSLoggers::mail_integration()->inform('E-mail was considered non-human');
                 }
 
                 imap_setflag_full($mbox, $l, '\\Seen');
@@ -249,7 +249,7 @@ abstract class EmailIntegration
             }
         }
 
-        CMSLoggers::mail_integration()->info('Finished incoming e-mail scan');
+        CMSLoggers::mail_integration()->inform('Finished incoming e-mail scan');
     }
 
     /**
@@ -372,7 +372,7 @@ abstract class EmailIntegration
 
         // Multi-part, so recurse to scan further parts
         if ($structure->type == 1) {
-            CMSLoggers::mail_integration()->info('Found mime multi-part with ' . integer_format(count($structure->parts)) . ' parts' . $qualifier_exp);
+            CMSLoggers::mail_integration()->inform('Found mime multi-part with ' . integer_format(count($structure->parts)) . ' parts' . $qualifier_exp);
 
             foreach ($structure->parts as $index => $sub_structure) {
                 if ($part_number != '') {
@@ -408,7 +408,7 @@ abstract class EmailIntegration
             ) {
                 $filename = isset($structure->dparameters[0]) ? $structure->dparameters[0]->value : 'unknown.bin';
 
-                CMSLoggers::mail_integration()->info('Found attachment, ' . $filename . $qualifier_exp);
+                CMSLoggers::mail_integration()->inform('Found attachment, ' . $filename . $qualifier_exp);
 
                 // Check it's a reasonable file-size
                 if ($attachment_size_total + $structure->bytes >= 1024 * 1024 * 20/*20MB is quite enough, thank you*/) {
@@ -443,14 +443,14 @@ abstract class EmailIntegration
             } else {
                 if ($disposition == 'ATTACHMENT') {
                     if (!isset($structure->bytes)) {
-                        CMSLoggers::mail_integration()->info('Found attachment section, but cannot process as not an attachment due to missing data' . $qualifier_exp);
+                        CMSLoggers::mail_integration()->inform('Found attachment section, but cannot process as not an attachment due to missing data' . $qualifier_exp);
                     }
                 } elseif ($part_mime_type == 'APPLICATION/OCTET-STREAM') {
                     if (!isset($structure->bytes)) {
-                        CMSLoggers::mail_integration()->info('Found binary section, but cannot process as not an attachment due to missing data' . $qualifier_exp);
+                        CMSLoggers::mail_integration()->inform('Found binary section, but cannot process as not an attachment due to missing data' . $qualifier_exp);
                     }
                     if ($structure->type == 2) {
-                        CMSLoggers::mail_integration()->info('Found binary section, but cannot process as not an attachment due to structure type of ' . strval($structure->type) . $qualifier_exp);
+                        CMSLoggers::mail_integration()->inform('Found binary section, but cannot process as not an attachment due to structure type of ' . strval($structure->type) . $qualifier_exp);
                     }
                 }
             }
@@ -462,7 +462,7 @@ abstract class EmailIntegration
         if ($part_mime_type == $needed_mime_type) {
             require_code('character_sets');
 
-            CMSLoggers::mail_integration()->info('Found relevant mime section, ' . $part_mime_type . $qualifier_exp);
+            CMSLoggers::mail_integration()->inform('Found relevant mime section, ' . $part_mime_type . $qualifier_exp);
 
             if ($part_number == '') {
                 $part_number = '1';
@@ -496,7 +496,7 @@ abstract class EmailIntegration
         }
 
         if (($part_mime_type != 'TEXT/HTML') && ($part_mime_type != 'TEXT/PLAIN') && ($part_mime_type != 'APPLICATION/OCTET-STREAM')) {
-            CMSLoggers::mail_integration()->info('Found non-understood section with mime-type ' . $part_mime_type . ' and structure type ' . strval($structure->type) . $qualifier_exp);
+            CMSLoggers::mail_integration()->inform('Found non-understood section with mime-type ' . $part_mime_type . ' and structure type ' . strval($structure->type) . $qualifier_exp);
         }
 
         return null;
@@ -875,12 +875,12 @@ abstract class EmailIntegration
 
         $full_header = "\r\n" . cms_strtolower_ascii($full_header);
         if (strpos($full_header, "\r\nfrom: <>") !== false) {
-            CMSLoggers::mail_integration()->info('Considered non-human due to: empty-from field');
+            CMSLoggers::mail_integration()->inform('Considered non-human due to: empty-from field');
 
             return true;
         }
         if ((strpos($full_header, "\r\nauto-submitted: ") !== false) && (strpos($full_header, "\r\nauto-submitted: no") === false)) {
-            CMSLoggers::mail_integration()->info('Considered non-human due to: auto-submitted header');
+            CMSLoggers::mail_integration()->inform('Considered non-human due to: auto-submitted header');
 
             return true;
         }
@@ -902,7 +902,7 @@ abstract class EmailIntegration
                 (($_body_text !== null) && (stripos($_body_text, $j) !== false)) ||
                 (($_body_html !== null) && (stripos($_body_html, $j) !== false))
             ) {
-                CMSLoggers::mail_integration()->info('Considered non-human due to: recognised automated subject line');
+                CMSLoggers::mail_integration()->inform('Considered non-human due to: recognised automated subject line');
 
                 return true;
             }

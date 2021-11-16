@@ -1381,7 +1381,7 @@ function handle_ipn_transaction_script(bool $silent_fail = false, bool $send_not
 
     @header('X-Robots-Tag: noindex');
 
-    CMSLoggers::ecommerce()->info('Transaction', [serialize($_POST), serialize($_GET)]);
+    CMSLoggers::ecommerce()->inform('Transaction', [serialize($_POST), serialize($_GET)]);
 
     $payment_gateway = get_param_string('from', get_option('payment_gateway'));
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));

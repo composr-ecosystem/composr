@@ -46,10 +46,12 @@ class log_refs_test_set extends cms_test_case
             'performance.log',
             'performance_warnings.log',
             'template_previews.log',
+            'debug_fs.log',
 
             // For non-bundled addons
             'sugarcrm.log',
             'tapatalk.log',
+            'webdav.log',
         ];
 
         $matches = [];

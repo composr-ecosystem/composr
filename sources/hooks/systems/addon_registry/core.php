@@ -1355,6 +1355,7 @@ class Hook_addon_registry_core
             'caches/http/index.html',
             'data/gravatar.php',
             'config_editor.php',
+            'sources/hooks/systems/cron/cloud_propagation.php',
             'index.php',
             '_config.php',
             'uploads/auto_thumbs/index.html',

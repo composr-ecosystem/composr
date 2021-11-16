@@ -24,7 +24,7 @@ class mobile_detect_test_set extends cms_test_case
         $this->assertTrue(!is_mobile('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36', false));
         $this->assertTrue(!is_mobile('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36', true));
 
-        // ChromeOS
+        // Chrome OS
         $this->assertTrue(!is_mobile('Mozilla/5.0 (X11; CrOS x86_64 14150.74.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.114 Safari/537.36', false));
         $this->assertTrue(!is_mobile('Mozilla/5.0 (X11; CrOS x86_64 14150.74.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.114 Safari/537.36', true));
 

@@ -107,9 +107,9 @@ class ___performance_test_set extends cms_test_case
         $this->assertTrue(!$slow, 'Too slow on ' . $page_link . ' (' . float_format($time) . ' seconds)');
 
         $message = $page_link . ' (' . $url . '): ' . float_format($time) . ' seconds';
-        CMSLoggers::performance()->info($message);
+        CMSLoggers::performance()->inform($message);
         if ($slow) {
-            CMSLoggers::performance_warnings()->info($message);
+            CMSLoggers::performance_warnings()->inform($message);
         }
 
         cms_set_time_limit($old_limit);

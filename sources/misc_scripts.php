@@ -399,7 +399,7 @@ function cron_bridge_script(string $caller)
     }
 
     // Starting logging
-    $log_message = CMSLoggers::cron()->info('CRON STARTING');
+    $log_message = CMSLoggers::cron()->inform('CRON STARTING');
     if ($verbose) {
         echo $log_message;
     }
@@ -492,7 +492,7 @@ function cron_bridge_script(string $caller)
             // Run, with basic locking support
             if ((get_value_newer_than('cron_currently_running__' . $hook, time() - 60 * 60 * 5/*huge 5 hour timeout in case a particular hook is badly broken and we do not want frequent trip ups*/, true) !== '1') || ($force)) {
                 // Update log to say starting
-                $log_message = CMSLoggers::cron()->info('STARTING ' . $hook . ' (' . $info['label'] . ')');
+                $log_message = CMSLoggers::cron()->inform('STARTING ' . $hook . ' (' . $info['label'] . ')');
                 if ($verbose) {
                     echo $log_message;
                 }
@@ -553,13 +553,13 @@ function cron_bridge_script(string $caller)
                 delete_value('cron_currently_running__' . $hook, true);
 
                 // Update log to say finished
-                $log_message = CMSLoggers::cron()->info('FINISHED ' . $hook . ' (' . $info['label'] . ')');
+                $log_message = CMSLoggers::cron()->inform('FINISHED ' . $hook . ' (' . $info['label'] . ')');
                 if ($verbose) {
                     echo $log_message;
                 }
             } else {
                 // Update log to say locked
-                $log_message = CMSLoggers::cron()->info('WAS LOCKED ' . $hook . ' (' . $info['label'] . ')');
+                $log_message = CMSLoggers::cron()->inform('WAS LOCKED ' . $hook . ' (' . $info['label'] . ')');
                 if ($verbose) {
                     echo $log_message;
                 }
@@ -573,9 +573,9 @@ function cron_bridge_script(string $caller)
             $loop_ending = (time() - $_SERVER['REQUEST_TIME'] >= $loop_max_seconds);
 
             if ($loop_ending) {
-                $log_message = CMSLoggers::cron()->info('REACHED END OF LOOPING');
+                $log_message = CMSLoggers::cron()->inform('REACHED END OF LOOPING');
             } else {
-                $log_message = CMSLoggers::cron()->info('PAUSED FOR ' . integer_format($loop_wait_seconds) . ' SECONDS BEFORE LOOPING');
+                $log_message = CMSLoggers::cron()->inform('PAUSED FOR ' . integer_format($loop_wait_seconds) . ' SECONDS BEFORE LOOPING');
             }
             if ($verbose) {
                 echo $log_message;
@@ -591,7 +591,7 @@ function cron_bridge_script(string $caller)
                 } elseif (php_function_allowed('usleep')) {
                     usleep($loop_wait_seconds * 1000000);
                 } else {
-                    $log_message = CMSLoggers::cron()->info('PHP sleep and usleep functions are missing so loop_wait_seconds will be ignored');
+                    $log_message = CMSLoggers::cron()->inform('PHP sleep and usleep functions are missing so loop_wait_seconds will be ignored');
                     if ($verbose) {
                         echo $log_message;
                     }
@@ -601,7 +601,7 @@ function cron_bridge_script(string $caller)
             $kill_cron_looping = get_value('kill_cron_looping', '0', true);
             clearstatcache(false, get_file_base() . '/sources/version.php');
             if (($kill_cron_looping == '1') || (filemtime(get_file_base() . '/sources/version.php') > $_SERVER['REQUEST_TIME'])) {
-                $log_message = CMSLoggers::cron()->info('LOOPING KILL SIGNAL DETECTED');
+                $log_message = CMSLoggers::cron()->inform('LOOPING KILL SIGNAL DETECTED');
                 if ($verbose) {
                     echo $log_message;
                 }
@@ -619,7 +619,7 @@ function cron_bridge_script(string $caller)
     }
 
     // Ending logging
-    $log_message = CMSLoggers::cron()->info('CRON ENDING');
+    $log_message = CMSLoggers::cron()->inform('CRON ENDING');
     if ($verbose) {
         echo $log_message;
     }

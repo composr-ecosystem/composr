@@ -1856,7 +1856,7 @@ class DatabaseConnector
     {
         global $QUERY_COUNT, $QUERY_LOG, $QUERY_LIST, $DEV_MODE, $IN_MINIKERNEL_VERSION, $UPON_QUERY_HOOKS_CACHE;
 
-        CMSLoggers::query()->info($query . ';');
+        CMSLoggers::queries()->inform($query . ';');
 
         if ($DEV_MODE) {
             if (peek_db_scope_check()) {

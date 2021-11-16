@@ -86,19 +86,20 @@ if (!empty($request_method_name) && isset($SERVER_DEFINE[$request_method_name]))
 
 if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
     // Request
+    $post_data = mixed();
     if (empty($_POST)) {
         $post_data = @file_get_contents('php://input');
     } else {
         $post_data = $_POST;
     }
-    CMSLoggers::tapatalk()->info('REQUEST', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'get' => $_GET, 'cookie' => $_COOKIE, 'post' => $post_data, 'files' => $_FILES]);
+    CMSLoggers::tapatalk()->inform('REQUEST', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'get' => $_GET, 'cookie' => $_COOKIE, 'post' => $post_data, 'files' => $_FILES]);
 
     // Response
     ob_start();
     ob_start();
     function _do_response_logging()
     {
-        CMSLoggers::tapatalk()->info('RESPONSE', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'headers' => headers_list(), 'data' => ob_get_contents()]);
+        CMSLoggers::tapatalk()->inform('RESPONSE', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'headers' => headers_list(), 'data' => ob_get_contents()]);
 
         @ob_end_flush();
     }

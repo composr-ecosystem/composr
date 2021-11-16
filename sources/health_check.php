@@ -186,7 +186,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
         }
     }
 
-    CMSLoggers::health_check()->info('(HEALTH CHECK STARTING)');
+    CMSLoggers::health_check()->inform('(HEALTH CHECK STARTING)');
 
     $categories = [];
 
@@ -266,7 +266,7 @@ function run_health_check(bool &$has_fails, ?array $sections_to_run = null, bool
     }
     cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
-    CMSLoggers::health_check()->info('(HEALTH CHECK ENDING)');
+    CMSLoggers::health_check()->inform('(HEALTH CHECK ENDING)');
 
     return $categories;
 }
@@ -308,9 +308,9 @@ abstract class Hook_Health_Check
         $this->current_section_label = $section_label;
 
         if ($check_context != CHECK_CONTEXT__PROBING_FOR_SECTIONS) {
-            CMSLoggers::health_check()->info('STARTING ' . $this->category_label . ' \\ ' . $section_label);
+            CMSLoggers::health_check()->inform('STARTING ' . $this->category_label . ' \\ ' . $section_label);
             call_user_func([$this, $method], $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-            CMSLoggers::health_check()->info('FINISHED ' . $this->category_label . ' \\ ' . $section_label);
+            CMSLoggers::health_check()->inform('FINISHED ' . $this->category_label . ' \\ ' . $section_label);
         } else {
             if (strpos($section_label, ',') !== false) {
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // We cannot have commas in section labels because we store label sets in comma-separated lists

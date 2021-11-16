@@ -145,7 +145,7 @@ class Hook_addon_registry_webdav
             'data_custom/modules/webdav/tmp/index.html',
             'sources_custom/webdav.php',
             'sources_custom/webdav_commandr_fs.php',
-            'lang_custom/webdav.ini',
+            'lang_custom/EN/webdav.ini',
             'sources_custom/hooks/systems/config/days_to_keep__webdav_log.php',
             'sources_custom/hooks/systems/logs/webdav.php',
 

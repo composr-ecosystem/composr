@@ -138,12 +138,12 @@ class ForumEmailIntegration extends EmailIntegration
     {
         $test = cns_has_mailing_list_style();
         if ($test[0] == 0) {
-            CMSLoggers::mail_integration()->info('No mailing-list forums to deal with');
+            CMSLoggers::mail_integration()->inform('No mailing-list forums to deal with');
 
             return; // Possibly due to not being fully configured yet
         }
 
-        CMSLoggers::mail_integration()->info('Starting overall incoming e-mail scan process (forums)');
+        CMSLoggers::mail_integration()->inform('Starting overall incoming e-mail scan process (forums)');
 
         $sql = 'SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums';
         $sql_sup = ' WHERE ' . db_string_not_equal_to('f_mail_username', '') . ' AND ' . db_string_not_equal_to('f_mail_email_address', '');
@@ -161,7 +161,7 @@ class ForumEmailIntegration extends EmailIntegration
             $this->_incoming_scan($type, $host, $port, $folder, $username, $password);
         }
 
-        CMSLoggers::mail_integration()->info('Finished overall incoming e-mail scan process (forums)');
+        CMSLoggers::mail_integration()->inform('Finished overall incoming e-mail scan process (forums)');
     }
 
     /**
@@ -184,21 +184,21 @@ class ForumEmailIntegration extends EmailIntegration
 
             if ($member_id !== null) {
                 if (is_guest($member_id)) {
-                    CMSLoggers::mail_integration()->info('Will be posting as guest');
+                    CMSLoggers::mail_integration()->inform('Will be posting as guest');
                 } else {
-                    CMSLoggers::mail_integration()->info('Created a new member, #' . strval($member_id));
+                    CMSLoggers::mail_integration()->inform('Created a new member, #' . strval($member_id));
                 }
             }
         } else {
-            CMSLoggers::mail_integration()->info('Bound to a member, #' . strval($member_id));
+            CMSLoggers::mail_integration()->inform('Bound to a member, #' . strval($member_id));
         }
         if ($member_id === null) {
-            CMSLoggers::mail_integration()->info('Could not bind to a member');
+            CMSLoggers::mail_integration()->inform('Could not bind to a member');
 
             return;
         }
         if ($GLOBALS['FORUM_DRIVER']->is_banned($member_id)) {
-            CMSLoggers::mail_integration()->info('Member is banned');
+            CMSLoggers::mail_integration()->inform('Member is banned');
 
             return;
         }
@@ -206,7 +206,7 @@ class ForumEmailIntegration extends EmailIntegration
             ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_validated') == 0) ||
             ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_validated_email_confirm_code') != '')
         ) {
-            CMSLoggers::mail_integration()->info('Member is not validated');
+            CMSLoggers::mail_integration()->inform('Member is not validated');
 
             return;
         }
@@ -224,7 +224,7 @@ class ForumEmailIntegration extends EmailIntegration
         if (!has_category_access($member_id, 'forums', strval($this->forum_id))) {
             $forum_name = $this->forum_row['f_name'];
 
-            CMSLoggers::mail_integration()->info('Access denied to the bound member for ' . $forum_name);
+            CMSLoggers::mail_integration()->inform('Access denied to the bound member for ' . $forum_name);
 
             $this->send_bounce_email__access_denied($subject, $_body_text, $_body_html, $from_email, $email_bounce_to, $forum_name, $username, $member_id);
         }
@@ -274,7 +274,7 @@ class ForumEmailIntegration extends EmailIntegration
             $topic_validated = has_privilege($member_id, 'bypass_validation_midrange_content', 'topics', ['forums', $this->forum_id]);
             $topic_id = cns_make_topic($this->forum_id, '', '', $topic_validated ? 1 : 0, 1, 0, 0, null, null, false);
 
-            CMSLoggers::mail_integration()->info('Created topic #' . strval($topic_id));
+            CMSLoggers::mail_integration()->inform('Created topic #' . strval($topic_id));
         }
 
         if (is_guest($member_id)) {
@@ -293,10 +293,10 @@ class ForumEmailIntegration extends EmailIntegration
             syndicate_described_activity($is_starter ? 'cns:ACTIVITY_ADD_TOPIC' : 'cns:ACTIVITY_ADD_POST_IN', $title, '', '', '_SEARCH:topicview:browse:' . strval($topic_id) . '#post_' . strval($post_id), '', '', 'cns_forum', 1, $member_id);
         }
 
-        CMSLoggers::mail_integration()->info('Created post #' . strval($post_id));
+        CMSLoggers::mail_integration()->inform('Created post #' . strval($post_id));
 
         if (!empty($attachment_errors)) {
-            CMSLoggers::mail_integration()->info('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
+            CMSLoggers::mail_integration()->inform('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
 
             $post_url = $GLOBALS['FORUM_DRIVER']->post_url($post_id, '');
 

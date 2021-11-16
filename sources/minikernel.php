@@ -1468,7 +1468,7 @@ function get_localhost_ips() : array
  *
  * @package core
  */
-static class CMSLoggers
+class CMSLoggers
 {
     /**
      * Gets a logger, via intercepting function calls with same name as loggers. Compact syntax!

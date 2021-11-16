@@ -51,7 +51,7 @@ function webdav_script()
 
     $log_message = 'Request... ' . $_SERVER['REQUEST_METHOD'] . ': ' . $_SERVER['REQUEST_URI'];
     //$log_message.="\n".file_get_contents('php://input'); // Only enable when debugging, as breaks PUT requests (see http://stackoverflow.com/questions/3107624/why-can-php-input-be-read-more-than-once-despite-the-documentation-saying-othe)
-    CMSLoggers::webdav()->info($log_message);
+    CMSLoggers::webdav()->inform($log_message);
 
     // Initialise...
 

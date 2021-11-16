@@ -26,12 +26,14 @@
  */
 function init__cloud_fs()
 {
-    define('CMS_CLOUD__LOCAL', 1); // Unchanging file hosted on each machine (may be changed by Git of course).
-    define('CMS_CLOUD__PROPAGATED', 2); // Copied to all machines via a sync queue (the propagation_dirs & propagation_files tables). Fast local access, but a delay propagating and more local disk space use.
-    define('CMS_CLOUD__REMOTE', 3); // Hosted on e.g. a NAS, via a NFS share. Slower access, but always in sync and better for large amounts of data.
+    if (!defined('CMS_CLOUD__LOCAL')) {
+        define('CMS_CLOUD__LOCAL', 1); // Unchanging file hosted on each machine (may be changed by Git of course).
+        define('CMS_CLOUD__PROPAGATED', 2); // Copied to all machines via a sync queue (the propagation_dirs & propagation_files tables). Fast local access, but a delay propagating and more local disk space use.
+        define('CMS_CLOUD__REMOTE', 3); // Hosted on e.g. a NAS, via a NFS share. Slower access, but always in sync and better for large amounts of data.
 
-    define('FILE_BASE__SHARED', 'cmsCloudShared');
-    define('FILE_BASE__CUSTOM', 'cmsCloudCustom');
+        define('FILE_BASE__SHARED', 'cmsCloudShared');
+        define('FILE_BASE__CUSTOM', 'cmsCloudCustom');
+    }
 
     // Regexps specifying where normal Composr file paths will be routed to.
     // Should be in precedence order (for performance reasons).
@@ -142,7 +144,7 @@ function _make_cms_path_native(string $path) : array
 }
 
 /**
- * Detail a file for propagation across all servers.
+ * Detail a directory for propagation across all servers.
  *
  * @param  string $file_base_constant A FILE_BASE__* constant
  * @param  string $op_type Operation type

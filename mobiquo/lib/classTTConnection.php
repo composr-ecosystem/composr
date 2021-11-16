@@ -933,7 +933,7 @@ class classTTConnection
             return true;
         }
 
-        CMSLoggers::tapatalk()->info('VERIFY', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'response' => $response]);
+        CMSLoggers::tapatalk()->inform('VERIFY', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'response' => $response]);
 
         return false;
     }

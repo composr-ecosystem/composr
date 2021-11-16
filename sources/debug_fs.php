@@ -168,7 +168,7 @@ class DebugFsStreamWrapper
                 $line .= ' - ADDS LATENCY';
             }
 
-            CMSLoggers::debug_fs()->info($line);
+            CMSLoggers::debug_fs()->inform($line);
         }
 
         if ($slowdown) {

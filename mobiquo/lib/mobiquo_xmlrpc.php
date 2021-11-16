@@ -96,7 +96,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
             $response = mobiquo_response_false($msg);
             $this->output_response($response);
 
-            CMSLoggers::tapatalk()->info('TRACE', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'trace' => $e->getTrace()]);
+            CMSLoggers::tapatalk()->inform('TRACE', ['tapatalk_request_id' => TAPATALK_REQUEST_ID, 'trace' => $e->getTrace()]);
         }
     }
 

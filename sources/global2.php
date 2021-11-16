@@ -2623,11 +2623,7 @@ class CMSLogger
     public function __construct(string $name)
     {
         $this->name = $name;
-        if ($name == 'errorlog') {
-            $this->path = get_custom_file_base() . '/data_custom/errorlog.php';
-        } else {
-            $this->path = get_custom_file_base() . '/data_custom/' . $name . '.log';
-        }
+        $this->path = get_custom_file_base() . '/data_custom/' . $name . '.log';
     }
 
     /**
@@ -2645,7 +2641,7 @@ class CMSLogger
     }
 
     /**
-     * Log a message (Exceptional occurrences that are not errors).
+     * Log a message (Exceptional occurrences that are not fatal).
      *
      * Example: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
      *
@@ -2655,7 +2651,21 @@ class CMSLogger
      */
     public function warning(string $message, array $context = array()) : string
     {
-        return $this->log('warning', $message, $context);
+        return $this->log('warn', $message, $context);
+    }
+
+    /**
+     * Log a message (Exceptional occurrences that are minor and not fatal).
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
+     * @return string The line that would be added to the log file
+     */
+    public function notice(string $message, array $context = array()) : string
+    {
+        return $this->log('notice', $message, $context);
     }
 
     /**
@@ -2667,9 +2677,9 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function info(string $message, array $context = array()) : string
+    public function inform(string $message, array $context = array()) : string
     {
-        return $this->log('info', $message, $context);
+        return $this->log('inform', $message, $context);
     }
 
     /**
@@ -2704,7 +2714,7 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    protected function log(string $level, string $message, array $context = array()) : string
+    public function log(string $level, string $message, array $context = array()) : string
     {
         $details = CMSLoggers::collate_log_details($message, loggable_date(), $level, $context);
 
@@ -2757,9 +2767,12 @@ class CMSLogger
                     case 'critical':
                         $priority = LOG_CRIT;
                         break;
-                    case 'warning':
+                    case 'warning': // compat
+                    case 'warn':
                         $priority = LOG_WARNING;
                         break;
+                    case 'notice':
+                        $priority = LOG_NOTICE;
                     default:
                         $priority = LOG_INFO;
                         break;

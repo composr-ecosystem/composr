@@ -121,7 +121,7 @@ function _handle_permission_check_logging(int $member_id, string $op, array $par
             $message .= ' --> ' . ($result ? do_lang('YES') : do_lang('NO'));
         }
 
-        CMSLoggers::permission_checks()->info($message);
+        CMSLoggers::permission_checks()->inform($message);
     }
 
     if ((function_exists('fb_wrap')) && (get_param_integer('keep_firephp', 0) == 1) && (!headers_sent())) {

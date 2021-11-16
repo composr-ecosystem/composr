@@ -377,5 +377,5 @@ function task_log(?object $object, string $message, ?int $i = null, ?int $total 
     }
     $line .= "\n";
 
-    CMSLoggers::tasks()->info($line);
+    CMSLoggers::tasks()->inform($line);
 }

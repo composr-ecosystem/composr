@@ -239,7 +239,7 @@ class Hook_cron_cloud_propagation
                 }
             }
 
-            // Cleanup very old stuff (as unlike the other tables we cannot keep the table size down by deduplication alone)
+            // Cleanup very old stuff (as unlike the other tables we cannot keep the table size down by de-duplication alone)
             $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_logging WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * 24);
             $lines = $GLOBALS['SITE_DB']->query($sql, $max);
         }

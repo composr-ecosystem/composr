@@ -463,14 +463,14 @@ class _template_previews_test_set extends cms_test_case
         // Useful for debugging crashes
         global $PREVIEWS_LOG;
         if ($PREVIEWS_LOG !== null) {
-            CMSLoggers::template_previews()->info('RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - BEFORE:' . $called_form . ':' . $function);
+            CMSLoggers::template_previews()->inform('RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - BEFORE:' . $called_form . ':' . $function);
         }
 
         $ret = render_screen_preview($hook, $function, $template, $full_screen);
 
         // Useful for debugging crashes
         if ($PREVIEWS_LOG !== null) {
-            CMSLoggers::template_previews()->info('RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - AFTER:' . $called_form . ':' . $function);
+            CMSLoggers::template_previews()->inform('RAM@' . clean_file_size(memory_get_usage()) . '/' . clean_file_size(php_return_bytes(ini_get('memory_limit'))) . ' - AFTER:' . $called_form . ':' . $function);
         }
         return $ret;
     }
