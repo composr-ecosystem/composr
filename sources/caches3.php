@@ -266,7 +266,9 @@ function erase_cached_language(bool $local_only = false)
         Self_learning_cache::erase_smart_cache();
     }
 
-    cloud_rpc('erase_cached_language');
+    if (function_exists('cloud_rpc')) {
+        cloud_rpc('erase_cached_language');
+    }
 }
 
 /**
@@ -501,7 +503,9 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
         Self_learning_cache::erase_smart_cache();
     }
 
-    cloud_rpc('erase_cached_templates');
+    if (function_exists('cloud_rpc')) {
+        cloud_rpc('erase_cached_templates');
+    }
 
     // Rebuild ones needed for this session
     if ((!$preserve_some) && (!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!running_script('upgrader'))) {

@@ -390,8 +390,15 @@ function apply_forum_driver_md5_variant(string $data, string $key) : string
  */
 function get_session_id(bool $ignore_static_cache = false) : string
 {
+    static $loop = false;
+    if ($loop) {
+        return '';
+    }
+    $loop = true;
+
     require_code('static_cache');
     if ((!$ignore_static_cache) && (can_static_cache_request())) {
+        $loop = false;
         return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
     }
 
@@ -399,12 +406,17 @@ function get_session_id(bool $ignore_static_cache = false) : string
 
     if (!isset($_COOKIE[$cookie_var])) {
         if (array_key_exists('keep_session', $_GET)) {
-            return get_param_string('keep_session');
+            $ret = get_param_string('keep_session');
+        } else {
+            $ret = '';
         }
-        return '';
+        $loop = false;
+        return $ret;
     }
 
-    return isset($_COOKIE[$cookie_var]) ? $_COOKIE[$cookie_var] : '';
+    $ret = isset($_COOKIE[$cookie_var]) ? $_COOKIE[$cookie_var] : '';
+    $loop = false;
+    return $ret;
 }
 
 /**

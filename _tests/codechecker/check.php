@@ -1731,7 +1731,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '', $show_missi
                 }
 
                 // If it is a referenced parameter then we must pass a variable expression not a general expression
-                if ((@$param['ref']) && ($temp[0] != 'VARIABLE')) {
+                if ((@$param['ref']) && ($temp[0] != 'VARIABLE') && ((!is_array($temp[1])) || ($temp[1][0] != 'DEREFERENCE') || ($temp[1][1][0] != 'VARIABLE'))) {
                     log_warning('A referenced parameter for \'' . $function . '\' was given a non-variable expression', $c_pos);
                     break;
                 }
@@ -1772,7 +1772,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '', $show_missi
     }
 
     // Check for some known problem patterns
-    if (($function == 'isset') && (@$params[0][0][0] != 'VARIABLE')) {
+    if (($function == 'isset') && (@$params[0][0][0] != 'VARIABLE') && ((@$params[0][0][1][0] != 'DEREFERENCE') || (@$params[0][0][1][1][0] != 'VARIABLE'))) {
         log_warning('Can only pass variables to ' . $function, $c_pos);
     }
     if (($function == 'tempnam') && (@$params[0][0][0] == 'LITERAL') && (substr(@$params[0][0][1][1], 0, 4) == '/tmp')) {

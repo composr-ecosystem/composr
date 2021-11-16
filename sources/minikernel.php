@@ -1464,6 +1464,17 @@ function get_localhost_ips() : array
 }
 
 /**
+ * Find the cloud mode we are running as.
+ *
+ * @return string Cloud mode
+ * @set "" primary replica
+ */
+function cloud_mode() : string
+{
+    return '';
+}
+
+/**
  * Null-op version of CMSLoggers.
  *
  * @package core
@@ -1502,8 +1513,11 @@ class CMSLogger
 
     /**
      * Eat up calls.
+     *
+     * @return string Blank
      */
-    public function __call(...$args)
+    public function __call($name, $arguments) : string
     {
+        return '';
     }
 }

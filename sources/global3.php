@@ -2513,8 +2513,6 @@ function cms_strip_tags(string $str, string $tags, bool $tags_as_allow = true) :
  */
 function get_ip_address(int $amount = 4, ?string $ip = null) : string
 {
-    require_code('config');
-
     if ($ip === null) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }

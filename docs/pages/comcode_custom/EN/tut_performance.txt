@@ -1126,7 +1126,7 @@ You can view the log from Admin Zone > Audit > Low-level logging.
  - [page="_SEARCH:tut_google_appengine"]Installation on Google App Engine[/page]
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
- - https://developers.google.com/speed/pagespeed/insights/
+ - https://pagespeed.web.dev/
  - https://compo.sr/tracker/tag_view_page.php?tag_id=16
  - https://share.transistor.fm/s/38a4e496
 
