@@ -4034,7 +4034,7 @@ function cms_eval(string $code, string $context, bool $trigger_error = true)
         $result = false;
         $attach_manually = true;
 
-        $errormsg = $e->getMessage();
+        $errormsg = $e->getMessage() ;
     }
 
     pop_suppress_error_death();

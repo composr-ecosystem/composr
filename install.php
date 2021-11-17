@@ -2784,7 +2784,7 @@ function handle_self_referencing_embedment()
                 }
                 $SITE_INFO['db_type'] = post_param_string('db_type', false, INPUT_FILTER_POST_IDENTIFIER);
                 require_code('database');
-                if (post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER) == '') {
+                if (post_param_string('db_site', '', INPUT_FILTER_POST_IDENTIFIER) == '') {
                     $db = new DatabaseConnector(post_param_string('db_forums', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_password', false, INPUT_FILTER_PASSWORD), '', true);
                 } else {
                     $db = new DatabaseConnector(post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD), '', true);

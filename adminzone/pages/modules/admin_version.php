@@ -92,8 +92,10 @@ class Module_admin_version
         $GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality');
         $GLOBALS['SITE_DB']->drop_table_if_exists('cpages_fulltext_index');
         $GLOBALS['SITE_DB']->drop_table_if_exists('daily_visits');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('propagation_dirs');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('propagation_files');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('cloud_propagation_dirs');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('cloud_propagation_files');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('cloud_propagation_rpc');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('cloud_propagation_logging');
 
         /* We don't want to get rid of on-disk data when reinstalling
         $zones = find_all_zones(true);
@@ -969,7 +971,7 @@ class Module_admin_version
                 'note' => 'SHORT_TEXT',
             ]);
 
-            $GLOBALS['SITE_DB']->create_index('member_privileges', 'member_privileges_name', ['privilege', 'the_page', 'module_the_name', 'category_name']);
+            $GLOBALS['SITE_DB']->create_index('member_privileges', 'member_privileges_name', ['privilege', 'the_page', 'module_the_name', 'category_name'], null, true);
             $GLOBALS['SITE_DB']->create_index('member_privileges', 'member_privileges_member', ['member_id']);
 
             $GLOBALS['SITE_DB']->create_index('url_id_monikers', 'uim_page_link', ['m_resource_page', 'm_resource_type', 'm_resource_id']);
@@ -1197,48 +1199,48 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_dirs', [
                 'id' => '*AUTO',
-                'op_type' => 'SHORT_TEXT', // create|touch|move|delete
+                'op_type' => 'MINIID_TEXT', // create|touch|move|delete
                 'op_timestamp' => 'TIME',
                 'dir_file_base_constant' => 'ID_TEXT',
-                'dir_path' => 'PATH',
+                'dir_path' => 'SHORT_TEXT',
                 'dir_perms' => '?INTEGER',
                 'op_data' => 'LONG_TEXT', // a new directory path for a move operation
                 'op_originating_host' => 'ID_TEXT',
             ]);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'dupe_delete', ['op_type', 'dir_path']);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'order', ['op_timestamp', 'id']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'dupe_delete', ['op_type(6)', 'dir_path(200)']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_dirs', 'ordering', ['op_timestamp', 'id']);
 
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_files', [
                 'id' => '*AUTO',
-                'op_type' => 'SHORT_TEXT', // create|touch|move|delete
+                'op_type' => 'MINIID_TEXT', // create|touch|move|delete
                 'op_timestamp' => 'TIME',
                 'file_file_base_constant' => 'ID_TEXT',
-                'file_path' => 'PATH',
+                'file_path' => 'SHORT_TEXT',
                 'file_mtime' => '?INTEGER',
                 'file_perms' => '?INTEGER',
                 'op_data' => 'LONG_TEXT', // base64 encoded file contents, or a new file path for a move operation
                 'op_originating_host' => 'ID_TEXT',
             ]);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'dupe_delete', ['op_type', 'file_path']);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'order', ['op_timestamp', 'id']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'dupe_delete', ['op_type(6)', 'file_path(200)']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_files', 'ordering', ['op_timestamp', 'id']);
 
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_rpc', [
                 'id' => '*AUTO',
-                'op_type' => 'SHORT_TEXT', // erase_persistent_cache|erase_static_cache|erase_cached_language|erase_cached_templates|Self_learning_cache::erase_smart_cache
+                'op_type' => 'MINIID_TEXT', // erase_persistent_cache|erase_static_cache|erase_cached_language|erase_cached_templates|Self_learning_cache::erase_smart_cache
                 'op_timestamp' => 'TIME',
                 'op_originating_host' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('cloud_propagation_rpc', 'dupe_delete', ['op_type']);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_rpc', 'order', ['op_timestamp', 'id']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_rpc', 'ordering', ['op_timestamp', 'id']);
 
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_logging', [
                 'id' => '*AUTO',
-                'log_name' => 'ID_TEXT',
+                'log_name' => 'MINIID_TEXT',
                 'log_line' => 'LONG_TEXT',
                 'op_timestamp' => 'TIME',
                 'op_originating_host' => 'ID_TEXT',
             ]);
-            $GLOBALS['SITE_DB']->create_index('cloud_propagation_logging', 'order', ['op_timestamp', 'id']);
+            $GLOBALS['SITE_DB']->create_index('cloud_propagation_logging', 'ordering', ['op_timestamp', 'id']);
         }
     }
 

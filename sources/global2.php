@@ -1043,9 +1043,10 @@ function monitor_slow_urls()
     }
     if ($slow) {
         require_code('urls');
-
         require_code('failure');
-        cms_error_log('Profiling: Over time limit @ ' . get_self_url_easy(true) . "\t" . strval($time) . ' secs' . "\t" . date('Y-m-d H:i:s', time()), null);
+        if (function_exists('cms_error_log')) { // failure.php may not load in very bad error situation
+            cms_error_log('Profiling: Over time limit @ ' . get_self_url_easy(true) . "\t" . strval($time) . ' secs' . "\t" . date('Y-m-d H:i:s', time()), null);
+        }
     }
 }
 
@@ -1057,7 +1058,9 @@ function memory_tracking()
     $memory_tracking = intval(get_value('memory_tracking'));
     if (memory_get_peak_usage() > 1024 * 1024 * $memory_tracking) {
         require_code('failure');
-        cms_error_log('Profiling: Memory usage above memory_tracking (' . strval($memory_tracking) . 'MB) @ ' . get_self_url_easy(true), null);
+        if (function_exists('cms_error_log')) { // failure.php may not load in very bad error situation
+            cms_error_log('Profiling: Memory usage above memory_tracking (' . strval($memory_tracking) . 'MB) @ ' . get_self_url_easy(true), null);
+        }
     }
 }
 
@@ -1424,6 +1427,384 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
     }
 
     return false; // Bubbles back to PHP, which will do nothing if "@" was used
+}
+
+/**
+ * Get the date/time string as we log it. Designed to be consistent with how PHP puts dates into the error-log.
+ *
+ * @param  boolean $php_style Whether to use a PHP-style date (as opposed to as close to Apache-style as possible)
+ * @return string Date/time string
+ */
+function loggable_date(bool $php_style = false) : string
+{
+    if ($php_style) {
+        return gmdate('[d-M-Y H:i:s \U\T\C]');
+    }
+
+    // We try really hard to match with the Apache format, as it is so useful to be able to match the strings...
+
+    $ds = '%d/%b/%Y:%H:%M:%S';
+
+    static $timezone = null;
+    if ($timezone === null) {
+        if ((stripos(PHP_OS, 'WIN') === 0) && (php_function_allowed('exec'))) {
+            $timezone = exec('date +%z');
+            if (empty($timezone)) {
+                $timezone = '';
+            }
+        } else {
+            $timezone = '';
+        }
+    }
+
+    if ($timezone == '') {
+        // Best we can do is use what PHP's date.timezone setting is in php.ini
+        global $SERVER_TIMEZONE_CACHE;
+        if ($SERVER_TIMEZONE_CACHE != 'UTC') {
+            date_default_timezone_set($SERVER_TIMEZONE_CACHE);
+        }
+        $ret = strftime($ds . ' %z');
+        if ($SERVER_TIMEZONE_CACHE != 'UTC') {
+            date_default_timezone_set('UTC');
+        }
+    } else {
+        $hours = intval(substr($timezone, 0, strlen($timezone) - 2));
+        $minutes = intval(substr($timezone, -2));
+        $ret = strftime($ds, time() + $hours * 3600 + $minutes * 60) . ' ' . $timezone;
+    }
+
+    return $ret;
+}
+
+/**
+ * Get a logger to a specific file.
+ *
+ * @package core
+ */
+class CMSLoggers
+{
+    protected static $loggers = [];
+
+    /**
+     * Gets a logger, via intercepting function calls with same name as loggers. Compact syntax!
+     *
+     * @param  string $name Logger name
+     * @param  array $arguments Arguments (will be empty list)
+     * @return object Logger
+     */
+    public static function __callStatic(string $name, array $arguments) : object
+    {
+        if (!isset(self::$loggers[$name])) {
+            self::$loggers[$name] = new CMSLogger($name);
+        }
+
+        return self::$loggers[$name];
+    }
+
+    /**
+     * Collate log details.
+     *
+     * @param  string $message Log message
+     * @param  ?string $date Date (null: not set)
+     * @param  ?string $level Log level (null: not set)
+     * @param  array $context A map of extra context
+     * @return array The log details
+     */
+    public static function collate_log_details(string $message, ?string $date = null, ?string $level = null, array $context = []) : array
+    {
+        $details = [];
+
+        // Set details, in order...
+
+        if ($date !== null) {
+            $details['date'] = $date;
+        }
+
+        if ($level !== null) {
+            $details['level'] = $level;
+        }
+
+        $details['message'] = $message;
+
+        $details['hostname'] = gethostname();
+
+        $details['request_uri'] = $_SERVER['REQUEST_URI'];
+
+        global $BOOTSTRAPPING;
+
+        if (!$BOOTSTRAPPING) {
+            if (function_exists('get_session_id')) {
+                $details['session_id'] = get_session_id();
+            } else {
+                $details['session_id'] = '';
+            }
+
+            if (function_exists('get_member')) {
+                $details['member_id'] = strval(get_member());
+            } else {
+                $details['member_id'] = '';
+            }
+        }
+
+        if (function_exists('get_ip_address')) {
+            $details['client_ip'] = get_ip_address();
+        } else {
+            $details['client_ip'] = '';
+        }
+
+        if (isset($_SERVER['UNIQUE_ID'])) {
+            $details['unique_id'] = $_SERVER['UNIQUE_ID']; // http://httpd.apache.org/docs/current/mod/mod_unique_id.html
+        } else {
+            static $unique_id = null;
+            if ($unique_id === null) {
+                $unique_id = md5(uniqid('', true));
+                if (function_exists('apache_setenv')) {
+                    apache_setenv('UNIQUE_ID', $unique_id);
+                } elseif (php_function_allowed('putenv')) {
+                    putenv('UNIQUE_ID=' . $unique_id);
+                }
+            }
+            $details['unique_id'] = $unique_id;
+        }
+
+        $details['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+
+        $details['context'] = json_encode($context);
+
+        foreach ($details as &$val) {
+            $val = preg_replace('#[\x00-\x1F\s]#', ' ', $val);
+        }
+
+        return $details;
+    }
+
+    /**
+     * Generate simple (traditional) logging line from collate_log_details output.
+     *
+     * @param  array $details collate_log_details output
+     * @return string The log line
+     */
+    public static function generate_simple_line(array $details) : string
+    {
+        $line_syslog = '';
+        foreach ($details as $key => $val) {
+            if ($line_syslog != '') {
+                $line_syslog .= "\t";
+            }
+            if (in_array($key, ['date', 'level', 'message'])) {
+                $line_syslog .= $val;
+            } else {
+                $line_syslog .= $key . '=' . $val;
+            }
+        }
+        return $line_syslog;
+    }
+}
+
+/**
+ * A logger, instantiated against a specific log.
+ * Do not instantiate this yourself, use CMSLoggerFactory for performance-sake.
+ *
+ * The basic design is inspired by \Psr\Log\LoggerInterface.
+ * However to avoid system overhead for what Composr is not going to use, not all methods are defined.
+ * This class could be easily modified to be fully compatible with PSR-3 logging.
+ *
+ * @package core
+ */
+class CMSLogger
+{
+    protected $log_file = null;
+    protected $name;
+    protected $path;
+    protected $active = null;
+
+    protected $target__file = null;
+    protected $target__cloud = null;
+    protected $target__syslog = null;
+
+    /**
+     * Construct a logger to a specific log file.
+     *
+     * @param  string $name Log name
+     */
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+        $this->path = get_custom_file_base() . '/data_custom/' . $name . '.log';
+    }
+
+    /**
+     * Log a message (Critical conditions).
+     *
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
+     * @return string The line that would be added to the log file
+     */
+    public function critical(string $message, array $context = []) : string
+    {
+        return $this->log('critical', $message, $context);
+    }
+
+    /**
+     * Log a message (Exceptional occurrences that are not fatal).
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
+     *
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
+     * @return string The line that would be added to the log file
+     */
+    public function warning(string $message, array $context = []) : string
+    {
+        return $this->log('warn', $message, $context);
+    }
+
+    /**
+     * Log a message (Exceptional occurrences that are minor and not fatal).
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
+     * @return string The line that would be added to the log file
+     */
+    public function notice(string $message, array $context = []) : string
+    {
+        return $this->log('notice', $message, $context);
+    }
+
+    /**
+     * Log a message (Interesting events).
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
+     * @return string The line that would be added to the log file
+     */
+    public function inform(string $message, array $context = []) : string
+    {
+        return $this->log('inform', $message, $context);
+    }
+
+    /**
+     * Find whether this logger will do anything.
+     *
+     * @return boolean Whether it is active
+     */
+    public function is_active() : bool
+    {
+        if ($this->active === null) {
+            $this->active = true;
+
+            global $SITE_INFO;
+            if ((isset($SITE_INFO['no_extra_logs'])) && ($SITE_INFO['no_extra_logs'] == '1')) {
+                $this->active = false; // Explicitly disabled
+            } else {
+                require_code('files');
+
+                if ((!is_file($this->path)) || (!cms_is_writable($this->path))) {
+                    $this->active = false; // We don't create log files, up to user to initialise them if wanted
+                }
+            }
+        }
+        return $this->active;
+    }
+
+    /**
+     * Log a message with an arbitrary level.
+     *
+     * @param  string $level Log level
+     * @param  string $message Log message
+     * @param  array $context A map of extra context
+     * @return string The line that would be added to the log file
+     */
+    public function log(string $level, string $message, array $context = []) : string
+    {
+        $details = CMSLoggers::collate_log_details($message, loggable_date(), $level, $context);
+
+        $line_file = implode("\t", $details);
+
+        if ($this->log_file === null) {
+            if (!$this->is_active()) {
+                return $line_file;
+            }
+
+            $this->log_file = cms_fopen_text_write($this->path, false, 'a+b');
+
+            rewind($this->log_file);
+
+            $first_line = fgets($this->log_file);
+
+            $this->target__file = (preg_match('#TARGET:.*file#', $first_line) != 0) || (strpos($first_line, 'TARGET:') === false);
+            $this->target__cloud = (preg_match('#TARGET:.*cloud#', $first_line) != 0);
+            $this->target__syslog = (preg_match('#TARGET:.*syslog#', $first_line) != 0);
+
+            $new_file = (feof($this->log_file)) || (trim(fgets($this->log_file)) == '');
+        } else {
+            $new_file = false;
+        }
+
+        if ($this->target__file) {
+            fseek($this->log_file, 0, SEEK_END);
+
+            flock($this->log_file, LOCK_EX);
+            if ($new_file) {
+                // Write TSV header line
+                fwrite($this->log_file, implode("\t", array_keys($details)) . "\n");
+            }
+            fwrite($this->log_file, $line_file . "\n"); // Write TSV line
+            flock($this->log_file, LOCK_UN);
+
+            if ($this->target__cloud) {
+                $GLOBALS['SITE_DB']->query_insert('cloud_propagation_logging', [
+                    'log_name' => $this->name,
+                    'log_line' => $line_file,
+                    'op_timestamp' => time(),
+                    'op_originating_host' => gethostname(),
+                ]);
+            }
+        }
+
+        if ($this->target__syslog) {
+            if (function_exists('syslog')) {
+                switch ($level) {
+                    case 'critical':
+                        $priority = LOG_CRIT;
+                        break;
+                    case 'warning': // compat
+                    case 'warn':
+                        $priority = LOG_WARNING;
+                        break;
+                    case 'notice':
+                        $priority = LOG_NOTICE;
+                        break;
+                    default:
+                        $priority = LOG_INFO;
+                        break;
+                }
+
+                $line_syslog = CMSLoggers::generate_simple_line($details);
+
+                syslog($priority, get_base_url_hostname() . '-' . $this->name . ': ' . $line_syslog);
+            }
+        }
+
+        return $line_file;
+    }
+
+    /**
+     * Destructor.
+     */
+    public function __destruct()
+    {
+        if ($this->log_file !== null) {
+            fclose($this->log_file);
+            $this->log_file = null;
+        }
+    }
 }
 
 /**
@@ -2418,382 +2799,4 @@ function ends_with(string $haystack, string $needle) : bool
 function cms_empty_safe($var) : bool
 {
     return (empty($var)) && ($var !== '0');
-}
-
-/**
- * Get the date/time string as we log it. Designed to be consistent with how PHP puts dates into the error-log.
- *
- * @param  boolean $php_style Whether to use a PHP-style date (as opposed to as close to Apache-style as possible)
- * @return string Date/time string
- */
-function loggable_date(bool $php_style = false) : string
-{
-    if ($php_style) {
-        return gmdate('[d-M-Y H:i:s \U\T\C]');
-    }
-
-    // We try really hard to match with the Apache format, as it is so useful to be able to match the strings...
-
-    $ds = '%d/%b/%Y:%H:%M:%S';
-
-    static $timezone = null;
-    if ($timezone === null) {
-        if ((stripos(PHP_OS, 'WIN') === 0) && (php_function_allowed('exec'))) {
-            $timezone = exec('date +%z');
-            if (empty($timezone)) {
-                $timezone = '';
-            }
-        } else {
-            $timezone = '';
-        }
-    }
-
-    if ($timezone == '') {
-        // Best we can do is use what PHP's date.timezone setting is in php.ini
-        global $SERVER_TIMEZONE_CACHE;
-        if ($SERVER_TIMEZONE_CACHE != 'UTC') {
-            date_default_timezone_set($SERVER_TIMEZONE_CACHE);
-        }
-        $ret = strftime($ds . ' %z');
-        if ($SERVER_TIMEZONE_CACHE != 'UTC') {
-            date_default_timezone_set('UTC');
-        }
-    } else {
-        $hours = intval(substr($timezone, 0, strlen($timezone) - 2));
-        $minutes = intval(substr($timezone, -2));
-        $ret = strftime($ds, time() + $hours * 3600 + $minutes * 60) . ' ' . $timezone;
-    }
-
-    return $ret;
-}
-
-/**
- * Get a logger to a specific file.
- *
- * @package core
- */
-class CMSLoggers
-{
-    protected static $loggers = [];
-
-    /**
-     * Gets a logger, via intercepting function calls with same name as loggers. Compact syntax!
-     *
-     * @param  string $name Logger name
-     * @param  array $arguments Arguments (will be empty list)
-     * @return object Logger
-     */
-    public static function __callStatic(string $name, array $arguments) : object
-    {
-        if (!isset(self::$loggers[$name])) {
-            self::$loggers[$name] = new CMSLogger($name);
-        }
-
-        return self::$loggers[$name];
-    }
-
-    /**
-     * Collate log details.
-     *
-     * @param  string $message Log message
-     * @param  ?string $date Date (null: not set)
-     * @param  ?string $level Log level (null: not set)
-     * @param  array $context A map of extra context
-     * @return array The log details
-     */
-    public static function collate_log_details(string $message, ?string $date = null, ?string $level = null, array $context = []) : array
-    {
-        $details = [];
-
-        // Set details, in order...
-
-        if ($date !== null) {
-            $details['date'] = $date;
-        }
-
-        if ($level !== null) {
-            $details['level'] = $level;
-        }
-
-        $details['message'] = $message;
-
-        $details['hostname'] = gethostname();
-
-        $details['request_uri'] = $_SERVER['REQUEST_URI'];
-
-        global $BOOTSTRAPPING;
-
-        if (!$BOOTSTRAPPING) {
-            if (function_exists('get_session_id')) {
-                $details['session_id'] = get_session_id();
-            } else {
-                $details['session_id'] = '';
-            }
-
-            if (function_exists('get_member')) {
-                $details['member_id'] = strval(get_member());
-            } else {
-                $details['member_id'] = '';
-            }
-        }
-
-        if (function_exists('get_ip_address')) {
-            $details['client_ip'] = get_ip_address();
-        } else {
-            $details['client_ip'] = '';
-        }
-
-        if (isset($_SERVER['UNIQUE_ID'])) {
-            $details['unique_id'] = $_SERVER['UNIQUE_ID']; // http://httpd.apache.org/docs/current/mod/mod_unique_id.html
-        } else {
-            static $unique_id = null;
-            if ($unique_id === null) {
-                $unique_id = md5(uniqid('', true));
-                if (function_exists('apache_setenv')) {
-                    apache_setenv('UNIQUE_ID', $unique_id);
-                } elseif (php_function_allowed('putenv')) {
-                    putenv('UNIQUE_ID=' . $unique_id);
-                }
-            }
-            $details['unique_id'] = $unique_id;
-        }
-
-        $details['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-
-        $details['context'] = json_encode($context);
-
-        foreach ($details as &$val) {
-            $val = preg_replace('#[\x00-\x1F\s]#', ' ', $val);
-        }
-
-        return $details;
-    }
-
-    /**
-     * Generate simple (traditional) logging line from collate_log_details output.
-     *
-     * @param  array $details collate_log_details output
-     * @return string The log line
-     */
-    public static function generate_simple_line(array $details) : string
-    {
-        $line_syslog = '';
-        foreach ($details as $key => $val) {
-            if ($line_syslog != '') {
-                $line_syslog .= "\t";
-            }
-            if (in_array($key, ['date', 'level', 'message'])) {
-                $line_syslog .= $val;
-            } else {
-                $line_syslog .= $key . '=' . $val;
-            }
-        }
-        return $line_syslog;
-    }
-}
-
-/**
- * A logger, instantiated against a specific log.
- * Do not instantiate this yourself, use CMSLoggerFactory for performance-sake.
- *
- * The basic design is inspired by \Psr\Log\LoggerInterface.
- * However to avoid system overhead for what Composr is not going to use, not all methods are defined.
- * This class could be easily modified to be fully compatible with PSR-3 logging.
- *
- * @package core
- */
-class CMSLogger
-{
-    protected $log_file = null;
-    protected $name;
-    protected $path;
-    protected $active = null;
-
-    protected $target__file = null;
-    protected $target__cloud = null;
-    protected $target__syslog = null;
-
-    /**
-     * Construct a logger to a specific log file.
-     *
-     * @param  string $name Log name
-     */
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-        $this->path = get_custom_file_base() . '/data_custom/' . $name . '.log';
-    }
-
-    /**
-     * Log a message (Critical conditions).
-     *
-     * Example: Application component unavailable, unexpected exception.
-     *
-     * @param  string $message Log message
-     * @param  array $context A map of extra context
-     * @return string The line that would be added to the log file
-     */
-    public function critical(string $message, array $context = []) : string
-    {
-        return $this->log('critical', $message, $context);
-    }
-
-    /**
-     * Log a message (Exceptional occurrences that are not fatal).
-     *
-     * Example: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
-     *
-     * @param  string $message Log message
-     * @param  array $context A map of extra context
-     * @return string The line that would be added to the log file
-     */
-    public function warning(string $message, array $context = []) : string
-    {
-        return $this->log('warn', $message, $context);
-    }
-
-    /**
-     * Log a message (Exceptional occurrences that are minor and not fatal).
-     *
-     * Example: User logs in, SQL logs.
-     *
-     * @param  string $message Log message
-     * @param  array $context A map of extra context
-     * @return string The line that would be added to the log file
-     */
-    public function notice(string $message, array $context = []) : string
-    {
-        return $this->log('notice', $message, $context);
-    }
-
-    /**
-     * Log a message (Interesting events).
-     *
-     * Example: User logs in, SQL logs.
-     *
-     * @param  string $message Log message
-     * @param  array $context A map of extra context
-     * @return string The line that would be added to the log file
-     */
-    public function inform(string $message, array $context = []) : string
-    {
-        return $this->log('inform', $message, $context);
-    }
-
-    /**
-     * Find whether this logger will do anything.
-     *
-     * @return boolean Whether it is active
-     */
-    public function is_active() : bool
-    {
-        if ($this->active === null) {
-            $this->active = true;
-
-            global $SITE_INFO;
-            if ((isset($SITE_INFO['no_extra_logs'])) && ($SITE_INFO['no_extra_logs'] == '1')) {
-                $this->active = false; // Explicitly disabled
-            } else {
-                require_code('files');
-
-                if ((!is_file($this->path)) || (!cms_is_writable($this->path))) {
-                    $this->active = false; // We don't create log files, up to user to initialise them if wanted
-                }
-            }
-        }
-        return $this->active;
-    }
-
-    /**
-     * Log a message with an arbitrary level.
-     *
-     * @param  string $level Log level
-     * @param  string $message Log message
-     * @param  array $context A map of extra context
-     * @return string The line that would be added to the log file
-     */
-    public function log(string $level, string $message, array $context = []) : string
-    {
-        $details = CMSLoggers::collate_log_details($message, loggable_date(), $level, $context);
-
-        $line_file = implode("\t", $details);
-
-        if ($this->log_file === null) {
-            if (!$this->is_active()) {
-                return $line_file;
-            }
-
-            $this->log_file = cms_fopen_text_write($this->path, false, 'a+b');
-
-            rewind($this->log_file);
-
-            $first_line = fgets($this->log_file);
-
-            $this->target__file = (preg_match('#TARGET:.*file#', $first_line) != 0) || (strpos($first_line, 'TARGET:') === false);
-            $this->target__cloud = (preg_match('#TARGET:.*cloud#', $first_line) != 0);
-            $this->target__syslog = (preg_match('#TARGET:.*syslog#', $first_line) != 0);
-
-            $new_file = (feof($this->log_file)) || (trim(fgets($this->log_file)) == '');
-        } else {
-            $new_file = false;
-        }
-
-        if ($this->target__file) {
-            fseek($this->log_file, 0, SEEK_END);
-
-            flock($this->log_file, LOCK_EX);
-            if ($new_file) {
-                // Write TSV header line
-                fwrite($this->log_file, implode("\t", array_keys($details)) . "\n");
-            }
-            fwrite($this->log_file, $line_file . "\n"); // Write TSV line
-            flock($this->log_file, LOCK_UN);
-
-            if ($this->target__cloud) {
-                $GLOBALS['SITE_DB']->query_insert('cloud_propagation_logging', [
-                    'log_name' => $this->name,
-                    'log_line' => $line_file,
-                    'op_timestamp' => time(),
-                    'op_originating_host' => gethostname(),
-                ]);
-            }
-        }
-
-        if ($this->target__syslog) {
-            if (function_exists('syslog')) {
-                switch ($level) {
-                    case 'critical':
-                        $priority = LOG_CRIT;
-                        break;
-                    case 'warning': // compat
-                    case 'warn':
-                        $priority = LOG_WARNING;
-                        break;
-                    case 'notice':
-                        $priority = LOG_NOTICE;
-                        break;
-                    default:
-                        $priority = LOG_INFO;
-                        break;
-                }
-
-                $line_syslog = CMSLoggers::generate_simple_line($details);
-
-                syslog($priority, get_base_url_hostname() . '-' . $this->name . ': ' . $line_syslog);
-            }
-        }
-
-        return $line_file;
-    }
-
-    /**
-     * Destructor.
-     */
-    public function __destruct()
-    {
-        if ($this->log_file !== null) {
-            fclose($this->log_file);
-            $this->log_file = null;
-        }
-    }
 }

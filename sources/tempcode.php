@@ -2704,7 +2704,9 @@ function tempcode_error(object $e, string $code)
     $error_label = 'Tempcode error - ' . $error_message . ' - ' . $code;
 
     require_code('failure');
-    cms_error_log('Composr: ' . $error_label, null);
+    if (function_exists('cms_error_log')) { // failure.php may not load in very bad error situation
+        cms_error_log('Composr: ' . $error_label, null);
+    }
 
     fatal_exit($error_message);
 }

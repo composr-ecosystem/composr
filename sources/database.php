@@ -1038,7 +1038,9 @@ abstract class DatabaseDriver
         $php_error_label = $text_eval . ' @ ' . get_self_url_easy(true);
 
         require_code('failure');
-        cms_error_log('Database: ' . $php_error_label, null);
+        if (function_exists('cms_error_log')) { // failure.php may not load in very bad error situation
+            cms_error_log('Database: ' . $php_error_label, null);
+        }
 
         $restricted = false;
         if (!$GLOBALS['DEV_MODE'] && empty($GLOBALS['IS_ACTUALLY_ADMIN']) && (!running_script('install')) && (!running_script('upgrader'))) {
@@ -2699,11 +2701,12 @@ class DatabaseConnector
      * @param  ID_TEXT $index_name The index name
      * @param  array $fields The fields
      * @param  ?string $unique_key_fields Comma-separated names of the unique key field for the table (null: lookup)
+     * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters
      */
-    public function create_index(string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null)
+    public function create_index(string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, bool $save_bytes = false)
     {
         require_code('database_helper');
-        _helper_create_index($this, $table_name, $index_name, $fields, $unique_key_fields);
+        _helper_create_index($this, $table_name, $index_name, $fields, $unique_key_fields, $save_bytes);
     }
 
     /**

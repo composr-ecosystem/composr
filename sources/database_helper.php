@@ -89,6 +89,7 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         'unicode_SHORT_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_LONG_TEXT' => $take_unicode_into_account * 255 + 1,
         'unicode_ID_TEXT' => $take_unicode_into_account * 80 + 1,
+        'unicode_MINIID_TEXT' => $take_unicode_into_account * 40 + 1,
         'unicode_IP' => $take_unicode_into_account * 15 + 1,
         'unicode_LANGUAGE_NAME' => $take_unicode_into_account * 5 + 1,
         'unicode_URLPATH' => $take_unicode_into_account * 255 + 1,
@@ -113,29 +114,36 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         if ($null) {
             $field = substr($field, 1);
         }
+
         $size_restricted = (strpos($name, '(') !== false);
         if ($size_restricted) {
-            $name = preg_replace('#\(.*\)$#', '', $name);
+            $matches = [];
+            preg_match('#^(.*)\((.*)\)$#', $name, $matches);
+            $name = $matches[1];
+            $field_data_size = intval($matches[2]);
+            $field_data_size_unicode = $take_unicode_into_account * intval($matches[2]);
+        } else {
+            if (isset($data_sizes[$field])) {
+                $field_data_size = $data_sizes[$field];
+                $field_data_size_unicode = $data_sizes[(array_key_exists('unicode_' . $field, $data_sizes) ? 'unicode_' : '') . $field];
+            } else {
+                $field_data_size = 10; // 10=arbitrary default
+                $field_data_size_unicode = 10;
+            }
         }
 
         if ($key) {
-            $key_size += $data_sizes[$field];
+            $key_size += $field_data_size;
         }
-        if (!isset($data_sizes[$field])) {
-            $data_sizes[$field] = 10; // 10=arbitrary default
-        }
-        $total_size += $data_sizes[$field];
+        $total_size += $field_data_size;
         if ($key) {
-            $key_size_unicode += $data_sizes[(array_key_exists('unicode_' . $field, $data_sizes) ? 'unicode_' : '') . $field];
+            $key_size_unicode += $field_data_size_unicode;
         }
-        $total_size_unicode += $data_sizes[(array_key_exists('unicode_' . $field, $data_sizes) ? 'unicode_' : '') . $field];
+        $total_size_unicode += $field_data_size_unicode;
 
         if (($null) && (!$skip_null_check) && (($field == 'MINIID_TEXT') || ($field == 'ID_TEXT') || ($field == 'LANGUAGE_NAME') || ($field == 'IP') || ($field == 'URLPATH') || ($field == 'LONG_TEXT') || ($field == 'SHORT_TEXT'))) { // Needed for Oracle, really
             fatal_exit('You may not have a NULL string field');
         }
-        /*if (($key) && (substr($id_name, 0, 1) != '#') && (!$size_restricted) && (($field == 'LONG_TEXT'))) {      We now size restrict using "(255)"
-            fatal_exit('You may not use a ' . $field . ' field for part of a key');
-        }*/
         if (($key) && ($primary_key) && ($null)) {
             fatal_exit('No field that may be NULL may be a part of a primary key');
         }
@@ -150,25 +158,25 @@ function _check_sizes(string $table_name, bool $primary_key, array $fields, stri
         }
     }
     if ((!$skip_size_check) && (substr($id_name, 0, 1) != '#')) {
-        if ($key_size >= ($primary_key ? DB_MAX_PRIMARY_KEY_SIZE : DB_MAX_KEY_SIZE)) {
+        if ($key_size > ($primary_key ? DB_MAX_PRIMARY_KEY_SIZE : DB_MAX_KEY_SIZE)) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Key too long at ' . integer_format($key_size) . ' bytes [' . $id_name . ']'); // 252 for firebird
         }
-        if (($total_size >= DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
+        if (($total_size > DB_MAX_ROW_SIZE) && ($table_name != 'f_member_custom_fields')) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Fieldset (row) too long at ' . integer_format($total_size) . ' bytes [' . $id_name . ']');
         }
-        if ($key_size_unicode >= DB_MAX_KEY_SIZE_UNICODE) {
+        if ($key_size_unicode > DB_MAX_KEY_SIZE_UNICODE) {
             if ($return_on_error) {
                 return false;
             }
             fatal_exit('Unicode version of key too long at ' . integer_format($key_size_unicode) . ' bytes [' . $id_name . ']'); // 252 for firebird
         }
-        if (($total_size_unicode >= DB_MAX_ROW_SIZE_UNICODE) && ($table_name != 'f_member_custom_fields')) {
+        if (($total_size_unicode > DB_MAX_ROW_SIZE_UNICODE) && ($table_name != 'f_member_custom_fields')) {
             if ($return_on_error) {
                 return false;
             }
@@ -279,20 +287,17 @@ function _helper_create_table(object $this_ref, string $table_name, array $field
  * @param  ID_TEXT $index_name The index name
  * @param  array $fields The fields
  * @param  ?string $unique_key_fields Comma-separated names of the unique key field for the table (null: lookup)
+ * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters
  *
  * @ignore
  */
-function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null)
+function _helper_create_index(object $this_ref, string $table_name, string $index_name, array $fields, ?string $unique_key_fields = null, bool $save_bytes = false)
 {
     $fields_with_types = [];
     if ($table_name != 'db_meta') {
         $db_types = collapse_2d_complexity('m_name', 'm_type', $this_ref->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table_name]));
 
-        $sized = false;
         foreach ($fields as $field_name) {
-            if (strpos($field_name, '(') !== false) {
-                $sized = true;
-            }
             $_field_name = preg_replace('#\(.*\)$#', '', $field_name);
 
             $db_type = isset($db_types[$_field_name]) ? $db_types[$_field_name] : null;
@@ -306,11 +311,11 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
                 $db_type = '*' . $db_type;
             }
 
+            _helper_add_automatic_index_limiter($field_name, $db_type);
+
             $fields_with_types[$field_name] = $db_type;
         }
-        if (!$sized) {
-            _check_sizes($table_name, false, $fields_with_types, $index_name, false, true, true/*indexes don't use so many bytes as keys somehow*/);
-        }
+        _check_sizes($table_name, false, $fields_with_types, $index_name, false, true, $save_bytes);
     } else {
         foreach ($fields as $field_name) {
             $fields_with_types[$field_name] = null;
@@ -387,24 +392,40 @@ function _helper_generate_index_fields(string $table_name, array $fields, bool $
         if ($_fields != '') {
             $_fields .= ',';
         }
-        $_fields .= $field_name;
 
         if ($db_type !== null) {
             if (($is_full_text) && (multi_lang_content()) && (strpos($db_type, '_TRANS') !== false)) {
                 return null; // We don't create a full-text index on *_TRANS fields if we are directing through the translate table
             }
 
-            if ((strpos($field_name, '(') === false) && (!$is_full_text) && ((!multi_lang_content()) || (strpos($db_type, '_TRANS') === false))) {
-                if (strpos($field_name, '(') === false) {
-                    if ((strpos($db_type, 'SHORT_TEXT') !== false) || (strpos($db_type, 'SHORT_TRANS') !== false) || (strpos($db_type, 'LONG_TEXT') !== false) || (strpos($db_type, 'LONG_TRANS') !== false) || (strpos($db_type, 'URLPATH') !== false)) {
-                        $_fields .= '(250)'; // 255 would be too much with MySQL's UTF. Only MySQL supports index lengths, but the other drivers will strip them back out again.
-                    }
-                }
+            if (!$is_full_text) {
+                _helper_add_automatic_index_limiter($field_name, $db_type);
             }
         }
+
+        $_fields .= $field_name;
     }
 
     return $_fields;
+}
+
+/**
+ * Limit the indexing size on a field, if appropriate.
+ *
+ * @param  ID_TEXT $field_name The field name
+ * @param  ID_TEXT $db_type The DB name
+ *
+ * @ignore
+ */
+function _helper_add_automatic_index_limiter(&$field_name, $db_type)
+{
+    if ((strpos($field_name, '(') === false) && ((!multi_lang_content()) || (strpos($db_type, '_TRANS') === false))) {
+        if (strpos($field_name, '(') === false) {
+            if ((strpos($db_type, 'SHORT_TEXT') !== false) || (strpos($db_type, 'SHORT_TRANS') !== false) || (strpos($db_type, 'LONG_TEXT') !== false) || (strpos($db_type, 'LONG_TRANS') !== false) || (strpos($db_type, 'URLPATH') !== false)) {
+                $field_name .= '(250)'; // 255 would be too much with MySQL's UTF. Only MySQL supports index lengths, but the other drivers will strip them back out again.
+            }
+        }
+    }
 }
 
 /**
