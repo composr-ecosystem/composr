@@ -99,7 +99,8 @@ class Hook_cron_cloud_propagation
                     fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
                     if (!$result) {
                         require_code('failure');
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        $last_error = error_get_last();
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
                     }
                     break;
 
@@ -113,7 +114,8 @@ class Hook_cron_cloud_propagation
                     $result = @rename($file_base . '/' . $op['dir_path'], $file_base . '/' . $op['op_data']);
                     if (!$result) {
                         require_code('failure');
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        $last_error = error_get_last();
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
                     }
                     break;
 
@@ -121,7 +123,8 @@ class Hook_cron_cloud_propagation
                     $result = @rmdir($file_base . '/' . $op['dir_path']);
                     if (!$result) {
                         require_code('failure');
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        $last_error = error_get_last();
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
                     }
                     break;
             }
@@ -148,7 +151,8 @@ class Hook_cron_cloud_propagation
                     } else {
                         unset($op['op_data']);
                         require_code('failure');
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        $last_error = error_get_last();
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
                     }
                     break;
 
@@ -165,7 +169,8 @@ class Hook_cron_cloud_propagation
                     $result = @rename($file_base . '/' . $op['file_path'], $file_base . '/' . $op['op_data']);
                     if (!$result) {
                         require_code('failure');
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        $last_error = error_get_last();
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
                     }
                     break;
 
@@ -173,7 +178,8 @@ class Hook_cron_cloud_propagation
                     $result = @unlink($file_base . '/' . $op['file_path']);
                     if (!$result) {
                         require_code('failure');
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $php_errormsg);
+                        $last_error = error_get_last();
+                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
                     }
                     break;
             }

@@ -184,7 +184,7 @@ function inject_propagation_dir(string $file_base_constant, string $op_type, str
  */
 function cloudfs_ping_file_changed(string $path, string $file_base_constant)
 {
-    $_path = substr($path, strlen($file_base));
+    $_path = substr($path, strlen($file_base_constant));
     inject_propagation_file($file_base_constant, 'create', $_path, time(), fileperms($path), base64_encode(file_get_contents($path)));
 }
 
@@ -578,8 +578,8 @@ class CloudFsStreamWrapper
         $ret = fclose($this->file_handle);
         $this->file_handle = false;
 
-        if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            inject_propagation_file($file_base_constant, 'create', $this->file_path_relative, time(), fileperms($this->file_path_absolute), base64_encode(file_get_contents($this->file_path_absolute)));
+        if (($ret) && ($this->file_storage_type == CMS_CLOUD__PROPAGATED)) {
+            inject_propagation_file($this->file_file_base_constant, 'create', $this->file_path_relative, time(), fileperms($this->file_path_absolute), base64_encode(file_get_contents($this->file_path_absolute)));
         }
 
         return $ret;
@@ -596,30 +596,30 @@ class CloudFsStreamWrapper
      */
     public function rename(string $path_from, string $path_to) : bool
     {
-        list($path_relative_from, $path_absolute_from, $storage_type_from, $file_base_from, $file_base_constant_from) = _make_cms_path_native($path);
-        list($path_relative_to, $path_absolute_to, $storage_type_to, $file_base_to, $file_base_constant_to) = _make_cms_path_native($path);
+        list($path_relative_from, $path_absolute_from, $storage_type_from, $file_base_from, $file_base_constant_from) = _make_cms_path_native($path_from);
+        list($path_relative_to, $path_absolute_to, $storage_type_to, $file_base_to, $file_base_constant_to) = _make_cms_path_native($path_to);
 
         $ret = rename($path_absolute_from, $path_absolute_to);
 
         if ($ret) {
             if (($storage_type_from == CMS_CLOUD__PROPAGATED) && ($storage_type_to == CMS_CLOUD__PROPAGATED)) {
                 if (is_dir($path_to)) {
-                    inject_propagation_dir($file_base_constant, 'move', $path_relative_from, null, $path_relative_to);
+                    inject_propagation_dir($file_base_constant_to, 'move', $path_relative_from, null, $path_relative_to);
                 } else {
-                    inject_propagation_file($file_base_constant, 'move', $path_relative_from, null, $path_relative_to);
+                    inject_propagation_file($file_base_constant_to, 'move', $path_relative_from, null, $path_relative_to);
                 }
             } elseif (($storage_type_from == CMS_CLOUD__PROPAGATED) && ($storage_type_to != CMS_CLOUD__PROPAGATED)) {
                 // Will now be already there (would need to come in via Git if $storage_type_to == CMS_CLOUD__LOCAL), so we just delete where it's from
                 if (is_dir($path_to)) {
-                    inject_propagation_dir($file_base_constant, 'delete', $path_relative_from);
+                    inject_propagation_dir($file_base_constant_from, 'delete', $path_relative_from);
                 } else {
-                    inject_propagation_file($file_base_constant, 'delete', $path_relative_from);
+                    inject_propagation_file($file_base_constant_from, 'delete', $path_relative_from);
                 }
             } elseif (($storage_type_from != CMS_CLOUD__PROPAGATED) && ($storage_type_to == CMS_CLOUD__PROPAGATED)) {
                 if (is_dir($path_to)) {
-                    inject_propagation_dir($file_base_constant, 'create', $path_relative_to, fileperms($path_absolute_to));
+                    inject_propagation_dir($file_base_constant_to, 'create', $path_relative_to, fileperms($path_absolute_to));
                 } else {
-                    inject_propagation_file($file_base_constant, 'create', $path_relative_to, filemtime($path_absolute_to), fileperms($path_absolute_to), base64_encode(file_get_contents($path_absolute_to)));
+                    inject_propagation_file($file_base_constant_to, 'create', $path_relative_to, filemtime($path_absolute_to), fileperms($path_absolute_to), base64_encode(file_get_contents($path_absolute_to)));
                 }
             }
         }

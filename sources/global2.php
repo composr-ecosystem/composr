@@ -736,6 +736,7 @@ function fixup_bad_php_env_vars()
  */
 function cloud_mode() : string
 {
+    global $SITE_INFO;
     if (empty($SITE_INFO['cloud_mode'])) {
         return '';
     }
@@ -2463,7 +2464,7 @@ function loggable_date(bool $php_style = false) : string
     } else {
         $hours = intval(substr($timezone, 0, strlen($timezone) - 2));
         $minutes = intval(substr($timezone, -2));
-        $ret = strftime($ds + $hours * 3600 + $minutes * 60) . ' ' . $timezone;
+        $ret = strftime($ds, time() + $hours * 3600 + $minutes * 60) . ' ' . $timezone;
     }
 
     return $ret;
@@ -2503,7 +2504,7 @@ class CMSLoggers
      * @param  array $context A map of extra context
      * @return array The log details
      */
-    public static function collate_log_details(string $message, ?string $date = null, ?string $level = null, array $context = array()) : array
+    public static function collate_log_details(string $message, ?string $date = null, ?string $level = null, array $context = []) : array
     {
         $details = [];
 
@@ -2635,7 +2636,7 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function critical(string $message, array $context = array()) : string
+    public function critical(string $message, array $context = []) : string
     {
         return $this->log('critical', $message, $context);
     }
@@ -2649,7 +2650,7 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function warning(string $message, array $context = array()) : string
+    public function warning(string $message, array $context = []) : string
     {
         return $this->log('warn', $message, $context);
     }
@@ -2663,7 +2664,7 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function notice(string $message, array $context = array()) : string
+    public function notice(string $message, array $context = []) : string
     {
         return $this->log('notice', $message, $context);
     }
@@ -2677,7 +2678,7 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function inform(string $message, array $context = array()) : string
+    public function inform(string $message, array $context = []) : string
     {
         return $this->log('inform', $message, $context);
     }
@@ -2693,12 +2694,12 @@ class CMSLogger
             $this->active = true;
 
             global $SITE_INFO;
-            if ((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) {
+            if ((isset($SITE_INFO['no_extra_logs'])) && ($SITE_INFO['no_extra_logs'] == '1')) {
                 $this->active = false; // Explicitly disabled
             } else {
                 require_code('files');
 
-                if ((!is_file($path)) || (!cms_is_writable($path))) {
+                if ((!is_file($this->path)) || (!cms_is_writable($this->path))) {
                     $this->active = false; // We don't create log files, up to user to initialise them if wanted
                 }
             }
@@ -2714,7 +2715,7 @@ class CMSLogger
      * @param  array $context A map of extra context
      * @return string The line that would be added to the log file
      */
-    public function log(string $level, string $message, array $context = array()) : string
+    public function log(string $level, string $message, array $context = []) : string
     {
         $details = CMSLoggers::collate_log_details($message, loggable_date(), $level, $context);
 
@@ -2754,7 +2755,7 @@ class CMSLogger
             if ($this->target__cloud) {
                 $GLOBALS['SITE_DB']->query_insert('cloud_propagation_logging', [
                     'log_name' => $this->name,
-                    'log_line' => $line,
+                    'log_line' => $line_file,
                     'op_timestamp' => time(),
                     'op_originating_host' => gethostname(),
                 ]);
@@ -2773,6 +2774,7 @@ class CMSLogger
                         break;
                     case 'notice':
                         $priority = LOG_NOTICE;
+                        break;
                     default:
                         $priority = LOG_INFO;
                         break;
