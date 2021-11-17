@@ -446,10 +446,10 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
                         if (($true_hash !== null) && ($hash_on_disk != $true_hash)) {
                             if ((function_exists('diff_3way_text')) && (substr($file, -4) == '.css') && ($true_hash !== 2) && (file_exists($dir . $file . '.editfrom')) && (cms_is_writable($dir . $file))) {
                                 $new = diff_3way_text(file_get_contents($equiv_file), file_get_contents($dir . $file . '.editfrom'), file_get_contents($dir . $file));
-                                cms_file_put_contents_safe($dir . $file . '.' . strval(time()), cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-                                cms_file_put_contents_safe($dir . $file, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                                cms_file_put_contents_safe($dir . $file . '.' . strval(time()), cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
+                                cms_file_put_contents_safe($dir . $file, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                                 $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd> ' . do_lang('AUTO_MERGED') . '</li>';
-                                cms_file_put_contents_safe($dir . $file . '.editfrom', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                                cms_file_put_contents_safe($dir . $file . '.editfrom', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                             } else {
                                 $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
                             }

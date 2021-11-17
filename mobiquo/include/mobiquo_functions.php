@@ -179,7 +179,7 @@ function request_helper_get_file(string $request_method) : string
 
         // Save
         require_code('files');
-        cms_file_put_contents_safe($data_file, serialize($func_file_mapping), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($data_file, serialize($func_file_mapping), FILE_WRITE_FIX_PERMISSIONS);
     } else {
         $func_file_mapping = unserialize(cms_file_get_contents_safe($data_file, FILE_READ_LOCK));
     }

@@ -99,7 +99,7 @@ class RevisionEngineFiles
 
         @unlink($revision_path);
         require_code('files');
-        cms_file_put_contents_safe($revision_path, $original_text, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($revision_path, $original_text, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
     }
 
     /**

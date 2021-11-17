@@ -608,7 +608,7 @@ function afm_make_file(string $basic_path, string $contents, bool $world_access,
 
         clearstatcache();
     } else {
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | ($bom ? FILE_WRITE_BOM : 0));
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | ($bom ? FILE_WRITE_BOM : 0));
         @chmod($path, $access);
     }
 }

@@ -2160,7 +2160,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 }
                 require_code('files');
                 $path = get_custom_file_base() . '/uploads/attachments/' . $new_filename;
-                $success_status = cms_file_put_contents_safe($path, $file, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                $success_status = cms_file_put_contents_safe($path, $file, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
                 if (!$success_status) {
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => '428a36aa6cea693d01429f3d21caac36', 'WARNING' => intelligent_write_error_inline($path)]);
                     break;

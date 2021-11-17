@@ -126,5 +126,5 @@ function adjust_htaccess()
     }
 
     require_code('files');
-    cms_file_put_contents_safe($path, $contents, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+    cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS);
 }

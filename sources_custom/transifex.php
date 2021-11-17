@@ -782,7 +782,7 @@ END;
             $c = trim($c) . "\n\n";
 
             if ($tar_file === null) {
-                cms_file_put_contents_safe($full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($full_path, $c, FILE_WRITE_FIX_PERMISSIONS);
             } else {
                 tar_add_file($tar_file, $path, $c);
 
@@ -843,7 +843,7 @@ function _pull_cms_file_from_transifex($project_slug, $tar_file, $lang, $path, $
         }
 
         if ($tar_file === null) {
-            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         } else {
             tar_add_file($tar_file, $trans_path, $c);
         }
@@ -892,7 +892,7 @@ function _pull_ini_file_from_transifex($project_slug, $tar_file, $lang, $_f, &$f
         $c = "[strings]\n" . trim($write_out) . "\n";
 
         if ($tar_file === null) {
-            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         } else {
             tar_add_file($tar_file, $trans_path, $c);
         }

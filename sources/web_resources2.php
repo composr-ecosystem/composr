@@ -68,7 +68,7 @@ function js_compile(string $j, string $js_cache_path, bool $minify = true, ?stri
         $contents = '/* DO NOT EDIT. THIS IS A CACHE FILE AND WILL GET OVERWRITTEN RANDOMLY.' . "\n" . 'INSTEAD EDIT THE TEMPLATE FROM WITHIN THE ADMIN ZONE, OR BY MANUALLY EDITING A JAVASCRIPT_CUSTOM OVERRIDE. */' . "\n\n" . $out;
     }
     require_code('files');
-    $success_status = cms_file_put_contents_safe($js_cache_path, $contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    $success_status = cms_file_put_contents_safe($js_cache_path, $contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
     if (!$success_status) {
         @touch($js_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
     } elseif (get_value('disable_web_resources_static_compression') !== '1') {
@@ -98,7 +98,7 @@ function css_compile(string $active_theme, string $theme, string $c, string $ful
 
     list($success_status, $out) = _css_compile($active_theme, $theme, $c, $full_path, $minify);
     require_code('files');
-    $success_status = cms_file_put_contents_safe($css_cache_path, $out, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    $success_status = cms_file_put_contents_safe($css_cache_path, $out, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
     if (!$success_status) {
         @touch($css_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
     } elseif (get_value('disable_web_resources_static_compression') !== '1') {
@@ -240,7 +240,7 @@ function compress_cms_stub_file_br(string $stub_file) : bool
     if ($compressed === false) {
         return false;
     }
-    cms_file_put_contents_safe($stub_file . '.br', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($stub_file . '.br', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
     return true;
 }
 
@@ -266,7 +266,7 @@ function compress_cms_stub_file_gz(string $stub_file) : bool
     if ($compressed === false) {
         return false;
     }
-    cms_file_put_contents_safe($stub_file . '.gz', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($stub_file . '.gz', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
     return true;
 }
 

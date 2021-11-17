@@ -436,7 +436,7 @@ function generate_captcha()
     $GLOBALS['SITE_DB']->query_insert('captchas', ['si_session_id' => $session, 'si_time' => time(), 'si_code' => $si_code]);
 
     require_code('files');
-    cms_file_put_contents_safe(get_custom_file_base() . '/uploads/captcha/' . $session . '.wav', captcha_audio($si_code), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_custom_file_base() . '/uploads/captcha/' . $session . '.wav', captcha_audio($si_code), FILE_WRITE_FIX_PERMISSIONS);
 }
 
 /**

@@ -104,7 +104,7 @@ function incoming_uploads_script()
         if (get_param_integer('base64', 0) == 1) {
             require_code('files');
             $new = base64_decode(cms_file_get_contents_safe(get_custom_file_base() . '/' . $savename, FILE_READ_LOCK));
-            cms_file_put_contents_safe(get_custom_file_base() . '/' . $savename, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe(get_custom_file_base() . '/' . $savename, $new, FILE_WRITE_FIX_PERMISSIONS);
         }
 
         $member_id = get_member();

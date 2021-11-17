@@ -575,7 +575,7 @@ class Module_admin_zones
 
                 // Save
                 require_code('files');
-                cms_file_put_contents_safe($full_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                cms_file_put_contents_safe($full_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
                 // De-cache
                 $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['string_index'], ['the_zone' => ($redirect === null) ? $id : $redirect, 'the_page' => $_for]);

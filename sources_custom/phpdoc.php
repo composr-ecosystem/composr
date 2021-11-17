@@ -282,7 +282,7 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
                                 if ($found) {
                                     $lines[$i] = str_replace(trim(implode(' ', $parts)), $_description, $lines[$i]);
                                     require_code('files');
-                                    cms_file_put_contents_safe($full_path, implode('', $lines), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                                    cms_file_put_contents_safe($full_path, implode('', $lines), FILE_WRITE_FIX_PERMISSIONS);
                                 }
                             }
                         }

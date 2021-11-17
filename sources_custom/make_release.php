@@ -680,7 +680,7 @@ function make_files_manifest() // Builds files.bin, the Composr file manifest (u
 
     $file_manifest = serialize($files);
 
-    cms_file_put_contents_safe(get_file_base() . '/data/files.bin', $file_manifest, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/files.bin', $file_manifest, FILE_WRITE_FIX_PERMISSIONS);
 
     $MAKE_INSTALLERS__FILE_ARRAY['data/files.bin'] = $file_manifest;
 
@@ -688,7 +688,7 @@ function make_files_manifest() // Builds files.bin, the Composr file manifest (u
     require_code('version2');
     $version_branch = get_version_branch();
     $builds_path = get_builds_path();
-    cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/data/files.bin', $file_manifest, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/data/files.bin', $file_manifest, FILE_WRITE_FIX_PERMISSIONS);
 }
 
 function make_database_manifest() // Builds db_meta.bin, which is used for database integrity checks
@@ -859,7 +859,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
     // Save
     require_code('files');
     $path = get_file_base() . '/data/db_meta.bin';
-    cms_file_put_contents_safe($path, serialize($data), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($path, serialize($data), FILE_WRITE_FIX_PERMISSIONS);
 
     pop_db_scope_check();
 }
@@ -991,7 +991,7 @@ function make_install_sql()
         }
         $segment = trim($segment) . "\n";
         require_code('files');
-        cms_file_put_contents_safe(get_file_base() . '/install' . strval($i + 1) . '.sql', $segment, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe(get_file_base() . '/install' . strval($i + 1) . '.sql', $segment, FILE_WRITE_FIX_PERMISSIONS);
     }
 }
 
@@ -1008,7 +1008,7 @@ function _download_latest_data_cert()
     if (strpos($data, 'BEGIN CERTIFICATE') === false) {
         fatal_exit('Error with certificates');
     }
-    cms_file_put_contents_safe(get_file_base() . '/data/curl-ca-bundle.crt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/curl-ca-bundle.crt', $data, FILE_WRITE_FIX_PERMISSIONS);
 }
 
 function _download_latest_data_ip_country()
@@ -1059,7 +1059,7 @@ function _download_latest_data_ip_country()
         fatal_exit('Failed to extract MaxMind IP address data');
     }
 
-    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $spreadsheet_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $spreadsheet_data, FILE_WRITE_FIX_PERMISSIONS);
 
     @unlink($tmp_name_gzip);
     @unlink($tmp_name_csv);
@@ -1080,7 +1080,7 @@ function _download_latest_data_no_banning()
         $data .= http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
     }
 
-    cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS);
 }
 
 // See phpdoc_parser.php for functions.bin manifest building

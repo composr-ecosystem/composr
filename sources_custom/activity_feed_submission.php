@@ -265,6 +265,6 @@ function log_newest_activity(int $id, int $timeout = 1000, bool $force = false)
     $old_id = @cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
     if (($force) || ($old_id === false) || (intval($old_id) < $id)) {
         require_code('files');
-        cms_file_put_contents_safe($file_path, strval($id), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($file_path, strval($id), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
     }
 }

@@ -884,7 +884,7 @@ class Module_admin_themes
                 $contents .= 'capability_' . $capability . '=1' . "\n";
             }
         }
-        cms_file_put_contents_safe($ini_file, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($ini_file, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         // Save permissions
         require_code('permissions2');
@@ -908,7 +908,7 @@ class Module_admin_themes
         foreach ($new_map as $key => $val) {
             $contents .= $key . '=' . $val . "\n";
         }
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         // Empty caching
         erase_persistent_cache();

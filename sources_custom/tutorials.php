@@ -177,7 +177,7 @@ function list_tutorials()
     //sort_maps_by($tutorials, 'title', false, true);    Breaks keys
 
     require_code('files');
-    cms_file_put_contents_safe($cache_path, serialize($tutorials), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($cache_path, serialize($tutorials), FILE_WRITE_FIX_PERMISSIONS);
 
     return $tutorials;
 }

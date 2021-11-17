@@ -895,7 +895,7 @@ function remap_portable_as_urlpath($portable_data, bool $ignore_conflicts = fals
     }
 
     require_code('files');
-    cms_file_put_contents_safe($path, $binary, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($path, $binary, FILE_WRITE_FIX_PERMISSIONS);
 
     return $urlpath;
 }

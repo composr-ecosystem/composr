@@ -296,7 +296,7 @@ class Hook_task_import_rss
 
                 // Save to disk
                 require_code('files');
-                $success_status = cms_file_put_contents_safe($full_path, $_content, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                $success_status = cms_file_put_contents_safe($full_path, $_content, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                 if (!$success_status) {
                     return [null, do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($full_path))];
                 }
@@ -464,7 +464,7 @@ class Hook_task_import_rss
             $page = $item['page'];
             _news_import_grab_images_and_fix_links($download_images == 1, $contents, $imported_news);
             require_code('files');
-            cms_file_put_contents_safe($item['path'], $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            cms_file_put_contents_safe($item['path'], $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
             if ($item['parent_page'] !== null) {
                 $parent_page = null;
                 foreach ($imported_pages as $item2) {

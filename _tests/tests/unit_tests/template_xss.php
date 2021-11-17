@@ -75,7 +75,7 @@ class template_xss_test_set extends cms_test_case
 
                                 if (get_param_integer('save', 0) == 1) {
                                     $c_orig = str_replace($match, '{' . $matches[1][$i] . $matches[2][$i] . '/' . '}', $c_orig);
-                                    cms_file_put_contents_safe($path . '/' . $file, $c_orig, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                                    cms_file_put_contents_safe($path . '/' . $file, $c_orig, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                                 }
                             }
                         }

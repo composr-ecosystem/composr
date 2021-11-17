@@ -320,7 +320,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
                 $exif = false;
             } else {
                 require_code('files');
-                cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS);
                 $exif = function_exists('exif_read_data') ? @exif_read_data($to) : false;
                 if ($ext == 'svg') { // SVG is pass-through
                     cms_set_time_limit($old_limit);
@@ -420,7 +420,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
                     fix_permissions($to);
                 } else {
                     require_code('files');
-                    cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                    cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS);
                 }
                 cms_set_time_limit($old_limit);
                 return _image_path_to_url($to);
@@ -611,7 +611,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
             fix_permissions($to);
         } else {
             require_code('files');
-            cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS);
         }
         cms_set_time_limit($old_limit);
         return _image_path_to_url($to);
@@ -876,7 +876,7 @@ function post_param_image(string $name = 'image', ?string $upload_to = null, ?st
         @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
         if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
             fix_permissions(get_custom_file_base() . '/' . $upload_to);
-            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
         } else {
             $upload_to = 'themes/default/images_custom';
         }

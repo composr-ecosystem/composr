@@ -325,7 +325,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
                 // Save
                 if ($orig_css_file_contents != $css_file_contents) {
                     require_code('files');
-                    cms_file_put_contents_safe($css_dir . $css_file, $css_file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                    cms_file_put_contents_safe($css_dir . $css_file, $css_file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                 }
 
                 $successes[] = do_lang_tempcode('CSS_FILE_UPGRADED', escape_html($css_file));
@@ -376,7 +376,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
 
                         // Save
                         require_code('files');
-                        cms_file_put_contents_safe($templates_dir . $templates_file, $templates_file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                        cms_file_put_contents_safe($templates_dir . $templates_file, $templates_file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                     }
                 }
 

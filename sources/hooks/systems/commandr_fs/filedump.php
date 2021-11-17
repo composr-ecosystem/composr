@@ -301,7 +301,7 @@ class Hook_commandr_fs_filedump
             }
 
             require_code('files');
-            cms_file_put_contents_safe($path . '/' . $file_name, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($path . '/' . $file_name, $data, FILE_WRITE_FIX_PERMISSIONS);
 
             if (!empty($input)) {
                 table_from_portable_rows('filedump', [$input], ['name' => cms_mb_substr($file_name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);

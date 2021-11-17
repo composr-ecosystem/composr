@@ -200,7 +200,7 @@ function do_work()
     for ($i = $GLOBALS['SITE_DB']->query_select_value('comcode_pages', 'COUNT(*)'); $i < $num_wanted; $i++) {
         $file = uniqid('', false);
         /*$path = get_custom_file_base() . '/site/pages/comcode_custom/' . fallback_lang() . '/' . $file . '.txt';
-        cms_file_put_contents_safe($path, random_text(), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);*/
+        cms_file_put_contents_safe($path, random_text(), FILE_WRITE_FIX_PERMISSIONS);*/
         $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
             'the_zone' => 'site',
             'the_page' => $file,

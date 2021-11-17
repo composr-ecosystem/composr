@@ -1143,7 +1143,7 @@ class Hook_import_smf2
         list($path, $url) = find_unique_path('uploads/' . $sections, $filename);
 
         require_code('files');
-        cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS);
 
         return $url;
     }

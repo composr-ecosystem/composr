@@ -311,7 +311,7 @@ class Module_filedump
         $full_path = get_custom_file_base() . '/uploads/filedump' . $subpath;
         if (!file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath)) {
             if (has_privilege(get_member(), 'upload_filedump')) {
-                cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
             }
         }
 
@@ -1264,7 +1264,7 @@ class Module_filedump
         }
 
         $full_path = get_custom_file_base() . '/uploads/filedump' . $subpath . $name;
-        cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
 
         $redirect_url = build_url(['page' => '_SELF', 'type' => 'browse', 'subpath' => $subpath], '_SELF');
 

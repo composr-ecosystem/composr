@@ -66,12 +66,12 @@ class Hook_snippet_template_editor_save
                 }
             } else {
                 // Save
-                cms_file_put_contents_safe($custom_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                cms_file_put_contents_safe($custom_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
                 // Make base-hash-thingy
                 if (is_file($original_path) && !is_file($custom_path . '.editfrom')) {
                     $hash = cms_file_get_contents_safe($original_path, FILE_READ_LOCK | FILE_READ_BOM);
-                    cms_file_put_contents_safe($custom_path . '.editfrom', $hash, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                    cms_file_put_contents_safe($custom_path . '.editfrom', $hash, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                 }
             }
 

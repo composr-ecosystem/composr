@@ -268,5 +268,5 @@ function _update_base_config_for_content_translation(bool $new_setting)
         $config_file = rtrim($config_file) . "\n" . $wants . "\n";
     }
     require_code('files');
-    cms_file_put_contents_safe($config_path, $config_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($config_path, $config_file, FILE_WRITE_FIX_PERMISSIONS);
 }

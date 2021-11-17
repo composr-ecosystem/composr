@@ -204,17 +204,17 @@ class Module_admin_debrand
 
         $keyboard_map_path = get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/keymap.txt';
         $km = post_param_string('keyboard_map');
-        cms_file_put_contents_safe($keyboard_map_path, $km, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($keyboard_map_path, $km, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         $adminguide_path = get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt';
         $adminguide = post_param_string('adminguide');
         $adminguide = str_replace('__company__', post_param_string('company_name'), $adminguide);
-        cms_file_put_contents_safe($adminguide_path, $adminguide, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($adminguide_path, $adminguide, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         $start_path = get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt';
         if (!file_exists($start_path)) {
             $start = post_param_string('start_page');
-            cms_file_put_contents_safe($start_path, $start, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            cms_file_put_contents_safe($start_path, $start, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         }
 
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
@@ -233,7 +233,7 @@ class Module_admin_debrand
         }
         $global_tpl = cms_file_get_contents_safe($global_tpl_path, FILE_READ_LOCK | FILE_READ_BOM);
         $global_tpl = str_replace('Copyright ocProducts Limited', '', $global_tpl);
-        cms_file_put_contents_safe($save_global_tpl_path, $global_tpl, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($save_global_tpl_path, $global_tpl, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         if (post_param_integer('churchy', 0) == 1) {
             $db = get_db_for('f_emoticons');

@@ -683,7 +683,7 @@ class Module_admin_config
         require_code('files');
         $full_path = get_custom_file_base() . '/data_custom/xml_config/fields.xml';
         $xml = post_param_string('xml');
-        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         log_it('FIELD_FILTERS');
 
@@ -717,7 +717,7 @@ class Module_admin_config
         require_code('files');
         $full_path = get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml';
         $xml = post_param_string('xml');
-        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         log_it('BREADCRUMB_OVERRIDES');
 
@@ -751,7 +751,7 @@ class Module_admin_config
         require_code('files');
         $full_path = get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml';
         $xml = post_param_string('xml');
-        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         log_it('ADVANCED_BANNING');
 

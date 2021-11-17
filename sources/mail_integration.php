@@ -657,7 +657,7 @@ abstract class EmailIntegration
 
             $new_filename = preg_replace('#\..*#', '', $filename) . '.bin';
             list($new_path, $new_url, $new_filename) = find_unique_path('uploads/attachments', $new_filename);
-            cms_file_put_contents_safe($new_path, $filedata, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($new_path, $filedata, FILE_WRITE_FIX_PERMISSIONS);
 
             $urls = [cms_rawurlrecode('uploads/attachments/' . rawurlencode($new_filename)), ''];
 

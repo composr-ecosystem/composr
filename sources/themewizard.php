@@ -430,7 +430,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
         $output = generate_theme_wizard_css_sheet($file, $css_path, $landscape, $source_theme, $algorithm, $seed);
 
         require_code('files');
-        cms_file_put_contents_safe($save_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($save_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         // .editfrom file
         $c_success = @copy(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/css/' . $file, $save_path . '.editfrom');
@@ -458,7 +458,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
         if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
             $contents .= 'supports_themewizard_equations=1' . "\n";
         }
-        cms_file_put_contents_safe($themeini_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($themeini_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         $files_created[] = $themeini_path;
     }

@@ -33,7 +33,7 @@ if ($type == 'save') {
 
     require_code('files');
     $xml = post_param_string('xml');
-    cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
     log_it('HYBRIDAUTH_CONFIG');
 } else {

@@ -90,7 +90,7 @@ function create_robots_txt(?string $robots_txt = null, string &$msg = '', bool $
         $robots_txt = get_robots_txt();
     }
 
-    $ret = cms_file_put_contents_safe($path, $robots_txt, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+    $ret = cms_file_put_contents_safe($path, $robots_txt, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
     if ($ret) {
         $msg = do_lang('ROBOTS_TXT_CREATED');
 

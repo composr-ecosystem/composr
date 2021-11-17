@@ -325,7 +325,7 @@ class Database_Static_xml extends DatabaseDriver
         @mkdir($path, 0777);
         require_code('files');
         fix_permissions($path);
-        cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
     }
 
     /**
@@ -397,7 +397,7 @@ class Database_Static_xml extends DatabaseDriver
             mkdir($db_name, 0777);
             require_code('files');
             fix_permissions($db_name);
-            cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
         }
 
         return [$db_name];
@@ -946,7 +946,7 @@ class Database_Static_xml extends DatabaseDriver
                 mkdir($db[0] . '/' . $table_name, 0777);
                 require_code('files');
                 fix_permissions($db[0] . '/' . $table_name);
-                cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
             }
             @chdir($db[0] . '/' . $table_name);
             $files = @glob('{,.}*.{xml,xml-volatile}', GLOB_NOSORT | GLOB_BRACE);
@@ -1254,7 +1254,7 @@ class Database_Static_xml extends DatabaseDriver
             mkdir($db[0] . '/' . $table_name, 0777);
             require_code('files');
             fix_permissions($db[0] . '/' . $table_name);
-            cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
         }
 
         $path = $db[0] . '/' . $table_name . '/' . $guid . $suffix;
@@ -1289,7 +1289,7 @@ class Database_Static_xml extends DatabaseDriver
             $contents .= "\t<" . $key . ">" . xmlentities($val) . "</" . $key . ">\n";
         }
         $contents .= "</composr>\n";
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         $schema = $this->_read_schema($db, preg_replace('#/sup$#', '', $table_name), $fail_ok);
         if ($schema !== null) {
@@ -1646,7 +1646,7 @@ class Database_Static_xml extends DatabaseDriver
         @mkdir($path, 0777);
         require_code('files');
         fix_permissions($path);
-        cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
 
         return null;
     }

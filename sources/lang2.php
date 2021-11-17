@@ -157,7 +157,7 @@ function lang_string_translation(string $lang_from, string $lang_to, array $lang
         foreach ($lang_file_map_to as $key => $val) {
             $out .= $key . '=' . $val . "\n";
         }
-        cms_file_put_contents_safe($lang_to_dir . '/' . $lang_file . '.ini', $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($lang_to_dir . '/' . $lang_file . '.ini', $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
     }
 
     return $errors;
@@ -243,7 +243,7 @@ function inline_language_editing(string &$codename, ?string $lang)
         $contents = str_replace("'" . $codename . '=' . $value . "'", "'" . $codename . "'", $orig_contents);
         if ($orig_contents != $contents) {
             require_code('files');
-            cms_file_put_contents_safe($inc, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            cms_file_put_contents_safe($inc, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         }
     }
 }

@@ -182,7 +182,7 @@ class Hook_commandr_fs_bin
 
         if ((is_dir($path)) && (((file_exists($path . '/' . $file_name)) && (cms_is_writable($path . '/' . $file_name))) || ((!file_exists($path . '/' . $file_name)) && (cms_is_writable($path))))) {
             require_code('files');
-            $output = cms_file_put_contents_safe($path . '/' . $file_name, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            $output = cms_file_put_contents_safe($path . '/' . $file_name, $contents, FILE_WRITE_FIX_PERMISSIONS);
             return $output;
         } else {
             return false; // File doesn't exist

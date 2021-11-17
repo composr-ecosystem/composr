@@ -576,7 +576,7 @@ function copy_exif_data(string $src_path, string $dest_path, bool $reorientated 
 
     $trailing_content = $existing_content;
 
-    cms_file_put_contents_safe($dest_path, $header_content . $chunks_to_save . $trailing_content, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
+    cms_file_put_contents_safe($dest_path, $header_content . $chunks_to_save . $trailing_content, FILE_WRITE_FIX_PERMISSIONS);
 
     return true;
 }

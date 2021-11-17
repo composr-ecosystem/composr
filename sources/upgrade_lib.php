@@ -62,7 +62,7 @@ function rebuild_zone_files()
     foreach ($zones as $zone) {
         if (!in_array($zone, ['', 'cms', 'adminzone', 'site', 'forum', 'collaboration'/*LEGACY*/])) {
             if (strpos(cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'index.php', FILE_READ_LOCK), 'core') !== false) {
-                @cms_file_put_contents_safe(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php', cms_file_get_contents_safe(get_custom_file_base() . '/site/index.php', FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                @cms_file_put_contents_safe(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php', cms_file_get_contents_safe(get_custom_file_base() . '/site/index.php', FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS);
             }
         }
     }
@@ -141,7 +141,7 @@ function perform_search_replace(array $reps)
                     $contents = preg_replace(array_keys($reps), array_values($reps), $contents);
                     if ($contents != $contents_orig) {
                         require_code('files');
-                        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                     }
                 }
                 closedir($dh);

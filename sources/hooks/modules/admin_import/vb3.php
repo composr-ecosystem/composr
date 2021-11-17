@@ -977,7 +977,7 @@ class Hook_import_vb3
 
             // Save main file
             list($path, $url) = find_unique_path('uploads/' . $sections, $filename . ($obfuscate ? '.bin' : ''));
-            cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS);
 
             // Save thumbnail
             if ($thumbnail_data == '') {
@@ -985,7 +985,7 @@ class Hook_import_vb3
             } else {
                 // Given directly, so save
                 list($path, $thumb_url) = find_unique_path('uploads/' . $sections . '_thumbs', $filename);
-                cms_file_put_contents_safe($path, $thumbnail_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($path, $thumbnail_data, FILE_WRITE_FIX_PERMISSIONS);
 
                 return [$url, $thumb_url];
             }

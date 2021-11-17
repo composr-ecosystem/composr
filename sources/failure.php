@@ -923,7 +923,7 @@ function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bo
 
             $contents = str_ireplace('# Require not ip xxx.xx.x.x (leave this comment here!)', '# Require not ip xxx.xx.x.x (leave this comment here!)' . "\n" . 'Require not ip ' . $ip_cleaned, $contents);
 
-            cms_file_put_contents_safe(get_file_base() . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe(get_file_base() . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS);
         }
     }
 
@@ -999,7 +999,7 @@ function remove_ip_ban(string $ip)
 
             $contents = str_ireplace("\n" . 'Require not ip ' . $ip_cleaned . "\n", "\n", $contents);
 
-            cms_file_put_contents_safe(get_file_base() . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe(get_file_base() . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS);
         }
     }
     $GLOBALS['SITE_DB']->query_delete('hackattack', ['ip' => $ip]);

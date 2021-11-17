@@ -723,7 +723,7 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
         $sprite_path = get_file_base() . '/' . $_sprite_path;
     }
 
-    cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS);
 
     $icons_added = array_keys($icon_paths);
 

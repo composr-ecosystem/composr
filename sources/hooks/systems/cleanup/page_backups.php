@@ -99,7 +99,7 @@ class Hook_cleanup_page_backups
             if (!file_exists($path . '/_old_backups')) {
                 mkdir($path . '/_old_backups', 0777);
                 fix_permissions($path . '/_old_backups');
-                cms_file_put_contents_safe($path . '/_old_backups/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($path . '/_old_backups/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
             }
 
             while (($f = readdir($dh)) !== false) {

@@ -1352,7 +1352,7 @@ class Module_admin_setupwizard
                 fix_permissions($full_path . '.' . strval(time()));
             }
             $rf = $this->get_rules_file(post_param_string('rules'));
-            cms_file_put_contents_safe($full_path, $rf, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+            cms_file_put_contents_safe($full_path, $rf, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         }
 
         $block_options = null;
@@ -1371,7 +1371,7 @@ class Module_admin_setupwizard
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
                 }
-                cms_file_put_contents_safe($full_path, $zone_pages[DEFAULT_ZONE_PAGE_NAME], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                cms_file_put_contents_safe($full_path, $zone_pages[DEFAULT_ZONE_PAGE_NAME], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
                 // Left
                 $full_path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
@@ -1379,7 +1379,7 @@ class Module_admin_setupwizard
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
                 }
-                cms_file_put_contents_safe($full_path, $zone_pages['left'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                cms_file_put_contents_safe($full_path, $zone_pages['left'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
                 // Right
                 $full_path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
@@ -1387,7 +1387,7 @@ class Module_admin_setupwizard
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
                 }
-                cms_file_put_contents_safe($full_path, $zone_pages['right'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                cms_file_put_contents_safe($full_path, $zone_pages['right'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
             }
         } elseif (!$this->has_block_step()) {
             require_code('files2');
@@ -1399,7 +1399,7 @@ class Module_admin_setupwizard
                     $regexp = '#^\_' . preg_quote($source_theme, '#') . '__([\w\-]+)\.txt$#';
                     if (preg_match($regexp, $file, $matches) != 0) {
                         $page_name = $matches[1];
-                        cms_file_put_contents_safe($dir . '/' . $page_name . '.txt', cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                        cms_file_put_contents_safe($dir . '/' . $page_name . '.txt', cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                     }
                 }
             }

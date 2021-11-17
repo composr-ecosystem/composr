@@ -111,9 +111,9 @@ function write_text_file(string $codename, ?string $lang, string $out)
 
     require_code('files');
 
-    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
     // Backup with a timestamp (useful if for example an addon update replaces changes)
     $path .= '.' . strval(time());
-    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 }

@@ -794,7 +794,7 @@ function save_comcode_page(string $zone, string $new_file, string $lang, string 
     // Store page on disk
     if ($file_changed) {
         require_code('files');
-        cms_file_put_contents_safe($full_path, $text, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($full_path, $text, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
     }
 
     // Empty caching

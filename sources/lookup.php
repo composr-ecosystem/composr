@@ -268,7 +268,7 @@ function save_user_metadata(bool $include_referer = false, ?int $member_id = nul
     $path = get_custom_file_base() . '/temp/mail_' . get_secure_random_string() . '.txt';
 
     require_code('files');
-    cms_file_put_contents_safe($path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    cms_file_put_contents_safe($path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
     return $path;
 }

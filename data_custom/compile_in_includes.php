@@ -120,7 +120,7 @@ foreach ($files as $path) {
                 }
 
                 // Restore override
-                cms_file_put_contents_safe($path, '<' . '?php' . "\n\n" . $file_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($path, '<' . '?php' . "\n\n" . $file_data, FILE_WRITE_FIX_PERMISSIONS);
             }
         }
 
@@ -205,7 +205,7 @@ foreach ($files as $path) {
                     if ($marked_old) {
                         echo 'Skipped due to inconsistency (PRIOR TO COMPILED segment mismatching new override code): ' . $path . "\n";
                     } else {
-                        cms_file_put_contents_safe($path, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                        cms_file_put_contents_safe($path, $new, FILE_WRITE_FIX_PERMISSIONS);
 
                         echo 'Done: ' . $path . "\n";
                     }

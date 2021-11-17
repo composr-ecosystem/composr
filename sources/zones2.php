@@ -377,7 +377,7 @@ function save_zone_base_url(string $zone, string $base_url)
 
     if ($config_file != $config_file_before) {
         require_code('files');
-        cms_file_put_contents_safe($config_path, $config_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($config_path, $config_file, FILE_WRITE_FIX_PERMISSIONS);
     }
 }
 
@@ -1036,7 +1036,7 @@ function sync_htaccess_with_zones()
         $htaccess = cms_file_get_contents_safe($htaccess_path, FILE_READ_LOCK);
         $htaccess = preg_replace('#\(site[^\)]*#', '(' . implode('|', $zones), $htaccess);
         require_code('files');
-        cms_file_put_contents_safe($htaccess_path, $htaccess, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($htaccess_path, $htaccess, FILE_WRITE_FIX_PERMISSIONS);
     }
 }
 

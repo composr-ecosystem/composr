@@ -810,7 +810,7 @@ class Module_admin_import
             $_val = str_replace('\\', '\\\\', $val);
             $config_contents .= '$SITE_INFO[\'' . $key . '\']=\'' . $_val . "';\n";
         }
-        cms_file_put_contents_safe($FILE_BASE . '/' . $config_file, $config_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($FILE_BASE . '/' . $config_file, $config_contents, FILE_WRITE_FIX_PERMISSIONS);
         $out->attach(paragraph(do_lang_tempcode('CNS_CONVERTED_INFO')));
 
         // Add zone formally
