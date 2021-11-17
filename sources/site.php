@@ -214,10 +214,8 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
         $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
 
         if ($may_log_error) {
-            if (php_function_allowed('error_log')) {
-                require_code('failure');
-                cms_error_log('Composr: ' . $php_error_label, null);
-            }
+            require_code('failure');
+            cms_error_log('Composr: ' . $php_error_label, null);
 
             require_code('failure');
             $trace = get_html_trace();
@@ -1202,10 +1200,8 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     foreach ($headers_sent as $header) {
         if (preg_match('#^Location:#i', $header) != 0) {
             if ($debugging) {
-                if (php_function_allowed('error_log')) {
-                    require_code('failure');
-                    cms_error_log('SC save: redirect is present', null);
-                }
+                require_code('failure');
+                cms_error_log('SC save: redirect is present', null);
             }
 
             return false;
@@ -1215,10 +1211,8 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     global $INVALIDATED_FAST_SPIDER_CACHE;
     if ($INVALIDATED_FAST_SPIDER_CACHE) {
         if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                require_code('failure');
-                cms_error_log('SC save: caching explicitly blocked by $INVALIDATED_FAST_SPIDER_CACHE', null);
-            }
+            require_code('failure');
+            cms_error_log('SC save: caching explicitly blocked by $INVALIDATED_FAST_SPIDER_CACHE', null);
         }
 
         return false;
@@ -1227,10 +1221,8 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     global $HTTP_STATUS_CODE;
     if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                require_code('failure');
-                cms_error_log('SC save: HTTP status is ' . strval($HTTP_STATUS_CODE) . ' and non-HTML so no http-equiv', null);
-            }
+            require_code('failure');
+            cms_error_log('SC save: HTTP status is ' . strval($HTTP_STATUS_CODE) . ' and non-HTML so no http-equiv', null);
         }
 
         return false;
@@ -1238,10 +1230,8 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
 
     if (!can_static_cache_request(true)) {
         if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                require_code('failure');
-                cms_error_log('SC save: No, static cache not available according to can_static_cache_request() on ' . $url, null);
-            }
+            require_code('failure');
+            cms_error_log('SC save: No, static cache not available according to can_static_cache_request() on ' . $url, null);
         }
 
         return false;
@@ -1260,10 +1250,8 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
 
     if (!$GLOBALS['STATIC_CACHE_ENABLED']) {
         if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                require_code('failure');
-                cms_error_log('SC save: No, internal signal to not cache from Tempcode on ' . $url, null);
-            }
+            require_code('failure');
+            cms_error_log('SC save: No, internal signal to not cache from Tempcode on ' . $url, null);
         }
 
         return false; // Something in the output tree decided this was not cacheable
@@ -1275,10 +1263,8 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
 
     // Log
     if ($debugging) {
-        if (php_function_allowed('error_log')) {
-            require_code('failure');
-            cms_error_log('SC save: Yes, on ' . $url, null);
-        }
+        require_code('failure');
+        cms_error_log('SC save: Yes, on ' . $url, null);
     }
 
     // Remove any sessions etc

@@ -221,10 +221,8 @@ function _javascript_tempcode(string $j, object &$js, ?bool $_minify = null, ?bo
             disable_static_caching();
 
             if ((function_exists('debugging_static_cache')) && (debugging_static_cache())) {
-                if (php_function_allowed('error_log')) {
-                    require_code('failure');
-                    cms_error_log('SC: No static cache due to deferred JavaScript compilation, ' . $j, null);
-                }
+                require_code('failure');
+                cms_error_log('SC: No static cache due to deferred JavaScript compilation, ' . $j, null);
             }
 
             $_theme = $GLOBALS['FORUM_DRIVER']->get_theme();
@@ -508,10 +506,8 @@ function _css_tempcode(string $c, object &$css, object &$css_need_inline, bool $
             disable_static_caching();
 
             if ((function_exists('debugging_static_cache')) && (debugging_static_cache())) {
-                if (php_function_allowed('error_log')) {
-                    require_code('failure');
-                    cms_error_log('SC: No static cache due to deferred CSS compilation, ' . $c, null);
-                }
+                require_code('failure');
+                cms_error_log('SC: No static cache due to deferred CSS compilation, ' . $c, null);
             }
 
             $_theme = ($theme === null) ? $GLOBALS['FORUM_DRIVER']->get_theme() : $theme;

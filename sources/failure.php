@@ -269,9 +269,7 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
 
     if ($may_log_error) {
         // Put into error log
-        if (php_function_allowed('error_log')) {
-            cms_error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, null);
-        }
+        cms_error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, null);
 
         // Send error e-mail
         $trace = get_html_trace();
@@ -446,9 +444,7 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
         $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
 
         if ($may_log_error) {
-            if (php_function_allowed('error_log')) {
-                cms_error_log('Composr: ' . $php_error_label, null);
-            }
+            cms_error_log('Composr: ' . $php_error_label, null);
 
             $trace = get_html_trace();
             relay_error_notification($text_eval . '[html]' . $trace->evaluate() . '[/html]');

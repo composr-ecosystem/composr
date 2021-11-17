@@ -1195,17 +1195,6 @@ class Module_admin_version
                 'd_date_and_time' => 'TIME',
             ]);
 
-            $GLOBALS['SITE_DB']->create_table('cpages_fulltext_index', [
-                'i_zone_name' => '*ID_TEXT',
-                'i_page_name' => '*ID_TEXT',
-
-                'i_lang' => '*LANGUAGE_NAME',
-                'i_ngram' => '*INTEGER',
-                'i_ac' => '*INTEGER',
-
-                'i_occurrence_rate' => 'REAL',
-            ]);
-
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_dirs', [
                 'id' => '*AUTO',
                 'op_type' => 'SHORT_TEXT', // create|touch|move|delete

@@ -109,10 +109,8 @@ class Hx_health_check_email extends Hook_health_check_email
 
         if ($error !== null) {
             if (running_script('cron_bridge')) {
-                if (php_function_allowed('error_log')) {
-                    require_code('failure');
-                    cms_error_log('Mailer error: ' . $error, null); // We log this, as Health Check is not going to be able to send an e-mail
-                }
+                require_code('failure');
+                cms_error_log('Mailer error: ' . $error, null); // We log this, as Health Check is not going to be able to send an e-mail
             }
         }
     }

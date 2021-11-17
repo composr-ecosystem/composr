@@ -1036,10 +1036,9 @@ abstract class DatabaseDriver
         require_code('urls');
         $text_eval = is_object($message) ? $message->evaluate() : $message;
         $php_error_label = $text_eval . ' @ ' . get_self_url_easy(true);
-        if (php_function_allowed('error_log')) {
-            require_code('failure');
-            cms_error_log('Database: ' . $php_error_label, null);
-        }
+
+        require_code('failure');
+        cms_error_log('Database: ' . $php_error_label, null);
 
         $restricted = false;
         if (!$GLOBALS['DEV_MODE'] && empty($GLOBALS['IS_ACTUALLY_ADMIN']) && (!running_script('install')) && (!running_script('upgrader'))) {
@@ -1888,10 +1887,8 @@ class DatabaseConnector
 
             push_query_limiting(false);
 
-            if (php_function_allowed('error_log')) {
-                require_code('failure');
-                cms_error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), null);
-            }
+            require_code('failure');
+            cms_error_log('Profiling: Over ' . integer_format(DEV_MODE_QUERY_LIMIT) . ' queries @ ' . get_self_url_easy(true), null);
 
             if ($DEV_MODE) {
                 $QUERY_COUNT = 0;

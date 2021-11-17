@@ -2703,10 +2703,8 @@ function tempcode_error(object $e, string $code)
 
     $error_label = 'Tempcode error - ' . $error_message . ' - ' . $code;
 
-    if (php_function_allowed('error_log')) {
-        require_code('failure');
-        cms_error_log('Composr: ' . $error_label, null);
-    }
+    require_code('failure');
+    cms_error_log('Composr: ' . $error_label, null);
 
     fatal_exit($error_message);
 }
