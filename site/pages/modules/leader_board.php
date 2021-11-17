@@ -106,6 +106,8 @@ class Module_leader_board
         $max = get_param_integer('lb_max', 52);
         $all = get_param_integer('all', 0);
 
+        $list = [];
+
         require_code('leader_board');
         require_code('points');
 

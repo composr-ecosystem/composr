@@ -74,6 +74,8 @@ class Hook_cron_log_purging
 
         $lines = [];
 
+        $time = mixed();
+
         $myfile_charset = null;
         $myfile = cms_fopen_text_read($path, $myfile_charset, true, 'c+b');
         $matches = [];

@@ -25,7 +25,6 @@
  */
 class Hook_addon_registry_leader_board
 {
-
     /**
      * Get a list of file permissions to set.
      *
@@ -290,5 +289,4 @@ class Hook_addon_registry_leader_board
             'SETS' => $out
         ]), null, '', true);
     }
-
 }

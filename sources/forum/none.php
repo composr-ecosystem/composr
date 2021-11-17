@@ -591,7 +591,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function get_previous_members(int $member, int $total = 1) : array
     {
-        return null; // Guest doesn't count
+        return []; // Guest doesn't count
     }
 
     /**
@@ -605,9 +605,9 @@ class Forum_driver_none extends Forum_driver_base
     public function get_next_members(int $member, int $total = 1) : array
     {
         if ($member < 1) {
-            return 1;
+            return [[1]];
         } else {
-            return null;
+            return [];
         }
     }
 

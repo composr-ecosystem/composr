@@ -744,7 +744,7 @@ abstract class Mail_dispatcher_base
 
         // Needs to be marked as queued, as it never sent
         if ((!$worked) && ($queue_id !== null)) {
-            $GLOBALS['SITE_DB']->query_update('logged_mail_messages', array('m_queued' => 1), array('id' => $queue_id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 1], ['id' => $queue_id], '', 1);
         }
 
         if ($worked) {

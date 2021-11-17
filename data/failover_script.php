@@ -93,6 +93,8 @@ function handle_failover_auto_switching(int $iteration = 0)
         @set_time_limit(1000);
     }
 
+    $data = mixed();
+
     // Check URLs
     if (!empty($SITE_INFO['failover_check_urls'])) {
         $context = stream_context_create([

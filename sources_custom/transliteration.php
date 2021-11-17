@@ -23,7 +23,8 @@ function init__transliteration()
     if (!function_exists('transliterator_transliterate')) {
         require_code('Transliterator/Transliterator');
 
-        class BehatTransliterator extends \Behat\Transliterator\Transliterator {
+        class BehatTransliterator extends \Behat\Transliterator\Transliterator
+        {
         }
 
         function transliterator_transliterate($whatever, $text)

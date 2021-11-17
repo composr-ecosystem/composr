@@ -89,14 +89,12 @@ class Stemmer_EN
                     && !self::replace($word, 'bl', 'ble')
                         && !self::replace($word, 'iz', 'ize')
                 ) {
-
                     // Double consonant ending
                     if (self::doubleConsonant($word)
                         && substr($word, -2) != 'll'
                             && substr($word, -2) != 'ss'
                                 && substr($word, -2) != 'zz'
                     ) {
-
                         $word = substr($word, 0, -1);
                     } else {
                         if (self::m($word) == 1 && self::cvc($word)) {
@@ -303,7 +301,6 @@ class Stemmer_EN
                 self::replace($word, 'e', '');
             } else {
                 if (self::m(substr($word, 0, -1)) == 1) {
-
                     if (!self::cvc(substr($word, 0, -1))) {
                         self::replace($word, 'e', '');
                     }
@@ -370,6 +367,8 @@ class Stemmer_EN
         $str = preg_replace("#^$c+#", '', $str);
         $str = preg_replace("#$v+$#", '', $str);
 
+        $matches = [];
+
         preg_match_all("#($v+$c+)#", $str, $matches);
 
         return count($matches[1]);
@@ -386,6 +385,7 @@ class Stemmer_EN
     {
         $c = self::$regex_consonant;
 
+        $matches = [];
         return preg_match("#$c{2}$#", $str, $matches) && $matches[0][0] == $matches[0][1];
     }
 
@@ -399,6 +399,8 @@ class Stemmer_EN
     {
         $c = self::$regex_consonant;
         $v = self::$regex_vowel;
+
+        $matches = [];
 
         return preg_match("#($c$v$c)$#", $str, $matches)
                && strlen($matches[1]) == 3

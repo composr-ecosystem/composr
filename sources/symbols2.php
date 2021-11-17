@@ -2597,7 +2597,7 @@ function ecv2_THEME_DARK(string $lang, array $escaped, array $param) : string
  */
 function ecv2_KEEP_POST(string $lang, array $escaped, array $param) : string
 {
-    $value = build_keep_post_fields($param);
+    $value = static_evaluate_tempcode(build_keep_post_fields($param));
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
     }

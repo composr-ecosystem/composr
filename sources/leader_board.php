@@ -159,7 +159,6 @@ function calculate_leader_board(array $row, ?int $forced_time = null, ?int $forc
                 array_pop($points);
             }
         }
-
     } while (!empty($rows));
 
     // Construct the leader-board results
