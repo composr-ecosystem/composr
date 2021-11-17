@@ -1328,9 +1328,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
         if ((!isset($LOCAL_VARIABLES[$identifier])) && !((is_array($identifier) && (in_array($identifier[0], ['CALL_METHOD']))))) {
             // We skip this check if the "variable" is coming from a function/method
             // (in which case we have a function/method call rather than a variable)
-            if (!empty($GLOBALS['FLAG__SOMEWHAT_PEDANTIC'])) {
-                log_warning('Variable \'' . $identifier . '\' referenced before initialised', $variable[3]);
-            }
+            log_warning('Variable \'' . $identifier . '\' referenced before initialised', $variable[3]);
         }
 
         // Add to reference count if: this specifically is a reference, or it's complex therefore the base is explicitly a reference, or we are forced to add it because it is yet unseen

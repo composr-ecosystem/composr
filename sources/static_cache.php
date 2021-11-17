@@ -227,6 +227,8 @@ function static_cache(int $mode)
     if (function_exists('is_mobile')) {
         $is_mobile = is_mobile();
     } else {
+        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+
         // The set of browsers
         $mobile_agents = [
             // Implication by technology claims

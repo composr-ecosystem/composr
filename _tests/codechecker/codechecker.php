@@ -238,10 +238,10 @@ function check_file($to_use, $verbose = false, $very_verbose = false, $i = null,
         if (substr($key, 0, 6) == 'FLAG__') {
             if (strpos($TEXT, '/*CQC: ' . $key . '*/') !== false) {
                 $backed_up_flags[$key] = $GLOBALS[$key];
-                $GLOBALS['FLAG__' . $key] = true;
+                $GLOBALS[$key] = true;
             } elseif (strpos($TEXT, '/*CQC: !' . $key . '*/') !== false) {
                 $backed_up_flags[$key] = $GLOBALS[$key];
-                $GLOBALS['FLAG__' . $key] = false;
+                $GLOBALS[$key] = false;
             }
         }
     }

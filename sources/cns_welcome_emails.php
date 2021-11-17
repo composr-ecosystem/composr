@@ -62,7 +62,7 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
         $email_address = $member['email'];
         $lang = $member['language'];
 
-        $sendid = 'n' . strval($member['id']);
+        $send_id = 'n' . strval($member['id']);
         require_code('crypt');
         $hash = ratchet_hash($member['the_password'], 'xunsub');
     } else {
@@ -72,7 +72,7 @@ function cns_prepare_welcome_email(array $mail, ?array $member = null) : array
         $email_address = $member['m_email_address'];
         $lang = get_lang($member['id']);
 
-        $sendid = 'w' . strval($member['id']);
+        $send_id = 'w' . strval($member['id']);
         $hash = '';
     }
 

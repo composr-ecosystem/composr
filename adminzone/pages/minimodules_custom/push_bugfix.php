@@ -659,6 +659,8 @@ function push_bugfix_hotfix()
 
     $fixed_files = $_POST['fixed_files'];
 
+    $done = [];
+
     // A TAR of fixed files is uploaded to the tracker issue (correct relative file paths intact)
     $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
     if ($file_id !== null) {

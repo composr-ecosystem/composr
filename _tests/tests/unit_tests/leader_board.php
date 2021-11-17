@@ -18,7 +18,6 @@
  */
 class leader_board_test_set extends cms_test_case
 {
-
     protected $leaderboards;
 
     public function setUp()
@@ -327,7 +326,7 @@ class leader_board_test_set extends cms_test_case
                 $this->assertTrue(false, 'one_member: The leader-board did not return a result set when we expected one in testLeaderBoardOneMember().');
             }
             $count = count($results);
-            $this->assertTrue(($count == 1), 'one_member: The leader-board returned ' . $count . ' members when we expected 1. testLeaderBoardOneMember().');
+            $this->assertTrue(($count == 1), 'one_member: The leader-board returned ' . strval($count) . ' members when we expected 1. testLeaderBoardOneMember().');
         }
     }
 
@@ -431,7 +430,7 @@ class leader_board_test_set extends cms_test_case
                         $passed = false;
                     }
                 }
-                $this->assertTrue($passed, 'single_usergroup: We expected all members of the result set to be in usergroup ID ' . $group . ', but that was not the case, in testLeaderBoardUsergroup() test 1.');
+                $this->assertTrue($passed, 'single_usergroup: We expected all members of the result set to be in usergroup ID ' . strval($group) . ', but that was not the case, in testLeaderBoardUsergroup() test 1.');
             }
         }
 
@@ -512,7 +511,7 @@ class leader_board_test_set extends cms_test_case
                         break;
                     }
                 }
-                $this->assertTrue($found, 'holders: Could not find the test member ' . $member . ' in the leader-board result set, in testLeaderBoardHoldersEarners() test 1.');
+                $this->assertTrue($found, 'holders: Could not find the test member ' . strval($member) . ' in the leader-board result set, in testLeaderBoardHoldersEarners() test 1.');
             }
         }
 
@@ -535,7 +534,7 @@ class leader_board_test_set extends cms_test_case
                         break;
                     }
                 }
-                $this->assertTrue($found, 'earners: Could not find the test member ' . $member . ' in the leader-board result set, in testLeaderBoardHoldersEarners() test 2.');
+                $this->assertTrue($found, 'earners: Could not find the test member ' . strval($member) . ' in the leader-board result set, in testLeaderBoardHoldersEarners() test 2.');
             }
         }
 

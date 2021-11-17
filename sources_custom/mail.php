@@ -99,27 +99,27 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
 
             $encryption = get_value('mail_encryption');
             if ($encryption === null) {
-                if ($port == 25) {
+                if ($this->smtp_sockets_port == 25) {
                     $encryption = 'tcp'; // No encryption
-                } elseif ($port == 465) {
+                } elseif ($this->smtp_sockets_port == 465) {
                     $encryption = 'ssl';
-                } elseif ($port == 587)  {
+                } elseif ($this->smtp_sockets_port == 587)  {
                     $encryption = 'tls';
                 }
             }
 
-            $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $host) === '1'));
+            $disabled_ssl_verify = ((function_exists('get_value')) && (get_value('disable_ssl_for__' . $this->smtp_sockets_host) === '1'));
 
             $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';
-            $ssl_options = array(
+            $ssl_options = [
                 'verify_peer' => !$disabled_ssl_verify,
                 'verify_peer_name' => !$disabled_ssl_verify,
                 'cafile' => $crt_path,
                 'SNI_enabled' => true,
-            );
+            ];
 
             $transport->setEncryption($encryption);
-            $transport->setStreamOptions(array('ssl' => $ssl_options));
+            $transport->setStreamOptions(['ssl' => $ssl_options]);
 
             $mailer = new Swift_Mailer($transport);
 

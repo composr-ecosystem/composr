@@ -667,6 +667,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
                 }
             }
         }
+        $save_bytes = _helper_needs_to_save_bytes($table_name, $fields);
         $queries = $db_static->create_table($db->get_table_prefix() . $table_name, $fields, $db->connection_write, $table_name, $save_bytes);
         foreach ($queries as $i => $sql) {
             if ($i != 0) {
@@ -755,8 +756,8 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
                     }
                 }
 
-                if ((!$this->static_ob->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
-                    $sql = 'INSERT INTO ' . $conn->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES ' . $values_buildup . '(' . $all_values[0] . ')';
+                if ((!$db->static_ob->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
+                    $sql = 'INSERT INTO ' . $db->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES ' . $values_buildup . '(' . $all_values[0] . ')';
                     fwrite($out_file, $sql . ";\n");
 
                     $values_buildup = '';

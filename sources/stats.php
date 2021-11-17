@@ -1642,7 +1642,7 @@ function send_kpi_notifications()
     if (!empty($kpis)) {
         $kpis_for_tpl = [];
         foreach ($kpis as $kpi) {
-            list($kpi_row,,,,,, $edit_url,, $target, $current, $hits_target) = $kpi;
+            list($kpi_row, , , , , , $edit_url, , $target, $current, $hits_target) = $kpi;
             $graph_name = $kpi_row['k_graph_name'];
             $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
             $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);

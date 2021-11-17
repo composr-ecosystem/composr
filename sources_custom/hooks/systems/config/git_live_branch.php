@@ -29,7 +29,7 @@ class Hook_config_git_live_branch
             return null;
         }
 
-        return array(
+        return [
             'human_name' => 'GIT_LIVE_BRANCH',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -41,7 +41,7 @@ class Hook_config_git_live_branch
             'required' => true,
             'public' => false,
             'addon' => 'git_status',
-        );
+        ];
     }
 
     /**

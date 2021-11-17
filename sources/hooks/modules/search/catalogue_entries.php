@@ -320,7 +320,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 // ^ Nothing done with trans_fields and nontrans_fields
 
                 if ($remapped_orderer == 'b_cv_value') {
-                    $remapped_orderer = $title_field;
+                    $remapped_orderer = 'f0.cv_value';
                 }
             }
 
