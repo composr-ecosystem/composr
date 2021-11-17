@@ -172,7 +172,6 @@ function rename_zone(string $zone, string $new_zone, bool $dont_bother_with_main
         $new_path = get_file_base() . '/' . $new_zone . '/pages/' . $type . '/' . $page;
         if ((cms_is_writable($path)) && (cms_is_writable($new_path))) {
             rename($path, $new_path);
-            sync_file_move($path, $new_path);
         }
     }
 }

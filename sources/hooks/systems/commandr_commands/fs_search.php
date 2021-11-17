@@ -93,7 +93,6 @@ class Hook_commandr_command_fs_search
                     tar_add_file($out_file, $path, $full_path, fileperms($full_path), filemtime($full_path), true, false, true);
                 }
                 tar_close($out_file);
-                sync_file($out_file_path);
                 fix_permissions($out_file_path);
 
                 $out .= '<br />' . do_lang('MATCHES_TAR_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));

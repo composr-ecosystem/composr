@@ -436,7 +436,6 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
         $c_success = @copy(get_file_base() . '/themes/' . filter_naughty($source_theme) . '/css/' . $file, $save_path . '.editfrom');
         if ($c_success !== false) {
             fix_permissions($save_path . '.editfrom');
-            sync_file($save_path . '.editfrom');
         }
 
         $files_created[] = $_save_path;

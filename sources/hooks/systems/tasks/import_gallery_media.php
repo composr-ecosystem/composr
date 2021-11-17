@@ -67,14 +67,12 @@ class Hook_task_import_gallery_media
                     intelligent_write_error($new_path);
                 }
                 fix_permissions($new_path);
-                sync_file($new_path);
 
                 // Post-process
                 require_code('uploads');
                 $test = handle_upload_post_processing(is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous')) ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_VIDEO, $new_path, 'uploads/galleries', $filename, OBFUSCATE_NEVER);
                 if ($test !== null) {
                     unlink($new_path);
-                    sync_file($new_path);
                     $new_url = $test;
                 }
 
@@ -87,8 +85,6 @@ class Hook_task_import_gallery_media
             } else {
                 @unlink($path);
             }
-
-            sync_file($path);
         }
 
         task_log($this, 'Number of files successfully imported into gallery: ' . integer_format(count($media_imported)));

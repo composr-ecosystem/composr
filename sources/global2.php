@@ -2692,38 +2692,6 @@ function unixify_line_format(string $in, ?string $desired_charset = null) : stri
 }
 
 /**
- * Provides an override point for file synchronisation between mirrored servers. Called after any file creation, deletion or edit.
- *
- * @param  PATH $filename File/directory name to sync on (full path)
- */
-function sync_file(string $filename)
-{
-    global $FILE_BASE, $_MODIFIED_FILES;
-    static $has_sync_script = null;
-    if ($has_sync_script === null) {
-        $has_sync_script = is_file($FILE_BASE . '/data_custom/sync_script.php');
-    }
-    if ((!$has_sync_script) && (!isset($_MODIFIED_FILES))) {
-        return;
-    }
-
-    require_code('files2');
-    _sync_file($filename);
-}
-
-/**
- * Provides an override point for file-move synchronisation between mirrored servers. Called after any rename or move action.
- *
- * @param  PATH $old File/directory name to move from (may be full or relative path)
- * @param  PATH $new File/directory name to move to (may be full or relative path)
- */
-function sync_file_move(string $old, string $new)
-{
-    require_code('files2');
-    _sync_file_move($old, $new);
-}
-
-/**
  * Performs lots of magic to make sure data encodings are converted correctly. Input, and output too (as often stores internally in UTF or performs automatic dynamic conversions from internal to external charsets).
  *
  * @param  boolean $known_utf8 Whether we know we are working in utf-8. This is the case for AJAX calls.

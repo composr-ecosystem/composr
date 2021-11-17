@@ -395,7 +395,6 @@ class Module_admin_sitemap
                         $old_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page);
                         $new_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page);
                         rename($old_path, $new_path);
-                        sync_file_move($old_path, $new_path);
                     }
                 }
 
@@ -410,7 +409,6 @@ class Module_admin_sitemap
                         $old_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page);
                         $new_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page);
                         rename($old_path, $new_path);
-                        sync_file_move($old_path, $new_path);
                     }
                 }
 

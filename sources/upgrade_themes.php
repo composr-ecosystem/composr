@@ -320,7 +320,6 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
                 $revision_file = $css_dir . $css_file . '.' . strval(time());
                 if (@copy($css_dir . $css_file, $revision_file) !== false) {
                     fix_permissions($revision_file);
-                    sync_file($revision_file);
                 }
 
                 // Save

@@ -865,7 +865,6 @@ function tidy_theme_img_code(?string $new, string $old, string $table, string $f
         $count = $db->query_select_value($table, 'COUNT(*)', [$field => $old]);
         if ($count == 0) {
             @unlink(get_custom_file_base() . '/' . urldecode($url));
-            sync_file(get_custom_file_base() . '/' . urldecode($url));
             $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $old]);
         }
     }

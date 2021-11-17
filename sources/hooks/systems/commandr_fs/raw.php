@@ -78,7 +78,6 @@ class Hook_commandr_fs_raw
         if ((is_dir($path)) && (!file_exists($path . '/' . $new_dir_name)) && (cms_is_writable($path))) {
             $ret = @mkdir($path . '/' . $new_dir_name, 0777) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path . '/' . $new_dir_name), escape_html($path)), false, true);
             fix_permissions($path . '/' . $new_dir_name);
-            sync_file($path . '/' . $new_dir_name);
             return $ret;
         } else {
             return false; // Directory exists
@@ -133,7 +132,6 @@ class Hook_commandr_fs_raw
 
         if ((is_dir($path)) && (file_exists($path . '/' . $file_name)) && (cms_is_writable($path . '/' . $file_name))) {
             $ret = @unlink($path . '/' . $file_name) or intelligent_write_error($path . '/' . $file_name);
-            sync_file($path . '/' . $file_name);
             return $ret;
         } else {
             return false; // File doesn't exist

@@ -635,36 +635,6 @@ You'll need to disable the Composr "Reveal usage figures" configuration option, 
 
 Alternatively, you could do a similar thing using rewrite rules in the [tt].htaccess[/tt]/[tt]web.config[/tt], but this would add additional latency.
 
-[title="5"]Synching local file changes[/title]
-
-[i]This section is mainly applicable to programmers[/i]
-
-In order to implement file change synchronisation, you need to create a simple PHP file in [tt]data_custom/sync_script.php[/tt] that defines these functions:
-[code="PHP"]
-/**
- * Provides a hook for file synchronisation between mirrored servers. Called after any file creation, deletion or edit.
- *
- * @param  PATH $filename File/directory name to sync on (may be full or relative path)
- */
-function master__sync_file($filename)
-{
-   // Implementation details up to the network administrators; might work via NFS, SCP, etc
-}
-
-/**
- * Provides a hook for file-move synchronisation between mirrored servers. Called after any rename or move action.
- *
- * @param  PATH $old File/directory name to move from (may be full or relative path)
- * @param  PATH $new File/directory name to move to (may be full or relative path)
- */
-function master__sync_file_move($old, $new)
-{
-   // Implementation details up to the network administrators; might work via NFS, SCP, etc
-}
-[/code]
-
-You may want to code up these functions so that log files are not synched. By keeping log files separate on each machine. Or you might want to dissect them and pass them onto something like a network-based syslog.
-
 [title="5"]Upload syndication[/title]
 
 [i]This section is mainly applicable to programmers, although specific service implementations may be available within addons[/i]

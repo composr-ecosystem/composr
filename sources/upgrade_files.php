@@ -308,7 +308,6 @@ function _upgrader_file_upgrade_screen() : string
             } else {
                 unlink(get_file_base() . '/imports/addons/' . $found . '.new.tar');
             }
-            sync_file(get_file_base() . '/imports/addons/' . $found . '.tar');
         }
     }
 

@@ -695,7 +695,6 @@ class __filtering_test_set extends cms_test_case
 
         @unlink(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/temp_test.php');
         fix_permissions(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/temp_test.php');
-        sync_file(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/temp_test.php');
 
         parent::tearDown();
     }

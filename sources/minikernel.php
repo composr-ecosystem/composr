@@ -417,15 +417,6 @@ function tacit_https()
 }
 
 /**
- * Provides a hook for file synchronisation between mirrored servers. Called after any file creation, deletion or edit.
- *
- * @param  PATH $filename File/directory name to sync on (full path)
- */
-function sync_file($filename)
-{
-}
-
-/**
  * Find whether a particular PHP function is blocked.
  *
  * @param  string $function Function name

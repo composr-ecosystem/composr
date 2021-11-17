@@ -243,7 +243,6 @@ function _reorganise_content_row_upload(array $row, string $content_type, string
             fix_permissions($_compounded_new_disk_path);
             @copy(get_custom_file_base() . '/uploads/index.html', $_compounded_new_disk_path . '/index.html');
             fix_permissions($_compounded_new_disk_path . '/index.html');
-            sync_file($_compounded_new_disk_path . '/index.html');
         } else {
             if (running_script('execute_temp')) {
                 $REORGANISE_UPLOADS_ERRORMSGS[] = 'INFO: Directory already exists, ' . $_compounded_new_disk_path;

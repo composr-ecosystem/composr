@@ -880,7 +880,6 @@ function create_hotfix_tar($tracker_id, $files)
     }
     tar_close($tar_file);
 
-    sync_file($tar_path);
     fix_permissions($tar_path);
 
     return $tar_path;

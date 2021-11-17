@@ -1164,7 +1164,6 @@ class Module_cms_catalogues extends Standard_crud_module
         require_code('files_spreadsheets_read');
         if (!is_spreadsheet_readable($_FILES['file_anytype']['name'])) {
             unlink($target_path);
-            sync_file($target_path);
             warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html(get_file_extension($_FILES['file_anytype']['name']))));
         }
 

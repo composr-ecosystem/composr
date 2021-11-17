@@ -213,7 +213,6 @@ function handle_images_cleanup_pipeline(string $path, ?string $filename = null, 
             @rename($tmp_path, $path) or intelligent_write_error($path);
 
             if ($test) {
-                sync_file($path);
                 fix_permissions($path);
             }
         }
@@ -696,7 +695,6 @@ function png_compress(string $path, bool $lossy = false)
     }
 
     fix_permissions($path);
-    sync_file($path);
 
     imagedestroy($img);
 }

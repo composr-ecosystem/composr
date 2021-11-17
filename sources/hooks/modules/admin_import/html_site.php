@@ -575,7 +575,6 @@ class Hook_import_html_site
                         }*/
 
                         fix_permissions($target);
-                        sync_file($target);
                     }
 
                     $decoded_url = 'uploads/website_specific/' . $decoded_url;

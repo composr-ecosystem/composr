@@ -66,12 +66,10 @@ abstract class CSSCleanup
                     $revision_path = $path . '.' . strval(time());
                     copy($old_path, $revision_path);
                     fix_permissions($revision_path);
-                    sync_file($revision_path);
                 } else {
                     $editfrom_path = $path . '.editfrom';
                     copy($old_path, $editfrom_path);
                     fix_permissions($editfrom_path);
-                    sync_file($editfrom_path);
                 }
 
                 cms_file_put_contents_safe($path, $c, FILE_WRITE_BOM);

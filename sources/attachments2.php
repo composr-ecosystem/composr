@@ -211,13 +211,11 @@ function _handle_data_url_attachments(string &$comcode, string $type, string $id
                     handle_images_cleanup_pipeline($new_path, null, IMG_RECOMPRESS_LOSSLESS, null, null, true/*Code to strip GPS*/);
 
                     fix_permissions($new_path);
-                    sync_file($new_path);
 
                     require_code('uploads');
                     $test = handle_upload_post_processing(CMS_UPLOAD_IMAGE, $new_path, 'uploads/attachments', $new_filename, OBFUSCATE_NEVER);
                     if ($test !== null) {
                         unlink($new_path);
-                        sync_file($new_path);
 
                         $new_url = $test;
                     }

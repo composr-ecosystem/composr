@@ -819,7 +819,6 @@ function cms_imagesave($image, string $path, ?string $ext = null, bool $lossy = 
     }
 
     if ($test) {
-        sync_file($path);
         fix_permissions($path);
     }
 

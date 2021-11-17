@@ -68,8 +68,6 @@ function load_php_metadetails()
         'file_array_get' => true,
         'file_array_count' => true,
         'file_array_get_at' => true,
-        'master__sync_file' => true,
-        'master__sync_file_move' => true,
         '__construct' => true,
     ];
 

@@ -161,7 +161,6 @@ class specsettings_documented_test_set extends cms_test_case
         $this->assertTrue(is_string(http_get_contents(get_base_url() . '/index.php')));
         file_put_contents(get_file_base() . '/_config.php', $old_config);
         fix_permissions(get_file_base() . '/_config.php');
-        sync_file(get_file_base() . '/_config.php');
     }
 
     public function testValueOptions()

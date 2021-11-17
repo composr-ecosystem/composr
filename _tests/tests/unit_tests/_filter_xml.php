@@ -740,7 +740,6 @@ class _filter_xml_test_set extends cms_test_case
     public function tearDown()
     {
         @unlink(get_custom_file_base() . '/data_custom/xml_config/fields.xml');
-        sync_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml');
 
         parent::tearDown();
     }

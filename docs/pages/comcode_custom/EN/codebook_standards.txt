@@ -781,13 +781,6 @@ Use the [tt]fix_permissions[/tt] function after making a new file
 | The [tt]cms_file_put_contents_safe[/tt] function has a flag to do this automatically.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Run the [tt]sync_file[/tt] function after making any file changes
-| Scalability
-| Product development only
-| ocProducts PHP version
-| The [tt]cms_file_put_contents_safe[/tt] function has a flag to do this automatically.
-|-
-| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Be clever about text line-endings[/color]
 | Portability
 | Product development only

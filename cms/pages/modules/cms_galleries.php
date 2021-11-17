@@ -610,7 +610,6 @@ class Module_cms_galleries extends Standard_crud_module
 
                     $path = get_custom_file_base() . '/uploads/galleries/' . filter_naughty($file);
                     @unlink($path) or intelligent_write_error($path);
-                    sync_file($path);
                 }
             }
 
@@ -657,7 +656,6 @@ class Module_cms_galleries extends Standard_crud_module
                         intelligent_write_error($target_path);
                     }
                     fix_permissions($target_path);
-                    sync_file_move($current_url, $target_path);
 
                     $files[$target_path] = $filename;
                 } else {

@@ -129,7 +129,6 @@ function publish_addon($addon_name, $version_branch, $cat_id)
         warn_exit('Missing: ' . $from);
     }
     fix_permissions($to);
-    sync_file($to);
 
     $addon_url = 'uploads/downloads/' . urlencode($file);
 
@@ -180,7 +179,6 @@ function publish_theme($file, $version_branch, $cat_id)
         warn_exit('Missing: ' . $from);
     }
     fix_permissions($to);
-    sync_file($to);
 
     $addon_url = 'uploads/downloads/' . urlencode($new_file);
 

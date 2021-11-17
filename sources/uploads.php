@@ -302,7 +302,6 @@ function get_temporary_upload_path(string $attach_name, bool $prepend_session_id
             warn_exit(do_lang_tempcode('FILE_MOVE_ERROR', escape_html($_FILES[$attach_name]['name']), escape_html($target_path)));
         }
         fix_permissions($target_path);
-        sync_file($target_path);
     } else {
         if (!array_key_exists($attach_name, $_FILES)) {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
@@ -566,7 +565,6 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
                 }
             }
             fix_permissions($place);
-            sync_file($place);
 
             $url[0] = $upload_folder . '/' . $filename;
             if (strpos($http_result->filename, '/') === false) {
@@ -911,7 +909,6 @@ function _get_upload_url(int $member_id, string $attach_name, string $upload_fol
         }
     }
     fix_permissions($place);
-    sync_file($place);
 
     $url = [];
     $url[0] = $upload_folder . '/' . rawurlencode($filename);

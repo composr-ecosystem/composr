@@ -195,7 +195,6 @@ function rebuild_sitemap_set(int $set_number, int $last_time, $callback = null)
         make_missing_directory(dirname($sitemaps_out_path));
     }
     rename($sitemaps_out_temppath, $sitemaps_out_path);
-    sync_file($sitemaps_out_path);
     fix_permissions($sitemaps_out_path);
 
     // Compress
@@ -261,7 +260,6 @@ function rebuild_sitemap_index()
         make_missing_directory(dirname($sitemaps_out_path));
     }
     rename($sitemaps_out_temppath, $sitemaps_out_path);
-    sync_file($sitemaps_out_path);
     fix_permissions($sitemaps_out_path);
 }
 

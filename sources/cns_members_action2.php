@@ -1327,12 +1327,10 @@ function cns_delete_member(int $member_id)
     $old = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_avatar_url');
     if ((url_is_local($old)) && ((substr($old, 0, 20) == 'uploads/cns_avatars/') || (substr($old, 0, 16) == 'uploads/avatars/'))) {
         @unlink(get_custom_file_base() . '/' . rawurldecode($old));
-        sync_file(rawurldecode($old));
     }
     $old = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_photo_url');
     if ((url_is_local($old)) && ((substr($old, 0, 19) == 'uploads/cns_photos/') || (substr($old, 0, 15) == 'uploads/photos/'))) {
         @unlink(get_custom_file_base() . '/' . rawurldecode($old));
-        sync_file(rawurldecode($old));
     }
 
     if (addon_installed('catalogues')) {
@@ -1943,7 +1941,6 @@ function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
                 if ((!is_image($avatar_url, IMAGE_CRITERIA_GD_WRITE)) || (!url_is_local($avatar_url))) {
                     if ((url_is_local($avatar_url)) && (substr($avatar_url, 0, 20) == 'uploads/cns_avatars/')) {
                         unlink(get_custom_file_base() . '/' . rawurldecode($avatar_url));
-                        sync_file(get_custom_file_base() . '/' . rawurldecode($avatar_url));
                     }
                     warn_exit(do_lang_tempcode('IMAGE_BAD_DIMENSIONS', strval($width) . 'x' . strval($height), strval($sx) . 'x' . strval($sy)));
                 }
@@ -1963,7 +1960,6 @@ function cns_member_choose_avatar(string $avatar_url, ?int $member_id = null)
     // Cleanup old avatar
     if ((url_is_local($old)) && ((substr($old, 0, 20) == 'uploads/cns_avatars/') || (substr($old, 0, 16) == 'uploads/avatars/')) && ($old != $avatar_url)) {
         @unlink(get_custom_file_base() . '/' . rawurldecode($old));
-        sync_file(rawurldecode($old));
     }
 
     $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url], ['id' => $member_id], '', 1);
@@ -2038,7 +2034,6 @@ function cns_member_choose_photo_concrete(string $url, ?int $member_id = null)
         return;
     }
     if ((url_is_local($old)) && ((substr($old, 0, 19) == 'uploads/cns_photos/') || (substr($old, 0, 15) == 'uploads/photos/'))) {
-        sync_file(rawurldecode($old));
         @unlink(get_custom_file_base() . '/' . rawurldecode($old));
     }
 
@@ -2060,7 +2055,6 @@ function cns_member_choose_photo_concrete(string $url, ?int $member_id = null)
             if (!file_exists($new_file_path)) {
                 copy($file_path, $new_file_path);
                 fix_permissions($new_file_path);
-                sync_file($new_file_path);
             }
             $avatar_url = str_replace('/cns_photos/', '/cns_avatars/', $avatar_url);
         }

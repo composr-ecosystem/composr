@@ -425,9 +425,6 @@ function static_cache(int $mode)
             exit();
         } else {
             @unlink($fast_cache_path);
-            if (function_exists('sync_file')) {
-                sync_file($fast_cache_path);
-            }
         }
     }
 

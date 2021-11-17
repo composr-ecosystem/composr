@@ -1350,7 +1350,6 @@ class Module_admin_setupwizard
             if (file_exists($full_path)) {
                 @copy($full_path, $full_path . '.' . strval(time()));
                 fix_permissions($full_path . '.' . strval(time()));
-                sync_file($full_path . '.' . strval(time()));
             }
             $rf = $this->get_rules_file(post_param_string('rules'));
             cms_file_put_contents_safe($full_path, $rf, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
@@ -1371,7 +1370,6 @@ class Module_admin_setupwizard
                 if (file_exists($full_path)) {
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
-                    sync_file($full_path . '.' . strval(time()));
                 }
                 cms_file_put_contents_safe($full_path, $zone_pages[DEFAULT_ZONE_PAGE_NAME], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
@@ -1380,7 +1378,6 @@ class Module_admin_setupwizard
                 if (file_exists($full_path)) {
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
-                    sync_file($full_path . '.' . strval(time()));
                 }
                 cms_file_put_contents_safe($full_path, $zone_pages['left'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
@@ -1389,7 +1386,6 @@ class Module_admin_setupwizard
                 if (file_exists($full_path)) {
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
-                    sync_file($full_path . '.' . strval(time()));
                 }
                 cms_file_put_contents_safe($full_path, $zone_pages['right'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
             }

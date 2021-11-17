@@ -751,7 +751,6 @@ class Hook_import_ipb2
                         $filename = rawurldecode($row2['photo_location']);
                         if ((file_exists(get_custom_file_base() . '/uploads/cns_photos/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_custom_file_base() . '/uploads/cns_photos/' . $filename))) {
                             $photo_url = 'uploads/cns_photos/' . $filename;
-                            sync_file($photo_url);
                         } else {
                             if ($STRICT_FILE) {
                                 warn_exit(do_lang_tempcode('MISSING_PHOTO', escape_html($filename)));
@@ -782,7 +781,6 @@ class Hook_import_ipb2
                             $filename = substr($row['avatar'], 7);
                             if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
                                 $avatar_url = 'uploads/cns_avatars/' . $filename;
-                                sync_file($avatar_url);
                             } else {
                                 if ($STRICT_FILE) {
                                     warn_exit(do_lang_tempcode('MISSING_AVATAR', escape_html($filename)));
@@ -793,14 +791,12 @@ class Hook_import_ipb2
                             $filename = rawurldecode($row['avatar']);
                             if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
                                 $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
-                                sync_file($avatar_url);
                             } else {
                                 // Try as a pack avatar then
                                 $filename = rawurldecode($row['avatar']);
                                 $striped_filename = str_replace('/', '_', $filename);
                                 if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename)) || (@rename($file_base . '/style_avatars/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename))) {
                                     $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
-                                    sync_file($avatar_url);
                                 } else {
                                     if ($STRICT_FILE) {
                                         warn_exit(do_lang_tempcode('MISSING_AVATAR', escape_html($filename)));
@@ -1078,7 +1074,6 @@ class Hook_import_ipb2
                     $target_path = get_custom_file_base() . '/uploads/attachments/' . $attachment['attach_location'];
                     if ((file_exists(get_custom_file_base() . '/uploads/attachments/' . $attachment['attach_location'])) || (@rename($file_base . '/uploads/' . $attachment['attach_location'], $target_path))) {
                         $url = 'uploads/attachments/' . $attachment['attach_location'];
-                        sync_file($url);
                         $thumb_url = '';
                         $a_id[$i] = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $attachment['attach_filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $attachment['attach_file'], 'a_num_downloads' => $attachment['attach_hits'], 'a_last_downloaded_time' => null, 'a_add_time' => $post_date, 'a_description' => ''], true);
                         $has_attachment = true;

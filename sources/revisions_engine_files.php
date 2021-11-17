@@ -122,7 +122,6 @@ class RevisionEngineFiles
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         unlink($revision_path);
-        sync_file($revision_path);
     }
 
     /**

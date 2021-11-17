@@ -244,7 +244,6 @@ class Hook_fields_picture_multi
                     $unlink = (post_param_integer('field_' . strval($id) . '_' . strval($i + 1) . '_unlink', 0) == 1);
                     if ($unlink) {
                         @unlink(get_custom_file_base() . '/' . rawurldecode($_value));
-                        sync_file(rawurldecode($_value));
                     } else {
                         if ($value != '') {
                             $value .= "\n";
@@ -290,7 +289,6 @@ class Hook_fields_picture_multi
             $files = explode("\n", $value['cv_value']);
             foreach ($files as $path) {
                 @unlink(get_custom_file_base() . '/' . rawurldecode($path));
-                sync_file(rawurldecode($path));
             }
         }
     }

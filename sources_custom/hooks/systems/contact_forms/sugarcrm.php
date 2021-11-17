@@ -45,7 +45,6 @@ class Hook_contact_forms_sugarcrm
                 $path_new = get_custom_file_base() . '/temp/mail_' . uniqid('', true) . '.txt';
                 copy($path, $path_new);
                 fix_permissions($path_new);
-                sync_file($path_new);
 
                 $_attachments[$path_new] = $filename;
             } else {

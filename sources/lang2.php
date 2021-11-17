@@ -231,7 +231,6 @@ function inline_language_editing(string &$codename, ?string $lang)
     }
     flock($myfile, LOCK_UN);
     fclose($myfile);
-    sync_file($save_path);
     fix_permissions($save_path);
 
     // Fake-load the string

@@ -1090,7 +1090,6 @@ class Module_filedump
                                 warn_exit(do_lang_tempcode('OVERWRITE_ERROR'));
                             }
                             rename($old_filepath, $new_filepath);
-                            sync_file_move($old_filepath, $new_filepath);
                             $GLOBALS['SITE_DB']->query_update('filedump', ['name' => cms_mb_substr($new_filename, 0, 80)], ['name' => cms_mb_substr($old_filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)], '', 1);
 
                             foreach ($files as $i => $_file) {
@@ -1203,7 +1202,6 @@ class Module_filedump
 
                             log_it('FILEDUMP_DELETE_FILE', $file, $subpath);
                         }
-                        sync_file($path);
 
                         break;
 
@@ -1213,7 +1211,6 @@ class Module_filedump
                             warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($path_target)));
                         }
                         @rename($path, $path_target) or intelligent_write_error($path);
-                        sync_file_move($path, $path_target);
 
                         $test = $GLOBALS['SITE_DB']->query_update('filedump', ['subpath' => cms_mb_substr($target, 0, 80)], $where, '', 1);
 
@@ -1444,7 +1441,6 @@ class Module_filedump
             if (!$test) {
                 return do_lang_tempcode('FILE_MOVE_ERROR', escape_html($final_filename), escape_html('temp'));
             }
-            sync_file_move($sessioned_path, $nonsessioned_path);
 
             $filedump_error_msg = add_filedump_file($subpath, $final_filename, $nonsessioned_path, $description, true, true, $specified_action);
 

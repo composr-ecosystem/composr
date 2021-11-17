@@ -197,7 +197,6 @@ class Hook_fields_upload
 
             if (($old_value !== null) && ($old_value['cv_value'] != '') && (($value != '') || (post_param_integer('custom_' . strval($field['id']) . '_value_unlink', 0) == 1))) {
                 @unlink(get_custom_file_base() . '/' . rawurldecode($old_value['cv_value']));
-                sync_file(rawurldecode($old_value['cv_value']));
             }
         } else {
             $value = STRING_MAGIC_NULL;
@@ -216,7 +215,6 @@ class Hook_fields_upload
         if ($value['cv_value'] != '') {
             $path = preg_replace('#::.*$#', '', $value['cv_value']);
             @unlink(get_custom_file_base() . '/' . rawurldecode($path));
-            sync_file(rawurldecode($path));
         }
     }
 }

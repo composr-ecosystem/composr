@@ -297,9 +297,6 @@ function cms_file_put_contents_safe(string $path, string $contents, int $flags =
     if (($flags & FILE_WRITE_FIX_PERMISSIONS) != 0) {
         fix_permissions($path);
     }
-    if (($flags & FILE_WRITE_SYNC_FILE) != 0) {
-        sync_file($path);
-    }
 
     return true;
 }

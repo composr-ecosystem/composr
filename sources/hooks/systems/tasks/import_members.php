@@ -474,7 +474,6 @@ class Hook_task_import_members
 
         if ($done == 0) {
             @unlink($path);
-            sync_file($path);
             return [null, do_lang_tempcode('NO_DATA_IMPORTED')];
         }
 
@@ -486,7 +485,6 @@ class Hook_task_import_members
         delete_value('cns_newest_member_username');
 
         @unlink($path);
-        sync_file($path);
         return ['text/html', $outputted_messages];
     }
 }

@@ -141,7 +141,6 @@ function execute_task_background(array $task_row)
                         $path = $content_result[1];
                         $content_result = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
                         @unlink($path);
-                        sync_file($path);
                     }
 
                     $_content_result = is_object($content_result) ? ('[semihtml]' . $content_result->evaluate() . '[/semihtml]') : $content_result;
@@ -166,7 +165,6 @@ function execute_task_background(array $task_row)
         list($mime_type, $content_result) = $result;
         if (is_array($content_result)) {
             @unlink($content_result[1]);
-            sync_file($content_result[1]);
         }
     }
 
@@ -296,7 +294,6 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
             readfile($content_result[1]);
 
             @unlink($content_result[1]);
-            sync_file($content_result[1]);
         } else {
             /*if (is_object($content_result)) {
                 $content_result->evaluate_echo(null);

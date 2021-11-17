@@ -462,9 +462,6 @@ END;
             $backup_path = $save_path . '.' . strval(time()) . '_';
             $backup_path .= substr(md5(random_bytes(13)), 0, 13);
             $c_success = @copy($save_path, $backup_path);
-            if ($c_success !== false) {
-                ce_sync_file($backup_path);
-            }
         }
 
         $conn = open_up_ftp_connection();
@@ -534,7 +531,6 @@ END;
         }
 
         ce_fix_permissions($save_path);
-        ce_sync_file($save_path);
 
         // Make base-hash-thingy
         if (!isset($_POST['delete'])) {
@@ -558,7 +554,6 @@ END;
             @unlink($save_path . '.editfrom');
         }
         ce_fix_permissions($save_path . '.editfrom');
-        ce_sync_file($save_path . '.editfrom');
 
         if (!isset($_POST['delete'])) {
             $message = "Saved " . addslashes(code_editor_escape_html(str_replace('/', DIRECTORY_SEPARATOR, $save_path)) . " (and if applicable, placed a backup in its directory)!");
@@ -594,48 +589,6 @@ function convert_to_save_path(string $save_path) : string
         $save_path = str_replace('pages/modules/', 'pages/modules_custom/', $save_path);
     }
     return $save_path;
-}
-
-/**
- * Provides a hook for file synchronisation between mirrored servers.
- *
- * @param  PATH $filename File/directory name to sync on (may be full or relative path)
- */
-function ce_sync_file(string $filename)
-{
-    global $FILE_BASE;
-    if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
-        if (substr($filename, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $filename = substr($filename, strlen($FILE_BASE));
-        }
-        if (function_exists('master__sync_file')) {
-            master__sync_file($filename);
-        }
-    }
-}
-
-/**
- * Provides a hook for file synchronisation between mirrored servers.
- *
- * @param  PATH $old File/directory name to move from (may be full or relative path)
- * @param  PATH $new File/directory name to move to (may be full or relative path)
- */
-function ce_sync_file_move(string $old, string $new)
-{
-    global $FILE_BASE;
-    if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
-        if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $old = substr($old, strlen($FILE_BASE));
-        }
-        if (substr($new, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $new = substr($new, strlen($FILE_BASE));
-        }
-        if (function_exists('master__sync_file_move')) {
-            master__sync_file_move($old, $new);
-        }
-    }
 }
 
 /**

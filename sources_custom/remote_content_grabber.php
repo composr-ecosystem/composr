@@ -222,7 +222,6 @@ class RemoteContentGrabber
                 // Save
                 file_put_contents($file_path, $data);
                 fix_permissions($file_path);
-                sync_file($file_path);
             }
 
             // Note mappings

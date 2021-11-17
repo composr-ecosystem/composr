@@ -909,7 +909,6 @@ function _news_import_grab_image(string &$data, string $url)
     $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $target_handle]);
     flock($target_handle, LOCK_UN);
     fclose($target_handle);
-    sync_file($target_path);
     fix_permissions($target_path);
     if ($result !== null) {
         $data = str_replace('"' . $url . '"', $target_url, $data);

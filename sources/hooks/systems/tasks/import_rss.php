@@ -207,7 +207,6 @@ class Hook_task_import_rss
                         http_get_contents($item['rep_image'], ['trigger_error' => false, 'write_to_file' => $target_handle]);
                         flock($target_handle, LOCK_UN);
                         fclose($target_handle);
-                        sync_file($target_path);
                         fix_permissions($target_path);
                     }
                 }

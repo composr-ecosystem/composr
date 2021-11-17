@@ -906,7 +906,6 @@ function make_install_sql()
     get_sql_dump($out_file, true, false, [], null, $db);
     fclose($out_file);
     fix_permissions($out_path);
-    sync_file($out_path);
     $HAS_MULTI_LANG_CONTENT = $bak;
 
     // Run some checks to make sure our process is not buggy...

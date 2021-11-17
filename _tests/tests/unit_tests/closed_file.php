@@ -23,7 +23,6 @@ class closed_file_test_set extends cms_test_case
         $path = get_file_base() . '/closed.html';
         $test = 'Test';
         file_put_contents($path, $test);
-        sync_file($path);
 
         $url = static_evaluate_tempcode(build_url(['page' => ''], ''));
         $result = cms_http_request($url);
@@ -31,6 +30,5 @@ class closed_file_test_set extends cms_test_case
         $this->assertTrue($result->download_url == get_base_url() . '/closed.html');
 
         unlink($path);
-        sync_file($path);
     }
 }

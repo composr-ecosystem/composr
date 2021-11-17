@@ -228,7 +228,6 @@ function create_addon(string $file, array $files, string $addon_name, string $in
     }
 
     fix_permissions($_full);
-    sync_file($_full);
 }
 
 /*

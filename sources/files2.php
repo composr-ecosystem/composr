@@ -48,7 +48,6 @@ function make_missing_directory(string $dir, bool $make_index_file = true) : boo
         }
     }
     fix_permissions($dir);
-    sync_file($dir);
 
     cms_file_put_contents_safe($dir . '/index.html', '');
 
@@ -208,68 +207,6 @@ function clean_temporary_mail_attachments(?array $attachments)
 }
 
 /**
- * Provides a hook for file synchronisation between mirrored servers. Called after any file creation, deletion or edit.
- *
- * @param  PATH $filename File/directory name to sync on (full path)
- * @ignore
- */
-function _sync_file(string $filename)
-{
-    global $FILE_BASE, $_MODIFIED_FILES, $_CREATED_FILES;
-    if (substr($filename, 0, strlen($FILE_BASE) + 1) == $FILE_BASE . '/') {
-        $filename = substr($filename, strlen($FILE_BASE) + 1);
-    }
-    static $has_sync_script = null;
-    if ($has_sync_script === null) {
-        $has_sync_script = is_file($FILE_BASE . '/data_custom/sync_script.php');
-    }
-    if ($has_sync_script) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
-        if (function_exists('master__sync_file')) {
-            master__sync_file($filename);
-        }
-    }
-    if (isset($_MODIFIED_FILES)) {
-        foreach ($_MODIFIED_FILES as $i => $x) {
-            if (($x == $FILE_BASE . '/' . $filename) || ($x == $filename)) {
-                unset($_MODIFIED_FILES[$i]);
-            }
-        }
-    }
-    if (isset($_CREATED_FILES)) {
-        foreach ($_CREATED_FILES as $i => $x) {
-            if (($x == $FILE_BASE . '/' . $filename) || ($x == $filename)) {
-                unset($_CREATED_FILES[$i]);
-            }
-        }
-    }
-}
-
-/**
- * Provides a hook for file-move synchronisation between mirrored servers. Called after any rename or move action.
- *
- * @param  PATH $old File/directory name to move from (may be full or relative path)
- * @param  PATH $new File/directory name to move to (may be full or relative path)
- * @ignore
- */
-function _sync_file_move(string $old, string $new)
-{
-    global $FILE_BASE;
-    if (is_file($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
-        if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $old = substr($old, strlen($FILE_BASE));
-        }
-        if (substr($new, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $new = substr($new, strlen($FILE_BASE));
-        }
-        if (function_exists('master__sync_file_move')) {
-            master__sync_file_move($old, $new);
-        }
-    }
-}
-
-/**
  * Delete all the contents of a directory, and any subdirectories of that specified directory (recursively).
  *
  * @param  PATH $dir The pathname to the directory to delete
@@ -311,8 +248,6 @@ function _deldir_contents(string $dir, bool $default_preserve = false, bool $del
                 }
             }
         }
-
-        sync_file($dir . '/' . $file);
     }
     closedir($dh);
 
@@ -704,7 +639,6 @@ function delete_upload(string $upload_path, string $table, string $field, $id_fi
 
                 if ($count <= 1) {
                     @unlink(get_custom_file_base() . '/' . rawurldecode($url));
-                    sync_file(rawurldecode($url));
                 }
             }
             if ((url_is_local($url)) && (substr($url, 0, strlen('themes/default/images_custom') + 1) == 'themes/default/images_custom/')) {

@@ -393,7 +393,6 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
                 if (!$use_afm) {
                     @mkdir(get_custom_file_base() . '/' . $path . $file['path'], 0777, true);
                     fix_permissions(get_custom_file_base() . '/' . $path . $file['path']);
-                    sync_file(get_custom_file_base() . '/' . $path . $file['path']);
                 } else {
                     afm_make_directory($path . $file['path'], true);
                 }
@@ -412,7 +411,6 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
                             if (!file_exists(get_custom_file_base() . '/' . $path . $buildup)) {
                                 @mkdir(get_custom_file_base() . '/' . $path . $buildup, 0777, true);
                                 fix_permissions(get_custom_file_base() . '/' . $path . $buildup);
-                                sync_file(get_custom_file_base() . '/' . $path . $buildup);
                             }
                         } else {
                             afm_make_directory($path . $buildup, true);
@@ -429,7 +427,6 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
                             $saveat = get_custom_file_base() . '/' . $path . $file['path'] . '.' . strval(time());
                             copy(get_custom_file_base() . '/' . $path . $file['path'], $saveat);
                             fix_permissions($saveat);
-                            sync_file($saveat);
                         }
                     } else {
                         if (file_exists(get_custom_file_base() . '/' . $path . $file['path'])) {
@@ -473,7 +470,6 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
                     }
                     $full_path = get_custom_file_base() . '/' . $path . $file['path'];
                     @chmod($full_path, $data['mode']);
-                    sync_file($full_path);
                     if ($data['mtime'] == 0) {
                         $data['mtime'] = time();
                     }
@@ -542,7 +538,6 @@ function tar_get_file(array &$resource, string $path, bool $tolerate_errors = fa
                 flock($outfile, LOCK_UN);
                 fclose($outfile);
                 fix_permissions($path);
-                sync_file($path);
             }
 
             return ['data' => &$data, 'size' => $stuff['size'], 'mode' => $stuff['mode'], 'mtime' => $stuff['mtime']];
@@ -731,6 +726,5 @@ function tar_close(array $resource)
 
     if ($writing) {
         fix_permissions($resource['full']);
-        sync_file($resource['full']);
     }
 }

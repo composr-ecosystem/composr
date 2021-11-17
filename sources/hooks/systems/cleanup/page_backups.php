@@ -105,7 +105,6 @@ class Hook_cleanup_page_backups
             while (($f = readdir($dh)) !== false) {
                 if (is_numeric(get_file_extension($f))) {
                     rename($path . '/' . $f, $path . '/_old_backups/' . $f);
-                    sync_file_move($path . '/' . $f, $path . '/_old_backups/' . $f);
                 }
             }
             closedir($dh);

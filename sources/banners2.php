@@ -325,7 +325,6 @@ function check_banner(string $title_text = '', string $direct_code = '', string 
             if (strlen($data) > $banner_type_row['t_max_file_size'] * 1024) {
                 if (url_is_local($test_url)) {
                     @unlink(get_custom_file_base() . '/' . rawurldecode($test_url));
-                    sync_file(rawurldecode($test_url));
                 }
                 require_code('files');
                 warn_exit(do_lang_tempcode('BANNER_TOO_LARGE', escape_html(clean_file_size(strlen($data))), escape_html(clean_file_size($banner_type_row['t_max_file_size'] * 1024))));
@@ -338,7 +337,6 @@ function check_banner(string $title_text = '', string $direct_code = '', string 
                 if ($test === false) {
                     if (url_is_local($url)) {
                         @unlink(get_custom_file_base() . '/' . rawurldecode($url));
-                        sync_file(rawurldecode($url));
                     }
                     warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($url)));
                 }
@@ -348,7 +346,6 @@ function check_banner(string $title_text = '', string $direct_code = '', string 
                 if ((get_option('banner_autosize') != '1') && ((($sx !== null) && ($sx != $banner_type_row['t_image_width'])) || (($sy !== null) && ($sy != $banner_type_row['t_image_height'])))) {
                     if (url_is_local($test_url)) {
                         @unlink(get_custom_file_base() . '/' . rawurldecode($test_url));
-                        sync_file(rawurldecode($test_url));
                     }
                     warn_exit(do_lang_tempcode('BANNER_RES_BAD', escape_html(strval($banner_type_row['t_image_width'])), escape_html(strval($banner_type_row['t_image_height']))));
                 }

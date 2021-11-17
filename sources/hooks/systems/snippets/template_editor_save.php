@@ -60,11 +60,9 @@ class Hook_snippet_template_editor_save
                 // Delete
                 if (file_exists($custom_path)) {
                     unlink($custom_path);
-                    sync_file($custom_path);
                 }
                 if (file_exists($custom_path . '.editfrom')) {
                     unlink($custom_path . '.editfrom');
-                    sync_file($custom_path . '.editfrom');
                 }
             } else {
                 // Save

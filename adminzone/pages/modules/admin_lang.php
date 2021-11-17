@@ -821,7 +821,6 @@ class Module_admin_lang
         if (file_exists($path)) {
             @copy($path, $path_backup) or intelligent_write_error($path_backup);
             fix_permissions($path_backup);
-            sync_file($path_backup);
         }
         $contents = '';
         $contents .= "[descriptions]\n";
@@ -849,7 +848,6 @@ class Module_admin_lang
         $path_backup2 = $path . '.latest_in_cms_edit';
         @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
         fix_permissions($path_backup2);
-        sync_file($path_backup2);
 
         log_it('TRANSLATE_CODE');
 
@@ -904,7 +902,6 @@ class Module_admin_lang
                 if (file_exists($path)) {
                     @copy($path, $path_backup) or intelligent_write_error($path_backup);
                     fix_permissions($path_backup);
-                    sync_file($path_backup);
                 }
                 $contents = '';
                 if (!empty($descriptions)) {
@@ -928,7 +925,6 @@ class Module_admin_lang
                 $path_backup2 = $path . '.latest_in_cms_edit';
                 @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
                 fix_permissions($path_backup2);
-                sync_file($path_backup2);
             }
         }
 

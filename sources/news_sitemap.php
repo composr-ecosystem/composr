@@ -133,7 +133,6 @@ function build_news_sitemap()
     flock($sitemap_file, LOCK_UN);
     fclose($sitemap_file);
     require_code('files');
-    sync_file($path);
     fix_permissions($path);
 
     $target_url = get_custom_base_url() . '/data_custom/sitemaps/news_sitemap.xml';

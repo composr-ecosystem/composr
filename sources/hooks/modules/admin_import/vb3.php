@@ -485,7 +485,6 @@ class Hook_import_vb3
                             $relpath = rawurldecode($avatar_row['avatarpath']);
                             if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath))) || (@rename($file_base . '/uploads/' . $setting . $relpath, get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath)))) {
                                 $avatar_url = 'uploads/cns_avatars/' . basename($relpath);
-                                sync_file(get_custom_file_base() . '/' . $avatar_url);
                             }
                         }
                     }

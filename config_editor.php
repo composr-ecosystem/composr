@@ -429,9 +429,6 @@ function do_set()
     $backup_path .= substr(md5(random_bytes(13)), 0, 13);
     $copied_ok = @copy($FILE_BASE . '/' . $config_file, $backup_path);
     @chmod($backup_path, 0600);
-    if ($copied_ok !== false) {
-        co_sync_file($backup_path);
-    }
     $out = '';
     $out .= "<" . "?php\n";
     foreach ($new as $key => $val) {
@@ -449,52 +446,9 @@ function do_set()
     if (!$success) {
         echo '<strong>Could not save to file. Access denied?<strong>';
     }
-    co_sync_file($config_file);
 
     echo '<hr /><p>Edited configuration. If you wish to continue editing you must <a href="config_editor.php">login again.</a></p>';
     echo '<hr /><p>The <kbd>_config.php</kbd> file was backed up at <kbd>' . htmlentities(str_replace('/', DIRECTORY_SEPARATOR, $backup_path)) . '</kbd></p>';
-}
-
-/**
- * Provides a hook for file synchronisation between mirrored servers.
- *
- * @param  PATH $filename File/directory name to sync on (may be full or relative path)
- */
-function co_sync_file(string $filename)
-{
-    global $FILE_BASE;
-    if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
-        if (substr($filename, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $filename = substr($filename, strlen($FILE_BASE));
-        }
-        if (function_exists('master__sync_file')) {
-            master__sync_file($filename);
-        }
-    }
-}
-
-/**
- * Provides a hook for file synchronisation between mirrored servers.
- *
- * @param  PATH $old File/directory name to move from (may be full or relative path)
- * @param  PATH $new File/directory name to move to (may be full or relative path)
- */
-function co_sync_file_move(string $old, string $new)
-{
-    global $FILE_BASE;
-    if (file_exists($FILE_BASE . '/data_custom/sync_script.php')) {
-        require_once($FILE_BASE . '/data_custom/sync_script.php');
-        if (substr($old, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $old = substr($old, strlen($FILE_BASE));
-        }
-        if (substr($new, 0, strlen($FILE_BASE)) == $FILE_BASE) {
-            $new = substr($new, strlen($FILE_BASE));
-        }
-        if (function_exists('master__sync_file_move')) {
-            master__sync_file_move($old, $new);
-        }
-    }
 }
 
 /**

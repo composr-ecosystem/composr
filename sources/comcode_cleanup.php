@@ -185,7 +185,6 @@ function _download_associated_media(string &$text, string $old_url)
 
         rename($temp_path, $new_path);
         fix_permissions($new_path);
-        sync_file($new_path);
 
         $new_url = get_custom_base_url() . '/' . $new_url;
         $text = str_replace($old_url, $new_url, $text);

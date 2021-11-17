@@ -737,7 +737,6 @@ function save_comcode_page(string $zone, string $new_file, string $lang, string 
         }
         foreach ($rename_map as $path => $new_path) {
             rename(get_custom_file_base() . '/' . $path, get_custom_file_base() . '/' . $new_path);
-            sync_file_move(get_custom_file_base() . '/' . $path, get_custom_file_base() . '/' . $new_path);
         }
 
         // Got to rename various resources
@@ -965,7 +964,6 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
                     afm_delete_file($_path);
                 } else {
                     unlink(get_custom_file_base() . '/' . $_path);
-                    sync_file(get_custom_file_base() . '/' . $_path);
                 }
             }
         }
@@ -998,7 +996,6 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
                 afm_delete_file($_path);
             } else {
                 unlink(get_custom_file_base() . '/' . $_path);
-                sync_file(get_custom_file_base() . '/' . $_path);
             }
         }
     }

@@ -639,7 +639,6 @@ function table_from_portable_rows(string $table, array $rows, array $extra_field
                 // Cleanup old files
                 foreach ($upload_fields as $upload_field) {
                     @unlink(get_custom_file_base() . '/' . $old_row[$upload_field]);
-                    sync_file(get_custom_file_base() . '/' . $old_row[$upload_field]);
                 }
             }
         }
@@ -680,7 +679,6 @@ function table_from_portable_rows(string $table, array $rows, array $extra_field
                     // Cleanup old files
                     foreach ($upload_fields as $upload_field) {
                         @unlink(get_custom_file_base() . '/' . $old_row[$upload_field]);
-                        sync_file(get_custom_file_base() . '/' . $old_row[$upload_field]);
                     }
                 }
             }

@@ -63,7 +63,6 @@ class Hook_commandr_command_sql_dump
             $out_file = cms_fopen_text_write($out_file_path);
             get_sql_dump($out_file, true, false, [], $only, null, $intended_db_type);
             fclose($out_file);
-            sync_file($out_file_path);
             fix_permissions($out_file_path);
 
             $out = do_lang('SQL_DUMP_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));

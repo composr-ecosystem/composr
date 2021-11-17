@@ -119,7 +119,6 @@ function version_specific() : bool
                 while (($f = readdir($dh)) !== false) {
                     if (substr($f, -4) == '.tar') {
                         @rename(get_custom_file_base() . '/imports/mods/' . $f, get_file_base() . '/imports/addons/' . $f);
-                        sync_file_move(get_custom_file_base() . '/imports/mods/' . $f, get_file_base() . '/imports/addons/' . $f);
                     }
                 }
                 closedir($dh);
@@ -132,9 +131,7 @@ function version_specific() : bool
             $GLOBALS['SITE_DB']->rename_table('adminlogs', 'actionlogs');
 
             @rename(get_custom_file_base() . '/data_custom/breadcrumbs.xml', get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml');
-            sync_file_move(get_custom_file_base() . '/data_custom/breadcrumbs.xml', get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml');
             @rename(get_custom_file_base() . '/data_custom/fields.xml', get_custom_file_base() . '/data_custom/xml_config/fields.xml');
-            sync_file_move(get_custom_file_base() . '/data_custom/fields.xml', get_custom_file_base() . '/data_custom/xml_config/fields.xml');
 
             $remap = [
                 'ocf_post' => 'cns_post',

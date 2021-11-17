@@ -120,7 +120,6 @@ if ($mode == 'unbundle') {
             if (!file_exists(get_file_base() . '/' . $new_file)) {
                 @mkdir(dirname($new_file), 0777, true);
                 rename(get_file_base() . '/' . $path, get_file_base() . '/' . $new_file);
-                sync_file_move(get_file_base() . '/' . $path, get_file_base() . '/' . $new_file);
 
                 require_code('files');
                 $data = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);

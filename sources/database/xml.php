@@ -325,7 +325,6 @@ class Database_Static_xml extends DatabaseDriver
         @mkdir($path, 0777);
         require_code('files');
         fix_permissions($path);
-        sync_file($path);
         cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     }
 
@@ -344,12 +343,10 @@ class Database_Static_xml extends DatabaseDriver
             while (($file = readdir($dh)) !== false) {
                 if ((substr($file, -4) == '.xml') || (substr($file, -13) == '.xml-volatile')) {
                     unlink($file_path . '/' . $file);
-                    sync_file($file_path . '/' . $file);
                 }
             }
             closedir($dh);
             @rmdir($file_path);
-            sync_file($file_path);
 
             $success = true;
         } else {
@@ -400,7 +397,6 @@ class Database_Static_xml extends DatabaseDriver
             mkdir($db_name, 0777);
             require_code('files');
             fix_permissions($db_name);
-            sync_file($db_name);
             cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
 
@@ -950,7 +946,6 @@ class Database_Static_xml extends DatabaseDriver
                 mkdir($db[0] . '/' . $table_name, 0777);
                 require_code('files');
                 fix_permissions($db[0] . '/' . $table_name);
-                sync_file($db[0] . '/' . $table_name);
                 cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
             }
             @chdir($db[0] . '/' . $table_name);
@@ -1259,7 +1254,6 @@ class Database_Static_xml extends DatabaseDriver
             mkdir($db[0] . '/' . $table_name, 0777);
             require_code('files');
             fix_permissions($db[0] . '/' . $table_name);
-            sync_file($db[0] . '/' . $table_name);
             cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
 
@@ -1303,7 +1297,6 @@ class Database_Static_xml extends DatabaseDriver
             $new_path = $db[0] . '/' . $table_name . '/' . $new_guid . $suffix;
             if ($path != $new_path) {
                 rename($path, $new_path);
-                sync_file_move($path, $new_path);
             }
         }
 
@@ -1320,7 +1313,6 @@ class Database_Static_xml extends DatabaseDriver
     {
         if (file_exists($path)) {
             @unlink($path);
-            sync_file($path);
         }
     }
 
@@ -1400,12 +1392,10 @@ class Database_Static_xml extends DatabaseDriver
             while (($file = readdir($dh)) !== false) {
                 if ((substr($file, -4) == '.xml') || (substr($file, -13) == '.xml-volatile')) {
                     unlink($file_path . '/' . $file);
-                    sync_file($file_path . '/' . $file);
                 }
             }
             closedir($dh);
             @rmdir($file_path);
-            sync_file($file_path);
         }
 
         global $SCHEMA_CACHE;
@@ -1494,7 +1484,6 @@ class Database_Static_xml extends DatabaseDriver
             case 'RENAME':
                 $new_table_name = $this->_parsing_read($at, $tokens, $query);
                 rename($db[0] . '/' . $table_name, $db[0] . '/' . $new_table_name);
-                sync_file_move($db[0] . '/' . $table_name, $db[0] . '/' . $new_table_name);
                 $this->_clear_caching_for($table_name);
                 break;
             case 'CHANGE':
@@ -1657,7 +1646,6 @@ class Database_Static_xml extends DatabaseDriver
         @mkdir($path, 0777);
         require_code('files');
         fix_permissions($path);
-        sync_file($path);
         cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
         return null;

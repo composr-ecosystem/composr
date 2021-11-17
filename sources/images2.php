@@ -298,7 +298,6 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
             if ($using_path) {
                 copy($from, $to);
                 fix_permissions($to);
-                sync_file($to);
             }
             cms_set_time_limit($old_limit);
             return $from;
@@ -419,7 +418,6 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
                 if ($using_path) {
                     copy($from, $to);
                     fix_permissions($to);
-                    sync_file($to);
                 } else {
                     require_code('files');
                     cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
@@ -611,7 +609,6 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
         if ($using_path) {
             copy($from, $to);
             fix_permissions($to);
-            sync_file($to);
         } else {
             require_code('files');
             cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
@@ -677,7 +674,6 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
     imagedestroy($dest);
 
     fix_permissions($to);
-    sync_file($to);
 
     cms_set_time_limit($old_limit);
     return _image_path_to_url($to);

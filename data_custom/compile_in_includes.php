@@ -117,7 +117,6 @@ foreach ($files as $path) {
                 if ($marked_old) {
                     @unlink($file_orig);
                     rename($file_orig . '.orig-precompile', $file_orig);
-                    sync_file_move($file_orig . '.orig-precompile', $file_orig);
                 }
 
                 // Restore override
@@ -217,7 +216,6 @@ foreach ($files as $path) {
                 // Remove original file, to stop Composr trying to load it
                 if (!$marked_old) {
                     rename($file_orig, $file_orig . '.orig-precompile');
-                    sync_file_move($file_orig, $file_orig . '.orig-precompile');
                 }
             }
         }

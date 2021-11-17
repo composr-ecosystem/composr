@@ -290,7 +290,6 @@ function add_filedump_file(string $subpath, string &$filename, string $tmp_path,
     // If requested to leave alone when conflicting, delete the tmp_path file and exit.
     if (($conflicts) && ($conflict_action === 'leave_alone')) {
         @unlink($tmp_path);
-        sync_file($tmp_path);
         return [
             'error' => null,
             'conflict' => false,
@@ -305,7 +304,6 @@ function add_filedump_file(string $subpath, string &$filename, string $tmp_path,
     // If requested to overwrite conflicts, or if we have permission to overwrite immediately, overwrite conflicting file.
     if (((!$check_permissions) && ($conflicts)) || (($conflict_action === 'overwrite') && ($can_overwrite))) {
         @unlink($full);
-        sync_file($full);
         $conflicts = false;
     }
 
@@ -342,7 +340,6 @@ function add_filedump_file(string $subpath, string &$filename, string $tmp_path,
         }
     }
     fix_permissions($full);
-    sync_file($full);
 
     // Add description
     $description_l = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', ['name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);

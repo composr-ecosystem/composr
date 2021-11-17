@@ -221,7 +221,6 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
     flock($log_file, LOCK_UN);
     fclose($log_file);
     @rename($build_path_tmp, $build_path);
-    sync_file($build_path);
 
     // Clean up
     @deldir_contents($wip_path, false, true);

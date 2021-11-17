@@ -626,7 +626,6 @@ function cleanup_after_theme_image_file_removal(string $old_url)
     foreach ($possible_paths as $path) {
         if (is_file(get_custom_file_base() . '/' . $path)) {
             @unlink(get_custom_file_base() . '/' . $path);
-            sync_file(get_custom_file_base() . '/' . $path);
         }
     }
 }

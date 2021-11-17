@@ -198,7 +198,6 @@ function handle_upload_syndication(string $name, string $title, string $descript
         if ($no_quota || $force_remove_locally) {
             if (url_is_local($new_url)) {
                 @unlink(get_custom_file_base() . '/' . rawurldecode($new_url));
-                sync_file(rawurldecode($new_url));
             }
 
             if (empty($remote_urls)) {

@@ -379,7 +379,6 @@ class Module_admin_backup
         if (!@unlink($path)) {
             warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path)));
         }
-        sync_file($path);
 
         log_it('DELETE_BACKUP', $file);
 

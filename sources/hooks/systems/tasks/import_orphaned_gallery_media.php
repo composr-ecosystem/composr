@@ -65,7 +65,6 @@ class Hook_task_import_orphaned_gallery_media
                     intelligent_write_error($target_path);
                 }
                 fix_permissions($target_path);
-                sync_file_move($url, $target_path);
 
                 // Add to database
                 $import_details = add_gallery_media_wrap($target_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $target_filename);

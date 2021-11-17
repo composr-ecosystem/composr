@@ -499,16 +499,12 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
         @ftp_chmod($conn, $access, $path);
 
         clearstatcache();
-
-        sync_file(get_custom_file_base() . '/' . $basic_path);
     } else {
         if (!file_exists(get_custom_file_base() . '/' . $basic_path)) {
             @mkdir($path, $access, $recursive) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path), escape_html(dirname($path))), false, true);
         } else {
             @chmod($path, $access);
         }
-
-        sync_file($path);
     }
 }
 
@@ -568,12 +564,8 @@ function afm_delete_directory(string $basic_path, bool $recursive = false)
                 ftp_rmdir($conn, $path);
 
                 clearstatcache();
-
-                sync_file(get_custom_file_base() . '/' . $basic_path);
             } else {
                 @rmdir($path) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path), escape_html(dirname($path))), false, true);
-
-                sync_file($path);
             }
         }
     }
@@ -615,8 +607,6 @@ function afm_make_file(string $basic_path, string $contents, bool $world_access,
         @ftp_chmod($conn, $access, $path);
 
         clearstatcache();
-
-        sync_file(get_custom_file_base() . '/' . $basic_path);
     } else {
         cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | ($bom ? FILE_WRITE_BOM : 0));
         @chmod($path, $access);
@@ -683,12 +673,8 @@ function afm_move(string $basic_old_path, string $basic_new_path)
         }
 
         clearstatcache();
-
-        sync_file_move(get_custom_file_base() . '/' . $basic_old_path, get_custom_file_base() . '/' . $basic_new_path);
     } else {
         @rename($old_path, $new_path) or intelligent_write_error($old_path);
-
-        sync_file_move($old_path, $new_path);
     }
 }
 
@@ -713,15 +699,11 @@ function afm_delete_file(string $basic_path)
         }
 
         clearstatcache();
-
-        sync_file(get_custom_file_base() . '/' . $basic_path);
     } else {
         if (!file_exists($path)) {
             return;
         }
         @unlink($path) or intelligent_write_error($path);
-
-        sync_file($path);
     }
 }
 
