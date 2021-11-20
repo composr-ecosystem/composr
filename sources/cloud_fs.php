@@ -18,7 +18,6 @@
  * @package    core
  */
 
-
 /**
  * Standard code module initialisation function.
  *
@@ -27,18 +26,32 @@
 function init__cloud_fs()
 {
     if (!defined('CMS_CLOUD__LOCAL')) {
-        define('CMS_CLOUD__LOCAL', 1); // Unchanging file hosted on each machine (may be changed by Git of course).
-        define('CMS_CLOUD__PROPAGATED', 2); // Copied to all machines via a sync queue (the propagation_dirs & propagation_files tables). Fast local access, but a delay propagating and more local disk space use.
-        define('CMS_CLOUD__REMOTE', 3); // Hosted on e.g. a NAS, via a NFS share. Slower access, but always in sync and better for large amounts of data.
+        define('CMS_CLOUD__LOCAL', 1);
+        define('CMS_CLOUD__PROPAGATED', 2);
+        define('CMS_CLOUD__REMOTE', 3);
 
         define('FILE_BASE__SHARED', 'cmsCloudShared');
         define('FILE_BASE__CUSTOM', 'cmsCloudCustom');
     }
 
-    // Regexps specifying where normal Composr file paths will be routed to.
-    // Should be in precedence order (for performance reasons).
-    // Nothing used in early boot (pre-database connection) should use CMS_CLOUD__REMOTE.
-    // Override cloud.php and this data to change the configuration. Addons can add to this global themselves if needed.
+    define_cloud_fs_bindings();
+
+    global $SITE_INFO;
+    if (empty($SITE_INFO['nas_directory'])) {
+        $SITE_INFO['nas_directory'] = '../shared_storage';
+    }
+}
+
+/**
+ * Get the patterns defining what files are syndicated in what ways.
+ *
+ * Regexps specifying where normal Composr file paths will be routed to.
+ * Should be in precedence order (for performance reasons).
+ * Nothing used in early boot (pre-database connection) should use CMS_CLOUD__REMOTE.
+ * Override this function to change the configuration. Addons can add to this global themselves if needed.
+ */
+function define_cloud_fs_bindings()
+{
     global $CMS_CLOUD_BINDINGS;
     $CMS_CLOUD_BINDINGS = [
         '#^data_custom/errorlog\.php$#' => CMS_CLOUD__LOCAL,
@@ -62,11 +75,6 @@ function init__cloud_fs()
         '#^uploads(/.*)?$#' => CMS_CLOUD__REMOTE,
         '#^.*$#' => CMS_CLOUD__LOCAL,
     ];
-
-    global $SITE_INFO;
-    if (empty($SITE_INFO['nas_directory'])) {
-        $SITE_INFO['nas_directory'] = '../shared_storage';
-    }
 }
 
 /**

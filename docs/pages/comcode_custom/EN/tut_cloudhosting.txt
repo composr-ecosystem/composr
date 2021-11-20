@@ -1,0 +1,116 @@
+[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Cloud-hosting for Composr[/title]
+
+Composr has some excellent built-in support for hosting on server farms, i.e. cloud hosting.
+
+In particular, Composr has the following cloud features:
+ - Storage management:
+  - Mount a single shared storage directory, and have Composr feed shared data through it
+  - Syncing certain directories across all machines in a cloud (i.e. combining the benefits of a shared directory but with local latency)
+ - Log routing:
+  - Choice of (customisable on a per-log basis):
+   - Syndication of individual log lines (as they come in) across all hosts (for easy access)
+   - Routing of log lines to [concept]syslog[/concept]
+   - Purely local storage
+  - Clear indication of which host each log line (or error notification) comes from
+ - Configurable system scheduler:
+  - Designate one machine as the machine running the system scheduler, and others will just run a subset of the schedule necessary for maintaining the local host
+ - [concept]RPC[/concept]:
+  - Cache clearance operations will automatically run across all hosts
+
+[box="A note of caution"]
+[media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
+Deploying this requires some expertise, as you need to be familiar with system administration and setting up networks of machines (e.g. VMs, but may be actual bare metal servers).
+Be wary of any cloud hosting service that advertises automatic scaling of software, with you just installing it and not needing to know anything about database replication or storage management -- it's frankly not possible to do correctly.
+The Composr cloud support is designed to work optimally based on the actual architecture needed for high performance scaling -- it's not magic, it's careful engineering.
+[/box]
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]Fundamental architecture and setup[/title]
+
+[title="3"]Storage management[/title]
+
+There are certain files you want to store locally on each host (particularly code files and other non-changing assets), and certain files you need to share between hosts (such as user data, or data edited from within the Admin Zone).
+The files shared between hosts can be further subdivided into files that need to be low latency (such as custom Comcode pages that need to be quickly enumerated), and files that can be modest latency but always need to be there (like individual user uploads).
+
+We term these 3 categories as:
+ - [b]Local[/b]: Files stored individually on each host
+ - Shared:
+  - [b][concept]Propagated[/concept][/b]: Files stored on each host but automatically kept in sync via a database queue
+   - Fast
+  - [b]Remote[/b]: Files stored on some kind of shared storage, like a [acronym="Network Attached Storage"]NAS[/acronym]/[acronym="Storage Area Network"]SAN[/acronym]
+   - Always up-to-date
+   - No wasting space via duplication
+
+Remote storage works by industry-standard filesystem mounting technology. The Installation Options editor has a [tt]nas_directory[/tt] option that needs to configured to where you have mounted your shared storage. If defaults to a directory [tt]shared_storage[/tt], one level above Composr.
+You may choose to mount some kind of NAS using standard protocols such as NFS. There are also many [url="FUSE filesystems"]https://en.wikipedia.org/wiki/Filesystem_in_Userspace[/url], including implementations for mounting Amazon S3 storage.
+
+Composr has inbuilt rules that specify what files should be treated in what ways.
+If you are a programmer and for some reason you need to change the rules, you need to override the [tt]define_cloud_fs_bindings[/tt] function in [tt]cloud_fs.php[/tt].
+The cloud filesystem implementation works via a PHP stream wrapper that encapsulates all I/O and directs it as necessary.
+
+[title="3"]Creating hosts[/title]
+
+It is up to you exactly how you want to create hosts. You may want to start with some standard VM image to clone out to create hosts, or just some kind of simple script to get things going.
+
+We recommend using Git to deploy code and files (the [i]local[/i] and [i]propagated[/i] files). You can set up a central Git repository and clone the repository onto a host to activate it. Git is nice because you can pull in code changes quickly and easily using the non-bundled [tt]git_status[/tt] addon.
+
+The Installation Options editor has a [tt]cloud_mode[/tt] option that needs to configured on each host. One host will be configured as [tt]primary[/tt] and the rest as [tt]replica[/tt].
+
+[title="4"]System scheduler[/title]
+
+The system scheduler must be tied into Cron on each host, set up as you normally would.
+The primary host is where most of the system scheduler code will be running, ensuring that there is no undesirable duplication across hosts.
+
+[title="3"]Directing traffic[/title]
+
+You need to set up some mechanism for traffic to be directed to different hosts. Common approaches include:
+ - A reverse proxy server, configured to decide where to send traffic
+ - Geo-based DNS
+ - Round-robin DNS
+
+Discussing these systems is outside the scope of this tutorial, but they are standard technologies.
+
+[title="3"]Logging[/title]
+
+All Composr log files except [tt]data_custom/errorlog.php[/tt] can be configured to route log data in different ways via [tt]TARGETS[/tt] set on the first line of the file itself. This would set all of them:
+[code="Text"]
+TARGETS: file, syslog, cloud
+[/code]
+The targets available are:
+ - [tt]file[/tt]: save into this log file
+ - [tt]syslog[/tt]: save into the [concept]syslog[/concept] facility (on Windows it's the Event Log); this is useful when managing large IT environments using standard tools
+ - [tt]cloud[/tt]: synchronise all log files across the cloud, so each host has a complete log (only works if [tt]file[/tt] is also set); this is useful so long as you don't have huge numbers of cloud hosts
+
+[tt]data_custom/errorlog.php[/tt] can be sent to syslog or the weblogs (web server's own logs) by setting the [tt]errorlog[/tt] installation option. It cannot be syndicated to the cloud because (a) PHP will write to the error log itself, outside of Composr's direct control (b) errors may happen before Composr can boot. In most cases we do include a lot of extra metadata in the log though.
+
+[title="2"]Maintenance[/title]
+
+[title="3"]Clearing caches[/title]
+
+If you clear caches through the Cleanup Tools in the Admin Zone then this operation will automatically be synched across clients.
+
+[title="3"]Updating files[/title]
+
+[title="3"]Upgrading[/title]
+
+[concepts
+ 1_key="Syslog"             1_value="Operating system facility for managing logs in a consistent and centralised way"
+ 2_key="RPC"                2_value="Remote Procedure Call, used in Composr's case when an action on one host needs to trigger an action on all the others and orchestrated through a queue in the database"
+ 3_key="Propagated"         3_value="Our mode of automatic file sharing between hosts that works similarly to a system like Dropbox/Google Drive/ownCloud/etc"
+ 4_key="TODO"               4_value="TODO"
+ 5_key="TODO"               5_value="TODO"
+ 6_key="TODO"               6_value="TODO"
+ 7_key="TODO"               7_value="TODO"
+ 8_key="TODO"               8_value="TODO"
+ 9_key="TODO"               9_value="TODO"
+]Concepts[/concepts]
+
+[title="2"]See also[/title]
+
+ - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
+ - [page="_SEARCH:tut_install_linux"]Installation on Linux[/page]
+ - [page="_SEARCH:tut_google_appengine"]Installation on Google App Engine[/page]
+ - [page="_SEARCH:tut_performance"]Optimising Performance[/page]
+
+{$SET,tutorial_tags,Webhosting,core,installer,Installation,expert}{$SET,tutorial_add_date,Nov 2021}{$SET,tutorial_summary,How Composr can operate with cloud hosting.}[block]main_tutorial_rating[/block]

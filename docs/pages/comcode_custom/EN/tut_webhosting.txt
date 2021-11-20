@@ -480,6 +480,7 @@ So, the main take-away is:
 
 [title="2"]See also[/title]
 
+ - [page="_SEARCH:tut_cloudhosting"]Cloud-hosting for Composr[/page]
  - [page="_SEARCH:tut_install"]Installation[/page]
  - [page="_SEARCH:tut_install_permissions"]File permissions[/page]
  - [page="_SEARCH:tut_install_linux"]Installation on Linux[/page]

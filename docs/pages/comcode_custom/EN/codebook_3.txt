@@ -478,17 +478,6 @@ Useful Composr logs include:
  - Mail integration (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/mail_integration.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - The mail log (view from Admin Zone > Audit > E-mail queue/log)
 
-All Composr log files except [tt]data_custom/errorlog.php[/tt] can be configured to route log data in different ways via [tt]TARGETS[/tt] set on the first line of the file itself. This would set all of them:
-[code="Text"]
-TARGETS: file, syslog, cloud
-[/code]
-The targets available are:
- - [tt]file[/tt]: save into this log file
- - [tt]syslog[/tt]: save into the syslog facility (on Windows it's the Event Log); this is useful when managing large IT environments using standard tools
- - [tt]cloud[/tt]: synchronise all log files across the cloud, so each host has a complete log (only works if [tt]file[/tt] is also set); this is useful so long as you don't have huge numbers of cloud hosts
-
-[tt]data_custom/errorlog.php[/tt] can be sent to syslog or the weblogs (web server's own logs) by setting the [tt]errorlog[/tt] installation option. It cannot be syndicated to the cloud because (a) PHP will write to the error log itself, outside of Composr's direct control (b) errors may happen before Composr can boot. In most cases we do include a lot of extra metadata in the log though.
-
 Other very useful logs:
  - The web server's own access log; look carefully in it and you are likely to see things like HTTP response codes (e.g. 500 means Internal Server Error)
  - Any [tt]errorlog[/tt] files the web server may leave behind (native PHP error logs, which may or may not be enabled)
