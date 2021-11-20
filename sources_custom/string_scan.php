@@ -5670,6 +5670,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GALLERY_IMAGE_LIMIT_HIGH
         GALLERY_IMAGE_LIMIT_LOW
         GALLERY_IMPORT
+        _GALLERY_IMPORT
         GALLERY_IMPORT_SUCCESS_EDIT_TITLES_INLINE
         GALLERY_MEDIA_TITLE_REQUIRED
         GALLERY_MEMBER_SYNCED

@@ -197,8 +197,18 @@ class Module_cms_galleries extends Standard_crud_module
             }
         }
 
-        if ($type == 'import' || $type == '_import' || $type == '__import' || $type == 'orphaned') {
+        if ($type == 'import' || $type == 'orphaned') {
             $this->title = get_screen_title('GALLERY_IMPORT');
+        }
+
+        if ($type == '_import') {
+            $cat = get_param_string('name', 'root');
+            $this->title = get_screen_title('_GALLERY_IMPORT', true, [escape_html($cat)]);
+        }
+
+        if ($type == '__import') {
+            $cat = get_param_string('cat');
+            $this->title = get_screen_title('_GALLERY_IMPORT', true, [escape_html($cat)]);
         }
 
         if ($type == 'predefined_content') {
@@ -703,7 +713,7 @@ class Module_cms_galleries extends Standard_crud_module
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
         }
         if (($gallery[0]['accept_images'] == 0) || ($gallery[0]['is_member_synched'] == 1)) {
-            warn_exit(do_lang_tempcode(($gallery[0]['accept_images'] == 1) ? 'ERROR_NOT_ACCEPT_CONTAINER' : 'ERROR_NOT_ACCEPT_IMAGES'));
+            warn_exit(do_lang_tempcode(($gallery[0]['accept_images'] == 1) ? 'ERROR_NOT_ACCEPT_CONTAINER' : 'ERROR_NOT_ACCEPT_IMAGES', escape_html($cat)), false, false, 500, $this->title);
         }
 
         if ((!has_privilege(get_member(), 'no_personal_gallery_limit')) && ($owner == get_member())) {
@@ -1282,7 +1292,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
         }
         if (($gallery[0]['accept_videos'] == 0) || ($gallery[0]['is_member_synched'] == 1)) {
-            warn_exit(do_lang_tempcode(($gallery[0]['accept_videos'] == 1) ? 'ERROR_NOT_ACCEPT_CONTAINER' : 'ERROR_NOT_ACCEPT_VIDEOS'));
+            warn_exit(do_lang_tempcode(($gallery[0]['accept_videos'] == 1) ? 'ERROR_NOT_ACCEPT_CONTAINER' : 'ERROR_NOT_ACCEPT_VIDEOS', escape_html($cat)), false, false, 500, $this->title);
         }
 
         if ((!has_privilege(get_member(), 'no_personal_gallery_limit')) && ($owner == get_member())) {
