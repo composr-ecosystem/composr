@@ -26,7 +26,7 @@
 			<th>{!ACTIONS}</th>
 			<td>
 				<ul class="actions_list">
-					<li><a href="http://whatismyipaddress.com/ip/{IP*}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
+					<li><a href="https://whatismyipaddress.com/ip/{IP*}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
 					<li><a href="https://ping.eu/ping/?host={IP*}">Ping</a></li>
 					<li><a href="https://ping.eu/traceroute/?host={IP*}">Tracert</a></li>
 				</ul>
