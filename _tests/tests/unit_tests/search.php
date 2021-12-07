@@ -107,7 +107,7 @@ class search_test_set extends cms_test_case
     public function testKeywordSummary()
     {
         require_code('search');
-        $results = perform_keyword_search(['downloads', 'news']);
+        $results = perform_keyword_search(array('downloads', 'news'));
         $this->assertTrue(is_array($results));
     }
 }

@@ -80,13 +80,13 @@ class sitemap_test_set extends cms_test_case
 
     public function testIsSearchable()
     {
-        $properties_compare = [
+        $properties_compare = array(
             'content_type',
             'content_id',
             'page_link',
             'permissions',
             'privilege_page',
-        ];
+        );
 
         foreach ($this->flattened as $page_link => $node) {
             if ($page_link == '') {

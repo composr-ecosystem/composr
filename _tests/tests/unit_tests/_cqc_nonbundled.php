@@ -20,6 +20,8 @@ class _cqc_nonbundled_test_set extends cms_test_case
 {
     public function testNonBundled()
     {
+        $to_scan = array();
+
         $hooks = find_all_hooks('systems', 'addon_registry');
         ksort($hooks);
         foreach ($hooks as $hook => $dir) {

@@ -27,7 +27,7 @@ class Hook_symbol_COMPOSR_HOMESITE_ID_COMMUNITY_SITES_CATEGORY
     public function run($param)
     {
         $private = !empty($param[0]);
-        $cat_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', $private ? 'MAX(id)' : 'MIN(id)', ['c_name' => 'community_sites']);
+        $cat_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', $private ? 'MAX(id)' : 'MIN(id)', array('c_name' => 'community_sites'));
 
         return strval($cat_id);
     }

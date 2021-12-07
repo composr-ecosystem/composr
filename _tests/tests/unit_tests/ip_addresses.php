@@ -61,7 +61,7 @@ class ip_addresses_test_set extends cms_test_case
 
     public function testIPAddressSanitisation()
     {
-        $expectations = [
+        $expectations = array(
             '' => false,
 
             'x' => false,
@@ -94,7 +94,7 @@ class ip_addresses_test_set extends cms_test_case
             'gggg:gggg:gggg:gggg:gggg:gggg:gggg:gggg' => false,
             'FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF' => false,
             'FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF' => false, // Too short for when no double colons
-        ];
+        );
 
         foreach ($expectations as $string => $status) {
             $this->assertTrue(is_valid_ip($string) == $status, 'Incorrect IP address status for ' . $string);

@@ -189,7 +189,7 @@ class Hook_pointstore_giftr
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
         } else {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
         }
 
         // Show message / done

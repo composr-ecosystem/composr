@@ -218,7 +218,8 @@ class Hook_health_check_performance extends Hook_Health_Check
             usleep(1000000);
         } else {
             $start_time = time();
-            while (time() == $start_time);
+            while (time() == $start_time) {
+            }
         }
 
         $urls = array(

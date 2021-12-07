@@ -29,28 +29,28 @@ class file_security_test_set extends cms_test_case
     {
         $tests = array(
             // Not whitelisted
-            'foo.example' => ['foo.example', false],
+            'foo.example' => array('foo.example', false),
 
             // Files should be altered to remove double-file-extension
-            'foo.php.php.gif' => ['foo-php-php.gif', true],
-            'foo.php.bar.gif' => ['foo-php.bar.gif', true],
-            'foo.bar.php.gif' => ['foo.bar-php.gif', true],
-            'foo.php.gif' => ['foo-php.gif', true],
-            'foo.php' => ['foo.php', false], // Blacklisted
+            'foo.php.php.gif' => array('foo-php-php.gif', true),
+            'foo.php.bar.gif' => array('foo-php.bar.gif', true),
+            'foo.bar.php.gif' => array('foo.bar-php.gif', true),
+            'foo.php.gif' => array('foo-php.gif', true),
+            'foo.php' => array('foo.php', false), // Blacklisted
 
             // Files inside directories should be altered to remove double-file-extension
-            'x/foo.php.php.gif' => ['x/foo-php-php.gif', true],
-            'x/foo.php.bar.gif' => ['x/foo-php.bar.gif', true],
-            'x/foo.bar.php.gif' => ['x/foo.bar-php.gif', true],
-            'x/foo.php.gif' => ['x/foo-php.gif', true],
-            'x/foo.php' => ['x/foo.php', false], // Blacklisted
+            'x/foo.php.php.gif' => array('x/foo-php-php.gif', true),
+            'x/foo.php.bar.gif' => array('x/foo-php.bar.gif', true),
+            'x/foo.bar.php.gif' => array('x/foo.bar-php.gif', true),
+            'x/foo.php.gif' => array('x/foo-php.gif', true),
+            'x/foo.php' => array('x/foo.php', false), // Blacklisted
 
             // Directories should not be altered to remove double-file-extension
-            'foo.php.bar/foo.php.php.gif' => ['foo.php.bar/foo-php-php.gif', true],
-            'foo.php.bar/foo.php.bar.gif' => ['foo.php.bar/foo-php.bar.gif', true],
-            'foo.php.bar/foo.bar.php.gif' => ['foo.php.bar/foo.bar-php.gif', true],
-            'foo.php.bar/foo.php.gif' => ['foo.php.bar/foo-php.gif', true],
-            'foo.php.bar/foo.php' => ['foo.php.bar/foo.php', false], // Blacklisted
+            'foo.php.bar/foo.php.php.gif' => array('foo.php.bar/foo-php-php.gif', true),
+            'foo.php.bar/foo.php.bar.gif' => array('foo.php.bar/foo-php.bar.gif', true),
+            'foo.php.bar/foo.bar.php.gif' => array('foo.php.bar/foo.bar-php.gif', true),
+            'foo.php.bar/foo.php.gif' => array('foo.php.bar/foo-php.gif', true),
+            'foo.php.bar/foo.php' => array('foo.php.bar/foo.php', false), // Blacklisted
         );
 
         foreach ($tests as $from => $_) {

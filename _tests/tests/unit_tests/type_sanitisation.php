@@ -29,7 +29,7 @@ class type_sanitisation_test_set extends cms_test_case
     {
         // Some reasonable checks only, as e-mail address validation is incredibly complex...
 
-        $expectations = [
+        $expectations = array(
             '' => false,
 
             'foo@example.com' => true,
@@ -58,7 +58,7 @@ class type_sanitisation_test_set extends cms_test_case
             // Our regexp not smart enough for these but we do not care enough
             //'..@127.0.0.1' => false,
             //'foo@127.0.0.' => false,
-        ];
+        );
 
         foreach ($expectations as $string => $status) {
             $this->assertTrue(is_email_address($string) == $status, 'Incorrect e-mail address status for ' . $string);
