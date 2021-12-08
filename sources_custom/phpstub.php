@@ -2389,11 +2389,11 @@ function preg_replace_callback_array(array $patterns_and_callbacks, string $subj
  *
  * @param  string $pattern The pattern
  * @param  string $subject The subject
- * @param  ?integer $max_splits The maximum number of splits to make (null: no limit)
+ * @param  integer $max_splits The maximum number of splits to make (-1: no limit)
  * @param  ?integer $mode The special mode (null: none)
  * @return array The array due to splitting
  */
-function preg_split(string $pattern, string $subject, ?int $max_splits = null, ?int $mode = null) : array
+function preg_split(string $pattern, string $subject, int $max_splits = -1, ?int $mode = null) : array
 {
     return [];
 }
@@ -5057,6 +5057,7 @@ posix_*
 fileowner
 filegroup
 getmypid
+fnmatch
 
 Disabled various legacy synonyms (aliases), such as...
 

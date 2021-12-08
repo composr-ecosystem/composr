@@ -524,6 +524,9 @@ function test_url(string $url_full, string $tag_type, string $given_url, int $so
     if (strpos($url_full, '{$') !== false) {
         return new Tempcode();
     }
+    if (substr($url_full, 0, 1) == '#') {
+        return new Tempcode();
+    }
 
     // Exceptions that we don't want to check (typically things we use by default)
     if (in_array($url_full, [

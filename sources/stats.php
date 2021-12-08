@@ -651,9 +651,9 @@ abstract class CMSStatsHookBase
  */
 abstract class CMSStatsProvider extends CMSStatsHookBase
 {
-    protected const GRAPH_LINE_CHART = 1;
-    protected const GRAPH_PIE_CHART = 2;
-    protected const GRAPH_BAR_CHART = 3;
+    public const GRAPH_LINE_CHART = 1;
+    public const GRAPH_PIE_CHART = 2;
+    public const GRAPH_BAR_CHART = 3;
 
     protected const KPI_HIGH_IS_GOOD = 1;
     protected const KPI_LOW_IS_GOOD = 2;

@@ -1172,7 +1172,7 @@ function normalise_time_array(array $arr, string $zone) : array
 
     @date_default_timezone_set($zone);
 
-    $timestamp = mktime($hour, $minute, 0, $month, $day, $year);
+    $timestamp = mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year);
 
     if ($hour !== null) { // If time known
         $hour = intval(date('H', $timestamp));
@@ -1410,10 +1410,10 @@ function find_concrete_day_of_month(int $year, int $month, int $day, string $mon
     switch ($monthly_spec_type) {
         case 'day_of_month':
         default:
-            $day_of_month = intval(date('d', mktime($hour, $minute, 0, $month, $day, $year)));
+            $day_of_month = intval(date('d', mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year)));
             break;
         case 'day_of_month_backwards':
-            $day_of_month = intval(date('d', mktime($hour, $minute, 0, $month + 1, 0, $year))) - $day + 1;
+            $day_of_month = intval(date('d', mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month + 1, 0, $year))) - $day + 1;
             break;
         case 'dow_of_month':
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; // Used to set the repeating sequence $day is for (e.g. 0 means first Monday, 7 means second Monday, and so on)

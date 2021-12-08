@@ -116,7 +116,7 @@ function test_password(string $password, string $username = '', string $email_ad
     $running_maximum += 32;
 
     // Consider number of unique chars
-    $chars = preg_split('#(.)#', $password, null, PREG_SPLIT_DELIM_CAPTURE);
+    $chars = preg_split('#(.)#', $password, -1, PREG_SPLIT_DELIM_CAPTURE);
     $num_unique_chars = count(array_unique($chars)) - 1;
     $strength += min(25, ($num_unique_chars - 1) * 2);
     $running_maximum += 25;

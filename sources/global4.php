@@ -670,8 +670,8 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
                 if ($a === null) {
                     $a = do_lang('NA');
                 }
-                if ($a === null) {
-                    $a = do_lang('NA');
+                if ($b === null) {
+                    $b = do_lang('NA');
                 }
                 require_code('notifications');
                 require_lang('actionlog');

@@ -986,6 +986,7 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
     tar_close($tar);
 
     if ($do_db) {
+        require_lang('addons');
         log_it('INSTALL_ADDON', $addon_name);
     }
 }
@@ -1478,6 +1479,7 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
         }
     }
 
+    require_lang('addons');
     log_it('UNINSTALL_ADDON', $addon_info['name']);
 }
 

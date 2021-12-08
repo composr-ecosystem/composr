@@ -50,6 +50,7 @@ function cns_make_multi_moderation(string $name, string $post_text, ?int $move_t
     $map += insert_lang('mm_name', $name, 3, $GLOBALS['FORUM_DB']);
     $id = $GLOBALS['FORUM_DB']->query_insert('f_multi_moderations', $map, true);
 
+    require_lang('cns_multi_moderations');
     log_it('ADD_MULTI_MODERATION', strval($id), $name);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {

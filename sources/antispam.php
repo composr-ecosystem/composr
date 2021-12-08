@@ -313,7 +313,7 @@ function rbl_resolve(string $ip, string $rbl_domain, bool $page_level) : ?array
         foreach ($_ip as $seg) { // Copy rest in
             $normalised_ip .= str_pad($seg, 4, '0', STR_PAD_LEFT); // Pad out each component in full, building up $normalised_ip
         }
-        $parts = preg_split('//', $normalised_ip, null, PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('//', $normalised_ip, -1, PREG_SPLIT_NO_EMPTY);
         $arpa = implode('.', array_reverse($parts));
     }
 

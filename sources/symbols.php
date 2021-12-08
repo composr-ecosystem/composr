@@ -2207,7 +2207,7 @@ function symbol_truncator(array $param, string $type, $tooltip_if_truncated = nu
                 break;
         }
 
-        if ($tooltip) {
+        if (($tooltip) && (preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($truncated), ENT_QUOTES, get_charset()))) != preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($html), ENT_QUOTES, get_charset()))) {
             if ($tooltip_if_truncated !== null) {
                 $tif = (is_object($tooltip_if_truncated) ? $tooltip_if_truncated->evaluate() : $tooltip_if_truncated);
                 if (strpos($tif, $html) !== false) {

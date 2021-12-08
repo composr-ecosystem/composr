@@ -30,10 +30,7 @@ class template_xss_test_set extends cms_test_case
     {
         $templates = [];
 
-        $paths = [
-            get_file_base() . '/themes/default/templates',
-            get_file_base() . '/themes/default/templates_custom',
-        ];
+        $paths = [];
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             // Exceptions
@@ -119,10 +116,7 @@ class template_xss_test_set extends cms_test_case
     {
         $templates = [];
 
-        $paths = [
-            get_file_base() . '/themes/default/templates',
-            get_file_base() . '/themes/default/templates_custom',
-        ];
+        $paths = [];
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             // Exceptions

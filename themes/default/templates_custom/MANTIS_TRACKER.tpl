@@ -19,13 +19,13 @@
 
 					{+START,IF,{VOTED}}
 						<p class="js-click-add-voted-class tracker-issue-voting-status tracker-issue-not-voted">
-							<a target="_blank" href="{UNVOTE_URL*}"><img width="16" height="16" src="{$IMG*,icons/tracker/minus}" /> <span>{!FEATURES_UNVOTE}</span></a>
+							<a target="_blank" href="{UNVOTE_URL*}" title="{!FEATURES_UNVOTE} {!LINK_NEW_WINDOW}"><img width="16" height="16" src="{$IMG*,icons/tracker/minus}" /> <span>{!FEATURES_UNVOTE}</span></a>
 						</p>
 					{+END}
 
 					{+START,IF,{$NOT,{VOTED}}}
 						<p class="tracker-issue-voting-status tracker-issue-voted">
-							<a target="_blank" href="{VOTE_URL*}"><img width="16" height="16" src="{$IMG*,icons/tracker/plus}" /> <span>{!FEATURES_VOTE}</span></a>
+							<a target="_blank" href="{VOTE_URL*}" title="{!FEATURES_VOTE} {!LINK_NEW_WINDOW}"><img width="16" height="16" src="{$IMG*,icons/tracker/plus}" /> <span>{!FEATURES_VOTE}</span></a>
 						</p>
 					{+END}
 

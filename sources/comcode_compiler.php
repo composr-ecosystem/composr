@@ -1052,7 +1052,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                                     $ret->attach(static_evaluate_tempcode(comcode_lang_string($temp_lang_string))); // Recreate as a Comcode language string
                                                 }
                                             }
-                                        } else { // Symbol
+                                        } else { // Probably a symbol
                                             $p_len = $pos;
                                             $balance = 1;
                                             while (($p_len < $len) && ($balance != 0)) {

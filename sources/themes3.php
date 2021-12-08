@@ -188,6 +188,7 @@ function actual_add_theme(string $name, bool $include_themeini = true)
 
     Self_learning_cache::erase_smart_cache();
 
+    require_lang('themes');
     log_it('ADD_THEME', $name);
 }
 
@@ -226,6 +227,8 @@ function actual_rename_theme(string $theme, string $to)
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_theme' => $to], ['m_theme' => $theme]);
     }
     $GLOBALS['SITE_DB']->query_update('zones', ['zone_theme' => $to], ['zone_theme' => $theme]);
+
+    require_lang('themes');
     log_it('RENAME_THEME', $theme, $to);
 }
 
@@ -316,6 +319,7 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
 
     Self_learning_cache::erase_smart_cache();
 
+    require_lang('themes');
     log_it('COPY_THEME', $theme, $to);
 }
 
@@ -340,6 +344,8 @@ function actual_delete_theme(string $theme)
     afm_delete_directory('themes/' . $theme, true);
 
     $GLOBALS['SITE_DB']->query_delete('theme_images', ['theme' => $theme]);
+
+    require_lang('themes');
     log_it('DELETE_THEME', $theme);
 }
 
@@ -403,6 +409,7 @@ function actual_add_theme_image(string $theme, string $lang, string $id, string 
 
     $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => $id, 'theme' => $theme, 'url' => $url, 'lang' => $lang]);
 
+    require_lang('themes');
     log_it('ADD_THEME_IMAGE', $id, $theme);
 
     Self_learning_cache::erase_smart_cache();
@@ -469,6 +476,7 @@ function actual_edit_theme_image(string $old_id, string $theme, string $lang, st
         require_code('caches3');
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_THEME_IMAGE); // Paths may have been cached
 
+        require_lang('themes');
         log_it('EDIT_THEME_IMAGE', $id, $theme);
     }
 }
@@ -503,6 +511,7 @@ function actual_delete_theme_image(string $id, ?string $theme = null, ?string $l
         cleanup_after_theme_image_file_removal($old_url);
     }
 
+    require_lang('themes');
     log_it('DELETE_THEME_IMAGE', $id, $theme);
 }
 

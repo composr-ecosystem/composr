@@ -65,6 +65,10 @@ class Database_Static_mysqli extends Database_super_mysql
 
             return [$this->cache_db[$x], $db_name];
         }
+
+        mysqli_report(MYSQLI_REPORT_OFF);
+
+        // Connect
         $db_port = 3306;
         if (strpos($db_host, ':') !== false) {
             list($db_host, $_db_port) = explode(':', $db_host);

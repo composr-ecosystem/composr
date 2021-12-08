@@ -52,7 +52,7 @@
 
 		<div style="{+START,IF,{SHOW_PROFILE_IMAGE}}float:left; border-left: 1px solid #ccc; padding: 0; margin-left: 1em; padding-left: 1em; width: calc(100% - 48px - 2em - 1px - 80px);{+END}">
 			<strong>{USER_NAME*}</strong><br />
-			<a href="{USER_PAGE_URL*}" target="_blank">@{USER_SCREEN_NAME*}</a>
+			<a href="{USER_PAGE_URL*}" target="_blank" title="@{USER_SCREEN_NAME*} {!LINK_NEW_WINDOW}">@{USER_SCREEN_NAME*}</a>
 		</div>
 	</div>
 

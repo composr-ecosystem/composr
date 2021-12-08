@@ -77,6 +77,7 @@ function add_custom_comcode_tag(string $tag, $title, $description, string $repla
     }
     $GLOBALS['SITE_DB']->query_insert('custom_comcode', $map);
 
+    require_lang('custom_comcode');
     log_it('ADD_CUSTOM_COMCODE_TAG', $tag);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -149,6 +150,7 @@ function edit_custom_comcode_tag(string $old_tag, string $tag, string $title, st
     $map += lang_remap('tag_description', $_description, $description);
     $GLOBALS['SITE_DB']->query_update('custom_comcode', $map, ['tag_tag' => $old_tag], '', 1);
 
+    require_lang('custom_comcode');
     log_it('EDIT_CUSTOM_COMCODE_TAG', $tag, $old_tag);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -179,6 +181,7 @@ function delete_custom_comcode_tag(string $tag)
         'tag_tag' => $tag,
     ], '', 1);
 
+    require_lang('custom_comcode');
     log_it('DELETE_CUSTOM_COMCODE_TAG', $tag);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {

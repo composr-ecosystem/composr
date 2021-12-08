@@ -738,8 +738,8 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
                     continue;
                 }
 
-                if (($group['id'] != db_get_first_id()) && ($group['id'] != $current_primary_group) && ((array_key_exists($group['id'], $members_groups)) || (has_privilege(get_member(), 'assume_any_member')) || ($group['g_open_membership'] == 1))) {
-                    $selected = array_key_exists($group['id'], $members_groups);
+                if (($group['id'] != db_get_first_id()) && ((array_key_exists($group['id'], $members_groups)) || (has_privilege(get_member(), 'assume_any_member')) || ($group['g_open_membership'] == 1))) {
+                    $selected = array_key_exists($group['id'], $members_groups) && ($group['id'] != $current_primary_group);
                     $_groups2->attach(form_input_list_entry(strval($group['id']), $selected, get_translated_text($group['g_name'], $GLOBALS['FORUM_DB'])));
                 }
             }

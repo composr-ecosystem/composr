@@ -49,6 +49,7 @@ function cns_edit_multi_moderation(int $id, string $name, string $post_text, ?in
     $map += lang_remap('mm_name', $_name, $name, $GLOBALS['FORUM_DB']);
     $GLOBALS['FORUM_DB']->query_update('f_multi_moderations', $map, ['id' => $id], '', 1);
 
+    require_lang('cns_multi_moderations');
     log_it('EDIT_MULTI_MODERATION', strval($id), $name);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -76,6 +77,7 @@ function cns_delete_multi_moderation(int $id)
     $GLOBALS['FORUM_DB']->query_delete('f_multi_moderations', ['id' => $id], '', 1);
     delete_lang($_name, $GLOBALS['FORUM_DB']);
 
+    require_lang('cns_multi_moderations');
     log_it('DELETE_MULTI_MODERATION', strval($id), $name);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {

@@ -1341,7 +1341,11 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
                 break;
         }
         if (function_exists('get_option')) {
-            $handling_method = get_option('error_handling_' . $type . 's');
+            if ($type == 'deprecated') {
+                $handling_method = get_option('error_handling_' . $type);
+            } else {
+                $handling_method = get_option('error_handling_' . $type . 's');
+            }
         }
         if ($GLOBALS['DEV_MODE']) {
             $handling_method = 'FATAL';

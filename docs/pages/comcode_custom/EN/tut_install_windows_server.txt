@@ -29,7 +29,7 @@ The easiest way to install your server software is with the Microsoft [url="Web 
 
 When Web Platform Installer installs PHP it will make sure file permissions to PHP are correct as well as automatically configuring FastCGI. These are quite hard to do manually.
 
-You also need to install Microsoft .net 3.5 via "server roles", if it is not already installed. You can also try installing [url=".net 3.5 manually"]https://www.microsoft.com/net/[/url] if needed.
+You also need to install Microsoft .net 3.5 via "server roles", if it is not already installed. You can also try installing [url=".net 3.5 manually"]https://dotnet.microsoft.com/en-us/[/url] if needed.
 
 From the Web Platform Installer you need to install:
  - IIS Express [i]if you are not running on a real Windows Server[/i]

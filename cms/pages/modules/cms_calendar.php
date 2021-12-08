@@ -591,7 +591,7 @@ class Module_cms_calendar extends Standard_crud_module
         $fields2->attach(form_input_integer(do_lang_tempcode('RECURRENCES'), do_lang_tempcode('DESCRIPTION_RECURRENCES'), 'recurrences', $recurrences, false));
         $fields2->attach(form_input_tick(do_lang_tempcode('SEG_RECURRENCES'), do_lang_tempcode('DESCRIPTION_SEG_RECURRENCES'), 'seg_recurrences', $seg_recurrences == 1));
         $concrete_start_day = find_concrete_day_of_month($start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $timezone, $do_timezone_conv == 1);
-        $start_time = mktime($start_hour, $start_minute, 0, $start_month, $concrete_start_day, $start_year);
+        $start_time = mktime(($start_hour === null) ? 12 : $start_hour, ($start_hour === null) ? 0 : $start_minute, 0, $start_month, $concrete_start_day, $start_year);
         $start_time = tz_time($start_time, get_users_timezone());
         $conv_month = intval(date('n', $start_time));
         $conv_day = intval(date('j', $start_time));

@@ -710,7 +710,7 @@ function form_input_url($pretty_name, $description, string $name, ?string $defau
 
     require_code('urls_simplifier');
     $coder_ob = new HarmlessURLCoder();
-    $_default = $coder_ob->decode($default);
+    $_default = ($default === null) ? '' : $coder_ob->decode($default);
 
     $autocomplete = _get_autocomplete_attribute_value($name, $autocomplete);
 
@@ -1632,7 +1632,7 @@ function form_input_upload_multi_source($set_title, $set_description, object &$h
             if ($default === null) {
                 $filedump_default = '';
             } else {
-                $filedump_default = (preg_match('#^uploads/filedump/#', $default) != 0) ? $default : '';
+                $filedump_default = (($default !== null) && (preg_match('#^uploads/filedump/#', $default) != 0)) ? $default : '';
             }
             $filedump_field_description = do_lang_tempcode('DESCRIPTION_ALTERNATE_URL_FILEDUMP', escape_html($filedump_url->evaluate()));
             $filedump_widget = form_input_tree_list(do_lang_tempcode('FILEDUMP'), $filedump_field_description, $field_filedump, '', 'choose_filedump_file', $filedump_options, $required, $filedump_default, false);
