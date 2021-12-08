@@ -127,6 +127,12 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
             }
 
             $_mode = substr($header, 100, 8);
+            if (preg_match('#\s*[0-7]+\s*#', $_mode) == 0) {
+                if ($tolerate_errors) {
+                    return null;
+                }
+                warn_exit(do_lang_tempcode('CORRUPT_TAR'));
+            }
             $mode = octdec(trim($_mode));
             $size = octdec(rtrim(substr($header, 124, 12)));
             $mtime = octdec(rtrim(substr($header, 136, 12)));

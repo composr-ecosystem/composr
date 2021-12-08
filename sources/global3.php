@@ -4054,11 +4054,11 @@ function cms_preg_replace_callback_safe($pattern, $callback, $subject, $limit = 
  *
  * @param  string $pattern The pattern.
  * @param  string $subject The subject.
- * @param  ?integer $max_splits The maximum number of splits to make (null: no limit).
+ * @param  integer $max_splits The maximum number of splits to make (-1: no limit).
  * @param  ?integer $mode The special mode (null: none).
  * @return array The array due to splitting.
  */
-function cms_preg_split_safe($pattern, $subject, $max_splits = null, $mode = null)
+function cms_preg_split_safe($pattern, $subject, $max_splits = -1, $mode = null)
 {
     if (get_charset() == 'utf-8') {
         $result = @preg_split($pattern . 'u', $subject, $max_splits, $mode);

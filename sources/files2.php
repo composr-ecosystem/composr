@@ -1197,7 +1197,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
             $raw_payload .= $_postdetails_params;
             $raw_payload_curl = $_postdetails_params; // Other settings will be passed via cURL itself
         } else { // If files, use more complex multipart/form-data
-            if (strtolower($http_verb) == 'put') {
+            if (($http_verb !== null) && (strtolower($http_verb) == 'put')) {
                 $put_no_delete = (count($post_params) == 0) && (count($files) == 1); // Can we just use the one referenced file as a direct PUT
                 if ($put_no_delete) { // Yes
                     reset($files);
@@ -2398,7 +2398,7 @@ function _http_download_file_curl_body($ch, $str)
  * Final filter for downloader output: try a bit harder to detect the character encoding, in case it was not in an HTTP filter.
  * Manipulates the $HTTP_CHARSET global.
  *
- * @param  string $out The HTTP stream we will look through
+ * @param  ?string $out The HTTP stream we will look through (null: none)
  * @return string Same as $out
  *
  * @ignore
@@ -2406,7 +2406,7 @@ function _http_download_file_curl_body($ch, $str)
 function _detect_character_encoding($out)
 {
     global $HTTP_CHARSET;
-    if ($HTTP_CHARSET === null) {
+    if (($HTTP_CHARSET === null) && ($out !== null)) {
         $matches = array();
         if (preg_match('#<' . '?xml[^<>]*\s+encoding="([^"]+)"#', $out, $matches) != 0) {
             $HTTP_CHARSET = trim($matches[1]);

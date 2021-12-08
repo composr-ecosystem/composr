@@ -794,7 +794,9 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
                 if ($ob_info === null) {
                     continue;
                 }
-                $ob_info['view_page_link_pattern'] = preg_replace('#:[^:]*$#', ':_WILD', $ob_info['view_page_link_pattern']);
+                if ($ob_info['view_page_link_pattern'] !== null) {
+                    $ob_info['view_page_link_pattern'] = preg_replace('#:[^:]*$#', ':_WILD', $ob_info['view_page_link_pattern']);
+                }
 
                 if (($ob_info['view_page_link_pattern'] == $looking_for) && ($ob_info['support_url_monikers'])) {
                     if (is_numeric($url_id)) { // We definitely did not go to a moniker URL (as the URL ID was numeric). Lookup and redirect to the true moniker URL.

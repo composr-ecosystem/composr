@@ -262,7 +262,7 @@ function rbl_resolve($ip, $rbl_domain, $page_level)
         foreach ($_ip as $seg) {// Copy rest in
             $normalised_ip .= str_pad($seg, 4, '0', STR_PAD_LEFT); // Pad out each component in full, building up $normalised_ip
         }
-        $arpa = implode('.', array_reverse(preg_split('//', $normalised_ip, null, PREG_SPLIT_NO_EMPTY)));
+        $arpa = implode('.', array_reverse(preg_split('//', $normalised_ip, -1, PREG_SPLIT_NO_EMPTY)));
     }
 
     $lookup = str_replace('*', $arpa, $rbl_domain) . '.';

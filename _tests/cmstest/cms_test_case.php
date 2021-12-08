@@ -32,7 +32,7 @@ class cms_test_case extends WebTestCase
         }
 
         // We need to be compatible with low memory limits
-        ini_set('memory_limit', '32M');
+        @ini_set('memory_limit', '32M');
         set_value('memory_limit', '32M');
     }
 

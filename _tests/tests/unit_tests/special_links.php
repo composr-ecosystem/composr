@@ -20,26 +20,39 @@ class special_links_test_set extends cms_test_case
 {
     public function testISBN()
     {
-        // Disabled as it seems to heavily slow down most user agents
-        //$this->assertTrue(strpos(http_download_file('https://www.bookfinder.com/search/?isbn=0241968984&mode=isbn&st=sr&ac=qr', null, false), 'No Place to Hide') !== false, 'External link not working, fix test and use within Composr (separate)');
-        //$this->assertTrue(strpos(http_download_file('https://www.bookfinder.com/search/?isbn=978-0241968987&mode=isbn&st=sr&ac=qr', null, false), 'No Place to Hide') !== false, 'External link not working, fix test and use within Composr (separate)');
+        /*
+        Disabled as it seems to heavily slow down most user agents
+
+        $data = http_download_file('https://www.bookfinder.com/search/?isbn=0241968984&mode=isbn&st=sr&ac=qr', null, false);
+        $this->assertTrue(($data !== null) && (strpos($data, 'No Place to Hide') !== false), 'External link not working, fix test and use within Composr (separate)');
+
+        $data = http_download_file('https://www.bookfinder.com/search/?isbn=978-0241968987&mode=isbn&st=sr&ac=qr', null, false);
+        $this->assertTrue(($data !== null) && (strpos($data, 'No Place to Hide') !== false), 'External link not working, fix test and use within Composr (separate)');
+        */
     }
 
     public function testChicklets()
     {
-        $this->assertTrue(is_string(http_download_file('http://add.my.yahoo.com/content?url=' . urlencode('http://example.com'), null, false)), 'External link not working, fix test and use within Composr (separate)');
+        $data = http_download_file('http://add.my.yahoo.com/content?url=' . urlencode('http://example.com'), null, false);
+        $this->assertTrue(is_string($data), 'External link not working, fix test and use within Composr (separate)');
     }
 
     public function testLookupLinks()
     {
-        $this->assertTrue(strpos(http_download_file('https://whatismyipaddress.com/ip/12.34.56.78', null, false), 'AT&T Services') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
-        $this->assertTrue(strpos(http_download_file('https://ping.eu/ping/?host=12.34.56.78', null, false), 'Ping') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
-        $this->assertTrue(strpos(http_download_file('https://ping.eu/traceroute/?host=12.34.56.78', null, false), 'Traceroute') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $data = http_download_file('https://ip.me/?ip=12.34.56.78', null, false);
+        $this->assertTrue(($data !== null) && (strpos($data, 'AT&amp;T Services') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+
+        $data = http_download_file('https://ping.eu/ping/?host=12.34.56.78', null, false);
+        $this->assertTrue(($data !== null) && (strpos($data, 'Ping') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+
+        $data = http_download_file('https://ping.eu/traceroute/?host=12.34.56.78', null, false);
+        $this->assertTrue(($data !== null) && (strpos($data, 'Traceroute') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
     }
 
     public function testWhoIsLink()
     {
-        $this->assertTrue(stripos(http_download_file('http://whois.domaintools.com/compo.sr', null, false), 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
+        $data = http_download_file('http://whois.domaintools.com/compo.sr', null, false);
+        $this->assertTrue(($data !== null) && (stripos($data, 'whois') !== false), 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
     }
 
     public function testHealthCheckLinks()

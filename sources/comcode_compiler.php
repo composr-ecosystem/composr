@@ -1050,7 +1050,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                             if ($in_semihtml) {
                                                 $_variable_comcode = html_entity_decode($_variable_comcode, ENT_QUOTES, get_charset());
                                             }
-                                            $ret->parse_from($_variable_comcode, 0, strlen($_variable_comcode), true);
+                                            $ret->parse_from($_variable_comcode, 0, strlen($_variable_comcode));
                                             $pos = $p_len;
 
                                             /*if (!$in_html && !$in_semihtml) {     Actually, no, we must explicitly escape symbols in Comcode (except when there's a pre-Tempcode-pass of that Comcode / inside tag attributes / inside non-textual areas)

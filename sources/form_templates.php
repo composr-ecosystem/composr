@@ -1436,7 +1436,7 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
 
     require_code('urls_simplifier'); // TODO: This should move into form_input_url in v11
     $coder_ob = new HarmlessURLCoder();
-    $_default = $coder_ob->decode($default);
+    $_default = ($default === null) ? '' : $coder_ob->decode($default);
 
     $field_set->attach(form_input_url(do_lang_tempcode('URL'), do_lang_tempcode('DESCRIPTION_ALTERNATE_URL'), $field_url, $_default, $required));
 
@@ -1465,7 +1465,7 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
             } else {
                 $filedump_options = array();
             }
-            $filedump_default = (preg_match('#^uploads/filedump/#', $default) != 0) ? $default : '';
+            $filedump_default = (($default !== null) && (preg_match('#^uploads/filedump/#', $default) != 0)) ? $default : '';
             $filedump_field_description = do_lang_tempcode('DESCRIPTION_ALTERNATE_URL_FILEDUMP', escape_html($filedump_url->evaluate()));
             $field_set->attach(form_input_tree_list(do_lang_tempcode('FILEDUMP'), $filedump_field_description, $field_filedump, '', 'choose_filedump_file', $filedump_options, $required, $filedump_default, false));
         }

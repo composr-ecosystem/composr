@@ -107,13 +107,13 @@ class bump_member_group_timeout_test_set extends cms_test_case
         bump_member_group_timeout($member_id, $group_id, -10, false);
         $this->assertTrue(in_array($group_id, $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id)));
 
-        $member_id = 4;
+        $member_id = 2;
         bump_member_group_timeout($member_id, $group_id, -10, false);
         $this->assertTrue(in_array($group_id, $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id)));
 
         cleanup_member_timeouts();
 
         $this->assertFalse(in_array($group_id, $GLOBALS['FORUM_DRIVER']->get_members_groups(3)));
-        $this->assertFalse(in_array($group_id, $GLOBALS['FORUM_DRIVER']->get_members_groups(4)));
+        $this->assertFalse(in_array($group_id, $GLOBALS['FORUM_DRIVER']->get_members_groups(2)));
     }
 }

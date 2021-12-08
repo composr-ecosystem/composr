@@ -65,7 +65,7 @@ class http_test_set extends cms_test_case
     public function testRedirectDisabled()
     {
         $result = http_download_file('https://jigsaw.w3.org/HTTP/300/301.html', null, false, true);
-        $this->assertTrue(strpos($result, 'Redirect test page') === false);
+        $this->assertTrue($result === null);
     }
 
     public function testHttpAuth()

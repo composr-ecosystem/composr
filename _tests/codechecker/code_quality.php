@@ -600,6 +600,10 @@ $ERROR_FUNCS = array(
     'set_time_limit' => true,
     'exec' => true,
     'passthru' => true,
+
+    // TODO: Remove in v11, as deprecated in PHP 8.1
+    'gmstrftime' => true,
+    'strftime' => true,
 );
 
 global $COMPOSR_PATH;
@@ -1922,7 +1926,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         case 'NEW_OBJECT':
             global $FUNCTION_SIGNATURES;
             if ((!isset($FUNCTION_SIGNATURES[$inner[1]])) && ($FUNCTION_SIGNATURES != array()) && (strpos($function_guard, ',' . $inner[1] . ',') === false)) {
-                if (((is_null($GLOBALS['OK_EXTRA_FUNCTIONS'])) || (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $inner[1]) == 0))) {
+                if (((is_null($GLOBALS['OK_EXTRA_FUNCTIONS'])) || ($inner[1] !== null) && (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $inner[1]) == 0))) {
                     if (!is_null($inner[1])) {
                         log_warning('Unknown class, ' . $inner[1], $c_pos);
                     }

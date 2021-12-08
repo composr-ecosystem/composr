@@ -2705,11 +2705,11 @@ function preg_replace_callback($pattern, $callback, $subject, $limit = -1)
  *
  * @param  string $pattern The pattern.
  * @param  string $subject The subject.
- * @param  ?integer $max_splits The maximum number of splits to make (null: no limit).
+ * @param  integer $max_splits The maximum number of splits to make (-1: no limit).
  * @param  ?integer $mode The special mode (null: none).
  * @return array The array due to splitting.
  */
-function preg_split($pattern, $subject, $max_splits = null, $mode = null)
+function preg_split($pattern, $subject, $max_splits = -1, $mode = null)
 {
     return array();
 }
@@ -5565,7 +5565,6 @@ php_strip_whitespace
 ini_get_all
 get_include_path
 set_include_path
-restore_include_path
 setrawcookie
 umask
 get_browser
@@ -5613,7 +5612,6 @@ getmyinode
 getmygid
 get_current_user
 fnmatch
-money_format
 
 Disabled various legacy synonyms (aliases), such as...
 
@@ -5689,6 +5687,18 @@ ereg_replace
 eregi
 eregi_replace
 sql_regcase
+strptime
+date_sunrise
+date_sunset
+date_sun_info
+hebrevc
+convert_cyr_string
+money_format
+ezmlm_hash
+restore_include_path
+get_magic_quotes_gpc
+get_magic_quotes_runtime
+fgetss
 
 Disabled simply as we don't feel a need to use them (can enable if we find a use)...
 
@@ -5697,7 +5707,6 @@ interface_exists
 restore_exception_handler
 get_declared_interfaces
 get_defined_constants
-strptime
 htmlspecialchars_decode
 sha1_file
 strripos
