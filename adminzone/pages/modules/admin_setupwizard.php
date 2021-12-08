@@ -315,9 +315,13 @@ class Module_admin_setupwizard
             if (array_key_exists(2, $profile_addons)) {
                 $addon_list_override_to_off_by_default = $profile_addons[2];
             }
+            if (array_key_exists(3, $profile_addons)) {
+                $addon_list_force_on = $profile_addons[3];
+            }
         } else {
             $addon_list_on_by_default = mixed();
             $addon_list_advanced_on_by_default = array();
+            $addon_list_force_on = array();
         }
 
         /*$addon_list_on_by_default = array(   These will be put on in individual Setup Wizard profiles; we list them here just so our addon_setupwizard unit test can ensure we haven't forgotten to consider their status
@@ -473,7 +477,7 @@ class Module_admin_setupwizard
         require_code('addons');
         foreach ($all_addons as $addon_name => $row) {
             $is_core = ($addon_name == 'core') || (substr($addon_name, 0, 5) == 'core_');
-            if ((!$is_core) && (substr($addon_name, -7) != '_shared') && ($addon_name != 'setupwizard')) {
+            if ((!$is_core) && (substr($addon_name, -7) != '_shared') && ($addon_name != 'setupwizard') && (!in_array($addon_name, $addon_list_force_on))) {
                 $is_advanced_on_by_default = in_array($addon_name, $addon_list_advanced_on_by_default);
                 $is_advanced_off_by_default = in_array($addon_name, $addon_list_advanced_off_by_default);
                 $install_by_default = ((!is_null($addon_list_on_by_default)) && (in_array($addon_name, $addon_list_on_by_default)) || ($is_advanced_on_by_default) || ((is_null($addon_list_on_by_default)) && (!$is_advanced_off_by_default)));

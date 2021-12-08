@@ -44,8 +44,11 @@ class Hook_admin_setupwizard_installprofiles_shopping
     public function get_addon_list()
     {
         return array(
-            array('ecommerce', 'shopping', 'ssl', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'),
-            array());
+            array('ecommerce', 'ssl', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'),
+            array(),
+            array(),
+            array('shopping'),
+        );
     }
 
     /**

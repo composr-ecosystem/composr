@@ -44,8 +44,11 @@ class Hook_admin_setupwizard_installprofiles_blog
     public function get_addon_list()
     {
         return array(
-            array('news', 'newsletter'),
-            array());
+            array('newsletter'),
+            array(),
+            array(),
+            array('news'),
+        );
     }
 
     /**

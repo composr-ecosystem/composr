@@ -44,6 +44,7 @@ function add_award_type($title, $description, $points, $content_type, $hide_awar
     $map += insert_lang_comcode('a_description', $description, 2);
     $id = $GLOBALS['SITE_DB']->query_insert('award_types', $map, true);
 
+    require_lang('awards');
     log_it('ADD_AWARD_TYPE', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -82,6 +83,7 @@ function edit_award_type($id, $title, $description, $points, $content_type, $hid
     $map += lang_remap_comcode('a_description', $_description, $description);
     $GLOBALS['SITE_DB']->query_update('award_types', $map, array('id' => $id));
 
+    require_lang('awards');
     log_it('EDIT_AWARD_TYPE', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -102,6 +104,7 @@ function delete_award_type($id)
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'award_type'));
     }
     $_description = $GLOBALS['SITE_DB']->query_select_value('award_types', 'a_description', array('id' => $id));
+    require_lang('awards');
     log_it('DELETE_AWARD_TYPE', strval($id), get_translated_text($_title));
     $GLOBALS['SITE_DB']->query_delete('award_types', array('id' => $id), '', 1);
     $GLOBALS['SITE_DB']->query_delete('award_archive', array('a_type_id' => $id), '', 1);

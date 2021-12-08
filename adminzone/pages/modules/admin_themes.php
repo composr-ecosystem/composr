@@ -1504,6 +1504,13 @@ class Module_admin_themes
                 }
             }
 
+            // Get file path
+            $_default_load_path = find_template_place(basename($file, '.' . $ext), null, $theme, '.' . $ext, dirname($file));
+            if ($_default_load_path === null) {
+                attach_message(do_lang_tempcode('_MISSING_RESOURCE', escape_html($file)), 'warn');
+                continue;
+            }
+
             // Syntax highlighting
             $syntax = 'html';
             if (substr($file, -3) == '.js') {
@@ -1533,7 +1540,6 @@ class Module_admin_themes
             $codename = basename($file);
 
             // The file we're LOADING from for edit
-            $_default_load_path = find_template_place(basename($file, '.' . $ext), null, $theme, '.' . $ext, dirname($file));
             $contents = '';
             $revisions = new Tempcode();
             if (!is_null($_default_load_path[0])) {

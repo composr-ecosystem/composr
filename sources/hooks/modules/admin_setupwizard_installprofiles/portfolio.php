@@ -44,8 +44,11 @@ class Hook_admin_setupwizard_installprofiles_portfolio
     public function get_addon_list()
     {
         return array(
-            array('galleries', 'random_quotes', 'polls', 'news'),
-            array());
+            array('random_quotes', 'polls', 'news'),
+            array(),
+            array(),
+            array('galleries')
+        );
     }
 
     /**

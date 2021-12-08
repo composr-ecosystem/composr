@@ -76,6 +76,7 @@ function add_usergroup_subscription($title, $description, $cost, $length, $lengt
         $GLOBALS['SITE_DB']->query_insert('f_usergroup_sub_mails', $map);
     }
 
+    require_lang('ecommerce');
     log_it('ADD_USERGROUP_SUBSCRIPTION', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -195,6 +196,7 @@ function edit_usergroup_subscription($id, $title, $description, $cost, $length, 
         }
     }
 
+    require_lang('ecommerce');
     log_it('EDIT_USERGROUP_SUBSCRIPTION', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -269,6 +271,7 @@ function delete_usergroup_subscription($id, $uhoh_mail = '')
         delete_lang($_mail['m_body'], $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB']);
     }
 
+    require_lang('ecommerce');
     log_it('DELETE_USERGROUP_SUBSCRIPTION', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {

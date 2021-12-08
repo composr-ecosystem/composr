@@ -1519,7 +1519,7 @@ td>.box, .right .box:first-child:last-child, .left .box:first-child:last-child {
 	/* .box_inner set us in the wrong position, so fiddle around a bit to move us back to be flush */
 	margin: -5px 0 5px -5px;
 	padding: 0.4em 0.8em 0.4em 0.3em;
-	width: 100%;
+	width: calc(100% - 0.8em - 0.3em + 10px);
 }
 .box_inner>h2>.right .button_screen {
 	vertical-align: top;
@@ -1674,7 +1674,6 @@ a.toggleable_tray_button { /* Override above for toggleable_tray_button */
 	font-weight: bold;
 	vertical-align: middle;
 	margin: 0; /* Outside .box_inner so remove the margin added above */
-	padding: 0.3em 0; /* Centered so needs no horizontal padding, which would also mess with our 100% width */
 }
 
 .toggleable_tray_button {
@@ -3285,7 +3284,7 @@ ul.buttons_group, ul.associated_links_block_group {
 }
 
 .quite_wide_field {
-	width: 88%;
+	width: 86%;
 }
 
 .box___confirm_screen {

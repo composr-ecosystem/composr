@@ -126,6 +126,7 @@ class Hook_commandr_fs_menus extends Resource_fs_base
             generate_resource_fs_moniker('menu', $menu, null, null, true);
         }
 
+        require_lang('menus');
         log_it('ADD_MENU', $menu);
 
         $this->_resource_save_extend($this->folder_resource_type, $menu, $filename, $label, $properties);

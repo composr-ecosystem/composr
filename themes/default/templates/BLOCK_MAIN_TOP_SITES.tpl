@@ -26,10 +26,10 @@
 
 						{+START,IF,{$NOT,{$LT,{_loop_key},20}}}
 							{+START,IF_NON_EMPTY,{DESCRIPTION}}
-								<p><a target="_blank" title="{$STRIP_TAGS,{DESCRIPTION}}: {!NEW_WINDOW}" href="{URL*}">{DESCRIPTION}</a></p>
+								<p><a target="_blank" title="{$STRIP_TAGS,{DESCRIPTION}} {!LINK_NEW_WINDOW}" href="{URL*}">{DESCRIPTION}</a></p>
 							{+END}
 							{+START,IF_EMPTY,{DESCRIPTION}}
-								<p><a target="_blank" title="{NAME*}: {!NEW_WINDOW}" href="{URL*}">{NAME*}</a></p>
+								<p><a target="_blank" title="{NAME*} {!LINK_NEW_WINDOW}" href="{URL*}">{NAME*}</a></p>
 							{+END}
 						{+END}
 					</td>

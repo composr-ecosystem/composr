@@ -727,7 +727,7 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
         if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
             $page_place_r = $page_place;
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
-            if ((substr($page_place[0], 0, 7) != 'COMCODE') || ($type === null)) {
+            if (($page_place !== false) && (substr($page_place[0], 0, 7) != 'COMCODE') || ($type === null)) {
                 // We're viewing the Comcode page behind this redirect, or it's not a Comcode page so nothing is underneath it
                 $page = $page_place_r[1]['r_to_page'];
                 $zone = $page_place_r[1]['r_to_zone'];
@@ -794,7 +794,9 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
                 if ($ob_info === null) {
                     continue;
                 }
-                $ob_info['view_page_link_pattern'] = preg_replace('#:[^:]*$#', ':_WILD', $ob_info['view_page_link_pattern']);
+                if ($ob_info['view_page_link_pattern'] !== null) {
+                    $ob_info['view_page_link_pattern'] = preg_replace('#:[^:]*$#', ':_WILD', $ob_info['view_page_link_pattern']);
+                }
 
                 if (($ob_info['view_page_link_pattern'] == $looking_for) && ($ob_info['support_url_monikers'])) {
                     if (is_numeric($url_id)) { // We definitely did not go to a moniker URL (as the URL ID was numeric). Lookup and redirect to the true moniker URL.

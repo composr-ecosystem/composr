@@ -160,6 +160,7 @@ function actual_edit_theme_image($old_id, $theme, $lang, $id, $path, $quick = fa
         require_code('caches3');
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_THEME_IMAGE); // Paths may have been cached
 
+        require_lang('themes');
         log_it('EDIT_THEME_IMAGE', $id, $theme);
     }
 }
@@ -247,6 +248,7 @@ function actual_add_theme($name)
 
     Self_learning_cache::erase_smart_cache();
 
+    require_lang('themes');
     log_it('ADD_THEME', $name);
 }
 
@@ -271,6 +273,7 @@ function actual_add_theme_image($theme, $lang, $id, $path, $fail_ok = false)
 
     $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => $id, 'theme' => $theme, 'path' => $path, 'lang' => $lang));
 
+    require_lang('themes');
     log_it('ADD_THEME_IMAGE', $id, $theme);
 
     Self_learning_cache::erase_smart_cache();

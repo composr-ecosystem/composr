@@ -93,7 +93,7 @@ class Module_cms_authors
         if ($type == '_add') {
             breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE'))));
 
-            $author = get_param_string('author', $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
+            $author = get_param_string('id', $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
             $this->title = get_screen_title('_DEFINE_AUTHOR', true, array(escape_html($author)));
 
             $this->author = $author;
@@ -167,7 +167,6 @@ class Module_cms_authors
         return do_next_manager(get_screen_title('AUTHOR_MANAGE'), comcode_lang_string('DOC_AUTHORS'),
             array_merge(array(
                 has_privilege(get_member(), 'set_own_author_profile') ? array('menu/cms/author_set_own_profile', array('_SELF', array('type' => '_add'), '_SELF'), do_lang('EDIT_MY_AUTHOR_PROFILE')) : null,
-                has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('menu/_generic_admin/add_one', array('_SELF', array('type' => '_add'), '_SELF'), do_lang('ADD_AUTHOR')) : null,
                 has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('menu/_generic_admin/edit_one', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_MERGE_AUTHORS')) : null,
             ), manage_custom_fields_donext_link('author')),
             do_lang('AUTHOR_MANAGE')
@@ -370,7 +369,7 @@ class Module_cms_authors
             null,
             null,
             /* TYPED-ORDERED LIST OF 'LINKS'  */
-            has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('_SELF', array('type' => '_add'), '_SELF') : null, // Add one
+            null, // Add one
             is_null($author) ? null : array('_SELF', array('type' => '_add', 'id' => $author), '_SELF'), // Edit this
             has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('_SELF', array('type' => 'edit'), '_SELF') : null, // Edit one
             is_null($author) ? null : array('authors', array('type' => 'browse', 'id' => $author), get_module_zone('authors')), // View this
@@ -407,7 +406,7 @@ class Module_cms_authors
         }
 
         require_code('form_templates');
-        $fields = form_input_list(do_lang_tempcode('NAME'), '', 'author', $authors, null, true);
+        $fields = form_input_list(do_lang_tempcode('NAME'), '', 'id', $authors, null, true);
         $post_url = build_url(array('page' => '_SELF', 'type' => '_add'), '_SELF');
         $submit_name = do_lang_tempcode('SETUP');
         $define_form = do_template('FORM', array('_GUID' => '1109c0cfdd598bf87134de1838709c39', 'TABINDEX' => strval(get_form_field_tabindex()), 'HIDDEN' => '', 'TEXT' => '', 'FIELDS' => $fields, 'GET' => true, 'URL' => $post_url, 'SUBMIT_ICON' => 'menu___generic_admin__edit_this', 'SUBMIT_NAME' => $submit_name, 'SUPPORT_AUTOSAVE' => true));

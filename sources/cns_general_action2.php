@@ -36,6 +36,7 @@ function cns_edit_post_template($id, $title, $text, $forum_multi_code, $use_defa
         't_use_default_forums' => $use_default_forums
     ), array('id' => $id), '', 1);
 
+    require_lang('cns_post_templates');
     log_it('EDIT_POST_TEMPLATE', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -53,6 +54,7 @@ function cns_delete_post_template($id)
 {
     $GLOBALS['FORUM_DB']->query_delete('f_post_templates', array('id' => $id), '', 1);
 
+    require_lang('cns_post_templates');
     log_it('DELETE_POST_TEMPLATE', strval($id));
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -210,6 +212,7 @@ function cns_edit_welcome_email($id, $name, $subject, $text, $send_time, $newsle
         generate_resource_fs_moniker('welcome_email', strval($id));
     }
 
+    require_lang('cns_welcome_emails');
     log_it('EDIT_WELCOME_EMAIL', strval($id), get_translated_text($_subject));
 }
 
@@ -235,6 +238,7 @@ function cns_delete_welcome_email($id)
         expunge_resource_fs_moniker('welcome_email', strval($id));
     }
 
+    require_lang('cns_welcome_emails');
     log_it('DELETE_WELCOME_EMAIL', strval($id), get_translated_text($_subject));
 }
 
