@@ -1026,7 +1026,7 @@ cms_ini_set('suhosin.executor.multiheader', '1'); // Extra security if suhosin i
 cms_ini_set('suhosin.executor.disable_eval', '0');
 cms_ini_set('suhosin.executor.eval.whitelist', '');
 cms_ini_set('suhosin.executor.func.whitelist', '');
-cms_ini_set('auto_detect_line_endings', '0');
+cms_ini_set('auto_detect_line_endings', '0'); // LEGACY: Remove when only supporting PHP 8.1+
 cms_ini_set('default_socket_timeout', '60');
 cms_ini_set('html_errors', '1');
 cms_ini_set('docref_root', 'http://php.net/manual/en/');
