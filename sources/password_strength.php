@@ -75,7 +75,7 @@ function test_password($password, $username = '')
     $strength += preg_match_all('#[^a-zA-Z0-9]#', $password, $matches) * 8;
 
     // Get the number of unique chars
-    $chars = preg_split('#(.)#', $password, null, PREG_SPLIT_DELIM_CAPTURE);
+    $chars = preg_split('#(.)#', $password, -1, PREG_SPLIT_DELIM_CAPTURE);
     $num_unique_chars = count(array_unique($chars)) - 1;
     $strength += ($num_unique_chars - 1) * 2;
 

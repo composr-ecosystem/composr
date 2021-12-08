@@ -388,7 +388,7 @@ function install_cns($upgrade_from = null)
         //cns_make_boiler_custom_field('im_jabber'); Old-school, although XMPP is still popular for some, so we won't remove entirely
         cns_make_boiler_custom_field('im_skype');
         cns_make_boiler_custom_field('sn_facebook');
-        cns_make_boiler_custom_field('sn_google');
+        //cns_make_boiler_custom_field('sn_google');
         cns_make_boiler_custom_field('sn_twitter');
 
         $GLOBALS['FORUM_DB']->create_table('f_invites', array(

@@ -62,7 +62,6 @@ if (!function_exists('do_release')) {
 
         $ret = array();
         $ret[$prefix . 'VERSION'] = $version;
-        $ret[$prefix . 'NAME'] = $name_suffix;
         $ret[$prefix . 'FILESIZE'] = $filesize;
         $ret[$prefix . 'NUM_DOWNLOADS'] = integer_format($num_downloads);
         $ret[$prefix . 'URL'] = $url;

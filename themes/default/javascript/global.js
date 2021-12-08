@@ -2285,7 +2285,9 @@ function activate_tooltip(ac,event,tooltip,width,pic,height,bottom,no_delay,ligh
 	} else
 	{
 		ac.old_onclick=ac.onclick;
-		ac.onclick=function(event) { if (!event) var event=window.event; event.stopPropagation(); win.deactivate_tooltip(ac); };
+		window.setTimeout(function() { // Stop mobile calling handler twice in some situations
+			ac.onclick=function(event) { if (!event) var event=window.event; event.stopPropagation(); win.deactivate_tooltip(ac); };
+		},500);
 	}
 
 	if (typeof tooltip=='function') tooltip=tooltip();

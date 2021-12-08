@@ -153,7 +153,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         }
         $row = $rows[0];
 
-        list($meta_keywords, $meta_description) = seo_meta_get_for($resource_type, strval($row['id']));
+        list($meta_keywords, $meta_description) = seo_meta_get_for($resource_type, $row['name']);
 
         $properties = array(
             'label' => get_translated_text($row['fullname']),

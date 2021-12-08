@@ -1118,7 +1118,7 @@ function handle_form_saving_explicit(event,form)
 			if (navigator.onLine)
 			{
 				post=modsecurity_workaround_ajax(post);
-				do_ajax_request('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store'+keep_stub(),function() {
+				do_ajax_request('{$FIND_SCRIPT_NOHTTP;,autosave}?type=store'+keep_stub(),function(ajax_result) {
 					if (document.body.style.cursor=='wait') document.body.style.cursor='';
 
 					if (ajax_result.status!=500)

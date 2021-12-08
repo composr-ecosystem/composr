@@ -536,8 +536,8 @@ function _log_it($type, $a = null, $b = null)
                 if (is_null($a)) {
                     $a = do_lang('NA');
                 }
-                if (is_null($a)) {
-                    $a = do_lang('NA');
+                if (is_null($b)) {
+                    $b = do_lang('NA');
                 }
                 require_code('notifications');
                 require_lang('actionlog');

@@ -75,7 +75,6 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'advertise_on' => '0',
         'use_multi_db' => '0',
         'use_msn' => '0',
-        'default_lang' => fallback_lang(),
         'db_type' => $db_type,
         'forum_type' => $forum_driver,
         'board_path' => $board_path,

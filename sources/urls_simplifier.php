@@ -72,7 +72,7 @@ function _cms_rawurlrecode($url, $tolerate_errors)
 {
     $recoded = '';
 
-    $parts = preg_split('#(%[\dA-F]{1,2})#i', $url, null, PREG_SPLIT_DELIM_CAPTURE);
+    $parts = preg_split('#(%[\dA-F]{1,2})#i', $url, -1, PREG_SPLIT_DELIM_CAPTURE);
     foreach ($parts as $i => $part) {
         if ($i % 2 == 0) {
             $recoded .= $parts[$i];
@@ -148,6 +148,7 @@ class HarmlessURLCoder
     public function decode($str)
     {
         // TODO: Document this new behaviour in v11 codebook
+
         if ((function_exists('idn_to_utf8')) && (strpos($str, '://') !== false) && (get_charset() == 'utf-8')) {
             $domain = parse_url($str,  PHP_URL_HOST);
             $_domain = @/*LEGACY @ to remove awkward temporary INTL_IDNA_VARIANT_2003 deprecation message that exists until PHP4*/idn_to_utf8($domain);
@@ -163,7 +164,7 @@ class HarmlessURLCoder
         $decoded = '';
 
         $str = str_replace('+', ' ', $str);
-        $parts = preg_split('#(%[\dA-F]{1,2})#i', $str, null, PREG_SPLIT_DELIM_CAPTURE);
+        $parts = preg_split('#(%[\dA-F]{1,2})#i', $str, -1, PREG_SPLIT_DELIM_CAPTURE);
         foreach ($parts as $i => $part) {
             if ($i % 2 == 0) {
                 $decoded .= $parts[$i];

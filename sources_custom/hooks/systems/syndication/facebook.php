@@ -68,6 +68,7 @@ class Hook_syndication_facebook
         $code = get_param_string('code', '', true);
 
         if ($code == '') {
+            $scope = array();
             $scope[] = 'manage_pages';
             $scope[] = 'publish_pages';
             $oauth_redir_url = $FACEBOOK_CONNECT->getLoginUrl(array('redirect_uri' => $oauth_url->evaluate(), 'scope' => $scope));

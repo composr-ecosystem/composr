@@ -77,7 +77,7 @@
 					<!-- If you like new windows, add this... title="{!LINK_NEW_WINDOW}" target="_blank"  -->
 					<nav>
 						<ul class="actions_list">
-							<li><a rel="external" href="http://whatismyipaddress.com/ip/{IP*}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
+							<li><a rel="external" href="https://ip.me/?ip={IP*}">Reverse-DNS/WHOIS/Geo-Lookup</a></li>
 							<li><a rel="external" href="https://ping.eu/ping/?host={IP*}">Ping</a></li>
 							<li><a rel="external" href="https://ping.eu/traceroute/?host={IP*}">Tracert</a></li>
 						</ul>

@@ -166,7 +166,7 @@ function cns_get_group_members_raw($group_id, $include_primaries = true, $non_va
             $d = $GLOBALS['FORUM_DB']->query('SELECT id,m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_on_probation_until>' . strval(time()), $max);
             foreach ($d as $member_row) {
                 $member_id = $member_row['id'];
-                $members[] = $non_validated ? array('gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => $member_row['m_username']) : $member_id;
+                $members[] = $non_validated ? array('gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => $member_row['m_username'], 'implicit' => false) : $member_id;
             }
         }
     }

@@ -499,6 +499,8 @@ abstract class BaseFacebook
 
         $access_token = $this->getAccessTokenFromCode($code, '');
         if ($access_token) {
+          $this->destroySession(); // Start from clean now, as the 'code' is invalidated after this first use
+
           $this->setPersistentData('code', $code);
           $this->setPersistentData('access_token', $access_token);
           return $access_token;
@@ -1753,9 +1755,7 @@ class Facebook extends BaseFacebook
     foreach (self::$kSupportedKeys as $key) {
       $this->clearPersistentData($key);
     }
-    if ($this->sharedSessionID) {
-      $this->deleteSharedSessionCookie();
-    }
+    $this->deleteSharedSessionCookie();
   }
 
   /**

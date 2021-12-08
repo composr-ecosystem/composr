@@ -70,15 +70,6 @@ function facebook_init(app_id,channel_url,just_logged_out,serverside_fbuid,home_
 			}
 		{+END}
 	};
-
-	// Load the SDK Asynchronously
-	(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s); js.id = id;
-		js.src = 'https://connect.facebook.net/en_US/all.js#xfbml=1&appId={$CONFIG_OPTION;,facebook_appid}';
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
 }
 
 function facebook_trigger_refresh(home_page_url)
@@ -94,7 +85,7 @@ function facebook_trigger_refresh(home_page_url)
 			var current_url=window.top.location.href;
 			if (current_url.indexOf('refreshed_once=1')==-1)
 			{
-				current_url+=((current_url.indexOf('?')==-1)?'?':'&')+'refreshed_once=1';
+				current_url=current_url.replace(/#.*$/,'')+((current_url.indexOf('?')==-1)?'?':'&')+'refreshed_once=1';
 				window.top.location=current_url;
 			}
 			else if (current_url.indexOf('keep_refreshed_once=1')==-1)
