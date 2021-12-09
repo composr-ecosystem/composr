@@ -179,7 +179,6 @@ class Hook_addon_registry_stats
             'sources/hooks/modules/admin_stats/events.php',
             'sources/hooks/modules/admin_stats/links.php',
             'sources/hooks/modules/admin_stats/ratings.php',
-            'sources/hooks/modules/admin_stats/alexa.php',
             'sources/hooks/modules/admin_stats/content.php',
             'sources/hooks/modules/admin_stats_redirects/google_analytics.php',
         ];

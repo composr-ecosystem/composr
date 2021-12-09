@@ -885,7 +885,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/search.php',
             '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/seo.php',
-            '_tests/tests/unit_tests/seo_tracking.php',
             '_tests/tests/unit_tests/_setupwizard.php',
             '_tests/tests/unit_tests/shopping_order_management.php',
             '_tests/tests/unit_tests/shopping.php',

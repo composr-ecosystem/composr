@@ -1404,59 +1404,6 @@ class CMSStatsDatePivot extends CMSStatsFilter
 }
 
 /**
- * Function to find Alexa details of the site.
- *
- * @param  ?string $url The URL of the site which you want to find out information on.) (null: base URL)
- * @param  boolean $support_caching Whether to support caching
- * @return array Returns a pair with the rank, and the amount of links
- */
-function get_alexa_rank(?string $url = null, bool $support_caching = true): array
-{
-    if ($url === null) {
-        $url = get_base_url() . '/';
-    }
-
-    if ($support_caching) {
-        $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24, true);
-        if ($test !== null) {
-            return unserialize($test);
-        }
-    }
-
-    $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
-    $result = http_get_contents($_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0]);
-    if ($result === null) {
-        return [null, null];
-    }
-
-    $matches = [];
-    if (preg_match('#Rank <span class="small data textbig marginleft10"><span class="hash">\#</span>([\d,]+)#s', $result, $matches) != 0) {
-        $rank = intval(str_replace(',', '', $matches[1]));
-    } else {
-        $rank = null;
-    }
-    if (preg_match('#Sites Linking In: <a href="/siteinfo/yahoo.com" target="_blank" class="small data">([\d,]+)#s', $result, $matches) != 0) {
-        $links = intval(str_replace(',', '', $matches[1]));
-    } else {
-        $links = null;
-    }
-
-    // we would like, but cannot get (without an API key)...
-    /*
-        time on site
-        reach (as a percentage)
-        page views
-        audience (i.e. what country views the site most)
-     */
-
-    $ret = [$rank, $links];
-
-    set_value('alexa__' . md5($url), serialize($ret), true);
-
-    return $ret;
-}
-
-/**
  * Find whether geolocation data is installed.
  *
  * @return boolean Whether it is

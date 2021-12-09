@@ -1,5 +1,4 @@
 API,Maintenance codename,URL,Intention,Bundled?,Last sync/review date,Version,Unit test?,Health check?,Notes
-Alexa Traffic Rank,alexa,https://www.alexa.com/,Maintain,Yes,Apr 10th 2020,N/A,seo_tracking,N/A,"We use screen-scraping, not API, as we do not want to make users set up API keys for our minimum usage"
 Authorize.net,gateway_authorize,https://developer.authorize.net/,No action,Yes,N/A,Unknown,N/A,N/A,Deprecated API. No sponsor so no action.
 Bing Geocoding,geocoding_bing,https://docs.microsoft.com/en-us/bingmaps/rest-services/locations/,Maintain,Yes,Apr 10th 2020,1,_api_geocoding,Geocoding,
 Bing Translator,bing_translator,https://azure.microsoft.com/en-us/services/cognitive-services/translator-text-api/,Maintain,Yes,Apr 10th 2020,3,_api_translation,Translation,

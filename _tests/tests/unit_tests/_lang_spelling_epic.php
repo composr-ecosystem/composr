@@ -844,7 +844,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'albert',
             'alberta',
             'albumname',
-            'alexa',
             'aliquam',
             'allen',
             'allocable',
