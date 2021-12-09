@@ -167,6 +167,11 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
      */
     protected function _get_folder_edit_date(array $row, string $category = '') : ?int
     {
+        if (array_key_exists('id', $row)) {
+            $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', strval($row['id'])) . ' AND  (' . db_string_equal_to('the_type', 'ADD_CATALOGUE_CATEGORY') . ' OR ' . db_string_equal_to('the_type', 'EDIT_CATALOGUE_CATEGORY') . ')';
+            return $GLOBALS['SITE_DB']->query_value_if_there($query);
+        }
+
         $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', $row['c_name']) . ' AND  (' . db_string_equal_to('the_type', 'ADD_CATALOGUE') . ' OR ' . db_string_equal_to('the_type', 'EDIT_CATALOGUE') . ')';
         return $GLOBALS['SITE_DB']->query_value_if_there($query);
     }
@@ -452,6 +457,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         require_code('catalogues2');
 
         list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
@@ -524,6 +533,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
     public function folder_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         require_code('catalogues2');
 
@@ -738,6 +751,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'catalogue_category');
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         if ($category == '') {
             return false;
         }
@@ -769,6 +786,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
     public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         require_code('catalogues2');
         actual_delete_catalogue_entry(intval($resource_id));

@@ -311,7 +311,7 @@ function read_in_chat_perm_fields() : array
  *
  * @param  SHORT_TEXT $welcome The welcome message
  * @param  SHORT_TEXT $room_name The room name
- * @param  MEMBER $room_owner The room owner
+ * @param  ?MEMBER $room_owner The room owner (null: none)
  * @param  LONG_TEXT $allow2 The comma-separated list of users that may access it (blank: no restriction)
  * @param  LONG_TEXT $allow2_groups The comma-separated list of usergroups that may access it (blank: no restriction)
  * @param  LONG_TEXT $disallow2 The comma-separated list of users that may NOT access it (blank: no restriction)
@@ -320,7 +320,7 @@ function read_in_chat_perm_fields() : array
  * @param  BINARY $is_im Whether it is an IM room
  * @return AUTO_LINK The chatroom ID
  */
-function add_chatroom(string $welcome, string $room_name, int $room_owner, string $allow2, string $allow2_groups, string $disallow2, string $disallow2_groups, string $room_language, int $is_im = 0) : int
+function add_chatroom(string $welcome, string $room_name, ?int $room_owner, string $allow2, string $allow2_groups, string $disallow2, string $disallow2_groups, string $room_language, int $is_im = 0) : int
 {
     require_code('global4');
     prevent_double_submit('ADD_CHATROOM', null, $room_name);
@@ -363,14 +363,14 @@ function add_chatroom(string $welcome, string $room_name, int $room_owner, strin
  * @param  AUTO_LINK $id The chatroom ID
  * @param  SHORT_TEXT $welcome The welcome message
  * @param  SHORT_TEXT $room_name The room name
- * @param  MEMBER $room_owner The room owner
+ * @param  ?MEMBER $room_owner The room owner (null: none)
  * @param  LONG_TEXT $allow2 The comma-separated list of users that may access it (blank: no restriction)
  * @param  LONG_TEXT $allow2_groups The comma-separated list of usergroups that may access it (blank: no restriction)
  * @param  LONG_TEXT $disallow2 The comma-separated list of users that may NOT access it (blank: no restriction)
  * @param  LONG_TEXT $disallow2_groups The comma-separated list of usergroups that may NOT access it (blank: no restriction)
  * @param  LANGUAGE_NAME $room_language The room language
  */
-function edit_chatroom(int $id, string $welcome, string $room_name, int $room_owner, string $allow2, string $allow2_groups, string $disallow2, string $disallow2_groups, string $room_language)
+function edit_chatroom(int $id, string $welcome, string $room_name, ?int $room_owner, string $allow2, string $allow2_groups, string $disallow2, string $disallow2_groups, string $room_language)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['c_welcome', 'room_name', 'is_im'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {

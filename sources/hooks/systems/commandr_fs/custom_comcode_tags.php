@@ -153,6 +153,10 @@ class Hook_commandr_fs_custom_comcode_tags extends Resource_fs_base
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         $label = $this->_default_property_str($properties, 'label');
         $tag = $this->_create_name_from_label($label);
         $title = $this->_default_property_str($properties, 'title');
@@ -183,6 +187,10 @@ class Hook_commandr_fs_custom_comcode_tags extends Resource_fs_base
     public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         require_code('custom_comcode');
         delete_custom_comcode_tag($resource_id);

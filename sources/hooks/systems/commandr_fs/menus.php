@@ -190,6 +190,10 @@ class Hook_commandr_fs_menus extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         require_code('menus2');
         delete_menu($resource_id);
 
@@ -296,6 +300,10 @@ class Hook_commandr_fs_menus extends Resource_fs_base
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         if ($category === null) {
             return false; // Folder not found
         }
@@ -331,6 +339,10 @@ class Hook_commandr_fs_menus extends Resource_fs_base
     public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         require_code('menus2');
         delete_menu_item(intval($resource_id));

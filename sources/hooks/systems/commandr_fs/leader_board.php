@@ -165,6 +165,10 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         require_code('leader_board2');
 
         $board_type = $this->_default_property_str($properties, 'type');
@@ -203,6 +207,10 @@ class Hook_commandr_fs_leader_board extends Resource_fs_base
     public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         require_code('leader_board2');
         delete_leader_board(intval($resource_id));

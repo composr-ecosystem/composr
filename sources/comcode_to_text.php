@@ -80,7 +80,7 @@ function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_pr
         $text = str_replace('{$BASE_URL*}', get_base_url(), $text);
 
         if (strpos($text, '{') !== false) {
-            $text = static_evaluate_tempcode(template_to_tempcode($text, 0, false, '', null, null, true));
+            $text = @static_evaluate_tempcode(template_to_tempcode($text, 0, false, '', null, null, true));
         }
     }
 
