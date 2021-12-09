@@ -179,6 +179,11 @@ class calendar_event_test_set extends cms_test_case
             $year = 2000;
             for ($week = -5/*intentionally go before one year*/; $week < 55/*intentionally go past one year*/; $week++) {
                 list($month, $day, $_year) = date_from_week_of_year($year, $week);
+
+                if ($month === null) {
+                    continue;
+                }
+
                 $week_num = get_week_number_for(mktime(0, 0, 0, $month, $day, $year));
                 if (($week >= 1) && ($week < 52)) {
                     $expected_week_num = strval($_year) . '-' . str_pad(strval($week), 2, '0', STR_PAD_LEFT);

@@ -316,7 +316,7 @@ function read_in_chat_perm_fields()
  *
  * @param  SHORT_TEXT $welcome The welcome message
  * @param  SHORT_TEXT $room_name The room name
- * @param  MEMBER $room_owner The room owner
+ * @param  ?MEMBER $room_owner The room owner (null: none)
  * @param  LONG_TEXT $allow2 The comma-separated list of users that may access it (blank: no restriction)
  * @param  LONG_TEXT $allow2_groups The comma-separated list of usergroups that may access it (blank: no restriction)
  * @param  LONG_TEXT $disallow2 The comma-separated list of users that may NOT access it (blank: no restriction)
@@ -368,7 +368,7 @@ function add_chatroom($welcome, $room_name, $room_owner, $allow2, $allow2_groups
  * @param  AUTO_LINK $id The chatroom ID
  * @param  SHORT_TEXT $welcome The welcome message
  * @param  SHORT_TEXT $room_name The room name
- * @param  MEMBER $room_owner The room owner
+ * @param  ?MEMBER $room_owner The room owner (null: none)
  * @param  LONG_TEXT $allow2 The comma-separated list of users that may access it (blank: no restriction)
  * @param  LONG_TEXT $allow2_groups The comma-separated list of usergroups that may access it (blank: no restriction)
  * @param  LONG_TEXT $disallow2 The comma-separated list of users that may NOT access it (blank: no restriction)

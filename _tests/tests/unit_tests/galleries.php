@@ -37,6 +37,8 @@ class galleries_test_set extends cms_test_case
         require_code('permissions2');
         require_code('form_templates');
 
+        $GLOBALS['SITE_DB']->query_update('galleries', ['accept_images' => 1, 'accept_videos' => 1], ['name' => 'root'], '', 1);
+
         $this->access_mapping = array(db_get_first_id() => 4);
         // Creating cms catalogues object
         if (file_exists(get_file_base() . '/cms/pages/modules_custom/cms_galleries.php')) {

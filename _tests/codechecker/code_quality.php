@@ -843,6 +843,10 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
                 $t = $t[0];
             }
 
+            if ($t === null) {
+                continue;
+            }
+
             $t = ltrim($t, '?~');
             if (substr($t, 0, 6) == 'object') {
                 $t = 'object';
@@ -2119,6 +2123,10 @@ function set_composr_type($identifier, $type)
         $type = $type[0];
     }
 
+    if ($type === null) {
+        return;
+    }
+
     global $LOCAL_VARIABLES;
     $LOCAL_VARIABLES[$identifier]['types'][] = $type;
     if (substr($type, 0, 7) == 'object-') {
@@ -2176,6 +2184,10 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
 {
     if (is_array($actual_type)) {
         $actual_type = $actual_type[0];
+    }
+
+    if ($actual_type === null) {
+        return true;
     }
 
     if ((ltrim($actual_type, '~?') == 'mixed') && (!$mixed_as_fail)) {
