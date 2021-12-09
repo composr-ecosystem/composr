@@ -654,24 +654,24 @@ function date_range(int $from, ?int $to, bool $do_time = true, bool $force_absol
     if (($to - $from > 60 * 60 * 24) || (!$do_time) || ($force_absolute)) {
         if (!$do_time) {
             if ($force_absolute) { // Absolute, no time (with length)
-                $date1 = cms_strftime(do_lang('calendar_date_verbose'), $from);
-                $date2 = cms_strftime(do_lang('calendar_date_verbose'), $to);
+                $date1 = cms_date(do_lang('calendar_date_verbose'), $from);
+                $date2 = cms_date(do_lang('calendar_date_verbose'), $to);
             } else {
                 return $_length; // No time (with length)
             }
         } else { // Absolute, time (with length)
-            $date1 = cms_strftime(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $from);
-            $date2 = cms_strftime(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $to);
+            $date1 = cms_date(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $from);
+            $date2 = cms_date(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $to);
         }
     } else { // Just time (with length)
         $pm_a = date('a', $from);
         $pm_b = date('a', $to);
         if ($pm_a == $pm_b) {
-            $date1 = cms_strftime(do_lang('calendar_minute_ampm_known'), $from);
-            $date2 = cms_strftime(do_lang('calendar_minute'), $to);
+            $date1 = cms_date(do_lang('calendar_minute_ampm_known'), $from);
+            $date2 = cms_date(do_lang('calendar_minute'), $to);
         } else {
-            $date1 = cms_strftime(do_lang('calendar_minute'), $from);
-            $date2 = cms_strftime(do_lang('calendar_minute'), $to);
+            $date1 = cms_date(do_lang('calendar_minute'), $from);
+            $date2 = cms_date(do_lang('calendar_minute'), $to);
         }
         $_date1 = str_replace(do_lang('calendar_minute_no_minutes'), '', $date1);
         $_date2 = str_replace(do_lang('calendar_minute_no_minutes'), '', $date2);
@@ -679,7 +679,7 @@ function date_range(int $from, ?int $to, bool $do_time = true, bool $force_absol
             $date1 = $_date1;
             $date2 = $_date2;
         }
-        $date = cms_strftime(do_lang('calendar_date_verbose'), $from);
+        $date = cms_date(do_lang('calendar_date_verbose'), $from);
         return do_lang('EVENT_TIME_RANGE_WITHIN_DAY' . (($timezone == '') ? '' : '_WITH_TIMEZONE'), $date, $date1, [$date2, $_length, $timezone]);
     }
 
@@ -1521,13 +1521,13 @@ function monthly_spec_type_chooser(int $day_of_month, int $month, int $year, str
         $timestamp = mktime(0, 0, 0, $month, $day_of_month, $year);
 
         if (substr($monthly_spec_type, 0, 4) == 'dow_') {
-            $nth = cms_strftime(do_lang('calendar_day_of_month'), mktime(0, 0, 0, 1, intval(floatval($day) / 7.0) + 1, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
+            $nth = cms_date(do_lang('calendar_day_of_month'), mktime(0, 0, 0, 1, intval(floatval($day) / 7.0) + 1, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
         } else {
-            $nth = cms_strftime(do_lang('calendar_day_of_month'), mktime(0, 0, 0, $month, $day, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
+            $nth = cms_date(do_lang('calendar_day_of_month'), mktime(0, 0, 0, $month, $day, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
         }
-        $dow = cms_strftime('%a', $timestamp);
+        $dow = cms_date('D', $timestamp);
 
-        $month_name = cms_strftime('%b', $timestamp);
+        $month_name = cms_date('M', $timestamp);
 
         $text = do_lang_tempcode('CALENDAR_MONTHLY_RECURRENCE_CONCRETE_' . $monthly_spec_type, escape_html($nth), escape_html($dow), escape_html($month_name));
         $description = do_lang_tempcode('CALENDAR_MONTHLY_RECURRENCE_' . $monthly_spec_type);
@@ -1811,9 +1811,9 @@ function get_calendar_event_first_date(?string $timezone, int $do_timezone_conv,
     $do_time = $start_hour !== null;
     if ($to === null) {
         if (!$do_time) {
-            $written_date = cms_strftime(do_lang('calendar_date_verbose'), $from);
+            $written_date = cms_date(do_lang('calendar_date_verbose'), $from);
         } else {
-            $written_date = cms_strftime(do_lang('calendar_date_range_single'), $from);
+            $written_date = cms_date(do_lang('calendar_date_range_single'), $from);
         }
     } else {
         $written_date = date_range($from, $to, $do_time, true);

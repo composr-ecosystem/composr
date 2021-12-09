@@ -33,7 +33,7 @@
 				<table>
 					<tr><td style='text-align: right;'><b>Title:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'><a href='{VIDEO_URL}' target='_blank'>{VIDEO_TITLE}</a></td></tr>
 					<tr><td style='text-align: right;'><b>Channel:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'><a href='{CHANNEL_URL}' target='_blank'>{CHANNEL_NAME}</a></td></tr>
-					<tr><td style='text-align: right;' nowrap="nowrap"><b>Uploaded:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$FROM_TIMESTAMP,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</td></tr>
+					<tr><td style='text-align: right;' nowrap="nowrap"><b>Uploaded:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$FROM_TIMESTAMP,d F Y\, h:I:s A,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</td></tr>
 					{+START,IF,{$EQ,{DESCRIPTION_TYPE},long}}<tr><td style='text-align: right;'><b>Description:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$COMCODE,{DESCRIPTION}} </td></tr>{+END}
 					{+START,IF,{$EQ,{DESCRIPTION_TYPE},short}}<tr><td style='text-align: right;'><b>Description:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$COMCODE,{DESCRIPTION_SHORT}} {+START,IF,{DESCRIPTION_SHORTENED}}<b>...</b>{+END}</td></tr>{+END}
 					<tr><td style='text-align: right;'><b>Duration:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{DURATION_NUMERIC} ({DURATION_TEXT})</td></tr>
@@ -109,7 +109,7 @@
 			<table>
 				<tr><td style='text-align: right;'><b>Title:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'><a href='{VIDEO_URL}' target='_blank'>{VIDEO_TITLE}</a></td></tr>
 				<tr><td style='text-align: right;'><b>Channel:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'><a href='{CHANNEL_URL}' target='_blank'>{CHANNEL_NAME}</a></td></tr>
-				<tr><td style='text-align: right;' nowrap="nowrap"><b>Uploaded:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$FROM_TIMESTAMP,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</td></tr>
+				<tr><td style='text-align: right;' nowrap="nowrap"><b>Uploaded:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$FROM_TIMESTAMP,d F Y\, h:I:s A,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</td></tr>
 				{+START,IF,{$EQ,{DESCRIPTION_TYPE},long}}<tr><td style='text-align: right;'><b>Description:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$COMCODE,{DESCRIPTION}} </td></tr>{+END}
 				{+START,IF,{$EQ,{DESCRIPTION_TYPE},short}}<tr><td style='text-align: right;'><b>Description:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$COMCODE,{DESCRIPTION_SHORT}} {+START,IF,{DESCRIPTION_SHORTENED}}<b>...</b>{+END}</td></tr>{+END}
 				<tr><td style='text-align: right;'><b>Duration:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{DURATION_NUMERIC} ({DURATION_TEXT})</td></tr>
@@ -178,7 +178,7 @@
 				{+END}
 				<table>
 					<tr><td><b><a href='{VIDEO_URL}' target='_blank'>{VIDEO_TITLE}</a></b></td></tr>
-					<tr><td><b>{$FROM_TIMESTAMP,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</b></td></tr>
+					<tr><td><b>{$FROM_TIMESTAMP,d F Y\, h:I:s A,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</b></td></tr>
 					{+START,IF,{$EQ,{DESCRIPTION_TYPE},long}}<tr><td>long: {$COMCODE,{DESCRIPTION}}</td></tr>{+END}
 					{+START,IF,{$EQ,{DESCRIPTION_TYPE},short}}<tr><td>short: {$COMCODE,{DESCRIPTION_SHORT}} {+START,IF,{DESCRIPTION_SHORTENED}}<b>...</b>{+END}</td></tr>{+END}
 					{+START,IF_NON_EMPTY,{FOR_MORE_URL}}{+START,IF_EMPTY,{FOR_MORE_TEXT}}<tr><td><br />{FOR_MORE_LEAD} <a href='{FOR_MORE_URL}'>{FOR_MORE_URL}</a></td></tr>{+END}{+END}{+START,IF_NON_EMPTY,{FOR_MORE_URL}}{+START,IF_NON_EMPTY,{FOR_MORE_TEXT}}<tr><td><br />{FOR_MORE_LEAD} <a href='{FOR_MORE_URL}'>{FOR_MORE_TEXT}</a></td></tr>{+END}{+END}
@@ -212,7 +212,7 @@
 				<table>
 					<tr><td style='text-align: right;'><b>Title:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'><a href='{VIDEO_URL}' target='_blank'>{VIDEO_TITLE}</a></td></tr>
 					<tr><td style='text-align: right;'><b>Channel:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'><a href='{CHANNEL_URL}' target='_blank'>{CHANNEL_NAME}</a></td></tr>
-					<tr><td style='text-align: right;' nowrap="nowrap"><b>Uploaded:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$FROM_TIMESTAMP,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</td></tr>
+					<tr><td style='text-align: right;' nowrap="nowrap"><b>Uploaded:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$FROM_TIMESTAMP,d F Y\, h:I:s A,{$TO_TIMESTAMP,{UPLOAD_DATE}}}</td></tr>
 					{+START,IF,{$EQ,{DESCRIPTION_TYPE},long}}<tr><td style='text-align: right;'><b>Description:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$COMCODE,{DESCRIPTION}} </td></tr>{+END}
 					{+START,IF,{$EQ,{DESCRIPTION_TYPE},short}}<tr><td style='text-align: right;'><b>Description:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{$COMCODE,{DESCRIPTION_SHORT}} {+START,IF,{DESCRIPTION_SHORTENED}}<b>...</b>{+END}</td></tr>{+END}
 					<tr><td style='text-align: right;'><b>Duration:</b></td><td width='5'>&nbsp;</td><td style='text-align: left;'>{DURATION_NUMERIC} ({DURATION_TEXT})</td></tr>

@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: strftime|ucwords*/
+/*EXTRA FUNCTIONS: ucwords*/
 
 // NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
 

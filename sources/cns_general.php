@@ -472,12 +472,7 @@ function get_member_dob_details(int $member_id) : ?array
     $_dob = mktime(12, 0, 0, $month, $day, $year);
     $_dob_censored = mktime(12, 0, 0, $month, $day);
     if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_reveal_age') == 1) {
-        if (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
-            $dob = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($day), 2, '0', STR_PAD_LEFT);
-            $_dob = $_dob_censored; // Have to use censored as other is broken
-        } else {
-            $dob = get_timezoned_date($_dob, false, true);
-        }
+        $dob = get_timezoned_date($_dob, false, true);
         $_dob_censored_if_needed = $_dob; // No censoring needed
         $label = do_lang('DATE_OF_BIRTH');
 
@@ -489,11 +484,8 @@ function get_member_dob_details(int $member_id) : ?array
             $age--;
         }
     } else {
-        if (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
-            $_dob = $_dob_censored; // Have to use censored as other is broken
-        }
         $_dob_censored_if_needed = $_dob_censored;
-        $dob = cms_strftime(do_lang('date_no_year'), $_dob_censored);
+        $dob = cms_date(do_lang('date_no_year'), $_dob_censored);
         $label = do_lang('dates:BIRTHDAY');
 
         $age = null;

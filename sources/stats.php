@@ -614,7 +614,7 @@ function stats_find_graph_details(string $graph_name, bool $for_kpi = false): ?a
  */
 function get_stats_month_for_timestamp(int $timestamp): int
 {
-    list($year, $month) = array_map('intval', explode('-', cms_strftime('%Y-%m', $timestamp)));
+    list($year, $month) = array_map('intval', explode('-', cms_date('Y-m', $timestamp)));
     return ($year - 1970) * 12 + ($month - 1);
 }
 
@@ -813,20 +813,20 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
     {
         switch ($pivot) {
             case 'hour_of_day':
-                return intval(cms_strftime('%H', $timestamp));
+                return intval(cms_date('H', $timestamp));
             case 'day_series':
-                return cms_strftime('%Y-%m-%d', $timestamp);
+                return cms_date('Y-m-d', $timestamp);
             case 'day_of_week':
-                return intval(cms_strftime('%w', $timestamp));
+                return intval(cms_date('w', $timestamp));
             case 'month_series':
                 return get_stats_month_for_timestamp($timestamp);
             case 'month_of_year':
-                return intval(cms_strftime('%m', $timestamp));
+                return intval(cms_date('m', $timestamp));
             case 'quarter_series':
-                $month = floatval(cms_strftime('%m', $timestamp));
+                $month = floatval(cms_date('m', $timestamp));
                 return intval(floor($month / 4.0));
             case 'year_series':
-                return intval(cms_strftime('%Y', $timestamp));
+                return intval(cms_date('Y', $timestamp));
         }
 
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -932,7 +932,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
         switch ($pivot) {
             case 'hour_of_day':
-                return trim(cms_strftime('%l%P', mktime($pivot_value)));
+                return trim(cms_date('ga', mktime($pivot_value)));
 
             case 'day_of_week':
                 $dows = [

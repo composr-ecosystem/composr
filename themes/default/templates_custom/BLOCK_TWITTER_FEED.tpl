@@ -36,7 +36,7 @@
 							<strong><a href="{USER_PAGE_URL*}" title="@{USER_SCREEN_NAME*} {!LINK_NEW_WINDOW}" target="_blank">@{USER_SCREEN_NAME*}</a></strong><br /><br />
 							{USER_DESCRIPTION`}<br /><br />
 							{USER_LOCATION*} &nbsp;&nbsp;&nbsp; <a href="{USER_URL*}" title="@{USER_SCREEN_NAME*} Home page {!LINK_NEW_WINDOW}" target="_blank">{USER_URL*}</a><br />
-							Joined on {$FROM_TIMESTAMP*,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP*,{USER_CREATED_AT}}}
+							Joined on {$FROM_TIMESTAMP*,d F Y\, h:I:s A,{$TO_TIMESTAMP*,{USER_CREATED_AT}}}
 						</div>
 					</div>
 				{+END}

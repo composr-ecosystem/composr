@@ -18,8 +18,6 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: strftime*/
-
 /**
  * Standard code module initialisation function.
  *
@@ -323,18 +321,12 @@ function _get_timezoned_date_time(bool $include_time, int $timestamp, bool $use_
     $usered_timestamp = $utc_time ? $timestamp : utctime_to_usertime($timestamp, $member_id);
     $usered_now_timestamp = $utc_time ? time() : utctime_to_usertime(time(), $member_id);
 
-    if ($usered_timestamp < 0) {
-        if (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
-            return 'pre-1970';
-        }
-    }
-
     // Render basic date
     $date_string1 = do_lang('date_date'); // The date renderer string
     $joiner = do_lang('date_joiner');
     $date_string2 = $include_time ? do_lang('date_time') : ''; // The time renderer string
-    $ret1 = cms_strftime($date_string1, $usered_timestamp);
-    $ret2 = ($date_string2 == '') ? '' : cms_strftime($date_string2, $usered_timestamp);
+    $ret1 = cms_date($date_string1, $usered_timestamp);
+    $ret2 = ($date_string2 == '') ? '' : cms_date($date_string2, $usered_timestamp);
     $ret = $ret1 . (($ret2 == '') ? '' : ($joiner . $ret2));
 
     // If we can do contextual dates, have our shot
@@ -342,7 +334,7 @@ function _get_timezoned_date_time(bool $include_time, int $timestamp, bool $use_
         $use_contextual_dates = false;
     }
     if ($use_contextual_dates) {
-        $today = cms_strftime($date_string1, $usered_now_timestamp);
+        $today = cms_date($date_string1, $usered_now_timestamp);
 
         if ($ret1 == $today) { // It is/was today
             $ret = /*Today is obvious do_lang('TODAY').$joiner.*/$ret2;
@@ -350,18 +342,18 @@ function _get_timezoned_date_time(bool $include_time, int $timestamp, bool $use_
                 $ret = do_lang('TODAY'); // it'll be because avoid contextual dates is not on
             }
         } else {
-            $yesterday = cms_strftime($date_string1, $usered_now_timestamp - 24 * 60 * 60);
+            $yesterday = cms_date($date_string1, $usered_now_timestamp - 24 * 60 * 60);
             if ($ret1 == $yesterday) { // It is/was yesterday
                 $ret = do_lang('YESTERDAY') . (($ret2 == '') ? '' : ($joiner . $ret2));
             } else {
-                $week = cms_strftime('%U %Y', $usered_timestamp);
-                $now_week = cms_strftime('%U %Y', $usered_now_timestamp);
+                $week = cms_date('W Y', $usered_timestamp);
+                $now_week = cms_date('W Y', $usered_now_timestamp);
                 if ($week == $now_week) { // It is/was this week
                     $date_string1 = do_lang('date_withinweek_date'); // The date renderer string
                     $joiner = do_lang('date_withinweek_joiner');
                     $date_string2 = $include_time ? do_lang('date_time') : ''; // The time renderer string
-                    $ret1 = cms_strftime($date_string1, $usered_timestamp);
-                    $ret2 = ($date_string2 == '') ? '' : cms_strftime($date_string2, $usered_timestamp);
+                    $ret1 = cms_date($date_string1, $usered_timestamp);
+                    $ret2 = ($date_string2 == '') ? '' : cms_date($date_string2, $usered_timestamp);
                     $ret = $ret1 . (($ret2 == '') ? '' : ($joiner . $ret2));
                 }
                 // We could go on, and check for month, and year, but it would serve little value - probably would make the user think more than help.
@@ -415,99 +407,57 @@ function get_timezoned_time(int $timestamp, bool $use_contextual_times = true, b
 
     $date_string = do_lang('date_time');
     $usered_timestamp = $utc_time ? $timestamp : utctime_to_usertime($timestamp, $member_id);
-    return cms_strftime($date_string, $usered_timestamp);
+    return cms_date($date_string, $usered_timestamp);
 }
 
 /**
- * Format a local time/date according to language pack. Combines best features of 'strftime' and 'date'.
- * %o is 'S' in date.
- * Does not depend on locales, which are not thread-safe.
+ * Format a local time/date according to language pack. Uses 'date' syntax, with Composr's locale filter.
+ * Does not depend on actual locales, which are not thread-safe.
  *
  * @param  string $format The formatting string
  * @param  ?TIME $timestamp The timestamp (null: now). Assumed to already be timezone-shifted as required
  * @return string The formatted string
  */
-function cms_strftime(string $format, ?int $timestamp = null) : string
+function cms_date(string $format, ?int $timestamp = null) : string
 {
     if ($timestamp === null) {
         $timestamp = time();
     }
 
-    // A) Hack so we do not have to rely on locales (unstable) for textual components that should be translatable
-    $day_short = false;
-    if (strpos($format, '%a') !== false) {
-        $day_short = true;
-        $format = str_replace('%a', '<<' . '%w>>', $format);
-    }
-    $day_long = false;
-    if (strpos($format, '%a') !== false) {
-        $day_long = true;
-        $format = str_replace('%A', '[[%w]]', $format);
-    }
-    $month_short = false;
-    if (strpos($format, '%a') !== false) {
-        $month_short = true;
-        $format = str_replace('%b', '{{%m}}', $format);
-    }
-    $month_long = false;
-    if (strpos($format, '%a') !== false) {
-        $month_long = true;
-        $format = str_replace('%B', '((%m))', $format);
-    }
+    $ret = @strval(date($format, $timestamp));
 
-    // B) Hack to make sure we do not have leading zeroes or spaces
-    static $is_windows = null;
-    if ($is_windows === null) {
-        $is_windows = (stripos(PHP_OS, 'WIN') === 0);
-    }
-    if ($is_windows) {
-        $format = str_replace('%e', '%#d', $format);
-        $format = str_replace('%l', '%#I', $format);
-    } elseif (PHP_OS == 'SunOS') {
-        $format = str_replace('%e', '{{%e}}', $format);
-        $format = str_replace('%l', '{{%l}}', $format);
-    } else {
-        $format = str_replace('%e', '%-d', $format);
-        $format = str_replace('%l', '%-I', $format);
-    }
-
-    // Hack to add support for ordinal suffix
-    $format = str_replace('%o', date('S'/*English ordinal suffix for the day of the month, 2 characters*/, $timestamp), $format);
-
-    $ret = @strval(strftime($format, $timestamp));
-
-    // A continued
-    if ($day_short || $day_long || $month_short || $month_long) {
-        require_lang('dates');
-        if ($day_short) {
-            $arr = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-            foreach ($arr as $i => $str) {
-                $ret = str_replace('<<' . strval($i) . '>>', do_lang($str . '_SHORT'), $ret);
+    if (user_lang() != 'EN') {
+        $day_short = (strpos($format, 'D') !== false);
+        $day_long = (strpos($format, 'l') !== false);
+        $month_short = (strpos($format, 'M') !== false);
+        $month_long = (strpos($format, 'F') !== false);
+        if ($day_short || $day_long || $month_short || $month_long) {
+            require_lang('dates');
+            if ($day_short) {
+                $arr = ['Sun' => 'SUNDAY', 'Mon' => 'MONDAY', 'Tue' => 'TUESDAY', 'Wed' => 'WEDNESDAY', 'Thu' => 'THURSDAY', 'Fri' => 'FRIDAY', 'Sat' => 'SATURDAY'];
+                foreach ($arr as $hardcoded => $str) {
+                    $ret = str_replace($hardcoded, do_lang($str . '_SHORT'), $ret);
+                }
+            }
+            if ($day_long) {
+                $arr = ['Sunday' => 'SUNDAY', 'Monday' => 'MONDAY', 'Tuesday' => 'TUESDAY', 'Wednesday' => 'WEDNESDAY', 'Thursday' => 'THURSDAY', 'Friday' => 'FRIDAY', 'Saturday' => 'SATURDAY'];
+                foreach ($arr as $hardcoded => $str) {
+                    $ret = str_replace($hardcoded, do_lang($str), $ret);
+                }
+            }
+            if ($month_short) {
+                $arr = ['Jan' => 'JANUARY', 'Feb' => 'FEBRUARY', 'Mar' => 'MARCH', 'Apr' => 'APRIL', 'May' => 'MAY', 'Jun' => 'JUNE', 'Jul' => 'JULY', 'Aug' => 'AUGUST', 'Sep' => 'SEPTEMBER', 'Oct' => 'OCTOBER', 'Nov' => 'NOVEMBER', 'Dec' => 'DECEMBER'];
+                foreach ($arr as $hardcoded => $str) {
+                    $ret = str_replace($hardcoded, do_lang($str . '_SHORT'), $ret);
+                }
+            }
+            if ($month_long) {
+                $arr = ['January' => 'JANUARY', 'February' => 'FEBRUARY', 'March' => 'MARCH', 'April' => 'APRIL', 'May' => 'MAY', 'June' => 'JUNE', 'July' => 'JULY', 'August' => 'AUGUST', 'September' => 'SEPTEMBER', 'October' => 'OCTOBER', 'November' => 'NOVEMBER', 'December' => 'DECEMBER'];
+                foreach ($arr as $hardcoded => $str) {
+                    $ret = str_replace($hardcoded, do_lang($str), $ret);
+                }
             }
         }
-        if ($day_long) {
-            $arr = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-            foreach ($arr as $i => $str) {
-                $ret = str_replace('[[' . strval($i) . ']]', do_lang($str), $ret);
-            }
-        }
-        if ($month_short) {
-            $arr = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-            foreach ($arr as $i => $str) {
-                $ret = str_replace('{{' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '}}', do_lang($str . '_SHORT'), $ret);
-            }
-        }
-        if ($month_long) {
-            $arr = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-            foreach ($arr as $i => $str) {
-                $ret = str_replace('((' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '))', do_lang($str), $ret);
-            }
-        }
-    }
-
-    // B continued
-    if (PHP_OS == 'SunOS') {
-        $ret = preg_replace('#\{\{[ 0]?([^\{\}]+)\}\}#', '${1}', $ret);
     }
 
     return $ret;

@@ -245,13 +245,13 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             rawurlencode readdir realpath register_shutdown_function rename require require_once reset
             round rsort rtrim serialize set_error_handler preg_match preg_grep preg_match_all
             setcookie setlocale sha1 sin sort fprintf sprintf srand str_pad str_repeat str_replace
-            strcmp strftime strip_tags stripslashes strlen strpos strrpos strstr strtok
+            strcmp strip_tags stripslashes strlen strpos strrpos strstr strtok
             strtotime strtr strval substr substr_count time trim trigger_error
             uasort uksort uniqid unlink unserialize unset urldecode urlencode usort
             utf8_decode utf8_encode wordwrap cos array_rand array_unshift asin assert
             assert_options atan base_convert basename bin2hex bindec call_user_func_array
             connection_aborted connection_status crc32 decbin empty fflush fileatime flock flush
-            gethostbyaddr getrandmax gmmktime gmstrftime ip2long is_dir is_file
+            gethostbyaddr getrandmax gmmktime ip2long is_dir is_file
             levenshtein log log10 long2ip md5_file pow preg_quote prev rad2deg
             range readfile shuffle similar_text sqrt strcasecmp strcspn stristr strnatcasecmp
             strnatcmp strncasecmp strncmp strrchr strrev strspn substr_replace tan unpack version_compare

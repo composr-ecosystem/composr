@@ -439,7 +439,7 @@ No, there is too much CSS to feasibly make a map as is often used for forum soft
 [title="3"]How can I change how times are displayed?[/title]
 
 To change the settings for the whole of Composr you change some key strings in the [tt]global[/tt] language file. For documentation about the syntax, please see the PHP manual:
-http://php.net/manual/en/function.strftime.php
+http://php.net/manual/en/function.date.php
 
 [title="3"]How do I edit the HTML head and/or the opening and closing HTML body tags?[/title]
 

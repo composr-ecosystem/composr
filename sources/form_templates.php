@@ -2378,40 +2378,30 @@ function _form_input_date(string $name, bool $required, bool $null_default, bool
 
     $required = filter_form_field_required($name, $required);
 
-    if ((is_array($default_time)) && ($default_time[4] < 1970) && (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963')) { // Some systems can't do negative timestamps. Actually the maximum negative integer size is also an issue
-        list($default_minute, $default_hour, $default_month, $default_day, $default_year) = $default_time;
-        if ($default_minute === null) {
-            $default_minute = 0;
+    if (is_array($default_time)) {
+        if ($default_time[4] === null) {
+            $default_time = null;
+        } else {
+            list($default_minute, $default_hour, $default_month, $default_day, $default_year) = $default_time;
+            $default_time = mktime($default_hour, $default_minute, 0, $default_month, $default_day, $default_year);
         }
-        if ($default_hour === null) {
-            $default_hour = 0;
-        }
-    } else {
-        if (is_array($default_time)) {
-            if ($default_time[4] === null) {
-                $default_time = null;
-            } else {
-                list($default_minute, $default_hour, $default_month, $default_day, $default_year) = $default_time;
-                $default_time = mktime($default_hour, $default_minute, 0, $default_month, $default_day, $default_year);
-            }
-        }
-
-        $_default_time = filter_form_field_default($name, ($default_time === null) ? '' : strval($default_time));
-        $default_time = ($_default_time == '') ? null : intval($_default_time);
-
-        if (($default_time !== null) && ($handle_timezone)) {
-            if ($timezone === null) {
-                $timezone = get_users_timezone();
-            }
-            $default_time = tz_time($default_time, $timezone);
-        }
-
-        $default_minute = ($default_time === null) ? null : intval(date('i', $default_time));
-        $default_hour = ($default_time === null) ? null : intval(date('H', $default_time));
-        $default_day = ($default_time === null) ? null : intval(date('j', $default_time));
-        $default_month = ($default_time === null) ? null : intval(date('n', $default_time));
-        $default_year = ($default_time === null) ? null : intval(date('Y', $default_time));
     }
+
+    $_default_time = filter_form_field_default($name, ($default_time === null) ? '' : strval($default_time));
+    $default_time = ($_default_time == '') ? null : intval($_default_time);
+
+    if (($default_time !== null) && ($handle_timezone)) {
+        if ($timezone === null) {
+            $timezone = get_users_timezone();
+        }
+        $default_time = tz_time($default_time, $timezone);
+    }
+
+    $default_minute = ($default_time === null) ? null : intval(date('i', $default_time));
+    $default_hour = ($default_time === null) ? null : intval(date('H', $default_time));
+    $default_day = ($default_time === null) ? null : intval(date('j', $default_time));
+    $default_month = ($default_time === null) ? null : intval(date('n', $default_time));
+    $default_year = ($default_time === null) ? null : intval(date('Y', $default_time));
 
     if (($total_years_to_show !== null) && ($year_start === null)) {
         if ($total_years_to_show < 0) {

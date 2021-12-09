@@ -148,16 +148,16 @@ This is a simple example tag for showing reminders/advice to walkers, based on t
 
 [b]Replacement text[/b]:
 [code="HTML"]
-{+START,IF,{$EQ,{$FROM_TIMESTAMP,%b},Nov,Dec,Jan}}
+{+START,IF,{$EQ,{$FROM_TIMESTAMP,M},Nov,Dec,Jan}}
 	Pack your <span style="color: {COLOR}">gloves</span>, a <span style="color: {COLOR}">hat</span>, and a thick <span style="color: {COLOR}">coat</span>, it'll be cold on the {CONTENT}.
 {+END}
-{+START,IF,{$EQ,{$FROM_TIMESTAMP,%b},Feb,Mar,Apr}}
+{+START,IF,{$EQ,{$FROM_TIMESTAMP,M},Feb,Mar,Apr}}
 	Be careful of the <span style="color: {COLOR}">wildlife</span>, it's breeding season on {CONTENT}.
 {+END}
-{+START,IF,{$EQ,{$FROM_TIMESTAMP,%b},May,Jun,Jul}}
+{+START,IF,{$EQ,{$FROM_TIMESTAMP,M},May,Jun,Jul}}
 	Bring plenty of <span style="color: {COLOR}">water</span>, it may be very hot on the {CONTENT}.
 {+END}
-{+START,IF,{$EQ,{$FROM_TIMESTAMP,%b},Aug,Sep,Oct}}
+{+START,IF,{$EQ,{$FROM_TIMESTAMP,M},Aug,Sep,Oct}}
 	Wear good <span style="color: {COLOR}">shoes</span>, it may be slippy on the {CONTENT}.
 {+END}
 [/code]

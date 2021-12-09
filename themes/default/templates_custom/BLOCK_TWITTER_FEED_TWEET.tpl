@@ -11,7 +11,7 @@
 {+END}
 
 {+START,SET,tweet_timestamp}
-	{$FROM_TIMESTAMP*,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP,{TWEET_CREATED_AT}}} &ndash; {TWEET_TIME_AGO*}
+	{$FROM_TIMESTAMP*,d F Y\, h:I:s A,{$TO_TIMESTAMP,{TWEET_CREATED_AT}}} &ndash; {TWEET_TIME_AGO*}
 {+END}
 
 {+START,IF,{$EQ,{STYLE},1}}

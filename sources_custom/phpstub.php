@@ -5135,8 +5135,6 @@ Disabled due to being locale-dependent, which is not thread-safe:
 fgetcsv
 str_getcsv
 str_word_count
-strftime
-gmstrftime
 strcoll
 strtoupper
 strtolower
@@ -5180,7 +5178,6 @@ array_intersect_uassoc
 forward_static_call
 forward_static_call_array
 gc_enabled
-strptime
 date_create
 date_create_immutable
 date_create_from_format
