@@ -157,7 +157,7 @@ function static_cache($mode)
         }
     }
 
-    if (function_exists('is_mobile')) {
+    if ((function_exists('is_mobile')) && (function_exists('get_option'))) {
         $is_mobile = is_mobile();
     } else {
         // The set of browsers
@@ -175,6 +175,7 @@ function static_cache($mode)
 
             // Well known/important browsers/brands
             'Mobile Safari', // Usually Android
+            'Android',
             'iPhone',
             'iPod',
             'Opera Mobi',
@@ -183,7 +184,8 @@ function static_cache($mode)
             'Windows Phone',
             'nook browser', // Barnes and Noble
         );
-        $is_mobile = (preg_match('#' . implode('|', $browsers) . '#', $_SERVER['HTTP_USER_AGENT']) != 0);
+        $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+        $is_mobile = (preg_match('#' . implode('|', $browsers) . '#', $user_agent) != 0);
     }
 
     // Work out cache path (potentially will search a few places, based on priority)
