@@ -217,11 +217,15 @@ class Module_admin
     /**
      * See if a string matches one of the keywords.
      *
-     * @param  string $t Search string.
+     * @param  ?string $t Search string (null: came in null for whatever reason).
      * @return boolean Whether there is a match.
      */
     public function _keyword_match($t)
     {
+        if ($t === null) {
+            return false;
+        }
+
         static $regexp = '';
         if (($regexp == '') || ($this->and_query)) {
             foreach ($this->keywords as $keyword_group) {
