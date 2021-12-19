@@ -27,6 +27,9 @@ function init__addons2()
 {
     require_code('files');
     require_code('addons');
+
+    global $SITE_MAINTENANCE_LOCK;
+    $SITE_MAINTENANCE_LOCK = false;
 }
 
 /**
@@ -599,6 +602,8 @@ function create_addon($file, $files, $addon, $incompatibilities, $dependencies, 
  */
 function install_addon($file, $files = null, $do_files = true, $do_db = true)
 {
+    site_maintenance_lock_engage();
+
     $full = get_custom_file_base() . '/imports/addons/' . $file;
 
     require_code('zones2');
@@ -776,6 +781,8 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true)
 
     tar_close($tar);
 
+    site_maintenance_lock_disengage();
+
     require_lang('addons');
     log_it('INSTALL_ADDON', $addon);
 }
@@ -789,6 +796,8 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true)
 function uninstall_addon($addon, $clear_caches = true)
 {
     $addon_info = read_addon_info($addon);
+
+    site_maintenance_lock_engage();
 
     require_code('zones2');
     require_code('zones3');
@@ -901,6 +910,8 @@ function uninstall_addon($addon, $clear_caches = true)
             persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
         }
     }
+
+    site_maintenance_lock_disengage();
 
     require_lang('addons');
     log_it('UNINSTALL_ADDON', $addon_info['name']);
@@ -1267,4 +1278,31 @@ function inform_about_addon_uninstall($addon, $also_uninstalling = null, $addon_
     }
 
     return array($warnings, $files);
+}
+
+/**
+ * Engage a lock to stop site traffic, with automatic timeout and removal upon crash.
+ */
+function site_maintenance_lock_engage()
+{
+    global $SITE_MAINTENANCE_LOCK;
+    $SITE_MAINTENANCE_LOCK = true;
+
+    set_value('site_maintenance_lock', strval(time()));
+
+    register_shutdown_function('site_maintenance_lock_disengage'); // Auto-unlocks on some kind of crash
+}
+
+/**
+ * Disengage lock from site_maintenance_lock_engage().
+ */
+function site_maintenance_lock_disengage()
+{
+    global $SITE_MAINTENANCE_LOCK;
+
+    if ($SITE_MAINTENANCE_LOCK) {
+        $SITE_MAINTENANCE_LOCK = false;
+
+        set_value('site_maintenance_lock', '');
+    }
 }
