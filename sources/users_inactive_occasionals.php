@@ -162,6 +162,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         }
 
         $SESSION_CACHE[$new_session] = $new_session_row;
+        sort_maps_by($SESSION_CACHE, '!last_activity');
 
         global $SESSION_IS_NEW;
         $SESSION_IS_NEW = true;
