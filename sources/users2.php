@@ -112,10 +112,10 @@ function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
                 if ($count >= $max_to_show) { // Guests show with lower priority
                     if (!empty($guests)) {
                         array_pop($guests);
-                        $members[$row['the_user']] = $max_to_show;
+                        $members[$row['member_id']] = $max_to_show;
                     }
                 } else {
-                    $members[$row['the_user']] = $row;
+                    $members[$row['member_id']] = $row;
                 }
 
                 $count++;
