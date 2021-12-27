@@ -135,6 +135,6 @@ class Hook_content_meta_aware_post
     {
         require_code('cns_posts2');
 
-        return render_post_box($row, false, $give_context, $include_breadcrumbs, is_null($root) ? null : intval($root), $guid);
+        return render_post_box($row, false, $give_context, $include_breadcrumbs, is_null($root) ? null : intval($root), $guid, null, $zone);
     }
 }

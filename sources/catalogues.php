@@ -97,7 +97,8 @@ function render_catalogue_entry_box($row, $zone = '_SEARCH', $give_context = tru
     }
 
     $tpl_set = $catalogue_name;
-    $display = get_catalogue_entry_map($row, $catalogue, 'SEARCH', $tpl_set, $root, null, null, false, true);
+    $_breadcrumbs = null;
+    $display = get_catalogue_entry_map($row, $catalogue, 'SEARCH', $tpl_set, $root, null, null, false, true, null, $_breadcrumbs, false, $zone);
 
     $breadcrumbs = mixed();
     if ($include_breadcrumbs) {
@@ -885,9 +886,10 @@ function catalogue_entries_manual_sort($fields, &$entries, $order_by, $direction
  * @param  ?integer $order_by Field index to order by (null: none)
  * @param  ?array $_breadcrumbs Write breadcrumbs into here (null: don't bother)
  * @param  boolean $force_view_all Whether to render everything
+ * @param  ID_TEXT $zone The zone to display in
  * @return array A map of information relating to the entry. The map contains 'FIELDS' (Tempcode for all accumulated fields), 'FIELD_x' (for each field x applying to the entry), STAFF_DETAILS, COMMENT_DETAILS, RATING_DETAILS, VIEW_URL, BREADCRUMBS
  */
-function get_catalogue_entry_map($entry, $catalogue, $view_type, $tpl_set, $root = null, $fields = null, $only_fields = null, $feedback_details = false, $breadcrumbs_details = false, $order_by = null, &$_breadcrumbs = null, $force_view_all = false)
+function get_catalogue_entry_map($entry, $catalogue, $view_type, $tpl_set, $root = null, $fields = null, $only_fields = null, $feedback_details = false, $breadcrumbs_details = false, $order_by = null, &$_breadcrumbs = null, $force_view_all = false, $zone = '_SEARCH')
 {
     $id = $entry['id'];
     $all_visible = true;
@@ -1022,8 +1024,6 @@ function get_catalogue_entry_map($entry, $catalogue, $view_type, $tpl_set, $root
     if ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($entry['allow_comments'] >= 1)) {
         $map['COMMENT_COUNT'] = '1';
     }
-
-    $zone = get_module_zone('catalogues');
 
     $separate_view_screen =
         (get_option('is_on_comments') == '1') && ($entry['allow_comments'] >= 1) ||

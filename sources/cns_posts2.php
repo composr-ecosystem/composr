@@ -28,9 +28,10 @@
  * @param  ?AUTO_LINK $root Virtual root to use (null: none)
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @param  ?Tempcode $text_summary Text summary for result (e.g. highlighted portion of actual file from search result) (null: none)
+ * @param  ID_TEXT $zone The zone to display in
  * @return Tempcode The isolated post.
  */
-function render_post_box($row, $use_post_title = false, $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '', $text_summary = null)
+function render_post_box($row, $use_post_title = false, $give_context = true, $include_breadcrumbs = true, $root = null, $guid = '', $text_summary = null, $zone = '_SEARCH')
 {
     if (is_null($row)) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -162,7 +163,7 @@ function render_post_box($row, $use_post_title = false, $give_context = true, $i
     if (!is_null($root)) {
         $map['keep_forum_root'] = $root;
     }
-    $post_url = build_url($map, get_module_zone('topicview'));
+    $post_url = build_url($map, $zone);
     $post_url->attach('#post_' . strval($row['id']));
     if ($text_summary === null) {
         $just_post_row = db_map_restrict($row, array('id', 'p_post'), array('id' => 'p_id'));
