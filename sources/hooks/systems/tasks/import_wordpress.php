@@ -431,13 +431,6 @@ class Hook_task_import_wordpress
             }
         }
 
-        decache('main_news');
-        decache('main_image_fader_news');
-        decache('side_news');
-        decache('side_news_archive');
-        decache('bottom_news');
-        decache('side_news_categories');
-
         $ret = do_lang_tempcode('IMPORT_WORDPRESS_DONE');
         return array('text/html', $ret);
     }

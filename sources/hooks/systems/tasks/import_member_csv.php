@@ -438,8 +438,6 @@ class Hook_task_import_member_csv
 
         $outputted_messages->attach(do_lang_tempcode('NUM_MEMBERS_IMPORTED', escape_html(integer_format($num_added)), escape_html(integer_format($num_edited))));
 
-        decache('side_stats');
-        decache('main_members');
         delete_value('cns_newest_member_id');
         delete_value('cns_newest_member_username');
 
