@@ -149,6 +149,9 @@ class Module_cms_comcode_pages
             breadcrumb_set_parents([['_SELF:_SELF:browse:lang=' . get_param_string('lang', ''), do_lang_tempcode('menus:_COMCODE_PAGES')]]);
 
             $lang = get_param_string('lang', get_site_default_lang());
+            if (!does_lang_exist($lang)) {
+                $lang = get_site_default_lang();
+            }
 
             if ($file == '') {
                 $this->title = get_screen_title('COMCODE_PAGE_ADD', true, [escape_html($zone), escape_html($file)]);
@@ -1247,7 +1250,7 @@ class Module_cms_comcode_pages
 
         // Load up settings from the environments
         $file = filter_naughty(post_param_string('file'));
-        $lang = filter_naughty(get_param_string('lang'));
+        $lang = user_lang__with__translation_override();
         $zone = filter_naughty(post_param_string('zone'));
         if (addon_installed('page_management')) {
             $new_file = filter_naughty(has_actual_page_access(get_member(), 'admin_sitemap') ? post_param_string('title', $file) : $file);

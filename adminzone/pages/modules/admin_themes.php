@@ -1087,7 +1087,7 @@ class Module_admin_themes
     public function add_image() : object
     {
         $theme = $this->theme;
-        $lang = get_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override();
         if ($lang == '') {
             $lang = user_lang();
         }
@@ -1130,7 +1130,7 @@ class Module_admin_themes
         require_code('uploads');
 
         $theme = post_param_string('theme');
-        $lang = post_param_string('lang');
+        $lang = user_lang__with__translation_override(true);
         $id = post_param_string('id');
         $use_all_themes = post_param_integer('use_all_themes', 0);
         $use_all_langs = post_param_integer('use_all_langs', 0);
@@ -1286,7 +1286,7 @@ class Module_admin_themes
         require_code('uploads');
 
         $theme = post_param_string('theme');
-        $lang = post_param_string('lang');
+        $lang = user_lang__with__translation_override(true);
         $id = post_param_string('id');
         $old_id = post_param_string('old_id');
 
@@ -1350,7 +1350,7 @@ class Module_admin_themes
         require_code('urls2');
 
         $theme = post_param_string('theme');
-        $lang = post_param_string('lang');
+        $lang = user_lang__with__translation_override(true);
         $id = post_param_string('id');
 
         $seed = post_param_string('seed');

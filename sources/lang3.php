@@ -34,7 +34,7 @@ function _choose_language(object $title, bool $tip = false, bool $allow_all_sele
     }
 
     $lang = get_param_string('lang', /*get_param_string('keep_lang', null)*/null);
-    if ($lang !== null) {
+    if (($lang !== null) && (does_lang_exist($lang))) {
         return filter_naughty($lang);
     }
 
@@ -335,7 +335,7 @@ function _insert_lang(string $field_name, string $text, int $level, ?object $db 
     }
 
     if ($lang === null) {
-        $lang = get_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override();
     }
     $_text_parsed = null;
 
@@ -448,7 +448,7 @@ function _lang_remap(string $field_name, $id, string $text, ?object $db = null, 
         $db = $GLOBALS['SITE_DB'];
     }
 
-    $lang = get_param_string('lang', user_lang());
+    $lang = user_lang__with__translation_override();
 
     $member_id = (function_exists('get_member')) ? get_member() : $GLOBALS['FORUM_DRIVER']->get_guest_id(); // This updates the Comcode reference to match the current user, which may not be the owner of the content this is for. This is for a reason - we need to parse with the security token of the current user, not the original content submitter.
     if (($for_member === null) || ($GLOBALS['FORUM_DRIVER']->get_username($for_member, false, USERNAME_DEFAULT_NULL) === null)) {

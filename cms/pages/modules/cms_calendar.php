@@ -1257,7 +1257,7 @@ class Module_cms_calendar extends Standard_crud_module
     {
         check_privilege('mass_import');
 
-        $lang = post_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override(true);
 
         require_code('calendar_ical');
 

@@ -1053,7 +1053,11 @@ function _transifex_env_lang()
         }
     }
 
-    return get_param_string('lang', null);
+    $lang = get_param_string('lang', null);
+    if (($lang !== null) && (!does_lang_exist($lang))) {
+        $lang = null;
+    }
+    return $lang;
 }
 
 function _transifex_decode_content($in)

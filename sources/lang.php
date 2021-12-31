@@ -180,6 +180,39 @@ function fallback_lang() : string
 }
 
 /**
+ * Get the user's currently selected language, with support for an override when doing a translation.
+ *
+ * @param  boolean $post Whether the language setting is a POST parameter (default is a GET parameter)
+ * @return LANGUAGE_NAME The user's current language
+ */
+function user_lang__with__translation_override(bool $post = false) : string
+{
+    static $running = false;
+
+    if ($running) {
+        return user_lang(); // Probably in a failure due to filter_naughty_harsh
+    }
+    $running = true;
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $lang = $post ? post_param_string('lang', '') : get_param_string('lang', '');
+        if (($lang != '') && (!does_lang_exist(filter_naughty_harsh($lang)))) {
+            $lang = '';
+        }
+    } else {
+        $lang = '';
+    }
+
+    if ($lang == '') {
+        $lang = user_lang();
+    }
+
+    $running = false;
+
+    return $lang;
+}
+
+/**
  * Get the user's currently selected language.
  *
  * @return LANGUAGE_NAME The user's current language
@@ -340,6 +373,8 @@ function get_lang_browser() : ?string
  */
 function does_lang_exist(string $lang) : bool
 {
+    $lang = filter_naughty($lang);
+
     if ($lang == '') {
         return false;
     }
@@ -1121,7 +1156,7 @@ function get_translated_tempcode(string $table, array $row, string $field_name, 
     }
 
     if ($lang === null) {
-        $lang = get_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override();
     }
 
     if (multi_lang_content()) {
@@ -1261,7 +1296,7 @@ function get_translated_text($entry, ?object $db = null, ?string $lang = null, b
     }
 
     if ($lang === null) {
-        $lang = get_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override();
     }
 
     if ((isset($db->text_lookup_original_cache[$entry])) && ($lang === user_lang())) {

@@ -838,7 +838,7 @@ class Module_cms_news extends Standard_crud_module
     {
         check_privilege('mass_import');
 
-        $lang = post_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override(true);
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_import_news', 'old_type' => get_param_string('type', '')], '_SELF');
         $submit_name = do_lang_tempcode('IMPORT_NEWS');

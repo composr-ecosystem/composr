@@ -711,7 +711,7 @@ class Module_cms_blogs extends Standard_crud_module
     {
         check_privilege('mass_import', null, null, 'cms_news');
 
-        $lang = post_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override(true);
 
         $submit_name = do_lang_tempcode('IMPORT_WORDPRESS');
 

@@ -1144,6 +1144,9 @@ class Module_admin_addons
 
         $is_lang = (get_param_string('exp', 'custom') == 'lang');
         $lang = either_param_string('lang', null);
+        if (($lang !== null) && (!does_lang_exist($lang))) {
+            $lang = null;
+        }
 
         $is_theme = (get_param_string('exp', 'custom') == 'theme');
         $theme = either_param_string('theme', null);
@@ -1210,7 +1213,7 @@ class Module_admin_addons
         }
 
         if ($is_lang) {
-            $lang = post_param_string('lang');
+            $lang = user_lang__with__translation_override(true);
             $ini_file = get_custom_file_base() . '/lang_custom/langs.ini';
             if (!file_exists($ini_file)) {
                 $ini_file = get_file_base() . '/lang/langs.ini';

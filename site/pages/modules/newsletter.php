@@ -435,7 +435,7 @@ class Module_newsletter
         if ($password != post_param_string('password_confirm', '', INPUT_FILTER_PASSWORD)) {
             warn_exit(make_string_tempcode(escape_html(do_lang('PASSWORD_MISMATCH'))));
         }
-        $language = post_param_string('lang', user_lang());
+        $language = user_lang__with__translation_override(true);
         if (!is_valid_email_address($email)) {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }

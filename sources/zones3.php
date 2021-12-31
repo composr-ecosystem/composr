@@ -613,14 +613,14 @@ function get_template_contents(string $name) : string
         return '';
     }
 
-    $templates_dir = get_file_base() . '/data_custom/modules/cms_comcode_pages/' . get_param_string('lang', user_lang()) . '/';
+    $templates_dir = get_file_base() . '/data_custom/modules/cms_comcode_pages/' . user_lang__with__translation_override() . '/';
     $template_path = $templates_dir . $name . '.txt';
     if (!is_file($template_path)) {
         $templates_dir = get_file_base() . '/data_custom/modules/cms_comcode_pages/' . fallback_lang() . '/';
         $template_path = $templates_dir . $name . '.txt';
     }
     if (!is_file($template_path)) {
-        $templates_dir = get_file_base() . '/data/modules/cms_comcode_pages/' . get_param_string('lang', user_lang()) . '/';
+        $templates_dir = get_file_base() . '/data/modules/cms_comcode_pages/' . user_lang__with__translation_override() . '/';
         $template_path = $templates_dir . $name . '.txt';
     }
     if (!is_file($template_path)) {
