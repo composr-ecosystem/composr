@@ -153,24 +153,22 @@ class Module_cms_galleries extends Standard_crud_module
 
         if ($type == 'import') {
             inform_non_canonical_parameter('member_id');
-
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES'))));
         }
 
         if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')), array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT'))));
             breadcrumb_set_self(do_lang_tempcode('UPLOAD'));
         }
 
         if ($type == '__import') {
             $cat = get_param_string('cat');
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')), array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')), array('_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')), array('_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if (($type == 'orphaned') || ($type == 'orphan_add') || ($type == 'orphan_delete')) {
             $cat = post_param_string('ss_cat');
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')), array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')), array('_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')), array('_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 

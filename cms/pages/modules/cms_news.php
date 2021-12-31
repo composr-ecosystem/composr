@@ -138,7 +138,7 @@ class Module_cms_news extends Standard_crud_module
         }
 
         if ($type == '_import_news') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWS')), array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_NEWS'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_NEWS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 

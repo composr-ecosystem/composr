@@ -137,21 +137,13 @@ class Module_cms_downloads extends Standard_crud_module
             $this->title = get_screen_title('FILESYSTEM_DOWNLOADS');
         }
 
-        if ($type == 'import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_DOWNLOADS'))));
-        }
-
         if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_DOWNLOADS')), array('_SELF:_SELF:import', do_lang_tempcode('FTP_DOWNLOADS'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:import', do_lang_tempcode('FTP_DOWNLOADS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
-        if ($type == 'import2') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_DOWNLOADS'))));
-        }
-
         if ($type == '_import2') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_DOWNLOADS')), array('_SELF:_SELF:import', do_lang_tempcode('FILESYSTEM_DOWNLOADS'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:import', do_lang_tempcode('FILESYSTEM_DOWNLOADS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -757,6 +749,7 @@ class Module_cms_downloads_alt extends Standard_crud_module
     public $permissions_require = 'cat_high';
     public $user_facing = false;
     public $menu_label = 'SECTION_DOWNLOADS';
+    public $is_chained_with_parent_browse = true;
 
     public $donext_type = null;
 

@@ -144,7 +144,6 @@ class Module_admin_disastr extends Standard_crud_module
         set_helper_panel_tutorial('tut_subcom');
 
         if ($type == 'view') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('DISASTR_TITLE'))));
             breadcrumb_set_self(do_lang_tempcode('VIEW_DISEASE'));
         }
 

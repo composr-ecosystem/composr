@@ -79,17 +79,17 @@ class Module_admin_newsletter extends Standard_crud_module
         set_helper_panel_tutorial('tut_newsletter');
 
         if ($type == 'confirm') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')), array('_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND'))));
             breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
         }
 
         if ($type == 'send') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')), array('_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == 'view') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')), array('_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE'))));
+            breadcrumb_set_parents(array(array('_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE'))));
             breadcrumb_set_self(do_lang_tempcode('VIEW'));
         }
 
