@@ -8,7 +8,8 @@ function facebook_init(app_id,channel_url,just_logged_out,serverside_fbuid,home_
 			channelUrl: channel_url,
 			status: true,
 			cookie: true,
-			xfbml: true
+			xfbml: true,
+			version: 'v12.0'
 		});
 
 		// Ignore floods of "Unsafe JavaScript attempt to access frame with URL" errors in Chrome they are benign
