@@ -103,6 +103,10 @@ class Forum_driver_ipb2 extends forum_driver_ipb_shared
      */
     public function get_member_from_username($name)
     {
+        if ($name == do_lang('GUEST')) {
+            return $this->get_guest_id();
+        }
+
         return $this->connection->query_select_value_if_there('members', 'id', array('members_display_name' =>  $this->ipb_escape($name)));
     }
 
