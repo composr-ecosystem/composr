@@ -219,7 +219,7 @@ class Module_chat
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
-                'p_order' => 0,
+                'p_order' => 1,
             ));
 
             $GLOBALS['SITE_DB']->query_delete('comcode_pages', array(
@@ -235,7 +235,7 @@ class Module_chat
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
-                'p_order' => 0,
+                'p_order' => 2,
             ));
 
             $GLOBALS['SITE_DB']->create_index('chat_rooms', 'is_im', array('is_im'/*, 'room_name' makes key too long*/));
