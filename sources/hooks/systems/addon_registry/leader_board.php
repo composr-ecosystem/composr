@@ -3,7 +3,7 @@
 /*
 
   Composr
-  Copyright (c) ocProducts, 2004-2021
+  Copyright (c) ocProducts, 2004-2022
 
   See docs/LICENSE.md for full licensing information.
 
