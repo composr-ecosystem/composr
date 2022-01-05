@@ -634,8 +634,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONTENT_VIEWS_PER_CONTENT_DAY
         __COMCODE_PAGE_EDIT
         CONTENT_VIEWS
-        ALEXA_RANKING
-        ALEXA_LINKS
         FORM
         BLOCK_TRANS_NAME_main_staff_stats_graph
         CONVERSION_RATES

@@ -146,7 +146,7 @@ class Module_cms_calendar extends Standard_crud_module
         set_helper_panel_tutorial('tut_calendar');
 
         if ($type == '_import_ical') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_CALENDARS')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_ICAL')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:import', do_lang_tempcode('IMPORT_ICAL')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 

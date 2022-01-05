@@ -94,12 +94,8 @@ class Module_admin_cns_emoticons extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_emoticons');
 
-        if ($type == 'import') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS')]]);
-        }
-
         if ($type == '_import') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_EMOTICONS')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:import', do_lang_tempcode('IMPORT_EMOTICONS')]]);
         }
 
         if ($type == 'import' || $type == '_import') {

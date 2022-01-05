@@ -37,6 +37,9 @@ function get_google_search_console_data(?int $_start_month = null, ?int $_end_mo
 
     require_code('oauth');
     $access_token = refresh_oauth2_token('google_search_console', false);
+    if ($access_token === null) {
+        return null;
+    }
     $url = 'https://www.googleapis.com/webmasters/v3/sites/' . rawurlencode($url) . '/searchAnalytics/query?access_token=' . urlencode($access_token);
 
     if ($_start_month === null) {

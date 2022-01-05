@@ -33,7 +33,7 @@ class Hook_sw_core_cns
         $settings = [];
 
         if (get_forum_type() != 'cns') {
-            return [];
+            return $settings;
         }
 
         if (!is_on_multi_site_network()) {

@@ -1412,21 +1412,25 @@ class HttpDownloaderSockets extends HttpDownloader
             $_fwh = null;
             $time_init = time();
             $line = '';
-            while (($chunked) || (!@feof($mysock))) { // @'d because socket might have died. If so fread will will return false and hence we'll break
-                if ((function_exists('stream_select')) && (!empty($_frh)) && (!@stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)))) {
-                    if (($input === '') && ($time_init + $this->timeout <= time())) {
-                        if ((!$chunked) || ($buffer_unprocessed == '')) {
-                            $line = false; // Manual timeout
-                            if ($this->trigger_error) {
-                                warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_CONNECTION_STALLED', escape_html($url)));
-                            } else {
-                                $this->message_b = do_lang_tempcode('HTTP_DOWNLOAD_CONNECTION_STALLED', escape_html($url));
-                            }
+            while ((!@feof($mysock)) || (($chunked) && ($buffer_unprocessed != ''))) { // @'d because socket might have died. If so fread will will return false and hence we'll break
+                if ((empty($_frh)) || ((function_exists('stream_select')) && (!@stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0))))) {
+                    // Detected timeout
+                    if (($chunked) && ($buffer_unprocessed != '')) {
+                        // Either a broken chunked stream or no input at all yet...
 
-                            $this->message = 'connection-stalled';
-
-                            return null;
+                        $line = false; // Manual timeout
+                        if ($this->trigger_error) {
+                            warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_CONNECTION_STALLED', escape_html($url)));
+                        } else {
+                            $this->message_b = do_lang_tempcode('HTTP_DOWNLOAD_CONNECTION_STALLED', escape_html($url));
                         }
+
+                        $this->message = 'connection-stalled';
+
+                        return null;
+                    } else {
+                        // We don't know our stream is broken, so let's consider us done, just that the connection was not detected on our as properly closed with EOF...
+                        break;
                     }
                 }
 
@@ -1436,10 +1440,13 @@ class HttpDownloaderSockets extends HttpDownloader
                     $line = false; // Manual timeout
                 }
                 if ($line === false) {
+                    // Implicit EOF, so terminate
                     if ((!$chunked) || ($buffer_unprocessed == '')) {
+                        $_frh = []; // Will trigger a detected timeout on next loop cycle. Note stream_select also can empty $_frh, and we are simulating the same thing here but without any overhead on waiting for stream_select
+                        $line = '';
+                    } else {
                         break;
                     }
-                    $line = '';
                 }
                 if ($line == '') {
                     if ($first_fail_time !== null) {
@@ -1457,8 +1464,8 @@ class HttpDownloaderSockets extends HttpDownloader
                     $buffer_unprocessed = '';
 
                     if ($chunked) {
-                        if (isset($line[1]) && $line[0] == "\r" && $line[1] == "\n") {
-                            $line = substr($line, 2);
+                        if ((isset($line[1])) && ($line[0] == "\r") && ($line[1] == "\n")) {
+                            $line = @substr($line, 2);
                         }
 
                         $hexdec_chunk_details = '';
@@ -1466,7 +1473,7 @@ class HttpDownloaderSockets extends HttpDownloader
                         for ($hexdec_read = 0; $hexdec_read < $chunk_line_length; $hexdec_read++) {
                             $chunk_char = $line[$hexdec_read];
                             if ($chunk_char == "\r") {
-                                $chunk_char_is_hex = false;
+                                break;
                             } else {
                                 if ($has_ctype_xdigit) {
                                     $chunk_char_is_hex = ctype_xdigit($chunk_char);
@@ -1482,7 +1489,22 @@ class HttpDownloaderSockets extends HttpDownloader
                             }
                         }
                         if ($hexdec_chunk_details == '') { // No data
-                            continue;
+                            // No usable data here...
+
+                            if ($line == '') {
+                                // We just have no data yet
+                                continue;
+                            }
+
+                            // Corrupt, so terminate as empty
+                            if ($this->write_to_file === null) {
+                                $input = '';
+                            } else {
+                                ftruncate($this->write_to_file, 0);
+                            }
+                            $input_len = 0;
+                            $buffer_unprocessed = '';
+                            break;
                         }
                         $chunk_end_pos = strpos($line, "\r\n");
                         if ($chunk_end_pos === false) {
@@ -1498,7 +1520,8 @@ class HttpDownloaderSockets extends HttpDownloader
                         $buffer_unprocessed = substr($line, $chunk_end_pos + 2 + $amount_wanted); // May be some more extra read
                         $line = substr($line, $chunk_end_pos + 2, $amount_wanted);
                         if ($line == '') {
-                            break; // Terminating chunk
+                            // Terminates if an empty chunk
+                            break;
                         }
 
                         $input_len += $amount_wanted;
@@ -1688,11 +1711,14 @@ class HttpDownloaderSockets extends HttpDownloader
 
                         if ($line == "\r\n") {
                             $data_started = true;
-                            $buffer_unprocessed = substr($old_line, $tally);
+                            $buffer_unprocessed = @substr($old_line, $tally);
                             if ($buffer_unprocessed === false) {
                                 $buffer_unprocessed = '';
                             }
-                            break;
+
+                            if (($chunked) && (isset($buffer_unprocessed[1])) && ($buffer_unprocessed[0] == "\r") && ($buffer_unprocessed[1] == "\n")) {
+                                break; // Explicit termination after headers, we should not try and wait for more
+                            }
                         }
                     }
                 }

@@ -242,6 +242,10 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
         set_mass_import_mode($mim_before);
+        if (!$mim_before) {
+            require_code('caches3');
+            erase_block_cache();
+        }
         if ($result === false) {
             $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
         }

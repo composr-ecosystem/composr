@@ -75,7 +75,7 @@ function adminzone_extended_breadcrumbs() : array
 
     $breadcrumbs = [];
 
-    $link = $SMART_CACHE->get('extended_breadcrumbs');
+    $link = $SMART_CACHE->get('extended_breadcrumbs_' . get_param_string('type', ''));
     if ($link !== null) {
         list($link_map, $link_zone, $link_lang) = $link;
 
@@ -143,7 +143,7 @@ function adminzone_extended_breadcrumbs() : array
                         }
                         $link_lang = 'menus:' . cms_strtoupper_ascii($i[0]);
 
-                        $SMART_CACHE->set('extended_breadcrumbs', [$link_map, $link_zone, $link_lang]);
+                        $SMART_CACHE->set('extended_breadcrumbs_' . get_param_string('type', ''), [$link_map, $link_zone, $link_lang]);
 
                         $title = do_lang_tempcode($link_lang); // The language string codename version of the page grouping we found our current module was in
                         $page_link = build_page_link($link_map, $link_zone);
@@ -156,7 +156,7 @@ function adminzone_extended_breadcrumbs() : array
         }
     }
 
-    $SMART_CACHE->set('extended_breadcrumbs', [null, null, null]);
+    $SMART_CACHE->set('extended_breadcrumbs_' . get_param_string('type', ''), [null, null, null]);
 
     return $breadcrumbs;
 }

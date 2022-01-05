@@ -218,10 +218,10 @@ function static_cache(int $mode)
     $server_support_brotli = false; // May be set later
     $server_support_gzip = false; // May be set later
 
-    if (function_exists('is_mobile')) {
+    if ((function_exists('is_mobile')) && (function_exists('get_option'))) {
         $is_mobile = is_mobile();
     } else {
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
         // The set of browsers
         $mobile_agents = [
@@ -237,6 +237,7 @@ function static_cache(int $mode)
 
             // Well known/important browsers/brands
             'Mobile Safari', // Usually Android
+            'Android',
             'iPhone',
             'iPod',
             'Opera Mobi',
@@ -251,6 +252,7 @@ function static_cache(int $mode)
             'kindle',
             'silk',
         ];
+
         $is_tablet = (preg_match('/(' . implode('|', $tablets) . ')/i', $user_agent) != 0) || (strpos($user_agent, 'Android') !== false) && (strpos($user_agent, 'Mobile') === false);
         $is_mobile = (preg_match('/(' . implode('|', $mobile_agents) . ')/i', $user_agent) != 0) && (!$is_tablet);
     }

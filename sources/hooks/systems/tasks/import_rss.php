@@ -481,13 +481,6 @@ class Hook_task_import_rss
 
         pop_lax_comcode();
 
-        delete_cache_entry('main_news');
-        delete_cache_entry('main_image_fader_news');
-        delete_cache_entry('side_news');
-        delete_cache_entry('side_news_archive');
-        delete_cache_entry('bottom_news');
-        delete_cache_entry('side_news_categories');
-
         $ret = do_lang_tempcode('IMPORT_NEWS_DONE');
         return ['text/html', $ret];
     }

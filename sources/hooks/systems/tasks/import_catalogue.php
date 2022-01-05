@@ -68,7 +68,7 @@ class Hook_task_import_catalogue
                 $categories[$catalogue_name] = $cat_row['id'];
             }
         }
-        $root_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['cc_parent_id' => null]);
+        $root_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['cc_parent_id' => null, 'c_name' => $catalogue_name]);
 
         // Open spreadsheet file
         require_code('files_spreadsheets_read');

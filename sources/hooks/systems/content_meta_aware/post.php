@@ -162,6 +162,6 @@ class Hook_content_meta_aware_post extends Hook_CMA
     {
         require_code('cns_posts2');
 
-        return render_post_box($row, false, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid);
+        return render_post_box($row, false, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid, null, $zone);
     }
 }

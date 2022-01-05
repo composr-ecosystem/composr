@@ -1092,7 +1092,7 @@ class Module_admin_themes
             $lang = user_lang();
         }
         list($fields, $hidden) = $this->get_image_form_fields($theme, $lang);
-        $fields->attach(form_input_tick(do_lang_tempcode('USE_ALL_THEMES'), do_lang_tempcode('DESCRIPTION_USE_ALL_THEMES'), 'use_all_themes', false));
+        $fields->attach(form_input_tick(do_lang_tempcode('USE_ALL_THEMES'), do_lang_tempcode('DESCRIPTION_USE_ALL_THEMES'), 'use_all_themes', true));
         $fields->attach(form_input_tick(do_lang_tempcode('USE_ALL_LANGS'), do_lang_tempcode('DESCRIPTION_USE_ALL_LANGS'), 'use_all_langs', true));
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_add_image', 'uploading' => 1], '_SELF');
@@ -1139,7 +1139,7 @@ class Module_admin_themes
         if (strpos($id, '/') !== false) {
             $target_dir .= '/' . dirname($id);
         }
-        $urls = get_url('url', 'file', $target_dir);
+        $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, $id . '.XXX');
         if ($urls[0] == '') {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
@@ -1314,7 +1314,7 @@ class Module_admin_themes
             if (strpos($id, '/') !== false) {
                 $target_dir .= '/' . dirname($id);
             }
-            $urls = get_url('url', 'file', $target_dir);
+            $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, $id . '.XXX');
 
             if ((url_is_local($urls[0])) && (!file_exists(((substr($urls[0], 0, 15) == 'themes/default/') ? get_file_base() : get_custom_file_base()) . '/' . rawurldecode($urls[0])))) {
                 warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));

@@ -217,7 +217,7 @@ class Module_admin
     /**
      * See if a string matches one of the keywords.
      *
-     * @param  ?string $t Search string (null: nothing)
+     * @param  ?string $t Search string (null: came in null for whatever reason)
      * @return boolean Whether there is a match
      */
     public function _keyword_match(?string $t) : bool

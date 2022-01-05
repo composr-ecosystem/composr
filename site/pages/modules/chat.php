@@ -223,7 +223,7 @@ class Module_chat
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
                 'p_include_on_sitemap' => comcode_page_include_on_sitemap('site', 'userguide_chatcode') ? 1 : 0,
-                'p_order' => 0,
+                'p_order' => 1,
             ]);
 
             $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
@@ -240,7 +240,7 @@ class Module_chat
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
                 'p_include_on_sitemap' => comcode_page_include_on_sitemap('site', 'popup_blockers') ? 1 : 0,
-                'p_order' => 0,
+                'p_order' => 2,
             ]);
 
             $GLOBALS['SITE_DB']->create_index('chat_rooms', 'is_im', ['is_im'/*, 'room_name' makes key too long*/]);

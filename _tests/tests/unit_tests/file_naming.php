@@ -40,6 +40,7 @@ class file_naming_test_set extends cms_test_case
                 'data/mediaelement',
                 'data/plupload',
                 'data/fonts',
+                'test-a',
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;

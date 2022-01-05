@@ -210,6 +210,18 @@ class Hook_task_import_members
                 $dob_day = array_key_exists(2, $parts) ? intval($parts[2]) : null;
                 $dob_month = array_key_exists(1, $parts) ? intval($parts[1]) : null;
                 $dob_year = array_key_exists(0, $parts) ? intval($parts[0]) : null;
+
+                if (($dob_day > 31) || ($dob_month > 31)) {
+                    if (get_option('yeehaw') == '1') {
+                        $dob_day = array_key_exists(1, $parts) ? intval($parts[1]) : null;
+                        $dob_month = array_key_exists(0, $parts) ? intval($parts[0]) : null;
+                        $dob_year = array_key_exists(2, $parts) ? intval($parts[2]) : null;
+                    } else {
+                        $dob_day = array_key_exists(0, $parts) ? intval($parts[0]) : null;
+                        $dob_month = array_key_exists(1, $parts) ? intval($parts[1]) : null;
+                        $dob_year = array_key_exists(2, $parts) ? intval($parts[2]) : null;
+                    }
+                }
             } else {
                 $dob_day = null;
                 $dob_month = null;
@@ -480,8 +492,6 @@ class Hook_task_import_members
 
         $outputted_messages->attach(do_lang_tempcode('NUM_MEMBERS_IMPORTED', escape_html(integer_format($num_added)), escape_html(integer_format($num_edited))));
 
-        delete_cache_entry('side_stats');
-        delete_cache_entry('main_members');
         delete_value('cns_newest_member_id');
         delete_value('cns_newest_member_username');
 

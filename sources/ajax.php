@@ -535,11 +535,14 @@ function snippet_script()
 {
     prepare_backend_response('text/plain');
 
-    global $RELATIVE_PATH, $ZONE;
-    $test = get_module_zone(get_page_name());
-    if ($test !== null) {
-        $RELATIVE_PATH = $test;
-        $ZONE = null;
+    if (get_param_string('zone', null) === null) {
+        // If zone not explicitly specified, try and work it out from the page name parameter (if one given)
+        global $RELATIVE_PATH, $ZONE;
+        $test = get_module_zone(get_page_name());
+        if ($test !== null) {
+            $RELATIVE_PATH = $test;
+            $ZONE = null;
+        }
     }
 
     cms_ini_set('ocproducts.xss_detect', '0');

@@ -462,6 +462,7 @@ class Module_admin_setupwizard
 
         $installprofile = post_param_string('installprofile', '');
         $addon_list_override_to_off_by_default = [];
+        $addon_list_force_on = [];
         if ($installprofile != '') {
             require_code('hooks/modules/admin_setupwizard_installprofiles/' . filter_naughty_harsh($installprofile));
             $object = object_factory('Hook_admin_setupwizard_installprofiles_' . filter_naughty_harsh($installprofile));

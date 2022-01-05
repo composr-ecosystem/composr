@@ -2400,7 +2400,12 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
             $unique_id[] = $t_row[$_id_field];
         }
 
-        $_rows_deduped[serialize($unique_id)] = $t_row;
+        $sz = serialize($unique_id);
+        if (isset($_rows_deduped[$sz])) {
+            $t_count--;
+        } else {
+            $_rows_deduped[$sz] = $t_row;
+        }
     }
     $t_rows = array_values($_rows_deduped);
 

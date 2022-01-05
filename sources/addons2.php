@@ -27,6 +27,9 @@ function init__addons2()
 {
     require_code('files');
     require_code('addons');
+
+    global $SITE_MAINTENANCE_LOCK;
+    $SITE_MAINTENANCE_LOCK = false;
 }
 
 /*
@@ -466,6 +469,8 @@ INSTALLING ADDONS
  */
 function inform_about_addon_install(string $file, array $also_uninstalling = [], array $also_installing = [], bool $always_return = false) : array
 {
+    site_maintenance_lock_engage();
+
     $full = get_custom_file_base() . '/imports/addons/' . $file;
 
     // Look in the TAR
@@ -815,6 +820,8 @@ function get_addon_install_writable_paths(string $file) : array
  */
 function install_addon(string $file, ?array $files = null, bool $do_files = true, bool $do_db = true, bool $clear_caches = true)
 {
+    site_maintenance_lock_engage();
+
     require_code('zones2');
     require_code('zones3');
 
@@ -984,6 +991,8 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
     }
 
     tar_close($tar);
+
+    site_maintenance_lock_disengage();
 
     if ($do_db) {
         require_lang('addons');
@@ -1364,6 +1373,8 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
 {
     $addon_info = read_addon_info($addon_name);
 
+    site_maintenance_lock_engage();
+
     require_code('zones2');
     require_code('zones3');
     require_code('abstract_file_manager');
@@ -1479,6 +1490,8 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
         }
     }
 
+    site_maintenance_lock_disengage();
+
     require_lang('addons');
     log_it('UNINSTALL_ADDON', $addon_info['name']);
 }
@@ -1513,4 +1526,31 @@ function uninstall_addon_soft(string $addon_name)
     }
 
     set_value('kill_cron_looping', '1', true);
+}
+
+/**
+ * Engage a lock to stop site traffic, with automatic timeout and removal upon crash.
+ */
+function site_maintenance_lock_engage()
+{
+    global $SITE_MAINTENANCE_LOCK;
+    $SITE_MAINTENANCE_LOCK = true;
+
+    set_value('site_maintenance_lock', strval(time()));
+
+    register_shutdown_function('site_maintenance_lock_disengage'); // Auto-unlocks on some kind of crash
+}
+
+/**
+ * Disengage lock from site_maintenance_lock_engage().
+ */
+function site_maintenance_lock_disengage()
+{
+    global $SITE_MAINTENANCE_LOCK;
+
+    if ($SITE_MAINTENANCE_LOCK) {
+        $SITE_MAINTENANCE_LOCK = false;
+
+        set_value('site_maintenance_lock', '');
+    }
 }

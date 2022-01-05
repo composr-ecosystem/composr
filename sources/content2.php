@@ -93,9 +93,10 @@ function define_page_metadata(array $page_metadata, string $zone = '')
  * @param  ?integer $total Number of entries, alternative to supplying $max (null: work out from content type metadata)
  * @param  ID_TEXT $order_field The POST field to save under
  * @param  ?Tempcode $description Description for field input (null: {!ORDER})
+ * @param  ?integer $num_automated_now The number of records that are currently automated (null: work out)
  * @return Tempcode Ordering field
  */
-function get_order_field(string $entry_type, ?string $category_type, ?int $current_order, ?int $max = null, ?int $total = null, string $order_field = 'order', ?object $description = null) : object
+function get_order_field(string $entry_type, ?string $category_type, ?int $current_order, ?int $max = null, ?int $total = null, string $order_field = 'order', ?object $description = null, ?int $num_automated_now = null) : object
 {
     $new = ($current_order === null);
 
@@ -124,10 +125,12 @@ function get_order_field(string $entry_type, ?string $category_type, ?int $curre
     }
 
     if ($new) {
-        $test = $info['db']->query_value_if_there('SELECT COUNT(' . $db_order_field . ') FROM ' . $info['db']->get_table_prefix() . $info['table'] . ' WHERE ' . $db_order_field . '=' . strval(ORDER_AUTOMATED_CRITERIA));
+        if ($num_automated_now === null) {
+            $test = $info['db']->query_value_if_there('SELECT COUNT(' . $db_order_field . ') FROM ' . $info['db']->get_table_prefix() . $info['table'] . ' WHERE ' . $db_order_field . '=' . strval(ORDER_AUTOMATED_CRITERIA));
+        }
 
-        if ($test > 0) {
-            $current_order = ORDER_AUTOMATED_CRITERIA; // Ah, we are already in the habit of automated ordering here
+        if ($num_automated_now > 0 || $total == 0) {
+            $current_order = ORDER_AUTOMATED_CRITERIA; // Ah, we are already in the habit of automated ordering here / starting fresh
         } else {
             $max++; // Space for new one on end
             $current_order = $max;
