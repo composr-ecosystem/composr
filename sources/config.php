@@ -77,14 +77,18 @@ function init__config()
     global $MULTI_LANG_CACHE;
     $MULTI_LANG_CACHE = null;
 
-    // Check something isn't holding a lock (at time of writing this can only be addon management)
-    do {
-        $site_maintenance_lock = get_value_newer_than('site_maintenance_lock', time() - 60/*one minute lock timeout*/);
-        if ($site_maintenance_lock != '') {
-            sleep(5);
-            load_value_options();
-        }
-    } while ($site_maintenance_lock != '');
+    if (!$IN_MINIKERNEL_VERSION) {
+        // Check something isn't holding a lock (at time of writing this can only be addon management)
+        do {
+            $site_maintenance_lock = get_value_newer_than('site_maintenance_lock', time() - 60/*one minute lock timeout*/);
+            if ($site_maintenance_lock != '') {
+                if (php_function_allowed('usleep')) {
+                    usleep(5000000);
+                }
+                load_value_options();
+            }
+        } while ($site_maintenance_lock != '');
+    }
 }
 
 /**
