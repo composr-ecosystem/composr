@@ -1427,10 +1427,10 @@ class HttpDownloaderSockets extends HttpDownloader
 
                         $this->message = 'connection-stalled';
 
-                        return null;
+                        return null; // Termination case
                     } else {
                         // We don't know our stream is broken, so let's consider us done, just that the connection was not detected on our as properly closed with EOF...
-                        break;
+                        break; // Termination case
                     }
                 }
 
@@ -1442,16 +1442,16 @@ class HttpDownloaderSockets extends HttpDownloader
                 if ($line === false) {
                     // Implicit EOF, so terminate
                     if ((!$chunked) || ($buffer_unprocessed == '')) {
-                        $_frh = []; // Will trigger a detected timeout on next loop cycle. Note stream_select also can empty $_frh, and we are simulating the same thing here but without any overhead on waiting for stream_select
+                        $_frh = []; // Termination case: Will trigger a detected timeout on next loop cycle. Note stream_select also can empty $_frh, and we are simulating the same thing here but without any overhead on waiting for stream_select
                         $line = '';
                     } else {
-                        break;
+                        break; // Termination case
                     }
                 }
                 if ($line == '') {
                     if ($first_fail_time !== null) {
                         if ($first_fail_time < time() - 5) {
-                            break;
+                            break; // Termination case
                         }
                     } else {
                         $first_fail_time = time();
@@ -1459,6 +1459,7 @@ class HttpDownloaderSockets extends HttpDownloader
                 } else {
                     $first_fail_time = null;
                 }
+
                 if ($data_started) {
                     $line = $buffer_unprocessed . $line;
                     $buffer_unprocessed = '';
@@ -1504,7 +1505,10 @@ class HttpDownloaderSockets extends HttpDownloader
                             }
                             $input_len = 0;
                             $buffer_unprocessed = '';
-                            break;
+ 
+                            $this->message = 'connection-stalled';
+
+                            break; // Termination case
                         }
                         $chunk_end_pos = strpos($line, "\r\n");
                         if ($chunk_end_pos === false) {
@@ -1520,8 +1524,8 @@ class HttpDownloaderSockets extends HttpDownloader
                         $buffer_unprocessed = substr($line, $chunk_end_pos + 2 + $amount_wanted); // May be some more extra read
                         $line = substr($line, $chunk_end_pos + 2, $amount_wanted);
                         if ($line == '') {
-                            // Terminates if an empty chunk
-                            break;
+                            // An empty chunk
+                            break; // Termination case
                         }
 
                         $input_len += $amount_wanted;
@@ -1537,7 +1541,7 @@ class HttpDownloaderSockets extends HttpDownloader
 
                     if (($this->byte_limit !== null) && ($input_len >= $this->byte_limit)) {
                         $input = substr($input, 0, $this->byte_limit);
-                        break;
+                        break; // Termination case: Success, got all the input we need
                     }
                 } elseif ($line != '') {
                     $old_line = $line;
@@ -1577,7 +1581,7 @@ class HttpDownloaderSockets extends HttpDownloader
                                 $text = $this->copy_from_other($inner_request, $this);
                             }
 
-                            return $text;
+                            return $text; // Termination case (was delegated)
                         }
 
                         if (preg_match("#^Location: (.*)\r\n#i", $line, $matches) != 0) {
@@ -1603,7 +1607,7 @@ class HttpDownloaderSockets extends HttpDownloader
                                         $text = $this->copy_from_other($inner_request, $this);
                                     }
 
-                                    return $text;
+                                    return $text; // Termination case (was delegated)
                                 }
                             }
                         }
@@ -1717,12 +1721,17 @@ class HttpDownloaderSockets extends HttpDownloader
                             }
 
                             if (($chunked) && (isset($buffer_unprocessed[1])) && ($buffer_unprocessed[0] == "\r") && ($buffer_unprocessed[1] == "\n")) {
-                                break; // Explicit termination after headers, we should not try and wait for more
+                                // Explicit termination after headers, we should not try and wait for more
+                                break 2; // Termination case
                             }
+
+                            break;
                         }
                     }
                 }
             }
+
+            // (loop ended)
 
             // Process any non-chunked extra buffer (chunked would have been handled in main loop)
             if (!$chunked) {
@@ -1743,7 +1752,7 @@ class HttpDownloaderSockets extends HttpDownloader
 
             if (!$data_started) {
                 if ($this->byte_limit === 0) {
-                    return '';
+                    return ''; // Termination case
                 }
 
                 if ($this->trigger_error) {
@@ -1754,7 +1763,7 @@ class HttpDownloaderSockets extends HttpDownloader
                 $this->message = 'no-data';
 
 
-                return null;
+                return null; // Termination case
             }
 
             $size_expected = $this->download_size;
@@ -1771,10 +1780,10 @@ class HttpDownloaderSockets extends HttpDownloader
                 }
                 $this->message = 'short-data';
 
-                return $input;
+                return $input; // Termination case
             }
 
-            return $input;
+            return $input; // Termination case: success
         }
 
         $errstr = cms_error_get_last();
@@ -1789,7 +1798,7 @@ class HttpDownloaderSockets extends HttpDownloader
         }
         $this->message = 'could not connect to host'; // Could append  (' . $errstr . ') but only when debugging because we use this string like a constant in some places
 
-        return null;
+        return null; // Termination case
     }
 }
 

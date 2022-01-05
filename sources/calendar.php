@@ -456,6 +456,7 @@ function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $s
             break; // Let's be reasonable
         }
     } while (
+        ($recurrence != '') && // For corrupt data
         ($recurrence != 'none') &&
         ($a < $period_end) &&
         (($recurrences === null) || ($happened_count < $recurrences))
