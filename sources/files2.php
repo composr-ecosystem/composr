@@ -1978,8 +1978,10 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                         }
 
                         if (($chunked) && (isset($buffer_unprocessed[1])) && ($buffer_unprocessed[0] == "\r") && ($buffer_unprocessed[1] == "\n")) {
-                            break; // Explicit termination after headers, we should not try and wait for more
+                            break 2; // Explicit termination after headers, we should not try and wait for more
                         }
+
+                        break;
                     }
                 }
             }
