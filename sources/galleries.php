@@ -280,18 +280,29 @@ function render_gallery_box($myrow, $root = 'root', $show_member_stats_if_approp
         $thumb_order = 'ORDER BY id DESC';
     }
     if ($pic == '') {
-        $pic = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'thumb_url', array('cat' => $myrow['name'], 'validated' => 1), $thumb_order);
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy');
+            list($privacy_join_video, $privacy_where_video) = get_privacy_where_clause('video', 'r');
+            list($privacy_join_image, $privacy_where_image) = get_privacy_where_clause('image', 'r');
+        } else {
+            $privacy_join_video = '';
+            $privacy_where_video = '';
+            $privacy_join_image = '';
+            $privacy_where_image = '';
+        }
+
+        $pic = $GLOBALS['SITE_DB']->query_select_value_if_there('images r' . $privacy_join_image, 'thumb_url', array('cat' => $myrow['name'], 'validated' => 1), $privacy_where_image . ' ' . $thumb_order);
         if ($pic === '') {
             require_code('images');
-            $temp = $GLOBALS['SITE_DB']->query_select('images', array('id', 'url'), array('cat' => $myrow['name'], 'validated' => 1), $thumb_order, 1);
+            $temp = $GLOBALS['SITE_DB']->query_select('images r' . $privacy_join_image, array('id', 'url'), array('cat' => $myrow['name'], 'validated' => 1),  $privacy_where_image . ' ' . $thumb_order, 1);
             $thumb_url = ensure_thumbnail($temp[0]['url'], '', 'galleries', 'images', $temp[0]['id']);
         }
-    }
-    if (is_null($pic)) {
-        $pic = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', array('cat' => $myrow['name'], 'validated' => 1), $thumb_order);
-    }
-    if (is_null($pic)) {
-        $pic = '';
+        if ($pic === null) {
+            $pic = $GLOBALS['SITE_DB']->query_select_value_if_there('videos r' . $privacy_join_video, 'thumb_url', array('cat' => $myrow['name'], 'validated' => 1),  $privacy_where_video . ' ' . $thumb_order);
+        }
+        if ($pic === null) {
+            $pic = '';
+        }
     }
     if (($pic != '') && (url_is_local($pic))) {
         $pic = get_custom_base_url() . '/' . $pic;
