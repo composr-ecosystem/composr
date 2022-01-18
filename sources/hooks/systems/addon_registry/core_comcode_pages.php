@@ -209,8 +209,7 @@ class Hook_addon_registry_core_comcode_pages
                 'TITLE' => lorem_title(),
                 'TABLE' => placeholder_table(),
                 'SUBMIT_NAME' => lorem_word(),
-                'POST_URL' => placeholder_url(),
-                'HIDDEN' => '',
+                'URL' => placeholder_url(),
                 'TEXT' => lorem_paragraph_html(),
                 'LINKS' => array(array(
                     'LINK_IMAGE' => placeholder_image_url(),

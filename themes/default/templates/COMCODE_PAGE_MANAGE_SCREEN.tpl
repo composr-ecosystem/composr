@@ -4,10 +4,8 @@
 
 {TABLE}
 
-<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" autocomplete="off">
-	{$INSERT_SPAMMER_BLACKHOLE}
-
-	{HIDDEN}
+<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM*,{URL}}" method="get" autocomplete="off">
+	{$HIDDENS_FOR_GET_FORM,{URL}}
 
 	<p>
 		<label for="filter">{!FILTER}:</label>
