@@ -294,6 +294,7 @@ function build_closure_tempcode($type, $name, $parameters, $escaping = null)
             case 'PAGE_LINK':
             case 'LOAD_PAGE':
             case 'LOAD_PANEL':
+            case 'INSERT_SPAMMER_BLACKHOLE':
                 break;
 
             default:
@@ -1337,6 +1338,12 @@ function handle_symbol_preprocessing($seq_part, &$children)
             require_javascript('ajax');
             require_javascript('fractional_edit');
             return;
+
+        case 'INSERT_SPAMMER_BLACKHOLE':
+            if (get_bot_type() === null) {
+                $GLOBALS['STATIC_CACHE_ENABLED'] = false;
+            }
+            return;
     }
 }
 
@@ -1396,6 +1403,7 @@ class Tempcode
                                 case 'PAGE_LINK':
                                 case 'LOAD_PAGE':
                                 case 'LOAD_PANEL':
+                                case 'INSERT_SPAMMER_BLACKHOLE':
                                     $pp_bits[] = array(array(), TC_SYMBOL, $seq_part[3], $seq_part[1]);
                                     break;
                             }
