@@ -149,7 +149,7 @@ class Block_side_tag_cloud
                 'TAG' => $tag,
                 'COUNT' => strval($count),
                 'EM' => float_to_raw_string($em),
-                'LINK' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'days' => -1, 'only_search_meta' => '1') + $search_limiter, $zone),
+                'LINK' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'days' => -1, 'only_search_meta' => '1', 'boolean_search' => '1') + $search_limiter, $zone),
             );
         }
 
