@@ -278,15 +278,23 @@ class Hook_addon_registry_quizzes
         foreach (placeholder_array() as $k => $v) {
             $link = do_lorem_template('QUIZ_BOX', array(
                 'TYPE' => lorem_word(),
+                '_TYPE' => lorem_word(),
                 'DATE' => placeholder_date(),
+                '_DATE' => placeholder_date_raw(),
                 'URL' => placeholder_url(),
                 'NAME' => lorem_phrase(),
                 'START_TEXT' => lorem_phrase(),
                 'TIMEOUT' => placeholder_number(),
+                '_TIMEOUT' => placeholder_number(),
                 'REDO_TIME' => placeholder_number(),
-                '_TYPE' => lorem_word(),
-                'POINTS' => placeholder_id(),
+                'POINTS' => placeholder_number(),
+                '_POINTS' => placeholder_number(),
                 'GIVE_CONTEXT' => true,
+                'ID' => placeholder_id(),
+                'SUBMITTER' => placeholder_id(),
+                'PERCENTAGE' => placeholder_number(),
+                'OPEN_TIME' => placeholder_date_raw(),
+                'CLOSE_TIME' => placeholder_date_raw(),
             ));
         }
         $content_surveys->attach($link);
@@ -329,9 +337,24 @@ class Hook_addon_registry_quizzes
                 'TITLE' => lorem_title(),
                 'START_TEXT' => lorem_sentence_html(),
                 'FIELDS' => placeholder_fields(),
-                'TIMEOUT' => '5',
                 'EDIT_URL' => placeholder_url(),
                 'ALL_REQUIRED' => false,
+                'TYPE' => lorem_word(),
+                '_TYPE' => lorem_word(),
+                'DATE' => placeholder_date(),
+                '_DATE' => placeholder_date_raw(),
+                'URL' => placeholder_url(),
+                'NAME' => lorem_phrase(),
+                'TIMEOUT' => placeholder_number(),
+                '_TIMEOUT' => placeholder_number(),
+                'REDO_TIME' => placeholder_number(),
+                'POINTS' => placeholder_number(),
+                '_POINTS' => placeholder_number(),
+                'GIVE_CONTEXT' => true,
+                'SUBMITTER' => placeholder_id(),
+                'PERCENTAGE' => placeholder_number(),
+                'OPEN_TIME' => placeholder_date_raw(),
+                'CLOSE_TIME' => placeholder_date_raw(),
             )), null, '', true)
         );
     }

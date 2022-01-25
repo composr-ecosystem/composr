@@ -35,34 +35,34 @@ function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
 
     require_lang('quiz');
 
-    $date = get_timezoned_date_tempcode($row['q_add_date']);
     $url = build_url(array('page' => 'quiz', 'type' => 'do', 'id' => $row['id']), $zone);
 
     $just_quiz_row = db_map_restrict($row, array('id', 'q_start_text'));
 
-    $name = get_translated_text($row['q_name']);
-    $start_text = get_translated_tempcode('quizzes', $just_quiz_row, 'q_start_text');
-
-    if (has_privilege(get_member(), 'bypass_quiz_timer')) {
+    if ((has_privilege(get_member(), 'bypass_quiz_timer')) && (get_param_integer('keep_timer_display', 0) == 0)) {
         $row['q_timeout'] = null;
     }
-
-    $timeout = is_null($row['q_timeout']) ? '' : display_time_period($row['q_timeout'] * 60);
-    $redo_time = ((is_null($row['q_redo_time'])) || ($row['q_redo_time'] == 0)) ? '' : display_time_period($row['q_redo_time'] * 60 * 60);
 
     return do_template('QUIZ_BOX', array(
         '_GUID' => ($guid != '') ? $guid : '3ba4e19d93eb41f6cf2d472af982116e',
         'GIVE_CONTEXT' => $give_context,
-        '_TYPE' => $row['q_type'],
-        'POINTS' => strval($row['q_points_for_passing']),
-        'TIMEOUT' => $timeout,
-        'REDO_TIME' => $redo_time,
         'TYPE' => do_lang_tempcode($row['q_type']),
-        'DATE' => $date,
+        '_TYPE' => $row['q_type'],
+        'POINTS' => integer_format($row['q_points_for_passing']),
+        '_POINTS' => strval($row['q_points_for_passing']),
+        'TIMEOUT' => ($row['q_timeout'] === null) ? '' : display_time_period($row['q_timeout'] * 60),
+        '_TIMEOUT' => ($row['q_timeout'] === null) ? '' : strval($row['q_timeout']),
+        'REDO_TIME' => (($row['q_redo_time'] === null) || ($row['q_redo_time'] == 0)) ? '' : display_time_period($row['q_redo_time'] * 60 * 60),
+        'DATE' => get_timezoned_date_tempcode($row['q_add_date']),
+        '_DATE' => strval($row['q_add_date']),
         'URL' => $url,
-        'NAME' => $name,
-        'START_TEXT' => $start_text,
+        'NAME' => get_translated_text($row['q_name']),
+        'START_TEXT' => get_translated_tempcode('quizzes', $just_quiz_row, 'q_start_text'),
         'ID' => strval($row['id']),
+        'SUBMITTER' => strval($row['q_submitter']),
+        'PERCENTAGE' => strval($row['q_percentage']), // Not displayed by default template as maybe secret
+        'OPEN_TIME' => strval($row['q_open_time']), // Not displayed by default template as boring
+        'CLOSE_TIME' => ($row['q_close_time'] === null) ? '' : strval($row['q_close_time']), // Not displayed by default template as boring
     ));
 }
 
