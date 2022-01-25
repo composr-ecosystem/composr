@@ -26,13 +26,15 @@
 				</div>
 			{+END}
 			{+START,IF,{SIMPLE_STYLE}}
-				{+START,LOOP,OUT}
-					<p>
-						<label for="i_{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input_tick"{+START,IF,{CHECKED}} checked="checked"{+END} type="checkbox" id="i_{NAME*}" name="{NAME*}" value="1" /> {PRETTY_NAME*}</label>
-						<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_TAGS,{PRETTY_NAME*}}" />
-						<input name="tick_on_form__{NAME*}" value="0" type="hidden" />
-					</p>
-				{+END}
+				<div class="various_ticks_simple">
+					{+START,LOOP,OUT}
+						<p>
+							<label for="i_{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input_tick"{+START,IF,{CHECKED}} checked="checked"{+END} type="checkbox" id="i_{NAME*}" name="{NAME*}" value="1" /> {PRETTY_NAME*}</label>
+							<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_TAGS,{PRETTY_NAME*}}" />
+							<input name="tick_on_form__{NAME*}" value="0" type="hidden" />
+						</p>
+					{+END}
+				</div>
 			{+END}
 
 			{+START,IF_PASSED,CUSTOM_NAME}
