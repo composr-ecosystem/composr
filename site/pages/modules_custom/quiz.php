@@ -30,5 +30,18 @@ function init__site__pages__modules_custom__quiz($in = null)
         $in
     );
 
+    $in = override_str_replace_exactly(
+        "// Give them their result if it is a test.",
+        "
+        <ditto>
+        if ((addon_installed('points')) && (\$quiz['q_points_for_passing'] != 0)) {
+            require_code('points2');
+            \$cost = \$quiz['q_points_for_passing'] / 2;
+            \$points_difference -= \$cost;
+        }
+        ",
+        $in
+    );
+
     return $in;
 }
