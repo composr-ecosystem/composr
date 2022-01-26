@@ -58,7 +58,7 @@ There are a few different types of question, indicated by a little tag after the
  - [tt][SHORT][/tt] -- A single-line typed answer. If correct answers are provided then an inexact match is performed. The match is a case-insensitive punctuationless match for being within 75% closeness to the correct answer (25% of the characters may need to be added/removed/substituted) -- the user needs to hit a valid answer, and miss all invalid answers.
  - [tt][SHORT_STRICT][/tt] -- A single-line typed answer. If correct answers are provided then a case-sensitive exact match will be performed.
 
-If a question is followed by [tt][REQUIRED][/tt] then Composr will force it to be filled in (unless you have set a timeout and the timeout is exceeded).
+If a question is followed by [tt][REQUIRED][/tt] then Composr will force it to be filled in (unless you have set a timeout and the timeout is exceeded). This is not supported by the [tt]MULTIMULTIPLE[/tt] question type.
 
 You may put line(s) starting with a [tt]:[/tt] immediately under the question, to provide a longer caption for the question.
 
