@@ -343,7 +343,6 @@ class Hook_addon_registry_quizzes
                 '_TYPE' => lorem_word(),
                 'DATE' => placeholder_date(),
                 '_DATE' => placeholder_date_raw(),
-                'URL' => placeholder_url(),
                 'NAME' => lorem_phrase(),
                 'TIMEOUT' => placeholder_number(),
                 '_TIMEOUT' => placeholder_number(),
