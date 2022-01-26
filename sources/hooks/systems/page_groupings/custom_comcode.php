@@ -33,7 +33,7 @@ class Hook_page_groupings_custom_comcode
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/adminzone/setup/custom_comcode', array('admin_custom_comcode', array('type' => 'browse'), get_module_zone('admin_custom_comcode')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('custom_comcode:CUSTOM_COMCODE'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'COUNT(*)', null, '', true))))), 'custom_comcode:DOC_CUSTOM_COMCODE'),
+            array('setup', 'menu/adminzone/setup/custom_comcode', array('admin_custom_comcode', array('type' => 'browse'), get_module_zone('admin_custom_comcode')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('custom_comcode:CUSTOM_COMCODE'), make_string_tempcode(escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'COUNT(*)', null, '', true)))))), 'custom_comcode:DOC_CUSTOM_COMCODE'),
         );
     }
 }
