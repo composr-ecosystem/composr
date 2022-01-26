@@ -314,7 +314,18 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                         $correct_answer->attach(do_lang_tempcode('LIST_SEP'));
                     }
                     $correct_answer->attach(get_translated_text($a['q_answer_text']));
-                    $correct_explanation = get_translated_text($a['q_explanation']);
+                }
+
+                if ($for_this != $should_be_this) {
+                    $exp = get_translated_text($a['q_explanation']);
+                    if ($exp != '') {
+                        if ($correct_explanation === null) {
+                            $correct_explanation = new Tempcode();
+                        } else {
+                            $correct_explanation->attach(' ');
+                        }
+                        $correct_explanation->attach($exp);
+                    }
                 }
 
                 if ($for_this) {
