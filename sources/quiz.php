@@ -330,8 +330,6 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
             $correctness = 1.0 - $wrongness;
             $marks += $correctness;
 
-            $marks += $correctness;
-
             if ($correctness != 1.0) {
                 $correction = array($question['id'], $question_text, $correct_answer, $accum);
                 if ((!is_null($correct_explanation)) && ($correct_explanation != '')) {
