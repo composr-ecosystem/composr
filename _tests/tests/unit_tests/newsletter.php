@@ -69,7 +69,10 @@ class newsletter_test_set extends cms_test_case
 
         $rendered = static_evaluate_tempcode(comcode_to_tempcode($newsletter_message_substituted, null, true));
         $rendered = preg_replace('#' . preg_quote(get_base_url(), '#') . '[^" <>]*#', 'xxx', $rendered);
-        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can unsubscribe from this newsletter at: <a class=\"user_link\" href=\"xxx\" rel=\"external\" target=\"_blank\" title=\"xxx (this link will open in a new window)\">xxx</a></span><br /><br />";
+        $rendered = str_replace(array('_top', '_blank'), array('yyy', 'yyy'), $rendered);
+        $rendered = str_replace(' rel="external"', '', $rendered);
+        $rendered = str_replace(' title="xxx (' . do_lang('LINK_NEW_WINDOW') . ')"', '', $rendered);
+        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can unsubscribe from this newsletter at: <a class=\"user_link\" href=\"xxx\" target=\"yyy\">xxx</a></span><br /><br />";
         $this->assertTrue($rendered == $expected, 'Expected: ' . $expected . '; Got: ' . $rendered);
     }
 
