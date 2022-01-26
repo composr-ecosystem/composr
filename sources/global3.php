@@ -197,8 +197,8 @@ function is_suexec_like()
 
     static $answer = null;
     if ($answer === null) {
-        $answer = (((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (is_integer(@posix_getuid())) && (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))))
-                   || (is_writable_wrap(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))));
+        $answer = (((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (is_integer(@posix_getuid())) && (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'sources/global.php'))))
+                   || (is_writable_wrap(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'sources/global.php'))));
     }
     return $answer;
 }

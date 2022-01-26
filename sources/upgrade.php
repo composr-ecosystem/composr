@@ -679,7 +679,11 @@ function up_do_login($message = null)
         if (empty($SITE_INFO['ftp_username'])) {
             if (php_function_allowed('posix_getpwuid')) {
                 $u_info = posix_getpwuid(fileowner(get_file_base() . '/sources/global.php'));
-                $ftp_username = $u_info['name'];
+                if ($u_info !== false) {
+                    $ftp_username = $u_info['name'];
+                } else {
+                    $ftp_username = '';
+                }
             } else {
                 $ftp_username = '';
             }

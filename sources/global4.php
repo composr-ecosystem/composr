@@ -634,3 +634,56 @@ function is_unhelpful_redirect($redirect)
 
     return false;
 }
+
+/**
+ * Do whatever complex magic we can to try and find out the username we are running as, and suEXEC status.
+ * This function should be assumed to be a little slow, don't put it into the critical path.
+ *
+ * @return array A pair: The username as best can be found, the suEXEC status
+ */
+function get_exact_usernames_and_suexec()
+{
+    $user = null;
+    $suexec = null;
+    $username = null;
+
+    if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
+        $user = posix_getuid();
+        $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
+        $dets = posix_getpwuid($user);
+        if ($dets !== false) {
+            $username = $dets['name'];
+            return array($username, $suexec);
+        } elseif (($suexec) && (php_function_allowed('get_current_user'))) {
+            $username = get_current_user();
+            return array($username, $suexec);
+        }
+    }
+
+    if ((php_function_allowed('shell_exec')) && (strpos(PHP_OS, 'WIN') === false)) {
+        $username = @shell_exec('whoami');
+        if (!empty($username)) {
+            $username = trim($username);
+            if (php_function_allowed('get_current_user')) {
+                $suexec = ($username == get_current_user());
+            }
+            return array($username, $suexec);
+        }
+    }
+
+    if ($user === null) {
+        $tmp = cms_tempnam();
+        $user = @fileowner($tmp);
+        @unlink($tmp);
+    }
+    $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
+    if (($suexec) && (php_function_allowed('get_current_user'))) {
+        $username = get_current_user();
+    }
+
+    if ($username === null) {
+        $username = '#' . strval($user);
+    }
+
+    return array($username, $suexec);
+}
