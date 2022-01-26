@@ -58,7 +58,7 @@ function getAlexaRank($url)
     $p = array();
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
     $result = http_download_file($_url, null, false, false, 'Composr', null, null, null, null, null, null, null, null, 1.0);
-    if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $p) != 0) {
+    if (($result !== null) && (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $p) != 0)) {
         $rank = integer_format(intval($p[1]));
     } else {
         $rank = do_lang('NA');
