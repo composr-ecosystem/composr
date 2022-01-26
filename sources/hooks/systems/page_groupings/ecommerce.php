@@ -41,12 +41,12 @@ class Hook_page_groupings_ecommerce
             array('audit', 'menu/adminzone/audit/ecommerce/ecommerce', array('admin_ecommerce_logs', array('type' => 'browse'), get_module_zone('admin_ecommerce')), do_lang_tempcode('ecommerce:ECOMMERCE'), 'ecommerce:DOC_ECOMMERCE'),
             array('rich_content', 'menu/rich_content/ecommerce/purchase', array('purchase', array(), get_module_zone('purchase')), do_lang_tempcode('ecommerce:PURCHASING')),
         );
-        if ((!is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('invoices', 'COUNT(*)', array('i_member_id' => get_member())) > 0)) {
+        if ((!is_guest($member_id)) && (@intval($GLOBALS['SITE_DB']->query_select_value_if_there('invoices', 'COUNT(*)', array('i_member_id' => get_member()), '', true)) > 0)) {
             $ret = array_merge($ret, array(
                 array('rich_content', 'menu/adminzone/audit/ecommerce/invoices', array('invoices', array(), get_module_zone('invoices')), do_lang_tempcode('ecommerce:MY_INVOICES')),
             ));
         }
-        if ((!is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('subscriptions', 'COUNT(*)', array('s_member_id' => get_member())) > 0)) {
+        if ((!is_guest($member_id)) && (@intval($GLOBALS['SITE_DB']->query_select_value_if_there('subscriptions', 'COUNT(*)', array('s_member_id' => get_member()), '', true)) > 0)) {
             $ret = array_merge($ret, array(
                 array('rich_content', 'menu/adminzone/audit/ecommerce/subscriptions', array('subscriptions', array(), get_module_zone('subscriptions')), do_lang_tempcode('ecommerce:MY_SUBSCRIPTIONS')),
             ));
