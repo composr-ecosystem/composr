@@ -20,6 +20,11 @@ class _static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {
+        $panel_text = @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt');
+        if ((strpos($panel_text, 'side_newsletter') !== false) || (strpos($panel_text, 'side_shoutbox') !== false)) {
+            $this->assertTrue(false, 'Cannot have a POSTing block in a side panel for this test');
+        }
+
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = file_get_contents($config_file_path);
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['fast_spider_cache'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';");
@@ -44,7 +49,7 @@ class _static_caching_test_set extends cms_test_case
 
         $time = $time_after - $time_before;
 
-        $this->assertTrue($time < 0.1, 'Took too long, ' . float_format($time) . ' seconds');
+        $this->assertTrue($time < 0.2, 'Took too long, ' . float_format($time) . ' seconds');
 
         $this->assertTrue(preg_match('#global\w*\.css#', $data) != 0);
         $this->assertTrue(strpos($data, '</html>') !== false);
@@ -54,8 +59,8 @@ class _static_caching_test_set extends cms_test_case
 
     public function testFailover()
     {
-        $url = build_url(array('page' => ''), '');
-        $url2 = build_url(array('page' => 'xxx-does-not-exist' . uniqid('', true)), '');
+        $url = build_url(array('page' => '', 'keep_devtest' => null), '');
+        $url2 = build_url(array('page' => 'xxx-does-not-exist' . uniqid('', true), 'keep_devtest' => null), '');
 
         $test_url = get_base_url() . '/does-not-exist.abc';
 
@@ -80,10 +85,10 @@ class _static_caching_test_set extends cms_test_case
         $this->assertTrue(strpos(file_get_contents(get_file_base() . '/_config.php'), "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not');
 
         $result = http_download_file($url->evaluate(), null, false); // Should be failed over, but cached
-        $this->assertTrue(strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');
+        $this->assertTrue($result !== null && strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');
 
         $result = http_download_file($url2->evaluate(), null, false); // Should be failed over, but cached
-        $this->assertTrue(strpos($result, 'FAILOVER_CACHE_MISS') !== false, 'Failover cache miss message not found');
+        $this->assertTrue($result !== null && strpos($result, 'FAILOVER_CACHE_MISS') !== false, 'Failover cache miss message not found');
 
         file_put_contents($config_file_path, $config_file);
     }
