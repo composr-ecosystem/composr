@@ -27,9 +27,9 @@ class csrf_tags_test_set extends cms_test_case
         foreach ($dirs as $dir) {
             $dh = opendir($dir);
             while (($f = readdir($dh)) !== false) {
-				if ($f == '.' || $f == '..') {
-					continue;
-				}
+                if ($f == '.' || $f == '..') {
+                    continue;
+                }
 
                 $c = file_get_contents($dir . '/' . $f);
                 if (strpos($c, '<form') !== false) {
@@ -38,6 +38,10 @@ class csrf_tags_test_set extends cms_test_case
                     }
 
                     if (strpos($c, 'method="get"') !== false) {
+                        continue;
+                    }
+
+                    if (strpos($c, 'login_username') !== false) {
                         continue;
                     }
 
