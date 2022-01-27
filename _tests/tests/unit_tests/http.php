@@ -21,13 +21,13 @@ class http_test_set extends cms_test_case
     public function testSimple()
     {
         $result = http_download_file('http://example.com/');
-        $this->assertTrue(strpos($result, 'Example Domain') !== false);
+        $this->assertTrue($result !== null && strpos($result, 'Example Domain') !== false);
     }
 
     public function testSimpleHttps()
     {
         $result = http_download_file('https://example.com/');
-        $this->assertTrue(strpos($result, 'Example Domain') !== false);
+        $this->assertTrue($result !== null && strpos($result, 'Example Domain') !== false);
     }
 
     public function testHead()
@@ -53,13 +53,13 @@ class http_test_set extends cms_test_case
     public function testRedirect()
     {
         $result = http_download_file('http://jigsaw.w3.org/HTTP/300/301.html', null, false);
-        $this->assertTrue(strpos($result, 'Redirect test page') !== false);
+        $this->assertTrue($result !== null && strpos($result, 'Redirect test page') !== false);
     }
 
     public function testRedirectHttps()
     {
         $result = http_download_file('https://jigsaw.w3.org/HTTP/300/301.html', null, false);
-        $this->assertTrue(strpos($result, 'Redirect test page') !== false);
+        $this->assertTrue($result !== null && strpos($result, 'Redirect test page') !== false);
     }
 
     public function testRedirectDisabled()
@@ -71,7 +71,7 @@ class http_test_set extends cms_test_case
     public function testHttpAuth()
     {
         $result = http_download_file('https://jigsaw.w3.org/HTTP/Basic/', null, false, true, 'Composr', null, null, null, null, null, null, null, array('guest', 'guest'));
-        $this->assertTrue(strpos($result, 'Your browser made it!') !== false);
+        $this->assertTrue($result !== null && strpos($result, 'Your browser made it!') !== false);
     }
 
     public function testWriteToFile()
@@ -79,8 +79,8 @@ class http_test_set extends cms_test_case
         $write_path = cms_tempnam();
         $write = fopen($write_path, 'wb');
         $result = http_download_file('http://example.com/', null, false, true, 'Composr', null, null, null, null, null, $write);
-        $this->assertTrue(strpos(file_get_contents($write_path), 'Example Domain') !== false);
-		fclose($write);
+        $this->assertTrue($result !== null && strpos(file_get_contents($write_path), 'Example Domain') !== false);
+        fclose($write);
         unlink($write_path);
     }
 
@@ -89,8 +89,8 @@ class http_test_set extends cms_test_case
         $write_path = cms_tempnam();
         $write = fopen($write_path, 'wb');
         $result = http_download_file('https://example.com/', null, false, true, 'Composr', null, null, null, null, null, $write);
-        $this->assertTrue(strpos(file_get_contents($write_path), 'Example Domain') !== false);
-		fclose($write);
+        $this->assertTrue($result !== null && strpos(file_get_contents($write_path), 'Example Domain') !== false);
+        fclose($write);
         unlink($write_path);
     }
 }

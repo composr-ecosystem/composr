@@ -24,6 +24,7 @@ class file_naming_test_set extends cms_test_case
         require_code('files2');
 
         $ignore_stubs = array(
+            'test-a/',
             'aps/',
             'data/ckeditor/',
             'data/curl-ca-bundle.crt',
