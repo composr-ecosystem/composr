@@ -93,11 +93,15 @@ class auth_test_set extends cms_test_case
 
         $ips = array();
         $server_addr = get_ip_address(3, cms_srv('SERVER_ADDR'));
+        $alt_server_addr = get_ip_address(3, cms_gethostbyname(preg_replace('#:.*#', '', cms_srv('HTTP_HOST'))));
         /*This now breaks the test rather than fixes it, on MacOSX if (($server_addr == '0000:0000:0000:0000:0000:0000:*:*') && (cms_srv('HTTP_HOST') == 'localhost')) {
             $server_addr = '127.0.0.*'; // DNS will resolve localhost using ipv4, regardless of what Apache self-reports, at least on my current dev machine -- ChrisG
         }*/
         $ips[$server_addr] = true;
+        $ips[$alt_server_addr] = true;
         $ips['1.2.3.4'] = false;
+
+        $has_pass = false;
 
         foreach ($ips as $ip => $pass_expected) { // We actually test both pass and fail, to help ensure our test is actually not somehow getting a failure from something else
             // Clean up
@@ -126,10 +130,14 @@ class auth_test_set extends cms_test_case
 
             global $HTTP_MESSAGE;
             if ($pass_expected) {
-                $this->assertTrue($HTTP_MESSAGE != '401', 'Expected access but got error, for IP ' . $ip);
+                if ($HTTP_MESSAGE != '401') {
+                    $has_pass = true;
+                }
             } else {
                 $this->assertTrue($HTTP_MESSAGE == '401', 'Expected error but got access, for IP ' . $ip);
             }
         }
+
+        $this->assertTrue($has_pass, 'Expected access but did not get it for any attempted IPs');
     }
 }
