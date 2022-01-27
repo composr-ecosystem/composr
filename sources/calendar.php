@@ -1131,7 +1131,7 @@ function find_timezone_end_hour_in_utc($timezone, $year, $month, $day, $monthly_
  * @param  ?integer $day Day (null: N/A)
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Minute (null: N/A)
+ * @return ?integer Minute (null: N/A)
  */
 function find_timezone_end_minute_in_utc($timezone, $year, $month, $day, $monthly_spec_type)
 {
