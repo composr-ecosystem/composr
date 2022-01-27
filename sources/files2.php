@@ -1067,10 +1067,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
     $do_ip_forwarding = (preg_replace('#^www\.#', '', $base_url_parsed['host']) == preg_replace('#^www\.#', '', $connect_to)) && ($config_ip_forwarding != '') && ($config_ip_forwarding != '0');
     if ($do_ip_forwarding) { // For cases where we have IP-forwarding, and a strong firewall (i.e. blocked to our own domain's IP by default)
         if ($config_ip_forwarding == '1') {
-            $connect_to = cms_srv('LOCAL_ADDR');
-            if ($connect_to == '') {
-                $connect_to = cms_srv('SERVER_ADDR');
-            }
+            $connect_to = cms_srv('SERVER_ADDR');
             if ($connect_to == '') {
                 $connect_to = '127.0.0.1'; // "localhost" can fail due to IP6
             }
