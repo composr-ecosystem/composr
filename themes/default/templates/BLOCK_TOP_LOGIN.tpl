@@ -1,7 +1,5 @@
 {+START,IF,{$NOR,{$GET,login_screen},{$MATCH_KEY_MATCH,_WILD:login}}}
 	<form title="{!_LOGIN}" onsubmit="if (check_field_for_blankness(this.elements['login_username'],event)) { disable_button_just_clicked(this); return true; } return false;" action="{LOGIN_URL*}" method="post" class="inline top_login" autocomplete="on">
-		{$INSERT_SPAMMER_BLACKHOLE}
-
 		{+START,IF,{$NOT,{$MOBILE}}}
 			<div class="inline">
 				<div class="accessibility_hidden"><label for="s_login_username">{$LOGIN_LABEL}</label></div>
