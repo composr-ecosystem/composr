@@ -104,7 +104,6 @@ function reinstall_addon_soft($addon, $ini_info = null)
 
     $GLOBALS['SITE_DB']->query_delete('addons_files', array('addon_name' => $addon));
     $GLOBALS['SITE_DB']->query_delete('addons_dependencies', array('addon_name' => $addon));
-    $GLOBALS['SITE_DB']->query_delete('addons', array('addon_name' => $addon), '', 1);
 
     $GLOBALS['SITE_DB']->query_delete('addons', array('addon_name' => $addon), '', 1);
     $GLOBALS['SITE_DB']->query_insert('addons', array(
@@ -116,30 +115,25 @@ function reinstall_addon_soft($addon, $ini_info = null)
         'addon_copyright_attribution' => implode("\n", $addon_info['copyright_attribution']),
         'addon_licence' => $addon_info['licence'],
         'addon_description' => $addon_info['description'],
-        'addon_install_time' => time()
+        'addon_install_time' => time(),
     ));
 
-    foreach ($addon_info['dependencies'] as $dependency) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
-            'addon_name' => $addon,
-            'addon_name_dependant_upon' => trim($dependency),
-            'addon_name_incompatibility' => 0
-        ));
-    }
-    foreach ($addon_info['incompatibilities'] as $incompatibility) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
-            'addon_name' => $addon,
-            'addon_name_dependant_upon' => trim($incompatibility),
-            'addon_name_incompatibility' => 1
-        ));
-    }
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
+        'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon),
+        'addon_name_dependant_upon' => array_map('trim', $addon_info['dependencies']),
+        'addon_name_incompatibility' => array_fill(0, count($addon_info['dependencies']), 0),
+    ));
 
-    foreach ($addon_info['files'] as $addon_file) {
-        $GLOBALS['SITE_DB']->query_insert('addons_files', array(
-            'addon_name' => $addon,
-            'filename' => $addon_file
-        ));
-    }
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
+        'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon),
+        'addon_name_dependant_upon' => array_map('trim', $addon_info['incompatibilities']),
+        'addon_name_incompatibility' => array_fill(0, count($addon_info['incompatibilities']), 1),
+    ));
+
+    $GLOBALS['SITE_DB']->query_insert('addons_files', array(
+        'addon_name' => array_fill(0, count($addon_info['files']), $addon),
+        'filename' => $addon_info['files'],
+    ));
 }
 
 /**

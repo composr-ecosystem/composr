@@ -24,7 +24,7 @@
 <script>// <![CDATA[
 	/* Code to auto-submit the form after 5 seconds, but only if there were no errors */
 	var ps=document.getElementsByTagName('p');
-	var doh=false;
+	var doh={$?,{$_GET,keep_show_timings},true,false};
 	for (var i=0;i<ps.length;i++)
 	{
 		if (ps[i].className=='installer_warning') doh=true;

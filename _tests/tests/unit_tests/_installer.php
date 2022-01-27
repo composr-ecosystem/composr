@@ -67,7 +67,7 @@ class _installer_test_set extends cms_test_case
         $this->assertTrue(strpos($test, 'type="submit"') !== false); // Has start button: meaning something worked
     }
 
-    public function testFullInstallSafeMode()
+    public function testFullInstall()
     {
         if (strpos(get_db_type(), 'mysql') === false) {
             return;

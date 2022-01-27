@@ -98,9 +98,13 @@ class Module_admin_giftr extends Standard_crud_module
             $default_gifts[] = array('name' => 'A Kiss', 'image' => 'data_custom/images/giftr/2a%20kiss.jpg', 'price' => 10, 'enabled' => 1);
             $default_gifts[] = array('name' => 'A Love note', 'image' => 'data_custom/images/giftr/love%20note.jpg', 'price' => 10, 'enabled' => 1);
             $default_gifts[] = array('name' => 'A Santa hat', 'image' => 'data_custom/images/giftr/Santa_Hat.jpg', 'price' => 10, 'enabled' => 1);
-            foreach ($default_gifts as $dg) {
-                $GLOBALS['SITE_DB']->query_insert('giftr', $dg + array('category' => do_lang('DEFAULT')));
-            }
+            $GLOBALS['SITE_DB']->query_insert('giftr', array(
+                'name' => collapse_1d_complexity('name', $default_gifts),
+                'image' => collapse_1d_complexity('image', $default_gifts),
+                'price' => collapse_1d_complexity('price', $default_gifts),
+                'enabled' => collapse_1d_complexity('enabled', $default_gifts),
+                'category' => array_fill(0, count($default_gifts), do_lang('DEFAULT')),
+            ));
 
             $GLOBALS['SITE_DB']->create_table('members_gifts', array(
                 'id' => '*AUTO',
