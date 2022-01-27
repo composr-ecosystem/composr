@@ -2387,8 +2387,8 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
 
         if ((($ip4) && (_compare_ip_address($ban['ip'], $ip_parts, '.'))) || ((!$ip4) && (_compare_ip_address($ban['ip'], $ip_parts, ':')))) {
             if ($self_ip === null) {
-                $self_host = cms_srv('HTTP_HOST');
-                if (($self_host == '') || (preg_match('#^localhost[\.\:$]#', $self_host) != 0)) {
+                $self_host = preg_replace('#:.*#', '', cms_srv('HTTP_HOST'));
+                if (($self_host == '') || (preg_match('#^localhost\.?#', $self_host) != 0)) {
                     $self_ip = '';
                 } else {
                     $self_ip = cms_gethostbyname($self_host);
