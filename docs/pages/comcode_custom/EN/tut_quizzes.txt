@@ -58,11 +58,12 @@ There are a few different types of question, indicated by a little tag after the
  - [tt][SHORT][/tt] -- A single-line typed answer. If correct answers are provided then an inexact match is performed. The match is a case-insensitive punctuationless match for being within 75% closeness to the correct answer (25% of the characters may need to be added/removed/substituted) -- the user needs to hit a valid answer, and miss all invalid answers.
  - [tt][SHORT_STRICT][/tt] -- A single-line typed answer. If correct answers are provided then a case-sensitive exact match will be performed.
 
-If a question is followed by [tt][REQUIRED][/tt] then Composr will force it to be filled in (unless you have set a timeout and the timeout is exceeded).
+If a question is followed by [tt][REQUIRED][/tt] then Composr will force it to be filled in (unless you have set a timeout and the timeout is exceeded). This is not supported by the [tt]MULTIMULTIPLE[/tt] question type.
 
 You may put line(s) starting with a [tt]:[/tt] immediately under the question, to provide a longer caption for the question.
 
-You may also put line(s) starting with a [tt]:[/tt] and followed by an explanation, below each answer to a question, which will be displayed at completion for the explanation as to specifically why the given answer was correct or incorrect.
+You may also put line(s) starting with a [tt]:[/tt] and followed by an explanation, below each answer to a question, which will be displayed at completion for the explanation as to specifically why the given answer was correct or incorrect. i.e. it is text given to the user if they selected that particular answer.
+[tt]MULTIMULTIPLE[/tt] is a special case, as the user is selecting multiple answers. For [tt]MULTIMULTIPLE[/tt] the explanation text will be shown for any and all incorrect answers (separated by spaces).
 
 There is support for marking. If an answer is followed by [tt][*][/tt] then it is considered "correct" (this is very important for competitions and tests). If nothing is marked correct, the question will be considered as manually-marked (resulting in a quoted result range for the user, rather than a specific result), unless [tt][UNMARKED][/tt] is put after the question, in which case it will be collected but not count towards marking.
 

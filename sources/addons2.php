@@ -1045,27 +1045,22 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
         'addon_install_time' => time(),
     ]);
 
-    foreach ($addon_info['dependencies'] as $dependency) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
-            'addon_name' => $addon_name,
-            'addon_name_dependant_upon' => trim($dependency),
-            'addon_name_incompatibility' => 0,
-        ]);
-    }
-    foreach ($addon_info['incompatibilities'] as $incompatibility) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
-            'addon_name' => $addon_name,
-            'addon_name_dependant_upon' => trim($incompatibility),
-            'addon_name_incompatibility' => 1,
-        ]);
-    }
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon),
+        'addon_name_dependant_upon' => array_map('trim', $addon_info['dependencies']),
+        'addon_name_incompatibility' => array_fill(0, count($addon_info['dependencies']), 0),
+    ]);
 
-    foreach ($addon_info['files'] as $filepath) {
-        $GLOBALS['SITE_DB']->query_insert('addons_files', [
-            'addon_name' => $addon_name,
-            'filepath' => $filepath,
-        ]);
-    }
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon),
+        'addon_name_dependant_upon' => array_map('trim', $addon_info['incompatibilities']),
+        'addon_name_incompatibility' => array_fill(0, count($addon_info['incompatibilities']), 1),
+    ]);
+
+    $GLOBALS['SITE_DB']->query_insert('addons_files', [
+        'addon_name' => array_fill(0, count($addon_info['files']), $addon),
+        'filename' => $addon_info['files'],
+    ]);
 }
 
 /*

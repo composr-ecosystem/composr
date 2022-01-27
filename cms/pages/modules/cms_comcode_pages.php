@@ -317,21 +317,21 @@ class Module_cms_comcode_pages
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 100);
 
-        $_zone_filter = either_param_string('zone_filter', null);
+        $_zone_filter = get_param_string('zone_filter', null);
         if ($_zone_filter !== null) {
             $zone_filter = explode(',', $_zone_filter);
         } else {
             $zone_filter = null;
         }
 
-        $filter = either_param_string('filter', null);
+        $filter = get_param_string('filter', null);
         if (empty($filter)) {
             $filter = null;
         }
 
         // Choose language
         if (!$translations_mode) {
-            $lang = choose_language($this->title, true);
+            $lang = choose_language($this->title, true, false, false);
             if (is_object($lang)) {
                 return $lang;
             }
@@ -847,8 +847,7 @@ class Module_cms_comcode_pages
 
         // Render...
 
-        $post_url = build_url(['page' => '_SELF'], '_SELF');
-        $hidden = build_keep_post_fields(['filter']);
+        $post_url = build_url(['page' => '_SELF', 'lang' => $lang], '_SELF');
 
         $tpl = do_template('COMCODE_PAGE_MANAGE_SCREEN', [
             '_GUID' => 'eba3e03c65d96530e3a42d600f90ccd8',
@@ -856,8 +855,7 @@ class Module_cms_comcode_pages
             'TEXT' => $text,
             'TABLE' => $table,
             'FIELDS' => $fields,
-            'POST_URL' => $post_url,
-            'HIDDEN' => $hidden,
+            'URL' => $url,
             'SUBMIT_NAME' => $submit_name,
             'LINKS' => $links,
             'EXTRA' => $extra,

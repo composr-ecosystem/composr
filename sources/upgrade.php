@@ -258,7 +258,11 @@ function upgrader_output_login(?string $message = null)
         if (empty($SITE_INFO['ftp_username'])) {
             if (php_function_allowed('posix_getpwuid')) {
                 $u_info = posix_getpwuid(website_file_owner());
-                $ftp_username = $u_info['name'];
+                if ($u_info !== false) {
+                    $ftp_username = $u_info['name'];
+                } else {
+                    $ftp_username = '';
+                }
             } else {
                 $ftp_username = '';
             }

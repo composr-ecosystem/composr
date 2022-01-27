@@ -310,6 +310,10 @@ function prepare_installer_url(string $url) : string
     if ($kdfs != 0) {
         $url .= '&keep_debug_fs=' . strval($kdfs);
     }
+    $kst = get_param_integer('keep_show_timings', 0);
+    if ($kst != 0) {
+        $url .= '&keep_show_timings=' . strval($kst);
+    }
     return $url;
 }
 
@@ -1222,14 +1226,16 @@ function step_5() : object
     $table_prefix = post_param_string('table_prefix', false, INPUT_FILTER_POST_IDENTIFIER);
 
     // Test base URL isn't subject to redirects
-    $test_url = $base_url . '/installer_is_testing_base_urls.php';
-    require_code('files');
-    $http_result = cms_http_request($test_url, ['trigger_error' => false]);
-    if ($http_result->download_url != $test_url) {
-        if (preg_replace('#www\.#', '', $http_result->download_url) == $test_url) {
-            warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITH_WWW'));
-        } elseif ($http_result->download_url == preg_replace('#www\.#', '', $test_url)) {
-            warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITHOUT_WWW'));
+    if (preg_replace('#:\d+$#', '', $_SERVER['HTTP_HOST']) != $url_parts['host']) {
+        $test_url = $base_url . '/installer_is_testing_base_urls.php';
+        require_code('files');
+        $http_result = cms_http_request($test_url, ['trigger_error' => false]);
+        if ($http_result->download_url != $test_url) {
+            if (preg_replace('#www\.#', '', $http_result->download_url) == $test_url) {
+                warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITH_WWW'));
+            } elseif ($http_result->download_url == preg_replace('#www\.#', '', $test_url)) {
+                warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITHOUT_WWW'));
+            }
         }
     }
 
@@ -2313,12 +2319,24 @@ function step_7() : object
         $GLOBALS['FORUM_DRIVER']->forum_install_as_needed();
     }
 
-    // We must install this module first
+    $time_start = microtime(true);
+
+    // We must install these modules first
+    $time_before = microtime(true);
     if (reinstall_module('adminzone', 'admin_version')) {
         $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da46e6eb9069c8f700636ab61f76f895', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_version')]));
     }
+    $time_after = microtime(true);
+    if (get_param_integer('keep_show_timings', 0) == 1) {
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '1aafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_version took ' . float_format($time_after - $time_before) . ' seconds'))));
+    }
+    $time_before = microtime(true);
     if (reinstall_module('adminzone', 'admin_permissions')) {
         $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '11de3814d6a00a0e015466a0277fa7a1', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_permissions')]));
+    }
+    $time_after = microtime(true);
+    if (get_param_integer('keep_show_timings', 0) == 1) {
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '1aafb3dd014d589fcc057bba54fc4bb3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of admin_permissions took ' . float_format($time_after - $time_before) . ' seconds'))));
     }
 
     $modules = find_all_modules('adminzone');
@@ -2326,9 +2344,15 @@ function step_7() : object
         if (($module != 'admin_version') && ($module != 'admin_permissions')) {
             send_http_output_ping();
 
-            //echo '<' . '!-- Installing ' . escape_html($module) . ' --' . '>';
+            $time_before = microtime(true);
+
             if (reinstall_module('adminzone', $module)) {
                 $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
+            }
+
+            $time_after = microtime(true);
+            if (get_param_integer('keep_show_timings', 0) == 1) {
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '1fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
             }
         }
     }
@@ -2342,8 +2366,20 @@ function step_7() : object
 
         //if ($place == 'sources_custom') continue;  Now we are actually installing custom addons too
 
+        $time_before = microtime(true);
+
         reinstall_addon_soft($addon_name);
         $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))]));
+
+        $time_after = microtime(true);
+        if (get_param_integer('keep_show_timings', 0) == 1) {
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Addon installation of ' . escape_html($addon) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+        }
+    }
+
+    $time_end = microtime(true);
+    if (get_param_integer('keep_show_timings', 0) == 1) {
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2fafb3dd024d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('TOTAL TIME: ' . float_format($time_end - $time_start) . ' seconds')]));
     }
 
     $url = prepare_installer_url('install.php?step=8');
@@ -2373,8 +2409,15 @@ function step_8() : object
     foreach ($modules as $module => $type) {
         send_http_output_ping();
 
+        $time_before = microtime(true);
+
         if (reinstall_module('site', $module)) {
             $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
+        }
+
+        $time_after = microtime(true);
+        if (get_param_integer('keep_show_timings', 0) == 1) {
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
         }
     }
 
@@ -2410,8 +2453,15 @@ function step_9() : object
         foreach ($modules as $module => $type) {
             send_http_output_ping();
 
+            $time_before = microtime(true);
+
             if (reinstall_module($zone, $module)) {
                 $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'c1d95b9713006acb491b44ff6c79099c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
+            }
+
+            $time_after = microtime(true);
+            if (get_param_integer('keep_show_timings', 0) == 1) {
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
             }
         }
     }
@@ -2420,9 +2470,15 @@ function step_9() : object
     foreach ($blocks as $block => $type) {
         send_http_output_ping();
 
-        echo '<' . '!-- Installing block: ' . $block . ' --' . '>' . "\n";
+        $time_before = microtime(true);
+
         if (reinstall_block($block)) {
             $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))]));
+        }
+
+        $time_after = microtime(true);
+        if (get_param_integer('keep_show_timings', 0) == 1) {
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '4fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Block installation of ' . escape_html($block) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
         }
     }
 

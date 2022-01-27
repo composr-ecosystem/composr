@@ -83,7 +83,9 @@ function init__config()
         do {
             $site_maintenance_lock = get_value_newer_than('site_maintenance_lock', time() - 60/*one minute lock timeout*/);
             if ($site_maintenance_lock != '') {
-                sleep(5);
+                if (php_function_allowed('usleep')) {
+                    usleep(5000000);
+                }
                 load_value_options();
             }
         } while ($site_maintenance_lock != '');

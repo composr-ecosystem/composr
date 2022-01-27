@@ -1873,7 +1873,7 @@ class DatabaseConnector
 
         if ($DEV_MODE) {
             if (peek_db_scope_check()) {
-                if ((!multi_lang_content()) && (strpos($query, $this->get_table_prefix() . 'translate') !== false) && (strpos($query, 'DROP TABLE') === false) && (strpos($query, 'DROP INDEX') === false) && (strpos($query, 'ALTER TABLE') === false) && (strpos($query, 'CREATE TABLE') === false) && (trim($query) != 'SELECT * FROM cms_translate WHERE 1=1')) {
+                if ((!multi_lang_content()) && (strpos($query, $this->get_table_prefix() . 'translate') !== false) && (strpos($query, 'CHECK TABLE') === false) && (strpos($query, 'DROP TABLE') === false) && (strpos($query, 'DROP INDEX') === false) && (strpos($query, 'ALTER TABLE') === false) && (strpos($query, 'CREATE TABLE') === false) && (trim($query) != 'SELECT * FROM cms_translate WHERE 1=1')) {
                     fatal_exit('Assumption of multi-lang-content being on, and it\'s not');
                 }
 

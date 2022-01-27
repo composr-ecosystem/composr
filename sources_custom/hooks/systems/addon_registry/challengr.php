@@ -137,7 +137,6 @@ class Hook_addon_registry_challengr
             'lang_custom/EN/quiz.ini',
             'themes/default/templates_custom/QUIZ_DONE_SCREEN.tpl',
             'site/pages/modules_custom/quiz.php',
-            'sources_custom/quiz.php',
             'themes/default/templates_custom/QUIZ_BOX.tpl',
         ];
     }

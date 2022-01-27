@@ -92,7 +92,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(strpos($result->data, 'early_cinema.mp4') !== false);
+        $this->assertTrue($result->data !==null && strpos($result->data, 'early_cinema.mp4') !== false);
 
         // Test file properties
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -111,7 +111,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(strpos($result->data, '191805') !== false || strpos($result->data, '259941') !== false); // May have higher file-size than actual file due to JSON encoding
+        $this->assertTrue($result->data !==null && strpos($result->data, '191805') !== false || strpos($result->data, '259941') !== false); // May have higher file-size than actual file due to JSON encoding
 
         // Test download
         $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -157,7 +157,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(strpos($result->data, '12343') !== false || strpos($result->data, '16605') !== false); // May have higher file-size than actual file due to JSON encoding
+        $this->assertTrue($result->data !==null && strpos($result->data, '12343') !== false || strpos($result->data, '16605') !== false); // May have higher file-size than actual file due to JSON encoding
 
         // Test delete
         $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -188,7 +188,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(strpos($result->data, 'early_cinema.mp4') === false);
+        $this->assertTrue($result->data !==null && strpos($result->data, 'early_cinema.mp4') === false);
 
         deldir_contents(get_custom_file_base() . '/uploads/filedump/xxx123', false, true);
 
@@ -221,7 +221,7 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(strpos($result->data, 'xxx123') !== false);
+        $this->assertTrue($result->data !==null && strpos($result->data, 'xxx123') !== false);
 
         // Test delete folder
         $result = cms_http_request($webdav_filedump_base_url . '/xxx123/', [
@@ -252,6 +252,6 @@ class webdav_test_set extends cms_test_case
             var_dump($result->message);
             var_dump($result->data);
         }
-        $this->assertTrue(strpos($result->data, 'xxx123') === false);
+        $this->assertTrue($result->data !==null && strpos($result->data, 'xxx123') === false);
     }
 }

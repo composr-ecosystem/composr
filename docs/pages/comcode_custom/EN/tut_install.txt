@@ -134,6 +134,15 @@ The Setup Wizard ("Configure my Composr first") will guide you through some basi
 
 [center][img]data_custom/images/docs/tut_install/congratulations.jpg[/img][/center]
 
+[title="2"]Advice for webhosters[/title]
+
+Note that Composr administrators have full control over their website code. They may execute their own custom PHP code trivially.
+
+Therefore if you control the hosting and provide someone with a Composr staff username you should ensure that your hosting is either:
+1) locked down to only that site
+2) that you provide a non-administrator staff account
+3) that you trust any administrator with full control over the hosting
+
 [concepts
  1_key="Master password"       1_value="The master password is a special password that will help you restore settings if something makes the traditional Composr interface unusable."
 ]Concepts[/concepts]

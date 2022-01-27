@@ -174,9 +174,7 @@ class Hook_addon_registry_wordfilter
     {
         if ((($content === null) || (in_array('have_default_wordfilter', $content))) && (!has_predefined_content('wordfilter', 'have_default_wordfilter'))) {
             $naughties = $this->youre_a_naughty_boy_fawlty();
-            foreach ($naughties as $word) {
-                $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES, 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
-            }
+            $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $naughties, 'w_replacement' => array_fill(0, count($naughties), WORDFILTER_REPLACEMENT_GRAWLIXES), 'w_match_type' => array_fill(0, count($naughties), WORDFILTER_MATCH_TYPE_FULL)));
         }
     }
 

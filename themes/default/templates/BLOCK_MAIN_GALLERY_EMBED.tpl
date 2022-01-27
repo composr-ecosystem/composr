@@ -17,25 +17,27 @@
 		</div>
 	{+END}
 
-	{$SET,ajax_block_main_gallery_embed_wrapper,ajax-block-main-gallery-embed-wrapper-{$RAND%}}
-	<div id="{$GET*,ajax_block_main_gallery_embed_wrapper}" data-ajaxify="{ callUrl: '{$GET;*,block_call_url}', callParamsFromTarget: ['^[^_]*_start$', '^[^_]*_max$'], targetsSelector: '.ajax-block-wrapper-links a, .ajax-block-wrapper-links form' }">
-		<div class="gallery-grid-cell-wrap raw-ajax-grow-spot">
-			{ENTRIES}
-		</div>
-
-		{+START,IF_NON_EMPTY,{PAGINATION}}
-			<div class="pagination-spacing clearfix ajax-block-wrapper-links">
-				{PAGINATION}
+	{+START,IF_NON_EMPTY,{ENTRIES}{PAGINATION}}
+		{$SET,ajax_block_main_gallery_embed_wrapper,ajax-block-main-gallery-embed-wrapper-{$RAND%}}
+		<div id="{$GET*,ajax_block_main_gallery_embed_wrapper}" data-ajaxify="{ callUrl: '{$GET;*,block_call_url}', callParamsFromTarget: ['^[^_]*_start$', '^[^_]*_max$'], targetsSelector: '.ajax-block-wrapper-links a, .ajax-block-wrapper-links form' }">
+			<div class="gallery-grid-cell-wrap raw-ajax-grow-spot">
+				{ENTRIES}
 			</div>
 
-			{+START,INCLUDE,AJAX_PAGINATION}
-				WRAPPER_ID={$GET,ajax_block_main_gallery_embed_wrapper}
-				ALLOW_INFINITE_SCROLL=1
-			{+END}
-		{+END}
-	</div>
+			{+START,IF_NON_EMPTY,{PAGINATION}}
+				<div class="pagination-spacing clearfix ajax-block-wrapper-links">
+					{PAGINATION}
+				</div>
 
-	{+START,INCLUDE,MASS_SELECT_DELETE_FORM}{+END}
+				{+START,INCLUDE,AJAX_PAGINATION}
+					WRAPPER_ID={$GET,ajax_block_main_gallery_embed_wrapper}
+					ALLOW_INFINITE_SCROLL=1
+				{+END}
+			{+END}
+		</div>
+
+		{+START,INCLUDE,MASS_SELECT_DELETE_FORM}{+END}
+	{+END}
 </div>
 {+END}
 

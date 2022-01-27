@@ -300,6 +300,7 @@ function build_closure_tempcode(int $type, string $name, array $parameters, arra
             case 'METADATA':
             case 'METADATA_IMAGE_EXTRACT':
             case 'CANONICAL_URL':
+            case 'INSERT_SPAMMER_BLACKHOLE':
                 break;
 
             default:
@@ -1676,6 +1677,12 @@ function handle_symbol_preprocessing(array $seq_part, array &$children, string $
                 $CANONICAL_URL = $param[0]->evaluate();
             }
             return;
+
+        case 'INSERT_SPAMMER_BLACKHOLE':
+            if (get_bot_type() === null) {
+                $GLOBALS['STATIC_CACHE_ENABLED'] = false;
+            }
+            return;
     }
 }
 
@@ -1728,6 +1735,7 @@ class Tempcode
                             case 'LOAD_PANEL':
                             case 'METADATA':
                             case 'CANONICAL_URL':
+                            case 'INSERT_SPAMMER_BLACKHOLE':
                                 $pp_bits[] = [[], TC_SYMBOL, $seq_part[3], $seq_part[1]];
                                 break;
                         }

@@ -52,6 +52,8 @@ function generate_csrf_token(bool $force_fresh = false) : string
         $token = null;
     }
 
+    $GLOBALS['STATIC_CACHE_ENABLED'] = false;
+
     if ($token === null) {
         require_code('crypt');
         $token = get_secure_random_string();

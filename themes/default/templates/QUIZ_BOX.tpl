@@ -21,6 +21,9 @@
 				<dt class="field-name">{!REDO_TIME}:</dt> <dd>{REDO_TIME*}</dd>
 			{+END}
 			<dt class="field-name">{!ADDED}:</dt> <dd>{DATE*}</dd>
+			{+START,IF_NON_EMPTY,{POINTS}}
+				<dt class="field-name">{!POINTS}:</dt> <dd>{POINTS*}</dd>
+			{+END}
 		</dl>
 	</div>
 

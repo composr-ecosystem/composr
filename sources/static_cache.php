@@ -317,6 +317,11 @@ function static_cache(int $mode)
         if (is_file($fast_cache_path)) {
             break;
         }
+        $fast_cache_path = preg_replace('#\.gz$#', '', $fast_cache_path);
+        if (is_file($fast_cache_path)) {
+            $support_compressed = false;
+            break;
+        }
     }
 
     // Is cached

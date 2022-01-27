@@ -184,7 +184,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (!empty($get)) {
             $url .= '&' . http_build_query($get);
         }
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 240.0/*If XML DB may be VERY slow*/]);
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 240.0 : 30.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200'])) && (strpos($data, '<!--ERROR-->') === false);
 

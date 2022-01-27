@@ -220,7 +220,7 @@ function pagination(object $title, int $start, string $start_name, int $max, str
 
         // Link to first
         if ($start > 0) {
-            $url_array = ['page' => '_SELF', $start_name => running_script('index') ? null : 0, $start_name . '__keyed' => null];
+            $url_array = ['page' => '_SELF', $start_name => running_script('index') ? null : 0, $start_name . '__keyed' => ($keyset_value === null) ? null : ''];
             $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
             $first = do_template('PAGINATION_CONTINUE_FIRST', ['_GUID' => 'f5e510da318af9b37c3a4b23face5ae3', 'TITLE' => $title, 'P' => strval(1), 'FIRST_URL' => $cat_url]);
         } else {

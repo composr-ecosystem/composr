@@ -1096,7 +1096,7 @@ function find_timezone_start_hour_in_utc(string $timezone, int $year, int $month
  * @param  integer $day Day
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Hour
+ * @return integer Minute
  */
 function find_timezone_start_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
@@ -1114,15 +1114,19 @@ function find_timezone_start_minute_in_utc(string $timezone, int $year, int $mon
  * Find last hour in day for a timezone.
  *
  * @param  ID_TEXT $timezone The timezone of the event
- * @param  integer $year Year
- * @param  integer $month Month
- * @param  integer $day Day
+ * @param  ?integer $year Year (null: N/A)
+ * @param  ?integer $month Month (null: N/A)
+ * @param  ?integer $day Day (null: N/A)
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Hour
+ * @return ?integer Hour (null: N/A)
  */
 function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
+    if (($year === null) || ($month === null) || ($day === null)) {
+        return null;
+    }
+
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
@@ -1137,15 +1141,19 @@ function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, 
  * Find last minute in day for a timezone. Usually 59, but some timezones have 30 min offsets.
  *
  * @param  ID_TEXT $timezone The timezone of the event
- * @param  integer $year Year
- * @param  integer $month Month
- * @param  integer $day Day
+ * @param  ?integer $year Year (null: N/A)
+ * @param  ?integer $month Month (null: N/A)
+ * @param  ?integer $day Day (null: N/A)
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Hour
+ * @return ?integer Minute (null: N/A)
  */
 function find_timezone_end_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
+    if (($year === null) || ($month === null) || ($day === null)) {
+        return null;
+    }
+
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);

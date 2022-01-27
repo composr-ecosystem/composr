@@ -307,7 +307,7 @@ class Notification_dispatcher
         $no_cc = $this->no_cc;
 
         if ($GLOBALS['DEV_MODE']) {
-            if ((strpos($this->message, 'keep_devtest') !== false) && ($this->notification_code != 'ticket_reply') && ($this->notification_code != 'error_occurred') && ($this->notification_code != 'hack_attack') && ($this->notification_code != 'auto_ban') && (strpos($this->message, running_script('index') ? static_evaluate_tempcode(build_url(['page' => '_SELF'], '_SELF', [], true, false, true)) : get_self_url_easy()) === false) && ((strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') === false) || (strpos($this->message, $_SERVER['HTTP_REFERER']) === false))) { // Bad URL - it has to be general, not session-specific
+            if ((strpos($this->message, 'keep_devtest') !== false) && ($this->notification_code != 'ticket_reply') && (strpos($this->notification_code, 'error_occurred') !== false) && ($this->notification_code != 'hack_attack') && ($this->notification_code != 'auto_ban') && (strpos($this->message, running_script('index') ? static_evaluate_tempcode(build_url(['page' => '_SELF'], '_SELF', [], true, false, true)) : get_self_url_easy()) === false) && ((strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') === false) || (strpos($this->message, $_SERVER['HTTP_REFERER']) === false))) { // Bad URL - it has to be general, not session-specific
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
         }

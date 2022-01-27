@@ -1357,12 +1357,13 @@ function comcode_lang_string(string $lang_code) : object
  * @param  Tempcode $title Title for the form
  * @param  boolean $tip Whether to give a tip about edit order
  * @param  boolean $allow_all_selection Whether to add an 'all' entry to the list
+ * @param  boolean $post Whether to use a POST parameter
  * @return mixed The UI (Tempcode) or the language to use (string/LANGUAGE_NAME)
  */
-function choose_language(object $title, bool $tip = false, bool $allow_all_selection = false)
+function choose_language(object $title, bool $tip = false, bool $allow_all_selection = false, bool $post = true)
 {
     require_code('lang3');
-    return _choose_language($title, $tip, $allow_all_selection);
+    return _choose_language($title, $tip, $allow_all_selection, $post);
 }
 
 /**

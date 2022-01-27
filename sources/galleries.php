@@ -286,14 +286,25 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
     }
 
     if ($rep_image_url == '') {
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy');
+            list($privacy_join_video, $privacy_where_video) = get_privacy_where_clause('video', 'r');
+            list($privacy_join_image, $privacy_where_image) = get_privacy_where_clause('image', 'r');
+        } else {
+            $privacy_join_video = '';
+            $privacy_where_video = '';
+            $privacy_join_image = '';
+            $privacy_where_image = '';
+        }
+
         require_code('images');
-        $temp = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url'], ['cat' => $myrow['name'], 'validated' => 1], $thumb_order, 1);
+        $temp = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url'], ['cat' => $myrow['name'], 'validated' => 1], $privacy_where_image . ' ' . $thumb_order, 1);
         if (isset($temp[0])) {
             $rep_image_url = $temp[0]['url'];
         }
     }
     if ($rep_image_url == '') {
-        $rep_image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $myrow['name'], 'validated' => 1], $thumb_order);
+        $rep_image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $myrow['name'], 'validated' => 1], $privacy_where_video . ' ' . $thumb_order);
     }
     if ($rep_image_url == '') {
         $rep_image_url = find_theme_image('icons/no_image');
