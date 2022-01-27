@@ -139,7 +139,7 @@ function static_cache($mode)
         $file_extension = '.htm';
     }
 
-    $support_compressed = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false);
+    $support_compressed = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) && (function_exists('gzencode')) && (function_exists('php_function_allowed')) && (php_function_allowed('ini_set'));
     if ($support_compressed) {
         $file_extension .= '.gz';
     }
@@ -233,6 +233,11 @@ function static_cache($mode)
         if (is_file($fast_cache_path)) {
             break;
         }
+        $fast_cache_path = preg_replace('#\.gz$#', '', $fast_cache_path);
+        if (is_file($fast_cache_path)) {
+            $support_compressed = false;
+            break;
+        }
     }
 
     // Is cached
@@ -270,7 +275,7 @@ function static_cache($mode)
             }
 
             // Output
-            if ((($mode & STATIC_CACHE__FAILOVER_MODE) == 0) && ($support_compressed) && (function_exists('gzencode')) && (function_exists('php_function_allowed')) && (php_function_allowed('ini_set'))) {
+            if ((($mode & STATIC_CACHE__FAILOVER_MODE) == 0) && ($support_compressed)) {
                 ini_set('zlib.output_compression', 'Off');
                 header('Content-Encoding: gzip');
                 header('Vary: Accept-Encoding');
