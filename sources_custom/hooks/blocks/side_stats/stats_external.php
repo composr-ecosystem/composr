@@ -63,7 +63,7 @@ function getAlexaRank($url)
     } else {
         $rank = do_lang('NA');
     }
-    if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $p) != 0) {
+    if (($result !== null) && (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $p) != 0)) {
         $links = integer_format(intval($p[1]));
     } else {
         $links = '';
