@@ -184,7 +184,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (count($get) > 0) {
             $url .= '&' . http_build_query($get);
         }
-        $data = http_download_file($url, null, true, false, 'Composr', $post, null, null, null, null, null, null, null, 30.0); // 30 is a reasonable timeout, don't make it bigger as we want to test performance too
+        $data = http_download_file($url, null, true, false, 'Composr', $post, null, null, null, null, null, null, null, 40.0); // 40 is a reasonable timeout, don't make it bigger as we want to test performance too
         if (strpos(strip_tags($data), 'An error has occurred') !== false) {
             $GLOBALS['HTTP_MESSAGE'] = '500';
         }
