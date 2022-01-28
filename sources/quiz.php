@@ -51,7 +51,7 @@ function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
         'POINTS' => integer_format($row['q_points_for_passing']),
         '_POINTS' => strval($row['q_points_for_passing']),
         'TIMEOUT' => ($row['q_timeout'] === null) ? '' : display_time_period($row['q_timeout'] * 60),
-        '_TIMEOUT' => ($row['q_timeout'] === null) ? '' : strval($row['q_timeout']),
+        '_TIMEOUT' => ($row['q_timeout'] === null) ? '' : strval($row['q_timeout'] * 60),
         'REDO_TIME' => (($row['q_redo_time'] === null) || ($row['q_redo_time'] == 0)) ? '' : display_time_period($row['q_redo_time'] * 60 * 60),
         'DATE' => get_timezoned_date_tempcode($row['q_add_date']),
         '_DATE' => strval($row['q_add_date']),

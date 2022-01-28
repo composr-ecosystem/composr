@@ -530,7 +530,7 @@ class Module_quiz
             'POINTS' => integer_format($quiz['q_points_for_passing']),
             '_POINTS' => strval($quiz['q_points_for_passing']),
             '_TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : display_time_period($quiz['q_timeout'] * 60 - $timer_offset),
-            'TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : strval($quiz['q_timeout'] - $timer_offset),
+            'TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : strval($quiz['q_timeout'] * 60 - $timer_offset),
             'REDO_TIME' => (($quiz['q_redo_time'] === null) || ($quiz['q_redo_time'] == 0)) ? '' : display_time_period($quiz['q_redo_time'] * 60 * 60),
             'DATE' => get_timezoned_date_tempcode($quiz['q_add_date']),
             '_DATE' => strval($quiz['q_add_date']),
