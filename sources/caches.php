@@ -655,7 +655,7 @@ function get_cache_entry($codename, $cache_identifier, $special_cache_flags, $tt
         }
     }
 
-    $rets = _get_cache_entries(array($det), $special_cache_flags);
+    $rets = _get_cache_entries(array($det));
     return $rets[0];
 }
 
@@ -693,12 +693,11 @@ function permissive_groups_cache_signature()
  * Ability to do multiple get_cache_entry at once, for performance reasons.
  *
  * @param  array $dets An array of tuples of parameters (as per get_cache_entry, almost)
- * @param  ?integer $special_cache_flags Special cache flags (null: unknown)
  * @return array Array of results
  *
  * @ignore
  */
-function _get_cache_entries($dets, $special_cache_flags = null)
+function _get_cache_entries($dets)
 {
     static $cache = array();
 
@@ -708,57 +707,59 @@ function _get_cache_entries($dets, $special_cache_flags = null)
 
     $rets = array();
 
-    require_code('temporal');
-    $staff_status = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0)) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
-    $member = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_MEMBER) !== 0)) ? get_member() : null;
-    $groups = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0)) ? permissive_groups_cache_signature() : '';
-    $is_bot = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) !== 0)) ? (is_null(get_bot_type()) ? 0 : 1) : null;
-    $timezone = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0)) ? get_users_timezone(get_member()) : '';
-
     // Bulk load
     if ($GLOBALS['PERSISTENT_CACHE'] === null) {
         $do_query = false;
 
         $sql = 'SELECT cached_for,identifier,the_value,date_and_time,dependencies FROM ' . get_table_prefix() . 'cache WHERE ';
         $sql .= db_string_equal_to('the_theme', $GLOBALS['FORUM_DRIVER']->get_theme());
-        if ($staff_status === null) {
-            $sql .= ' AND staff_status IS NULL';
-        } else {
-            $sql .= ' AND staff_status=' . strval($staff_status);
-        }
-        if ($member === null) {
-            $sql .= ' AND the_member IS NULL';
-        } else {
-            $sql .= ' AND the_member=' . strval($member);
-        }
-        if ($groups === null) {
-            $sql .= ' AND ' . db_string_equal_to('groups', '');
-        } else {
-            $sql .= ' AND ' . db_string_equal_to('groups', $groups);
-        }
-        if ($is_bot === null) {
-            $sql .= ' AND is_bot IS NULL';
-        } else {
-            $sql .= ' AND is_bot=' . strval($is_bot);
-        }
-        if ($timezone === null) {
-            $sql .= ' AND ' . db_string_equal_to('timezone', '');
-        } else {
-            $sql .= ' AND ' . db_string_equal_to('timezone', $timezone);
-        }
         $sql .= ' AND ' . db_string_equal_to('lang', user_lang());
         $sql .= ' AND (1=0';
         foreach ($dets as $det) {
             list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-            $sz = serialize(array($codename, $md5_cache_identifier));
+            $sz = serialize(array($codename, $md5_cache_identifier, $special_cache_flags));
             if (isset($cache[$sz])) { // Already cached
                 $rets[] = $cache[$sz];
                 continue;
             }
 
             $sql .= ' OR ';
+
             $sql .= db_string_equal_to('cached_for', $codename) . ' AND ' . db_string_equal_to('identifier', $md5_cache_identifier);
+
+            require_code('temporal');
+            $staff_status = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0)) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
+            $member = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_MEMBER) !== 0)) ? get_member() : null;
+            $groups = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0)) ? permissive_groups_cache_signature() : '';
+            $is_bot = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) !== 0)) ? (is_null(get_bot_type()) ? 0 : 1) : null;
+            $timezone = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0)) ? get_users_timezone(get_member()) : '';
+
+            if ($staff_status === null) {
+                $sql .= ' AND staff_status IS NULL';
+            } else {
+                $sql .= ' AND staff_status=' . strval($staff_status);
+            }
+            if ($member === null) {
+                $sql .= ' AND the_member IS NULL';
+            } else {
+                $sql .= ' AND the_member=' . strval($member);
+            }
+            if ($groups === null) {
+                $sql .= ' AND ' . db_string_equal_to('groups', '');
+            } else {
+                $sql .= ' AND ' . db_string_equal_to('groups', $groups);
+            }
+            if ($is_bot === null) {
+                $sql .= ' AND is_bot IS NULL';
+            } else {
+                $sql .= ' AND is_bot=' . strval($is_bot);
+            }
+            if ($timezone === null) {
+                $sql .= ' AND ' . db_string_equal_to('timezone', '');
+            } else {
+                $sql .= ' AND ' . db_string_equal_to('timezone', $timezone);
+            }
 
             $do_query = true;
         }
@@ -770,7 +771,7 @@ function _get_cache_entries($dets, $special_cache_flags = null)
     foreach ($dets as $det) {
         list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-        $sz = serialize(array($codename, $md5_cache_identifier));
+        $sz = serialize(array($codename, $md5_cache_identifier, $special_cache_flags));
         if (isset($cache[$sz])) { // Already cached
             $rets[] = $cache[$sz];
             continue;

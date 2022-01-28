@@ -37,7 +37,7 @@ class Hook_page_groupings_downloads
         }
 
         return array(
-            has_privilege(get_member(), 'submit_midrange_content', 'cms_downloads') ? array('cms', 'menu/rich_content/downloads', array('cms_downloads', array('type' => 'browse'), get_module_zone('cms_downloads')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('downloads:SECTION_DOWNLOADS'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'COUNT(*)', null, '', true))))), 'downloads:DOC_DOWNLOADS') : null,
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_downloads') ? array('cms', 'menu/rich_content/downloads', array('cms_downloads', array('type' => 'browse'), get_module_zone('cms_downloads')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('downloads:SECTION_DOWNLOADS'), make_string_tempcode(escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'COUNT(*)', null, '', true)))))), 'downloads:DOC_DOWNLOADS') : null,
             array('rich_content', 'menu/rich_content/downloads', array('downloads', array(), get_module_zone('downloads')), do_lang_tempcode('downloads:SECTION_DOWNLOADS')),
         );
     }

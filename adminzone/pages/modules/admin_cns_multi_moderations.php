@@ -79,14 +79,14 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_moderation');
 
-        breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
-
-        if ($type == 'import') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS'))));
-        }
-
-        if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')), array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES'))));
+        if ($type == 'browse') {
+            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS'))));
+        } elseif ($type == 'import') {
+            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS'))));
+        } elseif ($type == '_import') {
+            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')), array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES'))));
+        } else {
+            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS'))));
         }
 
         if ($type == 'import' || $type == '_import') {

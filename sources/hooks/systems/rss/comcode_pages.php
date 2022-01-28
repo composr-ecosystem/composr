@@ -127,7 +127,7 @@ class Hook_rss_comcode_pages
                         $author = '';
                     }
                     $news_date = date($date_string, $rows3[$id]['p_add_date']);
-                    $edit_date = date($date_string, $rows3[$id]['p_edit_date']);
+                    $edit_date = ($rows3[$id]['p_edit_date'] === null) ? '' : date($date_string, $rows3[$id]['p_edit_date']);
                     if ($news_date == $edit_date) {
                         $edit_date = '';
                     }

@@ -454,10 +454,9 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                     warn_exit(do_lang_tempcode('CANNOT_COPY_TO_SERVER'));
                 }
             }
+            $ext = (($obfuscate == 2) && (!is_image($HTTP_FILENAME))) ? 'bin' : get_file_extension($HTTP_FILENAME);
             if (is_null($filename)) {
                 if (($obfuscate != 0) && ($obfuscate != 3)) {
-                    $ext = (($obfuscate == 2) && (!is_image($HTTP_FILENAME))) ? 'bin' : get_file_extension($HTTP_FILENAME);
-
                     $filename = $HTTP_FILENAME . ((substr($HTTP_FILENAME, -strlen($ext) - 1) == '.' . $ext) ? '' : ('.' . $ext));
                     $place = $upload_folder_full . '/' . $filename;
                     while (file_exists($place)) {
@@ -469,6 +468,10 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                     $place = $upload_folder_full . '/' . $filename;
                 }
             } else {
+                if (substr($filename, -4) == '.XXX') {
+                    $filename = substr($filename, 0, strlen($filename) - 4) . '.' . $ext;
+                }
+
                 $place = $upload_folder_full . '/' . shorten_urlencoded_filename($filename);
             }
             if (!has_privilege($member_id, 'exceed_filesize_limit')) {
@@ -869,6 +872,7 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
         return array('', '');
     }
 
+    $ext = (($obfuscate == 2) && (!is_image($file))) ? 'bin' : get_file_extension($file);
     if (is_null($filename)) {
         // If we are not obfuscating then we will need to search for an available filename
         if (($obfuscate == 0) || ($obfuscate == 3) || (strlen($file) > 150)) {
@@ -887,9 +891,6 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
             }
             sync_file($place);
         } else { // A result of some randomness
-            $ext = get_file_extension($file);
-            $ext = (($obfuscate == 2) && (!is_image($file))) ? 'bin' : get_file_extension($file);
-
             $filename = uniqid('', true) . '.' . $ext;
             $place = $upload_folder_full . '/' . $filename;
             while (file_exists($place)) {
@@ -898,6 +899,10 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
             }
         }
     } else {
+        if (substr($filename, -4) == '.XXX') {
+            $filename = substr($filename, 0, strlen($filename) - 4) . '.' . $ext;
+        }
+
         $place = $upload_folder_full . '/' . $filename;
     }
 

@@ -48,6 +48,8 @@ function generate_csrf_token()
 {
     static $token = null; // So we only have one per screen (otherwise we can get huge numbers in our table)
 
+    $GLOBALS['STATIC_CACHE_ENABLED'] = false;
+
     if ($token === null) {
         require_code('crypt');
         $token = get_rand_password();

@@ -12,6 +12,7 @@ rm -f caches/lang/*/*.lcd
 find caches -name "*.gcd" -exec rm -f {} \;
 find caches -name "*.xml" -exec rm -f {} \;
 find caches -name "*.htm" -exec rm -f {} \;
+find caches -name "*.gz" -exec rm -f {} \;
 if [ -e "data_custom/failover_rewritemap.txt" ]; then
 	echo > data_custom/failover_rewritemap.txt
 	echo > data_custom/failover_rewritemap__mobile.txt

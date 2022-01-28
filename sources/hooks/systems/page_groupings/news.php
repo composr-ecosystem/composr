@@ -36,8 +36,8 @@ class Hook_page_groupings_news
             return array();
         }
 
-        $cnt = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'COUNT(*)', null, '', true);
-        $cnt_blogs = $cnt - $GLOBALS['SITE_DB']->query_select_value_if_there('news n LEFT JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category', 'COUNT(*)', array('nc_owner' => null), '', true);
+        $cnt = @intval($GLOBALS['SITE_DB']->query_select_value_if_there('news', 'COUNT(*)', null, '', true));
+        $cnt_blogs = $cnt - @intval($GLOBALS['SITE_DB']->query_select_value_if_there('news n LEFT JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category', 'COUNT(*)', array('nc_owner' => null), '', true));
 
         return array(
             has_privilege(get_member(), 'submit_highrange_content', 'cms_news') ? array('cms', 'menu/rich_content/news', array('cms_news', array('type' => 'browse'), get_module_zone('cms_news')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('NEWS'), make_string_tempcode(escape_html(integer_format($cnt)))), 'news:DOC_NEWS') : null,

@@ -37,7 +37,7 @@ class Hook_page_groupings_galleries
         }
 
         return array(
-            has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? array('cms', 'menu/rich_content/galleries', array('cms_galleries', array('type' => 'browse'), get_module_zone('cms_galleries')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('galleries:GALLERIES'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('images', 'COUNT(*)', null, '', true) + $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'COUNT(*)', null, '', true))))), 'galleries:DOC_GALLERIES') : null,
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? array('cms', 'menu/rich_content/galleries', array('cms_galleries', array('type' => 'browse'), get_module_zone('cms_galleries')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('galleries:GALLERIES'), make_string_tempcode(escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('images', 'COUNT(*)', null, '', true)) + @intval($GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'COUNT(*)', null, '', true)))))), 'galleries:DOC_GALLERIES') : null,
             array('rich_content', 'menu/rich_content/galleries', array('galleries', array(), get_module_zone('galleries')), do_lang_tempcode('galleries:GALLERIES')),
         );
     }

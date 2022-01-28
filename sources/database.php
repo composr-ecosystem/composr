@@ -158,7 +158,7 @@ function reload_lang_fields($full = false, $only_table = null)
     if ($only_table !== null) {
         $sql .= ' AND ' . db_string_equal_to('m_table', $only_table);
     }
-    if (($msn_running) && (substr($only_table, 0, 2) === 'f_')) {
+    if (($msn_running) && ($only_table !== null) && (substr($only_table, 0, 2) === 'f_')) {
         $_table_lang_fields = array(); // Optimisation, as it'll get overwritten anyway
     } else {
         $_table_lang_fields = $GLOBALS['SITE_DB']->query($sql, null, null, true);
@@ -1698,7 +1698,7 @@ class DatabaseConnector
 
         if ($DEV_MODE) {
             if (!$GLOBALS['NO_DB_SCOPE_CHECK']) {
-                if ((!multi_lang_content()) && (strpos($query, $this->get_table_prefix() . 'translate') !== false) && (strpos($query, 'DROP TABLE') === false) && (strpos($query, 'DROP INDEX') === false) && (strpos($query, 'ALTER TABLE') === false) && (strpos($query, 'CREATE TABLE') === false)) {
+                if ((!multi_lang_content()) && (strpos($query, $this->get_table_prefix() . 'translate') !== false) && (strpos($query, 'CHECK TABLE') === false) && (strpos($query, 'DROP TABLE') === false) && (strpos($query, 'DROP INDEX') === false) && (strpos($query, 'ALTER TABLE') === false) && (strpos($query, 'CREATE TABLE') === false)) {
                     fatal_exit('Assumption of multi-lang-content being on, and it\'s not');
                 }
 

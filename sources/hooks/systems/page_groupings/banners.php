@@ -37,7 +37,7 @@ class Hook_page_groupings_banners
         }
 
         return array(
-            has_privilege(get_member(), 'submit_midrange_content', 'cms_banners') ? array('cms', 'menu/cms/banners', array('cms_banners', array('type' => 'browse'), get_module_zone('cms_banners')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('banners:BANNERS'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'COUNT(*)', null, '', true))))), 'banners:DOC_BANNERS') : null,
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_banners') ? array('cms', 'menu/cms/banners', array('cms_banners', array('type' => 'browse'), get_module_zone('cms_banners')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('banners:BANNERS'), make_string_tempcode(escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'COUNT(*)', null, '', true)))))), 'banners:DOC_BANNERS') : null,
             array('audit', 'menu/cms/banners', array('admin_banners', array('type' => 'browse'), get_module_zone('admin_banners')), do_lang_tempcode('banners:BANNER_STATISTICS'), 'banners:DOC_BANNERS'),
             array('site_meta', 'menu/cms/banners', array('banners', array('type' => 'browse'), get_module_zone('banners')), do_lang_tempcode('banners:BANNERS')),
         );

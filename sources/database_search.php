@@ -1025,6 +1025,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
         $db->query('SET SESSION MAX_EXECUTION_TIME=30000', null, null, true); // Only works in MySQL 5.7+
     }
 
+    $group_by_ok = (can_arbitrary_groupby() && $meta_id_field === 'id');
+    if (strpos($table, ' LEFT JOIN') === false) {
+        $group_by_ok = false; // Don't actually need to do a group by, as no duplication possible. We want to avoid GROUP BY as it forces MySQL to create a temporary table, slowing things down a lot.
+    }
+
     // This is so for example catalogue_entries.php can use brackets in it's table specifier while avoiding the table prefix after the first bracket. A bit weird, but that's our convention and it does save a small amount of typing
     $table_clause = $db->get_table_prefix() . (($table[0] == '(') ? (substr($table, 1)) : $table);
     if ($table[0] == '(') {
@@ -1083,6 +1088,10 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $_keywords_query = $table_clause . $keywords_join . $extra_join;
             $_keywords_query .= ' WHERE ' . $keywords_where;
             $_keywords_query .= (($where_clause != '') ? (' AND ' . $where_clause) : '');
+
+            if ($group_by_ok) {
+                $_keywords_query .= ' GROUP BY r.id';
+            }
 
             $keywords_query = 'SELECT ' . $select . ' FROM ' . $_keywords_query;
             if (!db_has_subqueries($db->connection_read)) {
@@ -1225,11 +1234,6 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                 }
             }
 
-            $group_by_ok = (can_arbitrary_groupby() && $meta_id_field === 'id');
-            if (strpos($table, ' LEFT JOIN') === false) {
-                $group_by_ok = false; // Don't actually need to do a group by, as no duplication possible. We want to avoid GROUP BY as it forces MySQL to create a temporary table, slowing things down a lot.
-            }
-
             // Work out main query
             $query = '';
             $main_query_parts = array();
@@ -1287,6 +1291,10 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                 }
                 $_count_query_main_search = 'SELECT (' . $_query . ')';
             }
+
+            // Won't work for UNION clauses unfortunately. De-dupe further on will fix, but not the count.
+            //$_count_query_main_search .= ($group_by_ok ? ' GROUP BY r.id' : '');
+            //$query .= ($group_by_ok ? ' GROUP BY r.id' : '');
 
             if (($order != '') && ($order . ' ' . $direction != 'contextual_relevance DESC') && ($order != 'contextual_relevance DESC')) {
                 $query .= ' ORDER BY ' . $order;
@@ -1431,29 +1439,21 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                 }
             }
 
-            $group_by_ok = (can_arbitrary_groupby() && $meta_id_field === 'id');
-            if (strpos($table, ' LEFT JOIN') === false) {
-                $group_by_ok = false; // Don't actually need to do a group by, as no duplication possible. We want to avoid GROUP BY as it forces MySQL to create a temporary table, slowing things down a lot.
-            }
-
             // Work out our queries
             $query = ' FROM ' . $table_clause . (($where_clause == '') ? '' : (' WHERE ' . $where_clause));
             if ($where_clause_and != '') {
                 $query .= (($where_clause == '') ? ' WHERE ' : ' AND ') . '(' . $where_clause_and . ')';
             }
-            if ($group_by_ok && false/*Actually we cannot assume that r.id exists*/) {
-                $_count_query_main_search = 'SELECT COUNT(DISTINCT r.id)' . $query;
-            } else {
-                if (!db_has_subqueries($db->connection_read)) {
-                    $_count_query_main_search = 'SELECT COUNT(*) ' . $query;
-                } else { // Has to do a nested subquery to reduce scope of COUNT(*), because the unbounded full-text's binary tree descendance can be extremely slow on physical disks if common words exist that aren't defined as MySQL stop words
-                    $tmp_subquery = 'SELECT 1 AS x' . $query;
-                    $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
+            $query .= ($group_by_ok ? ' GROUP BY r.id' : '');
+            if (!db_has_subqueries($db->connection_read)) {
+                $_count_query_main_search = 'SELECT COUNT(*) ' . $query;
+            } else { // Has to do a nested subquery to reduce scope of COUNT(*), because the unbounded full-text's binary tree descendance can be extremely slow on physical disks if common words exist that aren't defined as MySQL stop words
+                $tmp_subquery = 'SELECT 1 AS x' . $query;
+                $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
 
-                    $_count_query_main_search = '(SELECT COUNT(*) FROM (' . $tmp_subquery . ') counter)';
-                }
+                $_count_query_main_search = '(SELECT COUNT(*) FROM (' . $tmp_subquery . ') counter)';
             }
-            $query = 'SELECT ' . $select . $query . ($group_by_ok ? ' GROUP BY r.id' : '');
+            $query = 'SELECT ' . $select . $query;
             if (($order != '') && ($order . ' ' . $direction != 'contextual_relevance DESC') && ($order != 'contextual_relevance DESC')) {
                 $query .= ' ORDER BY ' . $order;
                 if (($direction == 'DESC') && (substr($order, -4) != ' ASC') && (substr($order, -5) != ' DESC')) {
@@ -1501,11 +1501,13 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             foreach ($t_rows as $t_row) {
                 if (array_key_exists('id', $t_row)) {
                     if (array_key_exists($t_row['id'], $done)) {
+                        $t_count--;
                         continue;
                     }
                     $done[$t_row['id']] = 1;
                 } elseif (array_key_exists('_primary_id', $t_row)) {
                     if (array_key_exists($t_row['_primary_id'], $done)) {
+                        $t_count--;
                         continue;
                     }
                     $done[$t_row['_primary_id']] = true;
@@ -1520,6 +1522,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                     $_t_row_copy = $_t_row;
                     unset($_t_row_copy['contextual_relevance']);
                     if ($_t_row_copy == $t_row_copy) {
+                        $t_count--;
                         continue 2;
                     }
                 }

@@ -879,6 +879,10 @@ class Forum_driver_wbb_shared extends Forum_driver_base
      */
     public function get_member_from_username($name)
     {
+        if ($name == do_lang('GUEST')) {
+            return $this->get_guest_id();
+        }
+
         return $this->connection->query_select_value_if_there('users', 'userid', array('username' => $name));
     }
 

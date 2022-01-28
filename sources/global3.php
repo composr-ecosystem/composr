@@ -197,8 +197,8 @@ function is_suexec_like()
 
     static $answer = null;
     if ($answer === null) {
-        $answer = (((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (is_integer(@posix_getuid())) && (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))))
-                   || (is_writable_wrap(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))));
+        $answer = (((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (is_integer(@posix_getuid())) && (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'sources/global.php'))))
+                   || (is_writable_wrap(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'sources/global.php'))));
     }
     return $answer;
 }
@@ -2387,8 +2387,8 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
 
         if ((($ip4) && (_compare_ip_address($ban['ip'], $ip_parts, '.'))) || ((!$ip4) && (_compare_ip_address($ban['ip'], $ip_parts, ':')))) {
             if ($self_ip === null) {
-                $self_host = cms_srv('HTTP_HOST');
-                if (($self_host == '') || (preg_match('#^localhost[\.\:$]#', $self_host) != 0)) {
+                $self_host = preg_replace('#:.*#', '', cms_srv('HTTP_HOST'));
+                if (($self_host == '') || (preg_match('#^localhost\.?#', $self_host) != 0)) {
                     $self_ip = '';
                 } else {
                     $self_ip = cms_gethostbyname($self_host);
@@ -3162,8 +3162,8 @@ function get_loaded_tags($limit_to = null, $the_tags = null)
 
             $tags[] = array(
                 'TAG' => $tag,
-                'LINK_LIMITEDSCOPE' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1') + $search_limiter_yes, get_module_zone('search')),
-                'LINK_FULLSCOPE' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1') + $search_limiter_no, get_module_zone('search')),
+                'LINK_LIMITEDSCOPE' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1', 'boolean_search' => '1') + $search_limiter_yes, get_module_zone('search')),
+                'LINK_FULLSCOPE' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1', 'boolean_search' => '1') + $search_limiter_no, get_module_zone('search')),
             );
         }
     }

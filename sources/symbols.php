@@ -44,6 +44,7 @@ function init__symbols()
         'LOAD_PAGE' => true,
         'FRACTIONAL_EDITABLE' => true,
         'PAGE_TITLE' => true,
+        'INSERT_SPAMMER_BLACKHOLE' => true,
     );
     $EXTRA_SYMBOLS = null;
     $CANONICAL_URL = null;

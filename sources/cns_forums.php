@@ -64,7 +64,7 @@ function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $includ
     if (!is_null($root)) {
         $map['keep_forum_root'] = $root;
     }
-    $url = build_url($map, get_module_zone('forumview'));
+    $url = build_url($map, $zone);
 
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('FORUM'), $row['f_name']) : $row['f_name'];
 

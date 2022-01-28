@@ -604,7 +604,7 @@ function _build_url($vars, $zone_name = '', $skip = null, $keep_all = false, $av
             }
 
             $is_keep = false;
-            $appears_keep = ((isset($key[0])) && ($key[0] === 'k') && (substr($key, 0, 5) === 'keep_'));
+            $appears_keep = ((is_string($key)) && (isset($key[0])) && ($key[0] === 'k') && (substr($key, 0, 5) === 'keep_'));
             if ($appears_keep) {
                 if ((!$skip_keep) && (!skippable_keep($key, $val))) {
                     $is_keep = true;

@@ -72,9 +72,7 @@ class Module_admin_wordfilter
                 'queers', 'retard', 'shag', 'shagged',
                 'shat', 'shit', 'slut', 'twat', 'wank', 'wanker', 'whore',
             );
-            foreach ($naughties as $word) {
-                $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $word, 'w_replacement' => '', 'w_substr' => 0));
-            }
+            $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $naughties, 'w_replacement' => array_fill(0, count($naughties), ''), 'w_substr' => array_fill(0, count($naughties), 0)));
         }
 
         if ((!is_null($upgrade_from)) && ($upgrade_from < 4)) {

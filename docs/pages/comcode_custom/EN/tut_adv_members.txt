@@ -274,6 +274,8 @@ For Excel (tested on Excel 2011 for Mac)...
 For OpenOffice...
 Load as normal, but check the "Quoted field as text" checkbox.
 
+Additionally, Excel has a 32KB limit on fields, so may truncate fields, possibly with some kind of error message (such as saying a repair is needed). Avoid embedding raw image data directly into CPFs: use proper attachments or image URLs.
+
 [title="3"]Importing[/title]
 
 Follow this process to do an import:

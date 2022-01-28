@@ -48,7 +48,7 @@ class Hook_page_groupings_catalogues
             if (!addon_installed('ecommerce')) {
                 $where .= 'WHERE ' . db_string_not_equal_to('c_name', 'products');
             }
-            $cnt = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'COUNT(*)', null, $where, true);
+            $cnt = @intval($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'COUNT(*)', null, $where, true));
             $ret[] = array('cms', 'menu/rich_content/catalogues/catalogues', array('cms_catalogues', array('type' => 'browse'), get_module_zone('cms_catalogues')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('catalogues:CATALOGUES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'catalogues:DOC_CATALOGUES');
         }
         if ($exhaustive) {
@@ -74,7 +74,7 @@ class Hook_page_groupings_catalogues
 
                         if (has_submit_permission('mid', $member_id, get_ip_address(), 'cms_catalogues', array('catalogues_catalogue', $row['c_name']))) {
                             if ($count < 10) {
-                                $ret2[] = array('cms', $menu_icon, array('cms_catalogues', array('type' => 'browse', 'catalogue_name' => $row['c_name']), get_module_zone('cms_catalogues')), do_lang_tempcode('ITEMS_HERE', escape_html(get_translated_text($row['c_title'])), escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'COUNT(*)', array('c_name' => $row['c_name']), '', true)))), get_translated_tempcode('catalogues', $row, 'c_description'));
+                                $ret2[] = array('cms', $menu_icon, array('cms_catalogues', array('type' => 'browse', 'catalogue_name' => $row['c_name']), get_module_zone('cms_catalogues')), do_lang_tempcode('ITEMS_HERE', escape_html(get_translated_text($row['c_title'])), escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'COUNT(*)', array('c_name' => $row['c_name']), '', true))))), get_translated_tempcode('catalogues', $row, 'c_description'));
                             }
                             $count++;
                         }

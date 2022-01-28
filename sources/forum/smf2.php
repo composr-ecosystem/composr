@@ -1021,6 +1021,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function get_member_from_username($name)
     {
+        if ($name == do_lang('GUEST')) {
+            return $this->get_guest_id();
+        }
+
         return $this->connection->query_select_value_if_there('members', 'id_member', array('real_name' => $name));
     }
 

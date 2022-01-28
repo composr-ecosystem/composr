@@ -34,8 +34,9 @@ restrictify();
 safe_ini_set('ocproducts.xss_detect', '0');
 
 if (!is_suexec_like()) {
-    $user = posix_getpwuid(posix_geteuid());
-    attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $user['name'] . '), your file permissions will likely get mangled.', 'warn');
+    require_code('global4');
+    list($username, $suexec) = get_exact_usernames_and_suexec();
+    attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $username . '), your file permissions will likely get mangled.', 'warn');
 }
 
 $_title = get_screen_title('Composr bugfix tool', false);
@@ -748,6 +749,7 @@ function create_hotfix_tar($tracker_id, $files)
         }
         if (in_array($file, array(
             'sources_custom/string_scan.php',
+            'data_custom/functions.bin',
         ))) {
             continue;
         }

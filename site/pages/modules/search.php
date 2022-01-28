@@ -542,13 +542,20 @@ class Module_search
     {
         $content = get_param_string('content', '', true);
 
-        $boolean_search = get_param_integer('boolean_search', 0) == 1;
         if (get_option('enable_boolean_search') == '0') {
-            $boolean_search = false;
+            // No UI choice, automatic
             if ((db_has_full_text($GLOBALS['SITE_DB']->connection_read)) && (method_exists($GLOBALS['SITE_DB']->static_ob, 'db_has_full_text_boolean')) && ($GLOBALS['SITE_DB']->static_ob->db_has_full_text_boolean())) {
-                $boolean_search = (preg_match('#["\+\-]#', $content) != 0);
+                // Boolean is supported
+                $boolean_search = (preg_match('#["\+\-]#', $content) != 0); // It's boolean if boolean syntax is being used
+            } else {
+                // Boolean is not supported
+                $boolean_search = false;
             }
+        } else {
+            // UI choice
+            $boolean_search = get_param_integer('boolean_search', 0) == 1;
         }
+
         return $boolean_search;
     }
 
@@ -678,7 +685,7 @@ class Module_search
                 if (php_function_allowed('set_time_limit')) {
                     @set_time_limit(10); // Prevent errant search hooks (easily written!) taking down a server. Each call given 10 seconds (calling set_time_limit resets the timer).
                 }
-                $hook_results = $ob->run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $max, $boolean_operator, $where_clause, $search_under, $boolean_search ? 1 : 0);
+                $hook_results = $ob->run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $max, $boolean_operator, $where_clause, $search_under, $boolean_search);
                 if (is_null($hook_results)) {
                     continue;
                 }

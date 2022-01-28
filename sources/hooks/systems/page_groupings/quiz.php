@@ -38,7 +38,7 @@ class Hook_page_groupings_quiz
 
         return array(
             array('audit', 'menu/rich_content/quiz', array('admin_quiz', array('type' => 'browse'), get_module_zone('admin_quiz')), do_lang_tempcode('quiz:QUIZZES'), 'quiz:DOC_QUIZZES'),
-            has_privilege(get_member(), 'submit_highrange_content', 'cms_quiz') ? array('cms', 'menu/rich_content/quiz', array('cms_quiz', array('type' => 'browse'), get_module_zone('cms_quiz')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('quiz:QUIZZES'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'COUNT(*)', null, '', true))))), 'quiz:DOC_QUIZZES') : null,
+            has_privilege(get_member(), 'submit_highrange_content', 'cms_quiz') ? array('cms', 'menu/rich_content/quiz', array('cms_quiz', array('type' => 'browse'), get_module_zone('cms_quiz')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('quiz:QUIZZES'), make_string_tempcode(escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'COUNT(*)', null, '', true)))))), 'quiz:DOC_QUIZZES') : null,
             array('rich_content', 'menu/rich_content/quiz', array('quiz', array(), get_module_zone('quiz')), do_lang_tempcode('quiz:QUIZZES')),
         );
     }

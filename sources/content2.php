@@ -44,9 +44,10 @@ function init__content2()
  * @param  ?integer $total Number of entries, alternative to supplying $max (null: work out from content type metadata)
  * @param  ID_TEXT $order_field The POST field to save under
  * @param  ?Tempcode $description Description for field input (null: {!ORDER})
+ * @param  ?integer $num_automated_now The number of records that are currently automated (null: work out)
  * @return Tempcode Ordering field
  */
-function get_order_field($entry_type, $category_type, $current_order, $max = null, $total = null, $order_field = 'order', $description = null)
+function get_order_field($entry_type, $category_type, $current_order, $max = null, $total = null, $order_field = 'order', $description = null, $num_automated_now = null)
 {
     $new = is_null($current_order);
 
@@ -75,10 +76,12 @@ function get_order_field($entry_type, $category_type, $current_order, $max = nul
     }
 
     if ($new) {
-        $test = $info['connection']->query_select_value($info['table'], 'COUNT(' . $db_order_field . ')', null, 'WHERE ' . $db_order_field . '=' . strval(ORDER_AUTOMATED_CRITERIA));
+        if ($num_automated_now === null) {
+            $num_automated_now = $info['connection']->query_select_value($info['table'], 'COUNT(' . $db_order_field . ')', null, 'WHERE ' . $db_order_field . '=' . strval(ORDER_AUTOMATED_CRITERIA));
+        }
 
-        if ($test > 0) {
-            $current_order = ORDER_AUTOMATED_CRITERIA; // Ah, we are already in the habit of automated ordering here
+        if ($num_automated_now > 0 || $total == 0) {
+            $current_order = ORDER_AUTOMATED_CRITERIA; // Ah, we are already in the habit of automated ordering here / starting fresh
         } else {
             $max++; // Space for new one on end
             $current_order = $max;
