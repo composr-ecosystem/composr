@@ -94,8 +94,6 @@ class Module_admin_permissions
             $admin_groups = array_unique(array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups()));
             $guest_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($GLOBALS['FORUM_DRIVER']->get_guest_id());
             foreach (array_keys($usergroups) as $id) {
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => '', 'group_id' => $id]);
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'forum', 'group_id' => $id]);
                 if ($id != $guest_groups[0] || get_forum_type() == 'none') {
                     $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'site', 'group_id' => $id]);
                 }
@@ -103,9 +101,9 @@ class Module_admin_permissions
                     $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'cms', 'group_id' => $id]);
                 }
             }
-            foreach ($admin_groups as $admin_group) {
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'adminzone', 'group_id' => $admin_group]);
-            }
+            $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => array_fill(0, count($usergroups), ''), 'group_id' => array_keys($usergroups)]);
+            $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => array_fill(0, count($usergroups), 'forum'), 'group_id' => array_keys($usergroups)]);
+            $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => array_fill(0, count($admin_groups), 'adminzone'), 'group_id' => $admin_groups]);
 
             // What usergroups may NOT view this page (default is that any page may be viewed if a user can access its zone)
             $GLOBALS['SITE_DB']->create_table('group_page_access', [
@@ -117,14 +115,13 @@ class Module_admin_permissions
                 if ((get_forum_type() == 'cns') && (!is_guest($id))) {
                     $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'join', 'zone_name' => get_module_zone('join'), 'group_id' => $id]);
                 }
-
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_redirects', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people to redirect themselves passed the page/zone security unless they are admins already
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_addons', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people installing new code
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_email_log', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people snooping on admin e-mails (e.g. password reset)
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_permissions', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people just assigning themselves additional permissions
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_group_member_timeouts', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people temporarily putting themselves in an admin group
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_cns_groups', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people sneaking themselves into an administrator status
             }
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => array_fill(0, count($usergroups), 'admin_redirects'), 'zone_name' => array_fill(0, count($usergroups), 'adminzone'), 'group_id' => array_keys($usergroups)]); // We don't want people to redirect themselves passed the page/zone security unless they are admins already
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => array_fill(0, count($usergroups), 'admin_addons'), 'zone_name' => array_fill(0, count($usergroups), 'adminzone'), 'group_id' => array_keys($usergroups)]); // We don't want people installing new code
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => array_fill(0, count($usergroups), 'admin_email_log'), 'zone_name' => array_fill(0, count($usergroups), 'adminzone'), 'group_id' => array_keys($usergroups)]); // We don't want people snooping on admin e-mails (e.g. password reset)
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => array_fill(0, count($usergroups), 'admin_permissions'), 'zone_name' => array_fill(0, count($usergroups), 'adminzone'), 'group_id' => array_keys($usergroups)]); // We don't want people just assigning themselves additional permissions
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => array_fill(0, count($usergroups), 'admin_group_member_timeouts'), 'zone_name' => array_fill(0, count($usergroups), 'adminzone'), 'group_id' => array_keys($usergroups)]); // We don't want people temporarily putting themselves in an admin group
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => array_fill(0, count($usergroups), 'admin_cns_groups'), 'zone_name' => array_fill(0, count($usergroups), 'adminzone'), 'group_id' => array_keys($usergroups)]); // We don't want people sneaking themselves into an administrator status
 
             // False privileges
             $false_permissions = get_false_permissions();

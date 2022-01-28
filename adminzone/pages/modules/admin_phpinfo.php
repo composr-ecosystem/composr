@@ -18,8 +18,6 @@
  * @package    phpinfo
  */
 
-/*EXTRA FUNCTIONS: shell_exec|fileowner*/
-
 /**
  * Module page class.
  */

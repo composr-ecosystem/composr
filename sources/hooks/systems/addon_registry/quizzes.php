@@ -296,7 +296,6 @@ class Hook_addon_registry_quizzes
                 'REDO_TIME' => placeholder_number(),
                 'POINTS' => placeholder_number(),
                 '_POINTS' => placeholder_number(),
-                'GIVE_CONTEXT' => true,
                 'ID' => placeholder_id(),
                 'SUBMITTER' => placeholder_id(),
                 'PERCENTAGE' => placeholder_number(),

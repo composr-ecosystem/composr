@@ -27,19 +27,20 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
 
     if ($success && $do_index_test) {
         $url = get_base_url() . '/index.php?keep_no_query_limit=1';
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 200.0/*May be very slow with XML DB*/]);
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 200.0 : 30.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200', '503'/*site closed*/])) && (strpos($data, '<!--ERROR-->') === false);
 
         if (/*(!$success) && */(isset($_GET['debug']))) {
             @var_dump($url);
             @var_dump($http_result->message);
+            @var_dump($http_result->message_b);
             $error = clean_installer_output_for_code_display($data);
-            @print(escape_html($error));
+            @var_dump(escape_html($error));
             cms_flush_safe();
 
             if ((!$success) && (isset($_GET['debug']))) {
-                exit('Exiting early due to error');
+                exit('Exiting early due to error on home page test');
             }
         }
     }
@@ -184,19 +185,20 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (!empty($get)) {
             $url .= '&' . http_build_query($get);
         }
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 240.0 : 30.0]);
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => ($db_type == 'xml') ? 240.0 : 50.0]);
         $data = $http_result->data;
         $success = (in_array($http_result->message, ['200'])) && (strpos($data, '<!--ERROR-->') === false);
 
         if (/*(!$success) && */(isset($_GET['debug']))) {
             @var_dump($url);
             @var_dump($http_result->message);
+            @var_dump($http_result->message_b);
             $error = clean_installer_output_for_code_display($data);
-            @print(escape_html($error));
+            @var_dump(escape_html($error));
             cms_flush_safe();
 
             if ((!$success) && (isset($_GET['debug']))) {
-                exit('Exiting early due to error');
+                exit('Exiting early due to error on ' . json_encode($stage));
             }
         }
 

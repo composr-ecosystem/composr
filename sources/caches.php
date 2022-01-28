@@ -774,9 +774,6 @@ function _get_cache_entries(array $dets) : array
 
         $sql = 'SELECT cached_for,identifier,the_value,date_and_time,dependencies FROM ' . get_table_prefix() . 'cache WHERE 1=1';
 
-        $sql .= ' AND ' . db_string_equal_to('the_theme', $theme);
-        $sql .= ' AND ' . db_string_equal_to('lang', $lang);
-
         $sql .= ' AND (1=0';
         foreach ($dets as $det) {
             list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
@@ -825,6 +822,8 @@ function _get_cache_entries(array $dets) : array
             } else {
                 $sql .= ' AND ' . db_string_equal_to('timezone', $timezone);
             }
+            $sql .= ' AND ' . db_string_equal_to('the_theme', $theme);
+            $sql .= ' AND ' . db_string_equal_to('lang', $lang);
 
             $do_query = true;
         }

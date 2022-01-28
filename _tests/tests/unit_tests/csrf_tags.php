@@ -41,7 +41,7 @@ class csrf_tags_test_set extends cms_test_case
                         continue;
                     }
 
-                    if (strpos($c, 'login_username') !== false) {
+                    if (strpos($c, 'login-username') !== false) {
                         continue;
                     }
 

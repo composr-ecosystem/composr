@@ -2373,7 +2373,7 @@ function step_7() : object
 
         $time_after = microtime(true);
         if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Addon installation of ' . escape_html($addon) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '2fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Addon installation of ' . escape_html($addon_name) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
         }
     }
 
@@ -2568,13 +2568,20 @@ function step_10_populate_database() : object
         $zones[] = 'docs';
     }
     foreach (array_unique($zones)/*in case find_all_zones did find docs*/ as $zone) {
-        if (($zone != 'site') && ($zone != 'adminzone') && ($zone != 'forum') && ($zone != 'cms')) {
+        if (($zone != 'site') && ($zone != 'adminzone') && ($zone != 'forum') && ($zone != 'cms') && (($zone != '') || (get_option('single_public_zone') == '0'))) {
             $modules = find_all_modules($zone);
             foreach (array_keys($modules) as $module) {
                 send_http_output_ping();
 
+                $time_before = microtime(true);
+
                 if (reinstall_module($zone, $module)) {
                     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '25eb1c88fe122ec5a817f334d5f6bc5e', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
+                }
+
+                $time_after = microtime(true);
+                if (get_param_integer('keep_show_timings', 0) == 1) {
+                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '4fafb3dd0146689fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
                 }
             }
         }
@@ -2840,7 +2847,7 @@ function handle_self_referencing_embedment()
                 }
                 $SITE_INFO['db_type'] = post_param_string('db_type', false, INPUT_FILTER_POST_IDENTIFIER);
                 require_code('database');
-                if (post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER) == '') {
+                if (post_param_string('db_site', '', INPUT_FILTER_POST_IDENTIFIER) == '') {
                     $db = new DatabaseConnector(post_param_string('db_forums', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_forums_password', false, INPUT_FILTER_PASSWORD), '', true);
                 } else {
                     $db = new DatabaseConnector(post_param_string('db_site', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_host', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_user', false, INPUT_FILTER_POST_IDENTIFIER), post_param_string('db_site_password', false, INPUT_FILTER_PASSWORD), '', true);

@@ -69,7 +69,7 @@ class http_test_set extends cms_test_case
     public function testRedirectDisabled()
     {
         $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'no_redirect' => true]);
-        $this->assertTrue($result->data !==null && strpos($result->data, 'Redirect test page') === false);
+        $this->assertTrue($result->data === null);
     }
 
     public function testHttpAuth()

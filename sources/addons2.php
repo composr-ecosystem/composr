@@ -1046,20 +1046,20 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
     ]);
 
     $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
-        'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon),
+        'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon_name),
         'addon_name_dependant_upon' => array_map('trim', $addon_info['dependencies']),
         'addon_name_incompatibility' => array_fill(0, count($addon_info['dependencies']), 0),
     ]);
 
     $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
-        'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon),
+        'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon_name),
         'addon_name_dependant_upon' => array_map('trim', $addon_info['incompatibilities']),
         'addon_name_incompatibility' => array_fill(0, count($addon_info['incompatibilities']), 1),
     ]);
 
     $GLOBALS['SITE_DB']->query_insert('addons_files', [
-        'addon_name' => array_fill(0, count($addon_info['files']), $addon),
-        'filename' => $addon_info['files'],
+        'addon_name' => array_fill(0, count($addon_info['files']), $addon_name),
+        'filepath' => $addon_info['files'],
     ]);
 }
 

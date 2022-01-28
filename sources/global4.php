@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: fileowner*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -792,7 +794,7 @@ function is_unhelpful_redirect(string $redirect) : bool
  *
  * @return array A pair: The username as best can be found, the suEXEC status
  */
-function get_exact_usernames_and_suexec()
+function get_exact_usernames_and_suexec() : array
 {
     $user = null;
     $suexec = null;
@@ -806,10 +808,10 @@ function get_exact_usernames_and_suexec()
         $dets = posix_getpwuid($user);
         if ($dets !== false) {
             $username = $dets['name'];
-            return array($username, $suexec);
+            return [$username, $suexec];
         } elseif (($suexec) && (php_function_allowed('get_current_user'))) {
             $username = get_current_user();
-            return array($username, $suexec);
+            return [$username, $suexec];
         }
     }
 
@@ -822,11 +824,11 @@ function get_exact_usernames_and_suexec()
             if (php_function_allowed('get_current_user')) {
                 $suexec = ($username == get_current_user());
             }
-            return array($username, $suexec);
+            return [$username, $suexec];
         }
     }
 
-    // Windows, or very cripped Linux or Mac OS...
+    // Windows, or very crippled Linux or Mac OS...
 
     if ($user === null) {
         $tmp = cms_tempnam();
@@ -842,5 +844,5 @@ function get_exact_usernames_and_suexec()
         $username = '#' . strval($user);
     }
 
-    return array($username, $suexec);
+    return [$username, $suexec];
 }

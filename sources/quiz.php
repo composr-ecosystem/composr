@@ -35,9 +35,9 @@ function render_quiz_box(array $row, string $zone = '_SEARCH', bool $give_contex
 
     require_lang('quiz');
 
-    $url = build_url(array('page' => 'quiz', 'type' => 'do', 'id' => $row['id']), $zone);
+    $url = build_url(['page' => 'quiz', 'type' => 'do', 'id' => $row['id']], $zone);
 
-    $just_quiz_row = db_map_restrict($row, array('id', 'q_start_text'));
+    $just_quiz_row = db_map_restrict($row, ['id', 'q_start_text']);
 
     if ((has_privilege(get_member(), 'bypass_quiz_timer')) && (get_param_integer('keep_timer_display', 0) == 0)) {
         $row['q_timeout'] = null;
@@ -255,11 +255,11 @@ function score_quiz(int $entry_id, ?int $quiz_id = null, ?array $quiz = null, ?a
                     $exp = get_translated_text($a['q_explanation']);
                     if ($exp != '') {
                         if ($correct_explanation === null) {
-                            $correct_explanation = new Tempcode();
+                            $correct_explanation = '';
                         } else {
-                            $correct_explanation->attach(' ');
+                            $correct_explanation .= ' ';
                         }
-                        $correct_explanation->attach($exp);
+                        $correct_explanation .= $exp;
                     }
                 }
 

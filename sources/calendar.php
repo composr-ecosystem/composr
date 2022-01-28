@@ -1121,7 +1121,7 @@ function find_timezone_start_minute_in_utc(string $timezone, int $year, int $mon
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return ?integer Hour (null: N/A)
  */
-function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
+function find_timezone_end_hour_in_utc(string $timezone, ?int $year, ?int $month, ?int $day, string $monthly_spec_type) : ?int
 {
     if (($year === null) || ($month === null) || ($day === null)) {
         return null;
@@ -1148,7 +1148,7 @@ function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, 
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
  * @return ?integer Minute (null: N/A)
  */
-function find_timezone_end_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
+function find_timezone_end_minute_in_utc(string $timezone, ?int $year, ?int $month, ?int $day, string $monthly_spec_type) : ?int
 {
     if (($year === null) || ($month === null) || ($day === null)) {
         return null;

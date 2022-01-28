@@ -1505,7 +1505,7 @@ class HttpDownloaderSockets extends HttpDownloader
                             }
                             $input_len = 0;
                             $buffer_unprocessed = '';
- 
+
                             $this->message = 'connection-stalled';
 
                             break; // Termination case

@@ -99,7 +99,7 @@ RewriteCond %{REQUEST_FILENAME}.png -f
 RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
 RewriteCond %{HTTP_USER_AGENT} (Chrom|Firefox|Safari)
 RewriteCond %{REQUEST_FILENAME}.png -f
-RewriteRule ^(themes/default/images/loading\.gif)$ $themes/default/images/loading.gif.png [L,QSA]
+RewriteRule ^(themes/default/images/loading\.gif)$ themes/default/images/loading.gif.png [L,QSA]
 
 # crossdomain.xml is actually Composr-driven
 RewriteRule ^crossdomain\.xml data/crossdomain.php

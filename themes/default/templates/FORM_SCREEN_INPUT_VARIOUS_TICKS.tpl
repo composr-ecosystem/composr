@@ -24,7 +24,7 @@
 				</div>
 			{+END}
 			{+START,IF,{SIMPLE_STYLE}}
-				<div class="various_ticks_simple">
+				<div class="various-ticks-simple">
 					{+START,LOOP,OUT}
 						<p>
 							<label for="i-{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input-tick"{+START,IF,{CHECKED}} checked="checked"{+END}{+START,IF,{DISABLED}} disabled="disabled"{+END} type="checkbox" id="i-{NAME*}" name="{NAME*}" value="1" /> {PRETTY_NAME*}</label>

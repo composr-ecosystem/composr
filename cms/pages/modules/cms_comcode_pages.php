@@ -847,7 +847,7 @@ class Module_cms_comcode_pages
 
         // Render...
 
-        $post_url = build_url(['page' => '_SELF', 'lang' => $lang], '_SELF');
+        $url = build_url(['page' => '_SELF', 'lang' => $lang], '_SELF');
 
         $tpl = do_template('COMCODE_PAGE_MANAGE_SCREEN', [
             '_GUID' => 'eba3e03c65d96530e3a42d600f90ccd8',
