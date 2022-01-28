@@ -631,11 +631,14 @@ function snippet_script()
 {
     prepare_for_known_ajax_response();
 
-    global $RELATIVE_PATH, $ZONE;
-    $test = get_module_zone(get_page_name());
-    if ($test !== null) {
-        $RELATIVE_PATH = $test;
-        $ZONE = null;
+    if (get_param_string('zone', null) === null) {
+        // If zone not explicitly specified, try and work it out from the page name parameter (if one given)
+        global $RELATIVE_PATH, $ZONE;
+        $test = get_module_zone(get_page_name());
+        if ($test !== null) {
+            $RELATIVE_PATH = $test;
+            $ZONE = null;
+        }
     }
 
     header('X-Robots-Tag: noindex'); // We would not normally bother doing no-index tagging for a non-HTML page, but Google is finding this because we often emit HTML code from it

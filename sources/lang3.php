@@ -24,10 +24,11 @@
  * @param  Tempcode $title Title for the form
  * @param  boolean $tip Whether to give a tip about edit order
  * @param  boolean $allow_all_selection Whether to add an 'all' entry to the list
+ * @param  boolean $post Whether to use a POST parameter
  * @return mixed The UI (Tempcode) or the language to use (string/LANGUAGE_NAME)
  * @ignore
  */
-function _choose_language($title, $tip = false, $allow_all_selection = false)
+function _choose_language($title, $tip = false, $allow_all_selection = false, $post = true)
 {
     if (!multi_lang()) {
         return user_lang();
@@ -73,7 +74,7 @@ function _choose_language($title, $tip = false, $allow_all_selection = false)
 
     breadcrumb_set_self(do_lang_tempcode('LANGUAGE'));
 
-    return do_template('FORM_SCREEN', array('_GUID' => '1a2823d450237aa299c095bf9c689a2a', 'SKIP_WEBSTANDARDS' => true, 'HIDDEN' => $hidden, 'SUBMIT_ICON' => 'buttons__proceed', 'SUBMIT_NAME' => do_lang_tempcode('PROCEED'), 'TITLE' => $title, 'FIELDS' => $fields, 'URL' => $url, 'TEXT' => $text));
+    return do_template('FORM_SCREEN', array('_GUID' => '1a2823d450237aa299c095bf9c689a2a', 'GET' => !$post, 'SKIP_WEBSTANDARDS' => true, 'HIDDEN' => $hidden, 'SUBMIT_ICON' => 'buttons__proceed', 'SUBMIT_NAME' => do_lang_tempcode('PROCEED'), 'TITLE' => $title, 'FIELDS' => $fields, 'URL' => $url, 'TEXT' => $text));
 }
 
 /**

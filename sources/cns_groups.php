@@ -55,7 +55,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
 
     require_lang('cns');
 
-    $url = build_url(array('page' => 'groups', 'type' => 'view', 'id' => $row['id']), get_module_zone('groups'));
+    $url = build_url(array('page' => 'groups', 'type' => 'view', 'id' => $row['id']), $zone);
 
     $_title = cns_get_group_name($row['id']);
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('USERGROUP'), $_title) : $_title;

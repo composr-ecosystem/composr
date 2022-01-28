@@ -2,23 +2,25 @@
 
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
 	{+START,IF,{$NEQ,{_GUID},carousel}}
-		{$SET,ajax_block_main_gallery_embed_wrapper,ajax_block_main_gallery_embed_wrapper_{$RAND%}}
-		<div id="{$GET*,ajax_block_main_gallery_embed_wrapper}">
-			<div class="gallery_grid_cell_wrap raw_ajax_grow_spot">
-				{ENTRIES}
-			</div>
-
-			{+START,IF_NON_EMPTY,{PAGINATION}}
-				<div class="pagination_spacing float_surrounder ajax_block_wrapper_links">
-					{PAGINATION}
+		{+START,IF_NON_EMPTY,{ENTRIES}{PAGINATION}}
+			{$SET,ajax_block_main_gallery_embed_wrapper,ajax_block_main_gallery_embed_wrapper_{$RAND%}}
+			<div id="{$GET*,ajax_block_main_gallery_embed_wrapper}">
+				<div class="gallery_grid_cell_wrap raw_ajax_grow_spot">
+					{ENTRIES}
 				</div>
 
-				{+START,INCLUDE,AJAX_PAGINATION}
-					ALLOW_INFINITE_SCROLL=1
-					WRAPPER_ID={$GET,ajax_block_main_gallery_embed_wrapper}
+				{+START,IF_NON_EMPTY,{PAGINATION}}
+					<div class="pagination_spacing float_surrounder ajax_block_wrapper_links">
+						{PAGINATION}
+					</div>
+
+					{+START,INCLUDE,AJAX_PAGINATION}
+						ALLOW_INFINITE_SCROLL=1
+						WRAPPER_ID={$GET,ajax_block_main_gallery_embed_wrapper}
+					{+END}
 				{+END}
-			{+END}
-		</div>
+			</div>
+		{+END}
 	{+END}
 
 	{+START,IF,{$EQ,{_GUID},carousel}}
@@ -64,7 +66,9 @@
 		//]]></script>
 	{+END}
 
-	{+START,INCLUDE,MASS_SELECT_DELETE_FORM}
+	{+START,IF_NON_EMPTY,{ENTRIES}{PAGINATION}}
+		{+START,INCLUDE,MASS_SELECT_DELETE_FORM}
+		{+END}
 	{+END}
 {+END}
 

@@ -32,6 +32,10 @@ class Hook_sw_core_cns
     {
         $settings = array();
 
+        if (get_forum_type() != 'cns') {
+            return $settings;
+        }
+
         $dbs_back = $GLOBALS['NO_DB_SCOPE_CHECK'];
         $GLOBALS['NO_DB_SCOPE_CHECK'] = true;
 

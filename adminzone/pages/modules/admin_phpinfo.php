@@ -148,27 +148,10 @@ class Module_admin_phpinfo
 
         $out .= '<h2>Run-time details</h2>';
         $out .= '<p><strong>Your IP address</strong>: ' . escape_html(get_ip_address()) . '</p>';
-        if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
-            $user = posix_getuid();
-            $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
-            $dets = posix_getpwuid($user);
-            $out .= '<p><strong>Running as user</strong>: ' . escape_html($dets['name']) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
-        } elseif (php_function_allowed('shell_exec')) {
-            $test = @shell_exec('whoami');
-            if (!empty($test)) {
-                if (php_function_allowed('get_current_user')) {
-                    $suexec = ($test == get_current_user());
-                } else {
-                    $suexec = null;
-                }
-                $out .= '<p><strong>Running as user</strong>: ' . escape_html($test) . (is_null($suexec) ? '' : (' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')')) . '</p>';
-            }
-        } else {
-            $tmp = cms_tempnam();
-            $user = @fileowner($tmp);
-            @unlink($tmp);
-            $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
-            $out .= '<p><strong>Running as user</strong>: ' . escape_html((($suexec) && (php_function_allowed('get_current_user'))) ? get_current_user() : ('#' . strval($user))) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
+        require_code('global4');
+        list($username, $suexec) = get_exact_usernames_and_suexec();
+        if (!empty($username)) {
+            $out .= '<p><strong>Running as user</strong>: ' . escape_html($username) . (($suexec === null) ? '' : (' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')')) . '</p>';
         }
         if (php_function_allowed('php_sapi_name')) {
             $out .= '<p><strong>PHP configured as</strong>: ' . escape_html(php_sapi_name()) . '</p>';

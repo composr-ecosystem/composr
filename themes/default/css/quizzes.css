@@ -16,10 +16,6 @@
 	{$BETA_CSS_PROPERTY,border-radius: 5px;}
 }
 
-.quiz_form {
-	position: relative;
-}
-
 .quiz_form table {
 	counter-reset: quiz_num;
 }
@@ -33,7 +29,9 @@
 }
 
 .quiz_form th {
-	padding: 0.5em 2em 0.5em 4em;
+	padding: 1.5em 2em 0.5em 70px !important;
+	min-height: 2.5em;
+	position: relative;
 }
 
 .quiz_form td {
@@ -43,11 +41,8 @@
 
 .quiz_form th>span.field_name {
 	position: relative;
-	display: inline-block;
-	padding-left: 60px;
 	z-index: 10;
 	padding-top: 0.5em;
-	min-height: 2.5em;
 }
 
 .quiz_form th:before {
@@ -56,6 +51,7 @@
 	z-index: 5;
 	font-size: 2.2em;
 	position: absolute;
+	top: 15px;
 	left: 15px;
 	padding-top: 10px;
 	color: {$GET,th_secondary_text};
@@ -125,7 +121,7 @@
 	vertical-align: top;
 }
 
-.quiz_form .radio_list, .quiz_form .various_ticks, .quiz_result_question, .quiz_result_given_answer, .quiz_result_answer {
+.quiz_form .radio_list, .quiz_form .various_ticks_simple, .quiz_result_question, .quiz_result_given_answer, .quiz_result_answer {
 	font-weight: bold;
 }
 

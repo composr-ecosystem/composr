@@ -138,10 +138,11 @@
 
 .gallery_regular_thumb p, .gallery_regular_thumb .grating {
 	margin: 0.5em;
-	min-height: 1.5em;
+	min-height: 1.6em;
 }
 
 .gallery_regular_thumb .grating {
+	margin-top: 0;
 	float: right;
 }
 

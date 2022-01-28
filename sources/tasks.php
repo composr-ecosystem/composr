@@ -85,6 +85,9 @@ function execute_task_background($task_row)
     $result = call_user_func_array(array($ob, 'run'), $args);
     if (!$mim_before) {
         set_mass_import_mode(false);
+
+        require_code('caches3');
+        erase_block_cache();
     }
 
     // Send notification

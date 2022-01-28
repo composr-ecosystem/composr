@@ -1319,12 +1319,17 @@ class Module_cms_catalogues_cat extends Standard_crud_module
             $fields->attach(form_input_tree_list(do_lang_tempcode('PARENT'), do_lang_tempcode('DESCRIPTION_PARENT', 'catalogue_category'), 'parent_id', null, 'choose_catalogue_category', array('catalogue_name' => $catalogue_name), true, ((is_null($parent_id)) || ($parent_id == -1)) ? '' : strval($parent_id)));
         }
 
-        $max = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MAX(cc_order)', array('c_name' => $catalogue_name), 'AND cc_order<>' . strval(ORDER_AUTOMATED_CRITERIA));
-        if (is_null($max)) {
-            $max = 0;
+        if ($is_tree) {
+            $hidden->attach(form_input_hidden('order', strval(($order === null) ? ORDER_AUTOMATED_CRITERIA : $order)));
+        } else {
+            $max = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MAX(cc_order)', array('c_name' => $catalogue_name), 'AND cc_order<>' . strval(ORDER_AUTOMATED_CRITERIA));
+            if (is_null($max)) {
+                $max = 0;
+            }
+            $total = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $catalogue_name));
+            $num_automated_now = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(cc_order)', null, 'WHERE ' . db_string_equal_to('c_name', $catalogue_name) . ' AND cc_order=' . strval(ORDER_AUTOMATED_CRITERIA));
+            $fields->attach(get_order_field('catalogue_category', null, $order, $max, $total, 'order', null, $num_automated_now));
         }
-        $total = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $catalogue_name));
-        $fields->attach(get_order_field('catalogue_category', null, $order, $max, $total));
 
         if (cron_installed()) {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '745236e628a4d3da5355f07874433600', 'SECTION_HIDDEN' => is_null($move_target), 'TITLE' => do_lang_tempcode('CLASSIFIED_ADS'))));

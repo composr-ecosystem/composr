@@ -249,23 +249,31 @@ abstract class Standard_crud_module
         } else {
             if ((((method_exists($this, 'browse')) && ($type != 'browse')) || ((isset($this->is_chained_with_parent_browse)) && ($this->is_chained_with_parent_browse)))) {
                 global $BREADCRUMB_SET_PARENTS;
-                if (($this->special_edit_frontend) && (($type == '_edit') || ($type == '_edit_category'))) {
-                    breadcrumb_set_parents(array_merge($BREADCRUMB_SET_PARENTS, array(array('_SELF:_SELF:browse', do_lang_tempcode(is_null($this->menu_label) ? 'MENU' : $this->menu_label)), array('_SELF:_SELF:' . substr($type, 1), do_lang_tempcode('CHOOSE')))));
-                } else {
-                    if (($this->catalogue) && (either_param_string('catalogue_name', '') != '')) {
-                        $_catalogue_title = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_title', array('c_name' => either_param_string('catalogue_name')));
-                        if ($_catalogue_title === null) {
-                            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue'));
-                        }
-                        $catalogue_title = get_translated_text($_catalogue_title);
-                        breadcrumb_set_parents(array_merge($BREADCRUMB_SET_PARENTS, array(array('_SELF:_SELF:browse:catalogue_name=' . either_param_string('catalogue_name', ''), $catalogue_title))));
+                $has_browse_already = false;
+                foreach ($BREADCRUMB_SET_PARENTS as $set_parent) {
+                    if ($set_parent[0] == '_SELF:_SELF:browse') {
+                        $has_browse_already = true;
+                    }
+                }
+                if (!$has_browse_already) {
+                    if (($this->special_edit_frontend) && (($type == '_edit') || ($type == '_edit_category'))) {
+                        breadcrumb_set_parents(array_merge(array(array('_SELF:_SELF:browse', do_lang_tempcode(is_null($this->menu_label) ? 'MENU' : $this->menu_label)), array('_SELF:_SELF:' . substr($type, 1), do_lang_tempcode('CHOOSE'))), $BREADCRUMB_SET_PARENTS));
                     } else {
-                        breadcrumb_set_parents(array_merge($BREADCRUMB_SET_PARENTS, array(array('_SELF:_SELF:browse', do_lang_tempcode(is_null($this->menu_label) ? 'MENU' : $this->menu_label)))));
+                        if (($this->catalogue) && (either_param_string('catalogue_name', '') != '')) {
+                            $_catalogue_title = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_title', array('c_name' => either_param_string('catalogue_name')));
+                            if ($_catalogue_title === null) {
+                                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue'));
+                            }
+                            $catalogue_title = get_translated_text($_catalogue_title);
+                            breadcrumb_set_parents(array_merge(array(array('_SELF:_SELF:browse:catalogue_name=' . either_param_string('catalogue_name', ''), $catalogue_title)), $BREADCRUMB_SET_PARENTS));
+                        } else {
+                            breadcrumb_set_parents(array_merge(array(array('_SELF:_SELF:browse', do_lang_tempcode(is_null($this->menu_label) ? 'MENU' : $this->menu_label))), $BREADCRUMB_SET_PARENTS));
+                        }
                     }
                 }
             } else {
                 if (($this->special_edit_frontend) && (($type == '_edit') || ($type == '_edit_category'))) {
-                    breadcrumb_set_parents(array_merge($BREADCRUMB_SET_PARENTS, array(array('_SELF:_SELF:' . substr($type, 1), do_lang_tempcode('CHOOSE')))));
+                    breadcrumb_set_parents(array_merge(array(array('_SELF:_SELF:' . substr($type, 1), do_lang_tempcode('CHOOSE'))), $BREADCRUMB_SET_PARENTS));
                 }
             }
 

@@ -20,7 +20,7 @@
 		</div></div>
 	{+END}
 
-	{+START,IF_NON_EMPTY,{ENTRIES}}
+	{+START,IF_NON_EMPTY,{$TRIM,{ENTRIES}}}
 		{ENTRIES}
 
 		<div class="box category_sorter inline_block"><div class="box_inner">
@@ -29,7 +29,7 @@
 		</div></div>
 	{+END}
 
-	{+START,IF_EMPTY,{ENTRIES}{CHILDREN}}
+	{+START,IF_EMPTY,{$TRIM,{ENTRIES}{CHILDREN}}}
 		<p class="nothing_here">
 			{!NO_ENTRIES}
 		</p>

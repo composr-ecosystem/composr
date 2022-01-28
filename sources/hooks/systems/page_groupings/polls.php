@@ -37,7 +37,7 @@ class Hook_page_groupings_polls
         }
 
         return array(
-            has_privilege(get_member(), 'submit_midrange_content', 'cms_polls') ? array('cms', 'menu/social/polls', array('cms_polls', array('type' => 'browse'), get_module_zone('cms_polls')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('POLLS'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('poll', 'COUNT(*)', null, '', true))))), 'polls:DOC_POLLS') : null,
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_polls') ? array('cms', 'menu/social/polls', array('cms_polls', array('type' => 'browse'), get_module_zone('cms_polls')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('POLLS'), make_string_tempcode(escape_html(integer_format(@intval($GLOBALS['SITE_DB']->query_select_value_if_there('poll', 'COUNT(*)', null, '', true)))))), 'polls:DOC_POLLS') : null,
             array('social', 'menu/social/polls', array('polls', array(), get_module_zone('polls')), do_lang_tempcode('POLLS')),
         );
     }
