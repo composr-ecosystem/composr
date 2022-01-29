@@ -472,7 +472,9 @@ class _filter_xml_test_set extends cms_test_case
         $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $this->assertTrue(substr_count($result, ' value="foobar"') == 1);
+        if ($result !== null) {
+            $this->assertTrue(substr_count($result, ' value="foobar"') == 1);
+        }
     }
 
     public function testMinLength()
