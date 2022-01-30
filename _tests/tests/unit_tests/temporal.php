@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -22,10 +22,10 @@ class temporal_test_set extends cms_test_case
     {
         // Test simulated locales
         require_lang('dates');
-        $this->assertTrue(cms_strftime('%A', mktime(12, 0, 0, 2, 16, 2010)) == do_lang('TUESDAY'));
-        $this->assertTrue(cms_strftime('%B', mktime(12, 0, 0, 2, 16, 2010)) == do_lang('FEBRUARY'));
+        $this->assertTrue(cms_date('l', mktime(12, 0, 0, 2, 16, 2010)) == do_lang('TUESDAY'));
+        $this->assertTrue(cms_date('F', mktime(12, 0, 0, 2, 16, 2010)) == do_lang('FEBRUARY'));
 
         // Test trimming
-        $this->assertTrue(cms_strftime('%e', mktime(12, 0, 0, 2, 9, 2010)) == '9');
+        $this->assertTrue(cms_date('j', mktime(12, 0, 0, 2, 9, 2010)) == '9');
     }
 }

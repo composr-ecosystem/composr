@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -49,7 +49,7 @@ function render_group_box(array $row, string $zone = '_SEARCH', bool $give_conte
 
     require_lang('cns');
 
-    $url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups'));
+    $url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], $zone);
 
     $_title = cns_get_group_name($row['id']);
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('USERGROUP'), $_title) : $_title;

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: strftime|ucwords*/
+/*EXTRA FUNCTIONS: ucwords*/
 
 // NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
 
@@ -1384,7 +1384,11 @@ function composr_error_handler(int $errno, string $errstr, string $errfile, int 
                 break;
         }
         if (function_exists('get_option')) {
-            $handling_method = get_option('error_handling_' . $type . 's');
+            if ($type == 'deprecated') {
+                $handling_method = get_option('error_handling_' . $type);
+            } else {
+                $handling_method = get_option('error_handling_' . $type . 's');
+            }
         }
         if ($GLOBALS['DEV_MODE']) {
             $handling_method = 'FATAL';

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -73,14 +73,14 @@ function init__users()
             }
             if ((get_forum_type() == 'cns') && (!is_on_multi_site_network())) {
                 push_db_scope_check(false);
-                $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id WHERE ' . $where . ' ORDER BY the_session', null, 0, true, true); // Suppress errors in case table does not exist yet
+                $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id WHERE ' . $where . ' ORDER BY last_activity DESC', null, 0, true, true); // Suppress errors in case table does not exist yet
                 if ($_s === null) {
                     $_s = [];
                 }
                 $SESSION_CACHE = list_to_map('the_session', $_s);
                 pop_db_scope_check();
             } else {
-                $SESSION_CACHE = list_to_map('the_session', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE ' . $where . ' ORDER BY the_session'));
+                $SESSION_CACHE = list_to_map('the_session', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE ' . $where . ' ORDER BY last_activity DESC'));
             }
             if (get_option('session_prudence') == '0' && function_exists('persistent_cache_set')) {
                 persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);

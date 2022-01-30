@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -163,7 +163,7 @@ class file_type_safelisting_test_set extends cms_test_case
         }
         $file_types = array_keys($exts);
         sort($file_types);
-        $file_types = array_diff($file_types, ['MAD', 'MAI', 'MYD', 'MYI', 'alt', 'api', 'bat', 'cat', 'cgi', 'cms', 'com', 'crt', 'dtd', 'dir', 'dll', 'for', 'gcd', 'gid', 'git', 'inc', 'inf', 'jit', 'key', 'lcd', 'low', 'max', 'min', 'msg', 'net', 'old', 'org', 'pem', 'pid', 'pre', 'pwl', 'pws', 'rel', 'rev', 'src', 'swf', 'tcp', 'tld', 'tmp', 'uid', 'xap', 'xxx']); // Lots of stuff that is not needed to have any explicit handling
+        $file_types = array_diff($file_types, ['MAD', 'MAI', 'MYD', 'MYI', 'alt', 'api', 'bat', 'cat', 'cgi', 'cms', 'com', 'crt', 'dtd', 'dir', 'dll', 'for', 'gcd', 'gid', 'git', 'inc', 'inf', 'jit', 'key', 'lcd', 'low', 'max', 'min', 'msg', 'net', 'old', 'org', 'pem', 'pid', 'pre', 'pwl', 'pws', 'rel', 'rev', 'src', 'swf', 'tcp', 'tld', 'tmp', 'uid', 'xap', 'xxx', 'XXX']); // Lots of stuff that is not needed to have any explicit handling
 
         $diff = array_diff($file_types, $this->file_types);
         $this->assertTrue(empty($diff), 'File types used in code unknown to mime_types.php: ' . serialize($diff));

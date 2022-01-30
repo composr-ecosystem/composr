@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -38,6 +38,10 @@ class csrf_tags_test_set extends cms_test_case
                     }
 
                     if (strpos($c, 'method="get"') !== false) {
+                        continue;
+                    }
+
+                    if (strpos($c, 'login-username') !== false) {
                         continue;
                     }
 

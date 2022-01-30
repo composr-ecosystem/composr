@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -635,8 +635,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONTENT_VIEWS_PER_CONTENT_DAY
         __COMCODE_PAGE_EDIT
         CONTENT_VIEWS
-        ALEXA_RANKING
-        ALEXA_LINKS
         FORM
         BLOCK_TRANS_NAME_main_staff_stats_graph
         CONVERSION_RATES
@@ -5671,6 +5669,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GALLERY_IMAGE_LIMIT_HIGH
         GALLERY_IMAGE_LIMIT_LOW
         GALLERY_IMPORT
+        _GALLERY_IMPORT
         GALLERY_IMPORT_SUCCESS_EDIT_TITLES_INLINE
         GALLERY_MEDIA_TITLE_REQUIRED
         GALLERY_MEMBER_SYNCED

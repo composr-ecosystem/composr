@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -45,7 +45,7 @@ class Hook_preview_newsletter_whatsnew
         require_lang('newsletter');
         require_javascript('newsletter');
 
-        $lang = post_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override(true);
 
         if (get_param_string('type', 'browse') == 'whatsnew') {
             $cutoff_time = post_param_date('cutoff');

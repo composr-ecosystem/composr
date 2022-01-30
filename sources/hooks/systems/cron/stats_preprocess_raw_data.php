@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -59,7 +59,7 @@ class Hook_cron_stats_preprocess_raw_data
             $start_time = tz_time($start_time, $server_timezone);
         }
 
-        $today = cms_strftime('%Y-%m-%d');
+        $today = cms_date('Y-m-d');
         list($year, $month, $day) = array_map('intval', explode('-', $today));
         $end_time = mktime(0, 0, 0, $month, $day, $year) - 1;
         $end_time = tz_time($end_time, $server_timezone);

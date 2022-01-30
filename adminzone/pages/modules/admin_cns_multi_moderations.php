@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -97,14 +97,14 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_moderation');
 
-        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
-
-        if ($type == 'import') {
-            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')]]);
-        }
-
-        if ($type == '_import') {
-            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES')]]);
+        if ($type == 'browse') {
+            breadcrumb_set_parents([['_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')]]);
+        } elseif ($type == 'import') {
+            breadcrumb_set_parents([['_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')]]);
+        } elseif ($type == '_import') {
+            breadcrumb_set_parents([['_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES')]]);
+        } else {
+            breadcrumb_set_parents([['_SEARCH:admin_cns_forums:browse', do_lang_tempcode('MANAGE_FORUMS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')]]);
         }
 
         if ($type == 'import' || $type == '_import') {

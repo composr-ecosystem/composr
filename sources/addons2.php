@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -27,6 +27,9 @@ function init__addons2()
 {
     require_code('files');
     require_code('addons');
+
+    global $SITE_MAINTENANCE_LOCK;
+    $SITE_MAINTENANCE_LOCK = false;
 }
 
 /*
@@ -465,6 +468,8 @@ INSTALLING ADDONS
  */
 function inform_about_addon_install(string $file, array $also_uninstalling = [], array $also_installing = [], bool $always_return = false) : array
 {
+    site_maintenance_lock_engage();
+
     $full = get_custom_file_base() . '/imports/addons/' . $file;
 
     // Look in the TAR
@@ -814,6 +819,8 @@ function get_addon_install_writable_paths(string $file) : array
  */
 function install_addon(string $file, ?array $files = null, bool $do_files = true, bool $do_db = true, bool $clear_caches = true)
 {
+    site_maintenance_lock_engage();
+
     require_code('zones2');
     require_code('zones3');
 
@@ -984,7 +991,10 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
 
     tar_close($tar);
 
+    site_maintenance_lock_disengage();
+
     if ($do_db) {
+        require_lang('addons');
         log_it('INSTALL_ADDON', $addon_name);
     }
 }
@@ -1034,27 +1044,22 @@ function reinstall_addon_soft(string $addon_name, ?array $ini_info = null)
         'addon_install_time' => time(),
     ]);
 
-    foreach ($addon_info['dependencies'] as $dependency) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
-            'addon_name' => $addon_name,
-            'addon_name_dependant_upon' => trim($dependency),
-            'addon_name_incompatibility' => 0,
-        ]);
-    }
-    foreach ($addon_info['incompatibilities'] as $incompatibility) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
-            'addon_name' => $addon_name,
-            'addon_name_dependant_upon' => trim($incompatibility),
-            'addon_name_incompatibility' => 1,
-        ]);
-    }
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon_name),
+        'addon_name_dependant_upon' => array_map('trim', $addon_info['dependencies']),
+        'addon_name_incompatibility' => array_fill(0, count($addon_info['dependencies']), 0),
+    ]);
 
-    foreach ($addon_info['files'] as $filepath) {
-        $GLOBALS['SITE_DB']->query_insert('addons_files', [
-            'addon_name' => $addon_name,
-            'filepath' => $filepath,
-        ]);
-    }
+    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
+        'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon_name),
+        'addon_name_dependant_upon' => array_map('trim', $addon_info['incompatibilities']),
+        'addon_name_incompatibility' => array_fill(0, count($addon_info['incompatibilities']), 1),
+    ]);
+
+    $GLOBALS['SITE_DB']->query_insert('addons_files', [
+        'addon_name' => array_fill(0, count($addon_info['files']), $addon_name),
+        'filepath' => $addon_info['files'],
+    ]);
 }
 
 /*
@@ -1362,6 +1367,8 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
 {
     $addon_info = read_addon_info($addon_name);
 
+    site_maintenance_lock_engage();
+
     require_code('zones2');
     require_code('zones3');
     require_code('abstract_file_manager');
@@ -1477,6 +1484,9 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
         }
     }
 
+    site_maintenance_lock_disengage();
+
+    require_lang('addons');
     log_it('UNINSTALL_ADDON', $addon_info['name']);
 }
 
@@ -1510,4 +1520,31 @@ function uninstall_addon_soft(string $addon_name)
     }
 
     set_value('kill_cron_looping', '1', true);
+}
+
+/**
+ * Engage a lock to stop site traffic, with automatic timeout and removal upon crash.
+ */
+function site_maintenance_lock_engage()
+{
+    global $SITE_MAINTENANCE_LOCK;
+    $SITE_MAINTENANCE_LOCK = true;
+
+    set_value('site_maintenance_lock', strval(time()));
+
+    register_shutdown_function('site_maintenance_lock_disengage'); // Auto-unlocks on some kind of crash
+}
+
+/**
+ * Disengage lock from site_maintenance_lock_engage().
+ */
+function site_maintenance_lock_disengage()
+{
+    global $SITE_MAINTENANCE_LOCK;
+
+    if ($SITE_MAINTENANCE_LOCK) {
+        $SITE_MAINTENANCE_LOCK = false;
+
+        set_value('site_maintenance_lock', '');
+    }
 }

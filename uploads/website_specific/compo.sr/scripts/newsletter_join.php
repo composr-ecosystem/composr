@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  You may not distribute a modified version of this file, unless it is solely as a Composr modification.
  See docs/LICENSE.md for full licensing information.
@@ -51,7 +51,7 @@ if (!addon_installed('newsletter')) {
 $url = get_param_string('url', false, INPUT_FILTER_URL_GENERAL);
 $email = get_param_string('email', false, INPUT_FILTER_GET_IDENTIFIER);
 $advertise_on = get_param_integer('advertise_on', 0);
-$lang = get_param_string('lang');
+$lang = user_lang__with__translation_override();
 
 if ($advertise_on == 1) {
     $GLOBALS['SITE_DB']->query_insert('may_feature', ['url' => $url]);

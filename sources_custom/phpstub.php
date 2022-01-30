@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -2389,11 +2389,11 @@ function preg_replace_callback_array(array $patterns_and_callbacks, string $subj
  *
  * @param  string $pattern The pattern
  * @param  string $subject The subject
- * @param  ?integer $max_splits The maximum number of splits to make (null: no limit)
+ * @param  integer $max_splits The maximum number of splits to make (-1: no limit)
  * @param  ?integer $mode The special mode (null: none)
  * @return array The array due to splitting
  */
-function preg_split(string $pattern, string $subject, ?int $max_splits = null, ?int $mode = null) : array
+function preg_split(string $pattern, string $subject, int $max_splits = -1, ?int $mode = null) : array
 {
     return [];
 }
@@ -5057,6 +5057,7 @@ posix_*
 fileowner
 filegroup
 getmypid
+fnmatch
 
 Disabled various legacy synonyms (aliases), such as...
 
@@ -5134,8 +5135,6 @@ Disabled due to being locale-dependent, which is not thread-safe:
 fgetcsv
 str_getcsv
 str_word_count
-strftime
-gmstrftime
 strcoll
 strtoupper
 strtolower
@@ -5179,7 +5178,6 @@ array_intersect_uassoc
 forward_static_call
 forward_static_call_array
 gc_enabled
-strptime
 date_create
 date_create_immutable
 date_create_from_format

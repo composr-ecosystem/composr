@@ -3,7 +3,6 @@
 		{+START,IF_NON_EMPTY,{TITLE}}<h3>{TITLE}</h3>{+END}
 
 		<form title="{!_LOGIN}" class="js-submit-check-login-username-field" action="{LOGIN_URL*}" method="post" autocomplete="on">
-			{$INSERT_FORM_POST_SECURITY}
 			<input type="hidden" name="_active_login" value="1" />
 
 			<div>

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -110,7 +110,7 @@ class Hook_fields_upload_multi
         foreach ($out as $ev => $original_filename) {
             if (url_is_local($ev)) {
                 $keep = symbol_tempcode('KEEP');
-                $download_url = find_script('catalogue_file') . '?file=' . urlencode(basename(preg_replace('#::.*$#', '', $ev))) . '&table=' . urlencode($table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode($id_field) . '&url_field=' . urlencode($url_field);
+                $download_url = find_script('catalogue_file') . '?file=' . urlencode(basename(preg_replace('#::.*$#', '', $ev))) . '&table=' . urlencode(($table === null) ? '' : $table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode(($id_field === null) ? '' : $id_field) . '&url_field=' . urlencode(($url_field === null) ? '' : $url_field);
                 if (strpos($ev, '::') !== false) {
                     list($file, $original_filename) = explode('::', $ev);
                     $download_url .= '&original_filename=' . urlencode($original_filename);

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -33,7 +33,7 @@ class Hook_sw_core_cns
         $settings = [];
 
         if (get_forum_type() != 'cns') {
-            return [];
+            return $settings;
         }
 
         if (!is_on_multi_site_network()) {

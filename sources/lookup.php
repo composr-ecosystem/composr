@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -488,7 +488,7 @@ function find_user_metadata(bool $include_referer = true, ?int $member_id = null
                 //$h[$l_session_id] = $myrow['session_id'];
             }
 
-            if (($myrow['referer'] != '') && (($advanced) || (/*external referer*/@parse_url($myrow['referer'], HTTP_HOST) != get_base_url_hostname()))) {
+            if (($myrow['referer'] != '') && (($advanced) || (/*external referer*/@parse_url($myrow['referer'], PHP_URL_HOST) != get_base_url_hostname()))) {
                 $h[$l_referer] = $myrow['referer'];
             }
 

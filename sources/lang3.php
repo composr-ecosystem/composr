@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -24,17 +24,18 @@
  * @param  Tempcode $title Title for the form
  * @param  boolean $tip Whether to give a tip about edit order
  * @param  boolean $allow_all_selection Whether to add an 'all' entry to the list
+ * @param  boolean $post Whether to use a POST parameter
  * @return mixed The UI (Tempcode) or the language to use (string/LANGUAGE_NAME)
  * @ignore
  */
-function _choose_language(object $title, bool $tip = false, bool $allow_all_selection = false)
+function _choose_language(object $title, bool $tip = false, bool $allow_all_selection = false, bool $post = true)
 {
     if (!multi_lang()) {
         return user_lang();
     }
 
     $lang = get_param_string('lang', /*get_param_string('keep_lang', null)*/null);
-    if ($lang !== null) {
+    if (($lang !== null) && (does_lang_exist($lang))) {
         return filter_naughty($lang);
     }
 
@@ -76,7 +77,7 @@ function _choose_language(object $title, bool $tip = false, bool $allow_all_sele
     return do_template('FORM_SCREEN', [
         '_GUID' => '1a2823d450237aa299c095bf9c689a2a',
         'SKIP_WEBSTANDARDS' => true,
-        'GET' => true,
+        'GET' => !$post,
         'HIDDEN' => $hidden,
         'SUBMIT_ICON' => 'buttons/proceed',
         'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
@@ -335,7 +336,7 @@ function _insert_lang(string $field_name, string $text, int $level, ?object $db 
     }
 
     if ($lang === null) {
-        $lang = get_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override();
     }
     $_text_parsed = null;
 
@@ -448,7 +449,7 @@ function _lang_remap(string $field_name, $id, string $text, ?object $db = null, 
         $db = $GLOBALS['SITE_DB'];
     }
 
-    $lang = get_param_string('lang', user_lang());
+    $lang = user_lang__with__translation_override();
 
     $member_id = (function_exists('get_member')) ? get_member() : $GLOBALS['FORUM_DRIVER']->get_guest_id(); // This updates the Comcode reference to match the current user, which may not be the owner of the content this is for. This is for a reason - we need to parse with the security token of the current user, not the original content submitter.
     if (($for_member === null) || ($GLOBALS['FORUM_DRIVER']->get_username($for_member, false, USERNAME_DEFAULT_NULL) === null)) {

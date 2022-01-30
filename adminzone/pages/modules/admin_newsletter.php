@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -90,12 +90,12 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         if ($type == 'confirm') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND')]]);
             breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
         }
 
         if ($type == 'send') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -128,7 +128,7 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         if ($type == 'view') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE')]]);
             breadcrumb_set_self(do_lang_tempcode('VIEW'));
         }
 

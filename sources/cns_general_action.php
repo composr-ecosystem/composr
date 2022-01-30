@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -39,6 +39,7 @@ function cns_make_post_template(string $title, string $text, string $forum_multi
         't_use_default_forums' => $use_default_forums,
     ], true);
 
+    require_lang('cns_post_templates');
     log_it('ADD_POST_TEMPLATE', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -123,6 +124,7 @@ function cns_make_welcome_email(string $name, string $subject, string $text, int
         generate_resource_fs_moniker('welcome_email', strval($id), null, null, true);
     }
 
+    require_lang('cns_welcome_emails');
     log_it('ADD_WELCOME_EMAIL', strval($id), $subject);
 
     return $id;

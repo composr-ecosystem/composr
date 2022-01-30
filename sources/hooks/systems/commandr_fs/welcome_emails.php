@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -141,6 +141,10 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         require_code('cns_general_action2');
 
         $label = $this->_default_property_str($properties, 'label');
@@ -171,6 +175,10 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
     public function file_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         require_code('cns_general_action2');
         cns_delete_welcome_email(intval($resource_id));

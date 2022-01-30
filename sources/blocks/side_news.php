@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -223,7 +223,7 @@ PHP;
 
             $news_title = get_translated_tempcode('news', $just_news_row, 'title');
 
-            $date = cms_strftime(do_lang('date_concise_near_date'), utctime_to_usertime($myrow['date_and_time']));
+            $date = cms_date(do_lang('date_concise_near_date'), utctime_to_usertime($myrow['date_and_time']));
 
             $summary = get_translated_tempcode('news', $just_news_row, 'news');
             if ($summary->is_empty()) {

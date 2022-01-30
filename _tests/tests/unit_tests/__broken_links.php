@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -246,7 +246,8 @@ class __broken_links_test_set extends cms_test_case
         if (preg_match('#^https://compo\.sr/uploads/website_specific/compo\.sr/scripts/build_personal_upgrader\.php#', $url) != 0) {
             return;
         }
-        if (in_array($url, [ // These just won't check from a bot guest user
+        if (in_array($url, [
+        // These just won't check from a bot guest user
             'https://cloud.google.com/console',
             'https://www.google.com/webmasters/tools/home',
             'https://console.developers.google.com/project',
@@ -255,6 +256,12 @@ class __broken_links_test_set extends cms_test_case
             'https://compo.sr/themeing-changes.htm',
             'https://pixabay.com/',
             'https://www.patreon.com/posts/18644315',
+
+            // Invalid but not actually used
+            'http://qbnz.com/highlighter/',
+
+            // In non-maintained functionality
+            'http://php-minishell.appspot.com/',
         ])) {
             return;
         }

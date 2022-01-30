@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -107,7 +107,7 @@ class Module_quiz
 
             $GLOBALS['SITE_DB']->create_table('quizzes', [
                 'id' => '*AUTO',
-                'q_timeout' => '?INTEGER', // The number of minutes to complete the test (not secure)
+                'q_timeout' => '?INTEGER', // The number of minutes to complete the test
                 'q_name' => 'SHORT_TRANS',
                 'q_start_text' => 'LONG_TRANS__COMCODE',
                 'q_end_text' => 'LONG_TRANS__COMCODE',
@@ -447,7 +447,7 @@ class Module_quiz
         $title_to_use = $this->title_to_use;
         $title_to_use_2 = $this->title_to_use_2;
 
-        if (has_privilege(get_member(), 'bypass_quiz_timer')) {
+        if ((has_privilege(get_member(), 'bypass_quiz_timer')) && (get_param_integer('keep_timer_display', 0) == 0)) {
             $quiz['q_timeout'] = null;
         }
 
@@ -526,8 +526,21 @@ class Module_quiz
             'TITLE' => $this->title,
             'START_TEXT' => $start_text,
             'FIELDS' => $fields,
-            'TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : strval($quiz['q_timeout'] * 60 - $timer_offset),
             'ALL_REQUIRED' => $all_required,
+            'TYPE' => do_lang_tempcode($quiz['q_type']),
+            '_TYPE' => $quiz['q_type'],
+            'POINTS' => integer_format($quiz['q_points_for_passing']),
+            '_POINTS' => strval($quiz['q_points_for_passing']),
+            '_TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : display_time_period($quiz['q_timeout'] * 60 - $timer_offset),
+            'TIMEOUT' => ($quiz['q_timeout'] === null) ? '' : strval($quiz['q_timeout'] * 60 - $timer_offset),
+            'REDO_TIME' => (($quiz['q_redo_time'] === null) || ($quiz['q_redo_time'] == 0)) ? '' : display_time_period($quiz['q_redo_time'] * 60 * 60),
+            'DATE' => get_timezoned_date_tempcode($quiz['q_add_date']),
+            '_DATE' => strval($quiz['q_add_date']),
+            'NAME' => get_translated_text($quiz['q_name']),
+            'SUBMITTER' => strval($quiz['q_submitter']),
+            'PERCENTAGE' => strval($quiz['q_percentage']), // Not displayed by default template as maybe secret
+            'OPEN_TIME' => strval($quiz['q_open_time']), // Not displayed by default template as boring
+            'CLOSE_TIME' => ($quiz['q_close_time'] === null) ? '' : strval($quiz['q_close_time']), // Not displayed by default template as boring
         ]);
     }
 
@@ -542,7 +555,7 @@ class Module_quiz
         $quiz = $this->quiz;
         $quiz_name = get_translated_text($quiz['q_name']);
 
-        if (has_privilege(get_member(), 'bypass_quiz_timer')) {
+        if ((has_privilege(get_member(), 'bypass_quiz_timer')) && (get_param_integer('keep_timer_display', 0) == 0)) {
             $quiz['q_timeout'] = null;
         }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -94,7 +94,8 @@ function render_catalogue_entry_box(array $row, string $zone = '_SEARCH', bool $
     }
 
     $tpl_set = $catalogue_name;
-    $display = get_catalogue_entry_map($row, $catalogue, 'SEARCH', $tpl_set, $root, null, null, false, true);
+    $_breadcrumbs = null;
+    $display = get_catalogue_entry_map($row, $catalogue, 'SEARCH', $tpl_set, $root, null, null, false, true, null, $_breadcrumbs, false, $zone);
 
     $breadcrumbs = null;
     if ($include_breadcrumbs) {
@@ -882,9 +883,10 @@ function catalogue_entries_manual_sort(array $fields, array &$entries, string $o
  * @param  ?integer $order_by Field index to order by (null: none)
  * @param  ?array $_breadcrumbs Write breadcrumbs into here (null: don't bother)
  * @param  boolean $force_view_all Whether to render everything
+ * @param  ID_TEXT $zone The zone to display in
  * @return array A map of information relating to the entry. The map contains 'FIELDS' (Tempcode for all accumulated fields), 'FIELD_x' (for each field x applying to the entry), STAFF_DETAILS, COMMENT_DETAILS, RATING_DETAILS, VIEW_URL, BREADCRUMBS
  */
-function get_catalogue_entry_map(array $entry, ?array $catalogue = null, string $view_type = 'PAGE', string $tpl_set = 'DEFAULT', ?int $root = null, ?array $fields = null, ?array $only_fields = null, bool $feedback_details = false, bool $breadcrumbs_details = false, ?int $order_by = null, ?array &$_breadcrumbs = null, bool $force_view_all = false) : array
+function get_catalogue_entry_map(array $entry, ?array $catalogue = null, string $view_type = 'PAGE', string $tpl_set = 'DEFAULT', ?int $root = null, ?array $fields = null, ?array $only_fields = null, bool $feedback_details = false, bool $breadcrumbs_details = false, ?int $order_by = null, ?array &$_breadcrumbs = null, bool $force_view_all = false, string $zone = '_SEARCH') : array
 {
     $id = $entry['id'];
     $all_visible = true;
@@ -1008,8 +1010,6 @@ function get_catalogue_entry_map(array $entry, ?array $catalogue = null, string 
     if ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($entry['allow_comments'] >= 1)) {
         $map['COMMENT_COUNT'] = '1';
     }
-
-    $zone = get_module_zone('catalogues');
 
     $separate_view_screen =
         (get_option('is_on_comments') == '1') && ($entry['allow_comments'] >= 1) ||

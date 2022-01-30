@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -286,6 +286,10 @@ function tapatalk_strip_comcode(string $data) : string
     // Pre-check, optimisation
     $smilies = [];
     foreach ($_smilies as $code => $imgcode) {
+        if (is_integer($code)) {
+            $code = strval($code);
+        }
+
         if (strpos($data, $code) !== false) {
             $smilies[$code] = $imgcode;
         }

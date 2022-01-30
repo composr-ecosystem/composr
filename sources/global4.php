@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -17,6 +17,8 @@
  * @copyright  ocProducts Ltd
  * @package    core
  */
+
+/*EXTRA FUNCTIONS: fileowner*/
 
 /**
  * Standard code module initialisation function.
@@ -670,8 +672,8 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
                 if ($a === null) {
                     $a = do_lang('NA');
                 }
-                if ($a === null) {
-                    $a = do_lang('NA');
+                if ($b === null) {
+                    $b = do_lang('NA');
                 }
                 require_code('notifications');
                 require_lang('actionlog');
@@ -784,4 +786,63 @@ function is_unhelpful_redirect(string $redirect) : bool
     }
 
     return false;
+}
+
+/**
+ * Do whatever complex magic we can to try and find out the username we are running as, and suEXEC status.
+ * This function should be assumed to be a little slow, don't put it into the critical path.
+ *
+ * @return array A pair: The username as best can be found, the suEXEC status
+ */
+function get_exact_usernames_and_suexec() : array
+{
+    $user = null;
+    $suexec = null;
+    $username = null;
+
+    if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
+        // Linux or Mac OS...
+
+        $user = posix_getuid();
+        $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
+        $dets = posix_getpwuid($user);
+        if ($dets !== false) {
+            $username = $dets['name'];
+            return [$username, $suexec];
+        } elseif (($suexec) && (php_function_allowed('get_current_user'))) {
+            $username = get_current_user();
+            return [$username, $suexec];
+        }
+    }
+
+    if ((php_function_allowed('shell_exec')) && (strpos(PHP_OS, 'WIN') === false)) {
+        // Linux or Mac OS but crippled with missing or broken POSIX...
+
+        $username = @shell_exec('whoami');
+        if (!empty($username)) {
+            $username = trim($username);
+            if (php_function_allowed('get_current_user')) {
+                $suexec = ($username == get_current_user());
+            }
+            return [$username, $suexec];
+        }
+    }
+
+    // Windows, or very crippled Linux or Mac OS...
+
+    if ($user === null) {
+        $tmp = cms_tempnam();
+        $user = @fileowner($tmp);
+        @unlink($tmp);
+    }
+    $suexec = ($user == fileowner(get_file_base() . '/sources/global.php'));
+    if ((($suexec) || (strpos(PHP_OS, 'WIN') !== false)) && (php_function_allowed('get_current_user'))) {
+        $username = get_current_user(); // On Windows this returns the user PHP is running as, counter to documentation
+    }
+
+    if ($username === null) {
+        $username = '#' . strval($user);
+    }
+
+    return [$username, $suexec];
 }

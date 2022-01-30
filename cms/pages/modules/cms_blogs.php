@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -118,7 +118,7 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         if ($type == '_import_wordpress') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_BLOGS')], ['_SELF:_SELF:import_wordpress', do_lang_tempcode('IMPORT_WORDPRESS')]]);
+            breadcrumb_set_parents([['_SELF:_SELF:import_wordpress', do_lang_tempcode('IMPORT_WORDPRESS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -711,7 +711,7 @@ class Module_cms_blogs extends Standard_crud_module
     {
         check_privilege('mass_import', null, null, 'cms_news');
 
-        $lang = post_param_string('lang', user_lang());
+        $lang = user_lang__with__translation_override(true);
 
         $submit_name = do_lang_tempcode('IMPORT_WORDPRESS');
 

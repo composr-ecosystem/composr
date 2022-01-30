@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -885,7 +885,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/search.php',
             '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/seo.php',
-            '_tests/tests/unit_tests/seo_tracking.php',
             '_tests/tests/unit_tests/_setupwizard.php',
             '_tests/tests/unit_tests/shopping_order_management.php',
             '_tests/tests/unit_tests/shopping.php',
@@ -894,7 +893,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/sitemap_submit.php',
             '_tests/tests/unit_tests/sorting.php',
             '_tests/tests/unit_tests/_special_links.php',
-            '_tests/tests/unit_tests/specsettings_documented.php',
+            '_tests/tests/unit_tests/__specsettings_documented.php',
             '_tests/tests/unit_tests/spreadsheets.php',
             '_tests/tests/unit_tests/sql_compat.php',
             '_tests/tests/unit_tests/standard_dir_files.php',
@@ -955,7 +954,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/lang_missing_parameters.php',
             '_tests/tests/unit_tests/leader_board.php',
             '_tests/tests/unit_tests/mobile_detect.php',
-
+            '_tests/tests/unit_tests/new_window_labels.php',
             'data_custom/search_test.php',
         ];
     }

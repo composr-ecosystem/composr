@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -529,15 +529,21 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
                     warn_exit(do_lang_tempcode('CANNOT_COPY_TO_SERVER'), false, true);
                 }
             }
+
+            $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($http_result->filename, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($http_result->filename, $http_result->download_mime_type);
+
             if ($filename === null) {
                 if ($obfuscate != OBFUSCATE_NEVER) {
-                    $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($http_result->filename, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($http_result->filename, $http_result->download_mime_type);
                     list($place, , $filename) = find_unique_path($upload_folder, $filename);
                 } else {
                     $filename = shorten_urlencoded_filename($http_result->filename);
                     $place = $upload_folder_full . '/' . $filename;
                 }
             } else {
+                if (substr($filename, -4) == '.XXX') {
+                    $filename = substr($filename, 0, strlen($filename) - 4) . '.' . $ext;
+                }
+
                 $place = $upload_folder_full . '/' . shorten_urlencoded_filename($filename);
             }
             if (!has_privilege($member_id, 'exceed_filesize_limit')) {
@@ -869,19 +875,23 @@ function _get_upload_url(int $member_id, string $attach_name, string $upload_fol
         return ['', ''];
     }
 
+    $ext = get_file_extension($file);
+    $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($file);
+
     if ($filename === null) {
         // If we are not obfuscating then we will need to search for an available filename
         if (($obfuscate == OBFUSCATE_NEVER) || (strlen($file) > 150)) {
             list($place, , $filename) = find_unique_path($upload_folder, $file);
         } else { // A result of some randomness
-            $ext = get_file_extension($file);
-            $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($file);
-
             require_code('crypt');
             $filename = get_secure_random_string() . '.' . $ext;
             list($place, , $filename) = find_unique_path($upload_folder, $filename);
         }
     } else {
+        if (substr($filename, -4) == '.XXX') {
+            $filename = substr($filename, 0, strlen($filename) - 4) . '.' . $ext;
+        }
+
         $place = $upload_folder_full . '/' . $filename;
     }
 

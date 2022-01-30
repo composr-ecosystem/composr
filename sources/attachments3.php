@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -49,7 +49,7 @@ function update_lang_comcode_attachments(string $field_name, $lang_id, string $t
         $db = $GLOBALS['SITE_DB'];
     }
 
-    $lang = get_param_string('lang', user_lang());
+    $lang = user_lang__with__translation_override();
 
     require_lang('comcode');
 

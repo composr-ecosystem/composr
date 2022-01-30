@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -73,6 +73,7 @@ function add_usergroup_subscription(string $title, string $description, float $p
         $db->query_insert('f_usergroup_sub_mails', $map);
     }
 
+    require_lang('ecommerce');
     log_it('ADD_USERGROUP_SUBSCRIPTION', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -191,6 +192,7 @@ function edit_usergroup_subscription(int $id, string $title, string $description
         }
     }
 
+    require_lang('ecommerce');
     log_it('EDIT_USERGROUP_SUBSCRIPTION', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -262,6 +264,7 @@ function delete_usergroup_subscription(int $id, string $uhoh_mail = '')
         delete_lang($_mail['m_body'], $db);
     }
 
+    require_lang('ecommerce');
     log_it('DELETE_USERGROUP_SUBSCRIPTION', strval($id), $title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {

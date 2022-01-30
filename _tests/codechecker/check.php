@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -356,6 +356,10 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
                 $t = $t[0];
             }
 
+            if ($t === null) {
+                continue;
+            }
+
             $t = ltrim($t, '?~');
             if (substr($t, 0, 6) == 'object') {
                 $t = 'object';
@@ -373,7 +377,7 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
                 $t = 'object';
             }
             if ($t != 'mixed') {
-                $observed_types[$t] = 1;
+                $observed_types[$t] = true;
             }
         }
         if (array_keys($observed_types) != ['array', 'resource']) {
@@ -1246,21 +1250,23 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             return 'object';
 
         case 'NEW_OBJECT':
-            $class = preg_replace('#^.*\\\\#', '', $inner[1]); // We strip out namespaces from the name, and just look at the actual class name
-            global $FUNCTION_SIGNATURES;
-            if (isset($FUNCTION_SIGNATURES[$class])) {
-                if ($FUNCTION_SIGNATURES[$class]['is_abstract']) {
-                    log_warning('Trying to initiate an abstract class, ' . $class, $c_pos);
+            if ($inner[1] !== null) {
+                $class = preg_replace('#^.*\\\\#', '', $inner[1]); // We strip out namespaces from the name, and just look at the actual class name
+                global $FUNCTION_SIGNATURES;
+                if (isset($FUNCTION_SIGNATURES[$class])) {
+                    if ($FUNCTION_SIGNATURES[$class]['is_abstract']) {
+                        log_warning('Trying to initiate an abstract class, ' . $class, $c_pos);
+                    }
+                    if ($FUNCTION_SIGNATURES[$class]['type'] != 'class') {
+                        log_warning('Trying to initiate a(n) ' . $FUNCTION_SIGNATURES[$class]['type'] . ', ' . $class, $c_pos);
+                    }
                 }
-                if ($FUNCTION_SIGNATURES[$class]['type'] != 'class') {
-                    log_warning('Trying to initiate a(n) ' . $FUNCTION_SIGNATURES[$class]['type'] . ', ' . $class, $c_pos);
-                }
-            }
-            if ((!isset($FUNCTION_SIGNATURES[$class])) && (!empty($FUNCTION_SIGNATURES)) && (strpos($function_guard, ',' . $class . ',') === false)) {
-                if ((($GLOBALS['OK_EXTRA_FUNCTIONS'] === null) || (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $class) == 0))) {
-                    if (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]) && $class != '') {
-                        if ($class !== null) {
-                            log_warning('Could not find class, ' . $class, $c_pos);
+                if ((!isset($FUNCTION_SIGNATURES[$class])) && (!empty($FUNCTION_SIGNATURES)) && (strpos($function_guard, ',' . $class . ',') === false)) {
+                    if ((($GLOBALS['OK_EXTRA_FUNCTIONS'] === null) || (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $class) == 0))) {
+                        if (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]) && $class != '') {
+                            if ($class !== null) {
+                                log_warning('Could not find class, ' . $class, $c_pos);
+                            }
                         }
                     }
                 }
@@ -2080,6 +2086,10 @@ function set_composr_type($identifier, $type)
         $type = $type[0];
     }
 
+    if ($type === null) {
+        return;
+    }
+
     global $LOCAL_VARIABLES;
     $LOCAL_VARIABLES[$identifier]['types'][] = $type;
     if (substr($type, 0, 7) == 'object-') {
@@ -2145,6 +2155,10 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
 {
     if (is_array($actual_type)) {
         $actual_type = $actual_type[0];
+    }
+
+    if ($actual_type === null) {
+        return true;
     }
 
     if ((ltrim($actual_type, '~?') == 'mixed') && (!$mixed_as_fail)) {

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -101,9 +101,10 @@ function push_bugfix_ui()
 {
     global $REMOTE_BASE_URL;
 
-    if ((!is_suexec_like()) && (function_exists('posix_getpwuid')) && (function_exists('posix_getuid'))) {
-        $user = posix_getpwuid(posix_getuid());
-        attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $user['name'] . '), your file permissions will likely get mangled.', 'warn');
+    if (!is_suexec_like()) {
+        require_code('global4');
+        list($username, $suexec) = get_exact_usernames_and_suexec();
+        attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $username . '), your file permissions will likely get mangled.', 'warn');
     }
 
     $_title = get_screen_title('Composr bugfix tool 1/3', false);
@@ -627,6 +628,7 @@ END;
         }
         if (in_array($file, [
             'sources_custom/string_scan.php',
+            'data_custom/functions.bin',
         ])) {
             $selected = false;
         }

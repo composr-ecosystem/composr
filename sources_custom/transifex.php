@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -643,7 +643,7 @@ Translations may also be downloaded directly from Transifex.";
 {$open} /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -1053,7 +1053,11 @@ function _transifex_env_lang()
         }
     }
 
-    return get_param_string('lang', null);
+    $lang = get_param_string('lang', null);
+    if (($lang !== null) && (!does_lang_exist($lang))) {
+        $lang = null;
+    }
+    return $lang;
 }
 
 function _transifex_decode_content($in)

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -437,9 +437,7 @@ function _post_param_date(string $stub, bool $get_also = false, bool $do_timezon
         }
     }
     if ($do_timezone_conversion) {
-        if (($year >= 1970) || (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) == '1963')) { // Only try and do timezone conversion if we can do proper maths this far back
-            $time = $time * 2 - tz_time($time, $timezone);
-        }
+        $time = $time * 2 - tz_time($time, $timezone);
     }
 
     return $time;

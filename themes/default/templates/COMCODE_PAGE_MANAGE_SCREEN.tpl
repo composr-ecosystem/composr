@@ -5,10 +5,10 @@
 
 	{TABLE}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post">
-		{$INSERT_FORM_POST_SECURITY}
+	<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM,{URL}}" method="get">
+		{$HIDDENS_FOR_GET_FORM,{URL}}
 
-		{HIDDEN}
+		{$INSERT_FORM_POST_SECURITY}
 
 		{+START,IF,{HAS_PAGINATION}}
 			<p>

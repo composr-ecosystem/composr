@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -874,6 +874,10 @@ class Forum_driver_wbb22 extends Forum_driver_base
      */
     public function get_member_from_username(string $name) : int
     {
+        if ($name == do_lang('GUEST')) {
+            return $this->get_guest_id();
+        }
+
         return $this->db->query_select_value_if_there('users', 'userid', ['username' => $name]);
     }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -249,7 +249,7 @@ function _sitemap_node_to_xml(array $admin_groups, array $groups, array $node, b
         $privilege_perms .= ' img_func_1="permissionsImgFunc1" img_func_2="permissionsImgFunc2" highlighted="true"';
     }
 
-    $draggable = (preg_match('#^adminzone:admin_#', @strval($node['content_id'])) == 0) && (preg_match('#^\w*:\w+$#', @strval($node['content_id'])) != 0);
+    $draggable = ($node['content_id'] !== null) && (preg_match('#^adminzone:admin_#', @strval($node['content_id'])) == 0) && (preg_match('#^\w*:\w+$#', @strval($node['content_id'])) != 0);
 
     $serverid = $node['page_link'];
 

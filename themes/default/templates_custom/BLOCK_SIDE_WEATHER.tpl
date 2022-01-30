@@ -38,7 +38,7 @@
 
 	{+START,LOOP,WEATHER_DAYS}
 		<div class="float-surrounder">
-			<h4>{$FROM_TIMESTAMP*,%A,{TIMESTAMP}}</h4>
+			<h4>{$FROM_TIMESTAMP*,l,{TIMESTAMP}}</h4>
 
 			{+START,IF_NON_EMPTY,CONDITIONS}
 				{+START,LOOP,CONDITIONS}

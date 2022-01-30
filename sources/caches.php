@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -711,7 +711,7 @@ function get_cache_entry(string $codename, string $cache_identifier, int $specia
         }
     }
 
-    $rets = _get_cache_entries([$det], $special_cache_flags);
+    $rets = _get_cache_entries([$det]);
     return $rets[0];
 }
 
@@ -781,12 +781,11 @@ function get_cache_signature_details(?int $special_cache_flags, ?int &$staff_sta
  * Ability to do multiple get_cache_entry at once, for performance reasons.
  *
  * @param  array $dets An array of tuples of parameters (as per get_cache_entry, almost)
- * @param  ?integer $special_cache_flags Special cache flags (null: unknown)
  * @return array Array of results
  *
  * @ignore
  */
-function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : array
+function _get_cache_entries(array $dets) : array
 {
     static $cache = [];
 
@@ -796,62 +795,62 @@ function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : arr
 
     $rets = [];
 
-    $staff_status = null;
-    $member_id = null;
-    $groups = null;
-    $is_bot = null;
-    $timezone = null;
-    $theme = null;
-    $lang = null;
-    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
-
     // Bulk load
     if ($GLOBALS['PERSISTENT_CACHE'] === null) {
         $do_query = false;
 
         $sql = 'SELECT cached_for,identifier,the_value,date_and_time,dependencies FROM ' . get_table_prefix() . 'cache WHERE 1=1';
 
-        if ($staff_status === null) {
-            $sql .= ' AND staff_status IS NULL';
-        } else {
-            $sql .= ' AND staff_status=' . strval($staff_status);
-        }
-        if ($member_id === null) {
-            $sql .= ' AND the_member IS NULL';
-        } else {
-            $sql .= ' AND the_member=' . strval($member_id);
-        }
-        if ($groups === null) {
-            $sql .= ' AND ' . db_string_equal_to('the_groups', '');
-        } else {
-            $sql .= ' AND ' . db_string_equal_to('the_groups', $groups);
-        }
-        if ($is_bot === null) {
-            $sql .= ' AND is_bot IS NULL';
-        } else {
-            $sql .= ' AND is_bot=' . strval($is_bot);
-        }
-        if ($timezone === null) {
-            $sql .= ' AND ' . db_string_equal_to('timezone', '');
-        } else {
-            $sql .= ' AND ' . db_string_equal_to('timezone', $timezone);
-        }
-
-        $sql .= ' AND ' . db_string_equal_to('the_theme', $theme);
-        $sql .= ' AND ' . db_string_equal_to('lang', $lang);
-
         $sql .= ' AND (1=0';
         foreach ($dets as $det) {
             list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-            $sz = serialize([$codename, $md5_cache_identifier]);
+            $sz = serialize([$codename, $md5_cache_identifier, $special_cache_flags]);
             if (isset($cache[$sz])) { // Already cached
                 $rets[] = $cache[$sz];
                 continue;
             }
 
             $sql .= ' OR ';
+
             $sql .= db_string_equal_to('cached_for', $codename) . ' AND ' . db_string_equal_to('identifier', $md5_cache_identifier);
+
+            $staff_status = null;
+            $member_id = null;
+            $groups = null;
+            $is_bot = null;
+            $timezone = null;
+            $theme = null;
+            $lang = null;
+            get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
+
+            if ($staff_status === null) {
+                $sql .= ' AND staff_status IS NULL';
+            } else {
+                $sql .= ' AND staff_status=' . strval($staff_status);
+            }
+            if ($member_id === null) {
+                $sql .= ' AND the_member IS NULL';
+            } else {
+                $sql .= ' AND the_member=' . strval($member_id);
+            }
+            if ($groups === null) {
+                $sql .= ' AND ' . db_string_equal_to('the_groups', '');
+            } else {
+                $sql .= ' AND ' . db_string_equal_to('the_groups', $groups);
+            }
+            if ($is_bot === null) {
+                $sql .= ' AND is_bot IS NULL';
+            } else {
+                $sql .= ' AND is_bot=' . strval($is_bot);
+            }
+            if ($timezone === null) {
+                $sql .= ' AND ' . db_string_equal_to('timezone', '');
+            } else {
+                $sql .= ' AND ' . db_string_equal_to('timezone', $timezone);
+            }
+            $sql .= ' AND ' . db_string_equal_to('the_theme', $theme);
+            $sql .= ' AND ' . db_string_equal_to('lang', $lang);
 
             $do_query = true;
         }
@@ -864,7 +863,7 @@ function _get_cache_entries(array $dets, ?int $special_cache_flags = null) : arr
     foreach ($dets as $det) {
         list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-        $sz = serialize([$codename, $md5_cache_identifier]);
+        $sz = serialize([$codename, $md5_cache_identifier, $special_cache_flags]);
         if (isset($cache[$sz])) { // Already cached
             $rets[] = $cache[$sz];
             continue;

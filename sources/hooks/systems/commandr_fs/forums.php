@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -520,6 +520,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
             list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
+            if ($resource_id === null) {
+                return false;
+            }
+
             require_code('cns_forums_action2');
 
             $label = $this->_default_property_str($properties, 'label');
@@ -534,6 +538,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'topic');
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
             list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
+
+            if ($resource_id === null) {
+                return false;
+            }
 
             require_code('cns_topics_action2');
 
@@ -598,6 +606,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
     public function folder_delete(string $filename, string $path) : bool
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         if ($resource_type == 'forum') {
             require_code('cns_forums_action2');
@@ -709,6 +721,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'topic');
         list($properties,) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
+        if ($resource_id === null) {
+            return false;
+        }
+
         if ($category == '') {
             return false;
         }
@@ -754,6 +770,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'topic');
+
+        if ($resource_id === null) {
+            return false;
+        }
 
         $topic_id = $this->_integer_category($category);
 

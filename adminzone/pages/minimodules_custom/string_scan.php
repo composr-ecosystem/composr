@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -26,6 +26,9 @@ $title->evaluate_echo();
 require_code('string_scan');
 
 $lang = get_param_string('lang', fallback_lang());
+if (!does_lang_exist($lang)) {
+    $lang = fallback_lang();
+}
 list($just_lang_strings_admin, $just_lang_strings_non_admin, $lang_strings_shared, $lang_strings_unknown, $all_strings_in_lang, $strings_files) = string_scan($lang);
 
 require_all_lang();

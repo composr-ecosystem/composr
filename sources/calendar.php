@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -456,6 +456,7 @@ function find_periods_recurrence(string $timezone, int $do_timezone_conv, int $s
             break; // Let's be reasonable
         }
     } while (
+        ($recurrence != '') && // For corrupt data
         ($recurrence != 'none') &&
         ($a < $period_end) &&
         (($recurrences === null) || ($happened_count < $recurrences))
@@ -654,24 +655,24 @@ function date_range(int $from, ?int $to, bool $do_time = true, bool $force_absol
     if (($to - $from > 60 * 60 * 24) || (!$do_time) || ($force_absolute)) {
         if (!$do_time) {
             if ($force_absolute) { // Absolute, no time (with length)
-                $date1 = cms_strftime(do_lang('calendar_date_verbose'), $from);
-                $date2 = cms_strftime(do_lang('calendar_date_verbose'), $to);
+                $date1 = cms_date(do_lang('calendar_date_verbose'), $from);
+                $date2 = cms_date(do_lang('calendar_date_verbose'), $to);
             } else {
                 return $_length; // No time (with length)
             }
         } else { // Absolute, time (with length)
-            $date1 = cms_strftime(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $from);
-            $date2 = cms_strftime(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $to);
+            $date1 = cms_date(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $from);
+            $date2 = cms_date(do_lang(($to - $from > 60 * 60 * 24 * 5) ? 'calendar_date_range_single_long' : 'calendar_date_range_single'), $to);
         }
     } else { // Just time (with length)
         $pm_a = date('a', $from);
         $pm_b = date('a', $to);
         if ($pm_a == $pm_b) {
-            $date1 = cms_strftime(do_lang('calendar_minute_ampm_known'), $from);
-            $date2 = cms_strftime(do_lang('calendar_minute'), $to);
+            $date1 = cms_date(do_lang('calendar_minute_ampm_known'), $from);
+            $date2 = cms_date(do_lang('calendar_minute'), $to);
         } else {
-            $date1 = cms_strftime(do_lang('calendar_minute'), $from);
-            $date2 = cms_strftime(do_lang('calendar_minute'), $to);
+            $date1 = cms_date(do_lang('calendar_minute'), $from);
+            $date2 = cms_date(do_lang('calendar_minute'), $to);
         }
         $_date1 = str_replace(do_lang('calendar_minute_no_minutes'), '', $date1);
         $_date2 = str_replace(do_lang('calendar_minute_no_minutes'), '', $date2);
@@ -679,7 +680,7 @@ function date_range(int $from, ?int $to, bool $do_time = true, bool $force_absol
             $date1 = $_date1;
             $date2 = $_date2;
         }
-        $date = cms_strftime(do_lang('calendar_date_verbose'), $from);
+        $date = cms_date(do_lang('calendar_date_verbose'), $from);
         return do_lang('EVENT_TIME_RANGE_WITHIN_DAY' . (($timezone == '') ? '' : '_WITH_TIMEZONE'), $date, $date1, [$date2, $_length, $timezone]);
     }
 
@@ -1095,7 +1096,7 @@ function find_timezone_start_hour_in_utc(string $timezone, int $year, int $month
  * @param  integer $day Day
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Hour
+ * @return integer Minute
  */
 function find_timezone_start_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
 {
@@ -1113,15 +1114,19 @@ function find_timezone_start_minute_in_utc(string $timezone, int $year, int $mon
  * Find last hour in day for a timezone.
  *
  * @param  ID_TEXT $timezone The timezone of the event
- * @param  integer $year Year
- * @param  integer $month Month
- * @param  integer $day Day
+ * @param  ?integer $year Year (null: N/A)
+ * @param  ?integer $month Month (null: N/A)
+ * @param  ?integer $day Day (null: N/A)
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Hour
+ * @return ?integer Hour (null: N/A)
  */
-function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
+function find_timezone_end_hour_in_utc(string $timezone, ?int $year, ?int $month, ?int $day, string $monthly_spec_type) : ?int
 {
+    if (($year === null) || ($month === null) || ($day === null)) {
+        return null;
+    }
+
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
@@ -1136,15 +1141,19 @@ function find_timezone_end_hour_in_utc(string $timezone, int $year, int $month, 
  * Find last minute in day for a timezone. Usually 59, but some timezones have 30 min offsets.
  *
  * @param  ID_TEXT $timezone The timezone of the event
- * @param  integer $year Year
- * @param  integer $month Month
- * @param  integer $day Day
+ * @param  ?integer $year Year (null: N/A)
+ * @param  ?integer $month Month (null: N/A)
+ * @param  ?integer $day Day (null: N/A)
  * @param  ID_TEXT $monthly_spec_type In-month specification type
  * @set day_of_month day_of_month_backwards dow_of_month dow_of_month_backwards
- * @return integer Hour
+ * @return ?integer Minute (null: N/A)
  */
-function find_timezone_end_minute_in_utc(string $timezone, int $year, int $month, int $day, string $monthly_spec_type) : int
+function find_timezone_end_minute_in_utc(string $timezone, ?int $year, ?int $month, ?int $day, string $monthly_spec_type) : ?int
 {
+    if (($year === null) || ($month === null) || ($day === null)) {
+        return null;
+    }
+
     $_hour = 0;
     $_minute = 0;
     $day = find_concrete_day_of_month($year, $month, $day, $monthly_spec_type, $_hour, $_minute, $timezone, true);
@@ -1172,7 +1181,7 @@ function normalise_time_array(array $arr, string $zone) : array
 
     @date_default_timezone_set($zone);
 
-    $timestamp = mktime($hour, $minute, 0, $month, $day, $year);
+    $timestamp = mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year);
 
     if ($hour !== null) { // If time known
         $hour = intval(date('H', $timestamp));
@@ -1410,10 +1419,10 @@ function find_concrete_day_of_month(int $year, int $month, int $day, string $mon
     switch ($monthly_spec_type) {
         case 'day_of_month':
         default:
-            $day_of_month = intval(date('d', mktime($hour, $minute, 0, $month, $day, $year)));
+            $day_of_month = intval(date('d', mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month, $day, $year)));
             break;
         case 'day_of_month_backwards':
-            $day_of_month = intval(date('d', mktime($hour, $minute, 0, $month + 1, 0, $year))) - $day + 1;
+            $day_of_month = intval(date('d', mktime(($hour === null) ? 12 : $hour, ($minute === null) ? 0 : $minute, 0, $month + 1, 0, $year))) - $day + 1;
             break;
         case 'dow_of_month':
             $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; // Used to set the repeating sequence $day is for (e.g. 0 means first Monday, 7 means second Monday, and so on)
@@ -1521,13 +1530,13 @@ function monthly_spec_type_chooser(int $day_of_month, int $month, int $year, str
         $timestamp = mktime(0, 0, 0, $month, $day_of_month, $year);
 
         if (substr($monthly_spec_type, 0, 4) == 'dow_') {
-            $nth = cms_strftime(do_lang('calendar_day_of_month'), mktime(0, 0, 0, 1, intval(floatval($day) / 7.0) + 1, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
+            $nth = cms_date(do_lang('calendar_day_of_month'), mktime(0, 0, 0, 1, intval(floatval($day) / 7.0) + 1, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
         } else {
-            $nth = cms_strftime(do_lang('calendar_day_of_month'), mktime(0, 0, 0, $month, $day, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
+            $nth = cms_date(do_lang('calendar_day_of_month'), mktime(0, 0, 0, $month, $day, $year)); // Bit of a hack. Uses the date locales nth stuff, even when it's not actually a day-of-month here.
         }
-        $dow = cms_strftime('%a', $timestamp);
+        $dow = cms_date('D', $timestamp);
 
-        $month_name = cms_strftime('%b', $timestamp);
+        $month_name = cms_date('M', $timestamp);
 
         $text = do_lang_tempcode('CALENDAR_MONTHLY_RECURRENCE_CONCRETE_' . $monthly_spec_type, escape_html($nth), escape_html($dow), escape_html($month_name));
         $description = do_lang_tempcode('CALENDAR_MONTHLY_RECURRENCE_' . $monthly_spec_type);
@@ -1811,9 +1820,9 @@ function get_calendar_event_first_date(?string $timezone, int $do_timezone_conv,
     $do_time = $start_hour !== null;
     if ($to === null) {
         if (!$do_time) {
-            $written_date = cms_strftime(do_lang('calendar_date_verbose'), $from);
+            $written_date = cms_date(do_lang('calendar_date_verbose'), $from);
         } else {
-            $written_date = cms_strftime(do_lang('calendar_date_range_single'), $from);
+            $written_date = cms_date(do_lang('calendar_date_range_single'), $from);
         }
     } else {
         $written_date = date_range($from, $to, $do_time, true);

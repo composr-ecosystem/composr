@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -93,30 +93,42 @@ function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
     }
 
     $sessions = $SESSION_CACHE;
-    sort_maps_by($sessions, 'last_activity'); // There may be multiple, and we need the latest to come out of the algorithm on top
 
     $members = [];
+    $guests = [];
     $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+    $guests_online = 0;
     $members_online = 0;
     foreach ($sessions as $row) {
         if (($row['last_activity'] > $cutoff) && ($row['session_invisible'] == 0)) {
             if ($row['member_id'] == $guest_id) {
-                $count++;
-                $members[] = $row;
-                $members_online++;
-                if ($members_online == $max_to_show + 1) { // This is silly, don't display any
-                    if ($filter !== null) { // Unless we are filtering
-                        return $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval($cutoff) . ' AND member_id=' . strval($filter), 1);
-                    }
-                    return null;
+                if ($count < $max_to_show) {
+                    $guests[] = $row;
                 }
-            } elseif (!member_blocked(get_member(), $row['member_id'])) {
+
                 $count++;
-                $members[-$row['member_id']] = $row; // - (minus) is just a hackerish thing to allow it to do a unique, without messing with the above
+                $guests_online++;
+            } elseif ((!member_blocked(get_member(), $row['member_id'])) && (!isset($members[$row['member_id']]))) {
+                if ($count >= $max_to_show) { // Guests show with lower priority
+                    if (!empty($guests)) {
+                        array_pop($guests);
+                        $members[$row['member_id']] = $max_to_show;
+                    }
+                } else {
+                    $members[$row['member_id']] = $row;
+                }
+
+                $count++;
+                $members_online++;
             }
         }
+
+        if (($count >= $max_to_show) && ($filter !== null)) {
+            return $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE last_activity>' . strval($cutoff) . ' AND member_id=' . strval($filter), 1);
+        }
     }
-    return $members;
+
+    return array_merge($members, $guests);
 }
 
 /**

@@ -284,7 +284,7 @@ Here's a helpful script to search a codebase for a function call happening on a 
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -768,11 +768,13 @@ The 'keep' parameters available are:
  - [tt]keep_test_version[/tt] -- set to a dotted version number to test the version block in the Admin Zone dashboard as if you're running a different version. Likely needs combining with [tt]keep_cache_blocks=0[/tt]
  - [tt]keep_notifications[/tt] -- set this to '0' to suppress sending of notifications (only works if logged in as an administrator)
  - [tt]keep_quick_hybrid[/tt] -- set this to '1' in a quick installer to let the installer read code files from disk while installing if they are there; this allows hot-fixing/hot-debugging of installation bugs
+ - [tt]keep_show_timings[/tt] -- set this to '1' for the installer to spit out some timings information (for performance debugging) and turn off auto-continue
  - [tt]keep_translate_sort[/tt] -- set this to 'recent' to make the content translation interface show recent strings first; useful during debugging
  - [tt]keep_debug_fs[/tt] -- set this to '1' for disk I/O to be slowed and file system case sensitivity to be checked. This works in the installer or on the installed site so long as the [tt]$SITE_INFO['debug_fs'] = '1';[/tt] setting is also set in [tt]_config.php[/tt]. Or, to a higher number of milliseconds if you want to introduce fake I/O latency. It is for developer filesystem testing. It is not compatible with any use of system commands, so certain very particular parts of the system that rely on this will not function.
  - [tt]keep_manual_import_config[/tt] -- set this to '1' in the import module to disable automatic detection of the import target's database settings from its filesystem config file (if you don't have it, for example)
  - [tt]keep_composr_fast_custom_index[/tt] -- set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own full-text search, 1 for the Composr fast custom index
  - [tt]keep_check_backdoor_ip_dns[/tt] -- set this to '1' to check against hostnames in the [tt]backdoor_ip[/tt] setting
+ - [tt]keep_timer_display[/tt] -- set this to '1' if you want quiz timers to show in the quiz module, even to users with the bypass_quiz_timer privilege
 
 The following 'keep' parameters have interface triggers, but are also handy for manual activation:
  - [tt]keep_markers[/tt] -- set this to '1' if you want template start/end markers to be output in the page HTML source when viewed in Composr

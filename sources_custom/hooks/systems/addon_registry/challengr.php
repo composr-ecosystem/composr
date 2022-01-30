@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -137,7 +137,6 @@ class Hook_addon_registry_challengr
             'lang_custom/EN/quiz.ini',
             'themes/default/templates_custom/QUIZ_DONE_SCREEN.tpl',
             'site/pages/modules_custom/quiz.php',
-            'sources_custom/quiz.php',
             'themes/default/templates_custom/QUIZ_BOX.tpl',
         ];
     }

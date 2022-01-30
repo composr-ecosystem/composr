@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -235,8 +235,8 @@ function _save_available_quiz_answers(int $id, string $text, string $type)
                 'q_required' => $required,
                 'q_marked' => $marked,
             ];
-            $map += lang_remap('q_question_text', $existing[$i]['q_question_text'], $question);
-            $map += lang_remap('q_question_extra_text', $existing[$i]['q_question_extra_text'], $question_extra_text);
+            $map += lang_remap_comcode('q_question_text', $existing[$i]['q_question_text'], $question);
+            $map += lang_remap_comcode('q_question_extra_text', $existing[$i]['q_question_extra_text'], $question_extra_text);
             $GLOBALS['SITE_DB']->query_update('quiz_questions', $map, ['id' => $existing[$i]['id']]);
 
             // Now we add the answers

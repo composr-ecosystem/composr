@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -407,7 +407,7 @@ class Module_vforums
         $_buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => '8c928f1f703e9ba232a7033adee19a31', 'TITLE' => do_lang_tempcode('ROOT_FORUM'), 'IMG' => 'buttons/all', 'IMMEDIATE' => false, 'URL' => $archive_url]));
         if ($title->evaluate() == do_lang('TOPICS_UNREAD')) {
             $mark_read_url = build_url(['page' => 'topics', 'type' => 'mark_read', 'id' => db_get_first_id()], get_module_zone('topics'));
-            $_buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'b96e17e77be6de6faf9eb340d7ba955a', 'TITLE' => do_lang_tempcode('ROOT_FORUM'), 'IMG' => 'buttons/mark_read', 'IMMEDIATE' => false, 'URL' => $mark_read_url]));
+            $_buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'b96e17e77be6de6faf9eb340d7ba955a', 'TITLE' => do_lang_tempcode('ROOT_FORUM'), 'IMG' => 'buttons__mark_read_forum', 'IMMEDIATE' => false, 'URL' => $mark_read_url]));
         }
 
         $tpl_map = [

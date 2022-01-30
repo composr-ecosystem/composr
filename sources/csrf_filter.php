@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -51,6 +51,8 @@ function generate_csrf_token(bool $force_fresh = false) : string
     if ($force_fresh) {
         $token = null;
     }
+
+    $GLOBALS['STATIC_CACHE_ENABLED'] = false;
 
     if ($token === null) {
         require_code('crypt');

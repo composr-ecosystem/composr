@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -21,13 +21,13 @@ class http_test_set extends cms_test_case
     public function testSimple()
     {
         $result = cms_http_request('http://example.com/');
-        $this->assertTrue(strpos($result->data, 'Example Domain') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false);
     }
 
     public function testSimpleHttps()
     {
         $result = cms_http_request('https://example.com/');
-        $this->assertTrue(strpos($result->data, 'Example Domain') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false);
     }
 
     public function testHead()
@@ -57,25 +57,25 @@ class http_test_set extends cms_test_case
     public function testRedirect()
     {
         $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true]);
-        $this->assertTrue(strpos($result->data, 'Redirect test page') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false);
     }
 
     public function testRedirectHttps()
     {
         $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true]);
-        $this->assertTrue(strpos($result->data, 'Redirect test page') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false);
     }
 
     public function testRedirectDisabled()
     {
         $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'no_redirect' => true]);
-        $this->assertTrue(($result->data === null) || (strpos($result->data, 'Redirect test page') === false));
+        $this->assertTrue($result->data === null);
     }
 
     public function testHttpAuth()
     {
         $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', ['convert_to_internal_encoding' => true, 'auth' => ['guest', 'guest']]);
-        $this->assertTrue(strpos($result->data, 'Your browser made it!') !== false);
+        $this->assertTrue($result->data !== null && strpos($result->data, 'Your browser made it!') !== false);
     }
 
     public function testWriteToFile()

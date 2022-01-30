@@ -17,7 +17,7 @@
 		<tbody>
 			{+START,LOOP,ROWS}
 				<tr class="{$CYCLE,results_table_zebra,zebra-0,zebra-1}">
-					<td><a href="{WEBSITE_URL*}" target="_blank">{WEBSITE_NAME*}</a></td>
+					<td><a href="{WEBSITE_URL*}" target="_blank" title="{WEBSITE_NAME*} {!LINK_NEW_WINDOW}">{WEBSITE_NAME*}</a></td>
 					<td><abbr title="{!_AGO,{!DAYS,{HITTIME_2*}}}">{!_AGO,{!HOURS,{HITTIME*}}}</abbr></td>
 					<td>{CMS_ACTIVE*}</td>
 					<td>{L_VERSION*}</td>

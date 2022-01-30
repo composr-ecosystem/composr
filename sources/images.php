@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -835,6 +835,9 @@ function cms_imagesave($image, string $path, ?string $ext = null, bool $lossy = 
 function get_matching_closed_captions_file(string $url, string $scope_limit = 'uploads/') : ?string
 {
     $path = convert_url_to_path($url);
+    if ($path === null) {
+        return null;
+    }
     $stem = get_custom_file_base() . '/' . $scope_limit . '/';
     if (substr($path, 0, strlen($stem)) == $stem) {
         require_code('files');

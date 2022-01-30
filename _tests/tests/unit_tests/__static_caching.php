@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -20,6 +20,11 @@ class __static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {
+        $panel_text = @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt');
+        if ((strpos($panel_text, 'main_newsletter_signup') !== false) || (strpos($panel_text, 'side_newsletter') !== false) || (strpos($panel_text, 'side_shoutbox') !== false)) {
+            $this->assertTrue(false, 'Cannot have a POSTing block in a side panel for this test');
+        }
+
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_inclusion_list']='.*';");
@@ -48,7 +53,7 @@ class __static_caching_test_set extends cms_test_case
 
         $time = $time_after - $time_before;
 
-        $this->assertTrue($time < 0.1, 'Took too long, ' . float_format($time) . ' seconds');
+        $this->assertTrue($time < 0.2/*HTTPS negotiation takes a little time at least*/, 'Took too long, ' . float_format($time) . ' seconds');
 
         $this->assertTrue(preg_match('#global\w*\.css#', $data) != 0);
         $this->assertTrue(strpos($data, '</html>') !== false);
@@ -58,8 +63,8 @@ class __static_caching_test_set extends cms_test_case
 
     public function testFailover()
     {
-        $url = build_url(['page' => ''], '');
-        $url2 = build_url(['page' => 'xxx-does-not-exist' . uniqid('', true)], '');
+        $url = build_url(['page' => '', 'keep_devtest' => null], '');
+        $url2 = build_url(['page' => 'xxx-does-not-exist' . uniqid('', true), 'keep_devtest' => null], '');
 
         $test_url = get_base_url() . '/does-not-exist.bin';
 
@@ -85,10 +90,10 @@ class __static_caching_test_set extends cms_test_case
         $this->assertTrue(strpos($ccc, "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not...' . $ccc);
 
         $result = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should be failed over, but cached
-        $this->assertTrue(strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');
+        $this->assertTrue($result !== null && strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');
 
         $result = http_get_contents($url2->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should be failed over, but cached
-        $this->assertTrue(strpos($result, 'FAILOVER_CACHE_MISS') !== false, 'Failover cache miss message not found');
+        $this->assertTrue($result !== null && strpos($result, 'FAILOVER_CACHE_MISS') !== false, 'Failover cache miss message not found');
 
         file_put_contents($config_file_path, $config_file);
     }

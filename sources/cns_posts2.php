@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -28,9 +28,10 @@
  * @param  ?AUTO_LINK $root Virtual root to use (null: none)
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @param  ?Tempcode $text_summary Text summary for result (e.g. highlighted portion of actual file from search result) (null: none)
+ * @param  ID_TEXT $zone The zone to display in
  * @return Tempcode The isolated post
  */
-function render_post_box(array $row, bool $use_post_title = false, bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '', ?object $text_summary = null) : object
+function render_post_box(array $row, bool $use_post_title = false, bool $give_context = true, bool $include_breadcrumbs = true, ?int $root = null, string $guid = '', ?object $text_summary = null, string $zone = '_SEARCH') : object
 {
     if ($row === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -164,7 +165,7 @@ function render_post_box(array $row, bool $use_post_title = false, bool $give_co
     if ($root !== null) {
         $map['keep_forum_root'] = $root;
     }
-    $post_url = build_url($map, get_module_zone('topicview'));
+    $post_url = build_url($map, $zone);
     $post_url->attach('#post_' . strval($row['id']));
     if ($text_summary === null) {
         $just_post_row = db_map_restrict($row, ['id', 'p_post'], ['id' => 'p_id']);

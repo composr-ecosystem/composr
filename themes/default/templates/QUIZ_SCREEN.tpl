@@ -3,6 +3,14 @@
 <div data-tpl="quizScreen" data-tpl-params="{+START,PARAMS_JSON,TIMEOUT}{_*}{+END}">
 	{TITLE}
 
+	{+START,IF_NON_EMPTY,{POINTS}}
+		<div class="meta-details" role="note">
+			<dl class="meta-details-list">
+				<dt class="field-name">{!POINTS}:</dt> <dd>{POINTS*}</dd>
+			</dl>
+		</div>
+	{+END}
+
 	{WARNING_DETAILS}
 
 	{$REQUIRE_CSS,quizzes}

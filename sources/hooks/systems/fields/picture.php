@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -136,7 +136,7 @@ class Hook_fields_picture
 
         if (url_is_local($ev)) {
             $keep = symbol_tempcode('KEEP');
-            $download_url = find_script('catalogue_file') . '?file=' . urlencode($image_url) . '&table=' . urlencode($table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode($id_field) . '&url_field=' . urlencode($url_field);
+            $download_url = find_script('catalogue_file') . '?file=' . urlencode($image_url) . '&table=' . urlencode(($table === null) ? '' : $table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode(($id_field === null) ? '' : $id_field) . '&url_field=' . urlencode(($url_field === null) ? '' : $url_field);
             $download_url .= '&inline=1';
             if ($field_id_field !== null) {
                 $download_url .= '&field_id_field=' . urlencode($field_id_field) . '&field_id=' . urlencode(strval($field['id']));

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -65,7 +65,7 @@ function _cms_rawurlrecode(string $url, bool $tolerate_errors) : string
 {
     $recoded = '';
 
-    $parts = preg_split('#(%[\dA-F]{1,2})#i', $url, null, PREG_SPLIT_DELIM_CAPTURE);
+    $parts = preg_split('#(%[\dA-F]{1,2})#i', $url, -1, PREG_SPLIT_DELIM_CAPTURE);
     foreach ($parts as $i => $part) {
         if ($i % 2 == 0) {
             $recoded .= $parts[$i];
@@ -154,7 +154,7 @@ class HarmlessURLCoder
         $decoded = '';
 
         $str = str_replace('+', ' ', $str);
-        $parts = preg_split('#(%[\dA-F]{1,2})#i', $str, null, PREG_SPLIT_DELIM_CAPTURE);
+        $parts = preg_split('#(%[\dA-F]{1,2})#i', $str, -1, PREG_SPLIT_DELIM_CAPTURE);
         foreach ($parts as $i => $part) {
             if ($i % 2 == 0) {
                 $decoded .= $parts[$i];

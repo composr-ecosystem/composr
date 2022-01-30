@@ -1,7 +1,6 @@
 {+START,IF,{$NOR,{$GET,login_screen},{$MATCH_KEY_MATCH,_WILD:login}}}
 	<div data-tpl="blockTopLogin">
 		<form title="{!_LOGIN}" action="{LOGIN_URL*}" method="post" class="form-inline top-login js-form-top-login" autocomplete="on">
-			{$INSERT_FORM_POST_SECURITY}
 			<input type="hidden" name="_active_login" value="1" />
 
 			{+START,IF,{$DESKTOP}}{+START,IF,{$NOT,{$CONFIG_OPTION,single_public_zone}}}{$,Hide login form when having single public zone to make space for navigation menu}

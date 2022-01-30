@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -83,13 +83,18 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
             foreach (['RSS2', 'Atom'] as $type) {
                 $url = find_script('backend') . '?type=' . $type . '&mode=' . $feed . '&days=30&max=100';
-                $data = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'cookies' => [get_session_cookie() => $this->session_id]]);
+                $data = http_get_contents($url, ['trigger_error' => false, 'timeout' => 10.0, 'convert_to_internal_encoding' => true, 'cookies' => [get_session_cookie() => $this->session_id]]);
+
+                if ($data === null) {
+                    $this->assertTrue(false, 'Failed generation on ' . $url);
+                    continue;
+                }
 
                 $data = str_replace(['http://localhost/', 'https://localhost/'], ['http://example.com/', 'http://example.com/'], $data); // Workaround validator bug
 
-                $result = http_get_contents('https://validator.w3.org/feed/check.cgi', ['timeout' => 30.0, 'convert_to_internal_encoding' => true, 'post_params' => ['rawdata' => $data]]);
+                $result = http_get_contents('https://validator.w3.org/feed/check.cgi', ['trigger_error' => false, 'timeout' => 30.0, 'convert_to_internal_encoding' => true, 'post_params' => ['rawdata' => $data]]);
 
-                $ok = (strpos($result, 'Congratulations!') !== false);
+                $ok = ($result !== null) && (strpos($result, 'Congratulations!') !== false);
                 if (!$ok) {
                     if ($this->debug) {
                         @var_dump($data);

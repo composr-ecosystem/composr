@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -73,8 +73,7 @@ class Hook_cdn_transfer_cloudinary
 
         // Proceed...
 
-        $before = ini_get('ocproducts.type_strictness');
-        cms_ini_set('ocproducts.type_strictness', '0');
+        destrictify();
 
         $cloud_name = get_option('cloudinary_cloud_name');
         $api_key = get_option('cloudinary_api_key');
@@ -139,7 +138,7 @@ class Hook_cdn_transfer_cloudinary
 
         $id = $result['public_id'];
 
-        cms_ini_set('ocproducts.type_strictness', $before);
+        restrictify();
 
         return $url;
     }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -57,7 +57,7 @@ class lang_missing_parameters_test_set extends cms_test_case
                     if (!empty($matches[$i][4][0])) {
                         $num_params++;
                         if (!empty($matches[$i][5][0])) {
-                            $num_params++;
+                            $num_params += 40; // May be an array, so assume lots in it
                         }
                     }
                 }

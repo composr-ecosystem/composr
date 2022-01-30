@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -98,7 +98,7 @@ class Hook_health_check_marketing extends Hook_Health_Check
         } elseif (addon_installed('stats')) {
             $this->stateCheckManual('Check stats to see how your site is performing');
         }
-        $this->stateCheckManual('See how your traffic compares to other websites using [url="Alexa"]https://www.alexa.com/[/url]');
+        $this->stateCheckManual('See how your traffic compares to other websites using [url="Similarweb"]https://www.similarweb.com/[/url]');
     }
 
     /**

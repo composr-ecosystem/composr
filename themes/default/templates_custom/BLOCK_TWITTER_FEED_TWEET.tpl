@@ -11,7 +11,7 @@
 {+END}
 
 {+START,SET,tweet_timestamp}
-	{$FROM_TIMESTAMP*,%d %B %Y\, %I:%M:%S %p,{$TO_TIMESTAMP,{TWEET_CREATED_AT}}} &ndash; {TWEET_TIME_AGO*}
+	{$FROM_TIMESTAMP*,d F Y\, h:I:s A,{$TO_TIMESTAMP,{TWEET_CREATED_AT}}} &ndash; {TWEET_TIME_AGO*}
 {+END}
 
 {+START,IF,{$EQ,{STYLE},1}}
@@ -52,7 +52,7 @@
 
 		<div style="{+START,IF,{SHOW_PROFILE_IMAGE}}float:left; border-left: 1px solid #ccc; padding: 0; margin-left: 1em; padding-left: 1em; width: calc(100% - 48px - 2em - 1px - 80px);{+END}">
 			<strong>{USER_NAME*}</strong><br />
-			<a href="{USER_PAGE_URL*}" target="_blank">@{USER_SCREEN_NAME*}</a>
+			<a href="{USER_PAGE_URL*}" target="_blank" title="@{USER_SCREEN_NAME*} {!LINK_NEW_WINDOW}">@{USER_SCREEN_NAME*}</a>
 		</div>
 	</div>
 

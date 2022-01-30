@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -614,7 +614,7 @@ function stats_find_graph_details(string $graph_name, bool $for_kpi = false): ?a
  */
 function get_stats_month_for_timestamp(int $timestamp): int
 {
-    list($year, $month) = array_map('intval', explode('-', cms_strftime('%Y-%m', $timestamp)));
+    list($year, $month) = array_map('intval', explode('-', cms_date('Y-m', $timestamp)));
     return ($year - 1970) * 12 + ($month - 1);
 }
 
@@ -651,9 +651,9 @@ abstract class CMSStatsHookBase
  */
 abstract class CMSStatsProvider extends CMSStatsHookBase
 {
-    protected const GRAPH_LINE_CHART = 1;
-    protected const GRAPH_PIE_CHART = 2;
-    protected const GRAPH_BAR_CHART = 3;
+    public const GRAPH_LINE_CHART = 1;
+    public const GRAPH_PIE_CHART = 2;
+    public const GRAPH_BAR_CHART = 3;
 
     protected const KPI_HIGH_IS_GOOD = 1;
     protected const KPI_LOW_IS_GOOD = 2;
@@ -813,20 +813,20 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
     {
         switch ($pivot) {
             case 'hour_of_day':
-                return intval(cms_strftime('%H', $timestamp));
+                return intval(cms_date('H', $timestamp));
             case 'day_series':
-                return cms_strftime('%Y-%m-%d', $timestamp);
+                return cms_date('Y-m-d', $timestamp);
             case 'day_of_week':
-                return intval(cms_strftime('%w', $timestamp));
+                return intval(cms_date('w', $timestamp));
             case 'month_series':
                 return get_stats_month_for_timestamp($timestamp);
             case 'month_of_year':
-                return intval(cms_strftime('%m', $timestamp));
+                return intval(cms_date('m', $timestamp));
             case 'quarter_series':
-                $month = floatval(cms_strftime('%m', $timestamp));
+                $month = floatval(cms_date('m', $timestamp));
                 return intval(floor($month / 4.0));
             case 'year_series':
-                return intval(cms_strftime('%Y', $timestamp));
+                return intval(cms_date('Y', $timestamp));
         }
 
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -932,7 +932,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
 
         switch ($pivot) {
             case 'hour_of_day':
-                return trim(cms_strftime('%l%P', mktime($pivot_value)));
+                return trim(cms_date('ga', mktime($pivot_value)));
 
             case 'day_of_week':
                 $dows = [
@@ -1401,59 +1401,6 @@ class CMSStatsDatePivot extends CMSStatsFilter
         }
         return form_input_list($this->label, new Tempcode(), $this->filter_name, $list);
     }
-}
-
-/**
- * Function to find Alexa details of the site.
- *
- * @param  ?string $url The URL of the site which you want to find out information on.) (null: base URL)
- * @param  boolean $support_caching Whether to support caching
- * @return array Returns a pair with the rank, and the amount of links
- */
-function get_alexa_rank(?string $url = null, bool $support_caching = true): array
-{
-    if ($url === null) {
-        $url = get_base_url() . '/';
-    }
-
-    if ($support_caching) {
-        $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24, true);
-        if ($test !== null) {
-            return unserialize($test);
-        }
-    }
-
-    $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
-    $result = http_get_contents($_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0]);
-    if ($result === null) {
-        return [null, null];
-    }
-
-    $matches = [];
-    if (preg_match('#Rank <span class="small data textbig marginleft10"><span class="hash">\#</span>([\d,]+)#s', $result, $matches) != 0) {
-        $rank = intval(str_replace(',', '', $matches[1]));
-    } else {
-        $rank = null;
-    }
-    if (preg_match('#Sites Linking In: <a href="/siteinfo/yahoo.com" target="_blank" class="small data">([\d,]+)#s', $result, $matches) != 0) {
-        $links = intval(str_replace(',', '', $matches[1]));
-    } else {
-        $links = null;
-    }
-
-    // we would like, but cannot get (without an API key)...
-    /*
-        time on site
-        reach (as a percentage)
-        page views
-        audience (i.e. what country views the site most)
-     */
-
-    $ret = [$rank, $links];
-
-    set_value('alexa__' . md5($url), serialize($ret), true);
-
-    return $ret;
 }
 
 /**

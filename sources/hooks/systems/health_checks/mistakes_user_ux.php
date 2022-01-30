@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -87,7 +87,16 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             return;
         }
 
-        $domains = get_server_names(false, false);
+        global $SITE_INFO;
+        $domains = [
+            '' => parse_url(get_base_url(), PHP_URL_HOST),
+        ];
+        $zl = strlen('ZONE_MAPPING_');
+        foreach ($SITE_INFO as $key => $_val) {
+            if ($key !== '' && $key[0] === 'Z' && substr($key, 0, $zl) === 'ZONE_MAPPING_') {
+                $domains[substr($key, $zl)] = $_val[0];
+            }
+        }
 
         foreach ($domains as $zone => $domain) {
             if (is_local_machine($domain)) {

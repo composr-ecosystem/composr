@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -523,7 +523,7 @@ class Module_banners
                 if ($sortable == 'day') {
                     $period = get_timezoned_date($row['c_date_and_time']);
                 } else {
-                    $period = cms_strftime('%B %Y', $row['c_date_and_time']);
+                    $period = cms_date('F Y', $row['c_date_and_time']);
                 }
 
                 if (!isset($tally_sets[$period])) {

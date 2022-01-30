@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -63,6 +63,10 @@ function _apply_emoticons(string $text) : string
     // Pre-check, optimisation
     $emoticons = [];
     foreach ($_emoticons as $code => $imgcode) {
+        if (is_integer($code)) {
+            $code = strval($code);
+        }
+
         if (strpos($text, $code) !== false) {
             $emoticons[$code] = $imgcode;
         }
@@ -522,6 +526,9 @@ function test_url(string $url_full, string $tag_type, string $given_url, int $so
         return new Tempcode();
     }
     if (strpos($url_full, '{$') !== false) {
+        return new Tempcode();
+    }
+    if (substr($url_full, 0, 1) == '#') {
         return new Tempcode();
     }
 

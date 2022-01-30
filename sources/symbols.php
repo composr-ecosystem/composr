@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -2207,7 +2207,7 @@ function symbol_truncator(array $param, string $type, $tooltip_if_truncated = nu
                 break;
         }
 
-        if ($tooltip) {
+        if (($tooltip) && (preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($truncated), ENT_QUOTES, get_charset()))) != preg_replace('#\s+#', ' ', html_entity_decode(strip_tags($html), ENT_QUOTES, get_charset()))) {
             if ($tooltip_if_truncated !== null) {
                 $tif = (is_object($tooltip_if_truncated) ? $tooltip_if_truncated->evaluate() : $tooltip_if_truncated);
                 if (strpos($tif, $html) !== false) {
@@ -4535,10 +4535,7 @@ function ecv_FROM_TIMESTAMP(string $lang, array $escaped, array $param) : string
         if ((!isset($param[2])) || ($param[2] === '1')) {
             $timestamp = utctime_to_usertime($timestamp);
         }
-        $value = cms_strftime($param[0], $timestamp);
-        if ($value === $param[0]) { // If no conversion happened then the syntax must have been for 'date' not 'strftime'
-            $value = date($param[0], $timestamp);
-        }
+        $value = cms_date($param[0], $timestamp);
     } else {
         if ($GLOBALS['STATIC_TEMPLATE_TEST_MODE']) {
             require_code('lorem');

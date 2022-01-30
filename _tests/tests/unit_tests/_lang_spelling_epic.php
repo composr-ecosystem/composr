@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -844,7 +844,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'albert',
             'alberta',
             'albumname',
-            'alexa',
             'aliquam',
             'allen',
             'allocable',
@@ -2668,7 +2667,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'stopword',
             'str',
             'strategise',
-            'strftime',
             'stringwithformat',
             'strippable',
             'strlen',

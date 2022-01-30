@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -223,8 +223,7 @@ class Hook_addon_registry_core_comcode_pages
             'TITLE' => lorem_title(),
             'TABLE' => placeholder_table(),
             'SUBMIT_NAME' => lorem_word(),
-            'POST_URL' => placeholder_url(),
-            'HIDDEN' => '',
+            'URL' => placeholder_url(),
             'TEXT' => lorem_paragraph_html(),
             'LINKS' => $links,
             'FILTER' => '',

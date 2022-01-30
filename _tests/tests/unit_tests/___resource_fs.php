@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -91,6 +91,7 @@ class ___resource_fs_test_set extends cms_test_case
                     $_path = $ob->folder_convert_id_to_filename($folder_resource_type_1, 'test-a');
                     $ob->folder_delete('test-a', $_path);
                 } catch (Exception $e) {
+                } catch (Error $e) {
                 }
                 set_throw_errors(false);
 
@@ -109,6 +110,7 @@ class ___resource_fs_test_set extends cms_test_case
             try {
                 $ob->file_delete('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
             } catch (Exception $e) {
+            } catch (Error $e) {
             }
             set_throw_errors(false);
 
@@ -306,6 +308,7 @@ class ___resource_fs_test_set extends cms_test_case
                         $this->assertTrue($result !== false, 'Failed to folder_delete ' . $commandr_fs_hook . ' (' . $_path . ')');
                     }
                 } catch (Exception $e) {
+                } catch (Error $e) {
                 }
                 set_throw_errors(false);
             }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -95,7 +95,7 @@ class Hook_rss_calendar
 
             $row = $_row[1];
 
-            $id = strval($_row[0]);
+            $id = strval($_row[0]) . '_' . strval($_row[2]); // Uses date as well, to avoid duplication
             $author = '';
 
             // The "add" date'll be actually used for the event time

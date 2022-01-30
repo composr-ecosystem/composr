@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -486,7 +486,7 @@ abstract class Hook_Health_Check
 
             // Server blocked to access itself
             if ($page_link == ':') {
-                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, 'The server cannot download itself');
+                $this->assertTrue($HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] !== null, 'The server cannot download from self-hosted page-link [tt]' . $page_link . '[/tt]');
             }
         }
         return $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link];

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2021
+ Copyright (c) ocProducts, 2004-2022
 
  See docs/LICENSE.md for full licensing information.
 
@@ -30,7 +30,7 @@ class string_functions_test_set extends cms_test_case
             'cms_urlencode' => 'urlencode',
             'cms_rawurlencode' => 'rawurlencode',
             'cms_escapeshellarg' => 'escapeshellarg',
-            'cms_strftime' => 'strftime',
+            'cms_date' => 'date',
             'cms_mb_strlen' => 'strlen',
             'cms_mb_strtolower' => 'strtolower',
             'cms_mb_strtoupper' => 'strtoupper',

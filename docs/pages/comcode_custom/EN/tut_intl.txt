@@ -65,10 +65,7 @@ All bundled languages packs are located in the [tt]lang[/tt] directory of Compos
 
 Language string codes that are in lower case are special strings, that should not be translated directly. These strings contain encoded information relating to the language pack. All these strings have documentation labels to explain what they do.
 
-For dates and times we use the PHP [url]http://php.net/manual/en/function.strftime.php[/url] function, except the following changes are made by Composr...
- - [tt]%e[/tt] is the day of the month but will not have a leading space (because that's ugly) and will work on Windows servers too
- - [tt]%l[/tt] is the 12-hour clock hour but will not have a leading space digit (because that's ugly)
- - [tt]%o[/tt] is an English date ordinal (e.g. [tt]st[/tt] or [tt]th[/tt])
+For dates and times we use the PHP [url]http://php.net/manual/en/function.date.php[/url] function, except the following changes are made by Composr, except we automatically internationalise the results.
 
 [title="4"]Dates[/title]
 
@@ -86,41 +83,41 @@ However, it is useful for us to document the strings involved, and an illustrati
 | [tt]date_concise_near_date[/tt]
 ([tt]global[/tt] language file)
 | A date ~ within year
-| [tt]%e %b[/tt] (e.g. 14 Feb)
-| [tt]%b %e[/tt] (e.g. Feb 14)
+| [tt]j M[/tt] (e.g. 14 Feb)
+| [tt]M j[/tt] (e.g. Feb 14)
 |-
 | [tt]date_no_year[/tt]
 ([tt]global[/tt] language file)
 | A date ~ within year
-| [tt]%e%o %B %Y[/tt] (e.g. 14th February)
-| [tt]%B %e%o %Y[/tt] (e.g. February 14th)
+| [tt]jS F Y[/tt] (e.g. 14th February)
+| [tt]F jS Y[/tt] (e.g. February 14th)
 |-
 | [tt]date_date[/tt]
 ([tt]global[/tt] language file)
 | A date
-| [tt]%e%o %B %Y[/tt] (e.g. 14th February 2017)
-| [tt]%B %e%o %Y[/tt] (e.g. February 14th 2017)
+| [tt]jS F Y[/tt] (e.g. 14th February 2017)
+| [tt]F jS Y[/tt] (e.g. February 14th 2017)
 |-
 | [tt]calendar_date[/tt]
 ([tt]calendar[/tt] language file)
 | A date in conciser form (calendar-only)
-| [tt]%d-%m-%Y[/tt] (e.g. 14-02-2017)
-| [tt]%m-%d-%Y[/tt] (e.g. 02-14-2017)
+| [tt]d-m-Y[/tt] (e.g. 14-02-2017)
+| [tt]m-d-Y[/tt] (e.g. 02-14-2017)
 |-
 | [tt]calendar_date_verbose[/tt]
 ([tt]calendar[/tt] language file)
 | A date in verboser form (calendar-only)
-| [tt]%a %e%o %B %Y[/tt] (e.g. Mon 14th February 2017)
-| [tt]%a %B %e%o %Y[/tt] (e.g. Mon February 14th 2017)
+| [tt]D jS F Y[/tt] (e.g. Mon 14th February 2017)
+| [tt]D F jS Y[/tt] (e.g. Mon February 14th 2017)
 |-
 | [tt]calendar_day_of_month_verbose[/tt]
 ([tt]calendar[/tt] language file)
 | A date within a month (calendar-only)
-| [tt]%a %e%o[/tt] (e.g. Mon 14th)
-| [tt]%a %e%o[/tt] (e.g. Mon 14th)
+| [tt]D jS[/tt] (e.g. Mon 14th)
+| [tt]D jS[/tt] (e.g. Mon 14th)
 |}
 
-Non-English speaking users may want to make other changes, e.g. remove [tt]%o[/tt] so that suffixes like [tt]th[/tt] and [tt]st[/tt] aren't used.
+Non-English speaking users may want to make other changes, e.g. remove [tt]S[/tt] so that suffixes like [tt]th[/tt] and [tt]st[/tt] aren't used.
 
 We define dates with some different variations. This is because practically it isn't appropriate to try and use only one format across the entire system. The calendar may use date formats from [tt]global[/tt], but the rest of Composr will not use date formats from the calendar.
 
@@ -136,32 +133,32 @@ Commonly non-English users will want to switch to a 24-hour clock for time. Here
 | [tt]date_regular_time[/tt]
 ([tt]global[/tt] language file)
 | A time in regular form 
-| [tt]%l:%M %p[/tt] (e.g. 8:14 am [i]or[/i] 8:14 pm)
-| [tt]%H:%M[/tt] (e.g. 08:14 or 20:14)
+| [tt]g:I A[/tt] (e.g. 8:14 am [i]or[/i] 8:14 pm)
+| [tt]H:I[/tt] (e.g. 08:14 or 20:14)
 |-
 | [tt]date_verbose_time[/tt]
 ([tt]global[/tt] language file)
 | A time in verbose form (calendar-only)
-| [tt]%l:%M %p[/tt] (e.g. 8:14 am [i]or[/i] 8:14 pm)
-| [tt]%H:%M[/tt] (e.g. 08:14 or 20:14)
+| [tt]g:I A[/tt] (e.g. 8:14 am [i]or[/i] 8:14 pm)
+| [tt]H:I[/tt] (e.g. 08:14 or 20:14)
 |-
 | [tt]calendar_minute[/tt]
 ([tt]calendar[/tt] language file)
 | A time (calendar-only)
-| [tt]%l:%M %p[/tt] (e.g. 8:14 am [i]or[/i] 8:14 pm)
-| [tt]%H:%M[/tt] (e.g. 08:14 or 20:14)
+| [tt]g:I A[/tt] (e.g. 8:14 am [i]or[/i] 8:14 pm)
+| [tt]H:I[/tt] (e.g. 08:14 or 20:14)
 |-
 | [tt]calendar_date_range_single[/tt]
 ([tt]calendar[/tt] language file)
 | A time range happening on a particular date ~ within month (calendar-only)
-| [tt]%l:%M %p (%e%o)[/tt] (e.g. 8:14 am (14th) [i]or[/i] 8:14 pm (14th))
-| [tt]%l:%M %p (%e%o)[/tt] (e.g. 8:14 am (14th) [i]or[/i] 8:14 pm (14th))
+| [tt]g:I A (jS)[/tt] (e.g. 8:14 am (14th) [i]or[/i] 8:14 pm (14th))
+| [tt]g:I A (jS)[/tt] (e.g. 8:14 am (14th) [i]or[/i] 8:14 pm (14th))
 |-
 | [tt]calendar_date_range_single_long[/tt]
 ([tt]calendar[/tt] language file)
 | A time range happening on a particular date (calendar-only)
-| [tt]%l:%M %p (%e%o %b)[/tt] (e.g. 8:14 am (14th Feb) [i]or[/i] 8:14 pm (14th Feb))
-| [tt]%l:%M %p (%b %e%o)[/tt] (e.g. 8:14 am (Feb 14th) [i]or[/i] 8:14 pm (Feb 14th))
+| [tt]g:I A (jS M)[/tt] (e.g. 8:14 am (14th Feb) [i]or[/i] 8:14 pm (14th Feb))
+| [tt]g:I A (M jS)[/tt] (e.g. 8:14 am (Feb 14th) [i]or[/i] 8:14 pm (Feb 14th))
 |}
 
 We define times with some different variations. This is because practically it isn't appropriate to try and use only one format across the entire system. The calendar may use time formats from [tt]global[/tt], but the rest of Composr will not use time formats from the calendar.
