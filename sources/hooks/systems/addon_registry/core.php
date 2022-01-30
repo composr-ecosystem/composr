@@ -1187,10 +1187,6 @@ class Hook_addon_registry_core
             'sources_custom/hooks/systems/login_providers_direct_auth/.htaccess',
             'sources/hooks/systems/login_providers_direct_auth/index.html',
             'sources_custom/hooks/systems/login_providers_direct_auth/index.html',
-            'sources/hooks/systems/upload_syndication/.htaccess',
-            'sources_custom/hooks/systems/upload_syndication/.htaccess',
-            'sources/hooks/systems/upload_syndication/index.html',
-            'sources_custom/hooks/systems/upload_syndication/index.html',
             'sources/hooks/systems/non_active_urls/.htaccess',
             'sources_custom/hooks/systems/non_active_urls/.htaccess',
             'sources/hooks/systems/non_active_urls/index.html',
@@ -1728,10 +1724,6 @@ class Hook_addon_registry_core
             'sources/uploads.php',
             'sources/urls_simplifier.php',
             'sources/uploads2.php',
-            'sources/upload_syndication.php',
-            'data/upload_syndication_auth.php',
-            'lang/EN/upload_syndication.ini',
-            'themes/default/templates/UPLOAD_SYNDICATION_SETUP_SCREEN.tpl',
             'sources/urls.php',
             'sources/urls2.php',
             'sources/users.php',
@@ -2010,7 +2002,6 @@ class Hook_addon_registry_core
             'templates/MASS_SELECT_FORM_BUTTONS.tpl' => 'mass_select_form_buttons',
             'templates/MASS_SELECT_MARKER.tpl' => 'mass_select_marker',
             'templates/MASS_SELECT_DELETE_FORM.tpl' => 'mass_select_delete_form',
-            'templates/UPLOAD_SYNDICATION_SETUP_SCREEN.tpl' => 'upload_syndication_setup_screen',
             'templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl' => 'group_member_timeout_manage_screen',
             'templates/SPONSORS_SCREEN.tpl' => 'sponsors_screen',
             'templates/TRANSLATION_LINKS.tpl' => 'translation_links',
@@ -2869,22 +2860,6 @@ class Hook_addon_registry_core
             'ACTIVE_FILTER' => placeholder_id(),
             'SUBMIT_ICON' => 'buttons/proceed',
             'LINKS' => $links,
-        ]), null, '', true);
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return Tempcode Preview
-     */
-    public function tpl_preview__upload_syndication_setup_screen() : object
-    {
-        return lorem_globalise(do_lorem_template('UPLOAD_SYNDICATION_SETUP_SCREEN', [
-            'LABEL' => lorem_phrase(),
-            'HOOK' => lorem_word(),
-            'NAME' => lorem_word(),
         ]), null, '', true);
     }
 

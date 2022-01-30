@@ -254,9 +254,6 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
     require_javascript('checking');
     require_javascript('posting');
 
-    require_code('upload_syndication');
-    list($syndication_json, $filter) = get_upload_syndication_json(CMS_UPLOAD_ANYTHING);
-
     if (get_forum_type() == 'cns') {
         require_code('cns_groups');
         require_lang('cns');
@@ -269,12 +266,10 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
     }
 
     require_code('files2');
-    $max_attach_size = get_max_file_size(($syndication_json === null) ? get_member() : null, $GLOBALS['SITE_DB']);
+    $max_attach_size = get_max_file_size(get_member(), $GLOBALS['SITE_DB']);
     $no_quota = ((get_forum_type() == 'cns') && (cns_get_member_best_group_property(get_member(), 'max_daily_upload_mb') == 0));
     if ($no_quota) {
-        if ($syndication_json === null) {
-            return [new Tempcode(), new Tempcode()];
-        }
+        return [new Tempcode(), new Tempcode()];
     } else {
         $filter = null;
     }
@@ -288,7 +283,6 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
             '_GUID' => 'c3b38ca70cbd1c5f9cf91bcae9ed1134',
             'POSTING_FIELD_NAME' => $posting_field_name,
             'I' => strval($i),
-            'SYNDICATION_JSON' => $syndication_json,
             'NO_QUOTA' => $no_quota,
             'FILTER' => $filter,
             'TRUE_ATTACHMENT_UI' => $true_attachment_ui,
@@ -299,7 +293,6 @@ function get_attachments(string $posting_field_name, bool $true_attachment_ui = 
         '_GUID' => 'c3b38ca70cbd1c5f9cf91bcae9ed11ds',
         'POSTING_FIELD_NAME' => $posting_field_name,
         'I' => '__num_attachments__',
-        'SYNDICATION_JSON' => $syndication_json,
         'NO_QUOTA' => $no_quota,
         'FILTER' => $filter,
         'TRUE_ATTACHMENT_UI' => $true_attachment_ui,
@@ -1558,15 +1551,9 @@ function form_input_upload_multi_source($set_title, $set_description, object &$h
 
     $field_file = $set_name . '__upload';
 
-    if ($support_syndication) {
-        require_code('upload_syndication');
-        list($syndication_json,) = get_upload_syndication_json(CMS_UPLOAD_IMAGE);
-    } else {
-        $syndication_json = null;
-    }
     if ($filter === null) {
         if ($images_only !== null) {
-            $filter = get_allowed_image_file_types($images_only); // We don't use the filter from get_upload_syndication_json because we're not restricted to what can syndicate
+            $filter = get_allowed_image_file_types($images_only);
         } else {
             $filter = '';
         }
@@ -1577,7 +1564,7 @@ function form_input_upload_multi_source($set_title, $set_description, object &$h
             $required = false; // As we already have it. But we pass $default as '' so it does not offer deletion. The current URL is passed through the URL setting.
         }
 
-        $upload_widget = form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), $field_file, $required, null, null, true, $filter, $syndication_json);
+        $upload_widget = form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), $field_file, $required, null, null, true, $filter);
 
         $hidden_url_widget = form_input_hidden($set_name . '__url', $default);
         $hidden->attach($hidden_url_widget);
@@ -1587,7 +1574,7 @@ function form_input_upload_multi_source($set_title, $set_description, object &$h
 
     $field_set = alternate_fields_set__start($set_name);
 
-    $upload_widget = form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), $field_file, $required, $default, null, true, $filter, $syndication_json);
+    $upload_widget = form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), $field_file, $required, $default, null, true, $filter);
 
     $field_set->attach($upload_widget);
 
@@ -1706,10 +1693,9 @@ function make_previewable_url_absolute(?string $url) : array
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  boolean $plupload Whether plupload-style is preferred
  * @param  string $filter File-type filter to limit to, comma-separated file extensions (might not be supported)
- * @param  ?string $syndication_json JSON structure of what uploader syndications there will be (null: none)
  * @return Tempcode The input field
  */
-function form_input_upload($pretty_name, $description, string $name, bool $required, ?string $default = null, ?int $tabindex = null, bool $plupload = true, string $filter = '', ?string $syndication_json = null) : object
+function form_input_upload($pretty_name, $description, string $name, bool $required, ?string $default = null, ?int $tabindex = null, bool $plupload = true, string $filter = '') : object
 {
     if ($plupload) {
         require_javascript('plupload');
@@ -1737,7 +1723,6 @@ function form_input_upload($pretty_name, $description, string $name, bool $requi
         'TABINDEX' => strval($tabindex),
         'REQUIRED' => $_required,
         'NAME' => $name,
-        'SYNDICATION_JSON' => $syndication_json,
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
@@ -1753,10 +1738,9 @@ function form_input_upload($pretty_name, $description, string $name, bool $requi
  * @param  ?array $default The default value for the field (null: none)
  * @param  boolean $plupload Whether plupload-style is preferred
  * @param  string $filter File-type filter to limit to, comma-separated file extensions (might not be supported)
- * @param  ?string $syndication_json JSON structure of what uploader syndications there will be (null: none)
  * @return Tempcode The input field
  */
-function form_input_upload_multi($pretty_name, $description, string $name, bool $required, ?int $tabindex = null, ?array $default = null, bool $plupload = true, string $filter = '', ?string $syndication_json = null) : object
+function form_input_upload_multi($pretty_name, $description, string $name, bool $required, ?int $tabindex = null, ?array $default = null, bool $plupload = true, string $filter = '') : object
 {
     if ($plupload) {
         require_javascript('plupload');
@@ -1784,7 +1768,6 @@ function form_input_upload_multi($pretty_name, $description, string $name, bool 
         'NAME' => $name,
         'I' => '1',
         'NAME_STUB' => $name,
-        'SYNDICATION_JSON' => $syndication_json,
     ]);
     return _form_input('', $pretty_name, $description, $input, $required, false, $tabindex, false, true);
 }

@@ -38,7 +38,6 @@ function init__transifex()
         'global.ini' => TRANSLATE_PRIORITY_URGENT,
         'cns.ini' => TRANSLATE_PRIORITY_URGENT,
         'news.ini' => TRANSLATE_PRIORITY_URGENT,
-        'upload_syndication.ini' => TRANSLATE_PRIORITY_NORMAL,
         'trackbacks.ini' => TRANSLATE_PRIORITY_NORMAL,
         'sms.ini' => TRANSLATE_PRIORITY_NORMAL,
         'rss.ini' => TRANSLATE_PRIORITY_NORMAL,

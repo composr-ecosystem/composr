@@ -4,7 +4,7 @@
 	<img class="upload-field-image-preview" src="{$ENSURE_PROTOCOL_SUITABILITY*,{EXISTING_URL}}" title="" alt="{!EXISTING}" />
 {+END}
 
-<div class="upload-field inline-block" data-view="FromScreenInputUpload" data-view-params="{+START,PARAMS_JSON,NAME,PLUPLOAD,FILTER,SYNDICATION_JSON}{_*}{+END}">
+<div class="upload-field inline-block" data-view="FromScreenInputUpload" data-view-params="{+START,PARAMS_JSON,NAME,PLUPLOAD,FILTER}{_*}{+END}">
 	<div class="vertical-alignment inline-block">
 		<input tabindex="{TABINDEX*}" class="input-upload{REQUIRED*}" type="file" id="{NAME*}" name="{NAME*}" />
 		{+START,IF,{EDIT}}
@@ -21,8 +21,4 @@
 			</p>
 		{+END}
 	</div>
-
-	{+START,IF_PASSED,SYNDICATION_JSON}
-		<div id="{NAME*}-syndication-options" class="syndication-options"></div>
-	{+END}
 </div>

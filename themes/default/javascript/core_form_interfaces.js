@@ -154,12 +154,6 @@
                 window.$plupload.preinitFileInput('upload', params.name, null, params.filter);
             });
         }
-
-        if (params.syndicationJson != null) {
-            $cms.requireJavascript('editing').then(function () {
-                window.$editing.showUploadSyndicationOptions(params.name, params.syndicationJson);
-            });
-        }
     }
 
     $util.inherits(FromScreenInputUpload, $cms.View);
@@ -1095,12 +1089,6 @@
     $cms.templates.formScreenInputUploadMulti = function formScreenInputUploadMulti(params, container) {
         var nameStub = strVal(params.nameStub),
             index = strVal(params.i);
-
-        if (params.syndicationJson != null) {
-            $cms.requireJavascript('editing').then(function () {
-                window.$editing.showUploadSyndicationOptions(nameStub, params.syndicationJson);
-            });
-        }
 
         if (params.plupload && !$cms.isHttpauthLogin() && $cms.configOption('complex_uploader')) {
             window.$plupload.preinitFileInput('upload_multi', nameStub + '_' + index, null, params.filter);

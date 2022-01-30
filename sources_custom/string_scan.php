@@ -9435,7 +9435,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_PASSWORD_RESET_EXTERNAL_ARCHITECTURE
         FAILED
         FAILED_TO_OPEN_POPUP
-        FAILURE_UPLOAD_SYNDICATION_AUTH
         FC_MONDAY
         FC_TUESDAY
         FC_WEDNESDAY
@@ -10689,7 +10688,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUCCESS_NEWSLETTER_AUTO
         SUCCESS_NEWSLETTER_AUTO_INSTANT
         SUCCESS_SAVE
-        SUCCESS_UPLOAD_SYNDICATION_AUTH
         SUGGESTIONS_ONLY
         SUPER_MODERATORS
         SUPPORT_NO_TICKETS
@@ -10834,7 +10832,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADE
         UPLOAD
         UPLOAD_MUST_SYNDICATE
-        UPLOAD_SYNDICATION_AUTH
         UPLOAD_TO
         US
         USE
@@ -11135,7 +11132,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _ONLINE_NOW_NO_HOURS
         _ONLINE_NOW_NO_MINUTES
         _ONLINE_NOW_NO_MONTHS
-        _OVER_DAILY_QUOTA
         _PAID_SUBSCRIPTION_ENDED
         _PAID_SUBSCRIPTION_STARTED
         _PAID_SUBSCRIPTION_UHOH

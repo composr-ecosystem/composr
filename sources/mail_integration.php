@@ -661,9 +661,6 @@ abstract class EmailIntegration
 
             $urls = [cms_rawurlrecode('uploads/attachments/' . rawurlencode($new_filename)), ''];
 
-            require_code('upload_syndication');
-            $urls[0] = handle_upload_syndication('', '', '', $urls[0], $filename, true);
-
             $attachment_id = $GLOBALS['SITE_DB']->query_insert('attachments', [
                 'a_member_id' => $member_id,
                 'a_file_size' => strlen($filedata),

@@ -15,7 +15,6 @@
     $editing.insertTextbox = insertTextbox;
     $editing.insertTextboxWrapping = insertTextboxWrapping;
     $editing.getSelectedText = getSelectedText;
-    $editing.showUploadSyndicationOptions = showUploadSyndicationOptions;
 
     $cms.functions.comcodeAddTryForSpecialComcodeTagSpecificContentsUi = function () {
         // If we select an image we want to have good defaults for an image, but only if the defaults weren't already changed
@@ -1084,67 +1083,5 @@
         if (input.setSelectionRange !== undefined) {
             input.setSelectionRange(selectionStart, selectionEnd);
         }
-    }
-
-    function showUploadSyndicationOptions(name, syndicationJson, noQuota) {
-        name = strVal(name);
-        syndicationJson = strVal(syndicationJson);
-        noQuota = Boolean(noQuota);
-
-        var htmlSpot = document.getElementById(name + '-syndication-options'),
-            html = '',
-            numChecked = 0,
-            fileOb = document.getElementById(name),
-            preDisabled = fileOb.disabled, hook,
-            syndication = JSON.parse(syndicationJson),
-            num = Object.keys(syndication).length,
-            id, authorised, label, checked;
-
-        for (hook in syndication) {
-            id = 'upload_syndicate__' + hook + '__' + name;
-            authorised = syndication[hook].authorised;
-            label = syndication[hook].label;
-
-            if (authorised) {
-                checked = true;
-                numChecked++;
-            } else {
-                checked = false;
-            }
-
-            setTimeout((function (id, authorised, hook) {
-                $dom.on('#' + id, 'click', function () {
-                    var el = document.getElementById(id);
-                    if (el.checked && !authorised) {
-                        //e.checked=false;  Better to assume success, not all oAuth support callback
-                        var url = '{$FIND_SCRIPT_NOHTTP;,upload_syndication_auth}?hook=' + encodeURIComponent(hook) + '&name=' + encodeURIComponent(name) + $cms.keep();
-
-                        if ($cms.isMobile()) {
-                            window.open(url);
-                        } else {
-                            $cms.ui.open(url, null, 'width=960;height=500', '_top');
-                        }
-
-                        if (!preDisabled) {
-                            fileOb.disabled = false;
-                        }
-                    }
-                });
-            }).bind(undefined, id, authorised, hook), 0);
-
-            html += '<span><label for="' + id + '"><input type="checkbox" ' + (checked ? 'checked="checked" ' : '') + 'id="' + id + '" name="' + id + '" value="1" />{!upload_syndication:UPLOAD_TO;^} ' + $cms.filter.html(label) + ((noQuota && (num === 1)) ? ' ({!_REQUIRED;^})' : '') + '</label></span>';
-        }
-
-        if (noQuota && (numChecked === 0)) {
-            fileOb.disabled = true;
-        }
-
-        if ((html !== '') && !noQuota) {
-            html += '<span><label for="force_remove_locally"><input type="checkbox" id="force_remove_locally" name="force_remove_locally" value="1" />{!upload_syndication:FORCE_REMOVE_LOCALLY;^}</label></span>';
-        }
-
-        html = '<div>' + html + '</div>';
-
-        $dom.html(htmlSpot, html);
     }
 }(window.$cms, window.$util, window.$dom));

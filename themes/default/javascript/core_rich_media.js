@@ -13,12 +13,6 @@
         if ($cms.configOption('complex_uploader')) {
             window.$plupload.preinitFileInput("attachment_multi", "file" + params.i, params.postingFieldName, params.filter);
         }
-
-        if (params.syndicationJson != null) {
-            $cms.requireJavascript('editing').then(function () {
-                window.$editing.showUploadSyndicationOptions("file" + params.i, params.syndicationJson, Boolean(params.noQuota));
-            });
-        }
     }
 
     $util.inherits(Attachment, $cms.View, /**@lends Attachment#*/{

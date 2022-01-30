@@ -639,9 +639,7 @@ Alternatively, you could do a similar thing using rewrite rules in the [tt].htac
 
 [i]This section is mainly applicable to programmers, although specific service implementations may be available within addons[/i]
 
-Composr contains 2 kinds of hooks for sending off uploads to third-party servers:
-1) [tt]upload_syndication[/tt] -- transfers attachments and gallery files to other services, useful both for syndication and remote hosting; supports a basic UI for determining whether syndication happens
-2) [tt]cdn_transfer[/tt] -- transparently transfers uploads directly to other services at an early stage; has no UI
+Composr contains a kinds of hooks for sending off uploads to third-party servers, [tt]cdn_transfer[/tt]. This transparently transfers uploads directly to other services at an early stage; has no UI.
 
 [title="4"]Database replication[/title]
 

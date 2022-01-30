@@ -382,11 +382,6 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 	margin-bottom: 1em !important;
 }
 
-.syndication-options {
-	overflow: hidden;
-	white-space: nowrap;
-}
-
 /* Special validated checkbox; use of span.validated-checkbox is due to http://stackoverflow.com/questions/6949148/css-after-not-adding-content-to-certain-elements */
 span.validated-checkbox, span.validated-checkbox+input[name="validated"].input-tick {
 	width: 91px;
@@ -455,17 +450,6 @@ span.validated-checkbox + input[name="validated"].input-tick {
 .various-ticks {
 	margin: -0.5em 0 -0.5em -0.5em;
 	white-space: nowrap;
-}
-
-.syndication-options span {
-	white-space: nowrap;
-	border-right: 1px solid {$GET,pale_border};
-	font-size: 0.9em;
-	padding-right: 0.5em;
-	margin-right: 0.3em;
-}
-.syndication-options span:last-child {
-	border-right: 0;
 }
 
 .various-ticks .input-individual-tick, .various-ticks .input-other-tick {

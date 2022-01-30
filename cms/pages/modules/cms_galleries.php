@@ -1008,9 +1008,6 @@ class Module_cms_galleries extends Standard_crud_module
 
         reset_images_cleanup_pipeline_settings();
 
-        require_code('upload_syndication');
-        $url = handle_upload_syndication('image__upload', $title, $description, $url, $filename, false);
-
         $this->donext_type = $cat;
 
         $metadata = actual_metadata_get_fields('image', null);
@@ -1088,11 +1085,6 @@ class Module_cms_galleries extends Standard_crud_module
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
         set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks, get_value('keep_gallery_gps', '0') == '0');
-
-        if (!fractional_edit()) {
-            require_code('upload_syndication');
-            $url = handle_upload_syndication('image__upload', $title, $description, $url, $filename, false);
-        }
 
         reset_images_cleanup_pipeline_settings();
 

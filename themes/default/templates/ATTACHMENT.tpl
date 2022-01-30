@@ -1,5 +1,5 @@
 {+START,IF,{$NAND,{TRUE_ATTACHMENT_UI},{$BROWSER_MATCHES,simplified_attachments_ui}}}
-	<div class="wide-table-wrap" data-view="Attachment" data-view-params="{+START,PARAMS_JSON,I,POSTING_FIELD_NAME,FILTER,SYNDICATION_JSON,NO_QUOTA}{_*}{+END}">
+	<div class="wide-table-wrap" data-view="Attachment" data-view-params="{+START,PARAMS_JSON,I,POSTING_FIELD_NAME,FILTER,NO_QUOTA}{_*}{+END}">
 		<table class="map-table form-table wide-table">
 			{+START,IF,{$DESKTOP}}
 				<colgroup>
@@ -29,10 +29,6 @@
 							<span class="vertical-alignment">
 								<input size="15" type="file" id="file{I*}" name="file{I*}" class="js-inp-file-change-set-attachment" />
 							</span>
-
-							{+START,IF_PASSED,SYNDICATION_JSON}
-								<div id="file{I*}-syndication-options" class="syndication-options"></div>
-							{+END}
 						</div>
 					</td>
 				</tr>

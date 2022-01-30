@@ -208,22 +208,6 @@
         });
     };
 
-    $cms.templates.uploadSyndicationSetupScreen = function (params) {
-        var winParent = window.parent || window.opener,
-            id = 'upload_syndicate__' + params.hook + '__' + params.name,
-            el = winParent.document.getElementById(id);
-
-        el.checked = true;
-
-        setTimeout(function () {
-            if (window.fauxClose !== undefined) {
-                window.fauxClose();
-            } else {
-                window.close();
-            }
-        }, 4000);
-    };
-
     $cms.templates.blockMainComcodePageChildren = function blockMainComcodePageChildren() {};
 
     function onclickConfirmRememberMe(e, checkbox) {

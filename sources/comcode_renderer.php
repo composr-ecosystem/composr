@@ -2096,8 +2096,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     require_code('files');
                     $daily_quota = NON_CNS_QUOTA;
                 }
-                require_code('upload_syndication');
-                if (($daily_quota !== null) && ((substr($id, 0, 4) != 'new_') || (!upload_will_syndicate('file' . substr($id, 4))))) {
+                if (($daily_quota !== null) && ((substr($id, 0, 4) != 'new_')) {
                     $_size_uploaded_today = $db->query('SELECT SUM(a_file_size) AS the_answer FROM ' . $db->get_table_prefix() . 'attachments WHERE a_member_id=' . strval($source_member) . ' AND a_add_time>' . strval(time() - 60 * 60 * 24) . ' AND a_add_time<=' . strval(time()));
                     if ($_size_uploaded_today[0]['the_answer'] === null) {
                         $_size_uploaded_today[0]['the_answer'] = 0;
@@ -2110,25 +2109,10 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                         $attach_size += floatval($_file['size']) / 1024.0 / 1024.0;
                     }
                     if (($size_uploaded_today + $attach_size) > floatval($daily_quota)) {
-                        $syn_services = [];
-                        $hooks = find_all_hook_obs('systems', 'upload_syndication', 'Hook_upload_syndication_');
-                        foreach ($hooks as $ob) {
-                            if ($ob->is_enabled()) {
-                                $syn_services[] = $ob->get_label();
-                            }
-                        }
-
-                        require_code('upload_syndication');
-                        list($syndication_json,) = get_upload_syndication_json(CMS_UPLOAD_ANYTHING);
-
-                        if (($daily_quota > 0) || (empty($syn_services))) {
+                        if ($daily_quota > 0) {
                             $over_quota_str = 'OVER_DAILY_QUOTA';
                         } else {
-                            if (count($syn_services) > 1) {
-                                $over_quota_str = '_OVER_DAILY_QUOTA';
-                            } else {
-                                $over_quota_str = '__OVER_DAILY_QUOTA';
-                            }
+                            $over_quota_str = '__OVER_DAILY_QUOTA';
                         }
 
                         $temp_tpl = do_template('WARNING_BOX', [
@@ -2141,7 +2125,6 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                                 [
                                     escape_html($GLOBALS['FORUM_DRIVER']->get_username($source_member)),
                                     escape_html(get_site_name()),
-                                    escape_html(isset($syn_services[0]) ? $syn_services[0] : ''),
                                 ]
                             ),
                         ]);
@@ -2205,9 +2188,6 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     }
                     $_size = $_FILES['file' . $_id]['size'];
                     $original_filename = $_FILES['file' . $_id]['name'];
-
-                    require_code('upload_syndication');
-                    $urls[0] = handle_upload_syndication('file' . $_id, '', array_key_exists('description', $attributes) ? $attributes['description'] : '', $urls[0], $original_filename, true);
                 } else { // Should not get here
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'f7c0ead08bf7e19f3b78a536c755d6a5', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')]);
                     break;
