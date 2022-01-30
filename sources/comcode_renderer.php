@@ -63,6 +63,10 @@ function _apply_emoticons(string $text) : string
     // Pre-check, optimisation
     $emoticons = [];
     foreach ($_emoticons as $code => $imgcode) {
+        if (is_integer($code)) {
+            $code = strval($code);
+        }
+
         if (strpos($text, $code) !== false) {
             $emoticons[$code] = $imgcode;
         }

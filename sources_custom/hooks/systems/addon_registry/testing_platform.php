@@ -893,7 +893,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/sitemap_submit.php',
             '_tests/tests/unit_tests/sorting.php',
             '_tests/tests/unit_tests/_special_links.php',
-            '_tests/tests/unit_tests/specsettings_documented.php',
+            '_tests/tests/unit_tests/__specsettings_documented.php',
             '_tests/tests/unit_tests/spreadsheets.php',
             '_tests/tests/unit_tests/sql_compat.php',
             '_tests/tests/unit_tests/standard_dir_files.php',

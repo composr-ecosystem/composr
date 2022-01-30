@@ -141,6 +141,10 @@ function check_wordfilter(string $input, ?string $name = null, bool $exit = true
 
     // Apply filter for disallowed substrings
     foreach ($WORDS_TO_FILTER_CACHE as $word => $w) {
+        if (is_integer($word)) {
+            $word = strval($word);
+        }
+
         if (($w['w_match_type'] === WORDFILTER_MATCH_TYPE_SUBSTRING) && (stripos($input, $word) !== false)) {
             $replacement = $w['w_replacement'];
             if (($replacement == '') && ($exit)) {

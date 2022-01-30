@@ -286,6 +286,10 @@ function tapatalk_strip_comcode(string $data) : string
     // Pre-check, optimisation
     $smilies = [];
     foreach ($_smilies as $code => $imgcode) {
+        if (is_integer($code)) {
+            $code = strval($code);
+        }
+
         if (strpos($data, $code) !== false) {
             $smilies[$code] = $imgcode;
         }

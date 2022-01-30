@@ -475,6 +475,7 @@ function actual_delete_catalogue(string $name)
     }
     $GLOBALS['SITE_DB']->query_delete('catalogues', ['c_name' => $name], '', 1);
     $_title = $myrow['c_title'];
+    $__title = get_translated_text($_title);
     delete_lang($myrow['c_title']);
     delete_lang($myrow['c_description']);
     $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'catalogues_catalogue', 'category_name' => $name]);
@@ -486,7 +487,7 @@ function actual_delete_catalogue(string $name)
 
     update_catalogue_content_ref('catalogue', $name, '');
 
-    log_it('DELETE_CATALOGUE', $name, $_title);
+    log_it('DELETE_CATALOGUE', $name, $__title);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
