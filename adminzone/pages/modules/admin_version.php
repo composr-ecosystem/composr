@@ -1241,6 +1241,8 @@ class Module_admin_version
                 'op_originating_host' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('cloud_propagation_logging', 'ordering', ['op_timestamp', 'id']);
+
+            set_option('cdn', str_replace(',', ';', get_option('cdn')));
         }
     }
 

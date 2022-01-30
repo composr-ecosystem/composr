@@ -209,7 +209,7 @@ Miscellaneous tips:
 
 [title="3"]Content Delivery Networks (CDNs)[/title]
 
-There are a number of approaches you can take if you want to serve media from third party servers. Doing this reduces latency, and your own hosting costs, as well as some other potential side benefits such as automatic transcoding, and making the web requests cookieless.
+There are a number of approaches you can take if you want to serve media from third party servers. Doing this reduces latency, and your own hosting costs, as well as adding some other potential side benefits such as automatic transcoding, and making the web requests cookieless.
 
 [title="4"]Theme/content files[/title]
 
@@ -221,13 +221,13 @@ cdn.example.com
 [/code]
 Or:
 [code="Text"]
-example1.example.com,example2.example.com
+example1.example.com;example2.example.com
 [/code]
 
-As you can see, it is a comma-separated list of domain names. These domain names must be serving your files from a directory structure that mirrors that of your normal domain precisely. How you achieve that is up to you, but here are some ideas:
+As you can see, it is a semicolon-separated list of domain names. These domain names must be serving your files from a directory structure that mirrors that of your normal domain precisely. How you achieve that is up to you, but here are some ideas:
  - Use a commercial CDN service
   - There are many commercial CDN services available that can be configured in via this option. Many of them automatically will transfer over any file you reference on their service (via URL equivalencies) so that you don't need to worry about copying files over yourself.
- - Use your own CDN servers, and something like [tt]rsync[/tt] to keep files in sync
+ - Use your own CDN servers, and something like [tt]rsync[/tt], or the Composr cloud filesystem, to keep files in sync
   - If you are very sophisticated, you may use implement choice of the best geographic server location at the DNS level
  - Use Cloudflare, but just on the CDN domain (hence getting all the CDN advantages of Cloudflare but without having to proxy your entire website)
   - If you set Cloudflare to control your entire site then this is actually creating a bottleneck and a performance degradation, as you are relying on all your content flowing through Cloudflare, even for users in the same building as your server
@@ -235,8 +235,17 @@ As you can see, it is a comma-separated list of domain names. These domain names
 
 Composr will randomise what CDN's it uses, so parallelisation can work more efficiently (this is the only reason for the comma-separation). Web browsers have a limit on how many parallel web requests may come from a single server, and this works around that.
 
+You can also use URL prefixes instead of domain names.
+
+You may want to specify what file extensions the CDN supports. You do this by appending a comma-separated list of file extensions to a CDN.
+
+For example, to route images through Cloudinary:
+[code="Text"]
+https://res.cloudinary.com/<cloudinary-username>/image/fetch/,jpg,jpe,jpeg,gif,png
+[/code]
+
 By default Composr will pipe CSS, JavaScript, and theme image files, through the CDN.
-You can use the [tt]CDN_FILTER[/tt] directive and symbol to pass anything within through the CDN. This is described further below.
+You can use the [tt]CDN_FILTER[/tt] Tempcode symbol or the [tt]CDN_FILTER[/tt] Tempcode directive to pass anything within through the CDN. This is described further below.
 
 [title="3"][tt]HTML_COMPRESS[/tt] and [tt]CDN_FILTER[/tt] directives[/title]
 
@@ -1098,4 +1107,4 @@ You can view the log from Admin Zone > Audit > Low-level logging.
  - https://compo.sr/tracker/tag_view_page.php?tag_id=16
  - https://share.transistor.fm/s/38a4e496
 
-{$SET,tutorial_tags,Performance,filebased_persistent_caching,cloudinary,failover,Maintenance,Development,Power tools,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Composr is very heavily optimised for high performance out-of-the-box, but here are some advanced performance tips.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Performance,filebased_persistent_caching,failover,Maintenance,Development,Power tools,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Composr is very heavily optimised for high performance out-of-the-box, but here are some advanced performance tips.}[block]main_tutorial_rating[/block]

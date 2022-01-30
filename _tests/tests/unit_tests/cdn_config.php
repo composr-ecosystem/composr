@@ -18,8 +18,10 @@
  */
 class cdn_config_test_set extends cms_test_case
 {
-    public function testCDNConfig()
+    public function testCDNConfigAlternateDomains()
     {
+        // Tests setting CDN to both IP and hostname, and also a prefix, and checking we see theme images distributed from all...
+
         $hostname = get_base_url_hostname();
         $server_ips = get_server_ips();
         $ip_address = $server_ips[0];
@@ -30,7 +32,7 @@ class cdn_config_test_set extends cms_test_case
 
         require_code('images');
 
-        $_cdn_config = $hostname . ',' . $ip_address;
+        $_cdn_config = $hostname . ';' . $ip_address . ';' . 'https://res.cloudinary.com/demo/image/fetch/,jpg,jpe,jpeg,gif,png';
         set_option('cdn', $_cdn_config);
 
         if ($this->debug) {
@@ -44,6 +46,10 @@ class cdn_config_test_set extends cms_test_case
         $dh = opendir($path);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
+                if ($file == 'no_image.png') {
+                    continue;
+                }
+
                 if (is_image($file, IMAGE_CRITERIA_WEBSAFE)) {
                     $ext = get_file_extension($file);
                     $url = find_theme_image(basename($file, '.' . $ext), false, false, 'default');
@@ -58,7 +64,12 @@ class cdn_config_test_set extends cms_test_case
             closedir($dh);
         }
 
-        $this->assertTrue($a && $b);
+        $this->assertTrue($a, 'Could not find usage of hostname-CDN');
+        $this->assertTrue($b, 'Could not find usage of IP-CDN');
+
+        $got = find_theme_image('no_image', false, false, 'default');
+        $expected = 'https://res.cloudinary.com/demo/image/fetch/' . get_base_url() . '/themes/default/images/no_image.png';
+        $this->assertTrue($got == $expected, 'Got: ' . $got);
 
         set_option('cdn', '');
     }

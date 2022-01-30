@@ -713,7 +713,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/clean_reinstall.php',
             '_tests/tests/unit_tests/closed_file.php',
             '_tests/tests/unit_tests/cloudflare_ip_range_sync.php',
-            '_tests/tests/unit_tests/_api_cloudinary.php',
             '_tests/tests/unit_tests/catalogues_module.php',
             '_tests/tests/unit_tests/cma_hooks.php',
             '_tests/tests/unit_tests/cms_merge.php',

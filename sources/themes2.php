@@ -120,7 +120,7 @@ function autoprobe_cdns() : string
 
             if (($test_result !== null) && ($test_result == $expected)) {
                 if ($detected_cdns != '') {
-                    $detected_cdns .= ',';
+                    $detected_cdns .= ';';
                 }
                 $detected_cdns .= $t;
             }

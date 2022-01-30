@@ -336,6 +336,7 @@ function cdn_filter(string $url) : string
     }
 
     if (($cdn !== '') && ($km !== 0)) {
+        // Autodetection
         if ($cdn === '<autodetect>') {
             $cdn = get_value('cdn');
             if ($cdn === null) {
@@ -358,13 +359,31 @@ function cdn_filter(string $url) : string
             return $cdn_consistency_check[$url];
         }
 
-        static $cdn_parts = null;
-        if ($cdn_parts === null) {
-            $cdn_parts = explode(',', $cdn);
+        $ext = get_file_extension($url);
+
+        // Parse config option
+        static $cdn_options = [];
+        if (!isset($cdn_options[$ext])) {
+            $cdn_options[$ext] = [];
+
+            $_cdn_options = explode(';', $cdn);
+            foreach ($_cdn_options as $_cdn_option) {
+                if (strpos($_cdn_option, ',') !== false) {
+                    $__cdn_option = explode(',', $_cdn_option);
+                    if (in_array($ext, $__cdn_option)) {
+                        $cdn_options[$ext][] = $__cdn_option[0];
+                    }
+                } else {
+                    $cdn_options[$ext][] = $_cdn_option;
+                }
+            }
         }
 
-        if (count($cdn_parts) === 1) {
-            $cdn_part = $cdn_parts[0];
+        // Choose which CDN to use
+        if (count($cdn_options[$ext]) === 0) {
+            return $url;
+        } elseif (count($cdn_options[$ext]) === 1) {
+            $cdn_to_use = $cdn_options[$ext][0];
         } else {
             $sum_asc = 0;
             $basename = basename($url);
@@ -373,23 +392,30 @@ function cdn_filter(string $url) : string
                 $sum_asc += ord($basename[$i]);
             }
 
-            $cdn_part = $cdn_parts[$sum_asc % count($cdn_parts)]; // To make a consistent but fairly even distribution we do some modular arithmetic against the total of the ASCII values
+            $cdn_to_use = $cdn_options[$ext][$sum_asc % count($cdn_options[$ext])]; // To make a consistent but fairly even distribution we do some modular arithmetic against the total of the ASCII values
         }
 
-        static $normal_prefix = null;
-        static $bus = null;
-        if ($normal_prefix === null) {
-            $normal_prefix = '#(^https?://)' . preg_quote(get_base_url_hostname(), '#') . '([:/])#';
-            $bus = get_base_url() . '/';
-        }
-        if (substr($url, 0, strlen($bus)) == $bus) {
-            $file_path = get_custom_file_base() . '/' . rawurldecode(substr($url, strlen($bus)));
-            $mtime = @filemtime($file_path);
-            if ($mtime !== false) {
-                $url .= '?' . strval($mtime);
+        // Do our substitution
+        if (strpos($cdn_to_use, '://') !== false) {
+            // Prefix
+            $new_url = $cdn_to_use . $url;
+        } else {
+            // Domain substitution
+            static $normal_prefix = null;
+            static $bus = null;
+            if ($normal_prefix === null) {
+                $normal_prefix = '#(^https?://)' . preg_quote(get_base_url_hostname(), '#') . '([:/])#';
+                $bus = get_base_url() . '/';
             }
+            if (substr($url, 0, strlen($bus)) == $bus) {
+                $file_path = get_custom_file_base() . '/' . rawurldecode(substr($url, strlen($bus)));
+                $mtime = @filemtime($file_path);
+                if ($mtime !== false) {
+                    $url .= '?' . strval($mtime);
+                }
+            }
+            $new_url = preg_replace($normal_prefix, '${1}' . $cdn_to_use . '${2}', $url);
         }
-        $new_url = preg_replace($normal_prefix, '${1}' . $cdn_part . '${2}', $url);
 
         $cdn_consistency_check[$url] = $new_url;
 

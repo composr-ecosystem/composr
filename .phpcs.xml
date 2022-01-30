@@ -19,7 +19,6 @@
 	<exclude-pattern>sources/mail_dkim.php</exclude-pattern>
 	<exclude-pattern>sources_custom/aws_ses</exclude-pattern>
 	<exclude-pattern>sources_custom/browser_detect.php</exclude-pattern>
-	<exclude-pattern>sources_custom/Cloudinary</exclude-pattern>
 	<exclude-pattern>sources_custom/curl.php</exclude-pattern>
 	<exclude-pattern>sources_custom/geshi</exclude-pattern>
 	<exclude-pattern>sources_custom/geshi.php</exclude-pattern>

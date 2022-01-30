@@ -29,7 +29,7 @@ class _api_confluence_test_set extends cms_test_case
         $this->load_key_options('confluence');
     }
 
-    public function testCloudinaryTransfer()
+    public function testConfluenceConnection()
     {
         if (!addon_installed('confluence')) {
             $this->assertTrue(false, 'The confluence addon must be installed for this test to run');
