@@ -78,6 +78,7 @@ class Hook_addon_registry_installer
             'tut_install_windows_desktop',
             'tut_install_windows_server',
             'tut_webhosting',
+            'tut_cloudhosting',
         ];
     }
 

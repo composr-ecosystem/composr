@@ -113,4 +113,4 @@ If you clear caches through the Cleanup Tools in the Admin Zone then this operat
  - [page="_SEARCH:tut_google_appengine"]Installation on Google App Engine[/page]
  - [page="_SEARCH:tut_performance"]Optimising Performance[/page]
 
-{$SET,tutorial_tags,Webhosting,core,installer,Installation,expert}{$SET,tutorial_add_date,Nov 2021}{$SET,tutorial_summary,How Composr can operate with cloud hosting.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Webhosting,installer,Installation,expert}{$SET,tutorial_add_date,Nov 2021}{$SET,tutorial_summary,How Composr can operate with cloud hosting.}[block]main_tutorial_rating[/block]

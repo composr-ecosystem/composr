@@ -130,7 +130,7 @@ class Hook_rss_comcode_pages
 
                     $author = $GLOBALS['FORUM_DRIVER']->get_username($rows3[$id]['p_submitter'], false, USERNAME_DEFAULT_BLANK);
                     $news_date = date($date_string, $rows3[$id]['p_add_date']);
-                    $edit_date = date($date_string, $rows3[$id]['p_edit_date']);
+                    $edit_date = ($rows3[$id]['p_edit_date'] === null) ? '' : date($date_string, $rows3[$id]['p_edit_date']);
                     if ($news_date == $edit_date) {
                         $edit_date = '';
                     }

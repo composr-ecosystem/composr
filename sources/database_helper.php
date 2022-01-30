@@ -417,7 +417,7 @@ function _helper_generate_index_fields(string $table_name, array $fields, bool $
  *
  * @ignore
  */
-function _helper_add_automatic_index_limiter(&$field_name, $db_type)
+function _helper_add_automatic_index_limiter(string &$field_name, string $db_type)
 {
     if ((strpos($field_name, '(') === false) && ((!multi_lang_content()) || (strpos($db_type, '_TRANS') === false))) {
         if (strpos($field_name, '(') === false) {
