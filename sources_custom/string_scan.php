@@ -5281,7 +5281,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ERROR_INACCESSIBLE_DIR
         ERRORLOG
         ERROR_LOGGING_PROBABLY_BROKEN
-        ERROR_MAIL
+        ERROR_NOTIFICATION
         ERROR_NON_TERMINAL
         ERROR_NOT_ACCEPT_CONTAINER
         ERROR_NOT_ACCEPT_IMAGES

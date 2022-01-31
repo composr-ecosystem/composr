@@ -1149,7 +1149,16 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
 
     require_code('notifications');
     require_code('comcode');
-    $mail = do_notification_lang('ERROR_MAIL', comcode_escape($error_url), $text, $ocproducts ? '?' : get_ip_address(), get_site_default_lang());
+    $mail = do_notification_lang(
+        'ERROR_NOTIFICATION',
+        comcode_escape($error_url),
+        $text,
+        [
+            $ocproducts ? '?' : comcode_escape(get_ip_address()),
+            gethostname(),
+        ],
+        get_site_default_lang()
+    );
     dispatch_notification($notification_type, null, do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), $ocproducts ? '?' : get_ip_address(), null, get_site_default_lang()), $mail, null, A_FROM_SYSTEM_PRIVILEGED);
     if (
         ($ocproducts) &&
