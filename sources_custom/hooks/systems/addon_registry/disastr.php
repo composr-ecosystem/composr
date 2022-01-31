@@ -94,7 +94,7 @@ class Hook_addon_registry_disastr
      */
     public function get_description() : string
     {
-        return 'Encourage your website users to interact more and increase their activity. You can release a number of diseases all at once or one at a time. Disastr comes configured with a number of pre-created viruses and you can add more. There are also Cures and Immunizations for the diseases which can be purchased through the eCommerce. Each disease will cause a member\'s points total to become sick and start going down unless they buy the cure. The cure is usually twice the price of the immunisation. If the user cannot afford the cure they will have to interact more with the site to rebuild up their points total to be able to afford to buy it. All the pre-configured diseases come unreleased and you have the opportunity to choose when they are released and how virulent they are. Users which have been infected will be sent a notification with a link to the cure. Once cured, members can still be re-infected if they have not purchased an Immunization. The diseases are spread via the friend lists in Composr.
+        return 'Encourage your website users to interact more and increase their activity. You can release a number of diseases all at once or one at a time. Disastr comes configured with a number of pre-created viruses and you can add more. There are also Cures and Immunisations for the diseases which can be purchased through the eCommerce. Each disease will cause a member\'s points total to become sick and start going down unless they buy the cure. The cure is usually twice the price of the immunisation. If the user cannot afford the cure they will have to interact more with the site to rebuild up their points total to be able to afford to buy it. All the pre-configured diseases come unreleased and you have the opportunity to choose when they are released and how virulent they are. Users which have been infected will be sent a notification with a link to the cure. Once cured, members can still be re-infected if they have not purchased an Immunisation. The diseases are spread via the friend lists in Composr.
 
 To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
     }
@@ -155,7 +155,8 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
             'sources_custom/hooks/systems/cron/disastr.php',
             'sources_custom/hooks/systems/page_groupings/disastr.php',
             'uploads/disastr_addon/index.html',
-            'data_custom/images/disastr/hazard.jpg',
+            'data_custom/images/disastr/hazard.jpg', // LEGACY
+            'data_custom/images/disastr/hazard.png',
             'data_custom/images/disastr/index.html',
             'sources_custom/hooks/systems/actionlog/disastr.php',
         ];

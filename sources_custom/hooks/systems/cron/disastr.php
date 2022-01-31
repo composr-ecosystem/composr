@@ -104,16 +104,16 @@ class Hook_cron_disastr
                     $members_disease_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', ['*'], ['member_id' => $friends_healthy[$to_infect], 'disease_id' => $disease['id']]);
 
                     $insert = true;
-                    $has_immunization = false;
+                    $has_immunisation = false;
                     if (isset($members_disease_rows[0])) {
                         // There is already a DB member disease record
                         $insert = false;
                         if ($members_disease_rows[0]['immunisation'] == 1) {
-                            $has_immunization = true;
+                            $has_immunisation = true;
                         }
                     }
 
-                    if (!$has_immunization) {
+                    if (!$has_immunisation) {
                         $_cure_url = build_url(['page' => 'purchase', 'type' => 'pay', 'id' => 'CURE_' . strval($disease['id'])], get_module_zone('purchase'), [], false, false, true);
                         $cure_url = $_cure_url->evaluate();
 
