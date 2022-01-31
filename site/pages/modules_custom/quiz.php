@@ -23,7 +23,7 @@ function init__site__pages__modules_custom__quiz($in = null)
         <ditto>
         if (addon_installed('points')) {
             require_code('points2');
-            \$cost = \$quiz['q_points_for_passing'] / 2;
+            \$cost = intval(floor(\$quiz['q_points_for_passing'] / 2));
             charge_member(get_member(), \$cost, 'Entered a test');
         }
         ",
@@ -36,7 +36,7 @@ function init__site__pages__modules_custom__quiz($in = null)
         <ditto>
         if ((addon_installed('points')) && (\$quiz['q_points_for_passing'] != 0)) {
             require_code('points2');
-            \$cost = \$quiz['q_points_for_passing'] / 2;
+            \$cost = intval(floor(\$quiz['q_points_for_passing'] / 2));
             \$points_difference -= \$cost;
         }
         ",
