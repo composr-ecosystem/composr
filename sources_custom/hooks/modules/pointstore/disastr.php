@@ -56,7 +56,9 @@ class Hook_pointstore_disastr
 
         $title = get_screen_title('DISEASES_CURES_IMMUNIZATIONS_TITLE');
 
-        $fields = '<table style="width: 100%" cellspacing="0" cellpadding="0" border="1"><tr style="border: 1px solid #ccc; background-color: #E3EAF6;"><th colspan="2">Disease</th><th width="33%">Cure</th><th width="33%">Immunisation</th></tr>';
+        $fields = '<div class="wide_table_wrap"><table class="columned_table wide_table results_table"><thead><tr><th colspan="2">Disease</th><th width="33%">Cure</th><th width="33%">Immunisation</th></tr></thead><tbody>';
+
+        $cnt = 0;
 
         $member_id = get_member();
         $rows = $GLOBALS['SITE_DB']->query_select('diseases', array('*'), null, 'ORDER BY name');
@@ -98,13 +100,15 @@ class Hook_pointstore_disastr
                     <td width="33%">' . ($get_cure ? ('<a href="' . escape_html($cure_url) . '">' . escape_html($disease['cure']) . '</a> costs ' . escape_html(integer_format($disease['cure_price'])) . ' points') : (do_lang('NA_EM') . ' (you\'re not infected)')) . '</td>
                     <td width="33%">' . (!$get_cure ? ('<a href="' . escape_html($immunization_url) . '">' . escape_html($disease['immunisation']) . '</a> costs ' . escape_html(integer_format($disease['immunisation_price'])) . ' points') : (do_lang('NA_EM') . ' (you\'re already infected)')) . '</td>
                 </tr>';
+
+                $cnt++;
             }
         }
 
-        if (count($rows) == 0) {
-            $fields .= '<tr><td colspan="4">' . do_lang('NO_ENTRIES_TO_DISPLAY') . '</td></tr>';
+        if ($cnt == 0) {
+            $fields .= '<tr><td colspan="4">' . do_lang('NO_DISASTR_ENTRIES_TO_DISPLAY') . '</td></tr>';
         }
-        $fields .= '</table>';
+        $fields .= '</tbody></table></div>';
 
         return do_template('POINTSTORE_DISASTR_DISEASES', array('_GUID' => 'fbbe019ec60abf82b585618ec7f1453c', 'TITLE' => $title, 'FIELDS' => $fields));
     }
@@ -121,38 +125,24 @@ class Hook_pointstore_disastr
         $disease_id = get_param_string('disease', 0);
         $member_id = get_member();
 
-        //default values
-        $sick = 0;
-
         $get_cure = get_param_integer('cure', 0);
         $get_immunization = get_param_integer('immunization', 0);
 
-        $cure = ($get_cure == 1) ? 1 : 0;
-        $immunization = ($get_immunization == 1) ? 1 : 0;
-
         $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', array('*'), array('member_id' => $member_id, 'disease_id' => $disease_id), '', 1);
 
-        $insert = true;
-
-        if (isset($member_rows[0]['member_id']) && $member_rows[0]['member_id'] != 0) {
-            //there is already a db member disease record
-            $insert = false;
-            $sick = ($get_cure == 1 && $member_rows[0]['sick'] == 1) ? 0 : $sick;
-        } else {
-            //we should insert a new db member disease record
+        $rows = $GLOBALS['SITE_DB']->query_select('diseases', array('*'), array('id' => $disease_id), '', 1);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('diseases', array('*'), array('id' => $disease_id), '', 1);
-
-        $cure_price = (isset($rows[0]['cure_price']) && (intval($rows[0]['cure_price']) > 0)) ? intval($rows[0]['cure_price']) : 0;
-        $immunization_price = (isset($rows[0]['immunisation_price']) && (intval($rows[0]['immunisation_price']) > 0)) ? intval($rows[0]['immunisation_price']) : 0;
+        $cure_price = $rows[0]['cure_price'];
+        $immunization_price = $rows[0]['immunisation_price'];
         $amount = ($get_immunization == 1) ? $immunization_price : $cure_price;
 
         $title = get_screen_title('DISEASES_CURES_IMMUNIZATIONS_TITLE');
 
         // Check points
         $points_left = available_points(get_member());
-
         if (!has_privilege(get_member(), 'give_points_self')) {
             if ($points_left < $amount) {
                 return warn_screen($title, do_lang_tempcode('_CANT_AFFORD_THIS'));
@@ -167,10 +157,10 @@ class Hook_pointstore_disastr
             charge_member(get_member(), $amount, do_lang('CURE_PURCHASED'));
         }
 
-        if ($insert) {
-            $GLOBALS['SITE_DB']->query_insert('members_diseases', array('member_id' => $member_id, 'disease_id' => $disease_id, 'sick' => strval($sick), 'cure' => strval($cure), 'immunisation' => strval($immunization)));
+        if (!array_key_exists(0, $member_rows)) {
+            $GLOBALS['SITE_DB']->query_insert('members_diseases', array('member_id' => $member_id, 'disease_id' => $disease_id, 'sick' => 0, 'cure' => $get_cure, 'immunisation' => $get_immunization));
         } else {
-            $GLOBALS['SITE_DB']->query_update('members_diseases', array('member_id' => $member_id, 'disease_id' => $disease_id, 'sick' => strval($sick), 'cure' => strval($cure), 'immunisation' => strval($immunization)), array('member_id' => $member_id, 'disease_id' => $disease_id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('members_diseases', array('member_id' => $member_id, 'disease_id' => $disease_id, 'sick' => 0, 'cure' => $get_cure, 'immunisation' => $get_immunization), array('member_id' => $member_id, 'disease_id' => $disease_id), '', 1);
         }
 
         if ($get_immunization == 1) {
