@@ -474,7 +474,7 @@ function cron_bridge_script(string $caller)
             }
 
             // Not running because we are a cloud host?
-            if ((cloud_mode() != '') && ((!isset($info['cloud_all'])) || (!$info['cloud_all']))) {
+            if ((cloud_mode() != 'primary') && ((!isset($info['cloud_all'])) || (!$info['cloud_all']))) {
                 continue;
             }
 

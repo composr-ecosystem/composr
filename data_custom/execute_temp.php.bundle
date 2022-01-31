@@ -73,5 +73,10 @@ function execute_temp()
         return;
     }
 
+    // Default integrity measure, can edit/remove as required
+    if (cloud_mode() == 'secondary') {
+        return;
+    }
+
     // Temporary code goes here
 }
