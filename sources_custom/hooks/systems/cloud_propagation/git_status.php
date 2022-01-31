@@ -21,9 +21,10 @@ class Hook_cloud_propagation_git_status
     /**
      * Handle an RPC, if we can.
      *
-     * @param  string $type The procedure to call
+     * @param  string $type Operation type
+     * @param  string $data Parameter data
      */
-    public function rpc(string $type)
+    public function rpc(string $type, string $data)
     {
         if (!addon_installed('git_status')) {
             return;

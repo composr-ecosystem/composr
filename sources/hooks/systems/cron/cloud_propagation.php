@@ -219,7 +219,7 @@ class Hook_cron_cloud_propagation
                 default:
                     foreach ($_hooks as $ob) {
                         if (method_exists($ob, 'rpc')) {
-                            $ob->rpc($op['op_type']);
+                            $ob->rpc($op['op_type'], $op['op_data']);
                         }
                     }
             }

@@ -1227,6 +1227,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_table('cloud_propagation_rpc', [
                 'id' => '*AUTO',
                 'op_type' => 'MINIID_TEXT', // erase_persistent_cache|erase_static_cache|erase_cached_language|erase_cached_templates|Self_learning_cache::erase_smart_cache
+                'op_data' => 'LONG_TEXT',
                 'op_timestamp' => 'TIME',
                 'op_originating_host' => 'ID_TEXT',
             ]);
