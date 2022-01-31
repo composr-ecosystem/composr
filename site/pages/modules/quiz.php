@@ -644,12 +644,26 @@ class Module_quiz
         ) = score_quiz($entry_id, $quiz_id, $quiz, $questions);
 
         // Award points?
+        $points_difference = 0;
         if ((addon_installed('points')) && ($quiz['q_points_for_passing'] != 0) && (($quiz['q_type'] != 'TEST') || ($passed === true))) {
-            require_code('points2');
-            $points_difference = $quiz['q_points_for_passing'];
-            system_gift_transfer(do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $points_difference, get_member());
-        } else {
-            $points_difference = 0;
+            $num_entries = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', [
+                'q_member' => get_member(),
+                'q_quiz' => $quiz_id,
+            ]);
+
+            if ($num_entries != 1) {
+                $num_point_events = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)', [
+                    'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                    'gift_to' => get_member(),
+                    $GLOBALS['SITE_DB']->translate_field_ref('reason') => do_lang('POINTS_COMPLETED_QUIZ', $quiz_name),
+                ]);
+            }
+
+            if (($num_entries == 1) || ($num_point_events == 0)) {
+                require_code('points2');
+                $points_difference = $quiz['q_points_for_passing'];
+                system_gift_transfer(do_lang('POINTS_COMPLETED_QUIZ', $quiz_name), $points_difference, get_member());
+            }
         }
 
         // Give them their result if it is a test.
