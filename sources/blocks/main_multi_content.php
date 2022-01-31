@@ -73,14 +73,13 @@ class Block_main_multi_content
     {
         $info = array();
         $info['cache_on'] = '
-            (preg_match(\'#<\w+>#\',(array_key_exists(\'filter\',$map)?$map[\'filter\']:\'\'))!=0)
+            ((array_key_exists(\'efficient\',$map) && $map[\'efficient\']==\'0\') || (preg_match(\'#<\w+>#\',(array_key_exists(\'filter\',$map)?$map[\'filter\']:\'\'))!=0))
             ?
             null
             :
             array(
                 array_key_exists(\'as_guest\',$map)?($map[\'as_guest\']==\'1\'):false,
                 array_key_exists(\'guid\',$map)?$map[\'guid\']:\'\',
-                (array_key_exists(\'efficient\',$map) && $map[\'efficient\']==\'1\')?array():$GLOBALS[\'FORUM_DRIVER\']->get_members_groups(get_member(),false,true),
                 array_key_exists(\'render_if_empty\',$map)?$map[\'render_if_empty\']:\'0\',
                 ((array_key_exists(\'attach_to_url_filter\',$map)?$map[\'attach_to_url_filter\']:\'0\')==\'1\'),
                 get_param_integer($block_id.\'_max\',array_key_exists(\'max\',$map)?intval($map[\'max\']):30),
