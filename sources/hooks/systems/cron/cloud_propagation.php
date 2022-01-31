@@ -81,6 +81,8 @@ class Hook_cron_cloud_propagation
 
         $where = 'id>=' . strval($last_synched) . ' AND ' . db_string_not_equal_to('op_originating_host', gethostname());
 
+        $hooks = find_all_hook_obs('systems', 'cloud_propagation', 'Hook_cloud_propagation_');
+
         $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where . ' ORDER BY op_timestamp,id';
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
@@ -213,6 +215,13 @@ class Hook_cron_cloud_propagation
                 case 'Self_learning_cache::erase_smart_cache':
                     Self_learning_cache::erase_smart_cache(true);
                     break;
+
+                default:
+                    foreach ($_hooks as $ob) {
+                        if (method_exists($ob, 'rpc')) {
+                            $ob->rpc($op['op_type']);
+                        }
+                    }
             }
         }
 

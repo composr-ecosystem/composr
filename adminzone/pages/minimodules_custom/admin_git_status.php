@@ -437,13 +437,10 @@ function git_status__pull()
     $title = get_screen_title('Pull', false);
     $title->evaluate_echo();
 
-    echo static_evaluate_tempcode(with_whitespace(escape_html(git_pull())));
+    if (cloud_mode() != '') {
+        attach_message('A git_pull command has been added to the RPC queue for propagation across the cloud.');
+        cloud_rpc('git_pull');
+    }
 
-    require_code('caches3');
-    erase_cached_templates();
-    erase_cached_language();
-    erase_comcode_cache();
-    erase_block_cache(true);
-    erase_comcode_page_cache();
-    erase_persistent_cache();
+    echo static_evaluate_tempcode(with_whitespace(escape_html(git_pull())));
 }

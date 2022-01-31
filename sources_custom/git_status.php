@@ -249,9 +249,21 @@ function git_push()
     return _git_exec('push');
 }
 
-function git_pull()
+function git_pull($clear_caches = true)
 {
-    return _git_exec('pull');
+    $ret = _git_exec('pull');
+
+    if ($clear_caches) {
+        require_code('caches3');
+        erase_cached_templates();
+        erase_cached_language();
+        erase_comcode_cache();
+        erase_block_cache(true);
+        erase_comcode_page_cache();
+        erase_persistent_cache();
+    }
+
+    return $ret;
 }
 
 function get_git_file($path, $revision = 'HEAD')
