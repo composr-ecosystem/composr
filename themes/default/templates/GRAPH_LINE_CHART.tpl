@@ -6,16 +6,17 @@
 
 <script {$CSP_NONCE_HTML}>
 	window.addEventListener('load',function () {
-		var ctx = document.getElementById('chart_{ID%}').getContext('2d');
+		var element = document.getElementById('chart_{ID%}');
+		var ctx = element.getContext('2d');
 
 		var data = {
 			datasets: [
 				{+START,LOOP,DATASETS}
 					{
-						label: '{LABEL;/}',
+						label: '{LABEL;^/}',
 						fill: {$?,{FILL},'origin',false},
-						backgroundColor: '{COLOR;/}',
-						borderColor: '{COLOR;/}',
+						backgroundColor: '{COLOR;^/}',
+						borderColor: '{COLOR;^/}',
 						data: [
 							{+START,LOOP,DATAPOINTS}
 								{VALUE`},
@@ -23,7 +24,7 @@
 						],
 						tooltips: [
 							{+START,LOOP,DATAPOINTS}
-								'{TOOLTIP;/}',
+								'{TOOLTIP;^/}',
 							{+END}
 						],
 					},
@@ -32,15 +33,16 @@
 
 			labels : [
 				{+START,LOOP,X_LABELS}
-					'{_loop_var;/}',
+					'{_loop_var;^/}',
 				{+END}
 			],
 		};
 
 		var options = {
-			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
-				responsive: true,
-				maintainAspectRatio: false,
+			tension: 1,
+			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
+			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
+				responsive: false,
 			{+END}
 			{+START,IF,{$EQ,{DATASETS},1}}
 				legend: {
@@ -50,7 +52,12 @@
 			{+START,IF,{$NEQ,{DATASETS},1}}
 				legend: {
 					display: true,
-					position: 'right',
+					{+START,IF,{$LT,{DATASETS},3}}
+						position: 'top',
+					{+END}
+					{+START,IF,{$GT,{DATASETS},2}}
+						position: 'right',
+					{+END}
 				},
 			{+END}
 			scales: {
@@ -58,7 +65,7 @@
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;/}',
+							labelString: '{X_AXIS_LABEL;^/}',
 						},
 					{+END}
 					{+START,IF_IN_ARRAY,X_LABELS,}{$,If blank labels have been placed we can assume this is to space things out manually}
@@ -71,27 +78,44 @@
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{Y_AXIS_LABEL;/}',
+							labelString: '{Y_AXIS_LABEL;^/}',
 						},
 					{+END}
-					{+START,IF,{BEGIN_AT_ZERO}}
-						ticks: {
+					ticks: {
+						{+START,IF,{BEGIN_AT_ZERO}}
 							beginAtZero: true,
-						},
-					{+END}
+						{+END}
+						{+START,IF,{CLAMP_Y_AXIS}}
+							max: {MAX%},
+						{+END}
+					},
 				}],
 			},
 			tooltips: {
 				callbacks: {
 					label: function(tooltipItem, data) {
-						var tooltip = data.datasets[tooltipItem.datasetIndex].tooltips[tooltipItem.index];
 						var ret = '';
+
+						var tooltip = data.datasets[tooltipItem.datasetIndex].tooltips[tooltipItem.index];
 						if (tooltip != '') {
 							ret += tooltip;
-							ret += ': ';
 						}
-						ret += tooltipItem.yLabel;
-						return ret;
+
+						{+START,IF,{$NEQ,{DATASETS},1}}
+							if (ret != '') {
+								ret += ': ';
+							}
+							ret += data.datasets[tooltipItem.datasetIndex].label;
+						{+END}
+
+						{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
+							if (ret != '') {
+								ret += ': ';
+							}
+							ret += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+						{+END}
+
+						return ret.split("\n");
 					},
 				},
 			},
@@ -106,10 +130,10 @@
 							return context.dataset.backgroundColor;
 						},
 						borderRadius: 4,
-						color: '#FFFFFF',
 						font: {
 							weight: 'bold'
 						},
+						formatter: Math.round
 					},
 				{+END}
 			},

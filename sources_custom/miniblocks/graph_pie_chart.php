@@ -41,12 +41,15 @@ while (($line = $sheet_reader->read_row()) !== false) {
     $datapoints[] = [
         'label' => $line[0],
         'value' => $line[1],
-        'tooltip' => implode(',', array_slice($line, 2)),
+        'tooltip' => implode("\n", array_slice($line, 2)),
     ];
 }
 $sheet_reader->close();
 
 $options = ['show_data_labels' => $show_data_labels, 'doughnut' => $doughnut];
+if (!empty($map['id'])) {
+    $options['id'] = $map['id'];
+}
 
 $tpl = graph_pie_chart($datapoints, $options, $color_pool, $width, $height);
 $tpl->evaluate_echo();

@@ -6,7 +6,8 @@
 
 <script {$CSP_NONCE_HTML}>
 	window.addEventListener('load',function () {
-		var ctx = document.getElementById('chart_{ID%}').getContext('2d');
+		var element = document.getElementById('chart_{ID%}');
+		var ctx = element.getContext('2d');
 
 		var data = {
 			datasets: [{
@@ -17,42 +18,42 @@
 				],
 				backgroundColor: [
 					{+START,LOOP,DATAPOINTS}
-						'{COLOR;/}',
+						'{COLOR;^/}',
 					{+END}
 				],
 			}],
 
 			labels: [
 				{+START,LOOP,DATAPOINTS}
-					'{LABEL;/}',
+					'{LABEL;^/}',
 				{+END}
 			],
 			tooltips: [
 				{+START,LOOP,DATAPOINTS}
-					'{TOOLTIP;/}',
+					'{TOOLTIP;^/}',
 				{+END}
 			],
 		};
 
 		var options = {
-			legend: false,
-			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
-				responsive: true,
-				maintainAspectRatio: false,
+			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
+			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
+				responsive: false,
 			{+END}
+			legend: false,
 			tooltips: {
 				callbacks: {
 					label: function(tooltipItem, data) {
-						var tooltip = data.tooltips[tooltipItem.index];
 						var ret = '';
 						ret += data.labels[tooltipItem.index] + ' = ' + data.datasets[0].data[tooltipItem.index];
+						var tooltip = data.tooltips[tooltipItem.index];
 						if (tooltip != '') {
 							if (ret != '') {
 								ret += ': ';
 							}
 							ret += tooltip;
 						}
-						return ret;
+						return ret.split("\n");
 					},
 				},
 			},
@@ -66,10 +67,8 @@
 						backgroundColor: function(context) {
 							return context.dataset.backgroundColor;
 						},
-						borderColor: 'white',
 						borderRadius: 25,
-						borderWidth: 2,
-						color: 'white',
+						borderWidth: 1,
 						display: function(context) {
 							var dataset = context.dataset;
 							var count = dataset.data.length;

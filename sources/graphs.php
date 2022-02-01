@@ -89,30 +89,34 @@ function _search_graph_color_pool(int $i, array $color_pool) : string
  * 1 measure of scattered data across two uneven dimensions.
  *
  * @param  array $datapoints Data-points to render
- * @param  string $x_axis_label X-axis label
- * @param  string $y_axis_label Y-axis label
+ * @param  mixed $x_axis_label X-axis label (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
  * @param  array $options Map of additional fiddly options
  * @param  ?string $color Colour for plotting (null: get from default colour pool)
  * @param  ?string $width Width (null: responsive)
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The diagram
  */
-function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', string $y_axis_label = '', array $options = [], ?string $color = null, ?string $width = null, ?string $height = null) : object
+function graph_scatter_diagram(array $datapoints, $x_axis_label = '', $y_axis_label = '', array $options = [], ?string $color = null, ?string $width = null, ?string $height = null) : object
 {
     if ($color === null) {
         $color_pool = [];
         _generate_graph_color_pool($color_pool);
     }
 
-    $id = _generate_graph_id();
+    $id = isset($options['id']) ? $options['id'] : _generate_graph_id();
 
     _normalise_graph_dims($width, $height);
 
     $bubble = false;
 
+    $max = 0;
+
     $_datapoints = [];
     foreach ($datapoints as $p) {
         $r = isset($p['r']) ? number_raw_string($p['r']) : null;
+
+        $y_value = number_raw_string($p['y']);
 
         $category = isset($p['category']) ? $p['category'] : '';
 
@@ -121,7 +125,7 @@ function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', str
         }
         $_datapoints[$category][] = [
             'X' => number_raw_string($p['x']),
-            'Y' => number_raw_string($p['y']),
+            'Y' => $y_value,
             'R' => $r,
             'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
         ];
@@ -129,6 +133,8 @@ function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', str
         if ($r !== null) {
             $bubble = true;
         }
+
+        $max = max($max, floatval($y_value));
     }
 
     ksort($_datapoints);
@@ -146,6 +152,16 @@ function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', str
 
     $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
 
+    $clamp_y_axis = isset($options['clamp_y_axis']) ? $options['clamp_y_axis'] : false;
+    if ((isset($options['clamp_y_axis'])) && ($options['clamp_y_axis'] != '0')) {
+        if (is_integer($options['clamp_y_axis'])) {
+            $max += $options['clamp_y_axis'];
+        }
+        $clamp_y_axis = true;
+    } else {
+        $clamp_y_axis = false;
+    }
+
     return do_template('GRAPH_SCATTER_DIAGRAM', [
         '_GUID' => 'a3fc255270253893b7550f18f9f94fca',
         'ID' => $id,
@@ -156,6 +172,8 @@ function graph_scatter_diagram(array $datapoints, string $x_axis_label = '', str
         'DATASETS' => $datasets,
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'BUBBLE' => $bubble,
+        'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'MAX' => strval(intval(ceil($max))),
     ]);
 }
 
@@ -181,13 +199,15 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         $show_data_labels = false;
     }
 
-    $id = _generate_graph_id();
+    $id = isset($options['id']) ? $options['id'] : _generate_graph_id();
 
     _normalise_graph_dims($width, $height);
 
     if (empty($datasets)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+
+    $max = 0;
 
     if ($x_labels === null) {
         $x_labels = range(0, count($datasets[0]['datapoints']));
@@ -202,16 +222,22 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         $datapoints = [];
         foreach ($dataset['datapoints'] as $p) {
             if (is_array($p)) {
+                $value = number_raw_string($p['value']);
+
                 $datapoints[] = [
-                    'VALUE' => number_raw_string($p['value']),
+                    'VALUE' => $value,
                     'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
                 ];
             } else {
+                $value = number_raw_string($p);
+
                 $datapoints[] = [
-                    'VALUE' => number_raw_string($p),
+                    'VALUE' => $value,
                     'TOOLTIP' => '',
                 ];
             }
+
+            $max = max($max, floatval($value));
         }
 
         $_datasets[] = [
@@ -225,6 +251,15 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
     $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
     $fill = isset($options['fill']) ? $options['fill'] : false;
 
+    if ((isset($options['clamp_y_axis'])) && ($options['clamp_y_axis'] != '0')) {
+        if (is_integer($options['clamp_y_axis'])) {
+            $max += $options['clamp_y_axis'];
+        }
+        $clamp_y_axis = true;
+    } else {
+        $clamp_y_axis = false;
+    }
+
     return do_template('GRAPH_LINE_CHART', [
         '_GUID' => '4a45757f02c5356c6b87a1c8d6366d49',
         'ID' => $id,
@@ -237,6 +272,8 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'SHOW_DATA_LABELS' => $show_data_labels,
         'FILL' => $fill,
+        'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'MAX' => strval(intval(ceil($max))),
     ]);
 }
 
@@ -259,7 +296,7 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
         $show_data_labels = false;
     }
 
-    $id = _generate_graph_id();
+    $id = isset($options['id']) ? $options['id'] : _generate_graph_id();
 
     _normalise_graph_dims($width, $height);
 
@@ -267,15 +304,19 @@ function graph_pie_chart(array $datapoints, array $options = [], ?array $color_p
     $_datapoints = [];
     foreach ($datapoints as $x => $p) {
         if (is_array($p)) {
+            $value = number_raw_string($p['value']);
+
             $_datapoints[] = [
                 'LABEL' => $p['label'],
-                'VALUE' => number_raw_string($p['value']),
+                'VALUE' => $value,
                 'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
             ];
         } else {
+            $value = is_string($x) ? $x : number_raw_string($x);
+
             $_datapoints[] = [
-                'LABEL' => is_string($x) ? $x : number_raw_string($x),
+                'LABEL' => $value,
                 'VALUE' => number_raw_string($p),
                 'TOOLTIP' => '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
@@ -319,34 +360,52 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
         $show_data_labels = false;
     }
 
-    $id = _generate_graph_id();
+    $id = isset($options['id']) ? $options['id'] : _generate_graph_id();
 
     _normalise_graph_dims($width, $height);
+
+    $max = 0;
 
     $i = 0;
     $_datapoints = [];
     foreach ($datapoints as $x => $p) {
         if (is_array($p)) {
+            $value = number_raw_string($p['value']);
+
             $_datapoints[] = [
                 'LABEL' => $p['label'],
-                'VALUE' => number_raw_string($p['value']),
+                'VALUE' => $value,
                 'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
             ];
         } else {
+            $value = number_raw_string($p);
+
             $_datapoints[] = [
                 'LABEL' => is_string($x) ? $x : number_raw_string($x),
-                'VALUE' => number_raw_string($p),
+                'VALUE' => $value,
                 'TOOLTIP' => '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
             ];
         }
+
+        $max = max($max, floatval($value));
+
         $i++;
     }
 
     $begin_at_zero = isset($options['begin_at_zero']) ? $options['begin_at_zero'] : false;
     $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
     $horizontal = isset($options['horizontal']) ? $options['horizontal'] : false;
+
+    if ((isset($options['clamp_y_axis'])) && ($options['clamp_y_axis'] != '0')) {
+        if (is_integer($options['clamp_y_axis'])) {
+            $max += $options['clamp_y_axis'];
+        }
+        $clamp_y_axis = true;
+    } else {
+        $clamp_y_axis = false;
+    }
 
     return do_template('GRAPH_BAR_CHART', [
         '_GUID' => '173df546b9bcb31ca064910e1952e484',
@@ -359,6 +418,8 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'SHOW_DATA_LABELS' => $show_data_labels,
         'HORIZONTAL' => $horizontal,
+        'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'MAX' => strval(intval(ceil($max))),
     ]);
 }
 
@@ -384,29 +445,37 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
         $show_data_labels = false;
     }
 
-    $id = _generate_graph_id();
+    $id = isset($options['id']) ? $options['id'] : _generate_graph_id();
 
     _normalise_graph_dims($width, $height);
+
+    $max = 0;
 
     $_datasets = [];
     foreach ($datasets as $i => $dataset) {
         $datapoints = [];
         foreach ($dataset['datapoints'] as $x => $p) {
             if (is_array($p)) {
+                $value = number_raw_string($p['value']);
+
                 $datapoints[] = [
                     'LABEL' => $p['label'],
-                    'VALUE' => number_raw_string($p['value']),
+                    'VALUE' => $value,
                     'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
                     'COLOR' => _search_graph_color_pool($i, $color_pool),
                 ];
             } else {
+                $value = number_raw_string($p);
+
                 $datapoints[] = [
                     'LABEL' => @strval($x),
-                    'VALUE' => number_raw_string($p),
+                    'VALUE' => $value,
                     'TOOLTIP' => '',
                     'COLOR' => _search_graph_color_pool($i, $color_pool),
                 ];
             }
+
+            $max = max($max, floatval($value));
         }
 
         $_datasets[] = [
@@ -428,6 +497,15 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
     $horizontal = isset($options['horizontal']) ? $options['horizontal'] : false;
     $stacked = isset($options['stacked']) ? $options['stacked'] : true;
 
+    if ((isset($options['clamp_y_axis'])) && ($options['clamp_y_axis'] != '0')) {
+        if (is_integer($options['clamp_y_axis'])) {
+            $max += $options['clamp_y_axis'];
+        }
+        $clamp_y_axis = true;
+    } else {
+        $clamp_y_axis = false;
+    }
+
     return do_template('GRAPH_STACKED_BAR_CHART', [
         'ID' => $id,
         'WIDTH' => $width,
@@ -440,6 +518,101 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
         'SHOW_DATA_LABELS' => $show_data_labels,
         'HORIZONTAL' => $horizontal,
         'STACKED' => $stacked,
+        'CLAMP_Y_AXIS' => $clamp_y_axis,
+        'MAX' => strval(intval(ceil($max))),
+    ]);
+}
+
+/**
+ * Many multiple measures across one large even dimension (x) and one uneven dimension (y).
+ *
+ * @param  array $datasets Data-sets to render
+ * @param  mixed $x_axis_label X-axis label (string or Tempcode)
+ * @param  mixed $y_axis_label Y-axis label (string or Tempcode)
+ * @param  mixed $z_axis_label Z-axis label (string or Tempcode)
+ * @param  string $title Title
+ * @param  array $options Map of additional fiddly options
+ * @param  ?array $color_pool Colour pool to use (null: default colour pool)
+ * @param  ?string $width Width (null: responsive)
+ * @param  ?string $height Height (null: responsive)
+ * @return Tempcode The chart
+ */
+function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_label = '', string $z_axis_label = '', string $title = '', array $options = [], ?array $color_pool = null, ?string $width = null, ?string $height = null)
+{
+    _generate_graph_color_pool($color_pool);
+
+    if (is_mobile()) {
+        $show_data_labels = false;
+    }
+
+    $id = isset($options['id']) ? $options['id'] : _generate_graph_id();
+
+    _normalise_graph_dims($width, $height);
+
+    $max = null;
+    $min = null;
+
+    $labels = [];
+
+    $_datasets = [];
+    foreach ($datasets as $i => $dataset) {
+        $datapoints = [];
+        foreach ($dataset['datapoints'] as $x => $p) {
+            if (is_array($p)) {
+                $label = $p['label'];
+                $value = number_raw_string($p['value']);
+
+                $datapoints[] = [
+                    'LABEL' => $label,
+                    'VALUE' => $value,
+                    'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
+                ];
+            } else {
+                $label = @strval($x);
+                $value = number_raw_string($p);
+
+                $datapoints[] = [
+                    'LABEL' => $label,
+                    'VALUE' => $value,
+                    'TOOLTIP' => '',
+                ];
+            }
+
+            if ($i == 0) {
+                $labels[] = $label;
+            }
+
+            $_value = floatval($value);
+            if (($max === null) || ($_value > $max)) {
+                $max = $_value;
+            }
+            if (($min === null) || ($_value < $min)) {
+                $min = $_value;
+            }
+        }
+
+        $_datasets[] = [
+            'Y_LABEL' => $dataset['label'],
+            'DATAPOINTS' => $datapoints,
+        ];
+    }
+
+    $show_data_labels = isset($options['show_data_labels']) ? $options['show_data_labels'] : true;
+
+    return do_template('GRAPH_BUBBLE_BAR_CHART', [
+        'ID' => $id,
+        'WIDTH' => $width,
+        'HEIGHT' => $height,
+        'X_AXIS_LABEL' => $x_axis_label,
+        'Y_AXIS_LABEL' => $y_axis_label,
+        'Z_AXIS_LABEL' => $z_axis_label,
+        'TITLE' => $title,
+        'LABELS' => $labels,
+        'DATASETS' => $_datasets,
+        'SHOW_DATA_LABELS' => $show_data_labels,
+        'COLOR' => _search_graph_color_pool(0, $color_pool),
+        'MIN' => float_to_raw_string($min, 2, true),
+        'MAX' => float_to_raw_string($max, 2, true),
     ]);
 }
 
