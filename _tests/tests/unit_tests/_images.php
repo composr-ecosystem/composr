@@ -88,6 +88,9 @@ class _images_test_set extends cms_test_case
         $this->assertTrue(!isset($GLOBALS['REQUIRED_CODE']['http'])); // Should have been able to do the above using the filesystem, via a URL->path conversion
         $this->assertTrue(is_array(cms_getimagesize_url('https://compo.sr/themes/composr_homesite/images_custom/composr_homesite/composr_full_logo.png')));
         $this->assertTrue(cms_getimagesize(get_file_base() . '/themes/default/images/not_here.png') === false);
+
+        $svg_dets = cms_getimagesize(get_file_base() . '/themes/default/images/led/off.svg');
+        $this->assertTrue($svg_dets[0] == 6);
     }
 
     public function testIsAnimated()
