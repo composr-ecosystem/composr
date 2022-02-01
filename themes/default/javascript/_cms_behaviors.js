@@ -688,7 +688,7 @@
                 $dom.on(el, 'click', function (e) {
                     var options = objVal($dom.data(el, 'clickStatsEventTrack'));
 
-                    $cms.statsEventTrack(el, options.category, options.action, e, options.nativeTracking);
+                    $cms.statsEventTrack(el, options.category, options.action, options.label, e, options.nativeTracking);
                 });
             });
         }

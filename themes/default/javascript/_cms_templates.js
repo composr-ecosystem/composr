@@ -30,49 +30,49 @@
     $cms.templates.blockMainScreenActions = function blockMainScreenActions(params, container) {
         var urlEncodedCanonicalUrl = strVal(params.urlEncodedCanonicalUrl);
         $dom.on(container, 'click', '.js-click-print-screen', function () {
-            $cms.statsEventTrack(null, '{!recommend:PRINT_THIS_SCREEN;}', null, null, true);
+            $cms.statsEventTrack(null, '{!recommend:PRINT_THIS_SCREEN;}', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-facebook', function () {
-            $cms.statsEventTrack(null, 'social__facebook', null, null, true);
+            $cms.statsEventTrack(null, 'social__facebook', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-twitter', function (e, link) {
             link.href = 'https://twitter.com/share?count=horizontal&counturl=' + urlEncodedCanonicalUrl + '&original_referer=' + urlEncodedCanonicalUrl + '&text=' + encodeURIComponent(document.title) + '&url=' + urlEncodedCanonicalUrl;
 
-            $cms.statsEventTrack(null, 'social__twitter', null, null, true);
+            $cms.statsEventTrack(null, 'social__twitter', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-digg', function () {
-            $cms.statsEventTrack(null, 'social__digg', null, null, true);
+            $cms.statsEventTrack(null, 'social__digg', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-linkedin', function () {
-            $cms.statsEventTrack(null, 'social__linkedin', null, null, true);
+            $cms.statsEventTrack(null, 'social__linkedin', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-pinterest', function () {
-            $cms.statsEventTrack(null, 'social__pinterest', null, null, true);
+            $cms.statsEventTrack(null, 'social__pinterest', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-tumblr', function () {
-            $cms.statsEventTrack(null, 'social__tumblr', null, null, true);
+            $cms.statsEventTrack(null, 'social__tumblr', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-vkontakte', function () {
-            $cms.statsEventTrack(null, 'social__vkontakte', null, null, true);
+            $cms.statsEventTrack(null, 'social__vkontakte', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-sina-weibo', function () {
-            $cms.statsEventTrack(null, 'social__sina_weibo', null, null, true);
+            $cms.statsEventTrack(null, 'social__sina_weibo', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-tencent-weibo', function () {
-            $cms.statsEventTrack(null, 'social__tencent_weibo', null, null, true);
+            $cms.statsEventTrack(null, 'social__tencent_weibo', null, null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-qzone', function () {
-            $cms.statsEventTrack(null, 'social__qzone', null, null, true);
+            $cms.statsEventTrack(null, 'social__qzone', null, null, null, true);
         });
     };
 

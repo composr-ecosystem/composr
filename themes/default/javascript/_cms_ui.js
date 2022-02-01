@@ -299,7 +299,7 @@
 
         // Add in move/leave events if needed
         if (!haveLinks) {
-            $dom.on(el, 'mouseout.cmsTooltip', function (e) {
+            $dom.on(el, 'mouseleave.cmsTooltip', function (e) {
                 var tooltipEl = el.tooltipId ? document.getElementById(el.tooltipId) : null;
 
                 if (!el.contains(e.relatedTarget) && (!tooltipEl || !tooltipEl.contains(e.relatedTarget))) {

@@ -872,7 +872,7 @@
      * @param nativeTracking - Whether the inbuilt Composr tracking should register the event (normally we don't do this as we can register events without requiring JavaScript)
      * @returns { Promise }
      */
-    $cms.statsEventTrack = function statsEventTrack(el, category, action, e, nativeTracking) {
+    $cms.statsEventTrack = function statsEventTrack(el, category, action, label, e, nativeTracking) {
         nativeTracking = nativeTracking || false;
         var useGA = $cms.configOption('google_analytics') && !$cms.isStaff() && !$cms.isAdmin(),
             $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'),
@@ -887,7 +887,7 @@
                 try {
                     $util.log('Beacon', 'send', 'event', category, gaAction);
 
-                    window.ga('send', 'event', category, gaAction, { transport: 'beacon', hitCallback: resolve });
+                    window.ga('send', 'event', category, gaAction, label, { transport: 'beacon', hitCallback: resolve });
                 } catch (err) {
                     okay = false;
                 }
