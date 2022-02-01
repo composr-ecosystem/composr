@@ -1,3 +1,8 @@
+/*
+ {$BRAND_NAME`}
+ Copyright (c) ocProducts, 2004-2022
+*/
+
 /* Bubble bar charts */
 
 .bubble-bar-chart-wrap .graph-heading {
@@ -10,7 +15,6 @@
 	float: right;
 	margin: 0 25px;
 	font-size: 12px;
-	color: #636B6F;
 }
 
 .bubble-bar-chart-legend span {
@@ -41,7 +45,6 @@ table.bubble-bar-chart th, table.bubble-bar-chart td {
 }
 
 table.bubble-bar-chart tbody th {
-	color: white;
 	text-transform: none;
 	font-weight: normal;
 	height: 24px;
