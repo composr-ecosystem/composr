@@ -35,7 +35,7 @@ class Hook_symbol_FORM_TO_EMAIL_URL
         if (isset($param[0])) {
             $redirect_url = static_evaluate_tempcode(build_url(['page' => $param[0]], '_SEARCH'));
         } else {
-            $redirect_url = get_self_url(true);
+            $redirect_url = get_self_url(true, false, array('sent' => 1));
         }
         $url .= '?redirect=' . cms_urlencode(static_evaluate_tempcode(protect_url_parameter($redirect_url)));
         $url .= keep_symbol([]);
