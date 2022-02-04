@@ -98,12 +98,6 @@ If you clear caches through the Cleanup Tools in the Admin Zone then this operat
  1_key="Syslog"             1_value="Operating system facility for managing logs in a consistent and centralised way"
  2_key="RPC"                2_value="Remote Procedure Call, used in Composr's case when an action on one host needs to trigger an action on all the others and orchestrated through a queue in the database"
  3_key="Propagated"         3_value="Our mode of automatic file sharing between hosts that works similarly to a system like Dropbox/Google Drive/ownCloud/etc"
- 4_key="TODO"               4_value="TODO"
- 5_key="TODO"               5_value="TODO"
- 6_key="TODO"               6_value="TODO"
- 7_key="TODO"               7_value="TODO"
- 8_key="TODO"               8_value="TODO"
- 9_key="TODO"               9_value="TODO"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

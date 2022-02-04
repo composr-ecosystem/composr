@@ -983,7 +983,7 @@ function _get_cache_entries(array $dets) : array
  * @param  string $type Operation type
  * @param  string $data Parameter data
  */
-function cloud_rpc(string $type, string $data)
+function cloud_rpc(string $type, string $data = '')
 {
     if ((cloud_mode() != '') && ($GLOBALS['SITE_DB']->table_exists('cloud_propagation_rpc'))) {
         $GLOBALS['SITE_DB']->query_insert('cloud_propagation_rpc', [

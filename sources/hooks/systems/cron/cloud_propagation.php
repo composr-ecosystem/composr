@@ -79,6 +79,8 @@ class Hook_cron_cloud_propagation
 
         $last_synched = intval(get_value('cloud_propagation_to__' . gethostname(), '-1', true));
 
+        $propagation_record_days = (get_option('cloud_propagation_record_days') == '') ? null : intval(get_option('cloud_propagation_record_days'));
+
         $where = 'id>=' . strval($last_synched) . ' AND ' . db_string_not_equal_to('op_originating_host', gethostname());
 
         $hooks = find_all_hook_obs('systems', 'cloud_propagation', 'Hook_cloud_propagation_');
@@ -87,48 +89,55 @@ class Hook_cron_cloud_propagation
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
-        }
-        foreach ($ops as $op) {
-            if ($op['dir_file_base_constant'] == FILE_BASE__SHARED) {
-                $file_base = get_file_base(true);
-            } else {
-                $file_base = get_custom_file_base(true);
+
+            foreach ($ops as $op) {
+                if ($op['dir_file_base_constant'] == FILE_BASE__SHARED) {
+                    $file_base = get_file_base(true);
+                } else {
+                    $file_base = get_custom_file_base(true);
+                }
+
+                switch ($op['op_type']) {
+                    case 'create':
+                        $result = @mkdir($file_base . '/' . $op['dir_path'], $op['dir_perms']);
+                        fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
+                        if (!$result) {
+                            require_code('failure');
+                            $last_error = error_get_last();
+                            cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
+                        }
+                        break;
+
+                    case 'touch':
+                        if ($op['dir_perms'] !== null) {
+                            fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
+                        }
+                        break;
+
+                    case 'move':
+                        $result = @rename($file_base . '/' . $op['dir_path'], $file_base . '/' . $op['op_data']);
+                        if (!$result) {
+                            require_code('failure');
+                            $last_error = error_get_last();
+                            cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
+                        }
+                        break;
+
+                    case 'delete':
+                        $result = @rmdir($file_base . '/' . $op['dir_path']);
+                        if (!$result) {
+                            require_code('failure');
+                            $last_error = error_get_last();
+                            cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
+                        }
+                        break;
+                }
             }
 
-            switch ($op['op_type']) {
-                case 'create':
-                    $result = @mkdir($file_base . '/' . $op['dir_path'], $op['dir_perms']);
-                    fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
-                    if (!$result) {
-                        require_code('failure');
-                        $last_error = error_get_last();
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
-                    }
-                    break;
-
-                case 'touch':
-                    if ($op['dir_perms'] !== null) {
-                        fix_permissions($file_base . '/' . $op['dir_path'], $op['dir_perms']);
-                    }
-                    break;
-
-                case 'move':
-                    $result = @rename($file_base . '/' . $op['dir_path'], $file_base . '/' . $op['op_data']);
-                    if (!$result) {
-                        require_code('failure');
-                        $last_error = error_get_last();
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
-                    }
-                    break;
-
-                case 'delete':
-                    $result = @rmdir($file_base . '/' . $op['dir_path']);
-                    if (!$result) {
-                        require_code('failure');
-                        $last_error = error_get_last();
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
-                    }
-                    break;
+            // Cleanup very old stuff
+            if ($propagation_record_days !== null) {
+                $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * $propagation_record_days);
+                $GLOBALS['SITE_DB']->query($sql, $max);
             }
         }
 
@@ -136,54 +145,61 @@ class Hook_cron_cloud_propagation
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
-        }
-        foreach ($ops as $op) {
-            if ($op['file_file_base_constant'] == FILE_BASE__SHARED) {
-                $file_base = get_file_base(true);
-            } else {
-                $file_base = get_custom_file_base(true);
+
+            foreach ($ops as $op) {
+                if ($op['file_file_base_constant'] == FILE_BASE__SHARED) {
+                    $file_base = get_file_base(true);
+                } else {
+                    $file_base = get_custom_file_base(true);
+                }
+
+                switch ($op['op_type']) {
+                    case 'create':
+                        $result = cms_file_put_contents_safe($file_base . '/' . $op['file_path'], base64_decode($op['op_data']), FILE_WRITE_FAILURE_SILENT);
+                        if ($result) {
+                            fix_permissions($file_base . '/' . $op['file_path'], $op['file_perms']);
+                            @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
+                        } else {
+                            unset($op['op_data']);
+                            require_code('failure');
+                            $last_error = error_get_last();
+                            cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
+                        }
+                        break;
+
+                    case 'touch':
+                        if ($op['file_perms'] !== null) {
+                            fix_permissions($file_base . '/' . $op['file_path'], $op['file_perms']);
+                        }
+                        if ($op['file_mtime'] !== null) {
+                            @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
+                        }
+                        break;
+
+                    case 'move':
+                        $result = @rename($file_base . '/' . $op['file_path'], $file_base . '/' . $op['op_data']);
+                        if (!$result) {
+                            require_code('failure');
+                            $last_error = error_get_last();
+                            cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
+                        }
+                        break;
+
+                    case 'delete':
+                        $result = @unlink($file_base . '/' . $op['file_path']);
+                        if (!$result) {
+                            require_code('failure');
+                            $last_error = error_get_last();
+                            cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
+                        }
+                        break;
+                }
             }
 
-            switch ($op['op_type']) {
-                case 'create':
-                    $result = cms_file_put_contents_safe($file_base . '/' . $op['file_path'], base64_decode($op['op_data']), FILE_WRITE_FAILURE_SILENT);
-                    if ($result) {
-                        fix_permissions($file_base . '/' . $op['file_path'], $op['file_perms']);
-                        @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
-                    } else {
-                        unset($op['op_data']);
-                        require_code('failure');
-                        $last_error = error_get_last();
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
-                    }
-                    break;
-
-                case 'touch':
-                    if ($op['file_perms'] !== null) {
-                        fix_permissions($file_base . '/' . $op['file_path'], $op['file_perms']);
-                    }
-                    if ($op['file_mtime'] !== null) {
-                        @chmod($file_base . '/' . $op['file_path'], $op['file_mtime']);
-                    }
-                    break;
-
-                case 'move':
-                    $result = @rename($file_base . '/' . $op['file_path'], $file_base . '/' . $op['op_data']);
-                    if (!$result) {
-                        require_code('failure');
-                        $last_error = error_get_last();
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
-                    }
-                    break;
-
-                case 'delete':
-                    $result = @unlink($file_base . '/' . $op['file_path']);
-                    if (!$result) {
-                        require_code('failure');
-                        $last_error = error_get_last();
-                        cms_error_log('Cloud sync fail for ' . json_encode($op) . ': ' . $last_error['message']);
-                    }
-                    break;
+            // Cleanup very old stuff
+            if ($propagation_record_days !== null) {
+                $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_dirs WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * $propagation_record_days);
+                $GLOBALS['SITE_DB']->query($sql, $max);
             }
         }
 
@@ -191,37 +207,44 @@ class Hook_cron_cloud_propagation
         $ops = $GLOBALS['SITE_DB']->query($sql, $max);
         if (!empty($ops)) {
             disable_php_memory_limit();
-        }
-        foreach ($ops as $op) {
-            switch ($op['op_type']) {
-                case 'erase_persistent_cache':
-                    erase_persistent_cache(true);
-                    break;
 
-                case 'erase_static_cache':
-                    erase_static_cache(true);
-                    break;
+            foreach ($ops as $op) {
+                switch ($op['op_type']) {
+                    case 'erase_persistent_cache':
+                        erase_persistent_cache(true);
+                        break;
 
-                case 'erase_cached_language':
-                    require_code('caches3');
-                    erase_cached_language(true);
-                    break;
+                    case 'erase_static_cache':
+                        erase_static_cache(true);
+                        break;
 
-                case 'erase_cached_templates':
-                    require_code('caches3');
-                    erase_cached_templates(false, null, null, false, true);
-                    break;
+                    case 'erase_cached_language':
+                        require_code('caches3');
+                        erase_cached_language(true);
+                        break;
 
-                case 'Self_learning_cache::erase_smart_cache':
-                    Self_learning_cache::erase_smart_cache(true);
-                    break;
+                    case 'erase_cached_templates':
+                        require_code('caches3');
+                        erase_cached_templates(false, null, null, false, true);
+                        break;
 
-                default:
-                    foreach ($_hooks as $ob) {
-                        if (method_exists($ob, 'rpc')) {
-                            $ob->rpc($op['op_type'], $op['op_data']);
+                    case 'Self_learning_cache::erase_smart_cache':
+                        Self_learning_cache::erase_smart_cache(true);
+                        break;
+
+                    default:
+                        foreach ($_hooks as $ob) {
+                            if (method_exists($ob, 'rpc')) {
+                                $ob->rpc($op['op_type'], $op['op_data']);
+                            }
                         }
-                    }
+                }
+            }
+
+            // Cleanup very old stuff
+            if ($propagation_record_days !== null) {
+                $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_rpc WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * $propagation_record_days);
+                $GLOBALS['SITE_DB']->query($sql, $max);
             }
         }
 
@@ -254,9 +277,11 @@ class Hook_cron_cloud_propagation
                 }
             }
 
-            // Cleanup very old stuff (as unlike the other tables we cannot keep the table size down by de-duplication alone)
-            $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_logging WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * 24);
-            $lines = $GLOBALS['SITE_DB']->query($sql, $max);
+            // Cleanup very old stuff
+            if ($propagation_record_days !== null) {
+                $sql = 'DELETE * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'cloud_propagation_logging WHERE ' . $where . ' AND op_timestamp<' . strval(time() - 60 * 60 * $propagation_record_days);
+                $GLOBALS['SITE_DB']->query($sql, $max);
+            }
         }
 
         set_value('cloud_propagation_to__' . gethostname(), strval(time()), true);

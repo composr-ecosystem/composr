@@ -186,6 +186,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/google_apis_client_secret.php',
             'sources/hooks/systems/config/azure_api_key.php',
             'sources/hooks/systems/config/timezone.php',
+            'sources/hooks/systems/config/cloud_propagation_record_days.php',
             'sources/hooks/systems/config/header_type.php',
             'sources/hooks/systems/config/header_classic_image.php',
             'sources/hooks/systems/config/header_classic_text_colour.php',
