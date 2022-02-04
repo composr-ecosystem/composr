@@ -253,6 +253,24 @@ function git_pull($clear_caches = true)
 {
     $ret = _git_exec('pull');
 
+    // We have to make Git the authority over anything that might be sitting on a host
+    //  Files creating live may be added to git at some point and then pulled back through
+    if (cloud_mode() != '') {
+        $files = [];
+
+        $matches = [];
+        if (preg_match('#error: The following untracked working tree files would be overwritten by merge:(\n\t.+)+#', $ret, $matches) != 0) {
+            foreach (explode("\n", trim($matches[1], "\n")) as $match) {
+                $files[] = get_file_base() . '/' . ltrim($match, "\t");
+            }
+            foreach ($files as $file) {
+                unlink($file);
+            }
+
+            $ret = _git_exec('pull');
+        }
+    }
+
     if ($clear_caches) {
         require_code('caches3');
         erase_cached_templates();
@@ -279,7 +297,7 @@ function git_exec($cmd)
 function _git_exec($cmd)
 {
     static $cache = [];
-    if ($cmd == 'fetch') {
+    if ($cmd == 'fetch' || $cmd == 'pull') {
         $cache = [];
     }
     if (array_key_exists($cmd, $cache)) {
