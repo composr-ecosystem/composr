@@ -2096,7 +2096,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     require_code('files');
                     $daily_quota = NON_CNS_QUOTA;
                 }
-                if (($daily_quota !== null) && ((substr($id, 0, 4) != 'new_')) {
+                if (($daily_quota !== null) && (substr($id, 0, 4) != 'new_')) {
                     $_size_uploaded_today = $db->query('SELECT SUM(a_file_size) AS the_answer FROM ' . $db->get_table_prefix() . 'attachments WHERE a_member_id=' . strval($source_member) . ' AND a_add_time>' . strval(time() - 60 * 60 * 24) . ' AND a_add_time<=' . strval(time()));
                     if ($_size_uploaded_today[0]['the_answer'] === null) {
                         $_size_uploaded_today[0]['the_answer'] = 0;
