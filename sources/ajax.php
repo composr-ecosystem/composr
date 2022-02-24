@@ -646,6 +646,9 @@ function snippet_script()
     header('Content-Type: text/plain; charset=' . get_charset());
     convert_data_encodings(true);
     $hook = filter_naughty_harsh(get_param_string('snippet'));
+    if ((!is_file(get_file_base() . '/sources/hooks/systems/snippets/' . $hook . '.php')) && (!is_file(get_file_base() . '/sources_custom/hooks/systems/snippets/' . $hook . '.php'))) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
     require_code('hooks/systems/snippets/' . $hook, true);
     $object = object_factory('Hook_snippet_' . $hook);
     $tempcode = $object->run();
