@@ -47,7 +47,6 @@ function init__cloud_fs()
  *
  * Regexps specifying where normal Composr file paths will be routed to.
  * Should be in precedence order (for performance reasons).
- * Nothing used in early boot (pre-database connection) should use CMS_CLOUD__REMOTE.
  * Override this function to change the configuration. Addons can add to this global themselves if needed.
  */
 function define_cloud_fs_bindings()
@@ -83,10 +82,15 @@ function define_cloud_fs_bindings()
 function enable_cloud_fs()
 {
     if (function_exists('stream_wrapper_register')) {
+        global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL, $SITE_INFO;
+
+        if (!is_dir($SITE_INFO['nas_directory'])) {
+            fatal_exit('Configured nas_directory does not exist');
+        }
+
         stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
         stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
 
-        global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
         $FILE_BASE_LOCAL = get_file_base(true);
         $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
         $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
