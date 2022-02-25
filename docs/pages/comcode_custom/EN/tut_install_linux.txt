@@ -99,7 +99,7 @@ Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need
 
 (the extension_dir may actually be different on different versions, so check that)
 
-[title="3"]Fedora/RHEL/CentOS[/title]
+[title="3"]Fedora/RHEL/AlmaLinux/CentOS Stream[/title]
 
 You may need to setup the [url="EPEL repository"]https://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/[/url] first.
 
