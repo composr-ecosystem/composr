@@ -778,6 +778,13 @@ function _get_cache_entries($dets)
         }
 
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
+            require_code('temporal');
+            $staff_status = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0)) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
+            $member = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_MEMBER) !== 0)) ? get_member() : null;
+            $groups = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0)) ? permissive_groups_cache_signature() : '';
+            $is_bot = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) !== 0)) ? (is_null(get_bot_type()) ? 0 : 1) : null;
+            $timezone = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0)) ? get_users_timezone(get_member()) : '';
+
             $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
             $lang = user_lang();
             $cache_row = persistent_cache_get(array('CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member, $groups, $is_bot, $timezone));
