@@ -197,6 +197,11 @@ function rss_backend_script()
     if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+
+    // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
+    header('Content-Type: text/xml'); // application/rss+xml ?
+    header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
+
     require_code('hooks/systems/rss/' . $mode, true);
     $object = object_factory('Hook_rss_' . $mode);
     require_code('selectcode');
@@ -220,10 +225,6 @@ function rss_backend_script()
     } else {
         $rss_cloud = new Tempcode();
     }
-
-    // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
-    header('Content-Type: text/xml'); // application/rss+xml ?
-    header("Content-Security-Policy: default-src 'self'; style-src 'self' data: 'unsafe-inline'"); // Don't allow special execution via a vector of namespace-injected HTML
 
     if (cms_srv('REQUEST_METHOD') == 'HEAD') {
         return;

@@ -116,9 +116,6 @@ function semi_dev_mode_startup()
 function destrictify($change_content_type = true, $mysql_too = false)
 {
     // Turn off strictness
-    if ((!headers_sent()) && ($change_content_type)) {
-        @header('Content-type: text/html; charset=' . get_charset());
-    }
     $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
     $GLOBALS['TITLE_CALLED'] = true;
     error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE);
