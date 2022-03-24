@@ -787,6 +787,8 @@ function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $d
 
                     if ($show == 'gradient') {
                         $img = generate_gradient($colours['lgrad'], $colours['dgrad']);
+                    } elseif (($show == 'icons/16x16/filetypes/external_link')) {
+                        $img = generate_recoloured_image($path, '#000000', $colours['BW'], '#000000', $colours['BW']);
                     } elseif (($show == 'background_image')) {
                         $img = generate_recoloured_image($path, '#FFFFFF', $colours['WB'], '#DDE5F7', $colours['washed_out']);
                     } elseif (($show == 'header') || ($show == 'outer_background') || ($show == 'inner_background') || ($show == 'block_background') || ($show == 'big_tabs_controller_button_active') || ($show == 'big_tabs_controller_button_top_active') || ($show == 'big_tabs_controller_button_top') || ($show == 'big_tabs_controller_button')) {
