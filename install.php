@@ -314,6 +314,10 @@ function prepare_installer_url(string $url) : string
     if ($kst != 0) {
         $url .= '&keep_show_timings=' . strval($kst);
     }
+    $kf = get_param_integer('keep_fatalistic', 0);
+    if ($kf != 0) {
+        $url .= '&keep_fatalistic=' . strval($kf);
+    }
     return $url;
 }
 
@@ -540,15 +544,17 @@ function step_2() : object
     }
     global $FILE_ARRAY;
     if (@is_array($FILE_ARRAY)) {
-        $licence = unixify_line_format(handle_string_bom(file_array_get('docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md')));
+        $licence = file_array_get('docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md');
         if ($licence === null) {
-            $licence = unixify_line_format(handle_string_bom(file_array_get('docs/LICENSE.md')));
+            $licence = file_array_get('docs/LICENSE.md');
         }
+        $licence = unixify_line_format(handle_string_bom($licence));
     } else {
-        $licence = @cms_file_get_contents_safe(get_file_base() . '/docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
-        if ($licence === false) {
-            $licence = cms_file_get_contents_safe(get_file_base() . '/docs/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
+        $licence_path = get_file_base() . '/docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md';
+        if (!is_file($licence_path)) {
+            $licence_path = get_file_base() . '/docs/LICENSE.md';
         }
+        $licence = cms_file_get_contents_safe($licence_path, FILE_READ_LOCK | FILE_READ_BOM);
     }
     $licence = preg_replace('#\((\w+\.md)\)#', '(https://gitlab.com/composr-foundation/composr/-/blob/' . STABLE_BRANCH_NAME . '/docs/$1)', $licence);
 

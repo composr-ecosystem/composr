@@ -47,7 +47,7 @@ class __installer_test_set extends cms_test_case
 
         $url = baseify_local_url('exports/builds/' . $version_dotted . '/install.php');
 
-        if (!is_file($install_path)) {
+        if ((!is_file($install_path)) || (!empty($_GET['force_rebuild']))) {
             make_installers();
         }
 

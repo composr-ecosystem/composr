@@ -192,6 +192,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'docs/pages/comcode_custom/EN/index.html',
             'data_custom/images/docs/index.html',
             'docs/jsdoc/index.html',
+            'docs/jsdoc/.htaccess',
             'docs/jsdoc/jsdoc.json',
             'docs/jsdoc/jsdoc.sh',
 

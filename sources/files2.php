@@ -127,7 +127,7 @@ function cms_get_temp_dir() : array
         make_missing_directory($local_path);
     }
     $server_path = rtrim(sys_get_temp_dir(), '/\\');
-    $problem_saving = ((get_option('force_local_temp_dir') == '1') || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
+    $problem_saving = ((!function_exists('get_option')) || (get_option('force_local_temp_dir') == '1') || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
     $path = ($problem_saving ? $local_path : $server_path);
     return [$path, $problem_saving, $server_path, $local_path];
 }

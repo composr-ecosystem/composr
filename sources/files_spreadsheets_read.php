@@ -60,6 +60,7 @@ function spreadsheet_open_read(string $path, ?string $filename = null, int $algo
     switch ($ext) {
         case 'csv':
         case 'txt':
+        case '':
             return new CMS_CSV_Reader($path, $filename, $algorithm, $trim, $default_charset);
     }
 

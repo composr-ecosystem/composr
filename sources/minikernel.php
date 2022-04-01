@@ -883,7 +883,7 @@ function get_base_url(?string $path = null, ?string $zone_for = null, bool $path
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
         $default_base_url = (tacit_https() ? 'https://' : 'http://') . get_request_hostname();
-        $port = $_SERVER['SERVER_PORT'];
+        $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
         if ($port != (tacit_https() ? '443' : '80')) {
             $default_base_url .= ':' . $port;
         }

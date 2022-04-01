@@ -695,7 +695,7 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
     }
 
     if (($bitmask & IGNORE_CUSTOM_ZONES) != 0) {
-        if ((is_dir(get_file_base() . '/' . $path)) && (is_file(get_file_base() . '/' . $path . '/index.php')) && (is_dir(get_file_base() . '/' . $path . '/pages')) && (!in_array($filename_lower, ['adminzone', 'cms', 'forum', 'site']))) {
+        if ((is_dir(get_file_base() . '/' . $path)) && (is_file(get_file_base() . '/' . $path . '/index.php')) && (is_dir(get_file_base() . '/' . $path . '/pages')) && (!in_array($filename_lower, ['adminzone', 'cms', 'forum', 'site', 'docs']))) {
             return true;
         }
     }

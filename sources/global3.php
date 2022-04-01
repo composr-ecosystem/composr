@@ -4446,7 +4446,11 @@ function get_login_url() : array
  */
 function website_file_owner() : int
 {
-    return fileowner(get_file_base() . '/sources/global.php');
+    $path = get_file_base() . '/sources/global.php';
+    if (!is_file($path)) {
+        $path = get_file_base() . '/install.php';
+    }
+    return fileowner($path);
 }
 
 /**
@@ -4457,7 +4461,11 @@ function website_file_owner() : int
  */
 function website_file_group() : int
 {
-    return filegroup(get_file_base() . '/sources/global.php');
+    $path = get_file_base() . '/sources/global.php';
+    if (!is_file($path)) {
+        $path = get_file_base() . '/install.php';
+    }
+    return filegroup($path);
 }
 
 /**
@@ -4467,7 +4475,11 @@ function website_file_group() : int
  */
 function website_creation_time() : int
 {
-    return filemtime(get_file_base() . '/sources/global.php');
+    $path = get_file_base() . '/sources/global.php';
+    if (!is_file($path)) {
+        $path = get_file_base() . '/install.php';
+    }
+    return filemtime($path);
 }
 
 /**
@@ -4485,8 +4497,8 @@ function is_maintained(string $code) : bool
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get('data/maintenance_status.csv');
-            file_put_contents('php://memory', $file);
-            $path = 'php://memory';
+            $path = cms_tempnam();
+            file_put_contents($path, $file);
         } else {
             $path = get_file_base() . '/data/maintenance_status.csv';
         }
@@ -4496,6 +4508,9 @@ function is_maintained(string $code) : bool
             $cache[$row['Codename']] = !empty($row['Current active sponsor']);
         }
         $sheet_reader->close();
+        if (@is_array($FILE_ARRAY)) {
+            @unlink($path);
+        }
     }
 
     if (isset($cache[$code])) {

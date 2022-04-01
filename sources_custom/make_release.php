@@ -145,31 +145,42 @@ function make_installers($skip_file_grab = false)
         $installer_start = "<" . "?php
             /* QUICK INSTALLER CODE starts */
 
-            global \$FILE_ARRAY,\$SIZE_ARRAY,\$OFFSET_ARRAY,\$DIR_ARRAY,\$DATADOTCMS_FILE;
+            global \$FILE_ARRAY, \$SIZE_ARRAY, \$OFFSET_ARRAY, \$DIR_ARRAY, \$DATADOTCMS_FILE;
             \$OFFSET_ARRAY = [{$offset_list}];
             \$SIZE_ARRAY = [{$size_list}];
             \$FILE_ARRAY = [{$file_list}];
             \$DATADOTCMS_FILE = @fopen('data.cms','rb');
-            if (\$DATADOTCMS_FILE === false) exit('data.cms missing / inaccessible -- make sure you upload it');
-            if (filesize('data.cms') != " . strval($archive_size) . ") warn_exit('data.cms not fully uploaded, or wrong version for this installer');
-            if (md5(file_array_get('{$md5_test_path}')) != '{$md5}') warn_exit('data.cms corrupt. Must not be uploaded in text mode');
+            if (\$DATADOTCMS_FILE === false) {
+                exit('data.cms missing / inaccessible -- make sure you upload it');
+            }
+            if (filesize('data.cms') != " . strval($archive_size) . ") {
+                warn_exit('data.cms not fully uploaded, or wrong version for this installer');
+            }
+            if (md5(file_array_get('{$md5_test_path}')) != '{$md5}') {
+                warn_exit('data.cms corrupt. Must not be uploaded in text mode');
+            }
 
             function file_array_get(\$path)
             {
-                global \$OFFSET_ARRAY,\$SIZE_ARRAY,\$DATADOTCMS_FILE,\$FILE_BASE;
+                global \$OFFSET_ARRAY, \$SIZE_ARRAY, \$DATADOTCMS_FILE, \$FILE_BASE;
 
-                if (substr(\$path,0,strlen(\$FILE_BASE.'/')) == \$FILE_BASE.'/')
-                    \$path = substr(\$path,strlen(\$FILE_BASE.'/'));
+                if (substr(\$path, 0, strlen(\$FILE_BASE . '/')) == \$FILE_BASE . '/') {
+                    \$path = substr(\$path, strlen(\$FILE_BASE . '/'));
+                }
 
-                if (!isset(\$OFFSET_ARRAY[\$path])) return;
+                if (!isset(\$OFFSET_ARRAY[\$path])) {
+                    return;
+                }
                 \$offset = \$OFFSET_ARRAY[\$path];
                 \$size = \$SIZE_ARRAY[\$path];
-                if (\$size == 0) return '';
-                fseek(\$DATADOTCMS_FILE,\$offset,SEEK_SET);
-                if (\$size>1024*1024) {
-                    return [\$size,\$DATADOTCMS_FILE,\$offset];
+                if (\$size == 0) {
+                    return '';
                 }
-                \$data = fread(\$DATADOTCMS_FILE,\$size);
+                fseek(\$DATADOTCMS_FILE, \$offset, SEEK_SET);
+                if (\$size > 1024 * 1024) {
+                    return [\$size, \$DATADOTCMS_FILE, \$offset];
+                }
+                \$data = fread(\$DATADOTCMS_FILE, \$size);
                 return \$data;
             }
 
@@ -183,7 +194,7 @@ function make_installers($skip_file_grab = false)
             {
                 global \$FILE_ARRAY;
                 \$name = \$FILE_ARRAY[\$i];
-                return [\$name,file_array_get(\$name]);
+                return [\$name, file_array_get(\$name)];
             }
 
             function file_array_count()

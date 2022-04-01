@@ -599,7 +599,7 @@ abstract class HttpDownloader
         // Post-processing...
 
         // Detect HTTP-status using http-equiv
-        if (($this->download_mime_type !== null) && ($this->data !== null) && (substr($this->message, 0, 1) == '2')) {
+        if (($this->download_mime_type !== null) && ($this->data !== null) && ($this->message !== null) && (substr($this->message, 0, 1) == '2')) {
             if (preg_match('#^(text/html|application/xhtml+xml)($|;)#', $this->download_mime_type) != 0) {
                 $matches = [];
                 if (preg_match('#<meta http-equiv=["\']?Status["\']? content=["\']?(\d+)#i', $this->data, $matches) != 0) {

@@ -71,7 +71,12 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
     global $FILE_ARRAY;
     if ((@is_array($FILE_ARRAY)) && (file_array_exists('lang/' . $lang . '/' . $codename . '.ini'))) {
         $lang_file = 'lang/' . $lang . '/' . $codename . '.ini';
-        $file = unixify_line_format(handle_string_bom(file_array_get($lang_file)));
+        $data = file_array_get($lang_file);
+        if ($lang == fallback_lang()) {
+            $file = unixify_line_format($data);
+        } else {
+            $file = unixify_line_format(handle_string_bom($data));
+        }
         _get_lang_file_map($file, $load_target, 'strings', true, true, $lang);
         $bad = true;
     } else {
