@@ -46,7 +46,7 @@ class Hook_commandr_command_cloud_fs_initialise
             }
 
             // Loop through CMS_CLOUD_BINDINGS looking for CMS_CLOUD__REMOTE
-            // mv it all under $SITE_INFO['nas_directory'] - if not already a symlink (otherwise whine)
+            // move it all under $SITE_INFO['nas_directory'] - if not already a symlink (otherwise whine)
             // Create symlinks
         }
     }

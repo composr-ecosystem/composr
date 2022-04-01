@@ -37,7 +37,7 @@ function _find_text_file_path(string $codename, ?string $lang, bool $get_save_pa
             $path = get_file_base(true) . '/text_custom/' . $codename . '.txt';
         }
 
-        $path = get_file_base() . '/text_custom/' . $lang . '/' . $codename . '.txt';
+        $path = get_file_base() . '/text_custom/' . $codename . '.txt';
         if (is_file($path)) {
             return $path;
         }

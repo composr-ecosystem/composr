@@ -37,6 +37,11 @@ class standard_dir_files_test_set extends cms_test_case
         sort($files);
         $types = [];
         foreach ($files as $path) {
+            // Exceptions
+            if (preg_match('#^(themes/_unnamed_)/#', $path) != 0) {
+                continue;
+            }
+
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             if (strpos($c, '<IfModule mod_php') !== false) {
                 for ($i = 1; $i < $min_version; $i++) {
@@ -63,7 +68,7 @@ class standard_dir_files_test_set extends cms_test_case
             if ($path == '.htaccess') { // Root file
                 continue;
             }
-            if (preg_match('#^(tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/compo.sr/demonstratr/servers)/#', $path) != 0) {
+            if (preg_match('#^(tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/compo.sr/demonstratr/servers|themes/_unnamed_)/#', $path) != 0) {
                 continue;
             }
 

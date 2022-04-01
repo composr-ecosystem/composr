@@ -884,28 +884,38 @@ function _url_rewrite_params(string $zone_name, array $parameters) : ?string
  * @param  ?boolean $custom_dir Whether the URL is definitely local under the custom directory (null: unknown / auto-detect)
  * @return boolean Whether the URL is local
  */
-function url_is_local(string $url, ?string $relative_part = null, ?bool $custom_dir = null) : bool
+function url_is_local(string $url, ?string &$relative_part = null, ?bool &$custom_dir = null) : bool
 {
-    $relative_part = $url;
-    $custom_dir = null;
-
     if ($url === '') {
+        $relative_part = $url;
+        $custom_dir = null;
         return true;
     }
 
     if ($url[0] === 't' && substr($url, 0, 7) === 'themes/' || $url[0] === 'u' && substr($url, 0, 8) === 'uploads/') {
+        $relative_part = $url;
+        $custom_dir = null;
         return true;
     }
-    if ($url[0] === 'h' && (substr($url, 0, 7) === 'http://' || substr($url, 0, 8) === 'https://')) {
-        return false;
+
+    if ($relative_part === null) {
+        if ($url[0] === 'h' && (substr($url, 0, 7) === 'http://' || substr($url, 0, 8) === 'https://')) {
+            $relative_part = null;
+            $custom_dir = null;
+            return false;
+        }
     }
 
     if (preg_match('#^[^:\{%]*$#', $url) !== 0) {
+        $relative_part = $url;
+        $custom_dir = null;
         return true;
     }
 
     $first_char = $url[0];
     if ((strpos($url, '://') === false) && ($first_char !== '{') && (substr($url, 0, 7) !== 'mailto:') && (substr($url, 0, 5) !== 'data:') && (substr($url, 0, 8) !== 'debugfs:') && (substr($url, 0, 4) !== 'cid:') && ($first_char !== '%')) {
+        $relative_part = $url;
+        $custom_dir = null;
         return true;
     }
 
@@ -925,6 +935,7 @@ function url_is_local(string $url, ?string $relative_part = null, ?bool $custom_
     }
 
     $relative_part = null;
+    $custom_dir = null;
     return false;
 }
 

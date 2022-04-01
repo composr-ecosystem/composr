@@ -406,7 +406,7 @@ function xhtml_substr(string $html, int $from, ?int $length = null, bool $litera
                         list($width, $height) = $test;
                     }
                     $pixels = $width * $height;
-                    $pixels_per_character = 15 * 15;
+                    $pixels_per_character = 250000; // One emoticon
                     $img_characters = @intval(floatval($pixels) / floatval($pixels_per_character));
                     $c += $img_characters;
                 }

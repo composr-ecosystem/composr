@@ -684,7 +684,7 @@ class Field_restriction_loader
         xml_set_character_data_handler($xml_parser, 'startText');
 
         // Run the parser
-        $data = cms_file_get_contents_safe(get_file_base() . '/data/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM);
+        $data = cms_file_get_contents_safe(get_file_base() . '/data_custom/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM);
         if (trim($data) == '') {
             return [];
         }

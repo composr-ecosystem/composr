@@ -217,5 +217,9 @@ function find_all_fonts(bool $test_character_support = false, bool $include_path
  */
 function find_font_path(string $font) : string
 {
-    return get_file_base() . '/data_custom/fonts/' . $font . '.ttf';
+    $path = get_file_base() . '/data_custom/fonts/' . $font . '.ttf';
+    if (!is_file($path)) {
+        $path = get_file_base() . '/data/fonts/' . $font . '.ttf';
+    }
+    return $path;
 }

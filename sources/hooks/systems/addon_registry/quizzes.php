@@ -301,6 +301,7 @@ class Hook_addon_registry_quizzes
                 'PERCENTAGE' => placeholder_number(),
                 'OPEN_TIME' => placeholder_date_raw(),
                 'CLOSE_TIME' => placeholder_date_raw(),
+                'GIVE_CONTEXT' => true,
             ]);
         }
         $content_surveys->attach($link);
@@ -350,7 +351,6 @@ class Hook_addon_registry_quizzes
             'REDO_TIME' => placeholder_number(),
             'POINTS' => placeholder_number(),
             '_POINTS' => placeholder_number(),
-            'GIVE_CONTEXT' => true,
             'SUBMITTER' => placeholder_id(),
             'PERCENTAGE' => placeholder_number(),
             'OPEN_TIME' => placeholder_date_raw(),

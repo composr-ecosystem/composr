@@ -48,8 +48,8 @@ if (url_is_local($url_or_path, $relative_part, $custom_dir)) {
 
 require_code('mime_types');
 require_code('files');
-header('Content-Type: ' . get_mime_type(get_file_extension($url), false));
+header('Content-Type: ' . get_mime_type(get_file_extension($url_or_path), false));
 ini_set('allow_url_fopen', '1');
 
 cms_ob_end_clean();
-@readfile($url);
+@readfile($url_or_path);

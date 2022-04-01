@@ -913,39 +913,43 @@ function log_hack_attack_and_exit(string $reason, string $reason_param_a = '', s
 }
 
 /**
- * Get a value (either POST [u]or[/u] GET), or the default if neither can be found.
+ * Get a parameter value (either POST *or* GET, i.e. like $_REQUEST[$name]), or the default if neither can be found.
+ * Implements additional security over the direct PHP access mechanism which should not be used.
+ * Use with caution, as this has very limited CSRF protection compared to post_param_string.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return ?string The value of the parameter (null: not there, and default was null)
+ * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
+ * @return ?string The parameter value (null: missing)
  */
-function either_param_string(string $name, ?string $default = null) : ?string
+function either_param_string(string $name, $default = false) : ?string
 {
     $a = __param($_REQUEST, $name, $default);
     return $a;
 }
 
 /**
- * Get the value of the specified POST key, if it is found, or the default otherwise.
+ * Get the value of the specified POST parameter (i.e. like $_POST[$name]) if it is passed, or the default otherwise.
+ * Implements additional security over the direct PHP access mechanism which should not be used.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return ?string The value of the parameter (null: not there, and default was null)
+ * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
+ * @return ?string The parameter value (null: missing)
  */
-function post_param_string(string $name, ?string $default = null) : ?string
+function post_param_string(string $name, $default = false) : ?string
 {
     $a = __param($_POST, $name, $default);
     return $a;
 }
 
 /**
- * Get the value of the specified GET key, if it is found, or the default otherwise.
+ * Get the value of the specified GET parameter (i.e. like $_GET[$name]) if it is passed, or the default otherwise.
+ * Implements additional security over the direct PHP access mechanism which should not be used.
  *
  * @param  ID_TEXT $name The name of the parameter to get
- * @param  ?string $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return ?string The value of the parameter (null: not there, and default was null)
+ * @param  ?~mixed $default The default value to give the parameter if the parameter value is not defined (null: allow missing parameter) (false: give error on missing parameter)
+ * @return ?string The parameter value (null: missing)
  */
-function get_param_string(string $name, ?string $default = null) : ?string
+function get_param_string(string $name, $default = false) : ?string
 {
     $a = __param($_GET, $name, $default);
     return $a;
@@ -978,9 +982,9 @@ function __param(array $array, string $name, $default, bool $must_integer = fals
  *
  * @param  ID_TEXT $name The name of the parameter to get
  * @param  ?mixed $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return integer The parameter value
+ * @return ?integer The parameter value (null: not set, and null given as default)
  */
-function either_param_integer(string $name, $default = null) : int
+function either_param_integer(string $name, $default = null) : ?int
 {
     $ret = __param($_REQUEST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
     if (($default === null) && (($ret === '') || ($ret === null))) {
@@ -994,9 +998,9 @@ function either_param_integer(string $name, $default = null) : int
  *
  * @param  ID_TEXT $name The name of the parameter to get
  * @param  ?mixed $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return integer The parameter value
+ * @return ?integer The parameter value (null: not set, and null given as default)
  */
-function post_param_integer(string $name, $default = null) : int
+function post_param_integer(string $name, $default = null) : ?int
 {
     $ret = __param($_POST, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
     if (($default === null) && (($ret === '') || ($ret === null))) {
@@ -1010,9 +1014,9 @@ function post_param_integer(string $name, $default = null) : int
  *
  * @param  ID_TEXT $name The name of the parameter to get
  * @param  ?mixed $default The default value to give the parameter if the parameter value is not defined (null: give error on missing parameter)
- * @return integer The parameter value
+ * @return ?integer The parameter value (null: not set, and null given as default)
  */
-function get_param_integer(string $name, $default = null) : int
+function get_param_integer(string $name, $default = null) : ?int
 {
     $ret = __param($_GET, $name, ($default === false) ? false : (($default === null) ? null : strval($default)));
     if (($default === null) && (($ret === '') || ($ret === null))) {

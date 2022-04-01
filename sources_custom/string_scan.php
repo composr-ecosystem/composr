@@ -114,6 +114,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        CLOUD_PROPAGATION
+        CLOUD_PROPAGATION_RECORD_DAYS
+        CONFIG_OPTION_cloud_propagation_record_days
+        FORCE_REMOVE_LOCALLY
+        UPLOAD_MUST_SYNDICATE
+        UPLOAD_TO
         SYNC_REVISIONS_WITH_GIT
         SYNC_REVISIONS_WITH_GIT_CONFIRM
         SYNC_REVISIONS_WITH_GIT_MESSAGE

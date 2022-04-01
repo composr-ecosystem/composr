@@ -527,7 +527,7 @@ class Module_cms_comcode_pages
                 if (($located !== false) && ($located[0] != 'REDIRECT')) {
                     $_zone = $located[count($located) - 1];
                     $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
- 
+
                     $files_list[$row['the_zone'] . ':' . $row['the_page']] = [
                         $page_path, // page_path
                         $row, // row
