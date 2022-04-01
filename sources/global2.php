@@ -358,7 +358,7 @@ function init__global2()
     // More critical things
     require_code('caches');
     require_code('database'); // There's nothing without the database
-    if ((cloud_mode() != '') || ($GLOBALS['CURRENT_SHARE_USER'] !== null)) {
+    if ((cloud_mode() != '') || (shared_site_install())) {
         require_code('cloud_fs');
         enable_cloud_fs();
     }
@@ -601,7 +601,7 @@ function init__global2()
         }
 
         // Auto-upgrade
-        if (($CURRENT_SHARE_USER !== null) && (float_to_raw_string(cms_version_number()) != get_value('version'))) {
+        if (($GLOBALS['CURRENT_SHARE_USER'] !== null) && (float_to_raw_string(cms_version_number()) != get_value('version'))) {
             require_code('upgrade_shared_installs');
             automate_upgrade__safe();
         }
@@ -2193,7 +2193,7 @@ function find_script(string $name, bool $append_keep = false) : string
 function get_base_url(?string $path = null, ?string $zone_for = null, bool $path_is_relative = true) : string
 {
     $custom = false;
-    if (($path !== null) && ($GLOBALS['CURRENT_SHARE_USER'] !== null)) {
+    if (($path !== null) && (shared_site_install())) {
         $custom_file_base = get_file_base(true, true);
         if ($path_is_relative) {
             if (is_file($custom_file_base . '/' . $path)) {

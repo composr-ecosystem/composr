@@ -85,10 +85,6 @@ function enable_cloud_fs()
     if (function_exists('stream_wrapper_register')) {
         global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL, $SITE_INFO;
 
-        if (!is_dir($SITE_INFO['nas_directory'])) {
-            fatal_exit('Configured nas_directory does not exist');
-        }
-
         stream_wrapper_register(FILE_BASE__AUTODETECT, 'CloudFsStreamWrapper');
         stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
         stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
@@ -97,6 +93,10 @@ function enable_cloud_fs()
         $CUSTOM_FILE_BASE_LOCAL = get_file_base(true, true);
         $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
         $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
+
+        if ((!is_dir($SITE_INFO['nas_directory'])) && (cloud_mode() != '')) {
+            fatal_exit('Configured nas_directory does not exist');
+        }
     }
 }
 
@@ -111,33 +111,33 @@ function _make_cms_path_native(string $path) : array
     global $CMS_CLOUD_BINDINGS, $SITE_INFO, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
     if (substr($path, 0, strlen(FILE_BASE__AUTODETECT . '://')) == FILE_BASE__AUTODETECT . '://') {
-        if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path)) {
+        $path_relative = substr($path, strlen(FILE_BASE__AUTODETECT . '://'));
+
+        if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path_relative)) {
             $file_base = $CUSTOM_FILE_BASE_LOCAL;
-        } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path)) {
+        } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path_relative)) {
             $file_base = $FILE_BASE_LOCAL;
-        } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path)))) {
+        } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
             $file_base = $CUSTOM_FILE_BASE_LOCAL;
-        } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path)))) {
+        } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
             $file_base = $FILE_BASE_LOCAL;
         } else {
             $file_base = $CUSTOM_FILE_BASE_LOCAL;
         }
 
         $file_base_constant = FILE_BASE__AUTODETECT;
-
-        $path_relative = substr($path, strlen(FILE_BASE__SHARED . '://'));
     } elseif (substr($path, 0, strlen(FILE_BASE__SHARED . '://')) == FILE_BASE__SHARED . '://') {
+        $path_relative = substr($path, strlen(FILE_BASE__SHARED . '://'));
+
         $file_base = get_file_base(false, true);
 
         $file_base_constant = FILE_BASE__SHARED;
-
-        $path_relative = substr($path, strlen(FILE_BASE__SHARED . '://'));
     } elseif (substr($path, 0, strlen(FILE_BASE__CUSTOM . '://')) == FILE_BASE__CUSTOM . '://') {
+        $path_relative = substr($path, strlen(FILE_BASE__CUSTOM . '://'));
+
         $file_base = get_file_base(true, true);
 
         $file_base_constant = FILE_BASE__CUSTOM;
-
-        $path_relative = substr($path, strlen(FILE_BASE__CUSTOM . '://'));
     } else {
         return [null, $path, CMS_CLOUD__LOCAL, null, null];
     }
@@ -145,7 +145,7 @@ function _make_cms_path_native(string $path) : array
     $root = (($path == '') || ($path == '/'));
 
     $storage_type = CMS_CLOUD__LOCAL;
-    if (!$root) {
+    if ((!$root) && (cloud_mode() != '')) {
         foreach ($CMS_CLOUD_BINDINGS as $regexp => $_storage_type) {
             if (preg_match($regexp, $path) != 0) {
                 $storage_type = $_storage_type;
@@ -160,16 +160,16 @@ function _make_cms_path_native(string $path) : array
             if ($root) {
                 $path_absolute = $file_base;
             } else {
-                $path_absolute = $file_base . '/' . $path;
+                $path_absolute = $file_base . '/' . $path_relative;
             }
             break;
 
         case CMS_CLOUD__REMOTE:
             $nas_directory = $SITE_INFO['nas_directory'];
             if ((substr($nas_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($nas_directory, 1, 2) == ':/'))) {
-                $path_absolute = $nas_directory . '/' . $path;
+                $path_absolute = $nas_directory . '/' . $path_relative;
             } else {
-                $path_absolute = $file_base . '/' . $nas_directory . '/' . $path;
+                $path_absolute = $file_base . '/' . $nas_directory . '/' . $path_relative;
             }
             break;
     }
@@ -478,10 +478,10 @@ class CloudFsStreamWrapper
      * @param  PATH $path Filename
      * @param  string $mode Mode (e.g. at)
      * @param  integer $options Bitmask options
-     * @param  string $opened_path The real path will be written into here, if requested
+     * @param  ?string $opened_path The real path will be written into here, if requested (null: not requested)
      * @return boolean Success status
      */
-    public function stream_open(string $path, string $mode, int $options, string &$opened_path) : bool
+    public function stream_open(string $path, string $mode, int $options, ?string &$opened_path) : bool
     {
         list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 

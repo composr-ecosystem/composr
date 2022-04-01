@@ -729,7 +729,7 @@ class Module_admin_themes
         $theme = $this->theme;
 
         if (($theme == 'default') || ($theme == 'admin')) {
-            if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+            if (shared_site_install()) {
                 warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
             }
         }
@@ -792,7 +792,7 @@ class Module_admin_themes
         $theme = get_param_string('old_theme', false, INPUT_FILTER_GET_COMPLEX);
 
         if (($theme == 'default') || ($theme == 'admin')) {
-            if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+            if (shared_site_install()) {
                 warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
             }
         }

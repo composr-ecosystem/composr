@@ -354,7 +354,7 @@ function check_banner(string $title_text = '', string $direct_code = '', string 
             check_privilege('use_html_banner');
             if (strpos($direct_code, '<?') !== false) {
                 check_privilege('use_php_banner');
-                if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+                if (shared_site_install()) {
                     warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
                 }
             }

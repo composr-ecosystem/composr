@@ -62,7 +62,7 @@ function disable_content_translation()
     push_db_scope_check(false);
     push_query_limiting(false);
 
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
     if (!multi_lang_content()) {
@@ -144,7 +144,7 @@ function enable_content_translation()
     push_db_scope_check(false);
     push_query_limiting(false);
 
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
     if (multi_lang_content()) {

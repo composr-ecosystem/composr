@@ -3061,7 +3061,7 @@ function ecv_BANNER(string $lang, array $escaped, array $param) : string
 
     if (addon_installed('banners')) {
         global $SITE_INFO;
-        $is_on_banners = (!empty($param[1])) || (((!has_privilege(get_member(), 'banner_free')) || (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_option('admin_banners') == '1')) || ($GLOBALS['CURRENT_SHARE_USER'] !== null)));
+        $is_on_banners = (!empty($param[1])) || (((!has_privilege(get_member(), 'banner_free')) || (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_option('admin_banners') == '1')) || (shared_site_install())));
         if (!empty($SITE_INFO['throttle_bandwidth_registered'])) {
             $views_till_now = intval(get_value('page_views'));
             $bandwidth_allowed = $SITE_INFO['throttle_bandwidth_registered'];

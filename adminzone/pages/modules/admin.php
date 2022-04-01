@@ -641,7 +641,7 @@ class Module_admin
             $all_options = [];
             foreach ($hooks as $hook => $ob) {
                 $details = $ob->get_details();
-                if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
+                if ((!shared_site_install()) || ($details['shared_hosting_restricted'] == 0)) {
                     if ($ob->get_default() !== null) {
                         $all_options[$hook] = $details;
                     }

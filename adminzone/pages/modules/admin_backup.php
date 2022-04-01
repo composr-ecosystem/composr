@@ -139,7 +139,7 @@ class Module_admin_backup
 
         require_code('files');
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 

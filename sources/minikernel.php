@@ -106,6 +106,16 @@ function init__minikernel()
 }
 
 /**
+ * Find whether we are running a shared-site install.
+ *
+ * @return boolean Whether we are
+ */
+function shared_site_install() : bool
+{
+    return false;
+}
+
+/**
  * Set HTTP caching in a conclusive and simple way.
  *
  * @param  ?TIME $last_modified When the resource was last modified (null: dynamic non-cached request)

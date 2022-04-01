@@ -1036,7 +1036,7 @@ function set_http_status_code(int $code)
  */
 function find_template_place(string $codename, ?string $lang, string $theme, string $suffix, string $directory, bool $non_custom_only = false, bool $fallback_other_themes = true) : ?array
 {
-    global $FILE_ARRAY, $CURRENT_SHARE_USER;
+    global $FILE_ARRAY;
 
     static $tp_cache = [];
     $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only, $fallback_other_themes]);
@@ -1049,9 +1049,9 @@ function find_template_place(string $codename, ?string $lang, string $theme, str
             $place = [$theme, '/' . $directory . '_custom/', $suffix];
         } elseif (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '/' . $codename . $suffix)) {
             $place = [$theme, '/' . $directory . '/', $suffix];
-        } elseif (($CURRENT_SHARE_USER !== null) && ($theme !== 'default') && (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '_custom/' . $codename . $suffix)) && (!$non_custom_only)) {
+        } elseif ((shared_site_install()) && ($theme !== 'default') && (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '_custom/' . $codename . $suffix)) && (!$non_custom_only)) {
             $place = [$theme, '/' . $directory . '_custom/', $suffix];
-        } elseif (($CURRENT_SHARE_USER !== null) && ($theme !== 'default') && (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '/' . $codename . $suffix))) {
+        } elseif ((shared_site_install()) && ($theme !== 'default') && (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '/' . $codename . $suffix))) {
             $place = [$theme, '/' . $directory . '/', $suffix];
         } elseif ((is_file(get_file_base() . '/themes/' . 'default' . '/' . $directory . '_custom/' . $codename . $suffix)) && (!in_safe_mode()) && (!$non_custom_only)) {
             $place = ['default', '/' . $directory . '_custom/', $suffix];
@@ -2662,7 +2662,7 @@ function get_server_names(bool $include_non_web_names = true, bool $include_equi
             $arr[] = $tmp;
         }
     }
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         $tmp = parse_url(_get_base_url_custom(), PHP_URL_HOST);
         if (!empty($tmp)) {
             $arr[] = $tmp;

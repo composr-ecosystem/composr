@@ -233,7 +233,7 @@ function actual_edit_zone(string $zone, string $title, string $default_page, str
             warn_exit(do_lang_tempcode('BAD_CODENAME'));
         }
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 
@@ -354,7 +354,7 @@ function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = 
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
 

@@ -643,7 +643,7 @@ class Module_admin_zones
                 $base_url = (whole_site_https() ? 'https://' : 'http://') . $SITE_INFO['ZONE_MAPPING_' . $zone][0] . '/' . $SITE_INFO['ZONE_MAPPING_' . $zone][1];
             }
         }
-        if ($GLOBALS['CURRENT_SHARE_USER'] === null) {
+        if (!shared_site_install()) {
             $fields .= static_evaluate_tempcode(form_input_line(do_lang_tempcode('ZONE_BASE_URL'), do_lang_tempcode('DESCRIPTION_ZONE_BASE_URL'), 'base_url', $base_url, false));
         }
 
@@ -679,7 +679,7 @@ class Module_admin_zones
     {
         appengine_live_guard();
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 
@@ -732,7 +732,7 @@ class Module_admin_zones
     {
         appengine_live_guard();
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 
@@ -867,7 +867,7 @@ class Module_admin_zones
         $hidden->attach(form_input_hidden('zone', $zone));
         $no_delete_zones = (get_forum_type() == 'cns') ? ['', 'adminzone', 'forum'] : ['', 'adminzone'];
         $no_rename_zones = ['', 'adminzone', 'forum'];
-        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || ($GLOBALS['CURRENT_SHARE_USER'] !== null);
+        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || (shared_site_install());
         if ($no_rename) {
             $hidden->attach(form_input_hidden('new_zone', $zone));
         } else {
@@ -878,7 +878,7 @@ class Module_admin_zones
             }
             $fields->attach(form_input_codename(do_lang_tempcode('CODENAME'), do_lang_tempcode($rename_label), 'new_zone', $zone, true));
         }
-        if ((!in_array($zone, $no_delete_zones)) && (!appengine_is_live()) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
+        if ((!in_array($zone, $no_delete_zones)) && (!appengine_is_live()) && (!shared_site_install())) {
             if ($no_rename) {
                 $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2fec0bddfe975b573da9bbd68ec16689', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             }

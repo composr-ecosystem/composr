@@ -99,7 +99,7 @@ class Hook_cron_calendar_reminders
                         require_code('character_sets');
                         echo http_get_contents($job_text, ['convert_to_internal_encoding' => true]);
                     } elseif (addon_installed('commandr')) { // It's code
-                        if ($GLOBALS['CURRENT_SHARE_USER'] === null) {
+                        if (!shared_site_install()) {
                             // Backwards-compatibility for pure PHP code (if its creation date was before the time of writing this comment [Wednesday 22nd Match, 14:58])
                             if ($job['e_add_date'] < 1143046670) {
                                 cms_ini_set('ocproducts.xss_detect', '0');

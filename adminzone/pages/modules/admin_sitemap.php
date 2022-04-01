@@ -197,7 +197,7 @@ class Module_admin_sitemap
                 }
                 $file->attach(do_lang_tempcode('ZONE_WRITE', escape_html($zone), escape_html($page)));
 
-                if (($GLOBALS['CURRENT_SHARE_USER'] !== null) && ($type != 'comcode_custom')) {
+                if ((shared_site_install()) && ($type != 'comcode_custom')) {
                     warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
                 }
             }
@@ -237,7 +237,7 @@ class Module_admin_sitemap
             }
 
             if (post_param_integer('page__' . $page, 0) == 1) {
-                if (($GLOBALS['CURRENT_SHARE_USER'] !== null) && ($type != 'comcode_custom')) {
+                if ((shared_site_install()) && ($type != 'comcode_custom')) {
                     warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
                 }
 
@@ -279,7 +279,7 @@ class Module_admin_sitemap
      */
     public function _move() : object
     {
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 

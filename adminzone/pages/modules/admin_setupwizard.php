@@ -1075,7 +1075,7 @@ class Module_admin_setupwizard
                 $writable_paths[] = 'themes';
             }
         }
-        if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
+        if ((post_param_integer('skip_4', 0) == 0) && (!shared_site_install())) {
             foreach (array_keys($addons_uninstall) as $addon_name) {
                 $writable_paths = array_merge($writable_paths, get_addon_uninstall_writable_paths($addon_name));
             }
@@ -1289,7 +1289,7 @@ class Module_admin_setupwizard
         }
 
         // Set addons
-        if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
+        if ((post_param_integer('skip_4', 0) == 0) && (!shared_site_install())) {
             foreach ($addons_uninstall as $addon_name => $addon_info) {
                 // Archive it off to exports/addons
                 if (!empty($addon_info['files'])) {

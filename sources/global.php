@@ -567,6 +567,30 @@ function cms_flush_safe()
 }
 
 /**
+ * Find whether we are running a shared-site install.
+ *
+ * @return boolean Whether we are
+ */
+function shared_site_install() : bool
+{
+    static $ret = null;
+    if ($ret === null) {
+        global $SITE_INFO;
+
+        if (!empty($SITE_INFO['custom_file_base'])) {
+            $ret = true;
+        } elseif (!empty($SITE_INFO['custom_file_base_stub'])) { // Make sure $CURRENT_SHARE_USER is set if it is a shared site, so we can use CURRENT_SHARE_USER as an indicator of it being one.
+            require_code('shared_installs');
+            current_share_user();
+            $ret = ($GLOBALS['CURRENT_SHARE_USER'] !== null);
+        } else {
+            $ret = false;
+        }
+    }
+    return $ret;
+}
+
+/**
  * Get the file base for your installation of Composr.
  *
  * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-site install (null: virtual file system to search both file bases)
@@ -580,9 +604,12 @@ function get_file_base(?bool $custom_dir = null, bool $true_local = false) : str
         $custom_dir = false;
     }
 
-    $is_multi_site = ($GLOBALS['CURRENT_SHARE_USER'] !== null);
+    static $is_multi_site = null;
+    if ($is_multi_site === null) {
+        $is_multi_site = shared_site_install();
+    }
 
-    if (($custom_dir === false) || (!$is_multi_site) || (($custom_dir === null) && (!defined('FILE_BASE__AUTODETECT')/*early in boot*/))) {
+    if (($custom_dir === false) || (!$is_multi_site) || (($custom_dir === null) && (!defined('FILE_BASE__AUTODETECT')/*early in boot or no Cloud-fs running*/))) {
         global $FILE_BASE, $FILE_BASE_LOCAL;
         if (($true_local) && (!empty($FILE_BASE_LOCAL))) {
             return $FILE_BASE_LOCAL;
@@ -621,7 +648,7 @@ function get_file_base(?bool $custom_dir = null, bool $true_local = false) : str
     }
 
     // This kicks the ball to our Cloud-fs implementation
-    return FILE_BASE__AUTODETECT . '://';
+    return FILE_BASE__AUTODETECT . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
 }
 
 /**
@@ -1232,11 +1259,6 @@ if ($rate_limiting) {
             unset($RATE_LIMITING_DATA);
         }
     }
-}
-
-if (!empty($SITE_INFO['custom_file_base_stub'])) { // Make sure $CURRENT_SHARE_USER is set if it is a shared site, so we can use CURRENT_SHARE_USER as an indicator of it being one.
-    require_code('shared_installs');
-    current_share_user();
 }
 
 // Pass on to next bootstrap level

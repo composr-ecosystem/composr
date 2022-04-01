@@ -48,7 +48,7 @@ function force_have_afm_details(array $writable_paths = [])
 {
     $no_ftp_conditions = [
         is_suexec_like(), // No need for FTP
-        ($GLOBALS['CURRENT_SHARE_USER'] !== null), // Shared installs are assumed to have the necessary AFM permissions where needed
+        (shared_site_install()), // Shared installs are assumed to have the necessary AFM permissions where needed
         (!function_exists('ftp_ssl_connect')) && (!function_exists('ftp_connect')), // FTP not available
     ];
     foreach ($no_ftp_conditions as $no_ftp_condition) {

@@ -440,7 +440,7 @@ function show_banner(string $name, string $title_text, object $caption, string $
         } else { // HTML/PHP
             require_code('permissions');
             if (has_privilege($submitter, 'use_html_banner')) {
-                if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only allow PHP code if not a shared install
+                if (!shared_site_install()) { // Only allow PHP code if not a shared install
                     $matches = [];
                     $num_matches = preg_match_all('#<\?(.*)\?' . '>#U', $direct_code, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {

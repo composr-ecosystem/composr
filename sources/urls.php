@@ -920,7 +920,7 @@ function url_is_local(string $url, ?string &$relative_part = null, ?bool &$custo
     }
 
     if ($relative_part !== null) {
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             $base_urls = [_get_base_url_custom() => true, _get_base_url_basic() => false];
         } else {
             $base_urls = [_get_base_url_basic() => false];

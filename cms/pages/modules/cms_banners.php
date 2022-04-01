@@ -144,7 +144,7 @@ class Module_cms_banners extends Standard_crud_module
      */
     public function run_start(string $type) : object
     {
-        //if ($GLOBALS['CURRENT_SHARE_USER'] !== null) warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
+        //if (shared_site_install()) warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
 
         require_code('banners');
         require_code('banners2');

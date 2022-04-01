@@ -97,7 +97,7 @@ class Module_admin_debrand
      */
     public function run() : object
     {
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 
@@ -190,7 +190,7 @@ class Module_admin_debrand
 
         $critical_errors_path = 'sources_custom/critical_errors.php';
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
+        if (!shared_site_install()) { // Only if not a shared install
             require_code('abstract_file_manager');
             force_have_afm_details([
                 $critical_errors_path,
@@ -217,7 +217,7 @@ class Module_admin_debrand
             cms_file_put_contents_safe($start_path, $start, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         }
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
+        if (!shared_site_install()) { // Only if not a shared install
             $critical_errors = cms_file_get_contents_safe(get_file_base() . '/sources/critical_errors.php', FILE_READ_LOCK);
             $critical_errors = str_replace('Composr', addslashes(post_param_string('rebrand_name')), $critical_errors);
             $critical_errors = str_replace('https://compo.sr', addslashes(post_param_string('rebrand_base_url', false, INPUT_FILTER_URL_GENERAL)), $critical_errors);

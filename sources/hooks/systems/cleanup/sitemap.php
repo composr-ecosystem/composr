@@ -30,7 +30,7 @@ class Hook_cleanup_sitemap
      */
     public function info() : ?array
     {
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             return null;
         }
 

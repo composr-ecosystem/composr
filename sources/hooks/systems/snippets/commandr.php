@@ -38,7 +38,7 @@ class Hook_snippet_commandr
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('import')));
         }
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 

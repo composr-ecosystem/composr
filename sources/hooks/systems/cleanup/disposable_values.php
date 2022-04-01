@@ -34,7 +34,7 @@ class Hook_cleanup_disposable_values
             return null;
         }
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             return null;
         }
 
@@ -53,7 +53,7 @@ class Hook_cleanup_disposable_values
      */
     public function run() : object
     {
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             return new Tempcode();
         }
 

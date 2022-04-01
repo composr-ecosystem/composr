@@ -390,7 +390,7 @@ function _check_filedump_filename(string &$subpath, string &$filename, bool $che
 
     // Security
     if ($check_permissions) {
-        if ((!has_privilege(get_member(), 'upload_anything_filedump')) || ($GLOBALS['CURRENT_SHARE_USER'] !== null)) {
+        if ((!has_privilege(get_member(), 'upload_anything_filedump')) || (shared_site_install())) {
             check_extension($filename);
         }
     }

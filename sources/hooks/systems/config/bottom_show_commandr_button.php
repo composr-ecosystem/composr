@@ -55,6 +55,6 @@ class Hook_config_bottom_show_commandr_button
             return null;
         }
 
-        return ($GLOBALS['CURRENT_SHARE_USER'] !== null) ? '0' : '1';
+        return (shared_site_install()) ? '0' : '1';
     }
 }

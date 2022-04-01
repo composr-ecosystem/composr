@@ -228,7 +228,7 @@ function actual_add_zone(string $zone, string $title, string $default_page = DEF
         warn_exit(do_lang_tempcode('BAD_CODENAME'));
     }
 
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
 
@@ -340,7 +340,7 @@ function make_zone_directory(string $zone)
  */
 function save_zone_base_url(string $zone, string $base_url)
 {
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         return;
     }
 

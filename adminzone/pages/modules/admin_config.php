@@ -285,7 +285,7 @@ class Module_admin_config
         $categories = [];
         foreach ($hooks as $ob) {
             $details = $ob->get_details();
-            if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
+            if ((!shared_site_install()) || ($details['shared_hosting_restricted'] == 0)) {
                 if ($ob->get_default() !== null) {
                     $category = $details['category'];
                     if (!isset($categories[$category])) {
@@ -437,7 +437,7 @@ class Module_admin_config
         $options = [];
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
-            if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
+            if ((!shared_site_install()) || ($details['shared_hosting_restricted'] == 0)) {
                 if ($category == $details['category']) {
                     if ($ob->get_default() !== null) {
                         if (!isset($details['order_in_category_group'])) {
@@ -567,7 +567,7 @@ class Module_admin_config
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             if ($category == $details['category']) {
-                if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
+                if ((!shared_site_install()) || ($details['shared_hosting_restricted'] == 0)) {
                     if ($ob->get_default() !== null) {
                         $details['ob'] = $ob;
                         $options[$hook] = $details;

@@ -1263,7 +1263,7 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
  */
 function may_see_stack_traces() : bool
 {
-    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+    if (shared_site_install()) {
         return true; // Demonstratr exception
     }
     if ((function_exists('is_cli')) && (is_cli())) {

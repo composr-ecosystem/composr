@@ -559,7 +559,7 @@ class Module_admin_cns_forums extends Standard_crud_module
 
                 $details = $ob->get_details();
                 if ($details['type'] == 'forum') {
-                    if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
+                    if ((!shared_site_install()) || ($details['shared_hosting_restricted'] == 0)) {
                         require_code('config2');
                         require_all_lang();
                         $edit_url = config_option_url($hook);

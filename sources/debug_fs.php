@@ -353,10 +353,10 @@ class DebugFsStreamWrapper
      * @param  PATH $path Filename
      * @param  string $mode Mode (e.g. at)
      * @param  integer $options Bitmask options
-     * @param  string $opened_path The real path will be written into here, if requested
+     * @param  ?string $opened_path The real path will be written into here, if requested (null: not requested)
      * @return boolean Success status
      */
-    public function stream_open(string $path, string $mode, int $options, string &$opened_path) : bool
+    public function stream_open(string $path, string $mode, int $options, ?string &$opened_path) : bool
     {
         $this->init_call('stream_open', $path, true);
 

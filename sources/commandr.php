@@ -55,7 +55,7 @@ function commandr_script()
 
         prepare_backend_response();
 
-        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+        if (shared_site_install()) {
             warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
         }
 
@@ -1195,7 +1195,7 @@ class Virtual_shell
         $commandr_output = mixed();
 
         // NOTE: Variables throughout this function use the $commandr_ prefix to avoid conflicts with any created through executing PHP commands from the CL
-        if ($GLOBALS['CURRENT_SHARE_USER'] === null) {
+        if (!shared_site_install()) {
             // Reload settings...
 
             if (array_key_exists('commandr_state', $_COOKIE)) {
