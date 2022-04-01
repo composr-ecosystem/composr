@@ -73,7 +73,7 @@ class Module_admin_backup
         delete_value('backup_b_type');
 
         //require_code('files');
-        //deldir_contents(get_custom_file_base() . '/exports/backups', true);
+        //deldir_contents(get_file_base(true) . '/exports/backups', true);
     }
 
     /**
@@ -244,7 +244,7 @@ class Module_admin_backup
     public function get_results() : object
     {
         // Find all files in the incoming directory
-        $path = get_custom_file_base() . '/exports/backups/';
+        $path = get_file_base() . '/exports/backups/';
         if (!file_exists($path)) {
             require_code('files2');
             make_missing_directory($path);
@@ -266,7 +266,7 @@ class Module_admin_backup
             $rows = new Tempcode();
             foreach ($entries as $entry) {
                 $delete_url = build_url(['page' => '_SELF', 'type' => 'confirm_delete', 'file' => $entry['file']], '_SELF');
-                $url = get_custom_base_url() . '/exports/backups/' . $entry['file'];
+                $url = baseify_local_url('exports/backups/' . $entry['file']);
 
                 $actions = new Tempcode();
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
@@ -375,7 +375,7 @@ class Module_admin_backup
     {
         $file = post_param_string('file');
 
-        $path = get_custom_file_base() . '/exports/backups/' . filter_naughty($file);
+        $path = get_file_base(true) . '/exports/backups/' . filter_naughty($file);
         if (!@unlink($path)) {
             warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path)));
         }

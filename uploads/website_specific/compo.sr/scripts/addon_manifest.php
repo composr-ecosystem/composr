@@ -88,7 +88,7 @@ foreach (array_keys($_GET) as $x) {
             $url = $result[0]['url'];
 
             if (url_is_local($url)) {
-                $last_date = @filemtime(get_custom_file_base() . '/' . rawurldecode($url));
+                $last_date = @filemtime(get_file_base() . '/' . rawurldecode($url));
             } else {
                 $last_date = @filemtime($url);
             }

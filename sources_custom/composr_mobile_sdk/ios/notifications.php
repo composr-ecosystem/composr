@@ -108,7 +108,7 @@ class IOSPushNotifications
 
         $push = new ApnsPHP_Push(
             ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
-            get_custom_file_base() . '/data_custom/modules/ios/server_certificates.pem'
+            get_file_base() . '/data_custom/modules/ios/server_certificates.pem'
         );
 
         $passphrase = get_option('ios_cert_passphrase');

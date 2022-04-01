@@ -142,14 +142,14 @@ function find_theme_image(string $id, bool $silent_fail = false, bool $leave_loc
                                 $missing = false;
                             }
                         } else {
-                            $missing = !is_file(get_custom_file_base() . '/' . rawurldecode($url)) && !is_file(get_file_base() . '/' . rawurldecode($url));
+                            $missing = !is_file(get_file_base() . '/' . rawurldecode($url));
                         }
                         if ($missing) {
                             $url = '';
 
                             // Dynamic fixup possible?
                             if ($theme != 'default') {
-                                if ((!file_exists(get_custom_file_base() . '/.git')) || (defined('DO_PLANNED_DECACHE'))) { // Do not automatically remap missing theme images if running out of Git - could be that Git operator is doing a re-sync between servers
+                                if ((!file_exists(get_file_base(false) . '/.git')) || (defined('DO_PLANNED_DECACHE'))) { // Do not automatically remap missing theme images if running out of Git - could be that Git operator is doing a re-sync between servers
                                     $url = $db->query_select_value_if_there('theme_images', 'url', ['id' => $id, 'theme' => 'default', 'lang' => $lang]);
                                     if ($url !== null) {
                                         $db->query_update('theme_images', ['url' => $url], ['id' => $id, 'theme' => $theme, 'lang' => $lang], '', 1);
@@ -247,11 +247,7 @@ function find_theme_image(string $id, bool $silent_fail = false, bool $leave_loc
                 if ($db->is_forum_db()) {
                     $url = get_forum_base_url() . '/' . $url;
                 } else {
-                    if ((substr($url, 0, 22) === 'themes/default/images/') || (!is_file(get_custom_file_base() . '/' . rawurldecode($url)))) {
-                        $url = get_base_url() . '/' . $url;
-                    } else {
-                        $url = get_custom_base_url() . '/' . $url;
-                    }
+                    $url = get_base_url(rawurldecode($url)) . '/' . $url;
                 }
             }
 
@@ -408,7 +404,7 @@ function cdn_filter(string $url) : string
                 $bus = get_base_url() . '/';
             }
             if (substr($url, 0, strlen($bus)) == $bus) {
-                $file_path = get_custom_file_base() . '/' . rawurldecode(substr($url, strlen($bus)));
+                $file_path = get_file_base() . '/' . rawurldecode(substr($url, strlen($bus)));
                 $mtime = @filemtime($file_path);
                 if ($mtime !== false) {
                     $url .= '?' . strval($mtime);
@@ -439,31 +435,26 @@ function _search_img_file(string $theme, ?string $lang, string $id, string $dir 
 {
     global $THEME_IMAGE_EXTENSIONS;
 
-    $places = array_unique([get_custom_file_base(), get_file_base()]);
+    foreach ($THEME_IMAGE_EXTENSIONS as $extension) {
+        $file_path = get_file_base() . '/themes/' . $theme . '/';
+        if ($dir !== '') {
+            $file_path .= $dir . '/';
+        }
+        if (!empty($lang)) {
+            $file_path .= $lang . '/';
+        }
+        $file_path .= $id . '.' . $extension;
 
-    foreach ($places as $_base) {
-        $base = $_base . '/themes/';
-
-        foreach ($THEME_IMAGE_EXTENSIONS as $extension) {
-            $file_path = $base . $theme . '/';
-            if ($dir !== '') {
-                $file_path .= $dir . '/';
-            }
+        if (@is_file($file_path)) { // Good, now return URL (@ in case something component in path is actually a file https://bugs.php.net/bug.php?id=52065)
+            $url = cms_rawurlrecode('themes/' . rawurlencode($theme) . '/' . $dir . '/');
             if (!empty($lang)) {
-                $file_path .= $lang . '/';
+                $url .= $lang . '/';
             }
-            $file_path .= $id . '.' . $extension;
-
-            if (@is_file($file_path)) { // Good, now return URL (@ in case something component in path is actually a file https://bugs.php.net/bug.php?id=52065)
-                $url = cms_rawurlrecode('themes/' . rawurlencode($theme) . '/' . $dir . '/');
-                if (!empty($lang)) {
-                    $url .= $lang . '/';
-                }
-                $url .= $id . '.' . $extension;
-                return $url;
-            }
+            $url .= $id . '.' . $extension;
+            return $url;
         }
     }
+
     return null;
 }
 

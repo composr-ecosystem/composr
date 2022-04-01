@@ -415,7 +415,7 @@ class Forum_driver_cns extends Forum_driver_base
         if (($theme == '') || ($theme == '-1')) {
             if (!GOOGLE_APPENGINE) { // Requires a Cloud Storage fstat on GAE, so bad idea - user should be explicit in their zone setup (which the Theme Wizard will do)
                 $theme = get_default_theme_name();
-                if (is_dir(get_custom_file_base() . '/themes/' . $theme)) {
+                if (is_dir(get_file_base() . '/themes/' . $theme)) {
                     return $theme;
                 }
                 $theme = 'default';
@@ -1109,7 +1109,7 @@ class Forum_driver_cns extends Forum_driver_base
         }
 
         if ((url_is_local($avatar)) && ($avatar != '')) {
-            if ((is_on_multi_site_network()) || (is_file(get_file_base() . '/' . rawurldecode($avatar))) || (is_file(get_custom_file_base() . '/' . rawurldecode($avatar)))) {
+            if ((is_on_multi_site_network()) || (is_file(get_file_base() . '/' . rawurldecode($avatar)))) {
                 $avatar = get_complex_base_url($avatar) . '/' . $avatar;
             } else {
                 $avatar = '';

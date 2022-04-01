@@ -48,7 +48,7 @@ function force_have_afm_details(array $writable_paths = [])
 {
     $no_ftp_conditions = [
         is_suexec_like(), // No need for FTP
-        get_file_base() != get_custom_file_base(), // Shared installs are assumed to have the necessary AFM permissions where needed
+        ($GLOBALS['CURRENT_SHARE_USER'] !== null), // Shared installs are assumed to have the necessary AFM permissions where needed
         (!function_exists('ftp_ssl_connect')) && (!function_exists('ftp_connect')), // FTP not available
     ];
     foreach ($no_ftp_conditions as $no_ftp_condition) {
@@ -442,7 +442,7 @@ function _rescope_path(string $path) : string
         }
         return $ftp_folder . $path;
     }
-    return get_custom_file_base() . '/' . $path;
+    return get_file_base() . '/' . $path;
 }
 
 /**
@@ -490,7 +490,7 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
                 @ftp_chmod($conn, $access, $build_up);
             }
         }
-        if (!file_exists(get_custom_file_base() . '/' . $basic_path)) {
+        if (!file_exists(get_file_base(true) . '/' . $basic_path)) {
             $success = @ftp_mkdir($conn, $path);
             if (!is_string($success)) {
                 warn_exit(protect_from_escaping(cms_error_get_last()), false, true);
@@ -500,7 +500,7 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
 
         clearstatcache();
     } else {
-        if (!file_exists(get_custom_file_base() . '/' . $basic_path)) {
+        if (!file_exists(get_file_base(true) . '/' . $basic_path)) {
             @mkdir($path, $access, $recursive) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path), escape_html(dirname($path))), false, true);
         } else {
             @chmod($path, $access);
@@ -520,7 +520,7 @@ function afm_make_directory(string $basic_path, bool $world_access, bool $recurs
 function _get_dir_tree(string $base, string $at = '') : array
 {
     $out = [['dir', $at]];
-    $stub = get_custom_file_base() . '/' . $base . '/' . $at;
+    $stub = get_file_base(true) . '/' . $base . '/' . $at;
     $dh = @opendir($stub);
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
@@ -622,7 +622,7 @@ function afm_make_file(string $basic_path, string $contents, bool $world_access,
  */
 function afm_read_file(string $path, bool $bom = false) : string
 {
-    return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK | ($bom ? FILE_READ_BOM : 0));
+    return cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | ($bom ? FILE_READ_BOM : 0));
 }
 
 /**
@@ -634,10 +634,7 @@ function afm_read_file(string $path, bool $bom = false) : string
  */
 function afm_copy(string $old_path, string $new_path, bool $world_access)
 {
-    $a = get_custom_file_base() . '/' . $old_path;
-    if (!file_exists($a)) {
-        $a = get_file_base() . '/' . $old_path;
-    }
+    $a = get_file_base() . '/' . $old_path;
     $contents = cms_file_get_contents_safe($a, FILE_READ_LOCK);
     afm_make_file($new_path, $contents, $world_access);
 }
@@ -650,11 +647,11 @@ function afm_copy(string $old_path, string $new_path, bool $world_access)
  */
 function afm_move(string $basic_old_path, string $basic_new_path)
 {
-    if (file_exists(get_custom_file_base() . '/' . $basic_new_path)) {
+    if (file_exists(get_file_base(true) . '/' . $basic_new_path)) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($basic_new_path)));
     }
 
-    if (is_dir(get_custom_file_base() . '/' . $basic_new_path)) {
+    if (is_dir(get_file_base(true) . '/' . $basic_new_path)) {
         $basic_new_path .= substr($basic_old_path, strrpos($basic_old_path, '/')); // If we are moving to a path, add on the filename to that path
     }
 

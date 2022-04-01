@@ -61,7 +61,7 @@ function resolve_addon_dependency_problems(array &$installing, array &$uninstall
     }
 
     // Only uninstall if we're not working from a Git repository
-    if (file_exists(get_file_base() . '/.git')) {
+    if (file_exists(get_file_base(true) . '/.git')) {
         $uninstalling = [];
     }
 
@@ -136,7 +136,7 @@ function create_addon(string $file, array $files, string $addon_name, string $in
 {
     require_code('tar');
 
-    $_full = get_custom_file_base() . '/' . $dir . '/' . $file;
+    $_full = get_file_base(true) . '/' . $dir . '/' . $file;
     $tar = tar_open($_full, 'wb');
 
     if ($file_base === null) {
@@ -253,7 +253,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
     $files = [];
 
     // Find addons available for installation
-    $dh = @opendir(get_custom_file_base() . '/imports/addons/');
+    $dh = @opendir(get_file_base() . '/imports/addons/');
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.tar') {
@@ -266,7 +266,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
     // Find mtimes (in separate loop so as to not have to interleave fs-STAT calls between readdir calls (disk seeking)
     foreach ($files as $i => $file_parts) {
         $file = $file_parts[0];
-        $files[$i][1] = $gather_mtimes ? filemtime(get_custom_file_base() . '/imports/addons/' . $file) : 0;
+        $files[$i][1] = $gather_mtimes ? filemtime(get_file_base() . '/imports/addons/' . $file) : 0;
     }
 
     sort_maps_by($files, '1');
@@ -283,7 +283,7 @@ function find_available_addons(bool $installed_too = true, bool $gather_mtimes =
             continue;
         }
 
-        $full = get_custom_file_base() . '/imports/addons/' . $file;
+        $full = get_file_base() . '/imports/addons/' . $file;
         require_code('tar');
         $tar = tar_open($full, 'rb', true);
         $info_file = tar_get_file($tar, 'addon.inf', true);
@@ -470,7 +470,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
 {
     site_maintenance_lock_engage();
 
-    $full = get_custom_file_base() . '/imports/addons/' . $file;
+    $full = get_file_base() . '/imports/addons/' . $file;
 
     // Look in the TAR
     require_code('tar');
@@ -661,7 +661,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
         if (!$_dependencies_str->is_empty()) {
             $_dependencies_str->attach(do_lang_tempcode('LIST_SEP'));
         }
-        if (file_exists(get_custom_file_base() . '/imports/addons/' . $in . '.tar')) {
+        if (file_exists(get_file_base() . '/imports/addons/' . $in . '.tar')) {
             $in_tpl = hyperlink(build_url(['page' => 'admin_addons', 'type' => 'addon_install', 'file' => $in . '.tar'], get_module_zone('admin_addons')), $in, true, true);
         } else {
             $in_tpl = make_string_tempcode(escape_html($in));
@@ -797,7 +797,7 @@ function get_addon_install_writable_paths(string $file) : array
     $writable_paths = [];
 
     require_code('tar');
-    $full = get_custom_file_base() . '/imports/addons/' . $file;
+    $full = get_file_base() . '/imports/addons/' . $file;
     $tar = tar_open($full, 'rb');
     $directory = tar_get_directory($tar);
     foreach ($directory as $entry) {
@@ -825,7 +825,7 @@ function install_addon(string $file, ?array $files = null, bool $do_files = true
     require_code('zones3');
 
     require_code('tar');
-    $full = get_custom_file_base() . '/imports/addons/' . $file;
+    $full = get_file_base() . '/imports/addons/' . $file;
     $tar = tar_open($full, 'rb');
     $info_file = tar_get_file($tar, 'addon.inf');
     if ($info_file === null) {
@@ -1452,7 +1452,7 @@ function uninstall_addon(string $addon_name, bool $clear_caches = true)
         }
     }
     foreach ($zones_gone as $zone) {
-        if (file_exists(get_custom_file_base() . '/' . filter_naughty($zone))) {
+        if (file_exists(get_file_base() . '/' . filter_naughty($zone))) {
             afm_delete_directory(filter_naughty($zone), true);
         }
     }

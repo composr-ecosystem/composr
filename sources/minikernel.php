@@ -873,10 +873,12 @@ function get_site_name()
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  string $zone_for What zone this is running in
+ * @param  ?string $path The file path, used to detect what base URL to use on shared-site installs (null: assume the root-install base URL)
+ * @param  ?ID_TEXT $zone_for The zone the link is for (null: root zone)
+ * @param  boolean $path_is_relative Whether the given $path is relative
  * @return URLPATH The base URL
  */
-function get_base_url(string $zone_for = '') : string
+function get_base_url(?string $path = null, ?string $zone_for = null, bool $path_is_relative = true) : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
@@ -895,16 +897,6 @@ function get_base_url(string $zone_for = '') : string
         return $base_url . (($zone_for == '') ? '' : ('/' . $zone_for));
     }
     return $SITE_INFO['base_url'] . (($zone_for == '') ? '' : ('/' . $zone_for));
-}
-
-/**
- * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install only, this is different to the base URL.
- *
- * @return URLPATH The base URL
- */
-function get_custom_base_url() : string
-{
-    return get_base_url();
 }
 
 /**
@@ -1032,20 +1024,11 @@ function get_param_integer(string $name, $default = null) : int
 /**
  * Get the file base for your installation of Composr.
  *
+ * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-site install (null: virtual file system to search both file bases)
+ * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem
  * @return PATH The file base, without a trailing slash
  */
-function get_file_base() : string
-{
-    global $FILE_BASE;
-    return $FILE_BASE;
-}
-
-/**
- * Get the file base for your installation of Composr.  For a shared install only, this is different to the base URL.
- *
- * @return PATH The file base, without a trailing slash
- */
-function get_custom_file_base() : string
+function get_file_base(?bool $custom_dir = null, bool $true_local = false) : string
 {
     global $FILE_BASE;
     return $FILE_BASE;

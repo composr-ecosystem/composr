@@ -77,11 +77,7 @@ function get_news_category_image_url(string $nc_img) : string
     if ($nc_img == '') {
         $image = '';
     } elseif (looks_like_url($nc_img)) {
-        $image = $nc_img;
-
-        if (url_is_local($image)) {
-            $image = get_custom_base_url() . '/' . $image;
-        }
+        $image = baseify($nc_img);
     } else {
         $image = find_theme_image($nc_img, true);
         if ($image === null) {
@@ -124,10 +120,7 @@ function render_news_box(array $row, string $zone = '_SEARCH', bool $give_contex
 
     if ($row['news_image'] != '') {
         require_code('images');
-        $rep_image_url = $row['news_image'];
-        if (url_is_local($rep_image_url)) {
-            $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
-        }
+        $rep_image_url = baseify($row['news_image']);
     } else {
         $rep_image_url = get_news_category_image_url($news_cat_row['nc_img']);
     }

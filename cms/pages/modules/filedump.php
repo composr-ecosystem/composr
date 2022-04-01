@@ -55,7 +55,7 @@ class Module_filedump
         $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'filedump']);
 
         //require_code('files');
-        //deldir_contents(get_custom_file_base() . '/uploads/filedump', true);
+        //deldir_contents(get_file_base(true) . '/uploads/filedump', true);
     }
 
     /**
@@ -285,7 +285,7 @@ class Module_filedump
 
         $subpath = $this->subpath;
 
-        if (!file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath)) {
+        if (!file_exists(get_file_base() . '/uploads/filedump' . $subpath)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
@@ -308,8 +308,9 @@ class Module_filedump
         $recurse = get_param_integer('recurse', 0);
 
         // Check directory exists
-        $full_path = get_custom_file_base() . '/uploads/filedump' . $subpath;
-        if (!file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath)) {
+        $full_path = get_file_base() . '/uploads/filedump' . $subpath;
+        if (!file_exists(get_file_base() . '/uploads/filedump' . $subpath)) {
+            $full_path = get_file_base(true) . '/uploads/filedump' . $subpath;
             if (has_privilege(get_member(), 'upload_filedump')) {
                 cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
             }
@@ -319,7 +320,7 @@ class Module_filedump
         $db_rows = [];
         $directories = [];
         $files = [];
-        $dir_contents = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . $subpath, trim($subpath, '/'), IGNORE_ACCESS_CONTROLLERS, $recurse == 1);
+        $dir_contents = get_directory_contents(get_file_base() . '/uploads/filedump' . $subpath, trim($subpath, '/'), IGNORE_ACCESS_CONTROLLERS, $recurse == 1);
         foreach ($dir_contents as $filename) {
             $_subpath = dirname($filename);
             if ($_subpath == '.') {
@@ -329,7 +330,7 @@ class Module_filedump
             $filename = basename($filename);
 
             if (!should_ignore_file('uploads/filedump' . $_subpath . $filename, IGNORE_ACCESS_CONTROLLERS | IGNORE_HIDDEN_FILES)) {
-                $_full = get_custom_file_base() . '/uploads/filedump' . $_subpath . $filename;
+                $_full = get_file_base() . '/uploads/filedump' . $_subpath . $filename;
                 if (!file_exists($_full)) {
                     continue; // Broken symlink or (?) permission problem
                 }
@@ -425,7 +426,7 @@ class Module_filedump
             foreach ($files as $i => $file) {
                 $filename = $file['filename'];
                 $_subpath = $file['subpath'];
-                $_full = get_custom_file_base() . '/uploads/filedump' . $_subpath . $filename;
+                $_full = get_file_base() . '/uploads/filedump' . $_subpath . $filename;
 
                 $_description = $file['_description'];
                 if ($_description != '') {
@@ -469,7 +470,7 @@ class Module_filedump
 
                     $embed_url = null;
                 } else { // File
-                    $url = get_custom_base_url() . '/uploads/filedump' . str_replace('%2F', '/', rawurlencode($_subpath . $filename));
+                    $url = baseify_local_url('uploads/filedump' . str_replace('%2F', '/', rawurlencode($_subpath . $filename)));
 
                     if ((is_image($url, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ, true)) || (is_image($url, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_VECTOR, true))) {
                         $is_image = true;
@@ -570,7 +571,7 @@ class Module_filedump
         }
 
         // Find directories we could move stuff into / upload to
-        $directories = get_directory_contents(get_custom_file_base() . '/uploads/filedump', '', IGNORE_ACCESS_CONTROLLERS, true, false);
+        $directories = get_directory_contents(get_file_base() . '/uploads/filedump', '', IGNORE_ACCESS_CONTROLLERS, true, false);
         $directories[] = '';
         cms_mb_sort($directories, SORT_FLAG_CASE | SORT_NATURAL);
         $other_directories = $directories;
@@ -716,10 +717,10 @@ class Module_filedump
 
         $db_rows = list_to_map('name', $GLOBALS['SITE_DB']->query_select('filedump', ['*'], ['subpath' => cms_mb_substr($subpath, 0, 80)]));
 
-        $handle = opendir(get_custom_file_base() . '/uploads/filedump' . $subpath);
+        $handle = opendir(get_file_base() . '/uploads/filedump' . $subpath);
         while (false !== ($filename = readdir($handle))) {
             if (!should_ignore_file('uploads/filedump' . $subpath . $filename, IGNORE_ACCESS_CONTROLLERS | IGNORE_HIDDEN_FILES)) {
-                $_full = get_custom_file_base() . '/uploads/filedump' . $subpath . $filename;
+                $_full = get_file_base() . '/uploads/filedump' . $subpath . $filename;
                 if (!file_exists($_full)) {
                     continue; // Broken symlink or (?) permission problem
                 }
@@ -815,8 +816,8 @@ class Module_filedump
         $subpath = get_param_string('subpath', '', INPUT_FILTER_GET_COMPLEX);
         $file = get_param_string('file', '', INPUT_FILTER_GET_COMPLEX);
 
-        $url = get_custom_base_url() . '/uploads/filedump' . str_replace('%2F', '/', rawurlencode($subpath . $file));
-        $path = get_custom_file_base() . '/uploads/filedump' . $subpath . $file;
+        $url = baseify_local_url('uploads/filedump' . str_replace('%2F', '/', rawurlencode($subpath . $file)));
+        $path = get_file_base() . '/uploads/filedump' . $subpath . $file;
 
         $generated = null;
         $rendered = null;
@@ -1083,8 +1084,8 @@ class Module_filedump
                     if (($new_filename != '') && ($old_filename != $new_filename)) {
                         $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', ['name' => cms_mb_substr($old_filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
                         if ((($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'))) {
-                            $old_filepath = get_custom_file_base() . '/uploads/filedump' . $subpath . $old_filename;
-                            $new_filepath = get_custom_file_base() . '/uploads/filedump' . $subpath . $new_filename;
+                            $old_filepath = get_file_base() . '/uploads/filedump' . $subpath . $old_filename;
+                            $new_filepath = get_file_base(true) . '/uploads/filedump' . $subpath . $new_filename;
 
                             if (file_exists($new_filepath)) {
                                 warn_exit(do_lang_tempcode('OVERWRITE_ERROR'));
@@ -1144,8 +1145,8 @@ class Module_filedump
 
             $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', $where);
             if ((($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'))) {
-                $is_directory = is_dir(get_custom_file_base() . '/uploads/filedump' . $subpath . $file);
-                $path = get_custom_file_base() . '/uploads/filedump' . $subpath . $file;
+                $is_directory = is_dir(get_file_base() . '/uploads/filedump' . $subpath . $file);
+                $path = get_file_base() . '/uploads/filedump' . $subpath . $file;
 
                 switch ($action) {
                     case 'zip':
@@ -1206,7 +1207,7 @@ class Module_filedump
                         break;
 
                     case 'move':
-                        $path_target = get_custom_file_base() . '/uploads/filedump' . $target . $file;
+                        $path_target = get_file_base(true) . '/uploads/filedump' . $target . $file;
                         if (file_exists($path_target)) {
                             warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($path_target)));
                         }
@@ -1259,11 +1260,11 @@ class Module_filedump
         $name = filter_naughty(post_param_string('folder_name'));
         $subpath = filter_naughty(post_param_string('subpath'));
 
-        if (file_exists(get_custom_file_base() . '/uploads/filedump' . $subpath . $name)) {
+        if (file_exists(get_file_base(true) . '/uploads/filedump' . $subpath . $name)) {
             warn_exit(do_lang_tempcode('FOLDER_OVERWRITE_ERROR'));
         }
 
-        $full_path = get_custom_file_base() . '/uploads/filedump' . $subpath . $name;
+        $full_path = get_file_base(true) . '/uploads/filedump' . $subpath . $name;
         cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
 
         $redirect_url = build_url(['page' => '_SELF', 'type' => 'browse', 'subpath' => $subpath], '_SELF');
@@ -1433,8 +1434,8 @@ class Module_filedump
             list($final_filename, $specified_action) = $data;
 
             $sessioned_filename = get_session_id() . '_' . $temp_filename;
-            $sessioned_path = get_custom_file_base() . '/temp/' . $sessioned_filename;
-            $nonsessioned_path = get_custom_file_base() . '/temp/' . $temp_filename;
+            $sessioned_path = get_file_base(true) . '/temp/' . $sessioned_filename;
+            $nonsessioned_path = get_file_base(true) . '/temp/' . $temp_filename;
 
             // Get rid of the session ID security before proceeding
             $test = @rename($sessioned_path, $nonsessioned_path);

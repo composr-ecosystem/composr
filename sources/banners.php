@@ -105,9 +105,8 @@ function banners_script(bool $ret = false, ?string $type = null, ?string $dest =
         if (empty($img_url)) {
             $img_url = find_theme_image('blank');
         }
-        if (url_is_local($img_url)) {
-            $img_url = get_custom_base_url() . '/' . $img_url;
-        }
+        $img_url = baseify($img_url);
+
         header('Location: ' . escape_header($img_url)); // assign_refresh not used, as no UI here
     } elseif ($type == 'click') {
         // Input parameters
@@ -366,7 +365,7 @@ function show_banner(string $name, string $title_text, object $caption, string $
                 if (substr($img_url, 0, 12) == 'data/images/') {
                     $img_url = cdn_filter(get_base_url() . '/' . $img_url);
                 } else {
-                    $img_url = get_custom_base_url() . '/' . $img_url;
+                    $img_url = baseify_local_url($img_url);
                 }
             }
             static $banner_type_rows = [];
@@ -399,9 +398,7 @@ function show_banner(string $name, string $title_text, object $caption, string $
                 'IMG' => $img_url,
             ]);
         } else { // Iframe
-            if (url_is_local($img_url)) {
-                $img_url = get_custom_base_url() . '/' . $img_url;
-            }
+            $img_url = baseify($img_url);
             $_banner_type_row = $GLOBALS['SITE_DB']->query_select('banner_types', ['t_image_width', 't_image_height'], ['id' => $b_type], '', 1);
             if ($width === null) {
                 if (array_key_exists(0, $_banner_type_row)) {

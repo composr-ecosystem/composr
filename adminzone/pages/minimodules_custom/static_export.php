@@ -115,7 +115,7 @@ if (get_param_integer('save__pages', 1) == 1) {
 // Other media
 if (get_param_integer('save__uploads', 1) == 1) {
     $subpaths = [];
-    foreach (get_directory_contents(get_custom_file_base() . '/uploads', '', IGNORE_ACCESS_CONTROLLERS, false, false) as $subpath) {
+    foreach (get_directory_contents(get_file_base() . '/uploads', '', IGNORE_ACCESS_CONTROLLERS, false, false) as $subpath) {
         if (($subpath != 'downloads') && ($subpath != 'attachments') && ($subpath != 'attachments_thumbs')) {
             $subpaths = array_merge($subpaths, ['uploads/' . $subpath]);
         }
@@ -127,8 +127,8 @@ if (get_param_integer('save__uploads', 1) == 1) {
     }
     foreach ($subpaths as $subpath) {
         if (substr($subpath, -strlen('/templates_cached')) == '/templates_cached') {
-            foreach (get_directory_contents(get_custom_file_base() . '/' . $subpath, '', 0, false, true, ['css', 'js']) as $file) {
-                tar_add_file($STATIC_EXPORT_TAR, $subpath . '/' . $file, get_custom_file_base() . '/' . $subpath . '/' . $file, 0644, time(), true);
+            foreach (get_directory_contents(get_file_base() . '/' . $subpath, '', 0, false, true, ['css', 'js']) as $file) {
+                tar_add_file($STATIC_EXPORT_TAR, $subpath . '/' . $file, get_file_base() . '/' . $subpath . '/' . $file, 0644, time(), true);
             }
         } else {
             tar_add_folder($STATIC_EXPORT_TAR, null, get_file_base(), null, $subpath);
@@ -433,7 +433,7 @@ if (trim($post) != "") {
 ';
     if (get_param_integer('save__mailer', 1) == 1) {
         require_code('crypt');
-        $mailer_path = get_custom_file_base() . '/pages/html_custom/' . $lang . '/mailer_temp.htm';
+        $mailer_path = get_file_base(true) . '/pages/html_custom/' . $lang . '/mailer_temp.htm';
         cms_file_put_contents_safe($mailer_path, $mailer_script, FILE_WRITE_FIX_PERMISSIONS);
         $session_cookie_id = get_session_cookie();
         $data = http_get_contents(static_evaluate_tempcode(build_url(['page' => 'mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null], '', [], false, false, true)), ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'cookies' => [$session_cookie_id => get_secure_random_string()]]);
@@ -455,7 +455,7 @@ if (get_param_integer('save__warnings', 1) == 1) {
 }
 
 // Sitemap, if it has been built
-if (file_exists(get_custom_file_base() . '/data_custom/sitemaps/index.xml')) {
+if (file_exists(get_file_base(true) . '/data_custom/sitemaps/index.xml')) {
     tar_add_folder($STATIC_EXPORT_TAR, null, 'data_custom/sitemaps');
 }
 
@@ -468,9 +468,9 @@ if (get_param_integer('dir', 0) == 0) {
 
 // Extract
 $myfile = tar_open($tar_path, 'rb');
-if (!file_exists(get_custom_file_base() . '/exports/static')) {
-    mkdir(get_custom_file_base() . '/exports/static', 0777);
-    fix_permissions(get_custom_file_base() . '/exports/static');
+if (!file_exists(get_file_base(true) . '/exports/static')) {
+    mkdir(get_file_base(true) . '/exports/static', 0777);
+    fix_permissions(get_file_base(true) . '/exports/static');
 }
 tar_extract_to_folder($myfile, 'exports/static');
 tar_close($myfile);

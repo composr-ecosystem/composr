@@ -31,7 +31,7 @@ class Hook_contentious_overrides_facebook_support
         $j = 'facebook_support';
         $found = find_template_place($j, '', $theme, '.js', 'javascript');
         if ($found !== null) {
-            $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $j . $found[2];
+            $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $j . $found[2];
             $data .= cms_file_get_contents_safe($full_path);
         }
     }

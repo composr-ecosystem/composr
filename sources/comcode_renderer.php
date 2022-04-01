@@ -499,11 +499,7 @@ function absoluteise_and_test_comcode_url(string $given_url, int $source_member,
         if (substr($url, 0, 1) == '/') {
             $url = substr($url, 1);
         }
-        if ((file_exists(get_file_base() . '/' . $url)) && (!file_exists(get_custom_file_base() . '/' . $url))) {
-            $url = get_base_url() . '/' . $url;
-        } else {
-            $url = get_custom_base_url() . '/' . $url;
-        }
+        $url = get_base_url(rawurldecode($url)) . '/' . $url;
     }
 
     $temp_tpl = test_url($url, $tag, $given_url, $source_member);
@@ -1945,16 +1941,16 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $url_thumb = $url_full;
             } else {
                 if ($attributes['param'] != '') {
-                    $url_thumb = url_is_local($attributes['param']) ? (get_custom_base_url() . '/' . $attributes['param']) : $attributes['param'];
+                    $url_thumb = baseify($attributes['param']);
                 }
-                if (($attributes['param'] == '') || ((url_is_local($attributes['param'])) && (!file_exists(get_custom_file_base() . '/' . rawurldecode($attributes['param']))))) {
+                if (($attributes['param'] == '') || ((url_is_local($attributes['param'])) && (!file_exists(get_file_base() . '/' . rawurldecode($attributes['param']))))) {
                     $new_name = url_to_filename($url_full);
                     require_code('images');
-                    $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
+                    $file_thumb = get_file_base(true) . '/uploads/auto_thumbs/' . $new_name;
                     if ((!file_exists($file_thumb)) && (strpos($file_thumb, '{$') === false)) {
                         $url_thumb = convert_image($url_full, $file_thumb, null, null, intval(get_option('thumb_width')), false);
                     } else {
-                        $url_thumb = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
+                        $url_thumb = baseify_local_url('uploads/auto_thumbs/' . rawurlencode($new_name));
                     }
                 }
             }
@@ -1993,11 +1989,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
 
             $rollover = array_key_exists('rollover', $attributes) ? $attributes['rollover'] : null;
             if (($rollover !== null) && (url_is_local($rollover))) {
-                if ((file_exists(get_file_base() . '/' . $rollover)) && (!file_exists(get_custom_file_base() . '/' . $rollover))) {
-                    $rollover = get_base_url() . '/' . $rollover;
-                } else {
-                    $rollover = get_custom_base_url() . '/' . $rollover;
-                }
+                $rollover = get_base_url(rawurldecode($rollover)) . '/' . $rollover;
             }
 
             $refresh_time = array_key_exists('refresh_time', $attributes) ? strval(intval($attributes['refresh_time'])) : '0';
@@ -2149,7 +2141,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     $new_filename = $md5 . '.' . get_file_extension($original_filename);
                 }
                 require_code('files');
-                $path = get_custom_file_base() . '/uploads/attachments/' . $new_filename;
+                $path = get_file_base() . '/uploads/attachments/' . $new_filename;
                 $success_status = cms_file_put_contents_safe($path, $file, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
                 if (!$success_status) {
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => '428a36aa6cea693d01429f3d21caac36', 'WARNING' => intelligent_write_error_inline($path)]);
@@ -2158,7 +2150,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $_size = strlen($file);
                 $url = 'uploads/attachments/' . $new_filename;
                 if ($db->is_forum_db()) {
-                    $url = get_custom_base_url() . '/' . $url;
+                    $url = baseify_local_url($url);
                 }
             } elseif (!is_numeric($id)) { // New attachments: uploads
                 if (substr($id, 0, 4) == 'new_') {
@@ -2256,15 +2248,15 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                         require_code('images');
                         $ext = '.' . get_file_extension($original_filename);
                         $md5 = md5(substr($original_filename, 0, 30));
-                        $thumb_path = get_custom_file_base() . '/uploads/attachments_thumbs/' . $md5 . $ext;
+                        $thumb_path = get_file_base(true) . '/uploads/attachments_thumbs/' . $md5 . $ext;
                         $attributes['thumb_url'] = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true, null, false, true);
 
                         if ($db->is_forum_db()) {
-                            $attributes['thumb_url'] = get_custom_base_url() . '/' . $attributes['thumb_url'];
+                            $attributes['thumb_url'] = baseify_local_url($attributes['thumb_url']);
                         }
                     } elseif ((addon_installed('galleries')) && (is_video($original_filename, $as_admin, true)) && (url_is_local($url))) {
                         require_code('galleries2');
-                        $attributes['thumb_url'] = video_get_default_thumb_url(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url);
+                        $attributes['thumb_url'] = video_get_default_thumb_url(baseify($url));
                     }
                 }
 
@@ -2292,14 +2284,16 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     }
                 }
 
+                $thumb_url_minimal = $attributes['thumb_url'];
+                $relative_part = '';
+                if (url_is_local($thumb_url_minimal, $relative_part)) {
+                    $thumb_url_minimal = $relative_part;
+                }
+
                 // Set URL correctly, if on an M.S.N.
                 if ($db->is_forum_db()) {
-                    if (url_is_local($url)) {
-                        $url = get_custom_base_url() . '/' . $url;
-                    }
-                    if (url_is_local($attributes['thumb_url'])) {
-                        $attributes['thumb_url'] = get_custom_base_url() . '/' . $attributes['thumb_url'];
-                    }
+                    $url = baseify($url);
+                    $attributes['thumb_url'] = baseify($attributes['thumb_url']);
                 }
 
                 // Insert attachment
@@ -2307,7 +2301,7 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     'a_member_id' => $on_behalf_of_member,
                     'a_file_size' => $_size,
                     'a_url' => $url,
-                    'a_thumb_url' => preg_replace('#^' . preg_quote(get_custom_base_url() . '/') . '#', '', $attributes['thumb_url']),
+                    'a_thumb_url' => $thumb_url_minimal,
                     'a_original_filename' => $original_filename,
                     'a_num_downloads' => 0,
                     'a_last_downloaded_time' => null,

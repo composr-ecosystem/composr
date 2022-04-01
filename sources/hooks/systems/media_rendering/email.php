@@ -84,9 +84,9 @@ class Hook_media_rendering_email
 
         require_code('mail');
         global $EMAIL_ATTACHMENTS;
-        if (url_is_local($url)) {
-            $url = get_custom_base_url() . '/' . $url;
-        }
+
+        $url = baseify($url);
+
         if ((!array_key_exists('filename', $attributes)) || ($attributes['filename'] == '')) {
             $attributes['filename'] = urldecode(basename($url));
         }

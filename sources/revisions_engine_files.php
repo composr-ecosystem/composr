@@ -69,7 +69,7 @@ class RevisionEngineFiles
         }
 
         if (($original_text === null) || ($original_timestamp === null)) {
-            $existing_path = get_custom_file_base() . '/' . filter_naughty($directory . '/' . $filename_id . '.' . $ext);
+            $existing_path = get_file_base(true) . '/' . filter_naughty($directory . '/' . $filename_id . '.' . $ext);
             $existing_path = zone_black_magic_filterer($existing_path);
             if (!is_file($existing_path)) {
                 $existing_path = get_file_base() . '/' . filter_naughty($directory . '/' . $filename_id . '.' . $ext);
@@ -88,7 +88,7 @@ class RevisionEngineFiles
             }
         }
 
-        $stub = get_custom_file_base() . '/';
+        $stub = get_file_base(true) . '/';
 
         if (substr($directory, 0, strlen($stub)) == $stub) {
             $directory = substr($directory, strlen($stub));
@@ -117,7 +117,7 @@ class RevisionEngineFiles
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        $revision_path = get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext . '.' . strval($revisions[0]['r_time']);
+        $revision_path = get_file_base(true) . '/' . $directory . '/' . $filename_id . '.' . $ext . '.' . strval($revisions[0]['r_time']);
         if (!is_file($revision_path)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -143,10 +143,10 @@ class RevisionEngineFiles
             return [];
         }
 
-        $base = get_custom_file_base() . '/' . $directory;
+        $base = get_file_base(true) . '/' . $directory;
 
         $times = [];
-        $quick_match = @glob(get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext . '.*', GLOB_NOSORT);
+        $quick_match = @glob(get_file_base(true) . '/' . $directory . '/' . $filename_id . '.' . $ext . '.*', GLOB_NOSORT);
         if ($quick_match === false) {
             $quick_match = [];
         }
@@ -479,7 +479,7 @@ class RevisionEngineFiles
 
         if ($restore_from_path !== null) {
             $has_access = (dirname(filter_naughty($restore_from_path)) == $directory) || ((has_actual_page_access(get_member(), 'cms_comcode_pages')) && (strpos($restore_from_path, 'pages/comcode') !== false));
-            $full_path = get_custom_file_base() . '/' . filter_naughty($restore_from_path);
+            $full_path = get_file_base(true) . '/' . filter_naughty($restore_from_path);
             $exists = file_exists($full_path);
             if ($has_access && $exists) {
                 $text = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
@@ -528,14 +528,14 @@ class RevisionEngineFiles
 
         require_lang('actionlog');
 
-        $path_recent = get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext;
+        $path_recent = get_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext;
         if (!is_file($path_recent)) {
             $path_recent = get_file_base() . '/' . str_replace('_custom', '', $directory) . '/' . $filename_id . '.' . $ext;
         }
         if ($more_recent_revision !== null) {
             $path_recent .= '.' . strval($more_recent_revision);
         }
-        $path_older = get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext . '.' . strval($revision);
+        $path_older = get_file_base(true) . '/' . $directory . '/' . $filename_id . '.' . $ext . '.' . strval($revision);
 
         $text_recent = cms_file_get_contents_safe($path_recent);
         $text_older = cms_file_get_contents_safe($path_older);

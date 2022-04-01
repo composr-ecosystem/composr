@@ -102,7 +102,7 @@ class Hook_chat_bot_trickstr
             return null;
         }
 
-        if (!is_writable(get_file_base() . '/temp')) {
+        if (!is_writable(get_file_base(true) . '/temp')) {
             return null;
         }
 
@@ -113,7 +113,7 @@ class Hook_chat_bot_trickstr
             return null;
         }
 
-        if (file_exists(get_custom_file_base() . '/sources_custom/programe')) { // AliceBot, much better
+        if (file_exists(get_file_base() . '/sources_custom/programe')) { // AliceBot, much better
             if (get_value('trickstr_installed') !== '1') {
                 disable_php_memory_limit();
 
@@ -274,7 +274,7 @@ class Hook_chat_bot_trickstr
         $syncount = 0;
 
         // load knowledge file
-        $lines_array = cms_file_safe(get_custom_file_base() . '/sources_custom/hooks/modules/chat_bots/knowledge.txt');
+        $lines_array = cms_file_safe(get_file_base() . '/sources_custom/hooks/modules/chat_bots/knowledge.txt');
 
         $count = count($lines_array);
 

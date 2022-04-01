@@ -137,15 +137,15 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
 
     // Ensure directory is there...
 
-    if (!file_exists(get_custom_file_base() . '/exports/backups')) {
+    if (!file_exists(get_file_base(true) . '/exports/backups')) {
         require_code('files2');
-        make_missing_directory(get_custom_file_base() . '/exports/backups');
+        make_missing_directory(get_file_base(true) . '/exports/backups');
     }
 
     // Start log...
 
     require_code('files');
-    $log_file_path = get_custom_file_base() . '/exports/backups/' . $file . '.txt';
+    $log_file_path = get_file_base(true) . '/exports/backups/' . $file . '.txt';
     $log_file = @cms_fopen_text_write($log_file_path, true) or intelligent_write_error($log_file_path); // .txt file because IIS doesn't allow .log download
     cms_ini_set('log_errors', '1');
     cms_ini_set('error_log', $log_file_path);
@@ -155,7 +155,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
     // Open archive...
 
     require_code('tar');
-    $backup_file_tmp_path = get_custom_file_base() . '/exports/backups/' . filter_naughty($file) . '.tmp';
+    $backup_file_tmp_path = get_file_base(true) . '/exports/backups/' . filter_naughty($file) . '.tmp';
     $backup_file = tar_open($backup_file_tmp_path, 'wb');
 
     // Write readme.txt file...
@@ -165,10 +165,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
 
     // Read in template file and find marker in it...
 
-    $template = get_custom_file_base() . '/data_custom/modules/admin_backup/restore.php.pre';
-    if (!file_exists($template)) {
-        $template = get_file_base() . '/data/modules/admin_backup/restore.php.pre';
-    }
+    $template = get_file_base() . '/data_custom/modules/admin_backup/restore.php.pre';
 
     $_install_php_file = cms_file_get_contents_safe($template, FILE_READ_LOCK);
 
@@ -232,12 +229,12 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
         set_value('last_backup', strval(time()));
         $avoid_backing_up = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin', FILE_READ_LOCK)) : [];
         $root_only_dirs = directories_to_backup();
-        tar_add_folder($backup_file, $log_file, get_custom_file_base(), $max_size, '', $avoid_backing_up, $root_only_dirs, !running_script('cron_bridge'), IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, $callback);
+        tar_add_folder($backup_file, $log_file, get_file_base(true), $max_size, '', $avoid_backing_up, $root_only_dirs, !running_script('cron_bridge'), IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, $callback);
     } elseif ($b_type == 'incremental') {
         $threshold = intval(get_value('last_backup'));
 
         set_value('last_backup', strval(time()));
-        $directory = tar_add_folder_incremental($backup_file, $log_file, get_custom_file_base(), $threshold, $max_size, '', IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, $callback);
+        $directory = tar_add_folder_incremental($backup_file, $log_file, get_file_base(true), $threshold, $max_size, '', IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, $callback);
         $_directory = '';
         foreach ($directory as $d) {
             $a = '';
@@ -262,8 +259,8 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'), false, true);
     }
 
-    $backup_file_path = get_custom_file_base() . '/exports/backups/' . filter_naughty($file) . '.tar';
-    $url = get_base_url() . '/exports/backups/' . $file . '.tar';
+    $backup_file_path = get_file_base(true) . '/exports/backups/' . filter_naughty($file) . '.tar';
+    $url = baseify_local_url('exports/backups/' . $file . '.tar');
 
     rename($backup_file_tmp_path, $backup_file_path);
 
@@ -277,7 +274,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
                 warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
             }
 
-            $compressed_file_tmp_path = get_custom_file_base() . '/exports/backups/' . $file . '.tar.gz.tmp';
+            $compressed_file_tmp_path = get_file_base(true) . '/exports/backups/' . $file . '.tar.gz.tmp';
             $compressed_file = gzopen($compressed_file_tmp_path, 'wb') or intelligent_write_error($compressed_file_tmp_path);
 
             $fp_in = fopen($backup_file_path, 'rb');
@@ -288,8 +285,8 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
             fclose($fp_in);
             gzclose($compressed_file);
 
-            $compressed_file_path = get_custom_file_base() . '/exports/backups/' . $file . '.tar.gz';
-            $url = get_base_url() . '/exports/backups/' . $file . '.tar.gz';
+            $compressed_file_path = get_file_base(true) . '/exports/backups/' . $file . '.tar.gz';
+            $url = baseify_local_url('exports/backups/' . $file . '.tar.gz');
 
             rename($compressed_file_tmp_path, $compressed_file_path);
 
@@ -391,7 +388,7 @@ function directories_to_backup() : array
  */
 function deliver_remote_backup(string $file)
 {
-    $path_stub = get_custom_file_base() . '/exports/backups/';
+    $path_stub = get_file_base(true) . '/exports/backups/';
     if (file_exists($path_stub . $file . '.tar.gz')) {
         $_file = $file . '.tar.gz';
     } elseif (file_exists($path_stub . $file . '.tar')) {

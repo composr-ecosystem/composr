@@ -603,7 +603,7 @@ class Module_cms_banners extends Standard_crud_module
                 $spreadsheet_row[do_lang('DESCRIPTION')] = get_translated_text($row['caption']);
             }
 
-            $spreadsheet_row[do_lang('IMAGE')] = (url_is_local($row['img_url']) ? (get_custom_base_url() . '/') : '') . $row['img_url'];
+            $spreadsheet_row[do_lang('IMAGE')] = baseify($row['img_url']);
 
             $spreadsheet_row[do_lang('DESTINATION_URL')] = $row['site_url'];
 

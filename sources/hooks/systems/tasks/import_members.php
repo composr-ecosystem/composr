@@ -258,8 +258,9 @@ class Hook_task_import_members
 
             $avatar_url = array_key_exists('Avatar', $line) ? $line['Avatar'] : null;
             if ($avatar_url !== null) {
-                if (substr($avatar_url, 0, strlen(get_custom_base_url())) == get_custom_base_url() . '/') {
-                    $avatar_url = substr($avatar_url, strlen(get_custom_base_url() . '/'));
+                $relative_part = '';
+                if (url_is_local($avatar_url, $relative_part)) {
+                    $avatar_url = $relative_part;
                 }
             }
             $signature = array_key_exists('Signature', $line) ? $line['Signature'] : '';

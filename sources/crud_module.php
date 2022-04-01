@@ -223,7 +223,7 @@ abstract class Standard_crud_module
             if (substr($this->module_type, 0, 4) == 'cns_') {
                 $this->module_type = 'f_' . substr($this->module_type, 4);
             }
-            if ((file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $this->module_type . '.ini')) || (file_exists(get_custom_file_base() . '/lang_custom/' . fallback_lang() . '/' . $this->module_type . '.ini'))) {
+            if ((file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $this->module_type . '.ini')) || (file_exists(get_file_base() . '/lang_custom/' . fallback_lang() . '/' . $this->module_type . '.ini'))) {
                 require_lang($this->module_type);
             }
 

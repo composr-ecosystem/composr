@@ -1125,7 +1125,7 @@ abstract class Mail_dispatcher_base
 
             $sending_message .= chunk_split(base64_encode($contents), 76, $this->line_term);
 
-            $sf_prefix = get_custom_file_base() . '/temp/';
+            $sf_prefix = get_file_base(true) . '/temp/';
             if (substr($path, 0, strlen($sf_prefix)) == $sf_prefix) {
                 @unlink($path);
             }
@@ -1360,7 +1360,7 @@ abstract class Mail_dispatcher_base
         $through_queue = (!$this->bypass_queue) && (((cron_installed()) && (get_option('mail_queue') === '1'))) || (get_option('mail_queue_debug') === '1');
         if ((!empty($this->attachments)) && (get_option('mail_queue_debug') === '0')) {
             foreach (array_keys($this->attachments) as $path) {
-                if ((substr($path, 0, strlen(get_custom_file_base() . '/')) != get_custom_file_base() . '/') && (substr($path, 0, strlen(get_file_base() . '/')) != get_file_base() . '/')) {
+                if ((substr($path, 0, strlen(get_file_base(true) . '/')) != get_file_base(true) . '/') && (substr($path, 0, strlen(get_file_base(false) . '/')) != get_file_base(false) . '/')) {
                     $through_queue = false;
                 }
             }
@@ -1436,7 +1436,7 @@ abstract class Mail_dispatcher_base
                     }
 
                     if (url_is_local($full)) {
-                        $_full = get_custom_file_base() . '/' . rawurldecode($full);
+                        $_full = get_file_base() . '/' . rawurldecode($full);
                         if (file_exists($_full)) {
                             $filename = $myrow['a_original_filename'];
                             require_code('mime_types');
@@ -1482,7 +1482,8 @@ abstract class Mail_dispatcher_base
      */
     protected function mail_img_rep_callback(array $matches) : string
     {
-        if ((!url_is_local($matches[0])) && (substr($matches[2], 0, strlen(get_custom_base_url())) != get_custom_base_url()) && (substr($matches[2], 0, strlen(get_base_url())) != get_base_url())) {
+        $relative_part = '';
+        if (!url_is_local($matches[0], $relative_part)) {
             return $matches[0];
         }
 

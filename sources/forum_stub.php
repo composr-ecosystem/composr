@@ -489,7 +489,7 @@ class Forum_driver_base
         // Try hardcoded in URL
         $theme = $is_current_member ? filter_naughty(get_param_string('keep_theme', get_param_string('utheme', '-1'))) : '-1';
         if ($theme != '-1') {
-            if ((is_dir(get_file_base() . '/themes/' . $theme)) || (is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
+            if (is_dir(get_file_base() . '/themes/' . $theme)) { // Sanity check
                 $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => $zone_for]) : $ZONE['zone_theme'];
 
                 require_code('permissions');
@@ -513,7 +513,7 @@ class Forum_driver_base
         }
         if ($default_theme != '-1') { // Sanity check
             if ((!isset($SITE_INFO['no_disk_sanity_checks'])) || ($SITE_INFO['no_disk_sanity_checks'] != '1')) {
-                if (!is_dir(get_custom_file_base() . '/themes/' . $default_theme)) {
+                if (!is_dir(get_file_base() . '/themes/' . $default_theme)) {
                     $default_theme = '-1';
                 }
             }
@@ -537,7 +537,7 @@ class Forum_driver_base
         }
         if ( // Sanity/permissions check
             ($theme == '-1') ||
-            (($theme != 'default') && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) ||
+            (($theme != 'default') && (!is_dir(get_file_base() . '/themes/' . $theme))) ||
             (!has_category_access($member_id, 'theme', $theme))
         ) {
             if (!is_guest($member_id)) {

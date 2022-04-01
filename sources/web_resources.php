@@ -80,7 +80,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
         $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
     }
     $active_theme = $theme;
-    $dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
+    $dir = get_file_base(true) . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
     $js_cache_stem = $dir;
     $js_cache_stem .= '/';
     $js_cache_stub = '';
@@ -117,10 +117,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
             return '';
         }
         $theme = $found[0];
-        $full_path = get_custom_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
-        }
+        $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
     }
 
     if (
@@ -313,7 +310,7 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
         $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
     }
     $active_theme = $theme;
-    $dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
+    $dir = get_file_base(true) . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
     $css_cache_stem = $dir;
     $css_cache_stem .= '/';
     $css_cache_stub = '';
@@ -350,10 +347,7 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
             return '';
         }
         $theme = $found[0];
-        $full_path = get_custom_file_base() . '/themes/' . $theme . $found[1] . $c . $found[2];
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $c . $found[2];
-        }
+        $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $c . $found[2];
     }
 
     if (

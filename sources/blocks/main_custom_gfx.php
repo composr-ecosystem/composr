@@ -88,7 +88,7 @@ class Block_main_custom_gfx
         }
 
         // Cache to auto_thumbs
-        $thumb_path = get_custom_file_base() . '/uploads/auto_thumbs/' . $cache_id . '.png';
+        $thumb_path = get_file_base(true) . '/uploads/auto_thumbs/' . $cache_id . '.png';
         if ((!file_exists($thumb_path)) || (get_option('is_on_block_cache') == '0')) {
             // Ok so not cached yet
 
@@ -102,7 +102,7 @@ class Block_main_custom_gfx
 
             $font_path = find_font_path($font);
 
-            $path = ((strpos($img_path, '/default/images/') !== false) ? get_file_base() : get_custom_file_base()) . '/' . $img_path;
+            $path = get_file_base() . '/' . $img_path;
             $img = cms_imagecreatefrom($path);
             if ($img === false) {
                 return do_template('RED_ALERT', ['_GUID' => 'h8b1p9evu0ibhnjl0ze2ny4x0gxgcpwq', 'TEXT' => do_lang_tempcode('CORRUPT_FILE', escape_html($img_path))]);
@@ -156,7 +156,7 @@ class Block_main_custom_gfx
             imagedestroy($img);
         }
 
-        $url = get_custom_base_url() . '/uploads/auto_thumbs/' . $cache_id . '.png';
+        $url = baseify('uploads/auto_thumbs/' . $cache_id . '.png');
 
         return $url;
     }

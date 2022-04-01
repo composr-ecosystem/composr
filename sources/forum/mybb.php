@@ -999,7 +999,7 @@ class Forum_driver_mybb extends Forum_driver_base
         }
 
         // Look for a skin according to our site name (we bother with this instead of 'default' because Composr itself likes to never choose a theme when forum-theme integration is on: all forum [via map] or all Composr seems cleaner, although it is complex)
-        if ((!(strlen($def) > 0)) || (!file_exists(get_custom_file_base() . '/cache/themes/theme' . $skin))) {
+        if ((!(strlen($def) > 0)) || (!file_exists(get_file_base() . '/cache/themes/theme' . $skin))) {
             $mybbtheme = $this->db->query_select_value_if_there('themes', 'name', ['name' => get_site_name()]);
             if ($mybbtheme !== null) {
                 $def = array_key_exists($mybbtheme, $map) ? $map[$mybbtheme] : $mybbtheme;
@@ -1007,7 +1007,7 @@ class Forum_driver_mybb extends Forum_driver_base
         }
 
         // Default then!
-        if ((!(strlen($def) > 0)) || (!file_exists(get_custom_file_base() . '/cache/themes/theme' . $skin))) {
+        if ((!(strlen($def) > 0)) || (!file_exists(get_file_base() . '/cache/themes/theme' . $skin))) {
             $def = array_key_exists('default', $map) ? $map['default'] : 'default';
         }
 

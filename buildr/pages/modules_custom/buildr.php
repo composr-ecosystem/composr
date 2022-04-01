@@ -54,7 +54,7 @@ class Module_buildr
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/buildr_addon', true);
+            deldir_contents(get_file_base(true) . '/uploads/buildr_addon', true);
         }
 
         if ($GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) {

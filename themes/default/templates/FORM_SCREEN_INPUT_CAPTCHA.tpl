@@ -6,7 +6,7 @@
 	{+START,SET,CAPTCHA}
 		<div class="captcha">
 			{+START,IF,{$CONFIG_OPTION,audio_captcha,1}}
-				<a id="captcha-audio" rel="nofollow" class="js-click-play-self-audio-link" title="{!captcha:PLAY_AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/captcha/{$SESSION*}.wav?cache_break={$RAND&*}">{!captcha:PLAY_AUDIO_VERSION}</a>
+				<a id="captcha-audio" rel="nofollow" class="js-click-play-self-audio-link" title="{!captcha:PLAY_AUDIO_VERSION}" href="{$BASEIFY*,uploads/captcha/{$SESSION*}.wav}?cache_break={$RAND&*}">{!captcha:PLAY_AUDIO_VERSION}</a>
 			{+END}
 			{+START,IF,{$CONFIG_OPTION,css_captcha,1}}
 				<iframe {$?,{$BROWSER_MATCHES,ie}, frameBorder="0" scrolling="no"} tabindex="-1" id="captcha-readable" class="captcha-frame" title="{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}" src="{$FIND_SCRIPT*,captcha}?cache_break={$RAND&*}{$KEEP*,0,1}">{!CONTACT_STAFF_TO_JOIN_IF_IMPAIRED}</iframe>

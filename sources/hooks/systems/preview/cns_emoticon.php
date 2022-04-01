@@ -62,7 +62,7 @@ class Hook_preview_cns_emoticon
         }
 
         require_code('images');
-        $preview = do_image_thumb(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, post_param_string('code'), true);
+        $preview = do_image_thumb(baseify($url), post_param_string('code'), true);
 
         return [$preview, null, false];
     }

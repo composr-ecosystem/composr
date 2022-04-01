@@ -28,7 +28,7 @@ class lang_inline_editing_test_set extends cms_test_case
         $result = comcode_to_tempcode('{!testy_test:FOOBAR=Test}', null, true);
         $this->assertTrue($result->evaluate() == 'Test');
 
-        $expected_path = get_custom_file_base() . '/lang_custom/EN/testy_test.ini';
+        $expected_path = get_file_base() . '/lang_custom/EN/testy_test.ini';
         $ok = is_file($expected_path);
 
         $this->assertTrue($ok);

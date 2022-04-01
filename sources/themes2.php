@@ -50,7 +50,7 @@ function find_theme_seed(?string $theme = null) : string
     if ($test != '') {
         $THEME_SEED_CACHE[$theme] = $test;
     } else {
-        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css';
+        $css_path = get_file_base() . '/themes/' . $theme . '/css_custom/_colours.css';
         if (!is_file($css_path)) {
             $css_path = get_file_base() . '/themes/default/css/_colours.css';
         }
@@ -154,17 +154,6 @@ function find_all_themes(bool $needs_themewizard_support = false) : array
             }
         }
         closedir($_dir);
-    }
-    if (get_custom_file_base() != get_file_base()) {
-        $_dir = @opendir(get_custom_file_base() . '/themes/');
-        if ($_dir !== false) {
-            while (false !== ($file = readdir($_dir))) {
-                if ((strpos($file, '.') === false) && (is_dir(get_file_base() . '/themes/' . $file))) {
-                    $themes[$file] = null;
-                }
-            }
-            closedir($_dir);
-        }
     }
 
     foreach (array_keys($themes) as $file) {
@@ -282,11 +271,11 @@ function get_template_files_list(string $theme, string $directory, ?string $suff
     $out = [];
     if (($theme == 'default') || (!$this_theme_only)) {
         $out = array_merge($out, _get_template_files_list(get_file_base(), 'default/' . $directory, $suffix));
-        $out = array_merge($out, _get_template_files_list(get_custom_file_base(), 'default/' . $directory . '_custom', $suffix));
+        $out = array_merge($out, _get_template_files_list(get_file_base(), 'default/' . $directory . '_custom', $suffix));
     }
     if ($theme != 'default') {
-        $out = array_merge($out, _get_template_files_list(get_custom_file_base(), $theme . '/' . $directory, $suffix));
-        $out = array_merge($out, _get_template_files_list(get_custom_file_base(), $theme . '/' . $directory . '_custom', $suffix));
+        $out = array_merge($out, _get_template_files_list(get_file_base(), $theme . '/' . $directory, $suffix));
+        $out = array_merge($out, _get_template_files_list(get_file_base(), $theme . '/' . $directory . '_custom', $suffix));
     }
     ksort($out);
 
@@ -342,12 +331,9 @@ function find_template_path(string $file, string $subdir, string $theme) : ?stri
     if ($searched_theme === null) {
         return null;
     }
-    $template_path = get_custom_file_base() . '/themes/' . $searched_theme . $searched_directory . $_file . $suffix;
+    $template_path = get_file_base() . '/themes/' . $searched_theme . $searched_directory . $_file . $suffix;
     if (!is_file($template_path)) {
-        $template_path = get_file_base() . '/themes/' . $searched_theme . $searched_directory . $_file . $suffix;
-        if (!is_file($template_path)) {
-            $template_path = null;
-        }
+        $template_path = null;
     }
 
     $cache[$file][$subdir][$theme] = $template_path;
@@ -444,9 +430,9 @@ function post_param_theme_img_code(string $type, bool $required = false, string 
 
     if ($upload_to === null) {
         $upload_to = 'themes/default/images_custom/' . $type;
-        @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
-        if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
-            fix_permissions(get_custom_file_base() . '/' . $upload_to);
+        @mkdir(get_file_base(true) . '/' . $upload_to, 0777);
+        if (file_exists(get_file_base(true) . '/' . $upload_to)) {
+            fix_permissions(get_file_base(true) . '/' . $upload_to);
         } else {
             $upload_to = 'themes/default/images_custom';
         }
@@ -490,7 +476,7 @@ function find_images_do_dir(string $theme, string $subdir, array $langs) : array
 {
     require_code('images');
 
-    $full = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($subdir);
+    $full = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($subdir);
     $out = [];
 
     $_dir = @opendir($full);
@@ -567,14 +553,14 @@ function get_all_image_ids_type(string $type, bool $recurse = false, ?object $db
         _get_all_image_ids_type($ids, get_file_base() . '/themes/default/images/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
         _get_all_image_ids_type($ids, get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
         if ($theme != 'default') {
-            _get_all_image_ids_type($ids, get_custom_file_base() . '/themes/' . $theme . '/images/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
-            _get_all_image_ids_type($ids, get_custom_file_base() . '/themes/' . $theme . '/images/' . get_site_default_lang() . '/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
+            _get_all_image_ids_type($ids, get_file_base() . '/themes/' . $theme . '/images/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
+            _get_all_image_ids_type($ids, get_file_base() . '/themes/' . $theme . '/images/' . get_site_default_lang() . '/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
         }
         _get_all_image_ids_type($ids, get_file_base() . '/themes/default/images_custom/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
         _get_all_image_ids_type($ids, get_file_base() . '/themes/default/images_custom/' . get_site_default_lang() . '/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
         if ($theme != 'default') {
-            _get_all_image_ids_type($ids, get_custom_file_base() . '/themes/' . $theme . '/images_custom/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
-            _get_all_image_ids_type($ids, get_custom_file_base() . '/themes/' . $theme . '/images_custom/' . get_site_default_lang() . '/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
+            _get_all_image_ids_type($ids, get_file_base() . '/themes/' . $theme . '/images_custom/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
+            _get_all_image_ids_type($ids, get_file_base() . '/themes/' . $theme . '/images_custom/' . get_site_default_lang() . '/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
         }
     }
 
@@ -602,7 +588,7 @@ function get_all_image_ids_type(string $type, bool $recurse = false, ?object $db
                 continue;
             }
 
-            if ((url_is_local($row['url'])) && (!$include_missing) && (!file_exists(((substr($row['url'], 0, 15) == 'themes/default/') ? get_file_base() : get_custom_file_base()) . '/' . rawurldecode($row['url'])))) {
+            if ((url_is_local($row['url'])) && (!$include_missing) && (!file_exists(get_file_base() . '/' . rawurldecode($row['url'])))) {
                 continue;
             }
             if ($row['url'] != 'themes/default/images/blank.gif') { // We sometimes associate to blank.gif to essentially delete images so they can never be found again
@@ -864,7 +850,7 @@ function tidy_theme_img_code(?string $new, string $old, string $table, string $f
         }
         $count = $db->query_select_value($table, 'COUNT(*)', [$field => $old]);
         if ($count == 0) {
-            @unlink(get_custom_file_base() . '/' . urldecode($url));
+            @unlink(get_file_base(true) . '/' . urldecode($url));
             $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $old]);
         }
     }

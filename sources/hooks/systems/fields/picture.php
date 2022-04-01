@@ -84,10 +84,7 @@ class Hook_fields_picture
                 unset($METADATA['image']);
             }
 
-            $img_url = $ev;
-            if (url_is_local($img_url)) {
-                $img_url = get_custom_base_url() . '/' . $img_url;
-            }
+            $img_url = baseify($ev);
 
             set_extra_request_metadata([
                 'image' => $img_url,
@@ -124,10 +121,7 @@ class Hook_fields_picture
             return ''; // LEGACY: Fix to bad data that got in
         }
 
-        $image_url = $ev;
-        if (url_is_local($image_url)) {
-            $image_url = get_custom_base_url() . '/' . $image_url;
-        }
+        $image_url = baseify($ev);
 
         if (!array_key_exists('c_name', $field)) {
             $field['c_name'] = 'other';
@@ -243,7 +237,7 @@ class Hook_fields_picture
             }
 
             if (($old_value !== null) && ($old_value['cv_value'] != '') && (($value != '') || (post_param_integer('custom_' . strval($field['id']) . '_value_unlink', 0) == 1))) {
-                @unlink(get_custom_file_base() . '/' . rawurldecode($old_value['cv_value']));
+                @unlink(get_file_base() . '/' . rawurldecode($old_value['cv_value']));
             }
         } else {
             $value = STRING_MAGIC_NULL;
@@ -260,7 +254,7 @@ class Hook_fields_picture
     public function cleanup($value)
     {
         if ($value['cv_value'] != '') {
-            @unlink(get_custom_file_base() . '/' . rawurldecode($value['cv_value']));
+            @unlink(get_file_base() . '/' . rawurldecode($value['cv_value']));
         }
     }
 }

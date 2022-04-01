@@ -33,13 +33,7 @@ function cnl()
     return $cli ? "\n" : '<br />';
 }
 
-function get_custom_file_base()
-{
-    global $COMPOSR_PATH;
-    return $COMPOSR_PATH;
-}
-
-function get_file_base()
+function get_file_base($custom_dir = null, $true_local = false)
 {
     global $COMPOSR_PATH;
     return $COMPOSR_PATH;

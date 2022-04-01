@@ -55,12 +55,7 @@ class Hook_ecommerce_disastr
 
         $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], [], 'ORDER BY name');
         foreach ($rows as $disease) {
-            $image_url = $disease['image'];
-            if ($image_url != '') {
-                if (url_is_local($image_url)) {
-                    $image_url = get_custom_base_url() . '/' . $image_url;
-                }
-            }
+            $image_url = baseify($disease['image']);
 
             $products['CURE_' . strval($disease['id'])] = [
                 'item_name' => do_lang('__CURE', $disease['name'], $disease['cure']),

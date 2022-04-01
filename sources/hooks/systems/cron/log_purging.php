@@ -53,7 +53,7 @@ class Hook_cron_log_purging
         foreach ($hook_obs as $hook_ob) {
             $logs_available = $hook_ob->enumerate_logs();
             foreach ($logs_available as $filename => $details) {
-                $path = get_custom_file_base() . '/data_custom/' . $filename;
+                $path = get_file_base(true) . '/data_custom/' . $filename;
                 if ((is_file($path)) && ($details['days_to_keep'] !== null)) {
                     $this->purge_log($path, $details['days_to_keep']);
                 }

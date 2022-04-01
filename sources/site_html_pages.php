@@ -73,18 +73,18 @@ function load_html_page(string $string, ?string $file_base = null) : string
                 } else {
                     $new_url = $old_url;
                     if (url_is_local($old_url)) {
-                        if (is_file(get_custom_file_base() . '/' . dirname($string) . '/' . urldecode($old_url))) { // HTML pages dir
-                            $dirname = dirname($string);
-                            if ($dirname == '.') {
-                                $dirname = '';
+                        $paths_to_search = [
+                            get_file_base() . '/' . dirname($string) . '/' . urldecode($old_url), // HTML pages dir
+                            get_file_base() . '/' . get_zone_name() . '/' . urldecode($old_url), // Zone dir
+                            get_file_base() . '/' . urldecode($old_url), // Root dir
+                            get_file_base(true, true) . '/uploads/website_specific/' . urldecode($old_url), // uploads/website_specific
+                        ];
+
+                        foreach ($paths_to_search as $i => $search_path) {
+                            if ((is_file($search_path)) || (!isset($paths_to_search[$i + 1]/*settle for missing if last*/))) {
+                                $new_url = get_base_url($search_path, null, true) . '/' . $old_url;
+                                break;
                             }
-                            $new_url = get_base_url() . '/' . (($dirname == '') ? '' : ($dirname . '/')) . $old_url;
-                        } elseif (is_file(get_custom_file_base() . '/' . get_zone_name() . '/' . urldecode($old_url))) { // Zone dir
-                            $new_url = get_base_url() . '/' . ((get_zone_name() == '') ? '' : (get_zone_name() . '/')) . $old_url;
-                        } elseif (is_file(get_custom_file_base() . '/' . urldecode($old_url))) { // Root dir
-                            $new_url = get_base_url() . '/' . $old_url;
-                        } else {
-                            $new_url = get_base_url() . '/uploads/website_specific/' . $old_url; // uploads/website_specific
                         }
                     }
                 }

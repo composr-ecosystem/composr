@@ -80,11 +80,11 @@ class Module_admin_zones
             //}
             $langs = find_all_langs(true);
             foreach (array_keys($langs) as $lang) {
-                $path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
+                $path = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
                 if (file_exists($path)) {
                     deldir_contents($path, true);
                 }
-                $path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
+                $path = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
                 if (file_exists($path)) {
                     deldir_contents($path, true);
                 }
@@ -316,7 +316,6 @@ class Module_admin_zones
             $redirecting_to = null;
             $current_for = $for;
             switch ($page_info[0]) {
-                case 'COMCODE_CUSTOM_PURE':
                 case 'COMCODE':
                 case 'COMCODE_CUSTOM':
                     $is_comcode = true;
@@ -342,7 +341,6 @@ class Module_admin_zones
                     $page_info = _request_page($current_for, $redirecting_to, null, $lang);
                     if ($page_info !== false) {
                         switch ($page_info[0]) {
-                            case 'COMCODE_CUSTOM_PURE':
                             case 'COMCODE':
                             case 'COMCODE_CUSTOM':
                                 $is_comcode = true;
@@ -359,10 +357,7 @@ class Module_admin_zones
             $current_zone = ($redirecting_to === null) ? $id : $redirecting_to;
             $default_parsed = null;
             if ($is_comcode) {
-                $full_path = zone_black_magic_filterer(get_custom_file_base() . '/' . $current_zone . '/pages/' . cms_strtolower_ascii($page_info[0]) . '/' . $page_info[3] . '/' . $current_for . '.txt');
-                if (!file_exists($full_path)) {
-                    $full_path = zone_black_magic_filterer(get_file_base() . '/' . $current_zone . '/pages/' . cms_strtolower_ascii($page_info[0]) . '/' . $page_info[3] . '/' . $current_for . '.txt');
-                }
+                $full_path = zone_black_magic_filterer(get_file_base() . '/' . $current_zone . '/pages/' . cms_strtolower_ascii($page_info[0]) . '/' . $page_info[3] . '/' . $current_for . '.txt');
                 if (file_exists($full_path)) {
                     $comcode = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
 
@@ -561,7 +556,7 @@ class Module_admin_zones
                 $_for = ($for == DEFAULT_ZONE_PAGE_NAME) ? $default_page : $for;
 
                 // Where to save to
-                $full_path = zone_black_magic_filterer(get_custom_file_base() . (((($redirect === null) ? $id : $redirect) == '') ? '' : '/') . (($redirect === null) ? $id : $redirect) . '/pages/comcode_custom/' . $lang . '/' . $_for . '.txt');
+                $full_path = zone_black_magic_filterer(get_file_base(true) . (((($redirect === null) ? $id : $redirect) == '') ? '' : '/') . (($redirect === null) ? $id : $redirect) . '/pages/comcode_custom/' . $lang . '/' . $_for . '.txt');
 
                 // Store revision
                 if (addon_installed('actionlog')) {
@@ -872,7 +867,7 @@ class Module_admin_zones
         $hidden->attach(form_input_hidden('zone', $zone));
         $no_delete_zones = (get_forum_type() == 'cns') ? ['', 'adminzone', 'forum'] : ['', 'adminzone'];
         $no_rename_zones = ['', 'adminzone', 'forum'];
-        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || (get_file_base() != get_custom_file_base());
+        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || ($GLOBALS['CURRENT_SHARE_USER'] !== null);
         if ($no_rename) {
             $hidden->attach(form_input_hidden('new_zone', $zone));
         } else {

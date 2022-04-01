@@ -153,7 +153,7 @@ function dload_script()
     require_code('files');
     $extension = cms_strtolower_ascii(get_file_extension($full));
     if (url_is_local($full)) {
-        $_full = get_custom_file_base() . '/' . rawurldecode(/*filter_naughty*/($full));
+        $_full = get_file_base() . '/' . rawurldecode(/*filter_naughty*/($full));
     } else {
         $_full = rawurldecode($full);
     }
@@ -175,10 +175,8 @@ function dload_script()
     cms_ini_set('ocproducts.xss_detect', '0');
 
     // Is it non-local? If so, redirect
-    if ((!url_is_local($full)) || (!file_exists(get_custom_file_base() . '/' . rawurldecode(filter_naughty($full))))) {
-        if (url_is_local($full)) {
-            $full = get_custom_base_url() . '/' . $full;
-        }
+    if ((!url_is_local($full)) || (!file_exists(get_file_base() . '/' . rawurldecode(filter_naughty($full))))) {
+        $full = baseify($full);
         if ((strpos($full, "\n") !== false) || (strpos($full, "\r") !== false)) {
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
         }
@@ -523,7 +521,7 @@ function create_data_mash(string $url, ?string $data = null, ?string $extension 
 
     if ($data === null) {
         if (($direct_path) || (url_is_local($url))) {
-            $actual_path = $direct_path ? $url : (get_custom_file_base() . '/' . rawurldecode($url));
+            $actual_path = $direct_path ? $url : (get_file_base() . '/' . rawurldecode($url));
 
             if (file_exists($actual_path)) {
                 switch ($extension) {
@@ -923,7 +921,7 @@ function add_download(int $category_id, string $name, string $url, string $descr
 
     if (($file_size == 0) || (url_is_local($url))) {
         if (url_is_local($url)) {
-            $file_size = @filesize(get_custom_file_base() . '/' . rawurldecode($url)) or $file_size = null;
+            $file_size = @filesize(get_file_base() . '/' . rawurldecode($url)) or $file_size = null;
         } else {
             $http_result = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 0]);
             $file_size = $http_result->download_size;
@@ -1127,7 +1125,7 @@ function edit_download(int $id, int $category_id, string $name, string $url, str
     } else {
         if (($file_size == 0) || (url_is_local($url))) {
             if (url_is_local($url)) {
-                $file_size = @filesize(get_custom_file_base() . '/' . rawurldecode($url));
+                $file_size = @filesize(get_file_base() . '/' . rawurldecode($url));
                 if ($file_size === false) {
                     $file_size = 0;
                 }

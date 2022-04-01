@@ -206,10 +206,7 @@ Allows people to specify who referred them when they join your site or other con
                     if ($member_id !== null) {
                         require_code('files');
 
-                        $path = get_custom_file_base() . '/text_custom/referrals.txt';
-                        if (!is_file($path)) {
-                            $path = get_file_base() . '/text_custom/referrals.txt';
-                        }
+                        $path = get_file_base(true) . '/text_custom/referrals.txt';
                         $ini_file = cms_parse_ini_file_safe($path, true);
 
                         foreach (array_keys($ini_file) as $scheme_name) {

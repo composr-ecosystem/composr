@@ -638,7 +638,7 @@ function table_from_portable_rows(string $table, array $rows, array $extra_field
 
                 // Cleanup old files
                 foreach ($upload_fields as $upload_field) {
-                    @unlink(get_custom_file_base() . '/' . $old_row[$upload_field]);
+                    @unlink(get_file_base(true) . '/' . $old_row[$upload_field]);
                 }
             }
         }
@@ -678,7 +678,7 @@ function table_from_portable_rows(string $table, array $rows, array $extra_field
 
                     // Cleanup old files
                     foreach ($upload_fields as $upload_field) {
-                        @unlink(get_custom_file_base() . '/' . $old_row[$upload_field]);
+                        @unlink(get_file_base(true) . '/' . $old_row[$upload_field]);
                     }
                 }
             }
@@ -857,7 +857,7 @@ function remap_urlpath_as_portable(?string $urlpath)
         return $urlpath;
     }
 
-    $path = get_custom_file_base() . '/' . $urlpath;
+    $path = get_file_base() . '/' . $urlpath;
     if (!file_exists($path)) {
         return $urlpath;
     }
@@ -886,7 +886,7 @@ function remap_portable_as_urlpath($portable_data, bool $ignore_conflicts = fals
 
     check_extension($urlpath, false, null, true);
 
-    $path = get_custom_file_base() . '/' . $urlpath;
+    $path = get_file_base(true) . '/' . $urlpath;
 
     if ($ignore_conflicts) {
         // Hunt with sensible names until we don't get a conflict

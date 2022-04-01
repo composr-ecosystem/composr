@@ -391,7 +391,7 @@ class Database_Static_xml extends DatabaseDriver
     public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         if ((strpos($db_name, '\\') === false) && (strpos($db_name, '/') === false)) {
-            $db_name = get_custom_file_base() . '/uploads/website_specific/' . $db_name;
+            $db_name = get_file_base(true) . '/uploads/website_specific/' . $db_name;
         }
         if (!file_exists($db_name)) { // Will create on first usage
             mkdir($db_name, 0777);

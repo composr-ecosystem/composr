@@ -97,7 +97,7 @@ class Hook_task_import_newsletter_subscribers
 
                 $salt = (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line))) ? $spreadsheet_line[$salt_index] : '';
 
-                $language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line)) && ((file_exists(get_custom_file_base() . '/lang/' . $spreadsheet_line[$language_index])) || (file_exists(get_custom_file_base() . '/lang_custom/' . $spreadsheet_line[$language_index])))) ? $spreadsheet_line[$language_index] : $_language;
+                $language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line)) && ((file_exists(get_file_base() . '/lang/' . $spreadsheet_line[$language_index])) || (file_exists(get_file_base() . '/lang_custom/' . $spreadsheet_line[$language_index])))) ? $spreadsheet_line[$language_index] : $_language;
                 if ($language == '') {
                     $language = $_language;
                 }

@@ -265,7 +265,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
         require_javascript('editing');
 
         $map_a = get_file_base() . '/lang/langs.ini';
-        $map_b = get_custom_file_base() . '/lang_custom/langs.ini';
+        $map_b = get_file_base() . '/lang_custom/langs.ini';
         if (!file_exists($map_b)) {
             $map_b = $map_a;
         }
@@ -343,7 +343,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
         require_javascript('editing');
 
         $map_a = get_file_base() . '/lang/langs.ini';
-        $map_b = get_custom_file_base() . '/lang_custom/langs.ini';
+        $map_b = get_file_base() . '/lang_custom/langs.ini';
         if (!file_exists($map_b)) {
             $map_b = $map_a;
         }

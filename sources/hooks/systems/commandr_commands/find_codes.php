@@ -40,7 +40,7 @@ class Hook_commandr_command_find_codes
                 return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_codes')];
             }
 
-            $path = get_custom_file_base() . '/sources/';
+            $path = get_file_base() . '/sources/';
             $files = [];
 
             if (is_dir($path)) {

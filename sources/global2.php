@@ -70,7 +70,7 @@ function init__global2()
 
     cms_ini_set('log_errors', '1');
     if ((GOOGLE_APPENGINE) && (!appengine_is_live())) {
-        @mkdir(get_custom_file_base() . '/data_custom', 0755);
+        @mkdir(get_file_base(true) . '/data_custom', 0755);
     }
     if ((!empty($SITE_INFO['errorlog'])) && ($SITE_INFO['errorlog'] == 'syslog')) {
         cms_ini_set('error_log', 'syslog');
@@ -78,11 +78,11 @@ function init__global2()
     } elseif ((!empty($SITE_INFO['errorlog'])) && ($SITE_INFO['errorlog'] == 'weblogs')) {
         @ini_set('error_log', '');
     } else {
-        $error_log_path = get_custom_file_base() . '/data_custom/errorlog.php';
+        $error_log_path = get_file_base(true) . '/data_custom/errorlog.php';
         cms_ini_set('error_log', $error_log_path);
         if ((is_file($error_log_path)) && (filesize($error_log_path) < 17)) {
             @file_put_contents($error_log_path, "<" . "?php return; ?" . ">\n", LOCK_EX);
-            if (fileperms(get_custom_file_base() . '/caches/lang') === 0777) { // Try and get permissions correct in a simple way (too early in boot to do properly)
+            if (fileperms(get_file_base(true) . '/caches/lang') === 0777) { // Try and get permissions correct in a simple way (too early in boot to do properly)
                 chmod($error_log_path, 0666);
             }
         }
@@ -204,7 +204,7 @@ function init__global2()
         require_code('chat_poller');
         chat_poller();
     }
-    if ((running_script('notifications')) && (get_param_integer('time_barrier', null) !== null) && (@filemtime(get_custom_file_base() . '/data_custom/modules/web_notifications/latest.bin') <= get_param_integer('time_barrier')) && (get_param_string('type', '') == 'poller')) {
+    if ((running_script('notifications')) && (get_param_integer('time_barrier', null) !== null) && (@filemtime(get_file_base(true) . '/data_custom/modules/web_notifications/latest.bin') <= get_param_integer('time_barrier')) && (get_param_string('type', '') == 'poller')) {
         prepare_backend_response();
 
         //  encoding="' . escape_html(get_charset()) . '" not needed due to no data in it
@@ -358,7 +358,7 @@ function init__global2()
     // More critical things
     require_code('caches');
     require_code('database'); // There's nothing without the database
-    if (cloud_mode() != '') {
+    if ((cloud_mode() != '') || ($GLOBALS['CURRENT_SHARE_USER'] !== null)) {
         require_code('cloud_fs');
         enable_cloud_fs();
     }
@@ -1447,34 +1447,25 @@ function loggable_date(bool $php_style = false) : string
 
     // We try really hard to match with the Apache format, as it is so useful to be able to match the strings...
 
-    $ds = '%d/%b/%Y:%H:%M:%S';
+    $ds = 'd-M-Y:H:i:s';
 
     static $timezone = null;
     if ($timezone === null) {
+        $timezone = '';
         if ((stripos(PHP_OS, 'WIN') === 0) && (php_function_allowed('exec'))) {
-            $timezone = exec('date +%z');
-            if (empty($timezone)) {
-                $timezone = '';
+            $_timezone = exec('date +%z');
+            if (!empty($_timezone)) {
+                $timezone = $_timezone;
             }
-        } else {
-            $timezone = '';
         }
     }
 
     if ($timezone == '') {
-        // Best we can do is use what PHP's date.timezone setting is in php.ini
-        global $SERVER_TIMEZONE_CACHE;
-        if ($SERVER_TIMEZONE_CACHE != 'UTC') {
-            date_default_timezone_set($SERVER_TIMEZONE_CACHE);
-        }
-        $ret = strftime($ds . ' %z');
-        if ($SERVER_TIMEZONE_CACHE != 'UTC') {
-            date_default_timezone_set('UTC');
-        }
+        $ret = date($ds);
     } else {
         $hours = intval(substr($timezone, 0, strlen($timezone) - 2));
         $minutes = intval(substr($timezone, -2));
-        $ret = strftime($ds, time() + $hours * 3600 + $minutes * 60) . ' ' . $timezone;
+        $ret = date($ds, time() + $hours * 3600 + $minutes * 60) . ' ' . $timezone;
     }
 
     return $ret;
@@ -1634,7 +1625,7 @@ class CMSLogger
     public function __construct(string $name)
     {
         $this->name = $name;
-        $this->path = get_custom_file_base() . '/data_custom/' . $name . '.log';
+        $this->path = get_file_base(true) . '/data_custom/' . $name . '.log';
     }
 
     /**
@@ -1828,12 +1819,12 @@ function is_browser_decaching() : bool
         return false; // Decaching by mistake is real-bad when Google Cloud Storage is involved
     }
 
-    if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base() . '/_config.php'))) { // Used by decache.php
-        $config_file_orig = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
+    if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base(false) . '/_config.php'))) { // Used by decache.php
+        $config_file_orig = cms_file_get_contents_safe(get_file_base(false) . '/_config.php', FILE_READ_LOCK);
         $config_file = $config_file_orig;
         $config_file = rtrim(str_replace(['if (!defined(\'DO_PLANNED_DECACHE\')) ', 'define(\'DO_PLANNED_DECACHE\', true);'], ['', ''], $config_file)) . "\n\n";
         require_code('files');
-        cms_file_put_contents_safe(get_file_base() . '/_config.php', $config_file, FILE_WRITE_FIX_PERMISSIONS);
+        cms_file_put_contents_safe(get_file_base(false) . '/_config.php', $config_file, FILE_WRITE_FIX_PERMISSIONS);
         $browser_decaching_cache = true;
         return true;
     }
@@ -2194,10 +2185,65 @@ function find_script(string $name, bool $append_keep = false) : string
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?ID_TEXT $zone_for The zone the link is for (null: root zone)
+ * @param  ?string $path The file path, used to detect what base URL to use on shared-site installs (null: assume the root-install base URL)
+ * @param  ?ID_TEXT $zone_for The zone the URL is for (null: root zone)
+ * @param  boolean $path_is_relative Whether the given $path is relative
  * @return URLPATH The base URL
  */
-function get_base_url(?string $zone_for = null) : string
+function get_base_url(?string $path = null, ?string $zone_for = null, bool $path_is_relative = true) : string
+{
+    $custom = false;
+    if (($path !== null) && ($GLOBALS['CURRENT_SHARE_USER'] !== null)) {
+        $custom_file_base = get_file_base(true, true);
+        if ($path_is_relative) {
+            if (is_file($custom_file_base . '/' . $path)) {
+                $custom = true;
+            }
+        } else {
+            if (substr($path, 0, strlen($custom_file_base) + 1) == $custom_file_base . '/') {
+                $custom = true;
+            }
+        }
+    }
+
+    if ($custom) {
+        return _get_base_url_custom();
+    }
+
+    return _get_base_url_basic($zone_for);
+}
+
+/**
+ * Get the base URL to the shared-site install custom files.
+ * Only applies to shared-site installs, otherwise behaves the same as _get_base_url_basic.
+ *
+ * @return URLPATH The base URL
+ */
+function _get_base_url_custom() : string
+{
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['custom_base_url'])) {
+        return $SITE_INFO['custom_base_url'];
+    }
+    if (empty($SITE_INFO['custom_base_url_stub'])) {
+        return _get_base_url_basic();
+    }
+
+    // Note that HTTPS is not supported for shared installs
+    $u = current_share_user();
+    if ($u === null) {
+        return get_base_url();
+    }
+    return $SITE_INFO['custom_base_url_stub'] . '/' . $u;
+}
+
+/**
+ * Get the base URL to a zone.
+ *
+ * @param  ?ID_TEXT $zone_for The zone the URL is for (null: root zone)
+ * @return URLPATH The base URL
+ */
+function _get_base_url_basic(?string $zone_for = null) : string
 {
     global $VIRTUALISED_ZONES_CACHE;
     static $base_url_cache = null;
@@ -2270,37 +2316,14 @@ function get_base_url(?string $zone_for = null) : string
 }
 
 /**
- * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install, or a GAE-install, this is different to the base URL.
+ * Function to get a base URL for a Conversr relative-URL. The situation is complex as it needs to take into account Conversr multi-site-network's, locally defined theme images, and shared-installs (Demonstratr style).
  *
- * @return URLPATH The base URL
- */
-function get_custom_base_url() : string
-{
-    global $SITE_INFO;
-    if (!empty($SITE_INFO['custom_base_url'])) {
-        return $SITE_INFO['custom_base_url'];
-    }
-    if (empty($SITE_INFO['custom_base_url_stub'])) {
-        return get_base_url();
-    }
-
-    // Note that HTTPS is not supported for shared installs
-    $u = current_share_user();
-    if ($u === null) {
-        return get_base_url();
-    }
-    return $SITE_INFO['custom_base_url_stub'] . '/' . $u;
-}
-
-/**
- * Function to get a base URL for an Conversr relative-URL. The situation is complex as it needs to take into account Conversr multi-site-network's, locally defined theme images, and shared-installs (Demonstratr style).
- *
- * @param  URLPATH $at Short base URL we need to probe
+ * @param  URLPATH $at Relative URL we need to probe
  * @return URLPATH The appropriate base URL
  */
 function get_complex_base_url(string $at) : string
 {
-    return ((get_forum_base_url() != get_base_url()) ? get_forum_base_url() : ((substr($at, 0, 22) === 'themes/default/images/') ? get_base_url() : get_custom_base_url()));
+    return (get_forum_base_url() != get_base_url()) ? get_forum_base_url() : get_base_url($at);
 }
 
 /**

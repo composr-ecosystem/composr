@@ -156,11 +156,11 @@ class Hook_snippet_template_editor_load
             $custom_path_short = $zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt';
 
             // Read contents
-            list(, , $path) = find_comcode_page(get_site_default_lang(), $page, $zone);
-            if ($path == '') {
+            list(, , $file_path) = find_comcode_page(get_site_default_lang(), $page, $zone);
+            if ($file_path == '') {
                 $contents = '';
             } else {
-                $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                $contents = cms_file_get_contents_safe($file_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 // Revisions
                 if (addon_installed('actionlog')) {
@@ -200,7 +200,7 @@ class Hook_snippet_template_editor_load
         check_suhosin_request_size(strlen($contents));
 
         // Make sure we have directory before we allow editing to start, in case of an error
-        $custom_path = get_custom_file_base() . '/' . $custom_path_short;
+        $custom_path = get_file_base(true) . '/' . $custom_path_short;
         if (!file_exists(dirname($custom_path))) {
             make_missing_directory(dirname($custom_path));
         }

@@ -122,17 +122,15 @@ class Hook_media_rendering_image_websafe
 
             $new_name = strval($thumb_box_width) . '__' . url_to_filename($_url_safe);
             require_code('images');
-            $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
+            $file_thumb = get_file_base(true) . '/uploads/auto_thumbs/' . $new_name;
             if (!file_exists($file_thumb)) {
                 $attributes['thumb_url'] = convert_image($url_direct_filesystem, $file_thumb, $auto_box_width ? null : $thumb_box_width, $auto_box_height ? null : $thumb_box_height, ($auto_box_width && $auto_box_height) ? $thumb_box_width : null, false);
             } else {
-                $attributes['thumb_url'] = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
+                $attributes['thumb_url'] = baseify_local_url('uploads/auto_thumbs/' . rawurlencode($new_name));
             }
         }
 
-        if (url_is_local($url_direct_filesystem)) {
-            $url_direct_filesystem = get_custom_base_url() . '/' . $url_direct_filesystem;
-        }
+        $url_direct_filesystem = baseify($url_direct_filesystem);
 
         return do_template('MEDIA_IMAGE_WEBSAFE', [
             '_GUID' => '4dbc2c00dd049f9951c27d198065a4c2',

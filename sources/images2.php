@@ -65,10 +65,7 @@ function _ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_di
     }
 
     // Return
-    if (url_is_local($thumb_url)) {
-        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
-    }
-    return $thumb_url;
+    return baseify($thumb_url);
 }
 
 /**
@@ -107,9 +104,7 @@ function convert_image_plus(string $orig_url, ?string $dimensions = null, string
         $exp_dimensions[1] = null;
     }
 
-    if (url_is_local($orig_url)) {
-        $orig_url = get_custom_base_url() . '/' . $orig_url;
-    }
+    $orig_url = baseify($orig_url);
 
     if ($filename === null) {
         $ext = get_file_extension($orig_url);
@@ -130,8 +125,8 @@ function convert_image_plus(string $orig_url, ?string $dimensions = null, string
     if ($background !== null) {
         $file_prefix .= '__' . str_replace('#', '', $background);
     }
-    $save_path = get_custom_file_base() . '/' . $file_prefix . '__' . $filename;
-    $thumbnail_url = get_custom_base_url() . '/' . $file_prefix . '__' . rawurlencode($filename);
+    $save_path = get_file_base(true) . '/' . $file_prefix . '__' . $filename;
+    $thumbnail_url = baseify_local_url($file_prefix . '__' . rawurlencode($filename));
 
     // Only bother calculating the image if we've not already made one with these options
     if (is_file($save_path)) {
@@ -687,7 +682,7 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
  */
 function _image_path_to_url(string $to_path) : string
 {
-    $file_base = get_custom_file_base();
+    $file_base = get_file_base(true);
     if (substr($to_path, 0, strlen($file_base) + 1) != $file_base . '/') {
         //fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Nothing in the code should be trying to generate a thumbnail outside the base directory
         return '';
@@ -873,10 +868,10 @@ function post_param_image(string $name = 'image', ?string $upload_to = null, ?st
 
     if ($upload_to === null) {
         $upload_to = 'themes/default/images_custom/' . $theme_image_type;
-        @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
-        if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
-            fix_permissions(get_custom_file_base() . '/' . $upload_to);
-            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
+        @mkdir(get_file_base(true) . '/' . $upload_to, 0777);
+        if (file_exists(get_file_base(true) . '/' . $upload_to)) {
+            fix_permissions(get_file_base(true) . '/' . $upload_to);
+            cms_file_put_contents_safe(get_file_base(true) . '/' . $upload_to . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS);
         } else {
             $upload_to = 'themes/default/images_custom';
         }
@@ -900,7 +895,7 @@ function post_param_image(string $name = 'image', ?string $upload_to = null, ?st
         }
         $filename = $urls[2];
 
-        return check_form_field_image($field_file, cms_rawurlrecode($urls[0]), get_custom_file_base() . '/' . rawurldecode($urls[0]));
+        return check_form_field_image($field_file, cms_rawurlrecode($urls[0]), get_file_base(true) . '/' . rawurldecode($urls[0]));
     }
 
     // URL

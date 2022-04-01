@@ -20,10 +20,7 @@ function init__cns_join($in)
     }
 
     // More referral fields in form
-    $path = get_custom_file_base() . '/text_custom/referrals.txt';
-    if (!is_file($path)) {
-        $path = get_file_base() . '/text_custom/referrals.txt';
-    }
+    $path = get_file_base(true) . '/text_custom/referrals.txt';
     require_code('files');
     $ini_file = cms_parse_ini_file_safe($path, true);
     if ((!isset($ini_file['visible_referrer_field'])) || ($ini_file['visible_referrer_field'] == '1')) {

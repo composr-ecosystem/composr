@@ -53,7 +53,7 @@ class Module_admin_themes
         require_code('files');
         $langs = find_all_langs(true);
         foreach (array_keys($langs) as $lang) {
-            deldir_contents(get_custom_file_base() . '/themes/default/templates_cached/' . $lang, true);
+            deldir_contents(get_file_base(true) . '/themes/default/templates_cached/' . $lang, true);
         }
         // *_custom purposely left
     }
@@ -522,7 +522,7 @@ class Module_admin_themes
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
         if ($name != 'default') {
             $site_default_theme = preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', get_site_name());
-            $has_site_default_theme = file_exists(get_custom_file_base() . '/themes/' . $site_default_theme);
+            $has_site_default_theme = file_exists(get_file_base(true) . '/themes/' . $site_default_theme);
             $fields->attach(form_input_codename(do_lang_tempcode('CODENAME'), do_lang_tempcode($has_site_default_theme ? 'DESCRIPTION_CODENAME_THEME' : 'DESCRIPTION_CODENAME_THEME_HELPER', escape_html($site_default_theme)), 'theme', $name, true));
         }
 
@@ -774,7 +774,7 @@ class Module_admin_themes
      */
     protected function _get_theme_date(string $theme) : ?object
     {
-        $path = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . $theme;
+        $path = get_file_base() . '/themes/' . $theme;
         if (!is_dir($path)) {
             return null;
         }
@@ -821,7 +821,7 @@ class Module_admin_themes
                     //warn_exit(do_lang_tempcode('BAD_CODENAME'));
                 }
 
-                if (!file_exists(get_custom_file_base() . '/themes/' . $theme)) {
+                if (!file_exists(get_file_base() . '/themes/' . $theme)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                 }
 
@@ -851,7 +851,7 @@ class Module_admin_themes
         }
 
         // Save theme.ini
-        $ini_file = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . filter_naughty($theme) . '/theme.ini';
+        $ini_file = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_file_base(true)) . '/themes/' . filter_naughty($theme) . '/theme.ini';
         if (!file_exists($ini_file)) {
             $ini_file = get_file_base() . '/themes/default/theme.ini';
         }
@@ -1001,11 +1001,11 @@ class Module_admin_themes
         $fields->attach(form_input_line(do_lang_tempcode('CODENAME'), do_lang_tempcode('DESCRIPTION_THEME_IMAGE_NAME'), 'id', $id, true, null, null, 'text', 'some/path/name'));
 
         /* Actually we don't want to allow selection from existing -- too weird, creating these cross-links
-        $list = combo_get_image_paths($url, get_base_url() . '/themes/' . rawurlencode($theme) . '/images/', get_file_base() . '/themes/' . filter_naughty($theme) . '/images/');
-        $list->attach(combo_get_image_paths($url, get_base_url() . '/themes/' . rawurlencode($theme) . '/images_custom/', get_file_base() . '/themes/' . filter_naughty($theme) . '/images_custom/'));
+        $list = combo_get_image_paths($url, baseify_local_url('themes/' . rawurlencode($theme) . '/images/'), get_file_base() . '/themes/' . filter_naughty($theme) . '/images/');
+        $list->attach(combo_get_image_paths($url, baseify_local_url('themes/' . rawurlencode($theme) . '/images_custom/'), get_file_base() . '/themes/' . filter_naughty($theme) . '/images_custom/'));
         if ($theme != 'default') {
-            $list->attach(combo_get_image_paths($url, get_base_url() . '/themes/default/images/', get_file_base() . '/themes/default/images/'));
-            $list->attach(combo_get_image_paths($url, get_base_url() . '/themes/default/images_custom/', get_file_base() . '/themes/default/images_custom/'));
+            $list->attach(combo_get_image_paths($url, baseify_local_url('themes/default/images/'), get_file_base() . '/themes/default/images/'));
+            $list->attach(combo_get_image_paths($url, baseify_local_url('themes/default/images_custom/'), get_file_base() . '/themes/default/images_custom/'));
         }
         */
         handle_max_file_size($hidden, 'image');
@@ -1207,7 +1207,7 @@ class Module_admin_themes
         $unmodified = (strpos($url, 'themes/default/images/') !== false);
 
         disable_php_memory_limit();
-        $full_path = ($unmodified ? get_file_base() : get_custom_file_base()) . '/' . rawurldecode($url);
+        $full_path = get_file_base() . '/' . rawurldecode($url);
         $width = do_lang_tempcode('UNKNOWN_EM');
         $height = do_lang_tempcode('UNKNOWN_EM');
         $image_size = cms_getimagesize($full_path);
@@ -1216,7 +1216,7 @@ class Module_admin_themes
             $height = make_string_tempcode(strval($image_size[1]));
         }
 
-        $image_url = ($unmodified ? get_base_url() : get_custom_base_url()) . '/' . $url;
+        $image_url = baseify($url);
 
         list($fields_edit_file, $hidden_edit_file) = $this->get_image_form_fields($theme, $lang, $id, $url);
         $hidden_edit_file->attach(form_input_hidden('old_id', $id));
@@ -1316,7 +1316,7 @@ class Module_admin_themes
             }
             $urls = get_url('url', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, $id . '.XXX');
 
-            if ((url_is_local($urls[0])) && (!file_exists(((substr($urls[0], 0, 15) == 'themes/default/') ? get_file_base() : get_custom_file_base()) . '/' . rawurldecode($urls[0])))) {
+            if ((url_is_local($urls[0])) && (!file_exists(get_file_base() . '/' . rawurldecode($urls[0])))) {
                 warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
             }
 
@@ -1474,11 +1474,9 @@ class Module_admin_themes
 
         // Find all templates
         $templates = [];
-        foreach ([get_custom_file_base(), get_file_base()] as $file_base) {
-            foreach (['templates_custom', 'templates'] as $subdir) {
-                foreach (['default', $theme] as $theme) {
-                    $templates = array_merge($templates, get_directory_contents($file_base . '/themes/' . $theme . '/' . $subdir, '', 0, false, true, ['tpl']));
-                }
+        foreach (['templates_custom', 'templates'] as $subdir) {
+            foreach (['default', $theme] as $theme) {
+                $templates = array_merge($templates, get_directory_contents(get_file_base() . '/themes/' . $theme . '/' . $subdir, '', 0, false, true, ['tpl']));
             }
         }
         $templates = array_unique($templates);
@@ -1579,11 +1577,9 @@ class Module_admin_themes
         // LISTING CSS FILES...
 
         $css_files = [];
-        foreach ([get_custom_file_base(), get_file_base()] as $file_base) {
-            foreach (['css_custom', 'css'] as $subdir) {
-                foreach (['default', $theme] as $theme) {
-                    $css_files = array_merge($css_files, get_directory_contents($file_base . '/themes/' . $theme . '/' . $subdir, '', 0, false, true, ['css']));
-                }
+        foreach (['css_custom', 'css'] as $subdir) {
+            foreach (['default', $theme] as $theme) {
+                $css_files = array_merge($css_files, get_directory_contents(get_file_base() . '/themes/' . $theme . '/' . $subdir, '', 0, false, true, ['css']));
             }
         }
         $css_files = array_unique($css_files);
@@ -1760,7 +1756,7 @@ class Module_admin_themes
         switch ($type) {
             case 'templates':
                 $add_one = null;
-                $edit_this = ['_SELF', ['type' => 'edit_templates', 'f0file' => file_exists(get_custom_file_base() . '/' . str_replace('/templates/', '/templates_custom/', $file)) ? str_replace('/templates/', '/templates_custom/', $file) : $file, 'theme' => $theme], '_SELF'];
+                $edit_this = ['_SELF', ['type' => 'edit_templates', 'f0file' => file_exists(get_file_base() . '/' . str_replace('/templates/', '/templates_custom/', $file)) ? str_replace('/templates/', '/templates_custom/', $file) : $file, 'theme' => $theme], '_SELF'];
                 $edit_one = ['_SELF', ['type' => 'edit_templates', 'theme' => $theme], '_SELF', do_lang_tempcode('EDIT_THIS_TEMPLATE')];
                 $section_title = do_lang_tempcode('TEMPLATES');
                 break;

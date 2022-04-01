@@ -113,7 +113,7 @@ PHP;
             if (!array_key_exists('path', $map)) {
                 $map['path'] = 'uploads/website_specific/signup.txt';
             }
-            $path_exists = file_exists(get_custom_file_base() . '/' . $map['path']);
+            $path_exists = file_exists(get_file_base() . '/' . $map['path']);
 
             require_code('character_sets');
             $forename = post_param_string('forename' . strval($newsletter_id), '');
@@ -135,7 +135,7 @@ PHP;
 
             require_code('mail');
             if ($path_exists) {
-                $url = (url_is_local($map['path']) ? (get_custom_base_url() . '/') : '') . $map['path'];
+                $url = baseify($map['path']);
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
                 $body = http_get_contents($url, ['convert_to_internal_encoding' => true]);
                 $body = str_replace('{password}', $password, $body);

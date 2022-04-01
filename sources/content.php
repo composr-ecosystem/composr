@@ -1270,9 +1270,7 @@ abstract class Hook_CMA
             return find_theme_image($ret);
         }
 
-        if (url_is_local($ret)) {
-            $ret = get_custom_base_url() . '/' . $ret;
-        }
+        $ret = baseify($ret);
 
         return $ret;
     }

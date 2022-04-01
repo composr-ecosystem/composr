@@ -57,7 +57,7 @@ class lang_misc_test_set extends cms_test_case
         $this->assertTrue($en == $ex);
 
         deldir_contents(get_file_base() . '/lang_custom/EX', false, true);
-        @deldir_contents(get_file_base() . '/caches/lang/EX', false, true);
+        @deldir_contents(get_file_base(true) . '/caches/lang/EX', false, true);
         @deldir_contents(get_file_base() . '/themes/default/templates_cached/EX/', false, true);
         @deldir_contents(get_file_base() . '/themes/admin/templates_cached/EX/', false, true);
     }

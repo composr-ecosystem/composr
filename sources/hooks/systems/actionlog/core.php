@@ -510,10 +510,7 @@ class Hook_actionlog_core extends Hook_actionlog
             case 'ADD_THEME':
             case 'DELETE_THEME':
                 $theme = $actionlog_row['param_a'];
-                $path = get_custom_file_base() . '/themes/' . $theme . '/theme.ini';
-                if (!is_file($path)) {
-                    $path = get_file_base() . '/themes/' . $theme . '/theme.ini';
-                }
+                $path = get_file_base() . '/themes/' . $theme . '/theme.ini';
                 if (is_file($path)) {
                     $details = cms_parse_ini_file_fast($path);
                     if (array_key_exists('title', $details)) {
@@ -525,10 +522,7 @@ class Hook_actionlog_core extends Hook_actionlog
             case 'COPY_THEME':
             case 'RENAME_THEME':
                 $theme = $actionlog_row['param_b'];
-                $path = get_custom_file_base() . '/themes/' . $theme . '/theme.ini';
-                if (!is_file($path)) {
-                    $path = get_file_base() . '/themes/' . $theme . '/theme.ini';
-                }
+                $path = get_file_base() . '/themes/' . $theme . '/theme.ini';
                 if (is_file($path)) {
                     $details = cms_parse_ini_file_fast($path);
                     if (array_key_exists('title', $details)) {

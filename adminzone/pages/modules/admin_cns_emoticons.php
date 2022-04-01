@@ -276,7 +276,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         $url = cms_rawurlrecode('themes/default/images_custom/' . rawurlencode(basename($path)));
 
         // Images cleanup pipeline
-        $full_path = get_custom_file_base() . '/' . $path;
+        $full_path = get_file_base() . '/' . $path;
         handle_images_cleanup_pipeline($full_path);
 
         $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $image_code]);

@@ -267,7 +267,7 @@ END;
         echo '<!--ERROR-->';
 
         $contents = ob_get_contents();
-        $dir = get_custom_file_base() . '/critical_errors';
+        $dir = get_file_base(true) . '/critical_errors';
         if ((is_dir($dir)) && ((!isset($_GET['page'])) || ($_GET['page'] != '_critical_error')) && ((!isset($GLOBALS['SEMI_DEV_MODE'])) || (!$GLOBALS['SEMI_DEV_MODE']) || (!empty($_GET['keep_dev_mode']) && ($_GET['keep_dev_mode'] == '0')))) {
             $code = uniqid('', true);
             file_put_contents($dir . '/' . $code . '.log', $contents);
@@ -284,7 +284,7 @@ END;
             } else {
                 $back_path = preg_replace('#[^/]+#', '..', $RELATIVE_PATH);
             }
-            if (is_file(get_custom_file_base() . '/_critical_error.html')) {
+            if (is_file(get_file_base(true) . '/_critical_error.html')) {
                 $url = (($back_path == '') ? '' : ($back_path . '/')) . '_critical_error.html?error_code=' . urlencode($code);
             } else {
                 $url = (($back_path == '') ? '' : ($back_path . '/')) . 'index.php?page=_critical_error&error_code=' . urlencode($code);

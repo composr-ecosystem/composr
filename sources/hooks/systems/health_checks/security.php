@@ -214,13 +214,13 @@ class Hook_health_check_security extends Hook_Health_Check
             'temp/test.txt',
         ];
         foreach ($to_check as $c) {
-            $full_path = get_custom_file_base() . '/' . $c;
+            $full_path = get_file_base(true) . '/' . $c;
             $exists = is_file($full_path);
             if (!$exists) {
                 require_code('files');
                 cms_file_put_contents_safe($full_path, '');
             }
-            $http_result = cms_http_request(get_custom_base_url() . '/' . $c, ['trigger_error' => false]);
+            $http_result = cms_http_request(baseify_local_url($c), ['trigger_error' => false]);
             $this->assertTrue($http_result->message == '403' || $http_result->message == '404', 'Should not be able to download [tt]' . $c . '[/tt], should be secured by some kind of server configuration');
             if (!$exists) {
                 @unlink($full_path);
@@ -248,10 +248,10 @@ class Hook_health_check_security extends Hook_Health_Check
         require_code('crypt');
         $data = get_secure_random_string();
         require_code('files');
-        cms_file_put_contents_safe(get_custom_file_base() . '/' . $path, $data);
-        $result = http_get_contents(get_custom_base_url() . '/' . $path, ['trigger_error' => false]);
+        cms_file_put_contents_safe(get_file_base(true) . '/' . $path, $data);
+        $result = http_get_contents(baseify_local_url($path), ['trigger_error' => false]);
         $this->assertTrue($result === $data, 'Website does not seem to be running on the base URL that is configured');
-        @unlink(get_custom_file_base() . '/' . $path);
+        @unlink(get_file_base(true) . '/' . $path);
 
         if (!is_local_machine(get_base_url_hostname())) {
             if (php_function_allowed('shell_exec')) {

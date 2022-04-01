@@ -61,7 +61,7 @@ class Module_banners
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/banners', true);
+            deldir_contents(get_file_base(true) . '/uploads/banners', true);
         }
     }
 

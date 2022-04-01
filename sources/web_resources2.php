@@ -125,10 +125,7 @@ function _css_cms_include(array $matches) : array
     if (($theme == 'default' || $theme == 'admin') && ($matches[2] == 'css')) {
         $full_path = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
     } else {
-        $full_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
-        }
+        $full_path = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($matches[2]) . '/' . filter_naughty($c) . '.css';
     }
     if (!is_file($full_path)) {
         return [false, ''];

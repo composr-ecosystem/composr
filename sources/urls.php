@@ -540,7 +540,7 @@ function _build_url(array $parameters, string $zone_name = '', array $skip = [],
     }
 
     // Build up our URL base
-    $stub = get_base_url($zone_name);
+    $stub = get_base_url(null, $zone_name);
     $stub .= '/';
 
     // For bots we explicitly unset skippable injected 'keep_' params because it bloats the crawl-space
@@ -877,13 +877,18 @@ function _url_rewrite_params(string $zone_name, array $parameters) : ?string
 }
 
 /**
- * Find if the specified URL is local or not (actually, if it is relative). This is often used by code that wishes to use file system functions on URLs (Composr will store such relative local URLs for uploads, etc).
+ * Find if the specified URL is local. This is often used by code that wishes to use file system functions on URLs (Composr will store such relative local URLs for uploads, etc).
  *
  * @param  URLPATH $url The URL to check
+ * @param  ?string $relative_part If we also want to check for absolute local URLs, rather than just URLs relative to the base URL, we pass in a string here, and the relative part will be returned be reference (null: do not do absolute check)
+ * @param  ?boolean $custom_dir Whether the URL is definitely local under the custom directory (null: unknown / auto-detect)
  * @return boolean Whether the URL is local
  */
-function url_is_local(string $url) : bool
+function url_is_local(string $url, ?string $relative_part = null, ?bool $custom_dir = null) : bool
 {
+    $relative_part = $url;
+    $custom_dir = null;
+
     if ($url === '') {
         return true;
     }
@@ -898,8 +903,54 @@ function url_is_local(string $url) : bool
     if (preg_match('#^[^:\{%]*$#', $url) !== 0) {
         return true;
     }
+
     $first_char = $url[0];
-    return (strpos($url, '://') === false) && ($first_char !== '{') && (substr($url, 0, 7) !== 'mailto:') && (substr($url, 0, 5) !== 'data:') && (substr($url, 0, 8) !== 'debugfs:') && (substr($url, 0, 4) !== 'cid:') && ($first_char !== '%');
+    if ((strpos($url, '://') === false) && ($first_char !== '{') && (substr($url, 0, 7) !== 'mailto:') && (substr($url, 0, 5) !== 'data:') && (substr($url, 0, 8) !== 'debugfs:') && (substr($url, 0, 4) !== 'cid:') && ($first_char !== '%')) {
+        return true;
+    }
+
+    if ($relative_part !== null) {
+        if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
+            $base_urls = [_get_base_url_custom() => true, _get_base_url_basic() => false];
+        } else {
+            $base_urls = [_get_base_url_basic() => false];
+        }
+        foreach ($base_urls as $base_url => $_custom_dir) {
+            if (substr($url, 0, strlen($base_url) + 1) == $base_url . '/') {
+                $relative_part = substr($url, strlen($base_url) + 1);
+                $custom_dir = $_custom_dir;
+                return true;
+            }
+        }
+    }
+
+    $relative_part = null;
+    return false;
+}
+
+/**
+ * Make sure a URL is absolute by putting the base URL before it if it is not already absolute.
+ *
+ * @param  URLPATH $url The URL (either absolute, or relative to the base URL) (blank: no URL)
+ * @return URLPATH The absolute URL (blank: no URL)
+ */
+function baseify(string $url) : string
+{
+    if (($url != '') && (url_is_local($url))) {
+        $url = baseify_local_url($url);
+    }
+    return $url;
+}
+
+/**
+ * Make a relative URL absolute.
+ *
+ * @param  URLPATH $relative_url The relative URL
+ * @return URLPATH The absolute URL
+ */
+function baseify_local_url(string $relative_url) : string
+{
+    return get_base_url(rawurldecode($relative_url)) . '/' . $relative_url;
 }
 
 /**

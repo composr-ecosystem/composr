@@ -47,7 +47,7 @@ class _filter_xml_test_set extends cms_test_case
                 </filter>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'test';
 
@@ -86,7 +86,7 @@ class _filter_xml_test_set extends cms_test_case
                 </filter>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'test';
 
@@ -120,7 +120,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'test';
 
@@ -154,7 +154,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'test';
 
@@ -188,7 +188,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $rnd = strval(mt_rand(1, 100000));
         $title = 'EXAMPLE' . $rnd;
@@ -232,7 +232,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'this is a test';
 
@@ -275,7 +275,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'this is a test';
 
@@ -319,7 +319,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'EXAMPLE';
 
@@ -362,7 +362,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'blah';
 
@@ -405,7 +405,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = ' blah ';
 
@@ -449,7 +449,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $title = 'EXAMPLE';
 
@@ -491,7 +491,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $expects = [
             'xxx' => false,
@@ -536,7 +536,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $expects = [
             'b' => true,
@@ -579,7 +579,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $expects = [
             'hello' => true,
@@ -622,7 +622,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $expects = [
             'blah blah' => true,
@@ -666,7 +666,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $expects = [
             'foobar' => true,
@@ -709,7 +709,7 @@ class _filter_xml_test_set extends cms_test_case
                 </qualify>
             </fieldRestrictions>
         ';
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
         $expects = [
             'foobar' => false,
@@ -741,7 +741,7 @@ class _filter_xml_test_set extends cms_test_case
 
     public function tearDown()
     {
-        @unlink(get_custom_file_base() . '/data_custom/xml_config/fields.xml');
+        @unlink(get_file_base(true) . '/data_custom/xml_config/fields.xml');
 
         parent::tearDown();
     }

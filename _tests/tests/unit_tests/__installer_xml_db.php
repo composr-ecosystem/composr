@@ -25,7 +25,7 @@ class __installer_xml_db_test_set extends cms_test_case
         $database = 'test';
         $table_prefix = 'cms_xmldb_test_';
 
-        deldir_contents(get_custom_file_base() . '/uploads/website_specific/' . $database);
+        deldir_contents(get_file_base(true) . '/uploads/website_specific/' . $database);
 
         global $SITE_INFO;
         require_code('install_headless');

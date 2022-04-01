@@ -110,7 +110,7 @@ function sitemap_xml_build($callback = null, bool $force = false)
         rebuild_sitemap_index();
 
         // Ping search engines
-        ping_sitemap_xml(get_custom_base_url() . '/data_custom/sitemaps/index.xml');
+        ping_sitemap_xml(baseify_local_url('data_custom/sitemaps/index.xml'));
     }
 
     set_value('last_sitemap_time_calc_inner', strval($time), true);
@@ -130,7 +130,7 @@ function rebuild_sitemap_set(int $set_number, int $last_time, $callback = null)
     // Open
     $sitemaps_out_temppath = cms_tempnam(); // We write to temporary path first to minimise the time our target file is invalid (during generation)
     $sitemaps_out_file = cms_fopen_text_write($sitemaps_out_temppath);
-    $sitemaps_out_path = get_custom_file_base() . '/data_custom/sitemaps/set_' . strval($set_number) . '.xml';
+    $sitemaps_out_path = get_file_base(true) . '/data_custom/sitemaps/set_' . strval($set_number) . '.xml';
     $blob = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
     fwrite($sitemaps_out_file, $blob);
@@ -212,7 +212,7 @@ function rebuild_sitemap_index()
     // Open
     $sitemaps_out_temppath = cms_tempnam(); // We write to temporary path first to minimise the time our target file is invalid (during generation)
     $sitemaps_out_file = cms_fopen_text_write($sitemaps_out_temppath);
-    $sitemaps_out_path = get_custom_file_base() . '/data_custom/sitemaps/index.xml';
+    $sitemaps_out_path = get_file_base(true) . '/data_custom/sitemaps/index.xml';
     $blob = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
     fwrite($sitemaps_out_file, $blob);
@@ -220,8 +220,8 @@ function rebuild_sitemap_index()
     // Write out each set
     $sitemap_sets = $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['set_number', 'MAX(last_updated) AS last_updated'], [], 'GROUP BY set_number');
     foreach ($sitemap_sets as $sitemap_set) {
-        $path = get_custom_file_base() . '/data_custom/sitemaps/set_' . strval($sitemap_set['set_number']) . '.xml';
-        $url = get_custom_base_url() . '/data_custom/sitemaps/set_' . strval($sitemap_set['set_number']) . '.xml';
+        $path = get_file_base(true) . '/data_custom/sitemaps/set_' . strval($sitemap_set['set_number']) . '.xml';
+        $url = baseify_local_url('data_custom/sitemaps/set_' . strval($sitemap_set['set_number']) . '.xml');
 
         if ((is_file($path)) && (filesize($path) < 120)) {
             // Google gives hard errors on empty sets
@@ -298,12 +298,12 @@ function clean_unused_sitemap_files()
 {
     $pages = array_flip(collapse_1d_complexity('set_number', $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['DISTINCT set_number'])));
 
-    $dh = @opendir(get_custom_file_base() . '/data_custom/sitemaps');
+    $dh = @opendir(get_file_base(true) . '/data_custom/sitemaps');
     if ($dh !== false) {
         while (($f = readdir($dh)) !== false) {
             $matches = [];
             if ((preg_match('#^set_(\d+)\.xml(\.gz)?$#', $f, $matches) != 0) && (!array_key_exists(intval($matches[1]), $pages))) {
-                @unlink(get_custom_file_base() . '/data_custom/sitemaps/' . $f);
+                @unlink(get_file_base(true) . '/data_custom/sitemaps/' . $f);
             }
         }
         closedir($dh);

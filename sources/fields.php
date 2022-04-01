@@ -49,7 +49,7 @@ function catalogue_file_script()
             break;
     }
     $file = filter_naughty(get_param_string('file', false, INPUT_FILTER_GET_COMPLEX));
-    $_full = get_custom_file_base() . '/' . $upload_dir . '/' . filter_naughty(rawurldecode($file));
+    $_full = get_file_base() . '/' . $upload_dir . '/' . filter_naughty(rawurldecode($file));
     if (!file_exists($_full)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('FILE')));
     }

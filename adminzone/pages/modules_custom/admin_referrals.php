@@ -89,10 +89,7 @@ class Module_admin_referrals
 
         if ($type == 'adjust' || $type == '_adjust') {
             $scheme = get_param_string('scheme');
-            $path = get_custom_file_base() . '/text_custom/referrals.txt';
-            if (!is_file($path)) {
-                $path = get_file_base() . '/text_custom/referrals.txt';
-            }
+            $path = get_file_base(true) . '/text_custom/referrals.txt';
             $ini_file = cms_parse_ini_file_safe($path, true);
             $scheme_title = $ini_file[$scheme]['title'];
 

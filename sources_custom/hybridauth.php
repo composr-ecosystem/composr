@@ -75,7 +75,7 @@ function enumerate_hybridauth_providers($alternate_config = null)
 
     // Load up XML
     require_code('xml');
-    $xml_path = get_custom_file_base() . '/data_custom/xml_config/hybridauth.xml';
+    $xml_path = get_file_base() . '/data_custom/xml_config/hybridauth.xml';
     if (is_file($xml_path)) {
         $xml_contents = cms_file_get_contents_safe($xml_path, FILE_READ_LOCK | FILE_READ_BOM);
     } else {
@@ -434,12 +434,14 @@ function hybridauth_update_authenticated_account($provider, $id, $member_row, $e
     if (get_option('hybridauth_sync_avatar') == '1') {
         if (!empty($photo_url)) {
             $test = $member_row['m_avatar_url'];
-            if (($test == '') || (!url_is_local($test)) || (substr($test, 0, strlen(get_custom_base_url()) + 1) != get_custom_base_url() . '/')) {
+            $relative_part = '';
+            if (($test == '') || (!url_is_local($test, $relative_part))) {
                 $update_map['m_avatar_url'] = $photo_url;
             }
 
             $test = $member_row['m_photo_url'];
-            if (($test == '') || (!url_is_local($test)) || (substr($test, 0, strlen(get_custom_base_url()) + 1) != get_custom_base_url() . '/')) {
+            $relative_part = '';
+            if (($test == '') || (!url_is_local($test, $relative_part))) {
                 $update_map['m_photo_url'] = $photo_url;
             }
         }

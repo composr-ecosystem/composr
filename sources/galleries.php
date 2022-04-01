@@ -90,10 +90,7 @@ function render_image_box(array $row, string $zone = '_SEARCH', bool $give_conte
     $description = get_translated_tempcode('images', $just_image_row, 'the_description');
 
     // Images
-    $image_url = $row['url'];
-    if (url_is_local($image_url)) {
-        $image_url = get_custom_base_url() . '/' . $image_url;
-    }
+    $image_url = baseify($row['url']);
 
     // Render
     return do_template('GALLERY_IMAGE_BOX', [
@@ -161,14 +158,8 @@ function render_video_box(array $row, string $zone = '_SEARCH', bool $give_conte
     $description = get_translated_tempcode('videos', $just_video_row, 'the_description');
 
     // Images
-    $thumb_url = $row['thumb_url'];
-    if (url_is_local($thumb_url)) {
-        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
-    }
-    $video_url = $row['url'];
-    if (url_is_local($video_url)) {
-        $video_url = get_custom_base_url() . '/' . $video_url;
-    }
+    $thumb_url = baseify($row['thumb_url']);
+    $video_url = baseify($row['url']);
 
     // Render
     return do_template('GALLERY_VIDEO_BOX', [
@@ -309,9 +300,7 @@ function render_gallery_box(array $myrow, string $root = 'root', bool $show_memb
     if ($rep_image_url == '') {
         $rep_image_url = find_theme_image('icons/no_image');
     }
-    if (($rep_image_url != '') && (url_is_local($rep_image_url))) {
-        $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
-    }
+    $rep_image_url = baseify($rep_image_url);
 
     // Breadcrumbs
     $breadcrumbs = null;

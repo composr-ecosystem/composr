@@ -519,7 +519,7 @@ function cns_group_ldapcn_to_cnsid(string $cn) : ?int
 }
 
 /**
- * Find the named LDAP usergroup for an Conversr ID. Note that the returned MAY NOT ACTUALLY EXIST!
+ * Find the named LDAP usergroup for a Conversr ID. Note that the returned MAY NOT ACTUALLY EXIST!
  *
  * @param  GROUP $id The Conversr ID
  * @return ?SHORT_TEXT The named LDAP usergroup (null: none)

@@ -63,7 +63,7 @@ if (cms_strtolower_ascii(substr($file, -4)) == '.php') {
     log_hack_attack_and_exit('TRY_TO_DOWNLOAD_SCRIPT');
 }
 
-$_full = get_custom_file_base() . '/' . $file;
+$_full = get_file_base() . '/' . $file;
 if (!is_file($_full)) {
     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
 }
@@ -71,7 +71,7 @@ if (!is_file($_full)) {
 $size = filesize($_full);
 
 // Check permissions
-$search = ['"' . $file . '"', "'" . $file . "'", '"/' . $file . '"', "'/" . $file . "'", '"' . get_custom_base_url() . '/' . $file . '"', "'" . get_custom_base_url() . '/' . $file . "'"];
+$search = ['"' . $file . '"', "'" . $file . "'", '"/' . $file . '"', "'/" . $file . "'", '"' . baseify_local_url($file) . '"', "'" . baseify_local_url($file) . "'"];
 $okay = false;
 $zones = find_all_zones();
 foreach ($zones as $zone) {
@@ -80,7 +80,7 @@ foreach ($zones as $zone) {
         list($page_type, $ext) = $_scope;
         $pages = array_keys(find_all_pages($zone, $page_type, $ext));
         foreach ($pages as $page) {
-            $page_path = get_custom_file_base() . (($zone == '') ? '' : ('/' . $zone)) . '/pages/' . $page_type . '/' . $page . '.' . $ext;
+            $page_path = get_file_base() . (($zone == '') ? '' : ('/' . $zone)) . '/pages/' . $page_type . '/' . $page . '.' . $ext;
             $page_contents = cms_file_get_contents_safe($page_path, FILE_READ_LOCK | FILE_READ_BOM);
             foreach ($search as $s) {
                 if (strpos($page_contents, $s) !== false) {

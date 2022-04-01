@@ -550,7 +550,7 @@ class Notification_dispatcher
                         }
                     }
                     require_code('files');
-                    $path = get_custom_file_base() . '/data_custom/modules/web_notifications';
+                    $path = get_file_base(true) . '/data_custom/modules/web_notifications';
                     cms_file_put_contents_safe($path . '/latest.bin', strval(time()), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
                 }
 

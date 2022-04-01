@@ -233,7 +233,7 @@ class Hook_import_phpbb3
                 ];
                 $id_new = $GLOBALS['FORUM_DB']->query_insert('attachments', $row_copy, true);
 
-                @rename($file_base . '/files/' . $row['physical_filename'], get_custom_file_base() . '/uploads/attachments/' . $row['physical_filename']);
+                @rename($file_base . '/files/' . $row['physical_filename'], get_file_base(true) . '/uploads/attachments/' . $row['physical_filename']);
 
                 import_id_remap_put('attachment', strval($row['attach_id']), $id_new);
             }
@@ -527,7 +527,7 @@ class Hook_import_phpbb3
                         break;
                     case 1: // Upload
                         $filename = $row['user_avatar'];
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_path . '/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . $filename;
                         } else {
                             if ($STRICT_FILE) {
@@ -541,12 +541,12 @@ class Hook_import_phpbb3
                         break;
                     case 3: // Gallery
                         $filename = $row['user_avatar'];
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/' . $avatar_gallery_path . '/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                         } else {
                             // Try as a pack avatar then
                             $striped_filename = str_replace('/', '_', $filename);
-                            if (file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
+                            if (file_exists(get_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
                                 $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                             } else {
                                 if ($STRICT_FILE) {

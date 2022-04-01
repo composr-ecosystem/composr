@@ -47,7 +47,7 @@ class Hook_search_filedump extends FieldsSearchHook
         }
 
         require_code('files2');
-        if (empty(get_directory_contents(get_custom_file_base() . '/uploads/filedump'))) {
+        if (empty(get_directory_contents(get_file_base() . '/uploads/filedump'))) {
             return null;
         }
 
@@ -116,7 +116,7 @@ class Hook_search_filedump extends FieldsSearchHook
             $search_under = '';
         }
 
-        $files = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . (($search_under == '') ? '' : ('/' . $search_under)));
+        $files = get_directory_contents(get_file_base() . '/uploads/filedump' . (($search_under == '') ? '' : ('/' . $search_under)));
         $_rows = $GLOBALS['SITE_DB']->query_select('filedump');
         $rows = [];
         foreach ($_rows as $row) {
@@ -129,7 +129,7 @@ class Hook_search_filedump extends FieldsSearchHook
                 $_path = $search_under . '/' . $_path;
             }
 
-            $path = get_custom_file_base() . '/uploads/filedump/' . $_path;
+            $path = get_file_base() . '/uploads/filedump/' . $_path;
             if (!$this->_handle_date_check_runtime($cutoff, filemtime($path))) {
                 continue;
             }
@@ -148,7 +148,7 @@ class Hook_search_filedump extends FieldsSearchHook
                     $pre .= $dir . '/';
                 }
 
-                $url = get_custom_base_url() . '/uploads/filedump/' . str_replace('%2F', '/', rawurlencode($_path));
+                $url = baseify_local_url('uploads/filedump/' . str_replace('%2F', '/', rawurlencode($_path)));
 
                 require_code('images');
                 if (!is_image($url, IMAGE_CRITERIA_WEBSAFE, true)) {

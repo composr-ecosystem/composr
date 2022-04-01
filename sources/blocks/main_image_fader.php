@@ -152,12 +152,9 @@ PHP;
 
         foreach ($all_rows as $row) {
             if ($row['content_type'] == 'video') {
-                $image_url = $row['thumb_url'];
+                $image_url = baseify($row['thumb_url']);
             } else {
-                $image_url = $row['url'];
-            }
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
+                $image_url = baseify($row['url']);
             }
             $images[] = $image_url;
 

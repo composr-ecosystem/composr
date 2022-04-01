@@ -113,10 +113,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
         $title = $row[1];
         $zone_default_page = $row[2];
 
-        $path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php';
-        if (!is_file($path)) {
-            $path = get_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php';
-        }
+        $path = get_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php';
 
         $icon = null;
         switch ($zone) {

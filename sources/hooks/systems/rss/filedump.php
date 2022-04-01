@@ -44,7 +44,7 @@ class Hook_rss_filedump
             return null;
         }
 
-        if (!file_exists(get_custom_file_base() . '/uploads/filedump/')) {
+        if (!file_exists(get_file_base() . '/uploads/filedump/')) {
             return null;
         }
 
@@ -53,7 +53,7 @@ class Hook_rss_filedump
         require_code('files2');
 
         $content = new Tempcode();
-        $files = get_directory_contents(get_custom_file_base() . '/uploads/filedump');
+        $files = get_directory_contents(get_file_base() . '/uploads/filedump');
         $_rows = $GLOBALS['SITE_DB']->query_select('filedump', ['*']);
         if ($_rows === null) {
             return null;
@@ -81,11 +81,11 @@ class Hook_rss_filedump
 
             $id = $file;
 
-            $mtime = filemtime(get_custom_file_base() . '/uploads/filedump/' . $file);
+            $mtime = filemtime(get_file_base() . '/uploads/filedump/' . $file);
             if ($mtime < $cutoff) {
                 continue;
             }
-            $news_date = date($date_string, filectime(get_custom_file_base() . '/uploads/filedump/' . $file));
+            $news_date = date($date_string, filectime(get_file_base() . '/uploads/filedump/' . $file));
             $edit_date = date($date_string, $mtime);
             if ($news_date == $edit_date) {
                 $edit_date = '';
@@ -104,7 +104,7 @@ class Hook_rss_filedump
             $category = array_key_exists(1, $bits) ? $bits[1] : '';
             $category_raw = $category;
 
-            $view_url = get_custom_base_url() . '/uploads/filedump/' . str_replace('%2F', '/', rawurlencode($file));
+            $view_url = baseify_local_url('uploads/filedump/' . str_replace('%2F', '/', rawurlencode($file)));
 
             $if_comments = new Tempcode();
 

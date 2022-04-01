@@ -77,7 +77,7 @@ class Module_admin_lang
 
         $langs = find_all_langs(true);
         foreach (array_keys($langs) as $lang) {
-            deldir_contents(get_custom_file_base() . '/caches/lang/' . $lang, true);
+            deldir_contents(get_file_base(true) . '/caches/lang/' . $lang, true);
             // lang_custom purposely left
         }
     }
@@ -618,7 +618,7 @@ class Module_admin_lang
         $base_lang = fallback_lang();
 
         $map_a = get_file_base() . '/lang/langs.ini';
-        $map_b = get_custom_file_base() . '/lang_custom/langs.ini';
+        $map_b = get_file_base() . '/lang_custom/langs.ini';
 
         $search = get_param_string('search', '', INPUT_FILTER_GET_COMPLEX);
         if ($search != '') {
@@ -657,7 +657,7 @@ class Module_admin_lang
         $map = cms_parse_ini_file_fast($map_b);
 
         // Upgrade to custom if not there yet (or maybe we are creating a new lang - same difference)
-        $custom_dir = get_custom_file_base() . '/lang_custom/' . $lang;
+        $custom_dir = get_file_base(true) . '/lang_custom/' . $lang;
         if (!file_exists($custom_dir)) {
             appengine_live_guard();
 
@@ -665,7 +665,7 @@ class Module_admin_lang
 
             $writable_paths = ['lang_custom', 'lang_custom/' . $lang];
 
-            $cached_dir = get_custom_file_base() . '/caches/lang/' . $lang;
+            $cached_dir = get_file_base(true) . '/caches/lang/' . $lang;
             if (!file_exists($cached_dir)) {
                 $writable_paths[] = 'caches/lang';
             }
@@ -676,18 +676,18 @@ class Module_admin_lang
             $themes = find_all_themes();
 
             foreach ($zones as $zone) {
-                $_special_dir = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
+                $_special_dir = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
                 if (!file_exists($_special_dir)) {
                     $writable_paths[] = $zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom';
                 }
-                $_special_dir = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
+                $_special_dir = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
                 if (!file_exists($_special_dir)) {
                     $writable_paths[] = $zone . (($zone == '') ? '' : '/') . 'pages/html_custom';
                 }
             }
 
             foreach (array_keys($themes) as $theme) {
-                $_special_dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang;
+                $_special_dir = get_file_base(true) . '/themes/' . $theme . '/templates_cached/' . $lang;
                 if (!file_exists($_special_dir)) {
                     $writable_paths[] = 'themes/' . $theme . '/templates_cached';
                 }
@@ -710,12 +710,12 @@ class Module_admin_lang
 
             // Make Comcode page dirs
             foreach ($zones as $zone) {
-                $_special_dir = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
+                $_special_dir = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
                 if (!file_exists($_special_dir)) {
                     afm_make_directory($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang, true);
                     afm_make_file($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/index.html', '', false);
                 }
-                $_special_dir = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
+                $_special_dir = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
                 if (!file_exists($_special_dir)) {
                     afm_make_directory($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $lang, true);
                     afm_make_file($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $lang . '/index.html', '', false);
@@ -724,7 +724,7 @@ class Module_admin_lang
 
             // Make templates_cached dirs
             foreach (array_keys($themes) as $theme) {
-                $_special_dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang;
+                $_special_dir = get_file_base(true) . '/themes/' . $theme . '/templates_cached/' . $lang;
                 if (!file_exists($_special_dir)) {
                     afm_make_directory('themes/' . $theme . '/templates_cached/' . $lang, true);
                     afm_make_file('themes/' . $theme . '/templates_cached/' . $lang . '/index.html', '', false);
@@ -816,7 +816,7 @@ class Module_admin_lang
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
 
-        $path = get_custom_file_base() . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
+        $path = get_file_base(true) . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
         $path_backup = $path . '.' . strval(time());
         if (file_exists($path)) {
             @copy($path, $path_backup) or intelligent_write_error($path_backup);
@@ -897,7 +897,7 @@ class Module_admin_lang
             }
 
             if ($out != '' && $one_changed_from_saved) {
-                $path = get_custom_file_base() . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
+                $path = get_file_base(true) . '/lang_custom/' . filter_naughty($lang) . '/' . filter_naughty($lang_file) . '.ini';
                 $path_backup = $path . '.' . strval(time());
                 if (file_exists($path)) {
                     @copy($path, $path_backup) or intelligent_write_error($path_backup);

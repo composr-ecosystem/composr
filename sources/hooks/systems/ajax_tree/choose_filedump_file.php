@@ -39,7 +39,7 @@ class Hook_ajax_tree_choose_filedump_file
 
         require_code('files2');
         require_code('images');
-        $full_path = get_custom_file_base() . '/uploads/filedump';
+        $full_path = get_file_base() . '/uploads/filedump';
         if ($id != '') {
             $full_path .= '/' . $id;
         }
@@ -82,7 +82,7 @@ class Hook_ajax_tree_choose_filedump_file
                         if (($description === null) || (get_translated_text($description) == '')) {
                             $_description = '';
                             if (is_image($f, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ, true)) {
-                                $url = get_custom_base_url() . '/' . $entry_id;
+                                $url = baseify_local_url($entry_id);
                                 $_description = trim(static_evaluate_tempcode(do_image_thumb($url, '', true, false, null, null, true)));
                             }
                         } else {

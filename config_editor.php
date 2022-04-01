@@ -154,7 +154,7 @@ function do_access(string $given_password)
         'domain' => 'The domain that e-mail addresses are registered on, and possibly other things. This is only used by some very select parts of the system. It may be different from the domain in the base URL due to not having "www." on for example.',
         'default_lang' => 'The default language used on the site (language codename form, of subdirectory under lang/).',
         'block_url_schemes' => 'Whether to block the URL Scheme (mod_rewrite) option. Set this to 1 if you turned on URL Schemes and find your site no longer works.',
-        'on_msn' => 'Whether this is a site on an Conversr multi-site-network (enable for to trigger URLs to avatars and photos to be saved into the database as absolute). This option is only needed if you make satellite sites run the forum through a local base URL, as such a configuration does not know the forum base URL.',
+        'on_msn' => 'Whether this is a site on a Conversr multi-site-network (enable for to trigger URLs to avatars and photos to be saved into the database as absolute). This option is only needed if you make satellite sites run the forum through a local base URL, as such a configuration does not know the forum base URL.',
 
         'forum_type' => '<em>Forum:</em> The forum driver to use. Note that it is unwise to change this unless expert, as member-IDs and usergroup-IDs form a binding between portal and forum, and would need remapping. To convert to Conversr, the forum importers can handle all of this automatically.',
         'forum_base_url' => '<em>Forum:</em> This is the base URL for the forums. If it is not correct, various links, such as links to topics, will not function correctly.',

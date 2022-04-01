@@ -1392,7 +1392,7 @@ function __comcode_to_tempcode(string $comcode, int $source_member, bool $as_adm
                                                     $ad_text = show_banner($ad_bits['name'], $ad_bits['title_text'], get_translated_tempcode('banners', $just_banner_row, 'caption'), $ad_bits['direct_code'], $ad_bits['img_url'], '', $ad_bits['site_url'], $ad_bits['b_type'], $ad_bits['submitter']);
                                                     $embed_output = do_template('COMCODE_TOOLTIP', [
                                                         '_GUID' => 'a9f4793dc0c1a92cd7d08ae1b87c2308',
-                                                        'URL' => (url_is_local($ad_bits['site_url']) && ($ad_bits['site_url'] != '')) ? (get_custom_base_url() . '/' . $ad_bits['site_url']) : $ad_bits['site_url'],
+                                                        'URL' => baseify($ad_bits['site_url']),
                                                         'TOOLTIP' => $ad_text,
                                                         'CONTENT' => substr($comcode, $pos - 1, strlen($ad_trigger)),
                                                     ]);

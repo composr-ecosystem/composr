@@ -77,12 +77,12 @@ class Persistent_caching_filesystem
 
         clearstatcache();
 
-        $path = get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd';
+        $path = get_file_base(true) . '/caches/persistent/' . md5($key) . '.gcd';
         if (!is_file($path)) {
             return null;
         }
         if ($min_cache_date !== null) { // Code runs here as we know file exists at this point
-            if (filemtime(get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd') < $min_cache_date) {
+            if (filemtime(get_file_base(true) . '/caches/persistent/' . md5($key) . '.gcd') < $min_cache_date) {
                 return null;
             }
         }
@@ -124,7 +124,7 @@ class Persistent_caching_filesystem
         }
 
         require_code('files');
-        $path = get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd';
+        $path = get_file_base(true) . '/caches/persistent/' . md5($key) . '.gcd';
         $to_write = serialize($data);
         cms_file_put_contents_safe($path, $to_write, FILE_WRITE_FIX_PERMISSIONS);
     }
@@ -144,7 +144,7 @@ class Persistent_caching_filesystem
         }
 
         // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
-        @unlink(get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd');
+        @unlink(get_file_base(true) . '/caches/persistent/' . md5($key) . '.gcd');
 
         global $PC_FC_CACHE;
         unset($PC_FC_CACHE[$key]);
@@ -159,11 +159,11 @@ class Persistent_caching_filesystem
         $objects_list = [];
         $this->set('PERSISTENT_CACHE_OBJECTS', $objects_list);
 
-        $d = opendir(get_custom_file_base() . '/caches/persistent');
+        $d = opendir(get_file_base(true) . '/caches/persistent');
         while (($e = readdir($d)) !== false) {
             if (substr($e, -4) == '.gcd') {
                 // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
-                @unlink(get_custom_file_base() . '/caches/persistent/' . $e);
+                @unlink(get_file_base(true) . '/caches/persistent/' . $e);
             }
         }
         closedir($d);

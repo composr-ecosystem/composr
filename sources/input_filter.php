@@ -294,7 +294,7 @@ function hard_filter_input_data__filesystem(string &$val)
  */
 function hard_filter_input_data__dynamic_firewall(string $name, string &$val)
 {
-    $rules_path = get_custom_file_base() . '/data_custom/firewall_rules.txt';
+    $rules_path = get_file_base(false) . '/data_custom/firewall_rules.txt';
     if (is_file($rules_path)) {
         $rules = cms_file_safe($rules_path);
         foreach ($rules as $rule) {
@@ -657,7 +657,7 @@ class Field_restriction_loader
         if (!addon_installed('xml_fields')) {
             return [];
         }
-        if (!is_file(get_file_base() . '/data/xml_config/fields.xml') && !is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml')) {
+        if (!is_file(get_file_base() . '/data_custom/xml_config/fields.xml')) {
             return [];
         }
 
@@ -684,7 +684,7 @@ class Field_restriction_loader
         xml_set_character_data_handler($xml_parser, 'startText');
 
         // Run the parser
-        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml'), FILE_READ_LOCK | FILE_READ_BOM);
+        $data = cms_file_get_contents_safe(get_file_base() . '/data/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM);
         if (trim($data) == '') {
             return [];
         }
@@ -899,7 +899,7 @@ class Advanced_banning_loader
         if (!addon_installed('securitylogging')) {
             return [[], [], []];
         }
-        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml') && !is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml')) {
+        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml')) {
             return [[], [], []];
         }
 
@@ -924,7 +924,7 @@ class Advanced_banning_loader
         xml_set_character_data_handler($xml_parser, 'startText');
 
         // Run the parser
-        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? (get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : (get_file_base() . '/data/xml_config/advanced_banning.xml'), FILE_READ_LOCK | FILE_READ_BOM);
+        $data = cms_file_get_contents_safe(get_file_base() . '/data/xml_config/advanced_banning.xml', FILE_READ_LOCK | FILE_READ_BOM);
         if (trim($data) == '') {
             return [[], [], []];
         }

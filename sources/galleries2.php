@@ -1153,7 +1153,7 @@ function add_video(string $title, string $cat, string $description, string $url,
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'video', 'content_id' => strval($id), 'region' => $region]);
     }
 
-    $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
+    $consider_deferring = (!url_is_local($url)) || (filesize(get_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
 
     reorganise_uploads__gallery_videos(['id' => $id]);
 
@@ -1312,7 +1312,7 @@ function edit_video(int $id, string $title, string $cat, string $description, st
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
-    $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
+    $consider_deferring = (!url_is_local($url)) || (filesize(get_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
 
     reorganise_uploads__gallery_videos(['id' => $id]);
 
@@ -1449,11 +1449,11 @@ function find_gallery_watermarks(string $gallery) : ?array
 function _watermark_corner($source, string $watermark_url, int $x, int $y)
 {
     if ($watermark_url != '') {
-        $_watermark_url = rawurldecode($watermark_url);
-        if (url_is_local($_watermark_url)) {
-            $_watermark_url = get_custom_base_url() . '/' . $_watermark_url;
+        $watermark_path = rawurldecode($watermark_url);
+        if (url_is_local($watermark_path)) {
+            $watermark_path = get_file_base() . '/' . $watermark_path;
         }
-        $watermark = cms_imagecreatefrom($_watermark_url);
+        $watermark = cms_imagecreatefrom($watermark_path);
         if ($watermark !== false) {
             imagecolortransparent($watermark, imagecolorallocate($watermark, 255, 0, 255));
             if ($x == 1) {
@@ -2046,7 +2046,7 @@ function add_gallery_media_wrap(string $url, string $cat, int $member_id, int $a
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
         if (url_is_local($url)) {
-            handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+            handle_images_cleanup_pipeline(get_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
         }
 
         list(

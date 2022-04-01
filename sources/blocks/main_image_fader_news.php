@@ -165,9 +165,7 @@ PHP;
                     $image_url = find_theme_image('no_image');
                 }
             }
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
-            }
+            $image_url = baseify($image_url);
 
             $url_map = ['page' => 'news', 'type' => 'view', 'id' => $row['id'], 'select' => ($cat == '') ? null : $cat];
             if ($blogs === 1) {

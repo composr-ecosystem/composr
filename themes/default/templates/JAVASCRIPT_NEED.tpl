@@ -1,1 +1,1 @@
-<script id="javascript-{CODE*}" {$CSP_NONCE_HTML} defer="defer" src="{$CDN_FILTER*,{$CUSTOM_BASE_URL}/themes/{$THEME}/templates_cached/{$LANG}/{CODE}{SUFFIX}.js}{+START,IF_PASSED,SUP}?{SUP*}{+END}"></script>
+<script id="javascript-{CODE*}" {$CSP_NONCE_HTML} defer="defer" src="{$CDN_FILTER*,{$BASEIFY,themes/{$THEME}/templates_cached/{$LANG}/{CODE}{SUFFIX}.js}}{+START,IF_PASSED,SUP}?{SUP*}{+END}"></script>

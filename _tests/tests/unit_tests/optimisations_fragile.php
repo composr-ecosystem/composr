@@ -55,7 +55,7 @@ class optimisations_fragile_test_set extends cms_test_case
                 $out = load_module_page('site/pages/modules/' . $module . '.php', $module);
             } catch (Exception $e) {
             }
-            $bad = function_exists('ecv2_MAKE_URL_ABSOLUTE');
+            $bad = function_exists('ecv2_MAILTO');
             $this->assertTrue(!$bad, 'Loaded symbols2.php in module ' . $module);
             $this->assertTrue(empty($SYMBOLS2_CAUSE), 'Loaded symbols2.php in module ' . $module . ' (' . implode(', ', $SYMBOLS2_CAUSE) . ')');
             if ($bad) {

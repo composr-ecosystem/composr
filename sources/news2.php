@@ -888,7 +888,8 @@ function _news_import_grab_images_and_fix_links(bool $download_images, string &$
 function _news_import_grab_image(string &$data, string $url)
 {
     $url = qualify_url($url, get_base_url());
-    if (substr($url, 0, strlen(get_custom_base_url() . '/')) == get_custom_base_url() . '/') {
+    $relative_part = '';
+    if (url_is_local($url, $relative_part)) {
         return;
     }
     require_code('images');

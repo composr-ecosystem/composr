@@ -37,19 +37,15 @@ class Hook_task_find_orphaned_uploads
         // Find known paths
         $known_urls = [];
         $url_paths = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => 'URLPATH']);
-        $base_url = get_custom_base_url();
         foreach ($url_paths as $iteration => $url_path) {
             task_log($this, 'Processing table for referenced URLs, ' . $url_path['m_table'], $iteration, count($url_paths));
 
             $ofs = $GLOBALS['SITE_DB']->query_select($url_path['m_table'], [$url_path['m_name']]);
             foreach ($ofs as $of) {
                 $url = $of[$url_path['m_name']];
-                if (url_is_local($url)) {
-                    $known_urls[rawurldecode($url)] = true;
-                } else {
-                    if (substr($url, 0, strlen($base_url)) == $base_url) {
-                        $known_urls[rawurldecode(substr($url, strlen($base_url) + 1))] = true;
-                    }
+                $relative_part = '';
+                if (url_is_local($url, $relative_part)) {
+                    $known_urls[rawurldecode($relative_part)] = true;
                 }
             }
         }
@@ -60,7 +56,7 @@ class Hook_task_find_orphaned_uploads
         foreach ($all_files as $file) {
             if (!array_key_exists($file, $known_urls)) {
                 $orphaned[] = [
-                    'URL' => get_custom_base_url() . '/' . str_replace('%2F', '/', rawurlencode($file)),
+                    'URL' => baseify_local_url(str_replace('%2F', '/', rawurlencode($file))),
                     'PATH' => $file,
                 ];
             }
@@ -86,7 +82,7 @@ class Hook_task_find_orphaned_uploads
         task_log($this, 'Processing ' . $dir . ' directory for uploads');
 
         $out = [];
-        $_dir = ($dir == '') ? get_custom_file_base() : (get_custom_file_base() . '/' . $dir);
+        $_dir = ($dir == '') ? get_file_base(true) : (get_file_base(true) . '/' . $dir);
         $dh = @opendir($_dir);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {

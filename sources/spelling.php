@@ -352,7 +352,7 @@ function spellcheck_initialise(?string $lang = null)
         $spelling = '';
     }
 
-    $p_dict_path = sl_get_custom_file_base() . '/data_custom/spelling/personal_dicts';
+    $p_dict_path = sl_get_file_base() . '/data_custom/spelling/personal_dicts';
 
     switch ($spell_checker) {
         case 'pspell':
@@ -467,10 +467,10 @@ function _find_spell_checker() : ?string
  *
  * @return string Relative path
  */
-function sl_get_custom_file_base() : string
+function sl_get_file_base() : string
 {
-    if (function_exists('get_custom_file_base')) {
-        return get_custom_file_base();
+    if (function_exists('get_file_base')) {
+        return get_file_base(true);
     }
 
     return dirname(__FILE__, 2);

@@ -179,9 +179,9 @@ PHP;
                     $entry_title = get_translated_text($row['title']);
                     $view_url = build_url(['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'galleries', 'type' => 'image', 'id' => $row['id'], 'root' => $root, 'sort' => $sort], $zone);
                     $image_url = $row['url'];
-                    if ((url_is_local($image_url)) && (file_exists(get_custom_file_base() . '/' . rawurldecode($image_url)))) {
-                        $file_size = strval(filesize(get_custom_file_base() . '/' . rawurldecode($image_url)));
-                        $image_url = get_custom_base_url() . '/' . $image_url;
+                    if ((url_is_local($image_url)) && (file_exists(get_file_base() . '/' . rawurldecode($image_url)))) {
+                        $file_size = strval(filesize(get_file_base() . '/' . rawurldecode($image_url)));
+                        $image_url = baseify_local_url($image_url);
                     } else {
                         $file_size = '';
                     }
@@ -223,20 +223,10 @@ PHP;
                     // Display video
                     $entry_title = get_translated_text($row['title']);
                     $view_url = build_url(['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'galleries', 'type' => 'video', 'id' => $row['id'], 'root' => $root, 'sort' => $sort], $zone);
-                    $thumb_url = $row['thumb_url'];
-                    if (($thumb_url != '') && (url_is_local($thumb_url))) {
-                        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
-                    }
+                    $full_url = baseify($row['url']);
+                    $thumb_url = baseify($row['thumb_url']);
                     if ($thumb_url == '') {
                         $thumb_url = find_theme_image('na');
-                    }
-                    $full_url = $row['url'];
-                    if (url_is_local($full_url)) {
-                        $full_url = get_custom_base_url() . '/' . $full_url;
-                    }
-                    $thumb_url = $row['thumb_url'];
-                    if (($thumb_url != '') && (url_is_local($thumb_url))) {
-                        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
                     }
 
                     $entry_rating_details = ($row['allow_rating'] == 1) ? display_rating($view_url, get_translated_text($row['title']), 'videos', strval($row['id']), 'RATING_INLINE_STATIC', $row['submitter']) : null;

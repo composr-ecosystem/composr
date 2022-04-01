@@ -172,12 +172,12 @@ class Module_admin_errorlog
         // Read in end of any other log files we find
         require_all_lang();
         $logs = [];
-        $dh = opendir(get_custom_file_base() . '/data_custom');
+        $dh = opendir(get_file_base(true) . '/data_custom');
         while (($filename = readdir($dh)) !== false) {
             if (substr($filename, -4) == '.log') {
                 $myfile_file_charset = null;
                 $lines = [];
-                $myfile = @cms_fopen_text_read(get_custom_file_base() . '/data_custom/' . $filename, $myfile_file_charset, true);
+                $myfile = @cms_fopen_text_read(get_file_base(true) . '/data_custom/' . $filename, $myfile_file_charset, true);
                 if ($myfile !== false) {
                     // Get last 40000 bytes of log
                     fseek($myfile, -40000, SEEK_END);
@@ -313,9 +313,9 @@ class Module_admin_errorlog
 
         // Read in errors
         if (!GOOGLE_APPENGINE) {
-            if (is_readable(get_custom_file_base() . '/data_custom/errorlog.php')) {
-                if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > $maximum_size) {
-                    $myfile = fopen(get_custom_file_base() . '/data_custom/errorlog.php', 'rb');
+            if (is_readable(get_file_base(true) . '/data_custom/errorlog.php')) {
+                if (filesize(get_file_base(true) . '/data_custom/errorlog.php') > $maximum_size) {
+                    $myfile = fopen(get_file_base(true) . '/data_custom/errorlog.php', 'rb');
                     flock($myfile, LOCK_SH);
                     fseek($myfile, -$maximum_size, SEEK_END);
                     $lines = explode("\n", fread($myfile, $maximum_size));
@@ -324,7 +324,7 @@ class Module_admin_errorlog
                     unset($lines[0]);
                     $lines[] = '...';
                 } else {
-                    $lines = cms_file_safe(get_custom_file_base() . '/data_custom/errorlog.php');
+                    $lines = cms_file_safe(get_file_base(true) . '/data_custom/errorlog.php');
                 }
             } else {
                 $lines = [];
@@ -597,7 +597,7 @@ class Module_admin_errorlog
             $log_file .= '.log';
         }
 
-        unlink(get_custom_file_base() . '/data_custom/' . $log_file);
+        unlink(get_file_base(true) . '/data_custom/' . $log_file);
 
         $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -618,7 +618,7 @@ class Module_admin_errorlog
         }
 
         require_code('files');
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/' . $log_file, '');
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/' . $log_file, '');
 
         $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -642,7 +642,7 @@ class Module_admin_errorlog
 
         header('Content-Type: text/plain; charset=' . get_charset());
 
-        echo cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/' . $log_file, FILE_READ_LOCK | FILE_READ_BOM);
+        echo cms_file_get_contents_safe(get_file_base(true) . '/data_custom/' . $log_file, FILE_READ_LOCK | FILE_READ_BOM);
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();

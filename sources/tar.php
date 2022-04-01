@@ -397,8 +397,8 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
             // Special case for directories. Composr doesn't add directory records, but at least 7-zip does
             if (substr($file['path'], -1) == '/') {
                 if (!$use_afm) {
-                    @mkdir(get_custom_file_base() . '/' . $path . $file['path'], 0777, true);
-                    fix_permissions(get_custom_file_base() . '/' . $path . $file['path']);
+                    @mkdir(get_file_base(true) . '/' . $path . $file['path'], 0777, true);
+                    fix_permissions(get_file_base(true) . '/' . $path . $file['path']);
                 } else {
                     afm_make_directory($path . $file['path'], true);
                 }
@@ -414,9 +414,9 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
                     if (array_key_exists($i + 1, $path_components)) {
                         $buildup .= $component . '/';
                         if (!$use_afm) {
-                            if (!file_exists(get_custom_file_base() . '/' . $path . $buildup)) {
-                                @mkdir(get_custom_file_base() . '/' . $path . $buildup, 0777, true);
-                                fix_permissions(get_custom_file_base() . '/' . $path . $buildup);
+                            if (!file_exists(get_file_base(true) . '/' . $path . $buildup)) {
+                                @mkdir(get_file_base(true) . '/' . $path . $buildup, 0777, true);
+                                fix_permissions(get_file_base(true) . '/' . $path . $buildup);
                             }
                         } else {
                             afm_make_directory($path . $buildup, true);
@@ -429,13 +429,13 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
             if ($comcode_backups) {
                 if (substr($file['path'], -4) == '.txt') {
                     if (!$use_afm) {
-                        if (file_exists(get_custom_file_base() . '/' . $path . $file['path'])) {
-                            $saveat = get_custom_file_base() . '/' . $path . $file['path'] . '.' . strval(time());
-                            copy(get_custom_file_base() . '/' . $path . $file['path'], $saveat);
+                        if (file_exists(get_file_base(true) . '/' . $path . $file['path'])) {
+                            $saveat = get_file_base(true) . '/' . $path . $file['path'] . '.' . strval(time());
+                            copy(get_file_base(true) . '/' . $path . $file['path'], $saveat);
                             fix_permissions($saveat);
                         }
                     } else {
-                        if (file_exists(get_custom_file_base() . '/' . $path . $file['path'])) {
+                        if (file_exists(get_file_base(true) . '/' . $path . $file['path'])) {
                             afm_copy($path . $file['path'], $path . $file['path'] . '.' . strval(time()), true);
                         }
                     }
@@ -457,24 +457,24 @@ function tar_extract_to_folder(array &$resource, string $path, bool $use_afm = f
                 }
             }
             if (!$use_afm) {
-                if (file_exists(get_custom_file_base() . '/' . $path . $file['path'])) {
-                    $changed = (cms_file_get_contents_safe(get_custom_file_base() . '/' . $path . $file['path'], FILE_READ_LOCK) != $data['data']);
+                if (file_exists(get_file_base(true) . '/' . $path . $file['path'])) {
+                    $changed = (cms_file_get_contents_safe(get_file_base(true) . '/' . $path . $file['path'], FILE_READ_LOCK) != $data['data']);
                     if (!$changed) {
                         continue; // So old mtime can stay as is
                     }
                 }
 
-                $myfile = @fopen(get_custom_file_base() . '/' . $path . $file['path'], 'wb');
+                $myfile = @fopen(get_file_base(true) . '/' . $path . $file['path'], 'wb');
                 if ($myfile === false) {
                     if ($report_errors) {
-                        intelligent_write_error(get_custom_file_base() . '/' . $path . $file['path']);
+                        intelligent_write_error(get_file_base(true) . '/' . $path . $file['path']);
                     }
                 } else {
                     flock($myfile, LOCK_EX);
                     if (fwrite($myfile, $data['data']) < strlen($data['data'])) {
                         warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
                     }
-                    $full_path = get_custom_file_base() . '/' . $path . $file['path'];
+                    $full_path = get_file_base(true) . '/' . $path . $file['path'];
                     @chmod($full_path, $data['mode']);
                     if ($data['mtime'] == 0) {
                         $data['mtime'] = time();

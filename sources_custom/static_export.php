@@ -52,7 +52,7 @@ function _page_link_to_static(array $node)
 
         $langs = find_all_langs();
         foreach (array_keys($langs) as $lang) {
-            if (($lang != fallback_lang()) && (count(get_directory_contents(get_custom_file_base() . '/lang_custom/' . $lang, '', null, false, true)) < 5)) {
+            if (($lang != fallback_lang()) && (count(get_directory_contents(get_file_base() . '/lang_custom/' . $lang, '', null, false, true)) < 5)) {
                 continue; // Probably this is just the utf8 addon
             }
 
@@ -184,7 +184,7 @@ function _static_export_scriptrep_callback(array $matches) : string
                 $new_url = get_base_url() . '/media/' . $prefix . $attachment[0]['a_original_filename'];
 
                 if (get_param_integer('save__deps_files', 1) == 1) {
-                    $full_path = get_custom_file_base() . '/' . urldecode($attachment[0][$field]);
+                    $full_path = get_file_base() . '/' . urldecode($attachment[0][$field]);
                     tar_add_file($STATIC_EXPORT_TAR, 'media/' . $prefix . $attachment[0]['a_original_filename'], $full_path, 0644, filemtime($full_path), true, true);
                 }
             } else {
@@ -200,7 +200,7 @@ function _static_export_scriptrep_callback(array $matches) : string
             $new_url = get_base_url() . '/catalogue_files/' . md5($file) . '__' . $original_filename;
 
             if (get_param_integer('save__deps_files', 1) == 1) {
-                $full_path = get_custom_file_base() . '/uploads/catalogues/' . $file;
+                $full_path = get_file_base() . '/uploads/catalogues/' . $file;
                 tar_add_file($STATIC_EXPORT_TAR, 'catalogue_files/' . md5($file) . '__' . $original_filename, $full_path, 0644, filemtime($full_path), true, true);
             }
 
@@ -218,7 +218,7 @@ function _static_export_scriptrep_callback(array $matches) : string
                 $new_url = get_base_url() . '/files/' . $download[0]['id'] . '__' . $download[0]['original_filename'];
 
                 if (get_param_integer('save__deps_files', 1) == 1) {
-                    $full_path = get_custom_file_base() . '/' . urldecode($download[0][$field]);
+                    $full_path = get_file_base() . '/' . urldecode($download[0][$field]);
                     tar_add_file($STATIC_EXPORT_TAR, 'files/' . $download[0]['id'] . '__' . $download[0]['original_filename'], $full_path, 0644, filemtime($full_path), true, true);
                 }
             } else {

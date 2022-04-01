@@ -353,8 +353,8 @@ function _create_media_template_parameters($url, array $attributes, bool $as_adm
             $base_path = substr($__url, 0, strlen($__url) - strlen($ext) - 1);
             $image_types = array_map('trim', explode(',', get_option('valid_images')));
             foreach ($image_types as $image_type) {
-                if (is_file(get_custom_file_base() . '/' . $base_path . '.' . $image_type)) {
-                    $attributes['thumb_url'] = get_custom_base_url() . '/' . $base_path . '.' . $image_type;
+                if (is_file(get_file_base() . '/' . $base_path . '.' . $image_type)) {
+                    $attributes['thumb_url'] = baseify_local_url($base_path . '.' . $image_type);
                     break;
                 }
             }
@@ -362,19 +362,10 @@ function _create_media_template_parameters($url, array $attributes, bool $as_adm
     }
 
     if (($_url != '') && (url_is_local($_url))) {
-        if (is_file(get_custom_file_base() . '/' . urldecode($_url))) {
-            $_url = get_custom_base_url() . '/' . $_url;
-        } else {
-            $_url = get_base_url() . '/' . $_url;
-        }
-        $url = $_url;
+        $url = get_base_url(urldecode($_url)) . '/' . $_url;
     }
     if ((is_string($attributes['thumb_url'])) && ($attributes['thumb_url'] != '') && (url_is_local($attributes['thumb_url']))) {
-        if (is_file(get_custom_file_base() . '/' . urldecode($_url))) {
-            $attributes['thumb_url'] = get_custom_base_url() . '/' . $attributes['thumb_url'];
-        } else {
-            $attributes['thumb_url'] = get_base_url() . '/' . $attributes['thumb_url'];
-        }
+        $attributes['thumb_url'] = get_base_url(urldecode($_url)) . '/' . $attributes['thumb_url'];
     }
 
     if (is_numeric($attributes['filesize'])) {

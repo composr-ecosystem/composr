@@ -55,7 +55,7 @@ class Hook_preview_menu
                 }
             }
             closedir($dh);
-            $dh = opendir(get_custom_file_base() . '/themes/default/templates_custom/');
+            $dh = opendir(get_file_base() . '/themes/default/templates_custom/');
             while (($file = readdir($dh)) !== false) {
                 if ((preg_match('^MENU\_([a-z]+)\.tpl$^', $file, $matches) != 0) && (!file_exists(get_file_base() . '/themes/default/templates/' . $file))) {
                     $menu_types[] = $matches[1];

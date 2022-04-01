@@ -127,7 +127,7 @@ function actual_add_theme(string $name, bool $include_themeini = true)
 {
     push_query_limiting(false);
 
-    if ((file_exists(get_custom_file_base() . '/themes/' . $name)) || ($name == 'default')) {
+    if ((file_exists(get_file_base() . '/themes/' . $name)) || ($name == 'default')) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($name)));
     }
 
@@ -204,7 +204,7 @@ function actual_rename_theme(string $theme, string $to)
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    if ((file_exists(get_custom_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
+    if ((file_exists(get_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($to)));
     }
 
@@ -249,16 +249,13 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
 
     $theme_images_to_skip_path_map = [];
     foreach ($theme_images_to_skip as $theme_image) {
-        $path = get_custom_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
-        if (!is_file($path)) {
-            $path = get_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
-        }
+        $path = get_file_base() . '/' . urldecode(find_theme_image($theme_image, false, false, $theme));
         $theme_images_to_skip_path_map[$path] = $theme_image;
     }
     $theme_images_to_skip_flipped = array_flip($theme_images_to_skip);
     $css_files_to_skip_flipped = array_flip($css_files_to_skip);
 
-    if ((file_exists(get_custom_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
+    if ((file_exists(get_file_base() . '/themes/' . $to)) || ($to == 'default' || $to == 'admin')) {
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($to)));
     }
 
@@ -287,7 +284,7 @@ function actual_copy_theme(string $theme, string $to, array $theme_images_to_ski
     // Copy files
     global $THEME_IMAGE_EXTENSIONS;
     $matches = [];
-    $contents = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, '', null);
+    $contents = get_directory_contents(get_file_base() . '/themes/' . $theme, '', null);
     foreach ($contents as $file) {
         // Skip files as requested
         if ((preg_match('#^images(?_custom)/(.*)\.(' . implode('|', $THEME_IMAGE_EXTENSIONS) . ')$#', $file, $matches) != 0) && (isset($theme_images_to_skip_path_map['themes/' . $theme . '/' . $file]))) {
@@ -562,7 +559,7 @@ function regen_theme_images(string $theme, ?array $langs = null, ?string $target
 
         // Cleanup broken references
         foreach ($existing as $e) {
-            if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($e['url']))) && (!file_exists(get_file_base() . '/' . rawurldecode($e['url'])))) {
+            if (!file_exists(get_file_base() . '/' . rawurldecode($e['url']))) {
                 $GLOBALS['SITE_DB']->query_delete('theme_images', $e + $where, '', 1);
             }
         }
@@ -633,8 +630,8 @@ function cleanup_after_theme_image_file_removal(string $old_url)
     }
 
     foreach ($possible_paths as $path) {
-        if (is_file(get_custom_file_base() . '/' . $path)) {
-            @unlink(get_custom_file_base() . '/' . $path);
+        if (is_file(get_file_base(true) . '/' . $path)) {
+            @unlink(get_file_base(true) . '/' . $path);
         }
     }
 }
@@ -657,24 +654,22 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
     $icon_paths = [];
 
     foreach (array_unique([$theme, 'default']) as $_theme) {
-        foreach (array_unique([get_file_base(), get_custom_file_base()]) as $file_base) {
-            $theme_icons_dir = $file_base . '/themes/' . $_theme . '/images/' . $icons_dir;
-            if (file_exists($theme_icons_dir)) {
-                $overriding_icon_paths = get_directory_contents($theme_icons_dir, $theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
-                $icon_paths = _override_icon_paths($icon_paths, $overriding_icon_paths);
-            }
+        $theme_icons_dir = get_file_base() . '/themes/' . $_theme . '/images/' . $icons_dir;
+        if (file_exists($theme_icons_dir)) {
+            $overriding_icon_paths = get_directory_contents($theme_icons_dir, $theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
+            $icon_paths = _override_icon_paths($icon_paths, $overriding_icon_paths);
+        }
 
-            if ($userland) {
-                $theme_custom_icons_dir = $file_base . '/themes/' . $_theme . '/images_custom/' . $icons_dir;
-                if (file_exists($theme_custom_icons_dir)) {
-                    $overriding_icon_paths = get_directory_contents($theme_custom_icons_dir, $theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
-                    $icon_paths = _override_icon_paths($icon_paths, $overriding_icon_paths);
-                }
+        if ($userland) {
+            $theme_custom_icons_dir = get_file_base() . '/themes/' . $_theme . '/images_custom/' . $icons_dir;
+            if (file_exists($theme_custom_icons_dir)) {
+                $overriding_icon_paths = get_directory_contents($theme_custom_icons_dir, $theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
+                $icon_paths = _override_icon_paths($icon_paths, $overriding_icon_paths);
             }
         }
     }
 
-    $base_path_regex = '^(' . preg_quote(get_custom_file_base(), '#') . '|' . preg_quote(get_file_base(), '#') . ')/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
+    $base_path_regex = '^' . preg_quote(get_file_base(), '#') . '/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
 
     $old_icon_paths = $icon_paths;
     $icon_paths = [];
@@ -726,10 +721,10 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
     $theme_image = $icons_dir . '_sprite';
     if ($userland) {
         $_sprite_path = 'themes/' . $theme . '/images_custom/' . $theme_image . '.svg';
-        $sprite_path = get_custom_file_base() . '/' . $_sprite_path;
+        $sprite_path = get_file_base(true) . '/' . $_sprite_path;
     } else {
         $_sprite_path = 'themes/' . $theme . '/images/' . $theme_image . '.svg';
-        $sprite_path = get_file_base() . '/' . $_sprite_path;
+        $sprite_path = get_file_base(false) . '/' . $_sprite_path;
     }
 
     cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS);
@@ -745,7 +740,7 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
 }
 
 /**
- * Override icon paths.
+ * Work out precedence between icon paths.
  *
  * @param  array $icon_paths Icon paths
  * @param  array $overriding_icon_paths Overriding icon paths
@@ -753,7 +748,7 @@ function generate_svg_sprite(string $theme, bool $monochrome, bool $userland) : 
  */
 function _override_icon_paths(array $icon_paths, array $overriding_icon_paths) : array
 {
-    $base_path_regex = '^(' . preg_quote(get_custom_file_base(), '#') . '|' . preg_quote(get_file_base(), '#') . ')/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
+    $base_path_regex = '^' . preg_quote(get_file_base(), '#') . '/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
 
     foreach ($overriding_icon_paths as $overriding_icon_path) {
         $overriding_icon_name = preg_replace('#' . $base_path_regex . '#', '', $overriding_icon_path);

@@ -77,7 +77,7 @@ function init__continuous_integration()
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_tracker_categories' : null,
         ]);
 
-        define('CI_COMMIT_QUEUE_PATH', get_custom_file_base() . '/data_custom/ci_queue.json');
+        define('CI_COMMIT_QUEUE_PATH', get_file_base(true) . '/data_custom/ci_queue.json');
     }
 
     require_code('files');

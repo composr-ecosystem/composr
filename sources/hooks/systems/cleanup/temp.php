@@ -66,7 +66,7 @@ class Hook_cleanup_temp
             'temp',
         ];
         foreach ($subdirs as $subdir) {
-            $full = get_custom_file_base() . '/' . $subdir;
+            $full = get_file_base(true) . '/' . $subdir;
             $dh = @opendir($full);
             if ($dh !== false) {
                 while (($file = readdir($dh)) !== false) {

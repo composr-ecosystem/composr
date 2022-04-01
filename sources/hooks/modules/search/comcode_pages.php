@@ -106,14 +106,14 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             continue;
                         }
 
-                        list($file_base, $file_path) = find_comcode_page($lang, $page, $zone);
+                        list(, , $file_path) = find_comcode_page($lang, $page, $zone);
 
                         list($keywords, $description) = seo_meta_get_for('comcode_page', $zone . ':' . $page);
                         $content_fields = [
                             'zone_name' => $zone,
                             'page_name' => $page,
-                            'page_title' => get_comcode_page_title_from_disk($file_base . '/' . $file_path),
-                            'page_content' => cms_file_get_contents_safe($file_base . '/' . $file_path),
+                            'page_title' => get_comcode_page_title_from_disk($file_path),
+                            'page_content' => cms_file_get_contents_safe($file_path),
                             'meta_keywords' => $keywords,
                             'meta_description' => $description,
                         ];
@@ -358,7 +358,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             }
                         }
 
-                        $path = zone_black_magic_filterer((($dir == 'comcode_custom') ? get_custom_file_base() : get_file_base()) . (($zone == '') ? '' : '/') . $zone . '/pages/' . $dir . '/' . $page . '.txt');
+                        $path = zone_black_magic_filterer(get_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/' . $dir . '/' . $page . '.txt');
                         if (!$this->_handle_date_check_runtime($cutoff, filemtime($path))) {
                             continue;
                         }
@@ -433,10 +433,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 return new Tempcode();
             }
             $_zone = $page_request[count($page_request) - 1];
-            $comcode_file = get_custom_file_base() . (($_zone == '') ? '' : '/') . $_zone;
-            if (!is_file($comcode_file)) {
-                $comcode_file = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
-            }
+            $comcode_file = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
 
             if (file_exists($comcode_file)) {
                 push_lax_comcode(true);

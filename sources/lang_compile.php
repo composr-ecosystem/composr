@@ -88,14 +88,9 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
         // Load overrides now if they are there
         $has_override_file = false;
         if ($type !== 'lang') {
-            $lang_file = get_custom_file_base() . '/lang_custom/' . $lang . '/' . $codename . '.ini';
+            $lang_file = get_file_base() . '/lang_custom/' . $lang . '/' . $codename . '.ini';
             if (is_file($lang_file)) {
                 $has_override_file = true;
-            } elseif (get_file_base() !== get_custom_file_base()) {
-                $lang_file = get_file_base() . '/lang_custom/' . $lang . '/' . $codename . '.ini';
-                if (is_file($lang_file)) {
-                    $has_override_file = true;
-                }
             }
         }
         if ($has_override_file) {
@@ -109,7 +104,7 @@ function require_lang_compile(string $codename, ?string $lang, ?string $type, st
         if (($bad) && ($lang !== fallback_lang())) { // Still some hope
             require_lang($codename, fallback_lang(), $type, $ignore_errors);
             $REQUIRE_LANG_LOOP--;
-            $fallback_cache_path = get_custom_file_base() . '/caches/lang/' . fallback_lang() . '/' . $codename . '.lcd';
+            $fallback_cache_path = get_file_base(true) . '/caches/lang/' . fallback_lang() . '/' . $codename . '.lcd';
             if (is_file($fallback_cache_path)) {
                 require_code('files');
                 @copy($fallback_cache_path, $cache_path);
@@ -191,10 +186,7 @@ function get_lang_file_section(string $lang, ?string $file = null, string $secti
         return $entries;
     }
 
-    $a = get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
-    if ((get_custom_file_base() !== get_file_base()) && (!is_file($a))) {
-        $a = get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
-    }
+    $a = get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
 
     $b = (is_file($a)) ? $a : (get_file_base() . '/lang/' . $lang . '/' . $file . '.ini');
 
@@ -218,10 +210,7 @@ function get_lang_file_section(string $lang, ?string $file = null, string $secti
  */
 function get_lang_file_map(string $lang, string $file, bool $non_custom = false, bool $apply_filter = true) : array
 {
-    $a = get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
-    if ((get_custom_file_base() !== get_file_base()) && (!is_file($a))) {
-        $a = get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
-    }
+    $a = get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini';
 
     if ((!is_file($a)) || ($non_custom)) {
         $b = get_file_base() . '/lang/' . $lang . '/' . $file . '.ini';

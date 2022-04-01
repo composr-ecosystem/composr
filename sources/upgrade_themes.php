@@ -177,7 +177,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         $dark = find_theme_dark($theme);
         list($colours, $landscape) = calculate_themewizard_css_colours($seed, $dark, 'default', 'equations');
     }
-    $css_dir = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/';
+    $css_dir = get_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/';
     $dh = @opendir($css_dir);
     if ($dh !== false) {
         while (($css_file = readdir($dh)) !== false) {
@@ -343,7 +343,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
         'text' => 'txt',
     ];
     foreach ($directories as $directory => $ext) {
-        $templates_dir = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/' . $directory . '_custom/';
+        $templates_dir = get_file_base() . '/themes/' . filter_naughty($theme) . '/' . $directory . '_custom/';
         $dh = @opendir($templates_dir);
         if ($dh !== false) {
             while (($templates_file = readdir($dh)) !== false) {
@@ -397,7 +397,7 @@ function upgrade_theme(string $theme, float $from_version, float $to_version, bo
             if ($path != '') {
                 $new_path = str_replace('/' . $old, '/' . $new, $path);
                 if (!$test_run) {
-                    if (!file_exists(get_custom_file_base() . '/' . $new_path)) {
+                    if (!file_exists(get_file_base() . '/' . $new_path)) {
                         if (file_exists($path)) {
                             afm_move($path, $new_path);
                         }

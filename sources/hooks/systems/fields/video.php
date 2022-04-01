@@ -221,7 +221,7 @@ class Hook_fields_video
             }
 
             if (($old_value !== null) && ($old_value['cv_value'] != '') && (($ev != '') || (post_param_integer('custom_' . strval($field['id']) . '_value_unlink', 0) == 1))) {
-                @unlink(get_custom_file_base() . '/' . rawurldecode($old_value['cv_value']));
+                @unlink(get_file_base() . '/' . rawurldecode($old_value['cv_value']));
             }
 
             if ($ev == '') {
@@ -238,8 +238,9 @@ class Hook_fields_video
             }
 
             $stripped_ev = $ev;
-            if (substr($stripped_ev, 0, strlen(get_custom_base_url() . '/')) == get_custom_base_url() . '/') {
-                $stripped_ev = substr($stripped_ev, strlen(get_custom_base_url() . '/'));
+            $relative_part = '';
+            if (url_is_local($stripped_ev, $relative_part)) {
+                $stripped_ev = $relative_part;
             }
             if ((!url_is_local($stripped_ev)) || (!addon_installed('galleries'))) {
                 $width = intval(get_option('attachment_default_width'));
@@ -265,7 +266,7 @@ class Hook_fields_video
     {
         if ($value['cv_value'] != '') {
             $path = preg_replace('# .*$#', '', $value['cv_value']);
-            @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+            @unlink(get_file_base() . '/' . rawurldecode($path));
         }
     }
 }

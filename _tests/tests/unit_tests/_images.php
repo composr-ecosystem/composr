@@ -1298,11 +1298,11 @@ class _images_test_set extends cms_test_case
 
     protected function cleanupOutFiles()
     {
-        $dh = opendir(get_custom_file_base() . '/temp');
+        $dh = opendir(get_file_base(true) . '/temp');
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
                 if (is_image($file, IMAGE_CRITERIA_GD_READ)) {
-                    unlink(get_custom_file_base() . '/temp/' . $file);
+                    unlink(get_file_base(true) . '/temp/' . $file);
                 }
             }
             closedir($dh);

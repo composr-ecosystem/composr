@@ -59,9 +59,9 @@ class Hook_commandr_command_fs_search
             $matched_files = [];
 
             require_code('files2');
-            $files = get_directory_contents(get_custom_file_base(), '', null, true, true, $extensions);
+            $files = get_directory_contents(get_file_base(), '', null, true, true, $extensions);
             foreach ($files as $path) {
-                $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
                 if (stripos($c, $search) !== false) {
                     $out .= '<p><kbd>' . $path . '</kbd></p>';
                     $matched_files[] = $path;
@@ -72,7 +72,7 @@ class Hook_commandr_command_fs_search
                 $out = do_lang('NONE');
             }
 
-            // Generate replacement SQL...
+            // Download to file...
 
             if ((isset($parameters[2])) && (!empty($matched_files))) {
                 if (isset($parameters[1])) {
@@ -83,19 +83,19 @@ class Hook_commandr_command_fs_search
                 } else {
                     $out_filename = 'matches_' . uniqid('', true) . '.tar';
                 }
-                $out_file_path = get_custom_file_base() . '/exports/backups/' . $out_filename;
+                $out_file_path = get_file_base(true) . '/exports/backups/' . $out_filename;
 
                 // Generate TAR
                 require_code('tar');
                 $out_file = tar_open($out_file_path, 'wb');
                 foreach ($matched_files as $path) {
-                    $full_path = get_custom_file_base() . '/' . $path;
+                    $full_path = get_file_base(true) . '/' . $path;
                     tar_add_file($out_file, $path, $full_path, fileperms($full_path), filemtime($full_path), true, false, true);
                 }
                 tar_close($out_file);
                 fix_permissions($out_file_path);
 
-                $out .= '<br />' . do_lang('MATCHES_TAR_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));
+                $out .= '<br />' . do_lang('MATCHES_TAR_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(baseify_local_url('exports/backups/' . rawurlencode($out_filename))));
             }
 
             // ---

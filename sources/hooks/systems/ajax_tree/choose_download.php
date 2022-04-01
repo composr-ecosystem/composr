@@ -109,10 +109,7 @@ class Hook_ajax_tree_choose_download
                         while (array_key_exists($counter, $rows)) {
                             $row = $rows[$counter];
 
-                            $image_url = $row['url'];
-                            if (url_is_local($image_url)) {
-                                $image_url = get_custom_base_url() . '/' . $image_url;
-                            }
+                            $image_url = baseify($row['url']);
                             $description_image = get_translated_tempcode('images', $row, 'the_description');
                             $iedit_url = new Tempcode();
                             $_content = do_template('DOWNLOAD_SCREEN_IMAGE', [

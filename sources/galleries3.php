@@ -95,14 +95,8 @@ function show_gallery_video_script()
         }
     }
 
-    $url = $myrow['url'];
-    if (url_is_local($url)) {
-        $url = get_custom_base_url() . '/' . $url;
-    }
-    $thumb_url = $myrow['thumb_url'];
-    if (url_is_local($thumb_url)) {
-        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
-    }
+    $url = baseify($myrow['url']);
+    $thumb_url = baseify($myrow['thumb_url']);
 
     require_code('galleries');
     $video = show_gallery_video_media($url, $thumb_url, $myrow['video_width'], $myrow['video_height'], $myrow['video_length'], $myrow['submitter'], $myrow['closed_captions_url']);

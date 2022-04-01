@@ -45,7 +45,7 @@ class Hook_cleanup_http
      */
     public function run() : object
     {
-        $full = get_custom_file_base() . '/caches/http';
+        $full = get_file_base(true) . '/caches/http';
         $dh = @opendir($full);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {

@@ -1596,7 +1596,7 @@ function form_input_upload_multi_source($set_title, $set_description, object &$h
 
     if ((addon_installed('filedump')) && (has_actual_page_access(null, 'filedump'))) {
         require_code('files2');
-        $full_path = get_custom_file_base() . '/uploads/filedump';
+        $full_path = get_file_base() . '/uploads/filedump';
         $files = get_directory_contents($full_path, '', IGNORE_ACCESS_CONTROLLERS, false);
         $has_image_or_dir = false;
         foreach ($files as $file) {
@@ -1659,24 +1659,10 @@ function make_previewable_url_absolute(?string $url) : array
     $is_image = false;
 
     if (!cms_empty_safe($_url)) {
-        if (url_is_local($_url)) {
-            $image_path = get_custom_file_base() . '/' . dirname(rawurldecode($_url));
-            if (!is_file($image_path)) {
-                $image_path = get_file_base() . '/' . dirname(rawurldecode($_url));
-                $custom = false;
-            } else {
-                $custom = true;
-            }
+        $_url = baseify($_url);
 
-            $htaccess_path = $image_path . '/.htaccess';
-            if ((is_file($htaccess_path)) && (stripos(cms_file_get_contents_safe($htaccess_path, FILE_READ_LOCK), 'Require not ip') !== false)) {
-                return [$_url, $is_image];
-            }
-
-            require_code('images');
-            $is_image = is_image($_url, IMAGE_CRITERIA_WEBSAFE, true);
-            $_url = ($custom ? get_custom_base_url() : get_base_url()) . '/' . $_url;
-        }
+        require_code('images');
+        $is_image = is_image($_url, IMAGE_CRITERIA_WEBSAFE, true);
     }
 
     return [$_url, $is_image];

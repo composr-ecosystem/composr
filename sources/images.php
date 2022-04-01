@@ -48,19 +48,14 @@ function init__images()
  */
 function cms_getimagesize_url(string $url, bool $only_if_local = false)
 {
-    if (url_is_local($url)) {
-        $url = get_custom_base_url() . '/' . $url;
-    }
+    $url = baseify($url);
 
     $url = preg_replace('#\?\d+$#', '', $url);
 
-    $base_url = get_base_url();
-    $custom_base_url = get_custom_base_url();
-
-    if ((strpos($url, '.php') === false) && (substr($url, 0, strlen($base_url)) == $base_url)) {
-        $details = cms_getimagesize(get_file_base() . '/' . urldecode(substr($url, strlen($base_url) + 1)));
-    } elseif ((strpos($url, '.php') === false) && (substr($url, 0, strlen($custom_base_url)) == $custom_base_url) && (is_image($url, IMAGE_CRITERIA_NONE, true))) {
-        $details = cms_getimagesize(get_custom_file_base() . '/' . urldecode(substr($url, strlen($custom_base_url) + 1)));
+    $relative_part = '';
+    $custom_dir = null;
+    if ((strpos($url, '.php') === false) && (url_is_local($url, $relative_part, $custom_dir))) {
+        $details = cms_getimagesize(get_file_base($custom_dir) . '/' . rawurldecode($relative_part));
     } else {
         if ($only_if_local) {
             return false;
@@ -248,7 +243,10 @@ function do_image_thumb(string $url, $caption = '', bool $js_tooltip = false, bo
         $js_tooltip = true;
     }
 
-    $url = preg_replace('#' . preg_quote(get_custom_base_url() . '/', '#') . '#', '', $url);
+    $relative_part = '';
+    if (url_is_local($url, $relative_part)) {
+        $url = $relative_part;
+    }
 
     $default_size = ($width === null) && ($height === null);
     $box_size = $default_size;
@@ -274,18 +272,16 @@ function do_image_thumb(string $url, $caption = '', bool $js_tooltip = false, bo
         }
         $new_name .= url_to_filename($url);
 
-        $thumb_path = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
+        $thumb_path = get_file_base(true) . '/uploads/auto_thumbs/' . $new_name;
 
         if (!file_exists($thumb_path)) {
             $url = convert_image($url, $thumb_path, $box_size ? null : $width, $box_size ? null : $height, $box_size ? $width : null, false, null, false, $only_make_smaller);
         } else {
-            $url = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
+            $url = baseify_local_url('uploads/auto_thumbs/' . rawurlencode($new_name));
         }
     }
 
-    if (url_is_local($url)) {
-        $url = get_custom_base_url() . '/' . $url;
-    }
+    $url = baseify($url);
 
     return do_template('IMG_THUMB', [
         '_GUID' => 'f1c130b7c3b2922fe273596563cb377c',
@@ -322,21 +318,15 @@ function ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir
     }
 
     if ($full_url == '') {
-        if ((url_is_local($thumb_url)) && ($thumb_url != '')) {
-            return get_custom_base_url() . '/' . $thumb_url;
-        }
-        return $thumb_url;
+        return baseify($thumb_url);
     }
 
     // Ensure existing path still exists
     if ($thumb_url != '') {
         if (url_is_local($thumb_url)) {
-            $thumb_path = get_custom_file_base() . '/' . rawurldecode($thumb_url);
+            $thumb_path = get_file_base(true) . '/' . rawurldecode($thumb_url);
             if (!file_exists($thumb_path)) {
-                $from = str_replace(' ', '%20', $full_url);
-                if (url_is_local($from)) {
-                    $from = get_custom_base_url() . '/' . $from;
-                }
+                $from = baseify(str_replace(' ', '%20', $full_url));
 
                 if (is_image($from, IMAGE_CRITERIA_WEBSAFE, true)) {
                     $_thumb_url = convert_image($from, $thumb_path, null, null, intval($thumb_width), false);
@@ -352,7 +342,7 @@ function ensure_thumbnail(string $full_url, string $thumb_url, string $thumb_dir
                     }
                 }
             }
-            return get_custom_base_url() . '/' . $thumb_url;
+            return baseify_local_url($thumb_url);
         }
         return $thumb_url;
     }
@@ -838,14 +828,14 @@ function get_matching_closed_captions_file(string $url, string $scope_limit = 'u
     if ($path === null) {
         return null;
     }
-    $stem = get_custom_file_base() . '/' . $scope_limit . '/';
+    $stem = get_file_base() . '/' . $scope_limit . '/';
     if (substr($path, 0, strlen($stem)) == $stem) {
         require_code('files');
         $ext = get_file_extension($path);
         $base_path = substr($path, 0, strlen($path) - strlen($ext) - 1);
         foreach (['vtt'] as $subtitle_type) {
             if (is_file($base_path . '.' . $subtitle_type)) {
-                $_base_path = substr($base_path, strlen(get_custom_file_base()) + 1);
+                $_base_path = substr($base_path, strlen(get_file_base()) + 1);
                 return str_replace('%2F', '/', rawurlencode($_base_path . '.' . $subtitle_type));
             }
         }

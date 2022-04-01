@@ -1183,7 +1183,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
         }
 
         // Look for a skin according to our site name (we bother with this instead of 'default' because Composr itself likes to never choose a theme when forum-theme integration is on: all forum [via map] or all Composr seems cleaner, although it is complex)
-        if ((!(strlen($def) > 0)) || (!file_exists(get_custom_file_base() . '/themes/' . $def))) {
+        if ((!(strlen($def) > 0)) || (!file_exists(get_file_base() . '/themes/' . $def))) {
             $ipb = $this->db->query_select_value_if_there('skin_collections', 'set_image_dir', ['set_name' => get_site_name()]);
             if ($ipb !== null) {
                 $def = array_key_exists($ipb, $map) ? $map[$ipb] : $ipb;
@@ -1191,7 +1191,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
         }
 
         // Hmm, just the very-default then
-        if ((!(strlen($def) > 0)) || (!file_exists(get_custom_file_base() . '/themes/' . $def))) {
+        if ((!(strlen($def) > 0)) || (!file_exists(get_file_base() . '/themes/' . $def))) {
             $ipb = $this->db->query_select_value_if_there('skin_collections', 'set_image_dir', ['set_is_default' => 1]);
             if ($ipb !== null) {
                 $def = array_key_exists($ipb, $map) ? $map[$ipb] : $ipb;
@@ -1199,7 +1199,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
         }
 
         // Default then!
-        if ((!(strlen($def) > 0)) || (!file_exists(get_custom_file_base() . '/themes/' . $def))) {
+        if ((!(strlen($def) > 0)) || (!file_exists(get_file_base() . '/themes/' . $def))) {
             $def = array_key_exists('default', $map) ? $map['default'] : 'default';
         }
 

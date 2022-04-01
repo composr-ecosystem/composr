@@ -254,7 +254,7 @@ class Hook_addon_registry_syndication
         require_lang('rss');
 
         return do_lorem_template('RSS_XSLT', [
-            'JAVASCRIPT_XSL_MOPUP' => '',
+            'JAVASCRIPT' => '',
         ], null, false, null, '.xml', 'xml');
     }
 
@@ -270,7 +270,7 @@ class Hook_addon_registry_syndication
         require_lang('rss');
 
         return do_lorem_template('ATOM_XSLT', [
-            'JAVASCRIPT_XSL_MOPUP' => '',
+            'JAVASCRIPT' => '',
         ], null, false, null, '.xml', 'xml');
     }
 
@@ -286,7 +286,7 @@ class Hook_addon_registry_syndication
         require_lang('rss');
 
         return do_lorem_template('OPML_XSLT', [
-            'JAVASCRIPT_XSL_MOPUP' => '',
+            'JAVASCRIPT' => '',
         ], null, false, null, '.xml', 'xml');
     }
 

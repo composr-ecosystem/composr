@@ -100,7 +100,7 @@ class Module_purchase
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/ecommerce', true);
+            deldir_contents(get_file_base(true) . '/uploads/ecommerce', true);
         }
     }
 
@@ -641,12 +641,7 @@ class Module_purchase
                         continue;
                     }
 
-                    $image_url = $product_category['category_image_url'];
-                    if ($image_url != '') {
-                        if (url_is_local($image_url)) {
-                            $image_url = get_custom_base_url() . '/' . $image_url;
-                        }
-                    }
+                    $image_url = baseify($product_category['category_image_url']);
 
                     $url = build_url(['page' => '_SELF', 'type' => 'browse', 'category' => $this_category], '_SELF', [], true);
                     $can_purchase = false;
@@ -773,12 +768,7 @@ class Module_purchase
                 $url = null;
             }
 
-            $image_url = $details['item_image_url'];
-            if ($image_url != '') {
-                if (url_is_local($image_url)) {
-                    $image_url = get_custom_base_url() . '/' . $image_url;
-                }
-            }
+            $image_url = baseify($details['item_image_url']);
 
             $products[] = [
                 'ITEM_NAME' => $details['item_name'],

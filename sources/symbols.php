@@ -597,9 +597,9 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                     // Find alternate images
                     $url = html_entity_decode($matches[$i][2][0], ENT_QUOTES);
                     if ($mobile_url === null) {
-                        $url_stub = get_custom_base_url() . '/uploads/filedump/';
-                        if (substr($url, 0, strlen($url_stub)) == $url_stub) {
-                            $file_path = get_custom_file_base() . substr($url, strlen(get_custom_base_url()));
+                        $relative_part = '';
+                        if (url_is_local($url, $relative_part)) {
+                            $file_path = get_file_base() . '/' . rawurldecode(preg_replace('#\?\d+$#', '', $relative_part));
                             if (is_file($file_path)) {
                                 $ext = get_file_extension($file_path);
                                 $extensions = array_unique(array_merge([$ext], ['png', 'gif', 'jpg', 'jpeg', 'webp']));
@@ -609,7 +609,7 @@ function ecv(string $lang, array $escaped, int $type, string $name, array $param
                                         $mobile_file_path = dirname($file_path) . '/' . basename($file_path, '.' . $ext) . '-mobile.' . $_ext;
                                     }
                                     if (is_file($mobile_file_path)) {
-                                        $mobile_url = get_custom_base_url() . substr($mobile_file_path, strlen(get_custom_file_base()));
+                                        $mobile_url = baseify_local_url(substr($mobile_file_path, strlen(get_file_base())));
                                         break;
                                     }
                                 }
@@ -1354,7 +1354,7 @@ function ecv_IMG_INLINE(string $lang, array $escaped, array $param) : string
             }
         }
         if ($value != '') {
-            $file_path = ((substr($value, 0, 22) == 'themes/default/images/') ? get_file_base() : get_custom_file_base()) . '/' . $value;
+            $file_path = get_file_base() . '/' . $value;
             require_code('mime_types');
             $value = 'data:' . get_mime_type(get_file_extension($file_path), true) . ';base64,' . base64_encode(cms_file_get_contents_safe($file_path, FILE_READ_LOCK));
         } else {
@@ -1385,10 +1385,7 @@ function ecv_IMG_MTIME(string $lang, array $escaped, array $param) : string
     if (!empty($param[0])) {
         $path = find_theme_image($param[0], true, true);
         if ($path != '') {
-            $full_path = get_custom_file_base() . '/' . $path;
-            if (!is_file($full_path)) {
-                $full_path = get_file_base() . '/' . $path;
-            }
+            $full_path = get_file_base() . '/' . $path;
             $value = @strval(filemtime($full_path));
         }
     }
@@ -3351,7 +3348,6 @@ function ecv_THUMBNAIL(string $lang, array $escaped, array $param) : string
     }
 
     if (empty($param[2])) { // Where we are saving to
-        //$output_dir = dirname(rawurldecode(preg_replace('#' . preg_quote(get_custom_base_url() . '/', '#') . '#', '', $orig_url)));  We used to try and save into the same dir as the source image, but actually that's pretty messy
         $output_dir = 'uploads/auto_thumbs';
     } else {
         $output_dir = $param[2];
@@ -3359,7 +3355,7 @@ function ecv_THUMBNAIL(string $lang, array $escaped, array $param) : string
             $output_dir = 'uploads/' . $output_dir;
         }
 
-        if (!is_dir(get_custom_file_base() . '/' . $output_dir)) {
+        if (!is_dir(get_file_base(true) . '/' . $output_dir)) {
             $output_dir = 'uploads/auto_thumbs';
         }
     }
@@ -5983,12 +5979,12 @@ function ecv_COPYRIGHT(string $lang, array $escaped, array $param) : string
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_CUSTOM_BASE_URL(string $lang, array $escaped, array $param) : string
+function ecv_BASEIFY(string $lang, array $escaped, array $param) : string
 {
-    $value = get_custom_base_url();
-
     if (!empty($param[1])) {
-        $value = cdn_filter($value);
+        $value = baseify_local_url($param[1]);
+    } else {
+        $value = '';
     }
 
     if (!empty($escaped)) {
@@ -6014,33 +6010,6 @@ function ecv_BASE_URL_NOHTTP(string $lang, array $escaped, array $param) : strin
     }
 
     $value = preg_replace('#^https?://[^/]+#', '', get_base_url());
-    if (substr($value, 0, 2) == '//') {
-        $value = substr($value, 1);
-    }
-
-    if (!empty($escaped)) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result
- */
-function ecv_CUSTOM_BASE_URL_NOHTTP(string $lang, array $escaped, array $param) : string
-{
-    if ($GLOBALS['DEV_MODE']) { // Dev mode changes base domain so we need to actually use it in full (fine, we don't have HTTPS in dev mode).
-        return ecv_BASE_URL($lang, $escaped, $param);
-    }
-
-    $value = preg_replace('#^https?://[^/]+/#', '/', get_custom_base_url());
     if (substr($value, 0, 2) == '//') {
         $value = substr($value, 1);
     }

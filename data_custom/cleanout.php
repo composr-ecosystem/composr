@@ -498,15 +498,15 @@ function cleanup()
     require_code('files');
 
     if ($clean_all_attachments) {
-        deldir_contents(get_custom_file_base() . '/uploads/attachments', true);
+        deldir_contents(get_file_base(true) . '/uploads/attachments', true);
         $GLOBALS['SITE_DB']->query_delete('attachment_refs');
         $GLOBALS['SITE_DB']->query_delete('attachments');
     }
 
     if ($log_cache_wip_cleanup) {
-        deldir_contents(get_custom_file_base() . '/uploads/incoming_uploads', true);
-        deldir_contents(get_custom_file_base() . '/uploads/auto_thumbs', true);
-        deldir_contents(get_custom_file_base() . '/uploads/captcha', true);
+        deldir_contents(get_file_base(true) . '/uploads/incoming_uploads', true);
+        deldir_contents(get_file_base(true) . '/uploads/auto_thumbs', true);
+        deldir_contents(get_file_base(true) . '/uploads/captcha', true);
         foreach ($table_purposes as $table => $purpose) {
             if ((table_has_purpose_flag($table, TABLE_PURPOSE__FLUSHABLE)) && ($GLOBALS['SITE_DB']->table_exists($table))) {
                 $GLOBALS['SITE_DB']->query_delete($table);

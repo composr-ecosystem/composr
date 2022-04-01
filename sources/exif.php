@@ -121,7 +121,7 @@ function get_exif_image_caption(string $path, string $filename) : string
     $comments = '';
 
     // Try spreadsheet file
-    $spreadsheet_path = get_custom_file_base() . '/uploads/galleries/descriptions.csv';
+    $spreadsheet_path = get_file_base(true) . '/uploads/galleries/descriptions.csv';
     if (file_exists($spreadsheet_path)) {
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read($spreadsheet_path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);

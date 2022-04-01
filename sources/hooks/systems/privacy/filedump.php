@@ -73,7 +73,7 @@ class Hook_privacy_filedump extends Hook_privacy_base
             case 'filedump':
                 $rows = $GLOBALS['SITE_DB']->query_select('filedump', ['*'], ['id' => $row['id']], '', 1);
                 if (array_key_exists(0, $rows)) {
-                    $path = get_custom_file_base() . '/uploads/filedump' . $row['subpath'] . $row['name'];
+                    $path = get_file_base() . '/uploads/filedump' . $row['subpath'] . $row['name'];
                     @unlink($path);
                     $GLOBALS['SITE_DB']->query_delete('filedump', ['id' => $row['id']]);
                 }

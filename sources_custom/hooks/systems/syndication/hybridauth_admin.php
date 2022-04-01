@@ -71,10 +71,7 @@ class Hook_syndication_hybridauth_admin
 
         // FUDGE: We don't have a proper API to pull out videos, so we'll hard-code for gallery videos
         if ($content_type == 'video') {
-            $video_url = $GLOBALS['SITE_DB']->query_select_value('videos', 'url', ['id' => intval($content_id)]);
-            if (url_is_local($video_url)) {
-                $video_url = get_custom_base_url() . '/' . $video_url;
-            }
+            $video_url = baseify($GLOBALS['SITE_DB']->query_select_value('videos', 'url', ['id' => intval($content_id)]));
             $enclosure = $this->create_enclosure($video_url, \Hybridauth\Atom\Enclosure::ENCLOSURE_VIDEO);
             $atom->enclosures[] = $enclosure;
         }
@@ -173,9 +170,10 @@ class Hook_syndication_hybridauth_admin
         $enclosure->type = $type;
         $enclosure->url = $url;
 
-        $prefix = get_custom_base_url() . '/uploads/';
-        if (substr($url, 0, strlen($prefix)) == $prefix) {
-            $path = get_custom_file_base() . '/uploads/' . rawurldecode(substr($url, strlen($prefix)));
+        $relative_part = '';
+        $custom_dir = null;
+        if ((url_is_local($url, $relative_part, $custom_dir)) && (substr($relative_part, 0, 8) == 'uploads/')) {
+            $path = get_file_base($custom_dir) . '/' . rawurldecode($relative_part);
 
             require_code('mime_types');
             $mime_type = get_mime_type(get_file_extension($url), true);

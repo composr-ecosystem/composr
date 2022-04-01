@@ -69,7 +69,7 @@ class Module_downloads
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/downloads', true);
+            deldir_contents(get_file_base(true) . '/uploads/downloads', true);
         }
     }
 
@@ -369,10 +369,7 @@ class Module_downloads
                 while (array_key_exists($counter, $rows)) {
                     $row = $rows[$counter];
 
-                    $image_url = $row['url'];
-                    if (url_is_local($image_url)) {
-                        $image_url = get_custom_base_url() . '/' . $image_url;
-                    }
+                    $image_url = baseify($row['url']);
                     $image_description = get_translated_tempcode('images', $row, 'the_description');
                     if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_edit_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['galleries', 'download_' . strval($id)]))) {
                         $iedit_url = build_url(['page' => 'cms_galleries', 'type' => '_edit', 'id' => $row['id']], get_module_zone('cms_galleries'));

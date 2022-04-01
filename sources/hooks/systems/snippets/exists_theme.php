@@ -32,7 +32,7 @@ class Hook_snippet_exists_theme
     {
         $val = get_param_string('name');
 
-        $test = file_exists(get_file_base() . '/themes/' . $val) || file_exists(get_custom_file_base() . '/themes/' . $val);
+        $test = file_exists(get_file_base() . '/themes/' . $val);
         if (!$test) {
             return new Tempcode();
         }

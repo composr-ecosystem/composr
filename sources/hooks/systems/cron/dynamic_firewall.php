@@ -50,7 +50,7 @@ class Hook_cron_dynamic_firewall
      */
     public function run(?int $last_run)
     {
-        $rules_path = get_custom_file_base() . '/data_custom/firewall_rules.txt';
+        $rules_path = get_file_base(false) . '/data_custom/firewall_rules.txt';
 
         if (cms_is_writable($rules_path)) {
             require_code('version2');

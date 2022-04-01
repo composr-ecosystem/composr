@@ -33,9 +33,9 @@ function chat_poller()
     $hash_filename = 'chat_last_full_check_' . @substr(md5(serialize([$_COOKIE, $_SERVER['REMOTE_ADDR']])), 0, 2) . '.bin'; // 1 in 1296 chance of conflict with another user - good enough!
 
     if (
-        ((file_exists(get_custom_file_base() . '/data_custom/modules/chat/' . $hash_filename)) && (filemtime(get_custom_file_base() . '/data_custom/modules/chat/' . $hash_filename) >= time() - intval(floatval(CHAT_ACTIVITY_PRUNE) / 2.0))) && // If we've done a check within CHAT_ACTIVITY_PRUNE/2 seconds don't try again unless something is new (we do need to allow pruning to happen sometimes)
-        (($message_id != -1) && (file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/file_get_contents(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin', FILE_READ_LOCK)) <= $message_id)) &&
-        (($event_id != -1) && (file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/file_get_contents(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin', FILE_READ_LOCK)) <= $event_id))
+        ((file_exists(get_file_base(true) . '/data_custom/modules/chat/' . $hash_filename)) && (filemtime(get_file_base(true) . '/data_custom/modules/chat/' . $hash_filename) >= time() - intval(floatval(CHAT_ACTIVITY_PRUNE) / 2.0))) && // If we've done a check within CHAT_ACTIVITY_PRUNE/2 seconds don't try again unless something is new (we do need to allow pruning to happen sometimes)
+        (($message_id != -1) && (file_exists(get_file_base(true) . '/data_custom/modules/chat/chat_last_msg.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/file_get_contents(get_file_base(true) . '/data_custom/modules/chat/chat_last_msg.bin', FILE_READ_LOCK)) <= $message_id)) &&
+        (($event_id != -1) && (file_exists(get_file_base(true) . '/data_custom/modules/chat/chat_last_event.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/file_get_contents(get_file_base(true) . '/data_custom/modules/chat/chat_last_event.bin', FILE_READ_LOCK)) <= $event_id))
     ) {
         /*
         We do let the main code to run this at CHAT_ACTIVITY_PRUNE intervals, so no need to run the commented code below
@@ -52,10 +52,10 @@ function chat_poller()
         chat_null_exit();
     }
 
-    if (!file_exists(get_custom_file_base() . '/data_custom/modules/chat')) {
+    if (!file_exists(get_file_base(true) . '/data_custom/modules/chat')) {
         return; // Directory missing, but we will have to create it elsewhere (not booted up fully enough)
     }
-    touch(get_custom_file_base() . '/data_custom/modules/chat/' . $hash_filename);
+    touch(get_file_base(true) . '/data_custom/modules/chat/' . $hash_filename);
 }
 
 /**

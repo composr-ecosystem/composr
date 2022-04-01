@@ -278,13 +278,9 @@ function zone_black_magic_filterer(string $path, bool $relative = false) : strin
     if ($relative) {
         $stripped = $path;
     } else {
-        $cfb = get_custom_file_base();
-        if (substr($path, 0, strlen($cfb)) === $cfb) {
-            $stripped = substr($path, strlen($cfb) + 1);
-        } else {
-            $fb = get_file_base();
-            $stripped = substr($path, strlen($fb) + 1);
-        }
+        // Assume it is off standard file base
+        $fb = get_file_base();
+        $stripped = substr($path, strlen($fb) + 1);
     }
 
     if ($stripped !== '') {
@@ -322,33 +318,22 @@ function zone_black_magic_filterer(string $path, bool $relative = false) : strin
  * @param  LANGUAGE_NAME $lang The language most preferable
  * @param  ID_TEXT $file The page name
  * @param  ID_TEXT $zone The zone
- * @return array A triple: The file base, The path (blank: not found), Combined path (blank: not found)
+ * @return array A pair: The relative path (blank: not found), The absolute path (blank: not found)
  */
 function find_comcode_page(string $lang, string $file, string $zone) : array
 {
-    $file_path = zone_black_magic_filterer(filter_naughty($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $file . '.txt'), true);
-
-    $file_base = null;
-    if (is_file(get_custom_file_base() . '/' . $file_path)) {
-        $file_base = get_custom_file_base();
-    } elseif (is_file(get_file_base() . '/' . $file_path)) {
-        $file_base = get_file_base();
+    $page_request = _request_page($file, $zone);
+    if ($page_request === false || strpos($page_request[0], 'COMCODE') === false) {
+        return ['', ''];
     }
 
-    if ($file_base === null) {
-        $page_request = _request_page($file, $zone);
-        if ($page_request === false || strpos($page_request[0], 'COMCODE') === false) {
-            return [get_file_base(), '', ''];
-        }
-        $file_path = $page_request[count($page_request) - 1];
-
-        $file_base = get_custom_file_base();
-        if (!is_file($file_base . '/' . $file_path)) {
-            $file_base = get_file_base();
-        }
+    $string = $page_request[count($page_request) - 1];
+    if ($string == '') {
+        return ['', ''];
     }
 
-    return [$file_base, $file_path, ($file_path == '') ? '' : ($file_base . '/' . $file_path)];
+    $file_path = get_file_base() . '/' . $string;
+    return [$string, $file_path];
 }
 
 /**

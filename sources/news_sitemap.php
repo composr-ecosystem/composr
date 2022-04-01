@@ -25,7 +25,7 @@ function build_news_sitemap()
 {
     require_code('xml');
 
-    $path = get_custom_file_base() . '/data_custom/sitemaps/news_sitemap.xml';
+    $path = get_file_base(true) . '/data_custom/sitemaps/news_sitemap.xml';
     if (!file_exists(dirname($path))) {
         require_code('files2');
         make_missing_directory(dirname($path));
@@ -135,7 +135,7 @@ function build_news_sitemap()
     require_code('files');
     fix_permissions($path);
 
-    $target_url = get_custom_base_url() . '/data_custom/sitemaps/news_sitemap.xml';
+    $target_url = baseify_local_url('data_custom/sitemaps/news_sitemap.xml');
 
     require_code('web_resources2');
     $success_compress = compress_cms_stub_file_gz($path);

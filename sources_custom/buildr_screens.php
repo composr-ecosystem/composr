@@ -96,10 +96,7 @@ function output_inventory_screen(int $member_id) : object
             continue;
         }
         $item_row = $item_rows[0];
-        $pic_url = $item_row['picture_url'];
-        if ((url_is_local($pic_url)) && ($pic_url != '')) {
-            $pic_url = get_custom_base_url() . '/' . str_replace(' ', '%20', $pic_url);
-        }
+        $pic_url = baseify($item_row['picture_url']);
         $description = $item_row['the_description'];
         $bribable = $item_row['bribable'];
         $healthy = $item_row['healthy'];
@@ -152,10 +149,7 @@ function output_room_screen(int $member_id) : object
     $room = $rooms[0];
     $room_name = $room['name'];
     $room_text = comcode_to_tempcode($room['r_text'], $room['owner']);
-    $pic_url = str_replace(' ', '%20', $room['picture_url']);
-    if ((url_is_local($pic_url)) && ($pic_url != '')) {
-        $pic_url = get_custom_base_url() . '/' . $pic_url;
-    }
+    $pic_url = baseify($room['picture_url']);
     $up_room = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', ['location_x' => $x, 'location_y' => $y - 1, 'location_realm' => $realm]);
     $locked_up = $room['locked_up'];
     if (($locked_up == 1) || ($up_room === null)) {
@@ -260,10 +254,7 @@ function output_room_screen(int $member_id) : object
 
         $count = ($myrow['not_infinite'] == 1) ? make_string_tempcode(integer_format($myrow['i_count'], 0)) : do_lang_tempcode('W_INFINITE');
 
-        $picture_url = $myrow2['picture_url'];
-        if ((url_is_local($picture_url)) && ($picture_url != '')) {
-            $picture_url = get_custom_base_url() . '/' . str_replace(' ', '%20', $picture_url);
-        }
+        $picture_url = baseify($myrow2['picture_url']);
 
         $items->attach(do_template('W_MAIN_ITEM', [
             '_GUID' => 'c144fda9edfe61750aba4afbce7b9b02',

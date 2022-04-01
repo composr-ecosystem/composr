@@ -66,7 +66,7 @@ if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
 }
 
 // Create default news categories
-$categories_path = get_custom_file_base() . '/data_custom/free_article_import__categories.txt';
+$categories_path = get_file_base(true) . '/data_custom/free_article_import__categories.txt';
 $categories_default = is_file($categories_path) ? cms_file_safe($categories_path) : [];
 $categories_existing = collapse_2d_complexity('id', 'nc_title', $GLOBALS['SITE_DB']->query_select('news_categories', ['id', 'nc_title']));
 foreach ($categories_existing as $id => $nc_title) {
@@ -90,7 +90,7 @@ foreach ($categories_default as $category) {
 // Import news
 $done = 0;
 require_code('files_spreadsheets_read');
-$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/data_custom/free_article_import__articles.csv');
+$sheet_reader = spreadsheet_open_read(get_file_base(true) . '/data_custom/free_article_import__articles.csv');
 while (($r = $sheet_reader->read_row()) !== false) {
     $time_limit = cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
@@ -303,11 +303,11 @@ function parse_articletrader($r)
 function http_get_contents_cached($url, $referer = '', $cookies = [])
 {
     require_code('files');
-    $dir = get_custom_file_base() . '/data_custom/free_article_import_cache';
+    $dir = get_file_base(true) . '/data_custom/free_article_import_cache';
     if (@mkdir($dir, 0777) !== false) {
         fix_permissions($dir);
     }
-    $cache_file = get_custom_file_base() . '/data_custom/free_article_import_cache/' . md5($url) . '.htm';
+    $cache_file = get_file_base(true) . '/data_custom/free_article_import_cache/' . md5($url) . '.htm';
     if (is_file($cache_file)) {
         $data = cms_file_get_contents_safe($cache_file, FILE_READ_LOCK);
     } else {

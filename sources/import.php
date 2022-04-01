@@ -57,7 +57,7 @@ function load_import_deps()
 }
 
 /**
- * Switch Conversr to run over the local site-DB connector. Useful when importing and our forum driver is actually connected to a forum other than Conversr.
+ * Switch Conversr to run over the local site-DB connector. Useful when importing and our forum driver is actually connected to a forum other tha Conversr.
  */
 function cns_over_local()
 {

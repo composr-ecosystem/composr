@@ -41,7 +41,7 @@ class Hook_commandr_command_cloud_fs_initialise
             global $SITE_INFO, $CMS_CLOUD_BINDINGS;
 
             if (!file_exists($SITE_INFO['nas_directory'])) {
-                mkdir($SITE_INFO['nas_directory']);
+                mkdir($SITE_INFO['nas_directory'], 0777);
                 fix_permissions($SITE_INFO['nas_directory']);
             }
 

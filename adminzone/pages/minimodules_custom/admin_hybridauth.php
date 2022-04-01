@@ -21,7 +21,7 @@ $title = get_screen_title('HYBRIDAUTH_CONFIG');
 
 $type = get_param_string('type', 'browse');
 
-$full_path = get_custom_file_base() . '/data_custom/xml_config/hybridauth.xml';
+$full_path = get_file_base() . '/data_custom/xml_config/hybridauth.xml';
 
 $post_url = build_url(['page' => '_SELF', 'type' => 'save'], '_SELF');
 

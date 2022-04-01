@@ -45,7 +45,7 @@ class __installer_test_set extends cms_test_case
         $version_dotted = get_version_dotted();
         $install_path = $builds_path . '/builds/' . $version_dotted . '/install.php';
 
-        $url = get_custom_base_url() . '/exports/builds/' . $version_dotted . '/install.php';
+        $url = baseify_local_url('exports/builds/' . $version_dotted . '/install.php');
 
         if (!is_file($install_path)) {
             make_installers();

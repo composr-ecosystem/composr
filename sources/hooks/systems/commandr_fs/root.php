@@ -192,7 +192,7 @@ class Hook_commandr_fs_root
     {
         $dir_replacements = ['sources', 'comcode', 'html', 'minimodules', 'modules', 'data', 'lang', 'text', 'images', 'templates'];
 
-        $path = get_custom_file_base() . '/';
+        $path = get_file_base(true) . '/';
         $previous_dir_section = '';
         foreach ($directory as $dir_section) {
             if ($change_to_override) {

@@ -170,7 +170,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         global $RATE_LIMITING_DATA;
         $RATE_LIMITING_DATA = [];
 
-        $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiter.php';
+        $rate_limiter_path = get_file_base(true) . '/data_custom/rate_limiter.php';
         if (is_file($rate_limiter_path)) {
             $fp = fopen($rate_limiter_path, 'rb');
             flock($fp, LOCK_SH);

@@ -80,7 +80,7 @@ function load_themewizard_params_from_theme(string $theme, bool $guess_images_if
         }
 
         if ($theme != 'default') {
-            $myfile = cms_fopen_text_write(get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/theme.ini', false, 'ab');
+            $myfile = cms_fopen_text_write(get_file_base(true) . '/themes/' . filter_naughty($theme) . '/theme.ini', false, 'ab');
             fwrite($myfile, 'themewizard_images=' . $themewizard_images . "\n");
             flock($myfile, LOCK_UN);
             fclose($myfile);
@@ -111,7 +111,7 @@ function find_theme_dark(string $theme) : bool
     if ($test != '') {
         $THEME_DARK_CACHE[$theme] = ($test == '1');
     } else {
-        $css_path = get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css';
+        $css_path = get_file_base() . '/themes/' . $theme . '/css_custom/_colours.css';
         if (!is_file($css_path)) {
             $css_path = get_file_base() . '/themes/default/css/_colours.css';
         }
@@ -288,16 +288,14 @@ function themewizard_find_css_sheets(string $source_theme, ?string $seed = null,
 
     $sheets = [];
 
-    foreach ([get_custom_file_base(), get_file_base()] as $file_base) {
-        foreach (['css_custom', 'css'] as $subdir) {
-            $sheets_path = $file_base . '/themes/' . filter_naughty($source_theme) . '/' . $subdir;
+    foreach (['css_custom', 'css'] as $subdir) {
+        $sheets_path = get_file_base() . '/themes/' . filter_naughty($source_theme) . '/' . $subdir;
 
-            $files = get_directory_contents($sheets_path, $sheets_path, 0, false, true, ['css']);
-            foreach ($files as $path) {
-                if (!isset($sheets[basename($path)])) {
-                    if ((!$in_scope_only) || (strpos(cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), '{$THEMEWIZARD_COLOR,') !== false)) {
-                        $sheets[basename($path)] = $path;
-                    }
+        $files = get_directory_contents($sheets_path, $sheets_path, 0, false, true, ['css']);
+        foreach ($files as $path) {
+            if (!isset($sheets[basename($path)])) {
+                if ((!$in_scope_only) || (strpos(cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), '{$THEMEWIZARD_COLOR,') !== false)) {
+                    $sheets[basename($path)] = $path;
                 }
             }
         }
@@ -340,7 +338,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
     $css_files = themewizard_find_css_sheets($source_theme, $seed, $dark);
 
     // Create/clone base theme
-    if (file_exists(get_custom_file_base() . '/themes/' . $theme_name)) {
+    if (file_exists(get_file_base(true) . '/themes/' . $theme_name)) {
         require_code('abstract_file_manager');
         force_have_afm_details(['themes/' . $theme_name . '/css_custom/*', 'themes/' . $theme_name . '/images_custom/*']);
     } elseif (!$fix_only) {
@@ -377,7 +375,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
                         $composite = 'themes/' . filter_naughty($theme_name) . '/images/';
                     }
                     $ext = (is_string($image) ? 'svg' : 'png');
-                    $save_path = get_custom_file_base() . '/' . $composite . $theme_image . '.' . $ext;
+                    $save_path = get_file_base(true) . '/' . $composite . $theme_image . '.' . $ext;
                     $save_url = $composite . $theme_image . '.' . $ext;
 
                     // If already made (as we support auto-resume)
@@ -422,7 +420,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
     // Make sheets
     foreach ($css_files as $file => $css_path) {
         $_save_path = 'themes/' . filter_naughty($theme_name) . '/css_custom/' . $file;
-        $save_path = get_custom_file_base() . '/' . $_save_path;
+        $save_path = get_file_base(true) . '/' . $_save_path;
         if (file_exists($save_path)) { // If already made (as we support auto-resume)
             continue;
         }
@@ -443,7 +441,7 @@ function generate_themewizard_theme(string $theme_name, string $source_theme, st
 
     // Write theme.ini file
     $_themeini_path = 'themes/' . filter_naughty($theme_name) . '/theme.ini';
-    $themeini_path = get_custom_file_base() . '/' . $_themeini_path;
+    $themeini_path = get_file_base(true) . '/' . $_themeini_path;
     if (!is_file($themeini_path)) {
         require_code('files');
         $contents = '';
@@ -1733,8 +1731,8 @@ function generate_logo(string $name, ?string $font_choice = null, ?string $colou
 
     if ($logo_type !== 'small_white') {
         // Override user configured color with $THEMEWIZARD_COLOR "box_title_background" if available
-        if (file_exists(get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css')) {
-            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/_colours.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+        if (file_exists(get_file_base() . '/themes/' . $theme . '/css_custom/_colours.css')) {
+            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/' . $theme . '/css_custom/_colours.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         } else {
             $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/_colours.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         }

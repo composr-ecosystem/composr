@@ -789,10 +789,7 @@ function get_post_attachments(?int $post_id, ?int $attachment_id = null, bool $n
  */
 function _get_attachment(array $attachment_row) : array
 {
-    $url = $attachment_row['a_url'];
-    if (url_is_local($url)) {
-        $url = get_custom_base_url() . '/' . $url;
-    }
+    $url = baseify($attachment_row['a_url']);
 
     $ext = get_file_extension($attachment_row['a_original_filename']);
     if ($ext == 'pdf') {
@@ -803,10 +800,7 @@ function _get_attachment(array $attachment_row) : array
         $content_type = 'other';
     }
 
-    $thumb_url = $attachment_row['a_thumb_url'];
-    if (url_is_local($thumb_url)) {
-        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
-    }
+    $thumb_url = baseify($attachment_row['a_thumb_url']);
 
     $url = find_script('attachment') . '?id=' . strval($attachment_row['id']);
 

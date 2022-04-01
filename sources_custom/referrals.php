@@ -32,10 +32,7 @@ function assign_referral_awards($referee, $trigger)
 {
     require_code('files');
 
-    $path = get_custom_file_base() . '/text_custom/referrals.txt';
-    if (!is_file($path)) {
-        $path = get_file_base() . '/text_custom/referrals.txt';
-    }
+    $path = get_file_base(true) . '/text_custom/referrals.txt';
     $ini_file = cms_parse_ini_file_safe($path, true);
 
     $referee_username = $GLOBALS['FORUM_DRIVER']->get_username($referee);
@@ -480,10 +477,7 @@ function referrer_report_script($ret = false)
 
     require_code('files');
 
-    $path = get_custom_file_base() . '/text_custom/referrals.txt';
-    if (!is_file($path)) {
-        $path = get_file_base() . '/text_custom/referrals.txt';
-    }
+    $path = get_file_base(true) . '/text_custom/referrals.txt';
     $ini_file = cms_parse_ini_file_safe($path, true);
 
     $scheme_name = get_param_string('scheme', 'standard_scheme');

@@ -470,7 +470,7 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
         if ($email_validation) {
             $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL'));
         }
-        $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL_VALIDATED', escape_html(get_custom_base_url())));
+        $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL_VALIDATED', escape_html(get_base_url())));
     } elseif (!$email_validation) {
         if (($instant_login) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) { // Automatic instant log in
             require_code('users_active_actions');

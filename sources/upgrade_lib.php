@@ -61,8 +61,8 @@ function rebuild_zone_files()
     $zones = find_all_zones();
     foreach ($zones as $zone) {
         if (!in_array($zone, ['', 'cms', 'adminzone', 'site', 'forum', 'collaboration'/*LEGACY*/])) {
-            if (strpos(cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'index.php', FILE_READ_LOCK), 'core') !== false) {
-                @cms_file_put_contents_safe(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php', cms_file_get_contents_safe(get_custom_file_base() . '/site/index.php', FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS);
+            if (strpos(cms_file_get_contents_safe(get_file_base(true) . '/' . $zone . (($zone == '') ? '' : '/') . 'index.php', FILE_READ_LOCK), 'core') !== false) {
+                @cms_file_put_contents_safe(get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/index.php', cms_file_get_contents_safe(get_file_base(true) . '/site/index.php', FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS);
             }
         }
     }
@@ -78,17 +78,17 @@ function rebuild_zone_files()
  */
 function move_folder_contents(string $from, string $to)
 {
-    $dh = @opendir(get_custom_file_base() . '/' . $from);
+    $dh = @opendir(get_file_base(true) . '/' . $from);
     if ($dh !== false) {
         while (($f = readdir($dh)) !== false) {
             if (($f == 'index.html') || ($f == '.htaccess')) {
                 continue;
             }
 
-            @rename(get_custom_file_base() . '/' . $from . '/' . $f, $to . '/' . $f);
+            @rename(get_file_base(true) . '/' . $from . '/' . $f, $to . '/' . $f);
         }
         closedir($dh);
-        @rmdir(get_custom_file_base() . '/' . $from);
+        @rmdir(get_file_base(true) . '/' . $from);
     }
 }
 
@@ -130,7 +130,7 @@ function perform_search_replace(array $reps)
     // Do replacement...
 
     foreach ($target_dirs as $_dir) {
-        $dir = get_custom_file_base() . '/' . $_dir;
+        $dir = get_file_base(true) . '/' . $_dir;
         if (is_dir($dir)) {
             $dh = opendir($dir);
             if ($dh !== false) {

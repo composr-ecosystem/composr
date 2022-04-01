@@ -281,8 +281,8 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
             $original_filename = $label;
         }
         $file_size = $this->_default_property_int($properties, 'file_size');
-        if (($file_size == 0) && ($url != '') && (url_is_local($url)) && (file_exists(get_custom_file_base() . '/' . rawurldecode($url)))) {
-            $file_size = filesize(get_custom_file_base() . '/' . rawurldecode($url));
+        if (($file_size == 0) && ($url != '') && (url_is_local($url)) && (file_exists(get_file_base() . '/' . rawurldecode($url)))) {
+            $file_size = filesize(get_file_base() . '/' . rawurldecode($url));
         }
         $cost = $this->_default_property_int($properties, 'cost');
         $submitter_gets_points = $this->_default_property_int($properties, 'submitter_gets_points');
@@ -398,8 +398,8 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
             $original_filename = $label;
         }
         $file_size = $this->_default_property_int($properties, 'file_size');
-        if (($file_size == 0) && ($url != '') && (url_is_local($url)) && (file_exists(get_custom_file_base() . '/' . rawurldecode($url)))) {
-            $file_size = filesize(get_custom_file_base() . '/' . rawurldecode($url));
+        if (($file_size == 0) && ($url != '') && (url_is_local($url)) && (file_exists(get_file_base() . '/' . rawurldecode($url)))) {
+            $file_size = filesize(get_file_base() . '/' . rawurldecode($url));
         }
         $cost = $this->_default_property_int($properties, 'cost');
         $submitter_gets_points = $this->_default_property_int($properties, 'submitter_gets_points');

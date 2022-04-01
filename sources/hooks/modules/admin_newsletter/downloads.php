@@ -92,9 +92,7 @@ class Hook_whatsnew_downloads
                 if (array_key_exists(0, $gallery_images)) {
                     $image_url = $gallery_images[0]['url'];
                     if ($image_url != '') {
-                        if (url_is_local($image_url)) {
-                            $image_url = get_custom_base_url() . '/' . $image_url;
-                        }
+                        $image_url = baseify($image_url);
                         break;
                     }
                 }

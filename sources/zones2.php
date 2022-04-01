@@ -344,7 +344,7 @@ function save_zone_base_url(string $zone, string $base_url)
         return;
     }
 
-    $config_path = get_file_base() . '/_config.php';
+    $config_path = get_file_base(false) . '/_config.php';
     $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
     $config_file_before = $config_file;
 
@@ -901,21 +901,14 @@ function _find_all_pages(string $zone, string $type, string $ext = 'php', bool $
 
     $out = [];
 
-    $module_path = ($zone == '') ? ('pages/' . filter_naughty($type)) : (filter_naughty($zone) . '/pages/' . filter_naughty($type));
+    $page_type_path = ($zone == '') ? ('pages/' . filter_naughty($type)) : (filter_naughty($zone) . '/pages/' . filter_naughty($type));
 
-    if ($custom === null) {
-        $custom = ((strpos($type, 'comcode_custom') !== false) || (strpos($type, 'html_custom') !== false));
-        if (($custom) && (get_custom_file_base() != get_file_base())) {
-            $out = _find_all_pages($zone, $type, $ext, false, null, $show_method, false);
-        }
-    }
-    $stub = $custom ? get_custom_file_base() : get_file_base();
-    $dh = is_dir($stub . '/' . $module_path) ? opendir($stub . '/' . $module_path) : false;
+    $dh = is_dir(get_file_base() . '/' . $page_type_path) ? opendir(get_file_base() . '/' . $page_type_path) : false;
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
-            if ((substr($file, -4) == '.' . $ext) && (is_file($stub . '/' . $module_path . '/' . $file)) && (preg_match('#^[^\.][' . URL_CONTENT_REGEXP . ']*$#', substr($file, 0, strlen($file) - 4)) != 0)) {
+            if ((substr($file, -4) == '.' . $ext) && (is_file(get_file_base() . '/' . $page_type_path . '/' . $file)) && (preg_match('#^[^\.][' . URL_CONTENT_REGEXP . ']*$#', substr($file, 0, strlen($file) - 4)) != 0)) {
                 if ($cutoff_time !== null) {
-                    if (filectime($stub . '/' . $module_path . '/' . $file) < $cutoff_time) {
+                    if (filectime(get_file_base() . '/' . $page_type_path . '/' . $file) < $cutoff_time) {
                         continue;
                     }
                 }
@@ -929,12 +922,12 @@ function _find_all_pages(string $zone, string $type, string $ext = 'php', bool $
                                 foreach ($records as $record) {
                                     $file = $record['the_page'] . '.txt';
 
-                                    if (!is_file($stub . '/' . $module_path . '/' . $file)) {
+                                    if (!is_file(get_file_base() . '/' . $page_type_path . '/' . $file)) {
                                         continue;
                                     }
 
                                     if ($cutoff_time !== null) {
-                                        if (filectime($stub . '/' . $module_path . '/' . $file) < $cutoff_time) {
+                                        if (filectime(get_file_base() . '/' . $page_type_path . '/' . $file) < $cutoff_time) {
                                             continue;
                                         }
                                     }
@@ -955,12 +948,12 @@ function _find_all_pages(string $zone, string $type, string $ext = 'php', bool $
                                 foreach ($records as $record) {
                                     $file = $record['the_page'] . '.txt';
 
-                                    if (!is_file($stub . '/' . $module_path . '/' . $file)) {
+                                    if (!is_file(get_file_base() . '/' . $page_type_path . '/' . $file)) {
                                         continue;
                                     }
 
                                     if ($cutoff_time !== null) {
-                                        if (filectime($stub . '/' . $module_path . '/' . $file) < $cutoff_time) {
+                                        if (filectime(get_file_base() . '/' . $page_type_path . '/' . $file) < $cutoff_time) {
                                             continue;
                                         }
                                     }
@@ -1051,7 +1044,7 @@ function check_zone_name(string $zone)
     if (($url_scheme == 'SIMPLE') || ($url_scheme == 'HTM')) {
         if ($url_scheme == 'SIMPLE') {
             // No naming a zone the same as a root directory (a std dir)
-            if ((file_exists(get_file_base() . '/' . $zone)) || (file_exists(get_custom_file_base() . '/' . $zone))) {
+            if (file_exists(get_file_base() . '/' . $zone)) {
                 require_lang('zones');
                 warn_exit(do_lang_tempcode('CONFLICTING_ZONE_NAME'));
             }
@@ -1077,14 +1070,14 @@ function check_page_name(string $zone, string $page)
         $url_scheme = get_option('url_scheme');
         if ($url_scheme == 'SIMPLE') {
             // No naming a welcome zone page the same as a root directory (be it a std dir or a zone name)
-            if ((file_exists(get_file_base() . '/' . $page)) || (file_exists(get_custom_file_base() . '/' . $page))) {
+            if (file_exists(get_file_base() . '/' . $page)) {
                 require_lang('zones');
                 warn_exit(do_lang_tempcode('CONFLICTING_PAGE_NAME'));
             }
         }
         if ($url_scheme == 'HTM') {
             // No naming a welcome zone page the same as a zone
-            if ((file_exists(get_file_base() . '/' . $page . '/pages/comcode')) || (file_exists(get_custom_file_base() . '/' . $page . '/pages/comcode'))) {
+            if (file_exists(get_file_base() . '/' . $page . '/pages/comcode')) {
                 require_lang('zones');
                 warn_exit(do_lang_tempcode('CONFLICTING_PAGE_NAME'));
             }

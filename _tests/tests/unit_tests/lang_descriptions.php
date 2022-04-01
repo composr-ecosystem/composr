@@ -57,7 +57,7 @@ class lang_descriptions_test_set extends cms_test_case
     public function testNoNonsenseSections()
     {
         foreach (array_keys($this->lang_files) as $file) {
-            $path_a = get_custom_file_base() . '/lang_custom/' . fallback_lang() . '/' . $file . '.ini';
+            $path_a = get_file_base() . '/lang_custom/' . fallback_lang() . '/' . $file . '.ini';
             $path_b = get_file_base() . '/lang/' . fallback_lang() . '/' . $file . '.ini';
             foreach ([$path_a, $path_b] as $path) {
                 if (is_file($path)) {

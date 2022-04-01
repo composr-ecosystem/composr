@@ -147,12 +147,9 @@ PHP;
         $images = [];
         foreach ($all_rows as $i => $row) {
             if ($row['content_type'] == 'video') {
-                $image_url = $row['thumb_url'];
+                $image_url = baseify($row['thumb_url']);
             } else {
-                $image_url = $row['url'];
-            }
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
+                $image_url = baseify($row['url']);
             }
 
             $view_url = build_url(['page' => 'galleries', 'type' => $row['content_type'], 'id' => $row['id']], $zone);

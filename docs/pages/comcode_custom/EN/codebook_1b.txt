@@ -698,7 +698,7 @@ As a general rule, if a Composr table is stored in a table starting [tt]f_[/tt],
 
 In the case of Conversr, the forum driver just ties into the lower-level Conversr API. In the case of others, it's a basic clean-room implementation of accessing the relevant forum software's DB and files.
 
-Stuff that is not an Conversr feature but uses the forum, has to go through the official forum driver interface. We can supplement functionality exclusively targeted for Conversr with a [tt]if (get_forum_type() == 'cns')[/tt] guard. If we are coding functionality that is directly a part of Conversr (i.e. accessed in some Conversr-only part of the system, like the forum zone), then we don't need to worry about any of this.
+Stuff that is not a Conversr feature but uses the forum, has to go through the official forum driver interface. We can supplement functionality exclusively targeted for Conversr with a [tt]if (get_forum_type() == 'cns')[/tt] guard. If we are coding functionality that is directly a part of Conversr (i.e. accessed in some Conversr-only part of the system, like the forum zone), then we don't need to worry about any of this.
 
 [title="4"]Writing a forum driver[/title]
 
@@ -770,7 +770,7 @@ If you are unsure how software stores its data, enter test data that uses variou
 There is a very complex situation for non-forum importers that use forum-driver functions during import, in order to find data to associate with database records they are creating. For example, an importer for a simple download system which stores 'usernames' of download-submitters, might wish to try to bind these usernames to actual user-IDs, using the forum-database that Composr normally uses. However, by default the forum-database is tied to the local-Conversr-install during installation, as when forum data is imported, this Conversr database is required (as this is where the information will be piped to). Therefore there are two import API functions that allow switching to and from local and M.S.N. Conversr installations:
 1) [tt]cns_over_local[/tt] (this sets Composr to use the local Conversr for the FORUM_DB object)
 2) [tt]cns_over_msn[/tt] (this sets Composr to use the database of the regular forum for the FORUM_DB object -- which may or may not be Conversr, and even if it is Conversr, it might not be the local Conversr)
-Note that the importer system does not change the actual forum driver used. Therefore it cannot be assumed that the global FORUM_DRIVER object is an Conversr forum driver, nor can it be assumed it holds a local database. The Conversr system has been programmed to never use FORUM_DRIVER itself, it uses CNS_DRIVER (which you may use yourself if writing a forum importer), which is always guaranteed to be linked to Conversr.
+Note that the importer system does not change the actual forum driver used. Therefore it cannot be assumed that the global FORUM_DRIVER object is a Conversr forum driver, nor can it be assumed it holds a local database. The Conversr system has been programmed to never use FORUM_DRIVER itself, it uses CNS_DRIVER (which you may use yourself if writing a forum importer), which is always guaranteed to be linked to Conversr.
 A related problem is that some parts of Composr's API might assume that the FORUM_DB object points to Conversr if the [tt]get_forum_type[/tt] function returns [tt]cns[/tt]; or there can be problems with reference variables that confuses forum driver objects. Therefore running these commands might be required in some other cases -- in particular when Comcode is being parsed. Don't worry too much -- emulate what the other importers do.
 
 Sometimes data in software being imported has no use in Composr, or isn't quite compatible with how Composr does things. When the developers make an importer we try to make a call in these situations as to how important the feature is:
@@ -836,7 +836,7 @@ The user picks a forum driver when the install, which maps to a [tt]sources/foru
 
 In the case of Conversr, the forum driver just ties into the lower-level Conversr API. In the case of others, it's a basic clean-room implementation of accessing the relevant forum software's DB and files.
 
-Stuff that is not an Conversr feature but uses the forum, has to go through the official forum driver interface (unless you're working on an addon or a private site). We can supplement functionality exclusively targeted for Conversr with a [tt]if (get_forum_type()=='cns')[/tt] guard. If we are coding functionality that is directly a part of Conversr (i.e. accessed in some Conversr-only part of the system, like the forum zone), then we don't need to worry about any of this.
+Stuff that is not a Conversr feature but uses the forum, has to go through the official forum driver interface (unless you're working on an addon or a private site). We can supplement functionality exclusively targeted for Conversr with a [tt]if (get_forum_type()=='cns')[/tt] guard. If we are coding functionality that is directly a part of Conversr (i.e. accessed in some Conversr-only part of the system, like the forum zone), then we don't need to worry about any of this.
 
 [title="3"]Permissions[/title]
 

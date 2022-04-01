@@ -152,8 +152,8 @@ class RemoteContentGrabber
         } else {
             $_path_base = $opts['local_save_path'];
         }
-        $path_base = get_custom_file_base() . '/' . $_path_base;
-        $url_base = get_custom_base_url() . '/' . $_path_base;
+        $path_base = get_file_base(true) . '/' . $_path_base;
+        $url_base = baseify_local_url($_path_base);
 
         // Find referenced URLs in content
         $referenced_urls = [];

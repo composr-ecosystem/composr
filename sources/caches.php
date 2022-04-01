@@ -71,7 +71,7 @@ function init__caches()
         } elseif ((function_exists('wincache_ucache_get')) && (($SITE_INFO['use_persistent_cache'] == 'wincache') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
             require_code('persistent_caching/wincache');
             $PERSISTENT_CACHE = new Persistent_caching_wincache();
-        } elseif ((file_exists(get_custom_file_base() . '/caches/persistent/')) && (($SITE_INFO['use_persistent_cache'] == 'filesystem') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
+        } elseif ((file_exists(get_file_base(true) . '/caches/persistent/')) && (($SITE_INFO['use_persistent_cache'] == 'filesystem') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
             require_code('persistent_caching/filesystem');
             $PERSISTENT_CACHE = new Persistent_caching_filesystem();
         }
@@ -157,7 +157,7 @@ class Self_learning_cache
     public function __construct(string $bucket_name)
     {
         $this->bucket_name = $bucket_name;
-        $dir = get_custom_file_base() . '/caches/self_learning';
+        $dir = get_file_base(true) . '/caches/self_learning';
         //$this->path = $dir . '/' . filter_naughty(str_replace(['/', '\\', ':'], ['__', '__', '__'], $bucket_name)) . '.gcd'; Windows has a 260 character path limit, so we can't do it this way
         $this->path = $dir . '/' . filter_naughty(md5($bucket_name)) . '.gcd';
         $this->load();
@@ -322,7 +322,7 @@ class Self_learning_cache
      */
     public function _page_cache_resave()
     {
-        $dir = get_custom_file_base() . '/caches/self_learning';
+        $dir = get_file_base(true) . '/caches/self_learning';
         if (!is_dir($dir)) {
             require_code('files2');
             make_missing_directory($dir);
@@ -391,11 +391,11 @@ class Self_learning_cache
             }
             $done_once = true;
 
-            $dh = @opendir(get_custom_file_base() . '/caches/self_learning');
+            $dh = @opendir(get_file_base(true) . '/caches/self_learning');
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
                     if (substr($f, -4) == '.gcd') {
-                        @unlink(get_custom_file_base() . '/caches/self_learning/' . $f);
+                        @unlink(get_file_base(true) . '/caches/self_learning/' . $f);
                     }
                 }
                 closedir($dh);
@@ -522,25 +522,25 @@ function erase_persistent_cache(bool $local_only = false)
     $done_once = true;
 
     /* This is unsafe, the task queue may need something
-    $path = get_custom_file_base() . '/caches/http';
+    $path = get_file_base(true) . '/caches/http';
     if (is_dir($path)) {
         $d = opendir($path);
         while (($e = readdir($d)) !== false) {
             if (substr($e, -4) == '.bin') {
-                @unlink(get_custom_file_base() . '/caches/http/' . $e);
+                @unlink(get_file_base(true) . '/caches/http/' . $e);
             }
         }
         closedir($d);
     }
     */
 
-    $path = get_custom_file_base() . '/caches/persistent';
+    $path = get_file_base(true) . '/caches/persistent';
     if (is_dir($path)) {
         $d = opendir($path);
         while (($e = readdir($d)) !== false) {
             if (substr($e, -4) == '.gcd') {
                 // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
-                @unlink(get_custom_file_base() . '/caches/persistent/' . $e);
+                @unlink(get_file_base(true) . '/caches/persistent/' . $e);
             }
         }
         closedir($d);
@@ -553,11 +553,11 @@ function erase_persistent_cache(bool $local_only = false)
     erase_static_cache();
 
     require_code('files');
-    if (cms_is_writable(get_custom_file_base() . '/data_custom/failover_rewritemap.txt')) {
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+    if (cms_is_writable(get_file_base(true) . '/data_custom/failover_rewritemap.txt')) {
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/failover_rewritemap.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
     }
-    if (cms_is_writable(get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt')) {
-        cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+    if (cms_is_writable(get_file_base(true) . '/data_custom/failover_rewritemap__mobile.txt')) {
+        cms_file_put_contents_safe(get_file_base(true) . '/data_custom/failover_rewritemap__mobile.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
     }
 
     global $PERSISTENT_CACHE;
@@ -576,7 +576,7 @@ function erase_persistent_cache(bool $local_only = false)
  */
 function erase_static_cache(bool $local_only = false)
 {
-    $path = get_custom_file_base() . '/caches/static';
+    $path = get_file_base(true) . '/caches/static';
     if (!file_exists($path)) {
         return;
     }
@@ -584,7 +584,7 @@ function erase_static_cache(bool $local_only = false)
     while (($e = readdir($d)) !== false) {
         if ((substr($e, -4) == '.htm' || substr($e, -4) == '.xml' || substr($e, -3) == '.gz' || substr($e, -3) == '.br') && (strpos($e, '__failover_mode') === false)) {
             // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
-            @unlink(get_custom_file_base() . '/caches/static/' . $e);
+            @unlink(get_file_base(true) . '/caches/static/' . $e);
         }
     }
     closedir($d);

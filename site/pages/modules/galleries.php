@@ -68,8 +68,8 @@ class Module_galleries
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/galleries', true);
-            deldir_contents(get_custom_file_base() . '/uploads/galleries_thumbs', true);
+            deldir_contents(get_file_base(true) . '/uploads/galleries', true);
+            deldir_contents(get_file_base(true) . '/uploads/galleries_thumbs', true);
         }
     }
 
@@ -268,7 +268,7 @@ class Module_galleries
             do {
                 $rows = $GLOBALS['SITE_DB']->query_select('images', ['id', 'thumb_url'], [], ' AND thumb_url LIKE \'' . db_encode_like('uploads/galleries_thumbs/%') . '\' ORDER BY id', $max, $start);
                 foreach ($rows as $row) {
-                    @unlink(get_custom_file_base() . '/' . urldecode($row['thumb_url']));
+                    @unlink(get_file_base(true) . '/' . urldecode($row['thumb_url']));
                 }
                 $start += $max;
             } while (!empty($rows));
@@ -444,25 +444,16 @@ class Module_galleries
             $cat = $myrow['cat'];
             set_feed_url('?mode=galleries&select=' . urlencode($cat));
 
-            $url = $myrow['url'];
-            if (url_is_local($url)) {
-                $url = get_custom_base_url() . '/' . $url;
-            }
+            $url = baseify($myrow['url']);
             if ($type == 'image') {
-                $image_url = $myrow['url'];
+                $image_url = baseify($myrow['url']);
             } else {
-                $image_url = $myrow['thumb_url'];
-            }
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
+                $image_url = baseify($myrow['thumb_url']);
             }
 
             $closed_captions_url = '';
             if ($type == 'video') {
-                $closed_captions_url = $myrow['closed_captions_url'];
-                if (url_is_local($closed_captions_url)) {
-                    $closed_captions_url = get_custom_base_url() . '/' . $closed_captions_url;
-                }
+                $closed_captions_url = baseify($myrow['closed_captions_url']);
             }
 
             if (!has_category_access(get_member(), 'galleries', $cat)) {
@@ -810,8 +801,8 @@ class Module_galleries
 
                 $image_url = $row['url'];
                 if (url_is_local($image_url)) {
-                    $file_size = file_exists(get_custom_file_base() . '/' . rawurldecode($image_url)) ? strval(filesize(get_custom_file_base() . '/' . rawurldecode($image_url))) : '';
-                    $image_url = get_custom_base_url() . '/' . $image_url;
+                    $file_size = file_exists(get_file_base() . '/' . rawurldecode($image_url)) ? strval(filesize(get_file_base() . '/' . rawurldecode($image_url))) : '';
+                    $image_url = baseify_local_url($image_url);
                 } else {
                     $file_size = '';
                 }
@@ -878,15 +869,12 @@ class Module_galleries
             $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $content_type, 'probe_id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
             $view_url_2 = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
             if ($content_type == 'image') {
-                $image_url = $row['url'];
+                $image_url = baseify($row['url']);
             } else {
-                $image_url = $row['thumb_url'];
+                $image_url = baseify($row['thumb_url']);
             }
             if ($image_url == '') {
                 $image_url = find_theme_image('na');
-            }
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
             }
 
             $_edit_url = new Tempcode();
@@ -923,12 +911,7 @@ class Module_galleries
         $member_details = (($member_id === null) || (get_forum_type() != 'cns')) ? new Tempcode() : render_member_box($member_id, true, true, [], false);
 
         // Rep-image
-        $rep_image_url = '';
-        if (($rep_image != '') && (url_is_local($rep_image))) {
-            $rep_image_url = get_custom_base_url() . '/' . $rep_image;
-        } elseif ($rep_image != '') {
-            $rep_image_url = $rep_image;
-        }
+        $rep_image_url = baseify($rep_image);
 
         // Navigation
         list(, , , $first_entry_id, , , $first_type) = $this->build_set_navigation(db_string_equal_to('cat', $cat), '', '', $probe_id, $root, $probe_type, get_param_integer('wide_high', 0), $start, $max, $cat, $url_sort, $dir, $image_select, $video_select, $days);
@@ -1170,18 +1153,12 @@ class Module_galleries
             $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $content_type, 'probe_id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
             $view_url_2 = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
 
-            $full_url = $row['url'];
-            if (url_is_local($full_url)) {
-                $full_url = get_custom_base_url() . '/' . $full_url;
-            }
+            $full_url = baseify($row['url']);
 
             if ($content_type == 'image') {
-                $image_url = $row['url'];
+                $image_url = baseify($row['url']);
             } else {
-                $image_url = $row['thumb_url'];
-            }
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
+                $image_url = baseify($row['thumb_url']);
             }
 
             $content_url = build_url(['page' => '_SELF', 'type' => $content_type, 'id' => $probe_id], '_SELF', [], false, false, true)->evaluate();
@@ -1194,12 +1171,8 @@ class Module_galleries
 
             if (($probe_type === $content_type) && ($probe_id === intval($row['id']))) {
                 $current_index = $i;
-                $current_url = $row['url'];
+                $current_url = baseify($row['url']);
                 $current_type = $content_type;
-
-                if (url_is_local($current_url)) {
-                    $current_url = get_custom_base_url() . '/' . $current_url;
-                }
 
                 if ($content_type === 'video') {
                     // Video HTML
@@ -1658,12 +1631,9 @@ class Module_galleries
             if ($back_type === 'image') {
                 $back_image_url = $prev_row['url'];
             } else {
-                $back_image_url = $prev_row['thumb_url'];
+                $back_image_url = baseify($prev_row['thumb_url']);
                 if ($back_image_url == '') {
                     $back_image_url = find_theme_image('na');
-                }
-                if (url_is_local($back_image_url)) {
-                    $back_image_url = get_custom_base_url() . '/' . $back_image_url;
                 }
             }
         } else {
@@ -1691,12 +1661,9 @@ class Module_galleries
             if ($next_type === 'image') {
                 $next_image_url = $next_row['url'];
             } else {
-                $next_image_url = $next_row['thumb_url'];
+                $next_image_url = baseify($next_row['thumb_url']);
                 if ($next_image_url == '') {
                     $next_image_url = find_theme_image('na');
-                }
-                if (url_is_local($next_image_url)) {
-                    $next_image_url = get_custom_base_url() . '/' . $next_image_url;
                 }
             }
         } else {

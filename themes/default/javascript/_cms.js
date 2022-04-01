@@ -156,12 +156,6 @@
      * @method
      * @returns {string}
      */
-    $cms.getCustomBaseUrl = $util.constant(strVal('{$CUSTOM_BASE_URL;}'));
-    /**
-     * @memberof $cms
-     * @method
-     * @returns {string}
-     */
     $cms.getForumBaseUrl = $util.constant(strVal('{$FORUM_BASE_URL;}'));
     /**
      * @memberof $cms

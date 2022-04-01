@@ -97,9 +97,7 @@ class Hook_whatsnew_news
             $member_id = (is_guest($row['submitter'])) ? null : strval($row['submitter']);
             $image_url = $row['news_image'];
             if ($image_url != '') {
-                if (url_is_local($image_url)) {
-                    $image_url = get_custom_base_url() . '/' . $image_url;
-                }
+                $image_url = baseify($image_url);
             } else {
                 $image_url = null;
             }

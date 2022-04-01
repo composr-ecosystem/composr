@@ -47,7 +47,7 @@ if (strpos(PHP_OS, 'Darwin') !== false) {
 } else {
     $command_to_try = 'nautilus';
 }
-$command_to_try .= ' ' . get_custom_file_base() . '/exports/addons/';
+$command_to_try .= ' ' . get_file_base(true) . '/exports/addons/';
 
 echo '<p>This has built all the addons into <kbd><a href="#" onclick="fauxmodal_alert(\'&lt;kbd&gt;' . escape_html($command_to_try) . '&lt;/kbd&gt;\',null,\'Command to open folder\',true);"><kbd>exports/addons</kbd></a></kbd>. The <kbd>make_release</kbd> script you probably came from gives details on how to get these live on compo.sr.</p>';
 
@@ -87,7 +87,7 @@ foreach ($addons as $name => $place) {
     $addon_info = read_addon_info($name);
 
     $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $name)) . '-' . get_version_branch(floatval($addon_info['version'])) . '.tar';
-    $full_path = get_custom_file_base() . '/exports/addons/' . $file;
+    $full_path = get_file_base(true) . '/exports/addons/' . $file;
 
     // Copy through times from previous build IF the files didn't change (as Git munges mtimes)
     if (is_file($full_path)) {
@@ -123,7 +123,7 @@ foreach ($addons as $name => $place) {
         tar_close($tar_file);
     }
 
-    $old_time = @filemtime(get_custom_file_base() . '/exports/addons/' . $file);
+    $old_time = @filemtime(get_file_base(true) . '/exports/addons/' . $file);
 
     // Archive it off to exports/addons
     create_addon(
@@ -144,7 +144,7 @@ foreach ($addons as $name => $place) {
     );
 
     clearstatcache();
-    $new_time = @filemtime(get_custom_file_base() . '/exports/addons/' . $file);
+    $new_time = @filemtime(get_file_base(true) . '/exports/addons/' . $file);
 
     if ($old_time !== $new_time) {
         $done_addon = true;
@@ -166,7 +166,7 @@ if (get_param_integer('export_themes', 0) == 1) {
     require_code('files2');
     $themes = find_all_themes();
 
-    $page_files = get_directory_contents(get_custom_file_base(), '', 0, true, true, ['txt']);
+    $page_files = get_directory_contents(get_file_base(true), '', 0, true, true, ['txt']);
     foreach (array_keys($themes) as $theme) {
         if (($only !== null) && ($only !== $theme)) {
             continue;
@@ -192,7 +192,7 @@ if (get_param_integer('export_themes', 0) == 1) {
         $file = 'theme-' . preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $theme)) . '-' . get_version_branch() . '.tar';
 
         $files2 = [];
-        $theme_files = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, 'themes/' . $theme, IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES);
+        $theme_files = get_directory_contents(get_file_base(true) . '/themes/' . $theme, 'themes/' . $theme, IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES);
         foreach ($theme_files as $file2) {
             $files2[] = $file2;
         }
@@ -207,7 +207,7 @@ if (get_param_integer('export_themes', 0) == 1) {
         $_GET['keep_theme_test'] = '1';
         $_GET['theme'] = $theme;
 
-        $old_time = @filemtime(get_custom_file_base() . '/exports/addons/' . $file);
+        $old_time = @filemtime(get_file_base(true) . '/exports/addons/' . $file);
 
         create_addon(
             $file,
@@ -226,7 +226,7 @@ if (get_param_integer('export_themes', 0) == 1) {
         );
 
         clearstatcache();
-        $new_time = @filemtime(get_custom_file_base() . '/exports/addons/' . $file);
+        $new_time = @filemtime(get_file_base(true) . '/exports/addons/' . $file);
 
         if ($old_time !== $new_time) {
             echo nl2br(escape_html(update_addon_descriptions($file, $name, $description)));

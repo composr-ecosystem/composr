@@ -265,7 +265,7 @@ function _composr_error_handler(string $type, int $errno, string $errstr, string
         $php_error_label .= ' [' . $_SERVER['REQUEST_METHOD'] . ']';
     }
 
-    $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5)) && (!throwing_errors());
+    $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_file_base(true) . '/data_custom/errorlog.php') < time() - 60 * 5)) && (!throwing_errors());
 
     if ($may_log_error) {
         // Put into error log
@@ -362,7 +362,7 @@ function _warn_screen(object $title, $text, bool $provide_back = true, bool $sup
 function _sanitise_error_msg(string $text) : string
 {
     // Strip paths, for security reasons
-    return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
+    return str_replace([get_file_base(true) . '/', get_file_base(false) . '/'], ['', ''], $text);
 }
 
 /**
@@ -436,12 +436,15 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
 
     if ($log_error) {
         require_code('urls');
-        $php_error_label = $text_eval . ' @ ' . get_self_url_easy(true);
+        $php_error_label = $text_eval;
+        if (function_exists('get_self_url_easy')) {
+            $php_error_label .= ' @ ' . get_self_url_easy(true);
+        }
         if ((!empty($_SERVER['REQUEST_METHOD'])) && ($_SERVER['REQUEST_METHOD'] != 'GET')) {
             $php_error_label .= ' [' . $_SERVER['REQUEST_METHOD'] . ']';
         }
 
-        $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
+        $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_file_base(true) . '/data_custom/errorlog.php') < time() - 60 * 5));
 
         if ($may_log_error) {
             cms_error_log('Composr: ' . $php_error_label, null);
@@ -1129,6 +1132,10 @@ function relay_error_notification(string $text, bool $ocproducts = true, string 
         return;
     }
 
+    if (!function_exists('get_self_url_easy')) {
+        return;
+    }
+
     // Make sure we don't send too many error e-mails
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
@@ -1625,9 +1632,7 @@ function banned_exit(?string $reasoned_ban = null)
 
             $image_url = $_reasoned_ban['image_url'];
             if ($image_url !== null) {
-                if (url_is_local($image_url)) {
-                    $image_url = get_custom_base_url() . '/' . $image_url;
-                }
+                $image_url = baseify($image_url);
             }
 
             warn_exit($text, false, false, $http_status, $title, $image_url);

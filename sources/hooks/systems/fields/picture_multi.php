@@ -86,10 +86,7 @@ class Hook_fields_picture_multi
                     unset($METADATA['image']);
                 }
 
-                $img_url = $ev;
-                if (url_is_local($img_url)) {
-                    $img_url = get_custom_base_url() . '/' . $img_url;
-                }
+                $img_url = baseify($ev);
 
                 set_extra_request_metadata([
                     'image' => $img_url,
@@ -135,9 +132,7 @@ class Hook_fields_picture_multi
         $evs = explode("\n", $ev);
         foreach ($evs as $j => $ev) {
             $img_url = preg_replace('#::.*$#', '', $ev);
-            if (url_is_local($img_url)) {
-                $img_url = get_custom_base_url() . '/' . $img_url;
-            }
+            $img_url = baseify($img_url);
 
             if (!array_key_exists('c_name', $field)) {
                 $field['c_name'] = 'other';
@@ -243,7 +238,7 @@ class Hook_fields_picture_multi
                 foreach ($_old_value as $i => $_value) {
                     $unlink = (post_param_integer('field_' . strval($id) . '_' . strval($i + 1) . '_unlink', 0) == 1);
                     if ($unlink) {
-                        @unlink(get_custom_file_base() . '/' . rawurldecode($_value));
+                        @unlink(get_file_base() . '/' . rawurldecode($_value));
                     } else {
                         if ($value != '') {
                             $value .= "\n";
@@ -288,7 +283,7 @@ class Hook_fields_picture_multi
         if ($value['cv_value'] != '') {
             $files = explode("\n", $value['cv_value']);
             foreach ($files as $path) {
-                @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+                @unlink(get_file_base() . '/' . rawurldecode($path));
             }
         }
     }

@@ -40,7 +40,7 @@ function do_user_import()
 
     if (!USER_IMPORT_TEST_MODE) {
         require_code('files');
-        $infile = cms_fopen_text_write(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH);
+        $infile = cms_fopen_text_write(get_file_base(true) . '/' . USER_IMPORT_TEMP_PATH);
         $test = http_get_contents(USER_IMPORT_URL, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $infile]);
         fclose($infile);
         if ($test === null) {
@@ -49,7 +49,7 @@ function do_user_import()
     }
 
     require_code('files_spreadsheets_read');
-    $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+    $sheet_reader = spreadsheet_open_read(get_file_base(true) . '/' . USER_IMPORT_TEMP_PATH, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
     require_code('cns_members_action');
     require_code('cns_members_action2');

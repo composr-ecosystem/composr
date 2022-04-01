@@ -50,28 +50,16 @@ class Hook_page_groupings_language
         }
         closedir($_dir);
         if (!in_safe_mode()) {
-            $_dir = @opendir(get_custom_file_base() . '/lang_custom/');
+            $_dir = @opendir(get_file_base() . '/lang_custom/');
             if ($_dir !== false) {
                 while (false !== ($file = readdir($_dir))) {
                     if ($file == fallback_lang()) {
                         continue;
                     }
                     if ((!should_ignore_file('lang_custom/' . $file, IGNORE_ACCESS_CONTROLLERS)) && (strlen($file) <= 5)) {
-                        if (is_dir(get_custom_file_base() . '/lang_custom/' . $file)) {
+                        if (is_dir(get_file_base() . '/lang_custom/' . $file)) {
                             $has_langs = true;
                         }
-                    }
-                }
-                closedir($_dir);
-            }
-            if (get_custom_file_base() != get_file_base()) {
-                $_dir = opendir(get_file_base() . '/lang_custom/');
-                while (false !== ($file = readdir($_dir))) {
-                    if ($file == fallback_lang()) {
-                        continue;
-                    }
-                    if ((!should_ignore_file('lang_custom/' . $file, IGNORE_ACCESS_CONTROLLERS)) && (strlen($file) <= 5)) {
-                        $has_langs = true;
                     }
                 }
                 closedir($_dir);

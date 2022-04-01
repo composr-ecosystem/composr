@@ -55,6 +55,6 @@ class Hook_config_bottom_show_commandr_button
             return null;
         }
 
-        return (get_file_base() != get_custom_file_base()) ? '0' : '1';
+        return ($GLOBALS['CURRENT_SHARE_USER'] !== null) ? '0' : '1';
     }
 }

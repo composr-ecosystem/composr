@@ -135,10 +135,7 @@ function render_download_box(array $row, bool $pic = true, bool $include_breadcr
         // Images
         $rows = $GLOBALS['SITE_DB']->query_select('images', ['url', 'id'], ['cat' => 'download_' . strval($row['id'])], '', 1, $row['default_pic'] - 1);
         if (array_key_exists(0, $rows)) {
-            $rep_image_url = $rows[0]['url'];
-            if (url_is_local($rep_image_url)) {
-                $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
-            }
+            $rep_image_url = baseify($rows[0]['url']);
         }
     }
 
@@ -263,10 +260,7 @@ function render_download_category_box(array $row, string $zone = '_SEARCH', bool
     // Image
     $rep_image_url = '';
     if ($row['rep_image'] != '') {
-        $rep_image_url = $row['rep_image'];
-        if (url_is_local($rep_image_url)) {
-            $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
-        }
+        $rep_image_url = baseify($row['rep_image']);
     }
 
     return do_template('SIMPLE_PREVIEW_BOX', [

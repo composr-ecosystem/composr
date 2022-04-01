@@ -429,18 +429,18 @@ class Module_cms_galleries extends Standard_crud_module
         if ((has_actual_page_access(get_member(), 'admin_cleanup')) && ($GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)') + $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)') < 4000)) {
             require_code('files');
             $there = [];
-            $_dir = opendir(get_custom_file_base() . '/uploads/galleries/');
+            $_dir = opendir(get_file_base(true) . '/uploads/galleries/');
             while (false !== ($file = readdir($_dir))) {
-                if ((get_file_extension($file) != 'vtt') && (!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && (!is_dir(get_custom_file_base() . '/uploads/galleries/' . $file)) && ((is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous'))))) {
-                    $there[$file] = filemtime(get_custom_file_base() . '/uploads/galleries/' . $file);
+                if ((get_file_extension($file) != 'vtt') && (!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && (!is_dir(get_file_base(true) . '/uploads/galleries/' . $file)) && ((is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous'))))) {
+                    $there[$file] = filemtime(get_file_base(true) . '/uploads/galleries/' . $file);
                 }
             }
             closedir($_dir);
-            $_dir = @opendir(get_custom_file_base() . '/uploads/galleries/' . filter_naughty($cat));
+            $_dir = @opendir(get_file_base(true) . '/uploads/galleries/' . filter_naughty($cat));
             if ($_dir !== false) {
                 while (false !== ($file = readdir($_dir))) {
-                    if ((!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && (!is_dir(get_custom_file_base() . '/uploads/galleries/' . $cat . '/' . $file)) && ((is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous'))))) {
-                        $there[$cat . '/' . $file] = filemtime(get_custom_file_base() . '/uploads/galleries/' . $cat . '/' . $file);
+                    if ((!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && (!is_dir(get_file_base(true) . '/uploads/galleries/' . $cat . '/' . $file)) && ((is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous'))))) {
+                        $there[$cat . '/' . $file] = filemtime(get_file_base(true) . '/uploads/galleries/' . $cat . '/' . $file);
                     }
                 }
                 closedir($_dir);
@@ -616,7 +616,7 @@ class Module_cms_galleries extends Standard_crud_module
                         continue;
                     }
 
-                    $path = get_custom_file_base() . '/uploads/galleries/' . filter_naughty($file);
+                    $path = get_file_base(true) . '/uploads/galleries/' . filter_naughty($file);
                     @unlink($path) or intelligent_write_error($path);
                 }
             }
@@ -649,7 +649,7 @@ class Module_cms_galleries extends Standard_crud_module
         $files = [];
 
         // Initialize temp directory
-        $temp_path = get_custom_file_base() . '/temp';
+        $temp_path = get_file_base(true) . '/temp';
         if (!file_exists($temp_path)) {
             make_missing_directory($temp_path);
         }

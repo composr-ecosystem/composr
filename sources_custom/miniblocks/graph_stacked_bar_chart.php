@@ -36,7 +36,7 @@ $color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/stacked_bar_chart.csv' : $map['file'];
 
 require_code('files_spreadsheets_read');
-$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+$sheet_reader = spreadsheet_open_read(get_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
 $header = $sheet_reader->read_row();
 $num_datasets = count($header) - 1;

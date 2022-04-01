@@ -34,7 +34,7 @@ class Hook_stats_filedump
             return new Tempcode();
         }
 
-        if (!file_exists(get_custom_file_base() . '/uploads/filedump')) {
+        if (!file_exists(get_file_base() . '/uploads/filedump')) {
             return new Tempcode();
         }
 
@@ -45,7 +45,7 @@ class Hook_stats_filedump
         $bits = new Tempcode();
 
         if (get_option('filedump_show_stats_count_total_files') == '1') {
-            $files_cnt = count(get_directory_contents(get_custom_file_base() . '/uploads/filedump'));
+            $files_cnt = count(get_directory_contents(get_file_base() . '/uploads/filedump'));
 
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => 'd420666251bd9e70804f97ff737c775a',
@@ -59,7 +59,7 @@ class Hook_stats_filedump
                 '_GUID' => '995ec487ce5f445f2a74aa483a75910a',
                 'KEY' => do_lang_tempcode('DISK_USAGE'),
                 'RAW_VALUE' => null,
-                'VALUE' => clean_file_size(get_directory_size(get_custom_file_base() . '/uploads/filedump')),
+                'VALUE' => clean_file_size(get_directory_size(get_file_base() . '/uploads/filedump')),
             ]));
         }
         if ($bits->is_empty_shell()) {

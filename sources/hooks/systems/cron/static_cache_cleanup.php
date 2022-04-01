@@ -51,7 +51,7 @@ class Hook_cron_static_cache_cleanup
         //  So we clean out anything very expired so this stuff cannot build up (a little expired stays for fail-over mode).
         //  (Not caching foreign parameters is not possible, as they cannot feasibly be detected, tracking etc.)
 
-        $path = get_custom_file_base() . '/caches/static';
+        $path = get_file_base(true) . '/caches/static';
         $dh = @opendir($path);
         while (($f = readdir($dh)) !== false) {
             if (preg_match('#\.(htm|br|gz|xml)$#', $f) != 0) {

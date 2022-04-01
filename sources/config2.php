@@ -308,39 +308,26 @@ function _multi_lang() : bool
     }
     closedir($_dir);
     if (!in_safe_mode()) {
-        $_dir = @opendir(get_custom_file_base() . '/lang_custom/');
+        $_dir = @opendir(get_file_base() . '/lang_custom/');
         if ($_dir !== false) {
             while (false !== ($file = readdir($_dir))) {
                 if (($file != fallback_lang()) && ($file[0] != '.') && ($file[0] != '_') && ($file != 'index.html') && ($file != 'langs.ini') && ($file != 'map.ini') && (!isset($_langs[$file]))) {
-                    if (is_dir(get_custom_file_base() . '/lang_custom/' . $file)) {
+                    if (is_dir(get_file_base() . '/lang_custom/' . $file)) {
                         $_langs[$file] = 'lang_custom';
                     }
                 }
             }
             closedir($_dir);
         }
-        if (get_custom_file_base() != get_file_base()) {
-            $_dir = @opendir(get_file_base() . '/lang_custom/');
-            if ($_dir !== false) {
-                while (false !== ($file = readdir($_dir))) {
-                    if (($file != fallback_lang()) && ($file[0] != '.') && ($file[0] != '_') && ($file != 'index.html') && ($file != 'langs.ini') && ($file != 'map.ini') && (!isset($_langs[$file]))) {
-                        if (is_dir(get_file_base() . '/lang_custom/' . $file)) {
-                            $_langs[$file] = 'lang_custom';
-                        }
-                    }
-                }
-                closedir($_dir);
-            }
-        }
     }
 
     foreach ($_langs as $lang => $dir) {
-        if (/*optimisation*/is_file((($dir == 'lang_custom') ? get_custom_file_base() : get_file_base()) . '/' . $dir . '/' . $lang . '/global.ini')) {
+        if (/*optimisation*/is_file(get_file_base() . '/' . $dir . '/' . $lang . '/global.ini')) {
             $MULTI_LANG_CACHE = true;
             break;
         }
 
-        $_dir2 = @opendir((($dir == 'lang_custom') ? get_custom_file_base() : get_file_base()) . '/' . $dir . '/' . $lang);
+        $_dir2 = @opendir(get_file_base() . '/' . $dir . '/' . $lang);
         if ($_dir2 !== false) {
             while (false !== ($file2 = readdir($_dir2))) {
                 if (substr($file2, -4) == '.ini') {

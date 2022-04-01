@@ -320,7 +320,7 @@ You could create a [tt]404.php[/tt] if you need it to be dynamic, but it's proba
 
 [title="2"]Notes to programmers / architects[/title]
 
-The GAE API installs a version of PHP, but it does not have most of the limitations of the live version of PHP. Therefore be careful that you apply all the coding standards. In particular, ensure any custom files are written to using Composr's [tt]get_custom_file_base[/tt] function (which will be mapped to Google Cloud Storage live and [tt]data_custom/modules/google_appengine[/tt] in development).
+The GAE API installs a version of PHP, but it does not have most of the limitations of the live version of PHP. Therefore be careful that you apply all the coding standards. In particular, ensure any custom files are written to using Composr's [tt]get_file_base[/tt] function with the [tt]true[/tt] parameter (which will be mapped to Google Cloud Storage live and [tt]data_custom/modules/google_appengine[/tt] in development).
 
 If you are developing and don't have Commandr working yet, the [url="PHP-minishell"]http://php-minishell.appspot.com/[/url] is quite useful for testing the environment.
 

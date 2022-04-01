@@ -103,7 +103,7 @@ class Module_admin_version
         $langs = find_all_langs(true);
         foreach ($zones as $zone) {
             foreach (array_keys($langs) as $lang) {
-                deldir_contents(zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang, true), true);
+                deldir_contents(zone_black_magic_filterer(get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang, true), true);
             }
         }
         */

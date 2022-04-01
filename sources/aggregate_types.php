@@ -243,7 +243,7 @@ function parse_aggregate_xml(bool $display_errors = false) : array
 
     require_code('xml');
 
-    $xml = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? (get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : (get_file_base() . '/data/xml_config/aggregate_types.xml'), FILE_READ_LOCK | FILE_READ_BOM);
+    $xml = cms_file_get_contents_safe(is_file(get_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? (get_file_base() . '/data_custom/xml_config/aggregate_types.xml') : (get_file_base() . '/data/xml_config/aggregate_types.xml'), FILE_READ_LOCK | FILE_READ_BOM);
     if (trim($xml) == '') {
         return [];
     }

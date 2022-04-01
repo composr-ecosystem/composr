@@ -164,15 +164,9 @@ PHP;
 
         $items = [];
         foreach ($rows as $row) {
-            $full_url = $row['url'];
-            if (url_is_local($full_url)) {
-                $full_url = get_custom_base_url() . '/' . $full_url;
-            }
+            $full_url = baseify($row['url']);
 
-            $image_url = $row[($row['content_type'] == 'image') ? 'url' : 'thumb_url'];
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
-            }
+            $image_url = baseify($row[($row['content_type'] == 'image') ? 'url' : 'thumb_url']);
 
             $just_media_row = db_map_restrict($row, ['id', 'the_description']);
 

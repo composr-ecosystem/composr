@@ -79,13 +79,13 @@ class Block_menu
         if ($type != 'dropdown' && $type != 'tree' && $type != 'embossed' && $type != 'popup' && $type != 'select' && $type != 'sitemap' && $type != 'mobile') {
             $exists = file_exists(get_file_base() . '/themes/default/templates/MENU_BRANCH_' . $type . '.tpl');
             if (!$exists) {
-                $exists = file_exists(get_custom_file_base() . '/themes/default/templates_custom/MENU_BRANCH_' . $type . '.tpl');
+                $exists = file_exists(get_file_base() . '/themes/default/templates_custom/MENU_BRANCH_' . $type . '.tpl');
             }
             $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
             if ((!$exists) && ($theme != 'default')) {
-                $exists = file_exists(get_custom_file_base() . '/themes/' . $theme . '/templates/MENU_BRANCH_' . $type . '.tpl');
+                $exists = file_exists(get_file_base() . '/themes/' . $theme . '/templates/MENU_BRANCH_' . $type . '.tpl');
                 if (!$exists) {
-                    $exists = file_exists(get_custom_file_base() . '/themes/' . $theme . '/templates_custom/MENU_BRANCH_' . $type . '.tpl');
+                    $exists = file_exists(get_file_base() . '/themes/' . $theme . '/templates_custom/MENU_BRANCH_' . $type . '.tpl');
                 }
             }
             if (!$exists) {

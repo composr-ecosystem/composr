@@ -131,7 +131,7 @@ function lang_string_translation(string $lang_from, string $lang_to, array $lang
 
     // Make changes...
 
-    $lang_to_dir = get_custom_file_base() . '/lang_custom/' . $lang_to;
+    $lang_to_dir = get_file_base(true) . '/lang_custom/' . $lang_to;
     if (!file_exists($lang_to_dir)) {
         require_code('files2');
         make_missing_directory($lang_to_dir);
@@ -196,9 +196,6 @@ function inline_language_editing(string &$codename, ?string $lang)
     $save_path = get_file_base() . '/lang/' . fallback_lang() . '/' . $lang_file . '.ini';
     if (!is_file($save_path)) {
         $save_path = get_file_base() . '/lang_custom/' . fallback_lang() . '/' . $lang_file . '.ini';
-    }
-    if (!is_file($save_path)) {
-        $save_path = get_custom_file_base() . '/lang_custom/' . fallback_lang() . '/' . $lang_file . '.ini';
     }
 
     if (!file_exists(dirname($save_path))) {
@@ -273,27 +270,15 @@ function get_lang_files(?string $lang = null) : array
         }
         closedir($_dir);
     }
-    $_dir = @opendir(get_custom_file_base() . '/lang_custom/' . $lang);
+    $_dir = @opendir(get_file_base() . '/lang_custom/' . $lang);
     if ($_dir !== false) {
         while (false !== ($file = readdir($_dir))) {
-            if (($file[0] != '.') && (substr($file, -4) == '.ini')/* && (!should_ignore_file(get_custom_file_base().'/lang_custom/'.$lang.'/'.$file,0,0))*/) {
+            if (($file[0] != '.') && (substr($file, -4) == '.ini')/* && (!should_ignore_file(get_file_base().'/lang_custom/'.$lang.'/'.$file,0,0))*/) {
                 $file = substr($file, 0, strlen($file) - 4);
                 $_lang_files[$file] = 'lang_custom';
             }
         }
         closedir($_dir);
-    }
-    if (get_file_base() != get_custom_file_base()) {
-        $_dir = @opendir(get_file_base() . '/lang_custom/' . $lang);
-        if ($_dir !== false) {
-            while (false !== ($file = readdir($_dir))) {
-                if (($file != '.') && ($file != '..') && (substr($file, -4) == '.ini') && (!should_ignore_file(get_file_base() . '/lang_custom/' . $lang . '/' . $file))) {
-                    $file = substr($file, 0, strlen($file) - 4);
-                    $_lang_files[$file] = 'lang_custom';
-                }
-            }
-            closedir($_dir);
-        }
     }
 
     return $_lang_files;
@@ -439,7 +424,7 @@ function lookup_language_full_name(string $code) : string
     if ($LANGS_MAP_CACHE === null) {
         require_code('files');
         $map_file_a = get_file_base() . '/lang/langs.ini';
-        $map_file_b = get_custom_file_base() . '/lang_custom/langs.ini';
+        $map_file_b = get_file_base() . '/lang_custom/langs.ini';
         if (!is_file($map_file_b)) {
             $map_file_b = $map_file_a;
         }

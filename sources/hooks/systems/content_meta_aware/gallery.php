@@ -204,28 +204,18 @@ class Hook_content_meta_aware_gallery extends Hook_CMA
 function generate_gallery_entry_image_url(array $row) : string
 {
     if ($row['rep_image'] != '') {
-        $image_url = $row['rep_image'];
-        if (url_is_local($image_url)) {
-            $image_url = get_custom_base_url() . '/' . $image_url;
-        }
-        return $image_url;
+        return baseify($row['rep_image']);
     }
 
     if (addon_installed('galleries')) {
         $image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'url', ['cat' => $row['name']]);
         if (!cms_empty_safe($image_url)) {
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
-            }
-            return $image_url;
+            return baseify($image_url);
         }
 
         $image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $row['name']]);
         if (!cms_empty_safe($image_url)) {
-            if (url_is_local($image_url)) {
-                $image_url = get_custom_base_url() . '/' . $image_url;
-            }
-            return $image_url;
+            return baseify($image_url);
         }
     }
 

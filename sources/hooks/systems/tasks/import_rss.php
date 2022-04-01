@@ -192,9 +192,9 @@ class Hook_task_import_rss
                 }
 
                 // Work out rep-image
-                if (!file_exists(get_custom_file_base() . '/uploads/repimages')) {
+                if (!file_exists(get_file_base(true) . '/uploads/repimages')) {
                     require_code('files2');
-                    make_missing_directory(get_custom_file_base() . '/uploads/repimages');
+                    make_missing_directory(get_file_base(true) . '/uploads/repimages');
                 }
                 $rep_image = '';
                 if (array_key_exists('rep_image', $item)) {
@@ -263,7 +263,7 @@ class Hook_task_import_rss
                 $zone = 'site';
                 $lang = fallback_lang();
                 $file = preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $post_name); // Filter non-alphanumeric characters
-                $full_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang . '/' . $file . '.txt');
+                $full_path = zone_black_magic_filterer(get_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang . '/' . $file . '.txt');
 
                 // Content
                 $_content = "[title]" . comcode_escape($item['title']) . "[/title]\n\n";

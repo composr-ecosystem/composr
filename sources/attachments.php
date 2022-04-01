@@ -64,11 +64,8 @@ function render_attachment(string $tag, array $attributes, array $attachment_row
     }
 
     // Work out URL, going through the attachment frontend script
-    $url_safe = $attachment_row['a_url'];
-    if (url_is_local($url_safe)) {
-        $url_safe = get_custom_base_url() . '/' . $url_safe;
-    }
-    $url = null;
+    $url_safe = baseify($attachment_row['a_url']);
+    $url = mixed();
     $is_bin = (substr($url_safe, -4) == '.bin') || (substr($url_safe, -4) == '.dat')/*LEGACY*/;
     if ($tag == 'attachment' || $is_bin) {
         $url = new Tempcode();
@@ -243,7 +240,7 @@ function attachments_script()
         return;
     }
 
-    $_full = get_custom_file_base() . '/' . rawurldecode($full);
+    $_full = get_file_base() . '/' . rawurldecode($full);
     if (!file_exists($_full)) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', 'url:' . escape_html($full))); // File is missing, we can't do anything
     }

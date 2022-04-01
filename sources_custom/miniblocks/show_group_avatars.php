@@ -70,10 +70,7 @@ $rows = $GLOBALS['FORUM_DB']->query($query, $limit);
 foreach ($rows as $row) {
     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['id'], true);
 
-    $avatar_url = $row['m_avatar_url'];
-    if (url_is_local($avatar_url)) {
-        $avatar_url = get_custom_base_url() . '/' . $avatar_url;
-    }
+    $avatar_url = baseify($row['m_avatar_url']);
 
     $username = $GLOBALS['FORUM_DRIVER']->get_username($row['id']);
 

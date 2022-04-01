@@ -36,7 +36,7 @@ $file = empty($map['file']) ? 'uploads/website_specific/graph_test/line_chart.cs
 
 $datasets = [];
 require_code('files_spreadsheets_read');
-$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+$sheet_reader = spreadsheet_open_read(get_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 $x_labels = $sheet_reader->read_row();
 array_shift($x_labels); // Irrelevant corner
 while (($line = $sheet_reader->read_row()) !== false) {

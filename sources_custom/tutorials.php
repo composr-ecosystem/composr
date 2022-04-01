@@ -144,7 +144,7 @@ function list_tutorials()
 {
     $tutorials = [];
 
-    $cache_path = get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin';
+    $cache_path = get_file_base() . '/uploads/website_specific/tutorial_sigs.bin';
     if ((is_file($cache_path)) && (filemtime($cache_path) > time() - 60 * 60/*1hr cache*/) && (get_param_integer('keep_tutorial_test', 0) == 0)) {
         return unserialize(cms_file_get_contents_safe($cache_path, FILE_READ_LOCK));
     }

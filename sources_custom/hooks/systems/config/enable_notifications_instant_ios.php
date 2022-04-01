@@ -50,7 +50,7 @@ class Hook_config_enable_notifications_instant_ios
             return null;
         }
 
-        if (!is_file(get_custom_file_base() . '/data_custom/modules/ios/server_certificates.pem')) {
+        if (!is_file(get_file_base() . '/data_custom/modules/ios/server_certificates.pem')) {
             return null;
         }
 

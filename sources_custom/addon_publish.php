@@ -203,11 +203,11 @@ function get_addons_list_under_category($category_name, $version_branch)
         require_code('files');
 
         foreach (['uploads/downloads', 'exports/addons'] as $dir) {
-            $dh = opendir(get_custom_file_base() . '/' . $dir);
+            $dh = opendir(get_file_base() . '/' . $dir);
             while (($file = readdir($dh)) !== false) {
                 $matches = [];
                 if (preg_match('#^(\w+)-' . preg_quote($version_branch, '#') . '.tar#', $file, $matches) != 0) {
-                    $path = get_custom_file_base() . '/' . $dir . '/' . $file;
+                    $path = get_file_base() . '/' . $dir . '/' . $file;
                     $tar = tar_open($path, 'rb');
                     $info_file = tar_get_file($tar, 'addon.inf', true);
                     if ($info_file === null) {

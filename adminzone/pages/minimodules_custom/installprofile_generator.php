@@ -32,10 +32,7 @@ require_code('addons2');
 function find_blocks_in_page($page)
 {
     $blocks = [];
-    $page_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt';
-    if (!is_file($page_path)) {
-        $page_path = get_custom_file_base() . '/pages/comcode/' . get_site_default_lang() . '/' . $page . '.txt';
-    }
+    $page_path = get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt';
     if (is_file($page_path)) {
         $page_contents = cms_file_get_contents_safe($page_path, FILE_READ_LOCK);
         $matches = [];

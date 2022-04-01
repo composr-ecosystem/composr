@@ -44,7 +44,7 @@ class Hook_commandr_command_obfuscate_directory
             if (substr($dir, -1) == '/') {
                 $dir = substr($dir, 0, strlen($dir) - 1);
             }
-            $root_path = get_custom_file_base() . '/' . $dir;
+            $root_path = get_file_base(true) . '/' . $dir;
 
             if (!is_dir($root_path)) {
                 return ['', '', '', do_lang('NOT_A_DIR', '1')];
@@ -88,7 +88,7 @@ class Hook_commandr_command_obfuscate_directory
                         $obfuscated_filename = $obfuscated_filename_stub . '.' . $ext;
                     }
 
-                    $full_path = get_custom_file_base() . '/' . $dir . '/' . $path;
+                    $full_path = get_file_base(true) . '/' . $dir . '/' . $path;
                     $obfuscated_full_path = dirname($full_path) . '/' . $obfuscated_filename;
                 } while (file_exists($obfuscated_full_path));
 

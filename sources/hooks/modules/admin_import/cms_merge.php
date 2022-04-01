@@ -1931,7 +1931,7 @@ class Hook_import_cms_merge
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'theme_images WHERE path LIKE \'' . db_encode_like('%/images\_custom/%') . '\'');
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            if (!is_dir(get_file_base() . '/themes/' . $row['theme']) && !is_dir(get_custom_file_base() . '/themes/' . $row['theme'])) {
+            if (!is_dir(get_file_base() . '/themes/' . $row['theme'])) {
                 continue;
             }
 

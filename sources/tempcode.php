@@ -866,8 +866,6 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
     if (!isset($theme)) {
         $theme = isset($USER_THEME_CACHE) ? $USER_THEME_CACHE : (((isset($FORUM_DRIVER)) && (is_object($FORUM_DRIVER)) && (method_exists($FORUM_DRIVER, 'get_theme'))) ? filter_naughty($FORUM_DRIVER->get_theme()) : 'default');
     }
-    $prefix_default = get_file_base() . '/themes/';
-    $prefix = get_custom_file_base() . '/themes/';
 
     // Is it structurally cached on disk yet?
     $_data = mixed();
@@ -899,7 +897,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
     // Load from template cache?
     if ($may_use_template_cache) {
         if ($found !== null) {
-            $tcp_path_prefix = $prefix . $theme . '/templates_cached/' . $lang . '/';
+            $tcp_path_prefix = get_file_base(true) . '/themes/' . $theme . '/templates_cached/' . $lang . '/';
             $tcp_path_suffix = $found[2] . '.tcp';
             $tcp_path = $tcp_path_prefix . $codename . ($non_custom_only ? '_non_custom_only' : '') . $tcp_path_suffix;
 
@@ -911,21 +909,9 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
                 $support_smart_decaching = support_smart_decaching();
                 $found_disk_file = false;
                 if ($support_smart_decaching) {
-                    if (get_custom_file_base() !== get_file_base()) {
-                        $file_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $codename . $found[2];
-                        if (is_file($file_path)) {
-                            $found_disk_file = true;
-                        } else {
-                            $file_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $codename . $found[2];
-                            if (is_file($file_path)) {
-                                $found_disk_file = true;
-                            }
-                        }
-                    } else {
-                        $file_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $codename . $found[2];
-                        if (is_file($file_path)) {
-                            $found_disk_file = true;
-                        }
+                    $file_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $codename . $found[2];
+                    if (is_file($file_path)) {
+                        $found_disk_file = true;
                     }
                     if (GOOGLE_APPENGINE) {
                         gae_optimistic_cache(true);
@@ -1189,10 +1175,7 @@ function dependencies_are_good(string $codename, string $suffix, string $directo
         }
 
         $found = find_template_place($d, '', $theme, $suffix, $directory);
-        $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
-        }
+        $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $d . $found[2];
 
         $mtime = @filemtime($full_path);
         if (($mtime !== false) && ($mtime > $tcp_time)) {

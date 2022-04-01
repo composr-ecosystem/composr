@@ -46,7 +46,7 @@ class Hook_commandr_command_untar
 
             $path = $parameters[0];
 
-            if (!is_file(get_custom_file_base() . '/' . $path)) {
+            if (!is_file(get_file_base() . '/' . $path)) {
                 return ['', '', '', do_lang('MISSING_RESOURCE')];
             }
 
@@ -54,7 +54,7 @@ class Hook_commandr_command_untar
 
             require_code('tar');
 
-            $myfile = tar_open(get_custom_file_base() . '/' . $path, 'rb');
+            $myfile = tar_open(get_file_base() . '/' . $path, 'rb');
             tar_extract_to_folder($myfile, '');
             tar_close($myfile);
 

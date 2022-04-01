@@ -20,12 +20,12 @@ class __static_caching_test_set extends cms_test_case
 {
     public function testStaticCacheWorks()
     {
-        $panel_text = @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . @file_get_contents(get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt');
+        $panel_text = @file_get_contents(get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt') . @file_get_contents(get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt');
         if ((strpos($panel_text, 'main_newsletter_signup') !== false) || (strpos($panel_text, 'side_newsletter') !== false) || (strpos($panel_text, 'side_shoutbox') !== false)) {
             $this->assertTrue(false, 'Cannot have a POSTing block in a side panel for this test');
         }
 
-        $config_file_path = get_file_base() . '/_config.php';
+        $config_file_path = get_file_base(false) . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_inclusion_list']='.*';");
         fix_permissions($config_file_path);
@@ -39,7 +39,7 @@ class __static_caching_test_set extends cms_test_case
 
         if (get_param_integer('early_debug', 0) == 1) {
             require_code('files2');
-            var_dump(get_directory_contents(get_custom_file_base() . '/caches/static'));
+            var_dump(get_directory_contents(get_file_base(true) . '/caches/static'));
 
             var_dump($result);
         }
@@ -68,7 +68,7 @@ class __static_caching_test_set extends cms_test_case
 
         $test_url = get_base_url() . '/does-not-exist.bin';
 
-        $config_file_path = get_file_base() . '/_config.php';
+        $config_file_path = get_file_base(false) . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_inclusion_list']='.*';\n\$SITE_INFO['failover_mode'] = 'auto_off';\n\$SITE_INFO['failover_check_urls'] = '" . $test_url . "';\n\$SITE_INFO['failover_cache_miss_message'] = 'FAILOVER_CACHE_MISS';\n\$SITE_INFO['failover_email_contact'] = '';\$SITE_INFO['base_url'] = '" . addslashes(get_base_url()) . "';\n");
         fix_permissions($config_file_path);
@@ -86,7 +86,7 @@ class __static_caching_test_set extends cms_test_case
         $this->assertTrue($result_ob->message === '200', 'Failed to call failover script');
 
         clearstatcache();
-        $ccc = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
+        $ccc = cms_file_get_contents_safe(get_file_base(false) . '/_config.php', FILE_READ_LOCK);
         $this->assertTrue(strpos($ccc, "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not...' . $ccc);
 
         $result = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0]); // Should be failed over, but cached

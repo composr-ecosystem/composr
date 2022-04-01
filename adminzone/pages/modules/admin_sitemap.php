@@ -197,7 +197,7 @@ class Module_admin_sitemap
                 }
                 $file->attach(do_lang_tempcode('ZONE_WRITE', escape_html($zone), escape_html($page)));
 
-                if ((get_file_base() != get_custom_file_base()) && ($type != 'comcode_custom')) {
+                if (($GLOBALS['CURRENT_SHARE_USER'] !== null) && ($type != 'comcode_custom')) {
                     warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
                 }
             }
@@ -237,7 +237,7 @@ class Module_admin_sitemap
             }
 
             if (post_param_integer('page__' . $page, 0) == 1) {
-                if ((get_file_base() != get_custom_file_base()) && (strpos($type, 'comcode_custom') !== false)) {
+                if (($GLOBALS['CURRENT_SHARE_USER'] !== null) && ($type != 'comcode_custom')) {
                     warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
                 }
 
@@ -347,7 +347,7 @@ class Module_admin_sitemap
 
                 $_page = $page . '.' . get_page_type_file_extension($type);
                 $source_path = $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $_page;
-                $destination_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page);
+                $destination_path = zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page);
                 if (file_exists($destination_path)) {
                     if (!$cannot_move->is_empty()) {
                         $cannot_move->attach(do_lang_tempcode('LIST_SEP'));
@@ -381,33 +381,33 @@ class Module_admin_sitemap
                 if (substr($type, 0, 7) == 'comcode') {
                     rename_live_comcode_page($zone, $page, $new_zone, $page);
                 }
-                if (file_exists(zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page))) {
+                if (file_exists(zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page))) {
                     continue;
                 }
 
-                if (file_exists(zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page))) {
+                if (file_exists(zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page))) {
                     if ($afm_needed) {
                         afm_move(
                             zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page, true),
                             zone_black_magic_filterer(filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page, true)
                         );
                     } else {
-                        $old_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page);
-                        $new_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page);
+                        $old_path = zone_black_magic_filterer(get_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page);
+                        $new_path = zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page);
                         rename($old_path, $new_path);
                     }
                 }
 
                 // If a non-overridden one is there too, need to move that too
-                if ((strpos($type, '_custom') !== false) && (file_exists(zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page))) && (!file_exists(zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page)))) {
+                if ((strpos($type, '_custom') !== false) && (file_exists(zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page))) && (!file_exists(zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page)))) {
                     if ($afm_needed) {
                         afm_move(
                             zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page, true),
                             zone_black_magic_filterer(filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page, true)
                         );
                     } else {
-                        $old_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page);
-                        $new_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page);
+                        $old_path = zone_black_magic_filterer(get_file_base() . '/' . filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page);
+                        $new_path = zone_black_magic_filterer(get_file_base(true) . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty(str_replace('_custom', '', $type)) . '/' . $_page);
                         rename($old_path, $new_path);
                     }
                 }

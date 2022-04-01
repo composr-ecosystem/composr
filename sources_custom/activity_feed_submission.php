@@ -260,7 +260,7 @@ function activity_feed_removal_script()
  */
 function log_newest_activity(int $id, int $timeout = 1000, bool $force = false)
 {
-    $file_path = get_custom_file_base() . '/data_custom/latest_activity.bin';
+    $file_path = get_file_base(true) . '/data_custom/latest_activity.bin';
 
     $old_id = @cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
     if (($force) || ($old_id === false) || (intval($old_id) < $id)) {

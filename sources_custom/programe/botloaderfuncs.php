@@ -946,7 +946,7 @@ function loadstartupinc($fileid){
 //	print "<font size='3'>Loading startup.xml<BR></font>\n";
 	$learnfiles = array(); # This array will hold the files to LEARN
 
-	$file = get_custom_file_base()."/sources_custom/programe/aiml/" . "startup.xml";
+	$file = get_file_base()."/sources_custom/programe/aiml/" . "startup.xml";
 	$xml_parser = xml_parser_create();
 	xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
 	xml_set_element_handler($xml_parser, "startS", "endS");
@@ -1027,7 +1027,7 @@ function loadstartup()
     $learnfiles = array(); // This array will hold the files to LEARN
 
 
-    $file = get_custom_file_base()."/sources_custom/programe/aiml/" . "startup.xml";
+    $file = get_file_base()."/sources_custom/programe/aiml/" . "startup.xml";
     $xml_parser = xml_parser_create();
     xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
     xml_set_element_handler($xml_parser, "startS", "endS");
@@ -1073,7 +1073,7 @@ function learnallfiles($curbot)
 {
     global $learnfiles;
 
-    $dir=opendir (get_custom_file_base()."/sources_custom/programe/aiml/");
+    $dir=opendir (get_file_base()."/sources_custom/programe/aiml/");
     while ($file = readdir($dir)) {
 
         if (substr($file,strpos($file,"."))==".aiml"){
@@ -1148,7 +1148,7 @@ function learn($file)
         $file=$file;
     }
     else {
-        $file=get_custom_file_base()."/sources_custom/programe/aiml/" . $file;
+        $file=get_file_base()."/sources_custom/programe/aiml/" . $file;
     }
 
     if (!($fp = fopen($file, "r"))) {

@@ -145,7 +145,7 @@ function _download_associated_media(string &$text, string $old_url)
     if (!is_our_server(parse_url($old_url, PHP_URL_HOST))) {
         require_code('crypt');
         $temp_filename = get_secure_random_string();
-        $temp_dir = get_custom_file_base() . '/uploads/external_media';
+        $temp_dir = get_file_base(true) . '/uploads/external_media';
         if (!file_exists($temp_dir)) {
             require_code('files2');
             make_missing_directory($temp_dir);
@@ -186,7 +186,7 @@ function _download_associated_media(string &$text, string $old_url)
         rename($temp_path, $new_path);
         fix_permissions($new_path);
 
-        $new_url = get_custom_base_url() . '/' . $new_url;
+        $new_url = baseify_local_url($new_url);
         $text = str_replace($old_url, $new_url, $text);
     }
 }

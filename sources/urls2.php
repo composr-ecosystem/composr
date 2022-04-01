@@ -325,8 +325,8 @@ function _convert_url_to_path(string $url) : ?string
     }
 
     $url = str_replace('://www.', '://', $url);
-    $bu = str_replace('://www.', '://', get_base_url());
-    $cbu = str_replace('://www.', '://', get_custom_base_url());
+    $bu = str_replace('://www.', '://', _get_base_url_custom());
+    $cbu = str_replace('://www.', '://', _get_base_url_basic());
 
     if (
         (strpos($url, '://') === false) ||
@@ -341,10 +341,7 @@ function _convert_url_to_path(string $url) : ?string
             $file_path_stub = urldecode($url);
         }
         if (((substr($file_path_stub, 0, 7) == 'themes/') && (substr($file_path_stub, 0, 15) != 'themes/default/')) || (substr($file_path_stub, 0, 8) == 'uploads/') || (strpos($file_path_stub, '_custom/') !== false)) {
-            $_file_path_stub = get_custom_file_base() . '/' . $file_path_stub;
-            if (!is_file($_file_path_stub)) {
-                $_file_path_stub = get_file_base() . '/' . $file_path_stub;
-            }
+            $_file_path_stub = get_file_base() . '/' . $file_path_stub;
         } else {
             $_file_path_stub = get_file_base() . '/' . $file_path_stub;
         }
@@ -1038,7 +1035,7 @@ function find_unique_path(string $subdir, ?string $filename = null, bool $lock_i
         } else {
             $adjusted_filename = $basename . '_' . strval($i) . '.' . $ext;
         }
-        $path = get_custom_file_base() . '/' . $subdir . '/' . $adjusted_filename;
+        $path = get_file_base(true) . '/' . $subdir . '/' . $adjusted_filename;
         $i++;
 
         if ((is_file($path)) && ($conflict_okay_if_matching !== null)) {

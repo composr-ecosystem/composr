@@ -23,7 +23,7 @@ class mail_test_set extends cms_test_case
         foreach (['MAIL', 'NOTIFICATIONS'] as $mode) {
             $a = cms_tempnam();
             cms_file_put_contents_safe($a, 'test');
-            $b = get_custom_file_base() . '/temp/' . uniqid('', true);
+            $b = get_file_base(true) . '/temp/' . uniqid('', true);
             cms_file_put_contents_safe($b, 'test');
             $attachments = [$a => 'foo.txt', $b => 'bar.txt'];
 

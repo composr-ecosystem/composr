@@ -506,10 +506,10 @@ abstract class Hook_Health_Check
 
             list($zone, $attributes) = page_link_decode($page_link);
             $page = $attributes['page'];
-            $path_details = find_comcode_page(user_lang(), $page, $zone);
-            if ($path_details[2] != '') {
-                $comcode = cms_file_get_contents_safe($path_details[2], FILE_READ_LOCK | FILE_READ_BOM);
-                $html = load_comcode_page($path_details[1], $zone, $page, $path_details[0], true);
+            list($string, $file_path) = find_comcode_page(user_lang(), $page, $zone);
+            if ($string) {
+                $comcode = cms_file_get_contents_safe($file_path, FILE_READ_LOCK | FILE_READ_BOM);
+                $html = load_comcode_page($string, $zone, $page, true);
                 $ret = [$comcode, $html->evaluate(), $zone, $page];
                 $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE[$page_link] = $ret;
                 return $ret;

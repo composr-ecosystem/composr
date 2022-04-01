@@ -352,7 +352,7 @@ class Hook_import_html_site
             $cruft['FOOTER'] = $footer_to_write;
             $global_to_write = $header_to_write . '{MIDDLE}' . $footer_to_write;
         }
-        $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/templates_custom/GLOBAL_HTML_WRAP.tpl';
+        $path = get_file_base(true) . '/themes/' . filter_naughty($theme) . '/templates_custom/GLOBAL_HTML_WRAP.tpl';
         cms_file_put_contents_safe($path, $global_to_write, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
         // Extract site name from <title> tag, based on common consistency (largest common substring)
@@ -418,7 +418,7 @@ class Hook_import_html_site
             }
 
             if (substr($content_file, -4) == '.php') {
-                $file_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/minimodules_custom/' . $page . '.php');
+                $file_path = zone_black_magic_filterer(get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/minimodules_custom/' . $page . '.php');
                 cms_file_put_contents_safe($file_path, $file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
             } else {
                 $filtered = $this->_html_filter($file_contents, $fix_html, $base_url, $files, $file_base);
@@ -458,7 +458,7 @@ class Hook_import_html_site
                         $filtered = "<h1>" . $page_title . "</h1>\n\n" . $filtered;
                     }
 
-                    $file_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt');
+                    $file_path = zone_black_magic_filterer(get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt');
 
                     cms_file_put_contents_safe($file_path, '[semihtml]' . $filtered . '[/semihtml]', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                 } else { // Or copy htm/html's as Comcode-converted instead, if the user chose this
@@ -469,7 +469,7 @@ class Hook_import_html_site
 
                     require_code('comcode_from_html');
                     $comcode = semihtml_to_comcode($filtered);
-                    $file_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt');
+                    $file_path = zone_black_magic_filterer(get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt');
                     cms_file_put_contents_safe($file_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
                 }
             }
@@ -481,7 +481,7 @@ class Hook_import_html_site
                 continue;
             }
 
-            $path = get_custom_file_base() . '/uploads/website_specific/' . $file;
+            $path = get_file_base(true) . '/uploads/website_specific/' . $file;
             if (!file_exists($path)) {
                 require_code('files2');
                 make_missing_directory($path);
@@ -493,7 +493,7 @@ class Hook_import_html_site
         foreach (['site/', ''] as $zone) {
             $panels = ['panel_left', 'panel_right'];
             foreach ($panels as $panel) {
-                $path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . 'pages/comcode_custom/' . filter_naughty(fallback_lang()) . '/' . filter_naughty($panel) . '.txt');
+                $path = zone_black_magic_filterer(get_file_base(true) . (($zone == '') ? '' : '/') . $zone . 'pages/comcode_custom/' . filter_naughty(fallback_lang()) . '/' . filter_naughty($panel) . '.txt');
                 cms_file_put_contents_safe($path, '', FILE_WRITE_FIX_PERMISSIONS);
             }
         }
@@ -561,7 +561,7 @@ class Hook_import_html_site
                     $file_contents = str_replace($matches[2][$i], '{$PAGE_LINK*,' . $zone . ':' . $page . '}', $file_contents);
                 } else {
                     if (in_array($decoded_url, $files)) {
-                        $target = get_custom_file_base() . '/uploads/website_specific/' . $decoded_url;
+                        $target = get_file_base(true) . '/uploads/website_specific/' . $decoded_url;
                         $create_path = $target;
                         @mkdir(dirname($target), 0777, true);
                         @unlink($target);

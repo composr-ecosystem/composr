@@ -106,8 +106,8 @@ function uninstall_cns()
 
     require_code('files');
     if (!$GLOBALS['DEV_MODE']) {
-        deldir_contents(get_custom_file_base() . '/uploads/cns_avatars', true);
-        deldir_contents(get_custom_file_base() . '/uploads/cns_photos', true);
+        deldir_contents(get_file_base(true) . '/uploads/cns_avatars', true);
+        deldir_contents(get_file_base(true) . '/uploads/cns_photos', true);
     }
 
     delete_attachments('cns_post');
@@ -413,7 +413,7 @@ function install_cns(?float $upgrade_from = null)
         do {
             $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_photo_thumb_url'], [], ' AND m_photo_thumb_url LIKE \'' . db_encode_like('uploads/cns_photos_thumbs/%') . '\' ORDER BY id', $max, $start);
             foreach ($rows as $row) {
-                @unlink(get_custom_file_base() . '/' . urldecode($row['m_photo_thumb_url']));
+                @unlink(get_file_base(true) . '/' . urldecode($row['m_photo_thumb_url']));
             }
             $start += $max;
         } while (!empty($rows));

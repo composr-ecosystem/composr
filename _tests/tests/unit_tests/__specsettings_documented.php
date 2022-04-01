@@ -155,12 +155,12 @@ class __specsettings_documented_test_set extends cms_test_case
             $config .= '$SITE_INFO[\'' . $key . '\'] = \'\';' . "\n";
         }
         $config .= '?' . '>';
-        $old_config = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
+        $old_config = cms_file_get_contents_safe(get_file_base(false) . '/_config.php', FILE_READ_LOCK);
         $config .= $old_config;
-        file_put_contents(get_file_base() . '/_config.php', $config);
+        file_put_contents(get_file_base(false) . '/_config.php', $config);
         $this->assertTrue(is_string(http_get_contents(get_base_url() . '/index.php', ['trigger_error' => false])));
-        file_put_contents(get_file_base() . '/_config.php', $old_config);
-        fix_permissions(get_file_base() . '/_config.php');
+        file_put_contents(get_file_base(false) . '/_config.php', $old_config);
+        fix_permissions(get_file_base(false) . '/_config.php');
     }
 
     public function testValueOptions()

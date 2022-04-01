@@ -92,10 +92,7 @@ class Hook_rss_downloads
 
                 $keep = symbol_tempcode('KEEP');
                 $enclosure_url = find_script('dload') . '?id=' . $id . $keep->evaluate();
-                $full_url = $row['url'];
-                if (url_is_local($full_url)) {
-                    $full_url = get_custom_base_url() . '/' . $full_url;
-                }
+                $full_url = baseify($row['url']);
                 list($enclosure_length,) = get_enclosure_details($row['url'], $full_url);
                 $enclosure_type = 'application/octet-stream';
 

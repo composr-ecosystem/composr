@@ -363,7 +363,7 @@ class Module_admin_themewizard
             $font_code .= '
                 @font-face {
                     font-family: ' . $font . ';
-                    src: url(\'' . addslashes(get_custom_base_url() . '/' . $_font . '.ttf') . '\');
+                    src: url(\'' . addslashes(baseify_local_url($_font . '.ttf')) . '\');
                 }
             ';
         }
@@ -378,7 +378,7 @@ class Module_admin_themewizard
         if ($theme == '-1') {
             $theme = preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', get_site_name());
         }
-        if (!file_exists(get_custom_file_base() . '/themes/' . $theme)) {
+        if (!file_exists(get_file_base() . '/themes/' . $theme)) {
             $theme = 'default';
         }
         require_code('themes2');
@@ -426,12 +426,12 @@ class Module_admin_themewizard
                         $path = 'themes/' . $logo_save_theme . '/images_custom/' . $logo_output_theme_image . '.png';
                     }
 
-                    if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
+                    if (!file_exists(get_file_base(true) . '/' . dirname($path))) {
                         require_code('files2');
-                        make_missing_directory(get_custom_file_base() . '/' . dirname($path), true);
+                        make_missing_directory(get_file_base(true) . '/' . dirname($path), true);
                     }
 
-                    cms_imagesave($img, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
+                    cms_imagesave($img, get_file_base(true) . '/' . $path) or intelligent_write_error($path);
                     actual_edit_theme_image('logo/' . $logo_output_theme_image, $logo_save_theme, $lang, 'logo/' . $logo_output_theme_image, $path);
                 }
                 imagedestroy($img);

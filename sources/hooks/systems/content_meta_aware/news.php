@@ -160,11 +160,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
 function generate_news_image_url(array $row) : string
 {
     if ($row['news_image'] != '') {
-        $ret = $row['news_image'];
-        if (url_is_local($ret)) {
-            $ret = get_custom_base_url() . '/' . $ret;
-        }
-        return $ret;
+        return baseify($row['news_image']);
     }
 
     require_code('news');

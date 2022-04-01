@@ -80,10 +80,10 @@ function do_user_export($to_file = true)
 
         // Move temporary file to final output path and sync etc
         require_code('files');
-        make_missing_directory(get_custom_file_base() . '/' . dirname(USER_EXPORT_PATH));
-        @unlink(get_custom_file_base() . '/' . USER_EXPORT_PATH);
-        rename($outfile_path, get_custom_file_base() . '/' . USER_EXPORT_PATH);
-        fix_permissions(get_custom_file_base() . '/' . USER_EXPORT_PATH);
+        make_missing_directory(get_file_base(true) . '/' . dirname(USER_EXPORT_PATH));
+        @unlink(get_file_base(true) . '/' . USER_EXPORT_PATH);
+        rename($outfile_path, get_file_base(true) . '/' . USER_EXPORT_PATH);
+        fix_permissions(get_file_base(true) . '/' . USER_EXPORT_PATH);
     } else {
         $sheet_writer->output_and_exit(basename($outfile_path), true);
     }

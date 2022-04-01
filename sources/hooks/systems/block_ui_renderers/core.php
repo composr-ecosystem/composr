@@ -111,7 +111,7 @@ class Hook_block_ui_renderers_core
                 }
             }
             closedir($dh);
-            $dh = opendir(get_custom_file_base() . '/themes/default/templates_custom/');
+            $dh = opendir(get_file_base() . '/themes/default/templates_custom/');
             while (($file = readdir($dh)) !== false) {
                 if ((preg_match('^MENU_([a-z]+)\.tpl$^', $file, $matches) != 0) && (!file_exists(get_file_base() . '/themes/default/templates/' . $file))) {
                     $options[] = $matches[1];

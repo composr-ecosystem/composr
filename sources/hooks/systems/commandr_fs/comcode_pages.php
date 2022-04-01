@@ -350,10 +350,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
             $result = _request_page($row['the_page'], $row['the_zone'], 'comcode_custom', $lang, false);
             list(, , , $_lang, $_full_path) = $result;
             if ($lang == $_lang) {
-                $full_path = get_custom_file_base() . '/' . $_full_path;
-                if (!is_file($full_path)) {
-                    $full_path = get_file_base() . '/' . $_full_path;
-                }
+                $full_path = get_file_base() . '/' . $_full_path;
                 $text[$lang] = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
             }
         }

@@ -528,7 +528,7 @@ Support multi-site-networks (i.e. site db != forum db)
 | Stability
 | Product development only
 | Composr development mode
-| Remember that Conversr may be run over an M.S.N. (i.e. different URL, not just from the [tt]forum[/tt] zone) and also from a separate database -- don't make false assumptions about databases, tables (e.g. using [tt]SITE_DB[/tt] instead of [tt]FORUM_DB[/tt] and hence wrongly assuming the forum and site always share a database) and file-storage/URLs (e.g. using [tt]get_base_url[/tt] instead of [tt]get_forum_base_url[/tt]). Use the correct APIs for referencing Conversr data and files. As a general rule, any table starting [tt]f_[/tt] is an Conversr table and therefore should be accessed through [tt]FORUM_DB[/tt]. If you are running development mode you will get an error ("Using Conversr queries on the wrong driver") if you use the wrong database object.
+| Remember that Conversr may be run over an M.S.N. (i.e. different URL, not just from the [tt]forum[/tt] zone) and also from a separate database -- don't make false assumptions about databases, tables (e.g. using [tt]SITE_DB[/tt] instead of [tt]FORUM_DB[/tt] and hence wrongly assuming the forum and site always share a database) and file-storage/URLs (e.g. using [tt]get_base_url[/tt] instead of [tt]get_forum_base_url[/tt]). Use the correct APIs for referencing Conversr data and files. As a general rule, any table starting [tt]f_[/tt] is a Conversr table and therefore should be accessed through [tt]FORUM_DB[/tt]. If you are running development mode you will get an error ("Using Conversr queries on the wrong driver") if you use the wrong database object.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Handle errors in failure-prone function calls (e.g. [tt]fopen[/tt])
@@ -837,7 +837,7 @@ Avoid relative paths
 | Portability
 | All development
 | ocProducts PHP version
-| Don't assume any current directory (either URL or filesystem): use full paths (using [tt]get_file_base[/tt] or [tt]get_custom_file_base[/tt] to start off the full path).
+| Don't assume any current directory (either URL or filesystem): use full paths (using [tt]get_file_base[/tt] to start off the full path).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Don't assume where a module is located when you link[/color]
@@ -868,7 +868,7 @@ Avoid relative paths
 | Never put custom/user-files/logs in a non-custom directory, and never put code files in a custom directory if they are going to be distributed with Composr. Generally don't put files in places where they don't belong.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Use the [tt]get_custom_base_url[/tt], [tt]get_custom_file_base[/tt], [tt]get_base_url[/tt] and [tt]get_file_base[/tt] distinctions properly[/color]
+[color="red"]Use the [tt]get_base_url[/tt] and [tt]get_file_base[/tt] functions properly[/color]
 | Shared installs: multiple sites with one Composr install, GAE, unreliable include paths and default execution paths
 | Product development only
 | Manually

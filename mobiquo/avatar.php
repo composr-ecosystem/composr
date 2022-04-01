@@ -32,22 +32,18 @@ if (isset($_GET['user_id'])) {
 
 cms_ini_set('ocproducts.xss_detect', '0');
 
-$url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
-if ($url == '') {
+$url_or_path = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
+if ($url_or_path == '') {
     // Transparent 1x1 PNG
     header('Content-Type: image/png');
     echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=');
     return;
 }
 
-$stem = get_base_url() . '/';
-if (substr($url, 0, strlen($stem)) == $stem) {
-    $url = get_file_base() . '/' . rawurldecode(substr($url, strlen($stem)));
-} else {
-    $stem = get_custom_base_url() . '/';
-    if (substr($url, 0, strlen($stem)) == $stem) {
-        $url = get_custom_file_base() . '/' . rawurldecode(substr($url, strlen($stem)));
-    }
+$relative_part = '';
+$custom_dir = null;
+if (url_is_local($url_or_path, $relative_part, $custom_dir)) {
+    $url_or_path = get_file_base($custom_dir) . '/' . rawurldecode($relative_part);
 }
 
 require_code('mime_types');

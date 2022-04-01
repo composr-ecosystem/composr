@@ -631,7 +631,7 @@ class Hook_import_ipb2
                 }
                 $primary_group = import_id_remap_get('group', strval($row['mgroup']));
                 $language = ($row['language'] === null) ? '' : cms_strtoupper_ascii($row['language']);
-                if ((!file_exists(get_custom_file_base() . '/lang_custom/' . $language)) && (!file_exists(get_file_base() . '/lang/' . $language))) {
+                if ((!file_exists(get_file_base() . '/lang_custom/' . $language)) && (!file_exists(get_file_base() . '/lang/' . $language))) {
                     $language = '';
                 }
 
@@ -749,7 +749,7 @@ class Hook_import_ipb2
 
                     if ($row2['photo_type'] == 'upload') {
                         $filename = rawurldecode($row2['photo_location']);
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_photos/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_custom_file_base() . '/uploads/cns_photos/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_photos/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_file_base(true) . '/uploads/cns_photos/' . $filename))) {
                             $photo_url = 'uploads/cns_photos/' . $filename;
                         } else {
                             if ($STRICT_FILE) {
@@ -779,7 +779,7 @@ class Hook_import_ipb2
                     default:
                         if (substr($row['avatar'], 0, 7) == 'upload:') {
                             $filename = substr($row['avatar'], 7);
-                            if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                            if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                                 $avatar_url = 'uploads/cns_avatars/' . $filename;
                             } else {
                                 if ($STRICT_FILE) {
@@ -789,13 +789,13 @@ class Hook_import_ipb2
                             }
                         } elseif (url_is_local($row['avatar'])) {
                             $filename = rawurldecode($row['avatar']);
-                            if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                            if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($file_base . '/uploads/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                                 $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                             } else {
                                 // Try as a pack avatar then
                                 $filename = rawurldecode($row['avatar']);
                                 $striped_filename = str_replace('/', '_', $filename);
-                                if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename)) || (@rename($file_base . '/style_avatars/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename))) {
+                                if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $striped_filename)) || (@rename($file_base . '/style_avatars/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $striped_filename))) {
                                     $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                                 } else {
                                     if ($STRICT_FILE) {
@@ -1071,8 +1071,8 @@ class Hook_import_ipb2
                 $i = 0;
                 $a_id = [];
                 foreach ($attachments as $attachment) {
-                    $target_path = get_custom_file_base() . '/uploads/attachments/' . $attachment['attach_location'];
-                    if ((file_exists(get_custom_file_base() . '/uploads/attachments/' . $attachment['attach_location'])) || (@rename($file_base . '/uploads/' . $attachment['attach_location'], $target_path))) {
+                    $target_path = get_file_base(true) . '/uploads/attachments/' . $attachment['attach_location'];
+                    if ((file_exists(get_file_base() . '/uploads/attachments/' . $attachment['attach_location'])) || (@rename($file_base . '/uploads/' . $attachment['attach_location'], $target_path))) {
                         $url = 'uploads/attachments/' . $attachment['attach_location'];
                         $thumb_url = '';
                         $a_id[$i] = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $attachment['attach_filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $attachment['attach_file'], 'a_num_downloads' => $attachment['attach_hits'], 'a_last_downloaded_time' => null, 'a_add_time' => $post_date, 'a_description' => ''], true);

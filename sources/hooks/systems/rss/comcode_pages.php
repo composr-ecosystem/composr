@@ -98,7 +98,7 @@ class Hook_rss_comcode_pages
                     continue;
                 }
                 $_zone = $page_request[count($page_request) - 1];
-                $path = get_custom_file_base() . (($_zone == '') ? '' : '/') . $_zone;
+                $path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
                 if (!file_exists($path)) {
                     continue;
                 }

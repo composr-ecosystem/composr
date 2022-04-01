@@ -627,7 +627,7 @@
         }
 
         var soundUrl = 'data/sounds/message_received.mp3',
-            baseUrl = $util.rel((!soundUrl.includes('data_custom') && !soundUrl.includes('uploads/')) ? $cms.getBaseUrl() : $cms.getCustomBaseUrl()),
+            baseUrl = $util.rel($cms.getBaseUrl()),
             soundObject = window.soundManager.createSound({ url: baseUrl + '/' + soundUrl });
 
         if (soundObject && document.hasFocus()/*don't want multiple tabs all pinging*/) {

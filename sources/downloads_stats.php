@@ -38,7 +38,7 @@ function get_download_bandwidth() : int
             $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['url', 'num_downloads'], ['validated' => 1]);
             foreach ($rows as $myrow) {
                 if (url_is_local($myrow['url'])) {
-                    $file = get_custom_file_base() . '/' . rawurldecode($myrow['url']);
+                    $file = get_file_base() . '/' . rawurldecode($myrow['url']);
                     if (file_exists($file)) {
                         $value += filesize($file) * $myrow['num_downloads'];
                     }

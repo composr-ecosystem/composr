@@ -62,7 +62,7 @@ function disable_content_translation()
     push_db_scope_check(false);
     push_query_limiting(false);
 
-    if (get_file_base() != get_custom_file_base()) {
+    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
     if (!multi_lang_content()) {
@@ -144,7 +144,7 @@ function enable_content_translation()
     push_db_scope_check(false);
     push_query_limiting(false);
 
-    if (get_file_base() != get_custom_file_base()) {
+    if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
         warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
     if (multi_lang_content()) {
@@ -257,7 +257,7 @@ function enable_content_translation()
  */
 function _update_base_config_for_content_translation(bool $new_setting)
 {
-    $config_path = get_file_base() . '/_config.php';
+    $config_path = get_file_base(false) . '/_config.php';
     $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
     $has = '$SITE_INFO[\'multi_lang_content\'] = \'' . ($new_setting ? '0' : '1') . '\';';
     $wants = '$SITE_INFO[\'multi_lang_content\'] = \'' . ($new_setting ? '1' : '0') . '\';';

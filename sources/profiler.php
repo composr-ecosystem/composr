@@ -77,7 +77,7 @@ function cms_profile_is_enabled() : bool
     global $PROFILING_ALLOWED, $PROFILING_LINUX_FULL;
     if (!isset($PROFILING_ALLOWED)) {
         $val = get_value('enable_profiler');
-        $PROFILING_ALLOWED = ($val == '1' || $val == '2') && (cms_is_writable(get_custom_file_base() . '/data_custom'));
+        $PROFILING_ALLOWED = ($val == '1' || $val == '2') && (cms_is_writable(get_file_base(true) . '/data_custom'));
         $PROFILING_LINUX_FULL = ($val == '2');
     }
     return $PROFILING_ALLOWED;
@@ -176,7 +176,7 @@ function _cms_profile_log_line(string $line)
     global $PROFILER_FILEHANDLE, $PROFILER_PATH;
     if (!isset($PROFILER_FILEHANDLE)) {
         if (!isset($PROFILER_PATH)) {
-            $PROFILER_PATH = get_custom_file_base() . '/data_custom/profiling';
+            $PROFILER_PATH = get_file_base(true) . '/data_custom/profiling';
             if (is_guest()) {
                 $PROFILER_PATH .= '--guest';
             } else {

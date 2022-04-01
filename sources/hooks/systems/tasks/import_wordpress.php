@@ -272,7 +272,7 @@ class Hook_task_import_wordpress
                         $zone = 'site';
                         $lang = fallback_lang();
                         $file = preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $post['post_name']); // Filter non-alphanumeric characters
-                        $full_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang . '/' . $file . '.txt');
+                        $full_path = zone_black_magic_filterer(get_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang . '/' . $file . '.txt');
 
                         // Content
                         $_content = "[title]" . comcode_escape($post['post_title']) . "[/title]\n\n";

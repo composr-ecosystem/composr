@@ -385,7 +385,7 @@ function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = 
 
     actual_delete_zone_lite($zone);
 
-    if (file_exists(get_custom_file_base() . '/' . filter_naughty($zone))) {
+    if (file_exists(get_file_base(true) . '/' . filter_naughty($zone))) {
         afm_delete_directory(filter_naughty($zone), true);
     }
 }
@@ -475,7 +475,7 @@ function sitemap_do_next_manager(object $title, ?string $page, string $zone, obj
     $special = array_merge($special, [
         ['menu/adminzone/structure/sitemap/sitemap_editor', ['admin_sitemap', ['type' => 'browse'], get_module_zone('admin_sitemap')], do_lang_tempcode('SITEMAP_EDITOR')],
     ]);
-    if ((is_dir(get_custom_file_base() . '/.git')) && (php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
+    if ((is_dir(get_file_base(true) . '/.git')) && (php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
         if (has_privilege(get_member(), 'mass_import')) {
             $special[] = ['admin/sync', ['cms_comcode_pages', ['type' => 'sync_revisions_with_git'], get_module_zone('cms_comcode_pages')], do_lang_tempcode('SYNC_REVISIONS_WITH_GIT')];
         }
@@ -736,7 +736,7 @@ function save_comcode_page(string $zone, string $new_file, string $lang, string 
             }
         }
         foreach ($rename_map as $path => $new_path) {
-            rename(get_custom_file_base() . '/' . $path, get_custom_file_base() . '/' . $new_path);
+            @rename(get_file_base(true) . '/' . $path, get_file_base(true) . '/' . $new_path);
         }
 
         // Got to rename various resources
@@ -776,7 +776,7 @@ function save_comcode_page(string $zone, string $new_file, string $lang, string 
     ]);
 
     // Find file
-    $full_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . filter_naughty($zone) . '/pages/comcode_custom/' . filter_naughty($lang) . '/' . filter_naughty($new_file) . '.txt');
+    $full_path = zone_black_magic_filterer(get_file_base(true) . (($zone == '') ? '' : '/') . filter_naughty($zone) . '/pages/comcode_custom/' . filter_naughty($lang) . '/' . filter_naughty($new_file) . '.txt');
     $file_changed = ((!file_exists($full_path)) || ($text != cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM)));
 
     // Save revision
@@ -958,12 +958,12 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
             }
 
             $_path = zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type_shortened) . '/' . $lang . '/' . $_page, true);
-            $path = ((strpos($type, 'comcode/') !== false) ? get_file_base() : get_custom_file_base()) . '/' . $_path;
+            $path = get_file_base() . '/' . $_path;
             if (file_exists($path)) {
                 if ($use_afm) {
                     afm_delete_file($_path);
                 } else {
-                    unlink(get_custom_file_base() . '/' . $_path);
+                    unlink(get_file_base() . '/' . $_path);
                 }
             }
         }
@@ -990,12 +990,12 @@ function delete_cms_page(string $zone, string $page, string $type = 'comcode_cus
         }
 
         $_path = zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page, true);
-        $path = ((strpos($type, '_custom') === false) ? get_file_base() : get_custom_file_base()) . '/' . $_path;
+        $path = get_file_base() . '/' . $_path;
         if (file_exists($path)) {
             if ($use_afm) {
                 afm_delete_file($_path);
             } else {
-                unlink(get_custom_file_base() . '/' . $_path);
+                unlink(get_file_base() . '/' . $_path);
             }
         }
     }

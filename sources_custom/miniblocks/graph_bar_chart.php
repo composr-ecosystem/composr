@@ -36,7 +36,7 @@ $file = empty($map['file']) ? 'uploads/website_specific/graph_test/bar_chart.csv
 
 $datapoints = [];
 require_code('files_spreadsheets_read');
-$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+$sheet_reader = spreadsheet_open_read(get_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 while (($line = $sheet_reader->read_row()) !== false) {
     if (count($line) < 2) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

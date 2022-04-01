@@ -63,7 +63,7 @@ class Module_cms_comcode_pages
             'generate_page_sitemap' => ['GENERATE_PAGE_SITEMAP', 'tool_buttons/sitemap'],
         ];
 
-        if ((is_dir(get_custom_file_base() . '/.git')) && (php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
+        if ((is_dir(get_file_base(true) . '/.git')) && (php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
             if ((!$check_perms) || (has_privilege($member_id, 'mass_import'))) {
                 $ret['sync_revisions_with_git'] = ['SYNC_REVISIONS_WITH_GIT', 'admin/sync'];
             }
@@ -276,10 +276,7 @@ class Module_cms_comcode_pages
                 $located = _request_page($page, $zone, null, $lang);
                 if (($located !== false) && (strpos($located[0], 'COMCODE') !== false)) {
                     $_full_path = $located[count($located) - 1];
-                    $full_path = get_custom_file_base() . '/' . $_full_path;
-                    if (!is_file($full_path)) {
-                        $full_path = get_file_base() . '/' . $_full_path;
-                    }
+                    $full_path = get_file_base() . '/' . $_full_path;
 
                     $out[$zone . ':' . $page] = [
                         $full_path, // page path
@@ -529,11 +526,8 @@ class Module_cms_comcode_pages
                 $located = _request_page($row['the_page'], $row['the_zone'], null, $lang);
                 if (($located !== false) && ($located[0] != 'REDIRECT')) {
                     $_zone = $located[count($located) - 1];
-                    $page_path = get_custom_file_base() . (($_zone == '') ? '' : '/') . $_zone;
-                    if (!is_file($page_path)) {
-                        $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
-                    }
-
+                    $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
+ 
                     $files_list[$row['the_zone'] . ':' . $row['the_page']] = [
                         $page_path, // page_path
                         $row, // row
@@ -705,12 +699,10 @@ class Module_cms_comcode_pages
                 foreach ($langs as $_lang => $language_full_name) {
                     foreach (['comcode_custom', 'comcode'] as $page_type) {
                         foreach ((($row['zone'] == '') && (get_option('single_public_zone') == '1')) ? ['', 'site'] : [$row['zone']] as $_zone) {
-                            foreach (array_unique([get_custom_file_base(), get_file_base()]) as $file_base) {
-                                $test_path = $file_base . (($_zone == '') ? '' : ('/' . $_zone)) . '/pages/' . $page_type . '/' . $_lang . '/' . $row['page'] . '.txt';
-                                if (is_file($test_path)) {
-                                    $translations_found[$_lang] = filemtime($test_path);
-                                    continue 4;
-                                }
+                            $test_path = get_file_base() . (($_zone == '') ? '' : ('/' . $_zone)) . '/pages/' . $page_type . '/' . $_lang . '/' . $row['page'] . '.txt';
+                            if (is_file($test_path)) {
+                                $translations_found[$_lang] = filemtime($test_path);
+                                continue 4;
                             }
                         }
                     }
@@ -937,7 +929,7 @@ class Module_cms_comcode_pages
             }
         }
 
-        list($file_base, $file_path) = find_comcode_page($lang, $file, $zone);
+        list($string, $file_path) = find_comcode_page($lang, $file, $zone);
 
         // Check no redirects in our way
         if (addon_installed('redirects_editor')) {
@@ -960,10 +952,10 @@ class Module_cms_comcode_pages
         $contents = post_param_string('new', '');
         $parsed = null;
         if ($contents == '') {
-            if (is_file($file_base . '/' . $file_path)) {
-                $contents = cms_file_get_contents_safe($file_base . '/' . $file_path, FILE_READ_LOCK | FILE_READ_BOM);
+            if (is_file($file_path)) {
+                $contents = cms_file_get_contents_safe($file_path, FILE_READ_LOCK | FILE_READ_BOM);
 
-                if (strpos($file_path, '_custom/') === false) {
+                if (strpos($string, '_custom/') === false) {
                     global $LANG_FILTER_OB;
                     $contents = $LANG_FILTER_OB->compile_time(null, $contents, $lang);
                 }
@@ -1570,10 +1562,7 @@ class Module_cms_comcode_pages
                 $located = _request_page($page['the_page'], $page['the_zone']);
                 if (($located !== false) && ($located[0] != 'REDIRECT') && (isset($located[4]))) {
                     $_zone = $located[count($located) - 1];
-                    $page_path = get_custom_file_base() . (($_zone == '') ? '' : '/') . $_zone;
-                    if (!is_file($page_path)) {
-                        $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
-                    }
+                    $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
                     $page_contents = cms_file_get_contents_safe($page_path, FILE_READ_LOCK | FILE_READ_BOM);
                 } else {
                     $page_contents = '';
@@ -1644,7 +1633,7 @@ class Module_cms_comcode_pages
     {
         check_privilege('mass_import');
 
-        if ((!is_dir(get_custom_file_base() . '/.git')) || (!php_function_allowed('shell_exec')) || (!php_function_allowed('escapeshellarg'))) {
+        if ((!is_dir(get_file_base(true) . '/.git')) || (!php_function_allowed('shell_exec')) || (!php_function_allowed('escapeshellarg'))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
@@ -1667,7 +1656,7 @@ class Module_cms_comcode_pages
             foreach ($pages as $page_link => $parts) {
                 list($path, $row) = $parts;
 
-                $path = preg_replace('#^' . preg_quote(get_custom_file_base()) . '/#', '', $path);
+                $path = preg_replace('#^' . preg_quote(get_file_base()) . '/#', '', $path);
 
                 if (($only !== null) && ($only != $path)) {
                     continue;
@@ -1691,8 +1680,8 @@ class Module_cms_comcode_pages
                             continue; // Revision not in tree for some reason (probably)
                         }
 
-                        if (($i > 0) || ($revision != cms_file_get_contents_safe(get_custom_file_base() . '/' . $path))) {
-                            cms_file_put_contents_safe(get_custom_file_base() . '/' . $revision_path, $revision);
+                        if (($i > 0) || ($revision != cms_file_get_contents_safe(get_file_base() . '/' . $path))) {
+                            cms_file_put_contents_safe(get_file_base(true) . '/' . $revision_path, $revision);
                         }
 
                         $num_revisions++;

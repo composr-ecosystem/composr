@@ -425,7 +425,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
             '_GUID' => '2303459e94b959d2edf8444188bbeea9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'XML' => file_exists(get_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml', FILE_READ_LOCK | FILE_READ_BOM),
         ]);
     }
 
@@ -439,7 +439,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
         check_privilege('assume_any_member'); // Could be used to set up dangerous new stuff
 
         require_code('files');
-        $path = get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml';
+        $path = get_file_base(true) . '/data_custom/xml_config/aggregate_types.xml';
         $xml = post_param_string('xml');
         cms_file_put_contents_safe($path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 

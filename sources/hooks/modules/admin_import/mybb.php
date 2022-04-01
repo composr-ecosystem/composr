@@ -492,12 +492,12 @@ class Hook_import_mybb
                         $filename = $row['avatar'];
                         $filename = preg_replace('#images\/avatars\/#', '', $filename); // We need just a filename
 
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_gallery_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_gallery_path . '/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                         } else {
                             // Try as a pack avatar then
                             $striped_filename = str_replace('/', '_', $filename);
-                            if (file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
+                            if (file_exists(get_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
                                 $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                             } else {
                                 if ($STRICT_FILE) {
@@ -515,7 +515,7 @@ class Hook_import_mybb
                     case 'upload': // Upload
                         $filename = $row['avatar'];
                         $filename = preg_replace('#\.\/uploads\/avatars\/#', '', $filename);
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_path . '/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . $filename;
                         } else {
                             if ($STRICT_FILE) {

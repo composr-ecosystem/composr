@@ -42,7 +42,7 @@ class CMSAttachmentWrite
             $filekey .= '1';
         }
 
-        $urls = get_url('', $filekey, file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false, '', '', false, true);
+        $urls = get_url('', $filekey, file_exists(get_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false, '', '', false, true);
         if ($urls[0] == '') {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
@@ -100,7 +100,7 @@ class CMSAttachmentWrite
             $filekey .= '1';
         }
 
-        $urls = get_url('', $filekey, file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false, '', '', false, true);
+        $urls = get_url('', $filekey, file_exists(get_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false, '', '', false, true);
         if ($urls[0] == '') {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }

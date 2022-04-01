@@ -211,7 +211,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     if ($log_error) {
         require_code('urls');
         $php_error_label = (is_object($message) ? $message->evaluate() : $message) . ' @ ' . get_self_url_easy();
-        $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_custom_file_base() . '/data_custom/errorlog.php') < time() - 60 * 5));
+        $may_log_error = ((!running_script('cron_bridge')) || (@filemtime(get_file_base(true) . '/data_custom/errorlog.php') < time() - 60 * 5));
 
         if ($may_log_error) {
             require_code('failure');
@@ -1310,7 +1310,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     }
 
     // Work out cache path on disk
-    $fast_cache_path = get_custom_file_base() . '/caches/static/' . md5($url);
+    $fast_cache_path = get_file_base(true) . '/caches/static/' . md5($url);
     $fast_cache_path_failover_mode = $fast_cache_path;
     $bot_type = get_bot_type();
     if ($bot_type === null) {
@@ -1354,9 +1354,9 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
             $url_stem = str_replace(get_base_url() . '/', '', $url_stem);
             if (preg_match('#^' . $SITE_INFO['failover_apache_rewritemap_file'] . '$#', $url_stem) != 0) {
                 if (is_mobile()) {
-                    $rewritemap_file = get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt';
+                    $rewritemap_file = get_file_base(true) . '/data_custom/failover_rewritemap__mobile.txt';
                 } else {
-                    $rewritemap_file = get_custom_file_base() . '/data_custom/failover_rewritemap.txt';
+                    $rewritemap_file = get_file_base(true) . '/data_custom/failover_rewritemap.txt';
                 }
                 $rewritemap_file_contents = cms_file_get_contents_safe($rewritemap_file, FILE_READ_LOCK);
                 if (strpos($rewritemap_file_contents, "\n" . $url_stem . ' ') === false) {
@@ -1462,16 +1462,8 @@ function request_page(string $codename, bool $required, ?string $zone = null, ?s
             return $ret;
         case 'COMCODE_CUSTOM':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
-            if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1') && (get_custom_file_base() == get_file_base())) || (@is_file(get_custom_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], get_custom_file_base(), $being_included);
-                $REQUEST_PAGE_NEST_LEVEL--;
-                return $ret;
-            }
-            // no break (as probably been deleted since persistent cache was filled)
-        case 'COMCODE_CUSTOM_PURE':
-            $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], get_file_base(), $being_included);
+                $ret = load_comcode_page($path, $details[1], $details[2], $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1479,7 +1471,7 @@ function request_page(string $codename, bool $required, ?string $zone = null, ?s
         case 'COMCODE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], null, $being_included);
+                $ret = load_comcode_page($path, $details[1], $details[2], $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1631,20 +1623,14 @@ function __request_page(string $codename, string $zone, ?string $page_type = nul
                 if (!in_safe_mode()) {
                     if (get_param_integer('keep_theme_test', 0) == 1) {
                         $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $GLOBALS['FORUM_DRIVER']->get_theme() . '__' . $codename . '.txt', true);
-                        if (@is_file(get_custom_file_base() . '/' . $path)) {
+                        if (@is_file(get_file_base() . '/' . $path)) {
                             return ['COMCODE_CUSTOM', $zone, $GLOBALS['FORUM_DRIVER']->get_theme() . '__' . $codename, $lang, $path];
                         }
                     }
 
                     $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $codename . '.txt', true);
-                    if (@is_file(get_custom_file_base() . '/' . $path)) {
+                    if (@is_file(get_file_base() . '/' . $path)) {
                         return ['COMCODE_CUSTOM', $zone, $codename, $lang, $path];
-                    }
-                    if (get_custom_file_base() != get_file_base()) { // For multisite installs we also will search the root site's Custom Comcode pages
-                        $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $codename . '.txt', true);
-                        if (@is_file(get_file_base() . '/' . $path)) {
-                            return ['COMCODE_CUSTOM_PURE', $zone, $codename, $lang, $path];
-                        }
                     }
                 }
                 // no break
@@ -1657,7 +1643,7 @@ function __request_page(string $codename, string $zone, ?string $page_type = nul
             case 'html_custom':
                 if (!in_safe_mode()) {
                     $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $lang . '/' . $codename . '.htm', true);
-                    if (@is_file(get_custom_file_base() . '/' . $path)) {
+                    if (@is_file(get_file_base() . '/' . $path)) {
                         return ['HTML_CUSTOM', $zone, $codename, $lang, $path];
                     }
                 }
@@ -1707,25 +1693,19 @@ function __request_page(string $codename, string $zone, ?string $page_type = nul
     if (!in_safe_mode()) {
         if (get_param_integer('keep_theme_test', 0) == 1) {
             $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $GLOBALS['FORUM_DRIVER']->get_theme() . '__' . $codename . '.txt', true);
-            if (@is_file(get_custom_file_base() . '/' . $path)) {
+            if (@is_file(get_file_base() . '/' . $path)) {
                 return ['COMCODE_CUSTOM', $zone, $GLOBALS['FORUM_DRIVER']->get_theme() . '__' . $codename, $lang, $path];
             }
         }
 
         $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $codename . '.txt', true);
-        if (@is_file(get_custom_file_base() . '/' . $path)) {
+        if (@is_file(get_file_base() . '/' . $path)) {
             return ['COMCODE_CUSTOM', $zone, $codename, $lang, $path];
-        }
-        if (get_custom_file_base() != get_file_base()) { // For multisite installs we also will search the root site's Custom Comcode pages
-            $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $codename . '.txt', true);
-            if (@is_file(get_file_base() . '/' . $path)) {
-                return ['COMCODE_CUSTOM_PURE', $zone, $codename, $lang, $path];
-            }
         }
     }
     if (!in_safe_mode()) {
         $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $lang . '/' . $codename . '.htm', true);
-        if (@is_file(get_custom_file_base() . '/' . $path)) {
+        if (@is_file(get_file_base() . '/' . $path)) {
             return ['HTML_CUSTOM', $zone, $codename, $lang, $path];
         }
     }
@@ -1747,17 +1727,11 @@ function __request_page(string $codename, string $zone, ?string $page_type = nul
     foreach ($langs_to_try as $fallback_lang) {
         if (!in_safe_mode()) {
             $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $fallback_lang . '/' . $codename . '.txt', true);
-            if (@is_file(get_custom_file_base() . '/' . $path)) {
+            if (@is_file(get_file_base() . '/' . $path)) {
                 return ['COMCODE_CUSTOM', $zone, $codename, $fallback_lang, $path];
             }
-            if (get_custom_file_base() != get_file_base()) { // For multisite installs we also will search the root site's Custom Comcode pages
-                $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $fallback_lang . '/' . $codename . '.txt', true);
-                if (@is_file(get_file_base() . '/' . $path)) {
-                    return ['COMCODE_CUSTOM_PURE', $zone, $codename, $fallback_lang, $path];
-                }
-            }
             $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $fallback_lang . '/' . $codename . '.htm', true);
-            if (@is_file(get_custom_file_base() . '/' . $path)) {
+            if (@is_file(get_file_base() . '/' . $path)) {
                 return ['HTML_CUSTOM', $zone, $codename, $fallback_lang, $path];
             }
         }
@@ -1919,18 +1893,13 @@ function _load_comcodes_page_from_cache(array $pages) : array
  * @param  PATH $string The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $codename The codename of the page
- * @param  ?PATH $file_base The file base to load from (null: standard)
  * @param  boolean $being_included Whether the page is being included from another
  * @return Tempcode The page
  */
-function load_comcode_page(string $string, string $zone, string $codename, ?string $file_base = null, bool $being_included = false) : object
+function load_comcode_page(string $string, string $zone, string $codename, bool $being_included = false) : object
 {
     if (strlen($codename) < 1) {
         warn_exit(do_lang_tempcode('EMPTY_CODENAME'));
-    }
-
-    if ($file_base === null) {
-        $file_base = get_file_base();
     }
 
     if (!$being_included) {
@@ -1988,7 +1957,7 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
             if ($support_smart_decaching) {
-                $mtime = filemtime($file_base . '/' . $string);
+                $mtime = filemtime(get_file_base() . '/' . $string);
                 if ($mtime > time()) {
                     $mtime = time(); // Timezone error, we have to assume that cache is ok rather than letting us get in a loop decaching the file. It'll get fixed automatically in a few hours when the hours of the timezone difference passes.
                 }
@@ -2003,21 +1972,21 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
             $comcode_page_row = load_comcode_page_from_cache($codename, $zone, $theme);
             if ($comcode_page_row !== null) {
                 if ($support_smart_decaching) {
-                    $mtime = filemtime($file_base . '/' . $string);
+                    $mtime = filemtime(get_file_base() . '/' . $string);
                     if ($mtime > time()) {
                         $mtime = time(); // Timezone error, we have to assume that cache is ok rather than letting us get in a loop decaching the file. It'll get fixed automatically in a few hours when the hours of the timezone difference passes.
                     }
                 }
                 if ((!$support_smart_decaching) || ((($comcode_page_row['p_edit_date'] !== null) && ($comcode_page_row['p_edit_date'] >= $mtime)) || (($comcode_page_row['p_edit_date'] === null) && ($comcode_page_row['p_add_date'] !== null) && ($comcode_page_row['p_add_date'] >= $mtime)))) { // Make sure it has not been edited since last edited or created
                     // Optimised path for empty panels when no super-fast persistent cache
-                    if (($support_smart_decaching/*only should do an fstat if this is enabled*/) && (($being_included) || ($is_panel)) && ($GLOBALS['PERSISTENT_CACHE'] === null) && (filesize($file_base . '/' . $string) == 0)) {
+                    if (($support_smart_decaching/*only should do an fstat if this is enabled*/) && (($being_included) || ($is_panel)) && ($GLOBALS['PERSISTENT_CACHE'] === null) && (filesize(get_file_base() . '/' . $string) == 0)) {
                         return new Tempcode();
                     }
 
                     $just_comcode_page_row = db_map_restrict($comcode_page_row, ['the_page', 'the_zone', 'the_theme', 'string_index']);
                     $db_set = get_translated_tempcode('cached_comcode_pages', $just_comcode_page_row, 'string_index', null, user_lang(), true, true/*,true*/);
                 } else {
-                    $mtime = filemtime($file_base . '/' . $string);
+                    $mtime = filemtime(get_file_base() . '/' . $string);
                     if ($mtime > time()) {
                         $mtime = time(); // Timezone error, we have to assume that cache is ok rather than letting us get in a loop decaching the file. It'll get fixed automatically in a few hours when the hours of the timezone difference passes.
                     }
@@ -2051,10 +2020,10 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
                 }
 
                 require_code('site2');
-                $new_comcode_page_row['p_add_date'] = filectime($file_base . '/' . $string);
+                $new_comcode_page_row['p_add_date'] = filectime(get_file_base() . '/' . $string);
                 require_code('global4');
                 $new_comcode_page_row['p_include_on_sitemap'] = comcode_page_include_on_sitemap($zone, $codename) ? 1 : 0;
-                list($html, $title_to_use, $comcode_page_row, $raw_comcode) = _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $comcode_page_row, $new_comcode_page_row, $being_included);
+                list($html, $title_to_use, $comcode_page_row, $raw_comcode) = _load_comcode_page_not_cached($string, $zone, $codename, $comcode_page_row, $new_comcode_page_row, $being_included);
             }
 
             persistent_cache_set(['COMCODE_PAGE', $codename, $zone, $theme, user_lang()], [$html, $title_to_use, $comcode_page_row, $raw_comcode]);
@@ -2063,10 +2032,10 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         }
     } else {
         require_code('site2');
-        $new_comcode_page_row['p_add_date'] = filectime($file_base . '/' . $string);
+        $new_comcode_page_row['p_add_date'] = filectime(get_file_base() . '/' . $string);
         require_code('global4');
         $new_comcode_page_row['p_include_on_sitemap'] = comcode_page_include_on_sitemap($zone, $codename) ? 1 : 0;
-        list($html, $comcode_page_row, $title_to_use, $raw_comcode) = _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $new_comcode_page_row, $being_included);
+        list($html, $comcode_page_row, $title_to_use, $raw_comcode) = _load_comcode_page_cache_off($string, $zone, $codename, $new_comcode_page_row, $being_included);
     }
 
     require_code('global4');

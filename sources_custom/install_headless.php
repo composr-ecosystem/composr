@@ -20,7 +20,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
     }
 
-    copy(get_file_base() . '/_config.php', get_file_base() . '/_config.php.bak');
+    copy(get_file_base(false) . '/_config.php', get_file_base() . '/_config.php.bak');
     fix_permissions(get_file_base() . '/_config.php.bak');
 
     $success = _do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver, $board_path, $forum_base_url, $database_forums, $username_forums, $password_forums, $extra_settings, $db_type);
@@ -45,8 +45,8 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         }
     }
 
-    @unlink(get_file_base() . '/_config.php');
-    @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
+    @unlink(get_file_base(false) . '/_config.php');
+    @rename(get_file_base() . '/_config.php.bak', get_file_base(false) . '/_config.php');
 
     return $success;
 }

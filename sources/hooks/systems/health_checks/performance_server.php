@@ -114,7 +114,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
 
             require_code('files');
 
-            $free_space = disk_free_space(get_custom_file_base());
+            $free_space = disk_free_space(get_file_base(true));
             $this->assertTrue($free_space > $disk_space_threshold, 'Disk space very low @ ' . clean_file_size($free_space));
         } else {
             $this->stateCheckSkipped('PHP [tt]disk_free_space[/tt] function not available');

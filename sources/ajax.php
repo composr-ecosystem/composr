@@ -462,12 +462,9 @@ function load_template_script()
     $id = filter_naughty(basename(get_param_string('id')));
     $directory = filter_naughty(get_param_string('directory', dirname(get_param_string('id')), INPUT_FILTER_GET_COMPLEX));
 
-    $x = get_custom_file_base() . '/themes/' . $theme . '/' . $directory . '_custom/' . $id;
+    $x = get_file_base() . '/themes/' . $theme . '/' . $directory . '_custom/' . $id;
     if (!file_exists($x)) {
-        $x = get_file_base() . '/themes/' . $theme . '/' . $directory . '/' . $id;
-    }
-    if (!file_exists($x)) {
-        $x = get_custom_file_base() . '/themes/default/' . $directory . '_custom/' . $id;
+        $x = get_file_base() . '/themes/default/' . $directory . '_custom/' . $id;
     }
     if (!file_exists($x)) {
         $x = get_file_base() . '/themes/default/' . $directory . '/' . $id;

@@ -332,7 +332,7 @@ class Hook_import_vb3
                     $rows2 = $db->query_select('language', ['languagecode'], ['languageid' => $row['languageid']]);
                     if (array_key_exists(0, $rows2)) {
                         $language = cms_strtoupper_ascii($rows2[0]['languagecode']);
-                        if ((!file_exists(get_custom_file_base() . '/lang_custom/' . $language)) && (!file_exists(get_file_base() . '/lang/' . $language))) {
+                        if ((!file_exists(get_file_base() . '/lang_custom/' . $language)) && (!file_exists(get_file_base() . '/lang/' . $language))) {
                             $language = '';
                         }
                     }
@@ -483,7 +483,7 @@ class Hook_import_vb3
                         if (array_key_exists(0, $avatar_rows)) {
                             $avatar_row = $avatar_rows[0];
                             $relpath = rawurldecode($avatar_row['avatarpath']);
-                            if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath))) || (@rename($file_base . '/uploads/' . $setting . $relpath, get_custom_file_base() . '/uploads/cns_avatars/' . basename($relpath)))) {
+                            if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . basename($relpath))) || (@rename($file_base . '/uploads/' . $setting . $relpath, get_file_base(true) . '/uploads/cns_avatars/' . basename($relpath)))) {
                                 $avatar_url = 'uploads/cns_avatars/' . basename($relpath);
                             }
                         }

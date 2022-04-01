@@ -52,9 +52,7 @@ class Hook_realtime_rain_banners
                 if (is_image($row['img_url'], IMAGE_CRITERIA_WEBSAFE, has_privilege($row['member_id'], 'comcode_dangerous'))) {
                     $image = $row['img_url'];
                 }
-                if (url_is_local($image)) {
-                    $image = get_custom_base_url() . '/' . $image;
-                }
+                $image = baseify($image);
 
                 $drops[] = rain_get_special_icons($row['c_ip_address'], $timestamp) + [
                     'TYPE' => 'banners',

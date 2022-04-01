@@ -85,8 +85,9 @@ function rss_backend_script()
         // Feed stylesheet for RSS
         header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
-        $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('RSS_XSLT', ['_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'JAVASCRIPT_XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
+        $js = new Tempcode();
+        _javascript_tempcode('xsl_mopup', $js);
+        $echo = do_template('RSS_XSLT', ['_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'JAVASCRIPT' => $js], null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -94,8 +95,9 @@ function rss_backend_script()
         // Feed stylesheet for Atom
         header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
-        $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('ATOM_XSLT', ['_GUID' => '27fec456a6b3144aa847130e74463d99', 'JAVASCRIPT_XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
+        $js = new Tempcode();
+        _javascript_tempcode('xsl_mopup', $js);
+        $echo = do_template('ATOM_XSLT', ['_GUID' => '27fec456a6b3144aa847130e74463d99', 'JAVASCRIPT' => $js], null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -103,8 +105,9 @@ function rss_backend_script()
         // Feed stylesheet for Atom
         header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
-        $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('OPML_XSLT', ['_GUID' => 'c0c6bd1d7a0e263768a2208061f799f5', 'JAVASCRIPT_XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
+        $js = new Tempcode();
+        _javascript_tempcode('xsl_mopup', $js);
+        $echo = do_template('OPML_XSLT', ['_GUID' => 'c0c6bd1d7a0e263768a2208061f799f5', 'JAVASCRIPT' => $js], null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -248,23 +251,20 @@ function get_enclosure_details(string $url, string $enclosure_url) : array
     require_code('mime_types');
     $enclosure_type = get_mime_type(get_file_extension($url), false);
 
-    $base_url = get_custom_base_url();
-
-    if (substr($url, 0, strlen($base_url) + 1) == $base_url . '/') {
-        $url = substr($url, strlen($base_url) + 1);
+    $relative_url = '';
+    if (url_is_local($url, $relative_url)) {
+        $url = $relative_url;
     }
 
     $enclosure_length = '0';
-    if ((url_is_local($url)) && ((file_exists(get_custom_file_base() . '/' . rawurldecode($url))) || (preg_match('#^(image|video)/#', $enclosure_type) != 0))) {
-        $path = get_custom_file_base() . '/' . rawurldecode($url);
+    if ((url_is_local($url)) && ((file_exists(get_file_base() . '/' . rawurldecode($url))) || (preg_match('#^(image|video)/#', $enclosure_type) != 0))) {
+        $path = get_file_base() . '/' . rawurldecode($url);
         if (!is_file($path)) {
             return [null, null];
         }
         $enclosure_length = strval(filesize($path));
     } else {
-        if (url_is_local($url)) {
-            $url = $base_url . '/' . $url;
-        }
+        $url = baseify($url);
 
         $http_response = cms_http_request($enclosure_url, ['trigger_error' => false, 'byte_limit' => 0]);
         if ($http_response->download_size === null) {

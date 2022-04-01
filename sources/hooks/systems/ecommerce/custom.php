@@ -221,10 +221,7 @@ class Hook_ecommerce_custom
             if ($row['c_image_url'] == '') {
                 $image_url = find_theme_image('icons/spare/' . strval(($i % 8) + 1));
             } else {
-                $image_url = $row['c_image_url'];
-                if (url_is_local($image_url)) {
-                    $image_url = get_custom_base_url() . '/' . $image_url;
-                }
+                $image_url = baseify($row['c_image_url']);
             }
 
             $shipping_cost = floatval($row['c_shipping_cost']);

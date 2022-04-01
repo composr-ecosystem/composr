@@ -675,7 +675,7 @@ class Module_admin_config
             '_GUID' => 'cc21f921ecbdbdf83e1e28d2b3f75a3a',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'XML' => file_exists(get_file_base() . '/data_custom/xml_config/fields.xml') ? cms_file_get_contents_safe(get_file_base() . '/data_custom/xml_config/fields.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM),
         ]);
     }
 
@@ -687,7 +687,7 @@ class Module_admin_config
     public function _xml_fields() : object
     {
         require_code('files');
-        $full_path = get_custom_file_base() . '/data_custom/xml_config/fields.xml';
+        $full_path = get_file_base(true) . '/data_custom/xml_config/fields.xml';
         $xml = post_param_string('xml');
         cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
@@ -709,7 +709,7 @@ class Module_admin_config
             '_GUID' => '456f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'XML' => file_exists(get_file_base() . '/data_custom/xml_config/breadcrumbs.xml') ? cms_file_get_contents_safe(get_file_base() . '/data_custom/xml_config/breadcrumbs.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
         ]);
     }
 
@@ -721,7 +721,7 @@ class Module_admin_config
     public function _xml_breadcrumbs() : object
     {
         require_code('files');
-        $full_path = get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml';
+        $full_path = get_file_base(true) . '/data_custom/xml_config/breadcrumbs.xml';
         $xml = post_param_string('xml');
         cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
@@ -743,7 +743,7 @@ class Module_admin_config
             '_GUID' => '123f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'XML' => file_exists(get_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? cms_file_get_contents_safe(get_file_base() . '/data_custom/xml_config/advanced_banning.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
         ]);
     }
 
@@ -755,7 +755,7 @@ class Module_admin_config
     public function _advanced_banning() : object
     {
         require_code('files');
-        $full_path = get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml';
+        $full_path = get_file_base(true) . '/data_custom/xml_config/advanced_banning.xml';
         $xml = post_param_string('xml');
         cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 

@@ -134,7 +134,7 @@ function lang_load_runtime_processing()
     if ($LANG_RUNTIME_PROCESSING === null) {
         $needs_compiling = true;
 
-        $path = get_custom_file_base() . '/caches/lang/_runtime_processing.lcd';
+        $path = get_file_base(true) . '/caches/lang/_runtime_processing.lcd';
         if (is_file($path)) {
             $LANG_RUNTIME_PROCESSING = @unserialize(cms_file_get_contents_safe($path, FILE_READ_LOCK));
             if ($LANG_RUNTIME_PROCESSING !== false) {
@@ -389,10 +389,9 @@ function does_lang_exist(string $lang) : bool
     }
 
     $file_a = get_file_base() . '/lang/' . $lang;
-    $file_b = get_custom_file_base() . '/lang_custom/' . $lang;
-    $file_c = get_file_base() . '/lang_custom/' . $lang;
+    $file_b = get_file_base() . '/lang_custom/' . $lang;
 
-    return is_dir($file_c) || is_dir($file_b) || is_dir($file_a);
+    return is_dir($file_b) || is_dir($file_a);
 }
 
 /**
@@ -445,18 +444,14 @@ function get_lang_member(int $member_id) : ?string
         $_lang = cms_strtoupper_ascii($lang);
         if (!does_lang_exist($_lang)) {
             require_code('files');
-            $map_file_a = get_file_base() . '/lang/map.ini';
-            $map_file_b = get_custom_file_base() . '/lang_custom/map.ini';
-            if (!is_file($map_file_b)) {
-                $map_file_b = $map_file_a;
-            }
-            $map = cms_parse_ini_file_fast($map_file_b);
+            $map_file = get_file_base() . '/lang/map.ini';
+            $map = cms_parse_ini_file_fast($map_file);
             if (!array_key_exists($lang, $map)) {
                 //fatal_exit('The specified language (' . $lang . ') is missing. The language needs installing/creating in Composr, or the language map file needs updating (to map this language to a known Composr one), or both.');
                 $_lang = null; // Instead of the above, let's just fallback to default! So people's weird forum integration doesn't make Composr die
             } else {
                 $_lang = $map[$lang];
-                if ((!is_dir(get_file_base() . '/lang/' . $_lang)) && (!is_dir(get_custom_file_base() . '/lang_custom/' . $_lang)) && (!is_dir(get_file_base() . '/lang_custom/' . $_lang))) {
+                if ((!is_dir(get_file_base() . '/lang/' . $_lang)) && (!is_dir(get_file_base() . '/lang_custom/' . $_lang))) {
                     $_lang = null;
                 }
             }
@@ -517,16 +512,16 @@ function require_lang(string $codename, ?string $lang = null, ?string $type = nu
     }
     $LANG_REQUESTED_LANG[$lang][$codename] = true;
 
-    $cfb = get_custom_file_base();
-    $fb = get_file_base();
     if (strpos($codename, '..') !== false) {
         $codename = filter_naughty($codename);
     }
 
+    $fb = get_file_base();
+
     if ($PAGE_CACHE_LAZY_LOAD) {
         $support_smart_decaching = support_smart_decaching(true);
         if ($support_smart_decaching) {
-            $cache_path = $cfb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
+            $cache_path = $fb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
             $lang_file_default = $fb . '/lang/' . $lang . '/' . $codename . '.ini';
             if (!is_file($lang_file_default)) {
                 $lang_file_default = $fb . '/lang/' . fallback_lang() . '/' . $codename . '.ini';
@@ -581,12 +576,12 @@ function require_lang(string $codename, ?string $lang = null, ?string $type = nu
         $LANGUAGE_STRINGS_CACHE[$lang] = [];
     }
 
-    $cache_path = $cfb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
+    $cache_path = $fb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
 
     // Try language cache
     $desire_cache = (function_exists('has_caching_for') && has_caching_for('lang', $codename));
     if ($desire_cache) {
-        $cache_path = $cfb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
+        $cache_path = $fb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
         $lang_file_default = $fb . '/lang/' . $lang . '/' . $codename . '.ini';
         if (!is_file($lang_file_default)) {
             $lang_file_default = $fb . '/lang/' . fallback_lang() . '/' . $codename . '.ini';
@@ -671,7 +666,7 @@ function require_all_lang(?string $lang = null, bool $only_if_for_lang = false)
     $lang_files = get_lang_files(fallback_lang());
 
     foreach (array_keys($lang_files) as $file) {
-        if ((!$only_if_for_lang) || (is_file(get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini')) || (is_file(get_custom_file_base() . '/lang/' . $lang . '/' . $file . '.ini'))) {
+        if ((!$only_if_for_lang) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/' . $file . '.ini')) || (is_file(get_file_base() . '/lang/' . $lang . '/' . $file . '.ini'))) {
             require_lang($file, $lang, null, true);
         }
     }

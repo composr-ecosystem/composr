@@ -35,11 +35,12 @@ class Hook_commandr_fs_filedump
      * Get complete path.
      *
      * @param  array $meta_dir The current meta-directory path
+     * @param  boolean $saving Whether we are saving
      * @return array A pair: Complete path, Relative path
      */
-    protected function get_complete_path(array $meta_dir) : array
+    protected function get_complete_path(array $meta_dir, bool $saving = false) : array
     {
-        $path = get_custom_file_base() . '/uploads/filedump';
+        $path = get_file_base($saving ? true : null) . '/uploads/filedump';
         $subpath = '';
         foreach ($meta_dir as $meta_dir_section) {
             if ($subpath != '') {
@@ -115,7 +116,7 @@ class Hook_commandr_fs_filedump
     {
         $new_dir_name = filter_naughty($new_dir_name);
 
-        list($path, $subpath) = $this->get_complete_path($meta_dir);
+        list($path, $subpath) = $this->get_complete_path($meta_dir, true);
 
         if ((is_dir($path)) && (!file_exists($path . '/' . $new_dir_name)) && (cms_is_writable($path))) {
             $ret = @mkdir($path . '/' . $new_dir_name, 0777) or warn_exit(do_lang_tempcode('WRITE_ERROR_DIRECTORY', escape_html($path . '/' . $new_dir_name), escape_html($path)), false, true);
@@ -139,7 +140,7 @@ class Hook_commandr_fs_filedump
     {
         $dir_name = filter_naughty($dir_name);
 
-        list($path, $subpath) = $this->get_complete_path($meta_dir);
+        list($path, $subpath) = $this->get_complete_path($meta_dir, true);
 
         if ((is_dir($path)) && (file_exists($path . '/' . $dir_name)) && (cms_is_writable($path . '/' . $dir_name))) {
             require_code('files');
@@ -174,7 +175,7 @@ class Hook_commandr_fs_filedump
     {
         $file_name = filter_naughty($file_name);
 
-        list($path, $subpath) = $this->get_complete_path($meta_dir);
+        list($path, $subpath) = $this->get_complete_path($meta_dir, true);
 
         if ($file_name == RESOURCE_FS_SPECIAL_DIRECTORY_FILE) {
             // What if folder meta...
@@ -270,7 +271,7 @@ class Hook_commandr_fs_filedump
     {
         $file_name = filter_naughty($file_name);
 
-        list($path, $subpath) = $this->get_complete_path($meta_dir);
+        list($path, $subpath) = $this->get_complete_path($meta_dir, true);
 
         if ($file_name == RESOURCE_FS_SPECIAL_DIRECTORY_FILE) {
             // What if folder meta...

@@ -71,7 +71,7 @@ class Hook_health_check_stability extends Hook_Health_Check
             return;
         }
 
-        $path = get_custom_file_base() . '/data_custom/errorlog.php';
+        $path = get_file_base(true) . '/data_custom/errorlog.php';
         if (filesize($path) >= 25) {
             $this->stateCheckManual('Check the Composr error log');
         }
@@ -178,7 +178,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
         require_code('files');
 
-        $path = get_custom_file_base() . '/data_custom/errorlog.php';
+        $path = get_file_base(true) . '/data_custom/errorlog.php';
         $myfile_charset = null;
         $myfile = cms_fopen_text_read($path, $myfile_charset);
         if ($myfile !== false) {

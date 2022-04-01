@@ -27,7 +27,7 @@ class cqc__explicit_fail_test_set extends cms_test_case
 
     public function testCQCFailuresStillWork()
     {
-        $path = get_file_base() . '/temp/temp.php';
+        $path = get_file_base(true) . '/temp/temp.php';
         require_code('files');
         cms_file_put_contents_safe($path, "<" . "?= foo() . 1 + ''\n");
         $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=temp&api=1&somewhat_pedantic=1';

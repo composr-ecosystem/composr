@@ -420,7 +420,7 @@ function generate_captcha()
     $where = 'si_time<' . strval(time() - 60 * 30) . ' OR ' . db_string_equal_to('si_session_id', $session);
     $rows = $GLOBALS['SITE_DB']->query('SELECT si_session_id FROM ' . get_table_prefix() . 'captchas WHERE ' . $where);
     foreach ($rows as $row) {
-        @unlink(get_custom_file_base() . '/uploads/captcha/' . $row['si_session_id'] . '.wav');
+        @unlink(get_file_base(true) . '/uploads/captcha/' . $row['si_session_id'] . '.wav');
     }
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'captchas WHERE ' . $where);
 
@@ -436,7 +436,7 @@ function generate_captcha()
     $GLOBALS['SITE_DB']->query_insert('captchas', ['si_session_id' => $session, 'si_time' => time(), 'si_code' => $si_code]);
 
     require_code('files');
-    cms_file_put_contents_safe(get_custom_file_base() . '/uploads/captcha/' . $session . '.wav', captcha_audio($si_code), FILE_WRITE_FIX_PERMISSIONS);
+    cms_file_put_contents_safe(get_file_base(true) . '/uploads/captcha/' . $session . '.wav', captcha_audio($si_code), FILE_WRITE_FIX_PERMISSIONS);
 }
 
 /**

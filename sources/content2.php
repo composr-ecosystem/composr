@@ -522,7 +522,7 @@ function set_url_moniker(string $content_type, string $content_id, array $fields
 
                     if ($ok) {
                         // Test there are no zone conflicts
-                        if ((file_exists(get_file_base() . '/' . $parts[0])) || (file_exists(get_custom_file_base() . '/' . $parts[0]))) {
+                        if (file_exists(get_file_base() . '/' . $parts[0])) {
                             $ok = false;
                             attach_message(do_lang_tempcode('URL_MONIKER_CONFLICT_ZONE'), 'warn');
                         }

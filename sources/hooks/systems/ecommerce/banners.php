@@ -303,7 +303,7 @@ class Hook_ecommerce_banners
                 $e_details = json_encode([$member_id, $name, $image_url, $site_url, $caption, $direct_code, $notes]);
                 $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', ['e_details' => $e_details, 'e_time' => time()], true));
 
-                $confirmation_box = show_banner($name, '', comcode_to_tempcode($caption), $direct_code, (url_is_local($image_url) ? (get_custom_base_url() . '/') : '') . $image_url, '', $site_url, '', get_member());
+                $confirmation_box = show_banner($name, '', comcode_to_tempcode($caption), $direct_code, baseify($image_url), '', $site_url, '', get_member());
                 break;
 
             case 'BANNER_UPGRADE_HITS':

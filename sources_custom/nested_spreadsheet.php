@@ -47,8 +47,8 @@ function get_nested_spreadsheet_structure() : array
     require_code('files_spreadsheets_read');
 
     $spreadsheet_files = [];
-    if (file_exists(get_custom_file_base() . '/private_data')) {
-        $dh = @opendir(get_custom_file_base() . '/private_data');
+    if (file_exists(get_file_base() . '/private_data')) {
+        $dh = @opendir(get_file_base() . '/private_data');
         if ($dh !== false) {
             while (($spreadsheet_filename = readdir($dh)) !== false) {
                 if (is_spreadsheet_readable($spreadsheet_filename)) {
@@ -115,7 +115,7 @@ function get_nested_spreadsheet_structure() : array
                 $spreadsheet_parent_heading = $_value[3];
 
                 if (!array_key_exists($spreadsheet_filename, $spreadsheet_files)) { // Check referenced filename exists
-                    if (!file_exists(get_custom_file_base() . '/private_data')) {
+                    if (!file_exists(get_file_base() . '/private_data')) {
                         attach_message('Missing private_data directory for spreadsheet file storage.', 'warn', false, true);
                         break;
                     }

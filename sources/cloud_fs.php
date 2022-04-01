@@ -30,6 +30,7 @@ function init__cloud_fs()
         define('CMS_CLOUD__PROPAGATED', 2);
         define('CMS_CLOUD__REMOTE', 3);
 
+        define('FILE_BASE__AUTODETECT', 'cmsCloudAutodetect');
         define('FILE_BASE__SHARED', 'cmsCloudShared');
         define('FILE_BASE__CUSTOM', 'cmsCloudCustom');
     }
@@ -88,11 +89,12 @@ function enable_cloud_fs()
             fatal_exit('Configured nas_directory does not exist');
         }
 
+        stream_wrapper_register(FILE_BASE__AUTODETECT, 'CloudFsStreamWrapper');
         stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
         stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
 
-        $FILE_BASE_LOCAL = get_file_base(true);
-        $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
+        $FILE_BASE_LOCAL = get_file_base(false, true);
+        $CUSTOM_FILE_BASE_LOCAL = get_file_base(true, true);
         $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
         $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
     }
@@ -106,15 +108,35 @@ function enable_cloud_fs()
  */
 function _make_cms_path_native(string $path) : array
 {
-    global $CMS_CLOUD_BINDINGS, $SITE_INFO;
+    global $CMS_CLOUD_BINDINGS, $SITE_INFO, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
-    if (substr($path, 0, strlen(FILE_BASE__SHARED . '://')) == FILE_BASE__SHARED . '://') {
-        $file_base = get_file_base(true);
+    if (substr($path, 0, strlen(FILE_BASE__AUTODETECT . '://')) == FILE_BASE__AUTODETECT . '://') {
+        if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path)) {
+            $file_base = $CUSTOM_FILE_BASE_LOCAL;
+        } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path)) {
+            $file_base = $FILE_BASE_LOCAL;
+        } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path)))) {
+            $file_base = $CUSTOM_FILE_BASE_LOCAL;
+        } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path)))) {
+            $file_base = $FILE_BASE_LOCAL;
+        } else {
+            $file_base = $CUSTOM_FILE_BASE_LOCAL;
+        }
+
+        $file_base_constant = FILE_BASE__AUTODETECT;
+
+        $path_relative = substr($path, strlen(FILE_BASE__SHARED . '://'));
+    } elseif (substr($path, 0, strlen(FILE_BASE__SHARED . '://')) == FILE_BASE__SHARED . '://') {
+        $file_base = get_file_base(false, true);
+
         $file_base_constant = FILE_BASE__SHARED;
+
         $path_relative = substr($path, strlen(FILE_BASE__SHARED . '://'));
     } elseif (substr($path, 0, strlen(FILE_BASE__CUSTOM . '://')) == FILE_BASE__CUSTOM . '://') {
-        $file_base = get_custom_file_base(true);
+        $file_base = get_file_base(true, true);
+
         $file_base_constant = FILE_BASE__CUSTOM;
+
         $path_relative = substr($path, strlen(FILE_BASE__CUSTOM . '://'));
     } else {
         return [null, $path, CMS_CLOUD__LOCAL, null, null];
@@ -167,6 +189,10 @@ function _make_cms_path_native(string $path) : array
  */
 function inject_propagation_dir(string $file_base_constant, string $op_type, string $path_relative, ?int $perms = null, string $data = '')
 {
+    if (cloud_mode() == '') {
+        return;
+    }
+
     // Clean up any contradictions/prior-bloat first
     if ($op_type != 'move') {
         $GLOBALS['SITE_DB']->query_delete('cloud_propagation_dirs', [
@@ -213,6 +239,10 @@ function cloudfs_ping_file_changed(string $path, string $file_base_constant)
  */
 function inject_propagation_file(string $file_base_constant, string $op_type, string $path_relative, ?int $mtime = null, ?int $perms = null, string $data = '')
 {
+    if (cloud_mode() == '') {
+        return;
+    }
+
     // Clean up any contradictions/prior-bloat first
     if ($op_type != 'move') {
         $GLOBALS['SITE_DB']->query_delete('cloud_propagation_files', [
@@ -274,6 +304,22 @@ class CloudFsStreamWrapper
     {
         list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
+        if ($file_base_constant == FILE_BASE__AUTODETECT) {
+            global $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
+
+            $this->directory_handle = [];
+            foreach ([$CUSTOM_FILE_BASE_LOCAL, $FILE_BASE_LOCAL] as $_file_base) {
+                $dh = @opendir($_file_base . '/' . $path_relative, $this->context);
+                if ($dh !== false) {
+                    while (($f = readdir($dh)) !== false) {
+                        $this->directory_handle[$f] = true;
+                    }
+                    closedir($dh);
+                }
+            }
+            reset($this->directory_handle);
+        }
+
         $this->directory_handle = opendir($path_absolute, $this->context);
         return ($this->directory_handle !== false);
     }
@@ -285,6 +331,15 @@ class CloudFsStreamWrapper
      */
     public function dir_readdir()
     {
+        if (is_array($this->directory_handle)) {
+            if (empty($this->directory_handle)) {
+                return false;
+            }
+            $ret = key($this->directory_handle);
+            array_shift($this->directory_handle);
+            return $ret;
+        }
+
         if ($this->directory_handle === false) {
             return false;
         }
@@ -299,6 +354,11 @@ class CloudFsStreamWrapper
      */
     public function dir_rewinddir() : bool
     {
+        if (is_array($this->directory_handle)) {
+            reset($this->directory_handle);
+            return true;
+        }
+
         if ($this->directory_handle === false) {
             return false;
         }
@@ -314,6 +374,11 @@ class CloudFsStreamWrapper
      */
     public function dir_closedir() : bool
     {
+        if (is_array($this->directory_handle)) {
+            $this->directory_handle = null;
+            return true;
+        }
+
         if ($this->directory_handle === false) {
             return false;
         }
@@ -677,7 +742,7 @@ class CloudFsStreamWrapper
         }
 
         if (($ret) && ($storage_type == CMS_CLOUD__PROPAGATED)) {
-            if (is_dir(get_file_base(true) . '/' . $path)) {
+            if (is_dir($path_absolute)) {
                 inject_propagation_dir($file_base_constant, 'touch', $path_relative, fileperms($path_absolute));
             } else {
                 inject_propagation_file($file_base_constant, 'touch', $path_relative, filemtime($path_absolute), fileperms($path_absolute));

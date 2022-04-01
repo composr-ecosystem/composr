@@ -50,7 +50,7 @@ function export_menu_spreadsheet(?string $file_path = null)
 
     require_code('files_spreadsheets_write');
     if ($file_path === null) {
-        $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
+        $file_path = get_file_base(true) . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
     }
     make_spreadsheet($file_path, $data);
 }
@@ -74,7 +74,7 @@ function import_menu_spreadsheet(?string $file_path = null, ?string $filename = 
 
     if ($file_path === null) {
         require_code('files_spreadsheets_write');
-        $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
+        $file_path = get_file_base(true) . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
     }
     require_code('files_spreadsheets_read');
     $sheet_reader = spreadsheet_open_read($file_path, $filename);
@@ -486,9 +486,9 @@ function _copy_from_sitemap_to_new_menu(string $target_menu, array $node, int &$
             $theme_image_code = null;
             if ($child['extra_meta']['image'] !== null) {
                 $_theme_image_url = $child['extra_meta']['image'];
-                if (substr($_theme_image_url, 0, strlen(get_custom_base_url() . '/')) == get_custom_base_url() . '/') {
-                    $_theme_image_url = substr($theme_image_code, strlen(get_custom_base_url() . '/'));
-                    $theme_image_code = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['url' => $_theme_image_url]);
+                $relative_part = '';
+                if (url_is_local($_theme_image_url, $relative_part)) {
+                    $theme_image_code = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['url' => $relative_part]);
                 }
             }
 

@@ -1022,10 +1022,6 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>Find the URL to a named Composr entry script (e.g. <kbd>dload</kbd>), but as a relative URL to domain name root. This is useful for JavaScript because it makes the JavaScript portable able to run across multiple domains from a single cache pool (when you have zones on different domains) &ndash; and also so the cached JavaScript is compatible with both HTTPS and HTTP.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$MAKE_URL_ABSOLUTE,someurl}</td>
-			<td>Take what may be a relative URL (relative to site base URL), and make sure it is an absolute URL</td>
-		</tr>
-		<tr style="background: #DDFFDD">
 			<td>{$ENSURE_PROTOCOL_SUITABILITY,someurl}</td>
 			<td>Make sure a URL is safe to embed in the current page if the current page is HTTPS, e.g. by proxying a non-HTTPS URL</td>
 		</tr>
@@ -1227,11 +1223,11 @@ where:
 			<td>The base URL to the installation</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$CUSTOM_BASE_URL}</td>
-			<td>The base URL to custom data in the installation (usually the same as BASE_URL)</td>
+			<td>{$BASEIFY,relative_url}</td>
+			<td>Make a relative URL absolute, using the correct base URL for the referenced file</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$BASE_URL_NOHTTP} / {$CUSTOM_BASE_URL_NOHTTP}</td>
+			<td>{$BASE_URL_NOHTTP}</td>
 			<td>The base URL to the installation, but just the path, no protocol or domain name. This is useful in JS files (which cache as strings, not Tempcode) because it doesn't cause JS security errors when HTTPS and HTTP variants of a site are both in action (the same JS files may be served for both HTTPS and HTTP).</td>
 		</tr>
 		<tr style="background: #FFDDDD">

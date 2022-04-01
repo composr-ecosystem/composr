@@ -229,7 +229,7 @@ function ensure_version_exists_in_tracker($version)
 function upload_to_tracker_issue($tracker_id, $upload)
 {
     $disk_filename = md5(serialize($upload));
-    $save_path = get_custom_file_base() . '/tracker/uploads/' . $disk_filename;
+    $save_path = get_file_base(true) . '/tracker/uploads/' . $disk_filename;
     move_uploaded_file($upload['tmp_name'], $save_path);
     fix_permissions($save_path);
 
@@ -256,7 +256,7 @@ function upload_to_tracker_issue($tracker_id, $upload)
             '',
             '" . $disk_filename . "',
             '" . db_escape_string($upload['name']) . "',
-            '" . get_custom_file_base() . "/tracker/uploads/',
+            '" . get_file_base(true) . "/tracker/uploads/',
             '" . strval($upload['size']) . "',
             'application/octet-stream',
             '',

@@ -108,7 +108,7 @@ class Hook_fields_upload
             }
             $download_url .= $keep->evaluate();
         } else {
-            $download_url = (url_is_local($ev) ? (get_custom_base_url() . '/') : '') . $ev;
+            $download_url = baseify($ev);
         }
 
         return hyperlink($download_url, $original_filename, true, true);
@@ -196,7 +196,7 @@ class Hook_fields_upload
             }
 
             if (($old_value !== null) && ($old_value['cv_value'] != '') && (($value != '') || (post_param_integer('custom_' . strval($field['id']) . '_value_unlink', 0) == 1))) {
-                @unlink(get_custom_file_base() . '/' . rawurldecode($old_value['cv_value']));
+                @unlink(get_file_base() . '/' . rawurldecode($old_value['cv_value']));
             }
         } else {
             $value = STRING_MAGIC_NULL;
@@ -214,7 +214,7 @@ class Hook_fields_upload
     {
         if ($value['cv_value'] != '') {
             $path = preg_replace('#::.*$#', '', $value['cv_value']);
-            @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+            @unlink(get_file_base() . '/' . rawurldecode($path));
         }
     }
 }

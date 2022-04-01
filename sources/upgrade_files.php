@@ -316,8 +316,8 @@ function _upgrader_file_upgrade_screen() : string
     // Do extraction within iframe, if possible
     if ($popup_simple_extract) {
         // These are standardised temp files upgrader2.php will expect
-        $tmp_upgrade_path = get_custom_file_base() . '/data_custom/upgrader.cms.tmp';
-        $tmp_metadata_path = get_custom_file_base() . '/data_custom/upgrader.tmp';
+        $tmp_upgrade_path = get_file_base(false) . '/data_custom/upgrader.cms.tmp';
+        $tmp_metadata_path = get_file_base(false) . '/data_custom/upgrader.tmp';
 
         // Remove standardised temp files
         @unlink($tmp_upgrade_path);

@@ -192,7 +192,7 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
         $theme = isset($GLOBALS['FORUM_DRIVER']) ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
     }
     if ($theme != '') {
-        $ini_path = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . filter_naughty($theme) . '/theme.ini';
+        $ini_path = get_file_base() . '/themes/' . filter_naughty($theme) . '/theme.ini';
         if (is_file($ini_path)) {
             static $map = [];
             if (!isset($map[$theme])) {

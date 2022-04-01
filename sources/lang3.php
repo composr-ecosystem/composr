@@ -46,7 +46,7 @@ function _choose_language(object $title, bool $tip = false, bool $allow_all_sele
         if ($LANGS_MAP_CACHE === null) {
             require_code('files');
             $map_a = get_file_base() . '/lang/langs.ini';
-            $map_b = get_custom_file_base() . '/lang_custom/langs.ini';
+            $map_b = get_file_base() . '/lang_custom/langs.ini';
             if (!is_file($map_b)) {
                 $map_b = $map_a;
             }
@@ -141,15 +141,15 @@ function _find_all_langs(bool $even_empty_langs = false) : array
             return $test;
         }
 
-        $_dir = @opendir(get_custom_file_base() . '/lang_custom/');
+        $_dir = @opendir(get_file_base() . '/lang_custom/');
         if ($_dir !== false) {
             while (false !== ($file = readdir($_dir))) {
                 if ((!isset($file[5])) && ($file[0] != '.') && (($file == 'EN') || (!should_ignore_file('lang_custom/' . $file, IGNORE_ACCESS_CONTROLLERS)))) {
-                    if (is_dir(get_custom_file_base() . '/lang_custom/' . $file)) {
-                        if (($even_empty_langs) || (/*optimisation*/is_file(get_custom_file_base() . '/lang_custom/' . $file . '/global.ini'))) {
+                    if (is_dir(get_file_base() . '/lang_custom/' . $file)) {
+                        if (($even_empty_langs) || (/*optimisation*/is_file(get_file_base() . '/lang_custom/' . $file . '/global.ini'))) {
                             $_langs[$file] = 'lang_custom';
                         } else {
-                            $_dir2 = @opendir(get_custom_file_base() . '/lang_custom/' . $file);
+                            $_dir2 = @opendir(get_file_base() . '/lang_custom/' . $file);
                             if ($_dir2 !== false) {
                                 while (false !== ($file2 = readdir($_dir2))) {
                                     if (substr($file2, -4) == '.ini') {
@@ -163,29 +163,6 @@ function _find_all_langs(bool $even_empty_langs = false) : array
                 }
             }
             closedir($_dir);
-        }
-        if (get_custom_file_base() != get_file_base()) {
-            $_dir = @opendir(get_file_base() . '/lang_custom/');
-            if ($_dir !== false) {
-                while (false !== ($file = readdir($_dir))) {
-                    if ((!isset($file[5])) && ($file[0] != '.') && (($file == 'EN') || (!should_ignore_file('lang_custom/' . $file, IGNORE_ACCESS_CONTROLLERS)))) {
-                        if (is_dir(get_file_base() . '/lang_custom/' . $file)) {
-                            if ($even_empty_langs) {
-                                $_langs[$file] = 'lang_custom';
-                            } else {
-                                $_dir2 = opendir(get_file_base() . '/lang_custom/' . $file);
-                                while (false !== ($file2 = readdir($_dir2))) {
-                                    if (substr($file2, -4) == '.ini') {
-                                        $_langs[$file] = 'lang_custom';
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                closedir($_dir);
-            }
         }
     }
     $_dir = @opendir(get_file_base() . '/lang/');

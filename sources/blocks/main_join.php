@@ -161,7 +161,7 @@ class Block_main_join
      */
     protected function has_email_to_send(array $map) : bool
     {
-        return file_exists(get_custom_file_base() . '/' . $map['path']);
+        return file_exists(get_file_base() . '/' . $map['path']);
     }
 
     /**
@@ -176,7 +176,7 @@ class Block_main_join
         if ($email_address != '') {
             if ($this->has_email_to_send($map)) {
                 require_code('character_sets');
-                $url = (url_is_local($map['path']) ? (get_custom_base_url() . '/') : '') . $map['path'];
+                $url = baseify($map['path']);
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
                 $body = http_get_contents($url, ['convert_to_internal_encoding' => true]);
                 foreach ($_POST as $key => $val) {

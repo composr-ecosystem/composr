@@ -33,7 +33,7 @@ class Hook_commandr_fs_raw
      */
     public function listing(array $meta_dir, string $meta_root_node, object &$commandr_fs)
     {
-        $path = get_custom_file_base();
+        $path = get_file_base();
         foreach ($meta_dir as $meta_dir_section) {
             $path .= '/' . filter_naughty($meta_dir_section);
         }
@@ -70,7 +70,7 @@ class Hook_commandr_fs_raw
     public function make_directory(array $meta_dir, string $meta_root_node, string $new_dir_name, object &$commandr_fs) : bool
     {
         $new_dir_name = filter_naughty($new_dir_name);
-        $path = get_custom_file_base();
+        $path = get_file_base(true);
         foreach ($meta_dir as $meta_dir_section) {
             $path .= '/' . filter_naughty($meta_dir_section);
         }
@@ -96,7 +96,7 @@ class Hook_commandr_fs_raw
     public function remove_directory(array $meta_dir, string $meta_root_node, string $dir_name, object &$commandr_fs) : bool
     {
         $dir_name = filter_naughty($dir_name);
-        $path = get_custom_file_base();
+        $path = get_file_base(true);
         foreach ($meta_dir as $meta_dir_section) {
             $path .= '/' . filter_naughty($meta_dir_section);
         }
@@ -125,7 +125,7 @@ class Hook_commandr_fs_raw
     public function remove_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs) : bool
     {
         $file_name = filter_naughty($file_name);
-        $path = get_custom_file_base();
+        $path = get_file_base(true);
         foreach ($meta_dir as $meta_dir_section) {
             $path .= '/' . filter_naughty($meta_dir_section);
         }
@@ -150,7 +150,7 @@ class Hook_commandr_fs_raw
     public function read_file(array $meta_dir, string $meta_root_node, string $file_name, object &$commandr_fs)
     {
         $file_name = filter_naughty($file_name);
-        $path = get_custom_file_base();
+        $path = get_file_base();
         foreach ($meta_dir as $meta_dir_section) {
             $path .= '/' . filter_naughty($meta_dir_section);
         }
@@ -175,7 +175,7 @@ class Hook_commandr_fs_raw
     public function write_file(array $meta_dir, string $meta_root_node, string $file_name, string $contents, object &$commandr_fs) : bool
     {
         $file_name = filter_naughty($file_name);
-        $path = get_custom_file_base();
+        $path = get_file_base(true);
         foreach ($meta_dir as $meta_dir_section) {
             $path .= '/' . filter_naughty($meta_dir_section);
         }

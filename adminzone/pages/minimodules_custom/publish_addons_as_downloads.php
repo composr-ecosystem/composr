@@ -95,7 +95,7 @@ if (get_param_integer('import_themes', 1) == 1) {
     $cat_id = find_addon_category_download_category('Themes', $c_main_id);
     $cat_id = find_addon_category_download_category('Professional Themes', $cat_id);
 
-    $dh = opendir(get_custom_file_base() . '/exports/addons');
+    $dh = opendir(get_file_base(true) . '/exports/addons');
     $theme_count = 0;
     while (($file = readdir($dh)) !== false) {
         if (preg_match('#^theme-.*\.tar$#', $file) != 0) {
@@ -117,8 +117,8 @@ function publish_addon($addon_name, $version_branch, $cat_id)
 {
     $file = $addon_name . '-' . $version_branch . '.tar';
 
-    $from = get_custom_file_base() . '/exports/addons/' . $file;
-    $to = get_custom_file_base() . '/uploads/downloads/' . $file;
+    $from = get_file_base(true) . '/exports/addons/' . $file;
+    $to = get_file_base() . '/uploads/downloads/' . $file;
 
     if ((file_exists($from)) && (file_exists($to))) {
         @unlink($to);
@@ -156,7 +156,7 @@ function publish_addon($addon_name, $version_branch, $cat_id)
         $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
-        if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
+        if (file_exists(get_file_base() . '/' . $screenshot_url)) {
             add_image('', 'download_' . strval($download_id), '', $screenshot_url, 1, 0, 0, 0, '', null, null, null, 0);
         }
     }
@@ -167,8 +167,8 @@ function publish_theme($file, $version_branch, $cat_id)
     $addon_name = basename($file, '.tar');
     $new_file = $addon_name . '-' . $version_branch . '.tar';
 
-    $from = get_custom_file_base() . '/exports/addons/' . $file;
-    $to = get_custom_file_base() . '/uploads/downloads/' . $new_file;
+    $from = get_file_base(true) . '/exports/addons/' . $file;
+    $to = get_file_base() . '/uploads/downloads/' . $new_file;
 
     if ((file_exists($from)) && (file_exists($to))) {
         @unlink($to);
@@ -203,7 +203,7 @@ function publish_theme($file, $version_branch, $cat_id)
         $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
-        if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
+        if (file_exists(get_file_base() . '/' . $screenshot_url)) {
             add_image('', 'download_' . strval($download_id), $screenshot_url, '', 1, 0, 0, 0, '', null, null, null, 0);
         }
     }

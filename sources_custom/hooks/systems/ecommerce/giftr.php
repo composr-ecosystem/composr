@@ -65,12 +65,7 @@ class Hook_ecommerce_giftr
         $rows = $GLOBALS['SITE_DB']->query_select('giftr g', ['*', '(SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'members_gifts m WHERE m.gift_id=g.id) AS popularity'], $map, $order_by);
         $gifts = [];
         foreach ($rows as $gift) {
-            $image_url = $gift['image'];
-            if ($image_url != '') {
-                if (url_is_local($image_url)) {
-                    $image_url = get_custom_base_url() . '/' . $image_url;
-                }
-            }
+            $image_url = baseify($gift['image']);
 
             $products['GIFTR_' . strval($gift['id'])] = [
                 'item_name' => do_lang('_GIFT', $gift['name']),
@@ -199,7 +194,7 @@ class Hook_ecommerce_giftr
             if (array_key_exists(0, $gift_rows)) {
                 $gift_row = $gift_rows[0];
                 $gift_name = $gift_row['name'];
-                $gift_image_url = get_custom_base_url() . '/' . $gift_row['image'];
+                $gift_image_url = baseify_local_url($gift_row['image']);
                 $gift_row_id = $GLOBALS['SITE_DB']->query_insert('members_gifts', ['to_member_id' => $to_member_id, 'from_member_id' => $from_member_id, 'gift_id' => $gift_id, 'add_time' => time(), 'is_anonymous' => $anonymous, 'gift_message' => $gift_message], true);
 
                 $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $from_member_id, 'details' => $gift_name, 'details2' => $GLOBALS['FORUM_DRIVER']->get_username($to_member_id), 'txn_id' => $details['TXN_ID']]);

@@ -71,7 +71,7 @@ class Hook_health_check_upkeep_backups extends Hook_Health_Check
         $backup_schedule_time = intval(get_value('backup_schedule_time'));
         $last_backup = get_value('last_backup');
         if (($backup_schedule_time > 0) && ($last_backup !== null)) {
-            $path = get_custom_file_base() . '/exports/backups';
+            $path = get_file_base(true) . '/exports/backups';
             $found = false;
             $dh = opendir($path);
             while (($f = readdir($dh)) !== false) {

@@ -26,7 +26,7 @@ class __extra_logging_test_set extends cms_test_case
     {
         parent::setUp();
 
-        $config_path = get_file_base() . '/_config.php';
+        $config_path = get_file_base(false) . '/_config.php';
         $c = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
         $c = str_replace("\n\$SITE_INFO['static_caching_hours'] = '1';", '', $c);
         $c = str_replace("\n\$SITE_INFO['any_guest_cached_too'] = '1';", '', $c);
@@ -44,7 +44,7 @@ class __extra_logging_test_set extends cms_test_case
             return;
         }
 
-        $glob_cmd = get_custom_file_base() . '/data_custom/profiling--*.log';
+        $glob_cmd = get_file_base(true) . '/data_custom/profiling--*.log';
 
         clearstatcache();
         $before = glob($glob_cmd);
@@ -79,7 +79,7 @@ class __extra_logging_test_set extends cms_test_case
 
         set_value('monitor_slow_urls', '0.1');
 
-        $log_path = get_custom_file_base() . '/data_custom/errorlog.php';
+        $log_path = get_file_base(true) . '/data_custom/errorlog.php';
         cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(['page' => 'faq', 'cache' => 0], 'docs');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
@@ -96,7 +96,7 @@ class __extra_logging_test_set extends cms_test_case
 
         set_value('memory_tracking', '1');
 
-        $log_path = get_custom_file_base() . '/data_custom/errorlog.php';
+        $log_path = get_file_base(true) . '/data_custom/errorlog.php';
         cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(['page' => ''], '');
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 100.0, 'cookies' => [get_session_cookie() => $this->session_id]]);
@@ -221,7 +221,7 @@ class __extra_logging_test_set extends cms_test_case
             return;
         }
 
-        $path = get_custom_file_base() . '/data_custom/errorlog.php';
+        $path = get_file_base(true) . '/data_custom/errorlog.php';
 
         clearstatcache();
         $size_before = filesize($path);
@@ -237,7 +237,7 @@ class __extra_logging_test_set extends cms_test_case
             return;
         }
 
-        $path = get_custom_file_base() . '/data_custom/permission_checks.log';
+        $path = get_file_base(true) . '/data_custom/permission_checks.log';
         cms_file_put_contents_safe($path, '', FILE_WRITE_BOM);
 
         clearstatcache();
@@ -257,7 +257,7 @@ class __extra_logging_test_set extends cms_test_case
             return;
         }
 
-        $path = get_custom_file_base() . '/data_custom/queries.log';
+        $path = get_file_base(true) . '/data_custom/queries.log';
         cms_file_put_contents_safe($path, '', FILE_WRITE_BOM);
 
         clearstatcache();

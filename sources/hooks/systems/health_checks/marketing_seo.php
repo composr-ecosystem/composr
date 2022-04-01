@@ -270,7 +270,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
             return;
         }
 
-        $path = get_custom_file_base() . '/data_custom/sitemaps';
+        $path = get_file_base(true) . '/data_custom/sitemaps';
 
         $last_updated_file = @filemtime($path . '/index.xml');
         $ok = ($last_updated_file !== false);

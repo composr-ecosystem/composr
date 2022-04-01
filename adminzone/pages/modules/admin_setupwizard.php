@@ -179,7 +179,7 @@ class Module_admin_setupwizard
      */
     public function step1() : object
     {
-        $dh = @opendir(get_custom_file_base() . '/imports/addons/');
+        $dh = @opendir(get_file_base() . '/imports/addons/');
         $addons_available = [];
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
@@ -389,7 +389,7 @@ class Module_admin_setupwizard
         $fields->attach(form_input_line(do_lang_tempcode('GOOGLE_ANALYTICS'), do_lang_tempcode('CONFIG_OPTION_google_analytics'), 'google_analytics', $google_analytics, false));
 
         if (get_theme_option('setupwizard__provide_cms_advert_choice', null, post_param_string('source_theme', 'default')) == '1') {
-            $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
+            $panel_path = get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
             if (file_exists($panel_path)) {
                 $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path, FILE_READ_LOCK), 'logos/') !== false;
             } else {
@@ -1061,7 +1061,7 @@ class Module_admin_setupwizard
 
         $name = post_param_string('site_name');
         $new_theme_name = $this->generate_theme_name($name);
-        $generating_new_theme = !file_exists(get_custom_file_base() . '/themes/' . $new_theme_name);
+        $generating_new_theme = !file_exists(get_file_base() . '/themes/' . $new_theme_name);
         list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
 
         require_code('addons2');
@@ -1153,11 +1153,11 @@ class Module_admin_setupwizard
                     foreach (['large' => '-logo', 'standalone' => 'standalone_logo', 'small' => 'small_logo', 'small_white' => 'small_white_logo'] as $logo_type => $logo_output_theme_image) {
                         $logo = generate_logo($name, $font, $colour, $logo_theme_image, $background_theme_image, false, $logo_save_theme, $logo_type);
                         $path = 'themes/' . $logo_save_theme . '/images_custom/' . $logo_output_theme_image . '.png';
-                        if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
+                        if (!file_exists(get_file_base(true) . '/' . dirname($path))) {
                             require_code('files2');
-                            make_missing_directory(get_custom_file_base() . '/' . dirname($path), true);
+                            make_missing_directory(get_file_base(true) . '/' . dirname($path), true);
                         }
-                        cms_imagesave($logo, get_custom_file_base() . '/' . $path) or intelligent_write_error($path);
+                        cms_imagesave($logo, get_file_base(true) . '/' . $path) or intelligent_write_error($path);
                         actual_edit_theme_image('logo/' . $logo_output_theme_image, $logo_save_theme, get_site_default_lang(), 'logo/' . $logo_output_theme_image, $path, true);
                         imagedestroy($logo);
                     }
@@ -1347,7 +1347,7 @@ class Module_admin_setupwizard
 
         // Rules
         if (post_param_integer('skip_7', 0) == 0) {
-            $full_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/_rules.txt';
+            $full_path = get_file_base(true) . '/pages/comcode_custom/' . get_site_default_lang() . '/_rules.txt';
             if (file_exists($full_path)) {
                 @copy($full_path, $full_path . '.' . strval(time()));
                 fix_permissions($full_path . '.' . strval(time()));
@@ -1367,7 +1367,7 @@ class Module_admin_setupwizard
 
             foreach ($page_structure as $zone => $zone_pages) {
                 // Start
-                $full_path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt';
+                $full_path = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt';
                 if (file_exists($full_path)) {
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
@@ -1375,7 +1375,7 @@ class Module_admin_setupwizard
                 cms_file_put_contents_safe($full_path, $zone_pages[DEFAULT_ZONE_PAGE_NAME], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
                 // Left
-                $full_path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
+                $full_path = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
                 if (file_exists($full_path)) {
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
@@ -1383,7 +1383,7 @@ class Module_admin_setupwizard
                 cms_file_put_contents_safe($full_path, $zone_pages['left'], FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
 
                 // Right
-                $full_path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
+                $full_path = get_file_base(true) . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
                 if (file_exists($full_path)) {
                     @copy($full_path, $full_path . '.' . strval(time()));
                     fix_permissions($full_path . '.' . strval(time()));
@@ -1393,7 +1393,7 @@ class Module_admin_setupwizard
         } elseif (!$this->has_block_step()) {
             require_code('files2');
             foreach (find_all_zones() as $zone) {
-                $dir = get_custom_file_base() . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/comcode_custom/' . fallback_lang();
+                $dir = get_file_base(true) . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/comcode_custom/' . fallback_lang();
                 $files = get_directory_contents($dir, '', 0, true, true, ['txt']);
                 foreach ($files as $file) {
                     $matches = [];

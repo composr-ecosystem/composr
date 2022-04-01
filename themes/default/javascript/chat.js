@@ -403,14 +403,13 @@
             if (select.value === '') {
                 $cms.ui.alert('{!chat:PLEASE_SELECT_SOUND;}');
             } else {
-                playSoundUrl(select.value);
+                playSoundUrl(select.dataset.fullUrl);
             }
         });
     };
 
     function playSoundUrl(url) { // Used for testing different sounds
-        var baseUrl = $util.rel((!url.includes('data_custom/') && !url.includes('uploads/')) ? $cms.getBaseUrl() : $cms.getCustomBaseUrl());
-        var soundObject = window.soundManager.createSound({url: baseUrl + '/' + url});
+        var soundObject = window.soundManager.createSound({url: url});
         if (soundObject) {
             soundObject.play();
         }

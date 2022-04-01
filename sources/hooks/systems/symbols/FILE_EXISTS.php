@@ -36,7 +36,7 @@ class Hook_symbol_FILE_EXISTS
         }
 
         $path = $param[0];
-        $path = get_custom_file_base() . '/' . $path;
+        $path = get_file_base() . '/' . $path;
 
         $value = file_exists($path) ? '1' : '0';
 

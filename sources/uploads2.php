@@ -151,7 +151,7 @@ function _reorganise_content_row_upload(array $row, string $content_type, string
         $upload_directory .= '/' . $content_type;
     }
 
-    $current_disk_path = get_custom_file_base() . '/' . rawurldecode($current_upload_url);
+    $current_disk_path = get_file_base() . '/' . rawurldecode($current_upload_url);
     if (!is_file($current_disk_path)) {
         if (!$tolerate_errors) {
             warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($current_disk_path)));
@@ -215,7 +215,7 @@ function _reorganise_content_row_upload(array $row, string $content_type, string
         if (($current_upload_url == $new_upload_url) || (rawurldecode($current_upload_url) == rawurldecode($new_upload_url))) {
             return null; // It's already where it should be
         }
-        $new_disk_path = get_custom_file_base() . '/' . rawurldecode($new_upload_url);
+        $new_disk_path = get_file_base(true) . '/' . rawurldecode($new_upload_url);
 
         $i++;
     } while (is_file($new_disk_path));
@@ -226,8 +226,8 @@ function _reorganise_content_row_upload(array $row, string $content_type, string
     }
 
     // Make directory tree
-    $_new_disk_path = get_custom_file_base() . '/' . rawurldecode($new_upload_path);
-    $_compounded_new_disk_path = get_custom_file_base();
+    $_new_disk_path = get_file_base(true) . '/' . rawurldecode($new_upload_path);
+    $_compounded_new_disk_path = get_file_base(true);
     $parts = explode('/', rawurldecode($new_upload_path));
     foreach ($parts as $part) {
         $_compounded_new_disk_path .= '/' . $part;
@@ -241,7 +241,7 @@ function _reorganise_content_row_upload(array $row, string $content_type, string
                 return null; // Error, failed to make the directory
             }
             fix_permissions($_compounded_new_disk_path);
-            @copy(get_custom_file_base() . '/uploads/index.html', $_compounded_new_disk_path . '/index.html');
+            @copy(get_file_base() . '/uploads/index.html', $_compounded_new_disk_path . '/index.html');
             fix_permissions($_compounded_new_disk_path . '/index.html');
         } else {
             if (running_script('execute_temp')) {
@@ -346,7 +346,7 @@ function clean_empty_upload_directories(string $upload_directory, bool $top_leve
 {
     require_code('files');
 
-    $dh = @opendir(get_custom_file_base() . '/' . $upload_directory);
+    $dh = @opendir(get_file_base(true) . '/' . $upload_directory);
 
     if ($dh === false) {
         return true;
@@ -355,7 +355,7 @@ function clean_empty_upload_directories(string $upload_directory, bool $top_leve
     $ok_to_delete = !$top_level;
 
     while (($f = readdir($dh)) !== false) {
-        if (should_ignore_file(get_custom_file_base() . '/' . $upload_directory . '/' . $f, IGNORE_ACCESS_CONTROLLERS)) {
+        if (should_ignore_file(get_file_base(true) . '/' . $upload_directory . '/' . $f, IGNORE_ACCESS_CONTROLLERS)) {
             continue;
         }
 
@@ -364,7 +364,7 @@ function clean_empty_upload_directories(string $upload_directory, bool $top_leve
             continue;
         }
 
-        if (is_dir(get_custom_file_base() . '/' . $upload_directory . '/' . $f)) {
+        if (is_dir(get_file_base(true) . '/' . $upload_directory . '/' . $f)) {
             $ok_to_delete = clean_empty_upload_directories($upload_directory . '/' . $f, false) && $ok_to_delete;
         } else {
             $ok_to_delete = false;
@@ -374,7 +374,7 @@ function clean_empty_upload_directories(string $upload_directory, bool $top_leve
     closedir($dh);
 
     if ($ok_to_delete) {
-        deldir_contents(get_custom_file_base() . '/' . $upload_directory, false, true);
+        deldir_contents(get_file_base(true) . '/' . $upload_directory, false, true);
     }
 
     return $ok_to_delete;

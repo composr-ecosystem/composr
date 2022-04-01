@@ -35,10 +35,7 @@ class Hook_page_groupings_referrals
 
         $ret = [];
 
-        $path = get_custom_file_base() . '/text_custom/referrals.txt';
-        if (!is_file($path)) {
-            $path = get_file_base() . '/text_custom/referrals.txt';
-        }
+        $path = get_file_base(true) . '/text_custom/referrals.txt';
 
         if (is_file($path)) {
             $ini_file = cms_parse_ini_file_safe($path, true);

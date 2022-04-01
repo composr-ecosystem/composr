@@ -638,7 +638,7 @@ Let's say we want normal image attachments to route through S3. We would edit th
 [/code]
 to:
 [code="Tempcode"]
-{$PREG_REPLACE,^{$CUSTOM_BASE_URL}/uploads/attachments/,http://whateverYourAmazonBaseURLIS/uploads/attachments/,{URL}}
+{$PREG_REPLACE,^{$BASEIFY,uploads/attachments/},http://whateverYourAmazonBaseURLIS/uploads/attachments/,{URL}}
 [/code]
 You'll need to disable the Composr "Reveal usage figures" configuration option, as the usage figures can't be maintained with requests not routing through Composr.
 

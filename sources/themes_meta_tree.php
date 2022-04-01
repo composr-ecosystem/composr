@@ -461,7 +461,7 @@ class Meta_tree_builder
     {
         $full_rebuild = ($filter_level_a === null);
 
-        $theme_dir = get_custom_file_base() . '/themes/' . $theme;
+        $theme_dir = get_file_base(true) . '/themes/' . $theme;
         if (!file_exists($theme_dir)) {
             mkdir($theme_dir, 0777);
             fix_permissions($theme_dir);
@@ -565,7 +565,7 @@ class Meta_tree_builder
             }
 
             $zone = $page_link_parts[0];
-            if (!is_dir(get_custom_file_base() . '/' . $zone) && !is_dir(get_file_base() . '/' . $zone)) {
+            if (!is_dir(get_file_base() . '/' . $zone)) {
                 continue; // No zone
             }
 
@@ -812,10 +812,10 @@ class Meta_tree_builder
      */
     protected function put_in_standard_dir_files(string $path)
     {
-        copy(get_custom_file_base() . '/themes/default/templates/index.html', $path . '/index.html');
+        copy(get_file_base() . '/themes/default/templates/index.html', $path . '/index.html');
         fix_permissions($path . '/index.html');
 
-        copy(get_custom_file_base() . '/themes/default/templates/.htaccess', $path . '/.htaccess');
+        copy(get_file_base() . '/themes/default/templates/.htaccess', $path . '/.htaccess');
         fix_permissions($path . '/.htaccess');
     }
 }

@@ -55,7 +55,7 @@ class Hook_commandr_command_sql_dump
             } else {
                 $out_filename = 'dump_' . uniqid('', true) . '.sql';
             }
-            $out_file_path = get_custom_file_base() . '/exports/backups/' . $out_filename;
+            $out_file_path = get_file_base(true) . '/exports/backups/' . $out_filename;
 
             // Generate dump
             require_code('database_relations');
@@ -65,7 +65,7 @@ class Hook_commandr_command_sql_dump
             fclose($out_file);
             fix_permissions($out_file_path);
 
-            $out = do_lang('SQL_DUMP_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(get_custom_base_url() . '/exports/backups/' . rawurlencode($out_filename)));
+            $out = do_lang('SQL_DUMP_SAVED_TO', escape_html('exports/backups/' . $out_filename), escape_html(baseify_local_url('exports/backups/' . rawurlencode($out_filename))));
 
             return ['', $out, '', ''];
         }

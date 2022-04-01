@@ -68,7 +68,7 @@ class Module_catalogues
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/catalogues', true);
+            deldir_contents(get_file_base(true) . '/uploads/catalogues', true);
         }
 
         delete_privilege('high_catalogue_entry_timeout');

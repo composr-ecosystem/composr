@@ -148,7 +148,7 @@ $all_downloads_to_add = [
 ];
 
 foreach ($all_downloads_to_add as $i => $d) {
-    $full_local_path = get_custom_file_base() . '/uploads/downloads/' . $d['filename'];
+    $full_local_path = get_file_base() . '/uploads/downloads/' . $d['filename'];
     $d['full_local_path'] = $full_local_path;
     if (!file_exists($full_local_path)) {
         echo '<p>Could not find file <kbd>uploads/downloads/' . escape_html($d['filename']) . '</kbd></p>';
@@ -202,7 +202,7 @@ if ((!$is_bleeding_edge) && (!$is_old_tree) && (isset($all_downloads_to_add[0]['
 if ((!$is_bleeding_edge) && (!$is_old_tree)) {
     @unlink('data.cms');
     @unlink('install.php');
-    $cmd = 'cd ' . get_custom_file_base() . '/uploads/downloads; unzip -o ' . $all_downloads_to_add[0]['filename'];
+    $cmd = 'cd ' . get_file_base() . '/uploads/downloads; unzip -o ' . $all_downloads_to_add[0]['filename'];
     shell_exec($cmd);
 }
 

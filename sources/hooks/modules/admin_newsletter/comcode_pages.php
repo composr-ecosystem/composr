@@ -95,10 +95,10 @@ class Hook_whatsnew_comcode_pages
                 $_url = build_url(['page' => $page], $zone, [], false, false, true);
                 $url = $_url->evaluate();
 
-                list(, , $path) = find_comcode_page($lang, $page, $zone);
+                list(, , $file_path) = find_comcode_page($lang, $page, $zone);
 
                 require_code('zones2');
-                $name = get_comcode_page_title_from_disk($path);
+                $name = get_comcode_page_title_from_disk($file_path);
                 if (array_key_exists($id, $rows)) {
                     $_name = get_translated_text($rows[$id]['cc_page_title'], null, null, true);
                     if ($_name !== null) {

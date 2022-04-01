@@ -852,11 +852,11 @@ function thumb_script()
     require_code('images');
 
     $new_name = url_to_filename($url_full);
-    $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
+    $file_thumb = get_file_base(true) . '/uploads/auto_thumbs/' . $new_name;
     if (!file_exists($file_thumb)) {
         $url_thumb = convert_image($url_full, $file_thumb, null, null, intval(get_option('thumb_width')), false);
     } else {
-        $url_thumb = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
+        $url_thumb = baseify_local_url('uploads/auto_thumbs/' . rawurlencode($new_name));
     }
 
     require_code('mime_types');

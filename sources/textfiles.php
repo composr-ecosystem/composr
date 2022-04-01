@@ -23,17 +23,38 @@
  *
  * @param  string $codename The file name (without .txt)
  * @param  ?LANGUAGE_NAME $lang The language to load from (null: none) (blank: search)
- * @return string The path to the file
+ * @param  boolean $get_save_path Get the path to save to (may be different to the path found at)
+ * @return string The path to the file (blank: not found)
  *
  * @ignore
  */
-function _find_text_file_path(string $codename, ?string $lang) : string
+function _find_text_file_path(string $codename, ?string $lang, bool $get_save_path = false) : string
 {
     if ($lang === null) {
-        $langs = [''];
-    } elseif ($lang != '') {
+        // No language...
+
+        if ($get_save_path) {
+            $path = get_file_base(true) . '/text_custom/' . $codename . '.txt';
+        }
+
+        $path = get_file_base() . '/text_custom/' . $lang . '/' . $codename . '.txt';
+        if (is_file($path)) {
+            return $path;
+        }
+
+        $path = get_file_base() . '/text/' . $codename . '.txt';
+        if (is_file($path)) {
+            return $path;
+        }
+
+        return '';
+    }
+
+    if ($lang != '') {
+        // Specific language
         $langs = [$lang];
     } else {
+        // Search languages
         $langs = [user_lang()];
         if (get_site_default_lang() != user_lang()) {
             $langs[] = get_site_default_lang();
@@ -42,24 +63,24 @@ function _find_text_file_path(string $codename, ?string $lang) : string
             $langs[] = fallback_lang();
         }
     }
-    $i = 0;
-    $path = '';
-    do {
-        $lang = $langs[$i];
-        $path = get_custom_file_base() . '/text_custom/' . $lang . (($lang == '') ? '' : '/') . $codename . '.txt';
-        if (!is_file($path)) {
-            $path = get_file_base() . '/text_custom/' . $lang . (($lang == '') ? '' : '/') . $codename . '.txt';
-        }
-        if (!is_file($path)) {
-            $path = get_file_base() . '/text/' . $lang . (($lang == '') ? '' : '/') . $codename . '.txt';
-        }
-        $i++;
-    } while ((!is_file($path)) && (array_key_exists($i, $langs)));
-    if (!is_file($path)) {
-        $path = '';
+
+    if ($get_save_path) {
+        $path = get_file_base(true) . '/text_custom/' . $langs[0] . '/' . $codename . '.txt';
     }
 
-    return $path;
+    foreach ($langs as $lang) {
+        $path = get_file_base() . '/text_custom/' . $lang . '/' . $codename . '.txt';
+        if (is_file($path)) {
+            return $path;
+        }
+
+        $path = get_file_base() . '/text/' . $lang . '/' . $codename . '.txt';
+        if (is_file($path)) {
+            return $path;
+        }
+    }
+
+    return '';
 }
 
 /**
@@ -103,11 +124,7 @@ function read_text_file(string $codename, ?string $lang = null, bool $missing_bl
  */
 function write_text_file(string $codename, ?string $lang, string $out)
 {
-    $xpath = _find_text_file_path($codename, $lang);
-    if ($xpath == '') {
-        $xpath = get_file_base() . '/text/' . user_lang() . '/' . $codename . '.txt';
-    }
-    $path = str_replace(get_file_base() . '/text/', get_custom_file_base() . '/text_custom/', $xpath);
+    $path = _find_text_file_path($codename, $lang, true);
 
     require_code('files');
 

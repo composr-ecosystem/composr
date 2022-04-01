@@ -201,14 +201,14 @@ function is_plupload(bool $fake_prepopulation = false) : bool
                 }
 
                 $path = 'uploads/incoming/' . filter_naughty($value);
-                if (file_exists(get_custom_file_base() . '/' . $path)) {
+                if (file_exists(get_file_base(true) . '/' . $path)) {
                     $plupload = true;
                     if ($fake_prepopulation) {
                         $_FILES[substr($key, strlen('hid_file_id_'))] = [
                             'type' => 'plupload',
                             'name' => $filename,
-                            'tmp_name' => get_custom_file_base() . '/' . $path,
-                            'size' => filesize(get_custom_file_base() . '/' . $path),
+                            'tmp_name' => get_file_base(true) . '/' . $path,
+                            'size' => filesize(get_file_base(true) . '/' . $path),
                         ];
                     }
                 }
@@ -217,7 +217,7 @@ function is_plupload(bool $fake_prepopulation = false) : bool
                 foreach (array_map('intval', explode(':', $value)) as $i => $incoming_uploads_id) { // Some uploaders may delimite with ":" within a single POST field (plupload); others may give multiple POST fields (plupload, native)
                     $incoming_uploads_row = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'incoming_uploads WHERE (i_submitter=' . strval(get_member()) . ' OR i_submitter=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ') AND id=' . strval($incoming_uploads_id), 1);
                     if (array_key_exists(0, $incoming_uploads_row)) {
-                        if (file_exists(get_custom_file_base() . '/' . $incoming_uploads_row[0]['i_save_url'])) {
+                        if (file_exists(get_file_base(true) . '/' . $incoming_uploads_row[0]['i_save_url'])) {
                             $plupload = true;
                             if ($fake_prepopulation) {
                                 if (!$done_fake_prepopulation) {
@@ -231,8 +231,8 @@ function is_plupload(bool $fake_prepopulation = false) : bool
                                     $_FILES[$new_key] = [
                                         'type' => 'plupload',
                                         'name' => $incoming_uploads_row[0]['i_orig_filename'],
-                                        'tmp_name' => get_custom_file_base() . '/' . $incoming_uploads_row[0]['i_save_url'],
-                                        'size' => filesize(get_custom_file_base() . '/' . $incoming_uploads_row[0]['i_save_url']),
+                                        'tmp_name' => get_file_base(true) . '/' . $incoming_uploads_row[0]['i_save_url'],
+                                        'size' => filesize(get_file_base(true) . '/' . $incoming_uploads_row[0]['i_save_url']),
                                     ];
                                     $_POST['hid_file_id_' . $new_key] = strval($incoming_uploads_id);
 
@@ -281,7 +281,7 @@ function get_temporary_upload_path(string $attach_name, bool $prepend_session_id
 
         check_extension($_FILES[$attach_name]['name'], false, $_FILES[$attach_name]['tmp_name']);
 
-        $temp_path = get_custom_file_base() . '/temp';
+        $temp_path = get_file_base(true) . '/temp';
         if (!file_exists($temp_path)) {
             make_missing_directory($temp_path);
         }
@@ -382,11 +382,11 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
 
     $upload_folder = filter_naughty($upload_folder);
     if ($upload_folder_full === null) {
-        $upload_folder_full = get_custom_file_base() . '/' . $upload_folder;
+        $upload_folder_full = get_file_base(true) . '/' . $upload_folder;
     }
     $thumb_folder = preg_replace('#^(uploads/[^/]+)#', '${1}_thumbs', $upload_folder);
     if ($thumb_folder_full === null) {
-        $thumb_folder_full = get_custom_file_base() . '/' . $thumb_folder;
+        $thumb_folder_full = get_file_base(true) . '/' . $thumb_folder;
     }
 
     $out = [];
@@ -417,8 +417,8 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
             // Get the incoming upload's appropiate DB table row
             if ((substr($row_id_file_value, -4) == '.bin') && (strpos($row_id_file_value, ':') === false)) {
                 $path = 'uploads/incoming/' . filter_naughty($row_id_file_value);
-                if (file_exists(get_custom_file_base() . '/' . $path)) {
-                    $filearrays[$_attach_name] = ['type' => 'plupload', 'name' => post_param_string(str_replace('hidFileID', 'hidFileName', $row_id_file)), 'tmp_name' => get_custom_file_base() . '/' . $path, 'size' => filesize(get_custom_file_base() . '/' . $path)];
+                if (file_exists(get_file_base(true) . '/' . $path)) {
+                    $filearrays[$_attach_name] = ['type' => 'plupload', 'name' => post_param_string(str_replace('hidFileID', 'hidFileName', $row_id_file)), 'tmp_name' => get_file_base(true) . '/' . $path, 'size' => filesize(get_file_base(true) . '/' . $path)];
                     $_FILES[$_attach_name] = $filearrays[$_attach_name];
                     if ($i == 0) {
                         $plupload_uploaded = true;
@@ -431,8 +431,8 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
                 $incoming_uploads_row = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'incoming_uploads WHERE (i_submitter=' . strval(get_member()) . ' OR i_submitter=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ') AND id=' . strval($incoming_uploads_id), 1);
                 // If there is a DB record, proceed
                 if (array_key_exists(0, $incoming_uploads_row)) {
-                    if (file_exists(get_custom_file_base() . '/' . $incoming_uploads_row[0]['i_save_url'])) {
-                        $filearrays[$_attach_name] = ['type' => 'plupload', 'name' => $incoming_uploads_row[0]['i_orig_filename'], 'tmp_name' => get_custom_file_base() . '/' . $incoming_uploads_row[0]['i_save_url'], 'size' => filesize(get_custom_file_base() . '/' . $incoming_uploads_row[0]['i_save_url'])];
+                    if (file_exists(get_file_base(true) . '/' . $incoming_uploads_row[0]['i_save_url'])) {
+                        $filearrays[$_attach_name] = ['type' => 'plupload', 'name' => $incoming_uploads_row[0]['i_orig_filename'], 'tmp_name' => get_file_base(true) . '/' . $incoming_uploads_row[0]['i_save_url'], 'size' => filesize(get_file_base(true) . '/' . $incoming_uploads_row[0]['i_save_url'])];
                         $_FILES[$_attach_name] = $filearrays[$_attach_name];
                         if ($i == 0) {
                             $plupload_uploaded = true;
@@ -620,7 +620,7 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
         } else {
             $thumb_filename = basename(preg_replace('#[^' . URL_CONTENT_REGEXP . '\.]#', 'x', basename($url[0])));
             list($place, , $thumb_filename) = find_unique_path($thumb_folder, $thumb_filename);
-            $url_full = url_is_local($url[0]) ? (get_custom_base_url() . '/' . $url[0]) : $url[0];
+            $url_full = baseify($url[0]);
 
             $thumb = convert_image($url_full, $place, null, null, intval(get_option('thumb_width')), true, null, false, $only_make_smaller);
         }
@@ -652,7 +652,7 @@ function get_url(string $specify_name, string $attach_name, string $upload_folde
     if ((($enforce_type & CMS_UPLOAD_IMAGE) != 0) && ($enforce_type != CMS_UPLOAD_ANYTHING)) {
         if (($is_uploaded) && ($out[0] != '') && (url_is_local($out[0]))) {
             global $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS;
-            handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($out[0]), $out[2], $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS);
+            handle_images_cleanup_pipeline(get_file_base() . '/' . rawurldecode($out[0]), $out[2], $ICPS__RECOMPRESS_MODE, $ICPS__MAXIMUM_DIMENSION, $ICPS__WATERMARKS, $ICPS__STRIP_GPS);
         }
     }
 
@@ -701,7 +701,7 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
         $missing_ok = false;
 
         // Check the file exists
-        if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($url[0]))) && (!$missing_ok)) {
+        if ((!file_exists(get_file_base() . '/' . rawurldecode($url[0]))) && (!$missing_ok)) {
             if ($accept_errors) {
                 attach_message(do_lang_tempcode('MISSING_FILE'), 'warn', false, true);
                 return ['', ''];
@@ -719,14 +719,14 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
             ) ||
             (strpos($url[0], '..') !== false)
         ) {
-            $myfile = @fopen(get_custom_file_base() . '/' . rawurldecode($url[0]), 'rb');
+            $myfile = @fopen(get_file_base() . '/' . rawurldecode($url[0]), 'rb');
             if ($myfile !== false) {
                 $shouldbe = fread($myfile, 8000);
                 fclose($myfile);
             } else {
                 $shouldbe = null;
             }
-            $actuallyis = cms_http_request(get_custom_base_url() . '/' . $url[0], ['trigger_error' => false, 'byte_limit' => 8000]);
+            $actuallyis = cms_http_request(baseify_local_url($url[0]), ['trigger_error' => false, 'byte_limit' => 8000]);
 
             if (($actuallyis->message == '200') && ($shouldbe === null)) {
                 // No error downloading, but error using file system - therefore file exists and we'll use URL to download. Hence no security check.

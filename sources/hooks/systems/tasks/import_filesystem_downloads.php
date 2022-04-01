@@ -45,8 +45,8 @@ class Hook_task_import_filesystem_downloads
         if (substr($server_path, -1) == '/') {
             $server_path = substr($server_path, 0, strlen($server_path) - 1);
         }
-        $base_path = get_custom_file_base() . '/' . $server_path;
-        $base_url = get_custom_base_url() . '/' . $server_path;
+        $base_path = get_file_base() . '/' . $server_path;
+        $base_url = baseify_local_url($server_path);
 
         if (!file_exists($base_path)) {
             return [null, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($server_path))];

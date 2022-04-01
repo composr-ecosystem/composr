@@ -134,9 +134,7 @@ class Hook_whatsnew_catalogues
                 if ($field['cf_type'] == 'picture') {
                     $thumbnail = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_short', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $field['id']]);
                     if ($image_url != '') {
-                        if (url_is_local($image_url)) {
-                            $image_url = get_custom_base_url() . '/' . $image_url;
-                        }
+                        $image_url = baseify($image_url);
                         break;
                     }
                 }

@@ -368,17 +368,17 @@ function git_render_preview_from_raw_data($path, $raw_data)
 
 function git_render_preview_from_path($path)
 {
-    if (!is_file(get_custom_file_base() . '/' . $path)) {
+    if (!is_file(get_file_base() . '/' . $path)) {
         return paragraph(do_lang_tempcode('MISSING_RESOURCE'), '', 'red_alert');
     }
 
-    $url = get_custom_base_url() . '/' . str_replace('%2F', '/', rawurlencode($path));
+    $url = baseify_local_url(str_replace('%2F', '/', rawurlencode($path)));
 
     require_code('media_renderer');
     $renderers = find_media_renderers($url, [], true);
     $_renderers = array_diff($renderers, ['hyperlink', 'code']);
     if (($renderers === null) || (empty($_renderers))) {
-        return with_whitespace(escape_html(cms_file_get_contents_safe(get_custom_file_base() . '/' . $path)));
+        return with_whitespace(escape_html(cms_file_get_contents_safe(get_file_base() . '/' . $path)));
     }
 
     return _git_render_media_preview($path, $url);

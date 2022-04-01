@@ -40,13 +40,13 @@ class xml_sitemaps_test_set extends cms_test_case
     {
         sitemap_xml_build();
 
-        $this->assertTrue(is_file(get_custom_file_base() . '/data_custom/sitemaps/index.xml'));
+        $this->assertTrue(is_file(get_file_base(true) . '/data_custom/sitemaps/index.xml'));
     }
 
     public function testSitemapValidate()
     {
         $files = [];
-        $dh = @opendir(get_custom_file_base() . '/data_custom/sitemaps');
+        $dh = @opendir(get_file_base(true) . '/data_custom/sitemaps');
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
                 if (substr($f, -4) == '.xml') {
@@ -56,7 +56,7 @@ class xml_sitemaps_test_set extends cms_test_case
             closedir($dh);
         }
         foreach ($files as $file) {
-            $c = cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/sitemaps/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
+            $c = cms_file_get_contents_safe(get_file_base(true) . '/data_custom/sitemaps/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
             // Simple XML validation
             require_code('xml');
@@ -69,7 +69,7 @@ class xml_sitemaps_test_set extends cms_test_case
                 'page' => 'go',
             ];
 
-            $tmp_file = get_file_base() . '/temp.xml';
+            $tmp_file = get_file_base(true) . '/temp.xml';
             $cleaned_c = preg_replace('#https?://[^<>"]*#', 'http://example.com/', $c); // It checks URLs, which we don't want
             $cleaned_c = preg_replace('#(?U)(</url>.*</url>)(?-U).*</url>#s', '$1', $cleaned_c); // Strip down to speed up. Have 2 URLs else the validator is buggy
             file_put_contents($tmp_file, $cleaned_c);

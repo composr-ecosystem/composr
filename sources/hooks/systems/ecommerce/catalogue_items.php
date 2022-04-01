@@ -148,9 +148,7 @@ class Hook_ecommerce_catalogue_items
                 if ($image_url == '') {
                     $image_url = find_theme_image('no_image');
                 } else {
-                    if (url_is_local($image_url)) {
-                        $image_url .= get_custom_base_url() . '/' . $image_url;
-                    }
+                    $image_url = baseify($image_url);
                 }
 
                 // For catalogue items we make the numeric product ID the raw ID for the eCommerce item. This is unique to catalogue items (necessarily so, to avoid conflicts), and we do it for convenience

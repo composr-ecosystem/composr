@@ -898,14 +898,14 @@ class Module_admin
         if ($this->_section_match($section_limitations, $current_results_type)) {
             $content[$current_results_type] = new Tempcode();
             $map = [];
-            $dh = @opendir(get_custom_file_base() . '/imports/addons');
+            $dh = @opendir(get_file_base() . '/imports/addons');
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
                     if (substr($f, -4) == '.tar') {
                         $addon_codename = basename($f, '.tar');
                         if ($this->_keyword_match($addon_codename)) {
                             require_code('tar');
-                            $tar = tar_open(get_custom_file_base() . '/imports/addons/' . $f, 'rb');
+                            $tar = tar_open(get_file_base() . '/imports/addons/' . $f, 'rb');
                             $directory = tar_get_directory($tar);
                             $info_file = tar_get_file($tar, 'addon.inf');
                             if ($info_file === null) {
@@ -1185,7 +1185,7 @@ class Module_admin
                                 if (!array_key_exists($file, $lang_file_contents)) {
                                     $lang_file_contents[$file] = cms_file_get_contents_safe(get_file_base() . '/' . $lang_dir . '/' . fallback_lang() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                                 }
-                                if ((preg_match('#^' . preg_quote($n, '#') . '=#m', $lang_file_contents[$file]) != 0) || ((file_exists(get_custom_file_base() . '/lang_custom/' . user_lang() . '/' . $file)) && (preg_match('#^' . preg_quote($n, '#') . '=#m', cms_file_get_contents_safe(get_custom_file_base() . '/lang_custom/' . user_lang() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM)) != 0))) {
+                                if ((preg_match('#^' . preg_quote($n, '#') . '=#m', $lang_file_contents[$file]) != 0) || ((file_exists(get_file_base() . '/lang_custom/' . user_lang() . '/' . $file)) && (preg_match('#^' . preg_quote($n, '#') . '=#m', cms_file_get_contents_safe(get_file_base() . '/lang_custom/' . user_lang() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM)) != 0))) {
                                     $lang_file = basename($file, '.ini');
                                     break;
                                 }
@@ -1227,7 +1227,7 @@ class Module_admin
                 if ($image['theme'] == 'admin') {
                     continue; // Too bloaty to include
                 }
-                if (!file_exists(get_custom_file_base() . '/themes/' . $image['theme'])) {
+                if (!file_exists(get_file_base() . '/themes/' . $image['theme'])) {
                     continue; // Gone missing or no-overrides
                 }
 

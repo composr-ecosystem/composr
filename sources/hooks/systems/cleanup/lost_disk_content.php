@@ -54,7 +54,7 @@ class Hook_cleanup_lost_disk_content
         do {
             $zones = $GLOBALS['SITE_DB']->query_select('zones', ['*'], [], '', $max, $start);
             foreach ($zones as $zone) {
-                if ((!is_file(get_custom_file_base() . '/' . $zone['zone_name'] . (($zone['zone_name'] == '') ? '' : '/') . 'index.php')) && (!is_file(get_file_base() . '/' . $zone['zone_name'] . (($zone['zone_name'] == '') ? '' : '/') . 'index.php'))) {
+                if (!is_file(get_file_base() . '/' . $zone['zone_name'] . (($zone['zone_name'] == '') ? '' : '/') . 'index.php')) {
                     $to_delete[] = $zone['zone_name'];
                 }
             }
@@ -72,10 +72,7 @@ class Hook_cleanup_lost_disk_content
             do {
                 $pages = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page'], [], '', $max, $start);
                 foreach ($pages as $page) {
-                    if (
-                        (!is_file(get_custom_file_base() . '/' . $page['the_zone'] . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page['the_page'] . '.txt')) &&
-                        (!is_file(get_file_base() . '/' . $page['the_zone'] . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page['the_page'] . '.txt'))
-                    ) {
+                    if (!is_file(get_file_base() . '/' . $page['the_zone'] . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page['the_page'] . '.txt')) {
                         $to_delete[] = [$page['the_zone'], $page['the_page']];
                     }
                 }

@@ -42,7 +42,7 @@ class Hook_contact_forms_sugarcrm
         $_attachments = [];
         foreach ($attachments as $path => $filename) {
             if ((strpos($path, '://') === false) && (substr($path, 0, 5) != 'gs://')) {
-                $path_new = get_custom_file_base() . '/temp/mail_' . uniqid('', true) . '.txt';
+                $path_new = get_file_base(true) . '/temp/mail_' . uniqid('', true) . '.txt';
                 copy($path, $path_new);
                 fix_permissions($path_new);
 

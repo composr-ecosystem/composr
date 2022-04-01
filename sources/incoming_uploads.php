@@ -33,7 +33,7 @@ function incoming_uploads_script()
         }
     }
 
-    $path = get_custom_file_base() . '/uploads/incoming';
+    $path = get_file_base(true) . '/uploads/incoming';
     if (!file_exists($path)) {
         require_code('files2');
         make_missing_directory($path);
@@ -61,7 +61,7 @@ function incoming_uploads_script()
         $name = str_replace('C:\\fakepath\\', '', $name);
 
         if ($is_uploaded) { // && (file_exists($_FILES['file']['tmp_name']))) // file_exists check after is_uploaded_file to avoid race conditions. >>> Actually, open_basedir might block it
-            @move_uploaded_file($_FILES['file']['tmp_name'], get_custom_file_base() . '/' . $savename) or intelligent_write_error(get_custom_file_base() . '/' . $savename);
+            @move_uploaded_file($_FILES['file']['tmp_name'], get_file_base(true) . '/' . $savename) or intelligent_write_error(get_file_base(true) . '/' . $savename);
         }
     } elseif (post_param_string('name', '') != '') { // Less nice raw post, which most HTML5 browsers have to do. OR *post_max_size* exceeded (which blocks $_FILES population, even with error messages)
         prepare_backend_response(null);
@@ -72,7 +72,7 @@ function incoming_uploads_script()
         $in = fopen('php://input', 'rb');
         if ($in !== false) {
             // Open temp file
-            $out = fopen(get_custom_file_base() . '/' . $savename, 'wb');
+            $out = fopen(get_file_base(true) . '/' . $savename, 'wb');
             if ($out !== false) {
                 $is_uploaded = true;
 
@@ -103,8 +103,8 @@ function incoming_uploads_script()
 
         if (get_param_integer('base64', 0) == 1) {
             require_code('files');
-            $new = base64_decode(cms_file_get_contents_safe(get_custom_file_base() . '/' . $savename, FILE_READ_LOCK));
-            cms_file_put_contents_safe(get_custom_file_base() . '/' . $savename, $new, FILE_WRITE_FIX_PERMISSIONS);
+            $new = base64_decode(cms_file_get_contents_safe(get_file_base(true) . '/' . $savename, FILE_READ_LOCK));
+            cms_file_put_contents_safe(get_file_base(true) . '/' . $savename, $new, FILE_WRITE_FIX_PERMISSIONS);
         }
 
         $member_id = get_member();
@@ -118,7 +118,7 @@ function incoming_uploads_script()
         $outa = [];
         if (is_image($name, IMAGE_CRITERIA_NONE)) {
             require_code('exif');
-            $outa += get_exif_data(get_custom_file_base() . '/' . $savename);
+            $outa += get_exif_data(get_file_base(true) . '/' . $savename);
         }
         $outa['upload_id'] = strval($file_db_id);
         $outa['upload_name'] = $name;

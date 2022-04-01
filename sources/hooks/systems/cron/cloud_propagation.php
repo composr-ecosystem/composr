@@ -91,11 +91,7 @@ class Hook_cron_cloud_propagation
             disable_php_memory_limit();
 
             foreach ($ops as $op) {
-                if ($op['dir_file_base_constant'] == FILE_BASE__SHARED) {
-                    $file_base = get_file_base(true);
-                } else {
-                    $file_base = get_custom_file_base(true);
-                }
+                $file_base = $op['file_file_base_constant'] . '://';
 
                 switch ($op['op_type']) {
                     case 'create':
@@ -147,11 +143,7 @@ class Hook_cron_cloud_propagation
             disable_php_memory_limit();
 
             foreach ($ops as $op) {
-                if ($op['file_file_base_constant'] == FILE_BASE__SHARED) {
-                    $file_base = get_file_base(true);
-                } else {
-                    $file_base = get_custom_file_base(true);
-                }
+                $file_base = $op['file_file_base_constant'] . '://';
 
                 switch ($op['op_type']) {
                     case 'create':
@@ -233,7 +225,7 @@ class Hook_cron_cloud_propagation
                         break;
 
                     default:
-                        foreach ($_hooks as $ob) {
+                        foreach ($hooks as $ob) {
                             if (method_exists($ob, 'rpc')) {
                                 $ob->rpc($op['op_type'], $op['op_data']);
                             }
@@ -256,7 +248,7 @@ class Hook_cron_cloud_propagation
             $log_file = null;
             foreach ($lines as $i => $line) {
                 if ($log_file === null) {
-                    $path = get_custom_file_base() . '/data_custom/' . $line['log_name'] . '.log';
+                    $path = get_file_base(true) . '/data_custom/' . $line['log_name'] . '.log';
 
                     if ((!is_file($path)) || (!cms_is_writable($path))) {
                         continue;

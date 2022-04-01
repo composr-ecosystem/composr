@@ -249,9 +249,9 @@ class Hook_ajax_tree_choose_theme_files
                                 $page = strval($page);
                             }
 
-                            list(, , $path) = find_comcode_page(get_site_default_lang(), $page, $zone);
+                            list(, , $file_path) = find_comcode_page(get_site_default_lang(), $page, $zone);
 
-                            $description_html = $this->get_comcode_page_details_table($page, $zone, $path, $action_log_times);
+                            $description_html = $this->get_comcode_page_details_table($page, $zone, $file_path, $action_log_times);
 
                             list($img_url) = $this->get_template_file_icons($page . '.txt');
 
@@ -378,7 +378,7 @@ class Hook_ajax_tree_choose_theme_files
         return do_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', [
             '_GUID' => '865a7f5fe9968dce772fa4be8145e5f7',
             'FILE' => $template_file,
-            'FULL_PATH' => preg_replace('#^' . preg_quote(get_custom_file_base() . '/', '#') . '#', '', $template_file_path),
+            'FULL_PATH' => preg_replace('#^' . preg_quote(get_file_base() . '/', '#') . '#', '', $template_file_path),
             'LAST_EDITING_USERNAME' => isset($action_log_times[$template_file]) ? $GLOBALS['FORUM_DRIVER']->get_username($action_log_times[$template_file]['member_id']) : null,
             'LAST_EDITING_DATE' => (filectime($template_file_path) == filemtime($template_file_path)) ? null : get_timezoned_date_time(filemtime($template_file_path)),
             'FILE_SIZE' => clean_file_size(filesize($template_file_path)),

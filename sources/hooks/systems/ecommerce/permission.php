@@ -486,7 +486,7 @@ class Hook_ecommerce_permission
                     $downloads = $GLOBALS['SITE_DB']->query_select('download_downloads', ['url', 'file_size', 'original_filename'], ['category_id' => intval($row['p_category'])], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'));
                     foreach ($downloads as $download) {
                         if ((url_is_local($download['url'])) && ($download['file_size'] <= intval(get_option('download_cat_buy_max_emailed_size')) * 1024)) {
-                            $file_path = get_custom_file_base() . '/' . $download['url'];
+                            $file_path = get_file_base() . '/' . $download['url'];
                             $attachments[$file_path] = $download['original_filename'];
                         } else {
                             $all_attached = false;

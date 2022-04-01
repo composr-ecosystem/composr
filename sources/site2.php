@@ -344,7 +344,6 @@ function page_not_found(string $page, string $zone) : object
  * @param  PATH $string The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $codename The codename of the page
- * @param  PATH $file_base The file base to load from
  * @param  ?array $comcode_page_row Row from database (holds submitter etc) (null: no row, originated first from disk)
  * @param  array $new_comcode_page_row New row for database, used if necessary (holds submitter etc)
  * @param  boolean $being_included Whether the page is being included from another
@@ -352,14 +351,14 @@ function page_not_found(string $page, string $zone) : object
  *
  * @ignore
  */
-function _load_comcode_page_not_cached(string $string, string $zone, string $codename, string $file_base, ?array $comcode_page_row, array $new_comcode_page_row, bool $being_included = false) : array
+function _load_comcode_page_not_cached(string $string, string $zone, string $codename, ?array $comcode_page_row, array $new_comcode_page_row, bool $being_included = false) : array
 {
     global $COMCODE_PARSE_TITLE;
 
     push_query_limiting(false);
 
     // Not cached :(
-    $comcode = cms_file_get_contents_safe($file_base . '/' . $string, FILE_READ_LOCK | FILE_READ_BOM);
+    $comcode = cms_file_get_contents_safe(get_file_base() . '/' . $string, FILE_READ_LOCK | FILE_READ_BOM);
     if (strpos($string, '_custom/') === false) {
         global $LANG_FILTER_OB;
         $comcode = $LANG_FILTER_OB->compile_time(null, $comcode);
@@ -544,14 +543,13 @@ function apply_comcode_page_substitutions(string &$comcode)
  * @param  PATH $string The relative (to Composr's base directory) path to the page (e.g. pages/comcode/EN/example.txt)
  * @param  ID_TEXT $zone The zone the page is being loaded from
  * @param  ID_TEXT $codename The codename of the page
- * @param  PATH $file_base The file base to load from
  * @param  array $new_comcode_page_row New row for database, used if necessary (holds submitter etc)
  * @param  boolean $being_included Whether the page is being included from another
  * @return array A tuple: The page HTML (as Tempcode), New Comcode page row, Title, Raw Comcode
  *
  * @ignore
  */
-function _load_comcode_page_cache_off(string $string, string $zone, string $codename, string $file_base, array $new_comcode_page_row, bool $being_included = false) : array
+function _load_comcode_page_cache_off(string $string, string $zone, string $codename, array $new_comcode_page_row, bool $being_included = false) : array
 {
     global $COMCODE_PARSE_TITLE;
 
@@ -563,7 +561,7 @@ function _load_comcode_page_cache_off(string $string, string $zone, string $code
 
     $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['*'], ['the_zone' => $zone, 'the_page' => $codename], '', 1);
 
-    $comcode = cms_file_get_contents_safe($file_base . '/' . $string, FILE_READ_LOCK | FILE_READ_BOM);
+    $comcode = cms_file_get_contents_safe(get_file_base() . '/' . $string, FILE_READ_LOCK | FILE_READ_BOM);
     if ($GLOBALS['IS_TEMPLATE_PREVIEW_OP_CACHE']) {
         $preview_post_param_key = 'e_' . get_dynamic_file_parameter($zone . ':' . $codename);
         $test = post_param_string($preview_post_param_key, null);

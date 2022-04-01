@@ -322,7 +322,7 @@ function phase_2()
     } else {
         $command_to_try = 'nautilus';
     }
-    $command_to_try .= ' ' . get_custom_file_base() . '/exports/builds/' . $version_dotted . '/';
+    $command_to_try .= ' ' . get_file_base(true) . '/exports/builds/' . $version_dotted . '/';
     echo '
         <li>
             <strong>Upload</strong>: Upload all built files (in <a href="#" onclick="fauxmodal_alert(\'&lt;kbd&gt;' . escape_html($command_to_try) . '&lt;/kbd&gt;\',null,\'Command to open folder\',true);"><kbd>exports/builds/' . escape_html($version_dotted) . '</kbd></a>) to compo.sr server (<a target="_blank" href="sftp://web1@compo.sr/composr/uploads/downloads"><kbd>uploads/downloads</kbd></a>)

@@ -49,8 +49,8 @@ function enable_debug_fs()
     }
 
     global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
-    $FILE_BASE_LOCAL = get_file_base(true);
-    $CUSTOM_FILE_BASE_LOCAL = get_custom_file_base(true);
+    $FILE_BASE_LOCAL = get_file_base(false, true);
+    $CUSTOM_FILE_BASE_LOCAL = get_file_base(true, true);
 
     if ($FILE_BASE_LOCAL != $CUSTOM_FILE_BASE_LOCAL) {
         return; // Unsupported

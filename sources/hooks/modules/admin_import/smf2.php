@@ -668,7 +668,7 @@ class Hook_import_smf2
                     if (!empty($attachment_data[0]['filename'])) {
                         // Uploaded avatar
                         $filename = $attachment_data[0]['filename'];
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_path . '/' . $filename, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_path . '/' . $filename, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . $filename;
                         } else {
                             if ($STRICT_FILE) {
@@ -686,12 +686,12 @@ class Hook_import_smf2
                         $filename_with_subdir = $row['avatar'];
                         $filename = preg_replace('#.*\/#', '', $filename_with_subdir); // We need just a filename
 
-                        if ((file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_gallery_path . '/' . $filename_with_subdir, get_custom_file_base() . '/uploads/cns_avatars/' . $filename))) {
+                        if ((file_exists(get_file_base() . '/uploads/cns_avatars/' . $filename)) || (@rename($avatar_gallery_path . '/' . $filename_with_subdir, get_file_base(true) . '/uploads/cns_avatars/' . $filename))) {
                             $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                         } else {
                             // Try as a pack avatar then
                             $striped_filename = str_replace('/', '_', $filename);
-                            if (file_exists(get_custom_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
+                            if (file_exists(get_file_base() . '/uploads/cns_avatars/' . $striped_filename)) {
                                 $avatar_url = 'uploads/cns_avatars/' . substr($filename, strrpos($filename, '/'));
                             } else {
                                 if ($STRICT_FILE) {

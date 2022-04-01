@@ -114,11 +114,11 @@ function version_specific() : bool
         // LEGACY
 
         if ($version_database < 9.0) {
-            $dh = @opendir(get_custom_file_base() . '/imports/mods');
+            $dh = @opendir(get_file_base(false) . '/imports/mods');
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
                     if (substr($f, -4) == '.tar') {
-                        @rename(get_custom_file_base() . '/imports/mods/' . $f, get_file_base() . '/imports/addons/' . $f);
+                        @rename(get_file_base(false) . '/imports/mods/' . $f, get_file_base(false) . '/imports/addons/' . $f);
                     }
                 }
                 closedir($dh);
@@ -130,8 +130,8 @@ function version_specific() : bool
 
             $GLOBALS['SITE_DB']->rename_table('adminlogs', 'actionlogs');
 
-            @rename(get_custom_file_base() . '/data_custom/breadcrumbs.xml', get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml');
-            @rename(get_custom_file_base() . '/data_custom/fields.xml', get_custom_file_base() . '/data_custom/xml_config/fields.xml');
+            @rename(get_file_base(false) . '/data_custom/breadcrumbs.xml', get_file_base(false) . '/data_custom/xml_config/breadcrumbs.xml');
+            @rename(get_file_base(true) . '/data_custom/fields.xml', get_file_base(true) . '/data_custom/xml_config/fields.xml');
 
             $remap = [
                 'ocf_post' => 'cns_post',

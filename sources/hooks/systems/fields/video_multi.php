@@ -221,7 +221,7 @@ class Hook_fields_video_multi
                 foreach ($_old_value as $i => $_value) {
                     $unlink = (post_param_integer('field_' . strval($id) . '_' . strval($i + 1) . '_unlink', 0) == 1);
                     if ($unlink) {
-                        @unlink(get_custom_file_base() . '/' . rawurldecode($_value));
+                        @unlink(get_file_base() . '/' . rawurldecode($_value));
                     } else {
                         if ($value != '') {
                             $value .= "\n";
@@ -247,8 +247,9 @@ class Hook_fields_video_multi
                     }
 
                     $stripped_ev = $ev;
-                    if (substr($stripped_ev, 0, strlen(get_custom_base_url() . '/')) == get_custom_base_url() . '/') {
-                        $stripped_ev = substr($stripped_ev, strlen(get_custom_base_url() . '/'));
+                    $relative_part = '';
+                    if (url_is_local($stripped_ev, $relative_part)) {
+                        $stripped_ev = $relative_part;
                     }
                     if ((!url_is_local($stripped_ev)) || (!addon_installed('galleries'))) {
                         $width = intval(get_option('attachment_default_width'));
@@ -283,7 +284,7 @@ class Hook_fields_video_multi
             $files = explode("\n", $value['cv_value']);
             foreach ($files as $ev) {
                 $path = preg_replace('# .*$#', '', $ev);
-                @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+                @unlink(get_file_base() . '/' . rawurldecode($path));
             }
         }
     }

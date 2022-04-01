@@ -120,7 +120,7 @@ class Hook_fields_upload_multi
                 }
                 $download_url .= $keep->evaluate();
             } else {
-                $download_url = (url_is_local($ev) ? (get_custom_base_url() . '/') : '') . $ev;
+                $download_url = baseify($ev);
             }
 
             $ret->attach(paragraph(hyperlink($download_url, $original_filename, true, true), 'upload_multi'));
@@ -198,7 +198,7 @@ class Hook_fields_upload_multi
                 foreach ($_old_value as $i => $_value) {
                     $unlink = (post_param_integer('field_' . strval($id) . '_' . strval($i + 1) . '_unlink', 0) == 1);
                     if ($unlink) {
-                        @unlink(get_custom_file_base() . '/' . rawurldecode($_value));
+                        @unlink(get_file_base() . '/' . rawurldecode($_value));
                     } else {
                         if ($value != '') {
                             $value .= "\n";
@@ -251,7 +251,7 @@ class Hook_fields_upload_multi
             $files = explode("\n", $value['cv_value']);
             foreach ($files as $ev) {
                 $path = preg_replace('#::.*$#', '', $ev);
-                @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+                @unlink(get_file_base() . '/' . rawurldecode($path));
             }
         }
     }

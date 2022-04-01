@@ -157,13 +157,7 @@ function render_catalogue_category_box(array $row, string $zone = '_SEARCH', boo
     }
 
     // Image
-    $rep_image_url = '';
-    if ($row['rep_image'] != '') {
-        $rep_image_url = $row['rep_image'];
-        if (url_is_local($rep_image_url)) {
-            $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
-        }
-    }
+    $rep_image_url = baseify($row['rep_image']);
 
     // Metadata
     $child_counts = count_catalogue_category_children($row['id']);

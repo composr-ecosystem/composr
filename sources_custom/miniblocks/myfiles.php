@@ -23,8 +23,8 @@ require_code('files2');
 
 $member_id = isset($map['member_id']) ? intval($map['member_id']) : get_member();
 
-$basedir = get_custom_file_base() . '/uploads/filedump/' . $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-$baseurl = get_custom_base_url() . '/uploads/filedump/' . rawurlencode($GLOBALS['FORUM_DRIVER']->get_username($member_id));
+$basedir = get_file_base() . '/uploads/filedump/' . $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+$baseurl = baseify_local_url('uploads/filedump/' . rawurlencode($GLOBALS['FORUM_DRIVER']->get_username($member_id)));
 
 $files = file_exists($basedir) ? get_directory_contents($basedir) : [];
 

@@ -484,9 +484,9 @@ END;
                     return;
                 }
             } else { // Via FTP
-                $path2 = @tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? (get_custom_file_base() . '/temp/') : '/tmp/'), 'cmsce');
+                $path2 = @tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? (get_file_base(true) . '/temp/') : '/tmp/'), 'cmsce');
                 if ($path2 === false) {
-                    $path2 = @tempnam(get_custom_file_base() . '/temp/', 'cmsce');
+                    $path2 = @tempnam(get_file_base(true) . '/temp/', 'cmsce');
                 }
 
                 $h = fopen($path2, 'wb');

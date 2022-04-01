@@ -71,7 +71,7 @@ class Module_admin_addons
 
         if (!$GLOBALS['DEV_MODE']) {
             require_code('files');
-            //deldir_contents(get_custom_file_base() . '/exports/addons', true);    This just messes with the build process and is not useful
+            //deldir_contents(get_file_base(true) . '/exports/addons', true);    This just messes with the build process and is not useful
         }
     }
 
@@ -635,7 +635,7 @@ class Module_admin_addons
 
             $urls = get_url('url', 'file', 'imports/addons', OBFUSCATE_NEVER, CMS_UPLOAD_ANYTHING, false, '', '', true);
 
-            $full = get_custom_file_base() . '/' . $urls[0];
+            $full = get_file_base() . '/' . $urls[0];
             if (cms_strtolower_ascii(substr($full, -4)) != '.tar') {
                 return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('ADDON_NOT_TAR'));
             }
@@ -889,7 +889,7 @@ class Module_admin_addons
         appengine_live_guard();
 
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
-        $full = get_custom_file_base() . '/imports/addons/' . $file;
+        $full = get_file_base(true) . '/imports/addons/' . $file;
 
         $url = build_url(['page' => '_SELF', 'type' => '_addon_tar_delete'], '_SELF');
 
@@ -932,7 +932,7 @@ class Module_admin_addons
         appengine_live_guard();
 
         $file = filter_naughty(post_param_string('file'));
-        $full = get_custom_file_base() . '/imports/addons/' . $file;
+        $full = get_file_base(true) . '/imports/addons/' . $file;
 
         unlink($full) or intelligent_write_error($full);
 
@@ -1034,10 +1034,7 @@ class Module_admin_addons
         ksort($all_langs);
         $i = 0;
         $tpl_langs = new Tempcode();
-        $_lang_file_map = get_custom_file_base() . '/lang_custom/langs.ini';
-        if (!file_exists($_lang_file_map)) {
-            $_lang_file_map = get_file_base() . '/lang/langs.ini';
-        }
+        $_lang_file_map = get_file_base() . '/lang_custom/langs.ini';
         $lang_file_map = cms_parse_ini_file_fast($_lang_file_map);
         foreach ($all_langs as $lang => $dir) {
             if ($dir == 'lang_custom') {
@@ -1214,10 +1211,7 @@ class Module_admin_addons
 
         if ($is_lang) {
             $lang = user_lang__with__translation_override(true);
-            $ini_file = get_custom_file_base() . '/lang_custom/langs.ini';
-            if (!file_exists($ini_file)) {
-                $ini_file = get_file_base() . '/lang/langs.ini';
-            }
+            $ini_file = get_file_base() . '/lang_custom/langs.ini';
             if (file_exists($ini_file)) {
                 $details = cms_parse_ini_file_fast($ini_file);
                 if (array_key_exists($lang, $details)) {
@@ -1469,7 +1463,7 @@ class Module_admin_addons
             post_param_string('description')
         );
 
-        $download_url = get_custom_base_url() . '/exports/addons/' . $file;
+        $download_url = baseify_local_url('exports/addons/' . $file);
 
         log_it('EXPORT_ADDON', $file);
 

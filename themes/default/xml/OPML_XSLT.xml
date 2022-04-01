@@ -6,9 +6,7 @@
 			<head>
 				<title><xsl:value-of select="/opml/head/title" disable-output-escaping="yes" /></title>
 				<meta name="GENERATOR" content="{$BRAND_NAME*}" />
-				{+START,IF_NON_EMPTY,{JAVASCRIPT_XSL_MOPUP}}
-					<script {$CSP_NONCE_HTML} src="{JAVASCRIPT_XSL_MOPUP*}"></script>
-				{+END}
+				{JAVASCRIPT}
 				<xsl:element name="meta">
 					<xsl:attribute name="name"><xsl:text>description</xsl:text></xsl:attribute>
 					<xsl:attribute name="content"><xsl:value-of select="/opml/head/title" /></xsl:attribute>

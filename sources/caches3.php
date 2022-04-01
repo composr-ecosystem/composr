@@ -211,7 +211,7 @@ function erase_cached_language(bool $local_only = false)
 
     $langs = find_all_langs(true);
     foreach (array_merge(array_keys($langs), ['']) as $lang) {
-        $path = get_custom_file_base() . '/caches/lang' . (($lang == '') ? '' : '/') . $lang;
+        $path = get_file_base(true) . '/caches/lang' . (($lang == '') ? '' : '/') . $lang;
         $_dir = @opendir($path);
         if ($_dir === false) {
             require_code('files2');
@@ -308,7 +308,7 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
     $relevant_templates_in_cache = [];
     foreach ($themes as $theme) {
         foreach (array_keys($langs) as $lang) {
-            $path = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang . '/';
+            $path = get_file_base(true) . '/themes/' . $theme . '/templates_cached/' . $lang . '/';
             $_dir = @opendir($path);
             if ($_dir === false) {
                 require_code('files2');
@@ -360,11 +360,6 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
     if (($raw_file_regexp !== null) && ($all_template_data === null)) {
         $all_template_data = [];
 
-        $base_dirs = [get_custom_file_base()];
-        if (get_custom_file_base() != get_file_base()) {
-            $base_dirs[] = get_file_base();
-        }
-
         $theme_dirs = [
             'css' => '.css',
             'css_custom' => '.css',
@@ -378,31 +373,29 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
             'xml_custom' => '.xml',
         ];
 
-        foreach ($base_dirs as $base_dir) {
-            foreach ($themes as $theme) {
-                foreach ($theme_dirs as $theme_dir => $ext) {
-                    $dir_path = $base_dir . '/themes/' . $theme . '/' . $theme_dir;
-                    $_dir = @opendir($dir_path);
-                    if ($_dir !== false) {
-                        while (false !== ($file = readdir($_dir))) {
-                            // Basic filter
-                            if (substr($file, -strlen($ext)) != $ext) {
-                                continue;
-                            }
-                            if (!isset($relevant_templates_in_cache[$file])) {
-                                continue;
-                            }
-
-                            if (!isset($all_template_data[$file])) {
-                                $all_template_data[$file] = [];
-                            }
-                            $contents = @cms_file_get_contents_safe($dir_path . '/' . $file);
-                            if ($contents !== false) {
-                                $all_template_data[$file][] = $contents;
-                            }
+        foreach ($themes as $theme) {
+            foreach ($theme_dirs as $theme_dir => $ext) {
+                $dir_path = get_file_base() . '/themes/' . $theme . '/' . $theme_dir;
+                $_dir = @opendir($dir_path);
+                if ($_dir !== false) {
+                    while (false !== ($file = readdir($_dir))) {
+                        // Basic filter
+                        if (substr($file, -strlen($ext)) != $ext) {
+                            continue;
                         }
-                        closedir($_dir);
+                        if (!isset($relevant_templates_in_cache[$file])) {
+                            continue;
+                        }
+
+                        if (!isset($all_template_data[$file])) {
+                            $all_template_data[$file] = [];
+                        }
+                        $contents = @cms_file_get_contents_safe($dir_path . '/' . $file);
+                        if ($contents !== false) {
+                            $all_template_data[$file][] = $contents;
+                        }
                     }
+                    closedir($_dir);
                 }
             }
         }
@@ -465,19 +458,6 @@ function erase_cached_templates(bool $preserve_some = false, ?array $only_templa
                     }
                 }
             }
-        }
-    }
-
-    foreach (array_keys($langs) as $lang) {
-        $path = get_custom_file_base() . '/site/pages/html_custom/' . $lang . '/';
-        $_dir = is_dir($path) ? opendir($path) : false;
-        if ($_dir !== false) {
-            while (false !== ($file = readdir($_dir))) {
-                if (substr($file, -14) == '_tree_made.htm') {
-                    @unlink($path . $file);
-                }
-            }
-            closedir($_dir);
         }
     }
 
@@ -580,7 +560,7 @@ function erase_theme_images_cache()
             // Delete: A blank path, should not be there (actually it is a cache signal for "theme image does not exist")
             $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
         } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path) != 0) {
-            if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path))) && (!file_exists(get_file_base() . '/' . rawurldecode($path)))) {
+            if (!file_exists(get_file_base() . '/' . rawurldecode($path))) {
                 // Delete: Custom disk file does not actually exist
                 $GLOBALS['SITE_DB']->query_delete('theme_images', $image_details_key, '', 1);
             } else {

@@ -1103,7 +1103,6 @@ class Module_admin_newsletter extends Standard_crud_module
         // Which newsletter template?
         $_template_choices = [];
         $tpl_paths = [
-            get_custom_file_base() . '/themes/default/templates_custom',
             get_file_base() . '/themes/default/templates_custom',
             get_file_base() . '/themes/default/templates',
         ];

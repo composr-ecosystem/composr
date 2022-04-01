@@ -281,7 +281,7 @@ class BrokenURLScanner
             foreach ($pages as $page => $type) {
                 $COMCODE_URLS = [];
 
-                $file_path = zone_black_magic_filterer(((strpos($type, '_custom') !== false) ? get_custom_file_base() : get_file_base()) . '/' . $zone . '/pages/' . $type . '/' . $page . '.txt');
+                $file_path = zone_black_magic_filterer(get_file_base() . '/' . $zone . '/pages/' . $type . '/' . $page . '.txt');
                 $comcode = cms_file_get_contents_safe($file_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 if (strpos($comcode, '/') === false) {

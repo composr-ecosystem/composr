@@ -42,10 +42,7 @@ class Hook_members_referrals
 
         $ret = [];
 
-        $path = get_custom_file_base() . '/text_custom/referrals.txt';
-        if (!is_file($path)) {
-            $path = get_file_base() . '/text_custom/referrals.txt';
-        }
+        $path = get_file_base(true) . '/text_custom/referrals.txt';
         $ini_file = cms_parse_ini_file_safe($path, true);
 
         foreach ($ini_file as $ini_file_section_name => $ini_file_section) {
@@ -105,10 +102,7 @@ class Hook_members_referrals
 
         $ret = [];
 
-        $path = get_custom_file_base() . '/text_custom/referrals.txt';
-        if (!is_file($path)) {
-            $path = get_file_base() . '/text_custom/referrals.txt';
-        }
+        $path = get_file_base(true) . '/text_custom/referrals.txt';
         $ini_file = cms_parse_ini_file_safe($path, true);
 
         foreach ($ini_file as $ini_file_section_name => $ini_file_section) {

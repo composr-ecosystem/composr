@@ -874,7 +874,7 @@ function newsletter_domain_subscriber_stats(string $key) : array
 function newsletter_block_list() : array
 {
     $blocked = [];
-    $block_path = get_custom_file_base() . '/uploads/website_specific/newsletter_blocked.csv';
+    $block_path = get_file_base() . '/uploads/website_specific/newsletter_blocked.csv';
     if (is_file($block_path)) {
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read($block_path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);

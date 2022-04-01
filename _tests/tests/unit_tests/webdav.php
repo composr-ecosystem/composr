@@ -190,7 +190,7 @@ class webdav_test_set extends cms_test_case
         }
         $this->assertTrue($result->data !== null && strpos($result->data, 'early_cinema.mp4') === false);
 
-        deldir_contents(get_custom_file_base() . '/uploads/filedump/xxx123', false, true);
+        deldir_contents(get_file_base() . '/uploads/filedump/xxx123', false, true);
 
         // Test create folder
         $result = cms_http_request($webdav_filedump_base_url . '/xxx123/', [

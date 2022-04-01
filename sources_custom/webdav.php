@@ -77,11 +77,11 @@ function webdav_script()
         $server->addPlugin($auth_plugin);
     }
 
-    $lock_backend = new DAV\Locks\Backend\File(get_custom_file_base() . '/data_custom/modules/webdav/locks/locks.dat');
+    $lock_backend = new DAV\Locks\Backend\File(get_file_base(true) . '/data_custom/modules/webdav/locks/locks.dat');
     $lock_plugin = new DAV\Locks\Plugin($lock_backend);
     $server->addPlugin($lock_plugin);
 
-    $tffp = new DAV\TemporaryFileFilterPlugin(get_custom_file_base() . '/data_custom/modules/webdav/tmp');
+    $tffp = new DAV\TemporaryFileFilterPlugin(get_file_base(true) . '/data_custom/modules/webdav/tmp');
     $server->addPlugin($tffp);
 
     $plugin = new DAV\Browser\Plugin();

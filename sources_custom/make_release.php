@@ -515,7 +515,7 @@ function pretty_print_dom_document(DOMDocument $doc)
 
 function get_builds_path()
 {
-    $builds_path = get_file_base() . '/exports';
+    $builds_path = get_file_base(true) . '/exports';
     if (!file_exists($builds_path . '/builds')) {
         mkdir($builds_path . '/builds', 0777) or warn_exit('Could not make master build folder');
         fix_permissions($builds_path . '/builds');

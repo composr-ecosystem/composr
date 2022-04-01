@@ -265,7 +265,7 @@ function save_user_metadata(bool $include_referer = false, ?int $member_id = nul
     $data = find_user_metadata($include_referer, $member_id, $ip);
 
     require_code('crypt');
-    $path = get_custom_file_base() . '/temp/mail_' . get_secure_random_string() . '.txt';
+    $path = get_file_base(true) . '/temp/mail_' . get_secure_random_string() . '.txt';
 
     require_code('files');
     cms_file_put_contents_safe($path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);

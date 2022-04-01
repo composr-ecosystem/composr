@@ -97,7 +97,7 @@ function init__tempcode_compiler()
         'NAND' => SYMBOL_COMPILE_STATIC_SAFE,
         'GT' => SYMBOL_COMPILE_STATIC_SAFE,
         'EXTEND_URL' => SYMBOL_COMPILE_STATIC_SAFE,
-        'MAKE_URL_ABSOLUTE' => SYMBOL_COMPILE_STATIC_SAFE,
+        'BASEIFY' => SYMBOL_COMPILE_STATIC_SAFE,
         'LANG' => SYMBOL_COMPILE_STATIC_SAFE,
         'THEME' => SYMBOL_COMPILE_STATIC_SAFE,
         'VERSION_NUMBER' => SYMBOL_COMPILE_STATIC_SAFE,
@@ -109,9 +109,7 @@ function init__tempcode_compiler()
         'COPYRIGHT' => SYMBOL_COMPILE_STATIC_SAFE,
         'BRAND_NAME' => SYMBOL_COMPILE_STATIC_SAFE,
         'BRAND_BASE_URL' => SYMBOL_COMPILE_STATIC_SAFE,
-        'CUSTOM_BASE_URL' => SYMBOL_COMPILE_STATIC_SAFE_SIMPLE_BASE_URLS,
         'BASE_URL_NOHTTP' => SYMBOL_COMPILE_STATIC_SAFE,
-        'CUSTOM_BASE_URL_NOHTTP' => SYMBOL_COMPILE_STATIC_SAFE,
         'BASE_URL' => SYMBOL_COMPILE_STATIC_SAFE_SIMPLE_BASE_URLS,
         'CNS' => SYMBOL_COMPILE_STATIC_SAFE,
         'VALID_FILE_TYPES' => SYMBOL_COMPILE_STATIC_SAFE,
@@ -891,10 +889,7 @@ function compile_template(string $data, string $template_name, string $theme, st
                                     if (($found !== null) && ($found[1] !== null)) {
                                         $_theme = $found[0];
 
-                                        $full_path = get_custom_file_base() . '/themes/' . $_theme . $found[1] . $included_template_name . $found[2];
-                                        if (!is_file($full_path)) {
-                                            $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $included_template_name . $found[2];
-                                        }
+                                        $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $included_template_name . $found[2];
                                         if (is_file($full_path)) {
                                             $file_contents = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                                         } else {
@@ -1111,10 +1106,7 @@ function _do_template(string $theme, string $directory, string $codename, string
         $theme_orig = $theme;
     }
 
-    $base_dir = get_custom_file_base() . '/themes/';
-    if (!is_file($base_dir . $theme . $directory . $codename . $suffix)) {
-        $base_dir = get_file_base() . '/themes/';
-    }
+    $base_dir = get_file_base() . '/themes/';
 
     global $CACHE_TEMPLATES, $FILE_ARRAY, $IS_TEMPLATE_PREVIEW_OP_CACHE, $SITE_INFO;
     if ($IS_TEMPLATE_PREVIEW_OP_CACHE === null) {
@@ -1159,7 +1151,7 @@ function _do_template(string $theme, string $directory, string $codename, string
 
     // Save into cache
     if (($CACHE_TEMPLATES) && (has_caching_for('template', $codename)) && ($parameters === null) && (!$IS_TEMPLATE_PREVIEW_OP_CACHE)) {
-        $path2 = get_custom_file_base() . '/themes/' . $theme_orig . '/templates_cached/' . filter_naughty($lang);
+        $path2 = get_file_base(true) . '/themes/' . $theme_orig . '/templates_cached/' . filter_naughty($lang);
         $_path2 = $path2 . '/' . filter_naughty($_codename) . ($non_custom_only ? '_non_custom_only' : '') . $suffix . '.tcp';
 
         require_code('files');

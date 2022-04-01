@@ -50,7 +50,7 @@ function cache_and_carry($func, array $args, ?int $timeout = null, bool $cache_e
         unset($args_cache_signature[1]['extra_headers']['Authorization']);
     }
 
-    $path = get_custom_file_base() . '/caches/http/' . md5(serialize($func)) . '__' . md5(serialize($args_cache_signature)) . '.bin';
+    $path = get_file_base(true) . '/caches/http/' . md5(serialize($func)) . '__' . md5(serialize($args_cache_signature)) . '.bin';
     if (is_file($path) && ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (get_param_integer('keep_cache_and_carry', 1) == 1)) && (($timeout === null) || (filemtime($path) > time() - $timeout * 60))) {
         $_ret = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         if ($func === 'cms_http_request') {
@@ -123,7 +123,7 @@ function get_webpage_meta_details(string $url) : array
             }
         }
 
-        $url = get_custom_base_url() . '/' . $url;
+        $url = baseify_local_url($url);
     }
 
     if (!looks_like_url($url)) {
@@ -420,10 +420,7 @@ abstract class HttpDownloader
         // Normalise the URL...
 
         require_code('urls');
-        $url = str_replace(' ', '%20', $url);
-        if (url_is_local($url)) {
-            $url = get_custom_base_url() . '/' . $url;
-        }
+        $url = baseify(str_replace(' ', '%20', $url));
         if ((strpos($url, '/') !== false) && (strrpos($url, '/') < 7)) {
             $url .= '/';
         }
@@ -1996,8 +1993,8 @@ class HttpDownloaderFilesystem extends HttpDownloader
     protected function _run(string $url, array $options)
     {
         $parsed = parse_url(normalise_idn_url($url));
-        $parsed_base_url = parse_url(get_custom_base_url());
-        $file_base = get_custom_file_base();
+        $parsed_base_url = parse_url(_get_base_url_custom());
+        $file_base = get_file_base(true);
         $file_base = preg_replace('#' . preg_quote(urldecode($parsed_base_url['path'])) . '$#', '', $file_base);
         $file_path = $file_base . urldecode($parsed['path']);
 

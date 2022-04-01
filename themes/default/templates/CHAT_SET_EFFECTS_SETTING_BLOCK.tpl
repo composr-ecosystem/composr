@@ -40,10 +40,10 @@
 								{+END}
 								<option {+START,IF,{$EQ,,{VALUE}}} selected="selected"{+END} value="">{!NONE_EM}</option>
 								{+START,LOOP,LIBRARY}
-									<option {+START,IF,{$EQ,{EFFECT},{VALUE}}} selected="selected"{+END} value="{EFFECT*}">{EFFECT_SHORT*}</option>
+									<option {+START,IF,{$EQ,{EFFECT},{VALUE}}} selected="selected"{+END} value="{EFFECT*}" data-full-url="{$BASEIFY*,{EFFECT}}">{EFFECT_SHORT*}</option>
 								{+END}
 								{+START,IF,{$EQ,{$SUBSTR,{VALUE},0,8},uploads/}}
-									<option selected="selected" value="{VALUE*}">{!CUSTOM_UPLOAD}</option>
+									<option selected="selected" value="{VALUE*}" data-full-url="{$BASEIFY*,{VALUE}}">{!CUSTOM_UPLOAD}</option>
 								{+END}
 							</select>
 

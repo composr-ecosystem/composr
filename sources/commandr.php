@@ -1218,7 +1218,7 @@ class Virtual_shell
                 $commandr_state_lang_diff = [];
             }
             foreach ($commandr_state_lang_diff as $commandr_lang) {
-                if ((file_exists(get_custom_file_base() . '/lang_custom/' . fallback_lang() . '/' . $commandr_lang . '.ini')) || (file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $commandr_lang . '.ini'))) {
+                if (file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $commandr_lang . '.ini')) {
                     require_lang($commandr_lang, null, null, true);
                 }
             }

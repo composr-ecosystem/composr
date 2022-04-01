@@ -31,7 +31,7 @@ class Hook_contentious_overrides_hybridauth
         $c = 'hybridauth';
         $found = find_template_place($c, '', $theme, '.css', 'css');
         if ($found !== null) {
-            $full_path = get_custom_file_base() . '/themes/' . $found[0] . $found[1] . $c . $found[2];
+            $full_path = get_file_base() . '/themes/' . $found[0] . $found[1] . $c . $found[2];
             $data .= cms_file_get_contents_safe($full_path);
         }
     }

@@ -122,7 +122,7 @@ function _intelligent_write_error_inline(string $path)
  */
 function cms_get_temp_dir() : array
 {
-    $local_path = get_custom_file_base() . '/temp';
+    $local_path = get_file_base(true) . '/temp';
     if (!file_exists($local_path)) {
         make_missing_directory($local_path);
     }
@@ -174,7 +174,7 @@ function is_temp_file(string $path) : bool
     $_temp_dir = cms_get_temp_dir();
     $temp_dirs = [
         realpath($_temp_dir[0]),
-        get_custom_file_base() . '/temp',
+        get_file_base(true) . '/temp',
     ];
 
     foreach ($temp_dirs as $temp_dir) {
@@ -638,7 +638,7 @@ function delete_upload(string $upload_path, string $table, string $field, $id_fi
                 $count = $GLOBALS['SITE_DB']->query_select_value($table, 'COUNT(*)', [$field => $url]);
 
                 if ($count <= 1) {
-                    @unlink(get_custom_file_base() . '/' . rawurldecode($url));
+                    @unlink(get_file_base(true) . '/' . rawurldecode($url));
                 }
             }
             if ((url_is_local($url)) && (substr($url, 0, strlen('themes/default/images_custom') + 1) == 'themes/default/images_custom/')) {
@@ -688,7 +688,7 @@ function check_shared_space_usage(int $extra)
     if (!empty($SITE_INFO['throttle_space_registered'])) {
         $views_till_now = intval(get_value('page_views'));
         $bandwidth_allowed = $SITE_INFO['throttle_space_registered'];
-        $total_space = get_directory_size(get_custom_file_base() . '/uploads');
+        $total_space = get_directory_size(get_file_base(true) . '/uploads');
         if ($bandwidth_allowed * 1024 * 1024 >= $total_space + $extra) {
             return;
         }
@@ -698,7 +698,7 @@ function check_shared_space_usage(int $extra)
         // $days_till_now = (time() - $timestamp_start) / (24 * 60 * 60);
         $views_till_now = intval(get_value('page_views'));
         $space_allowed = $SITE_INFO['throttle_space_complementary'] + $SITE_INFO['throttle_space_views_per_meg'] * $views_till_now;
-        $total_space = get_directory_size(get_custom_file_base() . '/uploads');
+        $total_space = get_directory_size(get_file_base(true) . '/uploads');
         if ($space_allowed * 1024 * 1024 < $total_space + $extra) {
             critical_error('RELAY', 'The hosted user has exceeded their shared-hosting "disk-space to page-view" ratio. More pages must be viewed before this may be uploaded.');
         }

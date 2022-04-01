@@ -227,7 +227,7 @@ function send_trackbacks(string $_urls, string $title, string $excerpt) : bool
         return true;
     }
 
-    $post_params = ['url' => get_custom_base_url(), 'title' => $title, 'blog_name' => convert_to_internal_encoding(get_site_name(), get_charset(), 'utf-8'), 'excerpt' => $excerpt];
+    $post_params = ['url' => get_base_url(), 'title' => $title, 'blog_name' => convert_to_internal_encoding(get_site_name(), get_charset(), 'utf-8'), 'excerpt' => $excerpt];
 
     $urls = explode(',', $_urls);
     foreach ($urls as $url) {

@@ -285,10 +285,7 @@ function generate_catalogue_entry_image_url(array $row) : string
 
     switch ($field_type) {
         case 'picture':
-            $value = $field['effective_value_pure'];
-            if (url_is_local($value)) {
-                $value = get_custom_base_url() . '/' . $value;
-            }
+            $value = baseify($field['effective_value_pure']);
             break;
 
         case 'theme_image':
@@ -297,10 +294,7 @@ function generate_catalogue_entry_image_url(array $row) : string
 
         case 'picture_multi':
             $_value = explode("\n", $field['effective_value_pure']);
-            $value = $_value[0];
-            if (url_is_local($value)) {
-                $value = get_custom_base_url() . '/' . $value;
-            }
+            $value = baseify($_value[0]);
             break;
     }
 

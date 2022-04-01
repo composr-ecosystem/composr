@@ -222,7 +222,7 @@ if ($type == 'go') {
 
     require_code('tar');
     $generate_filename = 'upgrade-to-git--' . get_timezoned_date(time(), false) . '.tar';
-    $gpath = get_custom_file_base() . '/exports/addons/' . $generate_filename;
+    $gpath = get_file_base(true) . '/exports/addons/' . $generate_filename;
     $tar = tar_open($gpath, 'wb');
 
     $probe_dir = post_param_string('probe_dir', '');

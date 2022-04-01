@@ -33,7 +33,7 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 {
     // Handle if already required...
 
-    global $REQUIRED_CODE, $REQUIRING_CODE, $FILE_BASE, $SITE_INFO;
+    global $REQUIRED_CODE, $REQUIRING_CODE, $SITE_INFO;
     if (isset($REQUIRED_CODE[$codename])) {
         return;
     }
@@ -65,8 +65,8 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
 
     // Calculate custom/non-custom status...
 
-    $path_custom = $FILE_BASE . '/' . ($shorthand ? ('sources_custom/' . $codename . '.php') : $codename);
-    $path_orig = $FILE_BASE . '/' . ($shorthand ? ('sources/' . $codename . '.php') : $non_custom_codename);
+    $path_custom = get_file_base() . '/' . ($shorthand ? ('sources_custom/' . $codename . '.php') : $codename);
+    $path_orig = get_file_base() . '/' . ($shorthand ? ('sources/' . $codename . '.php') : $non_custom_codename);
 
     $has_orig = null;
     if (isset($GLOBALS['PERSISTENT_CACHE'])) {
@@ -569,50 +569,59 @@ function cms_flush_safe()
 /**
  * Get the file base for your installation of Composr.
  *
- * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem
+ * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-site install (null: virtual file system to search both file bases)
+ * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem. Cannot be used if $custom_dir is set to null.
  * @return PATH The file base, without a trailing slash
  */
-function get_file_base(bool $true_local = false) : string
+function get_file_base(?bool $custom_dir = null, bool $true_local = false) : string
 {
-    global $FILE_BASE, $FILE_BASE_LOCAL;
-    if (($true_local) && (!empty($FILE_BASE_LOCAL))) {
-        return $FILE_BASE_LOCAL;
-    }
-    return $FILE_BASE;
-}
-
-/**
- * Get the file base for your installation of Composr.  For a shared install, or a GAE-install, this is different to the file-base.
- *
- * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem
- * @return PATH The file base, without a trailing slash
- */
-function get_custom_file_base(bool $true_local = false) : string
-{
-    global $FILE_BASE, $SITE_INFO, $CUSTOM_FILE_BASE, $CUSTOM_FILE_BASE_LOCAL;
-
-    if (($true_local) && (!empty($CUSTOM_FILE_BASE_LOCAL))) {
-        return $CUSTOM_FILE_BASE_LOCAL;
+    if (($custom_dir === null) && ($true_local)) {
+        // Should never happen
+        $custom_dir = false;
     }
 
-    if (!empty($CUSTOM_FILE_BASE)) {
-        return $CUSTOM_FILE_BASE;
+    $is_multi_site = ($GLOBALS['CURRENT_SHARE_USER'] !== null);
+
+    if (($custom_dir === false) || (!$is_multi_site) || (($custom_dir === null) && (!defined('FILE_BASE__AUTODETECT')/*early in boot*/))) {
+        global $FILE_BASE, $FILE_BASE_LOCAL;
+        if (($true_local) && (!empty($FILE_BASE_LOCAL))) {
+            return $FILE_BASE_LOCAL;
+        }
+
+        return $FILE_BASE;
     }
 
-    if (!empty($SITE_INFO['custom_file_base'])) {
-        $CUSTOM_FILE_BASE = $SITE_INFO['custom_file_base'];
-    } elseif (!empty($SITE_INFO['custom_file_base_stub'])) {
-        require_code('shared_installs');
-        $u = current_share_user();
-        if ($u !== null) {
-            $CUSTOM_FILE_BASE = $SITE_INFO['custom_file_base_stub'] . '/' . $u;
+    // Multi-site code is more complex...
+
+    if ($custom_dir === true) {
+        global $FILE_BASE, $SITE_INFO, $CUSTOM_FILE_BASE, $CUSTOM_FILE_BASE_LOCAL;
+
+        if (($true_local) && (!empty($CUSTOM_FILE_BASE_LOCAL))) {
+            return $CUSTOM_FILE_BASE_LOCAL;
+        }
+
+        if (!empty($CUSTOM_FILE_BASE)) {
+            return $CUSTOM_FILE_BASE;
+        }
+
+        if (!empty($SITE_INFO['custom_file_base'])) {
+            $CUSTOM_FILE_BASE = $SITE_INFO['custom_file_base'];
+        } elseif (!empty($SITE_INFO['custom_file_base_stub'])) {
+            require_code('shared_installs');
+            $u = current_share_user();
+            if ($u !== null) {
+                $CUSTOM_FILE_BASE = $SITE_INFO['custom_file_base_stub'] . '/' . $u;
+            } else {
+                $CUSTOM_FILE_BASE = $FILE_BASE;
+            }
         } else {
             $CUSTOM_FILE_BASE = $FILE_BASE;
         }
-    } else {
-        $CUSTOM_FILE_BASE = $FILE_BASE;
+        return $CUSTOM_FILE_BASE;
     }
-    return $CUSTOM_FILE_BASE;
+
+    // This kicks the ball to our Cloud-fs implementation
+    return FILE_BASE__AUTODETECT . '://';
 }
 
 /**
@@ -1157,8 +1166,9 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     }
 }
 
-// Rate limiter, to stop aggressive bots
 global $SITE_INFO;
+
+// Rate limiter, to stop aggressive bots
 $rate_limiting = !empty($SITE_INFO['rate_limiting']);
 if ($rate_limiting) {
     if ((!empty($_SERVER['REMOTE_ADDR'])) && (basename($_SERVER['SCRIPT_NAME']) == 'index.php')) {
@@ -1224,7 +1234,10 @@ if ($rate_limiting) {
     }
 }
 
-get_custom_file_base(); // Make sure $CURRENT_SHARE_USER is set if it is a shared site, so we can use CURRENT_SHARE_USER as an indicator of it being one.
+if (!empty($SITE_INFO['custom_file_base_stub'])) { // Make sure $CURRENT_SHARE_USER is set if it is a shared site, so we can use CURRENT_SHARE_USER as an indicator of it being one.
+    require_code('shared_installs');
+    current_share_user();
+}
 
 // Pass on to next bootstrap level
 if (GOOGLE_APPENGINE) {

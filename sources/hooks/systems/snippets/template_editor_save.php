@@ -53,7 +53,7 @@ class Hook_snippet_template_editor_save
             $suffix = '.' . get_file_extension($file);
             $clean_file = basename($file, $suffix);
 
-            $custom_path = get_custom_file_base() . '/themes/' . $theme . '/' . $subdir . '_custom/' . $_file;
+            $custom_path = get_file_base(true) . '/themes/' . $theme . '/' . $subdir . '_custom/' . $_file;
             $original_path = get_file_base() . '/themes/default/' . $subdir . '/' . $_file;
 
             if (is_file($original_path) && cms_file_get_contents_safe($original_path, FILE_READ_LOCK | FILE_READ_BOM) == $contents) {

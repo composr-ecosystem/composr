@@ -97,7 +97,7 @@ function import_custom_emoticons(bool $remove_old_core = false)
     require_code('cns_general_action');
     require_code('images');
     $core_emoticons = [];
-    $dh = opendir(get_custom_file_base() . '/themes/default/images_custom/cns_emoticons');
+    $dh = opendir(get_file_base() . '/themes/default/images_custom/cns_emoticons');
     while (($f = readdir($dh)) !== false) {
         if (is_image($f, IMAGE_CRITERIA_WEBSAFE, true)) {
             $ext = get_file_extension($f);

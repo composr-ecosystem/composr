@@ -117,10 +117,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
         $zone_default_page = get_zone_default_page($zone);
 
         $path = end($details);
-        $full_path = get_custom_file_base() . '/' . $path;
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/' . $path;
-        }
+        $full_path = get_file_base() . '/' . $path;
 
         $row = $this->_load_row_from_page_groupings($row, $meta_gather, $zone, $page);
 

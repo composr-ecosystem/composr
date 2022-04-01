@@ -435,7 +435,7 @@ function step_1() : object
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
-    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
+    if ((file_exists(get_file_base(false) . '/_config.php')) && (!cms_is_writable(get_file_base(false) . '/_config.php')) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
@@ -457,7 +457,7 @@ function step_1() : object
     // Language selection...
 
     if (file_exists('lang_custom/langs.ini')) {
-        $lookup = cms_parse_ini_file_fast(get_custom_file_base() . '/lang_custom/langs.ini');
+        $lookup = cms_parse_ini_file_fast(get_file_base() . '/lang_custom/langs.ini');
     } else {
         $lookup = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');
     }
@@ -488,7 +488,7 @@ function step_1() : object
             $files = get_dir_contents('lang_custom/' . $lang);
             foreach (array_keys($files) as $file) {
                 if ((substr($file, -4) == '.ini') && (is_file(get_file_base() . '/lang/' . fallback_lang() . '/' . $file))) {
-                    $lang_count[$lang] += count(cms_parse_ini_file_fast(get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file));
+                    $lang_count[$lang] += count(cms_parse_ini_file_fast(get_file_base() . '/lang_custom/' . $lang . '/' . $file));
                 }
             }
         }
@@ -600,8 +600,8 @@ function step_3() : object
         $classes[$class][] = $forum;
     }
     global $DEFAULT_FORUM;
-    if ((file_exists(get_file_base() . '/_config.php')) && (filesize(get_file_base() . '/_config.php') != 0)) {
-        require_once(get_file_base() . '/_config.php');
+    if ((file_exists(get_file_base(false) . '/_config.php')) && (filesize(get_file_base(false) . '/_config.php') != 0)) {
+        require_once(get_file_base(false) . '/_config.php');
         global $SITE_INFO;
         if (array_key_exists('forum_type', $SITE_INFO)) {
             $DEFAULT_FORUM = $SITE_INFO['forum_type'];
@@ -839,9 +839,9 @@ function step_4() : object
 
     // Now we've gone through all the work of detecting it, lets grab from _config.php to see what we had last time we installed
     global $SITE_INFO;
-    if ((file_exists(get_file_base() . '/_config.php')) && (filesize(get_file_base() . '/_config.php') != 0)) {
+    if ((file_exists(get_file_base(false) . '/_config.php')) && (filesize(get_file_base(false) . '/_config.php') != 0)) {
         // De-set what we know we can't re-use because we have better info now
-        require_once(get_file_base() . '/_config.php');
+        require_once(get_file_base(false) . '/_config.php');
         if (($PROBED_FORUM_CONFIG['sql_database'] != '') && ($forum_type != 'cns') && ($forum_type != 'none')) {
             if ((!array_key_exists('forum_type', $SITE_INFO)) || ($SITE_INFO['forum_type'] != $forum_type)) { // Don't want to throw detected versions of these away
                 unset($SITE_INFO['user_cookie']);
@@ -1242,7 +1242,7 @@ function step_5() : object
     global $SITE_INFO;
 
     // If this exists, we may as well try and read it - may have some special flags in here during installation that we want to propagate
-    @include(get_file_base() . '/_config.php');
+    @include(get_file_base(false) . '/_config.php');
     foreach ($SITE_INFO as $key => $val) {
         if (!isset($_POST[$key])) {
             $_POST[$key] = $val;
@@ -1464,7 +1464,7 @@ function step_5_ftp() : array
     } else {
         $overwrite_ok = true;
         $files = [];
-        if (file_exists(get_file_base() . '/_config.php')) {
+        if (file_exists(get_file_base(false) . '/_config.php')) {
             $files[] = '_config.php';
         }
     }
@@ -1947,7 +1947,7 @@ if (appengine_is_live()) {
     }
 
     if (is_suexec_like()) {
-        fix_permissions(get_custom_file_base() . '/_config.php', 0600); // Don't allow other accounts to read
+        fix_permissions(get_file_base(false) . '/_config.php', 0600); // Don't allow other accounts to read
     }
 
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '261a1eb80baed15cbbce1a684d4a354d', 'SOMETHING' => do_lang_tempcode('WROTE_CONFIGURATION')]));
@@ -2524,7 +2524,7 @@ function step_10() : object
     }
 
     // Empty persistent cache
-    $path = get_custom_file_base() . '/caches/persistent/';
+    $path = get_file_base(true) . '/caches/persistent/';
     $_dir = @opendir($path);
     if ($_dir !== false) {
         while (false !== ($file = readdir($_dir))) {
