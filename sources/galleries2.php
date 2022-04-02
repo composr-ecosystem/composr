@@ -1272,11 +1272,8 @@ function find_gallery_watermarks($gallery)
 function _watermark_corner($source, $watermark_url, $x, $y)
 {
     if ($watermark_url != '') {
-        $_watermark_url = rawurldecode($watermark_url);
-        if (url_is_local($_watermark_url)) {
-            $_watermark_url = get_custom_base_url() . '/' . $_watermark_url;
-        }
-        $watermark = cms_imagecreatefrom($_watermark_url);
+        $watermark_path = get_custom_file_base() . '/' . rawurldecode($watermark_url);
+        $watermark = cms_imagecreatefrom($watermark_path);
         if ($watermark !== false) {
             imagecolortransparent($watermark, imagecolorallocate($watermark, 255, 0, 255));
             if ($x == 1) {
