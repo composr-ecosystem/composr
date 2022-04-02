@@ -5981,8 +5981,8 @@ function ecv_COPYRIGHT(string $lang, array $escaped, array $param) : string
  */
 function ecv_BASEIFY(string $lang, array $escaped, array $param) : string
 {
-    if (!empty($param[1])) {
-        $value = baseify_local_url($param[1]);
+    if (!empty($param[0])) {
+        $value = baseify_local_url($param[0]);
     } else {
         $value = '';
     }

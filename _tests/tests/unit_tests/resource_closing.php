@@ -61,7 +61,7 @@ class resource_closing_test_set extends cms_test_case
         $rs = get_resources();
         foreach ($rs as $r) {
             $type = get_resource_type($r);
-            $ok = in_array($type, ['Unknown', 'stream-context']) || $r === STDIN || $r === STDOUT || $r === STDERR;
+            $ok = in_array($type, ['Unknown', 'stream-context', 'stream factory']) || $r === STDIN || $r === STDOUT || $r === STDERR;
             $this->assertTrue($ok, 'Unexpected resource left open of type, ' . $type);
         }
     }

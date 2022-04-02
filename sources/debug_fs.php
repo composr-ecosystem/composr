@@ -195,10 +195,10 @@ class DebugFsStreamWrapper
      * Open a directory for analysis.
      *
      * @param  PATH $path The path to the directory to open
-     * @param  boolean $options Bitmask options
+     * @param  integer $options Bitmask options
      * @return boolean Success status
      */
-    public function dir_opendir(string $path, bool $options) : bool
+    public function dir_opendir(string $path, int $options) : bool
     {
         $this->init_call('dir_opendir', $path, true);
 
@@ -208,7 +208,11 @@ class DebugFsStreamWrapper
             return false;
         }
 
-        $this->directory_handle = @opendir($path, $this->context);
+        if ($this->context === null) { // Weird PHP bug
+            $this->directory_handle = opendir($path);
+        } else {
+            $this->directory_handle = opendir($path, $this->context);
+        }
         return ($this->directory_handle !== false);
     }
 
@@ -288,10 +292,10 @@ class DebugFsStreamWrapper
      * Removes directory.
      *
      * @param  PATH $path Directory path
-     * @param  boolean $options Bitmask options
+     * @param  integer $options Bitmask options
      * @return boolean Success status
      */
-    public function rmdir(string $path, bool $options) : bool
+    public function rmdir(string $path, int $options) : bool
     {
         $this->init_call('rmdir', $path, true);
 
@@ -329,7 +333,7 @@ class DebugFsStreamWrapper
      * Gets information about a file.
      *
      * @param  PATH $path File path
-     * @param  boolean $flags Bitmask options
+     * @param  integer $flags Bitmask options
      * @return ~array Map of status information (false: error)
      */
     public function url_stat(string $path, bool $flags)
@@ -342,7 +346,7 @@ class DebugFsStreamWrapper
             return false;
         }
 
-        return @stat($path);
+        return @stat($path); // We need an @, because url_stat is called for things like is_file
     }
 
     protected $file_handle = false;

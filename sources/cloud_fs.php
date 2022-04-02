@@ -297,10 +297,10 @@ class CloudFsStreamWrapper
      * Open a directory for analysis.
      *
      * @param  PATH $path The path to the directory to open
-     * @param  boolean $options Bitmask options
+     * @param  integer $options Bitmask options
      * @return boolean Success status
      */
-    public function dir_opendir(string $path, bool $options) : bool
+    public function dir_opendir(string $path, int $options) : bool
     {
         list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
@@ -308,19 +308,38 @@ class CloudFsStreamWrapper
             global $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
             $this->directory_handle = [];
+            $found_dir = false;
             foreach ([$CUSTOM_FILE_BASE_LOCAL, $FILE_BASE_LOCAL] as $_file_base) {
-                $dh = @opendir($_file_base . '/' . $path_relative, $this->context);
-                if ($dh !== false) {
-                    while (($f = readdir($dh)) !== false) {
-                        $this->directory_handle[$f] = true;
+                if (is_dir($_file_base . '/' . $path_relative)) {
+                    if ($this->context === null) { // Weird PHP bug
+                        $dh = @opendir($_file_base . '/' . $path_relative);
+                    } else {
+                        $dh = @opendir($_file_base . '/' . $path_relative, $this->context);
                     }
-                    closedir($dh);
+                    if (is_resource($dh)) {
+                        while (($f = readdir($dh)) !== false) {
+                            $this->directory_handle[$f] = true;
+                        }
+                        closedir($dh);
+                    }
+                    $found_dir = true;
                 }
             }
+
+            if (!$found_dir) {
+                return false;
+            }
+
             reset($this->directory_handle);
+
+            return true;
         }
 
-        $this->directory_handle = opendir($path_absolute, $this->context);
+        if ($this->context === null) { // Weird PHP bug
+            $this->directory_handle = opendir($path_absolute);
+        } else {
+            $this->directory_handle = opendir($path_absolute, $this->context);
+        }
         return ($this->directory_handle !== false);
     }
 
@@ -413,10 +432,10 @@ class CloudFsStreamWrapper
      * Removes directory.
      *
      * @param  PATH $path Directory path
-     * @param  boolean $options Bitmask options
+     * @param  integer $options Bitmask options
      * @return boolean Success status
      */
-    public function rmdir(string $path, bool $options) : bool
+    public function rmdir(string $path, int $options) : bool
     {
         list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
@@ -454,14 +473,14 @@ class CloudFsStreamWrapper
      * Gets information about a file.
      *
      * @param  PATH $path File path
-     * @param  boolean $flags Bitmask options
+     * @param  integer $flags Bitmask options
      * @return ~array Map of status information (false: error)
      */
-    public function url_stat(string $path, bool $flags)
+    public function url_stat(string $path, int $flags)
     {
         list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
 
-        return stat($path_absolute);
+        return @stat($path_absolute); // We need an @, because url_stat is called for things like is_file
     }
 
     protected $file_path_relative = null;
