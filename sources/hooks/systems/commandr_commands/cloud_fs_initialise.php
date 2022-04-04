@@ -84,16 +84,16 @@ class Hook_commandr_command_cloud_fs_initialise
                         rename($long_path, $destination_long_path);
                     }
                     $operations[] = 'mv ' . cms_escapeshellarg($long_path) . ' ' . cms_escapeshellarg($destination_long_path);
+
+                    // Symlink
+                    if (is_dir($long_path)) {
+                        if (!$dry_run) {
+                            symlink($destination_long_path, $long_path);
+                        }
+                        $operations[] = 'ln -s ' . cms_escapeshellarg($destination_long_path) . ' ' . cms_escapeshellarg($long_path);
+                    }
                 } else {
                     $errors[] = do_lang('REMOTE_STORAGE_DUPLICATION_ISSUE', $long_path, $destination_long_path);
-                }
-
-                // Symlink
-                if (is_dir($long_path)) {
-                    if (!$dry_run) {
-                        symlink($destination_long_path, $long_path);
-                    }
-                    $operations[] = 'ln -s ' . cms_escapeshellarg($destination_long_path) . ' ' . cms_escapeshellarg($long_path);
                 }
             }
 
