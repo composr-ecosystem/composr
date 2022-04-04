@@ -41,9 +41,14 @@ class Hook_commandr_command_cloud_fs_initialise
             require_code('cloud_fs');
 
             $remote_storage_directory = get_remote_storage_directory(get_file_base(false));
-            if (!file_exists($remote_storage_directory)) {
-                mkdir($remote_storage_directory, 0777);
-                fix_permissions($remote_storage_directory);
+            if (file_exists($remote_storage_directory)) {
+                $remote_storage_directory = realpath($remote_storage_directory);
+            } else {
+                if (!$dry_run) {
+                    make_missing_directory($remote_storage_directory);
+                    fix_permissions($remote_storage_directory);
+                }
+                $operations[] = 'mkdir -p ' . cms_escapeshellarg($remote_storage_directory);
             }
 
             disable_php_memory_limit();

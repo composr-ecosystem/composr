@@ -201,10 +201,11 @@ function get_remote_storage_directory(string $file_base) : string
 
     $is_absolute = (substr($_remote_storage_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($_remote_storage_directory, 1, 2) == ':/'));
     if ($is_absolute) {
-        return realpath($_remote_storage_directory);
+        $remote_storage_directory = $_remote_storage_directory;
     } else {
-        return realpath($file_base . '/' . $_remote_storage_directory);
+        $remote_storage_directory = realpath($file_base . '/' . $_remote_storage_directory);
     }
+    return $remote_storage_directory;
 }
 
 /**
