@@ -80,13 +80,15 @@ class Hook_commandr_command_cloud_fs_initialise
 
                 // Move
                 if (!file_exists($destination_long_path)) {
+                    $dir = is_dir($long_path);
+
                     if (!$dry_run) {
                         rename($long_path, $destination_long_path);
                     }
                     $operations[] = 'mv ' . cms_escapeshellarg($long_path) . ' ' . cms_escapeshellarg($destination_long_path);
 
                     // Symlink
-                    if (is_dir($long_path)) {
+                    if ($dir) {
                         if (!$dry_run) {
                             symlink($destination_long_path, $long_path);
                         }
