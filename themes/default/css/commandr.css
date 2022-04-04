@@ -47,7 +47,7 @@
 	margin-left: 10px;
 }
 
-.text-output {
+.text-output, .error-output {
 	white-space: pre !important;
 	overflow-x: auto;
 }

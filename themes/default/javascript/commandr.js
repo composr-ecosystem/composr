@@ -272,7 +272,7 @@
         if (!ajaxResult) {
             var stderrText = document.createTextNode('{!commandr:ERROR_NON_TERMINAL;^}\n{!INTERNAL_ERROR;^}');
             var stderrTextP = document.createElement('p');
-            stderrTextP.className = 'error_output';
+            stderrTextP.className = 'error-output';
             stderrTextP.appendChild(stderrText);
             pastCommand.appendChild(stderrTextP);
             newCommand.appendChild(pastCommand);
@@ -341,7 +341,7 @@
                 stderrText2 = document.createTextNode('{!commandr:TERMINAL_PROBLEM_ACCESSING_RESPONSE;^}');
             }
             stderrTextP2 = document.createElement('p');
-            stderrTextP2.className = 'error_output';
+            stderrTextP2.className = 'error-output';
             stderrTextP2.appendChild(stderrText2);
             pastCommand.appendChild(stderrTextP2);
 
@@ -349,7 +349,7 @@
         } else if (stderr !== '') {
             stderrText2 = document.createTextNode('{!commandr:ERROR_NON_TERMINAL;^}\n' + stderr);
             stderrTextP2 = document.createElement('p');
-            stderrTextP2.className = 'error_output';
+            stderrTextP2.className = 'error-output';
             stderrTextP2.appendChild(stderrText2);
             pastCommand.appendChild(stderrTextP2);
         }
