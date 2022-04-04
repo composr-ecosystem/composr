@@ -609,7 +609,7 @@ function pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, $
                     $c = cms_file_get_contents_safe(($full_path), FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                     $matches = [];
-                    if (preg_match('#function get_author\(\)\s*\{\s*return \'([^\']*)\';#', $c, $matches) != 0) {
+                    if (preg_match('#function get_author\(\)\s*:\s*string\s*\{\s*return \'([^\']*)\';#', $c, $matches) != 0) {
                         $translators = $matches[1];
                     }
                 }

@@ -96,7 +96,7 @@ function load_files_list_of_installed_addons(array $manifest) : array
     foreach ($hook_files as $addon_name => $hook_path) {
         $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
         $matches = [];
-        if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
+        if (preg_match('#function get_file_list\(\)\s*:\s*array\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
             $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $hook_path));
         }
     }
@@ -279,14 +279,14 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
 
     // Alien files
     if (!$basic) {
-        list($alien, $addon_name) = check_alien(get_file_base() . '/', '', false, null, null, array_flip($files_to_check));
-        if (($alien != '') || ($addon_name != '')) {
+        list($alien, $addon) = check_alien(get_file_base() . '/', '', false, null, null, array_flip($files_to_check));
+        if (($alien != '') || ($addon != '')) {
             $ret_str .= '<div>';
             if ($alien != '') {
                 $ret_str .= do_lang('WARNING_FILE_ALIEN', $alien);
             }
-            if ($addon_name != '') {
-                $ret_str .= do_lang('WARNING_FILE_ADDON', $addon_name);
+            if ($addon != '') {
+                $ret_str .= do_lang('WARNING_FILE_ADDON', $addon);
             }
             $ret_str .= '
                 <script>

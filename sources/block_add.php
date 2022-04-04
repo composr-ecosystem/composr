@@ -60,7 +60,7 @@ function block_helper_script()
         foreach ($hook_files as $addon_name => $hook_path) {
             $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
             $matches = [];
-            if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) {
+            if (preg_match('#function get_file_list\(\)\s*:\s*array\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) {
                 $addon_files = cms_eval($matches[1], $hook_path);
                 if ($addon_files === false) {
                     $addon_files = []; // Some kind of PHP error
