@@ -203,7 +203,7 @@ function get_remote_storage_directory(string $file_base) : string
     if ($is_absolute) {
         $remote_storage_directory = $_remote_storage_directory;
     } else {
-        $remote_storage_directory = realpath($file_base . '/' . $_remote_storage_directory);
+        $remote_storage_directory = $file_base . '/' . $_remote_storage_directory;
     }
     return $remote_storage_directory;
 }
