@@ -97,6 +97,10 @@ class Hook_commandr_command_cloud_fs_initialise
                 }
             }
 
+            if (empty($operations)) {
+                $operations[] = '(' . do_lang('NONE') . ')';
+            }
+
             $stdout = do_lang($dry_run ? 'REMOTE_STORAGE_OPERATIONS_DRY_RUN' : 'REMOTE_STORAGE_OPERATIONS_REAL', implode("\n", $operations));
             return ['', '', $stdout, implode("\n", $errors)];
         }
