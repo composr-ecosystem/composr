@@ -18,6 +18,8 @@
  * @package    commandr
  */
 
+/*EXTRA FUNCTIONS: symlink|readlink*/
+
 /**
  * Hook class.
  */
@@ -38,16 +40,113 @@ class Hook_commandr_command_cloud_fs_initialise
         } else {
             require_code('cloud_fs');
 
-            global $SITE_INFO, $CMS_CLOUD_BINDINGS;
-
-            if (!file_exists($SITE_INFO['nas_directory'])) {
-                mkdir($SITE_INFO['nas_directory'], 0777);
-                fix_permissions($SITE_INFO['nas_directory']);
+            $remote_storage_directory = get_remote_storage_directory(get_file_base(false));
+            if (!file_exists($remote_storage_directory)) {
+                mkdir($remote_storage_directory, 0777);
+                fix_permissions($remote_storage_directory);
             }
 
-            // Loop through CMS_CLOUD_BINDINGS looking for CMS_CLOUD__REMOTE
-            // move it all under $SITE_INFO['nas_directory'] - if not already a symlink (otherwise whine)
-            // Create symlinks
+            disable_php_memory_limit();
+            cms_disable_time_limit();
+
+            require_code('files2');
+
+            $operations = [];
+            $errors = [];
+
+            // Find any directories/files under a CMS_CLOUD__REMOTE scope
+            $results = [];
+            $file_base = realpath(get_file_base(false));
+            $this->search_filesystem($remote_storage_directory, $file_base, '', $results);
+
+            $dry_run = !array_key_exists('y', $options);
+
+            // Move identified directories/files under remote storage directory
+            foreach ($results as $short_path => $long_path) {
+                $destination_long_path = $remote_storage_directory . '/' . $short_path;
+
+                // Make parent directories as needed
+                if (!file_exists(dirname($destination_long_path))) {
+                    if (!$dry_run) {
+                        make_missing_directory(dirname($destination_long_path), false);
+                    }
+                    $operations[] = 'mkdir -p ' . cms_escapeshellarg(dirname($destination_long_path));
+                }
+
+                // Move
+                if (!file_exists($destination_long_path)) {
+                    if (!$dry_run) {
+                        rename($long_path, $destination_long_path);
+                    }
+                    $operations[] = 'mv ' . cms_escapeshellarg($long_path) . ' ' . cms_escapeshellarg($destination_long_path);
+                } else {
+                    $errors[] = do_lang('REMOTE_STORAGE_DUPLICATION_ISSUE', $long_path, $destination_long_path);
+                }
+
+                // Symlink
+                if (is_dir($long_path)) {
+                    if (!$dry_run) {
+                        symlink($destination_long_path, $long_path);
+                    }
+                    $operations[] = 'ln -s ' . cms_escapeshellarg($destination_long_path) . ' ' . cms_escapeshellarg($long_path);
+                }
+            }
+
+            $stdout = do_lang($dry_run ? 'REMOTE_STORAGE_OPERATIONS_DRY_RUN' : 'REMOTE_STORAGE_OPERATIONS_REAL', implode("\n", $operations));
+            return [[], [], [$stdout], $errors];
+        }
+    }
+
+    /**
+     * Recurse through the filesystem finding directories/files under remote storage directories.
+     *
+     * @param  PATH $remote_storage_directory The remote storage directory
+     * @param  PATH $long_path The full filesystem path we are currently recursing under
+     * @param  PATH $short_path The relative path we are currently recursing under
+     * @param  array $results A mapping of short path to long path, returned by reference
+     */
+    protected function search_filesystem(string $remote_storage_directory, string $long_path, string $short_path, array &$results)
+    {
+        global $CMS_CLOUD_BINDINGS;
+
+        $dh = @opendir($long_path);
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if (($f == '.') || ($f == '..')) {
+                    continue;
+                }
+
+                $_short_path = (($short_path == '') ? '' : ($short_path . '/')) . $f;
+                $_long_path = $long_path . '/' . $f;
+
+                // Is it already a symlink to under the remote storage?
+                if ((is_link($_long_path)) && (substr(readlink($_long_path), 0, strlen($remote_storage_directory) + 1) == $remote_storage_directory . '/')) {
+                    continue;
+                }
+
+                // Does it match a CMS_CLOUD__REMOTE pattern?
+                $matches_remote_pattern = false;
+                foreach ($CMS_CLOUD_BINDINGS as $regexp => $storage_type) {
+                    if (preg_match($regexp, $_short_path) != 0) {
+                        if ($storage_type == CMS_CLOUD__REMOTE) {
+                            $matches_remote_pattern = true;
+                        }
+                        break;
+                    }
+                }
+                if ($matches_remote_pattern) {
+                    $results[$_short_path] = $_long_path;
+
+                    continue;
+                }
+
+                // Recurse
+                if (is_dir($_long_path)) {
+                    $this->search_filesystem($remote_storage_directory, $_long_path, $_short_path, $results);
+                }
+            }
+
+            closedir($dh);
         }
     }
 }

@@ -38,12 +38,12 @@ We term these 3 categories as:
  - Shared:
   - [b][concept]Propagated[/concept][/b]: Files stored on each host but automatically kept in sync via a database queue
    - Fast
-  - [b]Remote[/b]: Files stored on some kind of shared storage, like a [acronym="Network Attached Storage"]NAS[/acronym]/[acronym="Storage Area Network"]SAN[/acronym]
+  - [b]Remote[/b]: Files stored on some kind of shared storage, like a [acronym="Network Attached Storage"]NAS[/acronym]/[acronym="Storage Area Network"]SAN[/acronym] or just storage on a shared server
    - Always up-to-date
    - No wasting space via duplication
 
 Remote storage works by industry-standard filesystem mounting technology. The Installation Options editor has a [tt]nas_directory[/tt] option that needs to configured to where you have mounted your shared storage. If defaults to a directory [tt]shared_storage[/tt], one level above Composr.
-You may choose to mount some kind of NAS using standard protocols such as NFS. There are also many [url="FUSE filesystems"]https://en.wikipedia.org/wiki/Filesystem_in_Userspace[/url], including implementations for mounting Amazon S3 storage.
+You may choose to mount some kind of remote storage using standard protocols such as NFS. There are also many [url="FUSE filesystems"]https://en.wikipedia.org/wiki/Filesystem_in_Userspace[/url], including implementations for mounting Amazon S3 storage.
 
 Composr has inbuilt rules that specify what files should be treated in what ways.
 If you are a programmer and for some reason you need to change the rules, you need to override the [tt]define_cloud_fs_bindings[/tt] function in [tt]cloud_fs.php[/tt].

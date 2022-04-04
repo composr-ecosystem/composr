@@ -336,7 +336,7 @@ class DebugFsStreamWrapper
      * @param  integer $flags Bitmask options
      * @return ~array Map of status information (false: error)
      */
-    public function url_stat(string $path, bool $flags)
+    public function url_stat(string $path, int $flags)
     {
         $this->init_call('url_stat', $path);
 

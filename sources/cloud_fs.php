@@ -12,6 +12,8 @@
 
 */
 
+/*EXTRA FUNCTIONS: stream_wrapper_register*/
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
@@ -38,8 +40,8 @@ function init__cloud_fs()
     define_cloud_fs_bindings();
 
     global $SITE_INFO;
-    if (empty($SITE_INFO['nas_directory'])) {
-        $SITE_INFO['nas_directory'] = '../shared_storage';
+    if (empty($SITE_INFO['remote_storage_directory'])) {
+        $SITE_INFO['remote_storage_directory'] = '../shared_storage';
     }
 }
 
@@ -82,20 +84,28 @@ function define_cloud_fs_bindings()
  */
 function enable_cloud_fs()
 {
-    if (function_exists('stream_wrapper_register')) {
-        global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL, $SITE_INFO;
+    global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
-        stream_wrapper_register(FILE_BASE__AUTODETECT, 'CloudFsStreamWrapper');
-        stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
-        stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
+    stream_wrapper_register(FILE_BASE__AUTODETECT, 'CloudFsStreamWrapper');
+    stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
+    stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
 
-        $FILE_BASE_LOCAL = get_file_base(false, true);
-        $CUSTOM_FILE_BASE_LOCAL = get_file_base(true, true);
-        $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
-        $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
+    $FILE_BASE_LOCAL = get_file_base(false, true);
+    $CUSTOM_FILE_BASE_LOCAL = get_file_base(true, true);
+    $FILE_BASE = FILE_BASE__SHARED . ':/'; // NB: Extra needed "/" will in effect be added by path concatenation anyway
+    $CUSTOM_FILE_BASE = FILE_BASE__CUSTOM . ':/'; // "
 
-        if ((!is_dir($SITE_INFO['nas_directory'])) && (cloud_mode() != '')) {
-            fatal_exit('Configured nas_directory does not exist');
+    if (cloud_mode() != '') {
+        $remote_storage_directory = get_remote_storage_directory(get_file_base(false));
+        if (!is_dir($remote_storage_directory)) {
+            fatal_exit(do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($remote_storage_directory))); // We do not try and auto-create, because it could be a configuration error
+        }
+        if (shared_site_install()) {
+            $remote_storage_directory = get_remote_storage_directory(get_file_base(true)());
+            if (!is_dir($remote_storage_directory)) {
+                require_code('files2');
+                make_missing_directory($remote_storage_directory, false);
+            }
         }
     }
 }
@@ -108,21 +118,25 @@ function enable_cloud_fs()
  */
 function _make_cms_path_native(string $path) : array
 {
-    global $CMS_CLOUD_BINDINGS, $SITE_INFO, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
+    global $CMS_CLOUD_BINDINGS, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
     if (substr($path, 0, strlen(FILE_BASE__AUTODETECT . '://')) == FILE_BASE__AUTODETECT . '://') {
         $path_relative = substr($path, strlen(FILE_BASE__AUTODETECT . '://'));
 
-        if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path_relative)) {
-            $file_base = $CUSTOM_FILE_BASE_LOCAL;
-        } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path_relative)) {
-            $file_base = $FILE_BASE_LOCAL;
-        } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
-            $file_base = $CUSTOM_FILE_BASE_LOCAL;
-        } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
-            $file_base = $FILE_BASE_LOCAL;
+        if (shared_site_install()) {
+            if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path_relative)) {
+                $file_base = $CUSTOM_FILE_BASE_LOCAL;
+            } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path_relative)) {
+                $file_base = $FILE_BASE_LOCAL;
+            } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
+                $file_base = $CUSTOM_FILE_BASE_LOCAL;
+            } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
+                $file_base = $FILE_BASE_LOCAL;
+            } else {
+                $file_base = $CUSTOM_FILE_BASE_LOCAL;
+            }
         } else {
-            $file_base = $CUSTOM_FILE_BASE_LOCAL;
+            $file_base = $FILE_BASE_LOCAL;
         }
 
         $file_base_constant = FILE_BASE__AUTODETECT;
@@ -165,16 +179,32 @@ function _make_cms_path_native(string $path) : array
             break;
 
         case CMS_CLOUD__REMOTE:
-            $nas_directory = $SITE_INFO['nas_directory'];
-            if ((substr($nas_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($nas_directory, 1, 2) == ':/'))) {
-                $path_absolute = $nas_directory . '/' . $path_relative;
-            } else {
-                $path_absolute = $file_base . '/' . $nas_directory . '/' . $path_relative;
-            }
+            $remote_storage_directory = get_remote_storage_directory($file_base);
+            $path_absolute = $remote_storage_directory . '/' . $path_relative;
             break;
     }
 
     return [$path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant];
+}
+
+/**
+ * Find an absolute remote storage path given a particular file base.
+ * Considers whether the path is absolute or relative to a file base.
+ * A relative path is needed for shared-site installs and/as we must have a remote_storage_directory for each individual site.
+ *
+ * @param  PATH $file_base File base
+ * @return PATH Absolute path
+ */
+function get_remote_storage_directory(string $file_base) : string
+{
+    global $SITE_INFO;
+    $_remote_storage_directory = $SITE_INFO['remote_storage_directory'];
+    $is_absolute = (substr($_remote_storage_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($_remote_storage_directory, 1, 2) == ':/'));
+    if ($is_absolute) {
+        return realpath($_remote_storage_directory);
+    } else {
+        return realpath($file_base . '/' . $_remote_storage_directory);
+    }
 }
 
 /**

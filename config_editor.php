@@ -237,7 +237,7 @@ function do_access(string $given_password)
         'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name',
 
         'cloud_mode' => '<em>Cloud:</em> The cloud mode, either blank (not on cloud), "primary" (where most Cron hooks run from), or "replica".',
-        'nas_directory' => '<em>Cloud:</em> <abbr title="Network Attached Storage">NAS</abbr> path (either absolute or relative).',
+        'remote_storage_directory' => '<em>Cloud:</em> Remote storage path (either absolute or relative).',
         'errorlog' => '<em>Cloud:</em> Where to log errors to the. May be set to either <kbd>syslog</kbd> or <kbd>weblogs</kbd>. Setting a value here will prevent viewing of errors within Composr and is generally used by network administrators in a cloud deployment.',
     ];
 

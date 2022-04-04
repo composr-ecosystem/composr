@@ -29,7 +29,7 @@ function init__files2()
 }
 
 /**
- * Make a missing required directory, or exit with an error if we cannot (unless error suppression is on).
+ * Make a missing required directory (with recursive parent directories), or exit with an error if we cannot (unless error suppression is on).
  *
  * @param  PATH $dir Path to create
  * @param  boolean $make_index_file Whether to make an empty index file, to prevent browsing
