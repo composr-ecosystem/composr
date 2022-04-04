@@ -194,17 +194,17 @@ function get_remote_storage_directory(string $file_base) : string
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['remote_storage_directory'])) {
-        $_remote_storage_directory = '../shared_storage';
+        $remote_storage_directory = dirname($file_base) . '/shared_storage';
     } else {
         $_remote_storage_directory = $SITE_INFO['remote_storage_directory'];
+        $is_absolute = (substr($_remote_storage_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($_remote_storage_directory, 1, 2) == ':/'));
+        if ($is_absolute) {
+            $remote_storage_directory = $_remote_storage_directory;
+        } else {
+            $remote_storage_directory = $file_base . '/' . $_remote_storage_directory;
+        }
     }
 
-    $is_absolute = (substr($_remote_storage_directory, 0, 1) == '/') || ((strpos(PHP_OS, 'WIN') !== false) && (substr($_remote_storage_directory, 1, 2) == ':/'));
-    if ($is_absolute) {
-        $remote_storage_directory = $_remote_storage_directory;
-    } else {
-        $remote_storage_directory = $file_base . '/' . $_remote_storage_directory;
-    }
     return $remote_storage_directory;
 }
 

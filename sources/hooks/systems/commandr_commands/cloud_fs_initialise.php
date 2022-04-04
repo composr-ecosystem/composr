@@ -40,6 +40,8 @@ class Hook_commandr_command_cloud_fs_initialise
         } else {
             require_code('cloud_fs');
 
+            $dry_run = !array_key_exists('y', $options);
+
             $remote_storage_directory = get_remote_storage_directory(get_file_base(false));
             if (file_exists($remote_storage_directory)) {
                 $remote_storage_directory = realpath($remote_storage_directory);
@@ -63,8 +65,6 @@ class Hook_commandr_command_cloud_fs_initialise
             $results = [];
             $file_base = realpath(get_file_base(false));
             $this->search_filesystem($remote_storage_directory, $file_base, '', $results);
-
-            $dry_run = !array_key_exists('y', $options);
 
             // Move identified directories/files under remote storage directory
             foreach ($results as $short_path => $long_path) {
@@ -98,7 +98,7 @@ class Hook_commandr_command_cloud_fs_initialise
             }
 
             $stdout = do_lang($dry_run ? 'REMOTE_STORAGE_OPERATIONS_DRY_RUN' : 'REMOTE_STORAGE_OPERATIONS_REAL', implode("\n", $operations));
-            return [[], [], [$stdout], $errors];
+            return ['', '', $stdout, implode("\n", $errors)];
         }
     }
 
