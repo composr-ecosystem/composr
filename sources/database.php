@@ -2101,7 +2101,6 @@ class DatabaseConnector
         }
         if ($query_tail_pos === null) {
             $query_tail_pos = $len;
-            @exit($query);
         }
         return [$from_pos, $query_tail_pos];
     }
