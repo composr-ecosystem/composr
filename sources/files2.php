@@ -49,7 +49,9 @@ function make_missing_directory(string $dir, bool $make_index_file = true) : boo
     }
     fix_permissions($dir);
 
-    cms_file_put_contents_safe($dir . '/index.html', '');
+    if ($make_index_file) {
+        cms_file_put_contents_safe($dir . '/index.html', '');
+    }
 
     return true;
 }
