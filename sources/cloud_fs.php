@@ -109,9 +109,10 @@ function enable_cloud_fs()
  * Resolve a path to the correct local path and find the storage type.
  *
  * @param  string $path Path
+ * @param  boolean $is_create_op Is this an operation to create a new file/directory?
  * @return array A tuple: The storage type relative path (if storage type is CMS_CLOUD__LOCAL then it will be null), The absolute path, The storage type (a CMS_CLOUD__* constant), The file base (if storage type is CMS_CLOUD__LOCAL then it will be null), The file base constant (a FILE_BASE__* constant) (if storage type is CMS_CLOUD__LOCAL then it will be null)
  */
-function _make_cms_path_native(string $path) : array
+function _make_cms_path_native(string $path, bool $is_create_op = false) : array
 {
     global $CMS_CLOUD_BINDINGS, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
@@ -119,16 +120,22 @@ function _make_cms_path_native(string $path) : array
         $path_relative = substr($path, strlen(FILE_BASE__AUTODETECT . '://'));
 
         if (shared_site_install()) {
-            if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path_relative)) {
-                $file_base = $CUSTOM_FILE_BASE_LOCAL;
-            } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path_relative)) {
+            if (running_script('upgrader')) {
                 $file_base = $FILE_BASE_LOCAL;
-            } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
+            } elseif ($is_create_op) {
                 $file_base = $CUSTOM_FILE_BASE_LOCAL;
-            } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
-                $file_base = $FILE_BASE_LOCAL;
             } else {
-                $file_base = $CUSTOM_FILE_BASE_LOCAL;
+                if (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . $path_relative)) {
+                    $file_base = $CUSTOM_FILE_BASE_LOCAL;
+                } elseif (file_exists($FILE_BASE_LOCAL . '/' . $path_relative)) {
+                    $file_base = $FILE_BASE_LOCAL;
+                } elseif ((strpos($path, '/') !== false) && (file_exists($CUSTOM_FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
+                    $file_base = $CUSTOM_FILE_BASE_LOCAL;
+                } elseif ((strpos($path, '/') !== false) && (file_exists($FILE_BASE_LOCAL . '/' . dirname($path_relative)))) {
+                    $file_base = $FILE_BASE_LOCAL;
+                } else {
+                    $file_base = $CUSTOM_FILE_BASE_LOCAL;
+                }
             }
         } else {
             $file_base = $FILE_BASE_LOCAL;
@@ -185,7 +192,7 @@ function _make_cms_path_native(string $path) : array
 /**
  * Find an absolute remote storage path given a particular file base.
  * Considers whether the path is absolute or relative to a file base.
- * A relative path is needed for shared-site installs and/as we must have a remote_storage_directory for each individual site.
+ * A relative path is needed for shared-code installs and/as we must have a remote_storage_directory for each individual site.
  *
  * @param  PATH $file_base File base
  * @return PATH Absolute path
@@ -448,7 +455,7 @@ class CloudFsStreamWrapper
      */
     public function mkdir(string $path, int $mode, int $options) : bool
     {
-        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path, true);
 
         $ret = mkdir($path_absolute, $mode, ($options & STREAM_MKDIR_RECURSIVE) != 0, $this->context);
 
@@ -533,7 +540,7 @@ class CloudFsStreamWrapper
      */
     public function stream_open(string $path, string $mode, int $options, ?string &$opened_path) : bool
     {
-        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path);
+        list($path_relative, $path_absolute, $storage_type, $file_base, $file_base_constant) = _make_cms_path_native($path, preg_match('#[cwx]#', $mode) != 0);
 
         $this->file_path_relative = $path_relative;
         $this->file_path_absolute = $path_absolute;
@@ -724,7 +731,7 @@ class CloudFsStreamWrapper
     public function rename(string $path_from, string $path_to) : bool
     {
         list($path_relative_from, $path_absolute_from, $storage_type_from, $file_base_from, $file_base_constant_from) = _make_cms_path_native($path_from);
-        list($path_relative_to, $path_absolute_to, $storage_type_to, $file_base_to, $file_base_constant_to) = _make_cms_path_native($path_to);
+        list($path_relative_to, $path_absolute_to, $storage_type_to, $file_base_to, $file_base_constant_to) = _make_cms_path_native($path_to, true);
 
         $ret = rename($path_absolute_from, $path_absolute_to);
 

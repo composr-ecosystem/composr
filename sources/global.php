@@ -567,7 +567,7 @@ function cms_flush_safe()
 }
 
 /**
- * Find whether we are running a shared-site install.
+ * Find whether we are running a shared-code install.
  *
  * @return boolean Whether we are
  */
@@ -593,7 +593,7 @@ function shared_site_install() : bool
 /**
  * Get the file base for your installation of Composr.
  *
- * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-site install (null: virtual file system to search both file bases)
+ * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-code install (null: virtual file system to search both file bases)
  * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem. Cannot be used if $custom_dir is set to null.
  * @return PATH The file base, without a trailing slash
  */

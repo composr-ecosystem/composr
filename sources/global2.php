@@ -2185,7 +2185,7 @@ function find_script(string $name, bool $append_keep = false) : string
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?string $path The file path, used to detect what base URL to use on shared-site installs (null: assume the root-install base URL)
+ * @param  ?string $path The file path, used to detect what base URL to use on shared-code installs (null: assume the root-install base URL)
  * @param  ?ID_TEXT $zone_for The zone the URL is for (null: root zone)
  * @param  boolean $path_is_relative Whether the given $path is relative
  * @return URLPATH The base URL
@@ -2214,8 +2214,8 @@ function get_base_url(?string $path = null, ?string $zone_for = null, bool $path
 }
 
 /**
- * Get the base URL to the shared-site install custom files.
- * Only applies to shared-site installs, otherwise behaves the same as _get_base_url_basic.
+ * Get the base URL to the shared-code install custom files.
+ * Only applies to shared-code installs, otherwise behaves the same as _get_base_url_basic.
  *
  * @return URLPATH The base URL
  */

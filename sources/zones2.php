@@ -228,10 +228,6 @@ function actual_add_zone(string $zone, string $title, string $default_page = DEF
         warn_exit(do_lang_tempcode('BAD_CODENAME'));
     }
 
-    if (shared_site_install()) {
-        warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
-    }
-
     // Check doesn't already exist
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
     if ($test !== null) {

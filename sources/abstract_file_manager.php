@@ -22,6 +22,10 @@
 
 /*
 The abstract file manager allows easy and transparent file system maintenance, even when it has to be piped through FTP.
+
+For shared-code installs:
+ - FTP mode is not supported, i.e. must be suEXEC-style.
+ - System-level functions (like in the upgrader) should not be done. Git should be used for performing file-system-level upgrades.
 */
 
 /**
@@ -429,11 +433,12 @@ function _access_string(int $access_int) : string
  * Re-scope a Composr path to a path suitable for the AFM connection.
  *
  * @param  PATH $path Original path
+ * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-code install (null: virtual file system to search both file bases)
  * @return PATH Re-scoped path
  *
  * @ignore
  */
-function _rescope_path(string $path) : string
+function _rescope_path(string $path, ?bool $custom_dir = null) : string
 {
     if (post_param_string('uses_ftp', running_script('upgrader') ? '0' : get_value('uses_ftp')) == '1') {
         $ftp_folder = post_param_string('ftp_folder', get_value('ftp_directory'), INPUT_FILTER_POST_IDENTIFIER);
@@ -442,7 +447,7 @@ function _rescope_path(string $path) : string
         }
         return $ftp_folder . $path;
     }
-    return get_file_base() . '/' . $path;
+    return get_file_base($custom_dir) . '/' . $path;
 }
 
 /**
@@ -453,7 +458,7 @@ function _rescope_path(string $path) : string
  */
 function afm_set_perms(string $basic_path, int $bitmask)
 {
-    $path = _rescope_path($basic_path);
+    $path = _rescope_path($basic_path, true);
 
     $conn = _ftp_info();
     if ($conn !== false) {
@@ -473,7 +478,7 @@ function afm_set_perms(string $basic_path, int $bitmask)
 function afm_make_directory(string $basic_path, bool $world_access, bool $recursive = false)
 {
     $access = _translate_dir_access($world_access);
-    $path = _rescope_path($basic_path);
+    $path = _rescope_path($basic_path, true);
 
     if ($recursive) {
         $parts = explode('/', $basic_path);
@@ -558,7 +563,7 @@ function afm_delete_directory(string $basic_path, bool $recursive = false)
         if ($type == 'file') {
             afm_delete_file($basic_path . '/' . $path);
         } else {
-            $path = _rescope_path($basic_path . '/' . $path);
+            $path = _rescope_path($basic_path . '/' . $path, true);
 
             if ($conn !== false) {
                 ftp_rmdir($conn, $path);
@@ -581,7 +586,7 @@ function afm_delete_directory(string $basic_path, bool $recursive = false)
  */
 function afm_make_file(string $basic_path, string $contents, bool $world_access, bool $bom = false)
 {
-    $path = _rescope_path($basic_path);
+    $path = _rescope_path($basic_path, true);
     $access = _translate_file_access($world_access, get_file_extension($basic_path));
 
     require_code('files');
@@ -655,8 +660,8 @@ function afm_move(string $basic_old_path, string $basic_new_path)
         $basic_new_path .= substr($basic_old_path, strrpos($basic_old_path, '/')); // If we are moving to a path, add on the filename to that path
     }
 
-    $old_path = _rescope_path($basic_old_path);
-    $new_path = _rescope_path($basic_new_path);
+    $old_path = _rescope_path($basic_old_path, true);
+    $new_path = _rescope_path($basic_new_path, true);
 
     $conn = _ftp_info();
     if ($conn !== false) {
@@ -682,7 +687,7 @@ function afm_move(string $basic_old_path, string $basic_new_path)
  */
 function afm_delete_file(string $basic_path)
 {
-    $path = _rescope_path($basic_path);
+    $path = _rescope_path($basic_path, true);
 
     $conn = _ftp_info();
     if ($conn !== false) {

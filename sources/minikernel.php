@@ -106,7 +106,7 @@ function init__minikernel()
 }
 
 /**
- * Find whether we are running a shared-site install.
+ * Find whether we are running a shared-code install.
  *
  * @return boolean Whether we are
  */
@@ -883,7 +883,7 @@ function get_site_name()
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?string $path The file path, used to detect what base URL to use on shared-site installs (null: assume the root-install base URL)
+ * @param  ?string $path The file path, used to detect what base URL to use on shared-code installs (null: assume the root-install base URL)
  * @param  ?ID_TEXT $zone_for The zone the link is for (null: root zone)
  * @param  boolean $path_is_relative Whether the given $path is relative
  * @return URLPATH The base URL
@@ -1038,7 +1038,7 @@ function get_param_integer(string $name, $default = null) : ?int
 /**
  * Get the file base for your installation of Composr.
  *
- * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-site install (null: virtual file system to search both file bases)
+ * @param  ?boolean $custom_dir Get the file base for the custom directory for the current active site of a shared-code install (null: virtual file system to search both file bases)
  * @param  boolean $true_local Bypass any filesystem wrappers we're using, e.g. the cloud filesystem
  * @return PATH The file base, without a trailing slash
  */

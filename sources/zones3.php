@@ -233,10 +233,6 @@ function actual_edit_zone(string $zone, string $title, string $default_page, str
             warn_exit(do_lang_tempcode('BAD_CODENAME'));
         }
 
-        if (shared_site_install()) {
-            warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
-        }
-
         // Check doesn't already exist
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $new_zone]);
         if ($test !== null) {
@@ -352,10 +348,6 @@ function actual_delete_zone(string $zone, bool $force = false, bool $skip_afm = 
 {
     if ($zone == '') {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-    }
-
-    if (shared_site_install()) {
-        warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
     }
 
     require_code('abstract_file_manager');

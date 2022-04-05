@@ -330,7 +330,7 @@ class Module_admin_setupwizard
      */
     public function step3() : object
     {
-        $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => shared_site_install() ? 'step5' : 'step4'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_3_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
 

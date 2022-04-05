@@ -679,10 +679,6 @@ class Module_admin_zones
     {
         appengine_live_guard();
 
-        if (shared_site_install()) {
-            warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
-        }
-
         $url_scheme = get_option('url_scheme');
         $change_htaccess = (($url_scheme == 'HTM') || ($url_scheme == 'SIMPLE'));
         $htaccess_path = get_file_base() . '/.htaccess';
@@ -732,10 +728,6 @@ class Module_admin_zones
     {
         appengine_live_guard();
 
-        if (shared_site_install()) {
-            warn_exit(do_lang_tempcode('SHARED_INSTALL_PROHIBIT'));
-        }
-
         $zone = post_param_string('zone');
 
         check_zone_name($zone);
@@ -748,7 +740,12 @@ class Module_admin_zones
         $header_text = post_param_string('header_text');
         $theme = post_param_string('theme');
         $require_session = post_param_integer('require_session', 0);
-        $base_url = post_param_string('base_url', '', INPUT_FILTER_URL_GENERAL);
+
+        if (shared_site_install()) {
+            $base_url = '';
+        } else {
+            $base_url = post_param_string('base_url', '', INPUT_FILTER_URL_GENERAL);
+        }
 
         actual_add_zone($zone, $_title, $default_page, $header_text, $theme, $require_session, false, $base_url);
 
@@ -867,7 +864,7 @@ class Module_admin_zones
         $hidden->attach(form_input_hidden('zone', $zone));
         $no_delete_zones = (get_forum_type() == 'cns') ? ['', 'adminzone', 'forum'] : ['', 'adminzone'];
         $no_rename_zones = ['', 'adminzone', 'forum'];
-        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || (shared_site_install());
+        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || (shared_site_install() && file_exists(get_file_base(false) . '/' . $zone));
         if ($no_rename) {
             $hidden->attach(form_input_hidden('new_zone', $zone));
         } else {
@@ -932,10 +929,15 @@ class Module_admin_zones
             $require_session = post_param_integer('require_session', 0);
             $base_url = post_param_string('base_url', '', INPUT_FILTER_URL_GENERAL);
 
-            $new_zone = post_param_string('new_zone');
-            if ($new_zone != $zone) {
-                appengine_live_guard();
-                check_zone_name($new_zone);
+            $no_rename = (shared_site_install() && file_exists(get_file_base(false) . '/' . $zone));
+            if ($no_rename) {
+                $new_zone = $zone;
+            } else {
+                $new_zone = post_param_string('new_zone');
+                if ($new_zone != $zone) {
+                    appengine_live_guard();
+                    check_zone_name($new_zone);
+                }
             }
             actual_edit_zone($zone, $_title, $default_page, $header_text, $theme, $require_session, $new_zone, false, false, $base_url);
 
