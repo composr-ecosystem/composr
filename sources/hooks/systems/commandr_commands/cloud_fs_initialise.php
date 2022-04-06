@@ -40,6 +40,14 @@ class Hook_commandr_command_cloud_fs_initialise
         } else {
             require_code('cloud_fs');
 
+            if (!php_function_allowed('symlink')) {
+                return ['', '', '', do_lang('_DISABLED_FUNCTION', 'symlink')];
+            }
+
+            if (!php_function_allowed('readlink')) {
+                return ['', '', '', do_lang('_DISABLED_FUNCTION', 'readlink')];
+            }
+
             $dry_run = !array_key_exists('y', $options);
 
             $remote_storage_directory = get_remote_storage_directory(get_file_base(false));

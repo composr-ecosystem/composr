@@ -4927,6 +4927,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DIRECTORY_NOT_FOUND
         DIRECTORY_RELATIVE_INSTALL
         DISABLED_FUNCTION
+        _DISABLED_FUNCTION
         DISK_USAGE
         DISMISS_TIP
         DISPATCH

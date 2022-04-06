@@ -1,6 +1,6 @@
 [title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Cloud-hosting for Composr[/title]
 
-Composr has some excellent built-in support for hosting on server farms, i.e. cloud hosting.
+Composr has some excellent built-in support for hosting across multiple servers, i.e. cloud hosting.
 
 In particular, Composr has the following cloud features:
  - Storage management:
@@ -26,28 +26,44 @@ The Composr cloud support is designed to work optimally based on the actual arch
 
 [contents]decimal,lower-alpha[/contents]
 
+[title="2"]Requirements[/title]
+
+Cloud hosting requirements have intentionally been kept very low. You will need to configure the architecture described in this tutorial. Other than that, your copy of PHP must not have the [tt]symlink[/tt], [tt]readlink[/tt] or [tt]stream_wrapper_register[/tt] functions disabled.
+
 [title="2"]Fundamental architecture and setup[/title]
 
-[title="3"]Storage management[/title]
+[title="3"]Storage management with Cloud-FS[/title]
+
+Composr provides [concept]Cloud-FS[/concept], which is a virtual filesystem that abstracts specialised handling/routing of different parts of the Composr file/directory structure. Cloud-FS is used both when Composr is supporting cloud hosting and supporting shared-code installs (not covered in this tutorial).
 
 There are certain files you want to store locally on each host (particularly code files and other non-changing assets), and certain files you need to share between hosts (such as user data, or data edited from within the Admin Zone).
 The files shared between hosts can be further subdivided into files that need to be low latency (such as custom Comcode pages that need to be quickly enumerated), and files that can be modest latency but always need to be there (like individual user uploads).
 
 We term these 3 categories as:
- - [b]Local[/b]: Files stored individually on each host
+ - [b][concept]Local file[/concept][/b]: Files stored individually on each host
  - Shared:
-  - [b][concept]Propagated[/concept][/b]: Files stored on each host but automatically kept in sync via a database queue
+  - [b][concept]Propagated file[/concept][/b]: Files stored on each host but automatically kept in sync via a database queue
    - Fast
-  - [b]Remote[/b]: Files stored on some kind of shared storage, like a [acronym="Network Attached Storage"]NAS[/acronym]/[acronym="Storage Area Network"]SAN[/acronym] or just storage on a shared server
+  - [b][concept]Remote file[/concept][/b]: Files stored on some kind of shared storage, like a [acronym="Network Attached Storage"]NAS[/acronym]/[acronym="Storage Area Network"]SAN[/acronym] or just storage on a shared server
    - Always up-to-date
    - No wasting space via duplication
 
-Remote storage works by industry-standard filesystem mounting technology. The Installation Options editor has a [tt]nas_directory[/tt] option that needs to configured to where you have mounted your shared storage. If defaults to a directory [tt]shared_storage[/tt], one level above Composr.
+Remote storage works with industry-standard filesystem mounting technology. The Installation Options editor has a [tt]remote_storage_directory[/tt] option that needs to configured to where you have mounted your shared storage. If defaults to a directory [tt]shared_storage[/tt], one level above Composr.
 You may choose to mount some kind of remote storage using standard protocols such as NFS. There are also many [url="FUSE filesystems"]https://en.wikipedia.org/wiki/Filesystem_in_Userspace[/url], including implementations for mounting Amazon S3 storage.
 
 Composr has inbuilt rules that specify what files should be treated in what ways.
 If you are a programmer and for some reason you need to change the rules, you need to override the [tt]define_cloud_fs_bindings[/tt] function in [tt]cloud_fs.php[/tt].
-The cloud filesystem implementation works via a PHP stream wrapper that encapsulates all I/O and directs it as necessary.
+The Cloud-FS implementation works via a set of PHP stream wrappers that encapsulate all I/O and directs it as necessary. Instead of [concept]native path[/concept]s, Cloud-FS uses [concept]Cloud-FS path[/concept]s.
+
+[title="4"]Initial setup[/title]
+
+Before remote storage can work naturally any directories/files under the scope of remote storage actually have to be moved under the configured [tt]remote_storage_directory[/tt]. Ideally the original directories/files that have been moved will also be symlinked, allowing code that is not written to support Cloud-FS to work without modification, and allowing things to work still if cloud mode is not turned on.
+
+Fortunately there is a Commandr command to handle this, [tt]cloud_fs_initialise[/tt]. Run without arguments the command will tell you what Linux commands are needed to perform the necessary optimisations, or if run as [tt]cloud_fs_initialise -y[/tt] it will actually make the changes for you. The command is not automatically reversible, so use with care. The command should be run [i]before[/i] cloud mode is enabled: the symlinks created will allow things to work even if cloud mode is not running.
+
+[title="4"]Third-party code[/title]
+
+We cannot guarantee that all third-party code will work correctly with Cloud-FS. The biggest risk is code that tries to use [tt]shell_exec[/tt] to call non-PHP programs on files without the necessary considerations.
 
 [title="3"]Creating hosts[/title]
 
@@ -84,6 +100,15 @@ The targets available are:
 
 [tt]data_custom/errorlog.php[/tt] can be sent to syslog or the weblogs (web server's own logs) by setting the [tt]errorlog[/tt] installation option. It cannot be syndicated to the cloud because (a) PHP will write to the error log itself, outside of Composr's direct control (b) errors may happen before Composr can boot. In most cases we do include a lot of extra metadata in the log though.
 
+[title="3"]Database[/title]
+
+The Composr cloud hosting puts no specific requirements on how you choose to host your database.
+
+You may want to have a dedicated machine for hosting the database, in which case you would configure to connect to that using the normal installation options.
+
+Larger clouds may want to have multiple database servers, and set up database replication for this. Configuring database replication is outside the scope of the Composr documentation.
+Geo-distributed clouds would also want to set up database replication, as it is not viable to connect to a database server with any notable connectivity latency.
+
 [title="2"]Maintenance[/title]
 
 [title="3"]Clearing caches[/title]
@@ -92,12 +117,39 @@ If you clear caches through the Cleanup Tools in the Admin Zone then this operat
 
 [title="3"]Updating files[/title]
 
+The non-bundled [tt]git_status[/tt] addon allows pulling in changes made to all hosts.
+
 [title="3"]Upgrading[/title]
+
+Anyone using cloud hosting with Composr likely has more than a small number of customisations to the system, so upgrades would be considered part of a wider development process.
+
+Generally upgrading would be performed in two parts:
+1) Upgrade on a development machine and commit/push any file changes
+2) Upgrade the cloud
+
+Upgrading a development machine would be fairly straight forward, like any normal upgrade. Commit/push all the file changes into Git as any new development change set would be committed.
+
+Upgrading the cloud is a bit trickier:
+a) You will likely want to schedule some down time, then close the site during scheduled downtime.
+b) You would use the [tt]git_status[/tt] addon to pull down any changes from Git.
+c) The database upgrade step could be performed using the regular Composr upgrader.
+d) Caches can then be cleared.
+e) Testing can then be performed
+f) The site would then be re-opened
+
+Sophisticated operations would have a staging cloud as well as a live cloud, so that an upgrade could be properly tested on the staging cloud first.
+
+Very sophisticated operations may choose to develop custom upgrade scripts that completely bypass Composr's regular upgrade process to avoid down-time entirely.
 
 [concepts
  1_key="Syslog"             1_value="Operating system facility for managing logs in a consistent and centralised way"
  2_key="RPC"                2_value="Remote Procedure Call, used in Composr's case when an action on one host needs to trigger an action on all the others and orchestrated through a queue in the database"
- 3_key="Propagated"         3_value="Our mode of automatic file sharing between hosts that works similarly to a system like Dropbox/Google Drive/ownCloud/etc"
+ 3_key="Local file"         3_value="A file that is not synched between hosts, i.e. one expected not to change like a source code file"
+ 4_key="Propagated file"    4_value="Our mode of automatic file sharing between hosts that works similarly to a system like Dropbox/Google Drive/ownCloud/etc"
+ 5_key="Remote file"        5_value="A file held on a networked mounted shared directory, e.g. a SAN or NAS"
+ 6_key="Cloud-FS"           6_value="The virtual filesystem used for handling synching of files between hosts in the optimal way for each file/directory"
+ 7_key="Cloud-FS path"      7_value="A Cloud-FS path uses a URL protocol handler (PHP stream wrapper), so that these paths are handled via Cloud-FS."
+ 8_key="Native path"        8_value="A normal filesystem path where Cloud-FS is not involved. Native paths are necessary for anything happening outside the scope of the PHP code."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

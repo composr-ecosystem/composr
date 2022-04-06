@@ -81,6 +81,10 @@ function enable_cloud_fs()
 {
     global $FILE_BASE, $CUSTOM_FILE_BASE, $FILE_BASE_LOCAL, $CUSTOM_FILE_BASE_LOCAL;
 
+    if (!function_exists('stream_wrapper_register')) {
+        fatal_exit(do_lang_tempcode('_DISABLED_FUNCTION', 'stream_wrapper_register'));
+    }
+
     stream_wrapper_register(FILE_BASE__AUTODETECT, 'CloudFsStreamWrapper');
     stream_wrapper_register(FILE_BASE__SHARED, 'CloudFsStreamWrapper');
     stream_wrapper_register(FILE_BASE__CUSTOM, 'CloudFsStreamWrapper');
