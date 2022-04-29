@@ -592,7 +592,11 @@ function sheet_script()
     header('Content-Type: text/css');
     $sheet = get_param_string('sheet');
     if ($sheet != '') {
-        $path = css_enforce(filter_naughty($sheet), get_param_string('theme', null));
+        $theme = get_param_string('theme', null);
+        if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) {
+            $theme = null;
+        }
+        $path = css_enforce(filter_naughty($sheet), $theme);
         if ($path != '') {
             echo @str_replace('../../../', '', cms_file_get_contents_safe($path));
         }
@@ -613,7 +617,11 @@ function script_script()
     header('Content-Type: application/javascript');
     $script = get_param_string('script');
     if ($script != '') {
-        $path = javascript_enforce(filter_naughty($script), get_param_string('theme', null));
+        $theme = get_param_string('theme', null);
+        if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) {
+            $theme = null;
+        }
+        $path = javascript_enforce(filter_naughty($script), $theme);
         if ($path != '') {
             echo @str_replace('../../../', '', cms_file_get_contents_safe($path));
         }
