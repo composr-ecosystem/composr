@@ -53,37 +53,37 @@ class Hook_config_oembed_manual_patterns
     {
         $default = '';
 
-        $default .= "(https?://(www\.)?youtube\.com/watch\?v=.*|https?://youtu\.be/\..*) = http://www.youtube.com/oembed\n";
+        $default .= "(https?://(www\.)?youtube\.com/watch\?v=.*|https?://youtu\.be/\..*) = https://www.youtube.com/oembed\n";
         $default .= "(https?://vimeo\.com/\d+) = http://vimeo.com/api/oembed.{format}\n";
-        $default .= "(https?://(www\.)?dailymotion\.com/video/.*|https?://dai\.ly/.*) = http://www.dailymotion.com/services/oembed\n";
-        $default .= "(https?://www\.slideshare\.net/.*/.*) = http://www.slideshare.net/api/oembed/2\n";
-        $default .= "(https?://(www\.)?scribd\.com/doc/.*) = http://www.scribd.com/services/oembed\n";
-        $default .= "(https?://.*\.flickr\.com/photos/.*|https?://flic\.kr/p/.*) = http://www.flickr.com/services/oembed\n";
-        $default .= "(https?://instagram\.com/p/.*) = http://api.instagram.com/oembed\n";
-        $default .= "(http?://i.*\.photobucket\.com/albums/.*|https?://gi.*\.photobucket\.com/groups/.*) = http://photobucket.com/oembed\n"; // NB: With this one you need to be really careful to get the *image* URL. Page URLs do not work, it's confusing!
-        //$default .= "(https?://twitter\.yfrog\.com/.*) = http://www.yfrog.com/api/oembed\n"; Does not work
-        $default .= "(https?://soundcloud\.com/.*/.*) = http://soundcloud.com/oembed\n";
+        $default .= "(https?://(www\.)?dailymotion\.com/video/.*|https?://dai\.ly/.*) = https://www.dailymotion.com/services/oembed\n";
+        $default .= "(https?://www\.slideshare\.net/.*/.*) = https://www.slideshare.net/api/oembed/2\n";
+        $default .= "(https?://(www\.)?scribd\.com/doc/.*) = https://www.scribd.com/services/oembed\n";
+        $default .= "(https?://.*\.flickr\.com/photos/.*|https?://flic\.kr/p/.*) = https://www.flickr.com/services/oembed\n";
+        $default .= "(https?://instagram\.com/p/.*) = https://api.instagram.com/oembed\n";
+        $default .= "(http?://i.*\.photobucket\.com/albums/.*|https?://gi.*\.photobucket\.com/groups/.*) = https://photobucket.com/oembed\n"; // NB: With this one you need to be really careful to get the *image* URL. Page URLs do not work, it's confusing!
+        //$default .= "(https?://twitter\.yfrog\.com/.*) = https://www.yfrog.com/api/oembed\n"; Does not work
+        $default .= "(https?://soundcloud\.com/.*/.*) = https://soundcloud.com/oembed\n";
         $default .= "(https?://twitter\.com/.*/status/\d+) = https://api.twitter.com/1/statuses/oembed.{format}\n";
-        $default .= "(https?://(www\.)?ustream\.tv/.*) = http://www.ustream.tv/oembed\n";
+        $default .= "(https?://(www\.)?ustream\.tv/.*) = https://www.ustream.tv/oembed\n";
 
-        $default .= "(https?://twitpic\.com/.*) = http://noembed.com/embed\n";
+        $default .= "(https?://twitpic\.com/.*) = https://noembed.com/embed\n";
         /*
         These are not very good - we may as well just do Open Graph on them ourselves rather than relying on noembed
-        $default .= "(https?://www\.amazon\.com/.*) = http://noembed.com/embed\n";
+        $default .= "(https?://www\.amazon\.com/.*) = https://noembed.com/embed\n";
         */
 
-        $default .= "(https?://www\.imdb\.com/title/.*|http://twitpic\.com/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://\w+\.wiki(pedia|media)\.org/wiki/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://edition\.cnn\.com/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://maps\.google\.(co\.uk|com)/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://www\.google\.(co\.uk|com)/maps/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://xkcd\.com/\d+/?) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://imgur\.com/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://tinypic.com/.*) = http://api.embed.ly/1/oembed\n";
-        $default .= "(https?://www\.justin\.tv/.*) = http://api.embed.ly/1/oembed\n";
+        $default .= "(https?://www\.imdb\.com/title/.*|http://twitpic\.com/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://\w+\.wiki(pedia|media)\.org/wiki/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://edition\.cnn\.com/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://maps\.google\.(co\.uk|com)/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://www\.google\.(co\.uk|com)/maps/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://xkcd\.com/\d+/?) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://imgur\.com/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://tinypic.com/.*) = https://api.embed.ly/1/oembed\n";
+        $default .= "(https?://www\.justin\.tv/.*) = https://api.embed.ly/1/oembed\n";
         /*
         Embedly requires an API key for high usage. It's pretty good though. To use an API key, do e.g.:
-        $default .= "(http://www\.imdb\.com/title/.*|http://twitpic\.com/.*) = http://api.embed.ly/1/oembed?key=xxxxxx\n";
+        $default .= "(http://www\.imdb\.com/title/.*|http://twitpic\.com/.*) = https://api.embed.ly/1/oembed?key=xxxxxx\n";
         */
 
         // Facebook may give "Security Check Required" when trying to auto-detect, so hard-code
@@ -92,8 +92,8 @@ class Hook_config_oembed_manual_patterns
         return $default;
 
         // NB: To put everything through...
-        //  embed.ly, you would do ".* = http://api.embed.ly/1/oembed"
-        //  Noembed, you would do ".* = http://noembed.com/embed"
+        //  embed.ly, you would do ".* = https://api.embed.ly/1/oembed"
+        //  Noembed, you would do ".* = https://noembed.com/embed"
         // iframely is interesting. It is self-hosted.
         // Largely though, Composr contains equivalent features to these products.
     }
