@@ -71,7 +71,7 @@ This section is not actively maintained. Package names may change, but it is des
 apt install apache2 libapache2-mod-php php php-common php-cli php-apcu curl php-curl \
 php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-mbstring php-pspell \
 php-xml php-intl php-json openssl mysql-server mysql-client \
-postfix nano wget lynx hunspell aspell aspell-en git openssh-server nano wget sysstat iotop \
+postfix nano wget lynx hunspell aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois dnsutils \
 lsof mlocate certbot python-certbot-apache poppler-utils
 [/code]
