@@ -94,9 +94,9 @@
 		</p>
 	{+END}
 
-	{+START,BOX,ocPortal migrations}
+	{+START,BOX,Facebook accounts}
 		<!-- LEGACY -->
-		If you have an ocPortal.com account, you can log in with that. However, if it is connected via Facebook you will need to do a password reset first to disconnect it from our old Facebook app.
+		We have disabled login integration with Facebook. If you were logging in using Facebook you will need to reset your password to allow normal access.
 	{+END}
 </div>
 
