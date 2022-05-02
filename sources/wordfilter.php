@@ -113,6 +113,10 @@ function check_wordfilter($a, $name = null, $no_die = false, $try_patterns = fal
 
     // Apply filter for disallowed substrings
     foreach ($WORDS_TO_FILTER_CACHE as $word => $w) {
+        if (is_integer($word)) {
+            $word = strval($word);
+        }
+
         if (($w['w_substr'] == 1) && (strpos($a, $word) !== false)) {
             if (($w['w_replacement'] == '') && (!$no_die)) {
                 warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word)));

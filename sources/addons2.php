@@ -118,22 +118,28 @@ function reinstall_addon_soft($addon, $ini_info = null)
         'addon_install_time' => time(),
     ));
 
-    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
-        'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon),
-        'addon_name_dependant_upon' => array_map('trim', $addon_info['dependencies']),
-        'addon_name_incompatibility' => array_fill(0, count($addon_info['dependencies']), 0),
-    ));
+    if (!empty($addon_info['dependencies'])) {
+        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
+            'addon_name' => array_fill(0, count($addon_info['dependencies']), $addon),
+            'addon_name_dependant_upon' => array_map('trim', $addon_info['dependencies']),
+            'addon_name_incompatibility' => array_fill(0, count($addon_info['dependencies']), 0),
+        ));
+    }
 
-    $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
-        'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon),
-        'addon_name_dependant_upon' => array_map('trim', $addon_info['incompatibilities']),
-        'addon_name_incompatibility' => array_fill(0, count($addon_info['incompatibilities']), 1),
-    ));
+    if (!empty($addon_info['incompatibilities'])) {
+        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
+            'addon_name' => array_fill(0, count($addon_info['incompatibilities']), $addon),
+            'addon_name_dependant_upon' => array_map('trim', $addon_info['incompatibilities']),
+            'addon_name_incompatibility' => array_fill(0, count($addon_info['incompatibilities']), 1),
+        ));
+    }
 
-    $GLOBALS['SITE_DB']->query_insert('addons_files', array(
-        'addon_name' => array_fill(0, count($addon_info['files']), $addon),
-        'filename' => $addon_info['files'],
-    ));
+    if (!empty($addon_info['files'])) {
+        $GLOBALS['SITE_DB']->query_insert('addons_files', array(
+            'addon_name' => array_fill(0, count($addon_info['files']), $addon),
+            'filename' => $addon_info['files'],
+        ));
+    }
 }
 
 /**

@@ -20,6 +20,10 @@ class Hook_symbol_FB_CONNECT_LOGGED_OUT
 {
     public function run($param)
     {
+        if (get_option('facebook_allow_signups') == '0') {
+            return '0';
+        }
+
         require_code('facebook_connect');
 
         if (isset($GLOBALS['FACEBOOK_LOGOUT'])) {

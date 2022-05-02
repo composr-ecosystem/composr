@@ -24,6 +24,10 @@ class Hook_symbol_FB_CONNECT_ACCESS_TOKEN
             return ''; // Probably the Tempcode compiler doing some scanning, startup still happening, could cause crash
         }
 
+        if (get_option('facebook_allow_signups') == '0') {
+            return '';
+        }
+
         $value = '';
         if (get_forum_type() == 'cns') {
             if (!is_guest()) { // A little crazy, but we need to do this as FB does not expire the cookie consistently, although oauth would have failed when creating a session against it

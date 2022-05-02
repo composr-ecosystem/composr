@@ -650,7 +650,7 @@ function ModalWindow()
 				_box_pos_top=(dim.window_height/(2+(this.VCENTRE_FRACTION_SHIFT*2)))-(parseInt(box_height)/2)+this.WINDOW_TOP_GAP;
 			}
 			if (_box_pos_top<this.WINDOW_TOP_GAP) _box_pos_top=this.WINDOW_TOP_GAP;
-			_box_pos_left=((dim.window_width/2)-(parseInt(box_width)/2));
+			_box_pos_left=((dim.window_width/2)-((parseInt(box_width)+this.WINDOW_SIDE_GAP+this.BOX_EAST_PERIPHERARY+this.BOX_WEST_PERIPHERARY)/2));
 			box_pos_top=_box_pos_top+'px';
 			box_pos_left=_box_pos_left+'px';
 

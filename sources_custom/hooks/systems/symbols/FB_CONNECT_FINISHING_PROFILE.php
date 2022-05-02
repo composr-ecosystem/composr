@@ -20,6 +20,10 @@ class Hook_symbol_FB_CONNECT_FINISHING_PROFILE
 {
     public function run($param)
     {
+        if (get_option('facebook_allow_signups') == '0') {
+            return '0';
+        }
+
         require_code('facebook_connect');
 
         if (isset($GLOBALS['FACEBOOK_FINISHING_PROFILE'])) {

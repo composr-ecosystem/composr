@@ -101,14 +101,19 @@ class Block_main_staff_website_monitoring
         $p = array();
         $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
         $result = http_download_file($_url, null, false, false, 'Composr', null, null, null, null, null, null, null, null, 1.0);
-        if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $p) != 0) {
-            $rank = integer_format(intval($p[1]));
+        if ($result !== null) {
+            if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $p) != 0) {
+                $rank = integer_format(intval($p[1]));
+            } else {
+                $rank = do_lang('NA');
+            }
+            if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $p) != 0) {
+                $links = integer_format(intval($p[1]));
+            } else {
+                $links = '0';
+            }
         } else {
             $rank = do_lang('NA');
-        }
-        if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $p) != 0) {
-            $links = integer_format(intval($p[1]));
-        } else {
             $links = '0';
         }
         $speed = '?';
