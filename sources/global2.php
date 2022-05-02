@@ -1695,7 +1695,7 @@ function __param($array, $name, $default, $integer = false, $posted = false)
 
     $val = $array[$name];
     if (is_array($val)) {
-        $val = trim(implode(',', $val), ' ,');
+        $val = @trim(implode(',', $val), ' ,'); // @ because it could be any complex arbitrary data structure (Composr does not do this, but bots may generate such URLs)
     }
 
     static $mq = null;
