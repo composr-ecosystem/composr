@@ -77,10 +77,11 @@ function init__files2()
      */
     $HTTP_HEADERS = array();
 
-    global $CURL_HEADERS, $CURL_BODY, $CURL_WRITE_TO_FILE;
+    global $CURL_HEADERS, $CURL_BODY, $CURL_WRITE_TO_FILE, $CURL_BYTE_LIMIT;
     $CURL_HEADERS = array();
     $CURL_BODY = '';
     $CURL_WRITE_TO_FILE = null;
+    $CURL_BYTE_LIMIT = null;
 }
 
 /**
@@ -1447,16 +1448,17 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                                                 }
 
                                                 // Data collection
-                                                global $CURL_HEADERS, $CURL_BODY, $CURL_WRITE_TO_FILE;
+                                                global $CURL_HEADERS, $CURL_BODY, $CURL_WRITE_TO_FILE, $CURL_BYTE_LIMIT;
                                                 $CURL_HEADERS = array();
                                                 $CURL_BODY = '';
+                                                $CURL_BYTE_LIMIT = $byte_limit;
                                                 $CURL_WRITE_TO_FILE = $write_to_file;
                                                 curl_setopt($ch, CURLOPT_HEADERFUNCTION, '_http_download_file_curl_headers');
                                                 curl_setopt($ch, CURLOPT_WRITEFUNCTION, '_http_download_file_curl_body');
 
                                                 // Response
                                                 $curl_result = curl_exec($ch);
-                                                if (!$curl_result) {
+                                                if ((!$curl_result) && ((curl_errno($ch) != CURLE_WRITE_ERROR) || ($CURL_BYTE_LIMIT === null))) {
                                                     // Error
                                                     $error = curl_error($ch);
                                                     $curl_errno = curl_errno($ch);
@@ -2430,12 +2432,18 @@ function _http_download_file_curl_headers($ch, $header)
  */
 function _http_download_file_curl_body($ch, $str)
 {
-    global $CURL_BODY, $CURL_WRITE_TO_FILE;
+    global $CURL_BODY, $CURL_WRITE_TO_FILE, $CURL_BYTE_LIMIT;
     if ($CURL_WRITE_TO_FILE !== null) {
         fwrite($CURL_WRITE_TO_FILE, $str);
     } else {
         $CURL_BODY .= $str;
     }
+
+    if (($CURL_BYTE_LIMIT !== null) && (strlen($CURL_BODY) > $CURL_BYTE_LIMIT)) {
+        $CURL_BODY = substr($CURL_BODY, 0, $CURL_BYTE_LIMIT);
+        return 0;
+    }
+
     return strlen($str);
 }
 
