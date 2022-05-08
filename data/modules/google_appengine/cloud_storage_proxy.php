@@ -43,7 +43,7 @@ if ($contents === false) {
     if (substr($request, -4) == '.css') {
         header('Content-Type: text/css; charset=utf-8');
     } elseif (substr($request, -3) == '.js') {
-        header('Content-Type: application/javascript; charset=utf-8');
+        header('Content-Type: text/javascript; charset=utf-8');
     } elseif ((substr($request, -4) == '.htm') || (substr($request, -5) == '.html')) {
         header('Content-Type: text/html; charset=utf-8');
     } else {

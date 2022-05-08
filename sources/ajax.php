@@ -512,7 +512,7 @@ function script_script()
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    prepare_backend_response('application/javascript');
+    prepare_backend_response('text/javascript');
 
     $script = get_param_string('script');
     if ($script != '') {

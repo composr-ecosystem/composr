@@ -79,7 +79,7 @@ function get_mime_types(bool $as_admin) : array
         // Web documents
         'html' => $as_admin ? 'text/html' : 'application/octet-stream',
         'htm' => $as_admin ? 'text/html' : 'application/octet-stream',
-        'js' => $as_admin ? 'application/javascript' : 'application/octet-stream',
+        'js' => $as_admin ? 'text/javascript' : 'application/octet-stream',
         'json' => $as_admin ? 'application/json' : 'application/octet-stream',
         'css' => $as_admin ? 'text/css' : 'application/octet-stream',
         'xsd' => $as_admin ? 'text/xml' : 'application/octet-stream',

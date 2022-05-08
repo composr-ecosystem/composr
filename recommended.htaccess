@@ -26,7 +26,7 @@ ErrorDocument 404 /index.php?page=404
 # Compress some static resources
 <IfModule mod_deflate.c>
 <IfModule mod_filter.c>
-AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
 </IfModule>
 </IfModule>
 
