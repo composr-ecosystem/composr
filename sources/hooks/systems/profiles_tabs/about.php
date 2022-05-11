@@ -255,9 +255,11 @@ class Hook_profiles_tabs_about
         $month = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_dob_month');
         $year = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_dob_year');
         $dob = '';
-        $_dob = mktime(12, 0, 0, $month, $day, $year);
-        $_dob_censored = mktime(12, 0, 0, $month, $day);
+        $_dob = null;
+        $_dob_censored = null;
         if (($day !== null) && ($month !== null) && ($year !== null)) {
+            $_dob = mktime(12, 0, 0, $month, $day, $year);
+            $_dob_censored = mktime(12, 0, 0, $month, $day);
             if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_reveal_age') == 1) {
                 if (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
                     $dob = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($day), 2, '0', STR_PAD_LEFT);
