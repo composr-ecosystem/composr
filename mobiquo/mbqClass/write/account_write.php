@@ -355,7 +355,7 @@ class CMSAccountWrite
         $code = generate_and_save_password_reset_code($password_reset_process, $member_id);
 
         // Logging
-        log_it('LOST_PASSWORD', strval($member_id), $username);
+        log_it('LOST_PASSWORD_INITIALISE', strval($member_id), $username);
 
         // Send confirm mail
         send_lost_password_reset_code($password_reset_process, $member_id, $code);

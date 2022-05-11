@@ -396,6 +396,9 @@ class Module_lost_password
         }
         $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id], '', 1);
 
+        // Logging
+        log_it('LOST_PASSWORD_FINALISE', strval($member_id), $username);
+
         // For temporary passwords: Log them in, then invite them to change their password
         if ($temporary_passwords) {
             require_code('users_inactive_occasionals');
