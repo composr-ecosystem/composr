@@ -435,8 +435,8 @@ class Module_cms_authors
 
         if (has_privilege(get_member(), 'delete_midrange_content')) {
             $fields = new Tempcode();
-            $fields->attach(form_input_list(do_lang_tempcode('SOURCE'), '', 'mauthor', $authors));
-            $fields->attach(form_input_list(do_lang_tempcode('TARGET'), '', 'mauthor2', $authors));
+            $fields->attach(form_input_list(do_lang_tempcode('FROM'), '', 'mauthor', $authors));
+            $fields->attach(form_input_list(do_lang_tempcode('TO'), '', 'mauthor2', $authors));
             $post_url = build_url(['page' => '_SELF', 'type' => '_merge'], '_SELF');
             $submit_name = do_lang_tempcode('MERGE_AUTHORS');
             $merge_form = do_template('FORM', [
