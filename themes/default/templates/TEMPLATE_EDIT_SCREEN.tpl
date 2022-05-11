@@ -2,7 +2,7 @@
 
 {$SET,COUNT,{COUNT}}
 
-<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" autocomplete="off" onsubmit="return modsecurity_workaround(this);">
+<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" autocomplete="off" onsubmit="return modsecurity_workaround(this);" data-modsecurity-workaround="1">
 	{$INSERT_SPAMMER_BLACKHOLE}
 
 	<div>

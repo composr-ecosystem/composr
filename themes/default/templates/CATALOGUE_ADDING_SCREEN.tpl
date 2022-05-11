@@ -4,7 +4,7 @@
 
 {+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 
-<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" target="_top" id="catalogue_form" autocomplete="off" onsubmit="return modsecurity_workaround(this);">
+<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}" target="_top" id="catalogue_form" autocomplete="off" onsubmit="return modsecurity_workaround(this);" data-modsecurity-workaround="1">
 	{$INSERT_SPAMMER_BLACKHOLE}
 
 	<div>

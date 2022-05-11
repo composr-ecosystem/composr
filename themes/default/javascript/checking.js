@@ -224,21 +224,32 @@ function do_form_submit(form,event)
 			}
 		}
 	}
+
+	var visual_commit=function() {
+		disable_buttons_just_clicked(document.getElementsByTagName('input'));
+		disable_buttons_just_clicked(document.getElementsByTagName('button'));
+
+		if (typeof window.detect_interval!='undefined')
+		{
+			window.clearInterval(window.detect_interval);
+			window.detect_interval=null;
+		}
+	};
+
 	if (form.onsubmit)
 	{
 		var ret=form.onsubmit.call(form,event);
-		if (!ret) return false;
+		if (!ret)
+		{
+			if (form.getAttribute('data-modsecurity-workaround')=='1') visual_commit();
+
+			return false;
+		}
 	}
+
 	if ((typeof window.just_checking_requirements=='undefined') || (!window.just_checking_requirements)) form.submit();
 
-	disable_buttons_just_clicked(document.getElementsByTagName('input'));
-	disable_buttons_just_clicked(document.getElementsByTagName('button'));
-
-	if (typeof window.detect_interval!='undefined')
-	{
-		window.clearInterval(window.detect_interval);
-		window.detect_interval=null;
-	}
+	visual_commit();
 
 	return true;
 }
@@ -285,11 +296,47 @@ function do_form_preview(event,form,preview_url,has_separate_preview)
 
 	if ((window.check_form) && (!check_form(form,true))) return false;
 
+	var visual_commit=function() {
+		document.getElementById('submit_button').style.display='inline';
+		//window.setInterval(function() { resize_frame('preview_iframe',window.top.scrollY+window.top.get_window_height()); },1500);
+		var pf=document.getElementById('preview_iframe');
+
+		/* Do our loading-animation */
+		if ((typeof window.just_checking_requirements=='undefined') || (!window.just_checking_requirements))
+		{
+			window.setInterval(window.trigger_resize,500);  /* In case its running in an iframe itself */
+			illustrate_frame_load(pf,'preview_iframe',50);
+		}
+
+		disable_buttons_just_clicked(document.getElementsByTagName('input'));
+		disable_buttons_just_clicked(document.getElementsByTagName('button'));
+
+		/* input.value not readable on most modern web browsers, and this code is not maintained
+		var inputs=form.elements,input;
+		for (var i=0;i<inputs.length-1;i++)
+		{
+			input=inputs[i];
+			if ((input.type=='file') && (!input.name.match(/file\d*$/)) && (input.className.indexOf('previews')==-1) && (!input.disabled) && (input.value!=''))
+			{
+				input.disabled=true;
+				window.setTimeout(function() { document.getElementById(input.id).disabled=false; },500);
+			}
+		}*/
+
+		// Turn main post editing back off
+		if (typeof wysiwyg_set_readonly!='undefined') wysiwyg_set_readonly('post',true);
+	};
+
 	if (form.onsubmit)
 	{
 		var test=form.onsubmit.call(form,event,true);
-		if (!test) return false;
-	} 
+		if (!test)
+		{
+			if (form.getAttribute('data-modsecurity-workaround')=='1') visual_commit();
+
+			return false;
+		}
+	}
 
 	if ((has_separate_preview) || (window.has_separate_preview))
 	{
@@ -297,34 +344,7 @@ function do_form_preview(event,form,preview_url,has_separate_preview)
 		return true;
 	}
 
-	document.getElementById('submit_button').style.display='inline';
-	//window.setInterval(function() { resize_frame('preview_iframe',window.top.scrollY+window.top.get_window_height()); },1500);
-	var pf=document.getElementById('preview_iframe');
-
-	/* Do our loading-animation */
-	if ((typeof window.just_checking_requirements=='undefined') || (!window.just_checking_requirements))
-	{
-		window.setInterval(window.trigger_resize,500);  /* In case its running in an iframe itself */
-		illustrate_frame_load(pf,'preview_iframe',50);
-	}
-
-	disable_buttons_just_clicked(document.getElementsByTagName('input'));
-	disable_buttons_just_clicked(document.getElementsByTagName('button'));
-
-	/* input.value not readable on most modern web browsers, and this code is not maintained
-	var inputs=form.elements,input;
-	for (var i=0;i<inputs.length-1;i++)
-	{
-		input=inputs[i];
-		if ((input.type=='file') && (!input.name.match(/file\d*$/)) && (input.className.indexOf('previews')==-1) && (!input.disabled) && (input.value!=''))
-		{
-			input.disabled=true;
-			window.setTimeout(function() { document.getElementById(input.id).disabled=false; },500);
-		}
-	}*/
-
-	// Turn main post editing back off
-	if (typeof wysiwyg_set_readonly!='undefined') wysiwyg_set_readonly('post',true);
+	visual_commit();
 
 	return true;
 }
