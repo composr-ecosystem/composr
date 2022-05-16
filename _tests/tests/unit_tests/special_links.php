@@ -39,7 +39,7 @@ class special_links_test_set extends cms_test_case
 
     public function testLookupLinks()
     {
-        $data = http_download_file('https://ip.me/?ip=12.34.56.78', null, false);
+        $data = http_download_file('https://ip.me/ip/12.34.56.78', null, false);
         $this->assertTrue(($data !== null) && (strpos($data, 'AT&amp;T Services') !== false), 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
 
         $data = http_download_file('https://ping.eu/ping/?host=12.34.56.78', null, false);
