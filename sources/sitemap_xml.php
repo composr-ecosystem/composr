@@ -242,7 +242,6 @@ function ping_sitemap_xml($url, $trigger_error = false)
             // Submit to search engines
             $services = array(
                 'http://www.google.com/webmasters/tools/ping?sitemap=',
-                'http://www.bing.com/webmaster/ping.aspx?siteMap=',
             );
             foreach ($services as $service) {
                 $out .= http_download_file($service . urlencode($url), null, $trigger_error);

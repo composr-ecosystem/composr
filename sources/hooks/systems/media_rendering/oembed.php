@@ -138,7 +138,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
         // Call endpoint
         require_code('files');
         require_code('files2');
-        $result = cache_and_carry('http_download_file', array($endpoint, null, false, false, 'Composr', null, null, null, null, null, null, null, null, 2.0));
+        $result = cache_and_carry('http_download_file', array($endpoint, 1024 * 100, false, false, 'Composr', null, null, null, null, null, null, null, null, 2.0));
         if ($result === false || $result[4] != '200') {
             return null;
         }

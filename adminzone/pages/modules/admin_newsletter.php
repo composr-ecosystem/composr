@@ -876,6 +876,9 @@ class Module_admin_newsletter extends Standard_crud_module
         $lang = choose_language($this->title);
 
         $cutoff_time = post_param_date('cutoff');
+        if ($cutoff_time === null) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html('cutoff')));
+        }
 
         $chosen_categories = '';
 

@@ -523,8 +523,8 @@ class Block_main_members
         }
 
         $has_active_filter = false;
-        foreach (array_keys($_GET) as $key) {
-            if (substr($key, 0, strlen($block_id . '_filter_')) == $block_id . '_filter_') {
+        foreach ($_GET as $key => $val) {
+            if ((substr($key, 0, strlen('filter_' . $block_id)) == 'filter_' . $block_id) && ($val != '')) {
                 $has_active_filter = true;
                 break;
             }
