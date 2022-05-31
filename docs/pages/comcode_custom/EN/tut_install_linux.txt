@@ -73,7 +73,12 @@ php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-mbstring php-pspe
 php-xml php-intl php-json openssl mysql-server mysql-client \
 postfix nano wget lynx hunspell aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois dnsutils \
-lsof mlocate certbot python-certbot-apache poppler-utils
+lsof mlocate poppler-utils
+[/code]
+
+If you want to deploy Let's Encrypt certificates you may also consider:
+[code="Bash"]
+apt install certbot certbot python-certbot-apache
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:
@@ -106,10 +111,15 @@ You may need to setup the [url="EPEL repository"]https://www.tecmint.com/how-to-
 [code="Bash"]
 yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apcu php-pdo curl \
 enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspell \
-php-xml php-intl php-json openssl mysql-server mysql \
+php-xml php-intl php-json openssl mariadb-server mysql \
 sendmail nano wget hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois bind-utils \
-lsof mlocate certbot python3-certbot-apache dnf-automatic poppler-utils
+lsof mlocate dnf-automatic poppler-utils
+[/code]
+
+If you want to deploy Let's Encrypt certificates you may also consider:
+[code="Bash"]
+yum install certbot python3-certbot-apache
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:
