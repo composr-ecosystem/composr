@@ -173,3 +173,5 @@
 
 {$,Feeds}
 {$FEEDS}
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9281606540426500" crossorigin="anonymous"></script>
