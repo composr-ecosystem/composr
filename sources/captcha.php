@@ -39,8 +39,7 @@ function captcha_script()
 
     $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
     if (is_null($code_needed)) {
-        generate_captcha();
-        $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+        $code_needed = generate_captcha();
         /*set_http_status_code('500');    This would actually be very slightly insecure, as it could be used to probe (binary) login state via rogue sites that check if CAPTCHAs had been generated
 
         warn_exit(do_lang_tempcode('CAPTCHA_NO_SESSION'));*/
@@ -286,6 +285,8 @@ function use_captcha()
 
 /**
  * Generate a CAPTCHA image.
+ *
+ * @return string The code.
  */
 function generate_captcha()
 {
@@ -314,6 +315,8 @@ function generate_captcha()
     cms_file_put_contents_safe(get_custom_file_base() . '/uploads/auto_thumbs/' . $session . '.wav', captcha_audio($si_code));
 
     require_javascript('ajax');
+
+    return $si_code;
 }
 
 /**
