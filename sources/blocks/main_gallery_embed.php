@@ -181,8 +181,7 @@ class Block_main_gallery_embed
                 }
                 $groups .= 'a.group_id=' . strval($group);
             }
-
-            $permissions_where = 'AND (';
+            $permissions_where = ' AND (';
             $permissions_where .= 'EXISTS (SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', 'galleries') . ' AND r.cat=a.category_name AND (' . $groups . '))';
             $permissions_where .= ' OR EXISTS (SELECT * FROM ' . get_table_prefix() . 'member_category_access ma WHERE ' . db_string_equal_to('ma.module_the_name', 'galleries') . ' AND r.cat=ma.category_name AND ((ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval(get_member()) . '))';
             $permissions_where .= ')';
