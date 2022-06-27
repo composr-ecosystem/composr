@@ -47,7 +47,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
             $cma_ob = get_content_object($this->content_type);
             $cma_info = $cma_ob->info();
             require_code('site');
-            if (($cma_info['module'] == $page) && ($zone != '_SEARCH') && (_request_page($page, $zone) !== false)) { // Ensure the given page matches the content type, and it really does exist in the given zone
+            if (($cma_info !== null) && ($cma_info['module'] == $page) && ($zone != '_SEARCH') && (_request_page($page, $zone) !== false)) { // Ensure the given page matches the content type, and it really does exist in the given zone
                 if ($matches[0] == $page_link) {
                     return SITEMAP_NODE_HANDLED_VIRTUALLY; // No type/ID specified
                 }
@@ -241,37 +241,39 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                     require_code('content');
                     $cc_cma_ob = get_content_object('catalogue_category');
                     $cc_cma_info = $cc_cma_ob->info();
-                    $cc_select = $this->select_fields($cc_cma_info);
+                    if ($cc_cma_info !== null) {
+                        $cc_select = $this->select_fields($cc_cma_info);
 
-                    $children_entries = array();
-                    $start = 0;
-                    do {
-                        $where = array('c_name' => $content_id, 'cc_parent_id' => null);
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', $cc_select, $where, '', $max_rows_per_loop, $start);
-                        foreach ($rows as $child_row) {
-                            $child_page_link = $zone . ':' . $page . ':category:' . strval($child_row['id']);
-                            $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
-                            if ($child_node !== null) {
-                                if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                    $test = find_theme_image('icons/24x24/menu/_generic_admin/view_this_category', true);
-                                    if ($test != '') {
-                                        $child_node['extra_meta']['image'] = $test;
+                        $children_entries = array();
+                        $start = 0;
+                        do {
+                            $where = array('c_name' => $content_id, 'cc_parent_id' => null);
+                            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', $cc_select, $where, '', $max_rows_per_loop, $start);
+                            foreach ($rows as $child_row) {
+                                $child_page_link = $zone . ':' . $page . ':category:' . strval($child_row['id']);
+                                $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
+                                if ($child_node !== null) {
+                                    if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
+                                        $test = find_theme_image('icons/24x24/menu/_generic_admin/view_this_category', true);
+                                        if ($test != '') {
+                                            $child_node['extra_meta']['image'] = $test;
+                                        }
+                                        $test = find_theme_image('icons/48x48/menu/_generic_admin/view_this_category', true);
+                                        if ($test != '') {
+                                            $child_node['extra_meta']['image_2x'] = $test;
+                                        }
                                     }
-                                    $test = find_theme_image('icons/48x48/menu/_generic_admin/view_this_category', true);
-                                    if ($test != '') {
-                                        $child_node['extra_meta']['image_2x'] = $test;
-                                    }
+
+                                    $children_entries[] = $child_node;
                                 }
-
-                                $children_entries[] = $child_node;
                             }
-                        }
-                        $start += $max_rows_per_loop;
-                    } while (count($rows) == $max_rows_per_loop);
+                            $start += $max_rows_per_loop;
+                        } while (count($rows) == $max_rows_per_loop);
 
-                    sort_maps_by($children_entries, 'title');
+                        sort_maps_by($children_entries, 'title');
 
-                    $children = array_merge($children, $children_entries);
+                        $children = array_merge($children, $children_entries);
+                    }
                 }
 
                 $struct['children'] = $children;

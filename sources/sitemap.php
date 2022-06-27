@@ -742,7 +742,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     /**
      * Get the CMA info for our content hook.
      *
-     * @return array The CMA info.
+     * @return ?array The CMA info (null: none).
      */
     protected function _get_cma_info()
     {
@@ -1066,6 +1066,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         $this->_make_zone_concrete($zone, $page_link);
 
         $cma_info = $this->_get_cma_info();
+        if ($cma_info === null) {
+            return null;
+        }
 
         $matches = array();
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);

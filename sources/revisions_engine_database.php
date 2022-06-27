@@ -403,7 +403,7 @@ class RevisionEngineDatabase
             $cma_ob = get_content_object($resource_type);
             if (!is_null($cma_ob)) {
                 $cma_info = $cma_ob->info();
-                if ($cma_info['support_revisions']) {
+                if (($cma_info !== null) && ($cma_info['support_revisions'])) {
                     $resource_types[$resource_type] = do_lang_tempcode($cma_info['content_type_label']);
                 }
             }

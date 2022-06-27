@@ -34,8 +34,10 @@ class cma_hooks_test_set extends cms_test_case
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
 
-            $this->all_cma_info[$content_type] = $cma_info;
-            $this->all_keys = array_unique(array_merge($this->all_keys, array_keys($cma_info)));
+            if ($cma_info !== null) {
+                $this->all_cma_info[$content_type] = $cma_info;
+                $this->all_keys = array_unique(array_merge($this->all_keys, array_keys($cma_info)));
+            }
         }
     }
 

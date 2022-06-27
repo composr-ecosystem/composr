@@ -631,6 +631,9 @@ function workflow_update_handler()
 
     // Grab information about the hook
     $info = $ob->info();
+    if ($info === null) {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
     $content_table = $info['table'];
     $content_field = $info['id_field'];
     if (array_key_exists('validated_field', $info)) {
@@ -715,6 +718,9 @@ function add_content_to_workflow($content_type = '', $content_id = '', $workflow
 
     // Grab information about the hook
     $info = $ob->info();
+    if ($info === null) {
+        return null;
+    }
     $content_table = $info['table'];
     $content_field = $info['id_field'];
 

@@ -56,6 +56,9 @@ function get_order_field($entry_type, $category_type, $current_order, $max = nul
     require_code('content');
     $ob = get_content_object($entry_type);
     $info = $ob->info();
+    if ($info === null) {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
 
     $db_order_field = isset($info['order_field']) ? $info['order_field'] : 'order';
 
@@ -150,6 +153,9 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
         require_code('content');
         $ob = get_content_object($content_type);
         $info = $ob->info();
+        if ($info === null) {
+            return new Tempcode();
+        }
 
         require_code('content');
         $content_row = mixed();
@@ -283,6 +289,15 @@ function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip 
     require_code('content');
     $ob = get_content_object($content_type);
     $info = $ob->info();
+    if ($info === null) {
+        return array(
+            'views' => 0,
+            'submitter' => get_member(),
+            'add_time' => time(),
+            'edit_time' => time(),
+            /*'url_moniker' => $url_moniker, was handled internally*/
+        );
+    }
 
     $views = mixed();
     $views_field = in_array('views', $fields_to_skip) ? null : $info['views_field'];
@@ -383,6 +398,9 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = null, $ne
     require_code('content');
     $ob = get_content_object($content_type);
     $info = $ob->info();
+    if ($info === null) {
+        return;
+    }
 
     $url_moniker = mixed();
     if (($info['support_url_monikers']) && (!in_array('url_moniker', $fields_to_skip))) {

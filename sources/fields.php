@@ -321,7 +321,7 @@ function manage_custom_fields_donext_link($content_type)
         $ob = get_content_object($content_type);
         $info = $ob->info();
 
-        if (($info['support_custom_fields']) && (has_privilege(get_member(), 'submit_cat_highrange_content', 'cms_catalogues')) && (has_privilege(get_member(), 'edit_cat_highrange_content', 'cms_catalogues'))) {
+        if (($info !== null) && ($info['support_custom_fields']) && (has_privilege(get_member(), 'submit_cat_highrange_content', 'cms_catalogues')) && (has_privilege(get_member(), 'edit_cat_highrange_content', 'cms_catalogues'))) {
             static $count = array();
             if (!isset($count[$content_type])) {
                 $count[$content_type] = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'COUNT(*)', array('c_name' => '_' . $content_type));
@@ -352,7 +352,7 @@ function manage_custom_fields_entry_points($content_type)
         $ob = get_content_object($content_type);
         $info = $ob->info();
 
-        if (($info['support_custom_fields']) && (has_privilege(get_member(), 'submit_cat_highrange_content', 'cms_catalogues')) && (has_privilege(get_member(), 'edit_cat_highrange_content', 'cms_catalogues'))) {
+        if (($info !== null) && ($info['support_custom_fields']) && (has_privilege(get_member(), 'submit_cat_highrange_content', 'cms_catalogues')) && (has_privilege(get_member(), 'edit_cat_highrange_content', 'cms_catalogues'))) {
             static $count = array();
             if (!isset($count[$content_type])) {
                 $count[$content_type] = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'COUNT(*)', array('c_name' => '_' . $content_type));

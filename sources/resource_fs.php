@@ -203,6 +203,9 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
         fatal_exit('Cannot load content object for ' . $resource_type);
     }
     $resource_info = $resource_object->info();
+    if ($resource_info === null) {
+        return array(null, null, null);
+    }
     $resource_fs_hook = $resource_info['commandr_filesystem_hook'];
 
     if (is_null($label)) {
@@ -316,7 +319,7 @@ function find_commandr_fs_filename_via_id($resource_type, $resource_id, $include
 {
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
     if (is_null($resource_fs_ob)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        return null;
     }
     $filename = $resource_fs_ob->convert_id_to_filename($resource_type, $resource_id);
     if (!is_null($filename)) {

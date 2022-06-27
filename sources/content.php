@@ -161,10 +161,12 @@ function convert_composr_type_codes($type_has, $type_id, $type_wanted)
         if ((($type_has == 'content_type') && ($content_type == $type_id)) || ($type_has != 'content_type')) {
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
-            $cma_info['content_type'] = $content_type;
-            if ((isset($cma_info[$type_has])) && (isset($cma_info[$type_wanted])) && (($cma_info[$type_has] == $type_id) || ($cma_info[$type_has] == preg_replace('#__.*$#', '', $type_id)))) {
-                $found_type_id = $cma_info[$type_wanted];
-                break;
+            if ($cma_info !== null) {
+                $cma_info['content_type'] = $content_type;
+                if ((isset($cma_info[$type_has])) && (isset($cma_info[$type_wanted])) && (($cma_info[$type_has] == $type_id) || ($cma_info[$type_has] == preg_replace('#__.*$#', '', $type_id)))) {
+                    $found_type_id = $cma_info[$type_wanted];
+                    break;
+                }
             }
         }
     }
@@ -194,9 +196,11 @@ function convert_composr_type_codes_multiple($type_has, $type_id)
         if ((($type_has == 'content_type') && ($content_type == $type_id)) || ($type_has != 'content_type')) {
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
-            $cma_info['content_type'] = $content_type;
-            if ((isset($cma_info[$type_has])) && (($cma_info[$type_has] == $type_id) || ($cma_info[$type_has] == preg_replace('#__.*$#', '', $type_id)))) {
-                $found_type_ids[] = $cma_info;
+            if ($cma_info !== null) {
+                $cma_info['content_type'] = $content_type;
+                if ((isset($cma_info[$type_has])) && (($cma_info[$type_has] == $type_id) || ($cma_info[$type_has] == preg_replace('#__.*$#', '', $type_id)))) {
+                    $found_type_ids[] = $cma_info;
+                }
             }
         }
     }
@@ -414,12 +418,17 @@ function content_language_string($content_type, $string)
 {
     $object = get_content_object($content_type);
     $info = $object->info();
-    $regexp = $info['actionlog_regexp'];
+    if ($info === null) {
+        $test = null;
+    } else {
+        $regexp = $info['actionlog_regexp'];
 
-    do_lang($info['content_type_label']); // This forces the language file to load if there is one, as it'll include the language file reference within content_type_label
+        do_lang($info['content_type_label']); // This forces the language file to load if there is one, as it'll include the language file reference within content_type_label
 
-    $string_custom = str_replace('\w+', $string, $regexp);
-    $test = do_lang($string_custom, null, null, null, null, false);
+        $string_custom = str_replace('\w+', $string, $regexp);
+        $test = do_lang($string_custom, null, null, null, null, false);
+    }
+
     if ($test === null) {
         $test = do_lang($string);
     }

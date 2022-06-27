@@ -602,7 +602,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
         $cma_ob = get_content_object($content_type);
         if ($cma_ob !== null) {
             $cma_info = $cma_ob->info();
-            if ($cma_ob === null) {
+            if ($cma_info === null) {
                 $content_type = null;
             }
         } else {
@@ -3333,6 +3333,9 @@ function make_fractionable_editable($content_type, $id, $title)
     require_code('content');
     $ob = get_content_object($content_type);
     $info = $ob->info();
+    if ($info === null) {
+        return is_object($title) ? $title : make_string_tempcode(escape_html($title));
+    }
 
     $parameters = array(
         is_object($title) ? $title->evaluate() : $title,

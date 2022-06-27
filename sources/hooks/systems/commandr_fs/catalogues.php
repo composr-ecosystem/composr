@@ -109,7 +109,6 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         switch ($above) {
             case '':
                 if ($under == 'catalogue') {
-                    $folder_info = $this->_get_cma_info($under);
                     return array(
                         'cat_field' => null,
                         'linker_table' => null,
@@ -121,7 +120,6 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 break;
             case 'catalogue':
                 if ($under == 'catalogue_category') {
-                    $folder_info = $this->_get_cma_info($under);
                     return array(
                         'cat_field' => 'c_name',
                         'linker_table' => 'catalogue_categories',
@@ -135,6 +133,12 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 if (($under == 'catalogue_category') || ($under == 'catalogue_entry')) {
                     $sub_info = $this->_get_cma_info($under);
                     $folder_info = $this->_get_cma_info($above);
+                    if ($sub_info === null) {
+                        return null;
+                    }
+                    if ($folder_info === null) {
+                        return null;
+                    }
                     return array(
                         'cat_field' => $sub_info['parent_category_field'],
                         'linker_table' => ($under == 'catalogue_entry') ? null : $sub_info['parent_spec__table_name'],

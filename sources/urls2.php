@@ -991,6 +991,9 @@ function find_id_via_url_moniker($content_type, $url_moniker)
 
     $cma_ob = object_factory('Hook_content_meta_aware_' . $content_type);
     $cma_info = $cma_ob->info();
+    if ($cma_info === null) {
+        return null;
+    }
     if (!$cma_info['support_url_monikers']) {
         return null;
     }

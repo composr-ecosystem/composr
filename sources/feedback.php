@@ -130,8 +130,10 @@ function get_details_behind_feedback_code($content_type, $content_id)
         require_code('content');
         $cma_ob = get_content_object($real_content_type);
         $info = $cma_ob->info();
-        list($content_title, $submitter_id, $cma_info, , $content_url, $content_url_email_safe) = content_get_details($real_content_type, $content_id);
-        return array($content_title, $submitter_id, $content_url, $content_url_email_safe, $cma_info);
+        if ($info !== null) {
+            list($content_title, $submitter_id, $cma_info, , $content_url, $content_url_email_safe) = content_get_details($real_content_type, $content_id);
+            return array($content_title, $submitter_id, $content_url, $content_url_email_safe, $cma_info);
+        }
     }
 
     return array(null, null, null, null, null);
@@ -635,11 +637,14 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
                 if ($real_content_type != '') {
                     require_code('content');
                     $cma_ob = get_content_object($real_content_type);
-                    $cma_content_row = content_get_row($content_id, $cma_ob->info());
-                    if (!is_null($cma_content_row)) {
-                        push_no_keep_context();
-                        $rendered = static_evaluate_tempcode($cma_ob->run($cma_content_row, '_SEARCH', $real_content_type != 'post'/*FUDGE - to conserve space*/, true));
-                        pop_no_keep_context();
+                    $cma_info = $cma_ob->info();
+                    if ($cma_info !== null) {
+                        $cma_content_row = content_get_row($content_id, $cma_info);
+                        if (!is_null($cma_content_row)) {
+                            push_no_keep_context();
+                            $rendered = static_evaluate_tempcode($cma_ob->run($cma_content_row, '_SEARCH', $real_content_type != 'post'/*FUDGE - to conserve space*/, true));
+                            pop_no_keep_context();
+                        }
                     }
                 }
                 $mail = do_notification_lang('CONTENT_LIKED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape(($content_title == '') ? cms_mb_strtolower($content_type_title) : $content_title), array(comcode_escape(is_object($safe_content_url) ? $safe_content_url->evaluate() : $safe_content_url), $rendered, comcode_escape($displayname), comcode_escape($username)));

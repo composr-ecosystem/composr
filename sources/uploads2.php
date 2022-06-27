@@ -65,6 +65,10 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
 
         $ob = get_content_object($content_type);
         $cma_info = $ob->info();
+
+        if ($cma_info === null) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
     }
 
     $table = $cma_info['table'];
