@@ -84,7 +84,7 @@ function check_csrf_token($token)
 
     delete_expired_tokens();
 
-    if ($token == get_session_id()) { // Session also works as a CSRF-token, as client-side knows it (AJAX)
+    if ($token == get_session_id() || $token == get_session_id(true)) { // Session also works as a CSRF-token, as client-side knows it (AJAX)
         return;
     }
 

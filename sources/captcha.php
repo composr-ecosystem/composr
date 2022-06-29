@@ -37,7 +37,7 @@ function captcha_script()
         warn_exit(do_lang_tempcode('GD_NEEDED'));
     }
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id(true)));
     if (is_null($code_needed)) {
         $code_needed = generate_captcha();
         /*set_http_status_code('500');    This would actually be very slightly insecure, as it could be used to probe (binary) login state via rogue sites that check if CAPTCHAs had been generated
@@ -237,7 +237,7 @@ function form_input_captcha()
 {
     $tabindex = get_form_field_tabindex(null);
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id(true)));
     if (is_null($code_needed)) {
         generate_captcha();
     }
@@ -290,7 +290,10 @@ function use_captcha()
  */
 function generate_captcha()
 {
-    $session = get_session_id();
+    global $INVALIDATED_FAST_SPIDER_CACHE;
+    $INVALIDATED_FAST_SPIDER_CACHE = true;
+
+    $session = get_session_id(true);
 
     // Clear out old codes
     $where = 'si_time<' . strval(time() - 60 * 30) . ' OR ' . db_string_equal_to('si_session_id', $session);
@@ -346,7 +349,7 @@ function enforce_captcha($regenerate_on_error = true)
 function check_captcha($code_entered, $regenerate_on_error = true)
 {
     if (use_captcha()) {
-        $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+        $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id(true)));
         if (is_null($code_needed)) {
             if (get_option('captcha_single_guess') == '1') {
                 generate_captcha();
@@ -388,7 +391,7 @@ function check_captcha($code_entered, $regenerate_on_error = true)
 function _cleanout_captcha()
 {
     if (!running_script('snippet')) {
-        $GLOBALS['SITE_DB']->query_delete('captchas', array('si_session_id' => get_session_id())); // Only allowed to check once
+        $GLOBALS['SITE_DB']->query_delete('captchas', array('si_session_id' => get_session_id(true))); // Only allowed to check once
     }
 }
 
