@@ -55,7 +55,7 @@
 					}
 				}
 
-				if (!check_passwords(form)) return false;
+				if (!check_passwords(form,false)) return false;
 
 				if ((form.elements['db_site_password']) && (window.do_ajax_field_test))
 				{

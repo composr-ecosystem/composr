@@ -1,16 +1,16 @@
 <script>// <![CDATA[
-	function check_passwords(form)
+	function check_passwords(form,ignore_blank_master_password)
 	{
 		if ((typeof form.confirm!='undefined') && (form.confirm)) return true;
 
 		if (typeof form.elements['cns_admin_password_confirm']!='undefined')
 		{
-			if (!_check_password(form,'cns_admin_password','{!ADMIN_USERS_PASSWORD;^/}')) return false;
+			if (!_check_password(form,'cns_admin_password','{!ADMIN_USERS_PASSWORD;^/}',false)) return false;
 		}
 
 		if (typeof form.elements['master_password_confirm']!='undefined')
 		{
-			if (!_check_password(form,'master_password','{!MASTER_PASSWORD;^/}')) return false;
+			if (!_check_password(form,'master_password','{!MASTER_PASSWORD;^/}',ignore_blank_master_password)) return false;
 		}
 
 		if ('{PASSWORD_PROMPT;/}'!='')
@@ -21,8 +21,10 @@
 		return true;
 	}
 
-	function _check_password(form,field_name,field_label)
+	function _check_password(form,field_name,field_label,ignore_blank_password)
 	{
+		if (ignore_blank_password && form.elements[field_name].value=='') return true;
+
 		// Check matches with confirm field
 		if (form.elements[field_name+'_confirm'].value!=form.elements[field_name].value)
 		{
