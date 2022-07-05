@@ -31,7 +31,7 @@
 				//]]></script>
 			{+END}
 
-			<form title="{!ACTION}" action="{POST_URL*}" method="post" onsubmit="return check_filedump_selections(this);" autocomplete="off">
+			<form title="{!ACTION}" action="{POST_URL*}#tab__thumbnails" method="post" onsubmit="return check_filedump_selections(this);" autocomplete="off">
 				{$INSERT_SPAMMER_BLACKHOLE}
 
 				{+START,IF_NON_EMPTY,{THUMBNAILS}}
@@ -86,7 +86,7 @@
 				TAB=listing
 			{+END}
 
-			<form title="{!ACTION}" action="{POST_URL*}" method="post" onsubmit="return check_filedump_selections(this);" autocomplete="off">
+			<form title="{!ACTION}" action="{POST_URL*}#tab__listing" method="post" onsubmit="return check_filedump_selections(this);" autocomplete="off">
 				{$INSERT_SPAMMER_BLACKHOLE}
 
 				{+START,IF_NON_EMPTY,{LISTING}}
