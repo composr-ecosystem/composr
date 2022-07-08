@@ -1299,7 +1299,7 @@ function get_root_comcode_pages($zone, $include_zone = false)
     $non_root = array();
     $root = array();
     foreach ($rows[$zone] as $row) {
-        if (($row['p_parent_page'] == '') && (isset($pages[$row['p_parent_page']]))) {
+        if (($row['p_parent_page'] == '') && (isset($pages[$row['the_page']]))) {
             $root[$row['the_page']] = $row['p_validated'];
         } else {
             $non_root[$row['the_page']] = $row['p_validated'];
