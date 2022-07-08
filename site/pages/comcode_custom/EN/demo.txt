@@ -18,6 +18,13 @@ Please note that because this is a demo system, your demo will only last a few d
 
 [title="2"]Instant (shared) demos[/title]
 
+[title="3"]Softaculous[/title]
+
+If you'd prefer to avoid entering the details required to set up your own demo you can also use the [url="Softaculos demo"]https://www.softaculous.com/apps/cms/Composr[/url].
+The admin username and password will be shown to you.
+
+[title="3"]Official shared demo[/title]
+
 We have a [url="http://shareddemo.composr.info/"]second shared demo[/url], populated with example content.
 
 Log in with the username [tt]admin[/tt] and the password [tt]demo123[/tt].
