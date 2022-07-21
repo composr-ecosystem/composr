@@ -2405,19 +2405,21 @@ function step_8() : object
 
     $log = new Tempcode();
 
-    $modules = find_all_modules('site');
-    foreach ($modules as $module => $type) {
-        send_http_output_ping();
+    foreach ((get_option('single_public_zone') == '1') ? [''] : ['', 'site'] as $zone) {
+        $modules = find_all_modules($zone);
+        foreach ($modules as $module => $type) {
+            send_http_output_ping();
 
-        $time_before = microtime(true);
+            $time_before = microtime(true);
 
-        if (reinstall_module('site', $module)) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
-        }
+            if (reinstall_module($zone, $module)) {
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
+            }
 
-        $time_after = microtime(true);
-        if (get_param_integer('keep_show_timings', 0) == 1) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+            $time_after = microtime(true);
+            if (get_param_integer('keep_show_timings', 0) == 1) {
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '3fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => protect_from_escaping('&raquo; Module installation of ' . escape_html($module) . ' took ' . float_format($time_after - $time_before) . ' seconds'))));
+            }
         }
     }
 
