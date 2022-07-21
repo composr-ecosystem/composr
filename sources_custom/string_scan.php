@@ -149,6 +149,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TICKETS_STAFF
         NO_CNS
         DOCS
+        COPY_TO_EDITABLE_MENU_PREFIX_AUTO_SET
+        COPY_TO_EDITABLE_MENU_PREFIX_MISSING
         EXPLANATION_WITH_DEFAULT
         PROJECT_SPONSORS
         PROJECT_SPONSORS_LABEL
