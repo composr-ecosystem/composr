@@ -386,7 +386,10 @@ function upgrader_output_header()
         <style>/*<![CDATA[*/
 END;
     foreach (['_base', '_colours', 'global'] as $css) {
-        @print(cms_file_get_contents_safe(css_enforce($css, 'default'), FILE_READ_LOCK | FILE_READ_BOM));
+        $css_path = css_enforce($css, 'default');
+        if ($css_path != '') {
+            @print(cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM));
+        }
     }
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('themes/default/images/icons/menu/adminzone/tools/upgrade.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
