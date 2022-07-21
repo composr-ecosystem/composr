@@ -429,7 +429,7 @@ function apply_forum_driver_md5_variant($data, $key)
 /**
  * Get the current session ID.
  *
- * @param boolean Get the session even if it is marked as a shy session; we only do this when we really need a session ID and do not have static caching for the request
+ * @param boolean $get_even_if_shy Get the session even if it is marked as a shy session; we only do this when we really need a session ID and do not have static caching for the request
  * @return ID_TEXT The current session ID (blank: none)
  */
 function get_session_id($get_even_if_shy = false)
