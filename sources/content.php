@@ -914,11 +914,12 @@ abstract class Hook_CMA
      */
     public function info_basic_cached() : ?array
     {
-        static $info = null;
-        if ($info === null) {
-            $info = $this->info();
+        static $info = [];
+        $key = get_class($this);
+        if (!isset($info[$key])) {
+            $info[$key] = $this->info();
         }
-        return $info;
+        return $info[$key];
     }
 
     /**
