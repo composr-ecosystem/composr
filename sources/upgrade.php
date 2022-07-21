@@ -385,10 +385,10 @@ function upgrader_output_header()
 
         <style>/*<![CDATA[*/
 END;
-    foreach (['_base', '_colours', 'global'] as $css) {
-        $css_path = css_enforce($css, 'default');
+    foreach (['_base', '_colours', 'global'] as $css_file) {
+        $css_path = css_enforce($css_file, 'default');
         if ($css_path != '') {
-            @print(cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM));
+            @print(cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_BOM));
         }
     }
     echo <<<END
