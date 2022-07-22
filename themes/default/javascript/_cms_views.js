@@ -884,7 +884,9 @@
             // Save into HTML
             this.overlayEl.style.top = boxPosTop + 'px';
             this.overlayEl.style.left = boxPosLeft + 'px';
-            this.overlayEl.style.padding = this.BOX_PADDING + 'px';
+            if (this.title == '') {
+                this.overlayEl.style.padding = this.BOX_PADDING + 'px';
+            }
 
             var doScroll = false;
 
