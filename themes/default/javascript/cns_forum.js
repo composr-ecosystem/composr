@@ -50,7 +50,7 @@
         stub = strVal(stub);
 
         var form = document.getElementById('post').form;
-        form.addEventListener('submit', function () {
+        form.addEventListener('submit', function (submitEvent) {
             var post = form.elements['post'],
                 textValue;
 
@@ -68,6 +68,7 @@
             }
 
             if (textValue.length > size) {
+                $dom.cancelSubmit(submitEvent);
                 $cms.ui.alert('{!cns:POST_TOO_LONG;}');
                 return false;
             }
