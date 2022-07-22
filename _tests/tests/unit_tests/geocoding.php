@@ -23,7 +23,7 @@ class geocoding_test_set extends cms_test_case
         parent::setUp();
 
         // Please don't use this on a live site, we just need these to test against
-        set_option('google_geocode_api_key', 'AIzaSyD-jqeO_HlD1bLmA68JhAJOBajZw96-UHE');
+        set_option('google_geocode_api_key', 'AIzaSyABpmhwlC5gw4W3tEUEQb8JoSczd1K7CJ4');
     }
 
     public function testIPGeocode()
