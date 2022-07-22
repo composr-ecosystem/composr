@@ -51,7 +51,7 @@
                 }
 
                 if (startDate > endDate) {
-                    submitEvent.preventDefault();
+                    $dom.cancelSubmit(submitEvent);
                     $cms.ui.alert('{!calendar:EVENT_CANNOT_AROUND;}');
                     return false;
                 }

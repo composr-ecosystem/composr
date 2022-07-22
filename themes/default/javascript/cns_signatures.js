@@ -12,7 +12,7 @@
                 post = post[1];
             }
             if (post.value.length > size) {
-                submitEvent.preventDefault();
+                $dom.cancelSubmit(submitEvent);
                 $cms.ui.alert('{!cns:SIGNATURE_TOO_BIG;^}');
                 return false;
             }
