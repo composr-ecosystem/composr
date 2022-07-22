@@ -104,6 +104,11 @@ function can_static_cache()
         return false;
     }
 
+    global $INVALIDATED_FAST_SPIDER_CACHE;
+    if ($INVALIDATED_FAST_SPIDER_CACHE) {
+        return false;
+    }
+
     return true;
 }
 

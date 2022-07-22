@@ -145,7 +145,7 @@ function ce_do_footer()
  */
 function ce_do_login()
 {
-    if (@$_POST['given_password']) {
+    if (isset($_POST['given_password'])) {
         echo '<p><strong>Invalid password</strong></p>';
     }
 
@@ -333,7 +333,7 @@ function do_access($given_password)
 
     echo '
         <p class="proceed_button" style="text-align: center">
-            <input class="button_screen buttons__save" type="submit" value="Save" onclick="return check_passwords(this.form);" />
+            <input class="button_screen buttons__save" type="submit" value="Save" onclick="return check_passwords(this.form,true);" />
         </p>
 
         <input type="hidden" name="given_password" value="' . htmlentities($given_password) . '" />

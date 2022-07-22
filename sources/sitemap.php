@@ -742,7 +742,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     /**
      * Get the CMA info for our content hook.
      *
-     * @return array The CMA info.
+     * @return ?array The CMA info (null: none).
      */
     protected function _get_cma_info()
     {
@@ -1066,6 +1066,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         $this->_make_zone_concrete($zone, $page_link);
 
         $cma_info = $this->_get_cma_info();
+        if ($cma_info === null) {
+            return null;
+        }
 
         $matches = array();
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
@@ -1296,7 +1299,7 @@ function get_root_comcode_pages($zone, $include_zone = false)
     $non_root = array();
     $root = array();
     foreach ($rows[$zone] as $row) {
-        if (($row['p_parent_page'] == '') && (isset($pages[$row['p_parent_page']]))) {
+        if (($row['p_parent_page'] == '') && (isset($pages[$row['the_page']]))) {
             $root[$row['the_page']] = $row['p_validated'];
         } else {
             $non_root[$row['the_page']] = $row['p_validated'];

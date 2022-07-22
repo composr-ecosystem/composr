@@ -37,7 +37,7 @@ abstract class Resource_fs_base
      * Get the file resource info for this Commandr-fs resource hook.
      *
      * @param  ID_TEXT $resource_type The resource type
-     * @return object The object
+     * @return array The info
      */
     protected function _get_cma_info($resource_type)
     {
@@ -118,6 +118,9 @@ abstract class Resource_fs_base
     protected function _has_parent_child_relationship($above, $under)
     {
         $sub_info = $this->_get_cma_info($under);
+        if ($sub_info === null) {
+            return null;
+        }
 
         $is_file = $this->is_file_type($under);
 
@@ -156,6 +159,9 @@ abstract class Resource_fs_base
         }
 
         $folder_info = is_null($above) ? $sub_info : $this->_get_cma_info($above);
+        if ($folder_info === null) {
+            return null;
+        }
         return array(
             'cat_field' => $sub_info['parent_category_field'],
             'linker_table' => $is_file ? null : $sub_info['parent_spec__table_name'],
@@ -1080,6 +1086,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $module = $cma_info['permissions_type_code'];
 
         switch ($resource_type) {
@@ -1120,6 +1129,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $module = $cma_info['permissions_type_code'];
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
@@ -1186,6 +1198,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return array();
+        }
         $module = $cma_info['permissions_type_code'];
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
@@ -1237,6 +1252,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $module = $cma_info['permissions_type_code'];
 
         // Cleanup
@@ -1297,6 +1315,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return array();
+        }
         $module = $cma_info['permissions_type_code'];
 
         switch ($resource_type) {
@@ -1345,6 +1366,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $module = $cma_info['permissions_type_code'];
 
         $cma_info['connection']->query_delete('group_privileges', array('module_the_name' => $module, 'category_name' => $category));
@@ -1377,6 +1401,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return null;
+        }
         $module = $cma_info['permissions_type_code'];
 
         $page = $cma_info['cms_page'];
@@ -1461,6 +1488,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $module = $cma_info['permissions_type_code'];
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
@@ -1506,6 +1536,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return array();
+        }
         $module = $cma_info['permissions_type_code'];
 
         $page = $cma_info['cms_page'];
@@ -1597,6 +1630,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $module = $cma_info['permissions_type_code'];
 
         foreach ($member_settings as $member_id => $value) {
@@ -1635,6 +1671,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return array();
+        }
         $module = $cma_info['permissions_type_code'];
 
         $members = $cma_info['connection']->query_select('member_privileges', array('member_id', 'privilege', 'the_value'), array('module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'active_until' => null));
@@ -1817,6 +1856,9 @@ abstract class Resource_fs_base
     protected function _resource_load_extend($resource_type, $resource_id, &$properties, $filename, $path)
     {
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $connection = $cma_info['connection'];
 
         $reserved_fields = array(
@@ -1939,6 +1981,9 @@ abstract class Resource_fs_base
     protected function _resource_save_extend_pre(&$properties, $resource_type, $filename, $label)
     {
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $connection = $cma_info['connection'];
 
         // New Attachment IDs need generating and substituting
@@ -1985,6 +2030,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($resource_type);
+        if ($cma_info === null) {
+            return;
+        }
         $connection = $cma_info['connection'];
 
         // Alternative IDs
@@ -2144,6 +2192,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($type);
+        if ($cma_info === null) {
+            return array();
+        }
         $connection = $cma_info['connection'];
 
         require_code('fields');
@@ -2211,6 +2262,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($type);
+        if ($cma_info === null) {
+            return array();
+        }
         $connection = $cma_info['connection'];
 
         $properties = array();
@@ -2261,6 +2315,9 @@ abstract class Resource_fs_base
         }
 
         $cma_info = $this->_get_cma_info($type);
+        if ($cma_info === null) {
+            return;
+        }
         $connection = $cma_info['connection'];
 
         $existing = get_bound_content_entry($type, $id);
@@ -2333,14 +2390,17 @@ abstract class Resource_fs_base
 
         // Find folders
         foreach ($folder_types as $resource_type) {
+            $folder_info = $this->_get_cma_info($resource_type);
+            if ($folder_info === null) {
+                continue;
+            }
+
             $relationship = $this->_has_parent_child_relationship($cat_resource_type, $resource_type);
             if (is_null($relationship)) {
                 continue;
             }
 
             $_cat_id = ($relationship['cat_field_numeric'] ? (($cat_id == '') ? null : intval($cat_id)) : $cat_id);
-
-            $folder_info = $this->_get_cma_info($resource_type);
 
             $select = array('main.*');
             $table = $folder_info['table'] . ' main';
@@ -2404,12 +2464,16 @@ abstract class Resource_fs_base
 
         // Find files
         foreach ($file_types as $resource_type) {
+            $file_info = $this->_get_cma_info($resource_type);
+            if ($file_info === null) {
+                continue;
+            }
+
             $relationship = $this->_has_parent_child_relationship($cat_resource_type, $resource_type);
             if (is_null($relationship)) {
                 continue;
             }
 
-            $file_info = $this->_get_cma_info($resource_type);
             $where = array();
             if (!is_null($this->folder_resource_type)) {
                 $_cat_id = ($relationship['cat_field_numeric'] ? (($cat_id == '') ? null : intval($cat_id)) : $cat_id);
@@ -2461,29 +2525,31 @@ abstract class Resource_fs_base
             list($cat_resource_type, $cat_id) = $this->folder_convert_filename_to_id(implode('/', $meta_dir));
             require_code('content');
             $folder_info = $this->_get_cma_info($cat_resource_type);
-            $folder = content_get_row($cat_id, $folder_info);
+            if ($folder_info !== null) {
+                $folder = content_get_row($cat_id, $folder_info);
 
-            $filetime = mixed();
-            if (method_exists($this, '_get_file_edit_date')) {
-                $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
-            }
-            if (is_null($filetime)) {
-                if (!is_null($folder_info['edit_time_field'])) {
-                    $filetime = $folder[$folder_info['edit_time_field']];
+                $filetime = mixed();
+                if (method_exists($this, '_get_file_edit_date')) {
+                    $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
                 }
                 if (is_null($filetime)) {
-                    if (!is_null($folder_info['add_time_field'])) {
-                        $filetime = $folder[$folder_info['add_time_field']];
+                    if (!is_null($folder_info['edit_time_field'])) {
+                        $filetime = $folder[$folder_info['edit_time_field']];
+                    }
+                    if (is_null($filetime)) {
+                        if (!is_null($folder_info['add_time_field'])) {
+                            $filetime = $folder[$folder_info['add_time_field']];
+                        }
                     }
                 }
-            }
 
-            $listing[] = array(
-                RESOURCE_FS_SPECIAL_DIRECTORY_FILE,
-                COMMANDR_FS_FILE,
-                null/*don't calculate a filesize*/,
-                $filetime,
-            );
+                $listing[] = array(
+                    RESOURCE_FS_SPECIAL_DIRECTORY_FILE,
+                    COMMANDR_FS_FILE,
+                    null/*don't calculate a filesize*/,
+                    $filetime,
+                );
+            }
         }
 
         return $listing;

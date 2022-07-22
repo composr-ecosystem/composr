@@ -545,8 +545,10 @@ function ip_cidr_check($ip, $cidr)
  */
 function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', $silent = false, $instant_ban = false)
 {
-    require_code('site');
-    attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+    if (!$GLOBALS['BOOTSTRAPPING']) {
+        require_code('site');
+        attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+    }
 
     if (!$silent) {
         require_code('global3');

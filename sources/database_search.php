@@ -1913,7 +1913,9 @@ function build_search_results_interface($results, $start, $max, $direction, $gen
             require_code('content');
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
-            $id = extract_content_str_id_from_data($result['data'], $cma_info);
+            if ($cma_info !== null) {
+                $id = extract_content_str_id_from_data($result['data'], $cma_info);
+            }
         }
 
         if (($i >= $start) && ($i < $start + $max)) {

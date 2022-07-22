@@ -146,7 +146,8 @@ class Module_admin_menus
             $label = do_lang_tempcode('MENU_ITEM_COUNT', escape_html($row['i_menu']), escape_html(integer_format($item_count)));
             $list->attach(form_input_list_entry($row['i_menu'], false, $label));
         }
-        if ((!isset($rows['main_menu'])) && (get_option('header_menu_call_string') == 'main_menu')) {
+        if (!isset($rows[get_option('header_menu_call_string')])) {
+            // If the configured menu is missing, or we are still set to use an auto-generated menu
             $list->attach(form_input_list_entry('', false, do_lang_tempcode('DEFAULT')));
         }
 
@@ -209,7 +210,11 @@ class Module_admin_menus
 
         // Option to copy to an editable menu
         if ($id == '') {
-            $preview = do_lang_tempcode('COPY_TO_EDITABLE_MENU');
+            if (is_sitemap_menu(get_option('header_menu_call_string'))) {
+                $preview = do_lang_tempcode('COPY_TO_EDITABLE_MENU', do_lang_tempcode('COPY_TO_EDITABLE_MENU_PREFIX_AUTO_SET'));
+            } else {
+                $preview = do_lang_tempcode('COPY_TO_EDITABLE_MENU', do_lang_tempcode('COPY_TO_EDITABLE_MENU_PREFIX_MISSING'));
+            }
             $confirm_url = build_url(array('page' => '_SELF', 'type' => 'edit', 'id' => 'main_menu', 'menu_type' => get_param_string('menu_type', null), 'redirect' => get_param_string('redirect', null)), '_SELF');
             require_code('templates_confirm_screen');
             return confirm_screen($this->title, $preview, $confirm_url, null, array('copy_from' => get_option('header_menu_call_string'), 'switch_over' => 1));

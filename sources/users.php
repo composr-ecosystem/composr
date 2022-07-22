@@ -425,11 +425,16 @@ function apply_forum_driver_md5_variant($data, $key)
 /**
  * Get the current session ID.
  *
+ * @param boolean $get_even_if_shy Get the session even if it is marked as a shy session; we only do this when we really need a session ID and do not have static caching for the request
  * @return ID_TEXT The current session ID (blank: none)
  */
-function get_session_id()
+function get_session_id($get_even_if_shy = false)
 {
     $cookie_var = get_session_cookie();
+
+    if (!empty($GLOBALS['INVALIDATED_FAST_SPIDER_CACHE'])) {
+        $get_even_if_shy = true;
+    }
 
     if ((!isset($_COOKIE[$cookie_var])) || (/*To work around Commandr's development mode trick*/$GLOBALS['DEV_MODE'] && running_script('commandr'))) {
         if (array_key_exists('keep_session', $_GET)) {
@@ -437,7 +442,14 @@ function get_session_id()
         }
         return '';
     }
-    return isset($_COOKIE[$cookie_var]) ? $_COOKIE[$cookie_var] : '';
+    if (isset($_COOKIE[$cookie_var])) {
+        $ret = $_COOKIE[$cookie_var];
+        if ((!$get_even_if_shy) && (substr($ret, 0, 1) == '[') && (substr($ret, -1) == ']')) {
+            return ''; // Shy session, so we do not retrieve it
+        }
+        return $ret;
+    }
+    return '';
 }
 
 /**

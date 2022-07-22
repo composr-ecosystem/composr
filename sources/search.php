@@ -515,7 +515,7 @@ function find_search_suggestions($request, $search_type = '')
                 $cma_ob = get_content_object($content_type);
                 $cma_info = $cma_ob->info();
 
-                if (strpos($cma_info['title_field'], ':') === false) {
+                if (($cma_info !== null) && (strpos($cma_info['title_field'], ':') === false)) {
                     if (($cma_info['title_field_dereference']) && (multi_lang_content())) {
                         $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . $cma_info['table'] . 'r';
                         $q .= ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];

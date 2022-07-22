@@ -33,6 +33,17 @@ function init__menus()
 }
 
 /**
+ * Find if a menu is a Sitemap menu (as opposed to a stored menu).
+ *
+ * @param  SHORT_TEXT $menu The menu identifier
+ * @return boolean Whether it is a Sitemap menu
+ */
+function is_sitemap_menu($menu)
+{
+    return (preg_match('#^[' . URL_CONTENT_REGEXP . ']+((:\d+)|(;.*))?$#', $menu) == 0);
+}
+
+/**
  * Take a menu identifier, and return a menu created from it.
  *
  * @param  ID_TEXT $type The type of the menu (determines which templates to use)
@@ -43,7 +54,7 @@ function init__menus()
  */
 function build_menu($type, $menu, $silent_failure = false, $apply_highlighting = true)
 {
-    $is_sitemap_menu = (preg_match('#^[' . URL_CONTENT_REGEXP . ']+((:\d+)|(;.*))?$#', $menu) == 0);
+    $is_sitemap_menu = is_sitemap_menu($menu);
 
     if ($is_sitemap_menu) {
         $root = _build_sitemap_menu($menu);

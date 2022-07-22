@@ -52,6 +52,9 @@ class Hook_rss_comments
                 return null;
             }
             $info = $ob->info();
+            if ($info === null) {
+                return null;
+            }
 
             // Category access
             $permissions_field = $info['permissions_type_code'];
