@@ -62,7 +62,7 @@ class special_links_test_set extends cms_test_case
             'https://seositecheckup.com/' => true,
             'https://www.google.com/webmasters/tools/home' => false,
             'https://www.thehoth.com/' => true,
-            'https://www.authoritylabs.com/resources/' => true,
+            'https://www.authoritylabs.com/ranking-tool/' => true,
             'https://validator.w3.org/' => true,
             'https://jigsaw.w3.org/css-validator/' => true,
             'https://achecker.achecks.ca/checker/index.php' => true,
