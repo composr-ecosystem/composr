@@ -699,7 +699,7 @@
         templateEditorCleanTabs();
 
         $cms.requireJavascript('tree_list').then(function () {
-            window.sitemap = $cms.ui.createTreeList('theme_files', '{$FIND_SCRIPT_NOHTTP;,ajax_tree}?hook=choose_theme_files&theme=' + params.theme + $cms.keep(), null, '', false, null, false, true);
+            window.sitemap = $cms.ui.createTreeList('theme_files', '{$FIND_SCRIPT_NOHTTP;,ajax_tree}?hook=choose_theme_files' + $cms.keep(), null, $cms.filter.url(JSON.stringify({'theme': params.theme})), false, null, false, true);
         });
 
         setTimeout(function () {

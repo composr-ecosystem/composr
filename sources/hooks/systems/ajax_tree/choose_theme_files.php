@@ -37,7 +37,7 @@ class Hook_ajax_tree_choose_theme_files
             access_denied('I_ERROR');
         }
 
-        $theme = get_param_string('theme');
+        $theme = $options['theme'];
 
         $out = '';
 
