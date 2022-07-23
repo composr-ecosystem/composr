@@ -1053,7 +1053,7 @@ function form_input_line_multi($pretty_name, $description, string $name, array $
         'NAME_STUB' => $name,
         'DEFAULT_ARRAY' => $default_array,
         'PATTERN' => $pattern,
-        'NUM_REQUIRED' => $num_required
+        'NUM_REQUIRED' => strval($num_required),
     ]));
 
     return _form_input(preg_replace('#\[\]$#', '', $name), $pretty_name, $description, $input, $num_required > 0, false, $tabindex, false, true, '', $pattern_error);

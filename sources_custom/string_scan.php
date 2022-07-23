@@ -8147,6 +8147,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _DELETE_MEMBER_WARNING
         ALTERNATE_ACTIONS
         _DESCRIPTION_ANSWER
+        _DESCRIPTION_ANSWERS
         _DESCRIPTION_BANNER_TYPE
         _DESCRIPTION_MAIL_PRICE
         MAIL_PRICE
