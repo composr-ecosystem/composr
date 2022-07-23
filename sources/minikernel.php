@@ -405,16 +405,6 @@ function cms_error_get_last() : string
 }
 
 /**
- * Find if we are running on a live Google App Engine application.
- *
- * @return boolean If it is running as a live Google App Engine application
- */
-function appengine_is_live() : bool
-{
-    return false;
-}
-
-/**
  * Are we currently running HTTPS.
  * Also see whole_site_https.
  *

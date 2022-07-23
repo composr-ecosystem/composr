@@ -98,18 +98,12 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
 
     global $CACHE_TEMPLATES;
     $support_smart_decaching = support_smart_decaching();
-    if (GOOGLE_APPENGINE) {
-        gae_optimistic_cache(true);
-    }
     $is_cached =
         (is_file($js_cache_path)) &&
         ($CACHE_TEMPLATES || !running_script('index')/*must cache for non-index to stop getting blanked out in depended sub-script output generation and hence causing concurrency issues*/) &&
         (has_caching_for('template', $j)) &&
         (!is_browser_decaching()) &&
         ((!in_safe_mode()) || (isset($GLOBALS['SITE_INFO']['safe_mode'])));
-    if (GOOGLE_APPENGINE) {
-        gae_optimistic_cache(false);
-    }
 
     if ((!$is_cached) || ($support_smart_decaching)) {
         $found = find_template_place($j, '', $theme, '.js', 'javascript');
@@ -328,18 +322,12 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
 
     global $CACHE_TEMPLATES;
     $support_smart_decaching = support_smart_decaching();
-    if (GOOGLE_APPENGINE) {
-        gae_optimistic_cache(true);
-    }
     $is_cached =
         (is_file($css_cache_path)) &&
         ($CACHE_TEMPLATES || !running_script('index')/*must cache for non-index to stop getting blanked out in depended sub-script output generation and hence causing concurrency issues*/) &&
         (has_caching_for('template', $c)) &&
         (!is_browser_decaching()) &&
         ((!in_safe_mode()) || (isset($GLOBALS['SITE_INFO']['safe_mode'])));
-    if (GOOGLE_APPENGINE) {
-        gae_optimistic_cache(false);
-    }
 
     if ((!$is_cached) || ($support_smart_decaching)) {
         $found = find_template_place($c, '', $theme, '.css', 'css');

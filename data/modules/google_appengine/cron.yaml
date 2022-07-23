@@ -1,4 +1,0 @@
-cron:
-- description: Composr scheduler
-  url: /data/cron_bridge.php
-  schedule: every 10 minutes

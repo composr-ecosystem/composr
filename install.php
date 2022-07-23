@@ -70,9 +70,6 @@ $GLOBALS['SEMI_DEV_MODE'] = true;
 
 @ob_end_clean(); // Reset to have no output buffering by default (we'll use it internally, taking complete control)
 
-// Are we in a special version of PHP?
-define('GOOGLE_APPENGINE', isset($_SERVER['APPLICATION_ID']));
-
 define('URL_CONTENT_REGEXP', '\w\-\x80-\xFF'); // PHP is done using ASCII (don't use the 'u' modifier). Note this doesn't include dots, this is intentional as they can cause problems in filenames
 define('URL_CONTENT_REGEXP_JS', '\w\-\u0080-\uFFFF'); // JavaScript is done using Unicode
 
@@ -631,12 +628,6 @@ function step_3() : object
         $forums = array_reverse($forums);
         $rec = in_array($DEFAULT_FORUM, $forums);
         foreach ($forums as $forum) {
-            if (GOOGLE_APPENGINE) {
-                if ($forum != 'cns') {
-                    continue;
-                }
-            }
-
             if ($class == 'general') {
                 $version = $forum;
             } else {
@@ -661,12 +652,6 @@ function step_3() : object
     $tdatabase = new Tempcode();
     $dbs_found = 0;
     foreach (array_keys($databases) as $database) {
-        if (GOOGLE_APPENGINE) {
-            if ($database != 'mysql' && $database != 'mysqli') {
-                continue;
-            }
-        }
-
         if ((count($databases) == 1) && ($database == 'xml')) {
             continue; // If they only have experimental XML option, they'll choose it - we don't want that - we want them to get the error
         }
@@ -974,13 +959,7 @@ function step_4() : object
     $text = new Tempcode();
     $options = new Tempcode();
     $hidden = new Tempcode();
-    if (!GOOGLE_APPENGINE) {
-        $options->attach(make_option(do_lang_tempcode('BASE_URL'), example('BASE_URL_TEXT'), 'base_url', $base_url, false, true));
-    } else {
-        $options->attach(make_option(do_lang_tempcode('GAE_APPLICATION'), do_lang_tempcode('DESCRIPTION_GAE_APPLICATION'), 'gae_application', preg_replace('#^.*~#', '', $_SERVER['APPLICATION_ID']), false, true));
-        $hidden->attach(form_input_hidden('base_url', $base_url));
-        $options->attach(make_option(do_lang_tempcode('GAE_BUCKET_NAME'), do_lang_tempcode('DESCRIPTION_GAE_BUCKET_NAME'), 'gae_bucket_name', '<application>', false, true));
-    }
+    $options->attach(make_option(do_lang_tempcode('BASE_URL'), example('BASE_URL_TEXT'), 'base_url', $base_url, false, true));
     $options->attach(make_option(do_lang_tempcode('EMAIL_ADDRESS'), example('', 'INSTALLER_EMAIL_ADDRESS'), 'email', post_param_string('email', '', INPUT_FILTER_POST_IDENTIFIER), false, false));
     $master_password = '';
     $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), example('', 'CHOOSE_MASTER_PASSWORD'), 'master_password', $master_password, true));
@@ -1058,7 +1037,7 @@ function step_4() : object
     } else {
         $hidden->attach(form_input_hidden('table_prefix', $table_prefix));
     }
-    /*if (!GOOGLE_APPENGINE) {   Excessive, let user tune later
+    /*   Excessive, let user tune later
         $options->attach(make_tick(do_lang_tempcode('USE_PERSISTENT'), example('', 'USE_PERSISTENT_TEXT'), 'use_persistent', $use_persistent ? 1 : 0));
     }*/
 
@@ -1067,25 +1046,10 @@ function step_4() : object
         $forum_options->attach($options);
         $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '48a122b54d68d9893533ece7237ea5e0', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
     } else {
-        if (GOOGLE_APPENGINE) {
-            $title = do_lang_tempcode('DEV_DATABASE_SETTINGS');
-            $text = do_lang_tempcode('DEV_DATABASE_SETTINGS_HELP');
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
-
-            $title = do_lang_tempcode('LIVE_DATABASE_SETTINGS');
-            $text = do_lang_tempcode('LIVE_DATABASE_SETTINGS_HELP');
-            $options = new Tempcode();
-            $options->attach(make_option(do_lang_tempcode('DATABASE_HOST'), new Tempcode(), 'gae_live_db_site_host', ':/cloudsql/<application>:<application>', false, true));
-            $options->attach(make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'gae_live_db_site', '<application>', false, true));
-            $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'gae_live_db_site_user', 'root', false, true));
-            $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'gae_live_db_site_password', '', true));
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
-        } else {
-            if (!$forum_options->is_empty()) {
-                $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
-            }
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
+        if (!$forum_options->is_empty()) {
+            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
         }
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     }
 
     // Advanced settings...
@@ -1099,18 +1063,16 @@ function step_4() : object
 
     // Cookie settings...
 
-    if (!GOOGLE_APPENGINE) {
-        $title = do_lang_tempcode('COOKIE_SETTINGS');
-        $text = new Tempcode();
-        $options = new Tempcode();
-        $hidden = new Tempcode();
-        $options->attach(make_option(do_lang_tempcode('COOKIE'), example('COOKIE_EXAMPLE', 'COOKIE_TEXT'), 'user_cookie', $member_cookie, false, true));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_PASSWORD'), example('COOKIE_PASSWORD_EXAMPLE', 'COOKIE_PASSWORD_TEXT'), 'pass_cookie', $pass_cookie, false, true));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_DOMAIN'), example('COOKIE_DOMAIN_EXAMPLE', 'COOKIE_DOMAIN_TEXT'), 'cookie_domain', $cookie_domain));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_PATH'), example('COOKIE_PATH_EXAMPLE', 'COOKIE_PATH_TEXT'), 'cookie_path', $cookie_path));
-        $options->attach(make_option(do_lang_tempcode('COOKIE_DAYS'), example('COOKIE_DAYS_EXAMPLE', 'COOKIE_DAYS_TEXT'), 'cookie_days', $cookie_days, false, true));
-        $advanced_2 = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '3b9ea022164801f4b60780a4a966006f', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
-    }
+    $title = do_lang_tempcode('COOKIE_SETTINGS');
+    $text = new Tempcode();
+    $options = new Tempcode();
+    $hidden = new Tempcode();
+    $options->attach(make_option(do_lang_tempcode('COOKIE'), example('COOKIE_EXAMPLE', 'COOKIE_TEXT'), 'user_cookie', $member_cookie, false, true));
+    $options->attach(make_option(do_lang_tempcode('COOKIE_PASSWORD'), example('COOKIE_PASSWORD_EXAMPLE', 'COOKIE_PASSWORD_TEXT'), 'pass_cookie', $pass_cookie, false, true));
+    $options->attach(make_option(do_lang_tempcode('COOKIE_DOMAIN'), example('COOKIE_DOMAIN_EXAMPLE', 'COOKIE_DOMAIN_TEXT'), 'cookie_domain', $cookie_domain));
+    $options->attach(make_option(do_lang_tempcode('COOKIE_PATH'), example('COOKIE_PATH_EXAMPLE', 'COOKIE_PATH_TEXT'), 'cookie_path', $cookie_path));
+    $options->attach(make_option(do_lang_tempcode('COOKIE_DAYS'), example('COOKIE_DAYS_EXAMPLE', 'COOKIE_DAYS_TEXT'), 'cookie_days', $cookie_days, false, true));
+    $advanced_2 = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '3b9ea022164801f4b60780a4a966006f', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
 
     $temp = new Tempcode();
     $temp->attach($advanced_1);
@@ -1804,21 +1766,12 @@ if (!function_exists(\'git_repos\')) {
             'use_msn',
             'use_multi_db',
 
-            'gae_live_db_site',
-            'gae_live_db_site_host',
-            'gae_live_db_site_user',
-            'gae_live_db_site_password',
-
             'post_data',
         ])) {
             continue;
         }
 
         if (($key == 'admin_username') && (post_param_string('forum_type') != 'none')) {
-            continue;
-        }
-
-        if ((GOOGLE_APPENGINE) && (($key == 'base_url') || (substr($key, 0, 9) == 'db_forums'))) {
             continue;
         }
 
@@ -1845,39 +1798,6 @@ if (!function_exists(\'git_repos\')) {
     // Derive a random session cookie name, to stop conflicts between sites
     if (!isset($_POST['session_cookie'])) {
         $config_contents .= '$SITE_INFO[\'session_cookie\'] = \'cms_session__' . md5($base_url) . "';\n";
-    }
-
-    // On the live GAE, we need to switch in different settings to the local dev server
-    if (GOOGLE_APPENGINE) {
-        $gae_live_code = "
-if (appengine_is_live()) {
-    \$SITE_INFO['db_site'] = '" . addslashes(post_param_string('gae_live_db_site', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
-    \$SITE_INFO['db_site_host'] = '" . addslashes(post_param_string('gae_live_db_site_host', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
-    \$SITE_INFO['db_site_user'] = '" . addslashes(post_param_string('gae_live_db_site_user', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
-    \$SITE_INFO['db_site_password'] = '" . addslashes(post_param_string('gae_live_db_site_password', false, INPUT_FILTER_PASSWORD)) . "';
-    \$SITE_INFO['custom_file_base'] = '" . addslashes('gs://' . post_param_string('gae_bucket_name', false, INPUT_FILTER_POST_IDENTIFIER)) . "';
-    if ((strpos(\$_SERVER['HTTP_HOST'],'.appspot.com') !== false) || (!tacit_https())) {
-        \$SITE_INFO['custom_base_url'] = '" . addslashes((tacit_https() ? 'https://' : 'http://') . post_param_string('gae_bucket_name', false, INPUT_FILTER_POST_IDENTIFIER) . '.storage.googleapis.com') . "';
-    } else { // Assumes a storage.<domain> CNAME has been created
-        \$SITE_INFO['custom_base_url'] = '" . addslashes((tacit_https() ? 'https://' : 'http://') . 'storage.') . "'.\$_SERVER['HTTP_HOST'];
-    }
-    \$SITE_INFO['no_extra_logs'] = '1';
-    \$SITE_INFO['no_disk_sanity_checks'] = '1';
-    \$SITE_INFO['no_installer_checks'] = '1';
-    \$SITE_INFO['disable_smart_decaching'] = '1';
-} else {
-    \$SITE_INFO['custom_file_base'] = '" . addslashes(get_file_base() . '/data_custom/modules/google_appengine') . "';
-    \$SITE_INFO['custom_base_url'] = '" . addslashes(get_base_url() . '/data_custom/modules/google_appengine') . "';
-
-    // Or this for more accurate (but slower) testing (assumes app name matches bucket name)...
-    //\$SITE_INFO['custom_file_base'] = 'gs://" . addslashes(post_param_string('gae_application')) . "';
-    //\$SITE_INFO['custom_base_url'] = 'http://localhost:8080/data/modules/google_appengine/cloud_storage_proxy.php?';
-}
-\$SITE_INFO['use_persistent_cache'] = '1';
-\$SITE_INFO['self_learning_cache'] = '1';
-\$SITE_INFO['charset'] = 'utf-8';
-";
-        $config_contents .= $gae_live_code;
     }
 
     // ---
@@ -1927,29 +1847,6 @@ if (appengine_is_live()) {
         if (function_exists('ftp_close')) {
             ftp_close($conn);
         }
-    }
-
-    if (GOOGLE_APPENGINE) {
-        require_code('files');
-
-        // Customise .user.ini file
-        $php_ini = cms_file_get_contents_safe(get_file_base() . '/.user.ini', FILE_READ_LOCK);
-        $php_ini = str_replace('<application>', post_param_string('gae_application'), $php_ini);
-        cms_file_put_contents_safe(get_file_base() . '/.user.ini', $php_ini, FILE_WRITE_FIX_PERMISSIONS);
-
-        // Copy in default YAML files
-        $dh = opendir(get_file_base() . '/data/modules/google_appengine');
-        while (($f = readdir($dh)) !== false) {
-            if (substr($f, -5) == '.yaml') {
-                @unlink(get_file_base() . '/' . $f);
-                copy(get_file_base() . '/data/modules/google_appengine/' . $f, get_file_base() . '/' . $f);
-            }
-        }
-
-        // Customise app.yaml file
-        $app_yaml = cms_file_get_contents_safe(get_file_base() . '/app.yaml', FILE_READ_LOCK);
-        $app_yaml = preg_replace('#^application: .*$#m', 'application: ' . post_param_string('gae_application'), $app_yaml);
-        cms_file_put_contents_safe(get_file_base() . '/app.yaml', $app_yaml | FILE_WRITE_FIX_PERMISSIONS);
     }
 
     if (is_suexec_like()) {
@@ -2968,7 +2865,7 @@ function make_option(object $nice_name, object $description, string $name, strin
     if ($hidden) {
         $input1 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '373b85cea71837a30d146df387dc2a42', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value]);
         $a = do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '455b0f61e6ce2eaf2acce2844fdd5e7a', 'NAME' => $name, 'INPUT' => $input1, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
-        if ((substr($name, 0, 3) != 'db_') && (substr($name, 0, 12) != 'gae_live_db_') && ($name != 'ftp_password')) {
+        if ((substr($name, 0, 3) != 'db_') && ($name != 'ftp_password')) {
             $input2 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '0f15bfe5b58f3ca7830a48791f1a6a6d', 'REQUIRED' => $_required, 'NAME' => $name . '_confirm', 'VALUE' => $value]);
             $b = do_template('INSTALLER_STEP_4_SECTION_OPTION', [
                 '_GUID' => 'c99e7339b7ffe81318ae84953e3c03a3',

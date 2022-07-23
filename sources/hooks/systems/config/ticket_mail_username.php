@@ -60,10 +60,6 @@ class Hook_config_ticket_mail_username
             return null;
         }
 
-        if (GOOGLE_APPENGINE) {
-            return null;
-        }
-
         return 'support';
     }
 }

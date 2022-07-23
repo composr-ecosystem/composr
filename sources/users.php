@@ -258,18 +258,6 @@ function get_member(bool $quick_only = false) : int
         $member_id = $ob->try_login($member_id, $quick_only);
     }
 
-    // Try via GAE Console
-    if (GOOGLE_APPENGINE) {
-        if (gae_is_admin()) {
-            require_code('users_active_actions');
-            if (function_exists('restricted_manually_enabled_backdoor')) { // May be trying to check in safe mode when doing above require_code, so recurse
-                $MEMBER_CACHED = restricted_manually_enabled_backdoor();
-                // Will have created a session in here already
-                return $MEMBER_CACHED;
-            }
-        }
-    }
-
     // Guest or banned
     if ($member_id === null) {
         $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();

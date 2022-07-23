@@ -13,8 +13,6 @@
  * @package    helper_scripts
  */
 
-/*EXTRA FUNCTIONS: php_sapi_name*/
-
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 

@@ -51,9 +51,6 @@ class Hook_config_tasks_background
      */
     public function get_default() : ?string
     {
-        if (GOOGLE_APPENGINE) {
-            return '1';
-        }
         return '0';
     }
 }

@@ -21,7 +21,7 @@
 /*EXTRA FUNCTIONS: ucfirst*/
 
 if ((isset($_SERVER['argv'][0])) && (strpos($_SERVER['argv'][0], 'critical_errors.php') !== false)) {
-    $cli = ((function_exists('php_sapi_name')) && (strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])));
+    $cli = ((strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])));
     if ($cli) {
         // Critical error monitoring mode
         chdir(dirname(__DIR__));

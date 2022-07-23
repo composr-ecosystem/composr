@@ -251,8 +251,6 @@ class Module_admin_sitemap
         }
 
         if ($afm_needed) {
-            appengine_live_guard();
-
             require_code('abstract_file_manager');
             force_have_afm_details($writable_paths);
         }
@@ -366,8 +364,6 @@ class Module_admin_sitemap
         }
 
         if ($afm_needed) {
-            appengine_live_guard();
-
             require_code('abstract_file_manager');
             force_have_afm_details($writable_paths);
         }

@@ -76,8 +76,6 @@ class Module_admin_debrand
 
         require_code('form_templates'); // Needs to run high so that the anti-click-hacking header is sent
 
-        appengine_live_guard();
-
         $type = get_param_string('type', 'browse');
 
         require_lang('debrand');

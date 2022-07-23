@@ -120,8 +120,6 @@ class Hook_import_html_site
      */
     public function import_pages(object $db, string $table_prefix, string $file_base)
     {
-        appengine_live_guard();
-
         require_code('files');
 
         require_code('files2');

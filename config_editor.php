@@ -233,9 +233,6 @@ function do_access(string $given_password)
         'rate_limit_time_window' => '<em>Rate limiting:</em> The number of seconds hits are counted across. Defaults to <kbd>10</kbd>.',
         'rate_limit_hits_per_window' => '<em>Rate limiting:</em> The number of hits per IP going back as far as the time window. Note that this is any URL hitting Composr CMS, not just pages (i.e. AJAX and banner frames would both count). Defaults to <kbd>5</kbd>.',
 
-        'gae_application' => '<em>Google App Engine:</em> Application name',
-        'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name',
-
         'cloud_mode' => '<em>Cloud:</em> The cloud mode, either blank (not on cloud), "primary" (where most Cron hooks run from), or "replica".',
         'remote_storage_directory' => '<em>Cloud:</em> Remote storage path (either absolute or relative).',
         'errorlog' => '<em>Cloud:</em> Where to log errors to the. May be set to either <kbd>syslog</kbd> or <kbd>weblogs</kbd>. Setting a value here will prevent viewing of errors within Composr and is generally used by network administrators in a cloud deployment.',

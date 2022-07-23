@@ -869,7 +869,7 @@ Avoid relative paths
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use the [tt]get_base_url[/tt] and [tt]get_file_base[/tt] functions properly[/color]
-| Shared installs: multiple sites with one Composr install, GAE, unreliable include paths and default execution paths
+| Shared installs: multiple sites with one Composr install, unreliable include paths and default execution paths
 | Product development only
 | Manually
 | Use a [tt]custom_*[/tt] function if referencing custom/user-data, otherwise don't. Core Composr files that can't be changed from inside Composr are not custom, other files are. i.e. non-custom files are those that would be shared between sites.

@@ -659,8 +659,6 @@ class Module_admin_lang
         // Upgrade to custom if not there yet (or maybe we are creating a new lang - same difference)
         $custom_dir = get_file_base(true) . '/lang_custom/' . $lang;
         if (!file_exists($custom_dir)) {
-            appengine_live_guard();
-
             // Work out what paths need to be writable...
 
             $writable_paths = ['lang_custom', 'lang_custom/' . $lang];

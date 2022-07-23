@@ -56,9 +56,6 @@ class Hook_config_ffmpeg_path
             return null;
         }
 
-        if (GOOGLE_APPENGINE) {
-            return null;
-        }
         return '';
     }
 }

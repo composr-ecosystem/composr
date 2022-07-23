@@ -60,10 +60,6 @@ class Hook_config_ticket_mail_server_host
             return null;
         }
 
-        if (GOOGLE_APPENGINE) {
-            return null;
-        }
-
         return '';
     }
 }

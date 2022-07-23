@@ -326,13 +326,6 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         't_add_time' => time(),
     ], true);
 
-    if (GOOGLE_APPENGINE) {
-        require_once('google/appengine/api/taskqueue/PushTask.php');
-
-        $task = new \google\appengine\api\taskqueue\PushTask('/data/tasks.php', ['id' => strval($id), 'secure_ref' => $secure_ref], ['name' => $hook . '_' . $secure_ref]);
-        $task_name = $task->add();
-    }
-
     $message = do_lang_tempcode('NEW_TASK_RUNNING');
     if (has_actual_page_access(get_member(), 'admin_errorlog')) {
         $message = do_lang_tempcode('NEW_TASK_RUNNING_LOGGING', $message, protect_from_escaping(escape_html(static_evaluate_tempcode(build_url(['page' => 'admin_errorlog'], get_module_zone('admin_errorlog'), [], false, false, false, 'cron_tasks')))));

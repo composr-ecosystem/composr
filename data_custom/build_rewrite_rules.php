@@ -143,10 +143,6 @@ $rewrite_rules = [
     ],
 ];
 
-// Write rules to google_appengine.php and app.yaml (Google App Engine)
-write_to('sources/google_appengine.php', 'GAE1', "\t" . '// RULES START', "\t// RULES END", 1, $rewrite_rules);
-write_to('app.yaml', 'GAE2', 'handlers:' . "\n", "- url: ^.*\.(css", 0, $rewrite_rules);
-
 // Write rules to recommended.htaccess (Apache)
 write_to('recommended.htaccess', 'ApacheRecommended', '<IfModule mod_rewrite.c>', '</IfModule>', 0, $rewrite_rules);
 
@@ -275,47 +271,6 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
             $rules_txt = preg_replace('#(<match|<action)#', "\t$1", $rules_txt);
             $new .= $rules_txt;
             $new .= "\n\t\t\t" . $match_end;
-            break;
-
-        case 'GAE1':
-            $new = $match_start;
-            $rules_txt = '';
-            foreach ($rewrite_rules as $x => $rewrite_rule_block) {
-                list($comment, $rewrite_rule_set) = $rewrite_rule_block;
-                foreach ($rewrite_rule_set as $y => $rewrite_rule) {
-                    list($rule, $to, $flags, $enabled) = $rewrite_rule;
-
-                    $rules_txt .= "\n" . ($enabled ? '' : '//') . "if (preg_match('#{$rule}#',\$uri,\$matches)!=0)\n" . ($enabled ? '' : '//') . "\t{\n\t_roll_gae_redirect(\$matches,'{$to}');\n\treturn null;\n\t}";
-                }
-            }
-            $rules_txt = preg_replace('#^#m', str_repeat("\t", $indent_level), $rules_txt) . "\n";
-            $new .= $rules_txt;
-            $new .= $match_end;
-            break;
-
-        case 'GAE2':
-            $new = $match_start;
-            $rules_txt = '';
-            foreach ($rewrite_rules as $x => $rewrite_rule_block) {
-                list($comment, $rewrite_rule_set) = $rewrite_rule_block;
-                foreach ($rewrite_rule_set as $y => $rewrite_rule) {
-                    list($rule, $to, $flags, $enabled) = $rewrite_rule;
-
-                    if (substr($rule, 0, 1) == '^') {
-                        $rule = substr($rule, 1);
-                    }
-                    if (substr($rule, -1) == '$') {
-                        $rule = substr($rule, 0, strlen($rule) - 1);
-                    }
-
-                    $rules_txt .=
-                        ($enabled ? '' : '#') . '- url: /' . $rule . "\n" .
-                        ($enabled ? '' : '#') . '  script: ' . preg_replace('#\?.*$#', '', str_replace(['\\', '$'], ['', '\\'], $to)) . "\n";
-                }
-            }
-            $rules_txt = preg_replace('#^\t*#m', str_repeat("\t", $indent_level), $rules_txt);
-            $new .= $rules_txt;
-            $new .= $match_end;
             break;
     }
 

@@ -157,6 +157,5 @@ Therefore if you control the hosting and provide someone with a Composr staff us
  - [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page]
  - The user-focused help page within Composr (linked from the menus)
  - [page="_SEARCH:tut_uninstall"]Uninstalling Composr from a server[/page]
- - [page="_SEARCH:tut_google_appengine"]Installation on Google App Engine[/page]
 
 {$SET,tutorial_tags,installer,core_database_drivers,Installation,novice,pinned}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,We explain what you need to do to install Composr. This tutorial is particularly important if you use the manual installer.}[block]main_tutorial_rating[/block]

@@ -56,10 +56,6 @@ class Hook_config_ticket_mail_email_address
             return null;
         }
 
-        if (GOOGLE_APPENGINE) {
-            return 'tickets@appid.appspotmail.com';
-        }
-
         return 'support@' . get_domain();
     }
 }

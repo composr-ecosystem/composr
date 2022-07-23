@@ -273,13 +273,6 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        if (!is_maintained('platform_gae')) {
-            $this->assertTrue(
-                !GOOGLE_APPENGINE,
-                '[html]' . do_lang('WARNING_NON_MAINTAINED', escape_html('Google App Engine'), escape_html(get_brand_base_url()), escape_html('platform_gae')) . '[/html]'
-            );
-        }
-
         if (!is_maintained('platform_peachpie')) {
             $this->assertTrue(
                 !defined('PEACHPIE_VERSION'),
@@ -657,13 +650,11 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        if (function_exists('php_sapi_name')) {
-            $current_locale = setlocale(LC_ALL, '0');
-            setlocale(LC_ALL, 'tr_TR');
-            $set_locale = setlocale(LC_ALL, '0');
-            setlocale(LC_ALL, $current_locale);
+        $current_locale = setlocale(LC_ALL, '0');
+        setlocale(LC_ALL, 'tr_TR');
+        $set_locale = setlocale(LC_ALL, '0');
+        setlocale(LC_ALL, $current_locale);
 
-            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server');
-        }
+        $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server');
     }
 }

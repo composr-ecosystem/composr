@@ -114,8 +114,6 @@ class Module_admin_setupwizard
      */
     public function run() : object
     {
-        appengine_live_guard();
-
         require_css('setupwizard');
         require_code('setupwizard');
         require_javascript('setupwizard');
@@ -599,9 +597,6 @@ class Module_admin_setupwizard
             'hybridauth', // this will be downloaded as it is not bundled
             'twitter_support', // this will be downloaded as it is not bundled
         ];
-        if (GOOGLE_APPENGINE) {
-            $addon_list_advanced_off_by_default[] = 'google_appengine';
-        }
 
         // Do we need to download any from compo.sr?
         $GLOBALS['DEV_MODE'] = false;

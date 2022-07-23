@@ -470,16 +470,6 @@ function override_str_replace_exactly($search, $replace, $subject, int $times = 
 }
 
 /**
- * Find if we are running on a live Google App Engine application.
- *
- * @return boolean If it is running as a live Google App Engine application
- */
-function appengine_is_live() : bool
-{
-    return (GOOGLE_APPENGINE) && (!is_writable(get_file_base() . '/sources/global.php'));
-}
-
-/**
  * Are we currently running HTTPS.
  * Also see whole_site_https.
  *
@@ -1061,17 +1051,12 @@ function cms_safe_exit_flow()
 global $PAGE_START_TIME;
 $PAGE_START_TIME = microtime(true);
 
-// Are we in a special version of PHP?
-define('GOOGLE_APPENGINE', isset($_SERVER['APPLICATION_ID']));
-
 define('URL_CONTENT_REGEXP', '\w\-\x80-\xFF'); // PHP is done using ASCII (don't use the 'u' modifier). Note this doesn't include dots, this is intentional as they can cause problems in filenames
 define('URL_CONTENT_REGEXP_JS', '\w\-\u0080-\uFFFF'); // JavaScript is done using Unicode
 
 // Sanitise the PHP environment some more
-if (!GOOGLE_APPENGINE) {
-    cms_ini_set('include_path', '');
-    cms_ini_set('allow_url_fopen', '0');
-}
+cms_ini_set('include_path', '');
+cms_ini_set('allow_url_fopen', '0');
 cms_ini_set('allow_url_include', '0');
 cms_ini_set('display_errors', '0');
 cms_ini_set('suhosin.executor.disable_emodifier', '1'); // Extra security if suhosin is available
@@ -1262,7 +1247,4 @@ if ($rate_limiting) {
 }
 
 // Pass on to next bootstrap level
-if (GOOGLE_APPENGINE) {
-    require_code('google_appengine');
-}
 require_code('global2');

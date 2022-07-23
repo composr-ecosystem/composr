@@ -181,7 +181,7 @@ Reference in [tt]web.config[/tt] file
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Don't assume directories already exist to write into[/color]
-| Shared installs: multiple sites with one Composr install, GAE
+| Shared installs: multiple sites with one Composr install
 | Product development only
 | Manually
 | If running a blank custom directory, none of the bundled directory structure will be initially present. You must therefore detect and auto-create missing directories, using [tt]make_missing_directory[/tt].

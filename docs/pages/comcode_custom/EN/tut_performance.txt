@@ -5,15 +5,16 @@ Composr is very heavily optimised so that pages load as quickly as possible, but
 The tips of most importance are given in [b]bold[/b].
 
 Performance tuning is multi-faceted, broadly fitting into:
- - Making all page requests faster
- - Making the most common page requests extremely fast (e.g. static caching for guests)
- - Improving the number of page requests per unit time (throughput)
- - Removing specific bottlenecks
+ - Broad back-end code optimisation (making all page requests faster)
+ - Targeted back-end code optimisation (making the most common page requests extremely fast, e.g. static caching for guests)
+ - Scaling across multiple servers
+ - Identifying and removing bottlenecks
  - Stopping requests blocking each other (e.g. database locks)
  - Blocking abuse, such as bad bots, DOS attacks, misrouted traffic, and flooders
- - Improving page download speeds (e.g. compression and minification)
- - Improving front-end rendering time
- - Optimising server configuration
+ - Reducing transfer sizes (e.g. compression and minification)
+ - Front-end code optimisation (e.g. writing CSS in a good way, worrying about things like "first contentful paint")
+ - Server configuration optimisation
+ - Server hardware optimisation
 There are many angles to come at the problem, and to really do a good job you need to come at all of them, on every layer of the web architecture.
 
 Limiting factors often are:
@@ -66,18 +67,16 @@ PHP requests are completely standalone. No data is held in memory from one reque
 Composr does not cache processed content in memory that has no special featured status, as this would only trade reliance on CPU for reliance on memory in a non-productive fashion.
 
 The cache is implemented to work with any one of:
- - [b]{$IS_MAINTAINED,caches_apc,APC/APCu}[/b], which is an PHP extension that provides in-memory storage features as well as an opcode cache and is associated with core PHP development (hence why we recommend it as the opcode cache to use)
+ - [b]{$IS_MAINTAINED,caches_apc,APCu}[/b], which is an PHP extension that provides in-memory storage features as well as an opcode cache and is associated with core PHP development (hence why we recommend it as the opcode cache to use)
  - [b]{$IS_MAINTAINED,caches_memcache,memcache}[/b] ('memcache' is the PHP extension for the 'memcached' server), which provides a heavyweight solution to memory sharing -- it is not recommended that this be used for typical websites, as memcached requires additional configuration
   - or [b]{$IS_MAINTAINED,caches_memcached,memcached}[/b], which works via the other PHP memcached server extension
- - [b]{$IS_MAINTAINED,caches_wincache,Wincache}[/b] -- a PHP accelerator extension developed by Microsoft, optimised for Windows
- - [b]{$IS_MAINTAINED,caches_xcache,XCache}[/b] -- another PHP accelerator extension
  - [b]{$IS_MAINTAINED,caches_filesystem,disk cache}[/b] -- stores data under the [tt]caches/persistent[/tt] directory -- while this does increase disk access, it still provides a performance boost over not having a persistent cache
 
 The PHP extensions work by either holding memory resident within the web server's PHP module (so it stays in memory between requests), or within a standalone persistent caching server that runs on the network. The [tt]filesystem[/tt] handler just stores data on disk, but disk caching will usually mean the data loads very quickly, and certainly more quickly than many disparate filesystem and database read operations.
 
 Composr will not use a persistent cache by default but it may be enabled from the Installation Options editor.
 
-Be aware that some persistent cache backends may be tied into a PHP process, rather than held system wide. This is the case for APC. Therefore if you are using a CGI architecture the full contents of the cache will be dumped each time a web request finishes (defeating the entire purpose); for fast CGI it's not as bad, as processes serve multiple requests, although it does mean there is a lot of duplication between each fast CGI process.
+Be aware that some persistent cache backends may be tied into a PHP process, rather than held system wide. This is the case for APCu. Therefore if you are using a CGI architecture the full contents of the cache will be dumped each time a web request finishes (defeating the entire purpose); for fast CGI it's not as bad, as processes serve multiple requests, although it does mean there is a lot of duplication between each fast CGI process.
 
 Do not set the persistent cache's memory (typically done in the PHP extension configuration) higher than needed, especially on a fast CGI or module-based PHP installation -- for at least some persistent cache backends the memory is pre-allocated, for each PHP process that is running. For APC, this is set via the [tt]apc.shm_size[/tt] setting.
 
@@ -85,12 +84,11 @@ Do not set the persistent cache's memory (typically done in the PHP extension co
 
 General tips:
  - [b]Don't have addons installed that you don't need[/b]. Some may have general performance requirements, such as catalogues (adds custom fields checking to all content types) -- while others may just have general over-head in terms of sitemap generation, language string presence, moniker registration, and hook execution.
- - Enable the [b]disable_smart_decaching[/b] option in the installation options. You can make it intelligent, by only allowing smart decaching if the FTP log was modified recently.
+ - Enable the [b]disable_smart_decaching[/b] option in the installation options.
  - If you get a lot of 404 errors, it is best to make a [b]static 404 page[/b] instead of using Composr's which can be relatively intensive. You activate a custom 404 page by putting a reference to it in the [tt].htaccess[/tt] file (Apache only; our [tt]recommended.htaccess[/tt] file does this for Composr's). Or for IIS, there is sample code in the [tt]web.config[/tt] file.
  - Enable the "Output compression" configuration option. Unless you're using Cloudflare's optimisation features, in which case disable it so Cloudflare can do that instead.
  - Sending e-mails can be an intensive task because Composr has to work out what CSS to include for each e-mail, put templating together, and connect through and send to the e-mail server. [b]Turning on the "E-mail queue" configuration option[/b] will avoid this happening immediately during user actions, deferring it. It will make forum posting, for example, faster.
  - Disabling URL monikers can help with performance; however this will also impact SEO if you think your URL paths are key to that.
- - If you use [tt]www[/tt] in your base URL, set an explicit cookie domain in [tt]_config.php[/tt] to include that. This will cause Google Analytics cookies to be set on the [tt]www[/tt] subdomain, reducing the cookie volume on other domains.
  - Deny guest access to pages that are necessarily computational intensive -- to stop bots consuming too many resources.
  - For MySQL you can configure Composr to use persistent database connections. This is not recommended on shared hosting because it may annoy the webhost, but if you have a dedicated server it will cut down load times as a new database connection does not need to be established. These are enabled through the "Installation Options" ([tt]http://yourbaseurl/config_editor.php[/tt]).
  - There are many possible config options, or [tt]set_value[/tt] commands to tune performance described in the [page="_SEARCH:codebook_3"]Code Book[/page].
@@ -159,17 +157,6 @@ This produces soft errors with the correct HTTP header. The errors happen early,
 
 Note that anyone behind a shared proxy server will share an IP address. See how to properly configure IP addresses under the "Reverse proxying" section.
 
-[title="3"]PHP time limit[/title]
-
-If you are really constrained for resources, and worry some requests may take too long in some cases, you can lower the PHP time limit from Composr's default 60 seconds.
-Note that Composr does raise the limit on its own when really needed.
-
-[code="PHP"]
-$SITE_INFO['max_execution_time'] = '10'; // Ten second maximum execution time
-[/code]
-
-Note that PHP's time limit does not count time taken doing database queries and other external tasks, except on Windows servers.
-
 [title="3"]Ensure configuration is set[/title]
 
 If a configuration page has never been saved, default config values from that page will be calculated on the fly, which is a little slower.
@@ -203,13 +190,12 @@ Comcode tips:
  - You can add [tt]{$,page hint: Quick Cache}[/tt] into Comcode pages to enable the equivalent of quick block caching for that page.
 
 Miscellaneous tips:
- - Serve pre-compressed CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is not commented as there are problems on some servers
- - Merge always-needed CSS and JS files into the global files via the "Globally-included CSS/JS files" configuration options
-
+ - Serve pre-compressed CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is not commented as there are problems on some servers.
+ - Merge always-needed CSS and JS files into the global files. This can be done using Tempcode, and is already done for some cases (so look at that to see how it is done). Note that for new cases you will need to override the files as blank in your theme.
 
 [title="3"]Content Delivery Networks (CDNs)[/title]
 
-There are a number of approaches you can take if you want to serve media from third party servers. Doing this reduces latency, and your own hosting costs, as well as adding some other potential side benefits such as automatic transcoding, and making the web requests cookieless.
+There are a number of approaches you can take if you want to serve media from third party servers. Doing this reduces latency, as well as adding some other potential side benefits such as automatic transcoding, and making the web requests cookieless.
 
 [title="4"]Theme/content files[/title]
 
@@ -246,6 +232,10 @@ https://res.cloudinary.com/<cloudinary-username>/image/fetch/,jpg,jpe,jpeg,gif,p
 
 By default Composr will pipe CSS, JavaScript, and theme image files, through the CDN.
 You can use the [tt]CDN_FILTER[/tt] Tempcode symbol or the [tt]CDN_FILTER[/tt] Tempcode directive to pass anything within through the CDN. This is described further below.
+
+[title="4"]Transfer hooks[/title]
+
+Composr contains a kinds of hooks for sending off uploads to third-party servers, [tt]cdn_transfer[/tt]. This transparently transfers uploads directly to other services at an early stage; has no UI.
 
 [title="3"][tt]HTML_COMPRESS[/tt] and [tt]CDN_FILTER[/tt] directives[/title]
 
@@ -306,11 +296,9 @@ In the HTML [tt]<head>[/tt] you can define [tt]<link>[/tt] tags for (increasing 
 
 If you have a situation where you can predict what links people will click, you can use a standard HTML approach to define preloading for those links with [tt]rel="preload"[/tt].
 
-Various [url="HTTP streaming techniques"]https://www.patreon.com/posts/18644315[/url] are discussed in a blog post I wrote.
-
 HTTP/2 is great, enable it on your server if you can. You can use [tt]preload[/tt] [tt]<link>[/tt] tags to define what the HTTP/2 implementation should automatically push. Just be aware that this will waste bandwidth for users who already have those resources cached.
 
-The work on HTTP/3 is also interesting (previously Google QUIC). Google SDCH was [i]extremely interesting[/i] (but Google dropped support due to lack of interest). At this time of writing it is too early to really think about these, but they should provide automatic optimisations to Composr if implemented.
+HTTP/3 is also interesting. At the time of writing Apache does not support it.
 
 [title="2"]Database management[/title]
 
@@ -495,15 +483,7 @@ Not all PHP configurations are created equal.
 
 [title="4"]Opcode caching[/title]
 
-Speed can be approximately doubled if an "[b]opcode cache[/b]" is installed as a PHP extension. These caches cache compiled PHP code so that PHP does not need to re-compile scripts on every page view. The main solutions for this are:
- - Zend OpCache (this is bundled by default in PHP 5.6 and higher, recommended)
- - APC (free) or APCu (free)
- - wincache (free, Windows only)
- - xcache (free)
-
-Opcode caching configuration sometimes lines up with persistent caching configuration, as Opcode cache backends often will also work as persistent cache backends.
-
-Only one opcode cache can be used, and they often need to be manually compiled against the PHP version on the server and then installed as an extension. Such system administration is beyond the scope of this tutorial.
+Speed can be approximately doubled if [url="PHP's opcode cache is configured"]https://www.php.net/manual/en/opcache.configuration.php[/url].
 
 [title="4"]PHP version[/title]
 
@@ -563,11 +543,13 @@ Tips:
  - Configure your TLS options appropriately; basically there is a trade-off between perfect privacy ("Perfect Forward Secrecy") and speed -- and TLS 1.3 offers good speed improvements.
  - Set up [tt]fail2ban[/tt] so that you aren't constantly having to log failed login attempts by hackers to SSH etc (this can be a big I/O performance hit).
  - You may want to use only systemd's journald, rather than rsyslogd; on some Linux system rsyslogd is configured to mirror entries written to journald, which can be very intensive due to the frequent reading in and out. journald is higher performance as it is an efficient binary format with a cursor feature.
- - Consider whether you want journaling or not -- it has a significant I/O overhead.
+ - Consider whether you want filesystem journaling or not -- it has a significant I/O overhead.
  - If you use Dropbox for server backup, and have other users actively saving files into the account, only keep it started for a short time after your backup script finishes -- as it will do a lot of I/O updating its SQLite databases whenever any file in Dropbox is changed.
  - Your server should be using none, or very little, swapspace. If swapspace is being used it implies that the server doesn't think the free RAM is enough and it will be actively moving stuff into and out of that swap space as your server serves web requests -- a real performance killer. You can [url="adjust the threshold when a Linux server will start using swapspace"]https://www.howtoforge.com/tutorial/linux-swappiness/[/url].
 
 [title="2"]Hosting scenarios[/title]
+
+Different hosting scenarios are discussed in the [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page] tutorial. This section provides additional information specifically around performance.
 
 [title="3"]Shared hosting[/title]
 
@@ -583,10 +565,6 @@ Webhosts may automatically produce warnings based on the CloudLinux maximums get
 
 cPanel users will find a resource usage graph is made available. Note that the 100% line on this graph represents 100% of the configured limit, not 100% of a CPU core or of combined CPU. The average and maximum lines are scaled proportional to this configured limit also. This will confuse you if you aren't aware of it, because everywhere else lve is configured and monitored in terms of percentage of total capacity.
 
-[title="3"]VPS[/title]
-
-A VPS (virtual private server) is similar to shared hosting, except you get a fully-manageable virtual machine. This is more secure and configurable.
-
 [title="3"]Dedicated servers[/title]
 
 A faster and more dedicated server will make Composr run faster. This may seem obvious, but in the efforts of optimisation, is easily forgotten.
@@ -595,74 +573,12 @@ CPU speed will be the most limiting factor for most websites: so this is the fir
 
 Go with an SSD in your machine if possible.
 
-[title="3"]The Cloud[/title]
+[title="3"]Cloud Hosting[/title]
 
-If you have outgrown normal shared hosting / a single VPS or server, you can do a cloud deployment of Composr, and there are a few options.
+Composr has excellent support for cloud hosting, see [page="_SEARCH:tut_cloudhosting"]Cloud-hosting for Composr[/page].
+Note that many companies will advertise cloud services to scale up web applications as if they work by magic. No company can make a web application automatically scale, it requires careful architecting and configuration. You will need to employ careful use of Composr's cloud-hosting features for it to work as you'd want.
 
-Options to consider (in increasing complexity):
-1) Auto-scaling webhost. There are some webhosts that will automatically set up scaling for you behind-the-scenes. For example, Composr runs perfectly on Rackspace Cloud Sites hosting, where you can set up quite large instances (we have been told that behind-the-scenes there is database replication, to share database load).
-2) VM provisioning services, such as Amazon EC2. There is a Composr Bitnami image for easy installation on Amazon's infrastructure. Bitnami also provide their own Amazon-based hosting service. There are some solutions to auto-scale out new cloud instances to meet demand, although many companies handle it manually. You will need some kind of load balancer.
-3) You can use Google App Engine, to get automated scaling, with a trade-off that it is a bit harder to initially set up. This is the most elegant and maintainable option and we generally prefer it over '1' and '2' if you are seriously investing in a maintainable infrastructure. We discuss this in the separate [page="_SEARCH:tut_google_appengine"]Google App Engine[/page] tutorial. [i]At the time of writing Google App Engine PHP support is unstable and won't run Composr properly -- this is outside our control, and we have been discussing it with Google directly.[/i]
-4) You can set up your own cloud system on your own servers, or cheap dedicated servers. You could look at using something like OpenStack to achieve this. This is similar to Facebook's infrastructure and a very challenging option, but perhaps the best from a huge-scale cost perspective.
-
-Please be aware that an auto-scaling cloud solution is not the same as just installing Composr on a cloud instance, so options 2/3/4 above are not simple out-of-the-box solutions. If you are just installing on a cloud instance then there's little difference to a VPS. Achieving effective automatic scaling requires significant expertise. If you want to use multiple instances you will need to set up your own MySQL replication and file-synching, which Composr does support (read on).
-
-[title="4"]Shared filesystem[/title]
-
-All web servers will need to share files (as we don't try and store file data in the database).
-
-There are 3 approaches with Composr:
-1) The best way to do this is with network storage (e.g. S3 or SAN).
-2) Composr has support for automatically synching local file changes between servers.
-3) Syndicate large media files to other storage, and sync all other files as per '2'
-
-We recommend SAN storage as it is easier to set up, doesn't require mirroring of every file on multiple machines, doesn't have sync delay, and has potential for much larger file stores. The down-side is the higher cost and the need for everything to be in the same data centre. You will need to take various factors into account when making your decision, such as cost, availability of programmers, existing hosting limitations, volume of data, nature of data, and requirements for geographic distribution.
-
-[title="5"]SAN storage[/title]
-
-There is not much for us to say here. SAN storage would be configured as normal filesystem storage by a skilled IT person.
-
-[title="5"]S3 storage[/title]
-
-Composr has no direct inbuilt S3 support, but this is intentional, because you do not need it. Assuming you have a Linux dedicated server or cloud instance, you may use the 'FUSE' system to make Composr upload directory/directories use S3.
-
-First you need to mount S3 storage to a directory, such as [tt]uploads/attachments[/tt], using a filesystem driver:
-http://tecadmin.net/mount-s3-bucket-centosrhel-ubuntu-using-s3fs/
-You'll want to mount a subdirectory of your S3 storage rather than a root. I recommend you mirror the same basic filesystem structure as Composr, so that you are mapping subdirectories with equivalence.
-You'll need to rename [tt]uploads/attachments[/tt] to something else to do this, and then move the old contents of that directory back into the S3 version of it.
-
-Now immediately you are using S3 for storage, however URLs are still coming through your own server, which will work, but not efficiently.
-Let's say we want normal image attachments to route through S3. We would edit the [tt]MEDIA_IMAGE_WEBSAFE.tpl[/tt] template, changing:
-[code="Tempcode"]
-{URL*}
-[/code]
-to:
-[code="Tempcode"]
-{$PREG_REPLACE,^{$BASEIFY,uploads/attachments/},http://whateverYourAmazonBaseURLIS/uploads/attachments/,{URL}}
-[/code]
-You'll need to disable the Composr "Reveal usage figures" configuration option, as the usage figures can't be maintained with requests not routing through Composr.
-
-Alternatively, you could do a similar thing using rewrite rules in the [tt].htaccess[/tt]/[tt]web.config[/tt], but this would add additional latency.
-
-[title="5"]Upload syndication[/title]
-
-[i]This section is mainly applicable to programmers, although specific service implementations may be available within addons[/i]
-
-Composr contains a kinds of hooks for sending off uploads to third-party servers, [tt]cdn_transfer[/tt]. This transparently transfers uploads directly to other services at an early stage; has no UI.
-
-[title="4"]Database replication[/title]
-
-In order to implement replication, just change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. The first host in the list must be the source server. It is assumed that each server has equivalent credentials and database naming. Due to the source server being a bottleneck, it will never be picked as a read-access server in the randomisation process, unless there is only one replica.
-
-It is advised to not set replication for the Composr [tt]sessions[/tt] table, as this is highly volatile. Instead you should remove any display of 'users online' from your templates because if you're at the point of replication there will be too many to list anyway (and Composr will have realised this and stopped showing it consistently in many cases, to stop performance issues).
-
-[title="4"]Load balancing[/title]
-
-Round-Robin DNS could be used to choose a frontend server from the farm randomly, or some other form of load balancing such as one based on a reverse proxy server.
-
-A proper load balancer is better than Round-Robin DNS as it can detect when servers are down, or overloaded, and properly route traffic accordingly. You may also have a load balancer than automatically provisions and starts and stops VMs for you based on demand patterns. You may even have a load balancer that acts as a front-end to initiating Cron jobs on whatever server is most available to run them at any point in time.
-
-[title="5"]Geographic distribution of servers[/title]
+[title="4"]Geographic distribution of servers[/title]
 
 Some people with very ambitious goals want to have multiple servers dotted around the world, able to operate in isolation to each other for maximum redundancy and performance. Priority-based geo-DNS resolution would be used for request routing.
 

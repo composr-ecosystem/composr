@@ -201,7 +201,6 @@ class addon_guards_test_set extends cms_test_case
                                 $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon_name . '], due to ' . $matches[0][$i];
 
                                 if (in_array($error_message, [
-                                    'Cannot find a guard for the google_appengine addon in sources/global.php [core], due to require_code(\'google_appengine\')',
                                     'Cannot find a guard for the chat addon in sources/global2.php [core], due to require_code(\'chat_poller\')',
                                     'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to require_javascript(\'catalogues\')',
                                     'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to do_template(\'CATALOGUE_ADDING_SCREEN\',',

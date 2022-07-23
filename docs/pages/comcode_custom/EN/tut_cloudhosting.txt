@@ -19,12 +19,78 @@ In particular, Composr has the following cloud features:
 
 [box="A note of caution"]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-Deploying this requires some expertise, as you need to be familiar with system administration and setting up networks of machines (e.g. VMs, but may be actual bare metal servers).
+Deploying this requires some expertise, as you need to be familiar with system administration and setting up networks of machines (e.g. VMs, or maybe actual bare metal servers).
 Be wary of any cloud hosting service that advertises automatic scaling of software, with you just installing it and not needing to know anything about database replication or storage management -- it's frankly not possible to do correctly.
 The Composr cloud support is designed to work optimally based on the actual architecture needed for high performance scaling -- it's not magic, it's careful engineering.
 [/box]
 
 [contents]decimal,lower-alpha[/contents]
+
+[title="2" sub="A foreword"]Comparison of Composr multi-server/cloud-integration mechanisms[/title]
+
+Composr has many ways of connecting to other servers and systems, and it can get a little overwhelming. Here we provide a summary of the systems available in Composr, what they are for, and how they are used. This doesn't directly relate to this tutorial (these systems are generally documented elsewhere), but may help avoid some confusion.
+
+{|
+! Mechanism
+! Type
+! Purpose
+! Usage
+|-
+| Cloud-FS
+| File hosting
+| Host a site across multiple servers, but make sure all files are accessible and updated between those servers (using various potential techniques). Allows scaling a website to handle unlimited usage. This is what this tutorial is covering.
+| Configured using installation options, and either a Commandr command to initialise necessary file structures or doing it by hand
+|-
+| Git
+| File hosting
+| Used by developers to develop and test functionality (be it code, or web assets), prior to them going live. May be used for sharing code directly between developers, for deployment to staging servers, and also to deploy changes to multiple servers in parallel.
+| Either by hand, or with the [tt]git_status[/tt] non-bundled addon
+|-
+| [acronym="Content Delivery Network"]CDN[/acronym]
+| File hosting
+| Allow web assets (images, JavaScript files, CSS files, fonts, etc) to be served from a machine closer to the user. Improves site speed by lowering latency for all the numerous asset files. Reduces cookie overhead.
+| Configuration option, which specifies what CDNs can serve what asset files
+|-
+| [tt]cdn_transfer[/tt] hooks
+| File hosting
+| Developers may code these hooks to automatically transfer select file uploads to a CDN. Most CDNs will not need this as they will operate a "pull on demand" policy, but necessary if you are using a service not explicitly designed as a CDN (such as a photo hosting site, or a simple FTP server).
+| Programming
+|-
+| Multi-site-networks
+| Shared communities
+| Composr can integrate with some common forum systems for handling members and topics. This includes having multiple different Composr sites integrating with a single forum system as a network with a shared community (shared forum and set of accounts).
+| At installation
+|-
+| Shared installs
+| Shared installs
+| Shared installs may be used for a single Composr installation to power multiple websites, for demoing systems or simple site builder systems for example. It shares some of the implementation of Cloud-FS, as an abstraction for finding where files are to be stored (on the shared install, or an individual site).
+| By developers (not supported)
+|-
+| Hybridauth
+| Content syndication / Account integration
+| The [tt]hybridauth[/tt] addon integrates with many social networks to allow pushing out content to those networks, account log in integration with those networks, and also bridging content from the networks to Atom feeds.
+| XML configuration
+|-
+| LDAP
+| Account integration
+| LDAP can be used to integrate accounts with many common providers, such as Microsoft Active Directory.
+| Configuration options
+|-
+| Data standards (push)
+| Data bridging
+| Formats such as RSS/Atom/iCalendar/WebDAV/JSON/CSV can be used to make data available to other systems. In general our policy is to use established standards for sharing data between systems.
+| N/A
+|-
+| Data standards (pull)
+| Data bridging
+| Similarly to the above, established standards can be used to pull data into Composr in many cases. This includes oEmbed, for smart linking to external content.
+| N/A
+|-
+| [tt]main_screen_actions[/tt] block
+| Social sharing
+| Sharing content to social networks (manually be members) can be achieved using this block. As a side-note, we also have default CPFs that can be deployed on your site so members can link out to their own social network accounts.
+| Usage of block
+|}
 
 [title="2"]Requirements[/title]
 
@@ -71,7 +137,7 @@ It is up to you exactly how you want to create hosts. You may want to start with
 
 We recommend using Git to deploy code and files (the [i]local[/i] and [i]propagated[/i] files). You can set up a central Git repository and clone the repository onto a host to activate it. Git is nice because you can pull in code changes quickly and easily using the non-bundled [tt]git_status[/tt] addon (the addon allows propagating a pull across hosts).
 
-The Installation Options editor has a [tt]cloud_mode[/tt] option that needs to configured on each host. One host will be configured as [tt]primary[/tt] and the rest as [tt]replica[/tt].
+The Installation Options editor has a [tt]cloud_mode[/tt] option that needs to configured on each host. One host will be configured as [tt]primary[/tt] and the rest as [tt]replica[/tt] (this is similar to MySQL's database replication terminology, except we say [tt]primary[/tt] instead of [tt]source[/tt] for it to make more sense).
 
 [title="4"]System scheduler[/title]
 
@@ -109,6 +175,11 @@ You may want to have a dedicated machine for hosting the database, in which case
 Larger clouds may want to have multiple database servers, and set up database replication for this. Configuring database replication is outside the scope of the Composr documentation.
 Geo-distributed clouds would also want to set up database replication, as it is not viable to connect to a database server with any notable connectivity latency.
 
+If you wish to use source-replica replication (i.e. where writes all go to a single replica), change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] (if set) values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. You may wish to use just two hosts (if you are configuring each Composr site to use a different database server explicitly), or lots of hosts if you want randomisation. The first host in the list must be the source server. It is assumed that each server has equivalent credentials and database naming. Due to the source server being a bottleneck, it will never be picked as a read-access server in the randomisation process.
+If you use replica-replica replication, configure each site's [tt]db_site_host[/tt]/[tt]db_forums_host[/tt] to the specific database server you want that site to connect to.
+
+It is advised to not set replication for the Composr [tt]sessions[/tt] table, as this is highly volatile. Instead you should remove any display of 'users online' from your templates because if you're at the point of replication there will be too many to list anyway (and Composr will have realised this and stopped showing it consistently in many cases, to stop performance issues).
+
 [title="2"]Maintenance[/title]
 
 [title="3"]Clearing caches[/title]
@@ -132,7 +203,7 @@ Upgrading a development machine would be fairly straight forward, like any norma
 Upgrading the cloud is a bit trickier:
 a) You will likely want to schedule some down time, then close the site during scheduled downtime.
 b) You would use the [tt]git_status[/tt] addon to pull down any changes from Git.
-c) The database upgrade step could be performed using the regular Composr upgrader.
+c) The database upgrade step could be performed using the regular Composr upgrader, on the primary machine.
 d) Caches can then be cleared.
 e) Testing can then be performed
 f) The site would then be re-opened
@@ -156,7 +227,6 @@ Very sophisticated operations may choose to develop custom upgrade scripts that 
 
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
  - [page="_SEARCH:tut_install_linux"]Installation on Linux[/page]
- - [page="_SEARCH:tut_google_appengine"]Installation on Google App Engine[/page]
  - [page="_SEARCH:tut_performance"]Optimising Performance[/page]
 
 {$SET,tutorial_tags,Webhosting,installer,Installation,expert}{$SET,tutorial_add_date,Nov 2021}{$SET,tutorial_summary,How Composr can operate with cloud hosting.}[block]main_tutorial_rating[/block]

@@ -268,10 +268,6 @@ function is_suexec_like() : bool
         return true; // Has to assume so, as cannot intercede
     }
 
-    if (GOOGLE_APPENGINE) {
-        return false;
-    }
-
     static $answer = null;
     if ($answer === null) {
         if (is_cli()) {
@@ -4049,26 +4045,6 @@ function cms_eval(string $code, string $context, bool $trigger_error = true)
 }
 
 /**
- * Exit if we are running on a Google App Engine application (live or development).
- */
-function appengine_general_guard()
-{
-    if (GOOGLE_APPENGINE) {
-        warn_exit(do_lang_tempcode('NOT_ON_GOOGLE_APPENGINE'));
-    }
-}
-
-/**
- * Exit if we are running on a live Google App Engine application.
- */
-function appengine_live_guard()
-{
-    if (appengine_is_live()) {
-        warn_exit(do_lang_tempcode('NOT_ON_LIVE_GOOGLE_APPENGINE'));
-    }
-}
-
-/**
  * Update a catalogue content field reference, to a new value.
  *
  * @param  ID_TEXT $type Content type
@@ -4383,7 +4359,7 @@ function escape_header(string $str, bool $within_quotes = false) : string
  */
 function is_cli() : bool
 {
-    return (php_function_allowed('php_sapi_name')) && (php_sapi_name() == 'cli') && ($_SERVER['REMOTE_ADDR'] == '');
+    return (php_sapi_name() == 'cli') && ($_SERVER['REMOTE_ADDR'] == '');
 }
 
 /**

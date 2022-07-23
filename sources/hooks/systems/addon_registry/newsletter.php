@@ -163,7 +163,6 @@ class Hook_addon_registry_newsletter
             'sources/hooks/systems/config/minutes_between_sends.php',
             'themes/default/templates/PERIODIC_NEWSLETTER_REMOVE.tpl',
             'sources/hooks/systems/tasks/send_newsletter.php',
-            'data/incoming_bounced_email.php',
             'sources/hooks/systems/config/newsletter_auto_pause.php',
             'sources/hooks/systems/config/newsletter_paused.php',
             'sources/hooks/blocks/main_staff_checklist/newsletter_paused.php',

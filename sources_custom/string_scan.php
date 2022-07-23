@@ -4601,8 +4601,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_FORUM_TOPIC_ID
         DESCRIPTION_FTP_FILES_PER_GO
         DESCRIPTION_FTP_SERVER_URL
-        DESCRIPTION_GAE_APPLICATION
-        DESCRIPTION_GAE_BUCKET_NAME
         DESCRIPTION_GALLERY
         DESCRIPTION_GALLERY_IMPORT_TITLE
         DESCRIPTION_GIFT_POINTS_BASE
@@ -4907,8 +4905,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DETECT_LANG_BROWSER
         DETECT_LANG_FORUM
         DEVELOPMENT_VIEWS
-        DEV_DATABASE_SETTINGS
-        DEV_DATABASE_SETTINGS_HELP
         DIFF_BETWEEN
         DIFF_EVERYTHING_AFTER
         DIFF_IMMEDIATELY_AFTER
@@ -5664,8 +5660,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FXML_FIELD_SHUNNED_SUBSTRING
         FXML_FIELD_TOO_LONG
         FXML_FIELD_TOO_SHORT
-        GAE_APPLICATION
-        GAE_BUCKET_NAME
         GALLERY_MEDIA_DEFAULT_SORT_ORDER
         GALLERIES_SUBCAT_NARROWIN
         GALLERY_ENTRIES_CAROUSEL_PER_PAGE
@@ -6005,8 +5999,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LINKS
         LISTING_DIRECTORIES
         LISTING_FILES
-        LIVE_DATABASE_SETTINGS
-        LIVE_DATABASE_SETTINGS_HELP
         LOAD_FILESYSTEM_FILES
         LOAD_FTP_FILES
         LOAD_SAVED_WARNING
@@ -6528,8 +6520,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOT_INTEGER
         NOT_INTEGER_URL_MONIKERS
         NOT_LOGGED_IN_NO_CREDIT
-        NOT_ON_GOOGLE_APPENGINE
-        NOT_ON_LIVE_GOOGLE_APPENGINE
         NOT_THEME_IMAGE
         NOT_USED_PREVIOUSLY
         NO_ACCEPT_EMAILS

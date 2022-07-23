@@ -1333,8 +1333,7 @@ class DatabaseConnector
             $this->connection_read = $this->connection_write;
         } else {
             $this->connection_write = [get_use_persistent(), $db_name, $servers[0], $db_user, $db_password, $fail_ok];
-            $min = (count($servers) == 2) ? 0 : 1;
-            $this->connection_read = [get_use_persistent(), $db_name, $servers[mt_rand($min, count($servers) - 1)], $db_user, $db_password, $fail_ok];
+            $this->connection_read = [get_use_persistent(), $db_name, $servers[mt_rand(1, count($servers) - 1)], $db_user, $db_password, $fail_ok];
         }
         $this->table_prefix = $table_prefix;
         $this->connection_unique_identifier = serialize([$db_name, $db_host, $db_user, $db_password, $table_prefix]);

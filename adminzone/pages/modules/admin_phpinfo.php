@@ -146,9 +146,7 @@ class Module_admin_phpinfo
         if (!empty($username)) {
             $out .= '<p><strong>Running as user</strong>: ' . escape_html($username) . (($suexec === null) ? '' : (' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')')) . '</p>';
         }
-        if (php_function_allowed('php_sapi_name')) {
-            $out .= '<p><strong>PHP configured as</strong>: ' . escape_html(php_sapi_name()) . '</p>';
-        }
+        $out .= '<p><strong>PHP configured as</strong>: ' . escape_html(php_sapi_name()) . '</p>';
 
         if (strpos(get_db_type(), 'mysql') !== false) {
             $mysql_version = $GLOBALS['SITE_DB']->query_value_if_there('SELECT version()');

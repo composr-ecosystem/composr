@@ -135,8 +135,6 @@ class Module_admin_backup
      */
     public function run() : object
     {
-        appengine_general_guard();
-
         require_code('files');
 
         if (shared_site_install()) {

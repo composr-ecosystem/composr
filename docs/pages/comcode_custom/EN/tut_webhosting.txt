@@ -41,7 +41,7 @@ Without a webhosting control panel you'll need to know how to use SSH (Linux) or
 [title="3"]Type of hosting[/title]
 
 Choices:
- - Shared hosting (the default)
+ - Shared hosting
  - VPS hosting / [concept]IaaS[/concept] (e.g. Amazon EC2, Azure, Rackspace)
  - Dedicated server
  - [concept]PaaS[/concept]:
@@ -56,7 +56,7 @@ IaaS is very common among professionals due to the ability to quickly provision 
 
 Users with high requirements for CPU, memory, security, privacy, autonomy or disk space, may opt to get a [concept]dedicated server[/concept]. This is more expensive.
 
-PaaS is highly specialised and not recommended unless you are a developer. Programmers will often prefer IaaS and PaaS hosting in order to get scalability. However scalability is not automatic with any system, so programmers need to put serious consideration into infrastructure. This is discussed more in the [page="_SEARCH:tut_performance"]Optimising Performance[/page] tutorial and outside the scope of any direct instructions we can give.
+PaaS is probably not appropriate for Composr and only mentioned here for completeness. It is designed to make a web application (like Composr) easily scalable, but in truth the scaling of any software requires a well-crafted architecture, at which point developers usually prefer a IaaS style deployment to get greater control. Composr has excellent support for scaling on an IaaS architecture (see our [page="_SEARCH:tut_cloudhosting"]Cloud-hosting for Composr[/page] tutorial).
 
 On shared hosting the webhost will take responsibility for the daily maintenance of the server. For example, keeping the server software up to date with security and stability [concept]patches[/concept]. However few webhosts will take serious responsibility for the maintenance (including backups) of your space on the server. If you are running a VPS or a dedicated server then you probably are responsible for absolutely everything, so make sure you are comfortable with that. It is important to understand the responsibilities for the various aspects of creating, maintaining and operating your website, before you launch your endeavour.
 

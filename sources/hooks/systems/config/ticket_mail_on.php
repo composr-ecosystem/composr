@@ -60,10 +60,6 @@ class Hook_config_ticket_mail_on
             return null;
         }
 
-        if (GOOGLE_APPENGINE) {
-            return null;
-        }
-
         return '0';
     }
 }

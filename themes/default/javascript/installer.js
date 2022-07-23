@@ -161,23 +161,6 @@
             });
         }
 
-        var gaeApp = document.getElementById('gae_application');
-
-        if (gaeApp) {
-            gaeOnChange();
-            gaeApp.addEventListener('change', gaeOnChange);
-        }
-
-        function gaeOnChange() {
-            var gaeLiveDbSite = document.getElementById('gae_live_db_site'),
-                gaeLiveDbSiteHost = document.getElementById('gae_live_db_site_host'),
-                gaeBucketName = document.getElementById('gae_bucket_name');
-
-            gaeLiveDbSite.value = gaeLiveDbSite.value.replace(/(<application>|composr)/g, gaeApp.value);
-            gaeLiveDbSiteHost.value = gaeLiveDbSiteHost.value.replace(/(<application>|composr)/g, gaeApp.value);
-            gaeBucketName.value = gaeBucketName.value.replace(/(<application>|composr)/g, gaeApp.value);
-        }
-
         var step4Form = document.getElementById('form-installer-step-4');
 
         if (step4Form) {

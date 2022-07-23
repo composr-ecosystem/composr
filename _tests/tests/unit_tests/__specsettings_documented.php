@@ -136,10 +136,6 @@ class __specsettings_documented_test_set extends cms_test_case
         for ($i = 0; $i < $num_matches; $i++) {
             $install_option = $matches[1][$i];
 
-            if (in_array($install_option, ['gae_application', 'gae_bucket_name'])) {
-                continue;
-            }
-
             $have_found = (strpos($all_code, '$GLOBALS[\'SITE_INFO\'][\'' . $install_option . '\']') !== false) || (strpos($all_code, '$SITE_INFO[\'' . $install_option . '\']') !== false);
             $this->assertTrue($have_found, 'Documented install option not used (' . $install_option . ')');
         }

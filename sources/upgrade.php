@@ -126,14 +126,12 @@ function upgrade_script()
 
         case 'file_upgrade':
             require_code('upgrade_files');
-            appengine_live_guard();
             echo upgrader_file_upgrade_screen();
             $show_more_link = false;
             break;
 
         case '_file_upgrade':
             require_code('upgrade_files');
-            appengine_live_guard();
             echo _upgrader_file_upgrade_screen();
             break;
 
@@ -170,7 +168,6 @@ function upgrade_script()
 
         case 'theme_upgrade':
             require_code('upgrade_themes');
-            appengine_live_guard();
             echo upgrader_theme_upgrade_screen();
             break;
 
@@ -500,7 +497,7 @@ function upgrader_menu_screen() : string
     $l_safe_mode = upgrader_link('index.php?keep_safe_mode=1', do_lang('UPGRADER_SAFE_MODE'));
     $num_addons = $GLOBALS['SITE_DB']->query_select_value('addons', 'COUNT(*)');
     $l_addon_management = upgrader_link('adminzone/index.php?page=admin_addons&keep_safe_mode=1', do_lang('UPGRADER_ADDON_MANAGEMENT', integer_format($num_addons)), $num_addons == 0);
-    $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);
+    $show_permission_buttons = (!is_suexec_like() || $GLOBALS['DEV_MODE']);
     $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'));
     $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'));
     $l_addon_remove = upgrader_link('upgrader.php?type=addon_remove', do_lang('UPGRADER_REMOVE_ADDON_FILES'));

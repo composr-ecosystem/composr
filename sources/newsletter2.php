@@ -25,38 +25,6 @@
  */
 
 /**
- * Script to read in a bounced e-mail.
- */
-function incoming_bounced_email_script()
-{
-    if (!addon_installed('newsletter')) {
-        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('newsletter')));
-    }
-
-    if (!GOOGLE_APPENGINE) {
-        return;
-    }
-
-    if (!gae_is_admin()) {
-        return;
-    }
-
-    header('X-Robots-Tag: noindex');
-
-    $bounce_email = file_get_contents('php://input');
-
-    $matches = [];
-    if (preg_match('#^From: .*([^ ]+@[^ ]+)#m', $bounce_email, $matches) != 0) {
-        $email = $matches[1];
-
-        $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', ['email' => $email]);
-        if ($id !== null) {
-            delete_newsletter_subscriber($id);
-        }
-    }
-}
-
-/**
  * Add to the newsletter, in the simplest way.
  * No authorisation support here, checks it works only for non-subscribed or non-confirmed members.
  *

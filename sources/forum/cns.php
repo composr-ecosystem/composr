@@ -413,13 +413,11 @@ class Forum_driver_cns extends Forum_driver_base
             }
         }
         if (($theme == '') || ($theme == '-1')) {
-            if (!GOOGLE_APPENGINE) { // Requires a Cloud Storage fstat on GAE, so bad idea - user should be explicit in their zone setup (which the Theme Wizard will do)
-                $theme = get_default_theme_name();
-                if (is_dir(get_file_base() . '/themes/' . $theme)) {
-                    return $theme;
-                }
-                $theme = 'default';
+            $theme = get_default_theme_name();
+            if (is_dir(get_file_base() . '/themes/' . $theme)) {
+                return $theme;
             }
+            $theme = 'default';
         }
         return $theme;
     }

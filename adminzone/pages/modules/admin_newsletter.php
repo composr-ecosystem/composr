@@ -55,10 +55,8 @@ class Module_admin_newsletter extends Standard_crud_module
             'subscribers' => ['VIEW_NEWSLETTER_SUBSCRIBERS', 'menu/adminzone/tools/newsletter/subscribers'],
             'import_subscribers' => ['IMPORT_NEWSLETTER_SUBSCRIBERS', 'admin/import_spreadsheet'],
             'archive' => ['NEWSLETTER_ARCHIVE', 'admin/view_archive'],
+            'bounce_filter_a' => ['BOUNCE_FILTER', 'menu/adminzone/tools/newsletter/newsletter_email_bounce'],
         ];
-        if (!GOOGLE_APPENGINE) {
-            $ret['bounce_filter_a'] = ['BOUNCE_FILTER', 'menu/adminzone/tools/newsletter/newsletter_email_bounce'];
-        }
         $ret += parent::get_entry_points();
         return $ret;
     }
@@ -157,11 +155,8 @@ class Module_admin_newsletter extends Standard_crud_module
             ['admin/view_archive', ['_SELF', ['type' => 'archive'], '_SELF'], do_lang('NEWSLETTER_ARCHIVE')],
             ['menu/adminzone/tools/newsletter/subscribers', ['_SELF', ['type' => 'subscribers'], '_SELF'], do_lang('VIEW_SUBSCRIBERS')],
             ['admin/import_spreadsheet', ['_SELF', ['type' => 'import_subscribers'], '_SELF'], do_lang('IMPORT_NEWSLETTER_SUBSCRIBERS')],
+            ['menu/adminzone/tools/newsletter/newsletter_email_bounce', ['_SELF', ['type' => 'bounce_filter_a'], '_SELF'], do_lang('BOUNCE_FILTER')],
         ];
-
-        if (!GOOGLE_APPENGINE) {
-            $this->extra_donext_entries[] = ['menu/adminzone/tools/newsletter/newsletter_email_bounce', ['_SELF', ['type' => 'bounce_filter_a'], '_SELF'], do_lang('BOUNCE_FILTER')];
-        }
 
         $this->add_one_label = do_lang_tempcode('ADD_NEWSLETTER');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_NEWSLETTER');
@@ -179,19 +174,17 @@ class Module_admin_newsletter extends Standard_crud_module
         if ($type == 'subscribers') {
             return $this->view_subscribers();
         }
-        if (!GOOGLE_APPENGINE) {
-            if ($type == 'bounce_filter_a') {
-                return $this->bounce_filter_a();
-            }
-            if ($type == 'bounce_filter_b') {
-                return $this->bounce_filter_b();
-            }
-            if ($type == 'bounce_filter_c') {
-                return $this->bounce_filter_c();
-            }
-            if ($type == 'bounce_filter_d') {
-                return $this->bounce_filter_d();
-            }
+        if ($type == 'bounce_filter_a') {
+            return $this->bounce_filter_a();
+        }
+        if ($type == 'bounce_filter_b') {
+            return $this->bounce_filter_b();
+        }
+        if ($type == 'bounce_filter_c') {
+            return $this->bounce_filter_c();
+        }
+        if ($type == 'bounce_filter_d') {
+            return $this->bounce_filter_d();
         }
 
         if ($type == 'whatsnew') {

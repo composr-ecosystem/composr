@@ -69,9 +69,6 @@ function init__global2()
     global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
 
     cms_ini_set('log_errors', '1');
-    if ((GOOGLE_APPENGINE) && (!appengine_is_live())) {
-        @mkdir(get_file_base(true) . '/data_custom', 0755);
-    }
     if ((!empty($SITE_INFO['errorlog'])) && ($SITE_INFO['errorlog'] == 'syslog')) {
         cms_ini_set('error_log', 'syslog');
         cms_ini_set('syslog.ident', get_base_url_hostname() . '-errorlog');
@@ -1812,11 +1809,6 @@ function is_browser_decaching() : bool
     static $browser_decaching_cache = null;
     if ($browser_decaching_cache !== null) {
         return $browser_decaching_cache;
-    }
-
-    if (GOOGLE_APPENGINE) {
-        $browser_decaching_cache = false;
-        return false; // Decaching by mistake is real-bad when Google Cloud Storage is involved
     }
 
     if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base(false) . '/_config.php'))) { // Used by decache.php

@@ -4975,18 +4975,29 @@ function get_object_vars(object $object)
     return [];
 }
 
+/**
+ * Returns the type of interface between web server and PHP.
+ *
+ * @return string SAPI name.
+ */
+function php_sapi_name()
+{
+    return '';
+}
+
+/**
+ * Gets the current PHP version.
+ *
+ * @return string The PHP version.
+ */
+function phpversion()
+{
+    return '';
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed
-
-Disabled due to Google App Engine...
-
-gc_collect_cycles
-gc_enable
-gc_disable
-phpversion
-php_sapi_name
-gethostname (Google AppEngine disallows)
 
 Disabled due to too much general weirdness or just generally a bad idea to use...
 
@@ -5177,6 +5188,9 @@ ob_list_handlers
 array_intersect_uassoc
 forward_static_call
 forward_static_call_array
+gc_collect_cycles
+gc_enable
+gc_disable
 gc_enabled
 date_create
 date_create_immutable

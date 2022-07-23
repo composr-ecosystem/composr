@@ -52,9 +52,6 @@ class Hook_config_url_scheme
      */
     public function get_default() : ?string
     {
-        if (GOOGLE_APPENGINE) {
-            return 'HTM';
-        }
         return 'RAW';
     }
 

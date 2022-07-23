@@ -32,10 +32,6 @@ class Hook_cron_tasks
      */
     public function info(?int $last_run, bool $calculate_num_queued) : ?array
     {
-        if (GOOGLE_APPENGINE) { // GAE has its own external task queue
-            return null;
-        }
-
         return [
             'label' => 'Run queued background tasks',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)') : null,

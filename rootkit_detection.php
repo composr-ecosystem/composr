@@ -66,15 +66,6 @@ if ($type == '') {
             <p>Database table prefix: <input type="text" name="db_prefix" value="cms_" /></p>
             <p>Database username: <input type="text" name="db_user" value="root" /></p>
             <p>Database password: <input type="password" name="db_password" autocomplete="new-password" /></p>
-END;
-
-    if (isset($_SERVER['APPLICATION_ID'])) { // Google App Engine
-        echo <<<END
-            <p>E-mail results to (required): <input type="text" name="email" /></p>
-END;
-    }
-
-    echo <<<END
             <button class="btn btn-primary btn-scr buttons--proceed" type="submit">Begin</button>
         </div>
 END;
@@ -83,22 +74,6 @@ END;
     $settings = [];
     foreach ($_POST as $key => $val) {
         $settings[$key] = $val;
-    }
-
-    // Google App Engine
-    if (isset($_SERVER['APPLICATION_ID'])) {
-        if (isset($_GET['settings'])) { // Running out of the task queue
-            $settings = unserialize($_GET['settings']);
-        } else { // Put into the task queue
-            require_once('google/appengine/api/taskqueue/PushTask.php');
-
-            $task = new \google\appengine\api\taskqueue\PushTask('/rootkit_detection.php', ['type' => 'go', 'settings' => serialize($settings)]);
-            $task_name = $task->add();
-
-            echo '<p>The task has been added to the GAE task queue.</p>';
-            rd_do_footer();
-            exit();
-        }
     }
 
     // Find and check password
@@ -216,17 +191,6 @@ END;
             $results .= md5_file($FILE_BASE . '/' . $path);
             $results .= "\n";
         }
-    }
-
-    if ((!empty($settings['email'])) && (class_exists('\google\appengine\api\mail\Message'))) { // Will only be the case on Google App Engine
-        require_once('google/appengine/api/mail/Message.php');
-
-        $task = new \google\appengine\api\mail\Message([
-            'to' => $settings['email'],
-            'subject' => 'Rootkit detection results',
-            'textBody' => $results,
-        ]);
-        $task_name = $task->add();
     }
 
     $results = nl2br(htmlentities($results));

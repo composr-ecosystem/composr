@@ -217,9 +217,6 @@ function restrictify()
             cms_ini_set('ocproducts.xss_detect', array_pop($PREVIOUS_XSS_STATE));
         }
     }
-    if (!GOOGLE_APPENGINE) {
-        cms_ini_set('include_path', '');
-    }
     cms_ini_set('suhosin.executor.disable_emodifier', '1');
     cms_ini_set('suhosin.executor.multiheader', '1');
     pop_db_scope_check();

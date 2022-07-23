@@ -913,13 +913,7 @@ function do_template(string $codename, array $parameters = [], ?string $lang = n
                     if (is_file($file_path)) {
                         $found_disk_file = true;
                     }
-                    if (GOOGLE_APPENGINE) {
-                        gae_optimistic_cache(true);
-                    }
                     $tcp_time = is_file($tcp_path) ? @filemtime($tcp_path) : false;
-                    if (GOOGLE_APPENGINE) {
-                        gae_optimistic_cache(false);
-                    }
                 }
 
                 $may_use_cache = false;
@@ -2568,15 +2562,7 @@ function tempcode_include(string $filepath)
 {
     // NB: We suppress errors because the file may be missing, especially due to race conditions. If we fail we return false, and an alternative Tempcode technique is used
 
-    if (GOOGLE_APPENGINE) {
-        gae_optimistic_cache(true);
-        $ret = @include($filepath);
-        gae_optimistic_cache(false);
-    } else {
-        $ret = is_file($filepath) ? include($filepath) : false;
-    }
-
-    return $ret;
+    return is_file($filepath) ? include($filepath) : false;
 }
 
 /**

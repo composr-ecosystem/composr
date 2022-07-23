@@ -567,8 +567,6 @@ class Module_admin_addons
      */
     public function addon_import() : object
     {
-        appengine_live_guard();
-
         $fields = new Tempcode();
         $set_name = 'addon';
         $required = true;
@@ -619,8 +617,6 @@ class Module_admin_addons
      */
     public function _addon_import() : object
     {
-        appengine_live_guard();
-
         require_code('uploads');
 
         $url_map = ['page' => '_SELF', 'type' => 'multi_action'];
@@ -655,8 +651,6 @@ class Module_admin_addons
      */
     public function multi_action() : object
     {
-        appengine_live_guard();
-
         $warnings = new Tempcode();
         $install_files = new Tempcode();
         $uninstall_files = new Tempcode();
@@ -714,8 +708,6 @@ class Module_admin_addons
      */
     public function _multi_action() : object
     {
-        appengine_live_guard();
-
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         require_code('abstract_file_manager');
@@ -807,8 +799,6 @@ class Module_admin_addons
      */
     public function addon_install() : object
     {
-        appengine_live_guard();
-
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
         list($warnings, $files, $info) = inform_about_addon_install($file);
 
@@ -844,8 +834,6 @@ class Module_admin_addons
      */
     public function _addon_install() : object
     {
-        appengine_live_guard();
-
         $file = filter_naughty(post_param_string('file'));
 
         require_code('abstract_file_manager');
@@ -886,8 +874,6 @@ class Module_admin_addons
      */
     public function addon_tar_delete() : object
     {
-        appengine_live_guard();
-
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
         $full = get_file_base(true) . '/imports/addons/' . $file;
 
@@ -929,8 +915,6 @@ class Module_admin_addons
      */
     public function _addon_tar_delete() : object
     {
-        appengine_live_guard();
-
         $file = filter_naughty(post_param_string('file'));
         $full = get_file_base(true) . '/imports/addons/' . $file;
 
@@ -947,8 +931,6 @@ class Module_admin_addons
      */
     public function addon_uninstall() : object
     {
-        appengine_live_guard();
-
         $addon_name = get_param_string('name');
 
         list($warnings, $files) = inform_about_addon_uninstall($addon_name);
@@ -965,8 +947,6 @@ class Module_admin_addons
      */
     public function _addon_uninstall() : object
     {
-        appengine_live_guard();
-
         $addon_name = post_param_string('addon_name');
 
         require_code('abstract_file_manager');
@@ -1024,8 +1004,6 @@ class Module_admin_addons
      */
     public function addon_export() : object
     {
-        appengine_live_guard();
-
         require_code('files');
 
         // Lang packs
@@ -1135,8 +1113,6 @@ class Module_admin_addons
      */
     public function _addon_export() : object
     {
-        appengine_live_guard();
-
         $hidden = build_keep_post_fields();
 
         $is_lang = (get_param_string('exp', 'custom') == 'lang');
@@ -1433,8 +1409,6 @@ class Module_admin_addons
      */
     public function __addon_export() : object
     {
-        appengine_live_guard();
-
         $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', post_param_string('addon_name'))) . date('-dmY-Hi', time()) . '.tar';
 
         $files = [];

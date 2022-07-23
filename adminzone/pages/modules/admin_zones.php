@@ -677,8 +677,6 @@ class Module_admin_zones
      */
     public function add_zone() : object
     {
-        appengine_live_guard();
-
         $url_scheme = get_option('url_scheme');
         $change_htaccess = (($url_scheme == 'HTM') || ($url_scheme == 'SIMPLE'));
         $htaccess_path = get_file_base() . '/.htaccess';
@@ -726,8 +724,6 @@ class Module_admin_zones
      */
     public function _add_zone() : object
     {
-        appengine_live_guard();
-
         $zone = post_param_string('zone');
 
         check_zone_name($zone);
@@ -864,7 +860,7 @@ class Module_admin_zones
         $hidden->attach(form_input_hidden('zone', $zone));
         $no_delete_zones = (get_forum_type() == 'cns') ? ['', 'adminzone', 'forum'] : ['', 'adminzone'];
         $no_rename_zones = ['', 'adminzone', 'forum'];
-        $no_rename = (appengine_is_live()) || (in_array($zone, $no_rename_zones)) || (shared_site_install() && file_exists(get_file_base(false) . '/' . $zone));
+        $no_rename = (in_array($zone, $no_rename_zones)) || (shared_site_install() && file_exists(get_file_base(false) . '/' . $zone));
         if ($no_rename) {
             $hidden->attach(form_input_hidden('new_zone', $zone));
         } else {
@@ -875,7 +871,7 @@ class Module_admin_zones
             }
             $fields->attach(form_input_codename(do_lang_tempcode('CODENAME'), do_lang_tempcode($rename_label), 'new_zone', $zone, true));
         }
-        if ((!in_array($zone, $no_delete_zones)) && (!appengine_is_live()) && (!shared_site_install())) {
+        if ((!in_array($zone, $no_delete_zones)) && (!shared_site_install())) {
             if ($no_rename) {
                 $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2fec0bddfe975b573da9bbd68ec16689', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             }
@@ -915,7 +911,7 @@ class Module_admin_zones
 
         $delete = post_param_integer('delete', 0);
 
-        if (($delete == 1) && (!appengine_is_live())) {
+        if ($delete == 1) {
             actual_delete_zone($zone);
 
             // Show it worked / Refresh
@@ -935,7 +931,6 @@ class Module_admin_zones
             } else {
                 $new_zone = post_param_string('new_zone');
                 if ($new_zone != $zone) {
-                    appengine_live_guard();
                     check_zone_name($new_zone);
                 }
             }

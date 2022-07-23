@@ -13,7 +13,7 @@
  * @package    helper_scripts
  */
 
-/*EXTRA FUNCTIONS: php_sapi_name|set_time_limit*/
+/*EXTRA FUNCTIONS: set_time_limit*/
 
 @header('Content-Type: text/plain; charset=utf-8');
 
