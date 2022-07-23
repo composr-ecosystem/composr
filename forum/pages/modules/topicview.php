@@ -680,6 +680,8 @@ class Module_topicview
 
         // Poll
         if ((array_key_exists('poll', $topic_info)) && (addon_installed('polls'))) {
+            require_lang('cns_polls');
+
             $_poll = $topic_info['poll'];
             $voted_already = $_poll['voted_already'];
             $poll_results = (array_key_exists(0, $_poll['answers'])) && (array_key_exists('num_votes', $_poll['answers'][0]));

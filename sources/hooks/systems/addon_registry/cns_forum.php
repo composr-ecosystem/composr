@@ -1458,6 +1458,7 @@ class Hook_addon_registry_cns_forum
         require_css('cns');
 
         require_lang('cns');
+        require_lang('cns_polls');
         if (addon_installed('polls')) {
             require_lang('polls');
         }

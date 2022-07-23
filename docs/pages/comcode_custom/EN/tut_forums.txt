@@ -121,6 +121,7 @@ If your users are confused by the quick reply function (for example, they miss t
 Topics may have a poll attached to them (by any member) by default, so as to gauge opinion tied to a discussion. These polls are separate to the main Composr poll system, and have different options. Forum polls may only be used by members, and there are options to restrict:
  - viewing of poll results until the poll is 'un-blinded'
  - voting, such that that members must reply to the topic of the poll before they may vote in it
+Site staff can also set default topic poll options on a per-forum basis (such as restricting which options are allowed) using XML markup. See [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page] for more information.
 [/surround]
 
 [title="2"]Editing posts[/title]
@@ -145,6 +146,7 @@ Conversr was designed to be a powerful forum in its own right.
 
 Here are some features we have in Conversr that are mostly unique across forum software:
  - Blind polls (results hidden until voting ends)
+ - Default poll options (options can be default or required for all polls in a forum, and allowance of custom options can be disabled)
  - Private topics, rather than primitive private messages
  - Inline private posts (private messages embedded in public forum topics, so people can make private remarks to each other)
  - Forum introduction questions (a much more general concept than the silly 'password protected' forums, which duplicate what usergroup permissions are for)

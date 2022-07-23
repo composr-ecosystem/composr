@@ -132,6 +132,7 @@ class Module_topics
         $type = get_param_string('type', 'browse');
 
         require_lang('cns');
+        require_lang('cns_polls');
 
         inform_non_canonical_parameter('#^kfs.*$#');
         inform_non_canonical_parameter('#^mark_.*$#');
@@ -1753,7 +1754,7 @@ class Module_topics
         }
         if (addon_installed('polls')) {
             $options[] = [do_lang_tempcode('ADD_TOPIC_POLL'), 'add_poll', false, do_lang_tempcode('DESCRIPTION_ADD_TOPIC_POLL')];
-            $add_poll_url = build_url(['page' => '_SELF', 'type' => 'add_poll', 'adding_new_topic' => '1'], '_SELF');
+            $add_poll_url = build_url(['page' => '_SELF', 'type' => 'add_poll', 'adding_new_topic' => '1', 'forum_id' => $forum_id], '_SELF'); // The actual adding of the topic to the database will be done alongside the poll itself
             $js_function_calls[] = ['newTopicFormChangeActionIfAddingPoll', ['add_poll_url' => $add_poll_url]];
         }
         if (count($options) == 1) {
@@ -2147,12 +2148,6 @@ class Module_topics
             }
 
             $title = get_screen_title('_ADD_POST_UNDER', true, [escape_html($topic_title), escape_html($poster_name_if_guest_parent)]);
-        }
-
-        if ((post_param_integer('add_poll', 0) == 1) && (addon_installed('polls'))) {
-            // Show it worked / Refresh
-            $url = build_url(['page' => '_SELF', 'type' => 'add_poll'], '_SELF');
-            return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
         }
 
         url_default_parameters__disable();
@@ -2606,6 +2601,7 @@ class Module_topics
 
     /**
      * Used by Module_topics#add_poll() to validate input for new topic to be created together with the poll in one go.
+     * We don't combine this with the code in Module_topics#_add_topic() as that also is doing stuff to the read in input. Cleaner to copy and paste in this rare instance.
      */
     public function _validate_request_for_potential_topic()
     {
@@ -2943,6 +2939,7 @@ class Module_topics
     /**
      * Get Tempcode for a topic poll adding/editing form.
      *
+     * @param  ?AUTO_LINK $forum_id The ID of the forum to which the poll is being added (null: it is a private topic)
      * @param  SHORT_TEXT $question The poll question
      * @param  array $answers A list of current answers for the poll
      * @param  BINARY $is_private Whether it is a private poll (blind poll, where the results aren't visible until made public)
@@ -2952,13 +2949,43 @@ class Module_topics
      * @param  integer $maximum_selections The maximum number of selections for voters
      * @return Tempcode The Tempcode for the fields
      */
-    public function get_poll_form_fields(string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1) : object
+    public function get_poll_form_fields(?int $forum_id = null, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1) : object
     {
         require_lang('polls');
+        require_code('cns_polls_action2');
 
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('QUESTION'), do_lang_tempcode('DESCRIPTION_QUESTION'), 'question', $question, true));
-        $fields->attach(form_input_line_multi(do_lang_tempcode('ANSWER'), do_lang_tempcode('_DESCRIPTION_ANSWER'), 'answer_', $answers, 2));
+
+        // Check for default poll options for this forum
+        $_default_options = cns_get_default_poll_options($forum_id);
+
+        // Convert mandatory keys to readonly (mandatory is more concise for users from XML, but readonly is more concise for the form input API)
+        $default_options = [];
+        foreach ($_default_options['options'] as $option) {
+            $map = [
+                'name' => $option['name'],
+            ];
+            if (array_key_exists('mandatory', $option)) {
+                $map['readonly'] = true;
+            }
+            array_push($default_options, $map);
+        }
+        $default_options_names = array_column($default_options, 'name');
+
+        // Also add any $answers not already in the array, if we are editing a poll, so they appear when editing.
+        foreach ($answers as $answer) {
+            if (!in_array($answer, $default_options_names)) {
+                array_push($default_options, [
+                    'name' => $answer,
+                ]);
+            }
+        }
+
+        $fields->attach(form_input_line_multi(do_lang_tempcode('ANSWER'), do_lang_tempcode('_DESCRIPTION_ANSWER'), 'answer_', $default_options, 0, null, 'line', null, null, $_default_options['confined']));
+        if ($_default_options['confined']) {
+            $fields->attach(form_input_hidden('answer_-confined', json_encode($default_options_names)));
+        }
 
         $options = [
             [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', $is_open == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN')],
@@ -2977,7 +3004,7 @@ class Module_topics
     /**
      * The UI to add a poll.
      *
-     * @param  ?AUTO_LINK $topic_id The topic ID to add the poll to (null: it is instead gettable from a GET parameter named 'id')
+* @param  ?AUTO_LINK $topic_id The topic ID to add the poll to (null: we are adding a new topic at the same time, it's in the POST environment already and will be relayed to _add_poll)
      * @return Tempcode The UI
      */
     public function add_poll(?int $topic_id = null) : object // Type
@@ -2986,9 +3013,13 @@ class Module_topics
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
+        require_javascript('cns_forum');
+
         if ($topic_id === null) {
             $topic_id = get_param_integer('id', null);
         }
+
+        $forum_id = get_param_integer('forum_id', null);
 
         $adding_new_topic = ($topic_id === null) && (get_param_integer('adding_new_topic', 0) == 1);
 
@@ -3012,7 +3043,14 @@ class Module_topics
         }
 
         url_default_parameters__enable();
-        $fields->attach($this->get_poll_form_fields());
+        if ($topic_id === null && $forum_id === null) {
+            $fields->attach($this->get_poll_form_fields());
+        } else {
+            if ($forum_id === null && $topic_id !== null) {
+                $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
+            }
+            $fields->attach($this->get_poll_form_fields($forum_id));
+        }
         url_default_parameters__disable();
 
         // Find polls we can grab
@@ -3029,10 +3067,10 @@ class Module_topics
                 $list->attach(form_input_list_entry(strval($poll['id']), false, do_lang_tempcode('POLL_IN_LIST', escape_html($poll['po_question']), escape_html($poll['t_cache_first_username']))));
             }
             $fields->attach(form_input_list(do_lang_tempcode('EXISTING'), do_lang_tempcode('COPY_EXISTING_POLL'), 'existing', $list, null, false, false));
-
-            require_javascript('cns_forum');
-            $js_function_calls[] = 'moduleTopicsAddPoll';
         }
+
+        require_javascript('cns_forum');
+        $js_function_calls[] = 'moduleTopicsAddPoll';
 
         $title = get_screen_title('ADD_TOPIC_POLL');
         $submit_name = do_lang_tempcode('ADD');
@@ -3734,7 +3772,7 @@ class Module_topics
         $requires_reply = $poll_info['po_requires_reply'];
         $minimum_selections = $poll_info['po_minimum_selections'];
         $maximum_selections = $poll_info['po_maximum_selections'];
-        $fields = $this->get_poll_form_fields($question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections);
+        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections);
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
 
         $title = get_screen_title('EDIT_TOPIC_POLL');
