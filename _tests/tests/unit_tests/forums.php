@@ -35,7 +35,7 @@ class forums_test_set extends cms_test_case
         require_lang('cns');
 
         $this->access_mapping = [db_get_first_id() => 4];
-        $this->forum_id = cns_make_forum('TestAdd', 'Test', db_get_first_id(), $this->access_mapping, db_get_first_id(), 1, 1, 0, '', '', '', 'last_post', 0, 0, '', '', '', null, '', '', '', 'post_as_guest', 1);
+        $this->forum_id = cns_make_forum('TestAdd', 'Test', db_get_first_id(), $this->access_mapping, db_get_first_id(), 1, 1, 0, '', '', '', 'last_post', 0, 0, '', '', '', null, '', '', '', 'post_as_guest', 1, '');
 
         $this->assertTrue('TestAdd' == $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $this->forum_id]));
     }
@@ -58,7 +58,7 @@ class forums_test_set extends cms_test_case
             return;
         }
 
-        cns_edit_forum($this->forum_id, 'TestEdit', 'Test', db_get_first_id(), db_get_first_id(), 1, 1, 0, '', '', '', 'last_post', 0, 0, '', '', '', null, '', '', '', 'post_as_guest', 1, false);
+        cns_edit_forum($this->forum_id, 'TestEdit', 'Test', db_get_first_id(), db_get_first_id(), 1, 1, 0, '', '', '', 'last_post', 0, 0, '', '', '', null, '', '', '', 'post_as_guest', 1, false, '');
         $this->assertTrue('TestEdit' == $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $this->forum_id]));
     }
 

@@ -69,6 +69,21 @@ To get it to run you need to do the following:
 
 For Zoho to work you just need to enable IMAP in your Zoho Mail account settings.
 
+[title="2"]Default Poll Options[/title]
+
+There is an option to set default poll options for topic polls created within the forum. The field takes a special XML markup.
+
+The XML markup is as follows:
+[code="XML"]<defaultPollOptions confined="true">
+	<option mandatory="true">Foo</option>
+	<option mandatory="true">Bar</option>
+	<option>Optional</option>
+</defaultPollOptions>[/code]
+ - If a [tt]confined[/tt] attribute is defined on [tt]defaultPollOptions[/tt] with a value of true, then members are not allowed to add poll options that are not defined in the XML.
+ - [tt]defaultPollOptions[/tt] accepts any number of [tt]option[/tt] children where you can define default options for all polls created in the forum.
+ - On each [tt]option[/tt], you can specify a [tt]mandatory[/tt] attribute with a value of true, which requires all polls to contain that option.
+ - Any [tt]option[/tt] without a true [tt]mandatory[/tt] attribute will appear by default when creating a poll. However, members may remove the option when creating the poll.
+
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_forums"]Discussion forums[/page]

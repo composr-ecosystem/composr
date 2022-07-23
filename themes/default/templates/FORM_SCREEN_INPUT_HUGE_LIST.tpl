@@ -1,7 +1,7 @@
 {$REQUIRE_JAVASCRIPT,core_form_interfaces}
 <tr>
-	{$SET,randomised_id,{$?,{$IS_EMPTY,{NAME*}},{$RAND},{NAME*}}}
-	<th id="form-table-field-name--{$GET,randomised_id}" colspan="2" class="form-table-description-above-cell{+START,IF,{REQUIRED}} required{+END}">
+	{$SET,unique_field_id,{$?,{$IS_EMPTY,{NAME*}},{$RAND},{NAME*}}}
+	<th id="form-table-field-name--{$GET,unique_field_id}" colspan="2" class="form-table-description-above-cell{+START,IF,{REQUIRED}} required{+END}">
 		<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_TAGS,{PRETTY_NAME*}}" />
 
 		<p class="field-name lonely-label">
@@ -16,8 +16,8 @@
 	</th>
 </tr>
 
-<tr class="field-input" data-tpl="formScreenInputHugeList_input" data-tpl-params="{+START,PARAMS_JSON,INLINE_LIST,randomised_id}{_*}{+END}">
-	<td id="form-table-field-input--{$GET,randomised_id}" colspan="2" class="form-table-huge-field{+START,IF,{REQUIRED}} required{+END}">
+<tr class="field-input" data-tpl="formScreenInputHugeList_input" data-tpl-params="{+START,PARAMS_JSON,INLINE_LIST,unique_field_id}{_*}{+END}">
+	<td id="form-table-field-input--{$GET,unique_field_id}" colspan="2" class="form-table-huge-field{+START,IF,{REQUIRED}} required{+END}">
 		{+START,IF,{INLINE_LIST}}
 		<select {+START,IF_PASSED,AUTOCOMPLETE} autocomplete="{AUTOCOMPLETE*}"{+END} size="{+START,IF_PASSED,SIZE}{SIZE*}{+END}{+START,IF_NON_PASSED,SIZE}15{+END}" tabindex="{TABINDEX*}" class="input-list{REQUIRED*} form-control " id="{NAME*}" name="{NAME*}" data-submit-on-enter="1">
 		{+END}
