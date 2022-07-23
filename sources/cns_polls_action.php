@@ -35,10 +35,13 @@
 function cns_make_poll(int $topic_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, bool $check_permissions = true) : int
 {
     require_code('cns_polls');
+    require_code('cns_polls_action2');
 
     if (($check_permissions) && (!cns_may_attach_poll($topic_id))) {
         access_denied('I_ERROR');
     }
+
+    cns_validate_poll_answers($topic_id, $answers);
 
     $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', [
         'po_question' => $question,

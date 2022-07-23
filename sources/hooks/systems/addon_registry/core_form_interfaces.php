@@ -1327,20 +1327,42 @@ class Hook_addon_registry_core_form_interfaces
             'COMCODE' => '',
         ]));
 
-        $input = new Tempcode();
-        foreach (placeholder_array(1) as $k => $v) {
-            $input->attach(do_lorem_template('FORM_SCREEN_INPUT_LINE_MULTI', [
-                'CLASS' => '',
-                'MAXLENGTH' => '10',
-                'PRETTY_NAME' => $v,
-                'TABINDEX' => placeholder_random_id(),
-                'NAME_STUB' => placeholder_random_id(),
-                'I' => strval($k),
+        $placeholder_line_multi = [];
+        for ($i = 0; $i < 3; $i++) {
+            array_push($placeholder_line_multi, [
+                'NAME' => 'LOREM',
+                'I' => strval($i),
                 'REQUIRED' => '-required',
-                'DEFAULT' => '',
-            ]));
+                'READONLY' => $i === 1
+            ]);
         }
 
+        $input = new Tempcode();
+        $name = placeholder_random_id();
+        $input->attach(do_lorem_template('FORM_SCREEN_INPUT_LINE_MULTI', [
+            '_GUID' => 'e2da34b7564cebfd83da2859e4abd020',
+            'CLASS' => '',
+            'MAXLENGTH' => '10',
+            'PRETTY_NAME' => lorem_word(),
+            'TABINDEX' => placeholder_number(),
+            'NAME_STUB' => placeholder_random_id(),
+            'DEFAULT_ARRAY' => $placeholder_line_multi,
+            'PATTERN' => null,
+            'NUM_REQUIRED' => strval(placeholder_number())
+        ]));
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
+            'REQUIRED' => true,
+            'SKIP_LABEL' => false,
+            'NAME' => $name,
+            'PRETTY_NAME' => lorem_word(),
+            'DESCRIPTION' => lorem_sentence_html(),
+            'DESCRIPTION_SIDE' => '',
+            'INPUT' => $input,
+            'COMCODE' => '',
+        ]));
+
+        $input = new Tempcode();
+        $name = placeholder_random_id();
         foreach (placeholder_array(2) as $k => $v) {
             $input->attach(do_lorem_template('FORM_SCREEN_INPUT_TEXT_MULTI', [
                 'PRETTY_NAME' => lorem_word(),
@@ -1351,6 +1373,17 @@ class Hook_addon_registry_core_form_interfaces
                 'DEFAULT' => '',
             ]));
         }
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
+            'REQUIRED' => true,
+            'SKIP_LABEL' => false,
+            'NAME' => $name,
+            'PRETTY_NAME' => lorem_word(),
+            'DESCRIPTION' => lorem_sentence_html(),
+            'DESCRIPTION_SIDE' => '',
+            'INPUT' => $input,
+            'COMCODE' => '',
+        ]));
+
         $name = placeholder_random_id();
         $hidden = do_lorem_template('FORM_SCREEN_INPUT_HIDDEN_2', [
             'NAME' => $name,

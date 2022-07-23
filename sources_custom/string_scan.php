@@ -8269,6 +8269,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LEADER_BOARD_ROLLING_0
         LEADER_BOARD_ROLLING_1
         MODULE_TRANS_NAME_admin_leader_board
+        POLL_DEFAULT_OPTIONS_XML
+        DESCRIPTION_POLL_DEFAULT_OPTIONS_XML
+        POLL_XML_INVALID_ROOT
+        POLL_XML_NO_OPTIONS
+        POLL_XML_INVALID_CHILD
+        POLL_XML_INVALID_ROOT_ATTRIBUTE
+        POLL_XML_INVALID_ROW_ATTRIBUTE
+        POLL_NO_DUPLICATE_OPTIONS
+        POLL_XML_TRUE_FALSE_ONLY
     ')));
 
     $non_admin_files = [
@@ -11489,6 +11498,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_leader_board_PARAM_timestamp
         BLOCK_main_leader_board_PARAM_timestamp_TITLE
         LEADER_BOARD_SIZE
+        POLL_MISSING_MANDATORY_OPTION
+        POLL_INVALID_OPTION
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

@@ -107,6 +107,7 @@ class Module_admin_cns_forums extends Standard_crud_module
         $type = get_param_string('type', 'browse');
 
         require_lang('cns');
+        require_lang('cns_polls');
         require_css('cns_admin');
         require_javascript('cns_forum');
 
@@ -228,9 +229,10 @@ class Module_admin_cns_forums extends Standard_crud_module
      * @param  ID_TEXT $mail_nonmatch_policy Mailing list policy for non-matched users
      * @set block post_as_guest create_account
      * @param  BINARY $mail_unconfirmed_notice Mailing list policy: whether to highlight that members are not fully confirmed
+     * @param  LONG_TEXT $poll_default_options_xml XML which defines enforced options for polls within this forum
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $name = '', string $description = '', ?int $forum_grouping_id = null, ?int $parent_forum = null, ?int $position = null, int $post_count_increment = 1, int $order_sub_alpha = 0, string $intro_question = '', string $intro_answer = '', string $redirection = '', string $order = 'last_post', int $is_threaded = 0, int $allows_anonymous_posts = 1, string $mail_email_address = '', string $mail_server_type = '', string $mail_server_host = '', ?int $mail_server_port = null, string $mail_folder = '', string $mail_username = '', string $mail_password = '', string $mail_nonmatch_policy = 'post_as_guest', int $mail_unconfirmed_notice = 1) : array
+    public function get_form_fields(?int $id = null, string $name = '', string $description = '', ?int $forum_grouping_id = null, ?int $parent_forum = null, ?int $position = null, int $post_count_increment = 1, int $order_sub_alpha = 0, string $intro_question = '', string $intro_answer = '', string $redirection = '', string $order = 'last_post', int $is_threaded = 0, int $allows_anonymous_posts = 1, string $mail_email_address = '', string $mail_server_type = '', string $mail_server_host = '', ?int $mail_server_port = null, string $mail_folder = '', string $mail_username = '', string $mail_password = '', string $mail_nonmatch_policy = 'post_as_guest', int $mail_unconfirmed_notice = 1, string $poll_default_options_xml = '') : array
     {
         if ($forum_grouping_id === null) {
             $forum_grouping_id = get_param_integer('forum_grouping_id', db_get_first_id());
@@ -266,6 +268,10 @@ class Module_admin_cns_forums extends Standard_crud_module
         $fields->attach(form_input_list(do_lang_tempcode('TOPIC_ORDER'), do_lang_tempcode('DESCRIPTION_TOPIC_ORDER'), 'topic_order', $list));
         $fields->attach(form_input_tick(do_lang_tempcode('IS_THREADED'), do_lang_tempcode('DESCRIPTION_IS_THREADED'), 'is_threaded', $is_threaded == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('ALLOWS_ANONYMOUS_POSTS'), do_lang_tempcode('DESCRIPTION_ALLOWS_ANONYMOUS_POSTS'), 'allows_anonymous_posts', $allows_anonymous_posts == 1));
+
+        if (addon_installed('polls')) {
+            $fields->attach(form_input_text(do_lang_tempcode('POLL_DEFAULT_OPTIONS_XML'), do_lang_tempcode('DESCRIPTION_POLL_DEFAULT_OPTIONS_XML'), 'poll_default_options_xml', $poll_default_options_xml, false));
+        }
 
         if (function_exists('imap_open')) {
             require_lang('config');
@@ -597,7 +603,7 @@ class Module_admin_cns_forums extends Standard_crud_module
         }
         $r = $m[0];
 
-        $fields = $this->get_form_fields($r['id'], $r['f_name'], get_translated_text($r['f_description'], $GLOBALS['FORUM_DB']), $r['f_forum_grouping_id'], $r['f_parent_forum'], $r['f_position'], $r['f_post_count_increment'], $r['f_order_sub_alpha'], get_translated_text($r['f_intro_question'], $GLOBALS['FORUM_DB']), $r['f_intro_answer'], $r['f_redirection'], $r['f_order'], $r['f_is_threaded'], $r['f_allows_anonymous_posts'], $r['f_mail_email_address'], $r['f_mail_server_type'], $r['f_mail_server_host'], $r['f_mail_server_port'], $r['f_mail_folder'], $r['f_mail_username'], $r['f_mail_password'], $r['f_mail_nonmatch_policy'], $r['f_mail_unconfirmed_notice']);
+        $fields = $this->get_form_fields($r['id'], $r['f_name'], get_translated_text($r['f_description'], $GLOBALS['FORUM_DB']), $r['f_forum_grouping_id'], $r['f_parent_forum'], $r['f_position'], $r['f_post_count_increment'], $r['f_order_sub_alpha'], get_translated_text($r['f_intro_question'], $GLOBALS['FORUM_DB']), $r['f_intro_answer'], $r['f_redirection'], $r['f_order'], $r['f_is_threaded'], $r['f_allows_anonymous_posts'], $r['f_mail_email_address'], $r['f_mail_server_type'], $r['f_mail_server_host'], $r['f_mail_server_port'], $r['f_mail_folder'], $r['f_mail_username'], $r['f_mail_password'], $r['f_mail_nonmatch_policy'], $r['f_mail_unconfirmed_notice'], $r['f_poll_default_options_xml']);
 
         $delete_fields = new Tempcode();
         if (intval($id) != db_get_first_id()) {
@@ -718,7 +724,8 @@ class Module_admin_cns_forums extends Standard_crud_module
             $mail_username,
             $mail_password,
             $mail_nonmatch_policy,
-            $mail_unconfirmed_notice
+            $mail_unconfirmed_notice,
+            post_param_string('poll_default_options_xml')
         );
         $id = strval($_id);
 
@@ -811,7 +818,8 @@ class Module_admin_cns_forums extends Standard_crud_module
             $mail_password,
             $mail_nonmatch_policy,
             $mail_unconfirmed_notice,
-            post_param_integer('reset_intro_acceptance', 0) == 1
+            post_param_integer('reset_intro_acceptance', 0) == 1,
+            post_param_string('poll_default_options_xml')
         );
 
         if (!fractional_edit()) {

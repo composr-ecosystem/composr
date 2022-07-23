@@ -1,7 +1,7 @@
-{$SET,randomised_id,{$?,{$IS_EMPTY,{NAME*}},{$RAND},{NAME*}}}
+{$SET,unique_field_id,{$?,{$IS_EMPTY,{NAME*}},{$RAND},{NAME*}}}
 
 <tr>
-	<th id="form-table-field-name--{$GET,randomised_id}" colspan="2" class="form-table-description-above-cell{+START,IF,{REQUIRED}} required{+END}">
+	<th id="form-table-field-name--{$GET,unique_field_id}" colspan="2" class="form-table-description-above-cell{+START,IF,{REQUIRED}} required{+END}">
 		<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_TAGS,{PRETTY_NAME*}}" />
 
 		<p class="field-name lonely-label">
@@ -14,8 +14,8 @@
 	</th>
 </tr>
 
-<tr class="field-input" data-tpl="formScreenInputHuge_input" data-tpl-params="{+START,PARAMS_JSON,randomised_id,NAME}{_*}{+END}">
-	<td id="form-table-field-input--{$GET,randomised_id}" colspan="2" class="form-table-huge-field {+START,IF,{REQUIRED}} required{+END}">
+<tr class="field-input" data-tpl="formScreenInputHuge_input" data-tpl-params="{+START,PARAMS_JSON,unique_field_id,NAME}{_*}{+END}">
+	<td id="form-table-field-input--{$GET,unique_field_id}" colspan="2" class="form-table-huge-field {+START,IF,{REQUIRED}} required{+END}">
 		<div id="container-for-{NAME*}">
 			<textarea {+START,IF_PASSED,AUTOCOMPLETE} autocomplete="{AUTOCOMPLETE*}"{+END} tabindex="{TABINDEX*}" class="input-text{_REQUIRED} form-control form-control-wide{+START,IF,{SCROLLS}} textarea-scroll{+END}" cols="70" rows="{ROWS*}" id="{NAME*}" name="{NAME*}" data-textarea-auto-height="">{DEFAULT*}</textarea>
 
