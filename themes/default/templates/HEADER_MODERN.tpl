@@ -1,5 +1,5 @@
 {$,Add CSS class .with-white-navbar for a white navbar, .with-seed-navbar for seed-colored navbar}
-<header itemscope="itemscope" itemtype="http://schema.org/WPHeader" class="header header-modern with-white-navbar {+START,IF,{$MOBILE}}is-touch-interface{+END} {+START,IF,{$DESKTOP}}is-hover-interface{+END} {+START,IF,{$THEME_OPTION,sticky_header}}is-sticky{+END}" data-view="Header">
+<header itemscope="itemscope" itemtype="http://schema.org/WPHeader" class="header header-modern with-white-navbar{+START,IF,{$MOBILE}} is-touch-interface{+END}{+START,IF,{$DESKTOP}} is-hover-interface{+END}{+START,IF,{$THEME_OPTION,sticky_header}} is-sticky{+END}" data-view="Header">
 	{$,This allows screen-reader users (e.g. blind users) to jump past the panels etc to the main content}
 	<a accesskey="s" class="accessibility-hidden" href="#maincontent">{!SKIP_NAVIGATION}</a>
 

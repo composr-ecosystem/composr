@@ -43,6 +43,9 @@ html {
 	-webkit-tap-highlight-color: transparent;
 	font-size: 14px;
 	overflow-y: scroll; /* This makes rendering smoother, no jerk when browser realises a scrollbar is needed, or between pages with/without */
+	/*{+START,IF,{$AND,{$EQ,{$THEME_OPTION,header_type},modern},{$THEME_OPTION,sticky_header}}}*/
+		scroll-padding-top: {$GET,stickied_header_modern_height};
+	/*{+END}*/
 }
 
 @-ms-viewport {
