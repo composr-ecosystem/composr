@@ -19,8 +19,8 @@
 					<label for="give-amount">
 						{!GIVE}
 					</label>
-						<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="give-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" />
-						{!POINTS_L}
+					<input maxlength="7" data-prevent-input="[^\-\d{$BACKSLASH}{$DECIMAL_POINT*}]" size="7" id="give-amount" class="form-control input-integer-required" placeholder="({!AMOUNT})" type="text" name="amount" />
+					{!POINTS_L}
 				</span>
 				<span class="give-fragment">
 					<label for="give-reason">
@@ -68,6 +68,9 @@
 					<label for="trans_type" class="accessibility-hidden">
 						{!POINTS_CHOOSE_ACTION}
 					</label>
+					<label for="give-amount" class="accessibility-hidden">
+						{!AMOUNT}
+					</label>
 					<select id="trans_type" class="form-control js-click-check-gift-options js-change-check-gift-options" name="trans_type">
 						<option value="">({!POINTS_CHOOSE_ACTION})</option>
 						<option value="gift">{!GIVE}</option>
@@ -88,7 +91,7 @@
 					<button id="give-points-submit" class="btn btn-primary buttons--points" type="submit">{!PROCEED_SHORT}</button>
 					{+START,IF,{$HAS_PRIVILEGE,have_negative_gift_points}}
 						<span id="points-payee-span" style="display: none;">
-							<label for="trans_type">
+							<label for="trans_payee" class="accessibility-hidden">
 								{!PAYEE}
 							</label>
 							<select id="trans_payee" class="form-control" name="trans_payee">

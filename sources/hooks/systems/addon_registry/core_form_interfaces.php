@@ -1352,7 +1352,7 @@ class Hook_addon_registry_core_form_interfaces
         ]));
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
-            'SKIP_LABEL' => false,
+            'SKIP_LABEL' => true,
             'NAME' => $name,
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence_html(),
@@ -1375,7 +1375,7 @@ class Hook_addon_registry_core_form_interfaces
         }
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
-            'SKIP_LABEL' => false,
+            'SKIP_LABEL' => true,
             'NAME' => $name,
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence_html(),
