@@ -59,18 +59,9 @@ function init__caches()
         } elseif ((class_exists('Memcache')) && (($SITE_INFO['use_persistent_cache'] == 'memcache') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
             require_code('persistent_caching/memcache');
             $PERSISTENT_CACHE = new Persistent_caching_memcache();
-        } elseif ((function_exists('apc_fetch')) && (($SITE_INFO['use_persistent_cache'] == 'apc') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
-            require_code('persistent_caching/apc');
-            $PERSISTENT_CACHE = new Persistent_caching_apccache();
         } elseif ((function_exists('apcu_fetch')) && (($SITE_INFO['use_persistent_cache'] == 'apcu') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
             require_code('persistent_caching/apcu');
             $PERSISTENT_CACHE = new Persistent_caching_apcucache();
-        } elseif ((function_exists('xcache_get')) && (($SITE_INFO['use_persistent_cache'] == 'xcache') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
-            require_code('persistent_caching/xcache');
-            $PERSISTENT_CACHE = new Persistent_caching_xcache();
-        } elseif ((function_exists('wincache_ucache_get')) && (($SITE_INFO['use_persistent_cache'] == 'wincache') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
-            require_code('persistent_caching/wincache');
-            $PERSISTENT_CACHE = new Persistent_caching_wincache();
         } elseif ((file_exists(get_file_base(true) . '/caches/persistent/')) && (($SITE_INFO['use_persistent_cache'] == 'filesystem') || ($SITE_INFO['use_persistent_cache'] == '1'))) {
             require_code('persistent_caching/filesystem');
             $PERSISTENT_CACHE = new Persistent_caching_filesystem();

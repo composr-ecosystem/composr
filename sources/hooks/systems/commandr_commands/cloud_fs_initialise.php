@@ -50,6 +50,14 @@ class Hook_commandr_command_cloud_fs_initialise
 
             $dry_run = !array_key_exists('y', $options);
 
+            disable_php_memory_limit();
+            cms_disable_time_limit();
+
+            require_code('files2');
+
+            $operations = [];
+            $errors = [];
+
             $remote_storage_directory = get_remote_storage_directory(get_file_base(false));
             if (file_exists($remote_storage_directory)) {
                 $remote_storage_directory = realpath($remote_storage_directory);
@@ -60,14 +68,6 @@ class Hook_commandr_command_cloud_fs_initialise
                 }
                 $operations[] = 'mkdir -p ' . cms_escapeshellarg($remote_storage_directory);
             }
-
-            disable_php_memory_limit();
-            cms_disable_time_limit();
-
-            require_code('files2');
-
-            $operations = [];
-            $errors = [];
 
             // Find any directories/files under a CMS_CLOUD__REMOTE scope
             $results = [];

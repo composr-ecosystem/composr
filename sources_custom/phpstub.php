@@ -4978,9 +4978,9 @@ function get_object_vars(object $object)
 /**
  * Returns the type of interface between web server and PHP.
  *
- * @return string SAPI name.
+ * @return string SAPI name
  */
-function php_sapi_name()
+function php_sapi_name() : string
 {
     return '';
 }
@@ -4988,9 +4988,9 @@ function php_sapi_name()
 /**
  * Gets the current PHP version.
  *
- * @return string The PHP version.
+ * @return string The PHP version
  */
-function phpversion()
+function phpversion() : string
 {
     return '';
 }
@@ -5142,7 +5142,8 @@ usleep
 time_nanosleep
 time_sleep_until
 
-Disabled due to being locale-dependent, which is not thread-safe:
+Disabled due to being locale-dependent, which is not thread-safe...
+* 
 fgetcsv
 str_getcsv
 str_word_count
@@ -5188,6 +5189,7 @@ ob_list_handlers
 array_intersect_uassoc
 forward_static_call
 forward_static_call_array
+gc_mem_caches
 gc_collect_cycles
 gc_enable
 gc_disable
@@ -5385,17 +5387,16 @@ stream_supports_lock
 stream_wrapper_register
 stream_wrapper_restore
 stream_wrapper_unregister
-get_resources
-gc_mem_caches
-deflate_init
-deflate_add
-inflate_init
-inflate_add
+stream_isatty
 socket_addrinfo_lookup
 socket_addrinfo_connect
 socket_addrinfo_bind
 socket_addrinfo_explain
-stream_isatty
+get_resources
+deflate_init
+deflate_add
+inflate_init
+inflate_add
 imagecreatefrombmp
 imagebmp
 

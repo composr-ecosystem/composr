@@ -205,42 +205,6 @@ class file_type_safelisting_test_set extends cms_test_case
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
     }
 
-    public function testAppYaml()
-    {
-        $path = get_file_base() . '/app.yaml';
-        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
-
-        // --
-
-        $file_types = [];
-        $matches = [];
-        preg_match('#- url: \/\(\.\*\\\.\((.*)\)\)#m', $c, $matches);
-        $file_types = explode('|', $matches[1]);
-        $file_types = array_diff($file_types, ['swf']); // We don't do mime-typing but do allow download
-        sort($file_types);
-
-        $file_types_expected = $this->file_types;
-        $file_types_expected = array_diff($file_types_expected, ['php', 'htm']); // No files which may be web-processed/web-generated
-        sort($file_types_expected);
-
-        $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
-
-        // --
-
-        $file_types = [];
-        $matches = [];
-        preg_match('#  upload: \.\*\\\.\((.*)\)#m', $c, $matches);
-        $file_types = explode('|', $matches[1]);
-        $file_types = array_diff($file_types, ['swf']); // We don't do mime-typing but do allow download
-        sort($file_types);
-
-        $file_types_expected = $this->file_types;
-        $file_types_expected = array_diff($file_types_expected, ['bin', 'php', 'htm']); // No files which may be web-processed/web-generated
-        sort($file_types_expected);
-
-        $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
-    }
-
     public function testCodebookRef()
     {
         $path = get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt';
