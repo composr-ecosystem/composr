@@ -401,6 +401,7 @@ function init__webstandards()
         'text-decoration-thickness' => '(' . $enforce_length . '|from-font)', // Not supported in IE11 but used as progressive enhancement
         'text-size-adjust' => '(none|auto|\d%|\d\d%|100%)', // Relevant for mobile devices
         'writing-mode' => '(tb-rl|lr-tb)', // Not supported in IE11 but used as progressive enhancement
+        'scroll-padding-top' => $enforce_length,
 
         /* SVG embedded in website CSS */
         'fill' => $enforce_css_color,
