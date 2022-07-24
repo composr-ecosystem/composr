@@ -5143,7 +5143,7 @@ time_nanosleep
 time_sleep_until
 
 Disabled due to being locale-dependent, which is not thread-safe...
-* 
+
 fgetcsv
 str_getcsv
 str_word_count
