@@ -100,20 +100,11 @@ function cms_getimagesize(string $path, ?string $ext = null)
         $ext = get_file_extension($path);
     }
 
-    if (is_image($path, IMAGE_CRITERIA_VECTOR, true)) {
-        if (!is_file($path)) {
-            return false;
-        }
-
-        return [
-            null,
-            null,
-            filesize($path),
-            $ext
-        ];
+    if (!is_file($path)) {
+        return false;
     }
 
-    if ($ext == 'gif') {
+    if (($ext == 'gif') || ($ext == 'svg')) {
         $data = @cms_file_get_contents_safe($path, FILE_READ_LOCK);
         if ($data === false) {
             return false;
@@ -125,6 +116,15 @@ function cms_getimagesize(string $path, ?string $ext = null)
                 $ext
             ]
         );
+    }
+
+    if (is_image($path, IMAGE_CRITERIA_VECTOR, true)) {
+        return [
+            null,
+            null,
+            filesize($path),
+            $ext
+        ];
     }
 
     if (function_exists('getimagesize')) {
@@ -157,6 +157,13 @@ function cms_getimagesizefromstring(string $data, ?string $ext = null)
             $ext = 'gif';
         } elseif (stripos(substr($data, 500), '<svg') !== false) {
             $ext = 'svg';
+        }
+    }
+
+    if ($ext === 'svg') {
+        $matches = [];
+        if (preg_match('#<svg[^<>]*\s+width="(\d+(\.\d+)?)(px)?"\s+height="(\d+(\.\d+)?)(px)?"#', $data, $matches) != 0) {
+            return [intval(round(floatval($matches[1]))), intval(round(floatval($matches[4])))];
         }
     }
 

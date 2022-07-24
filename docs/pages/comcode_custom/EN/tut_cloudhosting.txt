@@ -133,7 +133,7 @@ We cannot guarantee that all third-party code will work correctly with Cloud-FS.
 
 [title="3"]Creating hosts[/title]
 
-It is up to you exactly how you want to create hosts. You may want to start with some standard VM image to clone out to create hosts, or just some kind of simple script to get things going.
+It is up to you exactly how you want to create hosts. You may want to start with some standard VM image to clone out to create hosts, or just some kind of simple script to get things going. We have a [url="sample script"]https://gitlab.com/composr-foundation/composr-vm-init[/url].
 
 We recommend using Git to deploy code and files (the [i]local[/i] and [i]propagated[/i] files). You can set up a central Git repository and clone the repository onto a host to activate it. Git is nice because you can pull in code changes quickly and easily using the non-bundled [tt]git_status[/tt] addon (the addon allows propagating a pull across hosts).
 

@@ -975,24 +975,22 @@ function form_input_line_comcode($pretty_name, $description, string $name, ?stri
  * @param  mixed $pretty_name A human intelligible name for this input field
  * @param  mixed $description A description for this input field
  * @param  ID_TEXT $name The base parameter name which this input field is for (as this takes multiple parameters, they are named <name><x>). This name must end with '_'.
- * @param  array $default_array An array of lines to use as default (at least this many lines, filled by this array, will be presented by default)
+ * @param  array $_default_array An array or map of lines to use as default (at least this many lines, filled by this array, will be presented by default) (map format: [name=>string, readonly=>boolean])
  * @param  integer $num_required The minimum number of inputs allowed
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  string $class CSS class for input
  * @set line email
  * @param  ?string $pattern Custom regex pattern, covers whole field value (null: none)
  * @param  ?string $pattern_error Custom regex pattern validation error (null: none)
+ * @param  boolean $confined Only items in $_default_array are allowed
  * @return Tempcode The input field
  */
-function form_input_line_multi($pretty_name, $description, string $name, array $default_array, int $num_required, ?int $tabindex = null, string $class = 'line', ?string $pattern = null, ?string $pattern_error = null) : object
+function form_input_line_multi($pretty_name, $description, string $name, array $_default_array, int $num_required, ?int $tabindex = null, string $class = 'line', ?string $pattern = null, ?string $pattern_error = null, bool $confined = false) : object
 {
     if (substr($name, -1) != '_' && substr($name, -2) != '[]') {
         $name .= '_';
     }
 
-    $tabindex = get_form_field_tabindex($tabindex);
-
-    $default_array[0] = filter_form_field_default($name, array_key_exists(0, $default_array) ? $default_array[0] : '');
     if ($num_required == 0) {
         $required = filter_form_field_required($name, false);
         if ($required) {
@@ -1000,39 +998,57 @@ function form_input_line_multi($pretty_name, $description, string $name, array $
         }
     }
 
-    $input = new Tempcode();
+    $tabindex = get_form_field_tabindex($tabindex);
+    $default_array = [];
+
+    // Convert answers to a map.
     $i = 0;
-    foreach ($default_array as $default) {
+    foreach ($_default_array as $default) {
         $_required = ($i < $num_required) ? '-required' : '';
-        $input->attach(do_template('FORM_SCREEN_INPUT_LINE_MULTI', [
-            '_GUID' => 'e2da34b7564cebfd83da2859e4abd020',
-            'CLASS' => $class,
-            'MAXLENGTH' => get_field_restrict_property('maxlength', $name),
-            'PRETTY_NAME' => $pretty_name,
-            'TABINDEX' => strval($tabindex),
-            'NAME_STUB' => $name,
-            'I' => strval($i),
-            'REQUIRED' => $_required,
-            'DEFAULT' => $default,
-            'PATTERN' => $pattern,
-        ]));
+        if (is_array($default) && array_key_exists('name', $default)) {
+            array_push($default_array, [
+                'NAME' => $default['name'],
+                'I' => strval($i),
+                'REQUIRED' => $_required,
+                'READONLY' => array_key_exists('readonly', $default)
+            ]);
+        } else {
+            array_push($default_array, [
+                'NAME' => $default,
+                'I' => strval($i),
+                'REQUIRED' => $_required,
+                'READONLY' => false
+            ]);
+        }
         $i++;
     }
+
+    // Add in blank / initial lines where applicable
     $num_to_show_initially = max($num_required, count($default_array) + 1);
     for (; $i < $num_to_show_initially; $i++) {
-        $input->attach(do_template('FORM_SCREEN_INPUT_LINE_MULTI', [
-            '_GUID' => '10fcbe72e80ea1be07c3dd1fd9e0719e',
-            'CLASS' => $class,
-            'MAXLENGTH' => get_field_restrict_property('maxlength', $name),
-            'PRETTY_NAME' => $pretty_name,
-            'TABINDEX' => strval($tabindex),
-            'NAME_STUB' => $name,
+        array_push($default_array, [
+            'NAME' => ($i === 0) ? filter_form_field_default($name, '') : '',
             'I' => strval($i),
             'REQUIRED' => ($i >= $num_required) ? '' : '-required',
-            'DEFAULT' => '',
-            'PATTERN' => $pattern,
-        ]));
+            'READONLY' => false
+        ]);
+        $i++;
     }
+
+    // Generate form
+    $input = new Tempcode();
+    $input->attach(do_template('FORM_SCREEN_INPUT_LINE_MULTI', [
+        '_GUID' => 'e2da34b7564cebfd83da2859e4abd020',
+        'CLASS' => $class,
+        'MAXLENGTH' => get_field_restrict_property('maxlength', $name),
+        'PRETTY_NAME' => $pretty_name,
+        'TABINDEX' => strval($tabindex),
+        'NAME_STUB' => $name,
+        'DEFAULT_ARRAY' => $default_array,
+        'PATTERN' => $pattern,
+        'NUM_REQUIRED' => strval($num_required),
+    ]));
+
     return _form_input(preg_replace('#\[\]$#', '', $name), $pretty_name, $description, $input, $num_required > 0, false, $tabindex, false, true, '', $pattern_error);
 }
 

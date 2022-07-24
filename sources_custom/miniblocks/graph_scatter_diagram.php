@@ -27,6 +27,7 @@ $x_axis_label = @cms_empty_safe($map['x_axis_label']) ? '' : $map['x_axis_label'
 $y_axis_label = @cms_empty_safe($map['y_axis_label']) ? '' : $map['y_axis_label'];
 
 $begin_at_zero = !isset($map['begin_at_zero']) ? true : ($map['begin_at_zero'] == '1');
+$clamp_y_axis = !isset($map['clamp_y_axis']) ? false : intval($map['clamp_y_axis']);
 
 $color = empty($map['color']) ? null : $map['color'];
 
@@ -50,7 +51,10 @@ while (($line = $sheet_reader->read_row()) !== false) {
 }
 $sheet_reader->close();
 
-$options = ['begin_at_zero' => $begin_at_zero];
+$options = ['begin_at_zero' => $begin_at_zero, 'clamp_y_axis' => $clamp_y_axis];
+if (!empty($map['id'])) {
+    $options['id'] = $map['id'];
+}
 
 $tpl = graph_scatter_diagram($datapoints, $x_axis_label, $y_axis_label, $options, $color, $width, $height);
 $tpl->evaluate_echo();

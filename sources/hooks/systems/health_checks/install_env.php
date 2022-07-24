@@ -47,6 +47,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $this->process_checks_section('testPHPVersion', 'PHP version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testPHPPlatform', 'PHP platform', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testMySQLVersion', 'MySQL version', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testMySQLSettings', 'MySQL settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testForInjectedAdScripts', 'Injected Ad Scripts', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testModSecurity', 'ModSecurity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDiskSpaceInstallation', 'Disk Space (Installation)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -334,7 +335,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
                 $mariadb_too_old = version_compare($version, $minimum_version, '<');
                 $this->assertTrue(!$mariadb_too_old, do_lang('MARIADB_TOO_OLD', $minimum_version, $version));
 
-                $max_tested_mariadb_version = '10.5'; // LEGACY needs maintaining
+                $max_tested_mariadb_version = '10.6'; // LEGACY needs maintaining
                 if (!is_maintained('mariadb')) {
                     $mariadb_too_new = version_compare($version, $max_tested_mariadb_version . '.1000', '>');
                     $this->assertTrue(
@@ -354,6 +355,38 @@ class Hook_health_check_install_env extends Hook_Health_Check
                         '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MYSQL_TOO_NEW', escape_html($max_tested_mysql_version)), escape_html(get_brand_base_url()), escape_html('mysql')) . '[/html]'
                     );
                 }
+            }
+        }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testMySQLSettings(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
+        if (strpos(get_db_type(), 'mysql') === false) {
+            $this->stateCheckSkipped('Not running MySQL (or MariaDB)');
+            return;
+        }
+
+        $min = 1024 * 1024 * 4;
+
+        if (isset($GLOBALS['SITE_DB']->connection_write)) {
+            $vars = $GLOBALS['SITE_DB']->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
+            foreach ($vars as $var) {
+                $current = intval($var['Value']);
+                $this->assertTrue($current >= $min, do_lang('MAX_ALLOWED_PACKET_TOO_LOW', integer_format($min), integer_format($current)));
             }
         }
     }

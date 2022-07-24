@@ -39,7 +39,7 @@
         updateForm2();
         $dom.on(allDayEvent, 'click', updateForm2);
 
-        form.addEventListener('submit', function () {
+        form.addEventListener('submit', function (submitEvent) {
             if ((form.elements['end_day'] != null) && (form.elements['end_day'].selectedIndex !== 0) || (form.elements['end'] != null) && (form.elements['end'].value !== '')) {
                 var startDate, endDate;
                 if (startDay) {
@@ -51,6 +51,7 @@
                 }
 
                 if (startDate > endDate) {
+                    $dom.cancelSubmit(submitEvent);
                     $cms.ui.alert('{!calendar:EVENT_CANNOT_AROUND;}');
                     return false;
                 }

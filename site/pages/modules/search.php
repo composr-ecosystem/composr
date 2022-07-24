@@ -234,6 +234,9 @@ class Module_search
         require_javascript('tree_list');
 
         $search_query = get_param_string('content', null, INPUT_FILTER_GET_COMPLEX);
+        if ($search_query == '') { // Don't allow blank search queries
+            $search_query = null;
+        }
 
         $user_label = do_lang_tempcode('SEARCH_USER');
 

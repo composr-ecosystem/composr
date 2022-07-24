@@ -110,7 +110,6 @@ PHP;
         require_lang('catalogues');
         require_code('catalogues');
         require_code('feedback');
-        require_css('catalogues');
 
         // Selectcode
         $select = null;

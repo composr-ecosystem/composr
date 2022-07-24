@@ -68,12 +68,17 @@ This section is not actively maintained. Package names may change, but it is des
 [i]These instructions have not been tested since changes have been made to them.[/i]
 
 [code="Bash"]
-apt install apache2 libapache2-mod-php php php-common php-cli php-apcu curl php-curl \
+apt install apache2 libapache2-mod-php php php-common php-fpm php-cli php-apcu curl php-curl \
 php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-mbstring php-pspell \
 php-xml php-intl php-json openssl mysql-server mysql-client \
-postfix nano wget lynx hunspell aspell aspell-en git openssh-server nano wget sysstat iotop \
+postfix nano wget lynx hunspell aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois dnsutils \
-lsof mlocate certbot python-certbot-apache poppler-utils
+lsof mlocate poppler-utils
+[/code]
+
+If you want to deploy Let's Encrypt certificates you may also consider:
+[code="Bash"]
+apt install certbot certbot python-certbot-apache
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:
@@ -99,17 +104,22 @@ Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need
 
 (the extension_dir may actually be different on different versions, so check that)
 
-[title="3"]Fedora/RHEL/CentOS[/title]
+[title="3"]Fedora/RHEL/AlmaLinux/CentOS Stream[/title]
 
 You may need to setup the [url="EPEL repository"]https://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/[/url] first.
 
 [code="Bash"]
-yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apcu php-pdo curl \
+yum install httpd mod_ssl mod_fcgid php php-common php-fpm php-cli php-pecl-apcu php-pdo curl \
 enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspell \
-php-xml php-intl php-json openssl mysql-server mysql \
-sendmail nano wget lynx hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
+php-xml php-intl php-json openssl mariadb-server mysql \
+sendmail nano wget hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois bind-utils \
-lsof mlocate certbot python3-certbot-apache dnf-automatic poppler-utils
+lsof mlocate dnf-automatic poppler-utils
+[/code]
+
+If you want to deploy Let's Encrypt certificates you may also consider:
+[code="Bash"]
+yum install certbot python3-certbot-apache
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:

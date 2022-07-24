@@ -180,7 +180,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
         $path = get_file_base(true) . '/data_custom/errorlog.php';
         $myfile_charset = null;
-        $myfile = cms_fopen_text_read($path, $myfile_charset);
+        $myfile = @cms_fopen_text_read($path, $myfile_charset);
         if ($myfile !== false) {
             $filesize = filesize($path);
 

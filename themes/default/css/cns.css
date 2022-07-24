@@ -948,21 +948,22 @@ hr.cns-sig-barrier {
 */
 
 /*{+START,CSS_MODE,mobile}*/
-	/* Modifications to make the top "Mark read" button appear in mobile mode */
+	/* Modifications to make the top "Mark read" button appear in mobile mode (other non-accessibility-redundancy stuff is hidden in mobile mode) */
+
 	.cns-topic-buttons.non-accessibility-redundancy,
 	.cns-forum-buttons.non-accessibility-redundancy {
 		display: block;
 	}
 
-	.cns-forum-buttons .cns-buttons-screen input,
-	.cns-topic-buttons .cns-buttons-screen input,
-	.cns-forum-buttons .cns-buttons-screen a,
-	.cns-topic-buttons .cns-buttons-screen a {
+	.cns-forum-buttons.non-accessibility-redundancy .cns-buttons-screen input,
+	.cns-topic-buttons.non-accessibility-redundancy .cns-buttons-screen input,
+	.cns-forum-buttons.non-accessibility-redundancy .cns-buttons-screen a,
+	.cns-topic-buttons.non-accessibility-redundancy .cns-buttons-screen a {
 		display: none;
 	}
 
-	.cns-forum-buttons .cns-buttons-screen input[alt="{!cns:MARK_READ}"],
-	.cns-topic-buttons .cns-buttons-screen input[alt="{!cns:MARK_READ}"] {
+	.cns-forum-buttons.non-accessibility-redundancy .cns-buttons-screen input[alt="{!cns:MARK_READ}"],
+	.cns-topic-buttons.non-accessibility-redundancy .cns-buttons-screen input[alt="{!cns:MARK_READ}"] {
 		display: inline-block;
 	}
 /*{+END}*/

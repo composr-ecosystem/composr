@@ -534,6 +534,9 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
     // CKEditor may leave white-space on the end, we have to assume it was not intentional
     $semihtml = preg_replace('#(\[\w+)&nbsp;#', '${1} ', $semihtml);
 
+    // Headings should not be in paragraphs
+    $semihtml = preg_replace('#<p>(\s*\[title[^\[\]]*\].*\[/title\]\s*)</p>#Us', '${1} ', $semihtml);
+
     $semihtml = wysiwygify_media_set($semihtml);
 
     // ---

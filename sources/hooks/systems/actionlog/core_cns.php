@@ -277,7 +277,16 @@ class Hook_actionlog_core_cns extends Hook_actionlog
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                 ],
             ],
-            'LOST_PASSWORD' => [
+            'LOST_PASSWORD_INITIALISE' => [
+                'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                ],
+            ],
+            'LOST_PASSWORD_FINALISE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,

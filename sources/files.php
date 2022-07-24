@@ -539,10 +539,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'stats' => '', // ISPConfig
         'php.ini' => '.*',
         '.htpasswd' => '.*',
-        'robots.txt' => '',
-        'manifest.json' => '',
-        'browserconfig.xml' => '',
-        'favicon.ico' => '', // Not used for Composr, but default path for other scripts on server
         '400.shtml' => '',
         '500.shtml' => '',
         '404.shtml' => '',
@@ -551,6 +547,13 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'dos.yaml' => '',
         'queue.yaml' => '',
         '.htaccess' => '',
+
+        // De facto standard
+        'robots.txt' => '',
+        'ads.txt' => '',
+        'manifest.json' => '',
+        'browserconfig.xml' => '',
+        'favicon.ico' => '', // Not used for Composr, but default path for other scripts on server
 
         // Authorisation files
         'bingsiteauth.xml' => '',

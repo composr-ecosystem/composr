@@ -137,9 +137,9 @@ PHP;
             while (($row = $sheet_reader->read_row()) !== false) {
                 // Process out the ignore value
                 $value = mixed();
-                foreach ($row as $j => &$value) {
+                foreach ($row as $j => $value) {
                     if ($value == $ignore_value) {
-                        $value = '';
+                        $row[$j] = '';
                     }
                 }
 
@@ -316,7 +316,24 @@ PHP;
         }
 
         // Work out filterability
-        $numeric_types = array_flip(['raw_number', 'integer', 'float', 'integer_comma', 'float_comma', 'float_1dp']);
+        $numeric_types = array_flip([
+            'raw_number',
+
+            'integer',
+            'integer_comma',
+            'integer_explicit_sign',
+            'integer_comma_explicit_sign',
+
+            'float',
+            'float_comma',
+            'float_explicit_sign',
+            'float_comma_explicit_sign',
+
+            'float_1dp',
+            'float_comma_1dp',
+            'float_1dp_explicit_sign',
+            'float_comma_1dp_explicit_sign',
+        ]);
         foreach ($headers as $j => &$header) {
             if ($header['FILTERABLE'] !== null) {
                 continue; // Already known
@@ -332,7 +349,7 @@ PHP;
                 $values[$i] = $this->apply_formatting($values[$i], $headers[$j]['SORTABLE_TYPE']);
             }
             $too_much_to_filter = (count($values) > 20);
-            $header['FILTERABLE'] = (($too_much_to_filter) || (count($values) == count($values_with_dupes)) || (isset($numeric_types[$header['SORTABLE_TYPE']]))) ? [] : $values;
+            $header['FILTERABLE'] = (($too_much_to_filter) || (/*No duplication*/count($values) == count($values_with_dupes)) || (isset($numeric_types[$header['SORTABLE_TYPE']]))) ? [] : $values;
             $header['SEARCHABLE'] = ($header['SORTABLE_TYPE'] == 'alphanumeric');
         }
 
@@ -391,24 +408,9 @@ PHP;
 
                 $value = $this->apply_formatting($value, $headers[$j]['SORTABLE_TYPE']);
 
-                switch (is_array($transform) ? (isset($transform[$j]) ? $transform[$j] : '') : $transform) {
-                    case 'country_names':
-                        require_code('locations');
-                        $_value = find_country_name_from_iso($value);
-                        if ($_value !== null) {
-                            $value = $_value;
-                        }
-                        break;
-
-                    case 'ucwords':
-                        $value = cms_mb_ucwords(cms_mb_strtolower($value));
-                        break;
-
-                    case 'non-numeric-italics':
-                        if ((!is_numeric($value)) && ($value != '')) {
-                            $value = protect_from_escaping('<em>' . escape_html($value) . '</em>');
-                        }
-                        break;
+                $_transform = is_array($transform) ? (isset($transform[$j]) ? $transform[$j] : '') : $transform;
+                if ($_transform != '') {
+                    $this->apply_transform($value, $_transform);
                 }
             }
 
@@ -712,35 +714,89 @@ PHP;
      */
     protected function apply_formatting(string $value, string $sortable_type) : string
     {
-        if (($sortable_type == 'integer') && (is_numeric($value))) {
-            $value = integer_format(intval($value));
+        $numeric = false;
+
+        if (strpos($sortable_type, '_comma') === false) {
+            $decimal_separator = '.';
+            $thousands_separator = ',';
+        } else {
+            $decimal_separator = ',';
+            $thousands_separator = '.';
         }
 
-        if (($sortable_type == 'float') && (is_numeric($value))) {
-            $num_digits = 0;
-            if (strpos($value, '.') !== false) {
-                $num_digits = strlen($value) - strpos($value, '.') - 1;
+        if (is_numeric($value)) {
+            if (strpos($sortable_type, 'integer') !== false) {
+                $value = number_format(floatval($value), 0, $decimal_separator, $thousands_separator);
+                $numeric = true;
             }
-            $value = float_format(floatval($value), $num_digits);
-        }
 
-        if (($sortable_type == 'float_1dp') && (is_numeric($value))) {
-            $num_digits = 1;
-            $value = float_format(floatval($value), $num_digits);
-        }
-
-        if (($sortable_type == 'integer_comma') && (is_numeric($value))) {
-            $value = number_format(intval($value), 0, ',', '.');
-        }
-
-        if (($sortable_type == 'float_comma') && (is_numeric($value))) {
-            $num_digits = 0;
-            if (strpos($value, ',') !== false) {
-                $num_digits = strlen($value) - strpos($value, ',') - 1;
+            if (strpos($sortable_type, 'float') !== false) {
+                if (strpos($sortable_type, '1dp') === false) {
+                    $num_digits = 0;
+                    if (strpos($value, '.') !== false) {
+                        $num_digits = strlen($value) - strpos($value, '.') - 1;
+                    }
+                    $value = number_format(floatval($value), $num_digits, $decimal_separator, $thousands_separator);
+                } else {
+                    $num_digits = 1;
+                    $value = number_format(floatval($value), $num_digits, $decimal_separator, $thousands_separator);
+                }
+                $numeric = true;
             }
-            $value = number_format(floatval($value), $num_digits, ',', '.');
+        }
+
+        if (strpos($sortable_type, '_explicit_sign') !== false) {
+            if ($value == '') {
+                $value = '+0';
+            } elseif ((substr($value, 0, 1) != '-') && ($numeric)) {
+                $value = '+' . $value;
+            }
         }
 
         return $value;
+    }
+
+    /**
+     * Apply a transform to a cell value.
+     *
+     * @param  string $value Value to apply transform to.
+     * @param  ID_TEXT $transform Transform type.
+     * @return string Formatted value.
+     */
+    protected function apply_transform(string &$value, string $transform) : string
+    {
+        switch ($transform) {
+            case 'country_names':
+                require_code('locations');
+                $_value = find_country_name_from_iso($value);
+                if ($_value !== null) {
+                    $value = $_value;
+                }
+                break;
+
+            case 'ucwords':
+                $value = cms_mb_ucwords(cms_mb_strtolower($value));
+                break;
+
+            case 'non-numeric-italics':
+                if ((!is_numeric($value)) && ($value != '')) {
+                    $value = protect_from_escaping('<em>' . escape_html($value) . '</em>');
+                }
+                break;
+
+            case 'flag':
+                $country = $value;
+                $theme_image = find_theme_image('flags_large/' . strtolower($country), true);
+
+                require_code('locations');
+                $_country = find_country_name_from_iso($country);
+
+                if ($theme_image == '') {
+                    $value = protect_from_escaping(escape_html($_country));
+                } else {
+                    $value = protect_from_escaping('<span class="accessibility_hidden">' . escape_html($_country) . '</span><img width="24" src="' . escape_html($theme_image) . '" alt="" title="' . escape_html($_country) . '" />');
+                }
+                break;
+        }
     }
 }

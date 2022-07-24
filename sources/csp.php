@@ -449,7 +449,7 @@ function csp_logging_script()
 
     set_http_status_code(204);
 
-    trigger_error('CSP violation: ' . $data, E_USER_NOTICE);
+    cms_error_log('CSP violation: ' . $data);
 }
 
 /**

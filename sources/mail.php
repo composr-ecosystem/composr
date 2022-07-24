@@ -256,7 +256,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
             if (function_exists('error_clear_last')) {
                 error_clear_last();
             }
-            $_worked = @mail($to_line, $subject_wrapped, $sending_message, $signed_headers . $headers, $additional);
+            $_worked = @mail($to_line, $subject_wrapped, str_replace(chr(0), '', $sending_message), $signed_headers . $headers, $additional);
             if ((!$worked) && (cms_error_get_last() != '')) {
                 $error = cms_error_get_last();
                 $worked = false;

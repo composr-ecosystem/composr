@@ -6,7 +6,8 @@
 
 <script {$CSP_NONCE_HTML}>
 	window.addEventListener('load',function () {
-		var ctx = document.getElementById('chart_{ID%}').getContext('2d');
+		var element = document.getElementById('chart_{ID%}');
+		var ctx = element.getContext('2d');
 
 		var data = {
 			datasets: [
@@ -24,13 +25,13 @@
 							{+END}
 						],
 						{+START,IF_NON_EMPTY,{CATEGORY}}
-							label: '{CATEGORY;/}',
+							label: '{CATEGORY;^/}',
 						{+END}
-						backgroundColor: '{COLOR;/}',
+						backgroundColor: '{COLOR;^/}',
 
 						tooltips: [
 							{+START,LOOP,DATAPOINTS}
-								'{TOOLTIP;/}',
+								'{TOOLTIP;^/}',
 							{+END}
 						],
 					},
@@ -39,7 +40,8 @@
 		};
 
 		var options = {
-			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
+			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
+			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
 				responsive: false,
 			{+END}
 			{+START,IF,{$EQ,{DATASETS},1}}
@@ -58,7 +60,7 @@
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;/}',
+							labelString: '{X_AXIS_LABEL;^/}',
 						}
 					{+END}
 				}],
@@ -66,26 +68,29 @@
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{Y_AXIS_LABEL;/}',
+							labelString: '{Y_AXIS_LABEL;^/}',
 						},
 					{+END}
-					{+START,IF,{BEGIN_AT_ZERO}}
-						ticks: {
+					ticks: {
+						{+START,IF,{BEGIN_AT_ZERO}}
 							beginAtZero: true,
-						},
-					{+END}
+						{+END}
+						{+START,IF,{CLAMP_Y_AXIS}}
+							max: {MAX%},
+						{+END}
+					},
 				}],
 			},
 			tooltips: {
 				callbacks: {
 					label: function(tooltipItem, data) {
-						var tooltip = data.datasets[tooltipItem.datasetIndex].tooltips[tooltipItem.index];
 						var ret = '';
+						var tooltip = data.datasets[tooltipItem.datasetIndex].tooltips[tooltipItem.index];
 						if (tooltip) {
 							ret += tooltip + ': ';
 						}
 						ret += '(' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
-						return ret;
+						return ret.split("\n");
 					},
 					mode: 'dataset',
 				},

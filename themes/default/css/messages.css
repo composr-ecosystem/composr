@@ -17,6 +17,10 @@
 	}
 /*{+END}*/
 
+.site-special-message ul {
+	text-align: left;
+}
+
 .page-running-contact .site-special-message {
 	text-align: justify;
 }

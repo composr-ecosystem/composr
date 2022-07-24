@@ -26,27 +26,12 @@ function init__site__pages__modules_custom__quiz($in)
     }
 
     $in = override_str_replace_exactly(
-        "\$entry_id = \$GLOBALS['SITE_DB']->query_insert('quiz_entries', [",
-        "
-        if (addon_installed('points')) {
-            require_code('points2');
-            \$cost = \$quiz['q_points_for_passing'] / 2;
-            charge_member(get_member(), \$cost, 'Entered a test');
-        }
-        <ditto>
-        ",
-        $in
-    );
-
-    $in = override_str_replace_exactly(
-        "// Give them their result if it is a test.",
+        "// We have not already got points",
         "
         <ditto>
-        if ((addon_installed('points')) && (\$quiz['q_points_for_passing'] != 0)) {
-            require_code('points2');
-            \$cost = \$quiz['q_points_for_passing'] / 2;
-            \$points_difference -= \$cost;
-        }
+        \$cost = intval(ceil(floatval(\$quiz['q_points_for_passing']) / 2.0));
+        charge_member(get_member(), \$cost, 'Entered a test');
+        \$points_difference -= \$cost;
         ",
         $in
     );

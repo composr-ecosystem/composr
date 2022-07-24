@@ -112,13 +112,21 @@ var SortableTableSort = (function(){
 
   // Float sort
   // ----------
-  sort.float = sort.numeric; // Just treat it as numeric!
+  sort.float = sort.numeric_comma; // Just treat it as numeric!
   sort.float_comma = sort.numeric_comma;
+  sort.float_explicit_sign = sort.numeric_comma;
+  sort.float_comma_explicit_sign = sort.numeric_comma;
+  sort.float_1dp = sort.numeric_comma;
+  sort.float_comma_1dp = sort.numeric_comma;
+  sort.float_1dp_explicit_sign = sort.numeric_comma;
+  sort.float_comma_1dp_explicit_sign = sort.numeric_comma;
 
   // Integer sort
   // ------------
-  sort.integer = sort.numeric; // Just treat it as numeric!
+  sort.integer = sort.numeric_comma; // Just treat it as numeric!
   sort.integer_comma = sort.numeric_comma;
+  sort.integer_explicit_sign = sort.numeric_comma;
+  sort.integer_comma_explicit_sign = sort.numeric_comma;
 
   // Currency sort
   // -------------
@@ -284,7 +292,8 @@ var SortableTable = (function(){
     AutoPageSizePrefix:"table-autopage:",
     AutoPageJumpPrefix:"table-page:",
     PageNumberPrefix:"table-page-number:",
-    PageCountPrefix:"table-page-count:"
+    PageCountPrefix:"table-page-count:",
+    AutomaticFullPaginationPrefix: "table-automatic-full-pagination"
   };
   window.sortable_table = table; // To allow external script access
 
@@ -850,7 +859,7 @@ var SortableTable = (function(){
       // then go back to the last page and show it.
       if (pagestart>=unfilteredrowcount) {
         pagestart = unfilteredrowcount-(unfilteredrowcount%pagesize);
-        if (pagestart>=unfilteredrowcount) { // Edge case
+        if ((pagestart>=unfilteredrowcount) && (pagestart - pagesize >= 0)) { // Edge case
           pagestart-=pagesize;
         }
         tdata.page = page = pagestart/pagesize;
@@ -884,6 +893,35 @@ var SortableTable = (function(){
       }
       if (tdata.container_count) {
         tdata.container_count.innerHTML = pagecount;
+      }
+    }
+
+    // Update full pagination (individual numbers written out, rather than simpler back/next)
+    if (tdata.container_automatic_full) {
+      var automaticFull = tdata.container_automatic_full;
+      while (automaticFull.firstChild) automaticFull.removeChild(automaticFull.firstChild);
+      for (var i = 0; i < pagecount; i++) {
+        var newNode;
+        if (i == page) {
+          newNode = document.createElement('span');
+        } else {
+          newNode = document.createElement('a');
+          newNode.href = '#';
+          newNode.onclick = Function(""," \
+            SortableTable.page(this,"+i+"); \
+            if (typeof window.scrollTo!='undefined') \
+            { \
+              try \
+              { \
+                window.scrollTo(0, $dom.findPosY(document.getElementById('"+t.id+"'), true)); \
+              } \
+              catch (e) {}; \
+            } \
+            return false; \
+          ");
+        }
+        newNode.textContent = (i + 1);
+        automaticFull.appendChild(newNode);
       }
     }
 
@@ -1042,7 +1080,7 @@ var SortableTable = (function(){
             c.onclick = function () {
                 SortableTable.pageJump(this, type);
                 try {
-                    scrollTo(0,$dom.findPosY(document.getElementById(t.id)));
+                    scrollTo(0,$dom.findPosY(document.getElementById(t.id), true));
                 } catch (e) {}
 
                 return false;
@@ -1056,12 +1094,19 @@ var SortableTable = (function(){
         if (hasClass(c, table.PageCountPrefix.replace(/:$/,''))) {
           tdata.container_count = c;
         }
+
+        if (hasClass(c, table.AutomaticFullPaginationPrefix.replace(/:$/,''))) {
+          tdata.container_automatic_full = c;
+        }
       } );
       if (val = classValue(t,table.PageNumberPrefix)) {
         tdata.container_number = document.getElementById(val);
       }
       if (val = classValue(t,table.PageCountPrefix)) {
         tdata.container_count = document.getElementById(val);
+      }
+      if (val = classValue(t,table.AutomaticFullPaginationPrefix)) {
+        tdata.container_automatic_full = document.getElementById(val);
       }
       return table.page(t,0,args);
     }

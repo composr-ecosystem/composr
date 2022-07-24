@@ -101,7 +101,7 @@ function tt_is_https()
     (function() {
         function z(){
             var s = document.createElement("script");
-            s.type = "application/javascript";
+            s.type = "text/javascript";
             s.async = "async";
             // Change the second string below (tapatalk.com/your-proxiy-URL.js) to a location you control
             // that proxies the Tapstream JavaScript URL. The Tapstream JavaScript is available at

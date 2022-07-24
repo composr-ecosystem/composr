@@ -10,10 +10,6 @@
     function CatalogueAddingScreen(params) {
         CatalogueAddingScreen.base(this, 'constructor', arguments);
 
-        if (params.jsFunctionCalls != null) {
-            $cms.executeJsFunctionCalls(params.jsFunctionCalls);
-        }
-
         catalogueFieldChangeWatching();
     }
 

@@ -30,6 +30,7 @@ $begin_at_zero = !isset($map['begin_at_zero']) ? true : ($map['begin_at_zero'] =
 $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
 $horizontal = !isset($map['horizontal']) ? false : ($map['horizontal'] == '1');
 $stacked = !isset($map['stacked']) ? true : ($map['stacked'] == '1');
+$clamp_y_axis = !isset($map['clamp_y_axis']) ? false : intval($map['clamp_y_axis']);
 
 $color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
@@ -62,8 +63,6 @@ for ($i = 0; $i < $num_datasets; $i++) {
         }
     }
 
-    arsort($datapoints);
-
     $datasets[] = [
         'label' => $header[$i + 1],
         'datapoints' => $datapoints,
@@ -71,7 +70,10 @@ for ($i = 0; $i < $num_datasets; $i++) {
 }
 $sheet_reader->close();
 
-$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'horizontal' => $horizontal, 'stacked' => $stacked];
+$options = ['begin_at_zero' => $begin_at_zero, 'show_data_labels' => $show_data_labels, 'horizontal' => $horizontal, 'stacked' => $stacked, 'clamp_y_axis' => $clamp_y_axis];
+if (!empty($map['id'])) {
+    $options['id'] = $map['id'];
+}
 
 $tpl = graph_stacked_bar_chart($datasets, $labels, $x_axis_label, $y_axis_label, $options, $color_pool, $width, $height);
 $tpl->evaluate_echo();

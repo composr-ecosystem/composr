@@ -281,12 +281,12 @@ function filter_naughty_harsh($in)
     return $in;
 }
 
-function do_lang($x, $a = null, $b = null, $c = null)
+function do_lang($x, $a = '', $b = '', $c = '')
 {
     return do_lang_tempcode($x, $a, $b, $c);
 }
 
-function do_lang_tempcode($x, $a = null, $b = null, $c = null)
+function do_lang_tempcode($x, $a = '', $b = '', $c = '')
 {
     global $PARSED;
     if (!isset($PARSED)) {
@@ -301,13 +301,13 @@ function do_lang_tempcode($x, $a = null, $b = null, $c = null)
         }
     }
     $out = strip_tags(str_replace('{1}', $a, str_replace('{2}', $b, $PARSED[$x])));
-    if (is_string($c)) {
-        $out = str_replace('{3}', $c, $out);
-    } else {
+    if (is_array($c)) {
         $out = @str_replace('{3}', $c[0], $out);
         $out = @str_replace('{4}', $c[1], $out);
         $out = @str_replace('{5}', $c[2], $out);
         $out = @str_replace('{6}', $c[3], $out);
+    } else {
+        $out = str_replace('{3}', $c, $out);
     }
     return rtrim($out);
 }

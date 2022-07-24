@@ -459,6 +459,10 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	vertical-align: middle;
 }
 
+.various-ticks label input, .various-ticks label span {
+	vertical-align: middle;
+}
+
 .various-ticks .input-individual-tick {
 }
 

@@ -6,13 +6,14 @@
 
 <script {$CSP_NONCE_HTML}>
 	window.addEventListener('load',function () {
-		var ctx = document.getElementById('chart_{ID%}').getContext('2d');
+		var element = document.getElementById('chart_{ID%}');
+		var ctx = element.getContext('2d');
 
 		var data = {
 			datasets: [
 				{+START,LOOP,DATASETS}
 					{
-						label: '{LABEL;/}',
+						label: '{LABEL;^/}',
 						data: [
 							{+START,LOOP,DATAPOINTS}
 								{VALUE`},
@@ -20,7 +21,7 @@
 						],
 						backgroundColor: [
 							{+START,LOOP,DATAPOINTS}
-								'{COLOR;/}',
+								'{COLOR;^/}',
 							{+END}
 						],
 					},
@@ -29,24 +30,35 @@
 
 			labels: [
 				{+START,LOOP,LABELS}
-					'{LABEL;/}',
+					'{LABEL;^/}',
 				{+END}
 			],
 		};
 
 		var options = {
-			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
+			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
+			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
 				responsive: false,
 			{+END}
-			legend: {
-				display: false,
-			},
+			{+START,IF,{$EQ,{DATASETS},1}}
+				legend: {
+					display: false,
+				},
+			{+END}
+			{+START,IF,{$NEQ,{DATASETS},1}}
+				legend: {
+					display: true,
+					labels: {
+					},
+					position: 'top',
+				},
+			{+END}
 			scales: {
 				xAxes: [{
 					{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;/}',
+							labelString: '{X_AXIS_LABEL;^/}',
 						},
 					{+END}
 					{+START,IF_PASSED_AND_TRUE,STACKED}
@@ -57,18 +69,28 @@
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{Y_AXIS_LABEL;/}',
+							labelString: '{Y_AXIS_LABEL;^/}',
 						},
 					{+END}
-					{+START,IF,{BEGIN_AT_ZERO}}
-						ticks: {
+					ticks: {
+						{+START,IF,{BEGIN_AT_ZERO}}
 							beginAtZero: true,
-						},
-					{+END}
+						{+END}
+						{+START,IF,{CLAMP_Y_AXIS}}
+							max: {MAX%},
+						{+END}
+					},
 					{+START,IF_PASSED_AND_TRUE,STACKED}
 						stacked: true,
 					{+END}
 				}],
+			},
+			tooltips: {
+				callbacks: {
+					label: function(tooltipItem, data) {
+						return data.datasets[tooltipItem.datasetIndex].label + ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+					},
+				},
 			},
 
 			plugins: {

@@ -159,7 +159,7 @@ function confluence_get_mappings()
     $mappings = [];
 
     global $CONFLUENCE_SPACE;
-    $pages = confluence_query('content?spaceKey=' . $CONFLUENCE_SPACE . '&limit=1000000&expand=ancestors');
+    $pages = confluence_query('content?spaceKey=' . $CONFLUENCE_SPACE . '&limit=1000000&expand=ancestors', false);
     if (empty($pages['results'])) {
         return $mappings; // Observed response if Confluence has some glitch
     }

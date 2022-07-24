@@ -26,7 +26,7 @@ The 'view an author' screen will display the author profile, as well as download
 
 [surround]
 [media width="150" description="Managing/Merging authors" float="right"]data_custom/images/docs/tut_authors/authors_manage.png[/media]
-The Admin Zone provides a module for merging authors. This feature is provided as it is likely that different users will refer to authors with slightly different names at the point of submission.
+The Admin Zone provides a screen for merging authors. This feature is provided as it is likely that different users will refer to authors with slightly different names at the point of submission.
 [/surround]
 
 [title="2"]Deleting an Author[/title]

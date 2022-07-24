@@ -121,7 +121,7 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
 
     $submit_name = do_lang_tempcode('PROCEED');
 
-    return do_template('JOIN_FORM', [
+    return do_template('CNS_JOIN_FORM', [
         '_GUID' => 'f6dba5638ae50a04562df50b1f217311',
         'TEXT' => '',
         'HIDDEN' => $hidden,

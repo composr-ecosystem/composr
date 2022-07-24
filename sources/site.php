@@ -54,6 +54,13 @@ function init__site()
         'redirect_url' => true,
         'redirect' => true,
         'redirect_passon' => true,
+
+        // Google Analytics
+        'utm_source' => false,
+        'utm_medium' => false,
+        'utm_campaign' => false,
+        'utm_term' => false,
+        'utm_content' => false,
     ];
     inform_non_canonical_parameter('#^(.*_)?(max|start|sort)$#');
     if (function_exists('get_value')) {

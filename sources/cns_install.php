@@ -175,6 +175,7 @@ function install_cns(?float $upgrade_from = null)
     require_code('cns_groups');
     require_code('cns_forums');
     require_lang('cns');
+    require_lang('cns_polls');
     require_lang('cns_config');
     require_lang('cns_special_cpf');
     require_code('cns_moderation_action');
@@ -396,6 +397,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_password', 'SHORT_TEXT');
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_nonmatch_policy', 'ID_TEXT', 'post_as_guest');
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_unconfirmed_notice', 'BINARY', 1);
+        $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_poll_default_options_xml', 'LONG_TEXT');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_smart_topic_notification', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
@@ -681,6 +683,7 @@ function install_cns(?float $upgrade_from = null)
             'f_mail_password' => 'SHORT_TEXT',
             'f_mail_nonmatch_policy' => 'ID_TEXT',
             'f_mail_unconfirmed_notice' => 'BINARY',
+            'f_poll_default_options_xml' => 'LONG_TEXT',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_forums', 'cache_num_posts', ['f_cache_num_posts']); // Used to find active forums
         $GLOBALS['FORUM_DB']->create_index('f_forums', 'subforum_parenting', ['f_parent_forum']);

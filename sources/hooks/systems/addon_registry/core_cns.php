@@ -335,6 +335,7 @@ class Hook_addon_registry_core_cns
             'themes/default/images/cns_emoticons/tired.gif.png',
             'themes/default/images/cns_emoticons/whew.gif.png',
             'lang/EN/cns.ini',
+            'lang/EN/cns_polls.ini',
             'lang/EN/cns_ranks.ini',
             'lang/EN/cns_special_cpf.ini',
             'lang/EN/cns_components.ini',
@@ -394,7 +395,7 @@ class Hook_addon_registry_core_cns
             'pages/modules/join.php',
             'sources/cns_join.php',
             'pages/modules/lost_password.php',
-            'themes/default/templates/JOIN_FORM.tpl',
+            'themes/default/templates/CNS_JOIN_FORM.tpl',
             'themes/default/templates/CNS_DELURK_CONFIRM.tpl',
             'themes/default/templates/CNS_JOIN_STEP2_SCREEN.tpl',
             'lang/EN/cns_lurkers.ini',
@@ -540,7 +541,7 @@ class Hook_addon_registry_core_cns
             'templates/CNS_POST_MAP_ITEM.tpl' => 'cns_post_map',
             'templates/BLOCK_MAIN_JOIN_DONE.tpl' => 'block_main_join_done',
             'templates/BLOCK_MAIN_JOIN.tpl' => 'block_main_join',
-            'templates/JOIN_FORM.tpl' => 'join_form',
+            'templates/CNS_JOIN_FORM.tpl' => 'cns_join_form',
             'text/COPPA_MAIL.txt' => 'coppa_mail',
         ];
     }
@@ -1355,9 +1356,9 @@ class Hook_addon_registry_core_cns
      *
      * @return Tempcode Preview
      */
-    public function tpl_preview__join_form() : object
+    public function tpl_preview__cns_join_form() : object
     {
-        return lorem_globalise(do_lorem_template('JOIN_FORM', [
+        return lorem_globalise(do_lorem_template('CNS_JOIN_FORM', [
             'HIDDEN' => '',
             'URL' => placeholder_url(),
             'FIELDS' => placeholder_fields(),

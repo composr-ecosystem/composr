@@ -205,8 +205,8 @@ ini_set('ocproducts.type_strictness','0');
 	{
 		if(is_string($err))
 		{
-			$str = $GLOBALS['xmlrpcstr']["multicall_${err}"];
-			$code = $GLOBALS['xmlrpcerr']["multicall_${err}"];
+			$str = $GLOBALS['xmlrpcstr']["multicall_{$err}"];
+			$code = $GLOBALS['xmlrpcerr']["multicall_{$err}"];
 		}
 		else
 		{
@@ -783,7 +783,7 @@ ini_set('ocproducts.type_strictness','0');
 			}
 			if(isset($wanted))
 			{
-				return array(0, "Wanted ${wanted}, got ${got} at param ${pno}");
+				return array(0, "Wanted {$wanted}, got {$got} at param {$pno}");
 			}
 			else
 			{
@@ -1087,7 +1087,7 @@ ini_set('ocproducts.type_strictness','0');
 					return new xmlrpcresp(
 						0,
 						$GLOBALS['xmlrpcerr']['incorrect_params'],
-						$GLOBALS['xmlrpcstr']['incorrect_params'] . ": ${errstr}"
+						$GLOBALS['xmlrpcstr']['incorrect_params'] . ": {$errstr}"
 					);
 				}
 			}

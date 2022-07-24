@@ -177,8 +177,8 @@ function testset_do_header($title)
 
         <style>
 END;
-    foreach (['_base', '_colours', 'global'] as $css) {
-        $css_path = css_enforce($css, 'default');
+    foreach (['_base', '_colours', 'global'] as $css_file) {
+        $css_path = css_enforce($css_file, 'default');
         if ($css_path != '') {
             @print(cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_BOM));
         }

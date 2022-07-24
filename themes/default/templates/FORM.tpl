@@ -2,7 +2,7 @@
 {$REQUIRE_JAVASCRIPT,checking}
 {$SET,form_name,form-{$RAND}}
 
-<div data-tpl="form" data-tpl-params="{+START,PARAMS_JSON,JS_FUNCTION_CALLS,SKIPPABLE}{_*}{+END}">
+<div data-tpl="form" data-tpl-params="{+START,PARAMS_JSON,SKIPPABLE}{_*}{+END}">
 	{+START,IF_NON_EMPTY,{TEXT}}
 		{$PARAGRAPH,{TEXT}}
 	{+END}

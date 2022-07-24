@@ -6,7 +6,8 @@
 
 <script {$CSP_NONCE_HTML}>
 	window.addEventListener('load',function () {
-		var ctx = document.getElementById('chart_{ID%}').getContext('2d');
+		var element = document.getElementById('chart_{ID%}');
+		var ctx = element.getContext('2d');
 
 		var data = {
 			datasets: [{
@@ -17,40 +18,74 @@
 				],
 				backgroundColor: [
 					{+START,LOOP,DATAPOINTS}
-						'{COLOR;/}',
+						'{COLOR;^/}',
 					{+END}
 				],
 			}],
 
 			labels: [
 				{+START,LOOP,DATAPOINTS}
-					'{LABEL;/}',
+					'{LABEL;^/}',
 				{+END}
 			],
 			tooltips: [
 				{+START,LOOP,DATAPOINTS}
-					'{TOOLTIP;/}',
+					'{TOOLTIP;^/}',
 				{+END}
 			],
 		};
 
 		var options = {
-			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
-				responsive: true,
-				maintainAspectRatio: false,
+			maintainAspectRatio: (element.parentNode.parentNode.style.display == 'none'), /*Needed for correct sizing in hidden tabs*/
+			{+START,IF,{$NOR,{$EQ,{WIDTH},100%},{$IS_EMPTY,{WIDTH}}}}
+				responsive: false,
 			{+END}
 			legend: {
 				display: false,
+			},
+			layout: {
+				{+START,IF,{SHOW_DATA_LABELS}}
+					{+START,IF,{$NOT,{HORIZONTAL}}}
+						padding: {
+							left: 5,
+							right: 5,
+							top: 25,
+							bottom: 5,
+						},
+					{+END}
+					{+START,IF,{HORIZONTAL}}
+						padding: {
+							left: 5,
+							right: 25,
+							top: 5,
+							bottom: 5,
+						},
+					{+END}
+				{+END}
+				{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
+					padding: {
+						left: 5,
+						right: 5,
+						top: 5,
+						bottom: 5,
+					},
+				{+END}
 			},
 			scales: {
 				{+START,IF_NON_EMPTY,{X_AXIS_LABEL}}
 					xAxes: [{
 						scaleLabel: {
 							display: true,
-							labelString: '{X_AXIS_LABEL;/}',
+							labelString: '{X_AXIS_LABEL;^/}',
 						},
 						ticks: {
-							autoSkip: false,
+						{+START,IF,{$AND,{HORIZONTAL},{BEGIN_AT_ZERO}}}
+							beginAtZero: true,
+						{+END}
+						autoSkip: false,
+						{+START,IF,{$AND,{HORIZONTAL},{CLAMP_Y_AXIS}}}
+							max: {MAX%},
+						{+END}
 						},
 					}],
 				{+END}
@@ -58,12 +93,18 @@
 					{+START,IF_NON_EMPTY,{Y_AXIS_LABEL}}
 						scaleLabel: {
 							display: true,
-							labelString: '{Y_AXIS_LABEL;/}',
+							labelString: '{Y_AXIS_LABEL;^/}',
 						},
 					{+END}
 					{+START,IF,{BEGIN_AT_ZERO}}
 						ticks: {
+						{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{BEGIN_AT_ZERO}}}
 							beginAtZero: true,
+						{+END}
+						autoSkip: false,
+						{+START,IF,{$AND,{$NOT,{HORIZONTAL}},{CLAMP_Y_AXIS}}}
+							max: {MAX%},
+						{+END}
 						},
 					{+END}
 				}],
@@ -71,16 +112,19 @@
 			tooltips: {
 				callbacks: {
 					label: function(tooltipItem, data) {
-						var tooltip = data.tooltips[tooltipItem.index];
 						var ret = '';
-						ret += data.datasets[0].data[tooltipItem.index];
+						{+START,IF,{$NOT,{SHOW_DATA_LABELS}}}
+							ret += data.datasets[0].data[tooltipItem.index];
+						{+END}
+						var tooltip = data.tooltips[tooltipItem.index];
 						if (tooltip != '') {
 							if (ret != '') {
 								ret += ': ';
 							}
 							ret += tooltip;
 						}
-						return ret;
+
+						return ret.split("\n");
 					},
 				},
 			},
@@ -92,7 +136,12 @@
 				{+START,IF,{SHOW_DATA_LABELS}}
 					datalabels: {
 						anchor: 'end',
-						align: 'top',
+						{+START,IF,{HORIZONTAL}}
+							align: 'end',
+						{+END}
+						{+START,IF,{$NOT,{HORIZONTAL}}}
+							align: 'top',
+						{+END}
 						color: 'black',
 						display: function(context) {
 							return context.dataset.data[context.dataIndex] > 0;

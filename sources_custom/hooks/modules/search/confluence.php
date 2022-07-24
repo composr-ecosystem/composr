@@ -183,12 +183,14 @@ class Hook_search_confluence extends FieldsSearchHook
 
         $out = [];
         foreach ($rows['results'] as $i => $row) {
-            $out[$i]['data'] = $row;
-            unset($rows[$i]);
-            if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
-                $out[$i]['orderer'] = $row[$remapped_orderer];
-            } else {
-                $out[$i]['orderer'] = $i;
+            if (isset($row['content'])) {
+                $out[$i]['data'] = $row;
+                unset($rows[$i]);
+                if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
+                    $out[$i]['orderer'] = $row[$remapped_orderer];
+                } else {
+                    $out[$i]['orderer'] = $i;
+                }
             }
         }
 

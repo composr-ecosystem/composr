@@ -1559,16 +1559,13 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                 $embed->attach($old_embed);
             }
 
-            if ($semiparse_mode) {
-                $temp_tpl = make_string_tempcode('<h' . strval($level) . (($level == 1) ? ' class="screen-title"' : '') . '>' . $embed->evaluate() . '</h' . strval($level) . '>');
-                break;
-            }
             $tpl_map = [
                 'ID' => ((substr($pass_id, 0, 5) == 'panel') || (strpos($pass_id, '_') === 0)) ? null : $uniq_id,
                 'TITLE' => $embed,
                 'HELP_URL' => '',
                 'HELP_TERM' => '',
                 'LEVEL' => strval($level),
+                'CLASS' => empty($attributes['class']) ? null : $attributes['class'],
             ];
             if (array_key_exists('sub', $attributes)) {
                 $tpl_map['SUB'] = protect_from_escaping(comcode_to_tempcode($attributes['sub'], $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member));

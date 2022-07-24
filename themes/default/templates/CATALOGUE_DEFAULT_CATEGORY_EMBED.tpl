@@ -1,3 +1,5 @@
+{$REQUIRE_CSS,catalogues}
+
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
 	{$SET,ajax_catalogue_default_category_embed_wrapper,ajax-catalogue-default-category-embed-wrapper-{$RAND%}}
 	{$SET,block_call_url,{$FACILITATE_AJAX_BLOCK_CALL,{BLOCK_PARAMS}}{+START,IF_PASSED,EXTRA_GET_PARAMS}{EXTRA_GET_PARAMS}{+END}&page={$PAGE&}}

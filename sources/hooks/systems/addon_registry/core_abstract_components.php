@@ -136,7 +136,9 @@ class Hook_addon_registry_core_abstract_components
             'themes/default/templates/GRAPH_PIE_CHART.tpl',
             'themes/default/templates/GRAPH_SCATTER_DIAGRAM.tpl',
             'themes/default/templates/GRAPH_STACKED_BAR_CHART.tpl',
+            'themes/default/templates/GRAPH_BUBBLE_BAR_CHART.tpl',
             'themes/default/javascript/charts.js',
+            'themes/default/css/graphs.css',
         ];
     }
 

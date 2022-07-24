@@ -177,6 +177,9 @@ Technical references for debugging:
 Composr has config options for:
 1) turning on a mail queue (for efficient delivery).
 2) keeping stuff in the queue until you let it out (when testing a site, the "E-mail debug mode" configuration option).
+3) completely disabling e-mail (the [tt]no_email_output[/tt] installation option)
+
+[title="3"]Queues and logging[/title]
 
 The queue can be viewed from:
 Admin Zone > Audit > E-mail queue/log
@@ -184,6 +187,28 @@ Admin Zone > Audit > E-mail queue/log
 All (&dagger;) e-mails are logged for 14 days (by default) in the same system, regardless of whether the queue is on or not. This is very useful for analysing what your site has been sending out.
 
 &dagger; Except support ticket e-mails if IMAP integration is enabled, newsletter e-mails, password reset e-mails, and some other very high security or high volume e-mails.
+
+[title="3"]Completely disabling e-mail[/title]
+
+You can temporarily disable e-mails by adding this to the end of the [tt]_config.php[/tt] file:
+[code]
+$SITE_INFO['no_email_output'] = '1';
+[/code]
+This is a good sure-fire way to add an escape switch to Composr. Note that with this option on even the e-mail queue is bypassed, any e-mails are thrown into a proverbial black hole.
+
+[title="3"]Excessive e-mail output[/title]
+
+Some users may occasionally have a problem with their website sending out a lot of e-mails.
+
+There are a couple of common possibilities for this:
+1) Large number of errors happening in the background
+2) Comment/forum spammers
+
+If the "Send error e-mails to the developers" option is on (and it is by default), and a lot of errors are happening in the background, up to 50 e-mails per day may be sent to the developers about these errors. You can confirm this be seeing if there are a lot of errors in the [tt]data_custom/errorlog.php[/tt] file (or Admin Zone > Audit > Low-level logging).
+
+If many members have notifications enabled and spammers are spamming comment forms / forums, that can lead to a lot of e-mail notifications going out.
+
+You can see some of the e-mails sent from the e-mail log (Admin Zone > Audit > E-mail queue/log). Note that a few kinds of e-mail aren't included here, like error e-mails sent directly to the developers, or particularly security-sensitive e-mail.
 
 [title="2"]Testing a server's mail support[/title]
 

@@ -537,6 +537,8 @@ function erase_comcode_page_cache()
  */
 function erase_theme_images_cache()
 {
+    push_query_limiting(false);
+
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'theme_images WHERE url LIKE \'themes/%/images/%\'');
 
     Self_learning_cache::erase_smart_cache();
@@ -579,4 +581,6 @@ function erase_theme_images_cache()
             }
         }
     }
+
+    pop_query_limiting();
 }

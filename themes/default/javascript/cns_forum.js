@@ -50,7 +50,7 @@
         stub = strVal(stub);
 
         var form = document.getElementById('post').form;
-        form.addEventListener('submit', function () {
+        form.addEventListener('submit', function (submitEvent) {
             var post = form.elements['post'],
                 textValue;
 
@@ -68,6 +68,7 @@
             }
 
             if (textValue.length > size) {
+                $dom.cancelSubmit(submitEvent);
                 $cms.ui.alert('{!cns:POST_TOO_LONG;}');
                 return false;
             }
@@ -98,20 +99,67 @@
     };
 
     $cms.functions.moduleTopicsAddPoll = function moduleTopicsAddPoll() {
-        var existing = document.getElementById('existing'),
-            form = existing.form;
+        // Adding an existing poll
+        var existing = document.getElementById('existing');
+        var form;
 
-        form.addEventListener('change', pollFormElementsChangeListener);
+        if (existing) {
+            form = existing.form;
+            existing.addEventListener('change', pollFormElementsChangeListener);
+        }
 
         function pollFormElementsChangeListener() {
-            var disableAll = (existing.selectedIndex !== 0);
+            var copyingExistingPoll = existing.selectedIndex !== 0; // If copying from an existing poll, we disable all the poll related fields
             for (var i = 0; i < form.elements.length; i++) {
-                if ((form.elements[i] !== existing) && (form.elements[i].id !== 'perform_keywordcheck') && ((form.elements[i].type === 'checkbox') || (form.elements[i].type === 'text'))) {
-                    $cms.form.setRequired(form.elements[i].name, (!disableAll) && ((form.elements[i].id === 'question') || (form.elements[i].id === 'answer_0')));
-                    $cms.form.setLocked(form.elements[i], disableAll);
+                var fieldName = form.elements[i].name;
+                var isPollField = ['question', 'is_open', 'requires_reply', 'may_unblind_own_poll', 'is_private', 'minimum_selections', 'maximum_selections'].includes(fieldName) || form.elements[i].name.substr(0, 7) == 'answer_';
+                var isRequiredPollField = ['question', 'answer_0'].includes(fieldName);
+                if (isPollField) {
+                    $cms.form.setRequired(form.elements[i].name, !copyingExistingPoll && isRequiredPollField);
+                    if (form.elements[i].type === 'checkbox') {
+                        form.elements[i].disabled = copyingExistingPoll;
+                    } else {
+                        form.elements[i].readOnly = copyingExistingPoll;
+                    }
                 }
             }
         }
+
+        // Adding / editing a poll
+        var form2 = document.getElementById('main-form');
+        form2.addEventListener('submit', function (submitEvent) {
+            var error;
+
+            var confinedElement = document.getElementById('answer_-confined');
+            var confined; // array
+            if (confinedElement) {
+                confined = JSON.parse(confinedElement.value);
+            }
+
+            var entries = [];
+            for (var i = 0; i < form2.elements.length; i++) {
+                if (!form2.elements[i].name.startsWith('answer_')) continue;
+                if (form2.elements[i].value !== '') {
+                    // For confined polls, if a disallowed option is provided, error
+                    if (typeof confined !== 'undefined' && confined.indexOf(form2.elements[i].value) === -1) {
+                        error = $util.format('{!cns_polls:POLL_INVALID_OPTION;^}', [form2.elements[i].value]);
+                        $dom.cancelSubmit(submitEvent);
+                        $cms.ui.alert(error);
+                        return false;
+                    }
+
+                    // Disallow duplicate options
+                    if (entries.indexOf(form2.elements[i].value) !== -1) {
+                        error = $util.format('{!cns_polls:POLL_NO_DUPLICATE_OPTIONS;^}', [form2.elements[i].value]);
+                        $dom.cancelSubmit(submitEvent);
+                        $cms.ui.alert(error);
+                        return false;
+                    }
+
+                    entries.push(form2.elements[i].value);
+                }
+            }
+        });
     };
 
     $cms.functions.moduleAdminCnsForums = function moduleAdminCnsForums() {

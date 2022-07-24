@@ -80,6 +80,12 @@ This short tutorial aims simply to clarify what all these terms to relate to, an
 </table>
 [/html]
 
+[title="2"]Password resets (Conversr-only)[/title]
+
+Members who have lost access to their account can generally reset their password, using the standard kind of e-mail-based reset process everyone expects.
+
+The exception is for members in a usergroup with the "Member's passwords may not be reset using 'Forgot your password' feature" privilege. Any super-administrator will automatically have their privilege, and webmasters may choose to give it in high-security situations where manual verification is expected in order to allow anyone to regain access to an account. For example, in corporations where access is given to employees and management wants manual in-house verification. For example, if an account is so important that the small chance of a member's e-mail having been hijacked is too high a risk to take.
+
 [title="2"]How to rename the guest user (advanced, Conversr-only)[/title]
 
 Some Composr users want to change the term "Guest", for whatever reason. For example, maybe a hotel doesn't want to confuse an anonymous user with an actual hotel guest on their website.
