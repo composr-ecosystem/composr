@@ -1091,6 +1091,8 @@ function _download_latest_data_no_banning()
         $data .= http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
     }
 
+    $data = trim($data) . "\n";
+
     cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS);
 }
 
