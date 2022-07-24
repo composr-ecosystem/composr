@@ -110,7 +110,7 @@ function graph_scatter_diagram(array $datapoints, $x_axis_label = '', $y_axis_la
 
     $bubble = false;
 
-    $max = 0;
+    $max = 0.0;
 
     $_datapoints = [];
     foreach ($datapoints as $p) {
@@ -207,7 +207,7 @@ function graph_line_chart(array $datasets, ?array $x_labels = null, $x_axis_labe
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    $max = 0;
+    $max = 0.0;
 
     if ($x_labels === null) {
         $x_labels = range(0, count($datasets[0]['datapoints']));
@@ -364,7 +364,7 @@ function graph_bar_chart(array $datapoints, $x_axis_label = '', $y_axis_label = 
 
     _normalise_graph_dims($width, $height);
 
-    $max = 0;
+    $max = 0.0;
 
     $i = 0;
     $_datapoints = [];
@@ -449,7 +449,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
 
     _normalise_graph_dims($width, $height);
 
-    $max = 0;
+    $max = 0.0;
 
     $_datasets = [];
     foreach ($datasets as $i => $dataset) {
@@ -537,7 +537,7 @@ function graph_stacked_bar_chart(array $datasets, array $labels, $x_axis_label =
  * @param  ?string $height Height (null: responsive)
  * @return Tempcode The chart
  */
-function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_label = '', string $z_axis_label = '', string $title = '', array $options = [], ?array $color_pool = null, ?string $width = null, ?string $height = null)
+function graph_bubble_bar_chart(array $datasets, $x_axis_label = '', $y_axis_label = '', $z_axis_label = '', string $title = '', array $options = [], ?array $color_pool = null, ?string $width = null, ?string $height = null) : object
 {
     _generate_graph_color_pool($color_pool);
 

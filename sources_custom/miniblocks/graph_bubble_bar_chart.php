@@ -30,20 +30,20 @@ $title = empty($map['title']) ? '' : $map['title'];
 
 $show_data_labels = !isset($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
 
-$color_pool = empty($map['color_pool']) ? array() : explode(',', $map['color_pool']);
+$color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
 $myfile = fopen(get_custom_file_base() . '/' . $map['file'], 'rb');
 
 $header = fgetcsv($myfile);
 
-$sheet_data = array();
+$sheet_data = [];
 while (($line = fgetcsv($myfile)) !== false) {
     if (implode('', $line) != '') {
         $sheet_data[] = $line;
     }
 }
 
-$datasets = array();
+$datasets = [];
 foreach ($sheet_data as $line) {
     $num_datasets = count($line);
 
@@ -52,14 +52,14 @@ foreach ($sheet_data as $line) {
         $datapoints[$header[$i + 1]] = isset($line[$i + 1]) ? $line[$i + 1] : '';
     }
 
-    $datasets[] = array(
+    $datasets[] = [
         'label' => $line[0],
         'datapoints' => $datapoints,
-    );
+    ];
 }
 fclose($myfile);
 
-$options = array('show_data_labels' => $show_data_labels);
+$options = ['show_data_labels' => $show_data_labels];
 if (!empty($map['id'])) {
     $options['id'] = $map['id'];
 }

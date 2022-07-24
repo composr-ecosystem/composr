@@ -191,7 +191,7 @@ All (&dagger;) e-mails are logged for 14 days (by default) in the same system, r
 [title="3"]Completely disabling e-mail[/title]
 
 You can temporarily disable e-mails by adding this to the end of the [tt]_config.php[/tt] file:
-[code]
+[code="PHP"]
 $SITE_INFO['no_email_output'] = '1';
 [/code]
 This is a good sure-fire way to add an escape switch to Composr. Note that with this option on even the e-mail queue is bypassed, any e-mails are thrown into a proverbial black hole.

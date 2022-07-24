@@ -79,6 +79,7 @@ class file_type_safelisting_test_set extends cms_test_case
                 serialize(['rar', 'application/octet-stream']),
                 serialize(['exe', 'application/octet-stream']),
                 serialize(['ttf', 'application/octet-stream']),
+                serialize(['js', 'application/javascript']),
             ])) {
                 continue;
             }

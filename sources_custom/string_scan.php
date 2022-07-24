@@ -418,6 +418,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_header_type_VALUE_modern
         CONFIG_OPTION_header_type_VALUE_side
         THEMEWIZARD_FILES
+        LOST_PASSWORD_FINALISE
+        LOST_PASSWORD_INITIALISE
+        MAX_ALLOWED_PACKET_TOO_LOW
         CONFIG_CATEGORY_CONTENT_EDITING
         CONFIG_CATEGORY_DESCRIPTION__CONTENT_EDITING
         CONFIG_CATEGORY_DESCRIPTION__ECOMMERCE_PRODUCTS
@@ -8604,6 +8607,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AMOUNT
         ANON
         ANSWER
+        ANSWERS
         ANY_PROBLEMS_CAN
         APPLY_TO_GROUP
         ARCHIVES

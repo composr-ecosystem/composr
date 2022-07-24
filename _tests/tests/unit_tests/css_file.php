@@ -417,6 +417,7 @@ class css_file_test_set extends cms_test_case
             'inlineblock-desktop',
             'associated-breadcrumbs',
             'associated-details-smaller',
+            'screen-title',
             'attachment-left',
             'attachment-right',
             'author-defined',
