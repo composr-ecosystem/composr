@@ -71,6 +71,9 @@ class standard_dir_files_test_set extends cms_test_case
             if (preg_match('#^(tracker|exports/backups|exports/static|exports/builds|uploads/website_specific/compo.sr/demonstratr/servers|themes/_unnamed_)/#', $path) != 0) {
                 continue;
             }
+            if (preg_match('#^themes/(_unnamed_)/#', $path) != 0) {
+                continue;
+            }
 
             if (basename($path) == '.htaccess') {
                 $md5 = md5(cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK));

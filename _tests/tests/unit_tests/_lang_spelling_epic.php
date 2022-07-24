@@ -37,6 +37,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we safelist them
         $okay_words = [
+            preg_replace('#\..*$#', '', get_domain()),
             'adddefaultcharset',
             'deserialised',
             'readlink',

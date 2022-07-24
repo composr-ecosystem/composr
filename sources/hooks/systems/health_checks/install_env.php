@@ -375,6 +375,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+
         if (strpos(get_db_type(), 'mysql') === false) {
             $this->stateCheckSkipped('Not running MySQL (or MariaDB)');
             return;

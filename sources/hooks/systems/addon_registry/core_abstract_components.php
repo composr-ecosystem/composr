@@ -165,6 +165,7 @@ class Hook_addon_registry_core_abstract_components
             'templates/GRAPH_PIE_CHART.tpl' => 'graph_pie_chart',
             'templates/GRAPH_BAR_CHART.tpl' => 'graph_bar_chart',
             'templates/GRAPH_STACKED_BAR_CHART.tpl' => 'graph_stacked_bar_chart',
+            'templates/GRAPH_BUBBLE_BAR_CHART.tpl' => 'graph_bubble_bar_chart',
         ];
     }
 
@@ -423,6 +424,8 @@ class Hook_addon_registry_core_abstract_components
             'DATASETS' => $datasets,
             'BEGIN_AT_ZERO' => true,
             'BUBBLE' => false,
+            'CLAMP_Y_AXIS' => false,
+            'MAX' => null,
         ]));
     }
 
@@ -478,6 +481,8 @@ class Hook_addon_registry_core_abstract_components
             'BEGIN_AT_ZERO' => true,
             'SHOW_DATA_LABELS' => true,
             'FILL' => false,
+            'CLAMP_Y_AXIS' => false,
+            'MAX' => null,
         ]));
     }
 
@@ -565,6 +570,8 @@ class Hook_addon_registry_core_abstract_components
             'BEGIN_AT_ZERO' => true,
             'SHOW_DATA_LABELS' => true,
             'HORIZONTAL' => false,
+            'CLAMP_Y_AXIS' => false,
+            'MAX' => null,
         ]));
     }
 
@@ -650,6 +657,91 @@ class Hook_addon_registry_core_abstract_components
             'SHOW_DATA_LABELS' => true,
             'HORIZONTAL' => false,
             'STACKED' => true,
+            'CLAMP_Y_AXIS' => false,
+            'MAX' => null,
+        ]));
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return Tempcode Preview
+     */
+    public function tpl_preview__graph_bubble_bar_chart() : object
+    {
+        $datapoints_a = [
+            [
+                'label' => lorem_phrase(),
+                'value' => 1,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'label' => lorem_phrase(),
+                'value' => 3,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+        $datapoints_b = [
+            [
+                'label' => lorem_phrase(),
+                'value' => 2,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'label' => lorem_phrase(),
+                'value' => 2,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+
+        $_datapoints_a = [];
+        foreach ($datapoints_a as $x => $p) {
+            $_datapoints_a[] = [
+                'LABEL' => $p['label'],
+                'VALUE' => strval($p['value']),
+                'TOOLTIP' => $p['tooltip'],
+            ];
+        }
+        $_datapoints_b = [];
+        foreach ($datapoints_b as $x => $p) {
+            $_datapoints_b[] = [
+                'LABEL' => $p['label'],
+                'VALUE' => strval($p['value']),
+                'TOOLTIP' => $p['tooltip'],
+            ];
+        }
+
+        $_datasets = [];
+        $_datasets[] = [
+            'Y_LABEL' => 'A',
+            'DATAPOINTS' => $_datapoints_a,
+        ];
+        $_datasets[] = [
+            'Y_LABEL' => 'B',
+            'DATAPOINTS' => $_datapoints_b,
+        ];
+
+        $_labels = [
+            'A',
+            'B',
+        ];
+
+        return lorem_globalise(do_lorem_template('GRAPH_BUBBLE_BAR_CHART', [
+            'ID' => lorem_word(),
+            'WIDTH' => '500px',
+            'HEIGHT' => '500px',
+            'X_AXIS_LABEL' => lorem_phrase(),
+            'Y_AXIS_LABEL' => lorem_phrase(),
+            'Z_AXIS_LABEL' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'LABELS' => $_labels,
+            'DATASETS' => $_datasets,
+            'SHOW_DATA_LABELS' => true,
+            'COLOR' => '#FF0000',
+            'MIN' => '1',
+            'MAX' => '5',
         ]));
     }
 }
