@@ -408,6 +408,8 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
 
+        $GLOBALS['FORUM_DB']->add_table_field('f_polls', 'po_closing_time', '?TIME');
+
         $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'p_changed_usergroup_to', '?GROUP');
 
         $max = 100;
@@ -821,6 +823,7 @@ function install_cns(?float $upgrade_from = null)
             'po_minimum_selections' => 'INTEGER',
             'po_maximum_selections' => 'INTEGER',
             'po_requires_reply' => 'BINARY',
+            'po_closing_time' => '?TIME'
         ]);
 
         $GLOBALS['FORUM_DB']->create_table('f_poll_answers', [

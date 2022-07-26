@@ -104,8 +104,17 @@ function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id
         return false;
     }
 
+    require_code('cns_polls_action3');
+
     if ($member_id === null) {
         $member_id = get_member();
+    }
+
+    // If requireTopicPoll is true, disallow deleting a poll from a topic. The entire topic should be deleted instead.
+    $default_poll_options = [];
+    $default_poll_options = cns_get_default_poll_options($forum_id);
+    if ($default_poll_options['requireTopicPoll']) {
+        return false;
     }
 
     if (has_privilege($member_id, 'delete_midrange_content', 'topics', ['forums', $forum_id])) {
@@ -181,6 +190,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true) : ?arr
         'maximum_selections' => $poll_info[0]['po_maximum_selections'],
         'requires_reply' => $poll_info[0]['po_requires_reply'],
         'is_open' => $poll_info[0]['po_is_open'],
+        'closing_time' => $poll_info[0]['po_closing_time'],
         'answers' => $answers,
         'total_votes' => $poll_info[0]['po_cache_total_votes'],
     ];

@@ -1741,24 +1741,33 @@ class Module_topics
         }
         $hidden_fields->attach(form_input_hidden('from_url', get_self_url(true)));
         $js_function_calls = $this->_post_javascript();
-        $options = [];
+        $options = []; // [pretty name, name, ticked, description, read only]
         if (!is_guest()) {
             if (addon_installed('cns_signatures')) {
                 if (get_option('enable_skip_sig') == '1') {
-                    $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', false, do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE')];
+                    $options[] = [do_lang_tempcode('SKIP_SIGNATURE'), 'skip_sig', false, do_lang_tempcode('DESCRIPTION_SKIP_SIGNATURE'), false];
                 }
             }
             if (cns_forum_allows_anonymous_posts($forum_id)) {
-                $options[] = [do_lang_tempcode('_MAKE_ANONYMOUS_POST'), 'anonymous', false, do_lang_tempcode('MAKE_ANONYMOUS_POST_DESCRIPTION')];
+                $options[] = [do_lang_tempcode('_MAKE_ANONYMOUS_POST'), 'anonymous', false, do_lang_tempcode('MAKE_ANONYMOUS_POST_DESCRIPTION'), false];
             }
         }
         if (addon_installed('polls')) {
-            $options[] = [do_lang_tempcode('ADD_TOPIC_POLL'), 'add_poll', false, do_lang_tempcode('DESCRIPTION_ADD_TOPIC_POLL')];
+            require_code('cns_polls_action3');
+
             $add_poll_url = build_url(['page' => '_SELF', 'type' => 'add_poll', 'adding_new_topic' => '1', 'forum_id' => $forum_id], '_SELF'); // The actual adding of the topic to the database will be done alongside the poll itself
-            $js_function_calls[] = ['newTopicFormChangeActionIfAddingPoll', ['add_poll_url' => $add_poll_url]];
+            $default_poll_options = cns_get_default_poll_options($forum_id);
+            $options[] = [do_lang_tempcode('ADD_TOPIC_POLL'), 'add_poll', $default_poll_options['requireTopicPoll'], do_lang_tempcode('DESCRIPTION_ADD_TOPIC_POLL'), $default_poll_options['requireTopicPoll']];
+
+            // Only load JS for toggling form action URL if topic polls are not required. Else, forcefully re-direct to add poll.
+            if (!$default_poll_options['requireTopicPoll']) {
+                $js_function_calls[] = ['newTopicFormChangeActionIfAddingPoll', ['add_poll_url' => $add_poll_url]];
+            } else {
+                $post_url = $add_poll_url;
+            }
         }
         if (count($options) == 1) {
-            $specialisation->attach(form_input_tick($options[0][0], $options[0][3], $options[0][1], $options[0][2]));
+            $specialisation->attach(form_input_tick($options[0][0], $options[0][3], $options[0][1], $options[0][2], null, '1', $options[0][4]));
         } else {
             $specialisation2->attach(form_input_various_ticks($options, ''));
         }
@@ -2940,6 +2949,7 @@ class Module_topics
      * Get Tempcode for a topic poll adding/editing form.
      *
      * @param  ?AUTO_LINK $forum_id The ID of the forum to which the poll is being added (null: it is a private topic)
+     * @param  boolean $new_poll Whether we are making a new poll opposed to editing a poll
      * @param  SHORT_TEXT $question The poll question
      * @param  array $answers A list of current answers for the poll
      * @param  BINARY $is_private Whether it is a private poll (blind poll, where the results aren't visible until made public)
@@ -2947,12 +2957,13 @@ class Module_topics
      * @param  BINARY $requires_reply Whether a reply to the poll topic is required before voting
      * @param  integer $minimum_selections The minimum number of selections for voters
      * @param  integer $maximum_selections The maximum number of selections for voters
+     * @param  ?TIME $poll_closing_time The time this poll will close voting (null: the poll will not close automatically)
      * @return Tempcode The Tempcode for the fields
      */
-    public function get_poll_form_fields(?int $forum_id = null, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1) : object
+    public function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null) : object
     {
         require_lang('polls');
-        require_code('cns_polls_action2');
+        require_code('cns_polls_action3');
 
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('QUESTION'), do_lang_tempcode('DESCRIPTION_QUESTION'), 'question', $question, true));
@@ -2981,23 +2992,80 @@ class Module_topics
                 ]);
             }
         }
-
         $fields->attach(form_input_line_multi(do_lang_tempcode('ANSWERS'), do_lang_tempcode('_DESCRIPTION_ANSWERS'), 'answer_', $default_options, 0, null, 'line', null, null, $_default_options['confined']));
         if ($_default_options['confined']) {
-            $fields->attach(form_input_hidden('answer_-confined', json_encode($default_options_names)));
+            $fields->attach(form_input_hidden('answers-confined', json_encode($default_options_names)));
         }
 
-        $options = [
-            [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', $is_open == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN')],
-            [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', $requires_reply == 1, do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY')],
-        ];
+        if ($_default_options['minimumSelections'] !== null) {
+            $fields->attach(form_input_integer(do_lang_tempcode('MINIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MINIMUM_SELECTIONS'), 'minimum_selections', $_default_options['minimumSelections'], true, null, null, null, true));
+        } else {
+            $fields->attach(form_input_integer(do_lang_tempcode('MINIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MINIMUM_SELECTIONS'), 'minimum_selections', $minimum_selections, true));
+        }
+        if ($_default_options['maximumSelections'] !== null) {
+            $fields->attach(form_input_integer(do_lang_tempcode('MAXIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MAXIMUM_SELECTIONS'), 'maximum_selections', $_default_options['maximumSelections'], true, null, null, null, true));
+        } else {
+            $fields->attach(form_input_integer(do_lang_tempcode('MAXIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MAXIMUM_SELECTIONS'), 'maximum_selections', $maximum_selections, true));
+        }
+
+        $options = []; // [pretty name, name, ticked, description, read only]
+
+        // Maintain current value for is_open rather than forcing it from XML if we are editing a poll
+        if ($new_poll && $_default_options['votingEnabled']) {
+            $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', true, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), true];
+        } else {
+            $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', $is_open == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), $_default_options['votingEnabled']];
+        }
         if ((has_privilege(get_member(), 'may_unblind_own_poll')) && ($is_private !== null)) {
-            $options[] = [do_lang_tempcode('POLL_IS_PRIVATE'), 'is_private', $is_private == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_PRIVATE')];
+            if ($_default_options['confidential'] !== null) {
+                $options[] = [do_lang_tempcode('POLL_IS_PRIVATE'), 'is_private', $_default_options['confidential'], do_lang_tempcode('DESCRIPTION_POLL_IS_PRIVATE'), true];
+            } else {
+                $options[] = [do_lang_tempcode('POLL_IS_PRIVATE'), 'is_private', $is_private == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_PRIVATE'), false];
+            }
+        }
+        if ($_default_options['requiresReply'] !== null) {
+            $options[] = [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', $_default_options['requiresReply'], do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY'), true];
+        } else {
+            $options[] = [do_lang_tempcode('_POLL_REQUIRES_REPLY'), 'requires_reply', $requires_reply == 1, do_lang_tempcode('DESCRIPTION_POLL_REQUIRES_REPLY'), false];
         }
         $fields->attach(form_input_various_ticks($options, ''));
 
-        $fields->attach(form_input_integer(do_lang_tempcode('MINIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MINIMUM_SELECTIONS'), 'minimum_selections', $minimum_selections, true));
-        $fields->attach(form_input_integer(do_lang_tempcode('MAXIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MAXIMUM_SELECTIONS'), 'maximum_selections', $maximum_selections, true));
+        if ($_default_options['votingPeriodHours'] !== null) {
+            $actual_poll_closing_time = time();
+            $schedule = post_param_date('schedule');
+            $topic_id = get_param_integer('id', null);
+
+            // If we are editing a poll, keep the current poll closing time value
+            if (!$new_poll) {
+                $actual_poll_closing_time = $poll_closing_time;
+
+            // If votingPeriodHours is false, do not allow setting a closing time
+            } elseif ($_default_options['votingPeriodHours'] === false) {
+                $actual_poll_closing_time = null;
+
+            // If a topic scheduled time was provided, add votingPeriodHours to that
+            } elseif ($schedule !== null) {
+                $actual_poll_closing_time = $schedule + intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
+
+            // If a topic ID was provided, add votingPeriodHours to t_cache_first_time (in case we are editing a poll)
+            } elseif ($topic_id !== null) {
+                $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
+                if (!array_key_exists(0, $_topic_info)) {
+                    warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
+                }
+                $topic_info = $_topic_info[0];
+
+                $actual_poll_closing_time = $topic_info['t_cache_first_time'] + intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
+
+            // Otherwise, add votingPeriodHours to the current time
+            } else {
+                $actual_poll_closing_time += intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
+            }
+            $fields->attach(form_input_date(do_lang_tempcode('VOTING_OPEN_UNTIL'), do_lang_tempcode('DESCRIPTION_VOTING_OPEN_UNTIL'), 'closing_time', false, $actual_poll_closing_time === null, true, $actual_poll_closing_time, 10, null, null, true, null, true, null, true));
+        } else {
+            $fields->attach(form_input_date(do_lang_tempcode('VOTING_OPEN_UNTIL'), do_lang_tempcode('DESCRIPTION_VOTING_OPEN_UNTIL'), 'closing_time', false, $poll_closing_time === null, true, $poll_closing_time, 10, null, null, true, null, true, null));
+        }
+
         return $fields;
     }
 
@@ -3020,6 +3088,13 @@ class Module_topics
         }
 
         $forum_id = get_param_integer('forum_id', null);
+
+        if ($topic_id !== null) {
+            $topic_poll_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_poll_id', ['id' => $topic_id]);
+            if ($topic_poll_id) {
+                warn_exit(do_lang_tempcode('TOPIC_POLL_ALREADY_EXISTS'));
+            }
+        }
 
         $adding_new_topic = ($topic_id === null) && (get_param_integer('adding_new_topic', 0) == 1);
 
@@ -3044,12 +3119,12 @@ class Module_topics
 
         url_default_parameters__enable();
         if ($topic_id === null && $forum_id === null) {
-            $fields->attach($this->get_poll_form_fields());
+            $fields->attach($this->get_poll_form_fields(null, true));
         } else {
             if ($forum_id === null && $topic_id !== null) {
                 $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
             }
-            $fields->attach($this->get_poll_form_fields($forum_id));
+            $fields->attach($this->get_poll_form_fields($forum_id, true));
         }
         url_default_parameters__disable();
 
@@ -3110,6 +3185,13 @@ class Module_topics
 
         $topic_id = get_param_integer('id', null);
 
+        if ($topic_id !== null) {
+            $topic_poll_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_poll_id', ['id' => $topic_id]);
+            if ($topic_poll_id) {
+                warn_exit(do_lang_tempcode('TOPIC_POLL_ALREADY_EXISTS'));
+            }
+        }
+
         $adding_new_topic = ($topic_id === null) && (get_param_integer('adding_new_topic', 0) == 1);
 
         if ($adding_new_topic) {
@@ -3122,7 +3204,6 @@ class Module_topics
         }
 
         require_code('cns_polls_action');
-        require_code('cns_polls_action2');
 
         $_existing = post_param_string('existing', '');
         if ($_existing != '') {
@@ -3140,7 +3221,7 @@ class Module_topics
                 $answers[] = $trow['pa_answer'];
             }
 
-            cns_make_poll($topic_id, $row['po_question'], $row['po_is_private'], $row['po_is_open'], $row['po_minimum_selections'], $row['po_maximum_selections'], $row['po_requires_reply'], $answers);
+            cns_make_poll($topic_id, $row['po_question'], $row['po_is_private'], $row['po_is_open'], $row['po_minimum_selections'], $row['po_maximum_selections'], $row['po_requires_reply'], $answers, true, $row['po_closing_time']);
 
             return $this->redirect_to('ADD_TOPIC_POLL', $topic_id);
         }
@@ -3150,6 +3231,7 @@ class Module_topics
         $is_open = post_param_integer('is_open', 0);
         $minimum_selections = post_param_integer('minimum_selections', 0);
         $maximum_selections = post_param_integer('maximum_selections', 0);
+        $closing_time = post_param_date('closing_time');
         $requires_reply = post_param_integer('requires_reply', 0);
 
         $answers = [];
@@ -3165,7 +3247,7 @@ class Module_topics
             }
         }
 
-        cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers);
+        cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, true, $closing_time);
 
         return $this->redirect_to('ADD_TOPIC_POLL', $topic_id);
     }
@@ -3772,7 +3854,8 @@ class Module_topics
         $requires_reply = $poll_info['po_requires_reply'];
         $minimum_selections = $poll_info['po_minimum_selections'];
         $maximum_selections = $poll_info['po_maximum_selections'];
-        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections);
+        $poll_closing_time = $poll_info['po_closing_time'];
+        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time);
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
 
         $title = get_screen_title('EDIT_TOPIC_POLL');
@@ -3818,6 +3901,7 @@ class Module_topics
         $is_open = post_param_integer('is_open', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $minimum_selections = post_param_integer('minimum_selections', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $maximum_selections = post_param_integer('maximum_selections', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $closing_time = post_param_date('closing_time');
         $reason = post_param_string('reason', STRING_MAGIC_NULL);
         $requires_reply = post_param_integer('requires_reply', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
@@ -3843,7 +3927,7 @@ class Module_topics
 
         require_code('cns_polls_action');
         require_code('cns_polls_action2');
-        cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $reason);
+        cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $reason, $closing_time);
         return $this->redirect_to('EDIT_TOPIC_POLL', $topic_id);
     }
 
@@ -3858,12 +3942,22 @@ class Module_topics
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
+        require_code('cns_polls_action2');
+        require_code('cns_polls_action3');
+
         $topic_id = get_param_integer('id');
         $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $_topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
         $topic_info = $_topic_info[0];
+
+        $default_poll_options = [];
+        $default_poll_options = cns_get_default_poll_options($topic_info['t_forum_id']);
+        if ($default_poll_options['requireTopicPoll']) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
         $this->handle_topic_breadcrumbs($topic_info['t_forum_id'], $topic_id, $topic_info['t_cache_first_title'], do_lang_tempcode('DELETE_TOPIC_POLL'));
 
         return $this->relay_with_reason('DELETE_TOPIC_POLL');
@@ -3885,8 +3979,10 @@ class Module_topics
         if ($poll_id === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
+
         require_code('cns_polls_action');
         require_code('cns_polls_action2');
+
         cns_delete_poll($poll_id, post_param_string('reason'));
         return $this->redirect_to('DELETE_TOPIC_POLL', $topic_id);
     }

@@ -10,17 +10,16 @@
 			</tbody>
 		</table>
 
-		{+START,IF_NON_EMPTY,{BUTTON}}
-			<div class="cns-poll-button">
-				{BUTTON}
-			</div>
-		{+END}
-
-		{+START,IF_NON_EMPTY,{PRIVATE}{NUM_CHOICES}}
-			<div class="cns-poll-meta cns-column6">
+		<div class="cns-poll-meta">
+			{+START,IF_NON_EMPTY,{BUTTON}}
+				<div class="cns-poll-button">
+					{BUTTON}
+				</div>
+			{+END}
+			{+START,IF_NON_EMPTY,{PRIVATE}{NUM_CHOICES}}
 				{PRIVATE}
 				{NUM_CHOICES}
-			</div>
-		{+END}
+			{+END}
+		</div>
 	</div>
 </div>

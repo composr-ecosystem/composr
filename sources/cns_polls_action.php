@@ -30,18 +30,24 @@
  * @param  BINARY $requires_reply Whether members must have a post in the topic before they made vote
  * @param  array $answers A list of pairs of the potential voteable answers and the number of votes
  * @param  boolean $check_permissions Whether to check there are permissions to make the poll
+ * @param  ?TIME $poll_closing_time The time voting should close on this poll (null: the poll will not close automatically)
  * @return AUTO_LINK The ID of the newly created forum poll
  */
-function cns_make_poll(int $topic_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, bool $check_permissions = true) : int
+function cns_make_poll(int $topic_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, bool $check_permissions = true, ?int $poll_closing_time = null) : int
 {
     require_code('cns_polls');
-    require_code('cns_polls_action2');
+    require_code('cns_polls_action3');
 
     if (($check_permissions) && (!cns_may_attach_poll($topic_id))) {
         access_denied('I_ERROR');
     }
 
-    cns_validate_poll_answers($topic_id, $answers);
+    $topic_poll_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_poll_id', ['id' => $topic_id]);
+    if ($topic_poll_id) {
+        warn_exit(do_lang_tempcode('TOPIC_POLL_ALREADY_EXISTS'));
+    }
+
+    cns_validate_poll($topic_id, null, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time);
 
     $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', [
         'po_question' => $question,
@@ -51,6 +57,7 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
         'po_minimum_selections' => $minimum_selections,
         'po_maximum_selections' => $maximum_selections,
         'po_requires_reply' => $requires_reply,
+        'po_closing_time' => $poll_closing_time
     ], true);
 
     foreach ($answers as $answer) {

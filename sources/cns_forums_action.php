@@ -81,7 +81,7 @@ function cns_make_forum_grouping(string $title, string $description, int $expand
 function cns_make_forum(string $name, string $description, ?int $forum_grouping_id, ?array $access_mapping, ?int $parent_forum, int $position = 1, int $post_count_increment = 1, int $order_sub_alpha = 0, string $intro_question = '', string $intro_answer = '', string $redirection = '', string $order = 'last_post', int $is_threaded = 0, int $allows_anonymous_posts = 0, string $mail_email_address = '', string $mail_server_type = '', string $mail_server_host = '', ?int $mail_server_port = null, string $mail_folder = '', string $mail_username = '', string $mail_password = '', string $mail_nonmatch_policy = 'post_as_guest', int $mail_unconfirmed_notice = 1, string $poll_default_options_xml = '') : int
 {
     require_code('global4');
-    require_code('cns_polls_action2');
+    require_code('cns_polls_action3');
     prevent_double_submit('ADD_FORUM', null, $name);
 
     if (!get_mass_import_mode()) {

@@ -121,7 +121,8 @@ If your users are confused by the quick reply function (for example, they miss t
 Topics may have a poll attached to them (by any member) by default, so as to gauge opinion tied to a discussion. These polls are separate to the main Composr poll system, and have different options. Forum polls may only be used by members, and there are options to restrict:
  - viewing of poll results until the poll is 'un-blinded'
  - voting, such that that members must reply to the topic of the poll before they may vote in it
-Site staff can also set default topic poll options on a per-forum basis (such as restricting which options are allowed) using XML markup. See [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page] for more information.
+Once a member creates a topic poll, it can only be edited or deleted by those with the proper permissions (such as Edit/Delete Own Polls or Edit Midrange Content) to ensure voting result fairness.
+Site staff can also set default or mandatory topic poll options on a per-forum basis (such as restricting which options are allowed) using XML markup. See [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page] for more information.
 [/surround]
 
 [title="2"]Editing posts[/title]

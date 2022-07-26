@@ -3728,9 +3728,10 @@ function ecv_MAKE_RELATIVE_DATE(string $lang, array $escaped, array $param) : st
         if ((get_option('use_contextual_dates') == '0') && (empty($param[1]))) {
             $value = get_timezoned_date_time(intval($param[0]));
         } else {
-            $value = display_time_period(time() - intval($param[0]));
             if (!empty($param[2])) {
-                $value = do_lang('_AGO', $value);
+                $value = display_time_period(intval($param[0]) - time());
+            } else {
+                $value = display_time_period(time() - intval($param[0]));
             }
         }
     }

@@ -376,6 +376,7 @@ class Hook_addon_registry_core_cns
             'sources/cns_polls.php',
             'sources/cns_polls_action.php',
             'sources/cns_polls_action2.php',
+            'sources/cns_polls_action3.php',
             'sources/cns_posts.php',
             'sources/cns_posts2.php',
             'sources/cns_posts_action.php',

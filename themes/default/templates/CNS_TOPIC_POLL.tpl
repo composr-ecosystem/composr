@@ -13,17 +13,23 @@
 			</tbody>
 		</table>
 
-		{+START,IF_NON_EMPTY,{BUTTON}}
-			<div class="cns-poll-button">
-				{BUTTON}
-			</div>
-		{+END}
-
-		{+START,IF_NON_EMPTY,{PRIVATE}{NUM_CHOICES}}
-			<div class="cns-poll-meta cns-column6">
-				{PRIVATE}
-				{NUM_CHOICES}
-			</div>
-		{+END}
+		<div class="cns-poll-meta">
+			{+START,IF_NON_EMPTY,{BUTTON}}
+				<div class="cns-poll-button">
+					{BUTTON}
+				</div>
+			{+END}
+			{+START,IF_NON_EMPTY,{PRIVATE}{NUM_CHOICES}}
+				<div>
+					{PRIVATE}
+					{NUM_CHOICES}
+				</div>
+			{+END}
+			{+START,IF_PASSED,CLOSING_TIME}
+				<div class="cns-poll-closing-time">
+					{!VOTING_CLOSES_IN,{$MAKE_RELATIVE_DATE*,{CLOSING_TIME},0,1}}
+				</div>
+			{+END}
+		</div>
 	</div>
 </form>

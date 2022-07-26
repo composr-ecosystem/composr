@@ -1547,6 +1547,7 @@ class Hook_addon_registry_cns_forum
                         'MAXIMUM_SELECTIONS' => placeholder_number(),
                         '_TOTAL_VOTES' => placeholder_number(),
                         'TOTAL_VOTES' => placeholder_number(),
+                        'CLOSING_TIME' => placeholder_date_raw()
                     ]));
                 } else {
                     $answers = new Tempcode();
