@@ -112,7 +112,7 @@
             var copyingExistingPoll = existing.selectedIndex !== 0; // If copying from an existing poll, we disable all the poll related fields
             for (var i = 0; i < form.elements.length; i++) {
                 var fieldName = form.elements[i].name;
-                var isPollField = ['question', 'is_open', 'requires_reply', 'may_unblind_own_poll', 'is_private', 'minimum_selections', 'maximum_selections'].includes(fieldName) || form.elements[i].name.substr(0, 7) == 'answer_';
+                var isPollField = ['question', 'is_open', 'requires_reply', 'may_unblind_own_poll', 'is_private', 'minimum_selections', 'maximum_selections', 'closing_time'].includes(fieldName) || form.elements[i].name.substr(0, 7) == 'answer_';
                 var isRequiredPollField = ['question', 'answer_0'].includes(fieldName);
                 if (isPollField) {
                     $cms.form.setRequired(form.elements[i].name, !copyingExistingPoll && isRequiredPollField);
@@ -130,7 +130,7 @@
         form2.addEventListener('submit', function (submitEvent) {
             var error;
 
-            var confinedElement = document.getElementById('answer_-confined');
+            var confinedElement = document.getElementById('answers-confined');
             var confined; // array
             if (confinedElement) {
                 confined = JSON.parse(confinedElement.value);

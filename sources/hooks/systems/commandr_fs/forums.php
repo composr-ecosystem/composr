@@ -352,9 +352,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 $minimum_selections = $poll_data['minimum_selections'];
                 $maximum_selections = $poll_data['maximum_selections'];
                 $requires_reply = $poll_data['requires_reply'];
+                $closing_time = $poll_data['closing_time'];
                 $answers = $poll_data['answers']; // A list of pairs of the potential voteable answers and the cached number of votes.
 
-                $poll_id = cns_make_poll($id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, false);
+                $poll_id = cns_make_poll($id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, false, $closing_time);
 
                 $votes = $poll_data['votes'];
                 table_from_portable_rows('f_poll_votes', $properties['votes'], ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
@@ -567,14 +568,15 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 $minimum_selections = $poll_data['minimum_selections'];
                 $maximum_selections = $poll_data['maximum_selections'];
                 $requires_reply = $poll_data['requires_reply'];
+                $closing_time = $poll_data['closing_time'];
                 $answers = $poll_data['answers']; // A list of pairs of the potential voteable answers and the number of votes.
 
                 if ($poll_id === null) {
                     require_code('cns_polls_action');
-                    $poll_id = cns_make_poll(intval($resource_id), $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, false);
+                    $poll_id = cns_make_poll(intval($resource_id), $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, false, $closing_time);
                 } else {
                     require_code('cns_polls_action2');
-                    cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers);
+                    cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, '', $closing_time);
                 }
 
                 $votes = $poll_data['votes'];

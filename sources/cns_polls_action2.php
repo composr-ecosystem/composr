@@ -30,11 +30,13 @@
  * @param  BINARY $requires_reply Whether members must have a post in the topic before they made vote
  * @param  array $answers A list of the potential voteable answers
  * @param  LONG_TEXT $reason The reason for editing the poll
+ * @param  ?TIME $poll_closing_time The time voting should close on this poll (null: the poll will not close automatically)
  * @return AUTO_LINK The ID of the topic the poll is on
  */
-function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, string $reason = '') : int
+function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, string $reason = '', ?int $poll_closing_time = null) : int
 {
     require_code('cns_polls');
+    require_code('cns_polls_action3');
 
     $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['t_poll_id' => $poll_id], '', 1);
     if (!cns_may_edit_poll_by($topic_info[0]['t_forum_id'], $topic_info[0]['t_cache_first_member_id'])) {
@@ -47,7 +49,7 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
         access_denied('PRIVILEGE', 'may_unblind_own_poll');
     }
 
-    cns_validate_poll_answers($topic_id, $answers);
+    cns_validate_poll($topic_id, $poll_id, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time);
 
     $GLOBALS['FORUM_DB']->query_update('f_polls', [
         'po_question' => $question,
@@ -56,6 +58,7 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
         'po_minimum_selections' => $minimum_selections,
         'po_maximum_selections' => $maximum_selections,
         'po_requires_reply' => $requires_reply,
+        'po_closing_time' => $poll_closing_time
     ], ['id' => $poll_id], '', 1);
 
     $current_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], ['pa_poll_id' => $poll_id]);
@@ -101,6 +104,7 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
 function cns_delete_poll(int $poll_id, string $reason = '', bool $check_perms = true) : int
 {
     require_code('cns_polls');
+    require_code('cns_polls_action3');
 
     $info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['id'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $info)) {
@@ -142,6 +146,8 @@ function cns_delete_poll(int $poll_id, string $reason = '', bool $check_perms = 
  */
 function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?array $topic_info = null)
 {
+    require_code('cns_polls');
+
     // Who's voting
     if ($member_id === null) {
         $member_id = get_member();
@@ -173,11 +179,15 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     }
 
     // Check their vote is valid
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private'], ['id' => $poll_id], '', 1);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private', 'po_closing_time'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    if ((count($votes) < $rows[0]['po_minimum_selections']) || (count($votes) > $rows[0]['po_maximum_selections']) || ($rows[0]['po_is_open'] == 0)) {
+    $poll_info = [
+        'is_open' => $rows[0]['po_is_open'],
+        'closing_time' => $rows[0]['po_closing_time']
+    ];
+    if ((count($votes) < $rows[0]['po_minimum_selections']) || (count($votes) > $rows[0]['po_maximum_selections']) || !cns_is_poll_open($poll_info)) {
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     $answers = collapse_2d_complexity('id', 'pa_answer', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id', 'pa_answer'], ['pa_poll_id' => $poll_id]));
@@ -222,183 +232,23 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
 }
 
 /**
- * Get default poll options for a specified forum.
+ * Check if a poll is open by looking at the is_open property and checking if the closing_time has passed.
  *
- * @param  ?AUTO_LINK $forum_id The ID of the forum for which we are getting default poll options (null: private topic)
- * @return array Map of default poll options [confined=>boolean, options=>[[name=>string, mandatory=>boolean]]]
+ * @param  array $poll_info The cns_poll_get_results map of the poll
+ * @return boolean Whether the poll is open and voting is allowed
  */
-function cns_get_default_poll_options(?int $forum_id = null) : array
+function cns_is_poll_open(array $poll_info) : bool
 {
-    $default_options = ['confined' => false, 'options' => []];
-
-    // For private topics, there are no default poll options.
-    if ($forum_id === null) {
-        return $default_options;
+    // Is the poll explicitly marked not open?
+    if (!$poll_info['is_open']) {
+        return false;
     }
 
-    require_code('xml');
-    require_lang('cns_polls');
-
-    $_forum = $GLOBALS['FORUM_DB']->query_select('f_forums', ['*'], ['id' => $forum_id], '', 1);
-    if (!array_key_exists(0, $_forum)) {
-        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'forum'));
-    }
-    $forum = $_forum[0];
-
-    // If poll options are empty, return empty array.
-    if (!array_key_exists('f_poll_default_options_xml', $forum)) {
-        return $default_options;
-    }
-    if (trim($forum['f_poll_default_options_xml']) == '') {
-        return $default_options;
+    // Did the poll expire?
+    $current_time = time();
+    if ($poll_info['closing_time'] !== null && $poll_info['closing_time'] < $current_time) {
+        return false;
     }
 
-    $parsed = new CMS_simple_xml_reader($forum['f_poll_default_options_xml']);
-    list($root_tag, $root_attributes, , $this_children) = $parsed->gleamed;
-
-    // Skip if defaultPollOptions is not the root tag.
-    if ($root_tag != 'defaultPollOptions') {
-        return $default_options;
-    }
-
-    // Check for the confined attribute
-    foreach ($root_attributes as $attribute => $value) {
-        if ($attribute == "confined" && cms_strtolower_ascii($value) == 'true') {
-            $default_options['confined'] = true;
-        }
-    }
-
-    foreach ($this_children as $_child) {
-        if (!is_array($_child)) {
-            continue;
-        }
-        list($row_tag, $row_attributes, $row_value, $row_children) = $_child;
-        if ($row_tag != 'option') {
-            continue;
-        }
-
-        $map = [
-            'name' => $row_value,
-        ];
-        foreach ($row_attributes as $attribute => $value) {
-            if ($attribute == "mandatory" && cms_strtolower_ascii($value) == 'true') {
-                $map['mandatory'] = true;
-            } else {
-                $map['mandatory'] = false;
-            }
-        }
-        array_push($default_options['options'], $map);
-    }
-
-    return $default_options;
-}
-
-/**
- * Validate submitted answers for a poll and warn_exit if any are invalid.
- *
- * @param  AUTO_LINK $topic_id The ID of the topic to which this poll is being added or edited
- * @param  array $answers A list of pairs of the potential voteable answers and the number of votes
- */
-function cns_validate_poll_answers(int $topic_id, array $answers)
-{
-    require_lang('cns_polls');
-
-    $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
-    $default_options = cns_get_default_poll_options($forum_id);
-
-    $default_options_answers = array_column($default_options['options'], 'name');
-    $answers_text = [];
-    foreach ($answers as $answer) {
-        if (is_array($answer)) {
-            list($answer, $num_votes) = $answer;
-        }
-
-        // Check for duplicate answers
-        if ($answer !== '') {
-            if (in_array($answer, $answers_text)) {
-                warn_exit('POLL_NO_DUPLICATE_OPTIONS', $answer);
-            }
-            array_push($answers_text, $answer);
-        }
-    }
-
-    // Make sure all mandatory options are specified in answers
-    foreach ($default_options['options'] as $option) {
-        if ($option['mandatory'] && !in_array($option['name'], $answers_text)) {
-            warn_exit(do_lang_tempcode('POLL_MISSING_MANDATORY_OPTION', $option['name']));
-        }
-    }
-
-    // If poll is confined, make sure all of the specified answers exist as an option in the default options
-    if ($default_options['confined']) {
-        foreach ($answers_text as $answer) {
-            if (!in_array($answer, $default_options_answers)) {
-                warn_exit(do_lang_tempcode('POLL_INVALID_OPTION', $answer));
-            }
-        }
-    }
-}
-
-/**
- * Validate whether or not the XML markup passed in for default poll options is valid.
- *
- * @param  LONG_TEXT $xml The XML to validate
- * @return ?Tempcode Error message if invalid (null: XML is valid)
- */
-function cns_validate_default_poll_options_xml(string $xml = '') : ?object
-{
-    // Empty XML is valid
-    if (trim($xml) == '') {
-        return null;
-    }
-
-    require_code('xml');
-    require_lang('cns_polls');
-
-    $parsed = new CMS_simple_xml_reader($xml);
-    list($root_tag, $root_attributes, , $this_children) = $parsed->gleamed;
-
-    if ($root_tag != 'defaultPollOptions') {
-        return do_lang_tempcode('POLL_XML_INVALID_ROOT');
-    }
-
-    if (count($root_attributes) > 0) {
-        foreach ($root_attributes as $attribute => $value) {
-            if ($attribute != "confined") {
-                return do_lang_tempcode('POLL_XML_INVALID_ROOT_ATTRIBUTE', $attribute);
-            }
-        }
-    }
-
-    if (array_key_exists('confined', $root_attributes)) {
-        if (!in_array(cms_strtolower_ascii($root_attributes['confined']), ['true', 'false'])) {
-            return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', 'confined');
-        }
-        if (count($this_children) === 0) {
-            return do_lang_tempcode('POLL_XML_NO_OPTIONS');
-        }
-    }
-
-    foreach ($this_children as $_child) {
-        if (!is_array($_child)) {
-            continue;
-        }
-        list($row_tag, $row_attributes, $row_value, $row_children) = $_child;
-
-        if ($row_tag != 'option') {
-            return do_lang_tempcode('POLL_XML_INVALID_CHILD', $row_tag);
-        }
-
-        if (count($row_attributes) > 0) {
-            foreach ($row_attributes as $attribute => $value) {
-                if ($attribute != "mandatory") {
-                    return do_lang_tempcode('POLL_XML_INVALID_ROW_ATTRIBUTE', $attribute);
-                } elseif (!in_array(cms_strtolower_ascii($value), ['true', 'false'])) {
-                    return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', $attribute);
-                }
-            }
-        }
-    }
-
-    return null;
+    return true;
 }

@@ -114,7 +114,7 @@ function cns_delete_forum_grouping(int $forum_grouping_id, ?int $target_forum_gr
 function cns_edit_forum(int $forum_id, string $name, string $description, int $forum_grouping_id, ?int $new_parent, int $position, int $post_count_increment, int $order_sub_alpha, string $intro_question, string $intro_answer, string $redirection, string $order, int $is_threaded, int $allows_anonymous_posts, string $mail_email_address, string $mail_server_type, string $mail_server_host, ?int $mail_server_port, string $mail_folder, string $mail_username, string $mail_password, string $mail_nonmatch_policy, int $mail_unconfirmed_notice, bool $reset_intro_acceptance = false, string $poll_default_options_xml = '')
 {
     require_code('urls2');
-    require_code('cns_polls_action2');
+    require_code('cns_polls_action3');
 
     suggest_new_idmoniker_for('forumview', 'browse', strval($forum_id), '', $name);
 

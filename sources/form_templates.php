@@ -1472,7 +1472,7 @@ function form_input_tick($pretty_name, $description, string $name, bool $ticked,
 /**
  * Get the Tempcode for a bank of tick (check) boxes.
  *
- * @param  array $options A list of tuples: (prettyname, name, value, description)
+ * @param  array $options A list of tuples: (prettyname, name, value, description, disabled)
  * @param  mixed $description A description for this input field
  * @param  ?integer $_tabindex The tab index of the field (null: not specified)
  * @param  mixed $_pretty_name A human intelligible name for this input field (blank: use default)
@@ -1509,7 +1509,7 @@ function form_input_various_ticks(array $options, $description, ?int $_tabindex 
         $out = [];
         foreach ($_option[0] as $option) {
             list($pretty_name, $name, $value, $_description) = $option;
-            $disabled = !empty($option[4]);
+            $disabled = !empty($option[4]) && $option[4];
 
             $value = (filter_form_field_default($name, $value ? '1' : '0') == '1');
 
@@ -2355,11 +2355,12 @@ function form_input_date__cron($pretty_name, $description, string $name, bool $r
  * @param  ?ID_TEXT $timezone Timezone to input in (null: current user's timezone)
  * @param  boolean $handle_timezone Convert $default_time to $timezone
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @param  boolean $read_only Whether this field is disabled
  * @return Tempcode The input field
  */
-function form_input_date($pretty_name, $description, string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, ?int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null, bool $do_date = true, ?string $timezone = null, bool $handle_timezone = true, $autocomplete = null) : object
+function form_input_date($pretty_name, $description, string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, ?int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null, bool $do_date = true, ?string $timezone = null, bool $handle_timezone = true, $autocomplete = null, bool $read_only = false) : object
 {
-    $input = _form_input_date($name, $required, $null_default, $do_time, $default_time, $total_years_to_show, $year_start, $tabindex, $do_date, $timezone, $handle_timezone, $autocomplete);
+    $input = _form_input_date($name, $required, $null_default, $do_time, $default_time, $total_years_to_show, $year_start, $tabindex, $do_date, $timezone, $handle_timezone, $autocomplete, $read_only);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
 
@@ -2378,11 +2379,12 @@ function form_input_date($pretty_name, $description, string $name, bool $require
  * @param  ?ID_TEXT $timezone Timezone to input in (null: current user's timezone)
  * @param  boolean $handle_timezone Convert $default_time to $timezone
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @param  boolean $read_only Whether this field should be disabled
  * @return Tempcode The input field
  *
  * @ignore
  */
-function _form_input_date(string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, ?int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null, bool $do_date = true, ?string $timezone = null, bool $handle_timezone = true, $autocomplete = null) : object
+function _form_input_date(string $name, bool $required, bool $null_default, bool $do_time, $default_time = null, ?int $total_years_to_show = 10, ?int $year_start = null, ?int $tabindex = null, bool $do_date = true, ?string $timezone = null, bool $handle_timezone = true, $autocomplete = null, bool $read_only = false) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2484,6 +2486,7 @@ function _form_input_date(string $name, bool $required, bool $null_default, bool
         'MAX_DATE_YEAR' => ($year_end === null) ? '' : strval($year_end),
 
         'AUTOCOMPLETE' => $autocomplete,
+        'READ_ONLY' => $read_only ? strval(1) : strval(0)
     ]);
 }
 
@@ -2545,9 +2548,10 @@ function form_input_date_components($pretty_name, $description, string $name, bo
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  ?integer $maxlength Maximum input length (null: no maximum length, regular HTML5 number input)
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @param  boolean $read_only Whether this field is disabled
  * @return Tempcode The input field
  */
-function form_input_integer($pretty_name, $description, string $name, ?int $default, bool $required, ?int $tabindex = null, ?int $maxlength = null, $autocomplete = null) : object
+function form_input_integer($pretty_name, $description, string $name, ?int $default, bool $required, ?int $tabindex = null, ?int $maxlength = null, $autocomplete = null, bool $read_only = false) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -2568,6 +2572,7 @@ function form_input_integer($pretty_name, $description, string $name, ?int $defa
         'DEFAULT' => ($default === null) ? '' : strval($default),
         'MAXLENGTH' => ($maxlength === null) ? null : strval($maxlength),
         'AUTOCOMPLETE' => $autocomplete,
+        'READ_ONLY' => $read_only
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }

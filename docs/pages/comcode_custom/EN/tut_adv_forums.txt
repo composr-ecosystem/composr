@@ -74,15 +74,36 @@ For Zoho to work you just need to enable IMAP in your Zoho Mail account settings
 There is an option to set default poll options for topic polls created within the forum. The field takes a special XML markup.
 
 The XML markup is as follows:
-[code="XML"]<defaultPollOptions confined="true">
+[code="XML"]<defaultPollOptions requireTopicPoll="true" confined="true" votingEnabled="false" votingPeriodHours="24" requiresReply="true" resultsHidden="true" minimumSelections="1" maximumSelections="1">
 	<option mandatory="true">Foo</option>
 	<option mandatory="true">Bar</option>
 	<option>Optional</option>
 </defaultPollOptions>[/code]
- - If a [tt]confined[/tt] attribute is defined on [tt]defaultPollOptions[/tt] with a value of true, then members are not allowed to add poll options that are not defined in the XML.
- - [tt]defaultPollOptions[/tt] accepts any number of [tt]option[/tt] children where you can define default options for all polls created in the forum.
- - On each [tt]option[/tt], you can specify a [tt]mandatory[/tt] attribute with a value of true, which requires all polls to contain that option.
- - Any [tt]option[/tt] without a true [tt]mandatory[/tt] attribute will appear by default when creating a poll. However, members may remove the option when creating the poll.
+
+The [tt]defaultPollOptions[/tt] root tag supports the following attributes:
+ - [tt]requireTopicPoll[/tt] (boolean): If true, then every new topic in the forum must have a poll on creation. This also prevents anyone regardless of their permissions from deleting polls from topics in the forum (instead, the entire topic must be deleted).
+ - [tt]confined[/tt] (boolean): If true, then only the defined poll options in the XML are allowed; members may not add their own custom poll options.
+ - [tt]votingEnabled[/tt] (boolean): If true, then all polls must have voting enabled upon creation. Otherwise, the topic author may decide.
+ - [tt]votingPeriodHours[/tt] (number|false): 
+  - If defined as a number, then all polls created in the forum will close voting after the defined number of hours. 
+   - If a topic scheduled time was provided, this will be the number of hours from the scheduled time. Otherwise, it is the number of hours from when the topic was created. 
+  - If defined as false, then setting a date to close voting will not be allowed. 
+  - If not defined, then the topic author may define their own date to close voting if they wish.
+ - [tt]requiresReply[/tt] (boolean): If true, then every poll created in the forum will require a topic reply. If false, then every poll created in the forum will not require a topic reply. If not defined, then the topic author may decide.
+ - [tt]resultsHidden[/tt] (boolean): If true, then every poll created in the forum will require results be hidden (until a moderator unhides them) from members who voted. Otherwise, the topic author may decide.
+ - [tt]minimumSelections[/tt] (number): If defined, then all polls created in the forum will require the provided minimum number of selections when someone votes. If [tt]confined[/tt] is also true, then you must define at least this many option children in the XML.
+ - [tt]maximumSelections[/tt] (number): If defined, then all polls created in the forum will require the provided maximum number of selections when someone votes.
+
+The [tt]defaultPollOptions[/tt] accepts any number of [tt]option[/tt] children (but at least one must be provided if [tt]confined[/tt] is true). Options define which poll answers / options are filled in by default when adding a poll in this forum. The value of each [tt]option[/tt] is the name of the poll option. Each [tt]option[/tt] also supports the following attributes:
+ - [tt]mandatory[/tt] (boolean): If true, then every poll created in the forum must have this option in it (the option cannot be removed / changed).
+
+Nuances of which to be aware:
+ - Changing the default poll options XML affects the creation of polls in the future. While it does not affect current polls, any attempts to edit current polls will be subject to the restrictions of the newly defined options except for these attributes:
+  - [tt]votingEnabled[/tt]: This setting can be changed when editing a poll. It is assumed at some point that moderators will want to enable (or disable) voting.
+  - [tt]resultsHidden[/tt]: This setting can be changed when editing a poll. It is assumed at some point that moderators will want the results to be public.
+  - [tt]votingPeriodHours[/tt]: The poll will keep its set voting close time instead of being enforced by the XML, but the setting can no longer be changed on the poll.
+ - Default poll options are not enforced on polls moved from one forum topic to another.
+ - Restrictions defined in the XML apply to everyone regardless of privileges.
 
 [title="2"]See also[/title]
 

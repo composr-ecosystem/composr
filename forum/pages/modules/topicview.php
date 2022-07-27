@@ -681,13 +681,15 @@ class Module_topicview
         // Poll
         if ((array_key_exists('poll', $topic_info)) && (addon_installed('polls'))) {
             require_lang('cns_polls');
+            require_code('cns_polls_action2');
 
             $_poll = $topic_info['poll'];
+            $poll_is_open = cns_is_poll_open($_poll);
             $voted_already = $_poll['voted_already'];
             $poll_results = (array_key_exists(0, $_poll['answers'])) && (array_key_exists('num_votes', $_poll['answers'][0]));
             $answers = new Tempcode();
             $real_button = false;
-            if ($_poll['is_open']) {
+            if ($poll_is_open) {
                 if ($poll_results) {
                     $button = new Tempcode();
                 } elseif (($_poll['requires_reply']) && (!$replied)) {
@@ -754,7 +756,7 @@ class Module_topicview
             }
             $vote_url = build_url($map, get_module_zone('topics'));
             if ($_poll['is_private']) {
-                $private = paragraph(do_lang_tempcode('TOPIC_POLL_IS_PRIVATE'), 'dfgsdgdsgs');
+                $private = paragraph(do_lang_tempcode('TOPIC_POLL_RESULTS_HIDDEN'), 'dfgsdgdsgs');
             } else {
                 $private = new Tempcode();
             }
@@ -778,6 +780,7 @@ class Module_topicview
                 '_TOTAL_VOTES' => strval($total_votes),
                 'MINIMUM_SELECTIONS' => integer_format($_poll['minimum_selections']),
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
+                'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : null,
                 'TOTAL_VOTES' => integer_format($total_votes),
             ]);
         } else {
@@ -878,6 +881,12 @@ class Module_topicview
 
         $action_url = build_url(['page' => 'topics', 'id' => $id], get_module_zone('topics'));
         if ($id !== null) {
+            $default_poll_options = [];
+            if (addon_installed('polls')) {
+                require_code('cns_polls_action3');
+                $default_poll_options = cns_get_default_poll_options($topic_info['forum_id']);
+            }
+
             // Moderation options
             $moderator_actions = ''; // XHTMLXHTML
             if ($topic_info['forum_id'] === null) {
@@ -930,7 +939,7 @@ class Module_topicview
             if ((array_key_exists('may_edit_poll', $topic_info)) && (addon_installed('polls'))) {
                 $moderator_actions .= '<option value="edit_poll">' . do_lang('EDIT_TOPIC_POLL') . '</option>';
             }
-            if ((array_key_exists('may_delete_poll', $topic_info)) && (addon_installed('polls'))) {
+            if ((array_key_exists('may_delete_poll', $topic_info)) && (addon_installed('polls')) && (!$default_poll_options['requireTopicPoll'])) {
                 $moderator_actions .= '<option value="delete_poll">' . do_lang('DELETE_TOPIC_POLL') . '</option>';
             }
             if ((array_key_exists('may_attach_poll', $topic_info)) && (addon_installed('polls'))) {

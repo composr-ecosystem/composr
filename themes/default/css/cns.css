@@ -296,15 +296,19 @@ div.cns-table-footer > div > div {
 	color: {$GET,cns_personal_post_text};
 }
 
-.cns-poll-button {
+.cns-poll-meta {
 	text-align: center;
 	background-color: {$GET,area_faded_background};
+}
+
+.cns-poll-button {
+	text-align: center;
 	font-size: 0.9em;
 	vertical-align: middle;
 	padding: 0.5em;
 }
 
-.cns-poll-meta {
+.cns-poll-closing-time {
 	text-align: center;
 }
 

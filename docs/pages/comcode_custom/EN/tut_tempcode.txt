@@ -714,8 +714,8 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>Converts a formatted date/time to a timestamp via auto-recognition (first parameter is a timestamp). If no parameters given it will simply return the current timestamp.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$MAKE_RELATIVE_DATE,123456789}</td>
-			<td>Converts a timestamp into a textually described relative time (e.g. "10 minutes" [ago]).</td>
+			<td>{$MAKE_RELATIVE_DATE,123456789,1,1}</td>
+			<td>Converts a timestamp into a textually described relative time (e.g. "10 minutes" [ago]) (first parameter is a timestamp, second parameter is 1 to forcefully use a relative date regardless of the "Whether contextual dates (e.g. 'Today') should be used" option, third parameter is 1 if you expect the timestamp to occur in the future).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$TIME_PERIOD,1234}</td>
