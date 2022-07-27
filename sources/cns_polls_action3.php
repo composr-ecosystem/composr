@@ -32,7 +32,7 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
         'votingEnabled' => false,
         'votingPeriodHours' => null,
         'requiresReply' => null,
-        'confidential' => null,
+        'hideResults' => null,
         'minimumSelections' => null,
         'maximumSelections' => null,
         'options' => []
@@ -75,12 +75,12 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
             case 'confined':
             case 'requireTopicPoll':
             case 'votingEnabled':
+            case 'hideResults':
                 if ($value_lcase == 'true') {
                     $default_options[$attribute] = true;
                 }
                 break;
             case 'requiresReply':
-            case 'confidential':
                 // Note: we want to leave the returned poll option null if the XML attribute value is not true or false
                 if ($value_lcase == 'false') {
                     $default_options[$attribute] = false;
@@ -192,8 +192,12 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     }
 
     // Enforce poll options
-    if ($default_options['confidential'] !== null) {
-        $is_private = $default_options['confidential'] ? 1 : 0;
+    if (cms_strtolower_ascii($default_options['resultsHidden']) == 'true') {
+        if ($poll_id === null) {
+            $is_private = true;
+        } else {
+            $is_private = $poll_info['po_is_private'];
+        }
     }
     if (cms_strtolower_ascii($default_options['votingEnabled']) == 'true') {
         if ($poll_id === null) {
@@ -270,7 +274,7 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
         'votingEnabled' => 'boolean',
         'votingPeriodHours' => 'numberOrFalse',
         'requiresReply' => 'boolean',
-        'confidential' => 'boolean',
+        'resultsHidden' => 'boolean',
         'minimumSelections' => '0<number<maximumSelections',
         'maximumSelections' => '0<number'
     ];

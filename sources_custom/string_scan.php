@@ -9212,7 +9212,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_PASSWORD_TEMPORARY
         DESCRIPTION_PINNED
         DESCRIPTION_POLL_IS_OPEN
-        DESCRIPTION_POLL_IS_PRIVATE
+        DESCRIPTION_POLL_RESULTS_HIDDEN
         DESCRIPTION_POLL_REQUIRES_REPLY
         DESCRIPTION_POST_SHOW_AS_EDITED
         DESCRIPTION_POST_TEMPLATE
@@ -10296,7 +10296,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_CHOSEN_NOTIFICATION_MAIL_SUBJECT
         POLL_IN_LIST
         POLL_IS_OPEN
-        POLL_IS_PRIVATE
+        POLL_RESULTS_HIDDEN
         POLL_NOT_ENOUGH_ERROR
         POLL_NOT_ENOUGH_ERROR_2
         POLL_REQUIRES_REPLY
@@ -10804,7 +10804,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TOPIC_PINNING_DESCRIPTION
         TOPIC_POLLS
         TOPIC_POLL_CLOSED
-        TOPIC_POLL_IS_PRIVATE
+        TOPIC_POLL_RESULTS_HIDDEN
         TOPIC_STARTED_DATE_TIME
         TOPIC_TITLE_WILL_BE
         TOTAL_EVENTS_AND_HIGHEST_PRIORITY

@@ -3017,10 +3017,10 @@ class Module_topics
             $options[] = [do_lang_tempcode('POLL_IS_OPEN'), 'is_open', $is_open == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_OPEN'), $_default_options['votingEnabled']];
         }
         if ((has_privilege(get_member(), 'may_unblind_own_poll')) && ($is_private !== null)) {
-            if ($_default_options['confidential'] !== null) {
-                $options[] = [do_lang_tempcode('POLL_IS_PRIVATE'), 'is_private', $_default_options['confidential'], do_lang_tempcode('DESCRIPTION_POLL_IS_PRIVATE'), true];
+            if ($new_poll && $_default_options['hideResults']) {
+                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', true, do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), true];
             } else {
-                $options[] = [do_lang_tempcode('POLL_IS_PRIVATE'), 'is_private', $is_private == 1, do_lang_tempcode('DESCRIPTION_POLL_IS_PRIVATE'), false];
+                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', $is_private == 1, do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), false];
             }
         }
         if ($_default_options['requiresReply'] !== null) {
@@ -3555,9 +3555,9 @@ class Module_topics
         $forum_id = $topic_info['t_forum_id'];
         $private_topic = ($forum_id === null);
 
-        $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_validated', ['id' => $topic_info[0]['t_cache_first_post_id']]);
+        $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_validated', ['id' => $topic_info['t_cache_first_post_id']]);
         if ($validated !== null) {
-            if (($topic_info[0]['t_validated'] == 1) && ($validated == 0)) {
+            if (($topic_info['t_validated'] == 1) && ($validated == 0)) {
                 attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
             }
         }

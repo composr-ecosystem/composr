@@ -756,7 +756,7 @@ class Module_topicview
             }
             $vote_url = build_url($map, get_module_zone('topics'));
             if ($_poll['is_private']) {
-                $private = paragraph(do_lang_tempcode('TOPIC_POLL_IS_PRIVATE'), 'dfgsdgdsgs');
+                $private = paragraph(do_lang_tempcode('TOPIC_POLL_RESULTS_HIDDEN'), 'dfgsdgdsgs');
             } else {
                 $private = new Tempcode();
             }
