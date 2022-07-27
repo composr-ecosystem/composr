@@ -90,7 +90,7 @@ The [tt]defaultPollOptions[/tt] root tag supports the following attributes:
   - If defined as false, then setting a date to close voting will not be allowed. 
   - If not defined, then the topic author may define their own date to close voting if they wish.
  - [tt]requiresReply[/tt] (boolean): If true, then every poll created in the forum will require a topic reply. If false, then every poll created in the forum will not require a topic reply. If not defined, then the topic author may decide.
- - [tt]resultsHidden[/tt] (boolean): If true, then every poll created in the forum will require results to be hidden from members who voted. Otherwise, the topic author may decide.
+ - [tt]resultsHidden[/tt] (boolean): If true, then every poll created in the forum will require results be hidden (until a moderator unhides them) from members who voted. Otherwise, the topic author may decide.
  - [tt]minimumSelections[/tt] (number): If defined, then all polls created in the forum will require the provided minimum number of selections when someone votes. If [tt]confined[/tt] is also true, then you must define at least this many option children in the XML.
  - [tt]maximumSelections[/tt] (number): If defined, then all polls created in the forum will require the provided maximum number of selections when someone votes.
 
@@ -99,11 +99,11 @@ The [tt]defaultPollOptions[/tt] accepts any number of [tt]option[/tt] children (
 
 Nuances of which to be aware:
  - Changing the default poll options XML affects the creation of polls in the future. While it does not affect current polls, any attempts to edit current polls will be subject to the restrictions of the newly defined options except for these attributes:
-  - [tt]votingEnabled[/tt]: The poll will keep its state of whether or not voting is enabled instead of using what is enforced by the XML, but the setting can no longer be changed on the poll.
-  - [tt]resultsHidden[/tt]: This setting can be changed when editing a poll even if restricted in the XML. It is assumed at some point that topic authors will want to publicise the poll results.
+  - [tt]votingEnabled[/tt]: This setting can be changed when editing a poll. It is assumed at some point that moderators will want to enable (or disable) voting.
+  - [tt]resultsHidden[/tt]: This setting can be changed when editing a poll. It is assumed at some point that moderators will want the results to be public.
   - [tt]votingPeriodHours[/tt]: The poll will keep its set voting close time instead of being enforced by the XML, but the setting can no longer be changed on the poll.
- - Default poll options are not enforced on polls later attached to a topic or moved from one forum topic to another.
- - Restrictions defined in the XML apply to everyone regardless of permissions.
+ - Default poll options are not enforced on polls moved from one forum topic to another.
+ - Restrictions defined in the XML apply to everyone regardless of privileges.
 
 [title="2"]See also[/title]
 
