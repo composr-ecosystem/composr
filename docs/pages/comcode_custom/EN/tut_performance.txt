@@ -310,7 +310,7 @@ MySQL tips:
 
 If you have really large databases then two issues come into play:
 1) Composr will start doing sensible changes to site behaviour to stop things grinding to a halt
-2) You might start worrying about databases being too large for a single database server and need to implement 'sharding'
+2) You might start worrying about databases being too large for a single database server and need to implement 'partitioning' and/or 'sharding'
 
 You may also want to switch tables to InnoDB instead of MyISAM. If you do this then run this command in Commandr too:
 [code="Commandr"]
@@ -320,11 +320,12 @@ This works around that InnoDB can't do quick row counts in tables, so implements
 
 If using InnoDB you may want to customise the [tt]innodb_flush_log_at_trx_commit[/tt] and [tt]innodb_flush_log_at_timeout[/tt] settings. They provide a trade-off between performance and data integrity of recent transactions in the case of critical failure.
 
-[title="4"]Sharding[/title]
+[title="4"]Partitioning / Sharding[/title]
 
-If you have so much data (100's of GB, millions of records) that you can't house it in a single database server then you have a good kind of problem because clearly you are being incredibly successful.
-It's at this point that serious programming or database administration will need to happen to adapt Composr to your needs. MySQL does have support for 'sharding' that can happen transparently to Composr, where you could use multiple hard-disks together to serve a single database. However this is not the commodity hardware approach many people prefer.
-An alternative is to implement a No-SQL database driver into Composr. There is nothing stopping this happening so long as SQL is mapped to it. We have no out-of-the-box solution, but we do have full SQL parsing support in Composr for the intentionally-limited SQL base used by Composr (in the XML database driver) so have a lot of the technology needed to build the necessary translation layer. Practically speaking though this is a serious job, and at this point you are so huge you should be having a full-time team dedicated to performance work.
+If you have so much data (100's of GB, millions of records) that you can't house it in a single disk partition and/or database server then you have a good kind of problem because clearly you are being incredibly successful. It's at this point that serious programming or database administration will need to happen to adapt Composr to your needs. Practically speaking this is a serious job, and at this point you are so huge you should be having a full-time team dedicated to performance work.
+
+Partitioning is when you have a single MySQL database spread tables across different partitions.
+Sharding is when databases are spread across multiple MySQL servers. Sharding is supported by MySQL Cluster, or manually via your own code. In your own code you could try and implement your own database driver (perhaps based on the parsing code in the XML driver) to fork out querying to appropriate server(s) as required.
 
 [title="4"]Composr adaptations[/title]
 
@@ -577,19 +578,6 @@ Go with an SSD in your machine if possible.
 
 Composr has excellent support for cloud hosting, see [page="_SEARCH:tut_cloudhosting"]Cloud-hosting for Composr[/page].
 Note that many companies will advertise cloud services to scale up web applications as if they work by magic. No company can make a web application automatically scale, it requires careful architecting and configuration. You will need to employ careful use of Composr's cloud-hosting features for it to work as you'd want.
-
-[title="4"]Geographic distribution of servers[/title]
-
-Some people with very ambitious goals want to have multiple servers dotted around the world, able to operate in isolation to each other for maximum redundancy and performance. Priority-based geo-DNS resolution would be used for request routing.
-
-Composr can not currently support this, as ID numbers would conflict if database servers are not kept in strict sync with each other. We hope in a future version we can make changes for it to be possible (see https://compo.sr/tracker/view.php?id=3147). 
-
-[title="4"]Platform notes[/title]
-
-[title="5"]Amazon EC2[/title]
-
-Composr does quite a lot of disk I/O when checking for installed files, etc (much more than a traditional hard-coded custom application would need to do).
-Because of this we recommend using 'magnetic' rather than 'SSD' storage, because SSD storage on Amazon's infrastructure has extremely very low IOPS allowances (presumably so that their internal bandwidth is used for very-fast burst reads/writes from/to fast SSD rather than more regular reads/writes).
 
 [title="2"]Calculating hosting requirements[/title]
 

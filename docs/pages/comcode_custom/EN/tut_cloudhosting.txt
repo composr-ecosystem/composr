@@ -92,9 +92,15 @@ Composr has many ways of connecting to other servers and systems, and it can get
 | Usage of block
 |}
 
-[title="2"]Requirements[/title]
+[title="2"]Requirements and limitations[/title]
 
 Cloud hosting requirements have intentionally been kept very low. You will need to configure the architecture described in this tutorial. Other than that, your copy of PHP must not have the [tt]symlink[/tt], [tt]readlink[/tt] or [tt]stream_wrapper_register[/tt] functions disabled.
+
+[title="3"]Geographic distribution of servers[/title]
+
+Some people with very ambitious goals want to have multiple servers dotted around the world, able to operate in isolation to each other for maximum redundancy and performance. Priority-based geo-DNS resolution would be used for request routing.
+
+Composr can not currently support this, as ID numbers would conflict if database servers are not kept in strict sync with each other. We hope in a future version we can make changes for it to be possible (see https://compo.sr/tracker/view.php?id=3147). 
 
 [title="2"]Fundamental architecture and setup[/title]
 
@@ -153,6 +159,8 @@ You need to set up some mechanism for traffic to be directed to different hosts.
 
 Discussing these systems is outside the scope of this tutorial, but they are standard technologies.
 
+You should configure so that any particular user is consistently directed to the same server within a single session. This allows you to manage sessions separately for each server.
+
 [title="3"]Logging[/title]
 
 All Composr log files except [tt]data_custom/errorlog.php[/tt] can be configured to route log data in different ways via [tt]TARGETS[/tt] set on the first line of the file itself. This would set all of them:
@@ -170,15 +178,162 @@ The targets available are:
 
 The Composr cloud hosting puts no specific requirements on how you choose to host your database.
 
-You may want to have a dedicated machine for hosting the database, in which case you would configure to connect to that using the normal installation options.
+[title="4"]Replication[/title]
 
-Larger clouds may want to have multiple database servers, and set up database replication for this. Configuring database replication is outside the scope of the Composr documentation.
-Geo-distributed clouds would also want to set up database replication, as it is not viable to connect to a database server with any notable connectivity latency.
+You may wish to set up database replication. Replication allows scaling up your database performance by employing multiple servers, and also making sure database servers are hosted in close proximity to your web servers. There are other use cases for replication, such as backups, fail-over, or mirroring a database for remote access purposes -- but we will not be discussing them in this tutorial.
 
-If you wish to use source-replica replication (i.e. where writes all go to a single replica), change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] (if set) values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. You may wish to use just two hosts (if you are configuring each Composr site to use a different database server explicitly), or lots of hosts if you want randomisation. The first host in the list must be the source server. It is assumed that each server has equivalent credentials and database naming. Due to the source server being a bottleneck, it will never be picked as a read-access server in the randomisation process.
-If you use replica-replica replication, configure each site's [tt]db_site_host[/tt]/[tt]db_forums_host[/tt] to the specific database server you want that site to connect to.
+In Composr we use the modern terminology, having ‘Source’ and ‘Replica’ servers. ‘Source’ is where the writes happen, and ‘Replica’ is where the reads happen. Older terminology (still used by some software) uses the terms ‘Master’ and ‘Slave’. MariaDB actually uses ‘Primary’ and ‘Replica’.
+
+This tutorial only covers specifics related to MySQL and MariaDB. Other database software generally has similar concepts.
+
+Our [url="sample script"]https://gitlab.com/composr-foundation/composr-vm-init[/url] has some sample configuration code for setting up MySQL replication.
+
+[title="5"]Limitations[/title]
+
+Composr [url="does not support running across multiple data centers"]https://compo.sr/tracker/view.php?id=4717[/url] remote to each other. There is one reason for this: we make heavy use of [tt]auto_increment[/tt] IDs, which are guaranteed to quickly get into conflict.
+
+[title="5"]Configuring in Composr[/title]
+
+If you wish to use Source-Replica replication (i.e. where writes all go to a single Replica), change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] (if set) values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. You may wish to use just two hosts (if you are configuring each Composr site to use a different database server explicitly), or lots of hosts if you want randomisation. The first host in the list must be the Source server. It is assumed that each server has equivalent credentials and database naming. Due to the Source server being a bottleneck, it will never be picked as a read-access server in the randomisation process.
+
+If you use Replica-Replica replication, configure each site's [tt]db_site_host[/tt]/[tt]db_forums_host[/tt] to the specific database server you want that site to connect to.
 
 It is advised to not set replication for the Composr [tt]sessions[/tt] table, as this is highly volatile. Instead you should remove any display of 'users online' from your templates because if you're at the point of replication there will be too many to list anyway (and Composr will have realised this and stopped showing it consistently in many cases, to stop performance issues).
+
+[title="5"]Configuration dimensions[/title]
+
+Replication isn’t simply something that is simply enabled or not, there are many wildly different configurations. Essentially, configuration various along the following dimensions:
+ - Synchronization type
+ - Replication topology
+ - Replication format
+ - Replication method
+ - Location of database servers
+Everything is a trade-off, but Composr has particular requirements/recommendations.
+
+[title="5"]Synchronization type[/title]
+
+There are 3 synchronization types (recommendation in bold):
+
+{| 30%:70% wide
+! Type
+! Description
+|-
+| Asynchronous
+| A write to a Source will be marked completed before it has been copied to any Replicas. The default.
+|-
+| [b]Synchronous[/b]
+| A write to a Source will not be completed until it has been copied to all Replicas.
+|-
+| Semi-synchronous
+| A write to a Source will not be completed until it has been copied to at least one Replica. Only available in MySQL 5.5+, MariaDB 10.2 with a plugin, or MariaDB 10.3+.
+|}
+
+Synchronous writes are much slower. They also are vexed by timeout lag if one of the Replica database servers becomes unavailable to the Source server (the timeout can be configured).
+
+For the purposes of Composr you will need to configure synchronous replication. We need any database read call that happens after a database write call to have accurate data. Composr is coded to not require database writes to be particularly fast, as common writes on the front-end are performed after the page layout is sent to the user’s browser (where server configuration allows).
+
+Pertinent options:
+ - [tt]rpl_semi_sync_source_enabled[/tt] ([tt]rpl_semi_sync_master_enabled[/tt] for MySQL < 8.0.26 / MariaDB)
+ - [tt]rpl_semi_sync_replica_enabled[/tt] ([tt]rpl_semi_sync_slave_enabled[/tt] for MySQL < 8.0.26 / MariaDB)
+ - [tt]rpl_semi_sync_source_timeout[/tt] ([tt]rpl_semi_sync_master_timeout[/tt] for MySQL < 8.0.26 / MariaDB)
+
+[title="5"]Replication topology[/title]
+
+There are 2 main ways to configure your replication topology (recommendation in bold):
+
+{| 30%:70% wide
+! Topology
+! Description
+|-
+| Source-Source
+| You can write to all your database servers, and the writes are replicated out to every other database server.
+Also known as: Multi-Master, Master-Master, Star, Multi Leader, Primary-Primary.
+Not known as Multi-Source, because that is something entirely different in MySQL.
+|-
+| [b]Source-Replica[/b]
+| You write only to the Source, but you read from a Replica.
+Also known as: Single-Source, Slave-Slave, Single Leader, Primary-Replica.
+|}
+
+In truth you can configure any topology. In MySQL and MariaDB you configure servers to support replication from them, and you configure servers to replicate from any number of other servers. The topology you configure with this is up to you. For example, you could have one Source per data center.
+
+Source-Source replication has the advantage of faster writes if you have servers hosted in different data centers. Source-Source replication has the disadvantage of failure if one or more Sources becomes unavailable to each other, causing at best timeouts or at worst inconsistencies. Inconsistencies could also happen because writes from different Sources are not guaranteed to be in the same order. Source-Source replication is also much more complex to configure and manage, exponentially so for larger numbers of Sources. Note that generally writes are not a bottleneck in terms of overall database load as they are simpler and far less numerous than often-complex read queries – but could be for huge community/eCommerce websites.
+
+Given that Composr does not support hosting across multiple data centers (even with synchronous replication, sync lag with multiple Sources means critical conflicts can occur between [tt]auto_increment[/tt] IDs), we recommend Source-Replica replication.
+
+You will note that Source-Source replication is particularly fraught. This is a big reason why MySQL Group Replication and MariaDB Galera Cluster exist. These products manage server interconnection with elegance, as well as helping with sharding and partitioning.
+
+[title="5"]Replication format[/title]
+
+There are 3 ways to configure the replication format (recommendation in bold):
+
+{| 30%:70% wide
+! Format
+! Description
+|-
+| Statement Based
+| SQL statements are what is synched across servers.
+|-
+| Row Based
+| Actual row changes are what is synched across servers. The default.
+|-
+| [b]Mixed Based[/b]
+| A combination of the above.
+|}
+
+Statement Based replication is not entirely reliable, as it wrongly assumes a query will always produce the same result on the same data. This is not true, particularly because there are functions, such as random number generation, that by design produce different outputs.
+
+Row Based replication requires replicating additional data, is harder to debug, and has more scope for failure (due to it operating with exacting precision).
+
+Mixed Based replication provides the best of both worlds, with the database software picking the appropriate format based on the complexities of the query. This is what we recommend for Composr.
+
+Pertinent options:
+ - [tt]binlog_format[/tt]
+
+[title="5"]Replication method[/title]
+
+There are 2 replication methods in MySQL (recommendation in bold):
+
+{| 30%:70% wide
+! Method
+! Description
+|-
+| [b]Binary log[/b]
+| Replication works from a sequenced log of actions.
+|-
+| GTID
+| Replication also includes unique transaction IDs, to better keep track of actions (particularly useful when manually resolving conflicts).
+|}
+
+These are documented as separate things, but actually GTID overlays on top of the binary log. In MariaDB, GTID is always on.
+
+Given Composr does not use transactions, the binary log method is fine.
+
+Pertinent options:
+ - [tt]log_bin[/tt]
+ - [tt]gtid_mode[/tt]
+
+[title="5"]Location of database servers[/title]
+
+You need to consider whether your database servers are standalone or not (recommendation in bold):
+
+{| 30%:70% wide
+! Location
+! Description
+|-
+| Standalone
+| Servers are separate to the web server.
+|-
+| [b]On Web Server[/b]
+| The web server hosts the database software also.
+|}
+
+If the database software is on the web server then queries will execute faster. Larger operations may want to separate them so that different engineers can be responsible for the separate architecture, so that hardware may be better tuned, or if code other than Composr accesses the database. Most operations will not really benefit from any separate though.
+At the very least you need a very low (sub-millisecond) latency connection between web servers and database servers.
+
+[title="5"]Limiting what tables are replicated[/title]
+
+The MySQL [tt]CHANGE REPLICATION FILTER[/tt] query can limit what tables are replicated, as can starting MySQL with [tt]--replicate-wild-ignore-table=name[/tt]. As previously discussed, you should disable replication on the [tt]sessions[/tt] table.
 
 [title="2"]Maintenance[/title]
 
@@ -211,6 +366,15 @@ f) The site would then be re-opened
 Sophisticated operations would have a staging cloud as well as a live cloud, so that an upgrade could be properly tested on the staging cloud first.
 
 Very sophisticated operations may choose to develop custom upgrade scripts that completely bypass Composr's regular upgrade process to avoid down-time entirely.
+
+[title="2"]Platform-specific notes[/title]
+
+This section contain some very specific guidance for different platform(s) you may wish to use Composr with.
+
+[title="3"]Amazon EC2[/title]
+
+Composr does quite a lot of disk I/O when checking for installed files, etc (much more than a traditional hard-coded custom application would need to do).
+Because of this we recommend using 'magnetic' rather than 'SSD' storage, because SSD storage on Amazon's infrastructure has extremely very low IOPS allowances (presumably so that their internal bandwidth is used for very-fast burst reads/writes from/to fast SSD rather than more regular reads/writes).
 
 [concepts
  1_key="Syslog"             1_value="Operating system facility for managing logs in a consistent and centralised way"
