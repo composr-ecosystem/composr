@@ -703,16 +703,24 @@
             return str; // Nothing to do
         }
 
-        if ($util.isArrayLike(values)) {
-            return str.replace(/\{(\d+)\}/g, function (match, key) {
-                key--; // So that interpolation starts from '{1}'
-                return (key in values) ? strVal(values[key]) : match;
-            });
+        if (!$util.isArrayLike(values)) {
+            values = [values];
         }
 
-        return str.replace(/\{(\w+)\}/g, function (match, key) {
+        // Handle basic parameter reference syntax
+        str = str.replace(/\{(\d+)\}/g, function (match, key) {
+            key--; // So that interpolation starts from '{1}'
             return (key in values) ? strVal(values[key]) : match;
         });
+
+        // Handle pluralisation syntax
+        var nonPluralNonVowel = ['1', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{'/*for no-op param usage*/];
+        str = str.replace(/\{([^,]+)\|([^,]*)\|([^,]*)\}/g, function (match, key, a, b) {
+            key--; // So that interpolation starts from '{1}'
+            return (key in values) ? (nonPluralNonVowel.includes(strVal(values[key]).substr(0, 1)) ? a : b) : match;
+        });
+
+        return str;
     };
 
     /**
