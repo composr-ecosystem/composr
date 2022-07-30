@@ -91,17 +91,7 @@
 			<div class="screenInner">
 				{+START,IF,{$IN_STR,{$ZONE},docs}}
 					<div style="text-align: center; margin-bottom: 5px;">
-						<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9281606540426500" crossorigin="anonymous"></script>
-						<!-- Documentation -->
-						<ins class="adsbygoogle"
-							style="display:block"
-							data-ad-client="ca-pub-9281606540426500"
-							data-ad-slot="9384237051"
-							data-ad-format="auto"
-							data-full-width-responsive="true"></ins>
-						<script>
-							(adsbygoogle = window.adsbygoogle || []).push({});
-						</script>
+						<div id="amzn-assoc-ad-b42f4d41-65e0-4af7-b4a8-d8352681f987"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=b42f4d41-65e0-4af7-b4a8-d8352681f987"></script>
 					</div>
 				{+END}
 
@@ -109,17 +99,7 @@
 
 				{+START,IF,{$IN_STR,{$ZONE},docs}}
 					<div style="text-align: center; margin-top: 5px;">
-						<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9281606540426500" crossorigin="anonymous"></script>
-						<!-- Documentation -->
-						<ins class="adsbygoogle"
-							style="display:block"
-							data-ad-client="ca-pub-9281606540426500"
-							data-ad-slot="9384237051"
-							data-ad-format="auto"
-							data-full-width-responsive="true"></ins>
-						<script>
-							(adsbygoogle = window.adsbygoogle || []).push({});
-						</script>
+						<div id="amzn-assoc-ad-b42f4d41-65e0-4af7-b4a8-d8352681f987"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=b42f4d41-65e0-4af7-b4a8-d8352681f987"></script>
 					</div>
 				{+END}
 			</div>
