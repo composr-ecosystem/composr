@@ -57,7 +57,7 @@ function catalogue_file_script()
 
     // Security check; doesn't work for very old attachments (pre-v8) LEGACY note
     if ($table != 'catalogue_efv_short' && $table != 'catalogue_efv_long' && $table != 'f_member_custom_fields') { // FUDGE
-        access_denied('I_ERROR');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
     $entry_id = get_param_integer('id');
     $field_id = get_param_integer('field_id', null);
@@ -80,7 +80,7 @@ function catalogue_file_script()
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     if (!in_array($ev, explode("\n", preg_replace('#( |::).*$#m', '', $ev_check)))) {
-        access_denied('I_ERROR'); // ID mismatch for the file requested, to give a security error
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // ID mismatch for the file requested, to give a security error
     }
     if ($original_filename !== null) {
         $ev .= '::' . $original_filename;

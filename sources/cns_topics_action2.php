@@ -353,7 +353,7 @@ function cns_move_topics(int $from, int $to, ?array $topics = null, bool $check_
 
     if ($topics === null) { // All of them
         if ($from === null) {
-            access_denied('I_ERROR');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
         $all_topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_num_posts', 't_validated'], ['t_forum_id' => $from]);
