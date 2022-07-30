@@ -327,6 +327,10 @@ If you have so much data (100's of GB, millions of records) that you can't house
 Partitioning is when you have a single MySQL database spread tables across different partitions.
 Sharding is when databases are spread across multiple MySQL servers. Sharding is supported by MySQL Cluster, or manually via your own code. In your own code you could try and implement your own database driver (perhaps based on the parsing code in the XML driver) to fork out querying to appropriate server(s) as required.
 
+[title="4"]Non-relational databases[/title]
+
+Composr is designed to run on a relational database, including use of JOINs and other complex arbitrary querying patterns that relational databases are good at. NoSQL systems (such as MongoDB) are not directly supported, neither are search systems such as Solr -- although you may use these kinds of tools for your own custom code if you so desire.
+
 [title="4"]Composr adaptations[/title]
 
 Composr has in the past tested up to a million of the following:
