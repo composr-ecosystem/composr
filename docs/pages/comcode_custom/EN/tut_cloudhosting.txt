@@ -221,16 +221,16 @@ There are 3 synchronization types (recommendation in bold):
 | Asynchronous
 | A write to a Source will be marked completed before it has been copied to any Replicas. The default.
 |-
-| [b]Synchronous[/b]
-| A write to a Source will not be completed until it has been copied to all Replicas.
+| Synchronous
+| A write to a Source will not be completed until it has been copied to all Replicas. [i]Not supported on MySQL or MariaDB[/i].
 |-
-| Semi-synchronous
-| A write to a Source will not be completed until it has been copied to at least one Replica. Only available in MySQL 5.5+, MariaDB 10.2 with a plugin, or MariaDB 10.3+.
+| [b]Semi-synchronous[/b]
+| A write to a Source will not be completed until it has been copied to at least one Replica. Only available in MySQL 5.5+ with a plugin, MariaDB 10.2 with a plugin, or MariaDB 10.3.3+.
 |}
 
 Synchronous writes are much slower. They also are vexed by timeout lag if one of the Replica database servers becomes unavailable to the Source server (the timeout can be configured).
 
-For the purposes of Composr you will need to configure synchronous replication. We need any database read call that happens after a database write call to have accurate data. Composr is coded to not require database writes to be particularly fast, as common writes on the front-end are performed after the page layout is sent to the user’s browser (where server configuration allows).
+For the purposes of Composr you will need to configure semi-synchronous replication (we'd prefer synchronous, but it's not supported by MySQL/MariaDB). We need any database read call that happens after a database write call to have accurate data. Composr is coded to not require database writes to be particularly fast, as common writes on the front-end are performed after the page layout is sent to the user’s browser (where server configuration allows).
 
 Pertinent options:
  - [tt]rpl_semi_sync_source_enabled[/tt] ([tt]rpl_semi_sync_master_enabled[/tt] for MySQL < 8.0.26 / MariaDB)
@@ -299,7 +299,7 @@ There are 2 replication methods in MySQL (recommendation in bold):
 ! Description
 |-
 | [b]Binary log[/b]
-| Replication works from a sequenced log of actions.
+| Replication works from a sequenced log of actions. The binary log on the Source is copied incrementally as the relay log on the Replica.
 |-
 | GTID
 | Replication also includes unique transaction IDs, to better keep track of actions (particularly useful when manually resolving conflicts).
@@ -307,10 +307,12 @@ There are 2 replication methods in MySQL (recommendation in bold):
 
 These are documented as separate things, but actually GTID overlays on top of the binary log. In MariaDB, GTID is always on.
 
-Given Composr does not use transactions, the binary log method is fine.
+Given Composr does not use transactions, the binary log method is fine. Disable GTID so that replication start positions are not determined by transaction IDs that may exist.
 
 Pertinent options:
  - [tt]log_bin[/tt]
+ - [tt]log_bin_basename[/tt]
+ - [tt]relay_log[/tt]
  - [tt]gtid_mode[/tt]
 
 [title="5"]Location of database servers[/title]
