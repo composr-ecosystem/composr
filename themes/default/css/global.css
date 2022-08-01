@@ -4000,11 +4000,6 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	padding: 0.5em;
 	margin-bottom: 0.5em;
 }
-/*{+START,CSS_MODE,desktop}*/
-	.index-screen-fancier-screen-entries {
-		margin-left: 1em;
-	}
-/*{+END}*/
 .index-screen-fancier-entry {
 	margin: 0.5em;
 	padding: 0.5em;
