@@ -351,7 +351,6 @@ template {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-	margin-top: 0;
 	margin-bottom: 10px;
 	font-family: inherit;
 	font-weight: {$GET,font_weight_medium};
@@ -360,6 +359,10 @@ h1, h2, h3, h4, h5, h6,
 	/*{+START,IF,{$THEME_OPTION,text_shadows}}*/
 		text-shadow: 2px 2px 3px {$COLOR_RGBA,{$GET,seed_secondary},0.6};
 	/*{+END}*/
+}
+h2, h3, h4, h5, h6,
+	margin-top: 10px;
+.h2, .h3, .h4, .h5, .h6 {
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6 {
