@@ -1018,7 +1018,7 @@ function do_site()
 
     // Warning about whether the Setup Wizard still needs running
     $zone = get_zone_name();
-    if ((($zone == 'adminzone') || ($zone == 'cms')) && (get_param_integer('wide_high', 0) == 0)) {
+    if ((($zone == 'adminzone') || ($zone == 'cms')) && (get_param_integer('wide_high', 0) == 0) && (get_param_integer('keep_wide_high', 0) == 0)) {
         if ((get_param_integer('cancel_sw_warn', 0) == 1) || (!addon_installed('setupwizard'))) {
             set_value('setupwizard_completed', '1');
         } else {

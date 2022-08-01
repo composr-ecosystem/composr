@@ -311,7 +311,7 @@ class Hook_addon_registry_core_abstract_interfaces
         return lorem_globalise(do_lorem_template('REDIRECT_SCREEN', [
             'URL' => placeholder_url(),
             'TITLE' => lorem_title(),
-            'TEXT' => lorem_sentence_html(),
+            'TEXT' => lorem_sentence(),
         ]), null, '', true);
     }
 
