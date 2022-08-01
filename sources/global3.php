@@ -3600,7 +3600,7 @@ function seo_meta_get_for(string $type, string $id) : array
 
     $cache = ['', '', ''];
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword', 'id'], $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY id');
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword', 'id'], $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY sort_order');
     foreach ($rows as $row) {
         if ($cache[0] != '') {
             $cache[0] .= ',';

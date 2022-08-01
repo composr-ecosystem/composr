@@ -732,7 +732,7 @@ function seo_meta_set_for_explicit(string $type, string $id, string $keywords, s
     $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['*'], $map_general);
     foreach ($rows as $i => $row) {
         if ($i < count($_keywords)) {
-            $map = [];
+            $map = ['sort_order' => $i];
             $map += lang_remap('meta_keyword', $row['meta_keyword'], $_keywords[$i]);
             $GLOBALS['SITE_DB']->query_update('seo_meta_keywords', $map, ['id' => $row['id']], '', 1);
         } else {
@@ -744,6 +744,7 @@ function seo_meta_set_for_explicit(string $type, string $id, string $keywords, s
     foreach ($_keywords as $i => $keyword) {
         if ($i >= count($rows)) {
             $map = $map_general;
+            $map['sort_order'] = $i;
             $map += insert_lang('meta_keyword', $keyword, 2);
             $GLOBALS['SITE_DB']->query_insert('seo_meta_keywords', $map);
         }

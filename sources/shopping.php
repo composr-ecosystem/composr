@@ -162,7 +162,7 @@ function find_products_in_cart() : array
     } else {
         $where['ordered_by'] = get_member();
     }
-    return $GLOBALS['SITE_DB']->query_select('shopping_cart', ['*'], $where, 'ORDER BY id');
+    return $GLOBALS['SITE_DB']->query_select('shopping_cart', ['*'], $where, 'ORDER BY add_time');
 }
 
 /**
@@ -196,6 +196,7 @@ function add_to_cart(string $type_code, string $purchase_id = '', int $quantity 
             'type_code' => $type_code,
             'purchase_id' => $purchase_id,
             'quantity' => $quantity,
+            'add_time' => time()
         ];
         $id = $GLOBALS['SITE_DB']->query_insert('shopping_cart', $cart_map, true);
     } else {

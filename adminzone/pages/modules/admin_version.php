@@ -766,6 +766,7 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->create_table('seo_meta_keywords', [
                 'id' => '*AUTO',
+                'sort_order' => 'INTEGER',
                 'meta_for_type' => 'ID_TEXT',
                 'meta_for_id' => 'ID_TEXT',
                 'meta_keyword' => 'SHORT_TRANS',
@@ -778,7 +779,7 @@ class Module_admin_version
                 if ($keywords !== null) {
                     foreach ($keywords as $_keyword) {
                         $_keywords = array_unique(explode(',', trim(get_translated_text($_keyword['meta_keywords']))));
-                        foreach ($_keywords as $keyword) {
+                        foreach ($_keywords as $i => $keyword) {
                             if (trim($keyword) == '') {
                                 continue;
                             }
@@ -786,6 +787,7 @@ class Module_admin_version
                             $GLOBALS['SITE_DB']->query_insert('seo_meta_keywords', [
                                 'meta_for_type' => $_keyword['meta_for_type'],
                                 'meta_for_id' => $_keyword['meta_for_id'],
+                                'sort_order' => $i,
                             ] + insert_lang('meta_keyword', $keyword, 2));
                         }
                         delete_lang($_keyword['meta_keywords']);
@@ -1192,6 +1194,8 @@ class Module_admin_version
                 'd_member_id' => '*MEMBER',
                 'd_date_and_time' => 'TIME',
             ]);
+
+            $GLOBALS['SITE_DB']->add_table_field('seo_meta_keywords', 'sort_order', 'INTEGER');
         }
     }
 

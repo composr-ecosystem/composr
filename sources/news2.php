@@ -90,8 +90,9 @@ function edit_news_category(int $id, ?string $title, ?string $img, ?string $note
     require_code('urls2');
     suggest_new_idmoniker_for('news', 'browse', strval($id), '', $title);
 
-    // Sync meta keywords, if we have auto-sync for these
-    if (get_option('enable_seo_fields') === '0') {
+    // If enable_seo_fields is off (manual SEO keyword input), Composr uses news categories as an automatic SEO keyword for any news entries within that category.
+    // Therefore we need to remap to the newly updated title.
+    if ((get_option('enable_seo_fields') === '0') && ($old_title != $title)) {
         $sql = 'SELECT * FROM ' . get_table_prefix() . 'seo_meta_keywords m WHERE ';
         $sql .= db_string_equal_to('meta_for_type', 'news');
         $meta_keywords_field = $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword');
@@ -192,7 +193,8 @@ function delete_news_category(int $id)
 
     log_it('DELETE_NEWS_CATEGORY', strval($id), $old_title);
 
-    // Sync meta keywords, if we have auto-sync for these
+    // If enable_seo_fields is off (manual SEO keyword input), Composr uses news categories as an automatic SEO keyword for any news entries within that category.
+    // Therefore we need to delete the news category's title from any SEO keywords, given the category is being deleted.
     if (get_option('enable_seo_fields') === '0') {
         $sql = 'SELECT m.* FROM ' . get_table_prefix() . 'seo_meta_keywords m WHERE ';
         $sql .= db_string_equal_to('meta_for_type', 'news');

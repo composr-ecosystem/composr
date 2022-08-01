@@ -550,6 +550,7 @@ function do_work()
             'type_code' => strval(db_get_first_id()),
             'purchase_id' => strval(get_member()),
             'quantity' => 1,
+            'add_time' => time()
         ]);
     }
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'COUNT(*)'); $j < $num_wanted; $j++) {
