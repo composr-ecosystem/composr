@@ -149,6 +149,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'themes/default/templates/COLUMNED_TABLE_HEADER_ROW_CELL.tpl',
             'themes/default/templates/COLUMNED_TABLE_ROW.tpl',
             'themes/default/templates/COLUMNED_TABLE_ROW_CELL.tpl',
+            'themes/default/templates/COLUMNED_TABLE_MEMBER_CELL.tpl',
             'themes/default/templates/PAGINATION_CONTINUE.tpl',
             'themes/default/templates/PAGINATION_CONTINUE_LAST.tpl',
             'themes/default/templates/PAGINATION_CONTINUE_FIRST.tpl',

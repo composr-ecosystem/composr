@@ -36,11 +36,11 @@ class forum_polls_test_set extends cms_test_case
 
         $this->topic_id = cns_make_topic(db_get_first_id(), 'Test');
 
-        $this->poll_id = cns_make_poll($this->topic_id, 'Who are you ?', 0, 0, 2, 4, 0, ['a', 'b', 'c'], true);
+        $this->poll_id = cns_make_poll($this->topic_id, 'Who are you ?', 0, 0, 2, 4, 0, ['a', 'b', 'c'], 0, 0, 0, true);
 
         $this->assertTrue('Who are you ?' == $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', ['id' => $this->poll_id]));
 
-        cns_edit_poll($this->poll_id, 'Who am I?', 1, 1, 1, 4, 1, ['1', '2', '3'], 'nothing');
+        cns_edit_poll($this->poll_id, 'Who am I?', 1, 1, 1, 4, 1, ['1', '2', '3'], 0, 0, 0, 'nothing');
 
         $this->assertTrue('Who am I?' == $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', ['id' => $this->poll_id]));
     }

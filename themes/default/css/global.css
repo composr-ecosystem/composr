@@ -221,11 +221,6 @@ th, .fake-th {
 	text-align: inherit;
 }
 
-label {
-	display: inline-block;
-	margin-bottom: 7px;
-}
-
 button {
 	border-radius: 0;
 }
@@ -3173,6 +3168,10 @@ hr.spaced-rule {
 	display: inline-block;
 }
 
+.inline-icon {
+	width: 1.5em;
+}
+
 /* Something being shown for previewing, on its own so needs focus */
 .lonely-preview {
 	text-align: center;
@@ -3651,6 +3650,11 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 		margin-bottom: 0.5em;
 	}
 /*{+END}*/
+
+/* This class exists so member tooltips have space. */
+.overlay-table {
+	min-height: 300px;
+}
 
 /*
 =========================

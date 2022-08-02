@@ -539,8 +539,11 @@
                     }, 1000);
 
                     $dom.on(iframe, 'load', function () {
-                        if ($dom.hasIframeAccess(iframe) && (!iframe.contentDocument.querySelector('h1')) && (!iframe.contentDocument.querySelector('h2'))) {
-                            if (iframe.contentDocument.title) {
+                        if ($dom.hasIframeAccess(iframe)) {
+                            if (iframe.contentDocument.querySelector('h1')) {
+                                $dom.html(overlayHeader, $dom.html(iframe.contentDocument.querySelector('h1')));
+                                $dom.show(overlayHeader);
+                            } else if (iframe.contentDocument.title) {
                                 $dom.html(overlayHeader, $cms.filter.html(iframe.contentDocument.title));
                                 $dom.show(overlayHeader);
                             }

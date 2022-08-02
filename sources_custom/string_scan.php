@@ -10028,7 +10028,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NONE_EM
         NONMOBILE_VERSION
         NOONE_SELECTED_YET
-        NORATE
+        ALREADY_RATED
         NOTES
         NOTHING_SELECTED
         NOTHING_SELECTED_YET
@@ -10101,7 +10101,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOT_USERNAME
         NOT_VALID_ATTACHMENT
         NOT_VIDEO
-        NOVOTE
+        ALREADY_VOTED
         NOW_ADDED_AS_FRIEND
         NOW_DISABLED_NOTIFICATIONS
         NOW_DISABLED_NOTIFICATIONS_FORUM
@@ -10297,8 +10297,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_IN_LIST
         POLL_IS_OPEN
         POLL_RESULTS_HIDDEN
-        POLL_NOT_ENOUGH_ERROR
-        POLL_NOT_ENOUGH_ERROR_2
+        POLL_INVALID_SELECTION_COUNT
+        POLL_INVALID_SELECTION_COUNT_2
         POLL_REQUIRES_REPLY
         POLL_RESULTS
         POPULARITY
@@ -11513,6 +11513,17 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TOPIC_POLL_ALREADY_EXISTS
         VOTING_OPEN_UNTIL
         DESCRIPTION_VOTING_OPEN_UNTIL
+        VIEW_MEMBER_VOTES
+        DESCRIPTION_VIEW_MEMBER_VOTES
+        NOTIFICATION_TYPE_cns_topic_polls
+        POLL_REVOKE_VOTE
+        POLL_REVOKE_VOTE_CONFIRM
+        VOTE_REVOCATION
+        DESCRIPTION_VOTE_REVOCATION
+        GUESTS_CAN_VOTE
+        DESCRIPTION_GUESTS_CAN_VOTE
+        ERASE_VOTES
+        DESCRIPTION_ERASE_VOTES
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

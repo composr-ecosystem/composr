@@ -579,7 +579,7 @@ function cns_get_topic_array(array $topic_row, int $member_id, int $hot_topic_de
     if (($topic_row['t_validated'] == 0) && (addon_installed('unvalidated'))) {
         $topic['modifiers'][] = 'unvalidated';
     }
-    if (($topic_row['t_poll_id'] !== null) && (addon_installed('polls'))) {
+    if (($topic_row['t_poll_id'] !== null)) {
         $topic['modifiers'][] = 'poll';
     }
     $num_posts = $topic_row['t_cache_num_posts'];

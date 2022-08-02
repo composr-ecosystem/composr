@@ -51,10 +51,6 @@ class Module_cms_polls extends Standard_crud_module
      */
     public function get_entry_points(bool $check_perms = true, ?int $member_id = null, bool $support_crosslinks = true, bool $be_deferential = false) : ?array
     {
-        if (!addon_installed('polls')) {
-            return null;
-        }
-
         if (get_value('hide_polls') === '1') {
             return null;
         }
@@ -88,8 +84,6 @@ class Module_cms_polls extends Standard_crud_module
         }
 
         $type = get_param_string('type', 'browse');
-
-        require_lang('polls');
 
         set_helper_panel_tutorial('tut_feedback');
 
@@ -126,7 +120,7 @@ class Module_cms_polls extends Standard_crud_module
      */
     public function get_privilege_overrides() : array
     {
-        require_lang('polls');
+        require_lang('cns_polls');
         return ['submit_midrange_content' => [0, 'ADD_POLL'], 'bypass_validation_midrange_content' => [0, 'BYPASS_VALIDATION_POLL'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_POLL'], 'edit_midrange_content' => [0, 'EDIT_POLL'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_POLL'], 'delete_midrange_content' => [0, 'DELETE_POLL'], 'edit_own_highrange_content' => [0, 'EDIT_OWN_LIVE_POLL'], 'edit_highrange_content' => [0, 'EDIT_LIVE_POLL'], 'delete_own_highrange_content' => [0, 'DELETE_OWN_LIVE_POLL'], 'delete_highrange_content' => [0, 'DELETE_LIVE_POLL'], 'vote_in_polls' => 0];
     }
 

@@ -32,9 +32,12 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
         'votingEnabled' => false,
         'votingPeriodHours' => null,
         'requiresReply' => null,
-        'hideResults' => null,
+        'resultsHidden' => false,
         'minimumSelections' => null,
         'maximumSelections' => null,
+        'viewMemberVotes' => null,
+        'voteRevocation' => null,
+        'guestsCanVote' => null,
         'options' => []
     ];
 
@@ -72,16 +75,20 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
     foreach ($root_attributes as $attribute => $_value) {
         $value_lcase = cms_strtolower_ascii($_value);
         switch ($attribute) {
+            // Attributes that only pay attention to the "true" value.
             case 'confined':
             case 'requireTopicPoll':
             case 'votingEnabled':
-            case 'hideResults':
+            case 'resultsHidden':
                 if ($value_lcase == 'true') {
                     $default_options[$attribute] = true;
                 }
                 break;
+            // Attributes that pay attention to "true" or "false" value
             case 'requiresReply':
-                // Note: we want to leave the returned poll option null if the XML attribute value is not true or false
+            case 'viewMemberVotes':
+            case 'voteRevocation':
+            case 'guestsCanVote':
                 if ($value_lcase == 'false') {
                     $default_options[$attribute] = false;
                 }
@@ -89,6 +96,7 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
                     $default_options[$attribute] = true;
                 }
                 break;
+            // Attributes that pay attention to a number or "false" value
             case 'votingPeriodHours':
                 if ($value_lcase == 'false') {
                     $default_options[$attribute] = false;
@@ -96,6 +104,7 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
                     $default_options[$attribute] = (float)$value_lcase;
                 }
                 break;
+            // Attributes that pay attention to a number value
             case 'minimumSelections':
             case 'maximumSelections':
                 if (is_numeric($value_lcase)) {
@@ -142,8 +151,11 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
  * @param  integer $maximum_selections The maximum number of selections that may be made (returned by reference)
  * @param  BINARY $requires_reply Whether members must have a post in the topic before they made vote (returned by reference)
  * @param  ?TIME $closing_time The time at which voting for this poll will close (returned by reference) (null: the poll will not close automatically)
+ * @param  BINARY $view_member_votes Whether others should be allowed to see which members voted for each option on the results (returned by reference)
+ * @param  BINARY $vote_revocation Whether to allow voters to revoke their vote while voting is open
+ * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
  */
-function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$is_private, int &$is_open, int &$minimum_selections, int &$maximum_selections, int &$requires_reply, ?int &$closing_time)
+function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$is_private, int &$is_open, int &$minimum_selections, int &$maximum_selections, int &$requires_reply, ?int &$closing_time, int &$view_member_votes, int &$vote_revocation, int &$guests_can_vote)
 {
     require_lang('cns_polls');
 
@@ -168,7 +180,7 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
 
     $poll_info = [];
     if ($poll_id !== null) {
-        $_poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private', 'po_closing_time'], ['id' => $poll_id], '', 1);
+        $_poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private', 'po_closing_time', 'po_view_member_votes'], ['id' => $poll_id], '', 1);
         if (!array_key_exists(0, $_poll_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -192,14 +204,14 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     }
 
     // Enforce poll options
-    if (cms_strtolower_ascii($default_options['resultsHidden']) == 'true') {
+    if (is_string($default_options['resultsHidden']) && cms_strtolower_ascii($default_options['resultsHidden']) == 'true') {
         if ($poll_id === null) {
             $is_private = true;
         } else {
             $is_private = $poll_info['po_is_private'];
         }
     }
-    if (cms_strtolower_ascii($default_options['votingEnabled']) == 'true') {
+    if (is_string($default_options['votingEnabled']) && cms_strtolower_ascii($default_options['votingEnabled']) == 'true') {
         if ($poll_id === null) {
             $is_open = true;
         } else {
@@ -215,12 +227,21 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     if ($default_options['requiresReply'] !== null) {
         $requires_reply = $default_options['requiresReply'] ? 1 : 0;
     }
+    if ($default_options['viewMemberVotes'] !== null) {
+        $view_member_votes = $default_options['viewMemberVotes'] ? 1 : 0;
+    }
+    if ($default_options['voteRevocation'] !== null) {
+        $vote_revocation = $default_options['voteRevocation'] ? 1 : 0;
+    }
+    if ($default_options['guestsCanVote'] !== null) {
+        $guests_can_vote = $default_options['guestsCanVote'] ? 1 : 0;
+    }
     if ($default_options['votingPeriodHours'] !== null) {
         if ($poll_id === null) {
             $actual_poll_closing_time = time();
 
             // If votingPeriodHours is false, do not allow setting a closing time
-            if ($default_options['votingPeriodHours'] === FALSE) {
+            if ($default_options['votingPeriodHours'] === false) {
                 $actual_poll_closing_time = null;
 
             // If a topic ID was provided, add votingPeriodHours to t_cache_first_time
@@ -272,11 +293,14 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
         'requireTopicPoll' => 'boolean',
         'confined' => 'boolean',
         'votingEnabled' => 'boolean',
-        'votingPeriodHours' => 'numberOrFalse',
+        'votingPeriodHours' => '0<numberOrFalse',
         'requiresReply' => 'boolean',
         'resultsHidden' => 'boolean',
         'minimumSelections' => '0<number<maximumSelections',
-        'maximumSelections' => '0<number'
+        'maximumSelections' => '0<number',
+        'viewMemberVotes' => 'boolean',
+        'voteRevocation' => 'boolean',
+        'guestsCanVote' => 'boolean'
     ];
     $allowed_root_attribute_names = array_keys($allowed_root_attributes);
     foreach ($root_attributes as $attribute => $value) {
@@ -287,26 +311,30 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
 
         // Validate attribute values
         switch ($allowed_root_attributes[$attribute]) {
+            // true or false
             case 'boolean':
                 if (!in_array(cms_strtolower_ascii($value), ['true', 'false'])) {
                     return do_lang_tempcode('POLL_XML_TRUE_FALSE_ONLY', $attribute);
                 }
                 break;
+            // Any number greater than 0
             case '0<number':
-                if (!is_numeric($value)) {
+                if (!is_numeric($value) || $value <= 0) {
                     return do_lang_tempcode('POLL_XML_NUMBER_ONLY', $attribute);
                 }
                 break;
+            // Any number greater than 0 but less than maximumSelections
             case '0<number<maximumSelections':
-                if (!is_numeric($value)) {
+                if (!is_numeric($value) || $value <= 0) {
                     return do_lang_tempcode('POLL_XML_NUMBER_ONLY', $attribute);
                 }
                 if (array_key_exists('maximumSelections', $root_attributes) && is_numeric($root_attributes['maximumSelections']) && intval($value) > intval($root_attributes['maximumSelections'])) {
                     return do_lang_tempcode('POLL_XML_MINSELECTIONS_GREATERTHAN_MAXSELECTIONS', $attribute);
                 }
                 break;
-            case 'numberOrFalse':
-                if (!is_numeric($value) && cms_strtolower_ascii($value) != 'false') {
+            // Any number greater than 0, or false
+            case '0<numberOrFalse':
+                if ((!is_numeric($value) || $value <= 0) && cms_strtolower_ascii($value) != 'false') {
                     return do_lang_tempcode('POLL_XML_NUMBER_FALSE_ONLY', $attribute);
                 }
                 break;

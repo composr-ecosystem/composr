@@ -45,11 +45,8 @@ class Hook_admin_import_types_cns_forum
             'cns_multi_moderations' => 'MULTI_MODERATIONS',
             'cns_private_topics' => 'PRIVATE_TOPICS',
             'cns_saved_warnings' => 'SAVED_WARNINGS',
+            'cns_polls_and_votes' => 'TOPIC_POLLS'
         ];
-
-        if (addon_installed('polls')) {
-            $ret['cns_polls_and_votes'] = 'TOPIC_POLLS';
-        }
 
         return $ret;
     }

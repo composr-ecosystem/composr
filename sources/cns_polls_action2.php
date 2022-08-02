@@ -29,11 +29,15 @@
  * @param  integer $maximum_selections The maximum number of selections that may be made
  * @param  BINARY $requires_reply Whether members must have a post in the topic before they made vote
  * @param  array $answers A list of the potential voteable answers
+ * @param  BINARY $view_member_votes Whether others can see which members voted for each option on the results
+ * @param  BINARY $vote_revocation Whether to allow voters to revoke their vote when the poll's voting is still open
+ * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
  * @param  LONG_TEXT $reason The reason for editing the poll
  * @param  ?TIME $poll_closing_time The time voting should close on this poll (null: the poll will not close automatically)
+ * @param  boolean $erase_votes Whether to erase all the current votes
  * @return AUTO_LINK The ID of the topic the poll is on
  */
-function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, string $reason = '', ?int $poll_closing_time = null) : int
+function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, int $view_member_votes, int $vote_revocation, int $guests_can_vote, string $reason = '', ?int $poll_closing_time = null, bool $erase_votes = false) : int
 {
     require_code('cns_polls');
     require_code('cns_polls_action3');
@@ -45,11 +49,11 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
     $topic_id = $topic_info[0]['id'];
     $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => $poll_id], '', 1);
 
-    if ((!has_privilege(get_member(), 'may_unblind_own_poll')) && ($is_private == 0) && ($poll_info[0]['po_is_private'] == 1)) {
+    if ((!has_privilege(get_member(), 'may_unblind_own_poll')) && (!has_privilege(get_member(), 'edit_midrange_content', 'topics', ['forums', $topic_info[0]['t_forum_id']])) && ($is_private == 0) && ($poll_info[0]['po_is_private'] == 1)) {
         access_denied('PRIVILEGE', 'may_unblind_own_poll');
     }
 
-    cns_validate_poll($topic_id, $poll_id, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time);
+    cns_validate_poll($topic_id, $poll_id, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote);
 
     $GLOBALS['FORUM_DB']->query_update('f_polls', [
         'po_question' => $question,
@@ -58,32 +62,64 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
         'po_minimum_selections' => $minimum_selections,
         'po_maximum_selections' => $maximum_selections,
         'po_requires_reply' => $requires_reply,
-        'po_closing_time' => $poll_closing_time
+        'po_closing_time' => $poll_closing_time,
+        'po_view_member_votes' => $view_member_votes,
+        'po_vote_revocation' => $vote_revocation,
+        'po_guests_can_vote' => $guests_can_vote
     ], ['id' => $poll_id], '', 1);
 
-    $current_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], ['pa_poll_id' => $poll_id]);
-    $total_after = count($answers);
-    foreach ($current_answers as $i => $current_answer) {
-        if ($i < $total_after) {
-            $new_answer = $answers[$i];
-            $update = ['pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer];
-            if (is_array($new_answer)) {
-                $update['pa_cache_num_votes'] = $new_answer[1];
+    // If we are erasing votes, we can simply remove all answers / votes and re-populate with the new answers
+    if ($erase_votes) {
+        $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_poll_id' => $poll_id]);
+        $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_cache_total_votes' => 0], ['id' => $poll_id], '', 1);
+        $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', ['pa_poll_id' => $poll_id]);
+
+        foreach ($answers as $i => $answer) {
+            if (is_array($answer)) {
+                list($answer, $num_votes) = $answer;
+            } else {
+                $num_votes = 0;
             }
-            $GLOBALS['FORUM_DB']->query_update('f_poll_answers', $update, ['id' => $current_answer['id']], '', 1);
-        } else {
-            $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', ['id' => $current_answer['id']], '', 1);
-            $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_answer_id' => $current_answer['id']], '', 1);
+
+            $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', [
+                'pa_poll_id' => $poll_id,
+                'pa_answer' => $answer,
+                'pa_cache_num_votes' => 0, // Since we are erasing votes, this should always be 0
+                'pa_order' => $i
+            ]);
         }
-    }
-    $i++;
-    for (; $i < $total_after; $i++) {
-        $new_answer = $answers[$i];
-        $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', [
-            'pa_poll_id' => $poll_id,
-            'pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer,
-            'pa_cache_num_votes' => is_array($new_answer) ? $new_answer[1] : 0,
-        ]);
+    } else {
+        $current_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], ['pa_poll_id' => $poll_id]);
+        $total_after = count($answers);
+
+        // Loop through the database of current answers
+        foreach ($current_answers as $i => $current_answer) {
+            if ($i < $total_after) {
+                // Update the text and votes for the answer
+                $new_answer = $answers[$i];
+                $update = ['pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer, 'pa_order' => $i];
+                if (is_array($new_answer)) {
+                    $update['pa_cache_num_votes'] = $new_answer[1];
+                }
+                $GLOBALS['FORUM_DB']->query_update('f_poll_answers', $update, ['id' => $current_answer['id']], '', 1);
+            } else {
+                // Answer was removed
+                $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', ['id' => $current_answer['id']], '', 1);
+                $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_answer_id' => $current_answer['id']], '', 1);
+            }
+        }
+        $i++;
+
+        // Add new answers into the database if applicable
+        for (; $i < $total_after; $i++) {
+            $new_answer = $answers[$i];
+            $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', [
+                'pa_poll_id' => $poll_id,
+                'pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer,
+                'pa_cache_num_votes' => is_array($new_answer) ? $new_answer[1] : 0,
+                'pa_order' => $i
+            ]);
+        }
     }
 
     $name = $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', ['id' => $poll_id]);
@@ -169,20 +205,21 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     if (is_guest($member_id)) {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address()];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
     } else {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_forfeited' => 0];
     }
     $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
     if ($voted_already !== null) {
-        warn_exit(do_lang_tempcode('NOVOTE'));
+        warn_exit(do_lang_tempcode('ALREADY_VOTED'));
     }
 
-    // Check their vote is valid
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private', 'po_closing_time'], ['id' => $poll_id], '', 1);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private', 'po_closing_time', 'po_view_member_votes', 'po_guests_can_vote'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
+
+    // Check their vote is valid
     $poll_info = [
         'is_open' => $rows[0]['po_is_open'],
         'closing_time' => $rows[0]['po_closing_time']
@@ -193,6 +230,11 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     $answers = collapse_2d_complexity('id', 'pa_answer', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id', 'pa_answer'], ['pa_poll_id' => $poll_id]));
     if (($rows[0]['po_requires_reply'] == 1) && (!cns_has_replied_topic($topic_id, $member_id))) {
         warn_exit(do_lang_tempcode('POLL_REQUIRES_REPLY'));
+    }
+
+    // Redirect to login if guests cannot vote
+    if ($rows[0]['po_guests_can_vote'] != 1 && is_guest($member_id)) {
+        access_denied('NOT_AS_GUEST');
     }
 
     // Insert votes
@@ -207,6 +249,8 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_member_id' => $member_id,
             'pv_answer_id' => $vote,
             'pv_ip' => get_ip_address(),
+            'pv_forfeited' => 0,
+            'pv_date_time' => time()
         ]);
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes+1) WHERE id=' . strval($vote), 1);
@@ -218,8 +262,8 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
     }
     $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_polls SET po_cache_total_votes=(po_cache_total_votes+1) WHERE id=' . strval($poll_id), 1);
 
-    // Send notification if not private (if private then it would be too revealing to say when votes come in, as you could just look at who is online when you get the notification)
-    if ($rows[0]['po_is_private'] == 0) {
+    // Send notification to topic subscribers if the poll is not private and is set to reveal which members voted for each option (otherwise this can be too revealing as members can predict the outcome of the poll)
+    if ($rows[0]['po_is_private'] == 0 && $rows[0]['po_view_member_votes'] == 1) {
         $poll_title = $rows[0]['po_question'];
         $topic_title = $topic_info[0]['t_cache_first_title'];
         $topic_url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id);
@@ -227,7 +271,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         $subject = do_lang('POLL_VOTE_MAIL_SUBJECT', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));
         $mail = do_lang('POLL_VOTE_MAIL_BODY', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));
         require_code('notifications');
-        dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, [$member_id]);
+        dispatch_notification('cns_topic', strval($topic_id), $subject, $mail);
     }
 }
 
@@ -251,4 +295,75 @@ function cns_is_poll_open(array $poll_info) : bool
     }
 
     return true;
+}
+
+/**
+ * Revoke the vote by a member in a topic poll.
+ *
+ * @param  array $topic_info The topic info from cns_read_in_topic for the topic containing the poll
+ * @param  ?MEMBER $member_id The ID of the member from which to revoke the vote (null: the current member)
+ */
+function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
+{
+    // Ignore if there is no poll on this topic
+    if (!array_key_exists('poll', $topic_info)) {
+        return;
+    }
+
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    // Guests may not revoke their vote
+    if (is_guest($member_id)) {
+        access_denied('I_ERROR');
+    }
+
+    $poll = $topic_info['poll'];
+    $poll_info = cns_poll_get_results($poll['id'], false, [0]);
+
+    // Disallow / ignore if voting revocation is disabled or the poll is closed.
+    if (!$poll_info['vote_revocation'] || !cns_is_poll_open($poll_info)) {
+        access_denied('I_ERROR');
+    }
+
+    require_code('cns_general_action2');
+
+    $_answers = $poll_info['answers'];
+    $_votes = $poll_info['votes'];
+
+    // Find which answers were submitted on the vote (in case of multi-selections)
+    $answers = [];
+    foreach ($_votes as $vote) {
+        if ($vote['pv_member_id'] != $member_id) {
+            continue;
+        }
+
+        $_cell = array_search($vote['pv_answer_id'], array_column($_answers, 'id'));
+        if ($_cell !== null) {
+            array_push($answers, $_answers[$_cell]['answer']);
+        }
+    }
+
+    // Revoke the votes in the database
+    if (is_guest($member_id)) {
+        $map = ['pv_poll_id' => $poll_info['id'], 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
+    } else {
+        $map = ['pv_poll_id' => $poll_info['id'], 'pv_member_id' => $member_id];
+    }
+    $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_forfeited' => 1], $map);
+
+    // Re-cache total votes
+    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_info['id'], 'pv_forfeited' => 0]);
+    $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_cache_total_votes' => $total_votes], ['id' => $poll_info['id']], '', 1);
+
+    // Re-cache answer votes
+    $poll_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $poll_info['id']]);
+    foreach ($poll_answers as $answer) {
+        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll_info['id'], 'pv_forfeited' => 0]);
+        $GLOBALS['FORUM_DB']->query_update('f_poll_answers', ['pa_cache_num_votes' => $votes], ['id' => $answer['id']], '', 1);
+    }
+
+    // Log the revocation
+    cns_mod_log_it('VOTE_REVOCATION', strval($topic_info['id']), implode(', ', $answers));
 }
