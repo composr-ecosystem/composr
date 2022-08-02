@@ -204,7 +204,7 @@ function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_pr
 
     if (stripos($text, '[title') !== false) {
         if (!in_array('title', $tags_to_preserve)) {
-            $text = cms_preg_replace_callback_safe('#(\s*)\[title([^\]]*)\](.*)\[/title\]#Usi', '_title_callback', $text);
+            $text = cms_preg_replace_callback_safe('#(\s*)\[title([^\]]*)\](.*)\[/title\]#Usi', $for_extract ? '_title_callback_extract' : '_title_callback', $text);
         }
     }
 
@@ -214,6 +214,7 @@ function _strip_comcode(string $in, bool $for_extract = false, array $tags_to_pr
         }
     }
 
+    // Strip title if this is for extract
     $tags_to_strip_entirely = array_diff([
         'snapback',
         'post',
@@ -410,6 +411,20 @@ function _title_callback(array $matches) : string
     }
     $ret .= $matches[3] . "\n" . str_repeat($symbol, strlen($matches[3]));
     return $ret;
+}
+
+/**
+ * Make titles readable and extract-safe. Callback for preg_replace_callback.
+ *
+ * @param  array $matches Matches
+ * @return string Replacement
+ *
+ * @ignore
+ */
+function _title_callback_extract(array $matches) : string
+{
+    $ret = $matches[1] . $matches[3];
+    return $ret . '.';
 }
 
 /**
