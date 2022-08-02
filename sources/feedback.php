@@ -405,7 +405,7 @@ function get_rating_simple_array($content_url, ?string $content_title, string $c
             // $error = do_lang_tempcode('RATE_DENIED'); Commented out because it's a bit much
             $allow_rating = false;
         } elseif (already_rated(array_keys($all_rating_criteria), $content_id)) {
-            $error = do_lang_tempcode('NORATE');
+            $error = do_lang_tempcode('ALREADY_RATED');
             $allow_rating = false;
         } else {
             static $self_url = null;

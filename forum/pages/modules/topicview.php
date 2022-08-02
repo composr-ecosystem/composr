@@ -145,9 +145,21 @@ class Module_topicview
             $max = $default_max;
         }
 
-        $view_poll_results = get_param_integer('view_poll_results', 0);
+        $view_poll_results = post_param_integer('view_poll_results', 0);
+        $revoke_vote = post_param_integer('revoke_vote', 0);
 
         $topic_info = cns_read_in_topic($id, $start, $max, $view_poll_results == 1);
+
+        if ($revoke_vote == 1 && array_key_exists('poll', $topic_info)) {
+            require_code('cns_polls_action2');
+            cns_revoke_vote_in_poll($topic_info);
+
+            // Success
+            attach_message(do_lang_tempcode('SUCCESS', 'inform'));
+
+            // We must re-read topic info with updated poll stuff
+            $topic_info = cns_read_in_topic($id, $start, $max, $view_poll_results == 1);
+        }
 
         $may_reply = array_key_exists('may_reply', $topic_info);
 
@@ -679,30 +691,58 @@ class Module_topicview
         $buttons = cns_button_screen_wrap($button_array);
 
         // Poll
-        if ((array_key_exists('poll', $topic_info)) && (addon_installed('polls'))) {
+        if ((array_key_exists('poll', $topic_info))) {
             require_lang('cns_polls');
             require_code('cns_polls_action2');
 
             $_poll = $topic_info['poll'];
             $poll_is_open = cns_is_poll_open($_poll);
             $voted_already = $_poll['voted_already'];
+            $is_private = $_poll['is_private'] == 1;
             $poll_results = (array_key_exists(0, $_poll['answers'])) && (array_key_exists('num_votes', $_poll['answers'][0]));
             $answers = new Tempcode();
-            $real_button = false;
+            $show_buttons = false;
+            $disable_answers = false;
+            $poll_buttons = new Tempcode();
+            $footer_message = new Tempcode();
+            $revoke_url = new Tempcode();
+            $can_view_results = false;
+            $vote_will_forfeight = false;
+
+            // Controls the visibility of the "View Results" button (clicking to go from the voting interface to the results, without actually voting)
+            if (
+                (!is_guest()) || // Members can always view results as the system can reliably forfeit their vote against the member ID
+                (has_privilege(get_member(), 'view_poll_results_before_voting')) || // Privilege to view results regardless of current vote status
+                (is_guest()) && ($_poll['guests_can_vote'] == 1) && ($_poll['vote_revocation'] == 1) // Guests can only view results if they are allowed to vote (i.e. we're not trying to encourage them to log in to participate) and if revocation is enabled (i.e. we do not mind users changing their mind, which is necessarily the case for guest voting as it is impossible to enforce a forfeit)
+            ) {
+                $can_view_results = true;
+            }
+
+            // For controlling the warning overlay when someone clicks "View Results"
+            if (!$voted_already && $_poll['vote_revocation'] != 0 && !has_privilege(get_member(), 'view_poll_results_before_voting')) {
+                $vote_will_forfeight = true;
+            }
+
+            // Work out vote URL
+            $map = ['page' => 'topics', 'type' => 'vote_poll', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
+            $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
+            if (($test !== null) && ($test !== '0')) {
+                $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
+            }
+            $test_threaded = get_param_integer('threaded', null);
+            if ($test_threaded !== null) {
+                $map['threaded'] = $test_threaded;
+            }
+            $vote_url = build_url($map, get_module_zone('topics'));
+
+            // Work out buttons / error messages
             if ($poll_is_open) {
-                if ($poll_results) {
-                    $button = new Tempcode();
-                } elseif (($_poll['requires_reply']) && (!$replied)) {
-                    $button = do_lang_tempcode('POLL_REQUIRES_REPLY');
-                } else {
-                    if (!has_privilege(get_member(), 'vote_in_polls')) {
-                        $button = do_lang_tempcode(is_guest() ? 'GUESTS_CANT_VOTE_IN_POLLS' : 'VOTE_DENIED');
-                    } else {
-                        if ($voted_already !== null) {
-                            $button = do_lang_tempcode('NOVOTE');
-                        } else {
-                            require_lang('polls');
-                            $map = ['page' => 'topicview', 'id' => $id, 'view_poll_results' => 1, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
+                if (($poll_results || $voted_already !== null)) {
+                    $disable_answers = true;
+                    if ($voted_already) {
+                        $footer_message = do_lang_tempcode('ALREADY_VOTED');
+                        if ($_poll['vote_revocation'] == 1 && !is_guest()) {
+                            $map = ['page' => 'topicview', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
                             $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
                             if (($test !== null) && ($test !== '0')) {
                                 $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -711,21 +751,54 @@ class Module_topicview
                             if ($test_threaded !== null) {
                                 $map['threaded'] = $test_threaded;
                             }
-                            $results_url = build_url($map, get_module_zone('topics'));
-                            $button = do_template('CNS_TOPIC_POLL_BUTTON', ['_GUID' => '94b932fd01028df8f67bb5864d9235f9', 'RESULTS_URL' => $results_url]);
-                            $real_button = true;
+                            $revoke_url = build_url($map, get_module_zone('topics'));
+                            $poll_buttons = do_template('CNS_TOPIC_POLL_BUTTON_REVOKE', ['_GUID' => 'ae9380bae4e542b48fe10ae93e53fa7d', 'REVOKE_URL' => $revoke_url]);
+                            $show_buttons = true;
+                            $footer_message = new Tempcode();
                         }
+                    }
+                } elseif (($_poll['requires_reply']) && (!$replied)) {
+                    $disable_answers = true;
+                    $footer_message = do_lang_tempcode('POLL_REQUIRES_REPLY');
+                } else {
+                    if (!has_privilege(get_member(), 'vote_in_polls')) {
+                        $disable_answers = true;
+                        $footer_message = do_lang_tempcode(is_guest() ? 'GUESTS_CANT_VOTE_IN_POLLS' : 'VOTE_DENIED');
+                    } else {
+                        require_lang('cns_polls');
+                        $map = ['page' => 'topicview', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
+                        $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
+                        if (($test !== null) && ($test !== '0')) {
+                            $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
+                        }
+                        $test_threaded = get_param_integer('threaded', null);
+                        if ($test_threaded !== null) {
+                            $map['threaded'] = $test_threaded;
+                        }
+                        $results_url = build_url($map, get_module_zone('topics'));
+                        $poll_buttons = do_template('CNS_TOPIC_POLL_BUTTON', [
+                            '_GUID' => '94b932fd01028df8f67bb5864d9235f9',
+                            'RESULTS_URL' => $results_url,
+                            'VOTE_URL' => $vote_url,
+                            'CAN_VIEW_RESULTS' => $can_view_results,
+                            'VOTE_WILL_FORFEIGHT' => $vote_will_forfeight
+                        ]);
+                        $show_buttons = true;
+                        $footer_message = new Tempcode();
                     }
                 }
             } else {
-                $button = do_lang_tempcode('TOPIC_POLL_CLOSED');
+                $footer_message = do_lang_tempcode('TOPIC_POLL_CLOSED');
+                $disable_answers = true;
             }
+
+            // Work out results / voting UI
             $total_votes = $_poll['total_votes'];
             foreach ($_poll['answers'] as $answer) {
                 if (($poll_results) && (($_poll['requires_reply'] == 0) || ($replied))) {
                     $num_votes = $answer['num_votes'];
                     if ($total_votes != 0) {
-                        $width = intval(round(70.0 * floatval($num_votes) / floatval($total_votes)));
+                        $width = intval(round(100.0 * floatval($num_votes) / floatval($total_votes)));
                     } else {
                         $width = 0;
                     }
@@ -739,53 +812,40 @@ class Module_topicview
                         'WIDTH' => strval($width),
                         'ANSWER' => $answer['answer'],
                         'I' => strval($answer['id']),
+                        'VOTERS_URL' => $_poll['view_member_votes'] ? build_url(['page' => 'topics', 'type' => 'view_poll_voters', 'id' => $_poll['id'], 'answer_id' => $answer['id']], '_SELF') : null
                     ]);
                 } else {
-                    $answer_tpl = do_template('CNS_TOPIC_POLL_ANSWER' . (($_poll['maximum_selections'] == 1) ? '_RADIO' : ''), ['REAL_BUTTON' => $real_button, 'ID' => strval($_poll['id']), 'ANSWER' => $answer['answer'], 'I' => strval($answer['id'])]);
+                    $answer_tpl = do_template('CNS_TOPIC_POLL_ANSWER' . (($_poll['maximum_selections'] == 1) ? '_RADIO' : '_TICK'), ['DISABLE_ANSWERS' => $disable_answers, 'ID' => strval($_poll['id']), 'ANSWER' => $answer['answer'], 'I' => strval($answer['id'])]);
                 }
                 $answers->attach($answer_tpl);
             }
-            $map = ['page' => 'topics', 'type' => 'vote_poll', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
-            $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
-            if (($test !== null) && ($test !== '0')) {
-                $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
-            }
-            $test_threaded = get_param_integer('threaded', null);
-            if ($test_threaded !== null) {
-                $map['threaded'] = $test_threaded;
-            }
-            $vote_url = build_url($map, get_module_zone('topics'));
-            if ($_poll['is_private']) {
-                $private = paragraph(do_lang_tempcode('TOPIC_POLL_RESULTS_HIDDEN'), 'dfgsdgdsgs');
-            } else {
-                $private = new Tempcode();
-            }
-            if ($_poll['maximum_selections'] > 1) {
-                $num_choices = paragraph(($_poll['minimum_selections'] == $_poll['maximum_selections']) ? do_lang_tempcode('POLL_NOT_ENOUGH_ERROR_2', escape_html(integer_format($_poll['minimum_selections']))) : do_lang_tempcode('POLL_NOT_ENOUGH_ERROR', escape_html(integer_format($_poll['minimum_selections'])), escape_html(integer_format($_poll['maximum_selections']))), 'dsfsdfsdfs');
-            } else {
-                $num_choices = new Tempcode();
-            }
 
+            // Main poll template
             $poll = do_template('CNS_TOPIC_POLL' . ($poll_results ? '_VIEW_RESULTS' : ''), [
                 'ID' => strval($_poll['id']),
-                'NUM_CHOICES' => $num_choices,
-                'PRIVATE' => $private,
+                'PRIVATE' => $is_private,
+                'VOTES_REVEALED' => $_poll['view_member_votes'] == 1,
                 'QUESTION' => $_poll['question'],
                 'ANSWERS' => $answers,
-                'REAL_BUTTON' => $real_button,
-                'BUTTON' => $button,
+                'SHOW_BUTTONS' => $show_buttons,
+                'BUTTONS' => $poll_buttons,
+                'FOOTER_MESSAGE' => $footer_message,
                 'VOTE_URL' => $vote_url,
+                'REVOKE_URL' => $revoke_url,
+                'NOT_VOTED' => $voted_already == 0,
+                'IS_OPEN' => $poll_is_open,
                 '_MINIMUM_SELECTIONS' => strval($_poll['minimum_selections']),
                 '_MAXIMUM_SELECTIONS' => strval($_poll['maximum_selections']),
                 '_TOTAL_VOTES' => strval($total_votes),
                 'MINIMUM_SELECTIONS' => integer_format($_poll['minimum_selections']),
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
-                'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : null,
+                'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : '0',
                 'TOTAL_VOTES' => integer_format($total_votes),
             ]);
         } else {
             $poll = new Tempcode();
         }
+
 
         // Quick reply
         if ((array_key_exists('may_use_quick_reply', $topic_info)) && ($may_reply) && ($id !== null)) {
@@ -882,10 +942,8 @@ class Module_topicview
         $action_url = build_url(['page' => 'topics', 'id' => $id], get_module_zone('topics'));
         if ($id !== null) {
             $default_poll_options = [];
-            if (addon_installed('polls')) {
-                require_code('cns_polls_action3');
-                $default_poll_options = cns_get_default_poll_options($topic_info['forum_id']);
-            }
+            require_code('cns_polls_action3');
+            $default_poll_options = cns_get_default_poll_options($topic_info['forum_id']);
 
             // Moderation options
             $moderator_actions = ''; // XHTMLXHTML
@@ -936,13 +994,13 @@ class Module_topicview
             if (array_key_exists('may_close_topic', $topic_info)) {
                 $moderator_actions .= '<option value="close_topic">' . do_lang('CLOSE_TOPIC') . '</option>';
             }
-            if ((array_key_exists('may_edit_poll', $topic_info)) && (addon_installed('polls'))) {
+            if ((array_key_exists('may_edit_poll', $topic_info))) {
                 $moderator_actions .= '<option value="edit_poll">' . do_lang('EDIT_TOPIC_POLL') . '</option>';
             }
-            if ((array_key_exists('may_delete_poll', $topic_info)) && (addon_installed('polls')) && (!$default_poll_options['requireTopicPoll'])) {
+            if ((array_key_exists('may_delete_poll', $topic_info)) && (!$default_poll_options['requireTopicPoll'])) {
                 $moderator_actions .= '<option value="delete_poll">' . do_lang('DELETE_TOPIC_POLL') . '</option>';
             }
-            if ((array_key_exists('may_attach_poll', $topic_info)) && (addon_installed('polls'))) {
+            if ((array_key_exists('may_attach_poll', $topic_info))) {
                 $moderator_actions .= '<option value="add_poll">' . do_lang('ADD_TOPIC_POLL') . '</option>';
             }
             if (addon_installed('actionlog')) {

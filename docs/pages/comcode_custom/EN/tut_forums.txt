@@ -118,11 +118,39 @@ If your users are confused by the quick reply function (for example, they miss t
 [media width="150" description="Viewing a poll (post-voting)" float="right"]data_custom/images/docs/tut_forums/forums_poll_view_2.png[/media]
 [media width="150" description="Viewing a poll (pre-voting)" float="right"]data_custom/images/docs/tut_forums/forums_poll_view_1.png[/media]
 [media width="150" description="Adding a poll" float="right"]data_custom/images/docs/tut_forums/forums_poll_add.png[/media]
-Topics may have a poll attached to them (by any member) by default, so as to gauge opinion tied to a discussion. These polls are separate to the main Composr poll system, and have different options. Forum polls may only be used by members, and there are options to restrict:
- - viewing of poll results until the poll is 'un-blinded'
- - voting, such that that members must reply to the topic of the poll before they may vote in it
-Once a member creates a topic poll, it can only be edited or deleted by those with the proper privileges (such as Edit/Delete Own Polls or Edit Midrange Content) to ensure voting result fairness.
-Site staff can also set default or mandatory topic poll options on a per-forum basis (such as restricting which options are allowed) using XML markup. See [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page] for more information.
+Topics may have a poll attached to them (by any member) by default, so as to gauge opinion tied to a discussion. These polls are separate to the main Composr poll system, and have different options.
+
+Polls have options to restrict or allow:
+ - restrict viewing of poll results after voting until the option is unticked (unchecked) on the poll
+ - restrict voting, such that that members must reply to the topic of the poll before they may vote in it
+ - allow viewing which members voted for each option instead of just the vote counts
+ - allow members to revoke or change their own vote
+ - restrict when voting will be closed, either manually or on a specific date
+ - restrict the number of allowed selections on the poll
+ - allow guests to vote without logging in
+
+Site staff can set default or mandatory topic poll options on a per-forum basis (such as restricting which options are allowed) using XML markup. See [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page] for more information.
+
+There are a number of privileges associated with polls:
+ - On adding polls:
+  - Any member who can add a topic can also add a poll to that topic
+  - Members can only set poll results public if they have the "Un-blind their own polls" or "Edit Midrange Content" privilege.
+ - On using polls:
+  - Those without the "can vote in polls" privilege cannot vote in any polls regardless of the settings of any particular poll.
+  - The "View poll results before voting" does what you'd expect.
+ - On editing polls:
+  - Once a member creates a topic poll, it can only be edited or deleted by those with the proper privileges (Edit their own polls or Edit Midrange Content) to ensure voting result fairness.
+ - On deleting polls:
+  - Polls can only be deleted by members with the "Delete other users' mid-impact (medium visibility) content" privilege or with the "Delete own mid-impact (medium visibility) content" (if they own the poll they want to delete)
+
+On viewing results:
+ - When a member views a topic poll, if voting is open, they can either vote on it or view the results. If a member views the results without voting, they do not have the "View poll results before voting" privilege, and the poll does not allow members to revoke votes (i.e. be influenced to change their minds), the member forfeits their vote on that poll. Guests cannot view poll results prior to voting if the poll is set to not allow guest voting nor vote revoking.
+ - If voting on the poll is closed, then the member will either see the results if they are public, or they will only see a message saying that voting is closed.
+ - After a member votes, if results are public, they will see the current results of the poll. If enabled on the poll, the number of votes for each option will be a link and can be clicked to see which specific members voted that option and when.
+
+If voting revocation is allowed on the poll and voting is still open, a member may revoke their vote with the [b]Revoke Vote[/b] button. They may then re-vote at any time on the poll so long as voting is still open. Revoked votes are logged in the Action Log for moderators to review.
+
+When editing poll answers, the votes will be maintained; you should generally only edit answers to fix typos or add new choices (but not to modify or remove existing ones). If you are modifying existing answers beyond fixing typos, you should tick (check) the "Erase votes" box to erase all current votes for a fair poll.
 [/surround]
 
 [title="2"]Editing posts[/title]

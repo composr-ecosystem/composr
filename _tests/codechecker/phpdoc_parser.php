@@ -104,9 +104,16 @@ if (file_exists($COMPOSR_PATH . '/data_custom')) {
 } else {
     $myfile = fopen('functions.bin', 'wb');
 }
-flock($myfile, LOCK_EX);
-fwrite($myfile, serialize($classes));
-flock($myfile, LOCK_UN);
+if (!$myfile) {
+    exit('Could not open functions.bin. Maybe the file does not exist or permission is denied.');
+}
+
+if (flock($myfile, LOCK_EX)) {
+    fwrite($myfile, serialize($classes));
+    flock($myfile, LOCK_UN);
+} else {
+    exit('Error locking functions.bin. Maybe the file does not exist or permission is denied.');
+}
 fclose($myfile);
 
 echo 'DONE Compiled signatures';

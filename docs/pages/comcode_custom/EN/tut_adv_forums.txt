@@ -74,7 +74,7 @@ For Zoho to work you just need to enable IMAP in your Zoho Mail account settings
 There is an option to set default poll options for topic polls created within the forum. The field takes a special XML markup.
 
 The XML markup is as follows:
-[code="XML"]<defaultPollOptions requireTopicPoll="true" confined="true" votingEnabled="false" votingPeriodHours="24" requiresReply="true" resultsHidden="true" minimumSelections="1" maximumSelections="1">
+[code="XML"]<defaultPollOptions requireTopicPoll="true" confined="true" votingEnabled="false" votingPeriodHours="24" requiresReply="true" resultsHidden="true" viewMemberVotes="false" voteRevocation="false" guestsCanVote="true" minimumSelections="1" maximumSelections="1">
 	<option mandatory="true">Foo</option>
 	<option mandatory="true">Bar</option>
 	<option>Optional</option>
@@ -91,6 +91,9 @@ The [tt]defaultPollOptions[/tt] root tag supports the following attributes:
   - If not defined, then the topic author may define their own date to close voting if they wish.
  - [tt]requiresReply[/tt] (boolean): If true, then every poll created in the forum will require a topic reply. If false, then every poll created in the forum will not require a topic reply. If not defined, then the topic author may decide.
  - [tt]resultsHidden[/tt] (boolean): If true, then every poll created in the forum will require results be hidden (until a moderator unhides them) from members who voted. Otherwise, the topic author may decide.
+ - [tt]viewMemberVotes[/tt] (boolean): If true, then every poll created in the forum will require the ability to see which members voted for each option on the results. If false, then every poll created is not allowed to reveal which specific members voted for each option. If not defined, then the topic author may decide.
+ - [tt]voteRevocation[/tt] (boolean): If true, then every poll created in the forum will require allowing voters to revoke their vote while voting is still open. If false, then every poll created in the forum will not allow voters to revoke their vote. If not defined, then the topic author may decide.
+ - [tt]guestsCanVote[/tt] (boolean): If true, then every poll created in the forum will require allowing guests to vote without logging in. If false, then every poll created in the forum must require guests to log in to vote. If not defined, then the topic author may decide.
  - [tt]minimumSelections[/tt] (number): If defined, then all polls created in the forum will require the provided minimum number of selections when someone votes. If [tt]confined[/tt] is also true, then you must define at least this many option children in the XML.
  - [tt]maximumSelections[/tt] (number): If defined, then all polls created in the forum will require the provided maximum number of selections when someone votes.
 

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 x="0px" y="0px" width="10px" height="15px">
-<defs>
-</defs>
-<path fill="#C8691C" d="M0,0h8.125c1.104,0,2,0.896,2,2v4.859H0V0z"/>
-<path fill="#F79523" d="M0,6.863h10.125v4.246c0,0.966-0.896,1.749-2,1.749H0V6.863z"/>
-</svg>

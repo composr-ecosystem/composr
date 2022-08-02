@@ -270,14 +270,25 @@
         });
     };
 
-    $cms.templates.cnsTopicPoll = function (params) {
+    $cms.templates.cnsTopicPoll = function (params, container) {
+        var userIsVoting = true;
         var form = this,
             minSelections = Number(params.minimumSelections) || 0,
             maxSelections = Number(params.maximumSelections) || 0,
-            error = (minSelections === maxSelections) ? $util.format('{!cns_polls:POLL_NOT_ENOUGH_ERROR_2;^}', minSelections) : $util.format('{!cns_polls:POLL_NOT_ENOUGH_ERROR;^}', [minSelections, maxSelections]);
+            error = (minSelections === maxSelections) ? $util.format('{!cns_polls:POLL_INVALID_SELECTION_COUNT_2;^}', [minSelections]) : $util.format('{!cns_polls:POLL_INVALID_SELECTION_COUNT;^}', [minSelections, maxSelections]);
+
+        $dom.on(container, 'click', '.js-change-poll-form', function (e, btn) {
+            userIsVoting = false;
+            form.action = strVal(btn.dataset.formAction);
+        });
+
+        $dom.on(container, 'click', '.js-revert-poll-form', function (e, btn) {
+            userIsVoting = true;
+            form.action = strVal(btn.dataset.formAction);
+        });
 
         $dom.on(form, 'submit', function (e) {
-            if (cnsCheckPoll() === false) {
+            if (userIsVoting && cnsCheckPoll() === false) {
                 e.preventDefault();
             }
         });

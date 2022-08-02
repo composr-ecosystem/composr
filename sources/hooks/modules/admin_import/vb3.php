@@ -1024,7 +1024,7 @@ class Hook_import_vb3
                 $rows2[$i]['userid'] = import_id_remap_get('member', strval($row2['userid']), true);
             }
 
-            $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, false);
+            $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, 0, 0, 1, false);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from VB vote number to Composr vote number
 
@@ -1032,7 +1032,7 @@ class Hook_import_vb3
                 $member_id = $row2['userid'];
                 if (!empty($member_id)) {
                     $answer = array_key_exists($row2['voteoption'] - 1, $answers) ? $answers[$row2['voteoption'] - 1] : -1;
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '']);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_forfeited' => 0, 'pv_date_time' => $row2['votedate']]);
                 }
             }
 

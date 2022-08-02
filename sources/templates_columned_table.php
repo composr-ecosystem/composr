@@ -54,3 +54,26 @@ function columned_table_row(array $values, bool $escape) : object
 
     return do_template('COLUMNED_TABLE_ROW', ['_GUID' => 'a4efacc07ecb165e37c355559f476ae9', 'CELLS' => $cells]);
 }
+
+/**
+ * Get the Tempcode for a cell containing a member.
+ *
+ * @param  AUTO_LINK $member_id The ID of the member being added to the cell
+ * @return Tempcode A Tempcode containing the member, a hyperlink to their profile, and a member info tooltip
+ */
+function columned_table_member_cell(int $member_id) : object
+{
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
+    if ($username === null) {
+        return do_lang_tempcode('UNKNOWN');
+    }
+
+    $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true, $username);
+
+    return do_template('COLUMNED_TABLE_MEMBER_CELL', [
+        '_GUID' => '289bcaf692854b588f9b1eda3c0c52f4',
+        'PROFILE_URL' => $profile_url,
+        'USERNAME' => $username,
+        'MEMBER_ID' => strval($member_id)
+    ]);
+}

@@ -28,10 +28,6 @@
  */
 function cns_may_edit_poll_by(?int $forum_id, int $poll_owner, ?int $member_id = null) : bool
 {
-    if (!addon_installed('polls')) {
-        return false;
-    }
-
     if ($member_id === null) {
         $member_id = get_member();
     }
@@ -59,10 +55,6 @@ function cns_may_edit_poll_by(?int $forum_id, int $poll_owner, ?int $member_id =
  */
 function cns_may_attach_poll(int $topic_id, ?int $topic_owner = null, ?bool $has_poll_already = null, ?int $forum_id = null, ?int $member_id = null) : bool
 {
-    if (!addon_installed('polls')) {
-        return false;
-    }
-
     if ($topic_owner === null) {
         $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_info)) {
@@ -100,10 +92,6 @@ function cns_may_attach_poll(int $topic_id, ?int $topic_owner = null, ?bool $has
  */
 function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id = null) : bool
 {
-    if (!addon_installed('polls')) {
-        return false;
-    }
-
     require_code('cns_polls_action3');
 
     if ($member_id === null) {
@@ -130,24 +118,27 @@ function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id
 
 /**
  * Find a map of results relating to a certain poll.
+ * Applies forfeiting is required.
  *
  * @param  AUTO_LINK $poll_id The poll
  * @param  boolean $request_results Whether we must record that the current member is requesting the results, blocking future voting for them
+ * @param  ?array $request_voters An array duple of [$start, $max] if we want to also return specific member IDs and what they voted (null: Do not include member IDs)
+ * @param  ?AUTO_LINK $answer_id The poll answer ID to filter by (null: return all answers)
  * @return ?array The map of results (null: could not find poll)
  */
-function cns_poll_get_results(int $poll_id, bool $request_results = true) : ?array
+function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array $request_voters = null, ?int $answer_id = null) : ?array
 {
-    if (!addon_installed('polls')) {
-        return null;
-    }
-
     $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $poll_info)) {
         attach_message(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($poll_id)), 'poll'), 'warn');
         return null;
     }
 
-    $_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], ['pa_poll_id' => $poll_id], (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY id');
+    $where_map = ['pa_poll_id' => $poll_id];
+    if ($answer_id !== null) {
+        $where_map['id'] = $answer_id;
+    }
+    $_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], $where_map, (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY pa_order');
     $answers = [];
     foreach ($_answers as $_answer) {
         $answer = [];
@@ -161,23 +152,42 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true) : ?arr
         $answers[] = $answer;
     }
 
-    if ($request_results) {
-        // Forfeiting this by viewing results?
-        if (is_guest()) {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address()];
+    $votes = [];
+    if ($request_voters !== null) {
+        if (array_key_exists(1, $request_voters)) {
+            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_forfeited' => 0], 'ORDER BY pv_date_time DESC', $request_voters[1], $request_voters[0]);
         } else {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member()];
+            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_forfeited' => 0], 'ORDER BY pv_date_time DESC', null, $request_voters[0]);
         }
-        $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
-        if ($voted_already === null) {
+        $votes = $_votes;
+    }
+
+    if ($request_results) {
+        if (is_guest()) {
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
+        } else {
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_forfeited' => 0];
+        }
+        $voted_already = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map) !== null);
+        if (!$voted_already) {
             $forfeight = !has_privilege(get_member(), 'view_poll_results_before_voting');
+            // If view_poll_results_before_voting is not assigned, member may be forfeiting their vote
             if ($forfeight) {
-                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
-                    'pv_poll_id' => $poll_id,
-                    'pv_member_id' => get_member(),
-                    'pv_answer_id' => -1,
-                    'pv_ip' => get_ip_address(),
-                ]);
+                // Vote forfeit should only happen if voting revocation is not allowed on this poll
+                if ($poll_info[0]['po_vote_revocation'] == 0) {
+                    // Guests cannot view results if they cannot vote, view_poll_results_before_voting is not set, and vote revocation is off.
+                    if (is_guest() && $poll_info[0]['po_guests_can_vote'] == 0) {
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    }
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
+                        'pv_poll_id' => $poll_id,
+                        'pv_member_id' => get_member(),
+                        'pv_answer_id' => -1,
+                        'pv_ip' => get_ip_address(),
+                        'pv_forfeited' => 0,
+                        'pv_date_time' => time()
+                    ]);
+                }
             }
         }
     }
@@ -191,7 +201,11 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true) : ?arr
         'requires_reply' => $poll_info[0]['po_requires_reply'],
         'is_open' => $poll_info[0]['po_is_open'],
         'closing_time' => $poll_info[0]['po_closing_time'],
+        'view_member_votes' => $poll_info[0]['po_view_member_votes'],
+        'vote_revocation' => $poll_info[0]['po_vote_revocation'],
+        'guests_can_vote' => $poll_info[0]['po_guests_can_vote'],
         'answers' => $answers,
+        'votes' => $votes,
         'total_votes' => $poll_info[0]['po_cache_total_votes'],
     ];
 

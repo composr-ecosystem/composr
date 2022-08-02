@@ -280,7 +280,7 @@ div.cns-table-footer > div > div {
 	color: {$GET,box_title_text} !important;
 }
 
-.cns-post-emphasis, .cns-post-personal {
+.cns-post-emphasis, .cns-post-personal, .cns-post-poll {
 	font-size: 0.85em;
 	font-weight: bold;
 	text-align: center;
@@ -296,16 +296,13 @@ div.cns-table-footer > div > div {
 	color: {$GET,cns_personal_post_text};
 }
 
-.cns-poll-meta {
-	text-align: center;
-	background-color: {$GET,area_faded_background};
+.cns-post-poll, div.cns-post-poll.cns-forum-box-left { /* Extra selector clause to give precedence over th.de-th and .cns-forum-box-left */
+	background-color: {$GET,cns_polls_background} !important;
+	color: {$GET,cns_polls_text};
 }
 
 .cns-poll-button {
-	text-align: center;
-	font-size: 0.9em;
-	vertical-align: middle;
-	padding: 0.5em;
+	margin-top: 1em;
 }
 
 .cns-poll-closing-time {
@@ -324,12 +321,13 @@ div.cns-table-footer > div > div {
 	border-collapse: collapse;
 }
 
-.cns-topic-poll, .cns-topic-poll th {
+.cns-topic-poll, .cns-topic-poll td {
 	text-align: right;
 }
 
-.cns-topic-poll th, .cns-topic-poll td {
-	border: 1px dotted {$GET,standard_border};
+.cns-topic-poll, .cns-topic-poll th {
+	text-align: left;
+	width: 100%;
 }
 
 .cns-topic-poll img {
@@ -343,15 +341,24 @@ div.cns-table-footer > div > div {
 }
 
 .cns-topic-poll-result-column2 {
-	font-size: 0.85em;
+	padding: 0.5em;
 }
 
 .cns-topic-poll-result-column2 * {
 	vertical-align: middle;
 }
 
-.cns-topic-poll-result-column2 {
-	padding: 0.5em;
+.cns-topic-poll-relative {
+	position: relative;
+}
+
+.cns-topic-poll-progress {
+	position: absolute;
+	top: 5%;
+	left: 0;
+	width: 0;
+	height: 90%;
+	background-color: {$GET,cns_polls_background} !important;
 }
 
 .cns-topic-poster-title {

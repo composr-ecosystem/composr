@@ -599,7 +599,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_comcode_page_show_as_edited[/tt] -- set this to '1' to disable the Comcode Page "show as edited" feature
   - [tt]hide_import[/tt] -- set this to '1' to hide the import icon from the Admin Zone (as some other addons may depend on it, but you may not need an icon)
   - [tt]hide_zone_editor[/tt] -- set this to '1' to hide the zone editor from the Admin Zone (if you're not using side panels)
-  - [tt]hide_polls[/tt] -- set this to '1' if you don't want to show polls in the CMS menu (if you have the forum you need the polls addon, but may not use polls outside the forum)
+  - [tt]hide_polls[/tt] -- set this to '1' if you don't want to show polls in the CMS menu
   - [tt]hide_rss[/tt] -- set this to '1' to hide the RSS links from the Admin Zone
   - [tt]disable_bulkhelper[/tt] -- set this to '1' to disable the feature that asks you if you are bulk-adding records
   - [tt]disable_news_repimages[/tt] -- set this to '1' to disable rep-images for news categories

@@ -1,7 +1,4 @@
-<p>
-	<button id="poll-vote-button" class="btn btn-primary btn-sm menu--social--polls" type="submit">{!VOTE}</button>
-</p>
-
-<p>
-	<span class="associated-link"><a {+START,IF,{$NOT,{$HAS_PRIVILEGE,view_poll_results_before_voting}}} data-cms-confirm-click="{!VOTE_FORFEIGHT}"{+END} href="{RESULTS_URL*}">{!POLL_RESULTS}</a></span>
-</p>
+<button id="poll-vote-button" data-tpl="buttonScreenItem" data-form-action="{VOTE_URL*}" class="js-revert-poll-form btn btn-primary btn-scri menu--social--polls" type="submit">{+START,INCLUDE,ICON}NAME=menu/social/polls{+END} <span>{!VOTE}</span></button>
+{+START,IF_PASSED_AND_TRUE,CAN_VIEW_RESULTS}
+	<button data-tpl="buttonScreenItem" name="view_poll_results" value="1"{+START,IF,{VOTE_WILL_FORFEIGHT}} data-cms-confirm-click="{!VOTE_FORFEIGHT}"{+END} data-form-action="{RESULTS_URL*}" class="js-change-poll-form btn btn-primary btn-scri buttons--preview" type="submit">{+START,INCLUDE,ICON}NAME=buttons/preview{+END} <span>{!POLL_RESULTS}</span></button>
+{+END}

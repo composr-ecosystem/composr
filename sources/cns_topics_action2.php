@@ -270,7 +270,7 @@ function cns_delete_topic(int $topic_id, string $reason = '', ?int $post_target_
     }
 
     // Delete stuff
-    if (($poll_id !== null) && (addon_installed('polls'))) {
+    if ($poll_id !== null) {
         require_code('cns_polls_action');
         require_code('cns_polls_action2');
         cns_delete_poll($poll_id, '', false);
