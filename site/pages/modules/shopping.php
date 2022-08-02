@@ -154,6 +154,7 @@ class Module_shopping
             $GLOBALS['SITE_DB']->delete_table_field('shopping_cart', 'is_deleted');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_cart', 'product_id', 'ID_TEXT', 'type_code');
             $GLOBALS['SITE_DB']->add_table_field('shopping_cart', 'purchase_id', 'ID_TEXT', '');
+            $GLOBALS['SITE_DB']->add_table_field('shopping_cart', 'add_time', 'TIME');
 
             $GLOBALS['SITE_DB']->rename_table('shopping_order', 'shopping_orders');
             $GLOBALS['SITE_DB']->alter_table_field('shopping_orders', 'tot_price', 'REAL', 'total_price');
