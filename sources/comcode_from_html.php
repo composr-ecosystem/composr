@@ -406,24 +406,24 @@ function convert_html_headers_to_titles(string $semihtml, bool $forceful) : stri
 {
     if (stripos($semihtml, '<h') !== false) {
         $array_html_preg_replace = [];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title"[^<>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 class="screen-title"[^<>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title" class="screen-title">\s*<span class="inner">(.*)</span>\s*</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title"[^<>]*>(.*)</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 class="screen-title"[^<>]*>(.*)</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title" class="screen-title"[^<>]*>(.*)</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
-        $array_html_preg_replace[] = ['#^\s*<h1>(.*)</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title"[^<>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1 class="screen-title"[^<>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title" class="screen-title">\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title"[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1 class="screen-title"[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1 id="screen-title" class="screen-title"[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+        $array_html_preg_replace[] = ['#^\s*<h1>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
         if ($forceful) {
-            $array_html_preg_replace[] = ['#^\s*<h1[^<>]*>(.*)</h1>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
+            $array_html_preg_replace[] = ['#^\s*<h1[^<>]*>(.*)</h1>\s*<a id="[^"]*"></a>\s*$#siU', '[title="1"]${1}[/title]' . "\n"];
         }
         $semihtml = array_html_preg_replace('h1', $array_html_preg_replace, $semihtml);
-        $semihtml = preg_replace('#^\s*<h1[^>]+>(.*)</h1>\s*#siU', '[title="1"]${1}[/title]' . "\n", $semihtml);
+        $semihtml = preg_replace('#^\s*<h1[^>]+>(.*)</h1>\s*<a id="[^"]*"></a>\s*#siU', '[title="1"]${1}[/title]' . "\n", $semihtml);
         for ($i = 2; $i <= 4; $i++) {
             $array_html_preg_replace = [];
-            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '><span class="inner">(.*)</span></h' . strval($i) . '>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
-            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '>(.*)</h' . strval($i) . '>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
+            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '><span class="inner">(.*)</span></h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
+            $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '>(.*)</h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
             if ($forceful) {
-                $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '[^<>]*>(.*)</h' . strval($i) . '>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
+                $array_html_preg_replace[] = ['#^\s*<h' . strval($i) . '[^<>]*>(.*)</h' . strval($i) . '>\s*<a id="[^"]*"></a>\s*$#siU', '[title="' . strval($i) . '"]${1}[/title]' . "\n"];
             }
             $semihtml = array_html_preg_replace('h' . strval($i) . '', $array_html_preg_replace, $semihtml);
         }
@@ -596,8 +596,8 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
                 if ($semihtml != '') {
                     $semihtml = '[html]' . $semihtml . '[/html]';
                 }
-                $semihtml = preg_replace('#<h1[^>]*>\s*<span class="inner">(.*)</span>\s*</h1>#Us', '[/html][semihtml][title]${1}[/title][/semihtml][html]', $semihtml);
-                $semihtml = preg_replace('#<h1[^>]*>(.*)</h1>#Us', '[/html][semihtml][title]${1}[/title][/semihtml][html]', $semihtml);
+                $semihtml = preg_replace('#<h1[^>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>#Us', '[/html][semihtml][title]${1}[/title][/semihtml][html]', $semihtml);
+                $semihtml = preg_replace('#<h1[^>]*>(.*)</h1>\s*<a id="[^"]*"></a>#Us', '[/html][semihtml][title]${1}[/title][/semihtml][html]', $semihtml);
                 $semihtml = str_replace('[attachment', '[/html][semihtml][attachment', str_replace('[/attachment]', '[/attachment][/semihtml][html]', $semihtml));
                 $semihtml = str_replace('[/html][html]', '', $semihtml);
                 $semihtml = str_replace('[html][/html]', '', $semihtml);
@@ -610,8 +610,8 @@ function semihtml_to_comcode(string $semihtml, bool $force = false, bool $quick 
         if ($semihtml != '') {
             $semihtml = '[semihtml]' . $semihtml . '[/semihtml]';
         }
-        $semihtml = preg_replace('#<h1[^>]*>\s*<span class="inner">(.*)</span>\s*</h1>#Us', '[title]${1}[/title]', $semihtml);
-        $semihtml = preg_replace('#<h1[^>]*>(.*)</h1>#Us', '[title]${1}[/title]', $semihtml);
+        $semihtml = preg_replace('#<h1[^>]*>\s*<span class="inner">(.*)</span>\s*</h1>\s*<a id="[^"]*"></a>#Us', '[title]${1}[/title]', $semihtml);
+        $semihtml = preg_replace('#<h1[^>]*>(.*)</h1>\s*<a id="[^"]*"></a>#Us', '[title]${1}[/title]', $semihtml);
 
         return $semihtml;
     }
