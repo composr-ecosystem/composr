@@ -339,7 +339,7 @@ These rules are very standard, but if broken then code-overriding may not work c
 | Usability: so live sites are tidy
 | All development
 | Manually
-| Remember to sort things. Sometimes this needs doing in PHP code, and sometimes it needs doing in your queries ([tt]ORDER BY[/tt]). If doing it in PHP code consider you usually will want to do a "natural" sort, to consider whether case-insensitivity needs enabling, and to consider Unicode-safe sorting (handled by the [tt]cms_mb_*sort[/tt] functions). Typically you should order data records by date, not by ID (because IDs may not be sequential, especially on exotic database backends). You should never assume that data comes out of the database in the same order as it goes in.
+| Remember to sort things. Sometimes this needs doing in PHP code, and sometimes it needs doing in your queries ([tt]ORDER BY[/tt]). If doing it in PHP code consider you usually will want to do a "natural" sort, to consider whether case-insensitivity needs enabling, and to consider Unicode-safe sorting (handled by the [tt]cms_mb_*sort[/tt] functions). Typically you should order data records by date, and never by ID (because IDs may not be sequential, especially on exotic database backends). You should never assume that data comes out of the database in the same order as it goes in.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Remember to apply pagination wherever appropriate[/color]
