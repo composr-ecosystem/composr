@@ -320,8 +320,8 @@ function attachments_script()
             }
             $i += $len;
         }
-        fclose($myfile);
     }
+    @fclose($myfile);
 }
 
 /**

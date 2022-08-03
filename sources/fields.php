@@ -199,8 +199,8 @@ function catalogue_file_script()
             }
             $i += $len;
         }
-        fclose($myfile);
     }
+    @fclose($myfile);
 }
 
 /**

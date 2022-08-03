@@ -284,8 +284,8 @@ function dload_script()
             }
             $i += $len;
         }
-        fclose($myfile);
     }
+    @fclose($myfile);
     /*
 
     Security note... at the download adding/editing stage, we ensured that
