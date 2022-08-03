@@ -198,10 +198,22 @@
             newTopicFormOrigAction = addPollCheckbox.form.action;
         }
 
-        addPollCheckbox.form.action = (addPollCheckbox.checked) ? addPollUrl : newTopicFormOrigAction;
+        if (addPollCheckbox.checked) {
+            addPollCheckbox.form.elements['csrf_token_preserve'].value = '1';
+            addPollCheckbox.form.action = addPollUrl;
+        } else {
+            addPollCheckbox.form.elements['csrf_token_preserve'].value = '0';
+            addPollCheckbox.form.action = newTopicFormOrigAction;
+        }
 
         addPollCheckbox.addEventListener('change', function () {
-            addPollCheckbox.form.action = (addPollCheckbox.checked) ? addPollUrl : newTopicFormOrigAction;
+            if (addPollCheckbox.checked) {
+                addPollCheckbox.form.elements['csrf_token_preserve'].value = '1';
+                addPollCheckbox.form.action = addPollUrl;
+            } else {
+                addPollCheckbox.form.elements['csrf_token_preserve'].value = '0';
+                addPollCheckbox.form.action = newTopicFormOrigAction;
+            }
         })
     };
 

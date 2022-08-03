@@ -600,8 +600,12 @@ class Module_admin_cns_members
         url_default_parameters__disable();
 
         $submit_name = do_lang_tempcode('PROCEED');
+
         $post_url = build_url(['page' => '_SELF', 'type' => '_delurk'], '_SELF');
+
         $text = do_lang_tempcode('CHOOSE_DELURK_CRITERIA');
+
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => 'f911fc5be2865bdd065abf7c636530d4',

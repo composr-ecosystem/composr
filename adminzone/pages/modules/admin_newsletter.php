@@ -540,11 +540,15 @@ class Module_admin_newsletter extends Standard_crud_module
         $submit_name = do_lang_tempcode('PROCEED');
         $post_url = get_self_url();
 
+        $hidden = new Tempcode();
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
         $post_url = build_url(['page' => '_SELF', 'type' => 'bounce_filter_b'], '_SELF');
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '87f79d177931bab13f614b9cb24fb877',
             'SKIP_WEBSTANDARDS' => true,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('ENTER_IMAP_DETAILS'),
             'FIELDS' => $fields,
@@ -654,7 +658,7 @@ class Module_admin_newsletter extends Standard_crud_module
         return do_template('FORM_SCREEN', [
             '_GUID' => 'a517b87e2080204262d0bcf7fcebdf99',
             'SKIP_WEBSTANDARDS' => true,
-            'HIDDEN' => build_keep_post_fields(),
+            'HIDDEN' => build_keep_post_fields(['csrf_token_preserve']),
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('BOUNCE_WHICH'),
             'FIELDS' => $fields,
@@ -758,6 +762,8 @@ class Module_admin_newsletter extends Standard_crud_module
                 $text = do_lang_tempcode('PERIODIC_NEWSLETTER_AMEND');
             }
         }
+
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => 'ce1af424e01219c8dee2a7867c1647ef',

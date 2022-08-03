@@ -219,6 +219,9 @@ class Module_admin_setupwizard
 
         $fields = new Tempcode();
 
+        $hidden = new Tempcode();
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
         $inner = do_template('FORM', [
             '_GUID' => '71316d91703e3549301f57182405c997',
             'SKIP_WEBSTANDARDS' => true,
@@ -227,7 +230,7 @@ class Module_admin_setupwizard
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
             '_GUID' => '38a02343903542f8bbe1fb49a7b21eb7',
@@ -1020,7 +1023,7 @@ class Module_admin_setupwizard
         $post_url = build_url(['page' => '_SELF', 'type' => 'step10'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_9_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
-        $hidden = static_evaluate_tempcode(build_keep_post_fields());
+        $hidden = static_evaluate_tempcode(build_keep_post_fields(['csrf_token_preserve']));
 
         $fields = new Tempcode();
         $fields->attach(form_input_tick(do_lang_tempcode('CLOSED_SITE'), do_lang_tempcode('CONFIG_OPTION_site_closed'), 'site_closed', true));

@@ -1760,10 +1760,12 @@ class Module_topics
         $options[] = [do_lang_tempcode('ADD_TOPIC_POLL'), 'add_poll', $default_poll_options['requireTopicPoll'], do_lang_tempcode('DESCRIPTION_ADD_TOPIC_POLL'), $default_poll_options['requireTopicPoll']];
 
         // Only load JS for toggling form action URL if topic polls are not required. Else, forcefully re-direct to add poll.
-        if (!$default_poll_options['requireTopicPoll']) {
-            $js_function_calls[] = ['newTopicFormChangeActionIfAddingPoll', ['add_poll_url' => $add_poll_url]];
-        } else {
+        if ($default_poll_options['requireTopicPoll']) {
             $post_url = $add_poll_url;
+            $hidden_fields->attach(form_input_hidden('csrf_token_preserve', '1'));
+        } else {
+            $js_function_calls[] = ['newTopicFormChangeActionIfAddingPoll', ['add_poll_url' => $add_poll_url]];
+            $hidden_fields->attach(form_input_hidden('csrf_token_preserve', '0'));
         }
         if (count($options) == 1) {
             $specialisation->attach(form_input_tick($options[0][0], $options[0][3], $options[0][1], $options[0][2], null, '1', $options[0][4]));
@@ -3139,7 +3141,7 @@ class Module_topics
 
         if ($adding_new_topic) {
             // Preserve POSTed topic data in the add poll form
-            $hidden->attach(build_keep_post_fields());
+            $hidden->attach(build_keep_post_fields(['csrf_token_preserve']));
         }
 
         url_default_parameters__enable();

@@ -171,10 +171,13 @@ class Module_join
         }
 
         $hidden = new Tempcode();
+
         $_lead_source_description = either_param_string('_lead_source_description', do_lang('JOINED'));
         if ($_lead_source_description != '') {
             $hidden->attach(form_input_hidden('_lead_source_description', $_lead_source_description));
         }
+
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
         return do_template('CNS_JOIN_STEP1_SCREEN', [
             '_GUID' => '3776e89f3b18e4bd9dd532defe6b1e9e',

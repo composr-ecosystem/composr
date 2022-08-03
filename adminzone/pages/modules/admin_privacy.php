@@ -125,13 +125,16 @@ class Module_admin_privacy
         $radios->attach(form_input_radio_entry('action', 'sql', false, 'SQL'));
         $fields->attach(form_input_radio(do_lang_tempcode('ACTION'), '', 'action', $radios));
 
+        $hidden = new Tempcode();
+        $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
+
         $post_url = build_url(['page' => '_SELF', 'type' => '_search'], '_SELF');
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '2cc407037ec01a8f3483746a22889471',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
             'TITLE' => $this->title,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
@@ -195,7 +198,7 @@ class Module_admin_privacy
                     '_GUID' => '2cc407037ec01a8f3483746a22889471',
                     'GET' => false,
                     'SKIP_WEBSTANDARDS' => true,
-                    'HIDDEN' => build_keep_post_fields(),
+                    'HIDDEN' => build_keep_post_fields(['csrf_token_preserve']),
                     'TITLE' => $this->title,
                     'TEXT' => '',
                     'SUBMIT_ICON' => 'buttons/download',
@@ -228,7 +231,7 @@ class Module_admin_privacy
                     '_GUID' => '2cc407037ed31a8f3483746a22889471',
                     'GET' => false,
                     'SKIP_WEBSTANDARDS' => true,
-                    'HIDDEN' => build_keep_post_fields(),
+                    'HIDDEN' => build_keep_post_fields(['csrf_token_preserve']),
                     'TITLE' => $this->title,
                     'TEXT' => '',
                     'SUBMIT_ICON' => 'admin/delete2',
