@@ -431,11 +431,11 @@ function placeholder_number() : string
 }
 
 /**
- * Get suitable placeholder ID.
+ * Get suitable placeholder codename.
  *
- * @return string Place holder ID
+ * @return string Place holder codename
  */
-function placeholder_id() : string
+function placeholder_codename() : string
 {
     return 'x' . strval(123);
 }

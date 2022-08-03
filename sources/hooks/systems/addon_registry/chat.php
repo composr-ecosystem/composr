@@ -281,7 +281,7 @@ class Hook_addon_registry_chat
             'USERGROUP' => lorem_phrase(),
             'USERNAME' => lorem_phrase(),
             'URL' => placeholder_url(),
-            'F_ID' => placeholder_id(),
+            'F_ID' => placeholder_numeric_id(),
             'BOX' => placeholder_table(),
         ];
         $friends_arr = [];
@@ -296,7 +296,7 @@ class Hook_addon_registry_chat
             'EXTRA_GET_PARAMS' => '',
             'PAGINATION' => placeholder_pagination(),
             'BLOCK_PARAMS' => '',
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
 
             'START' => '0',
             'MAX' => '10',
@@ -305,7 +305,7 @@ class Hook_addon_registry_chat
         ]);
 
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_FRIENDS', [
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'ADD_FRIEND_URL' => placeholder_url(),
             'REMOVE_FRIEND_URL' => placeholder_url(),
         ]), null, '', true);
@@ -356,7 +356,7 @@ class Hook_addon_registry_chat
             'AVATAR_URL' => placeholder_avatar(),
             'STAFF_ACTIONS' => $chat_actions,
             'MEMBER_LINK' => lorem_word(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'MESSAGE' => lorem_phrase(),
             'DATE' => placeholder_date(),
             '_TIME' => placeholder_date_raw(),
@@ -407,7 +407,7 @@ class Hook_addon_registry_chat
     public function tpl_preview__block_side_shoutbox() : object
     {
         $tpl = do_lorem_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', [
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'MEMBER_URL' => placeholder_url(),
             'MEMBER_LINK' => placeholder_link(),
             'MESSAGE' => lorem_phrase(),
@@ -417,9 +417,9 @@ class Hook_addon_registry_chat
 
         return lorem_globalise(do_lorem_template('BLOCK_SIDE_SHOUTBOX', [
             'BLOCK_ID' => lorem_word(),
-            'CHATROOM_ID' => placeholder_id(),
+            'CHATROOM_ID' => placeholder_numeric_id(),
             'NUM_MESSAGES' => placeholder_number(),
-            'LAST_MESSAGE_ID' => placeholder_id(),
+            'LAST_MESSAGE_ID' => placeholder_numeric_id(),
             'MESSAGES' => $tpl,
             'URL' => placeholder_url(),
             'BLOCK_PARAMS' => '',
@@ -530,7 +530,7 @@ class Hook_addon_registry_chat
                     'FIRST' => $usernames->is_empty(),
                     'PROFILE_URL' => placeholder_url(),
                     'USERNAME' => $user,
-                    'MEMBER_ID' => placeholder_id(),
+                    'MEMBER_ID' => placeholder_numeric_id(),
                     'COLOUR' => 'black',
                     'AT' => lorem_phrase(),
                 ]));
@@ -583,7 +583,7 @@ class Hook_addon_registry_chat
             'BLOCKING_LINK' => placeholder_link(),
             'SETEFFECTS_LINK' => placeholder_link(),
             'ADD_CHATROOM_URL' => placeholder_url(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 
@@ -655,7 +655,7 @@ class Hook_addon_registry_chat
                 'FIRST' => $usernames->is_empty(),
                 'PROFILE_URL' => placeholder_url(),
                 'USERNAME' => $user,
-                'MEMBER_ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_numeric_id(),
                 'COLOUR' => 'black',
                 'AT' => lorem_phrase(),
             ]));
@@ -743,7 +743,7 @@ class Hook_addon_registry_chat
     {
         $im_area_template = do_lorem_template('CHAT_LOBBY_IM_AREA', [
             'MESSAGES_PHP' => find_script('messages'),
-            'CHATROOM_ID' => placeholder_id(),
+            'CHATROOM_ID' => placeholder_numeric_id(),
         ]);
         return lorem_globalise(do_lorem_template('CHAT_SITEWIDE_IM_POPUP', [
             'CONTENT' => $im_area_template,

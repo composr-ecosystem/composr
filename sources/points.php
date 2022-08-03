@@ -144,16 +144,14 @@ function point_info(int $member_id, bool $cache = true) : array
     }
 
     $ret = [];
-    if ($cache) {
-        $POINT_INFO_CACHE[$member_id] = [];
-    }
+    $ret[$member_id] = [];
     foreach ($values as $key => $val) {
         if (!isset($val->codename/*faster than is_object*/)) {
             $ret[$member_id][$key] = @intval($val);
-            if ($cache) {
-                $POINT_INFO_CACHE[$member_id][$key] = @intval($val);
-            }
         }
+    }
+    if ($cache) {
+        $POINT_INFO_CACHE[$member_id] = $ret[$member_id];
     }
     return $ret[$member_id];
 }

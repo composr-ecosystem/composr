@@ -31,10 +31,10 @@
 								</tbody>
 							</table>
 								{+START,IF,{$NEQ,{CLOSING_TIME},0}}
-									<p class="vertical-alignment"><img class="inline-icon" src="{$IMG,icons/status/inform}" /> <span>{!VOTING_CLOSES_IN,{$MAKE_RELATIVE_DATE*,{CLOSING_TIME},1,1}}</span></p>
+									<p class="vertical-alignment"><img class="inline-icon" alt="" src="{$IMG,icons/status/inform}" /> <span>{!VOTING_CLOSES_IN,{$MAKE_RELATIVE_DATE*,{CLOSING_TIME},1,1}}</span></p>
 								{+END}
 								{+START,IF,{PRIVATE}}
-									<p class="vertical-alignment"><img class="inline-icon" src="{$IMG,icons/status/inform}" /> <span>{!TOPIC_POLL_RESULTS_HIDDEN}</span></p>
+									<p class="vertical-alignment"><img class="inline-icon" alt="" src="{$IMG,icons/status/inform}" /> <span>{!TOPIC_POLL_RESULTS_HIDDEN}</span></p>
 								{+END}
 						</div>
 					</div>

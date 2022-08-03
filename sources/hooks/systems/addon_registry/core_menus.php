@@ -241,7 +241,7 @@ class Hook_addon_registry_core_menus
      */
     public function tpl_preview__administrative__menu_editor_screen() : object
     {
-        $branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => true, 'I' => placeholder_id(), 'CHILD_BRANCHES' => '']);
+        $branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => true, 'I' => placeholder_numeric_id(), 'CHILD_BRANCHES' => '']);
 
         $child_branch_template = do_lorem_template('MENU_EDITOR_BRANCH_WRAP', [
             'DISPLAY' => 'display: block',
@@ -257,7 +257,7 @@ class Hook_addon_registry_core_menus
             'URL' => '',
             'PAGE_ONLY' => '',
             'THEME_IMG_CODE' => '',
-            'I' => placeholder_id(),
+            'I' => placeholder_numeric_id(),
             'BRANCH' => $branch,
         ]);
 

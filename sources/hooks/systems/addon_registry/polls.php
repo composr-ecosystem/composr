@@ -205,7 +205,7 @@ class Hook_addon_registry_polls
 
         $if_comments = do_lorem_template('RSS_ENTRY_COMMENTS', [
             'COMMENT_URL' => placeholder_url(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
         ], null, false, null, '.xml', 'xml');
 
         return lorem_globalise(do_lorem_template('RSS_ENTRY', [
@@ -217,7 +217,7 @@ class Hook_addon_registry_polls
             'CATEGORY_RAW' => null,
             'CATEGORY' => '',
             'AUTHOR' => lorem_word(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'NEWS' => lorem_paragraph(),
             'DATE' => placeholder_date(),
         ], null, false, null, '.xml', 'xml'), null, '', true);
@@ -262,7 +262,7 @@ class Hook_addon_registry_polls
             case 'poll':
                 foreach (placeholder_array() as $k => $v) {
                     $tpl->attach(do_lorem_template('POLL_ANSWER', [
-                        'PID' => placeholder_id(),
+                        'PID' => placeholder_numeric_id(),
                         'I' => strval($k),
                         'CAST' => strval($k),
                         'VOTE_URL' => placeholder_url(),
@@ -275,7 +275,7 @@ class Hook_addon_registry_polls
             case 'result':
                 foreach (placeholder_array() as $k => $v) {
                     $tpl->attach(do_lorem_template('POLL_ANSWER_RESULT', [
-                        'PID' => placeholder_id(),
+                        'PID' => placeholder_numeric_id(),
                         'I' => strval($k),
                         'VOTE_URL' => placeholder_url(),
                         'ANSWER' => lorem_phrase(),
@@ -292,7 +292,7 @@ class Hook_addon_registry_polls
             default:
                 foreach (placeholder_array() as $k => $v) {
                     $tpl->attach(do_lorem_template('POLL_ANSWER', [
-                        'PID' => placeholder_id(),
+                        'PID' => placeholder_numeric_id(),
                         'I' => strval($k),
                         'CAST' => strval($k),
                         'VOTE_URL' => placeholder_url(),
@@ -302,7 +302,7 @@ class Hook_addon_registry_polls
                 }
                 foreach (placeholder_array() as $k => $v) {
                     $tpl->attach(do_lorem_template('POLL_ANSWER_RESULT', [
-                        'PID' => placeholder_id(),
+                        'PID' => placeholder_numeric_id(),
                         'I' => strval($k),
                         'VOTE_URL' => placeholder_url(),
                         'ANSWER' => lorem_phrase(),
@@ -320,11 +320,11 @@ class Hook_addon_registry_polls
             '_GUID' => '4c6b026f7ed96f0b5b8408eb5e5affb5',
             'VOTE_URL' => placeholder_url(),
             'GIVE_CONTEXT' => true,
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'RESULT_URL' => placeholder_url(),
             'SUBMIT_URL' => placeholder_url(),
             'ARCHIVE_URL' => placeholder_url(),
-            'PID' => placeholder_id(),
+            'PID' => placeholder_numeric_id(),
             'COMMENT_COUNT' => placeholder_number(),
             'QUESTION_PLAIN' => lorem_phrase(),
             'QUESTION' => lorem_phrase(),
@@ -363,19 +363,19 @@ class Hook_addon_registry_polls
         $trackbacks = new Tempcode();
         foreach (placeholder_array(1) as $k => $v) {
             $trackbacks->attach(do_lorem_template('TRACKBACK', [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
                 'EXCERPT' => lorem_paragraph(),
-                'NAME' => placeholder_id(),
+                'NAME' => placeholder_codename(),
             ]));
         }
         $trackback_details = do_lorem_template('TRACKBACK_WRAPPER', [
             'TRACKBACKS' => $trackbacks,
-            'TRACKBACK_FEEDBACK_TYPE' => placeholder_id(),
-            'TRACKBACK_ID' => placeholder_id(),
+            'TRACKBACK_FEEDBACK_TYPE' => placeholder_codename(),
+            'TRACKBACK_ID' => placeholder_numeric_id(),
             'TRACKBACK_TITLE' => lorem_phrase(),
         ]);
 
@@ -383,7 +383,7 @@ class Hook_addon_registry_polls
         $comments = '';
         $comment_details = do_lorem_template('COMMENTS_WRAPPER', [
             'TYPE' => lorem_word(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'REVIEW_RATING_CRITERIA' => [],
             'AUTHORISED_FORUM_URL' => placeholder_url(),
             'FORM' => placeholder_form(),
@@ -413,8 +413,8 @@ class Hook_addon_registry_polls
             'COMMENT_DETAILS' => $comment_details,
             'EDIT_URL' => placeholder_url(),
             'POLL_DETAILS' => $poll_details,
-            'SUBMITTER' => placeholder_id(),
-            'ID' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
+            'ID' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 

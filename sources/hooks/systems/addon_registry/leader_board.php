@@ -253,7 +253,7 @@ class Hook_addon_registry_leader_board
             $set_tpl = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
                 $set_tpl->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
-                    'ID' => placeholder_id(),
+                    'ID' => placeholder_numeric_id(),
                     'POINTS_URL' => placeholder_url(),
                     'PROFILE_URL' => placeholder_url(),
                     '_POINTS' => placeholder_number(),
@@ -280,7 +280,7 @@ class Hook_addon_registry_leader_board
         }
 
         return lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
-            '_ID' => placeholder_id(),
+            '_ID' => placeholder_numeric_id(),
             '_TYPE' => lorem_phrase(),
             '_COUNT' => placeholder_number(),
             'TITLE' => lorem_phrase(),

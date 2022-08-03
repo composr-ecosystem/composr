@@ -200,7 +200,7 @@ class Hook_addon_registry_points
         foreach (placeholder_array() as $k => $v) {
             $results->attach(do_lorem_template('POINTS_SEARCH_RESULT', [
                 'URL' => placeholder_url(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'USERNAME' => lorem_word(),
             ]));
         }
@@ -228,7 +228,7 @@ class Hook_addon_registry_points
 
         $give_template = do_lorem_template('POINTS_GIVE', [
             'GIVE_URL' => placeholder_url(),
-            'MEMBER' => placeholder_id(),
+            'MEMBER' => placeholder_numeric_id(),
             '_VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
             'VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
         ]);
@@ -245,7 +245,7 @@ class Hook_addon_registry_points
         ];
 
         $content = do_lorem_template('POINTS_PROFILE', [
-            'MEMBER' => placeholder_id(),
+            'MEMBER' => placeholder_numeric_id(),
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
             'POINTS_USED' => placeholder_number(),

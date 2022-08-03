@@ -89,7 +89,7 @@ class shopping_test_set extends cms_test_case
                     break;
 
                 case 'sku':
-                    $_POST['field_' . strval($id)] = placeholder_id();
+                    $_POST['field_' . strval($id)] = placeholder_codename();
                     break;
 
                 case 'price':

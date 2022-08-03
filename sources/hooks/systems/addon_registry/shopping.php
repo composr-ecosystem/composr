@@ -218,7 +218,7 @@ class Hook_addon_registry_shopping
         foreach (placeholder_array() as $v) {
             $name = placeholder_random_id();
             $fields->attach(do_lorem_template('CATALOGUE_products_FIELDMAP_ENTRY_FIELD', [
-                'ENTRYID' => placeholder_id(),
+                'ENTRYID' => placeholder_numeric_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
@@ -233,7 +233,7 @@ class Hook_addon_registry_shopping
         $cart_buttons = do_lorem_template('ECOM_SHOPPING_CART_BUTTONS', [
             'OUT_OF_STOCK' => lorem_phrase(),
             'ACTION_URL' => placeholder_url(),
-            'TYPE_CODE' => placeholder_id(),
+            'TYPE_CODE' => placeholder_codename(),
             'PURCHASE_ACTION_URL' => placeholder_url(),
             'CART_URL' => placeholder_url(),
         ]);
@@ -241,7 +241,7 @@ class Hook_addon_registry_shopping
         $rating_inside = new Tempcode();
 
         $map = [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'FIELD_0' => lorem_phrase(),
             'FIELD_0_PLAIN' => lorem_phrase(),
             'FIELD_1' => lorem_phrase(),
@@ -253,7 +253,7 @@ class Hook_addon_registry_shopping
             'FIELD_7' => placeholder_image(),
             'FIELD_7_PLAIN' => placeholder_url(),
             'FIELD_9' => lorem_phrase(),
-            'PRODUCT_CODE' => placeholder_id(),
+            'PRODUCT_CODE' => placeholder_codename(),
             'PRICE' => placeholder_number(),
             'RATING' => $rating_inside,
             'ALLOW_RATING' => false,
@@ -265,7 +265,7 @@ class Hook_addon_registry_shopping
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'CATALOGUE' => lorem_word(),
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
         ];
         $entry = do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP', $map);
 
@@ -273,7 +273,7 @@ class Hook_addon_registry_shopping
             'TITLE' => lorem_title(),
             'WARNINGS' => '',
             'ENTRY' => $entry,
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'TRACKBACK_DETAILS' => lorem_phrase(),
@@ -288,7 +288,7 @@ class Hook_addon_registry_shopping
             'TAGS' => placeholder_tags(),
             'CART_BUTTONS' => $cart_buttons,
             'CATALOGUE' => 'products',
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'FIELD_0' => lorem_phrase(),
             'FIELD_0_PLAIN' => lorem_phrase(),
             'FIELD_1' => lorem_phrase(),
@@ -315,7 +315,7 @@ class Hook_addon_registry_shopping
         foreach (placeholder_array() as $v) {
             $name = placeholder_random_id();
             $fields->attach(do_lorem_template('CATALOGUE_products_GRID_ENTRY_FIELD', [
-                'ENTRYID' => placeholder_id(),
+                'ENTRYID' => placeholder_numeric_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
@@ -339,7 +339,7 @@ class Hook_addon_registry_shopping
             'FIELD_7' => placeholder_image(),
             'FIELD_7_PLAIN' => placeholder_url(),
             'FIELD_9' => lorem_phrase(),
-            'PRODUCT_CODE' => placeholder_id(),
+            'PRODUCT_CODE' => placeholder_codename(),
             'PRICE' => placeholder_number(),
             'RATING' => $rating_inside,
             'MAP_TABLE' => placeholder_table(),
@@ -350,14 +350,14 @@ class Hook_addon_registry_shopping
             'EDIT_URL' => placeholder_url(),
             'ALLOW_RATING' => false,
             'CATALOGUE' => lorem_word(),
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
         ];
         $entry = do_lorem_template('CATALOGUE_products_GRID_ENTRY_WRAP', $map);
 
         $entries = do_lorem_template('CATALOGUE_products_CATEGORY_EMBED', [
             'DISPLAY_TYPE' => 'FIELDMAPS',
             'ENTRIES' => $entry,
-            'ROOT' => placeholder_id(),
+            'ROOT' => placeholder_numeric_id(),
             'BLOCK_PARAMS' => '',
             'SORTING' => '',
             'PAGINATION' => '',
@@ -444,7 +444,7 @@ class Hook_addon_registry_shopping
             $cells = new Tempcode();
             foreach ($array as $k2 => $v) {
                 $tick = do_lorem_template('RESULTS_TABLE_TICK', [
-                    'ID' => placeholder_id() . '_' . strval($k1) . '_' . strval($k2),
+                    'ID' => placeholder_numeric_id() . '_' . strval($k1) . '_' . strval($k2),
                 ]);
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
                     'VALUE' => $tick,
@@ -472,7 +472,7 @@ class Hook_addon_registry_shopping
         ]);
 
         return lorem_globalise(do_lorem_template('RESULTS_products_TABLE', [
-            'TEXT_ID' => placeholder_id(),
+            'TEXT_ID' => placeholder_codename(),
             'HEADER_ROW' => $header_row,
             'RESULT_ENTRIES' => $order_entries,
             'SORT' => $sort,
@@ -576,8 +576,8 @@ class Hook_addon_registry_shopping
             'PAYMENT_ADDRESS' => lorem_word(),
             'FORM_URL' => placeholder_url(),
             'MEMBER_ADDRESS' => placeholder_array(),
-            'ORDER_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'ORDER_ID' => placeholder_numeric_id(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'TYPE_CODE' => $items[0]['TYPE_CODE'],
         ]), null, '', true);
     }
@@ -640,7 +640,7 @@ class Hook_addon_registry_shopping
         foreach (placeholder_array() as $k => $v) {
             $selectors->attach(do_lorem_template('PAGINATION_SORTER', [
                 'SELECTED' => '',
-                'NAME' => placeholder_id(),
+                'NAME' => placeholder_codename(),
                 'VALUE' => lorem_word(),
             ]));
         }
@@ -666,7 +666,7 @@ class Hook_addon_registry_shopping
             'UPDATE_CART_URL' => placeholder_url(),
             'CONTINUE_SHOPPING_URL' => placeholder_url(),
             'MESSAGE' => lorem_phrase(),
-            'TYPE_CODES' => placeholder_id(),
+            'TYPE_CODES' => placeholder_codename(),
             'EMPTY_CART_URL' => placeholder_url(),
             'TOTAL_PRICE' => placeholder_number(),
             'TOTAL_TAX' => placeholder_number(),
@@ -694,8 +694,8 @@ class Hook_addon_registry_shopping
         foreach (placeholder_array() as $v) {
             $orders[] = [
                 'ORDER_TITLE' => lorem_phrase(),
-                'ID' => placeholder_id(),
-                'TXN_ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
+                'TXN_ID' => placeholder_codename(),
                 'TRANSACTION_LINKER' => lorem_word(),
                 'TOTAL_PRICE' => placeholder_number(),
                 'TOTAL_TAX' => placeholder_number(),
@@ -791,7 +791,7 @@ class Hook_addon_registry_shopping
             'TOTAL_SHIPPING_COST' => placeholder_number(),
             'CURRENCY' => 'GBP',
             'TRANSACTION_LINKER' => lorem_phrase(),
-            'ORDERED_BY_MEMBER_ID' => placeholder_id(),
+            'ORDERED_BY_MEMBER_ID' => placeholder_numeric_id(),
             'ORDERED_BY_USERNAME' => lorem_word(),
             'ORDER_STATUS' => lorem_phrase(),
             'NOTES' => lorem_phrase(),

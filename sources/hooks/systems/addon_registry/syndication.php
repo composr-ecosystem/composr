@@ -169,7 +169,7 @@ class Hook_addon_registry_syndication
      */
     public function tpl_preview__rss_wrapper() : object
     {
-        $comments = do_lorem_template('RSS_ENTRY_COMMENTS', ['COMMENT_URL' => placeholder_url(), 'ID' => placeholder_id()], null, false, null, '.xml', 'xml');
+        $comments = do_lorem_template('RSS_ENTRY_COMMENTS', ['COMMENT_URL' => placeholder_url(), 'ID' => placeholder_codename()], null, false, null, '.xml', 'xml');
 
         $content = do_lorem_template('RSS_ABBR', [], null, false, null, '.xml', 'xml');
         $content->attach(do_lorem_template('RSS_ENTRY', [
@@ -183,7 +183,7 @@ class Hook_addon_registry_syndication
             'AUTHOR' => lorem_word(),
             'IF_COMMENTS' => $comments,
             'NEWS' => lorem_paragraph(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
         ], null, false, null, '.xml', 'xml'));
 
         $cloud = do_lorem_template('RSS_CLOUD', [

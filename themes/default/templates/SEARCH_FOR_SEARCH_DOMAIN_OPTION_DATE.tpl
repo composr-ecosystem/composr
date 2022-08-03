@@ -7,6 +7,7 @@
 			TYPE=datetime
 			REQUIRED=0
 			UNLIMITED=1
+			READ_ONLY=0
 			DAY={$PREG_REPLACE,^\d\d\d\d\-\d\d\-(\d\d)( \d+:\d\d)?$,$1,{SPECIAL}}
 			MONTH={$PREG_REPLACE,^\d\d\d\d\-(\d\d)\-\d\d( \d+:\d\d)?$,$1,{SPECIAL}}
 			YEAR={$PREG_REPLACE,^(\d\d\d\d)\-\d\d\-\d\d( \d+:\d\d)?$,$1,{SPECIAL}}
@@ -30,6 +31,7 @@
 			TYPE=datetime
 			REQUIRED=0
 			UNLIMITED=1
+			READ_ONLY=0
 			DAY={$PREG_REPLACE,^\d\d\d\d\-\d\d\-(\d\d)( \d+:\d\d)?$,$1,{$PREG_REPLACE,;.*$,,{SPECIAL}}}
 			MONTH={$PREG_REPLACE,^\d\d\d\d\-(\d\d)\-\d\d( \d+:\d\d)?$,$1,{$PREG_REPLACE,;.*$,,{SPECIAL}}}
 			YEAR={$PREG_REPLACE,^(\d\d\d\d)\-\d\d\-\d\d( \d+:\d\d)?$,$1,{$PREG_REPLACE,;.*$,,{SPECIAL}}}
@@ -50,6 +52,7 @@
 			TYPE=datetime
 			REQUIRED=0
 			UNLIMITED=1
+			READ_ONLY=0
 			DAY={$PREG_REPLACE,^\d\d\d\d\-\d\d\-(\d\d)( \d+:\d\d)?$,$1,{$PREG_REPLACE,^.*;,,{SPECIAL}}}
 			MONTH={$PREG_REPLACE,^\d\d\d\d\-(\d\d)\-\d\d( \d+:\d\d)?$,$1,{$PREG_REPLACE,^.*;,,{SPECIAL}}}
 			YEAR={$PREG_REPLACE,^(\d\d\d\d)\-\d\d\-\d\d( \d+:\d\d)?$,$1,{$PREG_REPLACE,^.*;,,{SPECIAL}}}

@@ -296,7 +296,7 @@ class Hook_addon_registry_core_abstract_interfaces
         return do_lorem_template('AJAX_PAGINATION', [
             'BLOCK_PARAMS' => '',
             'ALLOW_INFINITE_SCROLL' => '1',
-            'WRAPPER_ID' => placeholder_id(),
+            'WRAPPER_ID' => placeholder_codename(),
         ]);
     }
 
@@ -593,7 +593,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'TITLE' => lorem_title(),
             'WEBSERVICE_RESULT' => lorem_phrase(),
             'TEXT' => lorem_sentence(),
-            'PROVIDE_BACK' => placeholder_id(),
+            'PROVIDE_BACK' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -847,7 +847,7 @@ class Hook_addon_registry_core_abstract_interfaces
             $cells = new Tempcode();
             foreach ($array as $k2 => $v2) {
                 $tick = do_lorem_template('RESULTS_TABLE_TICK', [
-                    'ID' => placeholder_id() . '_' . strval($k1) . '_' . strval($k2),
+                    'ID' => placeholder_codename() . '_' . strval($k1) . '_' . strval($k2),
                 ]);
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
                     'VALUE' => $tick,
@@ -876,7 +876,7 @@ class Hook_addon_registry_core_abstract_interfaces
 
         $results_table = do_lorem_template('RESULTS_TABLE', [
             'WIDTHS' => [],
-            'TEXT_ID' => placeholder_id(),
+            'TEXT_ID' => placeholder_codename(),
             'HEADER_ROW' => $header_row,
             'RESULT_ENTRIES' => $order_entries,
             'MESSAGE' => '',
@@ -923,7 +923,7 @@ class Hook_addon_registry_core_abstract_interfaces
             $cells = new Tempcode();
             foreach ($array as $k2 => $v2) {
                 $tick = do_lorem_template('RESULTS_TABLE_TICK', [
-                    'ID' => placeholder_id() . '_' . strval($k1) . '_' . strval($k2),
+                    'ID' => placeholder_codename() . '_' . strval($k1) . '_' . strval($k2),
                 ]);
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD', [
                     'VALUE' => $tick,
@@ -952,7 +952,7 @@ class Hook_addon_registry_core_abstract_interfaces
 
         $results_table = do_lorem_template('RESULTS_TABLE', [
             'WIDTHS' => [],
-            'TEXT_ID' => placeholder_id(),
+            'TEXT_ID' => placeholder_codename(),
             'HEADER_ROW' => $header_row,
             'RESULT_ENTRIES' => $order_entries,
             'MESSAGE' => '',
@@ -1026,7 +1026,7 @@ class Hook_addon_registry_core_abstract_interfaces
     public function tpl_preview__member_tooltip() : object
     {
         return lorem_globalise(do_lorem_template('MEMBER_TOOLTIP', [
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 

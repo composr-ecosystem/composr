@@ -321,7 +321,7 @@ class Hook_addon_registry_core_themeing
             'LIVE_PREVIEW_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'PING_URL' => placeholder_url(),
-            'ACTIVE_GUID' => placeholder_id(),
+            'ACTIVE_GUID' => placeholder_codename(),
             'DEFAULT_THEME_FILES_LOCATION' => '',
         ]), null, '', true);
     }
@@ -335,7 +335,7 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_template_editor_tab() : object
     {
-        $_parameters = do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => true, 'DISABLED' => false, 'CLASS' => '', 'NAME' => placeholder_id(), 'TEXT' => lorem_phrase()]);
+        $_parameters = do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => true, 'DISABLED' => false, 'CLASS' => '', 'NAME' => placeholder_codename(), 'TEXT' => lorem_phrase()]);
 
         $parameters = do_lorem_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', [
             'FILE_ID' => lorem_word(),
@@ -347,11 +347,11 @@ class Hook_addon_registry_core_themeing
         $guids = [[
             'GUID_FILENAME' => lorem_word(),
             'GUID_LINE' => placeholder_number(),
-            'GUID_GUID' => placeholder_id(),
+            'GUID_GUID' => placeholder_codename(),
             'GUID_IS_LIVE' => false,
         ]];
 
-        $related = [placeholder_id()];
+        $related = [placeholder_codename()];
 
         return lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_TAB', [
             'THEME' => lorem_word(),
@@ -393,7 +393,7 @@ class Hook_addon_registry_core_themeing
         return lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', [
             'DATE' => placeholder_date(),
             'FILE' => lorem_word(),
-            'REVISION_ID' => placeholder_id(),
+            'REVISION_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -462,8 +462,8 @@ class Hook_addon_registry_core_themeing
             'FILE' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'CODENAME' => lorem_word(),
-            'GUID' => placeholder_id(),
-            'ID' => placeholder_id(),
+            'GUID' => placeholder_codename(),
+            'ID' => placeholder_codename(),
         ];
 
         $param_info = do_lorem_template('PARAM_INFO', [

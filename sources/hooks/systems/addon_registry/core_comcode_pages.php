@@ -263,7 +263,7 @@ class Hook_addon_registry_core_comcode_pages
         return lorem_globalise(do_lorem_template('COMCODE_PAGE_SCREEN', [
             'BEING_INCLUDED' => false,
             'IS_PANEL' => false,
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'TAGS' => placeholder_tags(),
             'WARNING_DETAILS' => '',
             'EDIT_DATE_RAW' => placeholder_date_raw(),

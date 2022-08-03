@@ -217,9 +217,9 @@ class Hook_addon_registry_core_cleanup_tools
         foreach (placeholder_array() as $value) {
             $urls[] = [
                 'FULL_URL' => placeholder_url(),
-                'TABLE_NAMES' => [placeholder_id()],
-                'FIELD_NAMES' => [placeholder_id()],
-                'IDENTIFIERS' => [['IDENTIFIER' => placeholder_id(), 'EDIT_URL' => '']],
+                'TABLE_NAMES' => [placeholder_codename()],
+                'FIELD_NAMES' => [placeholder_codename()],
+                'IDENTIFIERS' => [['IDENTIFIER' => placeholder_codename(), 'EDIT_URL' => '']],
                 'CONTENT_TYPES' => [lorem_phrase()],
                 'STATUS' => true,
                 'MESSAGE' => '',

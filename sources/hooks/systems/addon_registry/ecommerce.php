@@ -454,7 +454,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_logos_worldpay() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_LOGOS_WORLDPAY', [
-            'INST_ID' => placeholder_id(),
+            'INST_ID' => placeholder_codename(),
             'PD_ADDRESS' => lorem_phrase(),
             'PD_EMAIL' => lorem_word(),
             'PD_NUMBER' => placeholder_number(),
@@ -471,7 +471,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_logos_authorize() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_LOGOS_AUTHORIZE', [
-            'CUSTOMER_ID' => placeholder_id(),
+            'CUSTOMER_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -499,8 +499,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', [
             'TYPE_CODE' => lorem_word(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'DIGEST' => lorem_phrase(),
             'TEST_MODE' => lorem_phrase(),
             'PRICE' => placeholder_number(),
@@ -527,8 +527,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', [
             'TYPE_CODE' => lorem_word(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'DIGEST' => lorem_phrase(),
             'TEST_MODE' => true,
             'LENGTH' => placeholder_number(),
@@ -555,7 +555,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_subscription_cancel_button_via_worldpay() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', [
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -571,8 +571,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_PAYPAL', [
             'TYPE_CODE' => lorem_word(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'PRICE' => placeholder_number(),
             'TAX' => placeholder_number(),
             'SHIPPING_COST' => placeholder_number(),
@@ -596,8 +596,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL', [
             'TYPE_CODE' => lorem_phrase(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'LENGTH' => placeholder_number(),
             'LENGTH_UNITS' => lorem_phrase(),
             'PRICE' => placeholder_number(),
@@ -620,7 +620,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_subscription_cancel_button_via_paypal() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', [
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -636,8 +636,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', [
             'TYPE_CODE' => lorem_word(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'DIGEST' => lorem_phrase(),
             'TEST_MODE' => true,
             'PRICE' => placeholder_number(),
@@ -663,8 +663,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', [
             'TYPE_CODE' => lorem_phrase(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'DIGEST' => lorem_phrase(),
             'TEST_MODE' => true,
             'FIRST_REPEAT' => lorem_phrase(),
@@ -691,7 +691,7 @@ class Hook_addon_registry_ecommerce
     {
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', [
             'CANCEL_URL' => placeholder_url(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -707,8 +707,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
             'TYPE_CODE' => lorem_word(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'PRICE' => placeholder_number(),
             'TAX' => placeholder_number(),
             'SHIPPING_COST' => placeholder_number(),
@@ -717,10 +717,10 @@ class Hook_addon_registry_ecommerce
             'PAYMENT_ADDRESS' => lorem_paragraph(),
             'FORM_URL' => placeholder_url(),
             'MEMBER_ADDRESS' => placeholder_array(),
-            'ACCOUNT_NUM' => placeholder_id(),
-            'SUBACCOUNT_NUM' => placeholder_id(),
-            'FORM_NAME' => placeholder_id(),
-            'FORM_PERIOD' => placeholder_id(),
+            'ACCOUNT_NUM' => placeholder_codename(),
+            'SUBACCOUNT_NUM' => placeholder_codename(),
+            'FORM_NAME' => placeholder_codename(),
+            'FORM_PERIOD' => placeholder_codename(),
             'DIGEST' => lorem_phrase(),
         ]), null, '', true);
     }
@@ -737,8 +737,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
             'TYPE_CODE' => lorem_phrase(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'LENGTH' => placeholder_number(),
             'LENGTH_UNITS' => 'm',
             'PRICE' => placeholder_number(),
@@ -748,10 +748,10 @@ class Hook_addon_registry_ecommerce
             'PAYMENT_ADDRESS' => lorem_paragraph(),
             'FORM_URL' => placeholder_url(),
             'MEMBER_ADDRESS' => placeholder_array(),
-            'ACCOUNT_NUM' => placeholder_id(),
-            'SUBACCOUNT_NUM' => placeholder_id(),
-            'FORM_NAME' => placeholder_id(),
-            'FORM_PERIOD' => placeholder_id(),
+            'ACCOUNT_NUM' => placeholder_codename(),
+            'SUBACCOUNT_NUM' => placeholder_codename(),
+            'FORM_NAME' => placeholder_codename(),
+            'FORM_PERIOD' => placeholder_codename(),
             'DIGEST' => lorem_phrase(),
         ]), null, '', true);
     }
@@ -766,7 +766,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_subscription_cancel_button_via_ccbill() : object
     {
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', [
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -782,8 +782,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_BUTTON_VIA_AUTHORIZE', [
             'TYPE_CODE' => lorem_word(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'FORM_URL' => placeholder_url(),
             'MEMBER_ADDRESS' => placeholder_array(),
             'SEQUENCE' => placeholder_number(),
@@ -795,7 +795,7 @@ class Hook_addon_registry_ecommerce
             'SHIPPING_COST' => placeholder_number(),
             'AMOUNT' => placeholder_number(),
             'IS_TEST' => false,
-            'CUST_ID' => placeholder_id(),
+            'CUST_ID' => placeholder_codename(),
             'CURRENCY' => 'GBP',
         ]), null, '', true);
     }
@@ -812,8 +812,8 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_BUTTON_VIA_AUTHORIZE', [
             'TYPE_CODE' => lorem_phrase(),
             'ITEM_NAME' => lorem_phrase(),
-            'PURCHASE_ID' => placeholder_id(),
-            'TRANS_EXPECTING_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
+            'TRANS_EXPECTING_ID' => placeholder_numeric_id(),
             'FORM_URL' => placeholder_url(),
             'MEMBER_ADDRESS' => placeholder_array(),
             'SEQUENCE' => placeholder_number(),
@@ -824,7 +824,7 @@ class Hook_addon_registry_ecommerce
             'TAX' => placeholder_number(),
             'AMOUNT' => placeholder_number(),
             'IS_TEST' => false,
-            'CUST_ID' => placeholder_id(),
+            'CUST_ID' => placeholder_codename(),
             'CURRENCY' => 'GBP',
             'LENGTH' => placeholder_number(),
             'LENGTH_UNITS' => 'm',
@@ -842,7 +842,7 @@ class Hook_addon_registry_ecommerce
     {
         return lorem_globalise(do_lorem_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_AUTHORIZE', [
             'CANCEL_URL' => placeholder_url(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -858,7 +858,7 @@ class Hook_addon_registry_ecommerce
         $fields = do_lorem_template('ECOM_PURCHASE_STAGE_TRANSACT', [
             'TITLE' => lorem_title(),
             'TYPE_CODE' => lorem_word(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
             'FIELDS' => placeholder_fields(),
             'HIDDEN' => '',
             'LOGOS' => placeholder_image(),
@@ -1106,7 +1106,7 @@ class Hook_addon_registry_ecommerce
             'TITLE' => lorem_title(),
             'ITEM_NAME' => lorem_phrase(),
             'TYPE_CODE' => lorem_word(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
             'FIELDS' => placeholder_fields(),
             'HIDDEN' => '',
             'LOGOS' => placeholder_image(),
@@ -1129,7 +1129,7 @@ class Hook_addon_registry_ecommerce
             'CURRENCY' => 'GBP',
             'ITEM_NAME' => lorem_phrase(),
             'TYPE_CODE' => lorem_word(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
             'LENGTH' => '3',
             'LENGTH_UNITS' => '$',
             'PRICE' => '123.45',
@@ -1169,7 +1169,7 @@ class Hook_addon_registry_ecommerce
             $invoices[] = [
                 'TRANSACTION_BUTTON' => placeholder_button(),
                 'INVOICE_TITLE' => lorem_phrase(),
-                'INVOICE_ID' => placeholder_id(),
+                'INVOICE_ID' => placeholder_numeric_id(),
                 'AMOUNT' => placeholder_number(),
                 'TAX' => placeholder_number(),
                 'CURRENCY' => 'GBP',
@@ -1203,7 +1203,7 @@ class Hook_addon_registry_ecommerce
                 'INVOICE_TITLE' => lorem_word(),
                 'PROFILE_URL' => placeholder_url(),
                 'USERNAME' => lorem_word_2(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'STATE' => lorem_phrase(),
                 'AMOUNT' => placeholder_number(),
                 'TAX' => placeholder_number(),
@@ -1239,7 +1239,7 @@ class Hook_addon_registry_ecommerce
         foreach (placeholder_array() as $k => $v) {
             $subscriptions[] = [
                 'ITEM_NAME' => lorem_phrase(),
-                'SUBSCRIPTION_ID' => placeholder_id(),
+                'SUBSCRIPTION_ID' => placeholder_codename(),
                 'PER' => lorem_word(),
                 'LENGTH' => placeholder_number(),
                 'LENGTH_UNITS' => 'm',
@@ -1261,8 +1261,8 @@ class Hook_addon_registry_ecommerce
                 'CANCEL_BUTTON' => $button,
                 'USERGROUP_SUBSCRIPTION_TITLE' => lorem_phrase(),
                 'USERGROUP_SUBSCRIPTION_DESCRIPTION' => lorem_paragraph_html(),
-                'USERGROUP_SUBSCRIPTION_ID' => placeholder_id(),
-                'USERGROUP_ID' => placeholder_id(),
+                'USERGROUP_SUBSCRIPTION_ID' => placeholder_numeric_id(),
+                'USERGROUP_ID' => placeholder_numeric_id(),
                 'USERGROUP_NAME' => lorem_phrase(),
                 '_PAYMENT_GATEWAY' => 'manual',
                 'PAYMENT_GATEWAY' => lorem_word(),
@@ -1293,7 +1293,7 @@ class Hook_addon_registry_ecommerce
         foreach (placeholder_array() as $k => $v) {
             $subscriptions[] = [
                 'ITEM_NAME' => lorem_phrase(),
-                'SUBSCRIPTION_ID' => placeholder_id(),
+                'SUBSCRIPTION_ID' => placeholder_codename(),
                 'PER' => lorem_word(),
                 'LENGTH' => placeholder_number(),
                 'LENGTH_UNITS' => 'm',
@@ -1315,8 +1315,8 @@ class Hook_addon_registry_ecommerce
                 'CANCEL_BUTTON' => $button,
                 'USERGROUP_SUBSCRIPTION_TITLE' => lorem_phrase(),
                 'USERGROUP_SUBSCRIPTION_DESCRIPTION' => lorem_paragraph_html(),
-                'USERGROUP_SUBSCRIPTION_ID' => placeholder_id(),
-                'USERGROUP_ID' => placeholder_id(),
+                'USERGROUP_SUBSCRIPTION_ID' => placeholder_numeric_id(),
+                'USERGROUP_ID' => placeholder_numeric_id(),
                 'USERGROUP_NAME' => lorem_phrase(),
                 '_PAYMENT_GATEWAY' => 'manual',
                 'PAYMENT_GATEWAY' => lorem_word(),
@@ -1324,7 +1324,7 @@ class Hook_addon_registry_ecommerce
         }
 
         return lorem_globalise(do_lorem_template('ECOM_MEMBER_SUBSCRIPTION_STATUS', [
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'SUBSCRIPTIONS' => $subscriptions,
         ]), null, '', true);
     }
@@ -1339,7 +1339,7 @@ class Hook_addon_registry_ecommerce
     public function tpl_preview__ecom_view_manual_transactions_screen() : object
     {
         $lines = do_lorem_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'SUBSCRIPTION' => lorem_title(),
             'ROWSPAN' => '1',
             'MEMBER' => placeholder_link(),
@@ -1414,7 +1414,7 @@ class Hook_addon_registry_ecommerce
         return lorem_globalise(do_lorem_template('ECOM_TRANSACTION_LOGS_SCREEN', [
             'TITLE' => lorem_title(),
             'PRODUCTS' => placeholder_options(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
             'URL' => placeholder_url(),
             'RESULTS_TABLE' => placeholder_table(),
         ]), null, '', true);
@@ -1632,7 +1632,7 @@ class Hook_addon_registry_ecommerce
             'TOTAL_PRICE' => placeholder_number(),
             'TOTAL_TAX' => placeholder_number(),
             'TOTAL_AMOUNT' => placeholder_number(),
-            'PURCHASE_ID' => placeholder_id(),
+            'PURCHASE_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 }

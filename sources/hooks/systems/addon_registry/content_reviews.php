@@ -151,8 +151,8 @@ class Hook_addon_registry_content_reviews
             'NEXT_REVIEW_DATE' => placeholder_date(),
             '_LAST_REVIEWED_TIME' => placeholder_date_raw(),
             '_NEXT_REVIEW_TIME' => placeholder_date_raw(),
-            'CONTENT_TYPE' => placeholder_id(),
-            'CONTENT_ID' => placeholder_id(),
+            'CONTENT_TYPE' => placeholder_codename(),
+            'CONTENT_ID' => placeholder_numeric_id(),
             'DISPLAY' => true,
         ]), null, '', true);
     }

@@ -428,7 +428,7 @@ class Hook_addon_registry_realtime_rain
     public function tpl_preview__administrative__realtime_rain_overlay() : object
     {
         return lorem_globalise(do_lorem_template('REALTIME_RAIN_OVERLAY', [
-            'MIN_TIME' => placeholder_id(),
+            'MIN_TIME' => placeholder_number(),
         ]), null, '', true);
     }
 
@@ -445,7 +445,7 @@ class Hook_addon_registry_realtime_rain
             'TITLE' => lorem_phrase(),
             'URL' => placeholder_url(),
             'IMAGE' => placeholder_image_url(),
-            'GROUP_ID' => placeholder_id(),
+            'GROUP_ID' => placeholder_numeric_id(),
             'RELATIVE_TIMESTAMP' => placeholder_date_raw(),
             'TICKER_TEXT' => lorem_phrase(),
             'TYPE' => lorem_word(),

@@ -294,7 +294,7 @@ class Hook_addon_registry_core_adminzone_dashboard
             $custom_task->attach(do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', [
                 'TASK_DONE' => 'checklist_todo',
                 'RECUR_INTERVAL' => '',
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'TASK_TITLE' => lorem_phrase(),
                 'ADD_DATE' => placeholder_date(),
                 'ADD_TIME' => placeholder_date(), // Actually it's something "ago", but this will do

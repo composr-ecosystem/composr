@@ -211,7 +211,7 @@ class Hook_addon_registry_stats
     {
         $existing_kpis = [];
         $existing_kpis[] = [
-            'KPI_ID' => placeholder_id(),
+            'KPI_ID' => placeholder_numeric_id(),
             'KPI_TITLE' => lorem_phrase(),
             'KPI_EDIT_URL' => placeholder_url(),
         ];
@@ -244,7 +244,7 @@ class Hook_addon_registry_stats
     {
         $existing_kpis = [];
         $existing_kpis[] = [
-            'KPI_ID' => placeholder_id(),
+            'KPI_ID' => placeholder_numeric_id(),
             'KPI_TITLE' => lorem_phrase(),
             'KPI_EDIT_URL' => placeholder_url(),
         ];
@@ -271,7 +271,7 @@ class Hook_addon_registry_stats
     {
         $existing_kpis = [];
         $existing_kpis[] = [
-            'KPI_ID' => placeholder_id(),
+            'KPI_ID' => placeholder_numeric_id(),
             'KPI_TITLE' => lorem_phrase(),
             'KPI_EDIT_URL' => placeholder_url(),
         ];

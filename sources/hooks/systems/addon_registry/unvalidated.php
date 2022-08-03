@@ -152,7 +152,7 @@ class Hook_addon_registry_unvalidated
             'CONTENT_TYPE_LABEL' => lorem_phrase(),
             'TITLE' => lorem_phrase(),
             'TYPE' => lorem_phrase(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'URL' => placeholder_url(),
         ], null, false, null, '.txt', 'text'), null, '', true);
     }

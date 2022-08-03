@@ -7,6 +7,7 @@
 			TYPE=time
 			REQUIRED=0
 			UNLIMITED=1
+			READ_ONLY=0
 			HOUR={$PREG_REPLACE,^(\d+):\d\d$,$1,{SPECIAL}}
 			MINUTE={$PREG_REPLACE,^\d+:(\d\d)$,$1,{SPECIAL}}
 		{+END}
@@ -21,6 +22,7 @@
 			TYPE=time
 			REQUIRED=0
 			UNLIMITED=1
+			READ_ONLY=0
 			HOUR={$PREG_REPLACE,^(\d+):\d\d$,$1,{$PREG_REPLACE,;.*$,,{SPECIAL}}}
 			MINUTE={$PREG_REPLACE,^\d+:(\d\d)$,$1,{$PREG_REPLACE,;.*$,,{SPECIAL}}}
 		{+END}
@@ -32,6 +34,7 @@
 			TYPE=time
 			REQUIRED=0
 			UNLIMITED=1
+			READ_ONLY=0
 			HOUR={$PREG_REPLACE,^(\d+):\d\d$,$1,{$PREG_REPLACE,^.*;,,{SPECIAL}}}
 			MINUTE={$PREG_REPLACE,^\d+:(\d\d)$,$1,{$PREG_REPLACE,^.*;,,{SPECIAL}}}
 		{+END}

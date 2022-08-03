@@ -449,8 +449,8 @@ class Hook_addon_registry_search
         $result = new Tempcode();
         $result->attach(do_lorem_template('SEARCH_RESULT', [
             'CONTENT' => lorem_paragraph_html(),
-            'TYPE' => placeholder_id(),
-            'ID' => placeholder_id(),
+            'TYPE' => placeholder_codename(),
+            'ID' => placeholder_codename(),
         ]));
 
         $types_results = [];
@@ -482,7 +482,7 @@ class Hook_addon_registry_search
             'USER_LABEL' => lorem_word(),
             'DAYS_LABEL' => lorem_word(),
             'ONLY_TITLES' => true,
-            'DAYS' => placeholder_id(),
+            'DAYS' => placeholder_number(),
             'SORT' => 'relevance',
             'DIRECTION' => 'DESC',
             'CONTENT' => lorem_phrase(),

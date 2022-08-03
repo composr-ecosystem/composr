@@ -241,7 +241,7 @@ class Hook_addon_registry_wiki
         $rating_inside = do_lorem_template('WIKI_RATING_FORM', [
             'LIKES' => true,
             'CONTENT_TYPE' => 'wiki',
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'URL' => placeholder_url(),
             'ALLOW_RATING' => true,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
@@ -266,7 +266,7 @@ class Hook_addon_registry_wiki
             'STAFF_ACCESS' => lorem_phrase(),
             'RATE_URL' => placeholder_url(),
             'RATING' => $rating_details,
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'POSTER_URL' => placeholder_url(),
             'POSTER' => lorem_phrase(),
             'POST_DATE_RAW' => placeholder_date_raw(),
@@ -288,9 +288,9 @@ class Hook_addon_registry_wiki
 
         return lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
             'TAGS' => placeholder_tags(),
-            'SHOW_POSTS' => placeholder_id(),
-            'ID' => placeholder_id(),
-            'CHAIN' => placeholder_id(),
+            'SHOW_POSTS' => true,
+            'ID' => placeholder_codename(),
+            'CHAIN' => placeholder_codename(),
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
             'STAFF_ACCESS' => '1',

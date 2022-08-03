@@ -486,14 +486,14 @@ class Hook_addon_registry_core_rich_media
             $page[] = $v;
         }
         $content->attach(do_lorem_template('COMCODE_BIG_TABS_CONTROLLER', [
-            'PASS_ID' => placeholder_id(),
+            'PASS_ID' => placeholder_codename(),
             'SWITCH_TIME' => '6000',
             'TABS' => $page,
         ]));
 
         foreach ($page as $i => $v) {
             $content->attach(do_lorem_template('COMCODE_BIG_TABS_TAB', [
-                'PASS_ID' => placeholder_id() . strval($i),
+                'PASS_ID' => placeholder_codename() . strval($i),
                 'CONTENT' => lorem_paragraph() . strval($i),
                 'NAME' => $v,
                 'DEFAULT' => ($i == 0),
@@ -708,7 +708,7 @@ class Hook_addon_registry_core_rich_media
     {
         return lorem_globalise(do_lorem_template('COMCODE_OVERLAY', [
             'EMBED' => lorem_phrase(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'X' => placeholder_number(),
             'Y' => placeholder_number(),
             'WIDTH' => placeholder_number(),
@@ -730,7 +730,7 @@ class Hook_addon_registry_core_rich_media
         return lorem_globalise(do_lorem_template('COMCODE_SNAPBACK', [
             'URL' => placeholder_url(),
             'TITLE' => lorem_phrase(),
-            'POST_ID' => placeholder_id(),
+            'POST_ID' => placeholder_codename(),
             '_DATE' => placeholder_date_raw(),
         ]), null, '', true);
     }
@@ -755,7 +755,7 @@ class Hook_addon_registry_core_rich_media
         }
         $k++;
         $section->attach(do_lorem_template('COMCODE_SECTION', [
-            'PASS_ID' => placeholder_id(),
+            'PASS_ID' => placeholder_codename(),
             'DEFAULT' => true,
             'NAME' => strval($k + 1),
             'CONTENT' => lorem_paragraph(),
@@ -766,7 +766,7 @@ class Hook_addon_registry_core_rich_media
         }
         $section->attach(do_lorem_template('COMCODE_SECTION_CONTROLLER', [
             'SECTIONS' => $page,
-            'PASS_ID' => placeholder_id(),
+            'PASS_ID' => placeholder_codename(),
         ]));
 
         return lorem_globalise($section, null, '', true);
@@ -1395,7 +1395,7 @@ class Hook_addon_registry_core_rich_media
             $lines[] = [
                 'URL' => placeholder_url(),
                 'LINE' => lorem_phrase(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_codename(),
                 'UNDER' => '',
             ];
         }
@@ -1568,7 +1568,7 @@ class Hook_addon_registry_core_rich_media
     public function tpl_preview__comcode_subtitle() : object
     {
         return lorem_globalise(do_lorem_template('COMCODE_SUBTITLE', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'TITLE' => lorem_phrase(),
             'SUB' => lorem_sentence(),
             'LEVEL' => '2',
@@ -1600,7 +1600,7 @@ class Hook_addon_registry_core_rich_media
             'FIELD_NAME' => lorem_phrase(),
             'TPL' => lorem_phrase(),
             'DESCRIPTION' => lorem_sentence(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'MAY_DELETE' => true,
             'DELETE_URL' => placeholder_url(),
         ];
@@ -1722,7 +1722,7 @@ class Hook_addon_registry_core_rich_media
 
         return lorem_globalise(do_lorem_template($template, [
             'URL' => placeholder_url(),
-            'REMOTE_ID' => placeholder_id(),
+            'REMOTE_ID' => placeholder_codename(),
             'THUMB_URL' => placeholder_image_url(),
             'FILENAME' => lorem_word(),
             'MIME_TYPE' => lorem_word(),
@@ -1952,7 +1952,7 @@ class Hook_addon_registry_core_rich_media
     {
         return lorem_globalise(do_lorem_template('COMCODE_MEMBER_LINK', [
             //'DETAILS' => lorem_sentence(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'USERNAME' => lorem_phrase(),
             'MEMBER_URL' => placeholder_url(),
         ]), null, '', true);
@@ -1975,7 +1975,7 @@ class Hook_addon_registry_core_rich_media
                 'URL_SAFE' => placeholder_url(),
                 'URL_DIRECT_FILESYSTEM' => placeholder_url(),
                 'HOOK' => lorem_word(),
-                'REMOTE_ID' => placeholder_id(),
+                'REMOTE_ID' => placeholder_codename(),
                 'THUMB_URL' => placeholder_image_url(),
                 'FILENAME' => lorem_word(),
                 'MIME_TYPE' => lorem_word(),

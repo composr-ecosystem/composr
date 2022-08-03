@@ -419,7 +419,7 @@ class Hook_addon_registry_language_block
             'CURRENT_LANG_FULL_NAME' => 'English',
             'CURRENT_LANG_COUNTRY_FLAG' => 'gb',
             'CURRENT_LANG' => 'EN',
-            'BLOCK_ID' => placeholder_id(),
+            'BLOCK_ID' => placeholder_codename(),
         ]), null, '', true);
     }
 }

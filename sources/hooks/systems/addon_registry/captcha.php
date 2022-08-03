@@ -239,7 +239,7 @@ class Hook_addon_registry_captcha
      */
     public function tpl_preview__captcha_loose() : object
     {
-        $name = placeholder_id();
+        $name = placeholder_codename();
         $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', [
             'RAW' => true,
             'SCROLLS' => '',

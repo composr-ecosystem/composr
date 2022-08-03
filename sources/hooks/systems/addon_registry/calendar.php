@@ -429,7 +429,7 @@ class Hook_addon_registry_calendar
     {
         return lorem_globalise(do_lorem_template('CALENDAR_EVENT_CONFLICT', [
             'URL' => placeholder_url(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'TITLE' => lorem_phrase(),
         ]), null, '', true);
     }
@@ -444,7 +444,7 @@ class Hook_addon_registry_calendar
     public function tpl_preview__calendar_event_box() : object
     {
         return lorem_globalise(do_lorem_template('CALENDAR_EVENT_BOX', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'URL' => placeholder_url(),
             'SUMMARY' => lorem_paragraph_html(),
             'TITLE' => lorem_phrase(),
@@ -484,7 +484,7 @@ class Hook_addon_registry_calendar
                     }
                     foreach (placeholder_array(2) as $v) {
                         $entries = do_lorem_template('CALENDAR_DAY_ENTRY', [
-                            'ID' => placeholder_id(),
+                            'ID' => placeholder_numeric_id(),
                             'URL' => placeholder_url(),
                             'TIME' => placeholder_date(),
                             'T_TITLE' => lorem_phrase(),
@@ -529,7 +529,7 @@ class Hook_addon_registry_calendar
                             ]);
                         } else {
                             $entries = do_lorem_template('CALENDAR_WEEK_ENTRY', [
-                                'ID' => placeholder_id(),
+                                'ID' => placeholder_numeric_id(),
                                 'URL' => placeholder_url(),
                                 'TIME' => placeholder_date(),
                                 'T_TITLE' => lorem_phrase(),
@@ -590,7 +590,7 @@ class Hook_addon_registry_calendar
                     $entries = new Tempcode();
                     foreach (placeholder_array() as $_k => $_v) {
                         $entries->attach(do_lorem_template('CALENDAR_MONTH_ENTRY', [
-                            'ID' => placeholder_id(),
+                            'ID' => placeholder_numeric_id(),
                             'T_TITLE' => lorem_phrase(),
                             'PRIORITY' => lorem_word(),
                             'ICON' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
@@ -715,13 +715,13 @@ class Hook_addon_registry_calendar
             'S' => 'I',
             'INTERESTED' => 'interested',
             'TYPE' => lorem_phrase(),
-            'TYPE_ID' => placeholder_id(),
+            'TYPE_ID' => placeholder_numeric_id(),
         ]);
         $events2 = do_lorem_template('CALENDAR_EVENT_TYPE', [
             'S' => 'F',
             'INTERESTED' => 'not_interested',
             'TYPE' => lorem_phrase(),
-            'TYPE_ID' => placeholder_id(),
+            'TYPE_ID' => placeholder_numeric_id(),
         ]);
         return do_lorem_template('CALENDAR_MAIN_SCREEN', [
             'RSS_FORM' => placeholder_form(),
@@ -767,7 +767,7 @@ class Hook_addon_registry_calendar
         $subscribed = [];
         foreach (placeholder_array() as $v) {
             $subscribed[] = [
-                'MEMBER_ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_numeric_id(),
                 'MEMBER_URL' => placeholder_url(),
                 'USERNAME' => lorem_word(),
             ];
@@ -800,10 +800,10 @@ class Hook_addon_registry_calendar
         return lorem_globalise(do_lorem_template('CALENDAR_EVENT_SCREEN', [
             'TITLE' => get_screen_title('CALENDAR_EVENT_VCAL', true, [lorem_phrase()]),
 
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'TAGS' => placeholder_tags(),
             'WARNING_DETAILS' => '',
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'ADD_DATE' => placeholder_date(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'EDIT_DATE_RAW' => placeholder_date_raw(),

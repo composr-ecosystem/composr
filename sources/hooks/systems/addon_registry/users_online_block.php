@@ -143,7 +143,7 @@ class Hook_addon_registry_users_online_block
                 'URL' => placeholder_url(),
                 'USERNAME' => lorem_phrase(),
                 'COLOUR' => lorem_word(),
-                'MEMBER_ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_numeric_id(),
                 'AVATAR_URL' => placeholder_image_url(),
             ];
         }

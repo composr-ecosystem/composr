@@ -2198,7 +2198,7 @@ class Hook_addon_registry_core
                 'CONTENT_TYPE' => lorem_word(),
                 'CONTENT_TYPE_LABEL' => lorem_phrase(),
                 'CONTENT_TYPE_ICON' => placeholder_image_url(),
-                'CONTENT_ID' => placeholder_id(),
+                'CONTENT_ID' => placeholder_codename(),
                 'CONTENT_URL' => placeholder_url(),
                 'CONTENT_TITLE_PLAIN' => lorem_phrase(),
                 'CONTENT_TITLE_HTML' => lorem_phrase_html(),
@@ -2503,7 +2503,7 @@ class Hook_addon_registry_core
             'DETAILS' => $details,
             'USERNAME' => lorem_word(),
             'NUM_UNREAD_PTS' => placeholder_number(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 
@@ -2560,7 +2560,7 @@ class Hook_addon_registry_core
             'LINKS_ECOMMERCE' => $links_ecommerce,
             'DETAILS' => $details,
             'USERNAME' => lorem_word(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'NUM_UNREAD_PTS' => placeholder_number(),
         ]), null, '', false);
     }
@@ -2776,8 +2776,8 @@ class Hook_addon_registry_core
     public function tpl_preview__mass_select_marker() : object
     {
         return lorem_globalise(do_lorem_template('MASS_SELECT_MARKER', [
-            'TYPE' => placeholder_id(),
-            'ID' => placeholder_id(),
+            'TYPE' => placeholder_codename(),
+            'ID' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -2803,7 +2803,7 @@ class Hook_addon_registry_core
     public function tpl_preview__mass_select_form_buttons() : object
     {
         $buttons = do_lorem_template('MASS_SELECT_FORM_BUTTONS', [
-            'TYPE' => placeholder_id(),
+            'TYPE' => placeholder_codename(),
         ]);
 
         $fields = new Tempcode();
@@ -2816,7 +2816,7 @@ class Hook_addon_registry_core
             'TABINDEX' => placeholder_number(),
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence(),
-            'NAME' => placeholder_id(),
+            'NAME' => placeholder_codename(),
             'DEFAULT' => '',
             'ROWS' => '20',
         ]));
@@ -2860,7 +2860,7 @@ class Hook_addon_registry_core
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTENT_FILTERING', [
             'BLOCK_ID' => lorem_word(),
             'FIELDS' => placeholder_fields(),
-            'ACTIVE_FILTER' => placeholder_id(),
+            'ACTIVE_FILTER' => placeholder_codename(),
             'SUBMIT_ICON' => 'buttons/proceed',
             'LINKS' => $links,
         ]), null, '', true);
@@ -2894,8 +2894,8 @@ class Hook_addon_registry_core
         $timeouts = [
             [
                 'USERNAME' => lorem_word(),
-                'MEMBER_ID' => placeholder_id(),
-                'GROUP_ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_numeric_id(),
+                'GROUP_ID' => placeholder_numeric_id(),
                 'DATE_INPUT' => lorem_phrase(),
             ],
         ];
@@ -2903,7 +2903,7 @@ class Hook_addon_registry_core
         return lorem_globalise(do_lorem_template('GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN', [
             'TITLE' => lorem_title(),
             'TIMEOUTS' => $timeouts,
-            'GROUPS' => [placeholder_id() => lorem_word()],
+            'GROUPS' => [placeholder_numeric_id() => lorem_word()],
             'DATE_INPUT' => lorem_phrase(),
             'URL' => placeholder_url(),
             'PAGINATION' => placeholder_pagination(),

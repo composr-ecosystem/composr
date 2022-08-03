@@ -200,7 +200,7 @@ class Hook_addon_registry_core_fields
                 ],
             ],
             'FLAT' => [lorem_phrase() . 'a', lorem_phrase() . 'b'],
-            'FIELD_ID' => placeholder_id(),
+            'FIELD_ID' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 

@@ -254,7 +254,7 @@ class Hook_addon_registry_news
             'BODY' => lorem_paragraph_html(),
             'DATE' => placeholder_date(),
             'DATE_RAW' => placeholder_date_raw(),
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'AUTHOR' => lorem_phrase(),
             'AUTHOR_URL' => placeholder_url(),
         ];
@@ -280,7 +280,7 @@ class Hook_addon_registry_news
         require_lang('news');
 
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_BLOG', [
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'RECENT_BLOG_POSTS' => lorem_paragraph_html(),
             'RSS_URL' => placeholder_url(),
             'ADD_BLOG_POST_URL' => placeholder_url(),
@@ -350,12 +350,12 @@ class Hook_addon_registry_news
             'BLOG' => lorem_phrase(),
             'AUTHOR_URL' => placeholder_url(),
             'CATEGORY' => lorem_phrase(),
-            '_CATEGORY' => placeholder_id(),
+            '_CATEGORY' => placeholder_numeric_id(),
             'CATEGORY_URL' => placeholder_url(),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'AUTHOR' => lorem_phrase(),
             '_AUTHOR' => lorem_phrase(),
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'AVATAR' => lorem_phrase(),
             'NEWS_TITLE' => lorem_phrase(),
             'NEWS_TITLE_PLAIN' => lorem_phrase(),
@@ -363,7 +363,7 @@ class Hook_addon_registry_news
             'NEWS' => lorem_phrase(),
             'COMMENTS' => lorem_phrase(),
             'VIEW' => lorem_phrase(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'FULL_URL' => placeholder_url(),
             'COMMENT_COUNT' => lorem_phrase(),
             'READ_MORE' => lorem_sentence(),
@@ -373,8 +373,8 @@ class Hook_addon_registry_news
             'CLOSED' => false,
             'FIRSTUSERNAME' => lorem_word(),
             'LASTUSERNAME' => lorem_word(),
-            'FIRSTMEMBERID' => placeholder_id(),
-            'LASTMEMBERID' => placeholder_id(),
+            'FIRSTMEMBERID' => placeholder_numeric_id(),
+            'LASTMEMBERID' => placeholder_numeric_id(),
             'DATE_RAW' => placeholder_date_raw(),
             'GIVE_CONTEXT' => false,
             'TAGS' => placeholder_tags(),
@@ -407,7 +407,7 @@ class Hook_addon_registry_news
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE_PLAIN' => lorem_phrase(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'NEWS_TITLE' => lorem_phrase(),
             ]));
         }
@@ -481,7 +481,7 @@ class Hook_addon_registry_news
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE_PLAIN' => lorem_phrase(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'NEWS_TITLE' => lorem_phrase(),
             ]));
         }
@@ -521,8 +521,8 @@ class Hook_addon_registry_news
         $contents = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $contents->attach(do_lorem_template('BLOCK_SIDE_NEWS_SUMMARY', [
-                'ID' => placeholder_id(),
-                'SUBMITTER' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
+                'SUBMITTER' => placeholder_numeric_id(),
                 'AUTHOR' => lorem_phrase(),
                 'REP_IMAGE_URL' => placeholder_image_url(),
                 'CATEGORY' => lorem_phrase(),
@@ -532,7 +532,7 @@ class Hook_addon_registry_news
                 'NEWS_TITLE' => lorem_phrase(),
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
-                'BLOCK_ID' => placeholder_id(),
+                'BLOCK_ID' => placeholder_codename(),
             ]));
         }
 
@@ -681,15 +681,15 @@ class Hook_addon_registry_news
         ]);
 
         return lorem_globalise(do_lorem_template('NEWS_ENTRY_SCREEN', [
-            'ID' => placeholder_id(),
-            'CATEGORY_ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
+            'CATEGORY_ID' => placeholder_numeric_id(),
             'BLOG' => true,
             '_TITLE' => lorem_phrase(),
             'CATEGORIES' => placeholder_array(),
             'NEWSLETTER_URL' => addon_installed('newsletter') ? placeholder_url() : '',
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'EDIT_DATE_RAW' => '',
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'CATEGORY' => lorem_phrase(),
             'REP_IMAGE_URL' => placeholder_image_url(),
             'TITLE' => lorem_title(),

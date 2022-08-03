@@ -210,7 +210,7 @@ class Hook_addon_registry_banners
     public function tpl_preview__banner_show_code() : object
     {
         return lorem_globalise(do_lorem_template('BANNER_SHOW_CODE', [
-            'NAME' => placeholder_id(),
+            'NAME' => placeholder_codename(),
             'WIDTH' => placeholder_number(),
             'HEIGHT' => placeholder_number(),
             'TYPE' => lorem_word(),
@@ -393,7 +393,7 @@ class Hook_addon_registry_banners
             'EDIT_URL' => placeholder_url(),
             'MAP_TABLE' => lorem_phrase(),
             'BANNER' => lorem_phrase(),
-            'NAME' => placeholder_id(),
+            'NAME' => placeholder_codename(),
             'RESULTS_TABLE' => placeholder_table(),
             'RESET_URL' => placeholder_url(),
         ]), null, '', true);

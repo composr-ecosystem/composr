@@ -34,21 +34,21 @@
 							{+START,IF,{$AND,{NOT_VOTED},{IS_OPEN}}}
 								{+START,IF,{$GT,{_MAXIMUM_SELECTIONS},1}}
 									{+START,IF,{$EQ,{_MINIMUM_SELECTIONS},{_MAXIMUM_SELECTIONS}}}
-										<p class="vertical-alignment"><img class="inline-icon" src="{$IMG*,icons/status/notice}" /> <span>{!POLL_INVALID_SELECTION_COUNT_2,{MINIMUM_SELECTIONS*}}</span></p>
+										<p class="vertical-alignment"><img alt="" class="inline-icon" src="{$IMG*,icons/status/notice}" /> <span>{!POLL_INVALID_SELECTION_COUNT_2,{MINIMUM_SELECTIONS*}}</span></p>
 									{+END}
 									{+START,IF,{$NEQ,{_MINIMUM_SELECTIONS},{_MAXIMUM_SELECTIONS}}}
-										<p class="vertical-alignment"><img class="inline-icon" src="{$IMG*,icons/status/notice}" /> <span>{!POLL_INVALID_SELECTION_COUNT,{MINIMUM_SELECTIONS*},{MAXIMUM_SELECTIONS*}}</span></p>
+										<p class="vertical-alignment"><img alt="" class="inline-icon" src="{$IMG*,icons/status/notice}" /> <span>{!POLL_INVALID_SELECTION_COUNT,{MINIMUM_SELECTIONS*},{MAXIMUM_SELECTIONS*}}</span></p>
 									{+END}
 								{+END}
 								{+START,IF,{VOTES_REVEALED}}
-									<p class="vertical-alignment"><img class="inline-icon" src="{$IMG*,icons/status/warn}" /> <span>{!TOPIC_POLL_MEMBER_VOTES_REVEALED}</span></p>
+									<p class="vertical-alignment"><img alt="" class="inline-icon" src="{$IMG*,icons/status/warn}" /> <span>{!TOPIC_POLL_MEMBER_VOTES_REVEALED}</span></p>
 								{+END}
 							{+END}
 							{+START,IF,{$NEQ,{CLOSING_TIME},0}}
-								<p class="vertical-alignment"><img class="inline-icon" src="{$IMG*,icons/status/inform}" /> <span>{!VOTING_CLOSES_IN,{$MAKE_RELATIVE_DATE*,{CLOSING_TIME},1,1}}</span></p>
+								<p class="vertical-alignment"><img alt="" class="inline-icon" src="{$IMG*,icons/status/inform}" /> <span>{!VOTING_CLOSES_IN,{$MAKE_RELATIVE_DATE*,{CLOSING_TIME},1,1}}</span></p>
 							{+END}
 							{+START,IF,{PRIVATE}}
-								<p class="vertical-alignment"><img class="inline-icon" src="{$IMG*,icons/status/inform}" /> <span>{!TOPIC_POLL_RESULTS_HIDDEN}</span></p>
+								<p class="vertical-alignment"><img alt="" class="inline-icon" src="{$IMG*,icons/status/inform}" /> <span>{!TOPIC_POLL_RESULTS_HIDDEN}</span></p>
 							{+END}
 						</div>
 					</div>

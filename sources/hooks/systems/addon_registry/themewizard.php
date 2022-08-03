@@ -205,9 +205,9 @@ class Hook_addon_registry_themewizard
         return lorem_globalise(do_lorem_template('THEMEWIZARD_PREVIEW', [
             'SOURCE_THEME' => 'default',
             'ALGORITHM' => 'equations',
-            'RED' => placeholder_id(),
-            'GREEN' => placeholder_id(),
-            'BLUE' => placeholder_id(),
+            'RED' => placeholder_codename(),
+            'GREEN' => placeholder_codename(),
+            'BLUE' => placeholder_codename(),
             'SEED' => lorem_word(),
             'DARK' => true,
             'DOMINANT' => lorem_word(),

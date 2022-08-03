@@ -231,7 +231,7 @@ class Hook_addon_registry_community_billboard
                 'TEXT' => $text->evaluate(),
             ]));
         }
-        $name = placeholder_id();
+        $name = placeholder_codename();
         $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', [
             'TABINDEX' => '5',
             'REQUIRED' => '-required',

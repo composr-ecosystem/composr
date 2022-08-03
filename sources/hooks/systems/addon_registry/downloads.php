@@ -275,10 +275,10 @@ class Hook_addon_registry_downloads
         return lorem_globalise(do_lorem_template('DOWNLOAD_BOX', [
             'ORIGINAL_FILENAME' => lorem_phrase(),
             'AUTHOR' => lorem_phrase(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             '_VIEWS' => placeholder_number(),
             'VIEWS' => placeholder_number(),
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'DESCRIPTION' => lorem_sentence(),
             'FILE_SIZE' => placeholder_number(),
             '_DOWNLOADS' => placeholder_number(),
@@ -317,7 +317,7 @@ class Hook_addon_registry_downloads
             'EDIT_CAT_URL' => placeholder_url(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'SORTING' => lorem_phrase(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'PRICE' => null,
             'SELECT' => '*',
             'SORT' => 'title',
@@ -340,9 +340,9 @@ class Hook_addon_registry_downloads
             $map = [
                 'ORIGINAL_FILENAME' => lorem_phrase(),
                 'AUTHOR' => lorem_phrase(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'VIEWS' => placeholder_number(),
-                'SUBMITTER' => placeholder_id(),
+                'SUBMITTER' => placeholder_numeric_id(),
                 'DESCRIPTION' => lorem_sentence(),
                 'FILE_SIZE' => placeholder_number(),
                 'DOWNLOADS' => placeholder_number(),
@@ -389,7 +389,7 @@ class Hook_addon_registry_downloads
             require_lang('galleries');
             foreach (placeholder_array() as $row) {
                 $image = do_lorem_template('DOWNLOAD_SCREEN_IMAGE', [
-                    'ID' => placeholder_id(),
+                    'ID' => placeholder_numeric_id(),
                     'TITLE' => lorem_phrase(),
                     'EDIT_URL' => placeholder_url(),
                     'IMAGE_URL' => placeholder_image_url(),
@@ -412,7 +412,7 @@ class Hook_addon_registry_downloads
             'LICENCE' => lorem_phrase(),
             'LICENCE_TITLE' => lorem_phrase(),
             'LICENCE_HYPERLINK' => placeholder_link(),
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'EDIT_DATE' => placeholder_date(),
             'EDIT_DATE_RAW' => placeholder_date_raw(),
             '_VIEWS' => placeholder_number(),
@@ -430,7 +430,7 @@ class Hook_addon_registry_downloads
             'DESCRIPTION' => lorem_paragraph_html(),
             'ADDITIONAL_DETAILS' => lorem_sentence_html(),
             'IMAGES_DETAILS' => $images_details,
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'FILE_SIZE' => placeholder_filesize(),
             'AUTHOR_URL' => placeholder_url(),
             'AUTHOR' => lorem_phrase(),
@@ -439,7 +439,7 @@ class Hook_addon_registry_downloads
             'COMMENT_DETAILS' => lorem_sentence_html(),
             'MAY_DOWNLOAD' => true,
             'NUM_IMAGES' => '3',
-            'CAT' => placeholder_id(),
+            'CAT' => placeholder_numeric_id(),
             'DOWNLOAD_URL' => placeholder_url(),
             'URL' => placeholder_url(),
         ]), null, '', true);
@@ -459,7 +459,7 @@ class Hook_addon_registry_downloads
             'NAME' => lorem_phrase(),
             'DOWNLOAD_URL' => placeholder_url(),
             'URL' => placeholder_url(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 

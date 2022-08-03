@@ -213,18 +213,18 @@ class Hook_addon_registry_tickets
                 'TITLE' => lorem_phrase(),
                 'EXTRA_DETAILS' => '',
                 'TICKET_TYPE_NAME' => lorem_phrase(),
-                'TICKET_TYPE_ID' => placeholder_id(),
+                'TICKET_TYPE_ID' => placeholder_numeric_id(),
                 'FIRST_DATE' => placeholder_date(),
                 'FIRST_DATE_RAW' => placeholder_date_raw(),
                 'FIRST_POSTER_PROFILE_URL' => placeholder_url(),
                 'FIRST_POSTER' => lorem_phrase(),
-                'FIRST_POSTER_ID' => placeholder_id(),
+                'FIRST_POSTER_ID' => placeholder_numeric_id(),
                 'LAST_POSTER_PROFILE_URL' => placeholder_url(),
                 'LAST_POSTER' => lorem_phrase(),
-                'LAST_POSTER_ID' => placeholder_id(),
+                'LAST_POSTER_ID' => placeholder_numeric_id(),
                 'LAST_DATE' => placeholder_date(),
                 'LAST_DATE_RAW' => placeholder_date_raw(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_codename(),
                 'ASSIGNED' => [],
             ]));
         }
@@ -295,18 +295,18 @@ class Hook_addon_registry_tickets
                 'TITLE' => lorem_phrase(),
                 'EXTRA_DETAILS' => '',
                 'TICKET_TYPE_NAME' => lorem_phrase(),
-                'TICKET_TYPE_ID' => placeholder_id(),
+                'TICKET_TYPE_ID' => placeholder_numeric_id(),
                 'FIRST_DATE' => placeholder_date(),
                 'FIRST_DATE_RAW' => placeholder_date_raw(),
                 'FIRST_POSTER_PROFILE_URL' => placeholder_url(),
                 'FIRST_POSTER' => lorem_phrase(),
-                'FIRST_POSTER_ID' => placeholder_id(),
+                'FIRST_POSTER_ID' => placeholder_numeric_id(),
                 'LAST_POSTER_PROFILE_URL' => placeholder_url(),
                 'LAST_POSTER' => lorem_phrase(),
-                'LAST_POSTER_ID' => placeholder_id(),
+                'LAST_POSTER_ID' => placeholder_numeric_id(),
                 'LAST_DATE' => placeholder_date(),
                 'LAST_DATE_RAW' => placeholder_date_raw(),
-                'ID' => placeholder_id(),
+                'ID' => placeholder_codename(),
                 'ASSIGNED' => [],
             ]));
         }
@@ -314,13 +314,13 @@ class Hook_addon_registry_tickets
         $whos_read = [];
         $whos_read[] = [
             'USERNAME' => lorem_word(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'MEMBER_URL' => placeholder_url(),
             'DATE' => placeholder_date(),
         ];
 
         return lorem_globalise(do_lorem_template('SUPPORT_TICKET_SCREEN', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'TOGGLE_TICKET_CLOSED_URL' => placeholder_url(),
             'CLOSED' => lorem_phrase(),
             'USERNAME' => lorem_word(),
@@ -394,8 +394,8 @@ class Hook_addon_registry_tickets
         require_lang('cns');
         require_css('cns');
         return lorem_globalise(do_lorem_template('CNS_REPORTED_POST_FCOMCODE', [
-            'POST_ID' => placeholder_id(),
-            'POST_MEMBER_ID' => placeholder_id(),
+            'POST_ID' => placeholder_numeric_id(),
+            'POST_MEMBER_ID' => placeholder_numeric_id(),
             'POST_MEMBER' => lorem_phrase(),
             'TOPIC_TITLE' => lorem_phrase(),
             'POST' => lorem_phrase(),
@@ -415,10 +415,10 @@ class Hook_addon_registry_tickets
         return lorem_globalise(do_lorem_template('REPORTED_CONTENT_FCOMCODE', [
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TYPE' => lorem_word(),
-            'CONTENT_ID' => placeholder_id(),
+            'CONTENT_ID' => placeholder_codename(),
             'CONTENT_MEMBER' => lorem_phrase(),
             'CONTENT_MEMBER_LINK' => lorem_phrase(),
-            'CONTENT_MEMBER_ID' => placeholder_id(),
+            'CONTENT_MEMBER_ID' => placeholder_numeric_id(),
             'CONTENT_TITLE' => lorem_phrase(),
             'CONTENT_RENDERED' => lorem_paragraph_html(),
             'REPORT_POST' => lorem_paragraph(),
@@ -462,7 +462,7 @@ class Hook_addon_registry_tickets
         return lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_US', [
             'BLOCK_ID' => lorem_word(),
             'COMMENT_DETAILS' => $comment_details,
-            'TYPE' => placeholder_id(),
+            'TYPE' => placeholder_codename(),
         ]), null, '', true);
     }
 

@@ -209,18 +209,18 @@ class Hook_addon_registry_core_notifications
         $notifications = new Tempcode();
         $notifications->attach(
             do_lorem_template('NOTIFICATION_WEB', [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'SUBJECT' => lorem_phrase(),
                 'MESSAGE' => lorem_paragraph(),
                 'FROM_USERNAME' => lorem_phrase(),
-                'FROM_MEMBER_ID' => placeholder_id(),
+                'FROM_MEMBER_ID' => placeholder_numeric_id(),
                 'FROM_URL' => placeholder_url(),
                 'FROM_AVATAR_URL' => placeholder_image_url(),
                 'PRIORITY' => '3',
                 '_TIME' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
-                'NOTIFICATION_CODE' => placeholder_id(),
-                'CODE_CATEGORY' => placeholder_id(),
+                'NOTIFICATION_CODE' => placeholder_codename(),
+                'CODE_CATEGORY' => placeholder_codename(),
                 'HAS_READ' => false,
             ])
         );
@@ -243,18 +243,18 @@ class Hook_addon_registry_core_notifications
     {
         return lorem_globalise(do_lorem_template('NOTIFICATION_VIEW_SCREEN', [
             'TITLE' => lorem_title(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
             'FROM_USERNAME' => lorem_phrase(),
-            'FROM_MEMBER_ID' => placeholder_id(),
+            'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'FROM_URL' => placeholder_url(),
             'FROM_AVATAR_URL' => placeholder_image_url(),
             'PRIORITY' => '3',
             '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
-            'NOTIFICATION_CODE' => placeholder_id(),
-            'CODE_CATEGORY' => placeholder_id(),
+            'NOTIFICATION_CODE' => placeholder_codename(),
+            'CODE_CATEGORY' => placeholder_codename(),
             'HAS_READ' => true,
         ]), null, '', true);
     }
@@ -281,18 +281,18 @@ class Hook_addon_registry_core_notifications
     public function tpl_preview__notification_web() : object
     {
         return lorem_globalise(do_lorem_template('NOTIFICATION_WEB', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
             'FROM_USERNAME' => lorem_phrase(),
-            'FROM_MEMBER_ID' => placeholder_id(),
+            'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'FROM_URL' => placeholder_url(),
             'FROM_AVATAR_URL' => placeholder_image_url(),
             'PRIORITY' => '3',
             '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
-            'NOTIFICATION_CODE' => placeholder_id(),
-            'CODE_CATEGORY' => placeholder_id(),
+            'NOTIFICATION_CODE' => placeholder_codename(),
+            'CODE_CATEGORY' => placeholder_codename(),
             'HAS_READ' => true,
         ]), null, '', true);
     }
@@ -307,18 +307,18 @@ class Hook_addon_registry_core_notifications
     public function tpl_preview__notification_web_desktop() : object
     {
         return lorem_globalise(do_lorem_template('NOTIFICATION_WEB_DESKTOP', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
             'FROM_USERNAME' => lorem_phrase(),
-            'FROM_MEMBER_ID' => placeholder_id(),
+            'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'FROM_URL' => placeholder_url(),
             'FROM_AVATAR_URL' => placeholder_image_url(),
             'PRIORITY' => '3',
             '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
-            'NOTIFICATION_CODE' => placeholder_id(),
-            'CODE_CATEGORY' => placeholder_id(),
+            'NOTIFICATION_CODE' => placeholder_codename(),
+            'CODE_CATEGORY' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -332,11 +332,11 @@ class Hook_addon_registry_core_notifications
     public function tpl_preview__notification_pt_desktop() : object
     {
         return lorem_globalise(do_lorem_template('NOTIFICATION_PT_DESKTOP', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'SUBJECT' => lorem_phrase(),
             'MESSAGE' => lorem_paragraph(),
             'FROM_USERNAME' => lorem_phrase(),
-            'FROM_MEMBER_ID' => placeholder_id(),
+            'FROM_MEMBER_ID' => placeholder_numeric_id(),
             'URL' => placeholder_url(),
             'FROM_AVATAR_URL' => placeholder_image_url(),
             '_TIME' => placeholder_date_raw(),
@@ -377,21 +377,21 @@ class Hook_addon_registry_core_notifications
 
         $notification_types = [];
         $notification_types[] = [
-            'NTYPE' => placeholder_id(),
+            'NTYPE' => placeholder_codename(),
             'LABEL' => lorem_phrase(),
             'CHECKED' => true,
             'RAW' => placeholder_number(),
             'AVAILABLE' => true,
-            'SCOPE' => placeholder_id(),
+            'SCOPE' => placeholder_codename(),
         ];
         $notification_types_titles = [];
         $notification_types_titles[] = [
-            'NTYPE' => placeholder_id(),
+            'NTYPE' => placeholder_codename(),
             'LABEL' => lorem_phrase(),
             'RAW' => placeholder_number(),
         ];
         $notification_code_map = [
-            'NOTIFICATION_CODE' => placeholder_id(),
+            'NOTIFICATION_CODE' => placeholder_codename(),
             'NOTIFICATION_LABEL' => lorem_phrase(),
             'NOTIFICATION_TYPES' => $notification_types,
             'SUPPORTS_CATEGORIES' => true,
@@ -412,7 +412,7 @@ class Hook_addon_registry_core_notifications
             'SMART_TOPIC_NOTIFICATION' => false,
             'MAILING_LIST_STYLE' => false,
             'MAILING_LIST_STYLE_DESCRIPTION' => do_lang_tempcode('DESCRIPTION_MAILING_LIST_STYLE', ''),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'ADVANCED_COLUMN' => true,
             'SHOW_PRIVILEGES' => false,
         ]);
@@ -437,30 +437,30 @@ class Hook_addon_registry_core_notifications
 
         $notification_types = [];
         $notification_types[] = [
-            'NTYPE' => placeholder_id(),
+            'NTYPE' => placeholder_codename(),
             'LABEL' => lorem_phrase(),
             'CHECKED' => true,
             'RAW' => placeholder_number(),
             'AVAILABLE' => true,
-            'SCOPE' => placeholder_id(),
+            'SCOPE' => placeholder_codename(),
         ];
         $notification_categories = [];
         $notification_categories[] = [
             'NUM_CHILDREN' => '0',
             'DEPTH' => '0',
-            'NOTIFICATION_CATEGORY' => placeholder_id(),
+            'NOTIFICATION_CATEGORY' => placeholder_codename(),
             'NOTIFICATION_TYPES' => $notification_types,
             'CATEGORY_TITLE' => lorem_phrase(),
             'CHECKED' => true,
             'CHILDREN' => '',
         ];
         $tree = do_lorem_template('NOTIFICATIONS_TREE', [
-            'NOTIFICATION_CODE' => placeholder_id(),
+            'NOTIFICATION_CODE' => placeholder_codename(),
             'NOTIFICATION_CATEGORIES' => $notification_categories,
         ]);
         $notification_types_titles = [];
         $notification_types_titles[] = [
-            'NTYPE' => placeholder_id(),
+            'NTYPE' => placeholder_codename(),
             'LABEL' => lorem_phrase(),
             'RAW' => placeholder_number(),
         ];
@@ -472,7 +472,7 @@ class Hook_addon_registry_core_notifications
             'ACTION_URL' => placeholder_url(),
             'NOTIFICATION_TYPES_TITLES' => $notification_types_titles,
             'TREE' => $tree,
-            'NOTIFICATION_CODE' => placeholder_id(),
+            'NOTIFICATION_CODE' => placeholder_codename(),
         ]), null, '', true);
     }
 }

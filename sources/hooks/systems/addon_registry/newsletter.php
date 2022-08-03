@@ -224,13 +224,13 @@ class Hook_addon_registry_newsletter
         $automatic = [];
         foreach (placeholder_array() as $k => $v) {
             $_content = do_lorem_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', [
-                'MEMBER_ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_numeric_id(),
                 'URL' => placeholder_url(),
                 'NAME' => lorem_word(),
                 'DESCRIPTION' => lorem_paragraph(),
                 'IMAGE_URL' => placeholder_image_url(),
                 'CONTENT_TYPE' => lorem_word(),
-                'CONTENT_ID' => placeholder_id(),
+                'CONTENT_ID' => placeholder_codename(),
                 'CATALOGUE' => lorem_word(),
             ], null, false, null, '.txt', 'text');
 
@@ -338,7 +338,7 @@ class Hook_addon_registry_newsletter
             'BLOCK_PARAMS' => '',
             'URL' => placeholder_url(),
             'NEWSLETTER_TITLE' => lorem_phrase(),
-            'NID' => placeholder_id(),
+            'NID' => placeholder_numeric_id(),
             'BUTTON_ONLY' => false,
         ]), null, '', true);
     }
@@ -358,7 +358,7 @@ class Hook_addon_registry_newsletter
             'NEWSLETTER_TITLE' => lorem_phrase(),
             'PATH_EXISTS' => true,
             'BLOCK_PARAMS' => '',
-            'NID' => placeholder_id(),
+            'NID' => placeholder_numeric_id(),
         ]), null, '', true);
     }
 

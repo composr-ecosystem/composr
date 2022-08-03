@@ -159,7 +159,7 @@ class Hook_addon_registry_cns_warnings
     public function tpl_preview__cns_member_profile_warnings() : object
     {
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', [
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'WARNINGS' => lorem_phrase(),
         ]), null, '', true);
     }
@@ -198,7 +198,7 @@ class Hook_addon_registry_cns_warnings
 
         return lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', [
             'TITLE' => lorem_title(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'VIEW_PROFILE_URL' => placeholder_url(),
             'ADD_WARNING_URL' => placeholder_url(),
             'RESULTS_TABLE' => placeholder_table(),

@@ -231,7 +231,7 @@ class Hook_addon_registry_quizzes
             'MEMBER_URL' => placeholder_url(),
             'DATE' => placeholder_date(),
             '_DATE' => placeholder_date_raw(),
-            'ENTRY_ID' => placeholder_id(),
+            'ENTRY_ID' => placeholder_numeric_id(),
             'QUIZ_NAME' => lorem_phrase(),
             'GIVEN_ANSWERS_ARR' => $given_answers_arr,
             'PASSED' => true,
@@ -296,8 +296,8 @@ class Hook_addon_registry_quizzes
                 'REDO_TIME' => placeholder_number(),
                 'POINTS' => placeholder_number(),
                 '_POINTS' => placeholder_number(),
-                'ID' => placeholder_id(),
-                'SUBMITTER' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
+                'SUBMITTER' => placeholder_numeric_id(),
                 'PERCENTAGE' => placeholder_number(),
                 'OPEN_TIME' => placeholder_date_raw(),
                 'CLOSE_TIME' => placeholder_date_raw(),
@@ -332,7 +332,7 @@ class Hook_addon_registry_quizzes
 
         return lorem_globalise(do_lorem_template('QUIZ_SCREEN', [
             'TAGS' => placeholder_tags(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'WARNING_DETAILS' => $warning_details,
             'URL' => placeholder_url(),
             'TITLE' => lorem_title(),
@@ -351,7 +351,7 @@ class Hook_addon_registry_quizzes
             'POINTS' => placeholder_number(),
             '_POINTS' => placeholder_number(),
             'GIVE_CONTEXT' => true,
-            'SUBMITTER' => placeholder_id(),
+            'SUBMITTER' => placeholder_numeric_id(),
             'PERCENTAGE' => placeholder_number(),
             'OPEN_TIME' => placeholder_date_raw(),
             'CLOSE_TIME' => placeholder_date_raw(),
@@ -384,7 +384,7 @@ class Hook_addon_registry_quizzes
         }
 
         return lorem_globalise(do_lorem_template('QUIZ_SURVEY_ANSWERS_MAIL', [
-            'ENTRY_ID' => placeholder_id(),
+            'ENTRY_ID' => placeholder_numeric_id(),
             'QUIZ_NAME' => lorem_phrase(),
             'GIVEN_ANSWERS_ARR' => $given_answers_arr,
             'GIVEN_ANSWERS' => $given_answers,
@@ -430,7 +430,7 @@ class Hook_addon_registry_quizzes
         }
 
         return lorem_globalise(do_lorem_template('QUIZ_TEST_ANSWERS_MAIL', [
-            'ENTRY_ID' => placeholder_id(),
+            'ENTRY_ID' => placeholder_numeric_id(),
             'QUIZ_NAME' => lorem_phrase(),
             'GIVEN_ANSWERS_ARR' => $given_answers_arr,
             'GIVEN_ANSWERS' => $given_answers,
@@ -463,7 +463,7 @@ class Hook_addon_registry_quizzes
 
         return lorem_globalise(do_lorem_template('QUIZ_DONE_SCREEN', [
             'TITLE' => lorem_title(),
-            'ENTRY_ID' => placeholder_id(),
+            'ENTRY_ID' => placeholder_numeric_id(),
             'QUIZ_NAME' => lorem_phrase(),
             'GIVEN_ANSWERS_ARR' => $given_answers_arr,
             'CORRECTIONS' => lorem_phrase(),
@@ -505,9 +505,9 @@ class Hook_addon_registry_quizzes
         $categories[do_lang('OTHER')]['QUIZZES'][] = [
             'QUIZ_NAME' => lorem_phrase(),
             'QUIZ_START_TEXT' => lorem_paragraph_html(),
-            'QUIZ_ID' => placeholder_id(),
+            'QUIZ_ID' => placeholder_numeric_id(),
             'QUIZ_URL' => placeholder_url(),
-            'ENTRY_ID' => placeholder_id(),
+            'ENTRY_ID' => placeholder_numeric_id(),
             'ENTRY_DATE' => placeholder_date(),
             '_ENTRY_DATE' => placeholder_date_raw(),
             'OUT_OF' => placeholder_number(),
@@ -519,7 +519,7 @@ class Hook_addon_registry_quizzes
 
         return lorem_globalise(do_lorem_template('MEMBER_QUIZ_ENTRIES', [
             'CATEGORIES' => $categories,
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'SORTING' => placeholder_table(),
             'DELETE_URL' => placeholder_url(),
         ]), null, '', true);

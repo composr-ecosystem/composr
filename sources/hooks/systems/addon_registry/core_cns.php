@@ -734,7 +734,7 @@ class Hook_addon_registry_core_cns
             'COLOUR' => '',
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'USERGROUP' => lorem_word_2(),
             'AT' => lorem_phrase(),
         ]), null, '', true);
@@ -788,7 +788,7 @@ class Hook_addon_registry_core_cns
     public function tpl_preview__cns_member_directory_username() : object
     {
         return lorem_globalise(do_lorem_template('CNS_MEMBER_DIRECTORY_USERNAME', [
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'USERNAME' => lorem_phrase(),
             'URL' => placeholder_url(),
             'AVATAR_URL' => placeholder_image_url(),
@@ -850,14 +850,14 @@ class Hook_addon_registry_core_cns
             'NAME' => lorem_phrase(),
             'RAW' => placeholder_ip(),
             'VALUE' => placeholder_ip(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
         ]);
         $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
             'CUSTOM_FIELDS' => $custom_fields,
         ]);
         $box = do_lorem_template('CNS_MEMBER_BOX', [
             'GIVE_CONTEXT' => false,
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'USERNAME' => lorem_phrase(),
             '_POSTS' => placeholder_number(),
             'POSTS' => placeholder_number(),
@@ -885,7 +885,7 @@ class Hook_addon_registry_core_cns
             'I' => '0',
             'BREAK' => false,
             'BOX' => $box,
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'GALLERY_NAME' => '',
             'GALLERY_TITLE' => '',
         ];
@@ -893,7 +893,7 @@ class Hook_addon_registry_core_cns
         $per_row = 6;
 
         $usergroups = [];
-        $usergroups[placeholder_id()] = ['USERGROUP' => lorem_phrase(), 'NUM' => placeholder_number()];
+        $usergroups[placeholder_numeric_id()] = ['USERGROUP' => lorem_phrase(), 'NUM' => placeholder_number()];
 
         $symbols = [
             [
@@ -961,7 +961,7 @@ class Hook_addon_registry_core_cns
 
         $custom_fields = [
             [
-                'FIELD_ID' => placeholder_id(),
+                'FIELD_ID' => placeholder_numeric_id(),
                 'NAME_FULL' => lorem_phrase(),
                 'NAME' => lorem_phrase(),
                 'RENDERED' => lorem_phrase(),
@@ -978,8 +978,8 @@ class Hook_addon_registry_core_cns
         $tabs = [];
         $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_ABOUT', [
             'RIGHT_MARGIN' => lorem_phrase(),
-            'AVATAR_WIDTH' => placeholder_id(),
-            'PHOTO_WIDTH' => placeholder_id(),
+            'AVATAR_WIDTH' => placeholder_number(),
+            'PHOTO_WIDTH' => placeholder_number(),
             'MOST_ACTIVE_FORUM' => lorem_phrase(),
             'TIME_FOR_THEM' => placeholder_date(),
             'TIME_FOR_THEM_RAW' => placeholder_date_raw(),
@@ -1001,7 +1001,7 @@ class Hook_addon_registry_core_cns
             '_COUNT_POINTS' => placeholder_number(),
             'COUNT_POINTS' => placeholder_number(),
             'PRIMARY_GROUP' => lorem_phrase(),
-            'PRIMARY_GROUP_ID' => placeholder_id(),
+            'PRIMARY_GROUP_ID' => placeholder_numeric_id(),
             'PHOTO_URL' => placeholder_image_url(),
             'EMAIL_ADDRESS' => lorem_word() . '@example.com',
             'AVATAR_URL' => placeholder_avatar(),
@@ -1015,7 +1015,7 @@ class Hook_addon_registry_core_cns
             'ACTIONS_audit' => $actions['audit'],
             'ACTIONS_content' => $actions['content'],
             'USERNAME' => lorem_word(),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'SECONDARY_GROUPS' => placeholder_array(),
             'VIEW_PROFILES' => true,
             'ON_PROBATION' => placeholder_date_raw(),
@@ -1029,7 +1029,7 @@ class Hook_addon_registry_core_cns
             '_COUNT_POSTS' => placeholder_number(),
         ]);
         $tabs[] = [
-            'TAB_CODE' => placeholder_id() . '0',
+            'TAB_CODE' => placeholder_codename() . '0',
             'TAB_TITLE' => lorem_phrase(),
             'TAB_ICON' => 'menu/social/profile',
             'TAB_CONTENT' => $tab_content,
@@ -1038,12 +1038,13 @@ class Hook_addon_registry_core_cns
         ];
         $tabs2 = [];
         $fields = new Tempcode();
-        $name = placeholder_id();
+        $name = placeholder_codename();
         $input = do_lorem_template('FORM_SCREEN_INPUT_INTEGER', [
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
             'NAME' => $name,
             'DEFAULT' => '',
+            'READ_ONLY' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1074,7 +1075,7 @@ class Hook_addon_registry_core_cns
             'JS_FUNCTION_CALLS' => [],
         ]);
         $tabs[] = [
-            'TAB_CODE' => placeholder_id() . '1',
+            'TAB_CODE' => placeholder_codename() . '1',
             'TAB_TITLE' => lorem_phrase(),
             'TAB_ICON' => 'menu/social/profile',
             'TAB_CONTENT' => $tab_content,
@@ -1084,7 +1085,7 @@ class Hook_addon_registry_core_cns
 
         return lorem_globalise(do_lorem_template('CNS_MEMBER_PROFILE_SCREEN', [
             'TITLE' => get_screen_title('MEMBER_ACCOUNT', true, [lorem_phrase(), lorem_phrase()]),
-            'MEMBER_ID' => placeholder_id(),
+            'MEMBER_ID' => placeholder_numeric_id(),
             'TABS' => $tabs,
         ]), null, '', true);
     }
@@ -1151,7 +1152,7 @@ class Hook_addon_registry_core_cns
         $_prospective_members = new Tempcode();
         foreach ($_primary_members as $i => $primary_member) {
             $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER', [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'NAME' => $primary_member,
                 'URL' => placeholder_url(),
             ]);
@@ -1183,7 +1184,7 @@ class Hook_addon_registry_core_cns
         $temp = new Tempcode();
         foreach (placeholder_array() as $i => $v) {
             $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER_SECONDARY', [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'URL' => placeholder_url(),
                 'REMOVE_URL' => placeholder_url(),
                 'NAME' => $v,
@@ -1213,7 +1214,7 @@ class Hook_addon_registry_core_cns
 
         foreach (placeholder_array() as $i => $v) {
             $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER_PROSPECTIVE', [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'ACCEPT_URL' => placeholder_url(),
                 'DECLINE_URL' => placeholder_url(),
                 'NAME' => lorem_word(),
@@ -1244,7 +1245,7 @@ class Hook_addon_registry_core_cns
 
         return lorem_globalise(do_lorem_template('CNS_VIEW_GROUP_SCREEN', [
             'GROUP_NAME' => lorem_phrase(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_numeric_id(),
             'FORUM' => '',
             'CLUB' => false,
             'EDIT_URL' => placeholder_url(),

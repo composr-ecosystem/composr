@@ -821,7 +821,7 @@ class Hook_addon_registry_core_form_interfaces
     {
         $fields = new Tempcode();
 
-        $name = placeholder_id();
+        $name = placeholder_codename();
         $fields->attach(do_lorem_template('FORM_SCREEN_INPUT_FLOAT', [
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
@@ -1089,6 +1089,7 @@ class Hook_addon_registry_core_form_interfaces
             'REQUIRED' => true,
             'TABINDEX' => placeholder_number(),
             'NAME' => $name,
+            'READ_ONLY' => false,
 
             'MINUTE' => placeholder_number(),
             'HOUR' => placeholder_number(),
@@ -1110,6 +1111,7 @@ class Hook_addon_registry_core_form_interfaces
             'TABINDEX' => placeholder_number(),
             'NAME' => $name,
             'TYPE' => 'date',
+            'READ_ONLY' => false,
 
             'YEAR' => placeholder_number(),
             'MONTH' => placeholder_number(),
@@ -1315,6 +1317,7 @@ class Hook_addon_registry_core_form_interfaces
             'REQUIRED' => '',
             'NAME' => $name,
             'DEFAULT' => '',
+            'READ_ONLY' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1516,7 +1519,7 @@ class Hook_addon_registry_core_form_interfaces
         $name = placeholder_random_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_TREE_LIST', [
             'NICE_LABEL' => '',
-            'USE_SERVER_ID' => placeholder_id(),
+            'USE_SERVER_ID' => true,
             'TABINDEX' => placeholder_number(),
             'NAME' => $name,
             'REQUIRED' => '',
@@ -1783,7 +1786,7 @@ class Hook_addon_registry_core_form_interfaces
     {
         return lorem_globalise(do_lorem_template('FORM_FIELD_SET_GROUPER', [
             'NAME' => lorem_word(),
-            'ID' => placeholder_id(),
+            'ID' => placeholder_codename(),
             'FIELDS' => placeholder_fields(),
             'VISIBLE' => true,
         ]), null, '', true);
@@ -1828,7 +1831,7 @@ class Hook_addon_registry_core_form_interfaces
         foreach (placeholder_array() as $k => $v) {
             $keywords[] = [
                 'KEYWORD' => $v,
-                'DENSITY' => placeholder_id(),
+                'DENSITY' => placeholder_number(),
                 'IDEAL_DENSITY' => placeholder_number(),
             ];
         }
@@ -1851,7 +1854,7 @@ class Hook_addon_registry_core_form_interfaces
         return lorem_globalise(do_lorem_template('PREVIEW_SCRIPT_CODE', [
             'NEW_POST_VALUE_HTML' => lorem_phrase(),
             'NEW_POST_VALUE' => lorem_phrase(),
-            'ATTACHMENT_FIELD' => placeholder_id(),
+            'ATTACHMENT_FIELD' => placeholder_codename(),
         ]), null, '', true);
     }
 
@@ -1907,7 +1910,7 @@ class Hook_addon_registry_core_form_interfaces
             $input = do_lorem_template('FORM_SCREEN_INPUT_THEME_IMAGE_CATEGORY', [
                 'DISPLAY' => 'block',
                 'CATEGORY' => $cells,
-                'FIELD_NAME' => placeholder_id(),
+                'FIELD_NAME' => placeholder_codename(),
                 'CATEGORY_NAME' => lorem_word(),
             ]);
             $content->attach($input);
@@ -2136,7 +2139,7 @@ class Hook_addon_registry_core_form_interfaces
         ]));
 
         $field = do_lorem_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX', [
-            'SERVER_ID' => placeholder_id(),
+            'SERVER_ID' => placeholder_codename(),
             'COLOR' => lorem_word(),
             'OVERRIDES' => [['TITLE' => lorem_phrase()]],
             'PERMISSION_ROWS' => $permission_rows,
@@ -2164,7 +2167,7 @@ class Hook_addon_registry_core_form_interfaces
 
         $fields = new Tempcode();
 
-        $name = placeholder_id();
+        $name = placeholder_codename();
         $input = do_lorem_template('FORM_SCREEN_INPUT_RADIO_LIST', [
             'NAME' => $name,
             'CODE' => '',
@@ -2284,7 +2287,7 @@ class Hook_addon_registry_core_form_interfaces
     {
         return lorem_globalise(do_lorem_template('BLOCK_HELPER_DONE', [
             'TITLE' => lorem_phrase(),
-            'FIELD_NAME' => placeholder_id(),
+            'FIELD_NAME' => placeholder_codename(),
             'BLOCK' => lorem_phrase(),
             'TAG_CONTENTS' => '',
             'SAVE_TO_ID' => '',
