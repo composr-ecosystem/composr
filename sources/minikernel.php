@@ -1223,7 +1223,7 @@ function persistent_cache_delete($key, $substring = false)
 function cms_ob_end_clean()
 {
     while (ob_get_level() > 0) {
-        if (!ob_end_clean()) {
+        if (!@ob_end_clean()) {
             break; // Cannot delete special buffer, likely output compression
         }
     }

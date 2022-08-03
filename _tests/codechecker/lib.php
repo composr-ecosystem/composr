@@ -202,7 +202,9 @@ function die_html_trace($message)
     echo $message . '<br /><br />';
 
     while (ob_get_level() > 0) { // Emergency output, potentially, so kill off any active buffer
-        ob_end_clean();
+        if (!@ob_end_clean()) {
+            break; // Cannot delete special buffer, likely output compression
+        }
     }
     $_trace = debug_backtrace();
     $trace = '';

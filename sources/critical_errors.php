@@ -68,7 +68,9 @@ if (!function_exists('critical_error')) {
         error_reporting(0);
 
         while (ob_get_level() > 0) { // Emergency output, potentially, so kill off any active buffer
-            @ob_end_clean();
+            if (!@ob_end_clean()) {
+                break; // Cannot delete special buffer, likely output compression
+            }
         }
         ob_start();
 
