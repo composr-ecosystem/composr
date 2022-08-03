@@ -40,6 +40,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             preg_replace('#\..*$#', '', get_domain()),
             'adddefaultcharset',
             'deserialised',
+            'misattributed',
             'lyndon',
             'dallas',
             'asd',

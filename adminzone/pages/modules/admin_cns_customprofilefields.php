@@ -782,7 +782,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             ], false));
         }
 
-        $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
+        $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $rows, 'NONRESPONSIVE' => false]);
 
         return do_template('COLUMNED_TABLE_SCREEN', [
             '_GUID' => 'ddfa0fb6ea396d3b57cb447bc228a885',

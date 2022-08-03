@@ -670,9 +670,9 @@ function table_from_portable_rows(string $table, array $rows, array $extra_field
     } else {
         // For a poor-mans REPLACE INTO (which is a MySQL extension)
         $keys = [];
-        foreach ($db_fields as $db_field) {
-            if (substr($db_field['m_type'], 0, 1) == '*') {
-                $keys[$db_field['m_name']] = true;
+        foreach ($db_fields as $db_field_name => $db_field_type) {
+            if (substr($db_field_type, 0, 1) == '*') {
+                $keys[$db_field_name] = true;
             }
         }
     }

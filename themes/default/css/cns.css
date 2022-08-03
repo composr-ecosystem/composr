@@ -301,22 +301,6 @@ div.cns-table-footer > div > div {
 	color: {$GET,cns_polls_text};
 }
 
-.cns-poll-button {
-	margin-top: 1em;
-}
-
-.cns-poll-closing-time {
-	text-align: center;
-}
-
-.cns-topic-poll-form {
-	margin-bottom: 2em;
-}
-
-.cns-topic-poll-form h3 {
-	text-align: center;
-}
-
 .cns-topic-poll {
 	border-collapse: collapse;
 }

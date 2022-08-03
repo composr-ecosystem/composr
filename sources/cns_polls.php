@@ -138,7 +138,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
     if ($answer_id !== null) {
         $where_map['id'] = $answer_id;
     }
-    $_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], $where_map, (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY pa_order');
+    $_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], $where_map, 'ORDER BY pa_order');
     $answers = [];
     foreach ($_answers as $_answer) {
         $answer = [];

@@ -72,7 +72,7 @@ class Hook_cron_tasks
             ], false));
         }
 
-        return do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $_rows]);
+        return do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $_rows, 'NONRESPONSIVE' => false]);
     }
 
     /**

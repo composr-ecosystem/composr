@@ -39,6 +39,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
         }
 
         require_lang('cns');
+        require_lang('cns_polls');
 
         return [
             'ADD_FORUM_GROUPING' => [

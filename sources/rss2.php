@@ -243,12 +243,16 @@ function rss_backend_script()
  * @param  URLPATH $enclosure_url The full URL to get details for
  * @return array A pair: the length of the data, the mime type
  */
-function get_enclosure_details(string $url, string $enclosure_url) : array
+function get_enclosure_details(string $url, string &$enclosure_url) : array
 {
+    $base_url = get_custom_base_url();
+
+    if (url_is_local($enclosure_url)) {
+        $enclosure_url = $base_url . '/' . $enclosure_url;
+    }
+
     require_code('mime_types');
     $enclosure_type = get_mime_type(get_file_extension($url), false);
-
-    $base_url = get_custom_base_url();
 
     if (substr($url, 0, strlen($base_url) + 1) == $base_url . '/') {
         $url = substr($url, strlen($base_url) + 1);

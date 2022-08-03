@@ -1128,7 +1128,7 @@ function predefined_content_changes_ui(string $addon, object $title, object $url
         ], false));
     }
 
-    $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a7', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
+    $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a7', 'HEADER_ROW' => $header_row, 'ROWS' => $rows, 'NONRESPONSIVE' => false]);
 
     return do_template('COLUMNED_TABLE_SCREEN', [
         '_GUID' => 'ddfa0fb6ea396d3b57cb447bc228a886',

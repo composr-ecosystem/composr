@@ -73,6 +73,7 @@ class Module_shopping
                 'type_code' => 'ID_TEXT',
                 'purchase_id' => 'ID_TEXT',
                 'quantity' => 'INTEGER',
+                'add_time' => 'TIME',
             ]);
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'ordered_by', ['ordered_by']);
             $GLOBALS['SITE_DB']->create_index('shopping_cart', 'session_id', ['session_id']);

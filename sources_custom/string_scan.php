@@ -5009,7 +5009,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_PHPINFO
         DOC_POINTS
         DOC_POLLS
-        DOC_CNS_POLLS
         DOC_POST_TEMPLATES
         DOC_PRIVILEGES
         DOC_QUIZZES
@@ -8664,6 +8663,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         AWARD_WINNER
         A_FORUM
         A_TOPIC
+        POLL_RESULTS_TABLE_ALL
+        POLL_RESULTS_TABLE_OPTION
+        TOPIC_POLL_MEMBER_VOTES_REVEALED
         BACK_TO_TOP
         BAD_CARD_DATE
         BAD_HTML_COLOUR
@@ -11515,7 +11517,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VOTING_OPEN_UNTIL
         VIEW_MEMBER_VOTES
         DESCRIPTION_VIEW_MEMBER_VOTES
-        NOTIFICATION_TYPE_cns_topic_polls
         POLL_REVOKE_VOTE
         POLL_REVOKE_VOTE_CONFIRM
         VOTE_REVOCATION

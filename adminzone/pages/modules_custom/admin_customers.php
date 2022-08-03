@@ -758,7 +758,7 @@ class Module_admin_customers
                 do_lang_tempcode('REASON'),
             ];
             $header_row = columned_table_header_row($_header_row);
-            $text->attach(do_template('COLUMNED_TABLE', ['_GUID' => '032e4dcb1d4224ed6633679154b6d827', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]));
+            $text->attach(do_template('COLUMNED_TABLE', ['_GUID' => '032e4dcb1d4224ed6633679154b6d827', 'HEADER_ROW' => $header_row, 'ROWS' => $rows, 'NONRESPONSIVE' => false]));
         }
 
         return do_template('FORM_SCREEN', [

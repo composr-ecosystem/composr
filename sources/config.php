@@ -321,7 +321,6 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
                     'logo/default_logos/logo7',
                     'logo/standalone_logo',
                     'perm_levels/*',
-                    'poll/*',
                 ];
                 $default = implode(',', $_default);
                 break;

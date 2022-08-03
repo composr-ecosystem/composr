@@ -1378,7 +1378,7 @@ class Hook_addon_registry_ecommerce
             $out->attach(do_lorem_template('COLUMNED_TABLE_ROW', ['CELLS' => $cells]));
         }
 
-        $content = do_lorem_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $out]);
+        $content = do_lorem_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $out, 'NONRESPONSIVE' => false]);
 
         return lorem_globalise(do_lorem_template('ECOM_SALES_LOG_SCREEN', [
             'TITLE' => lorem_title(),

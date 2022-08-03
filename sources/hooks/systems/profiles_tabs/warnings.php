@@ -186,7 +186,7 @@ class Hook_profiles_tabs_warnings
             $warn_members_text = do_lang_tempcode('DESCRIPTION_CAN_WARN', hyperlink($full_warnings_url, do_lang_tempcode('REVIEW_WARNING_HISTORY'), false, false));
         }
 
-        $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $table_rows]);
+        $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $table_rows, 'NONRESPONSIVE' => false]);
 
         $_content = do_template('COLUMNED_TABLE_SCREEN', [
             '_GUID' => '9dfa0fb6ea396d3b57cb447bc228a885',

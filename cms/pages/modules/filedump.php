@@ -564,7 +564,7 @@ class Module_filedump
                 ], false));
             }
 
-            $listing = do_template('COLUMNED_TABLE', ['_GUID' => '1c0a91d47c5fc8a7c2b35c7d9b36132f', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
+            $listing = do_template('COLUMNED_TABLE', ['_GUID' => '1c0a91d47c5fc8a7c2b35c7d9b36132f', 'HEADER_ROW' => $header_row, 'ROWS' => $rows, 'NONRESPONSIVE' => false]);
         } else {
             $listing = new Tempcode();
         }

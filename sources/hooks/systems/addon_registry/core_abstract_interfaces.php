@@ -803,6 +803,7 @@ class Hook_addon_registry_core_abstract_interfaces
         $field_rows = do_lorem_template('COLUMNED_TABLE', [
             'HEADER_ROW' => $header_row,
             'ROWS' => $table_rows,
+            'NONRESPONSIVE' => false,
         ]);
 
         return lorem_globalise(do_lorem_template('FORM_GROUPED', [

@@ -146,7 +146,7 @@ function build_sales_table(?int $filter_member_id, bool $show_username = false, 
         $_sales_rows->attach(columned_table_row($sales_row, true));
     }
 
-    $sales_table = do_template('COLUMNED_TABLE', ['_GUID' => 'd87800ff26e9e5b8f7593fae971faa73', 'HEADER_ROW' => $_header_row, 'ROWS' => $_sales_rows]);
+    $sales_table = do_template('COLUMNED_TABLE', ['_GUID' => 'd87800ff26e9e5b8f7593fae971faa73', 'HEADER_ROW' => $_header_row, 'ROWS' => $_sales_rows, 'NONRESPONSIVE' => false]);
 
     require_code('templates_pagination');
     $pagination = pagination(do_lang_tempcode('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_logs', $max, 'max_ecommerce_logs', $max_rows, false, null, null, 'tab--ecommerce-logs');

@@ -84,6 +84,7 @@ class template_no_unused_test_set extends cms_test_case
             'CNS_MEMBER_DIRECTORY_SCREEN_FILTERS',
             'CNS_MEMBER_DIRECTORY_SCREEN_FILTER',
             'CNS_TOPIC_POLL_ANSWER_RADIO',
+            'CNS_TOPIC_POLL_ANSWER_TICK',
             'CNS_TOPIC_POLL_VIEW_RESULTS',
             'CNS_VIEW_GROUP_MEMBER_SECONDARY',
             'COMCODE_CODE_SCROLL',

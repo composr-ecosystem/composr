@@ -1955,8 +1955,8 @@ class Hook_addon_registry_cns_forum
         $table = do_template('COLUMNED_TABLE', [
             'HEADER_ROW' => $header_row,
             'ROWS' => $_rows,
-            'NONRESPONSIVE' => true]
-        );
+            'NONRESPONSIVE' => true
+        ]);
 
         $tpl = do_template('CNS_TOPIC_POLL_VOTERS_SCREEN', [
             '_GUID' => 'd75c813e372c3ca8d1204609e54c9d65',

@@ -1742,7 +1742,7 @@ class Module_topics
         }
         $hidden_fields->attach(form_input_hidden('from_url', get_self_url(true)));
         $js_function_calls = $this->_post_javascript();
-        $options = []; // [pretty name, name, ticked, description, read only]
+        $options = []; // [pretty name, name, ticked (checked), description, read only]
         if (!is_guest()) {
             if (addon_installed('cns_signatures')) {
                 if (get_option('enable_skip_sig') == '1') {
@@ -3010,9 +3010,9 @@ class Module_topics
             $fields->attach(form_input_integer(do_lang_tempcode('MAXIMUM_SELECTIONS'), do_lang_tempcode('DESCRIPTION_MAXIMUM_SELECTIONS'), 'maximum_selections', $maximum_selections, true));
         }
 
-        // Lots of poll tick options...
+        // Lots of poll tick (check) options...
 
-        $options = []; // [pretty name, name, ticked, description, read only]
+        $options = []; // [pretty name, name, ticked (checked), description, read only]
 
         // Maintain current value for is_open rather than forcing it from XML if we are editing a poll
         if ($new_poll && $_default_options['votingEnabled']) {
@@ -3236,7 +3236,7 @@ class Module_topics
             }
             $row = $_poll_row[0];
 
-            $answer_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer'], ['pa_poll_id' => $existing], (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY pa_order');
+            $answer_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer', 'pa_order'], ['pa_poll_id' => $existing], 'ORDER BY pa_order');
             $answers = [];
             foreach ($answer_rows as $trow) {
                 $answers[] = $trow['pa_answer'];

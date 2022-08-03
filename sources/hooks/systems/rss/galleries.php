@@ -119,6 +119,9 @@ class Hook_rss_galleries
                 } else {
                     $thumb_url = $row['url'];
                 }
+                if (url_is_local($thumb_url)) {
+                    $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+                }
 
                 $view_url = build_url(['page' => 'galleries', 'type' => $row['type'], 'id' => $row['id']], get_module_zone('galleries'), [], false, false, true);
 
