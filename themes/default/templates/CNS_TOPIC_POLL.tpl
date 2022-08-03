@@ -19,8 +19,8 @@
 
 				<div class="cns-topic-section cns-topic-body">
 					<div class="cns-topic-post-member-details cns-post-poll" role="note">
-							<div>
-							</div>
+						<div>
+						</div>
 					</div>
 
 					<div class="cns-topic-post-area cns-post-main-column">
