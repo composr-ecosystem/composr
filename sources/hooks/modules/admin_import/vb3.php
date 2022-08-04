@@ -1032,7 +1032,7 @@ class Hook_import_vb3
                 $member_id = $row2['userid'];
                 if (!empty($member_id)) {
                     $answer = array_key_exists($row2['voteoption'] - 1, $answers) ? $answers[$row2['voteoption'] - 1] : -1;
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_forfeited' => 0, 'pv_date_time' => $row2['votedate']]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => $row2['votedate']]);
                 }
             }
 

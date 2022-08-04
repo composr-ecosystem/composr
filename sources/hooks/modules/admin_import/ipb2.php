@@ -1165,7 +1165,7 @@ class Hook_import_ipb2
                     if ($answer === null) {
                         $answer = -1;
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['ip_address'], 'pv_forfeited' => 0, 'pv_date_time' => $row2['vote_date']]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['ip_address'], 'pv_revoked' => 0, 'pv_date_time' => $row2['vote_date']]);
                 }
             }
 

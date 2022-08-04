@@ -322,9 +322,9 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
         if ($topic_info['t_poll_id'] !== null) {
             require_code('cns_polls');
             if (is_guest()) {
-                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
+                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
             } else {
-                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_member_id' => get_member(), 'pv_forfeited' => 0];
+                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_member_id' => get_member(), 'pv_revoked' => 0];
             }
             $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
             $test = cns_poll_get_results($topic_info['t_poll_id'], $view_poll_results || ($voted_already !== null));

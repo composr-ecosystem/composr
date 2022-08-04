@@ -155,18 +155,18 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
     $votes = [];
     if ($request_voters !== null) {
         if (array_key_exists(1, $request_voters)) {
-            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_forfeited' => 0], 'ORDER BY pv_date_time DESC', $request_voters[1], $request_voters[0]);
+            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'ORDER BY pv_date_time DESC', $request_voters[1], $request_voters[0]);
         } else {
-            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_forfeited' => 0], 'ORDER BY pv_date_time DESC', null, $request_voters[0]);
+            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'ORDER BY pv_date_time DESC', null, $request_voters[0]);
         }
         $votes = $_votes;
     }
 
     if ($request_results) {
         if (is_guest()) {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
         } else {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_forfeited' => 0];
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_revoked' => 0];
         }
         $voted_already = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map) !== null);
         if (!$voted_already) {
@@ -184,7 +184,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                         'pv_member_id' => get_member(),
                         'pv_answer_id' => -1,
                         'pv_ip' => get_ip_address(),
-                        'pv_forfeited' => 0,
+                        'pv_revoked' => 0,
                         'pv_date_time' => time()
                     ]);
                 }

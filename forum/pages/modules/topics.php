@@ -3300,9 +3300,9 @@ class Module_topics
         //  This is actually a security feature, to prevent CSRF attacks to force a user to forfeit using URL injection.
         if ($results['vote_revocation'] != 1) {
             if (is_guest()) {
-                $map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_forfeited' => 0];
+                $map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_revoked' => 0];
             } else {
-                $map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_forfeited' => 0];
+                $map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_revoked' => 0];
             }
             $forfeited = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', $map);
             if ($forfeited == 0) {

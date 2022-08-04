@@ -64,12 +64,12 @@ class Hook_task_cns_topics_recache
                 foreach ($polls as $i => $poll) {
                     task_log($this, 'Recaching poll', $i, count($polls));
 
-                    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll['id'], 'pv_forfeited' => 0]);
+                    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll['id'], 'pv_revoked' => 0]);
                     $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_cache_total_votes' => $total_votes], ['id' => $poll['id']], '', 1);
 
                     $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $poll['id']]);
                     foreach ($answers as $answer) {
-                        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll['id'], 'pv_forfeited' => 0]);
+                        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll['id'], 'pv_revoked' => 0]);
                         $GLOBALS['FORUM_DB']->query_update('f_poll_answers', ['pa_cache_num_votes' => $votes], ['id' => $answer['id']], '', 1);
                     }
                 }

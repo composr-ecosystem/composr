@@ -205,9 +205,9 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     if (is_guest($member_id)) {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
     } else {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_forfeited' => 0];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_revoked' => 0];
     }
     $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
     if ($voted_already !== null) {
@@ -249,7 +249,7 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_member_id' => $member_id,
             'pv_answer_id' => $vote,
             'pv_ip' => get_ip_address(),
-            'pv_forfeited' => 0,
+            'pv_revoked' => 0,
             'pv_date_time' => time()
         ]);
 
@@ -351,16 +351,16 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
     } else {
         $map = ['pv_poll_id' => $poll_info['id'], 'pv_member_id' => $member_id];
     }
-    $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_forfeited' => 1], $map);
+    $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_revoked' => 1], $map);
 
     // Re-cache total votes
-    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_info['id'], 'pv_forfeited' => 0]);
+    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_info['id'], 'pv_revoked' => 0]);
     $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_cache_total_votes' => $total_votes], ['id' => $poll_info['id']], '', 1);
 
     // Re-cache answer votes
     $poll_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $poll_info['id']]);
     foreach ($poll_answers as $answer) {
-        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll_info['id'], 'pv_forfeited' => 0]);
+        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll_info['id'], 'pv_revoked' => 0]);
         $GLOBALS['FORUM_DB']->query_update('f_poll_answers', ['pa_cache_num_votes' => $votes], ['id' => $answer['id']], '', 1);
     }
 
