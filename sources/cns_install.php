@@ -417,9 +417,12 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_date_time', 'TIME');
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_revoked', 'BINARY');
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_cached_points', 'INTEGER');
+        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_answer_id', '?AUTO_LINK');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_answers', 'pa_order', 'INTEGER');
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_order=id');
+
+        $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pa_poll_id', ['pa_poll_id']);
 
         $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'p_changed_usergroup_to', '?GROUP');
 
@@ -843,7 +846,7 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->create_table('f_poll_answers', [
             'id' => '*AUTO',
-            'pa_poll_id' => 'AUTO_LINK',
+            'pa_poll_id' => '*AUTO_LINK',
             'pa_answer' => 'SHORT_TEXT',
             'pa_cache_num_votes' => 'INTEGER',
             'pa_order' => 'INTEGER'
@@ -853,7 +856,7 @@ function install_cns(?float $upgrade_from = null)
             'id' => '*AUTO',
             'pv_poll_id' => 'AUTO_LINK',
             'pv_member_id' => 'MEMBER',
-            'pv_answer_id' => 'AUTO_LINK', // -1 means "forfeited" (member lost their ability to vote by viewing the results). We'd use null, but we aren't allowed null fragments in keys
+            'pv_answer_id' => '?AUTO_LINK', // null means forfeited vote
             'pv_ip' => 'IP',
             'pv_date_time' => 'TIME',
             'pv_revoked' => 'BINARY', // True means the member revoked this vote

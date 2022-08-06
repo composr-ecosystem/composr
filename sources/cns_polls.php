@@ -187,6 +187,11 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         // Go through each vote to calculate voting power
         $_answer_ids = array_column($answers, 'id');
         foreach ($_vote_rows as $vote) {
+            // Ignore forfeights
+            if ($vote['pv_answer_id'] === null) {
+                continue;
+            }
+
             $voting_power = 1.0;
             if ($point_weighting) {
                 $voting_power = cns_calculate_poll_voting_power($vote['pv_cached_points']);
@@ -273,7 +278,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                     $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
                         'pv_poll_id' => $poll_id,
                         'pv_member_id' => get_member(),
-                        'pv_answer_id' => -1,
+                        'pv_answer_id' => null,
                         'pv_ip' => get_ip_address(),
                         'pv_revoked' => 0,
                         'pv_date_time' => time(),
