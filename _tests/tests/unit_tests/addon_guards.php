@@ -108,9 +108,9 @@ class addon_guards_test_set extends cms_test_case
                 (substr($addon_name, 0, 5) == 'core_') || // No checks needed for core
                 (($hook_type !== null) && (array_key_exists($hook_type . '/' . $hook_subtype, $this->hook_ownership)) && ($addon_name == $this->hook_ownership[$hook_type . '/' . $hook_subtype])) // No checks needed for self-ownership of hooks of particular addons
             ) {
-                $this->assertTrue(!$has, 'No need to do addon check for ' . $path);
+                $this->assertTrue(!$has, 'No need to do addon check for ' . $addon_name . ' in ' . $path);
             } else {
-                $this->assertTrue($has, 'Missing addon check for ' . $path);
+                $this->assertTrue($has, 'Missing addon check for ' . $addon_name . ' in ' . $path);
             }
         }
     }

@@ -18,6 +18,10 @@
  * @package    core_abstract_interfaces
  */
 
+/*
+Results table = Built on top of columned table, with inbuilt integration of Composr pagination and column/<select>-based sorting
+*/
+
 /**
  * Get the Tempcode for a results table.
  *
@@ -34,7 +38,7 @@
  * @param  ?ID_TEXT $sort_order The order we are sorting in (null: none)
  * @set ASC DESC
  * @param  ?ID_TEXT $sort_name The parameter name used to store our sortable (usually 'sort') (null: none)
- * @param  ?Tempcode $message Message to show (null: auto)
+ * @param  ?Tempcode $message Message to show; you want to set this to new Tempcode() if you do not want any message to show (null: auto)
  * @param  array $widths Widths to specify to the table (strings, ending 'px')
  * @param  ?string $tpl_set The template set to use (null: default)
  * @param  ?integer $max_pagination_links The maximum number of quick-jump pagination-links to show (null: configured default)
