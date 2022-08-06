@@ -18,6 +18,10 @@
  * @package    core_abstract_interfaces
  */
 
+/*
+Results table = Built on top of columned table, with inbuilt integration of Composr pagination and column/<select>-based sorting
+*/
+
 /**
  * Get the Tempcode for a results table.
  *

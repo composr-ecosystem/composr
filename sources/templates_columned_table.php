@@ -18,6 +18,10 @@
  * @package    core_abstract_interfaces
  */
 
+/*
+Columned table = Simple low-assumption table with data organised into columns
+*/
+
 /**
  * Get the Tempcode for a table header row.
  *

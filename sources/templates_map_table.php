@@ -18,6 +18,10 @@
  * @package    core_abstract_interfaces
  */
 
+/*
+Map table = Table where each row represents a named field, and each record gets its own table
+*/
+
 /**
  * Get the Tempcode for a map screen. (a map shows a single entry, with the field name for each field to the left of the value).
  *
