@@ -1252,7 +1252,7 @@ class Hook_import_smf2
                 $row2['id_member'] = import_id_remap_get('member', strval($row2['id_member']), true);
             }
 
-            $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, 0, 0, 1, false);
+            $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new]));
 
@@ -1265,7 +1265,7 @@ class Hook_import_smf2
 
                     $answer = $answers[strval($row2['id_choice'])];
 
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '', 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_cached_points' => 0]);
                 }
             }
 

@@ -752,7 +752,12 @@ class Module_topicview
                                 $map['threaded'] = $test_threaded;
                             }
                             $revoke_url = build_url($map, get_module_zone('topics'));
-                            $poll_buttons = do_template('CNS_TOPIC_POLL_BUTTON_REVOKE', ['_GUID' => 'ae9380bae4e542b48fe10ae93e53fa7d', 'REVOKE_URL' => $revoke_url]);
+
+                            $map = ['_GUID' => 'ae9380bae4e542b48fe10ae93e53fa7d', 'REVOKE_URL' => $revoke_url];
+                            if ($_poll['view_member_votes']) {
+                                $map['ALL_VOTES_URL'] = build_url(['page' => 'topics', 'type' => 'view_poll_voters', 'id' => $_poll['id']], '_SELF');
+                            }
+                            $poll_buttons = do_template('CNS_TOPIC_POLL_BUTTON_RESULTS', $map);
                             $show_buttons = true;
                             $footer_message = new Tempcode();
                         }
@@ -793,10 +798,11 @@ class Module_topicview
             }
 
             // Work out results / voting UI
-            $total_votes = $_poll['total_votes'];
+            $point_weighting = (get_option('enable_poll_point_weighting') == '1') && ($_poll['point_weighting'] == 1);
+            $total_votes = $point_weighting ? $_poll['total_voting_power'] : $_poll['total_votes'];
             foreach ($_poll['answers'] as $answer) {
                 if (($poll_results) && (($_poll['requires_reply'] == 0) || ($replied))) {
-                    $num_votes = $answer['num_votes'];
+                    $num_votes = $point_weighting ? $answer['voting_power'] : $answer['num_votes'];
                     if ($total_votes != 0) {
                         $width = intval(round(100.0 * floatval($num_votes) / floatval($total_votes)));
                     } else {
@@ -807,8 +813,9 @@ class Module_topicview
                         'ID' => strval($_poll['id']),
                         '_NUM_VOTES' => strval($num_votes),
                         '_TOTAL_VOTES' => strval($total_votes),
-                        'NUM_VOTES' => integer_format($num_votes, 0),
-                        'TOTAL_VOTES' => integer_format($total_votes, 0),
+                        'NUM_VOTES' => float_format($num_votes, $point_weighting ? 2 : 0),
+                        'TOTAL_VOTES' => float_format($total_votes, $point_weighting ? 2 : 0),
+                        'POINT_WEIGHTING' => $point_weighting,
                         'WIDTH' => strval($width),
                         'ANSWER' => $answer['answer'],
                         'I' => strval($answer['id']),
@@ -840,7 +847,7 @@ class Module_topicview
                 'MINIMUM_SELECTIONS' => integer_format($_poll['minimum_selections']),
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
                 'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : '0',
-                'TOTAL_VOTES' => integer_format($total_votes),
+                'TOTAL_VOTES' => float_format($total_votes, $point_weighting ? 2 : 0),
             ]);
         } else {
             $poll = new Tempcode();

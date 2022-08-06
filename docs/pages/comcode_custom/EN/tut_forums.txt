@@ -153,6 +153,25 @@ If voting revocation is allowed on the poll and voting is still open, a member m
 When editing poll answers, the votes will be maintained; you should generally only edit answers to fix typos or add new choices (but not to modify or remove existing ones). If you are modifying existing answers beyond fixing typos, you should tick (check) the "Erase votes" box to erase all current votes for a fair poll.
 [/surround]
 
+[title="3"]Weighting poll results with points[/title]
+
+A site-wide setting can be enabled to allow poll results to be weighted according to the number of points each voter had at the time of voting. These settings are located in the Administration Zone -> Setup -> Configuration -> Forum options, and go to the "Point-weighting for polls" group.
+
+When the site-wide setting is enabled, individual polls can then have point-weighting enabled or disabled (they will be enabled by default).
+
+Point weighting works by assigning a [b]voting power[/b] to every vote based on the number of points the voter had at the time they voted. The voting powers are then compared relative to each other and to the other options in the poll to generate weighted results.
+
+The formula used to weigh poll results and generate a voting power is as follows:
+
+voting power = min(abs(maximum), max(0, offset + multiplier * log(max(0, points) + base, base)))
+ - [b]base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for polls options.
+ - First, the formula takes the log of the member's current points at the time of voting (minimum of 0) plus the log base.
+ - Then, the formula multiplies the results of log by the configured multiplier.
+ - Next, the offset is added to the result (offset can be negative to subtract instead).
+ - Finally, the formula ensures voting power is not higher than the defined maximum (if defined), and not lower than 0.
+
+A nuance with the weighted voting system is that the votes of early voters may not be weighted as high as they could be especially when a member later earns more points. If revoke vote is enabled on a poll, a member can revoke and re-vote to have their voting power re-calculated with their new points. Otherwise, a member can wait until close to the poll closing time, or when they expect to have the most number of points, to vote.
+
 [title="2"]Editing posts[/title]
 
 There is an edit post button underneath each post.

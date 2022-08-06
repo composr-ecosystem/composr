@@ -32,11 +32,12 @@
  * @param  BINARY $view_member_votes Whether others should be able to view individual members' votes in the results
  * @param  BINARY $vote_revocation Whether to allow voters to revoke their vote when the poll's voting is still open
  * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
+ * @param  BINARY $point_weighting Whether results for this poll should be weighed based on voter's points
  * @param  boolean $check_permissions Whether to check there are permissions to make the poll
  * @param  ?TIME $poll_closing_time The time voting should close on this poll (null: the poll will not close automatically)
  * @return AUTO_LINK The ID of the newly created forum poll
  */
-function cns_make_poll(int $topic_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, int $view_member_votes, int $vote_revocation, int $guests_can_vote, bool $check_permissions = true, ?int $poll_closing_time = null) : int
+function cns_make_poll(int $topic_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, int $view_member_votes, int $vote_revocation, int $guests_can_vote, int $point_weighting, bool $check_permissions = true, ?int $poll_closing_time = null) : int
 {
     require_code('cns_polls');
     require_code('cns_polls_action3');
@@ -50,7 +51,7 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
         warn_exit(do_lang_tempcode('TOPIC_POLL_ALREADY_EXISTS'));
     }
 
-    cns_validate_poll($topic_id, null, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote);
+    cns_validate_poll($topic_id, null, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
 
     $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', [
         'po_question' => $question,
@@ -63,7 +64,8 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
         'po_closing_time' => $poll_closing_time,
         'po_view_member_votes' => $view_member_votes,
         'po_vote_revocation' => $vote_revocation,
-        'po_guests_can_vote' => $guests_can_vote
+        'po_guests_can_vote' => $guests_can_vote,
+        'po_point_weighting' => $point_weighting
     ], true);
 
     foreach ($answers as $i => $answer) {

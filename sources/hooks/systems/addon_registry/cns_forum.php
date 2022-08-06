@@ -210,7 +210,7 @@ class Hook_addon_registry_cns_forum
             'themes/default/templates/CNS_TOPIC_POLL_ANSWER_RADIO.tpl',
             'themes/default/templates/CNS_TOPIC_POLL_ANSWER_RESULTS.tpl',
             'themes/default/templates/CNS_TOPIC_POLL_BUTTON.tpl',
-            'themes/default/templates/CNS_TOPIC_POLL_BUTTON_REVOKE.tpl',
+            'themes/default/templates/CNS_TOPIC_POLL_BUTTON_RESULTS.tpl',
             'themes/default/templates/CNS_TOPIC_POLL_VIEW_RESULTS.tpl',
             'themes/default/templates/CNS_TOPIC_POLL_VOTERS_SCREEN.tpl',
             'themes/default/templates/CNS_TOPIC_POST.tpl',
@@ -343,6 +343,11 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/systems/config/forum_posts_per_page.php',
             'sources/hooks/systems/config/forum_topics_per_page.php',
             'sources/hooks/systems/config/delete_trashed_pts.php',
+            'sources/hooks/systems/config/topic_polls_weighting_logarithmic_base.php',
+            'sources/hooks/systems/config/topic_polls_weighting_multiplier.php',
+            'sources/hooks/systems/config/topic_polls_weighting_ceiling.php',
+            'sources/hooks/systems/config/enable_poll_point_weighting.php',
+            'sources/hooks/systems/config/topic_polls_weighting_offset.php',
             'sources/hooks/systems/tasks/cns_recache.php',
             'sources/hooks/systems/tasks/cns_topics_recache.php',
             'sources/hooks/systems/tasks/notify_topics_moved.php',
@@ -406,14 +411,14 @@ class Hook_addon_registry_cns_forum
             'templates/CNS_POSTING_SCREEN_POSTS.tpl' => 'cns_posting_screen_posts',
             'templates/CNS_TOPIC_FIRST_UNREAD.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
             'templates/CNS_TOPIC_POLL_BUTTON.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
-            'templates/CNS_TOPIC_POLL_BUTTON_REVOKE.tpl' => 'cns_topic_voted_wrap',
+            'templates/CNS_TOPIC_POLL_BUTTON_RESULTS.tpl' => 'cns_topic_voted_wrap',
             'templates/CNS_TOPIC_POLL_ANSWER_RESULTS.tpl' => 'cns_topic_voted_wrap',
             'templates/CNS_TOPIC_POLL_ANSWER_TICK.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
             'templates/CNS_TOPIC_POLL_ANSWER_RADIO.tpl' => 'cns_topic_not_voted_radio_wrap',
             'templates/CNS_TOPIC_POLL.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
             'templates/CNS_TOPIC_SCREEN.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
             'templates/NOTIFICATION_BUTTONS.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
-            'templates/COLUMNED_TABLE_MEMBER_CELL.tpl' => 'cns_topic_poll_voters',
+            'templates/RESULTS_TABLE_MEMBER_CELL.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VOTERS_SCREEN.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VIEW_RESULTS.tpl' => 'cns_topic_voted_wrap',
             'templates/CNS_PRIVATE_TOPIC_LINK.tpl' => 'cns_private_topic_link',
@@ -1558,6 +1563,7 @@ class Hook_addon_registry_cns_forum
                     '_TOTAL_VOTES' => '45',
                     'NUM_VOTES' => '10',
                     'TOTAL_VOTES' => '45',
+                    'POINT_WEIGHTING' => placeholder_number(),
                     'WIDTH' => '30',
                     'ANSWER' => lorem_phrase(),
                     'I' => '0',
@@ -1569,6 +1575,7 @@ class Hook_addon_registry_cns_forum
                     '_TOTAL_VOTES' => '45',
                     'NUM_VOTES' => '15',
                     'TOTAL_VOTES' => '45',
+                    'POINT_WEIGHTING' => placeholder_number(),
                     'WIDTH' => '45',
                     'ANSWER' => lorem_phrase(),
                     'I' => '1',
@@ -1580,13 +1587,14 @@ class Hook_addon_registry_cns_forum
                     '_TOTAL_VOTES' => '45',
                     'NUM_VOTES' => '20',
                     'TOTAL_VOTES' => '45',
+                    'POINT_WEIGHTING' => placeholder_number(),
                     'WIDTH' => '60',
                     'ANSWER' => lorem_phrase(),
                     'I' => '2',
                     'VOTERS_URL' => placeholder_url(),
                 ]));
 
-                $buttons = do_lorem_template('CNS_TOPIC_POLL_BUTTON_REVOKE', [
+                $buttons = do_lorem_template('CNS_TOPIC_POLL_BUTTON_RESULTS', [
                     'REVOKE_URL' => placeholder_url(),
                 ]);
 
@@ -1882,7 +1890,7 @@ class Hook_addon_registry_cns_forum
         // Poll topic
         $topic_id = cns_make_topic(db_get_first_id(), lorem_phrase(), '', 1, 1, 0, 0, null, null, false);
         cns_make_post($topic_id, lorem_phrase(), lorem_chunk(), 0, true, 1, 0, null, null, null, null, null, null, null, false, true, null, true, lorem_phrase() . ' (' . do_lang('MODIFIER_poll') . ')');
-        cns_make_poll($topic_id, lorem_phrase(), 0, 1, 1, 1, 0, [lorem_phrase() . ' 1', lorem_phrase() . ' 2'], 0, 0, 1, false);
+        cns_make_poll($topic_id, lorem_phrase(), 0, 1, 1, 1, 0, [lorem_phrase() . ' 1', lorem_phrase() . ' 2'], 0, 0, 1, 1, false);
 
         // In "General Chat"
         $general_chat_forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name(do_lang('DEFAULT_FORUM_TITLE'));
@@ -1928,16 +1936,34 @@ class Hook_addon_registry_cns_forum
     public function tpl_preview__cns_topic_poll_voters() : object
     {
         require_code('cns_polls');
-        require_code('templates_columned_table');
+        require_code('templates_results_table');
+        require_lang('cns_polls');
 
         $field_titles = [
             do_lang_tempcode('DATE_TIME'),
             do_lang_tempcode('MEMBER'),
+            protect_from_escaping(do_lorem_template('HELP_ICON_PHRASE', [
+                'LABEL' => do_lang_tempcode('VOTING_POWER'),
+                'TOOLTIP' => do_lang_tempcode('DESCRIPTION_VOTING_POWER'),
+            ])),
             do_lang_tempcode('ANSWER')
         ];
-        $header_row = columned_table_header_row($field_titles);
+        $sortables = [
+            'pv_date_time' => do_lang_tempcode('DATE_TIME'),
+            'pv_member_id' => do_lang_tempcode('MEMBER'),
+            'voting_power' => do_lang_tempcode('VOTING_POWER'),
+            'answer' => do_lang_tempcode('ANSWER')
+        ];
+        $header_row = results_header_row($field_titles, $sortables);
+        $footer_row = results_footer_row([
+            '',
 
-        $member = do_lorem_template('COLUMNED_TABLE_MEMBER_CELL', [
+            '',
+            do_lang_tempcode('TOTAL_VOTING_POWER', placeholder_number()),
+            ''
+        ]);
+
+        $member = do_lorem_template('RESULTS_TABLE_MEMBER_CELL', [
             'PROFILE_URL' => placeholder_avatar(),
             'USERNAME' => lorem_phrase(),
             'MEMBER_ID' => placeholder_numeric_id()
@@ -1945,29 +1971,21 @@ class Hook_addon_registry_cns_forum
 
         $_rows = new Tempcode();
         for ($i = 0; $i < 3; $i++) {
-            $_rows->attach(columned_table_row([
+            $_rows->attach(results_entry([
                 placeholder_date(),
                 $member,
+                placeholder_number(),
                 lorem_phrase()
             ], true));
         }
 
-        $table = do_template('COLUMNED_TABLE', [
-            'HEADER_ROW' => $header_row,
-            'ROWS' => $_rows,
-            'NONRESPONSIVE' => true
-        ]);
-
-        $tpl = do_template('CNS_TOPIC_POLL_VOTERS_SCREEN', [
-            '_GUID' => 'd75c813e372c3ca8d1204609e54c9d65',
-            'TABLE' => $table,
-            'TITLE' => lorem_phrase()
-        ]);
+        $table = results_table(lorem_phrase(), 0, 'start', 3, 'max', 3, $header_row, $_rows, $sortables, null, null, 'sort', null, [], null, null, '866198fc95db4ad3abc322d9ad144875', false, null, false, false, $footer_row);
 
         return lorem_globalise(do_lorem_template('CNS_TOPIC_POLL_VOTERS_SCREEN', [
             '_GUID' => 'd75c813e372c3ca8d1204609e54c9d65',
             'TABLE' => $table,
-            'TITLE' => lorem_phrase()
+            'TITLE' => lorem_phrase(),
+            'PAGINATION' => placeholder_pagination()
         ]), null, '', true);
     }
 }

@@ -2225,10 +2225,6 @@ body button.button-hyperlink:hover {
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile__overlay}*/
-	.help-icon {
-		display: block;
-		margin-top: 0.5em;
-	}
 	.lonely-label + span + .help-icon {
 		margin-left: 0.5em;
 	}

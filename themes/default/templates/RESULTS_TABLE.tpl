@@ -14,7 +14,7 @@
 {+START,IF_NON_EMPTY,{RESULT_ENTRIES}}
 	{$PARAGRAPH,{MESSAGE}}
 
-	<div class="wide-table-wrap"><table class="columned-table results-table wide-table{+START,IF_EMPTY,{WIDTHS}} autosized-table{+END} responsive-table{+START,IF_PASSED_AND_TRUE,INTERACTIVE} sortable_table table-autosort:2 table-autofilter{+END}" itemprop="significantLinks">
+	<div class="wide-table-wrap"><table class="columned-table results-table wide-table{+START,IF_EMPTY,{WIDTHS}} autosized-table{+END}{+START,IF,{$NOT,{NONRESPONSIVE}}} responsive-table{+END}{+START,IF_PASSED_AND_TRUE,INTERACTIVE} sortable_table table-autosort:2 table-autofilter{+END}" itemprop="significantLinks">
 		{+START,IF,{$DESKTOP}}{+START,IF,{$EQ,{$LANG},EN}}{+START,IF_NON_EMPTY,{WIDTHS}}
 			<colgroup>
 				{+START,LOOP,WIDTHS}
@@ -31,6 +31,13 @@
 		<tbody>
 			{RESULT_ENTRIES}
 		</tbody>
+		{+START,IF_PASSED,FOOTER_ROW}
+			<tfoot>
+				<tr>
+					{FOOTER_ROW}
+				</tr>
+			</tfoot>
+		{+END}
 	</table></div>
 
 	{+START,SET,RESULTS_TABLE_PAGINATION}
