@@ -122,18 +122,25 @@ function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id
  *
  * @param  AUTO_LINK $poll_id The poll
  * @param  boolean $request_results Whether we must record that the current member is requesting the results, blocking future voting for them
- * @param  ?array $request_voters An array duple of [$start, $max] if we want to also return specific member IDs and what they voted (null: Do not include member IDs)
+ * @param  ?array $request_voters An array of [int $start = 0, string $order_by = 'pv_date_time DESC', int $max = 50] if we want to also return specific member IDs and what they voted ($order_by can also be voting_power or answer) (null: Do not include specific votes)
  * @param  ?AUTO_LINK $answer_id The poll answer ID to filter by (null: return all answers)
  * @return ?array The map of results (null: could not find poll)
  */
 function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array $request_voters = null, ?int $answer_id = null) : ?array
 {
+    // SQL injection prevention on $request_voters[1] ($order_by)
+    $acceptable_orders = ['pv_date_time ASC', 'pv_date_time DESC', 'pv_member_id ASC', 'pv_member_id DESC', 'pv_answer_id ASC', 'pv_answer_id DESC', 'answer ASC', 'answer DESC', 'voting_power ASC', 'voting_power DESC'];
+    if ($request_voters !== null && array_key_exists(1, $request_voters) && array_search($request_voters[1], $acceptable_orders) === false) {
+        log_hack_attack_and_exit('ORDERBY_HACK');
+    }
+
     $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $poll_info)) {
         attach_message(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($poll_id)), 'poll'), 'warn');
         return null;
     }
 
+    // Get poll answers and cached votes for each answer
     $where_map = ['pa_poll_id' => $poll_id];
     if ($answer_id !== null) {
         $where_map['id'] = $answer_id;
@@ -147,26 +154,115 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $answer['id'] = $_answer['id'];
         if ((($request_results) || ($poll_info[0]['po_is_open'] == 0)) && ($poll_info[0]['po_is_private'] == 0)) { // We usually will show the results for a closed poll, but not one still private
             $answer['num_votes'] = $_answer['pa_cache_num_votes'];
+            $answer['voting_power'] = 0;
         }
 
         $answers[] = $answer;
     }
 
+    // Do a little poll dancing
+    $start = (($request_voters !== null) && (array_key_exists(0, $request_voters))) ? $request_voters[0] : 0;
+    $max = (($request_voters !== null) && (array_key_exists(2, $request_voters))) ? $request_voters[2] : 50;
+    $max_vote_rows = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_id, 'pv_revoked' => 0]);
+
+    $point_weighting = (get_option('enable_poll_point_weighting') == '1' && $poll_info[0]['po_point_weighting'] == 1 && addon_installed('points'));
+    $_votes = [];
     $votes = [];
-    if ($request_voters !== null) {
-        if (array_key_exists(1, $request_voters)) {
-            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_forfeited' => 0], 'ORDER BY pv_date_time DESC', $request_voters[1], $request_voters[0]);
+    $total_voting_power = 0;
+
+    // We need to get each voter if we are either requesting that or we need to weigh votes by points
+    if ($request_voters !== null || $point_weighting) {
+        require_code('cns_polls_action2');
+
+        // All $order_by directives except voting_power and answer should be done in SQL
+        $not_sql_orders = ['answer ASC', 'answer DESC', 'voting_power ASC', 'voting_power DESC'];
+        $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters)) && (array_search($request_voters[1], $not_sql_orders) === false)) ? $request_voters[1] : 'pv_date_time DESC';
+
+        if ($point_weighting) {
+            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by);
         } else {
-            $_votes = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time'], ['pv_poll_id' => $poll_id, 'pv_forfeited' => 0], 'ORDER BY pv_date_time DESC', null, $request_voters[0]);
+            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
         }
+
+        // Go through each vote to calculate voting power
+        $_answer_ids = array_column($answers, 'id');
+        foreach ($_vote_rows as $vote) {
+
+            $voting_power = 1.0;
+            if ($point_weighting) {
+                $voting_power = cns_calculate_poll_voting_power($vote['pv_cached_points']);
+
+                // Add voting power to the total for the poll
+                $total_voting_power += $voting_power;
+
+                // Add voting power to the specific answer, if applicable
+                $_answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
+                if ($_answer_index !== false) {
+                    if (!array_key_exists('voting_power', $answers[$_answer_index])) {
+                        $answers[$_answer_index]['voting_power'] = $voting_power;
+                    } else {
+                        $answers[$_answer_index]['voting_power'] += $voting_power;
+                    }
+                }
+            }
+
+            // Add the voter row, if applicable
+            if ($request_voters !== null) {
+                $answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
+                $answer = ((array_key_exists($answer_index, $answers)) && (array_key_exists('answer', $answers[$answer_index]))) ? $answers[$answer_index]['answer'] : do_lang_tempcode('UNKNOWN');
+                $_votes[] = [
+                    'pv_answer_id' => $vote['pv_answer_id'],
+                    'answer' => $answer,
+                    'pv_member_id' => $vote['pv_member_id'],
+                    'pv_date_time' => $vote['pv_date_time'],
+                    'voting_power' => $voting_power
+                ];
+            }
+        }
+    }
+
+    // Sort votes by voting_power in memory if requested
+    if ($request_voters !== null && (array_key_exists(1, $request_voters)) && (($request_voters[1] == 'voting_power ASC') || ($request_voters[1] == 'voting_power DESC'))) {
+        $voting_powers = array_column($_votes, 'voting_power');
+        if ($request_voters[1] == 'voting_power ASC') {
+            array_multisort($voting_powers, SORT_ASC, $_votes);
+        } else {
+            array_multisort($voting_powers, SORT_DESC, $_votes);
+        }
+    }
+
+    // Sort by answer if requested
+    if ($request_voters !== null && (array_key_exists(1, $request_voters)) && (($request_voters[1] == 'answer ASC') || ($request_voters[1] == 'answer DESC'))) {
+        $_answers = array_column($_votes, 'answer');
+        if ($request_voters[1] == 'answer ASC') {
+            array_multisort($_answers, SORT_ASC, $_votes);
+        } else {
+            array_multisort($_answers, SORT_DESC, $_votes);
+        }
+    }
+
+    // Paginate votes if we did not do so via the database
+    if ($point_weighting) {
+        foreach ($_votes as $i => $vote) {
+            if ($i < $start) {
+                continue;
+            }
+
+            $votes[] = $vote;
+
+            if (count($votes) >= $max) {
+                break;
+            }
+        }
+    } else {
         $votes = $_votes;
     }
 
     if ($request_results) {
         if (is_guest()) {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
         } else {
-            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_forfeited' => 0];
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_revoked' => 0];
         }
         $voted_already = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map) !== null);
         if (!$voted_already) {
@@ -182,10 +278,11 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                     $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
                         'pv_poll_id' => $poll_id,
                         'pv_member_id' => get_member(),
-                        'pv_answer_id' => -1,
+                        'pv_answer_id' => null,
                         'pv_ip' => get_ip_address(),
-                        'pv_forfeited' => 0,
-                        'pv_date_time' => time()
+                        'pv_revoked' => 0,
+                        'pv_date_time' => time(),
+                        'pv_cached_points' => 0, // We do not need to know a member's points for forfeights.
                     ]);
                 }
             }
@@ -204,9 +301,12 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         'view_member_votes' => $poll_info[0]['po_view_member_votes'],
         'vote_revocation' => $poll_info[0]['po_vote_revocation'],
         'guests_can_vote' => $poll_info[0]['po_guests_can_vote'],
+        'point_weighting' => $poll_info[0]['po_point_weighting'],
         'answers' => $answers,
         'votes' => $votes,
+        'max_vote_rows' => $max_vote_rows,
         'total_votes' => $poll_info[0]['po_cache_total_votes'],
+        'total_voting_power' => $total_voting_power,
     ];
 
     return $out;

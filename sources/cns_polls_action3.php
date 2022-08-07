@@ -38,6 +38,7 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
         'viewMemberVotes' => null,
         'voteRevocation' => null,
         'guestsCanVote' => null,
+        'pointWeighting' => null,
         'options' => []
     ];
 
@@ -89,6 +90,7 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
             case 'viewMemberVotes':
             case 'voteRevocation':
             case 'guestsCanVote':
+            case 'pointWeighting':
                 if ($value_lcase == 'false') {
                     $default_options[$attribute] = false;
                 }
@@ -154,8 +156,9 @@ function cns_get_default_poll_options(?int $forum_id = null) : array
  * @param  BINARY $view_member_votes Whether others should be allowed to see which members voted for each option on the results (returned by reference)
  * @param  BINARY $vote_revocation Whether to allow voters to revoke their vote while voting is open
  * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
+ * @param  BINARY $point_weighting Whether votes will be weighed according to voter points
  */
-function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$is_private, int &$is_open, int &$minimum_selections, int &$maximum_selections, int &$requires_reply, ?int &$closing_time, int &$view_member_votes, int &$vote_revocation, int &$guests_can_vote)
+function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$is_private, int &$is_open, int &$minimum_selections, int &$maximum_selections, int &$requires_reply, ?int &$closing_time, int &$view_member_votes, int &$vote_revocation, int &$guests_can_vote, int &$point_weighting)
 {
     require_lang('cns_polls');
 
@@ -236,6 +239,9 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     if ($default_options['guestsCanVote'] !== null) {
         $guests_can_vote = $default_options['guestsCanVote'] ? 1 : 0;
     }
+    if ($default_options['pointWeighting'] !== null) {
+        $point_weighting = $default_options['pointWeighting'] ? 1 : 0;
+    }
     if ($default_options['votingPeriodHours'] !== null) {
         if ($poll_id === null) {
             $actual_poll_closing_time = time();
@@ -300,7 +306,8 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
         'maximumSelections' => '0<number',
         'viewMemberVotes' => 'boolean',
         'voteRevocation' => 'boolean',
-        'guestsCanVote' => 'boolean'
+        'guestsCanVote' => 'boolean',
+        'pointWeighting' => 'boolean'
     ];
     $allowed_root_attribute_names = array_keys($allowed_root_attributes);
     foreach ($root_attributes as $attribute => $value) {

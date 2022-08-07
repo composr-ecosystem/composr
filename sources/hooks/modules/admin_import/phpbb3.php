@@ -1054,7 +1054,7 @@ class Hook_import_phpbb3
                 $row2['vote_user_id'] = import_id_remap_get('member', strval($row2['vote_user_id']), true);
             }
 
-            $id_new = cns_make_poll($topic_id, $row['poll_option_text'], 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, false);
+            $id_new = cns_make_poll($topic_id, $row['poll_option_text'], 0, $is_open ? 1 : 0, 1, $maximum, 0, $answers, 0, 0, 1, 0, false);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from IPB vote number to Composr vote number
 
@@ -1066,7 +1066,7 @@ class Hook_import_phpbb3
                     } else {
                         $answer = $answers[$row2['poll_option_id'] - 1];
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['vote_user_ip'], 'pv_forfeited' => 0, 'pv_date_time' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => $row2['vote_user_ip'], 'pv_revoked' => 0, 'pv_date_time' => 0, 'pv_cached_points' => 0]);
                 }
             }
 

@@ -32,12 +32,13 @@
  * @param  BINARY $view_member_votes Whether others can see which members voted for each option on the results
  * @param  BINARY $vote_revocation Whether to allow voters to revoke their vote when the poll's voting is still open
  * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
+ * @param  BINARY $point_weighting Whether results for this poll should be weighed based on voter's points
  * @param  LONG_TEXT $reason The reason for editing the poll
  * @param  ?TIME $poll_closing_time The time voting should close on this poll (null: the poll will not close automatically)
  * @param  boolean $erase_votes Whether to erase all the current votes
  * @return AUTO_LINK The ID of the topic the poll is on
  */
-function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, int $view_member_votes, int $vote_revocation, int $guests_can_vote, string $reason = '', ?int $poll_closing_time = null, bool $erase_votes = false) : int
+function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_open, int $minimum_selections, int $maximum_selections, int $requires_reply, array $answers, int $view_member_votes, int $vote_revocation, int $guests_can_vote, int $point_weighting, string $reason = '', ?int $poll_closing_time = null, bool $erase_votes = false) : int
 {
     require_code('cns_polls');
     require_code('cns_polls_action3');
@@ -53,7 +54,7 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
         access_denied('PRIVILEGE', 'may_unblind_own_poll');
     }
 
-    cns_validate_poll($topic_id, $poll_id, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote);
+    cns_validate_poll($topic_id, $poll_id, $answers, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
 
     $GLOBALS['FORUM_DB']->query_update('f_polls', [
         'po_question' => $question,
@@ -65,7 +66,8 @@ function cns_edit_poll(int $poll_id, string $question, int $is_private, int $is_
         'po_closing_time' => $poll_closing_time,
         'po_view_member_votes' => $view_member_votes,
         'po_vote_revocation' => $vote_revocation,
-        'po_guests_can_vote' => $guests_can_vote
+        'po_guests_can_vote' => $guests_can_vote,
+        'po_point_weighting' => $point_weighting
     ], ['id' => $poll_id], '', 1);
 
     // If we are erasing votes, we can simply remove all answers / votes and re-populate with the new answers
@@ -183,6 +185,9 @@ function cns_delete_poll(int $poll_id, string $reason = '', bool $check_perms = 
 function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?array $topic_info = null)
 {
     require_code('cns_polls');
+    if (addon_installed('points')) {
+        require_code('points');
+    }
 
     // Who's voting
     if ($member_id === null) {
@@ -205,9 +210,9 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     if (is_guest($member_id)) {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_forfeited' => 0];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'pv_revoked' => 0];
     } else {
-        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_forfeited' => 0];
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id, 'pv_revoked' => 0];
     }
     $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
     if ($voted_already !== null) {
@@ -249,8 +254,9 @@ function cns_vote_in_poll(int $poll_id, array $votes, ?int $member_id = null, ?a
             'pv_member_id' => $member_id,
             'pv_answer_id' => $vote,
             'pv_ip' => get_ip_address(),
-            'pv_forfeited' => 0,
-            'pv_date_time' => time()
+            'pv_revoked' => 0,
+            'pv_date_time' => time(),
+            'pv_cached_points' => addon_installed('points') ? available_points($member_id) : 0
         ]);
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes+1) WHERE id=' . strval($vote), 1);
@@ -351,19 +357,47 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
     } else {
         $map = ['pv_poll_id' => $poll_info['id'], 'pv_member_id' => $member_id];
     }
-    $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_forfeited' => 1], $map);
+    $GLOBALS['FORUM_DB']->query_update('f_poll_votes', ['pv_revoked' => 1], $map);
 
     // Re-cache total votes
-    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_info['id'], 'pv_forfeited' => 0]);
+    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_info['id'], 'pv_revoked' => 0]);
     $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_cache_total_votes' => $total_votes], ['id' => $poll_info['id']], '', 1);
 
     // Re-cache answer votes
     $poll_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $poll_info['id']]);
     foreach ($poll_answers as $answer) {
-        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll_info['id'], 'pv_forfeited' => 0]);
+        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll_info['id'], 'pv_revoked' => 0]);
         $GLOBALS['FORUM_DB']->query_update('f_poll_answers', ['pa_cache_num_votes' => $votes], ['id' => $answer['id']], '', 1);
     }
 
     // Log the revocation
     cns_mod_log_it('VOTE_REVOCATION', strval($topic_info['id']), implode(', ', $answers));
+}
+
+/**
+ * Calculate how much voting power a certain amount of points has. This does not check if point weighting is enabled.
+ *
+ * @param  integer $points The number of points from which to calculate the voting power
+ * @return float The amount of voting power associated with the points
+ */
+function cns_calculate_poll_voting_power(int $points) : float
+{
+    $points = max(0, $points);
+
+    $ceiling = get_option('topic_polls_weighting_ceiling'); // Could be blank
+    $offset = intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = abs(floatval(get_option('topic_polls_weighting_logarithmic_base')));
+
+    // Voting power formula
+    $_voting_power = max(0, $offset + $multiplier * log($points + $base, $base));
+
+    $voting_power = $_voting_power;
+
+    // Max out at ceiling value
+    if ($ceiling !== null && $ceiling !== '') {
+        $voting_power = min(abs(intval($ceiling)), $_voting_power);
+    }
+
+    return $voting_power;
 }

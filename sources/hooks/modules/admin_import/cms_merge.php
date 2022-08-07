@@ -3478,7 +3478,7 @@ class Hook_import_cms_merge
                 $id_ordinal_map[$row3['id']] = $i;
             }
 
-            $id_new = cns_make_poll($topic_id, $row['po_question'], $row['po_is_private'], $row['po_is_open'], $row['po_minimum_selections'], $row['po_maximum_selections'], $row['po_requires_reply'], $answers, $row['po_view_member_votes'], $row['po_vote_revocation'], $row['po_guests_can_vote'], false);
+            $id_new = cns_make_poll($topic_id, $row['po_question'], $row['po_is_private'], $row['po_is_open'], $row['po_minimum_selections'], $row['po_maximum_selections'], $row['po_requires_reply'], $answers, $row['po_view_member_votes'], $row['po_vote_revocation'], $row['po_guests_can_vote'], $row['po_point_weighting'], false);
 
             $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from vote number ordinal to new vote number
             foreach ($rows2 as $row2) {
@@ -3493,7 +3493,7 @@ class Hook_import_cms_merge
                 if ($row2['pv_member_id'] === null) {
                     continue;
                 }
-                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $row2['pv_member_id'], 'pv_answer_id' => $answer, 'pv_ip' => $row2['pv_ip'], 'pv_forfeited' => $row2['pv_forfeited'], 'pv_date_time' => $row2['pv_date_time']]);
+                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $row2['pv_member_id'], 'pv_answer_id' => $answer, 'pv_ip' => $row2['pv_ip'], 'pv_revoked' => $row2['pv_revoked'], 'pv_date_time' => $row2['pv_date_time'], 'pv_cached_points' => $row2['pv_cached_points']]);
             }
 
             import_id_remap_put('f_poll', strval($row['id']), $id_new);

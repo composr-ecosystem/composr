@@ -5,7 +5,7 @@
 {+END}
 {+START,IF_NON_EMPTY,{RESULT_ENTRIES}}
 	{MESSAGE}
-	<div class="wide-table-wrap"><table class="columned-table results-table wide-table responsive-table">
+	<div class="wide-table-wrap"><table class="columned-table results-table wide-table{+START,IF,{$NOT,{NONRESPONSIVE}}} responsive-table{+END}">
 		{+START,IF,{$DESKTOP}}{+START,IF,{$EQ,{$LANG},EN}}{+START,IF_NON_EMPTY,{WIDTHS}}
 			<colgroup>
 				{+START,LOOP,WIDTHS}

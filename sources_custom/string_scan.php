@@ -8285,6 +8285,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POLL_XML_NUMBER_ONLY
         POLL_XML_MINSELECTIONS_GREATERTHAN_MAXSELECTIONS
         POLL_XML_NUMBER_FALSE_ONLY
+        TOPIC_POLLS_WEIGHTING_MULTIPLIER
+        CONFIG_OPTION_topic_polls_weighting_multiplier
+        TOPIC_POLLS_WEIGHTING_OFFSET
+        CONFIG_OPTION_topic_polls_weighting_offset
+        TOPIC_POLLS_WEIGHTING_CEILING
+        CONFIG_OPTION_topic_polls_weighting_ceiling
+        CONFIG_OPTION_enable_poll_point_weighting
+        TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE
+        CONFIG_OPTION_topic_polls_weighting_logarithmic_base
+
     ')));
 
     $non_admin_files = [
@@ -11525,6 +11535,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_GUESTS_CAN_VOTE
         ERASE_VOTES
         DESCRIPTION_ERASE_VOTES
+        POLL_POINT_WEIGHTING
+        ENABLE_POLL_POINT_WEIGHTING
+        DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING
+        POLL_VIEW_ALL_VOTES
+        TOTAL_VOTING_POWER
+        VOTING_POWER
+        DESCRIPTION_VOTING_POWER
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

@@ -2962,9 +2962,10 @@ class Module_topics
      * @param  BINARY $view_member_votes Whether others should be able to view individual members' votes in the results
      * @param  BINARY $vote_revocation Whether voting revocation should be allowed on this poll
      * @param  BINARY $guests_can_vote Whether guests can vote on the poll without logging in
+     * @param  BINARY $point_weighting Whether votes will be weighed according to how many points voters have
      * @return Tempcode The Tempcode for the fields
      */
-    public function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1) : object
+    public function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
     {
         require_lang('cns_polls');
         require_code('cns_polls_action3');
@@ -3056,7 +3057,16 @@ class Module_topics
             $options[] = [do_lang_tempcode('VIEW_MEMBER_VOTES'), 'view_member_votes', $view_member_votes == 1, do_lang_tempcode('DESCRIPTION_VIEW_MEMBER_VOTES'), false];
         }
 
-        $fields->attach(form_input_various_ticks($options, ''));
+        // Show point weighting tick (check) if points addon is installed and point weighting is enabled site-wide
+        if (addon_installed('points') && get_option('enable_poll_point_weighting') == '1') {
+            if ($_default_options['pointWeighting'] !== null) {
+                $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', $_default_options['pointWeighting'], do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), true];
+            } else {
+                $options[] = [do_lang_tempcode('ENABLE_POLL_POINT_WEIGHTING'), 'point_weighting', $point_weighting == 1, do_lang_tempcode('DESCRIPTION_ENABLE_POLL_POINT_WEIGHTING'), false];
+            }
+        }
+
+        $fields->attach(form_input_various_ticks($options, '', null, '', true));
 
         // ---
 
@@ -3244,7 +3254,7 @@ class Module_topics
                 $answers[] = $trow['pa_answer'];
             }
 
-            cns_make_poll($topic_id, $row['po_question'], $row['po_is_private'], $row['po_is_open'], $row['po_minimum_selections'], $row['po_maximum_selections'], $row['po_requires_reply'], $answers, $row['po_view_member_votes'], $row['po_vote_revocation'], $row['po_guests_can_vote'], true, $row['po_closing_time']);
+            cns_make_poll($topic_id, $row['po_question'], $row['po_is_private'], $row['po_is_open'], $row['po_minimum_selections'], $row['po_maximum_selections'], $row['po_requires_reply'], $answers, $row['po_view_member_votes'], $row['po_vote_revocation'], $row['po_guests_can_vote'], $row['po_point_weighting'], true, $row['po_closing_time']);
 
             return $this->redirect_to('ADD_TOPIC_POLL', $topic_id);
         }
@@ -3259,6 +3269,7 @@ class Module_topics
         $view_member_votes = post_param_integer('view_member_votes', 0);
         $vote_revocation = post_param_integer('vote_revocation', 0);
         $guests_can_vote = post_param_integer('guests_can_vote', 0);
+        $point_weighting = post_param_integer('point_weighting', 0);
 
         $answers = [];
         foreach ($_POST as $key => $val) {
@@ -3273,7 +3284,7 @@ class Module_topics
             }
         }
 
-        cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $view_member_votes, $vote_revocation, $guests_can_vote, true, $closing_time);
+        cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting, true, $closing_time);
 
         return $this->redirect_to('ADD_TOPIC_POLL', $topic_id);
     }
@@ -3286,23 +3297,31 @@ class Module_topics
     public function view_poll_voters() : object // Type
     {
         require_code('cns_polls');
-        require_code('templates_columned_table');
+        require_code('templates_results_table');
 
         $poll_id = get_param_integer('id');
         $answer_id = get_param_integer('answer_id', null);
 
         $start = get_param_integer('start', 0);
+        $order_by = get_param_string('sort', 'pv_date_time DESC', INPUT_FILTER_GET_COMPLEX); // SQL injection is covered in cns_poll_get_results
         $max = get_param_integer('max', 50);
 
-        $results = cns_poll_get_results($poll_id, false, [$start, $max], $answer_id);
+        $test = explode(' ', $order_by, 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+
+        $results = cns_poll_get_results($poll_id, false, [$start, $order_by, $max], $answer_id);
+        $voting_power_enabled = (get_option('enable_poll_point_weighting') == '1') && ($results['point_weighting'] == 1);
 
         // Ensure members don't try to view voters without a forfeit or vote if vote revocation is off.
         //  This is actually a security feature, to prevent CSRF attacks to force a user to forfeit using URL injection.
         if ($results['vote_revocation'] != 1) {
             if (is_guest()) {
-                $map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_forfeited' => 0];
+                $map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address(), 'pv_revoked' => 0];
             } else {
-                $map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_forfeited' => 0];
+                $map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member(), 'pv_revoked' => 0];
             }
             $forfeited = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', $map);
             if ($forfeited == 0) {
@@ -3317,32 +3336,62 @@ class Module_topics
         $answers = $results['answers'];
         $votes = $results['votes'];
 
+        $footer_row = null;
+
         $field_titles = [
             do_lang_tempcode('DATE_TIME'),
             do_lang_tempcode('MEMBER'),
         ];
+        $footer_fields = ['', ''];
+        $sortables = [
+            'pv_date_time' => do_lang_tempcode('DATE_TIME'),
+            'pv_member_id' => do_lang_tempcode('MEMBER')
+        ];
+        if ($voting_power_enabled) {
+            $field_titles[] = protect_from_escaping(do_template('HELP_ICON_PHRASE', [
+                'LABEL' => do_lang_tempcode('VOTING_POWER'),
+                'TOOLTIP' => do_lang_tempcode('DESCRIPTION_VOTING_POWER'),
+            ]));
+            $sortables['voting_power'] = do_lang_tempcode('VOTING_POWER');
+            $footer_fields[] = do_lang_tempcode('TOTAL_VOTING_POWER', float_format($results['total_voting_power'], 2));
+        }
         if ($answer_id === null) {
             $field_titles[] = do_lang_tempcode('ANSWER');
+            $sortables['answer'] = do_lang_tempcode('ANSWER');
+            $footer_fields[] = '';
         }
-        $header_row = columned_table_header_row($field_titles);
+        $header_row = results_header_row($field_titles, $sortables, 'sort', $order_by);
+        if ($voting_power_enabled) {
+            $footer_row = results_footer_row($footer_fields);
+        }
 
         $_rows = new Tempcode();
         foreach ($votes as $vote) {
             $_row = [
                 ($vote['pv_date_time'] > 0) ? get_timezoned_date_time($vote['pv_date_time']) : do_lang_tempcode('UNKNOWN'),
-                columned_table_member_cell($vote['pv_member_id'])
+                results_table_member_cell($vote['pv_member_id']),
             ];
-            $_cell = array_search($vote['pv_answer_id'], array_column($answers, 'id'));
+            if (get_option('enable_poll_point_weighting') == '1' && $results['point_weighting'] == 1) {
+                $_row[] = float_format($vote['voting_power']);
+            }
             if ($answer_id === null) {
+                $_cell = array_search($vote['pv_answer_id'], array_column($answers, 'id'));
                 if ($_cell !== null) {
                     $_row[] = $answers[$_cell]['answer'];
                 } else {
                     $_row[] = do_lang('UNKNOWN');
                 }
-                $_rows->attach(columned_table_row($_row, true));
+                $_rows->attach(results_entry($_row, true));
             } elseif ($vote['pv_answer_id'] == $answer_id) {
-                $_rows->attach(columned_table_row($_row, true));
+                $_rows->attach(results_entry($_row, true));
             }
+        }
+
+        if ($results['max_vote_rows'] > $max) {
+            require_code('templates_pagination');
+            $pagination = pagination(do_lang_tempcode('POLL_VOTES'), $start, 'start', $max, 'max', $results['max_vote_rows'], true, 7);
+        } else {
+            $pagination = new Tempcode();
         }
 
         $title = new Tempcode();
@@ -3352,9 +3401,9 @@ class Module_topics
             $title = get_screen_title('POLL_RESULTS_TABLE_ALL', true, [$results['question']]);
         }
 
-        $table = do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $_rows, 'NONRESPONSIVE' => true]);
+        $table = results_table($title, $start, 'start', $max, 'max', $results['max_vote_rows'], $header_row, $_rows, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), [], null, null, '866198fc95db4ad3abc322d9ad144875', false, null, false, false, $footer_row);
 
-        $tpl = do_template('CNS_TOPIC_POLL_VOTERS_SCREEN', ['_GUID' => 'd75c813e372c3ca8d1204609e54c9d65', 'TABLE' => $table, 'TITLE' => $title]);
+        $tpl = do_template('CNS_TOPIC_POLL_VOTERS_SCREEN', ['_GUID' => 'd75c813e372c3ca8d1204609e54c9d65', 'TABLE' => $table, 'TITLE' => $title, 'PAGINATION' => $pagination]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -3962,7 +4011,8 @@ class Module_topics
         $view_member_votes = $poll_info['po_view_member_votes'];
         $vote_revocation = $poll_info['po_vote_revocation'];
         $guests_can_vote = $poll_info['po_guests_can_vote'];
-        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote);
+        $point_weighting = $poll_info['po_point_weighting'];
+        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('ERASE_VOTES'), do_lang_tempcode('DESCRIPTION_ERASE_VOTES'), 'erase_votes', false));
@@ -4014,6 +4064,7 @@ class Module_topics
         $vote_revocation = post_param_integer('vote_revocation', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $guests_can_vote = post_param_integer('guests_can_vote', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $erase_votes = post_param_integer('erase_votes', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $point_weighting = post_param_integer('point_weighting', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
         if (fractional_edit()) {
             $answers = collapse_1d_complexity('pa_answer', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer'], ['pa_poll_id' => $poll_id]));
@@ -4037,7 +4088,7 @@ class Module_topics
 
         require_code('cns_polls_action');
         require_code('cns_polls_action2');
-        cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $view_member_votes, $vote_revocation, $guests_can_vote, $reason, $closing_time, $erase_votes == 1);
+        cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting, $reason, $closing_time, $erase_votes == 1);
         return $this->redirect_to('EDIT_TOPIC_POLL', $topic_id);
     }
 

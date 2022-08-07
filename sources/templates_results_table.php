@@ -46,9 +46,11 @@ Results table = Built on top of columned table, with inbuilt integration of Comp
  * @param  boolean $skip_sortables_form Whether to skip showing a sort form (useful if there is another form wrapped around this)
  * @param  ?ID_TEXT $hash URL hash component (null: none)
  * @param  boolean $interactive Whether to allow interactive sorting and filtering
+ * @param  boolean $responsive Whether the table should be responsive
+ * @param  ?Tempcode $footer_row The footer row of the fields we are showing in our table, presented in pre-prepared Tempcode (null: do not show a footer)
  * @return Tempcode The results table
  */
-function results_table($text_id, int $start, string $start_name, int $max, string $max_name, int $max_rows, object $header_row, object $result_entries, array $sortables = [], ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?object $message = null, array $widths = [], ?string $tpl_set = null, ?int $max_pagination_links = null, string $guid = '1c8645bc2a3ff5bec2e003142185561f', bool $skip_sortables_form = false, ?string $hash = null, bool $interactive = false) : object
+function results_table($text_id, int $start, string $start_name, int $max, string $max_name, int $max_rows, object $header_row, object $result_entries, array $sortables = [], ?string $sortable = null, ?string $sort_order = null, ?string $sort_name = 'sort', ?object $message = null, array $widths = [], ?string $tpl_set = null, ?int $max_pagination_links = null, string $guid = '1c8645bc2a3ff5bec2e003142185561f', bool $skip_sortables_form = false, ?string $hash = null, bool $interactive = false, bool $responsive = true, ?object $footer_row = null) : object
 {
     require_code('templates_pagination');
 
@@ -81,19 +83,24 @@ function results_table($text_id, int $start, string $start_name, int $max, strin
     // Pagination
     $pagination = pagination(is_object($text_id) ? $text_id : make_string_tempcode($text_id), $start, $start_name, $max, $max_name, $max_rows, true, $max_pagination_links, null, ($hash === null) ? '' : $hash);
 
+    $map = [
+        '_GUID' => $guid,
+        'TEXT_ID' => $text_id,
+        'HEADER_ROW' => $header_row,
+        'RESULT_ENTRIES' => $result_entries,
+        'MESSAGE' => $message,
+        'SORT' => $skip_sortables_form ? new Tempcode() : $sort,
+        'PAGINATION' => $pagination,
+        'WIDTHS' => $widths,
+        'INTERACTIVE' => $interactive,
+        'NONRESPONSIVE' => !$responsive
+    ];
+    if ($footer_row !== null) {
+        $map['FOOTER_ROW'] = $footer_row;
+    }
     return do_template(
         ($tpl_set === null) ? 'RESULTS_TABLE' : ('RESULTS_' . $tpl_set . '_TABLE'),
-        [
-            '_GUID' => $guid,
-            'TEXT_ID' => $text_id,
-            'HEADER_ROW' => $header_row,
-            'RESULT_ENTRIES' => $result_entries,
-            'MESSAGE' => $message,
-            'SORT' => $skip_sortables_form ? new Tempcode() : $sort,
-            'PAGINATION' => $pagination,
-            'WIDTHS' => $widths,
-            'INTERACTIVE' => $interactive,
-        ],
+        $map,
         null,
         false,
         'RESULTS_TABLE'
@@ -103,7 +110,7 @@ function results_table($text_id, int $start, string $start_name, int $max, strin
 /**
  * Get the Tempcode for a results table header row. You would take the output of this, and feed it in as $header_row, in a results_table function call.
  *
- * @param  array $values The array of field titles that header the entries in the results table
+ * @param  array $values The array of field titles that header the entries in the results table (a null value will increment the previous non-null column's colspan - do not use any nulls if there is no previous non-null column)
  * @param  array $sortables A map of sortable code (usually, db field names), to strings giving the human name for the sort order
  * @param  ID_TEXT $order_param The parameter name used to store our sortable
  * @param  ID_TEXT $current_ordering The current ordering ("$sortable $sort_order")
@@ -147,7 +154,7 @@ function results_header_row(array $values, array $sortables = [], string $order_
         }
 
         $map = [
-            '_GUID' => '80e9de91bb9e479766bc8568a790735c',
+            '_GUID' => $guid,
             'VALUE' => $value,
             'COLSPAN' => ($colspan === null) ? null : strval($colspan),
 
@@ -173,6 +180,46 @@ function results_header_row(array $values, array $sortables = [], string $order_
         } else {
             $cells->attach(do_template('RESULTS_TABLE_FIELD_TITLE', $map));
         }
+    }
+
+    return $cells;
+}
+
+/**
+ * Get the Tempcode for a results table footer row. You would take the output of this, and feed it in as $footer_row, in a results_table function call.
+ *
+ * @param  array $values The array of field titles that footer the entries in the results table (a null value will increment the previous non-null column's colspan - do not use any nulls if there is no previous non-null column)
+ * @param  string $guid GUID to pass to template
+ * @return Tempcode The generated footer row
+ */
+function results_footer_row(array $values, string $guid = 'e5df01c02d364a45b3cc56551407123f') : object
+{
+    $cells = new Tempcode();
+    $cnt = count($values);
+    foreach ($values as $i => $value) {
+        if ($value === null) {
+            continue;
+        }
+
+        $colspan = 1;
+        for ($j = $i + 1; $j < $cnt; $j++) {
+            if ($values[$j] !== null) {
+                break;
+            }
+
+            $colspan++;
+        }
+        if ($colspan == 1) {
+            $colspan = null;
+        }
+
+        $map = [
+            '_GUID' => $guid,
+            'VALUE' => $value,
+            'COLSPAN' => ($colspan === null) ? null : strval($colspan),
+        ];
+
+        $cells->attach(do_template('RESULTS_TABLE_FIELD_FOOTER', $map));
     }
 
     return $cells;
@@ -287,4 +334,30 @@ function results_sorter(array $sortables, ?string $sortable = null, ?string $sor
     }
     $GLOBALS['INCREMENTAL_ID_GENERATOR']++;
     return $sort;
+}
+
+/**
+ * Get the Tempcode for a cell containing a member.
+ *
+ * @param  AUTO_LINK $member_id The ID of the member being added to the cell
+ * @return Tempcode A Tempcode containing the member, a hyperlink to their profile, and a member info tooltip
+ */
+function results_table_member_cell(int $member_id) : object
+{
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
+    if ($username === null) {
+        return do_lang_tempcode('UNKNOWN');
+    }
+
+    if (!is_guest($member_id)) {
+        $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true, $username);
+        return do_template('RESULTS_TABLE_MEMBER_CELL', [
+            '_GUID' => '289bcaf692854b588f9b1eda3c0c52f4',
+            'PROFILE_URL' => $profile_url,
+            'USERNAME' => $username,
+            'MEMBER_ID' => strval($member_id)
+        ]);
+    } else {
+        return do_lang_tempcode('GUEST');
+    }
 }
