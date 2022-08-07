@@ -140,7 +140,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         return null;
     }
 
-    // Get poll answers and cached votes for each
+    // Get poll answers and cached votes for each answer
     $where_map = ['pa_poll_id' => $poll_id];
     if ($answer_id !== null) {
         $where_map['id'] = $answer_id;
@@ -160,7 +160,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $answers[] = $answer;
     }
 
-    // Prepare filtering by pagination
+    // Do a little poll dancing
     $start = (($request_voters !== null) && (array_key_exists(0, $request_voters))) ? $request_voters[0] : 0;
     $max = (($request_voters !== null) && (array_key_exists(2, $request_voters))) ? $request_voters[2] : 50;
     $max_vote_rows = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_id, 'pv_revoked' => 0]);
@@ -179,18 +179,14 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters)) && (array_search($request_voters[1], $not_sql_orders) === false)) ? $request_voters[1] : 'pv_date_time DESC';
 
         if ($point_weighting) {
-            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'ORDER BY ' . $order_by);
+            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by);
         } else {
-            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'ORDER BY ' . $order_by, $max, $start);
+            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
         }
 
         // Go through each vote to calculate voting power
         $_answer_ids = array_column($answers, 'id');
         foreach ($_vote_rows as $vote) {
-            // Ignore forfeights
-            if ($vote['pv_answer_id'] === null) {
-                continue;
-            }
 
             $voting_power = 1.0;
             if ($point_weighting) {
@@ -245,17 +241,21 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         }
     }
 
-    // Filter votes by pagination
-    foreach ($_votes as $i => $vote) {
-        if ($i < $start) {
-            continue;
-        }
+    // Paginate votes if we did not do so via the database
+    if ($point_weighting) {
+        foreach ($_votes as $i => $vote) {
+            if ($i < $start) {
+                continue;
+            }
 
-        $votes[] = $vote;
+            $votes[] = $vote;
 
-        if (count($votes) >= $max) {
-            break;
+            if (count($votes) >= $max) {
+                break;
+            }
         }
+    } else {
+        $votes = $_votes;
     }
 
     if ($request_results) {

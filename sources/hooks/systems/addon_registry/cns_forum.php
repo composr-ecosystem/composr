@@ -1985,7 +1985,7 @@ class Hook_addon_registry_cns_forum
             '_GUID' => 'd75c813e372c3ca8d1204609e54c9d65',
             'TABLE' => $table,
             'TITLE' => lorem_phrase(),
-            'PAGINATION' => placeholder_pagination()
+            'PAGINATION' => placeholder_pagination(),
         ]), null, '', true);
     }
 }

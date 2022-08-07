@@ -110,7 +110,7 @@ function results_table($text_id, int $start, string $start_name, int $max, strin
 /**
  * Get the Tempcode for a results table header row. You would take the output of this, and feed it in as $header_row, in a results_table function call.
  *
- * @param  array $values The array of field titles that header the entries in the results table
+ * @param  array $values The array of field titles that header the entries in the results table (a null value will increment the previous non-null column's colspan - do not use any nulls if there is no previous non-null column)
  * @param  array $sortables A map of sortable code (usually, db field names), to strings giving the human name for the sort order
  * @param  ID_TEXT $order_param The parameter name used to store our sortable
  * @param  ID_TEXT $current_ordering The current ordering ("$sortable $sort_order")
@@ -154,7 +154,7 @@ function results_header_row(array $values, array $sortables = [], string $order_
         }
 
         $map = [
-            '_GUID' => '80e9de91bb9e479766bc8568a790735c',
+            '_GUID' => $guid,
             'VALUE' => $value,
             'COLSPAN' => ($colspan === null) ? null : strval($colspan),
 
@@ -188,7 +188,7 @@ function results_header_row(array $values, array $sortables = [], string $order_
 /**
  * Get the Tempcode for a results table footer row. You would take the output of this, and feed it in as $footer_row, in a results_table function call.
  *
- * @param  array $values The array of field titles that footer the entries in the results table
+ * @param  array $values The array of field titles that footer the entries in the results table (a null value will increment the previous non-null column's colspan - do not use any nulls if there is no previous non-null column)
  * @param  string $guid GUID to pass to template
  * @return Tempcode The generated footer row
  */
@@ -214,7 +214,7 @@ function results_footer_row(array $values, string $guid = 'e5df01c02d364a45b3cc5
         }
 
         $map = [
-            '_GUID' => '06f70716dcd34fe1b4fde7c06904b89c',
+            '_GUID' => $guid,
             'VALUE' => $value,
             'COLSPAN' => ($colspan === null) ? null : strval($colspan),
         ];

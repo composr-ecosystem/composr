@@ -55,6 +55,6 @@ class Hook_config_enable_poll_point_weighting
         if (!addon_installed('cns_forum') || get_forum_type() != 'cns' || !addon_installed('points')) {
             return null;
         }
-        return '1';
+        return '0';
     }
 }

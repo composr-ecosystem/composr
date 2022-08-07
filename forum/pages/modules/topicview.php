@@ -814,7 +814,7 @@ class Module_topicview
                         '_NUM_VOTES' => strval($num_votes),
                         '_TOTAL_VOTES' => strval($total_votes),
                         'NUM_VOTES' => float_format($num_votes, $point_weighting ? 2 : 0),
-                        'TOTAL_VOTES' => float_format($total_votes, $point_weighting ? 2 : 0),
+                        'TOTAL_VOTES' => $point_weighting ? float_format($total_votes, 2) : integer_format($total_votes),
                         'POINT_WEIGHTING' => $point_weighting,
                         'WIDTH' => strval($width),
                         'ANSWER' => $answer['answer'],
@@ -847,7 +847,7 @@ class Module_topicview
                 'MINIMUM_SELECTIONS' => integer_format($_poll['minimum_selections']),
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
                 'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : '0',
-                'TOTAL_VOTES' => float_format($total_votes, $point_weighting ? 2 : 0),
+                'TOTAL_VOTES' => $point_weighting ? float_format($total_votes, 2) : integer_format($total_votes),
             ]);
         } else {
             $poll = new Tempcode();

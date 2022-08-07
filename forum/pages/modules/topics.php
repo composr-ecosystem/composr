@@ -2965,7 +2965,7 @@ class Module_topics
      * @param  BINARY $point_weighting Whether votes will be weighed according to how many points voters have
      * @return Tempcode The Tempcode for the fields
      */
-    public function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 1) : object
+    public function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
     {
         require_lang('cns_polls');
         require_code('cns_polls_action3');
@@ -3269,7 +3269,7 @@ class Module_topics
         $view_member_votes = post_param_integer('view_member_votes', 0);
         $vote_revocation = post_param_integer('vote_revocation', 0);
         $guests_can_vote = post_param_integer('guests_can_vote', 0);
-        $point_weighting = post_param_integer('point_weighting', 1);
+        $point_weighting = post_param_integer('point_weighting', 0);
 
         $answers = [];
         foreach ($_POST as $key => $val) {
