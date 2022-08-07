@@ -419,7 +419,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_cached_points', 'INTEGER');
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_answer_id', '?AUTO_LINK');
-        $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes SET pv_answer_id = NULL WHERE pv_answer_id = -1');
+        $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes SET pv_answer_id=NULL WHERE pv_answer_id=-1');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_answers', 'pa_order', 'INTEGER');
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_order=id');
