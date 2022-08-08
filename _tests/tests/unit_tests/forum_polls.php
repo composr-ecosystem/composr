@@ -79,26 +79,26 @@ class forum_polls_test_set extends cms_test_case
         set_option('topic_polls_weighting_multiplier', '2');
         set_option('topic_polls_weighting_logarithmic_base', '2');
 
-        $with_1000_points = float_format(cns_calculate_poll_voting_power(1000), 2);
+        $with_1000_points = float_to_raw_string(cns_calculate_poll_voting_power(1000), 2);
         $this->assertTrue($with_1000_points == '20.94', '$with_1000_points: Expected 20.94, got ' . $with_1000_points);
 
-        $with_1_point = float_format(cns_calculate_poll_voting_power(1), 2);
+        $with_1_point = float_to_raw_string(cns_calculate_poll_voting_power(1), 2);
         $this->assertTrue($with_1_point == '4.17', '$with_1_point: Expected 4.17, got ' . $with_1_point);
 
-        $with_0_points = float_format(cns_calculate_poll_voting_power(0), 2);
+        $with_0_points = float_to_raw_string(cns_calculate_poll_voting_power(0), 2);
         $this->assertTrue($with_0_points == '3.00', '$with_0_points: Expected 3.00, got ' . $with_0_points);
 
-        $with_negative_1_points = float_format(cns_calculate_poll_voting_power(-1), 2);
+        $with_negative_1_points = float_to_raw_string(cns_calculate_poll_voting_power(-1), 2);
         $this->assertTrue($with_negative_1_points == '3.00', '$with_negative_1_points: Expected 3.00, got ' . $with_negative_1_points);
 
-        $with_maxint_points_ceiling_100 = float_format(cns_calculate_poll_voting_power(PHP_INT_MAX), 2);
+        $with_maxint_points_ceiling_100 = float_to_raw_string(cns_calculate_poll_voting_power(PHP_INT_MAX), 2);
         $this->assertTrue($with_maxint_points_ceiling_100 == '100.00', '$with_maxint_points_ceiling_100: Expected 100.00, got ' . $with_maxint_points_ceiling_100);
 
-        $with_minint_points = cns_calculate_poll_voting_power(PHP_INT_MIN);
+        $with_minint_points = float_to_raw_string(cns_calculate_poll_voting_power(PHP_INT_MIN));
         $this->assertTrue($with_minint_points == '3.00', '$with_minint_points: Expected 3.00, got ' . $with_minint_points);
 
         set_option('topic_polls_weighting_ceiling', '');
-        $with_maxint_points_noceiling = float_format(cns_calculate_poll_voting_power(PHP_INT_MAX), 2);
+        $with_maxint_points_noceiling = float_to_raw_string(cns_calculate_poll_voting_power(PHP_INT_MAX), 2);
         $this->assertTrue($with_maxint_points_noceiling == '127.00', '$with_maxint_points_noceiling: Expected 127.00, got ' . $with_maxint_points_noceiling);
 
         set_option('topic_polls_weighting_ceiling', $before_options[0]);
