@@ -752,14 +752,21 @@ class Module_topicview
                                 $map['threaded'] = $test_threaded;
                             }
                             $revoke_url = build_url($map, get_module_zone('topics'));
-
-                            $map = ['_GUID' => 'ae9380bae4e542b48fe10ae93e53fa7d', 'REVOKE_URL' => $revoke_url];
-                            if ($_poll['view_member_votes']) {
-                                $map['ALL_VOTES_URL'] = build_url(['page' => 'topics', 'type' => 'view_poll_voters', 'id' => $_poll['id']], '_SELF');
-                            }
-                            $poll_buttons = do_template('CNS_TOPIC_POLL_BUTTON_RESULTS', $map);
+                        }
+                        if ($_poll['view_member_votes']) {
+                            $all_votes_url = build_url(['page' => 'topics', 'type' => 'view_poll_voters', 'id' => $_poll['id']], '_SELF');
+                        }
+                        if (($_poll['view_member_votes']) || ($_poll['vote_revocation'] == 1 && !is_guest())) {
                             $show_buttons = true;
                             $footer_message = new Tempcode();
+                            $map = ['GUID' => '00662ec1c9d84b96a5e1d8e197ef6de4'];
+                            if (($_poll['view_member_votes'])) {
+                                $map['ALL_VOTES_URL'] = $all_votes_url;
+                            }
+                            if ($_poll['vote_revocation'] == 1 && !is_guest()) {
+                                $map['REVOKE_URL'] = $revoke_url;
+                            }
+                            $poll_buttons = do_template('CNS_TOPIC_POLL_BUTTON_RESULTS', $map);
                         }
                     }
                 } elseif (($_poll['requires_reply']) && (!$replied)) {
