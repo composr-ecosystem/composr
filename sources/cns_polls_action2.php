@@ -375,22 +375,20 @@ function cns_revoke_vote_in_poll(array $topic_info, ?int $member_id = null)
 }
 
 /**
- * Calculate how much voting power a certain amount of points has. This does not check if point weighting is enabled.
+ * Calculate how much voting power a certain amount of points has.
  *
  * @param  integer $points The number of points from which to calculate the voting power
  * @return float The amount of voting power associated with the points
  */
 function cns_calculate_poll_voting_power(int $points) : float
 {
-    $points = max(0, $points);
-
     $ceiling = get_option('topic_polls_weighting_ceiling'); // Could be blank
     $offset = intval(get_option('topic_polls_weighting_offset'));
     $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
     $base = abs(floatval(get_option('topic_polls_weighting_logarithmic_base')));
 
-    // Voting power formula
-    $_voting_power = max(0, $offset + $multiplier * log($points + $base, $base));
+    // Voting power formula (!cns_polls:VOTING_POWER_EQUATION)
+    $_voting_power = max(0, $offset + $multiplier * log(max(0, $points) + $base, $base));
 
     $voting_power = $_voting_power;
 
@@ -400,4 +398,32 @@ function cns_calculate_poll_voting_power(int $points) : float
     }
 
     return $voting_power;
+}
+
+/**
+ * Calculate how much voting power a certain amount of points has and return text versions of the calculations.
+ *
+ * @param  integer $points The number of points from which to calculate the voting power
+ * @return array Tuple; first item is a string of the equation itself, second item is a string with the numbers substituted into the equation, and third item is the final result
+ */
+function cns_calculate_poll_voting_power_text(int $points) : array
+{
+    require_code('templates');
+    require_lang('cns_polls');
+
+    $ceiling = get_option('topic_polls_weighting_ceiling');
+    $offset = intval(get_option('topic_polls_weighting_offset'));
+    $multiplier = abs(floatval(get_option('topic_polls_weighting_multiplier')));
+    $base = abs(floatval(get_option('topic_polls_weighting_logarithmic_base')));
+
+    // Give context for a blank ceiling in the equation text
+    if ($ceiling === null || $ceiling == '') {
+        $ceiling = "Infinity";
+    }
+
+    $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'maximumVotingPower', 'offset', ['multiplier', 'points', 'logBase']));
+    $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', $ceiling, $offset, [$multiplier, $points, $base]));
+    $calculation = cns_calculate_poll_voting_power($points);
+
+    return [$equation, $equation_with_numbers, $calculation];
 }

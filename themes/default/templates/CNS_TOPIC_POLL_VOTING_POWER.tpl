@@ -1,0 +1,1 @@
+<abbr data-cms-rich-tooltip="{width: '650px'}" title="Equation: <strong>{EQUATION*}</strong> <br />Equation with numbers substituted: <strong>{EQUATION_WITH_NUMBERS*}</strong> <br />Final Result: <strong>{VOTING_POWER*}</strong>">{VOTING_POWER*}</abbr>

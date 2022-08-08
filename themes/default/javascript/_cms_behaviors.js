@@ -774,7 +774,7 @@
 
                     try {
                         //arguments: el, event, tooltip, width, pic, height, bottom, delay, lightsOff, forceWidth, win, haveLinks
-                        $cms.ui.activateTooltip(el, e, el.ttitle, 'auto', null, null, false, 0, false, false, window, true);
+                        $cms.ui.activateTooltip(el, e, el.ttitle, options.width || 'auto', null, options.height || null, false, 0, false, options.forceWidth || false, window, true);
                     } catch (ex) {
                         //$util.fatal('$cms.behaviors.cmsRichTooltip.attach(): Exception thrown by $cms.ui.activateTooltip()', ex, 'called with args:', args);
                     }
