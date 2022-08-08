@@ -213,6 +213,7 @@ class Hook_addon_registry_cns_forum
             'themes/default/templates/CNS_TOPIC_POLL_BUTTON_RESULTS.tpl',
             'themes/default/templates/CNS_TOPIC_POLL_VIEW_RESULTS.tpl',
             'themes/default/templates/CNS_TOPIC_POLL_VOTERS_SCREEN.tpl',
+            'themes/default/templates/CNS_TOPIC_POLL_VOTING_POWER.tpl',
             'themes/default/templates/CNS_TOPIC_POST.tpl',
             'themes/default/templates/CNS_TOPIC_SCREEN.tpl',
             'themes/default/templates/CNS_WHISPER_CHOICE_SCREEN.tpl',
@@ -420,6 +421,7 @@ class Hook_addon_registry_cns_forum
             'templates/NOTIFICATION_BUTTONS.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
             'templates/RESULTS_TABLE_MEMBER_CELL.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VOTERS_SCREEN.tpl' => 'cns_topic_poll_voters',
+            'templates/CNS_TOPIC_POLL_VOTING_POWER.tpl' => 'cns_topic_poll_voters',
             'templates/CNS_TOPIC_POLL_VIEW_RESULTS.tpl' => 'cns_topic_voted_wrap',
             'templates/CNS_PRIVATE_TOPIC_LINK.tpl' => 'cns_private_topic_link',
             'templates/CNS_PT_FILTERS.tpl' => 'cns_forum',
@@ -1957,7 +1959,6 @@ class Hook_addon_registry_cns_forum
         $header_row = results_header_row($field_titles, $sortables);
         $footer_row = results_footer_row([
             '',
-
             '',
             do_lang_tempcode('TOTAL_VOTING_POWER', placeholder_number()),
             ''
@@ -1974,7 +1975,12 @@ class Hook_addon_registry_cns_forum
             $_rows->attach(results_entry([
                 placeholder_date(),
                 $member,
-                placeholder_number(),
+                do_lorem_template('CNS_TOPIC_POLL_VOTING_POWER', [
+                    'GUID' => '690423ddee434df79de7bead4fb5e79e',
+                    'EQUATION' => with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'maximumVotingPower', 'offset', ['multiplier', 'points', 'logBase'])),
+                    'EQUATION_WITH_NUMBERS' => do_lang_tempcode('VOTING_POWER_EQUATION', placeholder_number(), placeholder_number(), [placeholder_number(), placeholder_number(), placeholder_number()]),
+                    'VOTING_POWER' => placeholder_number()
+                ]),
                 lorem_phrase()
             ], true));
         }

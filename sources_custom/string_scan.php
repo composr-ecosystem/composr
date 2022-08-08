@@ -11542,6 +11542,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TOTAL_VOTING_POWER
         VOTING_POWER
         DESCRIPTION_VOTING_POWER
+        VOTING_POWER_EQUATION
     ')));
 
     if ($GLOBALS['DEV_MODE']) {

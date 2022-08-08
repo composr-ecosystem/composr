@@ -3372,7 +3372,12 @@ class Module_topics
                 results_table_member_cell($vote['pv_member_id']),
             ];
             if (get_option('enable_poll_point_weighting') == '1' && $results['point_weighting'] == 1) {
-                $_row[] = float_format($vote['voting_power']);
+                $_row[] = do_template('CNS_TOPIC_POLL_VOTING_POWER', [
+                    'GUID' => '690423ddee434df79de7bead4fb5e79e',
+                    'EQUATION' => $vote['voting_equation'][0],
+                    'EQUATION_WITH_NUMBERS' => $vote['voting_equation'][1],
+                    'VOTING_POWER' => float_format($vote['voting_power'], 2)
+                ]);
             }
             if ($answer_id === null) {
                 $_cell = array_search($vote['pv_answer_id'], array_column($answers, 'id'));
