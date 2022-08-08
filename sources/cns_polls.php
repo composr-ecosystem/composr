@@ -191,6 +191,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
             $voting_power = 1.0;
             if ($point_weighting) {
                 $voting_power = cns_calculate_poll_voting_power($vote['pv_cached_points']);
+                $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cached_points']);
 
                 // Add voting power to the total for the poll
                 $total_voting_power += $voting_power;
@@ -215,7 +216,8 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                     'answer' => $answer,
                     'pv_member_id' => $vote['pv_member_id'],
                     'pv_date_time' => $vote['pv_date_time'],
-                    'voting_power' => $voting_power
+                    'voting_power' => $voting_power,
+                    'voting_equation' => $voting_equation
                 ];
             }
         }

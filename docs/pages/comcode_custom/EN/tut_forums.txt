@@ -165,10 +165,11 @@ The formula used to weigh poll results and generate a voting power is as follows
 
 [tt]voting power = min(abs(maximum), max(0, offset + multiplier * log(max(0, points) + base, base)))[/tt]
  - [b]base[/b], [b]multiplier[/b], [b]offset[/b], and [b]maximum[/b] are configurable values in the Forum / Point-weighting for polls options.
- - First, the formula takes the log of the member's current points at the time of voting (minimum of 0) plus the log base.
- - Then, the formula multiplies the results of log by the configured multiplier.
- - Next, the offset is added to the result (offset can be negative to subtract instead).
+ - First, the formula takes the log of the member's current points at the time of voting plus the log base.
+ - Then, the formula multiplies the results of log by the absolute value of the configured multiplier.
+ - Next, the offset is added to the result if (offset can be negative to subtract instead).
  - Finally, the formula ensures voting power is not higher than the defined maximum (if defined), and not lower than 0.
+ - When a member's points are 0 or negative, their voting power will be offset + multiplier (if it is below maximum) since the log value will always come out 1.
 
 A nuance with the weighted voting system is that the votes of early voters may not be weighted as high as they could be especially when a member later earns more points. If revoke vote is enabled on a poll, a member can revoke and re-vote to have their voting power re-calculated with their new points. Otherwise, a member can wait until close to the poll closing time, or when they expect to have the most number of points, to vote.
 
