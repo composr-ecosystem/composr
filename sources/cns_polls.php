@@ -187,7 +187,6 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         // Go through each vote to calculate voting power
         $_answer_ids = array_column($answers, 'id');
         foreach ($_vote_rows as $vote) {
-
             $voting_power = 1.0;
             if ($point_weighting) {
                 $voting_power = cns_calculate_poll_voting_power($vote['pv_cached_points']);

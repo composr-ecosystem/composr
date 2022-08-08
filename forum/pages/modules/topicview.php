@@ -760,7 +760,7 @@ class Module_topicview
                             $show_buttons = true;
                             $footer_message = new Tempcode();
                             $map = ['GUID' => '00662ec1c9d84b96a5e1d8e197ef6de4'];
-                            if (($_poll['view_member_votes'])) {
+                            if ($_poll['view_member_votes']) {
                                 $map['ALL_VOTES_URL'] = $all_votes_url;
                             }
                             if ($_poll['vote_revocation'] == 1 && !is_guest()) {
