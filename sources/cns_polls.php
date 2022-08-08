@@ -154,7 +154,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $answer['id'] = $_answer['id'];
         if ((($request_results) || ($poll_info[0]['po_is_open'] == 0)) && ($poll_info[0]['po_is_private'] == 0)) { // We usually will show the results for a closed poll, but not one still private
             $answer['num_votes'] = $_answer['pa_cache_num_votes'];
-            $answer['voting_power'] = 0;
+            $answer['voting_power'] = 0.0;
         }
 
         $answers[] = $answer;
@@ -168,7 +168,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
     $point_weighting = (get_option('enable_poll_point_weighting') == '1' && $poll_info[0]['po_point_weighting'] == 1 && addon_installed('points'));
     $_votes = [];
     $votes = [];
-    $total_voting_power = 0;
+    $total_voting_power = 0.0;
 
     // We need to get each voter if we are either requesting that or we need to weigh votes by points
     if ($request_voters !== null || $point_weighting) {
@@ -178,10 +178,15 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $not_sql_orders = ['answer ASC', 'answer DESC', 'voting_power ASC', 'voting_power DESC'];
         $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters)) && (array_search($request_voters[1], $not_sql_orders) === false)) ? $request_voters[1] : 'pv_date_time DESC';
 
+        $vote_rows_select = ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'];
+        $vote_rows_where = ['pv_poll_id' => $poll_id, 'pv_revoked' => 0];
+        if ($answer_id !== null) {
+            $vote_rows_where['pv_answer_id'] = $answer_id;
+        }
         if ($point_weighting) {
-            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by);
+            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', $vote_rows_select, $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by);
         } else {
-            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'], ['pv_poll_id' => $poll_id, 'pv_revoked' => 0], 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
+            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', $vote_rows_select, $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
         }
 
         // Go through each vote to calculate voting power
@@ -209,15 +214,16 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
             // Add the voter row, if applicable
             if ($request_voters !== null) {
                 $answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
-                $answer = ((array_key_exists($answer_index, $answers)) && (array_key_exists('answer', $answers[$answer_index]))) ? $answers[$answer_index]['answer'] : do_lang_tempcode('UNKNOWN');
-                $_votes[] = [
-                    'pv_answer_id' => $vote['pv_answer_id'],
-                    'answer' => $answer,
-                    'pv_member_id' => $vote['pv_member_id'],
-                    'pv_date_time' => $vote['pv_date_time'],
-                    'voting_power' => $voting_power,
-                    'voting_equation' => $voting_equation
-                ];
+                if ($answer_index !== false) {
+                    $answer = ((array_key_exists($answer_index, $answers)) && (array_key_exists('answer', $answers[$answer_index]))) ? $answers[$answer_index]['answer'] : do_lang_tempcode('UNKNOWN');
+                    $_votes[] = [
+                        'pv_answer_id' => $vote['pv_answer_id'],
+                        'answer' => $answer,
+                        'pv_member_id' => $vote['pv_member_id'],
+                        'pv_date_time' => $vote['pv_date_time'],
+                        'voting_power' => $voting_power
+                    ];
+                }
             }
         }
     }

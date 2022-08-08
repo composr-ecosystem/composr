@@ -3406,7 +3406,7 @@ class Module_topics
             $title = get_screen_title('POLL_RESULTS_TABLE_ALL', true, [$results['question']]);
         }
 
-        $table = results_table($title, $start, 'start', $max, 'max', $results['max_vote_rows'], $header_row, $_rows, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), [], null, null, '866198fc95db4ad3abc322d9ad144875', false, null, false, false, $footer_row);
+        $table = results_table(do_lang_tempcode('POLL_VOTES'), $start, 'start', $max, 'max', $results['max_vote_rows'], $header_row, $_rows, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), [], null, null, '866198fc95db4ad3abc322d9ad144875', false, null, false, false, $footer_row);
 
         $tpl = do_template('CNS_TOPIC_POLL_VOTERS_SCREEN', ['_GUID' => 'd75c813e372c3ca8d1204609e54c9d65', 'TABLE' => $table, 'TITLE' => $title, 'PAGINATION' => $pagination]);
 

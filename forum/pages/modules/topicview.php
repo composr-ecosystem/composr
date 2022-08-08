@@ -820,7 +820,7 @@ class Module_topicview
                         'ID' => strval($_poll['id']),
                         '_NUM_VOTES' => strval($num_votes),
                         '_TOTAL_VOTES' => strval($total_votes),
-                        'NUM_VOTES' => float_format($num_votes, $point_weighting ? 2 : 0),
+                        'NUM_VOTES' => $point_weighting ? float_format($num_votes, 2) : integer_format($num_votes),
                         'TOTAL_VOTES' => $point_weighting ? float_format($total_votes, 2) : integer_format($total_votes),
                         'POINT_WEIGHTING' => $point_weighting,
                         'WIDTH' => strval($width),

@@ -1561,7 +1561,7 @@ body#main-website #main-website-inner, html > body div.global-middle-faux {
 	/*{+END}*/
 }
 
-#main-website-inner.faded::before {
+#main-website-inner.faded::after {
 	position: fixed;
 	top: 0;
 	left: 0;
