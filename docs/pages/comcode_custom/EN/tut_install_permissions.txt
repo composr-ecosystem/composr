@@ -62,7 +62,6 @@ Set the following to [b]777[/b] (full directory permissions):
  - [tt]data_custom/sitemaps[/tt]
  - [tt]data_custom/spelling/personal_dicts[/tt]
  - [tt]data_custom/xml_config[/tt]
- - [tt]data_custom[/tt]
  - [tt]exports/*[/tt]
  - [tt]forum/pages/comcode_custom/<for-each-language>[/tt]
  - [tt]forum/pages/html_custom/<for-each-language>[/tt]

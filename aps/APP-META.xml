@@ -326,9 +326,6 @@
           <mapping url="data_custom/xml_config">
             <php:permissions writable="true"/>
           </mapping>
-          <mapping url="data_custom">
-            <php:permissions writable="true"/>
-          </mapping>
           <mapping url="exports/addons">
             <php:permissions writable="true"/>
           </mapping>

@@ -129,7 +129,7 @@ function scan_permissions(bool $live_output = false, bool $live_commands = false
  *
  * @param  boolean $runtime Include folders/files that are created dynamically
  * @param  boolean $non_bundled Whether to look at requirements of non-bundled addons
- * @return array The list of files
+ * @return array The list of paths; ** represents directory-wildcards
  */
 function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
 {
@@ -231,7 +231,6 @@ function get_chmod_array(bool $runtime = true, bool $non_bundled = true) : array
             'caches/static',
             'cms/pages/comcode_custom/**',
             'cms/pages/html_custom/**',
-            'data_custom',
             'data_custom/errorlog.php',
             'data_custom/firewall_rules.txt',
             'data_custom/modules/admin_backup',
