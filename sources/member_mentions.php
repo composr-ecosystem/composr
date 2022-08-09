@@ -86,6 +86,6 @@ function dispatch_member_mention_notifications(string $content_type, string $con
         $subject = do_lang('NOTIFICATION_MEMBER_MENTION_SUBJECT', $poster_username, cms_mb_strtolower($content_type_title), [$content_title, $content_url_email_safe->evaluate(), $content_type_title, $poster_displayname]);
         $message = do_notification_lang('NOTIFICATION_MEMBER_MENTION_BODY', comcode_escape($poster_username), comcode_escape(cms_mb_strtolower($content_type_title)), [comcode_escape($content_title), $content_url_email_safe->evaluate(), comcode_escape($content_type_title), comcode_escape($poster_displayname), $rendered]);
 
-        dispatch_notification('member_mention', '', $subject, $message, [$member_id], get_member());
+        dispatch_notification('member_mention', '', $subject, $message, [$member_id], ($submitter === null) ? get_member() : $submitter);
     }
 }
