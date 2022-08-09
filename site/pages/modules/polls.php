@@ -35,7 +35,7 @@ class Module_polls
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 6;
+        $info['version'] = 7;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         return $info;
@@ -166,6 +166,17 @@ class Module_polls
 
             add_privilege('SEARCH', 'autocomplete_keyword_poll', false);
             add_privilege('SEARCH', 'autocomplete_title_poll', false);
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 7)) {
+            // Deny non-staff/Guest access to set polls (overrides a privilege that some liberally-permissive sites may set)
+            $staff_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
+            $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
+            foreach (array_keys($usergroups) as $id) {
+                if ((!isset($staff_groups[$id])) && $id != (db_get_first_id())) {
+                    set_privilege($id, 'bypass_validation_midrange_content', false, 'cms_polls');
+                }
+            }
         }
     }
 
