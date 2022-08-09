@@ -56,6 +56,6 @@ class Hook_config_topic_polls_weighting_logarithmic_base
             return null;
         }
 
-        return '' . M_E;
+        return float_to_raw_string(M_E);
     }
 }

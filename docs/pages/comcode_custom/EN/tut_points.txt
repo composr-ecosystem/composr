@@ -23,10 +23,15 @@ Methods of earning points include:
  - Entering/passing quizzes
  - Being given them (this is described in a later section)
  - Earning them from selling a download (this is described in a later section)
+ - Birthdays
 
 Most methods of earning points may be altered in the configuration (Admin Zone > Setup > Configuration > Points options), so that the number of points earned from various activities is appropriate for your website.
 
 There is a distinction between the point count for points available for spending, and the point count for the total points ever earned (which contributes to rank and leader-board position). This will usually be made clear, but sometimes circumstance will dictate what is the appropriate meaning.
+
+[title="3"]A note about birthday points[/title]
+
+If birthday points is set to greater than 0, then members and staff cannot edit their own birthdays once they set it. This is to prevent birthday point abuse. Members should contact a staff member if they made a mistake in their birthday.
 
 [title="3"]A note about how points are calculated (somewhat advanced)[/title]
 

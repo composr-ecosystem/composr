@@ -8294,7 +8294,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_enable_poll_point_weighting
         TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE
         CONFIG_OPTION_topic_polls_weighting_logarithmic_base
-
+        CONFIG_OPTION_points_birthday
     ')));
 
     $non_admin_files = [
@@ -11544,6 +11544,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VOTING_POWER
         VOTING_POWER_EQUATION
         VOTING_POWER_DERIVATION
+        DATE_OF_BIRTH_NO_EDIT
+        BIRTHDAY_POINTS
+        BIRTHDAY_POINTS_NOTIFICATION_MAIL_SUBJECT
+        BIRTHDAY_POINTS_NOTIFICATION_MAIL_POINTS
+        BIRTHDAY_POINTS_NOTIFICATION_MAIL_NO_POINTS
+        NOTIFICATION_TYPE_birthday_points
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
