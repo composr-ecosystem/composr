@@ -334,8 +334,14 @@ function form_input_list_entry(string $value, bool $selected = false, $text = ''
  */
 function with_whitespace($in, bool $using_textarea = false) : object
 {
-    if ($in == '') {
-        return new Tempcode();
+    if (is_object($in)) {
+        if ($in->is_empty()) {
+            return $in;
+        }
+    } else {
+        if ($in == '') {
+            return new Tempcode();
+        }
     }
     return do_template('WITH_WHITESPACE', ['_GUID' => 'be3b74901d5522d4e67ff6313ad61643', 'CONTENT' => $in, 'USING_TEXTAREA' => $using_textarea]);
 }

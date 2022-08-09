@@ -221,7 +221,8 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                         'answer' => $answer,
                         'pv_member_id' => $vote['pv_member_id'],
                         'pv_date_time' => $vote['pv_date_time'],
-                        'voting_power' => $voting_power
+                        'voting_power' => $voting_power,
+                        'voting_equation' => $voting_equation,
                     ];
                 }
             }
