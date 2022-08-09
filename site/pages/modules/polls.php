@@ -175,6 +175,7 @@ class Module_polls
             foreach (array_keys($usergroups) as $id) {
                 if ((!isset($staff_groups[$id])) && $id != (db_get_first_id())) {
                     set_privilege($id, 'bypass_validation_midrange_content', false, 'cms_polls');
+                    set_privilege($id, 'edit_own_midrange_content', false, 'cms_polls');
                 }
             }
         }
