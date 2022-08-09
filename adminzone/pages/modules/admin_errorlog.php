@@ -162,7 +162,7 @@ class Module_admin_errorlog
         require_code('files');
         require_css('errorlog');
 
-        $maximum_size = 1024 * 512;
+        $maximum_size = 1024 * 32;
         $max_google_pages = 6;
         $default_max_per_page = 30;
 
@@ -250,6 +250,7 @@ class Module_admin_errorlog
         if ($sort_order == 'DESC') {
             $stuff = array_reverse($stuff);
         }
+
         require_code('templates_results_table');
         $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('MESSAGE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
@@ -393,6 +394,7 @@ class Module_admin_errorlog
         ]);
 
         require_code('templates_internalise_screen');
+
         return internalise_own_screen($tpl);
     }
 

@@ -42,7 +42,7 @@ class Hook_cron_cns_birthdays
             $this->this_birthday_day = date('d/m/Y', tz_time(time(), get_site_timezone()));
             if (get_value('last_birthday_day', null, true) !== $this->this_birthday_day) {
                 require_code('cns_general');
-                $num_queued = count(cns_find_birthdays());
+                $num_queued = count(cns_find_birthdays(null, true, get_site_timezone()));
             } else {
                 $num_queued = 0;
             }
@@ -70,7 +70,7 @@ class Hook_cron_cns_birthdays
             require_lang('cns');
 
             require_code('cns_general');
-            $_birthdays = cns_find_birthdays();
+            $_birthdays = cns_find_birthdays(null, true, get_site_timezone());
 
             $combined_birthdays_mail = '';
             foreach ($_birthdays as $_birthday) {

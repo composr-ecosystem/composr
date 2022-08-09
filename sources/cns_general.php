@@ -480,7 +480,7 @@ function get_member_dob_details(int $member_id) : ?array
         if ($month > intval(date('m'))) {
             $age--;
         }
-        if (($month == intval(date('m'))) && ($day > intval(date('D')))) {
+        if (($month == intval(date('m'))) && ($day > intval(date('j')))) {
             $age--;
         }
     } else {
@@ -530,25 +530,30 @@ function get_group_colour(int $gid) : string
  * Find all the birthdays in a certain day.
  *
  * @param  ?TIME $time A timestamps that exists in the certain day (null: now)
+ * @param  boolean $ignore_upper_limit Whether we should ignore the configured upper limit
+ * @param  ?string $timezone Use the specified timezone when determining who has a birthday (null: use the timezone of the current member)
  * @return array List of maps describing the members whose birthday it is on the certain day
  */
-function cns_find_birthdays(?int $time = null) : array
+function cns_find_birthdays(?int $time = null, bool $ignore_upper_limit = false, ?string $timezone = null) : array
 {
+    $upper_limit = intval(get_option('enable_birthdays'));
+    if (!$ignore_upper_limit && intval($upper_limit) <= 0) {
+        return [];
+    }
+
     if ($time === null) {
         $time = time();
     }
 
-    $upper_limit = intval(get_option('enable_birthdays'));
-
-    list($day, $month, $year) = explode(' ', date('j m Y', utctime_to_usertime($time)));
+    list($day, $month, $year) = explode(' ', date('j m Y', (($timezone !== null) ? tz_time($time, $timezone) : utctime_to_usertime($time))));
     $rows = $GLOBALS['FORUM_DB']->query_select(
         'f_members',
         ['id', 'm_username', 'm_reveal_age', 'm_dob_year', 'm_last_visit_time'],
         ['m_dob_day' => intval($day), 'm_dob_month' => intval($month)],
         'ORDER BY m_last_visit_time DESC',
-        $upper_limit
+        $ignore_upper_limit ? null : ($upper_limit + 1)
     );
-    if (count($rows) == $upper_limit) {
+    if (!$ignore_upper_limit && count($rows) == $upper_limit + 1) {
         return [];
     }
 
