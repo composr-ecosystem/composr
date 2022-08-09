@@ -485,6 +485,10 @@ class Module_cms_polls extends Standard_crud_module
 
                     set_poll(intval($id));
                 }
+            } else {
+                if ($is_current == 1) {
+                    unset_poll(intval($id));
+                }
             }
         }
 

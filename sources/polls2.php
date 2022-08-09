@@ -354,3 +354,13 @@ function set_poll($id)
     $mail = do_notification_lang('POLL_CHOSEN_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape(get_translated_text($question)), $poll_url->evaluate());
     dispatch_notification('poll_chosen', null, $subject, $mail);
 }
+
+/**
+ * Unset the poll.
+ *
+ * @param  AUTO_LINK $id The poll ID to unset
+ */
+function unset_poll($id)
+{
+    $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 0, 'date_and_time' => time()], ['id' => $id], '', 1);
+}
