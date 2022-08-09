@@ -510,9 +510,10 @@
         var xExcess = x - $dom.getWindowWidth(win) - win.pageXOffset + width + 10/*magic tolerance factor*/;
         if (xExcess > 0) { // Either we explicitly gave too much width, or the width auto-calculated exceeds what we THINK is the maximum width in which case we have to re-compensate with an extra contingency to stop CSS/JS vicious disagreement cycles
             var xBefore = x;
-            x -= xExcess + styleOffsetX;
-            if (x < 100) { // Do not make it impossible to de-focus the tooltip
-                x = (xBefore < 100) ? xBefore : 100;
+            x -= xExcess - styleOffsetX;
+            var minimumLeftPosition = 50;
+            if (x < minimumLeftPosition) { // Do not make it impossible to de-focus the tooltip
+                x = (xBefore < minimumLeftPosition) ? xBefore : minimumLeftPosition;
             }
         }
         if (x < 0) {
