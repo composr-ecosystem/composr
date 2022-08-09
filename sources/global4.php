@@ -688,6 +688,29 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
 }
 
 /**
+ * Find if an action already logged.
+ *
+ * @param  ID_TEXT $type The type of activity just carried out (a language string codename)
+ * @param  ?SHORT_TEXT $a The most important parameter of the activity (e.g. ID) (null: none)
+ * @param  ?SHORT_TEXT $b A secondary (perhaps, human readable) parameter of the activity (e.g. caption) (null: none)
+ * @return boolean Whether it is
+ * @ignore
+ */
+function already_in_log(string $type, ?string $a = null, ?string $b = null)
+{
+    $map = [
+        'the_type' => $type,
+    ];
+    if ($a !== null) {
+        $map['param_a'] = $a;
+    }
+    if ($b !== null) {
+        $map['param_b'] = $b;
+    }
+    return ($GLOBALS['SITE_DB']->query_select_value_if_there('actionlogs', 'id', $map) !== null);
+}
+
+/**
  * Generate a GUID.
  *
  * @return ID_TEXT A GUID

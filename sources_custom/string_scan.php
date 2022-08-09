@@ -11550,6 +11550,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_POINTS
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_NO_POINTS
         NOTIFICATION_TYPE_birthday_points
+        POLL_CHOSEN
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
