@@ -234,7 +234,7 @@ function render_member_box($poster_details, $preview = false, $hooks = null, $ho
             if ($month > intval(date('m'))) {
                 $age--;
             }
-            if (($month == intval(date('m'))) && ($day > intval(date('D')))) {
+            if (($month == intval(date('m'))) && ($day > intval(date('j')))) {
                 $age--;
             }
         } else {
