@@ -1,4 +1,5 @@
 {$REQUIRE_CSS,menu__sitemap}
+{$REQUIRE_JAVASCRIPT,core_menus}
 
 {$SET,js_menu,{$NOT,{$BROWSER_MATCHES,bot}}}
 

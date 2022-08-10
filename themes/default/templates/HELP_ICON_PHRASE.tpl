@@ -1,4 +1,4 @@
-<span class="vertical-alignment" data-cms-rich-tooltip="{}" title="{TOOLTIP=}">
+<span class="vertical-alignment" data-cms-rich-tooltip="{haveLinks: {$?,{$IN_STR,{TOOLTIP},<a},true,false}}" title="{TOOLTIP=}">
 	<span class="help-icon">
 		{+START,INCLUDE,ICON}
 			NAME=help

@@ -422,7 +422,7 @@ function cns_calculate_poll_voting_power_text(int $points) : array
     }
 
     $equation = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', 'maximumVotingPower', 'offset', ['multiplier', 'points', 'logBase']));
-    $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', $ceiling, $offset, [$multiplier, $points, $base]));
+    $equation_with_numbers = with_whitespace(do_lang_tempcode('VOTING_POWER_EQUATION', $ceiling, strval($offset), [float_to_raw_string($multiplier, 2, true), strval($points), float_to_raw_string($base, 2, true)]));
     $calculation = cns_calculate_poll_voting_power($points);
 
     return [$equation, $equation_with_numbers, $calculation];

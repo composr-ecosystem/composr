@@ -800,6 +800,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/geshi.php',
             '_tests/tests/unit_tests/getid3.php',
             '_tests/tests/unit_tests/git_conflicts.php',
+            '_tests/tests/unit_tests/suphp.php',
             '_tests/tests/unit_tests/glossary.php',
             '_tests/tests/unit_tests/google_appengine.php',
             '_tests/tests/unit_tests/___health_check.php',

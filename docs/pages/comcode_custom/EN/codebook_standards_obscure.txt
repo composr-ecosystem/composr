@@ -109,6 +109,13 @@ Block access when closed
 | Product development only
 | Manually
 | We don't say KiB or use 1000s. People don't understand KiB (the term never caught on), and 1024 is the long term convention in computing.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+No .php files in writable directories
+| Portability
+| Product development only
+| Automated test ([tt]suphp.php[/tt])
+| suPHP will not allow .php files in directories with group/other write permissions.
 |}
 
 [title="4"]Log files[/title]

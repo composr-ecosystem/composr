@@ -285,7 +285,15 @@ class Notification_dispatcher
         $this->subject = $subject;
         $this->message = $message;
         $this->to_member_ids = $to_member_ids;
-        $this->from_member_id = ($from_member_id === null) ? get_member() : $from_member_id;
+        $this->from_member_id = $from_member_id;
+
+        if ($from_member_id === null) {
+            if (running_script('cron_bridge')) {
+                $this->from_member_id = A_FROM_SYSTEM_PRIVILEGED;
+            } else {
+                $this->from_member_id = get_member();
+            }
+        }
     }
 
     /**

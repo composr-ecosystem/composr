@@ -338,6 +338,8 @@ function set_poll(int $id)
     $question = $rows[0]['question'];
     $submitter = $rows[0]['submitter'];
 
+    $already_logged = already_in_log('CHOOSE_POLL', strval($id));
+
     log_it('CHOOSE_POLL', strval($id), get_translated_text($question));
 
     require_code('users2');
@@ -346,11 +348,11 @@ function set_poll(int $id)
         syndicate_described_activity('polls:ACTIVITY_CHOOSE_POLL', get_translated_text($question), '', '', '_SEARCH:polls:view:' . strval($id), '', '', 'polls', 1, null, true);
     }
 
-    if ((!is_guest($submitter)) && (addon_installed('points'))) {
+    if ((!is_guest($submitter)) && (addon_installed('points')) && (!$already_logged)) {
         require_code('points2');
         $points_chosen = intval(get_option('points_CHOOSE_POLL'));
         if ($points_chosen != 0) {
-            system_gift_transfer(do_lang('POLL'), $points_chosen, $submitter);
+            system_gift_transfer(do_lang('POLL_CHOSEN'), $points_chosen, $submitter);
         }
     }
 
@@ -366,6 +368,19 @@ function set_poll(int $id)
     $poll_url = build_url(['page' => 'polls', 'type' => 'view', 'id' => $id], get_module_zone('polls'), [], false, false, true);
     $mail = do_notification_lang('POLL_CHOSEN_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape(get_translated_text($question)), $poll_url->evaluate());
     dispatch_notification('poll_chosen', null, $subject, $mail);
+
+    require_code('sitemap_xml');
+    notify_sitemap_node_edit('_SEARCH:polls:view:' . strval($id));
+}
+
+/**
+ * Unset the poll.
+ *
+ * @param  AUTO_LINK $id The poll ID to unset
+ */
+function unset_poll(int $id)
+{
+    $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 0, 'date_and_time' => time()], ['id' => $id], '', 1);
 
     require_code('sitemap_xml');
     notify_sitemap_node_edit('_SEARCH:polls:view:' . strval($id));
