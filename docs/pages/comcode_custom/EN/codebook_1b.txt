@@ -548,9 +548,9 @@ To do this write a [tt]systems/page_groupings[/tt] hook. Look at existing hooks 
 
 To add a new symbol you'll need to write a [tt]systems/symbols[/tt] hook. This is a very useful technique for extending the Tempcode system.
 
-[title="3"]Running system scheduler scripts[/title]
+[title="3"]Running system scheduler hooks[/title]
 
-To run a system scheduler script you'll need to do it via writing a [tt]systems/cron[/tt] hook. For it to work, the system scheduler must be set up on the server and tied into Composr (described in the Composr documentation). Look at existing hooks as examples. Alternatively, if you do not want to bother setting up the system scheduler, or want to see the script output (e.g. errors) when debugging, just call up [tt]http://yourbaseurl/data/cron_bridge.php[/tt] manually in the browser.
+To run a system scheduler hook you'll need to do it via writing a [tt]systems/cron[/tt] hook. For it to work, the system scheduler must be set up on the server and tied into Composr (described in the Composr documentation). Look at existing hooks as examples. Alternatively, if you do not want to bother setting up the system scheduler, or want to see the script output (e.g. errors) when debugging, just call up [tt]http://yourbaseurl/data/cron_bridge.php[/tt] manually in the browser.
 
 [title="3"]Contentious override hooks[/title]
 
@@ -1143,9 +1143,9 @@ To add the addon as non-bundled:
 
 Your addon can then be managed through the bugfix push system, and will be pushed when the addons are bulk-uploaded (done as a part of the new version release process).
 
-[title="3"]Cron hooks[/title]
+[title="3"]System scheduler hooks[/title]
 
-Anything to be executed regularly (e.g. every day) should be implemented as a Cron hook.
-You can simulate Cron executing by manually calling [tt]http://yourbaseurl/data/cron_bridge.php?limit_hooks=example&verbose=1&force=1[/tt]). This URL will only call the Cron hook named [tt]example[/tt], it will produce extra diagnostic information, and it will disable locking (so crashes that leave the Cron hook locked won't interrupt your debugging).
+Anything to be executed regularly (e.g. every day) should be implemented as a system scheduler hook.
+You can simulate Cron executing by manually calling [tt]http://yourbaseurl/data/cron_bridge.php?limit_hooks=example&verbose=1&force=1[/tt]). This URL will only call the system scheduler hook named [tt]example[/tt], it will produce extra diagnostic information, and it will disable locking (so crashes that leave the system scheduler hook locked won't interrupt your debugging).
 
 {$SET,tutorial_tags,Development,PHP,core_forum_drivers,Development,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Back-end development, part 2.}[block]main_tutorial_rating[/block]

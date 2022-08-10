@@ -299,7 +299,7 @@ function preview_script()
 }
 
 /**
- * Script to perform System scheduler scripts called by (usually) the real Cron.
+ * Script to perform system scheduler hooks called by (usually) the real Cron.
  *
  * @param  PATH $caller File path of the cron_bridge.php script
  *

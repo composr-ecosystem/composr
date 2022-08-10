@@ -323,7 +323,7 @@ function get_table_descriptions() : array
         'config' => 'all the configuration settings that have been saved',
         'content_privacy__members' => 'sets content privacy',
         'content_regions' => 'sets the regions content may be viewed from',
-        'cron_progression' => 'used to track and configure Cron scripts',
+        'cron_progression' => 'used to track and configure system scheduler hooks',
         'daily_visits' => 'tracks daily visits from site members',
         'edit_pings' => 'used to stop people editing the same thing at the same time (AJAX)',
         'failedlogins' => 'a log of all failed logins',

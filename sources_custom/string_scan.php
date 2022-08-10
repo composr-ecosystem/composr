@@ -993,7 +993,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_hc_io_mbs
         CONFIG_OPTION_list_unsubscribe_target
         CONFIG_OPTION_max_queued_mails_per_cron_cycle
-        CRON_SCRIPTS
+        CRON_HOOKS
         CSS_UNKNOWN_PSEUDO
         CSS_UNKNOWN_AT_RULE
         CSS_UNKNOWN_AT_BLOCK_RULE
@@ -8295,6 +8295,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TOPIC_POLLS_WEIGHTING_LOGARITHMIC_BASE
         CONFIG_OPTION_topic_polls_weighting_logarithmic_base
         CONFIG_OPTION_points_birthday
+        DOC_CRON_HOOKS
     ')));
 
     $non_admin_files = [
@@ -11544,7 +11545,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VOTING_POWER
         VOTING_POWER_EQUATION
         VOTING_POWER_DERIVATION
-        DATE_OF_BIRTH_NO_EDIT
+        DATE_OF_BIRTH_NO_SELF_EDIT
         BIRTHDAY_POINTS
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_SUBJECT
         BIRTHDAY_POINTS_NOTIFICATION_MAIL_POINTS

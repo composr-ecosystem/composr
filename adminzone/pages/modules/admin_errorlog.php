@@ -56,7 +56,8 @@ class Module_admin_errorlog
         }
 
         return [
-            '!' => ['ERRORLOG', 'menu/adminzone/audit/errorlog'],
+            'browse' => ['ERRORLOG', 'menu/adminzone/audit/errorlog'],
+            'cron' => ['CRON_HOOKS', 'admin/tool']
         ];
     }
 
@@ -87,6 +88,13 @@ class Module_admin_errorlog
             if (!php_function_allowed('ini_set')) {
                 attach_message(do_lang_tempcode('ERROR_LOGGING_PROBABLY_BROKEN'), 'warn');
             }
+        }
+
+        if ($type == 'cron') {
+            set_helper_panel_tutorial('tut_configuration');
+            set_helper_panel_text(comcode_lang_string('DOC_CRON_HOOKS'));
+
+            $this->title = get_screen_title('CRON_HOOKS');
         }
 
         if ($type == 'delete_log') {
@@ -127,6 +135,10 @@ class Module_admin_errorlog
 
         if ($type == 'browse') {
             return $this->show_logs();
+        }
+
+        if ($type == 'cron') {
+            return $this->show_cron_progression_table();
         }
 
         if ($type == 'delete_log') {
@@ -330,13 +342,6 @@ class Module_admin_errorlog
                 }
                 $delete_url = build_url(['page' => '_SELF', 'type' => 'delete_log', 'id' => basename($filename, '.log')], '_SELF');
 
-                // Prepare any additional details
-                if ($filename == 'cron.log') {
-                    $additional = $this->generate_cron_progression_table();
-                } else {
-                    $additional = new Tempcode();
-                }
-
                 // Template-ready
                 $logs[$filename] = [
                     'LOG' => $log,
@@ -344,7 +349,6 @@ class Module_admin_errorlog
                     'CLEAR_URL' => $clear_url,
                     'DELETE_URL' => $delete_url,
                     'ADD_URL' => $add_url,
-                    'ADDITIONAL' => $additional,
                 ];
             }
         }
@@ -359,13 +363,6 @@ class Module_admin_errorlog
                     // Action URLs
                     $add_url = build_url(['page' => '_SELF', 'type' => 'init_log', 'id' => basename($filename, '.log')], '_SELF');
 
-                    // Prepare any additional details
-                    if ($filename == 'cron.log') {
-                        $additional = $this->generate_cron_progression_table();
-                    } else {
-                        $additional = new Tempcode();
-                    }
-
                     // Template-ready
                     $logs[$filename] = [
                         'LOG' => null,
@@ -373,7 +370,6 @@ class Module_admin_errorlog
                         'CLEAR_URL' => new Tempcode(),
                         'DELETE_URL' => new Tempcode(),
                         'ADD_URL' => $add_url,
-                        'ADDITIONAL' => $additional,
                     ];
                 }
             }
@@ -403,7 +399,7 @@ class Module_admin_errorlog
      *
      * @return Tempcode The progression table
      */
-    protected function generate_cron_progression_table() : object
+    public function show_cron_progression_table() : object
     {
         require_code('templates_results_table');
         $_header_row = [
@@ -431,7 +427,7 @@ class Module_admin_errorlog
             $last_error = '';
             $enabled = true;
 
-            $info = $object->info($last_run, true);
+            $info = $object->info($last_run, null); // Low priority for calculating queued items
             if ($info !== null) {
                 $label = $info['label'];
                 $num_queued = $info['num_queued'];
@@ -518,11 +514,16 @@ class Module_admin_errorlog
             $result_entries->attach(results_entry($details, true));
         }
 
-        return results_table(do_lang_tempcode('CRON_SCRIPTS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
+        $table = results_table(do_lang_tempcode('CRON_HOOKS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
+
+        $tpl = do_template('RESULTS_TABLE_SCREEN', ['_GUID' => 'c9270fd515e76918a37edf3f573c6da2', 'RESULTS_TABLE' => $table, 'TITLE' => $this->title]);
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
     }
 
     /**
-     * Enable a Cron hook.
+     * Enable a system scheduler hook.
      *
      * @return Tempcode The result of execution
      */
@@ -533,7 +534,7 @@ class Module_admin_errorlog
     }
 
     /**
-     * Disable a Cron hook.
+     * Disable a system scheduler hook.
      *
      * @return Tempcode The result of execution
      */
@@ -544,7 +545,7 @@ class Module_admin_errorlog
     }
 
     /**
-     * Configure a Cron hook.
+     * Configure a system scheduler hook.
      *
      * @param  ID_TEXT $hook The hook
      * @param  BINARY $enabled Whether the hook is enabled

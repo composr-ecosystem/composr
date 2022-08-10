@@ -22,10 +22,10 @@ class Hook_cron_site_cleanup
      * Get info from this hook.
      *
      * @param  ?TIME $last_run Last time run (null: never)
-     * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
+     * @param  ?boolean $calculate_num_queued Calculate the number of items queued, if possible (null: the hook may decide / low priority)
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info(?int $last_run, bool $calculate_num_queued) : ?array
+    public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('composr_homesite')) {
             return null;
@@ -33,6 +33,11 @@ class Hook_cron_site_cleanup
 
         if (strpos(get_db_type(), 'mysql') === false) {
             return null;
+        }
+
+        // Calculate on low priority
+        if ($calculate_num_queued === null) {
+            $calculate_num_queued = true;
         }
 
         if ($calculate_num_queued) {
@@ -52,7 +57,7 @@ class Hook_cron_site_cleanup
     }
 
     /**
-     * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
+     * Run function for system scheduler hooks. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */

@@ -27,26 +27,24 @@ class Hook_cron_composr_fast_custom_index
      * Get info from this hook.
      *
      * @param  ?TIME $last_run Last time run (null: never)
-     * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
+     * @param  ?boolean $calculate_num_queued Calculate the number of items queued, if possible (null: the hook may decide / low priority)
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info(?int $last_run, bool $calculate_num_queued) : ?array
+    public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('search')) {
             return null;
         }
 
-        $num_queued = null;
-
         return [
             'label' => 'Index content for Composr fast custom index',
-            'num_queued' => $num_queued,
+            'num_queued' => null,
             'minutes_between_runs' => 15,
         ];
     }
 
     /**
-     * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
+     * Run function for system scheduler hooks. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
