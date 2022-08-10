@@ -38,7 +38,7 @@ class Hook_cron_group_points
         return [
             'label' => 'Assign points for usergroup membership',
             'num_queued' => null,
-            'minutes_between_runs' => 60 * 24 * 27, // Only once within a month
+            'minutes_between_runs' => 30,
         ];
     }
 
@@ -51,9 +51,15 @@ class Hook_cron_group_points
     {
         require_code('points');
 
-        if (date('j') != '1') {
-            return; // Only on first day
+        $actual_last_run = get_value('cron_group_points__last_run', null, true);
+        $current_month = date('Y-m', tz_time(time(), get_site_timezone()));
+
+        // Do not run if it is not a new month
+        if ($actual_last_run === $current_month) {
+            return;
         }
+
+        set_value('cron_group_points__last_run', $current_month, true);
 
         require_code('points');
         require_code('points2');
