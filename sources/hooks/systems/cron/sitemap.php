@@ -27,11 +27,16 @@ class Hook_cron_sitemap
      * Get info from this hook.
      *
      * @param  ?TIME $last_run Last time run (null: never)
-     * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
+     * @param  ?boolean $calculate_num_queued Calculate the number of items queued, if possible (null: the hook may decide / low priority)
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info(?int $last_run, bool $calculate_num_queued) : ?array
+    public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
+        // Calculate on low priority
+        if ($calculate_num_queued === null) {
+            $calculate_num_queued = true;
+        }
+
         if ($calculate_num_queued) {
             $last_time = intval(get_value('last_sitemap_time_calc_inner', null, true));
             $num_queued = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT set_number) FROM ' . get_table_prefix() . 'sitemap_cache WHERE last_updated>=' . strval($last_time));
@@ -47,7 +52,7 @@ class Hook_cron_sitemap
     }
 
     /**
-     * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
+     * Run function for system scheduler hooks. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */

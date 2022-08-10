@@ -696,7 +696,7 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
  * @return boolean Whether it is
  * @ignore
  */
-function already_in_log(string $type, ?string $a = null, ?string $b = null)
+function already_in_log(string $type, ?string $a = null, ?string $b = null) : bool
 {
     $map = [
         'the_type' => $type,

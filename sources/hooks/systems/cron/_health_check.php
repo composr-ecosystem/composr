@@ -27,10 +27,10 @@ class Hook_cron__health_check
      * Get info from this hook.
      *
      * @param  ?TIME $last_run Last time run (null: never)
-     * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
+     * @param  ?boolean $calculate_num_queued Calculate the number of items queued, if possible (null: the hook may decide / low priority)
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info(?int $last_run, bool $calculate_num_queued) : ?array
+    public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('health_check')) {
             return null;
@@ -44,13 +44,13 @@ class Hook_cron__health_check
     }
 
     /**
-     * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
+     * Run function for system scheduler hooks. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
     public function run(?int $last_run)
     {
-        // Note that we have a leading "_" on the hook name so that it runs first (we run the system scheduler scripts in sorted order)
+        // Note that we have a leading "_" on the hook name so that it runs first (we run the system scheduler hooks in sorted order)
 
         require_code('health_check');
 

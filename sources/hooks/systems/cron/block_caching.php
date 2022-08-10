@@ -27,11 +27,16 @@ class Hook_cron_block_caching
      * Get info from this hook.
      *
      * @param  ?TIME $last_run Last time run (null: never)
-     * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
+     * @param  ?boolean $calculate_num_queued Calculate the number of items queued, if possible (null: the hook may decide / low priority)
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info(?int $last_run, bool $calculate_num_queued) : ?array
+    public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
+        // Calculate on low priority
+        if ($calculate_num_queued === null) {
+            $calculate_num_queued = true;
+        }
+
         return [
             'label' => 'Block cache population',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('cron_caching_requests', 'COUNT(*)') : 0,
@@ -40,7 +45,7 @@ class Hook_cron_block_caching
     }
 
     /**
-     * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
+     * Run function for system scheduler hooks. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
