@@ -1003,7 +1003,7 @@ This section is not designed as primary documentation for the tools. Those tools
 | Web browser
 |-
 | [tt]data/cron_bridge.php[/tt]
-| Run the system scheduler scripts. Can also be used to probe for the likely Cron command to configure against.
+| Run the system scheduler hooks. Can also be used to probe for the likely Cron command to configure against.
 | [tt]core[/tt]
 | Cron (or equivalent) via PHP interpreter
 |-

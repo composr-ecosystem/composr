@@ -203,7 +203,7 @@ There are a number of parameters you can pass to [tt]cron_bridge.php[/tt], eithe
  - [tt]limit_hooks[/tt] -- Pass the name of PHP files in [tt]sources[_custom]/hooks/systems/cron[/tt] to limit to just those scheduler items; useful if you want to force certain items to run more regularly; if you pass just a single item name then normal wait times for processing that item will be ignored
  - [tt]include_msn[/tt] -- When Composr has multi-site-network sub-sites, whether to run the system scheduler on all those sub-sites
  - Debugging:
-  - [tt]verbose[/tt] -- Whether to put out extra output (not recommended when tied into Cron, as it will likely e-mail you every time it runs -- for that enable logging instead from Admin Zone > Audit > Error Log)
+  - [tt]verbose[/tt] -- Whether to put out extra output (not recommended when tied into Cron, as it will likely e-mail you every time it runs -- for that enable Cron logging instead from Admin Zone > Audit > Error Log)
   - [tt]query_mode[/tt] -- Whether to just spit out a Cron configuration command instead of running the scheduler
   - [tt]force[/tt] -- Whether to ignore scheduler item locking (for developers only); can be useful for testing and also clearing out stale locks
  - Loop configuration:
@@ -217,9 +217,16 @@ Via URL:
 Via command line:
 php cron_bridge.php --limit_hook=tasks --verbose
 
-[title="3"]Debugging the system scheduler[/title]
+[title="3"]System scheduler interface[/title]
 
-A system scheduler management interface is provided at Admin Zone > Audit > Low-level logging.
+A system scheduler management interface is provided at Admin Zone > Audit > Low-level logging > system scheduler hooks. There, you can get an overview of every system schedule script:
+ - Number of operations / items queued
+ - Time between each run
+ - Last run
+ - Amount of time the script took to execute
+ - Errors encountered
+ - Whether it is enabled
+ - Action buttons to enable/disable scripts or to execute scripts on-demand individually
 
 [title="2"]Closed site, and opening[/title]
 

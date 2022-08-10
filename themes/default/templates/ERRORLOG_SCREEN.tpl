@@ -36,10 +36,4 @@
 			<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{DELETE_URL*}">{!DELETE_LOG}</a></li>
 		{+END}
 	</ul>
-
-	{+START,IF_NON_EMPTY,{ADDITIONAL}}
-		<h3>{!ADDITIONAL_INFO}</h3>
-
-		{ADDITIONAL}
-	{+END}
 {+END}

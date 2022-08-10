@@ -1,6 +1,6 @@
 [title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Disaster recovery[/title]
 
-[i]The Composr 'error log' screen points to this tutorial (as well as the 'critical error' screen). If you think you have found a bug, please [page=":contact:free"]report it[/page]. The rest of this tutorial deals with potential disaster situations -- an error in the error log does not imply a disaster has happened.[/i]
+[i]The Composr 'error log' screen points to this tutorial (as well as the 'critical error' screen and the 'system scheduler hooks' screen). If you think you have found a bug, please [page=":contact:free"]report it[/page]. The rest of this tutorial deals with potential disaster situations -- an error in the error log does not imply a disaster has happened.[/i]
 
 This tutorial will go through some solutions to 'disastrous' scenarios that could happen on an unstable web server configuration. It does not cover all that could go wrong by any means, as there are literally an infinite number of things that could go wrong if Composr is running in an unreliable environment.
 

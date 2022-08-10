@@ -328,7 +328,7 @@ Composr has support for 'implicit usergroups' which are usergroup memberships de
 [title="3"]Limitations and background sync[/title]
 
 Usually when Composr handles checks of when someone is in a usergroup it goes through some fool-proof methods to do it by looking at just that particular user. Sometimes Composr needs to efficiently find all members in a usergroup, and bypasses checking implicit groups and LDAP for performance/simplicity.
-To mitigate this, Composr has a system scheduler script that is disabled by default that can be turned on by an Commandr command to synchronise implicit usergroups as normal usergroup memberships. To turn that on:
+To mitigate this, Composr has a system scheduler hook that is disabled by default that can be turned on by an Commandr command to synchronise implicit usergroups as normal usergroup memberships. To turn that on:
 [code="Commandr"]
 :set_value('implicit_usergroup_sync','1');
 [/code]

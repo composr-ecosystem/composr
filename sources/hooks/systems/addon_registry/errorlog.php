@@ -147,7 +147,6 @@ class Hook_addon_registry_errorlog
                 'CLEAR_URL' => placeholder_url(),
                 'DELETE_URL' => placeholder_url(),
                 'ADD_URL' => placeholder_url(),
-                'ADDITIONAL' => lorem_paragraph_html(),
             ],
         ];
 

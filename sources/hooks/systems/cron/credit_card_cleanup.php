@@ -30,10 +30,10 @@ class Hook_cron_credit_card_cleanup
      * Get info from this hook.
      *
      * @param  ?TIME $last_run Last time run (null: never)
-     * @param  boolean $calculate_num_queued Calculate the number of items queued, if possible
+     * @param  ?boolean $calculate_num_queued Calculate the number of items queued, if possible (null: the hook may decide / low priority)
      * @return ?array Return a map of info about the hook (null: disabled)
      */
-    public function info(?int $last_run, bool $calculate_num_queued) : ?array
+    public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -43,19 +43,23 @@ class Hook_cron_credit_card_cleanup
             return null;
         }
 
+        $credit_card_cleanup_days = get_option('credit_card_cleanup_days');
+        if ($credit_card_cleanup_days === null) {
+            return null;
+        }
+
+        require_code('cns_members');
+        $this->card_number_field_id = find_cms_cpf_field_id('cms_payment_card_number');
+        if ($this->card_number_field_id === null) {
+            return null;
+        }
+
+        // Calculate on low priority
+        if ($calculate_num_queued === null) {
+            $calculate_num_queued = true;
+        }
+
         if ($calculate_num_queued) {
-            $credit_card_cleanup_days = get_option('credit_card_cleanup_days');
-
-            if ($credit_card_cleanup_days === null) {
-                return null;
-            }
-
-            require_code('cns_members');
-            $this->card_number_field_id = find_cms_cpf_field_id('cms_payment_card_number');
-            if ($this->card_number_field_id === null) {
-                return null;
-            }
-
             $this->threshold = time() - 60 * 60 * 24 * intval($credit_card_cleanup_days);
 
             $where = 'm_last_visit_time<' . strval($this->threshold) . ' AND ' . db_string_not_equal_to('field_' . strval($this->card_number_field_id), '');
@@ -76,14 +80,12 @@ class Hook_cron_credit_card_cleanup
     }
 
     /**
-     * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
+     * Run function for system scheduler hooks. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)
      */
     public function run(?int $last_run)
     {
-        $credit_card_cleanup_days = get_option('credit_card_cleanup_days');
-
         $protected_field_changes = [];
         $protected_field_names = ['payment_cardholder_name', 'payment_card_type', 'payment_card_number', 'payment_card_start_date', 'payment_card_expiry_date', 'payment_card_issue_number', 'billing_street_address', 'billing_city', 'billing_post_code', 'billing_country', 'billing_mobile_phone_number', 'billing_county', 'billing_state'];
         foreach ($protected_field_names as $cpf) {

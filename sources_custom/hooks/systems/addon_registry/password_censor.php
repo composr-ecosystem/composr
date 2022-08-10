@@ -89,7 +89,7 @@ class Hook_addon_registry_password_censor
         return 'Regularly wipe old passwords posted in private on your website, in case it is ever hacked.
 
 In detail:
-This is a system scheduler script that regularly censors anything looking like a password stored in support ticket posts over 60 days old to limit the potential fallout if your ticket system ever got compromised.';
+This is a system scheduler hook that regularly censors anything looking like a password stored in support ticket posts over 60 days old to limit the potential fallout if your ticket system ever got compromised.';
     }
 
     /**
