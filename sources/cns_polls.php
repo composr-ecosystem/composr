@@ -129,7 +129,7 @@ function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id
 function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array $request_voters = null, ?int $answer_id = null) : ?array
 {
     // SQL injection prevention on $request_voters[1] ($order_by)
-    $acceptable_orders = ['pv_date_time ASC', 'pv_date_time DESC', 'pv_member_id ASC', 'pv_member_id DESC', 'pv_answer_id ASC', 'pv_answer_id DESC', 'answer ASC', 'answer DESC', 'voting_power ASC', 'voting_power DESC'];
+    $acceptable_orders = ['pv_date_time ASC', 'pv_date_time DESC', 'pv_member_id ASC', 'pv_member_id DESC', 'pv_answer_id ASC', 'pv_answer_id DESC', 'answer ASC', 'answer DESC', 'pv_cache_voting_power ASC', 'pv_cache_voting_power DESC'];
     if ($request_voters !== null && array_key_exists(1, $request_voters) && array_search($request_voters[1], $acceptable_orders) === false) {
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
@@ -140,7 +140,16 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         return null;
     }
 
-    // Get poll answers and cached votes for each answer
+    $point_weighting = (get_option('enable_poll_point_weighting') == '1' && $poll_info[0]['po_point_weighting'] == 1 && addon_installed('points'));
+
+    // Fetch / calculate voting powers for this poll when applicable
+    if ($point_weighting) {
+        require_code('cns_polls_action2');
+
+        $poll_info[0]['po_cache_voting_power'] = cns_calculate_poll_voting_power($poll_id, false, $poll_info[0]);
+    }
+
+    // Get poll answers and cached votes / power for each answer
     $where_map = ['pa_poll_id' => $poll_id];
     if ($answer_id !== null) {
         $where_map['id'] = $answer_id;
@@ -154,7 +163,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         $answer['id'] = $_answer['id'];
         if ((($request_results) || ($poll_info[0]['po_is_open'] == 0)) && ($poll_info[0]['po_is_private'] == 0)) { // We usually will show the results for a closed poll, but not one still private
             $answer['num_votes'] = $_answer['pa_cache_num_votes'];
-            $answer['voting_power'] = 0.0;
+            $answer['voting_power'] = $point_weighting ? cns_calculate_answer_voting_power($_answer['id'], false, $_answer) : $_answer['pa_cache_voting_power'];
         }
 
         $answers[] = $answer;
@@ -165,105 +174,46 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
     $max = (($request_voters !== null) && (array_key_exists(2, $request_voters))) ? $request_voters[2] : 50;
     $max_vote_rows = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll_id, 'pv_revoked' => 0]);
 
-    $point_weighting = (get_option('enable_poll_point_weighting') == '1' && $poll_info[0]['po_point_weighting'] == 1 && addon_installed('points'));
-    $_votes = [];
     $votes = [];
-    $total_voting_power = 0.0;
 
-    // We need to get each voter if we are either requesting that or we need to weigh votes by points
-    if ($request_voters !== null || $point_weighting) {
+    if ($request_voters !== null) {
         require_code('cns_polls_action2');
 
-        // All $order_by directives except voting_power and answer should be done in SQL
-        $not_sql_orders = ['answer ASC', 'answer DESC', 'voting_power ASC', 'voting_power DESC'];
+        // All $order_by directives except answer should be done in SQL
+        $not_sql_orders = ['answer ASC', 'answer DESC'];
         $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters)) && (array_search($request_voters[1], $not_sql_orders) === false)) ? $request_voters[1] : 'pv_date_time DESC';
 
-        $vote_rows_select = ['pv_answer_id', 'pv_member_id', 'pv_date_time', 'pv_cached_points'];
         $vote_rows_where = ['pv_poll_id' => $poll_id, 'pv_revoked' => 0];
         if ($answer_id !== null) {
             $vote_rows_where['pv_answer_id'] = $answer_id;
         }
-        if ($point_weighting) {
-            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', $vote_rows_select, $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by);
-        } else {
-            $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', $vote_rows_select, $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
-        }
 
-        // Go through each vote to calculate voting power
         $_answer_ids = array_column($answers, 'id');
+        $_vote_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_votes', ['*'], $vote_rows_where, 'AND pv_answer_id IS NOT NULL ORDER BY ' . $order_by, $max, $start);
         foreach ($_vote_rows as $vote) {
-            $voting_power = 1.0;
-            if ($point_weighting) {
-                $voting_power = cns_calculate_poll_voting_power($vote['pv_cached_points']);
-                $voting_equation = cns_calculate_poll_voting_power_text($vote['pv_cached_points']);
-
-                // Add voting power to the total for the poll
-                $total_voting_power += $voting_power;
-
-                // Add voting power to the specific answer, if applicable
-                $_answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
-                if ($_answer_index !== false) {
-                    if (!array_key_exists('voting_power', $answers[$_answer_index])) {
-                        $answers[$_answer_index]['voting_power'] = $voting_power;
-                    } else {
-                        $answers[$_answer_index]['voting_power'] += $voting_power;
-                    }
-                }
+            $answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
+            if ($answer_index !== false) {
+                $answer = ((array_key_exists($answer_index, $answers)) && (array_key_exists('answer', $answers[$answer_index]))) ? $answers[$answer_index]['answer'] : do_lang_tempcode('UNKNOWN');
+                $votes[] = [
+                    'pv_answer_id' => $vote['pv_answer_id'],
+                    'answer' => $answer,
+                    'pv_member_id' => $vote['pv_member_id'],
+                    'pv_date_time' => $vote['pv_date_time'],
+                    'voting_power' => $point_weighting ? cns_calculate_vote_voting_power($vote['id'], false, $vote) : $vote['pv_cache_voting_power'],
+                    'voting_equation' => cns_points_to_voting_power_text($vote['pv_cache_points']),
+                ];
             }
-
-            // Add the voter row, if applicable
-            if ($request_voters !== null) {
-                $answer_index = array_search($vote['pv_answer_id'], $_answer_ids);
-                if ($answer_index !== false) {
-                    $answer = ((array_key_exists($answer_index, $answers)) && (array_key_exists('answer', $answers[$answer_index]))) ? $answers[$answer_index]['answer'] : do_lang_tempcode('UNKNOWN');
-                    $_votes[] = [
-                        'pv_answer_id' => $vote['pv_answer_id'],
-                        'answer' => $answer,
-                        'pv_member_id' => $vote['pv_member_id'],
-                        'pv_date_time' => $vote['pv_date_time'],
-                        'voting_power' => $voting_power,
-                        'voting_equation' => $voting_equation,
-                    ];
-                }
-            }
-        }
-    }
-
-    // Sort votes by voting_power in memory if requested
-    if ($request_voters !== null && (array_key_exists(1, $request_voters)) && (($request_voters[1] == 'voting_power ASC') || ($request_voters[1] == 'voting_power DESC'))) {
-        $voting_powers = array_column($_votes, 'voting_power');
-        if ($request_voters[1] == 'voting_power ASC') {
-            array_multisort($voting_powers, SORT_ASC, $_votes);
-        } else {
-            array_multisort($voting_powers, SORT_DESC, $_votes);
         }
     }
 
     // Sort by answer if requested
     if ($request_voters !== null && (array_key_exists(1, $request_voters)) && (($request_voters[1] == 'answer ASC') || ($request_voters[1] == 'answer DESC'))) {
-        $_answers = array_column($_votes, 'answer');
+        $_answers = array_column($votes, 'answer');
         if ($request_voters[1] == 'answer ASC') {
-            array_multisort($_answers, SORT_ASC, $_votes);
+            array_multisort($_answers, SORT_ASC, $votes);
         } else {
-            array_multisort($_answers, SORT_DESC, $_votes);
+            array_multisort($_answers, SORT_DESC, $votes);
         }
-    }
-
-    // Paginate votes if we did not do so via the database
-    if ($point_weighting) {
-        foreach ($_votes as $i => $vote) {
-            if ($i < $start) {
-                continue;
-            }
-
-            $votes[] = $vote;
-
-            if (count($votes) >= $max) {
-                break;
-            }
-        }
-    } else {
-        $votes = $_votes;
     }
 
     if ($request_results) {
@@ -290,7 +240,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                         'pv_ip' => get_ip_address(),
                         'pv_revoked' => 0,
                         'pv_date_time' => time(),
-                        'pv_cached_points' => 0, // We do not need to know a member's points for forfeights.
+                        'pv_cache_points' => 0, // We do not need to know a member's points for forfeights.
                     ]);
                 }
             }
@@ -314,7 +264,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
         'votes' => $votes,
         'max_vote_rows' => $max_vote_rows,
         'total_votes' => $poll_info[0]['po_cache_total_votes'],
-        'total_voting_power' => $total_voting_power,
+        'total_voting_power' => $poll_info[0]['po_cache_voting_power'],
     ];
 
     return $out;

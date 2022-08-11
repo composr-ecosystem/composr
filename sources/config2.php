@@ -387,8 +387,9 @@ function get_default_option(string $name) : ?string
  * @param  ID_TEXT $name The name of the value
  * @param  LONG_TEXT $value The value
  * @param  BINARY $will_be_formally_set Whether this was a human-set value
+ * @param  ?object $ob The config hook responsible for this option (null: fetch it ourselves)
  */
-function set_option(string $name, string $value, int $will_be_formally_set = 1)
+function set_option(string $name, string $value, int $will_be_formally_set = 1, ?object $ob = null)
 {
     global $CONFIG_OPTIONS_CACHE;
 
@@ -396,11 +397,14 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1)
         $previous_value = get_option($name);
     }
 
-    require_code('hooks/systems/config/' . filter_naughty_harsh($name));
-    $ob = object_factory('Hook_config_' . filter_naughty_harsh($name), true);
     if ($ob === null) {
-        return;
+        require_code('hooks/systems/config/' . filter_naughty_harsh($name));
+        $ob = object_factory('Hook_config_' . filter_naughty_harsh($name), true);
+        if ($ob === null) { // If it's still null, it is not found. Exit.
+            return;
+        }
     }
+
     $details = $ob->get_details();
 
     $needs_dereference = ($details['type'] == 'transtext' || $details['type'] == 'transline' || $details['type'] == 'comcodetext' || $details['type'] == 'comcodeline') ? 1 : 0;
@@ -462,6 +466,11 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1)
     }
     if (class_exists('Self_learning_cache')) {
         Self_learning_cache::erase_smart_cache();
+    }
+
+    // Run post-save code where it exists
+    if (($ob !== null) && (method_exists($ob, 'postsave_handler'))) {
+        $ob->postsave_handler($value);
     }
 }
 

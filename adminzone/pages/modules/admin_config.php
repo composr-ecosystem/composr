@@ -583,6 +583,8 @@ class Module_admin_config
             // If the option was changed
             $old_value = get_option($name);
             if (($old_value != $value) || (!isset($CONFIG_OPTIONS_CACHE[$name]['c_set'])) || ($CONFIG_OPTIONS_CACHE[$name]['c_set'] == 0)) {
+                $ob = $details['ob'];
+
                 // Run pre-save code where it exists
                 if (($ob !== null) && (method_exists($ob, 'presave_handler'))) {
                     $okay_to_save = $ob->presave_handler($value, $old_value);
@@ -592,7 +594,7 @@ class Module_admin_config
 
                 // Save
                 if ($okay_to_save) {
-                    set_option($name, $value);
+                    set_option($name, $value, 1, $ob);
                 }
             }
         }
