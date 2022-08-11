@@ -469,7 +469,7 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
     }
 
     // Run post-save code where it exists
-    if (($ob !== null) && (method_exists($ob, 'postsave_handler'))) {
+    if (method_exists($ob, 'postsave_handler')) {
         $ob->postsave_handler($value);
     }
 }

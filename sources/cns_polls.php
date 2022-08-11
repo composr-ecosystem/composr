@@ -122,14 +122,14 @@ function cns_may_delete_poll_by(?int $forum_id, int $poll_owner, ?int $member_id
  *
  * @param  AUTO_LINK $poll_id The poll
  * @param  boolean $request_results Whether we must record that the current member is requesting the results, blocking future voting for them
- * @param  ?array $request_voters An array of [int $start = 0, string $order_by = 'pv_date_time DESC', int $max = 50] if we want to also return specific member IDs and what they voted ($order_by can also be voting_power or answer) (null: Do not include specific votes)
+ * @param  ?array $request_voters An array of [int $start = 0, string $order_by = 'pv_date_time DESC', int $max = 50] if we want to also return specific member IDs and what they voted (null: Do not include specific votes)
  * @param  ?AUTO_LINK $answer_id The poll answer ID to filter by (null: return all answers)
  * @return ?array The map of results (null: could not find poll)
  */
 function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array $request_voters = null, ?int $answer_id = null) : ?array
 {
     // SQL injection prevention on $request_voters[1] ($order_by)
-    $acceptable_orders = ['pv_date_time ASC', 'pv_date_time DESC', 'pv_member_id ASC', 'pv_member_id DESC', 'pv_answer_id ASC', 'pv_answer_id DESC', 'answer ASC', 'answer DESC', 'pv_cache_voting_power ASC', 'pv_cache_voting_power DESC'];
+    $acceptable_orders = ['pv_date_time ASC', 'pv_date_time DESC', 'pv_member_id ASC', 'pv_member_id DESC', 'pv_answer_id ASC', 'pv_answer_id DESC', 'pv_cache_voting_power ASC', 'pv_cache_voting_power DESC'];
     if ($request_voters !== null && array_key_exists(1, $request_voters) && array_search($request_voters[1], $acceptable_orders) === false) {
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
@@ -179,9 +179,7 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
     if ($request_voters !== null) {
         require_code('cns_polls_action2');
 
-        // All $order_by directives except answer should be done in SQL
-        $not_sql_orders = ['answer ASC', 'answer DESC'];
-        $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters)) && (array_search($request_voters[1], $not_sql_orders) === false)) ? $request_voters[1] : 'pv_date_time DESC';
+        $order_by = (($request_voters !== null) && (array_key_exists(1, $request_voters))) ? $request_voters[1] : 'pv_date_time DESC';
 
         $vote_rows_where = ['pv_poll_id' => $poll_id, 'pv_revoked' => 0];
         if ($answer_id !== null) {
@@ -203,16 +201,6 @@ function cns_poll_get_results(int $poll_id, bool $request_results = true, ?array
                     'voting_equation' => cns_points_to_voting_power_text($vote['pv_cache_points']),
                 ];
             }
-        }
-    }
-
-    // Sort by answer if requested
-    if ($request_voters !== null && (array_key_exists(1, $request_voters)) && (($request_voters[1] == 'answer ASC') || ($request_voters[1] == 'answer DESC'))) {
-        $_answers = array_column($votes, 'answer');
-        if ($request_voters[1] == 'answer ASC') {
-            array_multisort($_answers, SORT_ASC, $votes);
-        } else {
-            array_multisort($_answers, SORT_DESC, $votes);
         }
     }
 

@@ -413,7 +413,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_polls', 'po_vote_revocation', 'BINARY');
         $GLOBALS['FORUM_DB']->add_table_field('f_polls', 'po_guests_can_vote', 'BINARY');
         $GLOBALS['FORUM_DB']->add_table_field('f_polls', 'po_point_weighting', 'BINARY');
-        $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'po_cache_voting_power', '?REAL');
+        $GLOBALS['FORUM_DB']->add_table_field('f_polls', 'po_cache_voting_power', '?REAL');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_date_time', 'TIME');
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pv_revoked', 'BINARY');
@@ -423,7 +423,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_answer_id', '?AUTO_LINK');
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_votes SET pv_answer_id=NULL WHERE pv_answer_id=-1');
 
-        $GLOBALS['FORUM_DB']->add_table_field('f_poll_votes', 'pa_cache_voting_power', '?REAL');
+        $GLOBALS['FORUM_DB']->add_table_field('f_poll_answers', 'pa_cache_voting_power', '?REAL');
         $GLOBALS['FORUM_DB']->add_table_field('f_poll_answers', 'pa_order', 'INTEGER');
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_order=id');
 

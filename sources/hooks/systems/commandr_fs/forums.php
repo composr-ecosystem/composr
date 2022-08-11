@@ -363,11 +363,6 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
                 $votes = $poll_data['votes'];
                 table_from_portable_rows('f_poll_votes', $votes, ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
-
-                // Require re-cache since we added votes into the table
-                require_lang('cns');
-                require_code('tasks');
-                call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache');
             }
 
             if (isset($properties['special_pt_access'])) {
@@ -594,11 +589,6 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
                 $votes = $poll_data['votes'];
                 table_from_portable_rows('f_poll_votes', $votes, ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
-
-                // Require re-cache since we added votes into the table
-                require_lang('cns');
-                require_code('tasks');
-                call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache');
             } else {
                 if ($poll_id !== null) {
                     require_code('cns_polls_action2');

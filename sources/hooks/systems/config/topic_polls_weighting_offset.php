@@ -69,7 +69,7 @@ class Hook_config_topic_polls_weighting_offset
         require_lang('cns');
         require_code('tasks');
 
-        // Flush topics and polls cache
-        call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache');
+        // Flush voting power cache
+        call_user_func_array__long_task(do_lang('CACHE_TOPICS'), null, 'cns_topics_recache', [false, false, true]);
     }
 }

@@ -823,9 +823,9 @@ class Module_topicview
                         '_NUM_VOTES' => strval($num_votes),
                         '_TOTAL_VOTES' => strval($total_votes),
                         'NUM_VOTES' => integer_format($num_votes),
-                        'VOTING_POWER' => $voting_power !== null ? float_format($answer['voting_power'], 2) : null,
+                        'VOTING_POWER' => ($voting_power !== null) ? float_format($answer['voting_power'], 2) : null,
                         'TOTAL_VOTES' => integer_format($total_votes),
-                        'TOTAL_VOTING_POWER' => $total_voting_power !== null ? float_format($total_voting_power, 2) : null,
+                        'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
                         'POINT_WEIGHTING' => $point_weighting,
                         'WIDTH' => strval($width),
                         'ANSWER' => $answer['answer'],
@@ -859,7 +859,7 @@ class Module_topicview
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
                 'CLOSING_TIME' => ($poll_is_open && $_poll['closing_time'] !== null) ? strval($_poll['closing_time']) : '0',
                 'TOTAL_VOTES' => integer_format($total_votes),
-                'TOTAL_VOTING_POWER' => $total_voting_power !== null ? float_format($total_voting_power, 2) : null,
+                'TOTAL_VOTING_POWER' => ($total_voting_power !== null) ? float_format($total_voting_power, 2) : null,
                 'POINT_WEIGHTING' => $point_weighting,
             ]);
         } else {

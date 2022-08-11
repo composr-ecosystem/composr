@@ -3357,7 +3357,6 @@ class Module_topics
         }
         if ($answer_id === null) {
             $field_titles[] = do_lang_tempcode('ANSWER');
-            $sortables['answer'] = do_lang_tempcode('ANSWER');
             $footer_fields[] = '';
         }
         $header_row = results_header_row($field_titles, $sortables, 'sort', $order_by);

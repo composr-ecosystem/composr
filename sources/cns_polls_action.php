@@ -56,7 +56,7 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
     $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', [
         'po_question' => $question,
         'po_cache_total_votes' => 0,
-        'po_cache_voting_power' => 0,
+        'po_cache_voting_power' => 0.0,
         'po_is_private' => $is_private,
         'po_is_open' => $is_open,
         'po_minimum_selections' => $minimum_selections,
@@ -74,7 +74,7 @@ function cns_make_poll(int $topic_id, string $question, int $is_private, int $is
             'pa_poll_id' => $poll_id,
             'pa_answer' => $answer,
             'pa_cache_num_votes' => 0,
-            'pa_cache_voting_power' => 0,
+            'pa_cache_voting_power' => 0.0,
             'pa_order' => $i
         ]);
     }
