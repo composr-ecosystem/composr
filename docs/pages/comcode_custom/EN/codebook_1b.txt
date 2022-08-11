@@ -828,6 +828,12 @@ Subscriptions and invoices have some custom handling. Subscriptions can also end
 
 Details about how notifications are sent out, and how shipping addresses are handled are at the top of [tt]sources/ecommerce.php[/tt].
 
+[title="4"]Currency representation[/title]
+
+Composr stores and handles all currency amounts as floats. Ideally we would work in fixed point maths, but the reason we do not is PHP cannot do fixed point maths without an extension (and a lot of extra complexity), and doing the math in cents/pence would make the code confusing.
+We are aware that even a number like [tt]0.25[/tt] cannot truly be represented in a float. However, with 2 d.p. rounding, floats are accurate to around 16 million currency units. We round to 2 d.p. whenever payments are taken or checked, and in general whenever figures are displayed. Within the normal kind of bounds of money a Composr site would likely be handling, precision errors would not create any kind of reporting, charging, or accounting, error -- except when dealing with highly inflated currencies such as Venezuelan Bolivars.
+Highly inflated currencies are a tricky case. If we moved to storing cents as integers, the maximum amount of Venezuelan Bolivars represented in a 32 bit system would be equivalent of $3633 (based on exchange rates at the time of writing) -- so, not a solution. Venezuelan Bolivars have Bs.F, which is 1000 Bolivars, so you can just work in the higher value units which become the norm in a hyper-inflated currency.
+
 [title="3"]Forum drivers[/title]
 
 Composr supports third-party forums. This is so people who have an existing/preferred forum and need a CMS for it, can still benefit from Composr. For example, comment topics for news are stored on the forum, even if it's a third-party forum.
