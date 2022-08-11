@@ -50,14 +50,16 @@ function is_sitemap_menu($menu)
  * @param  SHORT_TEXT $menu The menu identifier to use (may be the name of a editable menu, or syntax to load from the Sitemap)
  * @param  boolean $silent_failure Whether to silently return blank if the menu does not exist
  * @param  boolean $apply_highlighting Whether to apply current-screen highlighting
+ * @param  string $tray_status The default expansion status of the node
+ * @set tray_open tray_closed
  * @return array A tuple: The generated Tempcode of the menu, the menu nodes, whether we flattened
  */
-function build_menu($type, $menu, $silent_failure = false, $apply_highlighting = true)
+function build_menu($type, $menu, $silent_failure = false, $apply_highlighting = true, $tray_status = 'tray_closed')
 {
     $is_sitemap_menu = is_sitemap_menu($menu);
 
     if ($is_sitemap_menu) {
-        $root = _build_sitemap_menu($menu);
+        $root = _build_sitemap_menu($menu, $tray_status);
 
         if ($root === null) {
             return array(new Tempcode(), array(), false);
@@ -186,10 +188,12 @@ function _build_stored_menu($menu)
  * Take a menu identifier, and return a Sitemap-based menu created from it.
  *
  * @param  SHORT_TEXT $menu The menu identifier to use (syntax to load from the Sitemap)
+ * @param  string $tray_status The default expansion status of the node
+ * @set tray_open tray_closed
  * @return array The Sitemap node structure (called a 'branch structure' for menus)
  * @ignore
  */
-function _build_sitemap_menu($menu)
+function _build_sitemap_menu($menu, $tray_status = 'tray_closed')
 {
     static $cache = array();
     if (isset($cache[$menu])) {
@@ -331,11 +335,35 @@ function _build_sitemap_menu($menu)
                 $root['children'][] = $node;
                 break;
         }
+
+        if ($tray_status == 'tray_open') {
+            _recursively_set_expanded($root);
+        }
     }
 
     $cache[$menu] = $root;
 
     return $root;
+}
+
+/**
+ * Set node expansion on the whole hierarchy of Sitemap nodes.
+ *
+ * @param array $node The node
+ *
+ * @ignore
+ */
+function _recursively_set_expanded(&$node)
+{
+    if (!isset($node['modifiers']['expanded'])) {
+        $node['modifiers']['expanded'] = 1;
+    }
+
+    if (isset($node['children'])) {
+        foreach ($node['children'] as &$child) {
+            _recursively_set_expanded($child);
+        }
+    }
 }
 
 /**
@@ -757,8 +785,8 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
     $tooltip = isset($branch['extra_meta']['description']) ? $branch['extra_meta']['description'] : new Tempcode();
 
     // How to display
-    if ((!isset($branch['modifiers']['expanded'])) && (!$expand_this) && (!$current_page) && ($page_link == '')) {
-        $display = has_js() ? 'none' : 'block'; // We remap to 'none' using JS. If no JS, it remains visible. Once we have learn't we have JS, we don't need to do it again
+    if ((!isset($branch['modifiers']['expanded'])) && (!$expand_this) && (!$current_page)) {
+        $display = has_js() ? 'none' : 'block'; // We remap to 'none' if we have JS. If no JS is detected/assumed-by-configuration, it remains visible.
     } else {
         $display = 'block';
     }

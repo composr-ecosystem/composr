@@ -221,7 +221,7 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
         $_GET['keep_session'] = $id;
     }
 
-    if ($id != get_session_id()) {
+    if (($id != get_session_id()) && (function_exists('decache')/*not happening during early boot*/)) {
         decache('side_users_online');
     }
 }
