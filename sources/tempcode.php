@@ -603,7 +603,7 @@ function make_string_tempcode(string $string) : object
 }
 
 /**
- * Add entity entity escaping to a string/Tempcode.
+ * Escape certain special characters in the provided string/Tempcode, so that it can be embedded as text within HTML.
  *
  * @param  mixed $data String
  * @return Tempcode Tempcode

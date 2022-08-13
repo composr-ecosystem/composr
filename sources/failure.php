@@ -753,7 +753,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         $reason_full = do_lang($reason, $reason_param_a, $reason_param_b, null, get_site_default_lang());
 
         $_stack_trace = get_html_trace();
-        $stack_trace = str_replace('html', '&#104;tml', $_stack_trace->evaluate());
+        $stack_trace = escape_html_in_comcode($_stack_trace->evaluate());
 
         $date = get_timezoned_date_time(time(), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
 

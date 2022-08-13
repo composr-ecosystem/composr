@@ -396,7 +396,7 @@ function cns_join_actual(bool $captcha_if_enabled = true, bool $intro_message_if
                 $fields_ob = get_fields_hook($custom_field['cf_type']);
                 $ev = $actual_custom_fields[$custom_field['id']];
                 $rendered = $fields_ob->render_field_value($custom_field, $ev);
-                $fields_done[] = ['LABEL' => $custom_field['trans_name'], 'VALUE' => $rendered];
+                $fields_done[] = ['LABEL' => $custom_field['trans_name'], 'VALUE' => escape_html_in_comcode(is_object($rendered) ? $rendered->evaluate($language) : $rendered)];
             }
         }
 

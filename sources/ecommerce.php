@@ -1842,7 +1842,7 @@ function send_transaction_mails(string $txn_id, string $item_name, bool $shipped
         'ITEM_NAME' => $item_name,
         'TAX' => float_format($tax),
         'CURRENCY_SYMBOL' => $currency_symbol,
-        'TAX_INVOICE' => $tax_invoice,
+        'TAX_INVOICE' => escape_html_in_comcode($tax_invoice),
         'MEMO' => $memo,
         'SHIPPED' => $shipped,
 

@@ -3160,7 +3160,7 @@ function get_num_users_peak() : int
 }
 
 /**
- * Get the specified string, but with all characters escaped.
+ * Escape certain special characters in the provided string, so that it can be embedded as text within HTML.
  *
  * @param  mixed $string The input string
  * @return mixed The escaped string
@@ -3192,6 +3192,17 @@ function escape_html($string)
     }
 
     return $ret;
+}
+
+/**
+ * Escape certain special characters in the provided string, so that it can be embedded as HTML within Comcode.
+ *
+ * @param  mixed $string The input string
+ * @return mixed The escaped string
+ */
+function escape_html_in_comcode($string)
+{
+    return preg_replace('#\[(/html)#i', '&#91;$1', $string);
 }
 
 /**
