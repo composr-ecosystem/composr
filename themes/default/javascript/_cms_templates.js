@@ -547,7 +547,7 @@
 
         if (onclickCallFunctions != null) {
             $dom.on(btn, 'click', function (e) {
-                var funcs = onclickCallFunctions.slice();
+                var funcs = JSON.parse(JSON.stringify(onclickCallFunctions));
 
                 e.preventDefault();
 
@@ -561,9 +561,7 @@
 
         if (onmousedownCallFunctions != null) {
             $dom.on(btn, 'mousedown', function (e) {
-                var funcs = onmousedownCallFunctions.slice();
-
-                // e.preventDefault();
+                var funcs = JSON.parse(JSON.stringify(onmousedownCallFunctions));
 
                 funcs.forEach(function (func) {
                     func.push(e);
@@ -577,6 +575,8 @@
     $cms.functions.spamWarning = function (e) {
         if (e.which === 2/*middle button*/) {
             this.href += '&spam=1';
+        } else {
+            this.href = this.href.replace(/&spam=1/g, '');
         }
     };
 
