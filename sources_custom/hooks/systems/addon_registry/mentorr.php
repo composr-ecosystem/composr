@@ -86,13 +86,13 @@ class Hook_addon_registry_mentorr
      */
     public function get_description() : string
     {
-        return 'Assign trusted members as mentors who will help new members. As a bonus the mentor will get the same amount of points, which his new friend gain during the first week.
+        return 'Assign trusted members as mentors who will help new members. As a bonus the mentor will get the same amount of points that his new friend gained during the first week.
 
-There will be configurable mentors usergroup, from which random member will be selected and made friend to newly joined members (it will make them buddies and also will create a Private Topic between them explaining the automatic friendship).
+There will be a configurable mentors usergroup, from which random members will be selected to be made friends with newly joined members (it will make them friends and also will create a Private Topic between them explaining the automatic friendship).
 
 To set the mentor group go to Admin Zone > Setup > Configuration > Member and forum options. At the bottom of the page choose the mentor user group from the drop down list. Go to the Usergroups display page for mentors and assign the users to the mentors usergroup.
 
-New users should then be assigned a mentor/buddy who will receive an equal amount of points the new user receives for the first week. The system will also create a private topic between the 2 members explaining what has happened.';
+New users should then be assigned a mentor/friend who will receive an equal amount of points the new user receives for the first week. The system will also create a private topic between the 2 members explaining what has happened.';
     }
 
     /**

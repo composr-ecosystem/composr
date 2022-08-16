@@ -161,7 +161,7 @@ class Module_classifieds
     }
 
     /**
-     * View an overview of the members adverts on the system.
+     * View an overview of the member's adverts on the system.
      *
      * @return Tempcode The UI
      */
