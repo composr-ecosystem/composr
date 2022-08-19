@@ -42,7 +42,7 @@
 				</div>
 
 				<div class="js-hover-toggle-real-time-indicator js-mouseover-set-time-line-position js-mousemove-timeline-click js-click-timeline-click" id="time-line">
-					<img id="time-line-image" width="802" height="5" src="{$IMG*,realtime_rain/time_line}" alt="" />
+					<img id="time-line-image" width="802" height="5" src="{$IMG*,realtime_rain/timeline/time_line}" alt="" />
 				</div>
 
 				<div id="next-but">

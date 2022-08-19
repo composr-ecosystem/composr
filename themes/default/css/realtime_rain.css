@@ -58,7 +58,7 @@
 	font-size: 1.25em;
 	padding: 11px 15px;
 	margin: 0;
-	background: url('{$IMG;,realtime_rain/news_header}') no-repeat 0 0;
+	background: url('{$IMG;,realtime_rain/news/news_header}') no-repeat 0 0;
 	background-size: 446px 42px;
 	border: 0;
 }
@@ -74,7 +74,7 @@
 	}
 /*{+END}*/
 #news-ticker .news-inside {
-	background: url('{$IMG;,realtime_rain/news_bg}') repeat-y center top;
+	background: url('{$IMG;,realtime_rain/news/news_bg}') repeat-y center top;
 	background-size: 446px 1px !important;
 	overflow: hidden;
 	margin: 0 auto;
@@ -114,7 +114,7 @@
 	font-size: 0.95em;
 }
 #news-ticker .news-footer {
-	background: url('{$IMG;,realtime_rain/news_bot}') no-repeat;
+	background: url('{$IMG;,realtime_rain/news/news_bot}') no-repeat;
 	background-size: 446px 21px !important;
 	height: 21px;
 	float: left;
@@ -155,7 +155,7 @@
 	}
 /*{+END}*/
 	#real-time-indicator {
-	background: url('{$IMG;,realtime_rain/realtime_indicator}') no-repeat 0 0;
+	background: url('{$IMG;,realtime_rain/timeline/realtime_indicator}') no-repeat 0 0;
 	background-size: 94px 51px !important;
 	overflow: hidden;
 	font-size: 0.75em;
@@ -171,7 +171,7 @@
 }
 #timer {
 	height: 38px;
-	background: url('{$IMG;,realtime_rain/timer_bg}') no-repeat;
+	background: url('{$IMG;,realtime_rain/timeline/timer_bg}') no-repeat;
 	background-size: 952px 46px !important;
 	margin-top: 5px;
 }
@@ -225,7 +225,7 @@
 }
 
 .attitude-ecommerce-positive {
-	background: url('{$IMG;,realtime_rain/sun_effect}') no-repeat 0 0;
+	background: url('{$IMG;,realtime_rain/effects/sun_effect}') no-repeat 0 0;
 	background-size: 246px 246px !important;
 	width: 246px;
 	height: 246px;
@@ -233,7 +233,7 @@
 	margin: -22px;
 }
 .attitude-join-positive, .attitude-Lorem-positive {
-	background: url('{$IMG;,realtime_rain/halo_effect}') no-repeat 0 0;
+	background: url('{$IMG;,realtime_rain/effects/halo_effect}') no-repeat 0 0;
 	background-size: 246px 246px !important;
 	width: 246px;
 	height: 246px;
@@ -241,7 +241,7 @@
 	margin: -20px;
 }
 .attitude-security-negative {
-	background: url('{$IMG;,realtime_rain/horns_effect}') no-repeat 0 0;
+	background: url('{$IMG;,realtime_rain/effects/horns_effect}') no-repeat 0 0;
 	background-size: 246px 246px !important;
 	width: 246px;
 	height: 246px;
@@ -249,7 +249,7 @@
 	margin: -12px;
 }
 .attitude-point-charges-negative {
-	background: url('{$IMG;,realtime_rain/shadow_effect}') no-repeat 0 0;
+	background: url('{$IMG;,realtime_rain/effects/shadow_effect}') no-repeat 0 0;
 	background-size: 246px 246px !important;
 	width: 246px;
 	height: 246px;
@@ -322,108 +322,108 @@
 }
 
 .bubble-post {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-post .avatar-icon {
-	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/post-avatar}') no-repeat;
 }
 
 .bubble-news {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-news .avatar-icon {
-	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/post-avatar}') no-repeat;
 }
 
 .bubble-recommend {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/recommend-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-recommend .avatar-icon {
-	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/recommend-avatar}') no-repeat;
 }
 
 .bubble-polls {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/polls-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-polls .avatar-icon {
-	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/polls-avatar}') no-repeat;
 }
 
 .bubble-ecommerce {
-	background: url('{$IMG;,realtime_rain/ecommerce-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/ecommerce-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-ecommerce .avatar-icon {
-	background: url('{$IMG;,realtime_rain/ecommerce-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/ecommerce-avatar}') no-repeat;
 }
 
 .bubble-actionlog {
-	background: url('{$IMG;,realtime_rain/actionlog-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/actionlog-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-actionlog .avatar-icon {
-	background: url('{$IMG;,realtime_rain/actionlog-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/actionlog-avatar}') no-repeat;
 }
 
 .bubble-security {
-	background: url('{$IMG;,realtime_rain/security-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/security-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-security .avatar-icon {
-	background: url('{$IMG;,realtime_rain/security-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/security-avatar}') no-repeat;
 }
 
 .bubble-chat {
-	background: url('{$IMG;,realtime_rain/chat-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/chat-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-chat .avatar-icon {
-	background: url('{$IMG;,realtime_rain/chat-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/chat-avatar}') no-repeat;
 }
 
 .bubble-stats {
-	background: url('{$IMG;,realtime_rain/stats-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/stats-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-stats .avatar-icon {
-	background: url('{$IMG;,realtime_rain/stats-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/stats-avatar}') no-repeat;
 }
 
 .bubble-join, .bubble-lorem {
-	background: url('{$IMG;,realtime_rain/join-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/join-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-join .avatar-icon, .bubble-lorem .avatar-icon {
-	background: url('{$IMG;,realtime_rain/join-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/join-avatar}') no-repeat;
 }
 
 .bubble-calendar {
-	background: url('{$IMG;,realtime_rain/calendar-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/calendar-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-calendar .avatar-icon {
-	background: url('{$IMG;,realtime_rain/calendar-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/calendar-avatar}') no-repeat;
 }
 
 .bubble-search {
-	background: url('{$IMG;,realtime_rain/search-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/search-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-search .avatar-icon {
-	background: url('{$IMG;,realtime_rain/search-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/search-avatar}') no-repeat;
 }
 
 .bubble-point-charges {
-	background: url('{$IMG;,realtime_rain/point_charges-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/point_charges-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-point-charges .avatar-icon {
-	background: url('{$IMG;,realtime_rain/point_charges-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/point_charges-avatar}') no-repeat;
 }
 
 .bubble-banners {
-	background: url('{$IMG;,realtime_rain/banners-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/banners-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-banners .avatar-icon {
-	background: url('{$IMG;,realtime_rain/banners-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/banners-avatar}') no-repeat;
 }
 
 .bubble-point-gifts {
-	background: url('{$IMG;,realtime_rain/point_gifts-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/point_gifts-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-point-gifts .avatar-icon {
-	background: url('{$IMG;,realtime_rain/point_gifts-avatar}') no-repeat;
+	background: url('{$IMG;,realtime_rain/avatars/point_gifts-avatar}') no-repeat;
 }
 
 .bubble-wrap {
