@@ -1964,7 +1964,7 @@ class Module_admin_themes
         if ((strpos($id, '/') !== false) && (str_replace(array('on', 'true', 'yes'), array('1', '1', '1'), strtolower(ini_get('safe_mode'))) != '1')) {
             $target_dir .= '/' . dirname($id);
         }
-        $path = get_url('path', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id) . '.XXX');
+        $path = get_url('path', 'file', $target_dir, 0, CMS_UPLOAD_ANYTHING, false, '', '', false, false, false, false, null, null, null, basename($id . '.XXX'));
         if ($path[0] == '') {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
