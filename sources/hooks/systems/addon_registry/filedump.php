@@ -231,6 +231,8 @@ class Hook_addon_registry_filedump
             'IMAGE_SIZES' => $image_sizes,
             'URL' => placeholder_image_url(),
             'EXISTING_COUNT' => placeholder_number(),
+            'DESCRIPTION' => lorem_phrase(),
+            'IMAGE' => true,
         ]), null, '', true);
     }
 }

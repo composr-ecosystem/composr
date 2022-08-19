@@ -954,6 +954,7 @@ class Module_filedump
         ]);
 
         $image_sizes = null;
+        $is_image = false;
         if (is_image($file, IMAGE_CRITERIA_GD_READ | IMAGE_CRITERIA_WEBSAFE, true)) {
             $size = cms_getimagesize($path);
             if (($size !== false) && ($size[0] !== null) && ($size[1] !== null)) {
@@ -986,6 +987,8 @@ class Module_filedump
                     ];
                 }
             }
+
+            $is_image = true;
         }
 
         $_existing_count = find_filedump_links($subpath . $file);
@@ -1004,6 +1007,8 @@ class Module_filedump
             'URL' => $url,
             'IMAGE_SIZES' => $image_sizes,
             'EXISTING_COUNT' => strval($existing_count),
+            'DESCRIPTION' => $description,
+            'IMAGE' => $is_image,
         ]);
     }
 

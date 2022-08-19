@@ -6,12 +6,16 @@
             var el = $dom.$('#generated_comcode');
             try {
                 el.focus();
-            } catch (e) {}
 
-            el.select();
+                el.select();
+            } catch (e) {}
         }
 
         $dom.on(container, 'click', '.js-click-input-img-size-select', function (e, input) {
+            input.select();
+        });
+
+        $dom.on(container, 'click', '.js-click-generated-html-select', function (e, input) {
             input.select();
         });
     };

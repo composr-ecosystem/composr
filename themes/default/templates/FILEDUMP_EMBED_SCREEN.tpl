@@ -1,3 +1,5 @@
+{$REQUIRE_JAVASCRIPT,filedump}
+
 <div data-tpl="filedumpEmbedScreen" data-tpl-params="{+START,PARAMS_JSON,GENERATED}{_*}{+END}">
 	{TITLE}
 
@@ -41,6 +43,17 @@
 					</li>
 				{+END}
 			</ul>
+
+			{+START,IF,{IMAGE}}
+				<p class="lonely-label">
+					<abbr title="HyperText Markup Language">HTML</abbr>:
+				</p>
+				<form action="#" method="post" autocomplete="off">
+					<div>
+						<textarea readonly="readonly" id="generated_html" name="generated_html" class="js-click-generated-html-select" cols="50" rows="2">{$SET,html,<img alt="{DESCRIPTION*}" src="{URL*}" />}{$GET*,html}</textarea>
+					</div>
+				</form>
+			{+END}
 
 			<h2>{!_COMCODE}</h2>
 		</div>

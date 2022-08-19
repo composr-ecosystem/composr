@@ -105,18 +105,30 @@
 
 /* Embed screen */
 
+#generated_html {
+	width: 100%;
+}
+
 .filedump-generated {
 	overflow: hidden;
 }
 
 .filedump-generated-comcode {
+	width: 50%;
+	padding-right: 0.5em;
+	box-sizing: border-box;
+}
+
+.filedump-generated-comcode textarea {
+	width: 100%;
 }
 
 .filedump-generated-preview {
-	margin-left: 1em;
+	padding-left: 0.5em;
 	float: right;
 	overflow-wrap: break-word;
-	max-width: 560px;
+	width: 50%;
+	box-sizing: border-box;
 }
 
 .filedump-image-sizes label {
