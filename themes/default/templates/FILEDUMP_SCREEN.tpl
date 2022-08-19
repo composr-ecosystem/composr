@@ -23,7 +23,7 @@
 			{+END}
 		</div></div>
 		<div class="tab-surround">
-			<div aria-labeledby="t-thumbnails" role="tabpanel" id="g-thumbnails" style="display: block">
+			<div aria-labelledby="t-thumbnails" role="tabpanel" id="g-thumbnails" style="display: block">
 				{+START,INCLUDE,FILEDUMP_SEARCH}
 					I=1
 					TAB=thumbnails
@@ -76,7 +76,7 @@
 				{+END}
 			</div>
 
-			<div aria-labeledby="t-listing" role="tabpanel" id="g-listing" style="display: none">
+			<div aria-labelledby="t-listing" role="tabpanel" id="g-listing" style="display: none">
 				{+START,INCLUDE,FILEDUMP_SEARCH}
 					I=2
 					TAB=listing
@@ -111,7 +111,7 @@
 			</div>
 
 			{+START,IF_NON_EMPTY,{CREATE_FOLDER_FORM}}
-				<div aria-labeledby="t-create-folder" role="tabpanel" id="g-create-folder" style="display: none">
+				<div aria-labelledby="t-create-folder" role="tabpanel" id="g-create-folder" style="display: none">
 					{+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 
 					{CREATE_FOLDER_FORM}
@@ -119,7 +119,7 @@
 			{+END}
 
 			{+START,IF_NON_EMPTY,{UPLOAD_FORM}}
-				<div aria-labeledby="t-upload" role="tabpanel" id="g-upload" style="display: none">
+				<div aria-labelledby="t-upload" role="tabpanel" id="g-upload" style="display: none">
 					{+START,INCLUDE,FORM_SCREEN_ARE_REQUIRED}{+END}
 
 					{UPLOAD_FORM}

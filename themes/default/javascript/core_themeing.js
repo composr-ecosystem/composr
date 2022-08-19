@@ -990,7 +990,7 @@
         // Create new tab body
         var bodies = document.getElementById('template-editor-tab-bodies');
         var body = document.createElement('div');
-        body.setAttribute('aria-labeledby', 't-' + fileId);
+        body.setAttribute('aria-labelledby', 't-' + fileId);
         body.setAttribute('role', 'tabpanel');
         body.id = 'g-' + fileId;
         body.style.display = 'none';

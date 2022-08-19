@@ -34,7 +34,7 @@
 	{$,Actual tab' contents follows}
 
 	{+START,IF_PASSED,PREVIEW}
-		<div id="view-{ID*}" style="display: block" aria-labeledby="view-tab-{ID*}" role="tabpanel">
+		<div id="view-{ID*}" style="display: block" aria-labelledby="view-tab-{ID*}" role="tabpanel">
 			{+START,IF_EMPTY,{PREVIEW}}
 				<p class="nothing-here">{!NONE}</p>
 			{+END}
@@ -45,7 +45,7 @@
 	{+END}
 
 	{+START,IF_PASSED,COMCODE}
-		<div id="edit-{ID*}" style="{+START,IF_NON_PASSED,PREVIEW}display: block{+END}{+START,IF_PASSED,PREVIEW}display: none{+END}" aria-labeledby="edit-tab-{ID*}" role="tabpanel">
+		<div id="edit-{ID*}" style="{+START,IF_NON_PASSED,PREVIEW}display: block{+END}{+START,IF_PASSED,PREVIEW}display: none{+END}" aria-labelledby="edit-tab-{ID*}" role="tabpanel">
 			<form title="{ID*}: {!COMCODE}" action="index.php" method="post" class="js-form-zone-editor-comcode">
 				{$INSERT_FORM_POST_SECURITY}
 
@@ -77,7 +77,7 @@
 		</div>
 	{+END}
 
-	<div id="info-{ID*}" style="{+START,IF_NON_PASSED,PREVIEW}display: block{+END}{+START,IF_PASSED,PREVIEW}display: none{+END}" aria-labeledby="info-tab-{ID*}" role="tabpanel">
+	<div id="info-{ID*}" style="{+START,IF_NON_PASSED,PREVIEW}display: block{+END}{+START,IF_PASSED,PREVIEW}display: none{+END}" aria-labelledby="info-tab-{ID*}" role="tabpanel">
 		<p class="lonely-label">
 			<span class="field-name">{!PAGE_TYPE}:</span>
 		</p>
@@ -121,7 +121,7 @@
 	</div>
 
 	{+START,IF_PASSED,SETTINGS}
-		<div id="settings-{ID*}" style="display: none" aria-labeledby="settings-tab-{ID*}" role="tabpanel">
+		<div id="settings-{ID*}" style="display: none" aria-labelledby="settings-tab-{ID*}" role="tabpanel">
 			<form title="{ID*}: {!SETTINGS}" id="middle-fields" action="index.php">
 				{$INSERT_FORM_POST_SECURITY}
 

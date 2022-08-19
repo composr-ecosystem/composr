@@ -1,3 +1,3 @@
-<style class="style-for-no-cache" {$CSP_NONCE_HTML}>
+<style {$CSP_NONCE_HTML}>
 {CODE/}
 </style>

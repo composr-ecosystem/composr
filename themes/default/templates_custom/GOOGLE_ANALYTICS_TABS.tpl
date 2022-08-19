@@ -17,7 +17,7 @@
 	</div>
 
 	{+START,LOOP,TAB_CONTENTS}
-		<div aria-labeledby="{PASS_ID|*}-btgoto-{TITLE|*}" role="tabpanel" class="comcode-big-tab" id="{PASS_ID|*}-section-{TITLE|*}" style="display: {$?,{$EQ,{_loop_key},0},block,none}; background-color: white">
+		<div aria-labelledby="{PASS_ID|*}-btgoto-{TITLE|*}" role="tabpanel" class="comcode-big-tab" id="{PASS_ID|*}-section-{TITLE|*}" style="display: {$?,{$EQ,{_loop_key},0},block,none}; background-color: white">
 			{CONTENT}
 		</div>
 	{+END}

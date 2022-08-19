@@ -38,7 +38,7 @@
 		<a aria-controls="g-themewizard" role="tab" href="#!" id="t-themewizard" class="tab tab-last js-click-select-tab-g" data-tp-tab="themewizard"><span>{!THEMEWIZARD}</span></a>
 	</div></div>
 	<div class="tab-surround">
-		<div aria-labeledby="t-file" role="tabpanel" id="g-file" style="display: block">
+		<div aria-labelledby="t-file" role="tabpanel" id="g-file" style="display: block">
 	{+END}{+END}{+END}
 
 			{+START,IF_NON_EMPTY,{TEXT_EDIT_FILE}}
@@ -76,7 +76,7 @@
 	{+START,IF_PASSED,URL_THEMEWIZARD}{+START,IF_PASSED,HIDDEN_THEMEWIZARD}{+START,IF_PASSED,FIELDS_THEMEWIZARD}
 		</div>
 
-		<div aria-labeledby="t-themewizard" role="tabpanel" id="g-themewizard" style="display: none">
+		<div aria-labelledby="t-themewizard" role="tabpanel" id="g-themewizard" style="display: none">
 			<p>{!THEME_IMAGE_RECOLOUR_DESCRIPTION}</p>
 
 			<form id="themewizard-form" title="{!THEMEWIZARD}" class="float-surrounder" method="post" action="{URL_THEMEWIZARD*}" enctype="multipart/form-data" target="_top">

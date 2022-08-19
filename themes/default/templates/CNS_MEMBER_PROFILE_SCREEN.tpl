@@ -22,7 +22,7 @@
 			</div>
 			<div class="modern-tab-bodies">
 				{+START,LOOP,TABS}
-					<div aria-labeledby="t-{TAB_CODE*}" role="tabpanel" id="g-{TAB_CODE*}" class="modern-tab-body modern-tab-body-{TAB_CODE*}" style="display: {$?,{TAB_FIRST},block,none}">
+					<div aria-labelledby="t-{TAB_CODE*}" role="tabpanel" id="g-{TAB_CODE*}" class="modern-tab-body modern-tab-body-{TAB_CODE*}" style="display: {$?,{TAB_FIRST},block,none}">
 						{+START,IF_PASSED,TAB_CONTENT}
 							{TAB_CONTENT}
 						{+END}

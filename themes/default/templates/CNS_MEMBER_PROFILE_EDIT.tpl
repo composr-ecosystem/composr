@@ -16,9 +16,9 @@
 
 	{+START,IF,{$GT,{TABS},1}}
 		<div class="modern-subtabs">
-			<div class="modern-subtab-headers">
+			<div class="modern-subtab-headers" role="tablist">
 				{+START,LOOP,TABS}
-					<div id="t-edit--{$LCASE,{TAB_CODE|*}}"{+START,IF,{TAB_FIRST}} class="tab-active tab-first{+END}{+START,IF,{TAB_LAST}} tab-last{+END}">
+					<div id="t-edit--{$LCASE,{TAB_CODE|*}}" class="tab-active{+START,IF,{TAB_FIRST}} tab-first{+END}{+START,IF,{TAB_LAST}} tab-last{+END}">
 						<a class="js-click-select-edit-tab" data-tp-tab-code="{TAB_CODE*}" aria-controls="g-edit--{$LCASE,{TAB_CODE|*}}" role="tab" href="#!">{+START,IF_NON_EMPTY,{TAB_ICON}}
 							{+START,INCLUDE,ICON}
 								NAME={TAB_ICON}
@@ -32,7 +32,7 @@
 	{+END}
 				{+START,LOOP,TABS}
 					{+START,IF,{$GT,{TABS},1}}
-					<div aria-labeledby="t-edit--{$LCASE,{TAB_CODE|*}}" role="tabpanel" id="g-edit--{$LCASE*,{TAB_CODE|}}" style="display: {$?,{TAB_FIRST},block,none}">
+					<div aria-labelledby="t-edit--{$LCASE,{TAB_CODE|*}}" role="tabpanel" id="g-edit--{$LCASE*,{TAB_CODE|}}" style="display: {$?,{TAB_FIRST},block,none}">
 					{+END}
 
 						{+START,IF_NON_EMPTY,{TAB_TEXT}}
@@ -49,7 +49,7 @@
 							{TAB_FIELDS}
 						{+END}
 
-						{+START,IF,{$NOT,{TAB_SINGLE_FIELD}}}
+						{+START,IF,{$NOT,{TAB_SINGLE_FIELD}}}{+START,IF_NON_EMPTY,{TAB_FIELDS}}
 							<div class="wide-table-wrap"><table class="map-table form-table wide-table">
 								{+START,IF,{$DESKTOP}}
 									<colgroup>
@@ -62,7 +62,7 @@
 									{TAB_FIELDS}
 								</tbody>
 							</table></div>
-						{+END}
+						{+END}{+END}
 
 					{+START,IF,{$GT,{TABS},1}}
 					</div>
