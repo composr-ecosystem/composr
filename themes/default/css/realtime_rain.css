@@ -12,16 +12,12 @@
 .page-running-admin-realtime-rain .breadcrumbs {
 	margin-bottom: 1em;
 }
-.page-running-admin-realtime-rain #real-time-surround {
-	border: 1px dotted {$GET,bubblescape_background};
-}
 #real-time-surround {
 	position: relative;
 	height: 555px;
 	background-color: {$GET,bubblescape};
 	overflow: hidden;
 	width: 100%;
-	opacity: 0.95;
 }
 #real-time {
 	height: 100%;
@@ -36,13 +32,14 @@
 
 #news-ticker {
 	z-index: 100;
-	height: auto;
 	overflow: hidden;
 	min-height: 116px;
 }
 /*{+START,CSS_MODE,desktop}*/
 	#news-ticker {
 		position: absolute;
+		top: 20px;
+		left: calc(50% - 223px);
 		width: 446px;
 	}
 /*{+END}*/
@@ -54,89 +51,38 @@
 #news-ticker h1 {
 	color: {$GET,bubble_text};
 	font-weight: bold;
-	float: left;
 	font-size: 1.25em;
-	padding: 11px 15px;
+	padding: 10px;
+	height: 64px;
 	margin: 0;
-	background: url('{$IMG;,realtime_rain/news/news_header}') no-repeat 0 0;
-	background-size: 446px 42px;
-	border: 0;
+	background: url('{$IMG;,realtime_rain/news/news_header}') no-repeat;
+	background-size: 100% 100% !important;
+	display: block;
 }
-/*{+START,CSS_MODE,desktop}*/
-	#news-ticker h1 {
-		width: 416px;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	#news-ticker h1 {
-		width: 100%;
-		background-size: 100% 100% !important;
-	}
-/*{+END}*/
 #news-ticker .news-inside {
 	background: url('{$IMG;,realtime_rain/news/news_bg}') repeat-y center top;
-	background-size: 446px 1px !important;
-	overflow: hidden;
-	margin: 0 auto;
-	padding: 0;
+	background-size: 100% 100% !important;
 }
-/*{+START,CSS_MODE,desktop}*/
-	#news-ticker .news-inside {
-		float: left;
-		width: 446px;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	#news-ticker .news-inside {
-		width: 100%;
-		background-position: left top;
-		background-size: 100% 100% !important;
-	}
-/*{+END}*/
 #news-ticker .news-content {
 	overflow: hidden;
-	height: auto;
 	color: {$GET,bubble_text};
 	font-size: 0.75em;
 	padding: 0 20px;
 }
-/*{+START,CSS_MODE,desktop}*/
-	#news-ticker .news-content {
-		width: 401px;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	#news-ticker .news-content {
-		width: 100%;
-	}
-/*{+END}*/
 #news-ticker .news-content p {
 	font-size: 0.95em;
 }
 #news-ticker .news-footer {
 	background: url('{$IMG;,realtime_rain/news/news_bot}') no-repeat;
-	background-size: 446px 21px !important;
+	background-size: 100% 100% !important;
 	height: 21px;
-	float: left;
 }
-/*{+START,CSS_MODE,desktop}*/
-	#news-ticker .news-footer {
-		width: 446px;
-	}
-/*{+END}*/
-/*{+START,CSS_MODE,mobile}*/
-	#news-ticker .news-footer {
-		width: 100%;
-		background-size: 100% 100% !important;
-	}
-/*{+END}*/
 
-#news-ticker, #time-line:hover {
+#news-ticker {
 	opacity: 0.5;
-	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
+	transition: opacity 2s;
 }
-
-#news-ticker:hover, #time-line {
+#news-ticker:hover {
 	opacity: 1.0;
 }
 
@@ -154,43 +100,42 @@
 		margin: 0 auto;
 	}
 /*{+END}*/
-	#real-time-indicator {
+#real-time-indicator {
 	background: url('{$IMG;,realtime_rain/timeline/realtime_indicator}') no-repeat 0 0;
-	background-size: 94px 51px !important;
+	background-size: 100% 100% !important;
 	overflow: hidden;
 	font-size: 0.75em;
-	width: 80px;
-	height: 43px;
+	font-weight: bold;
+	width: 94px;
+	height: 51px;
 	padding: 8px 5px 0 8px;
 	color: {$GET,slightly_seeded_pale_text};
 }
 #real-time-indicator span {
-	width: 90px;
+	width: 80px;
 	float: left;
 	text-align: center;
 }
 #timer {
 	height: 38px;
 	background: url('{$IMG;,realtime_rain/timeline/timer_bg}') no-repeat;
-	background-size: 952px 46px !important;
 	margin-top: 5px;
 }
 /*{+START,CSS_MODE,desktop}*/
 	#timer {
 		width: 952px;
-		padding: 8px 0 0 10px;
+		padding: 5px 0 0 5px;
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
 	#timer {
 		padding: 4px 0 0 10px;
 		width: 100%;
-		background-size: 100% 100% !important;
 	}
 /*{+END}*/
 #pause-but {
 	float: left;
-	margin-right: 50px;
+	margin-right: 26px;
 }
 #pre-but {
 	float: left;
@@ -201,7 +146,7 @@
 }
 #time-line img {
 	display: block;
-	margin-top: 7px;
+	margin-top: 8px;
 }
 /*{+START,CSS_MODE,mobile}*/
 	#time-line img {
@@ -213,20 +158,26 @@
 }
 #pause-but, #pre-but, #next-but, #time-line {
 	cursor: pointer;
-	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
 }
 
-#next-but, #pre-but, #pause-but, #timer-inner:hover {
+#timer-inner {
+	opacity: 0.4;
+	transition: opacity 2s;
+}
+#timer-inner:hover {
 	opacity: 1.0;
 }
 
-#next-but:hover, #pre-but:hover, #pause-but:hover, #pause-but.paused, #timer-inner {
+#pre-but, #next-but, #pause-but:not(:hover) a:not(.paused), #pause-but:hover a.paused {
+	opacity: 1.0;
+}
+#pre-but:hover, #next-but:hover, #pause-but:hover a:not(.paused), #pause-but:not(:hover) a.paused {
 	opacity: 0.7;
 }
 
 .attitude-ecommerce-positive {
 	background: url('{$IMG;,realtime_rain/effects/sun_effect}') no-repeat 0 0;
-	background-size: 246px 246px !important;
+	background-size: 100% 100% !important;
 	width: 246px;
 	height: 246px;
 	padding: 22px;
@@ -234,7 +185,7 @@
 }
 .attitude-join-positive, .attitude-Lorem-positive {
 	background: url('{$IMG;,realtime_rain/effects/halo_effect}') no-repeat 0 0;
-	background-size: 246px 246px !important;
+	background-size: 100% 100% !important;
 	width: 246px;
 	height: 246px;
 	padding: 20px;
@@ -242,7 +193,7 @@
 }
 .attitude-security-negative {
 	background: url('{$IMG;,realtime_rain/effects/horns_effect}') no-repeat 0 0;
-	background-size: 246px 246px !important;
+	background-size: 100% 100% !important;
 	width: 246px;
 	height: 246px;
 	padding: 12px;
@@ -250,7 +201,7 @@
 }
 .attitude-point-charges-negative {
 	background: url('{$IMG;,realtime_rain/effects/shadow_effect}') no-repeat 0 0;
-	background-size: 246px 246px !important;
+	background-size: 100% 100% !important;
 	width: 246px;
 	height: 246px;
 	padding: 17px;
@@ -264,36 +215,39 @@
 .bubble {
 	width: 161px;
 	height: 161px;
-	padding: 20px 0 0 20px;
+	padding: 20px 0 0 11px;
 	position: relative;
 	margin: 10px;
-	background-size: 181px 181px !important;
+	background-size: 100% 100% !important;
 }
 .bubble .avatar-icon {
-	width: 60px;
-	height: 60px;
-	background-size: 60px 60px !important;
+	width: 40px;
+	height: 40px;
+	background-size: 100% 100% !important;
+	margin: 10px 0 0 10px;
 }
 .bubble .avatar-icon img {
-	padding: 19px 17px;
-	max-width: 25px;
-	max-height: 25px;
+	margin-left: 5px;
+	margin-top: 5px;
+	width: 30px;
+	height: auto;
+	max-height: 30px;
 }
 .bubble h1 {
-	margin-top: 0;
+	margin-top: 6px;
 	color: {$GET,bubble_text};
 	font-weight: normal;
 	float: left;
-	font-size: 1.15em;
+	font-size: 0.9em;
 	border-bottom: 0;
 }
 .bubble .special-icon {
 	height: 39px;
 	float: right;
 	text-align: right;
-	padding: 14px 35px 0 0;
+	padding: 14px 55px 0 0;
 	font-size: 0.75em;
-	background-size: 36px 36px !important;
+	background-size: 100% 100% !important;
 }
 .bubble .special-icon a {
 	color: {$GET,bubble_link_inverted};
@@ -308,8 +262,8 @@
 	position: absolute;
 	bottom: 0;
 	font-size: 0.80em;
-	padding: 0 0 10px 0;
-	width: 150px;
+	padding: 0 0 24px 0;
+	width: 110px;
 	text-align: center;
 }
 .bubble .linkage a {
@@ -322,105 +276,105 @@
 }
 
 .bubble-post {
-	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat;
 }
 .bubble-post .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/post-avatar}') no-repeat;
 }
 
 .bubble-news {
-	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat;
 }
 .bubble-news .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/post-avatar}') no-repeat;
 }
 
 .bubble-recommend {
-	background: url('{$IMG;,realtime_rain/bubbles/recommend-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/recommend-bubble}') no-repeat;
 }
 .bubble-recommend .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/recommend-avatar}') no-repeat;
 }
 
 .bubble-polls {
-	background: url('{$IMG;,realtime_rain/bubbles/polls-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/polls-bubble}') no-repeat;
 }
 .bubble-polls .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/polls-avatar}') no-repeat;
 }
 
 .bubble-ecommerce {
-	background: url('{$IMG;,realtime_rain/bubbles/ecommerce-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/ecommerce-bubble}') no-repeat;
 }
 .bubble-ecommerce .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/ecommerce-avatar}') no-repeat;
 }
 
 .bubble-actionlog {
-	background: url('{$IMG;,realtime_rain/bubbles/actionlog-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/actionlog-bubble}') no-repeat;
 }
 .bubble-actionlog .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/actionlog-avatar}') no-repeat;
 }
 
 .bubble-security {
-	background: url('{$IMG;,realtime_rain/bubbles/security-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/security-bubble}') no-repeat;
 }
 .bubble-security .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/security-avatar}') no-repeat;
 }
 
 .bubble-chat {
-	background: url('{$IMG;,realtime_rain/bubbles/chat-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/chat-bubble}') no-repeat;
 }
 .bubble-chat .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/chat-avatar}') no-repeat;
 }
 
 .bubble-stats {
-	background: url('{$IMG;,realtime_rain/bubbles/stats-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/stats-bubble}') no-repeat;
 }
 .bubble-stats .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/stats-avatar}') no-repeat;
 }
 
 .bubble-join, .bubble-lorem {
-	background: url('{$IMG;,realtime_rain/bubbles/join-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/join-bubble}') no-repeat;
 }
 .bubble-join .avatar-icon, .bubble-lorem .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/join-avatar}') no-repeat;
 }
 
 .bubble-calendar {
-	background: url('{$IMG;,realtime_rain/bubbles/calendar-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/calendar-bubble}') no-repeat;
 }
 .bubble-calendar .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/calendar-avatar}') no-repeat;
 }
 
 .bubble-search {
-	background: url('{$IMG;,realtime_rain/bubbles/search-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/search-bubble}') no-repeat;
 }
 .bubble-search .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/search-avatar}') no-repeat;
 }
 
 .bubble-point-charges {
-	background: url('{$IMG;,realtime_rain/bubbles/point_charges-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/point_charges-bubble}') no-repeat;
 }
 .bubble-point-charges .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/point_charges-avatar}') no-repeat;
 }
 
 .bubble-banners {
-	background: url('{$IMG;,realtime_rain/bubbles/banners-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/banners-bubble}') no-repeat;
 }
 .bubble-banners .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/banners-avatar}') no-repeat;
 }
 
 .bubble-point-gifts {
-	background: url('{$IMG;,realtime_rain/bubbles/point_gifts-bubble}') no-repeat {$GET,bubblescape_island};
+	background: url('{$IMG;,realtime_rain/bubbles/point_gifts-bubble}') no-repeat;
 }
 .bubble-point-gifts .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/point_gifts-avatar}') no-repeat;

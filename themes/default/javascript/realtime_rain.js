@@ -1,6 +1,8 @@
 (function ($cms, $util, $dom) {
     'use strict';
 
+    var POLL_FREQUENCY = 10000;
+
     var $realtimeRain = window.$realtimeRain = {};
 
     $cms.templates.realtimeRainOverlay = function (params, container) {
@@ -13,7 +15,7 @@
 
         startRealtimeRain();
 
-        $dom.on(container, 'mouseover mouseover', '.js-hover-window-pause', function (e, target) {
+        $dom.on(container, 'mouseover mouseout', '.js-hover-window-pause', function (e, target) {
             if (target.contains(e.relatedTarget)) {
                 return;
             }
@@ -67,7 +69,9 @@
         window.pendingEvalFunction = function (el) { // In webkit you can't get a node until it's been closed, so we need to set our code into a function and THEN run it
             if (params.tickerText !== undefined) {
                 setTimeout(function () {
-                    $dom.html('#news-go-here', params.tickerText);
+                    if (document.getElementById('news-go-here')) {
+                        $dom.html('#news-go-here', params.tickerText);
+                    }
                 }, params.relativeTimestamp * 1000);
             }
             // Set up extra attributes
@@ -116,7 +120,7 @@
             tmpElement.parentNode.removeChild(tmpElement);
         }
 
-        img.className = '';
+        img.classList.remove('footer-button-loading');
 
         var x = document.createElement('div');
         document.body.appendChild(x);
@@ -129,7 +133,7 @@
             e.style.left = 0;
             e.style.top = 0;
             e.style.width = '100%';
-            e.style.height = ($dom.getWindowScrollHeight() - 40) + 'px';
+            e.style.height = ($dom.getWindowScrollHeight() - 70) + 'px';
             $dom.smoothScroll(0);
 
             startRealtimeRain();
@@ -138,21 +142,30 @@
 
     // Called to start the animation
     function startRealtimeRain() {
-        var newsTicker = document.getElementById('news-ticker');
-        newsTicker.style.top = '20px';
-        newsTicker.style.left = ($dom.getWindowWidth() / 2 - newsTicker.offsetWidth / 2) + 'px';
+        var newsTicker = document.getElementById('news-ticker'),
+            loadingIcon = document.getElementById('loading-icon');
 
-        document.getElementById('loading-icon').style.display = 'block';
+        if (loadingIcon) {
+            loadingIcon.style.display = 'block';
+        }
 
+        // Initial timing
         window.currentTime = timeNow() - 10;
         window.timeWindow = 10;
+
+        // Initial events
         getMoreEvents(window.currentTime + 1, window.currentTime + window.timeWindow); // note the +1 is because the time window is inclusive
+
+        // Querying events regularly
         window.bubbleTimer1 = setInterval(function () {
             if (window.paused) {
                 return;
             }
+
             getMoreEvents(window.currentTime + 1, window.currentTime + window.timeWindow);
-        }, 10000);
+        }, POLL_FREQUENCY);
+
+        // Updating timeline
         window.bubbleTimer2 = setInterval(function () {
             if (window.paused) {
                 return;
@@ -181,15 +194,21 @@
     }
 
     function receivedEvents(responseXml) {
-        var ajaxResult = responseXml && responseXml.querySelector('result');
+        var ajaxResult = responseXml && responseXml.querySelector('result'),
+            loadingIcon = document.getElementById('loading-icon');
 
         if (!ajaxResult) {
             return;
         }
 
-        document.getElementById('loading-icon').style.display = 'none';
+        if (loadingIcon) {
+            loadingIcon.style.display = 'none';
+        }
 
         var bubbles = document.getElementById('bubbles-go-here');
+        if (!bubbles) {
+            return; // Unloaded
+        }
 
         var maxHeight = bubbles.parentNode.offsetHeight;
         var totalVerticalSlots = maxHeight / 183;
@@ -316,6 +335,10 @@
         avoidRemove = Boolean(avoidRemove);
 
         var bubbles = document.getElementById('bubbles-go-here');
+        if (!bubbles) {
+            return; // Unloaded
+        }
+
         var maxHeight = bubbles.parentNode.offsetHeight;
         var jumpSpeed = 1;
         var newPos = (parseInt(el.style.top) || 0) + jumpSpeed;
@@ -350,7 +373,11 @@
             bubblesTidyUp();
             $dom.html('#real-time-date', '{!SET;^}');
             $dom.html('#real-time-time', '');
-            document.getElementById('loading-icon').style.display = 'block';
+
+            var loadingIcon = document.getElementById('loading-icon');
+            if (!loadingIcon) {
+                loadingIcon.style.display = 'block';
+            }
         } else {
             setTimeLinePosition(time);
         }
@@ -391,6 +418,10 @@
             timelineRange = maxTime - minTime,
             timelineOffsetTime = time - minTime,
             timelineOffsetPosition = timelineOffsetTime * timelineLength / timelineRange;
+
+        if (!marker) {
+            return; // Unloaded
+        }
         marker.style.marginLeft = (50 + timelineOffsetPosition) + 'px';
 
         var dateObject = new Date();
@@ -400,8 +431,19 @@
         if (!realtimedate) {
             return;
         }
+
         $dom.html(realtimedate, dateObject.getFullYear() + '/' + (String(dateObject.getMonth())) + '/' + (String(dateObject.getDate())));
-        $dom.html(realtimetime, (String(dateObject.getHours())) + ':' + (String(dateObject.getMinutes())) + ':' + (String(dateObject.getSeconds())));
+
+        var hours = (String(dateObject.getHours()));
+        var minutes = (String(dateObject.getMinutes()));
+        if (minutes.length == 1) {
+            minutes = '0' + minutes;
+        }
+        var seconds = (String(dateObject.getSeconds()));
+        if (seconds.length == 1) {
+            seconds= '0' + seconds;
+        }
+        $dom.html(realtimetime, hours + ':' + minutes + ':' + seconds);
     }
 
 }(window.$cms, window.$util, window.$dom));

@@ -1,16 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 x="0px" y="0px" width="94px" height="51px" viewBox="-7.337 -1 94 51">
-<defs>
-</defs>
-<path fill="#E6E7E8" d="M80.278,36.223c0,2.397-1.943,4.341-4.341,4.341H4.339C1.943,40.563,0,38.62,0,36.223V4.339
-	C0,1.943,1.943,0,4.339,0h71.598c2.397,0,4.341,1.943,4.341,4.339V36.223z"/>
-<path fill="#BCBEC0" d="M80.278,36.223c0,2.397-1.943,4.341-4.341,4.341l-36.722-0.317L28.311,0.002L75.938,0
-	c2.397,0,4.341,1.943,4.341,4.339V36.223z"/>
-<path fill="#3588A6" d="M80.278,36.496c0,2.521-2.045,4.564-4.565,4.564H4.565C2.044,41.061,0,39.018,0,36.496V6.82
-	c0-2.521,2.044-4.566,4.565-4.566h71.147c2.521,0,4.565,2.045,4.565,4.566V36.496z"/>
-<polygon fill="#3588A6" points="52.433,39.501 48.817,48.708 70.514,39.138 "/>
-<path fill="#52CAF5" d="M39.056,41.061H4.565C2.044,41.061,0,39.018,0,36.496V6.82c0-2.521,2.044-4.566,4.565-4.566H28.93
-	L39.056,41.061z"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   x="0px"
+   y="0px"
+   width="94px"
+   height="51px"
+   viewBox="-7.337 -1 94 51"
+   preserveAspectRatio="none"
+   id="svg14"
+   sodipodi:docname="realtime_indicator.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1525"
+     inkscape:window-height="863"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="3.393617"
+     inkscape:cx="48.178683"
+     inkscape:cy="25.5"
+     inkscape:window-x="48"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg14" />
+  <defs
+     id="defs2" />
+  <path
+     d="m 80.278,36.496 c 0,2.521 -2.045,4.564 -4.565,4.564 H 4.565 C 2.044,41.061 0,39.018 0,36.496 V 6.82 C 0,4.299 2.044,2.254 4.565,2.254 h 71.147 c 2.521,0 4.565,2.045 4.565,4.566 v 29.676 z"
+     id="path8"
+     style="fill:#23566b;fill-opacity:1"
+     inkscape:connector-curvature="0" />
+  <polygon
+     fill="#3588A6"
+     points="52.433,39.501 48.817,48.708 70.514,39.138 "
+     id="polygon10"
+     style="fill:#23566b;fill-opacity:1" />
+  <path
+     d="M 39.056,41.061 H 4.565 C 2.044,41.061 0,39.018 0,36.496 V 6.82 C 0,4.299 2.044,2.254 4.565,2.254 H 28.93 Z"
+     id="path12"
+     style="fill:#086f93;fill-opacity:1"
+     inkscape:connector-curvature="0" />
 </svg>

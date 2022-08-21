@@ -24,15 +24,15 @@
         }
 
         var img = document.getElementById('realtime-rain-img');
-        img.className = 'footer-button-loading';
+        img.classList.add('footer-button-loading');
         var tmpEl = document.createElement('img');
+        tmpEl.id = 'realtime-rain-img-loader';
         tmpEl.src = $util.srl('{$IMG;,loading}');
         tmpEl.width = '20';
         tmpEl.height = '20';
         tmpEl.style.position = 'absolute';
         tmpEl.style.left = ($dom.findPosX(img) + 2) + 'px';
         tmpEl.style.top = ($dom.findPosY(img) + 1) + 'px';
-        tmpEl.id = 'realtime-rain-img-loader';
         img.parentNode.appendChild(tmpEl);
 
         $cms.requireCss('realtime_rain');
