@@ -45,36 +45,46 @@ function realtime_rain_script()
     $to = get_param_integer('to', $time_now);
 
     if (get_param_integer('keep_realtime_test', 0) == 1) {
+        require_code('lorem');
+
         $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'point_charges', 'banners', 'point_gifts'];
         shuffle($types);
 
+        $special_icons = ['email', 'news', 'phone', 'searchengine'];
+        shuffle($special_icons);
+
         $events = [];
-        $cnt = count($types);
-        for ($i = 0; $i < max($cnt, 5); $i++) {
+        foreach ($types as $i => $type) {
+            if (mt_rand(0, 8) == 1) {
+                break; // Don't show too much at once
+            }
+
             $timestamp = mt_rand($from, $to);
-            $type = array_pop($types);
 
-            $event = rain_get_special_icons(get_ip_address(), $timestamp) + [
-                    'TYPE' => $type,
-                    'FROM_MEMBER_ID' => null,
-                    'TO_MEMBER_ID' => null,
-                    'TITLE' => 'Test',
-                    'IMAGE' => rain_get_country_image(get_ip_address()),
-                    'TIMESTAMP' => strval($timestamp),
-                    'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
-                    'TICKER_TEXT' => null,
-                    'URL' => null,
-                    'IS_POSITIVE' => ($type == 'ecommerce' || $type == 'join'),
-                    'IS_NEGATIVE' => ($type == 'security' || $type == 'point_charges'),
+            $special_icon = $special_icons[$i % count($special_icons)];
 
-                    // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
-                    'FROM_ID' => null,
-                    'TO_ID' => null,
-                    'GROUP_ID' => 'example_' . strval(mt_rand(0, 4)),
-                ];
-            $event['SPECIAL_ICON'] = 'email_icon';
-            $event['MULTIPLICITY'] = '10';
-            $events[] = $event;
+            $events[] = [
+                'TYPE' => $type,
+                'FROM_MEMBER_ID' => null,
+                'TO_MEMBER_ID' => null,
+                'TITLE' => lorem_phrase(),
+                'IMAGE' => rain_get_country_image(placeholder_ip_uk()),
+                'TIMESTAMP' => strval($timestamp),
+                'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
+                'TICKER_TEXT' => ($i == 0) ? lorem_sentence_html() : null,
+                'URL' => null,
+                'IS_POSITIVE' => ($type == 'ecommerce' || $type == 'join'),
+                'IS_NEGATIVE' => ($type == 'security' || $type == 'point_charges'),
+
+                // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
+                'FROM_ID' => null,
+                'TO_ID' => null,
+                'GROUP_ID' => 'example_' . strval(mt_rand(0, 4)),
+
+                'SPECIAL_ICON' => $special_icon,
+                'SPECIAL_TOOLTIP' => lorem_phrase(),
+                'MULTIPLICITY' => strval(($special_icon == 'email') ? 10 : 1),
+            ];
         }
     } else {
         $events = get_realtime_events($from, $to);
@@ -101,8 +111,6 @@ function realtime_rain_script()
  */
 function get_realtime_events(int $from, int $to) : array
 {
-    //restrictify();
-
     $drops = [];
 
     $hooks = find_all_hook_obs('systems', 'realtime_rain', 'Hook_realtime_rain_');

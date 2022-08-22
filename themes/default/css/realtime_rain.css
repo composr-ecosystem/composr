@@ -69,9 +69,6 @@
 	font-size: 0.75em;
 	padding: 0 20px;
 }
-#news-ticker .news-content p {
-	font-size: 0.95em;
-}
 #news-ticker .news-footer {
 	background: url('{$IMG;,realtime_rain/news/news_bot}') no-repeat;
 	background-size: 100% 100% !important;
@@ -178,34 +175,34 @@
 .attitude-ecommerce-positive {
 	background: url('{$IMG;,realtime_rain/effects/sun_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
-	width: 246px;
-	height: 246px;
-	padding: 22px;
-	margin: -22px;
+	width: 224px;
+	height: 222px;
+	padding: 21px;
+	margin: -21px;
 }
 .attitude-join-positive, .attitude-Lorem-positive {
 	background: url('{$IMG;,realtime_rain/effects/halo_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
-	width: 246px;
-	height: 246px;
-	padding: 20px;
-	margin: -20px;
+	width: 224px;
+	height: 222px;
+	padding: 21px;
+	margin: -21px;
 }
 .attitude-security-negative {
 	background: url('{$IMG;,realtime_rain/effects/horns_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
-	width: 246px;
-	height: 246px;
-	padding: 12px;
-	margin: -12px;
+	width: 224px;
+	height: 222px;
+	padding: 21px;
+	margin: -21px;
 }
 .attitude-point-charges-negative {
 	background: url('{$IMG;,realtime_rain/effects/shadow_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
-	width: 246px;
-	height: 246px;
-	padding: 17px;
-	margin: -17px;
+	width: 224px;
+	height: 222px;
+	padding: 21px;
+	margin: -21px;
 }
 
 .activated-quote-button {
@@ -242,20 +239,11 @@
 	border-bottom: 0;
 }
 .bubble .special-icon {
-	height: 39px;
 	float: right;
-	text-align: right;
-	padding: 14px 55px 0 0;
-	font-size: 0.75em;
-	background-size: 100% 100% !important;
+	padding: 3px 55px 0 0;
 }
-.bubble .special-icon a {
-	color: {$GET,bubble_link_inverted};
-	text-decoration: none;
-}
-.bubble .special-icon a:hover {
-	color: {$GET,bubble_hover_link_inverted};
-	text-decoration: none;
+.bubble .special-icon span img {
+	width: 22px;
 }
 .bubble .linkage {
 	height: 10%;

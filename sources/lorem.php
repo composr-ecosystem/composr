@@ -88,6 +88,16 @@ function placeholder_ip() : string
  *
  * @return string Place holder text
  */
+function placeholder_ip_uk() : string
+{
+    return '5.71.169.1';
+}
+
+/**
+ * Get suitable placeholder text.
+ *
+ * @return string Place holder text
+ */
 function lorem_sentence() : string
 {
     return 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
