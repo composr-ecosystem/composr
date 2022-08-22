@@ -7,16 +7,15 @@
 		<hr />
 		{+START,IF_NON_EMPTY,{COMMANDS}}{COMMANDS}{+END}
 	</div>
-	<div class="webstandards-checker-off">
-		<form title="{!PRIMARY_PAGE_FORM}" action="{SUBMIT_URL*}" method="post" id="commandr-form" data-submit-pd="1" class="js-submit-commandr-form-submission">
-			{$INSERT_FORM_POST_SECURITY}
 
-			<div id="command-prompt">
-				<label for="commandr-command">{PROMPT*}</label>
-				<input type="text" id="commandr-command" name="command" autofocus class="form-control js-keyup-input-commandr-handle-history" />
-				<button class="btn btn-primary btn-sm buttons--proceed" type="submit" role="textbox">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {$STRIP_TAGS,{!PROCEED_SHORT}}</button>
-				<img id="commandr-loading-image" style="display: none" width="20" height="20" src="{$IMG*,loading}" title="{!LOADING}" alt="{!LOADING}" />
-			</div>
-		</form>
-	</div>
+	<form title="{!PRIMARY_PAGE_FORM}" action="{SUBMIT_URL*}" method="post" id="commandr-form" data-submit-pd="1" class="js-submit-commandr-form-submission">
+		{$INSERT_FORM_POST_SECURITY}
+
+		<div id="command-prompt">
+			<label for="commandr-command">{PROMPT*}</label>
+			<input type="text" id="commandr-command" name="command" autofocus class="form-control js-keyup-input-commandr-handle-history" />
+			<button class="btn btn-primary btn-sm buttons--proceed" type="submit" role="textbox">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {$STRIP_TAGS,{!PROCEED_SHORT}}</button>
+			<img id="commandr-loading-image" style="display: none" width="20" height="20" src="{$IMG*,loading}" title="{!LOADING}" alt="{!LOADING}" />
+		</div>
+	</form>
 </div>

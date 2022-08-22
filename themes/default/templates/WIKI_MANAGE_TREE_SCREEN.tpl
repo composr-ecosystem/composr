@@ -33,7 +33,7 @@
 	{+START,IF_NON_EMPTY,{WIKI_TREE}}
 		<h2>{!ID_ASSISTANCE_TOOL}</h2>
 
-		<form title="{!PRIMARY_PAGE_FORM}" method="post" action="index.php">
+		<form title="{!PRIMARY_PAGE_FORM}" method="post" action="#">
 			{$INSERT_FORM_POST_SECURITY}
 
 			<p><label for="mtp-tree">{!BROWSE_ID_INSERT}</label></p>

@@ -46,7 +46,7 @@
 
 	{+START,IF_PASSED,COMCODE}
 		<div id="edit-{ID*}" style="{+START,IF_NON_PASSED,PREVIEW}display: block{+END}{+START,IF_PASSED,PREVIEW}display: none{+END}" aria-labelledby="edit-tab-{ID*}" role="tabpanel">
-			<form title="{ID*}: {!COMCODE}" action="index.php" method="post" class="js-form-zone-editor-comcode">
+			<form title="{ID*}: {!COMCODE}" action="#" method="post" class="js-form-zone-editor-comcode">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<p>
@@ -100,7 +100,7 @@
 		{$,Choosing where to redirect to, same page name but in a different zone}
 		{+START,IF_PASSED,ZONES}
 			{+START,IF,{$ADDON_INSTALLED,redirects_editor}}
-				<form title="{ID*}: {!DRAWS_FROM}" action="index.php" method="post">
+				<form title="{ID*}: {!DRAWS_FROM}" action="#" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					<p class="lonely-label">
@@ -122,7 +122,7 @@
 
 	{+START,IF_PASSED,SETTINGS}
 		<div id="settings-{ID*}" style="display: none" aria-labelledby="settings-tab-{ID*}" role="tabpanel">
-			<form title="{ID*}: {!SETTINGS}" id="middle-fields" action="index.php">
+			<form title="{ID*}: {!SETTINGS}" id="middle-fields" action="#">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<div class="wide-table-wrap"><table class="map-table form-table wide-table">

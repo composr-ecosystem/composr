@@ -77,7 +77,7 @@
 						<h3>{!FRIEND_LIST}</h3>
 
 						{+START,IF_NON_EMPTY,{FRIENDS}}
-							<form title="{!FRIEND_LIST}" method="post" action="{$?,{$IS_EMPTY,{URL_REMOVE_FRIENDS}},index.php,{URL_REMOVE_FRIENDS*}}">
+							<form title="{!FRIEND_LIST}" method="post" action="{$?,{$IS_EMPTY,{URL_REMOVE_FRIENDS}},#,{URL_REMOVE_FRIENDS*}}">
 								{$INSERT_FORM_POST_SECURITY}
 
 								<div id="friends-wrap">
@@ -116,7 +116,7 @@
 
 						{CHAT_SOUND}
 
-						<form title="{!SOUND_EFFECTS}" action="index.php" method="post" class="inline sound-effects-form">
+						<form title="{!SOUND_EFFECTS}" action="#" method="post" class="inline sound-effects-form">
 							{$INSERT_FORM_POST_SECURITY}
 
 							<p>

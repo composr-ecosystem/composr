@@ -11,7 +11,7 @@
 				<div class="pte-tree">
 					<div class="pte-icon-box">
 						<div class="box box---permissions-tree-editor-screen"><div class="box-inner">
-							<form title="{!CHOOSE} {!USERGROUP}" action="index.php" method="post">
+							<form title="{!CHOOSE} {!USERGROUP}" action="#" method="post">
 								<img alt="" width="19" height="11" src="{$IMG*,pte_view_help}" /><strong><label for="group">{!PERMISSIONS_TREE_EDITOR_ICON_LABEL}:</label></strong>
 								<select id="group" name="group" class="form-control js-click-update-group js-change-update-group">
 									{GROUPS}
@@ -21,7 +21,7 @@
 						</div></div>
 					</div>
 
-					<form title="{!PRIMARY_PAGE_FORM}" action="index.php" method="post">
+					<form title="{!PRIMARY_PAGE_FORM}" action="#" method="post">
 						<div class="accessibility-hidden"><label for="tree-list">{!ENTRY}</label></div>
 						<input class="form-control js-change-update-perm-box" style="display: none" type="text" id="tree-list" name="tree_list" value="{$_GET*,id}" />
 					</form>
@@ -57,7 +57,7 @@
 				{!PERMISSION_INHERITANCE_HOVER}
 			</p>
 
-			<form id="permissions-form" title="{!PRIMARY_PAGE_FORM}" method="post" action="index.php">
+			<form id="permissions-form" title="{!PRIMARY_PAGE_FORM}" method="post" action="#">
 				{$INSERT_FORM_POST_SECURITY}
 
 				<div class="clearfix">

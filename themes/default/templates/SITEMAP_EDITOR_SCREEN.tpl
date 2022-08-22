@@ -28,7 +28,7 @@
 				<h2>{!SITEMAP}</h2>
 
 				<div class="accessibility-hidden"><label for="tree-list">{!ENTRY}</label></div>
-				<form title="{!PRIMARY_PAGE_FORM}" action="index.php" method="post">
+				<form title="{!PRIMARY_PAGE_FORM}" action="#" method="post">
 					{$INSERT_FORM_POST_SECURITY}
 
 					<input style="display: none" type="text" id="tree-list" name="tree_list" value="{$_GET*,id}" class="form-control js-change-update-details-box" />

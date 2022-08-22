@@ -1,7 +1,7 @@
 <div data-tpl="chatSiteWideImPopup">
 	{CONTENT}
 
-	<form class="chat-sound-effects-checkbox inline" title="{!SOUND_EFFECTS}" action="index.php" method="post">
+	<form class="chat-sound-effects-checkbox inline" title="{!SOUND_EFFECTS}" action="#" method="post">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<p>

@@ -1,7 +1,7 @@
 {$REQUIRE_JAVASCRIPT,cns_forum}
 
 <td id="cell-mark-{ID*}" class="cns-topic-marker-cell cell-desktop" data-tpl="cnsTopicMarker">
-	<form class="webstandards-checker-off inline" title="{!MARKER} #{ID*}" method="post" action="index.php" id="form-mark-{ID*}">
+	<form class="inline" title="{!MARKER} #{ID*}" method="post" action="#" id="form-mark-{ID*}">
 		{$INSERT_FORM_POST_SECURITY}
 
 		<div class="inline">
