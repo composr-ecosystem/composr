@@ -332,7 +332,7 @@ class Module_tester
         $where .= ' AND s.s_inheritable=0';
 
         $sections = new Tempcode();
-        $query = 'SELECT *,t.id AS id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'tests t LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'test_sections s ON t.t_section=s.id WHERE ' . $where . ' ORDER BY s.s_section,t.id';
+        $query = 'SELECT *,t.id AS t_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'tests t LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'test_sections s ON t.t_section=s.id WHERE ' . $where . ' ORDER BY s.s_section,t.id';
         $_tests = $GLOBALS['SITE_DB']->query($query);
         $current = null;
         $current_2 = null;
@@ -365,8 +365,8 @@ class Module_tester
                 }
             }
 
-            $bug_report_url = build_url(array('page' => '_SELF', 'type' => 'report', 'id' => $test['id']), '_SELF');
-            $tests->attach(do_template('TESTER_GO_TEST', array('_GUID' => '1e719a51201d27eff7aed58b7f730251', 'BUG_REPORT_URL' => $bug_report_url, 'TEST' => $a_test, 'ID' => strval($test['id']), 'VALUE' => strval($test['t_status']))));
+            $bug_report_url = build_url(array('page' => '_SELF', 'type' => 'report', 'id' => $test['t_id']), '_SELF');
+            $tests->attach(do_template('TESTER_GO_TEST', array('_GUID' => '1e719a51201d27eff7aed58b7f730251', 'BUG_REPORT_URL' => $bug_report_url, 'TEST' => $a_test, 'ID' => strval($test['t_id']), 'VALUE' => strval($test['t_status']))));
         }
         if (($tests->is_empty()) && ($sections->is_empty())) {
             $sections = paragraph(do_lang_tempcode('NO_ENTRIES'), '4tregerg344');

@@ -1496,9 +1496,15 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     $t_rows = array_merge($t_rows, $t_main_search_rows);
     if (count($t_rows) > 0) {
         $t_rows_new = array();
-        if ((array_key_exists('id', $t_rows[0])) || (array_key_exists('_primary_id', $t_rows[0]))) {
+        if ((array_key_exists('id', $t_rows[0])) || (array_key_exists('r_id', $t_rows[0])) || (array_key_exists('_primary_id', $t_rows[0]))) {
             $done = array();
             foreach ($t_rows as $t_row) {
+                if (array_key_exists('r_id', $t_row)) {
+                    // Workaround that some DB backends don't allow multiple fields to have the same name, so we have to use r_id for our specifically selected field instead of id
+                    $t_row['id'] = $t_row['r_id'];
+                    unset($t_row['r_id']);
+                }
+
                 if (array_key_exists('id', $t_row)) {
                     if (array_key_exists($t_row['id'], $done)) {
                         $t_count--;
