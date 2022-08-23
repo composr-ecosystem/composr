@@ -295,7 +295,23 @@ class Module_admin_points
      */
     public function points_charge()
     {
-        $member = post_param_integer('member');
+        $member = post_param_integer('member', null);
+
+        if ($member === null) {
+            $member = get_param_integer('member');
+            $amount = get_param_integer('amount');
+            $reason = get_param_string('reason');
+
+            $hidden = new Tempcode();
+            $hidden->attach(form_input_hidden('member', strval($member)));
+            $hidden->attach(form_input_hidden('amount', strval($amount)));
+            $hidden->attach(form_input_hidden('reason', $reason));
+
+            $preview = $GLOBALS['FORUM_DRIVER']->get_username($member) . ': ' . integer_format($amount);
+
+            return do_template('CONFIRM_SCREEN', array('TITLE' => $this->title, 'PREVIEW' => $preview, 'URL' => get_self_url(false, false, array('member' => null, 'amount' => null, 'reason' => null)), 'FIELDS' => $hidden));
+        }
+
         $amount = post_param_integer('amount');
         $reason = post_param_string('reason');
 
