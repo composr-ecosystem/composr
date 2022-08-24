@@ -182,7 +182,14 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
         $add_time_field = in_array('add_time', $fields_to_skip) ? null : $info['add_time_field'];
         if (!is_null($add_time_field)) {
             $add_time = is_null($content_row) ? null : $content_row[$add_time_field];
-            $fields->attach(form_input_date(do_lang_tempcode('ADD_TIME'), do_lang_tempcode('DESCRIPTION_META_ADD_TIME'), 'meta_add_time', !is_null($content_row), is_null($content_row), true, $add_time, 40, intval(date('Y')) - 20));
+            if (true||@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') { // TODO: Fix in v11
+                $year_start = 1970;
+                $total_years_to_show = 2038 - 1970 - 1; // https://en.wikipedia.org/wiki/Year_2038_problem
+            } else {
+                $year_start = 0;
+                $total_years_to_show = 2038 - 1; // https://en.wikipedia.org/wiki/Year_2038_problem
+            }
+            $fields->attach(form_input_date(do_lang_tempcode('ADD_TIME'), do_lang_tempcode('DESCRIPTION_META_ADD_TIME'), 'meta_add_time', !is_null($content_row), is_null($content_row), true, $add_time, $total_years_to_show, $year_start));
         }
 
         if (!is_null($content_id)) {
