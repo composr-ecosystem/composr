@@ -21,17 +21,11 @@
             };
         },
 
-        submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
-        },
-
         fetchAndSubmit: function (e, btn) {
             var params = this.params;
-            var places = ['panel_left', 'panel_right', 'panel_top', 'panel_bottom', '{$DEFAULT_ZONE_PAGE_NAME;}'];
 
+            // Lock in WYSIWYG data
+            var places = ['panel_left', 'panel_right', 'panel_top', 'panel_bottom', '{$DEFAULT_ZONE_PAGE_NAME;}'];
             for (var i = 0; i < places.length; i++) {
                 if (window.CKEDITOR && CKEDITOR.instances['edit_' + places[i] + '_textarea']) {
                     CKEDITOR.instances['edit_' + places[i] + '_textarea'].updateElement();
@@ -39,10 +33,15 @@
                 setEditedPanel(places[i]);
             }
 
+            // Lock in other field data
             var form = $dom.$id('middle-fields');
             var editFieldStore = $dom.$id('edit-field-store');
             var i, store;
             for (i = 0; i < form.elements.length; i++) {
+                if (['csrf_token', ''].includes(form.elements[i].name)) {
+                    continue;
+                }
+
                 store = document.createElement('input');
                 store.type = 'hidden';
                 store.name = form.elements[i].name;
@@ -54,6 +53,12 @@
                 editFieldStore.appendChild(store);
             }
 
+            // Submit form as appropriate
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
+                e.preventDefault();
+                $cms.form.modSecurityWorkaround(btn.form);
+                return;
+            }
             $dom.submit(btn.form);
         }
     });
@@ -84,9 +89,9 @@
         events: function () {
             return {
                 'click .js-click-select-tab': 'selectTab',
-                'submit .js-form-zone-editor-comcode': 'submitComcode',
+                'submit .js-form-zone-editor-comcode': 'submitFromComcodePanelForm',
                 'click .js-a-toggle-wysiwyg': 'toggleWysiwyg',
-                'change .js-ta-ze-comcode, .js-sel-zones-draw, .js-inp-zones-draw': 'setEditedPanel'
+                'change .js-ta-ze-comcode, .js-sel-zones-draw, .js-inp-zones-draw': 'setEditedPanelOnChange'
             };
         },
 
@@ -166,32 +171,79 @@
             }
         },
 
-        submitComcode: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
-                e.preventDefault();
-                $cms.form.modSecurityWorkaround(form);
-            }
+        submitFromComcodePanelForm: function (e, form) {
+            // We don't want this, just cancel form submission
+            e.preventDefault();
         },
 
         toggleWysiwyg: function () {
             window.$editing.toggleWysiwyg('edit_' + this.params.id + '_textarea');
         },
 
-        setEditedPanel: function (e, field) {
+        setEditedPanelOnChange: function (e, field) {
             var params = this.params,
-                editor = $dom.$id('edit-tab-' + params.id);
+                tab = $dom.$id('edit-tab-' + params.id);
 
             setEditedPanel(params.id);
 
-            if (editor) {
+            // Make sure the tab just changed is selected
+            if (tab) {
                 if (field.localName === 'select') {
-                    $dom.toggle(editor, (params.currentZone === field.value));
+                    $dom.toggle(tab, (params.currentZone === field.value));
                 } else if (field.localName === 'input') {
-                    $dom.toggle(editor, (params.currentZone === field.value));
+                    $dom.toggle(tab, (params.currentZone === field.value));
                 }
             }
         }
     });
+
+    function setEditedPanel(id) {
+        var el, store;
+
+        /* The editing box */
+
+        el = $dom.$('textarea#edit_' + id + '_textarea');
+        if (el) {
+            store = $dom.$('#store_' + id);
+            if (!store) {
+                store = document.createElement('textarea');
+                store.name = id;
+                store.id = 'store_' + id;
+                $dom.$('#edit-field-store').appendChild(store);
+            }
+            store.value = window.$editing.getTextbox(el);
+        }
+
+        /* The WYSIWYG setting (not the actual HTML text value of the editor, the setting of whether WYSIWYG was used or not) */
+
+        el = $dom.$id('edit_' + id + '_textarea__is_wysiwyg');
+        if (el) {
+            store = $dom.$id('wysiwyg_store_' + id);
+            if (!store) {
+                store = document.createElement('input');
+                store.type = 'hidden';
+                store.id = 'wysiwyg_store_' + id;
+                store.name = id + '__is_wysiwyg';
+                $dom.$id('edit-field-store').appendChild(store);
+            }
+            store.value = el.value;
+        }
+
+        /* The redirect setting */
+
+        el = $dom.$('select#redirect_' + id);
+        if (el) {
+            store = $dom.$id('redirects_store_' + id);
+            if (!store) {
+                store = document.createElement('input');
+                store.type = 'hidden';
+                store.name = 'redirect_' + id;
+                store.id = 'redirects_store_' + id;
+                $dom.$id('edit-field-store').appendChild(store);
+            }
+            store.value = el.value;
+        }
+    }
 
     $cms.functions.moduleAdminZonesGetFormFields = function moduleAdminZonesGetFormFields() {
         var zone = document.getElementById('new_zone');
@@ -234,50 +286,4 @@
             $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
-
-    function setEditedPanel(id) {
-        var el, store;
-
-        /* The editing box */
-
-        el = $dom.$('teaxtarea#edit_' + id + '_textarea');
-        if (el) {
-            store = $dom.$('#store_' + id);
-            if (!store) {
-                store = document.createElement('textarea');
-                store.name = id;
-                store.id = 'store_' + id;
-                $dom.$('#edit-field-store').appendChild(store);
-            }
-            store.value = window.$editing.getTextbox(el);
-        }
-
-        /* The WYSIWYG setting (not the actual HTML text value of the editor, the setting of whether WYSIWYG was used or not) */
-
-        el = $dom.$id('edit_' + id + '_textarea__is_wysiwyg');
-        if (el) {
-            store = $dom.$id('wysiwyg_store_' + id);
-            if (!store) {
-                store = document.createElement('textarea');
-                store.id = 'wysiwyg_store_' + id;
-                store.name = id + '__is_wysiwyg';
-                $dom.$id('edit-field-store').appendChild(store);
-            }
-            store.value = el.value;
-        }
-
-        /* The redirect setting */
-
-        el = $dom.$('select#redirect_' + id);
-        if (el) {
-            store = $dom.$id('redirects_store_' + id);
-            if (!store) {
-                store = document.createElement('textarea');
-                store.name = 'redirect_' + id;
-                store.id = 'redirects_store_' + id;
-                $dom.$id('edit-field-store').appendChild(store);
-            }
-            store.value = el.value;
-        }
-    }
 }(window.$cms, window.$util, window.$dom));

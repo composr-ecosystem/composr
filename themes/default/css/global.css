@@ -6398,7 +6398,7 @@ NB: Form buttons are wrapped in either:
 	border-left: 0;
 	border-right: 0;
 	border-top: 0;
-	height: 25px;
+	height: 35px;
 }
 /*{+START,CSS_MODE,desktop}*/
 	.tabs {
@@ -6415,8 +6415,6 @@ NB: Form buttons are wrapped in either:
 /*{+START,CSS_MODE,mobile}*/
 	.tabs {
 		border-bottom: 1px solid {$GET,tab_border};
-		overflow: hidden;
-		height: auto;
 	}
 /*{+END}*/
 
@@ -6426,8 +6424,8 @@ a.tab, a.tab:visited, a.tab:hover {
 
 .tab {
 	float: left;
-	padding: 0 8px 0 8px !important;
-	height: 23px;
+	padding: 4px 8px 0 8px !important;
+	height: 100%;
 	text-align: center;
 	cursor: pointer;
 	line-height: 18px;

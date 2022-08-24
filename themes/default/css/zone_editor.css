@@ -21,16 +21,8 @@
 	}
 /*{+END}*/
 
-.ze-tabs {
-	background-color: {$GET,native_ui_background};
-}
-/*{+START,CSS_MODE,mobile}*/
-	.ze-tabs {
-		display: inline-block;
-	}
-/*{+END}*/
-
 .ze-tabs .tab {
+	background-color: {$GET,native_ui_background};
 	min-width: 3.4em;
 }
 
