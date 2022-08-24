@@ -181,7 +181,7 @@ class Hook_content_meta_aware_gallery extends Hook_CMA
     {
         require_code('galleries');
 
-        return render_gallery_box($row, ($root === null) ? $root : 'root', false, $zone, false, false, $give_context, $include_breadcrumbs, $attach_to_url_filter, $guid);
+        return render_gallery_box($row, ($root === null) ? 'root' : $root, false, $zone, false, false, $give_context, $include_breadcrumbs, $attach_to_url_filter, $guid);
     }
 
     /**
