@@ -10,10 +10,15 @@ button.date-datepicker-button:after {
   margin: 0em 0em 0.2em 0.7em;
   vertical-align: middle; }
 
-.csstransitions div.date-calendar-dialog.date-closed {
+/* Added by ChrisG */
+div.date-calendar-dialog {
+	z-index: 1000;
+}
+
+/*Removed by ChrisG to fix bug as class is missing .csstransitions*/ div.date-calendar-dialog.date-closed {
   transition: opacity 0.4s linear;
   opacity: 0; }
-.csstransitions div.date-calendar-dialog.date-open {
+/*Removed by ChrisG to fix bug as class is missing .csstransitions*/ div.date-calendar-dialog.date-open {
   z-index: 1000;
   transition: opacity 0.4s linear;
   opacity: 1; }
